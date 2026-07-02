@@ -50,9 +50,11 @@ Organizational governance for Supabase at scale: a **shared RLS policy library**
 - Database access via `psql` or Supabase SQL Editor
 - Pro plan recommended for cost alerts and usage API
 
-## Step 1 — Shared RLS Policy Library and Naming Conventions
+## Instructions
 
-### RLS Policy Templates
+### Step 1 — Shared RLS Policy Library and Naming Conventions
+
+#### RLS Policy Templates
 
 Create reusable RLS policy templates that teams apply to new tables. This prevents each developer from writing ad-hoc policies and ensures consistent access control.
 
@@ -164,7 +166,7 @@ $$ LANGUAGE plpgsql;
 -- SELECT public.rls_public_read_auth_write('blog_posts', 'author_id');
 ```
 
-### Naming Conventions
+#### Naming Conventions
 
 ```sql
 -- supabase/migrations/00000000000001_naming_convention_check.sql
@@ -228,7 +230,7 @@ $$ LANGUAGE plpgsql;
 -- Run: SELECT * FROM public.validate_naming_conventions();
 ```
 
-### Naming Convention Reference
+#### Naming Convention Reference
 
 | Object | Convention | Example |
 |--------|-----------|---------|
@@ -242,7 +244,7 @@ $$ LANGUAGE plpgsql;
 | Indexes | `idx_{table}_{columns}` | `idx_orders_user_id_created_at` |
 | Migrations | `{timestamp}_{verb}_{description}` | `20250322000000_create_orders_table.sql` |
 
-## Step 2 — Migration Review Process with CI Checks
+### Step 2 — Migration Review Process with CI Checks
 
 See [CI checks, cost alerts, and security audits](references/ci-cost-security.md) for GitHub Actions migration guardrails (RLS enforcement, naming checks, destructive operation blocks), pre-commit hooks, cost monitoring with Slack alerts, security audit scripts, and scheduled Edge Function audits.
 

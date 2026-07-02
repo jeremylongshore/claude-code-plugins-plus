@@ -48,11 +48,13 @@ The twelve most common Supabase mistakes, ranked by severity: **security** (serv
 - `@supabase/supabase-js` v2+ installed
 - Basic understanding of Row Level Security (RLS)
 
-## Step 1 — Security Pitfalls (Critical)
+## Instructions
+
+### Step 1 — Security Pitfalls (Critical)
 
 These mistakes can expose all your data to any user with browser dev tools.
 
-### Pitfall 1: Exposing service_role Key in Client Code
+#### Pitfall 1: Exposing service_role Key in Client Code
 
 ```typescript
 // BAD: service_role key in a NEXT_PUBLIC_ variable — shipped to every browser
@@ -92,7 +94,7 @@ grep -rn 'SERVICE_ROLE' --include="*.tsx" --include="*.jsx" --include="*.ts" src
 grep -rn 'NEXT_PUBLIC.*SERVICE_ROLE' .env* *.ts *.tsx
 ```
 
-### Pitfall 2: Tables Without RLS Enabled
+#### Pitfall 2: Tables Without RLS Enabled
 
 ```sql
 -- BAD: table created without enabling RLS
@@ -129,7 +131,7 @@ AND rowsecurity = false
 AND tablename NOT LIKE '\_%';
 ```
 
-### Pitfall 3: Overly Permissive RLS Policies
+#### Pitfall 3: Overly Permissive RLS Policies
 
 ```sql
 -- BAD: lets any authenticated user read ALL messages
@@ -152,7 +154,7 @@ CREATE POLICY "update_own_profile" ON public.profiles
   FOR UPDATE USING (id = auth.uid());
 ```
 
-### Pitfall 4: Not Using Connection Pooling in Serverless
+#### Pitfall 4: Not Using Connection Pooling in Serverless
 
 ```typescript
 // BAD: direct connection string in a serverless function
@@ -165,11 +167,11 @@ const connectionString = 'postgresql://postgres.xxx:pass@aws-0-us-east-1.pooler.
 // Required for serverless (Vercel, Netlify, Cloudflare Workers, AWS Lambda)
 ```
 
-## Step 2 — Data Integrity Pitfalls (High)
+### Step 2 — Data Integrity Pitfalls (High)
 
 These mistakes cause silent data loss, null pointer errors, and inconsistent state.
 
-### Pitfall 5: Not Handling { data, error }
+#### Pitfall 5: Not Handling { data, error }
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -190,7 +192,7 @@ if (error) {
 console.log(data.id)
 ```
 
-### Pitfall 6: Missing .select() After Insert/Update/Upsert
+#### Pitfall 6: Missing .select() After Insert/Update/Upsert
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -212,7 +214,7 @@ if (error) throw new Error(`Insert failed: ${error.message}`)
 console.log(data)  // { id: '...', title: 'Buy milk', is_complete: false, ... }
 ```
 
-### Pitfall 7: .single() on Empty or Multiple Results
+#### Pitfall 7: .single() on Empty or Multiple Results
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -245,9 +247,9 @@ const { data, error } = await supabase
 // neither        — use when you expect an array of results
 ```
 
-## Step 3 — Performance and Maintainability Pitfalls (Medium/Low)
+### Step 3 — Performance and Maintainability Pitfalls (Medium/Low)
 
-### Pitfall 8: select('*') Everywhere
+#### Pitfall 8: select('*') Everywhere
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -268,7 +270,7 @@ const { data } = await supabase
 // Benefits: smaller payload, typed results, index-friendly, no data leakage
 ```
 
-### Pitfall 9: N+1 Query Pattern
+#### Pitfall 9: N+1 Query Pattern
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -305,7 +307,7 @@ const { data: allTasks } = await supabase
 // Total: 2 queries regardless of N
 ```
 
-### Pitfall 10: Missing Indexes on Foreign Key Columns
+#### Pitfall 10: Missing Indexes on Foreign Key Columns
 
 ```sql
 -- BAD: foreign key without index
@@ -351,7 +353,7 @@ AND tc.table_schema = 'public'
 AND pi.indexname IS NULL;
 ```
 
-### Pitfall 11: Creating Multiple Client Instances
+#### Pitfall 11: Creating Multiple Client Instances
 
 ```typescript
 // BAD: new client in every file — wastes memory, breaks auth state
@@ -387,7 +389,7 @@ export const supabase = createClient<Database>(
 // import { supabase } from '@/lib/supabase'
 ```
 
-### Pitfall 12: Not Using Generated Types
+#### Pitfall 12: Not Using Generated Types
 
 ```typescript
 // BAD: manual types that drift from the actual database schema

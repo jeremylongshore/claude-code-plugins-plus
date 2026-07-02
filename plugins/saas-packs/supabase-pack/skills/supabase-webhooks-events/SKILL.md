@@ -44,11 +44,13 @@ Supabase offers four complementary event mechanisms: **Database Webhooks** (trig
 - `@supabase/supabase-js` v2+ installed for client-side patterns
 - Edge Functions deployed for webhook receiver patterns
 
-## Step 1 — Database Webhooks with `pg_net` and Trigger Functions
+## Instructions
+
+### Step 1 — Database Webhooks with `pg_net` and Trigger Functions
 
 Database webhooks fire HTTP requests when rows change. Under the hood, Supabase uses the `pg_net` extension to make async, non-blocking HTTP calls from within PostgreSQL.
 
-### Enable pg_net and Create the Trigger Function
+#### Enable pg_net and Create the Trigger Function
 
 ```sql
 -- Enable the pg_net extension (one-time)
@@ -76,7 +78,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 ```
 
-### Attach Triggers for INSERT, UPDATE, DELETE
+#### Attach Triggers for INSERT, UPDATE, DELETE
 
 ```sql
 -- Fire on new rows
@@ -109,7 +111,7 @@ CREATE TRIGGER on_order_status_changed
   FOR EACH ROW EXECUTE FUNCTION public.notify_order_status_changed();
 ```
 
-### Using `supabase_functions.http_request()` (Built-in Helper)
+#### Using `supabase_functions.http_request()` (Built-in Helper)
 
 Supabase provides a built-in wrapper that simplifies calling Edge Functions from triggers without managing headers manually:
 
@@ -128,7 +130,7 @@ CREATE TRIGGER on_profile_updated
   );
 ```
 
-### Inspect pg_net Responses
+#### Inspect pg_net Responses
 
 ```sql
 -- Check recent HTTP responses (retained for 6 hours)
@@ -144,9 +146,9 @@ WHERE status_code >= 400
 ORDER BY created DESC;
 ```
 
-## Step 2 — Edge Function Webhook Receivers with Signature Verification
+### Step 2 — Edge Function Webhook Receivers with Signature Verification
 
-### Webhook Receiver with Signature Verification
+#### Webhook Receiver with Signature Verification
 
 ```typescript
 // supabase/functions/on-order-created/index.ts
@@ -247,7 +249,7 @@ serve(async (req) => {
 });
 ```
 
-### Idempotent Event Processing
+#### Idempotent Event Processing
 
 Webhooks may be delivered more than once. Use an idempotency table to prevent duplicate processing:
 
@@ -307,9 +309,9 @@ DELETE FROM public.processed_events
 WHERE processed_at < now() - interval '7 days';
 ```
 
-## Step 3 — Postgres LISTEN/NOTIFY and Realtime as Event Source
+### Step 3 — Postgres LISTEN/NOTIFY and Realtime as Event Source
 
-### Postgres LISTEN/NOTIFY for Lightweight Pub/Sub
+#### Postgres LISTEN/NOTIFY for Lightweight Pub/Sub
 
 LISTEN/NOTIFY is PostgreSQL's built-in pub/sub. It does not persist messages and is best for ephemeral notifications between database functions or connected clients:
 
@@ -350,7 +352,7 @@ client.on("notification", (msg) => {
 });
 ```
 
-### Realtime `postgres_changes` as Client-Side Event Source
+#### Realtime `postgres_changes` as Client-Side Event Source
 
 Supabase Realtime lets frontend clients subscribe to database changes without polling. Enable Realtime on your table first (Dashboard > Database > Replication).
 
@@ -400,7 +402,7 @@ const channel = supabase
 // await supabase.removeChannel(channel);
 ```
 
-### Event-Driven Architecture: Combining Patterns
+#### Event-Driven Architecture: Combining Patterns
 
 Use database triggers for server-side workflows and Realtime for client-side UI updates:
 

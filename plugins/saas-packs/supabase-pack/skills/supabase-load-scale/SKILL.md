@@ -48,11 +48,13 @@ Supabase scaling operates at six layers: **read replicas** (offload analytics an
 - Database access via `psql` or Supabase SQL Editor
 - TypeScript project with generated database types
 
-## Step 1 — Read Replicas and Connection Pooling
+## Instructions
+
+### Step 1 — Read Replicas and Connection Pooling
 
 Read replicas let you route read-heavy queries (dashboards, reports, search) to replica databases while keeping writes on the primary. Supabase uses **Supavisor** (their pgBouncer replacement) for connection pooling with two modes: **transaction** (default, shares connections between requests) and **session** (holds a connection per client session, needed for prepared statements).
 
-### Configure the Read Replica Client
+#### Configure the Read Replica Client
 
 ```typescript
 // lib/supabase.ts
@@ -89,7 +91,7 @@ export const supabaseAdmin = createClient<Database>(
 )
 ```
 
-### Direct Postgres Connections via Supavisor Pooling
+#### Direct Postgres Connections via Supavisor Pooling
 
 ```bash
 # Transaction mode (default, port 6543) — best for serverless/short-lived connections
@@ -104,7 +106,7 @@ psql "postgresql://postgres.[project-ref]:[password]@aws-0-us-east-1.pooler.supa
 psql "postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres"
 ```
 
-### Route Queries to the Right Target
+#### Route Queries to the Right Target
 
 ```typescript
 // services/analytics.ts
@@ -138,7 +140,7 @@ export async function createOrder(order: OrderInsert) {
 }
 ```
 
-### Monitor Connection Pool Usage
+#### Monitor Connection Pool Usage
 
 ```sql
 -- Check active connections by source (run in SQL Editor)
@@ -158,9 +160,9 @@ SHOW max_connections;
 -- Micro: 60, Small: 90, Medium: 120, Large: 160, XL: 240, 2XL: 380, 4XL: 480
 ```
 
-## Step 2 — Compute Upgrades, CDN for Storage, and Edge Function Regions
+### Step 2 — Compute Upgrades, CDN for Storage, and Edge Function Regions
 
-### Compute Size Selection Guide
+#### Compute Size Selection Guide
 
 | Tier | vCPU | RAM | Max Connections | Best For |
 |------|------|-----|----------------|----------|
@@ -180,7 +182,7 @@ supabase projects update --experimental --compute-size small  # or medium, large
 supabase projects list
 ```
 
-### CDN Caching for Storage Buckets
+#### CDN Caching for Storage Buckets
 
 Public buckets are automatically served through Supabase's CDN. Optimize cache behavior with proper headers and transforms.
 
@@ -244,7 +246,7 @@ async function uploadVersionedAsset(bucket: string, file: Buffer, ext: string) {
 }
 ```
 
-### Edge Function Regional Deployment
+#### Edge Function Regional Deployment
 
 ```bash
 # Deploy to a specific region (closer to your users)
@@ -291,7 +293,7 @@ Deno.serve(async (req) => {
 })
 ```
 
-## Step 3 — Database Table Partitioning
+### Step 3 — Database Table Partitioning
 
 See [table partitioning patterns](references/table-partitioning.md) for range partitioning by date, automated partition creation via `pg_cron`, SDK query patterns with partition key filters, and partition drop for data retention.
 

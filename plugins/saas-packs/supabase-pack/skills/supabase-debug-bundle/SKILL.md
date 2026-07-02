@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Supabase Debug Bundle
 
+## Overview
+
 Collect a comprehensive, redacted diagnostic bundle from a Supabase project. Tests connectivity, auth, Realtime, Storage, RLS policy behavior, and database health — then packages everything into a single archive safe for sharing with Supabase support.
 
 ## Current State

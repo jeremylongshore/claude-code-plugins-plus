@@ -13,7 +13,7 @@ description: 'Manage Supabase rate limits and quotas across all plan tiers.
   "supabase quota", "supabase connection pool", "supabase too many requests".
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(node:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

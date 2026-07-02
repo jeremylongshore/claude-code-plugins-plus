@@ -53,11 +53,13 @@ Different application architectures require fundamentally different Supabase `cr
 - TypeScript project with generated database types (`supabase gen types typescript`)
 - For mobile: React Native with Expo or bare workflow
 
-## Step 1 — Next.js SSR (App Router with Server and Client Components)
+## Instructions
+
+### Step 1 — Next.js SSR (App Router with Server and Client Components)
 
 Next.js App Router requires **two separate clients**: a server-side client using cookies for auth (with `@supabase/ssr`) and a browser client for client components. Never expose `service_role` to the client.
 
-### Server-Side Client (for Server Components, Route Handlers, Server Actions)
+#### Server-Side Client (for Server Components, Route Handlers, Server Actions)
 
 ```typescript
 // lib/supabase/server.ts
@@ -105,7 +107,7 @@ export function createSupabaseAdmin() {
 }
 ```
 
-### Client-Side Client (for Client Components)
+#### Client-Side Client (for Client Components)
 
 ```typescript
 // lib/supabase/client.ts
@@ -128,7 +130,7 @@ export function createSupabaseBrowser() {
 }
 ```
 
-### Middleware for Auth Session Refresh
+#### Middleware for Auth Session Refresh
 
 ```typescript
 // middleware.ts
@@ -170,7 +172,7 @@ export const config = {
 }
 ```
 
-### Server Component Usage
+#### Server Component Usage
 
 ```typescript
 // app/dashboard/page.tsx
@@ -200,7 +202,7 @@ export default async function DashboardPage() {
 }
 ```
 
-### Server Action with Admin Client
+#### Server Action with Admin Client
 
 ```typescript
 // app/actions/admin.ts
@@ -225,9 +227,9 @@ export async function deleteUserAccount(userId: string) {
 }
 ```
 
-## Step 2 — SPA (React/Vue) and Mobile (React Native)
+### Step 2 — SPA (React/Vue) and Mobile (React Native)
 
-### SPA Architecture (React with Vite)
+#### SPA Architecture (React with Vite)
 
 SPAs use a single browser client with the anon key. All authorization is enforced via RLS. The service_role key is never present in the SPA bundle.
 
@@ -262,7 +264,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 })
 ```
 
-### React Hook for Auth-Protected Queries
+#### React Hook for Auth-Protected Queries
 
 ```typescript
 // src/hooks/useSupabaseQuery.ts
@@ -305,7 +307,7 @@ export function useCreateTodo() {
 }
 ```
 
-### Mobile Architecture (React Native with Expo)
+#### Mobile Architecture (React Native with Expo)
 
 React Native needs `AsyncStorage` for session persistence and deep link handling for OAuth.
 
@@ -329,7 +331,7 @@ export const supabase = createClient<Database>(
 )
 ```
 
-### Mobile OAuth with Deep Links
+#### Mobile OAuth with Deep Links
 
 ```typescript
 // lib/auth.ts (React Native)
@@ -371,7 +373,7 @@ export async function signInWithGoogle() {
 }
 ```
 
-### App.json Deep Link Configuration (Expo)
+#### App.json Deep Link Configuration (Expo)
 
 ```json
 {
@@ -389,7 +391,7 @@ export async function signInWithGoogle() {
 }
 ```
 
-## Step 3 — Serverless (Edge Functions) and Multi-Tenant
+### Step 3 — Serverless (Edge Functions) and Multi-Tenant
 
 See [serverless and multi-tenant patterns](references/serverless-and-multi-tenant.md) for Edge Function per-request clients, admin operation escalation, RLS-based multi-tenant isolation with schema, and tenant-scoped SDK queries.
 

@@ -46,11 +46,13 @@ Production Supabase apps need six reliability layers: **circuit breakers** (stop
 - For offline queue: browser environment with IndexedDB or server with Redis
 - For dual-write: secondary data store (Redis, DynamoDB, or local SQLite)
 
-## Step 1 — Circuit Breaker and Retry with Exponential Backoff
+## Instructions
+
+### Step 1 — Circuit Breaker and Retry with Exponential Backoff
 
 A circuit breaker tracks failures per Supabase service (database, auth, storage) and stops making calls when a threshold is exceeded. Combined with retry logic, it prevents both cascading failures and unnecessary retries during extended outages.
 
-### Circuit Breaker Implementation
+#### Circuit Breaker Implementation
 
 ```typescript
 // lib/circuit-breaker.ts
@@ -147,7 +149,7 @@ export const storageCircuit = new CircuitBreaker({
 })
 ```
 
-### Retry with Exponential Backoff and Jitter
+#### Retry with Exponential Backoff and Jitter
 
 ```typescript
 // lib/retry.ts
@@ -202,7 +204,7 @@ export async function withRetry<T>(
 }
 ```
 
-### Combining Circuit Breaker + Retry
+#### Combining Circuit Breaker + Retry
 
 ```typescript
 // services/todo-service.ts
@@ -247,7 +249,7 @@ export const TodoService = {
 }
 ```
 
-## Step 2 — Offline Queue and Graceful Degradation
+### Step 2 — Offline Queue and Graceful Degradation
 
 See [offline queue, graceful degradation, health checks, and dual-write](references/offline-degradation-health-dualwrite.md) for IndexedDB offline queue with auto-flush, cached fallback patterns, health check endpoints monitoring database/auth/storage, dual-write for critical data with Redis backup, and reconciliation jobs.
 
@@ -271,6 +273,32 @@ See [offline queue, graceful degradation, health checks, and dual-write](referen
 | Dual-write divergence | Network partition | Run reconciliation job every 5 min; alert on divergence count |
 | Health check false positive | Transient network blip | Require 3 consecutive failures before marking unhealthy |
 | Retry storm | All clients retry simultaneously | Jitter prevents thundering herd; circuit breaker stops retries when open |
+
+## Examples
+
+**Example 1 — List todos with outage fallback.** During a Supabase outage the circuit opens after 5 failures and the fallback serves an empty list instead of cascading errors:
+
+```typescript
+import { TodoService } from './services/todo-service'
+
+const { data, error } = await TodoService.list(userId)
+// Healthy: data from Supabase (transient errors retried with backoff).
+// Circuit OPEN: fallback returns { data: [], error: null } — UI renders
+// an empty state instead of crashing.
+```
+
+**Example 2 — Check circuit state before an expensive operation:**
+
+```typescript
+import { dbCircuit, storageCircuit } from './lib/circuit-breaker'
+
+const { state, failures } = dbCircuit.currentState
+if (state === 'OPEN') {
+  console.warn(`Database circuit OPEN (${failures} failures) — deferring bulk import`)
+} else if (storageCircuit.currentState.state !== 'OPEN') {
+  await runBulkImport()
+}
+```
 
 ## Resources
 
