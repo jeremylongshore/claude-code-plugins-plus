@@ -208,7 +208,7 @@ app.post('/webhooks/figma', (req, res) => {
 | `figd_...` in source control | #4 hardcoded PATs | Move to `process.env.FIGMA_PAT`, rotate the leaked token immediately |
 | Colors render wrong in generated CSS | #6 color format | Multiply Figma's 0-1 floats by 255 |
 | `TypeError` reading image URL | #7 null renders | Filter null entries from `/v1/images` responses |
-| Webhook events processed from unknown senders | #10 no passcode check | Verify `passcode` on every delivery (`references/pitfall-10-webhook-without-passcode-verification.md`)
+| Webhook events processed from unknown senders | #10 no passcode check | Verify `passcode` on every delivery (`references/pitfall-10-webhook-without-passcode-verification.md`) |
 
 ## Quick Reference
 
