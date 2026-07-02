@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Cost Tuning
 
+## Overview
+
 Reduce Sentry spend by 60-95% through SDK-level sampling, server-side inbound filters, `beforeSend` event dropping, and quota management — without losing visibility into production errors that matter.
 
 ## Prerequisites

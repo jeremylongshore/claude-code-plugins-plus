@@ -28,6 +28,8 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Load & Scale
 
+## Overview
+
 Configure Sentry for applications processing 1M+ requests/day without sacrificing error visibility, burning through quota, or adding measurable SDK overhead. Covers adaptive sampling, connection pooling, multi-region tagging, quota management, SDK benchmarking, batch submission, load testing, and self-hosted deployment considerations.
 
 ## Prerequisites
