@@ -261,6 +261,61 @@ def test_843_check2_shortname_mention_warns_not_errors():
     assert any("CHECK 2" in w and "reserveDevice" in w for w in warnings), warnings
 
 
+def test_843_kebab_server_name_declared_and_used_is_clean():
+    # Regression (schema 3.15.1): server segment with hyphens was invisible to
+    # _RE_MCP_FQ, so a declared-and-used tool falsely warned as over-declared.
+    errors, warnings = _body_check(
+        ["Read", "mcp__semantic-scholar__paper_search"],
+        "Call `mcp__semantic-scholar__paper_search` to find candidate papers.",
+    )
+    assert errors == [], errors
+    assert not any("over-declared" in w for w in warnings), warnings
+
+
+def test_843_snake_server_name_declared_and_used_is_clean():
+    # Regression (schema 3.15.1): underscores in the server segment collided
+    # with the `__` separator and the ref was never matched at all.
+    errors, warnings = _body_check(
+        ["Read", "mcp__plugin_automate_kobiton__getApp"],
+        "Fetch metadata with `mcp__plugin_automate_kobiton__getApp` first.",
+    )
+    assert errors == [], errors
+    assert not any("over-declared" in w for w in warnings), warnings
+
+
+def test_843_kebab_server_undeclared_body_ref_still_errors():
+    # True positive must survive the regex widening: an undeclared kebab-server
+    # FQ ref in the body is still a CHECK 1 error.
+    errors, _ = _body_check(
+        ["Read", "mcp__semantic-scholar__paper_search"],
+        "Then call `mcp__semantic-scholar__author_search` for the author list.",
+    )
+    assert any("CHECK 1" in e and "mcp__semantic-scholar__author_search" in e for e in errors), errors
+
+
+def test_843_overdeclared_kebab_server_tool_still_warns():
+    # True positive must survive: a declared kebab-server tool the body never
+    # references is still flagged as over-declared privilege.
+    errors, warnings = _body_check(
+        ["Read", "mcp__semantic-scholar__paper_search"],
+        "Summarize the papers already collected in the notes file.",
+    )
+    assert errors == []
+    assert any("over-declared" in w and "mcp__semantic-scholar__paper_search" in w for w in warnings), warnings
+
+
+def test_843_server_segment_cannot_swallow_separator():
+    # Separator-ambiguity guard: in mcp__a_b__c the server segment must stop
+    # at `a_b` (single-underscore joiner) and leave `__` as the separator, so
+    # the exact declared string matches and no over-declared warning fires.
+    errors, warnings = _body_check(
+        ["Read", "mcp__a_b__c"],
+        "Invoke `mcp__a_b__c` to run the check.",
+    )
+    assert errors == [], errors
+    assert not any("over-declared" in w for w in warnings), warnings
+
+
 def test_843_check2_suppressed_for_non_mcp_agent():
     # A code-focused agent with no MCP involvement: backtick `getStaticProps`
     # is prose, not a tool call — must not warn (the known-FP guard).

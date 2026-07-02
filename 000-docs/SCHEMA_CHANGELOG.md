@@ -146,6 +146,59 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.15.1] — 2026-07-02 — Body-vs-allowlist regex recognizes kebab/snake MCP server names (spec-compliance bug fix, issue #843)
+
+**Bug fix — no change to `ALWAYS_REQUIRED`, the tier model, or error-vs-warning
+semantics.** Autonomous-OK class per NON-NEGOTIABLE #6 (spec-compliance
+technical-correctness fix); PR gated for review per the Backlog Zero campaign
+governance rule (validator changes wait for Jeremy).
+
+### Fixed
+
+- **`_RE_MCP_FQ` (the #843 body-vs-allowlist scanner) now matches MCP server
+  names containing hyphens or underscores.** The old pattern
+  `mcp__[a-zA-Z0-9]+__[a-zA-Z0-9_]+` only accepted a bare-alnum server segment,
+  so real-world fully-qualified refs like `mcp__semantic-scholar__paper_search`
+  (kebab) and `mcp__plugin_automate_kobiton__getApp` (snake) never matched at
+  all. A declared-and-used tool with such a server name was therefore invisible
+  to the body scan and falsely warned as *"declares MCP tool … but the body never
+  references it — over-declared privilege"*. New pattern:
+  `mcp__[a-zA-Z0-9]+(?:[-_][a-zA-Z0-9]+)*__[a-zA-Z0-9_]+`.
+- **Separator-ambiguity choice (deliberate):** the server segment is alnum runs
+  joined by a SINGLE `-`/`_`, and each joiner must be followed by an alnum char —
+  so the segment can never swallow the `__` separator (whose second char is `_`,
+  not alnum). `mcp__a_b__c` parses as server `a_b` + tool `c`, deterministically.
+  The charset mirrors the existing `RE_MCP_TOOL_REF` (allowed-tools permission
+  form, which already accepted `mcp__database-explorer__query_database`) minus
+  its `^…$` anchors — `_RE_MCP_FQ` was the lone outlier. The tool segment is
+  unchanged (`[a-zA-Z0-9_]+`, underscores already allowed).
+
+### Tests
+
+Five regression tests added to the #843 section of
+`tests/test_validate_skills_schema_frontmatter.py`: kebab declared+used clean,
+snake declared+used clean, undeclared kebab body ref still a CHECK 1 error,
+over-declared kebab tool still warns, and the `mcp__a_b__c` separator guard.
+
+### Backward compatibility
+
+Non-breaking for correct agents: anything that passed at 3.15.0 with a truthful
+allowlist still passes at 3.15.1 with same or fewer warnings. Repo-wide
+marketplace run at landing (old vs new validator, same tree):
+
+- **−4 false over-declared warnings** — `mcp__dolt-mcp-vcs__{query,list_databases}`,
+  declared AND genuinely used in agent bodies, previously invisible to the scan.
+- **+2 previously-invisible TRUE-positive CHECK 3 errors** —
+  `plugins/community/sprint/agents/{nextjs-diagnostics-agent,ui-test-agent}.md`
+  reference `mcp__next-devtools__*` / `mcp__claude-in-chrome__*` in their bodies
+  while declaring zero `mcp__*` tools. These are genuine #843 defects (every
+  call runtime-blocked) that the old regex could not see — the check working
+  as designed, not a regression. Both files are pre-existing on `main` and
+  outside this PR's diff; no blocking CI lane runs a full-tree marketplace
+  pass, so no gate flips. Fix tracked as ordinary agent-file remediation.
+
+---
+
 ## [3.15.0] — 2026-07-01 — Enterprise body-section checks credit equivalent heading names (iel-62j fairness, additive)
 
 **Additive MINOR — no change to `ALWAYS_REQUIRED`, the tier model, or

@@ -178,7 +178,7 @@ except ImportError:
 #                       unchanged — only `## Capabilities` as a *heading* is credited
 #                       as an Overview synonym.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.15.0"
+SCHEMA_VERSION = "3.15.1"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -1900,8 +1900,13 @@ _MCP_VERB_PREFIXES = (
     "start",
     "stop",
 )
-# Fully-qualified MCP tool reference: mcp__<server>__<tool>
-_RE_MCP_FQ = re.compile(r"mcp__[a-zA-Z0-9]+__[a-zA-Z0-9_]+")
+# Fully-qualified MCP tool reference: mcp__<server>__<tool>.
+# The server segment accepts kebab/snake names (mcp__semantic-scholar__paper_search,
+# mcp__plugin_automate_kobiton__getApp): alnum runs joined by a SINGLE `-`/`_`.
+# Each joiner must be followed by an alnum char, so the segment can never swallow
+# the `__` separator (whose second char is `_`, not alnum) — deliberate
+# disambiguation. Charset mirrors RE_MCP_TOOL_REF, minus its ^…$ anchors.
+_RE_MCP_FQ = re.compile(r"mcp__[a-zA-Z0-9]+(?:[-_][a-zA-Z0-9]+)*__[a-zA-Z0-9_]+")
 # Backtick-quoted verbCamelCase short names commonly tool-call-shaped.
 _RE_BACKTICK_VERB = re.compile(r"`([a-z][a-zA-Z0-9_]*)`")
 
