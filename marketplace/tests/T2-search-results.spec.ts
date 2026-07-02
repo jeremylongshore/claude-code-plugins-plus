@@ -44,8 +44,9 @@ test.describe('Search Results', () => {
     // Wait for results
     await page.waitForTimeout(500);
 
-    // Find first plugin result link (look for any link containing /plugins/)
-    const pluginLink = page.locator('a[href*="/plugins/"]').first();
+    // Find first plugin result link (anchored to the /plugins/ prefix so
+    // docs URLs like /docs/concepts/plugins/ don't substring-match)
+    const pluginLink = page.locator('a[href^="/plugins/"]').first();
 
     // Click if found, otherwise skip this assertion
     const isVisible = await pluginLink.isVisible({ timeout: 2000 }).catch(() => false);
@@ -89,8 +90,9 @@ test.describe('Search Results', () => {
     // Wait for results
     await page.waitForTimeout(500);
 
-    // Find first skill result link (look for any link containing /skills/)
-    const skillLink = page.locator('a[href*="/skills/"]').first();
+    // Find first skill result link (anchored to the /skills/ prefix so
+    // docs URLs like /docs/concepts/skills/ don't substring-match)
+    const skillLink = page.locator('a[href^="/skills/"]').first();
 
     // Click if found
     const isVisible = await skillLink.isVisible({ timeout: 2000 }).catch(() => false);
