@@ -1,0 +1,37 @@
+{
+  "affected_agents": [],
+  "affected_hooks": [],
+  "affected_mcp": [],
+  "affected_skills": [],
+  "catalog_additions": [],
+  "contribution_types": ["sources", "sources_add"],
+  "file_categories": {
+    "yaml": 1
+  },
+  "plugin_paths": [],
+  "sources_additions": [
+    {
+      "# https": "//github.com/mishanefedov/skillrot",
+      "- name": "skillrot",
+      "author": "",
+      "category": "community",
+      "description": "Lint agent skills for external-CLI drift \u2014 finds skills calling tools (codex, gh, docker, supabase, ...) with flags or subcommands the installed version no longer accepts, plus a --cost context-budget audit",
+      "email": "48260330+mishanefedov@users.noreply.github.com",
+      "exclude": "",
+      "github": "mishanefedov",
+      "include": "",
+      "license": "MIT",
+      "name": "Michael Nefedov",
+      "repo": "mishanefedov/skillrot",
+      "source_path": "skills/skillrot",
+      "target_path": "plugins/community/skillrot",
+      "verified": "false"
+    }
+  ],
+  "touches_frontend": false,
+  "touches_scripts": false,
+  "touches_tests": false,
+  "touches_workflows": false,
+  "unknown": false,
+  "unmatched": []
+}

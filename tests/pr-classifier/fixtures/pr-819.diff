@@ -1,0 +1,300 @@
+diff --git a/.claude-plugin/marketplace.extended.json b/.claude-plugin/marketplace.extended.json
+index a8a861366..3802c81e5 100644
+--- a/.claude-plugin/marketplace.extended.json
++++ b/.claude-plugin/marketplace.extended.json
+@@ -9978,6 +9978,294 @@
+         "email": "info@aomi.dev"
+       },
+       "featured": false
++    },    {
++      "name": "cli-power-skills",
++      "source": "./plugins/productivity/cli-power-skills",
++      "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
++      "version": "1.0.0",
++      "category": "productivity",
++      "keywords": [
++        "cli-tools",
++        "agentic-skills",
++        "data-processing",
++        "security",
++        "web-crawling",
++        "python",
++        "ci-cd"
++      ],
++      "author": {
++        "name": "Yuriy Kotik",
++        "url": "https://github.com/ykotik"
++      },
++      "repository": "https://github.com/ykotik/cli-power-skills",
++      "license": "MIT"
++    },    {
++      "name": "claude-workflow-skills",
++      "source": "./plugins/productivity/claude-workflow-skills",
++      "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
++      "version": "1.7.1",
++      "category": "productivity",
++      "keywords": [
++        "workflow",
++        "promote",
++        "release",
++        "audit",
++        "standards",
++        "improve",
++        "triage",
++        "git",
++        "review",
++        "pull-request"
++      ],
++      "author": {
++        "name": "Alister Lewis-Bowen",
++        "url": "https://github.com/ali5ter"
++      },
++      "homepage": "https://github.com/ali5ter/claude-workflow-skills",
++      "repository": "https://github.com/ali5ter/claude-workflow-skills",
++      "license": "MIT"
++    },    {
++      "name": "cli-ux-tester",
++      "source": "./plugins/testing/cli-ux-tester",
++      "description": "Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents",
++      "version": "3.1.0",
++      "category": "testing",
++      "keywords": [
++        "CLI",
++        "UX",
++        "testing",
++        "developer-experience",
++        "terminal",
++        "usability"
++      ],
++      "author": {
++        "name": "Alister Lewis-Bowen",
++        "url": "https://github.com/ali5ter"
++      },
++      "homepage": "https://github.com/ali5ter/claude-cli-ux-skill",
++      "repository": "https://github.com/ali5ter/claude-cli-ux-skill",
++      "license": "MIT"
++    },    {
++      "name": "skyvern",
++      "source": "./plugins/productivity/skyvern",
++      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
++      "version": "0.1.0",
++      "category": "productivity",
++      "author": {
++        "name": "Skyvern-AI",
++        "url": "https://github.com/Skyvern-AI"
++      },
++      "license": "AGPL-3.0"
++    },    {
++      "name": "tonone",
++      "source": "./plugins/ai-agency/tonone",
++      "description": "23-agent engineering + product team with 125 skills for Claude Code",
++      "version": "1.8.0",
++      "category": "ai-agency",
++      "keywords": [
++        "agents",
++        "engineering-team",
++        "infrastructure",
++        "devops",
++        "backend",
++        "security",
++        "observability",
++        "frontend",
++        "ml",
++        "mobile",
++        "embedded",
++        "analytics",
++        "testing",
++        "platform",
++        "sales",
++        "revenue",
++        "customer-success",
++        "content-marketing",
++        "pr",
++        "community",
++        "finance",
++        "people",
++        "operations",
++        "support"
++      ],
++      "author": {
++        "name": "tonone-ai",
++        "url": "https://tonone.ai"
++      },
++      "repository": "https://github.com/tonone-ai/tonone",
++      "license": "MIT"
++    },    {
++      "name": "x-bug-triage",
++      "source": "./plugins/mcp/x-bug-triage",
++      "description": "Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
++      "version": "0.3.0",
++      "category": "mcp",
++      "keywords": [
++        "mcp",
++        "triage",
++        "x-api",
++        "bug-tracking",
++        "clustering"
++      ],
++      "author": {
++        "name": "Jeremy Longshore",
++        "email": "jeremy@intentsolutions.io"
++      },
++      "homepage": "https://github.com/jeremylongshore/x-bug-triage-plugin",
++      "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
++      "license": "MIT"
++    },    {
++      "name": "hyperflow",
++      "source": "./plugins/ai-agency/hyperflow",
++      "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
++      "version": "4.26.1",
++      "category": "ai-agency",
++      "keywords": [
++        "claude-code-plugin",
++        "multi-agent",
++        "dynamic-workflows",
++        "workflow-chain",
++        "triageflow",
++        "personas",
++        "flow-profiles",
++        "code-review",
++        "project-memory",
++        "multi-tool"
++      ],
++      "author": {
++        "name": "Mohammed Abdelhady",
++        "url": "https://github.com/Mohammed-Abdelhady"
++      },
++      "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
++      "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
++      "license": "MIT"
++    },    {
++      "name": "claudebase",
++      "source": "./plugins/productivity/claudebase",
++      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
++      "version": "0.2.0",
++      "category": "productivity",
++      "keywords": [
++        "github",
++        "sync",
++        "backup",
++        "config",
++        "profiles",
++        "settings"
++      ],
++      "author": {
++        "name": "Rohit Hazra",
++        "url": "https://github.com/rohithzr"
++      },
++      "homepage": "https://github.com/rohithzr/claudebase",
++      "repository": "https://github.com/rohithzr/claudebase",
++      "license": "MIT"
++    },    {
++      "name": "ejentum-anti-deception",
++      "source": "./plugins/community/ejentum-anti-deception",
++      "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.",
++      "version": "0.1.0",
++      "category": "community",
++      "author": {
++        "name": "Ejentum",
++        "url": "https://github.com/ejentum",
++        "email": "info@ejentum.com"
++      },
++      "license": "MIT"
++    },    {
++      "name": "ejentum-code",
++      "source": "./plugins/community/ejentum-code",
++      "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
++      "version": "0.1.0",
++      "category": "community",
++      "author": {
++        "name": "Ejentum",
++        "url": "https://github.com/ejentum",
++        "email": "info@ejentum.com"
++      },
++      "license": "MIT"
++    },    {
++      "name": "ejentum-memory",
++      "source": "./plugins/community/ejentum-memory",
++      "description": "Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. Requires ejentum-mcp and EJENTUM_API_KEY.",
++      "version": "0.1.0",
++      "category": "community",
++      "author": {
++        "name": "Ejentum",
++        "url": "https://github.com/ejentum",
++        "email": "info@ejentum.com"
++      },
++      "license": "MIT"
++    },    {
++      "name": "ejentum-reasoning",
++      "source": "./plugins/community/ejentum-reasoning",
++      "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
++      "version": "0.1.0",
++      "category": "community",
++      "author": {
++        "name": "Ejentum",
++        "url": "https://github.com/ejentum",
++        "email": "info@ejentum.com"
++      },
++      "license": "MIT"
++    },    {
++      "name": "over-50s-health",
++      "source": "./plugins/productivity/over-50s-health",
++      "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
++      "version": "3.3.0",
++      "category": "productivity",
++      "keywords": [
++        "health",
++        "fitness",
++        "nutrition",
++        "longevity",
++        "50+"
++      ],
++      "author": {
++        "name": "Alister Lewis-Bowen",
++        "url": "https://github.com/ali5ter"
++      },
++      "homepage": "https://github.com/ali5ter/over-50s-health-advisor",
++      "repository": "https://github.com/ali5ter/over-50s-health-advisor",
++      "license": "MIT"
++    },    {
++      "name": "obsidian-project-documentation",
++      "source": "./plugins/productivity/obsidian-project-documentation",
++      "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
++      "version": "3.2.5",
++      "category": "productivity",
++      "keywords": [
++        "obsidian",
++        "documentation",
++        "notes",
++        "projects"
++      ],
++      "author": {
++        "name": "Alister Lewis-Bowen",
++        "url": "https://github.com/ali5ter"
++      },
++      "homepage": "https://github.com/ali5ter/obsidian-project-assistant",
++      "repository": "https://github.com/ali5ter/obsidian-project-assistant",
++      "license": "MIT"
++    },    {
++      "name": "pair-programmer",
++      "source": "./plugins/productivity/pair-programmer",
++      "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
++      "version": "1.0.0",
++      "category": "productivity",
++      "keywords": [
++        "pair-programming",
++        "coding",
++        "skill-development",
++        "graduated-assistance"
++      ],
++      "author": {
++        "name": "Alister Lewis-Bowen",
++        "url": "https://github.com/ali5ter"
++      },
++      "homepage": "https://github.com/ali5ter/pair-programmer",
++      "repository": "https://github.com/ali5ter/pair-programmer",
++      "license": "MIT"
+     }
+   ]
+ }
+\ No newline at end of file

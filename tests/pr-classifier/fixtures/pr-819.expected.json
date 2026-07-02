@@ -1,0 +1,252 @@
+{
+  "affected_agents": [
+    "advisor",
+    "buzz",
+    "coach",
+    "deal",
+    "folk",
+    "ink",
+    "keep",
+    "owner-router",
+    "pitch",
+    "surge",
+    "triage-summarizer"
+  ],
+  "affected_hooks": ["hyperflow"],
+  "affected_mcp": ["x-bug-triage"],
+  "affected_skills": [
+    "amplify",
+    "apex-plan",
+    "apex-review",
+    "apex-status",
+    "api-testing",
+    "atlas-report",
+    "audit",
+    "audit-plugin",
+    "audit-standards",
+    "background",
+    "bridge",
+    "bug-clustering",
+    "buzz-devrel",
+    "buzz-hn",
+    "buzz-outreach",
+    "cache",
+    "ci-automation",
+    "data-processing",
+    "deal-outreach",
+    "deal-proposal",
+    "deal-qualify",
+    "deploy",
+    "dispatch",
+    "draft-landing",
+    "draft-patterns",
+    "flush",
+    "flux-migrate",
+    "forge-cost",
+    "form-palette",
+    "form-style",
+    "hyperflow",
+    "hyperflow-amplify",
+    "hyperflow-audit",
+    "hyperflow-cache",
+    "hyperflow-deploy",
+    "hyperflow-dispatch",
+    "hyperflow-scaffold",
+    "hyperflow-scope",
+    "hyperflow-spec",
+    "hyperflow-status",
+    "hyperflow-sticky",
+    "hyperflow-trace",
+    "improve",
+    "ink-brief",
+    "ink-cluster",
+    "ink-distribute",
+    "keep-churn",
+    "keep-qbr",
+    "keep-segment",
+    "lens-chart",
+    "owner-routing",
+    "pitch-copy",
+    "pitch-landing",
+    "pitch-launch",
+    "pitch-message",
+    "pitch-position",
+    "pitch-recon",
+    "prism-chart",
+    "prism-stack",
+    "promote",
+    "python-tooling",
+    "relay-ship",
+    "repo-scanning",
+    "review-pr",
+    "scaffold",
+    "scope",
+    "security-scanning",
+    "spec",
+    "status",
+    "sticky",
+    "surge-activation",
+    "surge-experiment",
+    "surge-landing",
+    "surge-plg",
+    "surge-recon",
+    "surge-retention",
+    "sync-profiles",
+    "sync-pull",
+    "sync-push",
+    "sync-setup",
+    "sync-status",
+    "touch-app",
+    "touch-ui",
+    "trace",
+    "triage",
+    "triage-display",
+    "vigil-instrument",
+    "warden-audit",
+    "warden-scan",
+    "web-crawling",
+    "web-research",
+    "workflow",
+    "x-bug-triage"
+  ],
+  "catalog_additions": [
+    {
+      "name": "cli-power-skills"
+    },
+    {
+      "name": "Yuriy Kotik"
+    },
+    {
+      "name": "claude-workflow-skills"
+    },
+    {
+      "name": "Alister Lewis-Bowen"
+    },
+    {
+      "name": "cli-ux-tester"
+    },
+    {
+      "name": "Alister Lewis-Bowen"
+    },
+    {
+      "name": "skyvern"
+    },
+    {
+      "name": "Skyvern-AI"
+    },
+    {
+      "name": "tonone"
+    },
+    {
+      "name": "tonone-ai"
+    },
+    {
+      "name": "x-bug-triage"
+    },
+    {
+      "name": "Jeremy Longshore"
+    },
+    {
+      "name": "hyperflow"
+    },
+    {
+      "name": "Mohammed Abdelhady"
+    },
+    {
+      "name": "claudebase"
+    },
+    {
+      "name": "Rohit Hazra"
+    },
+    {
+      "name": "ejentum-anti-deception"
+    },
+    {
+      "name": "Ejentum"
+    },
+    {
+      "name": "ejentum-code"
+    },
+    {
+      "name": "Ejentum"
+    },
+    {
+      "name": "ejentum-memory"
+    },
+    {
+      "name": "Ejentum"
+    },
+    {
+      "name": "ejentum-reasoning"
+    },
+    {
+      "name": "Ejentum"
+    },
+    {
+      "name": "over-50s-health"
+    },
+    {
+      "name": "Alister Lewis-Bowen"
+    },
+    {
+      "name": "obsidian-project-documentation"
+    },
+    {
+      "name": "Alister Lewis-Bowen"
+    },
+    {
+      "name": "pair-programmer"
+    },
+    {
+      "name": "Alister Lewis-Bowen"
+    }
+  ],
+  "contribution_types": [
+    "agent",
+    "catalog",
+    "catalog_add",
+    "doc",
+    "frontend",
+    "hook",
+    "mcp",
+    "plugin",
+    "script",
+    "skill"
+  ],
+  "file_categories": {
+    "(none)": 4,
+    "json": 74,
+    "md": 221,
+    "mjs": 2,
+    "py": 1,
+    "sh": 3,
+    "yaml": 1
+  },
+  "plugin_paths": [
+    "plugins/ai-agency/hyperflow",
+    "plugins/ai-agency/tonone",
+    "plugins/community/ejentum-anti-deception",
+    "plugins/community/ejentum-code",
+    "plugins/community/ejentum-memory",
+    "plugins/community/ejentum-reasoning",
+    "plugins/mcp/x-bug-triage",
+    "plugins/productivity/claude-workflow-skills",
+    "plugins/productivity/claudebase",
+    "plugins/productivity/cli-power-skills",
+    "plugins/productivity/obsidian-project-documentation",
+    "plugins/productivity/over-50s-health",
+    "plugins/productivity/pair-programmer",
+    "plugins/productivity/skyvern"
+  ],
+  "sources_additions": [],
+  "touches_frontend": true,
+  "touches_scripts": true,
+  "touches_tests": false,
+  "touches_workflows": false,
+  "unknown": true,
+  "unmatched": [
+    "marketplace/public/data/skills-catalog.json",
+    "marketplace/public/data/unified-search-index.json",
+    "pnpm-lock.yaml"
+  ]
+}

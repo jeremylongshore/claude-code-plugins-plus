@@ -1,0 +1,35 @@
+diff --git a/sources.yaml b/sources.yaml
+index e96ffb84aa..c9a8dfc56e 100644
+--- a/sources.yaml
++++ b/sources.yaml
+@@ -1145,6 +1145,30 @@ sources:
+       - '.git/**'
+       - '*.log'
+ 
++
++  # ============================================================
++  # skillrot (Michael Nefedov)
++  # https://github.com/mishanefedov/skillrot
++  # ============================================================
++
++  - name: skillrot
++    description: Lint agent skills for external-CLI drift — finds skills calling tools (codex, gh, docker, supabase, ...) with flags or subcommands the installed version no longer accepts, plus a --cost context-budget audit
++    repo: mishanefedov/skillrot
++    source_path: skills/skillrot
++    target_path: plugins/community/skillrot
++    author:
++      name: Michael Nefedov
++      github: mishanefedov
++      email: 48260330+mishanefedov@users.noreply.github.com
++    license: MIT
++    category: community
++    verified: false
++    include:
++      - 'SKILL.md'
++    exclude:
++      - 'node_modules/**'
++      - '.git/**'
++      - '*.log'
+ # Sync configuration
+ config:
+   # Branch to sync from (default: main)

@@ -1,0 +1,19 @@
+{
+  "affected_agents": [],
+  "affected_hooks": [],
+  "affected_mcp": [],
+  "affected_skills": [],
+  "catalog_additions": [],
+  "contribution_types": ["doc"],
+  "file_categories": {
+    "md": 1
+  },
+  "plugin_paths": [],
+  "sources_additions": [],
+  "touches_frontend": false,
+  "touches_scripts": false,
+  "touches_tests": false,
+  "touches_workflows": false,
+  "unknown": false,
+  "unmatched": []
+}

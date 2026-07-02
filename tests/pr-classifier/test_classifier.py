@@ -626,7 +626,86 @@ class TestFileCategoriesDeterminism:
 _FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 
-@pytest.mark.parametrize("pr_number", ["823"])
+def _load_fixture(pr_number: str) -> tuple[list[str], str | None]:
+    """Read the pr-NNN.files list and pr-NNN.diff text for a fixture PR."""
+    files_path = _FIXTURES / f"pr-{pr_number}.files"
+    diff_path = _FIXTURES / f"pr-{pr_number}.diff"
+    files = [
+        l.strip()
+        for l in files_path.read_text(encoding="utf-8").splitlines()
+        if l.strip()
+    ]
+    diff_text = diff_path.read_text(encoding="utf-8") if diff_path.exists() else None
+    return files, diff_text
+
+
+class TestNewFixtureVerdicts:
+    """Headline-verdict assertions for the PR #811/#819/#820/#821 fixture sets.
+
+    The parametrized snapshot test below pins the FULL output dict; these
+    named tests pin the one classification verdict each PR shape exists to
+    exercise, so an intentional snapshot regen can't silently flip the
+    semantic verdict without failing a readable named test.
+    """
+
+    def test_pr_811_readme_only_community_listing_is_doc(self):
+        """#811 — external contributor added a community-plugin row to the
+        top-level README. File-wise it's a doc-only change: no plugin dir,
+        no catalog file, no sources.yaml."""
+        files, diff = _load_fixture("811")
+        result = classify_files(files, diff_text=diff)
+        assert result["contribution_types"] == ["doc"]
+        assert result["plugin_paths"] == []
+        assert result["unknown"] is False
+
+    def test_pr_819_bulk_sync_recovery_mixed_shape(self):
+        """#819 — the sync-external.mjs rewrite that recovered 15 stranded
+        sources: 306 files spanning recovered plugins, catalog additions,
+        frontend data, and scripts. The big-PR stress shape."""
+        files, diff = _load_fixture("819")
+        result = classify_files(files, diff_text=diff)
+        types = set(result["contribution_types"])
+        assert {"plugin", "skill", "catalog", "catalog_add", "script", "frontend"}.issubset(types)
+        assert len(result["plugin_paths"]) == 14
+        # Note: 15 recovered sources parse as 30 catalog_additions because the
+        # catalog parser currently flushes nested author objects as separate
+        # entries. Pinned as-is; fixing the parser requires a fixture regen
+        # with a justifying commit message.
+        assert len(result["catalog_additions"]) == 30
+        # marketplace/public/** and pnpm-lock.yaml match no rule today.
+        assert result["unknown"] is True
+
+    def test_pr_820_root_sources_yaml_addition_is_sources_add(self):
+        """#820 — external contributor added the skillrot entry to root
+        sources.yaml. Exactly the sources_add lane."""
+        files, diff = _load_fixture("820")
+        result = classify_files(files, diff_text=diff)
+        assert result["contribution_types"] == ["sources", "sources_add"]
+        assert len(result["sources_additions"]) == 1
+        # Real sources.yaml entries are indented under `sources:`, so the
+        # parser captures the entry key as "- name" (not "name" — that slot
+        # gets the nested author name). Pinned as-is: the sources_add verdict
+        # is correct; the key shape is a known parser quirk on indented YAML.
+        assert result["sources_additions"][0]["- name"] == "skillrot"
+
+    def test_pr_821_plugin_docs_and_manifest_is_plugin_only(self):
+        """#821 — databricks-pack README + package.json bump. Plugin-internal
+        change that must NOT drag any of the pack's 24 skills (the #823
+        failure mode, seen again from the docs side)."""
+        files, diff = _load_fixture("821")
+        result = classify_files(files, diff_text=diff)
+        assert result["contribution_types"] == ["plugin"]
+        assert result["plugin_paths"] == ["plugins/saas-packs/databricks-pack"]
+        assert result["affected_skills"] == []
+
+
+# NOTE on pr-819.diff: the full #819 diff is ~64k added lines across 306
+# files and exceeds GitHub's API diff limit (HTTP 406 over 300 files), so the
+# committed fixture diff is trimmed to the .claude-plugin/marketplace.extended.json
+# section — the only part of that PR's diff the classifier's diff parsers
+# consume (root sources.yaml was not touched by #819). pr-819.files is the
+# complete 306-file list.
+@pytest.mark.parametrize("pr_number", ["811", "819", "820", "821", "823"])
 def test_real_pr_snapshot(pr_number):
     files_path = _FIXTURES / f"pr-{pr_number}.files"
     diff_path = _FIXTURES / f"pr-{pr_number}.diff"
