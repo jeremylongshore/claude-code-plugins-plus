@@ -28,6 +28,7 @@ import {
   DELIVERY_METADATA_EVENT_TYPE,
   type DeliveryObligation,
   deliveryIdempotencyKey,
+  ExfilBlockedError,
   extractSlackErrorCode,
   type IdempotentSendDeps,
 } from './lib.ts'
@@ -328,6 +329,373 @@ export async function deliverChunkedReplyDurably(
   return { status: 'delivered', ts: firstTs, sent: delivered }
 }
 
+// ---------------------------------------------------------------------------
+// Durable streaming reply finalize (ccsc-o7x.6 — ADR-002 addendum)
+// ---------------------------------------------------------------------------
+
+/** A streaming reply to make crash-durable. `id` is a fresh per-reply UUID (the
+ *  obligation id and thus idempotency key); `text` is the COMPLETE reply text —
+ *  the stream-finalize payload the poller redelivers on a crash, NOT a chunk. */
+export interface DurableStream {
+  id: string
+  channel: string
+  thread: string
+  text: string
+}
+
+/** Handle returned by `beginDurableStream` so the caller can resolve the
+ *  stream-finalize obligation once `streamReply` returns. Call EXACTLY ONE of
+ *  `markDelivered` (stream completed) / `markDead` (stream failed in-process).
+ *  Calling neither — the process crashed mid-stream — is the whole point: the
+ *  obligation stays `pending` and the poller redelivers. Both marks are
+ *  best-effort (a fenced mark failure leaves the poller to reconcile from disk)
+ *  and never throw. */
+export interface DurableStreamHandle {
+  markDelivered(): Promise<void>
+  markDead(reason: string): Promise<void>
+}
+
+/** Record a stream-finalize obligation BEFORE a streaming reply begins
+ *  (ccsc-o7x.6, ADR-002 addendum). Activates the `(channel, thread)` session and
+ *  appends ONE `pending` `DeliveryObligation` carrying the FULL reply text, then
+ *  returns a handle to resolve it once the stream ends:
+ *
+ *    - stream COMPLETES        → `markDelivered()` — the streamed message holds
+ *      the full content; nothing is owed;
+ *    - stream FAILS in-process → `markDead(reason)` — NOT left pending: the
+ *      poller's send does not re-run the outbound gate, and `streamReply` cannot
+ *      distinguish a gate rejection from a transient Slack error, so a
+ *      gate-rejected stream must never be auto-redelivered. The partial message
+ *      that landed is the same best-effort outcome as before;
+ *    - process CRASHES mid-stream → neither mark runs, the obligation stays
+ *      `pending`, and the boot-drain / poller redelivers the full text as a fresh
+ *      `chat.postMessage` (the partial streamed message is orphaned).
+ *
+ *  Throws `DurableUnavailableError` BEFORE recording if the session can't be
+ *  activated or holds no lease — the caller then streams best-effort, no net
+ *  (prior behavior). Mirrors `deliverReplyDurably`'s activate→lease→record
+ *  prologue; the difference is the send is the caller's progressive stream, not
+ *  an inline post, so this only records + hands back the resolve hooks. */
+export async function beginDurableStream(
+  deps: { supervisor: SessionSupervisor },
+  reply: DurableStream,
+): Promise<DurableStreamHandle> {
+  let handle: SessionHandle
+  try {
+    handle = await deps.supervisor.activate({ channel: reply.channel, thread: reply.thread })
+  } catch (err) {
+    throw new DurableUnavailableError(
+      `cannot activate session: ${err instanceof Error ? err.message : String(err)}`,
+    )
+  }
+  const lease = handle.lease
+  if (lease === null) throw new DurableUnavailableError('session holds no lease')
+  const token = lease.token
+
+  // Record the full-text obligation BEFORE the stream starts (crash-before /
+  // crash-during-stream safe).
+  await handle.recordTerminalDelivery(token, {
+    id: reply.id,
+    channel: reply.channel,
+    thread: reply.thread,
+    payload: reply.text,
+  })
+
+  return {
+    markDelivered(): Promise<void> {
+      return markObligation(handle, token, reply.id, { state: 'delivered', attempts: 1 })
+    },
+    markDead(reason: string): Promise<void> {
+      return markObligation(handle, token, reply.id, { state: 'dead', attempts: 1, lastError: reason })
+    },
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Durable file-upload reply delivery (ccsc-o7x.5 — ADR-002 addendum)
+// ---------------------------------------------------------------------------
+
+/** Injected Slack + guard I/O for durable file uploads (ccsc-o7x.5). Kept as an
+ *  interface so `slack-delivery.ts` imports no Slack SDK and the read/guard/upload
+ *  wiring lives in `server.ts`. Consumed by BOTH the inline path and the poller,
+ *  so a file's exfil guards re-run on every (re)upload.
+ *
+ *  **Read-once contract (closes a TOCTOU gap).** `readAndGuard` reads the file
+ *  ONCE, runs the exfil guards on those exact bytes, and RETURNS them; `upload`
+ *  sends that same buffer and never re-reads the path. So the bytes guarded are
+ *  provably the bytes sent — a file that changes on disk a microsecond after the
+ *  guard cannot slip past it for that delivery. (`ExfilBlockedError` lives in
+ *  `lib.ts` so the poller can classify it too.) */
+export interface FileUploadDeps {
+  /** Read `upload.path` ONCE, run the outbound file exfil guards on those bytes —
+   *  `assertSendable(path)` + secret-value scan of content + filename — and
+   *  return the bytes. THROWS `ExfilBlockedError` on a block (the impl journals
+   *  `exfil.block` first). The returned buffer is exactly what `upload` sends. */
+  readAndGuard(upload: { path: string; filename: string }): Promise<Uint8Array>
+  /** Dedup: the Slack file id if this upload already landed in the thread — a
+   *  recorded `uploadedFileId` still shared there, or a `(filename, size)` scan
+   *  match — else `null`. File shares carry no app metadata, so this is a thread
+   *  scan, not a metadata key. */
+  findUploaded(obligation: DeliveryObligation): Promise<string | null>
+  /** Upload the ALREADY-READ, ALREADY-GUARDED `bytes` for `obligation.upload` via
+   *  `filesUploadV2`; resolve the Slack file id. Never re-reads the path — the
+   *  guarded bytes are sent verbatim. Throws on Slack failure (the caller
+   *  classifies for retry / dead-letter). */
+  upload(obligation: DeliveryObligation, bytes: Uint8Array): Promise<string>
+}
+
+/** Idempotent, guarded durable file upload (ccsc-o7x.5). Order is **dedup →
+ *  read+guard → upload**: skip if already delivered, otherwise read the file once
+ *  and re-validate those exact bytes, then upload the SAME bytes. Returns the
+ *  Slack file id (existing on a dedup hit, fresh otherwise). The read+guard runs
+ *  on every call that reaches the upload — inline AND poller — so a file whose
+ *  content changed to a secret since record-time is blocked at redelivery, not
+ *  merely at record-time, and the guarded bytes are provably the sent bytes (no
+ *  second read). Throws `ExfilBlockedError` on a guard block and the Slack error
+ *  on an upload failure; the caller marks the obligation accordingly. */
+export async function sendFileObligation(
+  deps: FileUploadDeps,
+  obligation: DeliveryObligation,
+): Promise<string> {
+  if (obligation.upload === undefined) {
+    throw new Error('sendFileObligation: obligation has no upload descriptor')
+  }
+  const existing = await deps.findUploaded(obligation)
+  if (existing) return existing
+  // Read once + re-validate the exact bytes that will be sent, then send THEM.
+  const bytes = await deps.readAndGuard({
+    path: obligation.upload.path,
+    filename: obligation.upload.filename,
+  })
+  return deps.upload(obligation, bytes)
+}
+
+/** One logical reply with file attachments (ccsc-o7x.5). `chunks` is the
+ *  pre-split text (may be empty — a files-only reply); `files` are the
+ *  attachments. Each text chunk becomes obligation id `<id>:<i>` and each file
+ *  `<id>:file:<j>`, recorded all-or-nothing before any send and delivered in
+ *  order (text first so the message lands before its attachments). */
+export interface DurableFileReply {
+  id: string
+  channel: string
+  thread: string
+  chunks: string[]
+  files: { path: string; filename: string; comment?: string }[]
+}
+
+export type DurableFileDeliveryResult =
+  | { status: 'delivered'; ts: string | undefined; messagesSent: number; filesSent: number }
+  | { status: 'queued'; delivered: number; pending: number }
+
+/** Durable delivery of a reply with file attachments (ccsc-o7x.5) — the
+ *  files-bearing sibling of `deliverChunkedReplyDurably`. Records all text-chunk
+ *  AND file obligations in ONE atomic write before any send, then delivers them
+ *  in order: text chunks via `deps.post` (idempotency-keyed `chat.postMessage`),
+ *  files via `sendFileObligation` (dedup → guard → upload). On a successful file
+ *  upload the Slack file id is recorded (`uploadedFileId`) so a later redelivery
+ *  dedups.
+ *
+ *    - every item posts/uploads → all `delivered`, return the first message ts;
+ *    - a TRANSIENT error on item i → mark i `pending` and STOP (poller redelivers
+ *      i…N in order) → `queued`;
+ *    - a NON-RETRYABLE error or an `ExfilBlockedError` on item i → mark i `dead`
+ *      and rethrow so the agent sees the failure (a blocked file is never
+ *      uploaded; earlier items already landed).
+ *
+ *  Throws `DurableUnavailableError` BEFORE recording if the session can't be
+ *  activated or holds no lease — the caller falls back to the best-effort direct
+ *  path. */
+export async function deliverFileReplyDurably(
+  deps: { supervisor: SessionSupervisor; post: ReplyPoster; files: FileUploadDeps },
+  reply: DurableFileReply,
+): Promise<DurableFileDeliveryResult> {
+  let handle: SessionHandle
+  try {
+    handle = await deps.supervisor.activate({ channel: reply.channel, thread: reply.thread })
+  } catch (err) {
+    throw new DurableUnavailableError(
+      `cannot activate session: ${err instanceof Error ? err.message : String(err)}`,
+    )
+  }
+  const lease = handle.lease
+  if (lease === null) throw new DurableUnavailableError('session holds no lease')
+  const token = lease.token
+
+  // Text obligations first, then file obligations — recorded (and delivered) in
+  // that order so the message lands before its attachments.
+  const textRecords = reply.chunks.map((payload, i) => ({
+    id: `${reply.id}:${i}`,
+    channel: reply.channel,
+    thread: reply.thread,
+    payload,
+  }))
+  const fileRecords = reply.files.map((upload, j) => ({
+    id: `${reply.id}:file:${j}`,
+    channel: reply.channel,
+    thread: reply.thread,
+    payload: '',
+    upload,
+  }))
+  const records = [...textRecords, ...fileRecords]
+  await handle.recordTerminalDeliveries(token, records)
+
+  const total = records.length
+  let firstTs: string | undefined
+  let messagesSent = 0
+  let filesSent = 0
+  let delivered = 0
+  for (const record of records) {
+    const obligation: DeliveryObligation = {
+      ...record,
+      attempts: 0,
+      state: 'pending',
+      createdAt: 0,
+    }
+    try {
+      if (obligation.upload !== undefined) {
+        const fileId = await sendFileObligation(deps.files, obligation)
+        await markObligation(handle, token, obligation.id, {
+          state: 'delivered',
+          attempts: 1,
+          uploadedFileId: fileId,
+        })
+        filesSent++
+      } else {
+        const ts = await deps.post(obligation, deliveryIdempotencyKey(obligation))
+        if (messagesSent === 0) firstTs = ts
+        await markObligation(handle, token, obligation.id, { state: 'delivered', attempts: 1 })
+        messagesSent++
+      }
+      delivered++
+    } catch (err) {
+      const code = extractSlackErrorCode(err)
+      const lastError = code ?? (err instanceof Error ? err.message : String(err))
+      const nonRetryable =
+        err instanceof ExfilBlockedError || classifyDeliveryError(code) === 'non-retryable'
+      if (nonRetryable) {
+        await markObligation(handle, token, obligation.id, { state: 'dead', attempts: 1, lastError })
+        throw err
+      }
+      // Transient: leave this item (and every later one) pending and STOP — the
+      // poller redelivers the tail in order.
+      await markObligation(handle, token, obligation.id, { state: 'pending', attempts: 1, lastError })
+      return { status: 'queued', delivered, pending: total - delivered }
+    }
+  }
+  return { status: 'delivered', ts: firstTs, messagesSent, filesSent }
+}
+
+/** Pull the uploaded Slack file id out of a `filesUploadV2` response, tolerant of
+ *  the SDK's nested/loose shape. Returns `''` if none is extractable — callers
+ *  treat that as "no recorded id" and fall back to the `(filename, size)` scan. */
+function extractUploadedFileId(res: unknown): string {
+  const r = res as { files?: Array<{ id?: string; files?: Array<{ id?: string }> }> }
+  const first = r.files?.[0]
+  return first?.id ?? first?.files?.[0]?.id ?? ''
+}
+
+/** Build the production `FileUploadDeps` (ccsc-o7x.5 part 2) bound to a Slack
+ *  `WebClient` + the outbound exfil guards + injected fs reads. Kept here (not
+ *  `server.ts`) so it is unit-testable against a fake client — fs is INJECTED
+ *  (`readFile` / `fileSize`) so tests need no real files and this module stays
+ *  fs-free.
+ *
+ *  - `readAndGuard` reads the file ONCE via `readFile`, runs `assertSendable`
+ *    (path denylist) + `assertNoSecretValues` on the latin1 content AND the
+ *    filename, and returns the bytes. A guard hit journals `exfil.block` then
+ *    throws `ExfilBlockedError` (non-retryable everywhere). The returned buffer
+ *    is exactly what `upload` sends — no second read (TOCTOU-safe).
+ *  - `findUploaded` dedups: a recorded `uploadedFileId` still shared in the
+ *    thread, else a `(filename, size)` scan of `conversations.replies`. Returns
+ *    `null` (never `''`) on no match.
+ *  - `upload` sends the already-guarded bytes via `filesUploadV2` and returns the
+ *    new file id. */
+export function createFileSendDeps(deps: {
+  client: WebClient
+  assertSendable: (path: string) => void
+  assertNoSecretValues: (text: string) => void
+  journalExfilBlock: (reason: string) => void
+  readFile: (path: string) => Uint8Array
+  fileSize: (path: string) => number
+}): FileUploadDeps {
+  const blocked = (err: unknown): never => {
+    const reason = err instanceof Error ? err.message : String(err)
+    deps.journalExfilBlock(reason)
+    throw new ExfilBlockedError(reason)
+  }
+  return {
+    async readAndGuard(upload): Promise<Uint8Array> {
+      try {
+        deps.assertSendable(upload.path)
+      } catch (err) {
+        blocked(err)
+      }
+      // One read — its bytes are guarded AND sent (no second read).
+      const bytes = deps.readFile(upload.path)
+      // latin1 maps every byte 1:1 to a char, so no decode can split/drop a token.
+      try {
+        deps.assertNoSecretValues(Buffer.from(bytes).toString('latin1'))
+        deps.assertNoSecretValues(upload.filename)
+      } catch (err) {
+        blocked(err)
+      }
+      return bytes
+    },
+    async findUploaded(obligation): Promise<string | null> {
+      if (obligation.upload === undefined || !obligation.thread) return null
+      const { filename, path } = obligation.upload
+      const recordedId = obligation.uploadedFileId
+      let size = -1
+      try {
+        size = deps.fileSize(path)
+      } catch {
+        size = -1
+      }
+      const res = await deps.client.conversations.replies({
+        channel: obligation.channel,
+        ts: obligation.thread,
+        limit: 200,
+      })
+      const messages = (res.messages ?? []) as Array<{
+        ts?: string
+        files?: Array<{ id?: string; name?: string; size?: number }>
+      }>
+      for (const m of messages) {
+        // Only a file shared as part of THIS obligation's delivery window counts
+        // for the (filename, size) scan: a multi-turn thread can hold an OLDER
+        // file with the same name + size, and matching it would falsely dedup and
+        // DROP this upload (a loss, not a dup). Slack `ts` is epoch seconds; the
+        // obligation's `createdAt` is epoch ms. The recorded-id match is exact, so
+        // it is NOT time-scoped.
+        const msgMs = m.ts ? Math.round(Number.parseFloat(m.ts) * 1000) : 0
+        const fromThisDelivery = msgMs >= obligation.createdAt
+        for (const f of m.files ?? []) {
+          if (recordedId && f.id === recordedId) return f.id ?? 'delivered'
+          if (fromThisDelivery && size >= 0 && f.name === filename && f.size === size) {
+            return f.id ?? 'delivered'
+          }
+        }
+      }
+      return null
+    },
+    async upload(obligation, bytes): Promise<string> {
+      if (obligation.upload === undefined) {
+        throw new Error('createFileSendDeps.upload: obligation has no upload descriptor')
+      }
+      const res = await deps.client.filesUploadV2({
+        channel_id: obligation.channel,
+        file: Buffer.from(bytes),
+        filename: obligation.upload.filename,
+        ...(obligation.thread ? { thread_ts: obligation.thread } : {}),
+        ...(obligation.upload.comment ? { initial_comment: obligation.upload.comment } : {}),
+        // filesUploadV2's argument type is a strict union (channel-vs-thread
+        // destination); the reply tool casts the same way (executeReplyFileUploads).
+      } as Parameters<typeof deps.client.filesUploadV2>[0])
+      return extractUploadedFileId(res)
+    },
+  }
+}
+
 /** Best-effort fenced patch of one obligation's state. Never throws: a fenced /
  *  save failure leaves the obligation as-is for the poller to reconcile (see
  *  `deliverReplyDurably`). */
@@ -335,7 +703,14 @@ async function markObligation(
   handle: SessionHandle,
   token: number,
   id: string,
-  patch: { state: DeliveryObligation['state']; attempts: number; lastError?: string },
+  patch: {
+    state: DeliveryObligation['state']
+    attempts: number
+    lastError?: string
+    // ccsc-o7x.5 — recorded after a successful file upload, so a later redelivery
+    // dedups by checking the file is still shared in the thread.
+    uploadedFileId?: string
+  },
 ): Promise<void> {
   try {
     await handle.update(
@@ -348,6 +723,9 @@ async function markObligation(
                 state: patch.state,
                 attempts: patch.attempts,
                 ...(patch.lastError !== undefined ? { lastError: patch.lastError } : {}),
+                ...(patch.uploadedFileId !== undefined
+                  ? { uploadedFileId: patch.uploadedFileId }
+                  : {}),
               }
             : o,
         ),

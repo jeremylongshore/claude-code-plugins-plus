@@ -1,12 +1,12 @@
-# claude-code-slack-channel v0.11.0
+# claude-code-slack-channel v0.12.0
 
-The Slack-native governance substrate for Claude Code — the kernel other governance tooling builds on. Humans, Claude Code sessions, and peer agents converse safely in shared channels: every tool call passes through a declarative, tier-aware policy engine; every decision lands in a hash-chained, **Ed25519-signed** audit journal you can verify offline. Per-thread session isolation, identity-aware permission gates, operator admin commands with cross-channel approval, peer-bot loop control, and defense-in-depth against prompt injection. The policy/journal/relay kernel here is the substrate that the companion **[agent-governance-plane (AGP)](#companion-tooling)** vendors for cross-runtime governance.
+The Slack-native governance substrate for Claude Code — the kernel other governance tooling builds on. Humans, Claude Code sessions, and peer agents converse safely in shared channels: every tool call passes through a declarative, tier-aware policy engine; every decision lands in a hash-chained, **Ed25519-signed** audit journal you can verify offline. Per-thread session isolation, identity-aware permission gates, operator admin commands with cross-channel approval, multi-agent loop control + backpressure, **lease-fenced sessions that survive a process crash with loss-proof reply delivery**, and defense-in-depth against prompt injection. The policy/journal/relay kernel here is the substrate that the companion **[agent-governance-plane (AGP)](#companion-tooling)** reimplements for cross-runtime governance.
 
 [![CI](https://github.com/jeremylongshore/claude-code-slack-channel/actions/workflows/ci.yml/badge.svg)](https://github.com/jeremylongshore/claude-code-slack-channel/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jeremylongshore/claude-code-slack-channel/badge)](https://scorecard.dev/viewer/?uri=github.com/jeremylongshore/claude-code-slack-channel)
 
-**Links:** [Roadmap & Scope](ROADMAP.md) · [Gist One-Pager](https://gist.github.com/jeremylongshore/2bef9c630d4269d2858a666ae75fca53) · [GitHub Pages](https://jeremylongshore.github.io/claude-code-slack-channel/) · [Release Notes](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.11.0)
+**Links:** [Roadmap & Scope](ROADMAP.md) · [Gist One-Pager](https://gist.github.com/jeremylongshore/2bef9c630d4269d2858a666ae75fca53) · [GitHub Pages](https://jeremylongshore.github.io/claude-code-slack-channel/) · [Release Notes](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.12.0)
 
 > **Research Preview** — Channels require Claude Code v2.1.80+ and `claude.ai` login.
 
@@ -181,10 +181,12 @@ See [ACCESS.md](ACCESS.md) for the full schema.
 /slack-channel:access policy allowlist       # Only pre-approved users
 /slack-channel:access add U12345678          # Add a user
 /slack-channel:access remove U12345678       # Remove a user
-/slack-channel:access channel C12345678      # Opt in a channel
-/slack-channel:access channel C12345678 --mention  # Require @mention
+/slack-channel:access channel C12345678      # Opt in a channel (default: mention-to-engage)
+/slack-channel:access channel C12345678 --ambient  # Ambient: Claude hears every message
 /slack-channel:access status                 # Show current config
 ```
+
+**Interaction modes.** A newly opted-in channel defaults to **mention-to-engage** (`requireMention: true`): people converse freely and Claude only sees messages that `@`-mention it — and once a human mentions the bot in a thread, they can keep talking in that thread without re-mentioning (peer agents must `@`-mention every time). Pass `--ambient` for a dedicated bot channel where Claude hears everything, or `--allow <ids>` to restrict which humans are heard. See [ACCESS.md](ACCESS.md#interaction-modes).
 
 ### Multi-agent coordination
 
@@ -206,7 +208,7 @@ Example `access.json` entry:
 
 Self-echoes from this bot are always filtered regardless of `allowBotIds`. Peer bots cannot approve permission prompts — the permission relay gates on the top-level `allowFrom`, not the channel policy.
 
-**For the full multi-agent recipe** — registering a second bot, configuring `allowBotIds` mutually, mention-driven addressing, loop-prevention rate limit, `!mute`/`!unmute` operator verbs, common failure modes, what you DON'T get — see [`000-docs/multi-agent-channels.md`](000-docs/multi-agent-channels.md).
+**For the full multi-agent recipe** — registering a second bot, configuring `allowBotIds` mutually, mention-driven addressing, the per-bot rate limit + channel-wide circuit breaker + global session backpressure, per-user session isolation, the `!mute`/`!unmute` write verbs and `!agents`/`!mute-status`/`!rate-limit` read-only verbs, common failure modes, what you DON'T get — see [`000-docs/multi-agent-channels.md`](000-docs/multi-agent-channels.md).
 
 This is a prompt-injection vector by design. The security model is documented threat-model-first in [`SECURITY.md`](SECURITY.md): (1) the adversary and the four principals, (2) the mitigations below — each with its own stated limit, and (3) an explicit list of **what this does NOT protect against** (same-UID host compromise, in-process token exposure, supply-chain, Slack/Anthropic platform bugs). Start there for the full picture; the defense-in-depth layers are:
 
@@ -220,7 +222,8 @@ This is a prompt-injection vector by design. The security model is documented th
 - **Static mode**: Set `SLACK_ACCESS_MODE=static` to freeze access at boot (no runtime mutation).
 - **Signed audit journal**: Every tool-call decision is written to a hash-chained, **Ed25519-signed** journal (RFC 8785 JCS canonical form). The chain is verifiable offline against a published public key — see [Audit Signing](#audit-signing).
 - **Admin-command hardening**: Operator verbs (`!clear`, `!restart`) route through gate → policy → journal → execute and require a server-minted **HMAC nonce confirmed from a second channel**. Claude cannot self-invoke them — no MCP tool name begins with `admin.`. This closes the EchoLeak / operator-coercion class ([CVE-2025-32711](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/THREAT-MODEL.md), threat T11): a prompt injected into one channel cannot drive a privileged action, because confirmation must come from a channel the attacker doesn't control.
-- **Peer-bot loop control**: A per-`(channel, bot_id)` sliding-window rate limit (default 10 msg/60s) breaks A→B→A runaway loops; operators can `!mute <@bot>` / `!unmute <@bot>` a misbehaving peer.
+- **Multi-agent loop control + backpressure**: A per-`(channel, bot_id)` sliding-window rate limit (default 10 msg/60s) breaks A→B→A runaway loops; a channel-wide circuit breaker trips a 3+-bot ring (A→B→C→A) the pairwise limiter misses; an optional global `maxConcurrentSessions` cap sheds load before file handles / memory are exhausted (journaling `session.activate_rejected`). Operators can `!mute <@bot>` / `!unmute <@bot>` a peer and inspect state read-only with `!agents`, `!mute-status`, `!rate-limit`. Optional per-user session isolation (`perUserSessions`) gives each sender their own bridge session within a shared thread.
+- **Crash-safe sessions + loss-proof replies**: Each active session holds a fencing lease (monotonic token + heartbeat) so exactly one process owns a turn; a boot-time recovery sweep requeues work whose lease lapsed and quarantines anything it cannot prove safe. Replies are recorded as durable obligations **before** the send and drained by a leased, retrying, dead-lettering poller with idempotency keys — so a transient Slack error or a process crash redelivers **exactly once** instead of silently dropping the reply. Live for single-message, chunked, and streaming replies (file-upload durability is in progress — see [Reliability & crash-safety](#reliability--crash-safety)).
 
 Each layer's limit, and an explicit **"what this does NOT protect against"** section, are in [`SECURITY.md`](SECURITY.md). Trust boundaries, per-primitive attack surface, and threats T1–T11 are documented in [`000-docs/THREAT-MODEL.md`](000-docs/THREAT-MODEL.md).
 
@@ -241,9 +244,20 @@ bun audit-key-cli.ts show       # print active public key + key id
 
 The key is loaded at boot from SOPS+age-encrypted `.env`. Run with `--no-audit-signing` to fall back to hash-chain-only. Design + rotation lifecycle: [`000-docs/audit-journal-architecture.md`](000-docs/audit-journal-architecture.md) and [`000-docs/key-management.md`](000-docs/key-management.md).
 
+## Reliability & crash-safety
+
+A governance substrate that loses a decision — or a reply — is not trustworthy. The runtime is built so a process crash never silently drops work:
+
+- **Fencing lease per turn.** Each active session holds a monotonic-token + heartbeat lease, so exactly one process owns a turn even if an old one resurrects. A fenced write from a superseded owner is rejected and the handle is driven into quarantine (no split-brain).
+- **Boot-time recovery sweep.** On startup the supervisor reads every session file and classifies in-flight work: a lapsed heartbeat (owner provably dead) is **requeued**; a still-fresh marker or an unreadable file is **orphaned into quarantine** and fails closed until a human clears it. Both are journaled (`session.recovery.requeued` / `session.recovery.orphaned`).
+- **Transactional reply outbox.** A reply is recorded as a durable `DeliveryObligation` **before** the Slack send, drained by a leased poller that retries transient errors with bounded exponential backoff and dead-letters permanent ones (a dead-letter always records *why* — never a silent black hole).
+- **Exactly-once delivery.** Each obligation carries a deterministic idempotency key stamped into Slack message metadata; a redelivery after a lost ack is recognised and skipped. Live for **single-message, chunked, and streaming** replies; **file-upload** durability is landing in two parts (building blocks + design merged; production wiring in progress), because Slack file shares carry no app metadata and need a thread-scan dedup plus an exfil-guard that re-validates the bytes on every (re)upload.
+
+Operator knobs (all optional, sensible defaults): `SLACK_SESSION_LEASE_TTL_MS` (lease TTL, default 30s), `SLACK_DELIVERY_POLL_MS` (outbox drain interval, default 15s), `SLACK_MAX_CONCURRENT_SESSIONS` (global backpressure cap, default unlimited). Design: [`000-docs/session-state-machine.md`](000-docs/session-state-machine.md) and the crash-safety addenda in [`000-docs/ADR-002`](000-docs/ADR-002-architecture-patterns-from-peer-runtime-audit.md).
+
 ## Companion tooling
 
-**agent-governance-plane (AGP)** is a companion governance tool that builds **on** this substrate. AGP vendors a pinned copy of CCSC's governance kernel — the policy engine (`policy.ts`), the hash-chained signed journal (`journal.ts`), the Slack relay, and nonce-bound HITL — to govern agent runtimes beyond a single Slack bridge. The relationship is one-way by design: **CCSC is the substrate and has zero knowledge of AGP**; AGP is the downstream consumer. If you need governance across multiple agent runtimes (not just Claude Code in Slack), AGP is the layer to look at; if you need a governed Slack channel for Claude Code, CCSC is all you need. The substrate-extraction contract is documented in AGP's `000-docs/009-AT-ADR-ccsc-substrate-extraction-strategy.md`, and the patterns shared between the two are recorded in [`000-docs/ADR-002`](000-docs/ADR-002-architecture-patterns-from-peer-runtime-audit.md).
+**agent-governance-plane (AGP)** is a companion governance tool that builds **on** this substrate. AGP **reimplements** ("adapt-and-harden") a pinned baseline of CCSC's governance kernel — the policy engine, the hash-chained signed journal, the Slack relay, and nonce-bound HITL — under its own typed contracts to govern agent runtimes beyond a single Slack bridge. It is *not* a byte-for-byte vendored copy: AGP's ADR 040 superseded the original vendor approach for v0, tracking CCSC by a documented drift review against a pinned commit instead. The relationship is one-way by design: **CCSC is the substrate and has zero knowledge of AGP**; AGP is the downstream consumer. If you need governance across multiple agent runtimes (not just Claude Code in Slack), AGP is the layer to look at; if you need a governed Slack channel for Claude Code, CCSC is all you need. The substrate-extraction contract is in AGP's `000-docs/009-AT-ADR-...` (mechanism updated by its `040-AT-ADR-substrate-boundary-reconciliation`), and the patterns shared between the two are recorded in [`000-docs/ADR-002`](000-docs/ADR-002-architecture-patterns-from-peer-runtime-audit.md).
 
 ## Testing & Quality
 
@@ -253,7 +267,7 @@ Security-critical code earns a hard gate. `ci.yml` runs nine checks in sequence 
 |---|---|
 | `bun run typecheck` | TypeScript strict, no `any` escape hatches |
 | Biome lint | curated rule set |
-| `bun test` | **986 tests / 6,017 assertions** across unit + property + Gherkin suites |
+| `bun test` | **1,251 tests / 6,782 assertions** across unit + property + Gherkin suites |
 | coverage floor | **≥ 95%** line + function (`scripts/coverage-floor.sh`) |
 | dependency-cruiser | architecture invariants (e.g. `policy.ts` may never import `manifest.ts`) |
 | Gherkin lint | acceptance-feature style, `--strict` |
@@ -261,7 +275,7 @@ Security-critical code earns a hard gate. `ci.yml` runs nine checks in sequence 
 | `bun audit` | dependency CVEs at `--audit-level=high` |
 | crap-score | cyclomatic-complexity ceiling (30) |
 
-Out of band: **CodeQL**, **gitleaks** secret scanning, **OpenSSF Scorecard**, and manual **Stryker mutation testing** (`bunx stryker run`, baselines in [`000-docs/MUTATION_REPORT.md`](000-docs/MUTATION_REPORT.md)). The five Wall-1 acceptance primitives live in [`features/*.feature`](features/) and run against the real code via a hand-rolled Gherkin runner.
+Out of band: **CodeQL**, **gitleaks** secret scanning, **OpenSSF Scorecard**, and manual **Stryker mutation testing** (`bunx stryker run`, baselines in [`000-docs/MUTATION_REPORT.md`](000-docs/MUTATION_REPORT.md)). The seven Wall-1 acceptance primitives (61 scenarios across 7 `.feature` files) live in [`features/*.feature`](features/) and run against the real code via a hand-rolled Gherkin runner.
 
 ```bash
 bun test                  # full suite
