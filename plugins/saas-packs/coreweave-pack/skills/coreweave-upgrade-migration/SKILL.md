@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Upgrade & Migration
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave is a GPU-specialized cloud provider running Kubernetes-native infrastructure. Migrations involve upgrading between GPU instance types (A100 to H100), updating CUDA driver versions, and handling Kubernetes API version changes across namespaces. Tracking API versions is critical because CoreWeave's instance type labels and resource quotas change between platform releases, and deploying to a deprecated instance class will cause scheduling failures.

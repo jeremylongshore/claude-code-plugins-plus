@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Install & Auth
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Set up access to CoreWeave Kubernetes Service (CKS). CKS runs bare-metal Kubernetes with NVIDIA GPUs -- no hypervisor overhead. Access is via standard kubeconfig with CoreWeave-issued credentials.

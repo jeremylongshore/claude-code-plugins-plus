@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave CI Integration
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Set up CI/CD for CoreWeave GPU cloud workloads: run unit tests with mocked Kubernetes clients on every PR, deploy inference containers to CoreWeave namespaces on merge to main, and validate GPU resource requests against quota. CoreWeave uses standard Kubernetes APIs with GPU-specific scheduling, so CI pipelines authenticate via kubeconfig and manage deployments through `kubectl`.

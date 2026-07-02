@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Enterprise RBAC
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave runs GPU workloads on Kubernetes, so RBAC maps directly to K8s namespace isolation and ResourceQuotas. Each team gets a dedicated namespace with GPU limits, storage caps, and network policies. This prevents noisy-neighbor problems where one team's training job starves another's inference service. SOC 2 and HIPAA workloads require namespace-level audit logging and team-scoped API key rotation.

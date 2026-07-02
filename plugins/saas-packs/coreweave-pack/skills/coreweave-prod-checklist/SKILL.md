@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Production Checklist
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Inference Services
 
 - [ ] GPU type and count validated for model size

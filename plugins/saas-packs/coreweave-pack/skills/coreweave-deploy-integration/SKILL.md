@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Deploy Integration
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Deploy GPU-accelerated inference services on CoreWeave Kubernetes (CKS). This skill covers containerizing inference workloads with NVIDIA CUDA base images, configuring GPU resource limits and node affinity for A100/H100 scheduling, setting up health checks that validate GPU availability and model loading, and executing rolling updates that respect GPU node draining. CoreWeave's scheduler requires explicit GPU resource requests to place pods on the correct hardware tier.

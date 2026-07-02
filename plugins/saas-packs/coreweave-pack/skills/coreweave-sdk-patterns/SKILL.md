@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave SDK Patterns
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave is Kubernetes-native -- use kubectl, Kubernetes Python client, or Helm for programmatic management. These patterns cover GPU-aware deployment templates, inference client wrappers, and node affinity configurations.

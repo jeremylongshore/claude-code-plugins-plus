@@ -1,6 +1,8 @@
 # CoreWeave Skill Pack
 
-> 24 production-grade Claude Code skills for GPU cloud computing with CoreWeave Kubernetes Service
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
+20 production-grade Claude Code skills for GPU cloud computing with CoreWeave Kubernetes Service.
 
 ## What Is CoreWeave?
 
@@ -42,27 +44,24 @@ This skill pack provides real kubectl commands, YAML manifests, and Python patte
 | `coreweave-common-errors` | Pod Pending, CUDA OOM, NCCL timeout, image pull failures |
 | `coreweave-debug-bundle` | Collect node status, GPU allocation, and pod logs for support |
 
-### Operations (S09-S12)
+### Operations
 
 | Skill | Description |
 |-------|-------------|
-| `coreweave-rate-limits` | GPU quota management and inference request queuing |
 | `coreweave-security-basics` | Secrets for model tokens, network policies, RBAC |
 | `coreweave-prod-checklist` | Production readiness for inference and training workloads |
 | `coreweave-upgrade-migration` | GPU type migration (A100 to H100), CUDA version upgrades |
 
-### Pro Skills (P13-P18)
+### Pro Skills
 
 | Skill | Description |
 |-------|-------------|
 | `coreweave-ci-integration` | GitHub Actions for container build and CKS deployment |
 | `coreweave-deploy-integration` | Helm charts and Kustomize overlays for GPU deployments |
-| `coreweave-webhooks-events` | Kubernetes event monitoring, GPU metrics, Slack alerts |
 | `coreweave-performance-tuning` | GPU selection, vLLM batching, HPA with DCGM metrics |
 | `coreweave-cost-tuning` | GPU pricing comparison, scale-to-zero, quantization savings |
-| `coreweave-reference-architecture` | Multi-model inference platform architecture |
 
-### Flagship Skills (F19-F24)
+### Flagship Skills
 
 | Skill | Description |
 |-------|-------------|
@@ -71,7 +70,6 @@ This skill pack provides real kubectl commands, YAML manifests, and Python patte
 | `coreweave-incident-runbook` | GPU workload failure triage and remediation |
 | `coreweave-data-handling` | PVC storage classes, model downloading, dataset management |
 | `coreweave-enterprise-rbac` | Namespace isolation, GPU quotas per team, role bindings |
-| `coreweave-migration-deep-dive` | Migrate from AWS/GCP GPU instances to CoreWeave CKS |
 
 ## Quick Start
 

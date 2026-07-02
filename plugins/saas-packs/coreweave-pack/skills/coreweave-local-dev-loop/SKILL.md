@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Local Dev Loop
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Local development workflow for CoreWeave: build containers, test YAML manifests with dry-run, push to registry, and deploy to CoreWeave CKS.

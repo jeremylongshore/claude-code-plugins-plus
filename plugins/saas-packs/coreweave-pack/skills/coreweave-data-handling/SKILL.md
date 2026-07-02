@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Data Handling
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave GPU cloud workloads involve large-scale data artifacts: model weights (multi-GB safetensors/GGUF), training datasets (parquet, TFRecord, WebDataset), checkpoint snapshots, and inference cache volumes. Data flows through Kubernetes PersistentVolumeClaims backed by region-specific storage classes. Compliance requires encryption at rest via the storage driver, namespace-scoped RBAC for volume access, and audit logging for any data egress from GPU nodes.

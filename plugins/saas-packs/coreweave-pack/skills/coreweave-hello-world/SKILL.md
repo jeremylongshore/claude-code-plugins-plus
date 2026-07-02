@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Hello World
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Deploy your first GPU workload on CoreWeave: a simple inference service using vLLM or a batch CUDA job. CoreWeave runs Kubernetes on bare-metal GPU nodes with A100, H100, and L40 GPUs.

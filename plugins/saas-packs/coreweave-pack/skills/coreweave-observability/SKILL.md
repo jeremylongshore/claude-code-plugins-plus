@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Observability
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave runs GPU-intensive workloads on Kubernetes where hardware failures, memory exhaustion, and underutilization directly impact cost and reliability. Observability must cover DCGM GPU metrics, Kubernetes pod health, inference latency, and job completion rates. Proactive monitoring prevents wasted spend on idle GPUs and catches OOM conditions before they cascade.

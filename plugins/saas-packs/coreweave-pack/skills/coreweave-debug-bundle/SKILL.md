@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Debug Bundle
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Collect GPU node health, Kubernetes pod status, event logs, and API connectivity into a single diagnostic archive for CoreWeave support tickets. This bundle captures cluster-level resource allocation, failed pod logs, GPU device plugin state, and network reachability so support engineers can diagnose infrastructure issues without requesting additional information. Useful when GPU pods are stuck pending, inference workloads OOM, or node autoscaling behaves unexpectedly.

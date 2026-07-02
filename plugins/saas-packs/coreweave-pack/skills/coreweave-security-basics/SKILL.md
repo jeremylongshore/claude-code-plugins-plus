@@ -26,6 +26,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Security Basics
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave provides bare-metal GPU cloud on Kubernetes. Security concerns center on compute credential management (kubeconfig, deploy tokens), network isolation between inference workloads, secrets for model registry access (HuggingFace, container registries), and protecting sensitive training data on persistent volumes. A compromised namespace can expose GPU resources, model weights, and customer inference data.

@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Core Workflow: GPU Training
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 Run distributed GPU training on CoreWeave: single-node multi-GPU and multi-node training with PyTorch DDP, Slurm-on-Kubernetes, and shared storage.

@@ -7222,7 +7222,7 @@
     {
       "name": "coreweave-pack",
       "source": "./plugins/saas-packs/coreweave-pack",
-      "description": "Claude Code skill pack for CoreWeave (24 skills)",
+      "description": "Claude Code skill pack for CoreWeave (20 skills)",
       "version": "1.0.0",
       "category": "saas-packs",
       "keywords": [

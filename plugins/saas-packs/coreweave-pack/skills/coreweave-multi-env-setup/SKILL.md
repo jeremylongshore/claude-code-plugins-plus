@@ -25,6 +25,8 @@ compatibility: Designed for Claude Code
 ---
 # CoreWeave Multi-Environment Setup
 
+> **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
+
 ## Overview
 
 CoreWeave GPU cloud requires strict environment separation to control infrastructure costs and prevent resource contention. Each environment maps to an isolated Kubernetes namespace with its own GPU quota, scaling policy, and access controls. Development uses cheaper GPU tiers for iteration speed, staging mirrors production GPU types for accurate benchmarking, and production runs full-scale with no scale-to-zero to guarantee inference latency SLAs.
