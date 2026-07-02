@@ -1,6 +1,6 @@
 # HubSpot Skill Pack
 
-> Claude Code skill pack for HubSpot CRM integration -- 30 skills covering the CRM v3 API, marketing automation, sales pipelines, and production operations.
+> Claude Code skill pack for HubSpot CRM integration -- 10 production-engineer skills built from a real-world pain catalog, covering auth, webhooks, dedup, migrations, pipeline automation, and rate-limit survival on the CRM v3 API.
 
 ## What is HubSpot?
 
@@ -8,7 +8,7 @@ HubSpot is a CRM platform for marketing, sales, and customer service. The HubSpo
 
 ## Pack Overview
 
-This pack provides 30 auto-activating skills covering the full lifecycle of a HubSpot integration: from first install to production-grade architecture. All skills use real HubSpot API endpoints (`/crm/v3/objects/*`), the actual `@hubspot/api-client` SDK, and documented error responses.
+Version 2.0.0 is a deliberate rebuild: the original 30 template skills were replaced by 10 deeper, pain-catalog-grounded skills written for production engineers. Each skill targets the failure modes that actually burn HubSpot integrations — wrong-winner merges, webhook replay storms, portal quota exhaustion, cross-portal contamination — using real HubSpot API endpoints (`/crm/v3/objects/*`), the actual `@hubspot/api-client` SDK, and documented error responses.
 
 ## Installation
 
@@ -55,55 +55,18 @@ const batch = await client.crm.contacts.batchApi.read({
 
 ## Skills Included
 
-### Standard Skills (S01-S12)
-
-| Skill | Description |
-|-------|-------------|
-| `hubspot-install-auth` | Install `@hubspot/api-client`, configure private app tokens and OAuth 2.0 |
-| `hubspot-hello-world` | CRUD operations on contacts, companies, and deals with real endpoints |
-| `hubspot-local-dev-loop` | Dev workflow with Vitest mocks, test accounts, and hot reload |
-| `hubspot-sdk-patterns` | Typed client wrappers, batch operations, pagination, error classification |
-| `hubspot-core-workflow-a` | Contact-to-deal sales pipeline: upsert, associate, advance stages, log notes |
-| `hubspot-core-workflow-b` | Marketing automation: lists, forms, tickets, tasks, cross-object search |
-| `hubspot-common-errors` | Real HubSpot error responses (401, 403, 409, 429) with fixes |
-| `hubspot-debug-bundle` | Collect correlation IDs, rate limit state, and SDK diagnostics |
-| `hubspot-rate-limits` | Backoff with Retry-After, request queues, batch call reduction |
-| `hubspot-security-basics` | Token rotation, webhook v3 signature verification, scope management |
-| `hubspot-prod-checklist` | Health checks, monitoring alerts, deploy verification scripts |
-| `hubspot-upgrade-migration` | SDK version upgrades: API key to token, associations v3 to v4 |
-
-### Pro Skills (P13-P18)
-
-| Skill | Description |
-|-------|-------------|
-| `hubspot-ci-integration` | GitHub Actions CI with test account, integration tests, secret scanning |
-| `hubspot-deploy-integration` | Deploy to Vercel, Fly.io, Cloud Run with secret management |
-| `hubspot-webhooks-events` | CRM webhook subscriptions, v3 signature verification, idempotent handlers |
-| `hubspot-performance-tuning` | Batch APIs (100x reduction), caching, search optimization, streaming pagination |
-| `hubspot-cost-tuning` | API call monitoring, polling-to-webhook migration, batch vs individual analysis |
-| `hubspot-reference-architecture` | Layered architecture: infrastructure, service, API layers with association constants |
-
-### Flagship Skills (F19-F24)
-
-| Skill | Description |
-|-------|-------------|
-| `hubspot-multi-env-setup` | Dev/staging/prod with separate portals, secret managers, environment guards |
-| `hubspot-observability` | Prometheus metrics, OpenTelemetry tracing, Pino logging, AlertManager rules |
-| `hubspot-incident-runbook` | Triage scripts, decision trees, 401/429/5xx response playbooks, postmortem template |
-| `hubspot-data-handling` | GDPR delete API, data export, PII redaction, consent tracking |
-| `hubspot-enterprise-rbac` | Multi-token role-based access, OAuth multi-portal, audit trails |
-| `hubspot-migration-deep-dive` | Batch import with field mapping, upsert, deal associations, validation |
-
-### Flagship+ Skills (X25-X30)
-
-| Skill | Description |
-|-------|-------------|
-| `hubspot-advanced-troubleshooting` | Layer-by-layer diagnostics, correlation ID tracking, timing analysis |
-| `hubspot-load-scale` | k6 load tests, capacity planning calculator, batch aggregation patterns |
-| `hubspot-reliability-patterns` | Circuit breakers, graceful degradation, dead letter queues, health checks |
-| `hubspot-policy-guardrails` | ESLint rules, CI token scanning, runtime self-rate-limiting, pre-commit hooks |
-| `hubspot-architecture-variants` | Embedded vs service layer vs gateway patterns with decision matrix |
-| `hubspot-known-pitfalls` | 10 real anti-patterns: deprecated auth, search limits, wrong association IDs |
+| Skill | What it covers |
+|-------|----------------|
+| `hubspot-auth` | Authenticate production integrations (private app tokens vs OAuth), scope design, and auth-side failure modes |
+| `hubspot-webhook-handlers` | v3 webhook handlers that survive production: HMAC-SHA256 signature verification, Redis SET NX deduplication, async batch processing |
+| `hubspot-rate-limit-survival` | The daily 500K portal quota, per-10s burst limits, batch API efficiency (100x), token bucket pattern, queue-based smoothing |
+| `hubspot-contact-dedup` | Deduplication at production scale: import storms, wrong-winner merges, fuzzy-match blind spots, association orphans |
+| `hubspot-bulk-migration` | Bulk migration in or out of HubSpot (Salesforce, Pipedrive, Copper) with field mapping, ID continuity, association re-linking |
+| `hubspot-deal-pipeline-automation` | Stage automation loops, stale-deal safe-close logic, and pipeline auditing without destroying real pipeline |
+| `hubspot-lifecycle-and-lists` | Lifecycle stage progression guards and list segmentation without silently destroying CRM trust |
+| `hubspot-product-event-sync` | Idempotent batched sync of backend product events into contact/company custom properties (the Segment pattern without Segment) |
+| `hubspot-warehouse-sync` | CRM-to-warehouse sync (BigQuery, Snowflake, Postgres): initial backfill of millions of records under quota, then incremental |
+| `hubspot-agency-multi-portal` | Managing 10-100 client portals with credential isolation, per-portal audit trails, and GDPR/CCPA separation |
 
 ## Key HubSpot API Concepts
 
@@ -118,10 +81,10 @@ const batch = await client.crm.contacts.batchApi.read({
 
 Skills trigger automatically when you discuss HubSpot topics:
 
-- "Help me set up HubSpot" triggers `hubspot-install-auth`
-- "Create a contact in HubSpot" triggers `hubspot-hello-world`
-- "I'm getting a 429 error from HubSpot" triggers `hubspot-rate-limits`
-- "Deploy my HubSpot integration" triggers `hubspot-deploy-integration`
+- "Set up HubSpot auth for production" triggers `hubspot-auth`
+- "Our webhook handler is double-processing events" triggers `hubspot-webhook-handlers`
+- "I'm getting 429s from HubSpot" triggers `hubspot-rate-limit-survival`
+- "We have thousands of duplicate contacts" triggers `hubspot-contact-dedup`
 
 ## License
 

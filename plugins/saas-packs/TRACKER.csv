@@ -69,7 +69,7 @@ grammarly,Grammarly,flagship,24,@intentsolutionsio/grammarly-skill-md-pack,reser
 shopify,Shopify,flagship+,30,@intentsolutionsio/shopify-skill-md-pack,reserved,ccpi-shopify,30,0,not_started,not_added,Extended #68
 canva,Canva,flagship+,30,@intentsolutionsio/canva-skill-md-pack,reserved,ccpi-canva,30,0,not_started,not_added,Extended #69
 clickup,ClickUp,flagship,24,@intentsolutionsio/clickup-skill-md-pack,reserved,ccpi-clickup,24,0,not_started,not_added,Extended #70
-hubspot,HubSpot,flagship+,30,@intentsolutionsio/hubspot-skill-md-pack,reserved,ccpi-hubspot,30,0,not_started,not_added,Extended #71
+hubspot,HubSpot,flagship+,10,@intentsolutionsio/hubspot-skill-md-pack,reserved,ccpi-hubspot,10,0,not_started,added,v2.0.0 rebuild: 10 production-engineer skills (a04d1a23e); catalog synced 2026-07-02
 salesforce,Salesforce,flagship+,30,@intentsolutionsio/salesforce-skill-md-pack,reserved,ccpi-salesforce,30,0,not_started,not_added,Extended #72
 adobe,Adobe,flagship+,30,@intentsolutionsio/adobe-skill-md-pack,reserved,ccpi-adobe,30,0,not_started,not_added,Extended #73
 palantir,Palantir,flagship,24,@intentsolutionsio/palantir-skill-md-pack,reserved,ccpi-palantir,24,0,not_started,not_added,Extended #74

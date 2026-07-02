@@ -608,7 +608,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `guidewire-pack`    | Complete Guidewire integration skill pack with 24 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform…        |
 | `hex-pack`          | Claude Code skill pack for Hex (18 skills)                                                                                                  |
 | `hootsuite-pack`    | Claude Code skill pack for Hootsuite (18 skills)                                                                                            |
-| `hubspot-pack`      | Claude Code skill pack for HubSpot (30 skills)                                                                                              |
+| `hubspot-pack`      | Claude Code skill pack for HubSpot (10 production-engineer skills)                                                                          |
 | `ideogram-pack`     | Complete Ideogram integration skill pack with 24 skills covering AI image generation, text rendering, and creative design workflows.…       |
 | `instantly-pack`    | Complete Instantly integration skill pack with 24 skills covering cold email, outreach automation, and lead generation. Flagship tier…      |
 | `intercom-pack`     | Claude Code skill pack for Intercom (24 skills)                                                                                             |

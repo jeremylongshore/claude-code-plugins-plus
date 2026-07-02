@@ -7457,8 +7457,8 @@
     {
       "name": "hubspot-pack",
       "source": "./plugins/saas-packs/hubspot-pack",
-      "description": "Claude Code skill pack for HubSpot (30 skills)",
-      "version": "1.0.0",
+      "description": "Claude Code skill pack for HubSpot (10 production-engineer skills)",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "hubspot",
