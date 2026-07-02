@@ -20,6 +20,7 @@ const OUTPUT_FILE = path.join(DATA_DIR, 'unified-search-index.json');
 
 const PLUGINS_DIR = path.resolve(ROOT_DIR, '..', 'plugins');
 const EXTENDED_CATALOG_FILE = path.resolve(ROOT_DIR, '..', '.claude-plugin', 'marketplace.extended.json');
+const DOCS_DIR = path.join(ROOT_DIR, 'src/content/docs');
 
 console.log('🔍 Generating unified search index...\n');
 
@@ -171,6 +172,84 @@ const skills = skillsData.skills.map(skill => ({
   searchText: `${skill.name} ${skill.description || ''} ${skill.parentPlugin.category} ${(skill.allowedTools || []).join(' ')} ${(skill.compatibleWith || []).join(' ')}`.toLowerCase()
 }));
 
+// Transform docs for search — walk src/content/docs/**/*.md and index the
+// documentation section alongside plugins and skills. URLs mirror the Astro
+// content-collection routing in src/pages/docs/[...slug].astro, where the
+// entry id is the file path relative to the collection root minus `.md`.
+function walkDocFiles(dir) {
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  const out = [];
+  for (const ent of entries) {
+    const full = path.join(dir, ent.name);
+    if (ent.isDirectory()) {
+      out.push(...walkDocFiles(full));
+    } else if (ent.name.endsWith('.md')) {
+      out.push(full);
+    }
+  }
+  return out;
+}
+
+// Minimal frontmatter parser for the docs schema (title, description,
+// section: scalar strings; keywords: block list of strings). Nested object
+// lists (officialLinks) are ignored — only scalar and string-list fields
+// referenced below are consumed.
+function parseDocFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return null;
+  const fm = {};
+  let currentKey = null;
+  for (const line of match[1].split('\n')) {
+    const kv = line.match(/^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (kv) {
+      currentKey = kv[1];
+      const value = kv[2].trim();
+      if (value === '') {
+        fm[currentKey] = []; // block list (or nested structure) follows
+      } else {
+        fm[currentKey] = value.replace(/^["']|["']$/g, '');
+      }
+      continue;
+    }
+    const item = line.match(/^\s*-\s+(.*)$/);
+    if (item && currentKey && Array.isArray(fm[currentKey])) {
+      const entry = item[1].trim().replace(/^["']|["']$/g, '');
+      // Skip object-list entries (e.g. officialLinks `- title: ...`)
+      if (!/^[A-Za-z][A-Za-z0-9_-]*:\s/.test(entry)) fm[currentKey].push(entry);
+    }
+  }
+  return fm;
+}
+
+const docs = walkDocFiles(DOCS_DIR)
+  .map(file => {
+    const fm = parseDocFrontmatter(fs.readFileSync(file, 'utf8'));
+    if (!fm || !fm.title) {
+      console.warn(`   ⚠ Skipping doc without frontmatter title: ${path.relative(ROOT_DIR, file)}`);
+      return null;
+    }
+    const slug = path.relative(DOCS_DIR, file).replace(/\\/g, '/').replace(/\.md$/, '');
+    const keywords = Array.isArray(fm.keywords) ? fm.keywords : [];
+    return {
+      type: 'docs',
+      id: `docs/${slug}`,
+      slug,
+      name: fm.title,
+      description: typeof fm.description === 'string' ? fm.description : '',
+      category: typeof fm.section === 'string' ? fm.section : 'docs',
+      keywords,
+      url: `/docs/${slug}/`,
+      searchText: `${fm.title} ${fm.description || ''} ${fm.section || ''} ${keywords.join(' ')}`.toLowerCase()
+    };
+  })
+  .filter(Boolean)
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+
 // Combine into unified index
 const unifiedIndex = {
   meta: {
@@ -181,7 +260,10 @@ const unifiedIndex = {
   stats: {
     totalPlugins: plugins.length,
     totalSkills: skills.length,
-    totalItems: plugins.length + skills.length,
+    totalDocs: docs.length,
+    totalItems: plugins.length + skills.length + docs.length,
+    // Docs sections are intentionally excluded — this drives the plugin/skill
+    // category filter dropdown and the "N categories" marketing copy.
     categories: [...new Set([...plugins.map(p => p.category), ...skills.map(s => s.category)])].sort(),
     skillTools: skillsData.allowedToolsUsed || [],
     allKeywords: [...new Set(plugins.flatMap(p => p.keywords || []))].sort(),
@@ -193,7 +275,7 @@ const unifiedIndex = {
     communityPlugins: plugins.filter(p => p.authorType === 'community').length,
     communityContributors: [...new Set(plugins.filter(p => p.authorType === 'community').map(p => p.author?.name || 'Unknown'))].length
   },
-  items: [...plugins, ...skills]
+  items: [...plugins, ...skills, ...docs]
 };
 
 // Write unified index
@@ -203,6 +285,7 @@ console.log('✅ Unified search index generated!\n');
 console.log(`📊 Statistics:`);
 console.log(`   Plugins: ${plugins.length}`);
 console.log(`   Skills: ${skills.length}`);
+console.log(`   Docs: ${docs.length}`);
 console.log(`   Total searchable items: ${unifiedIndex.stats.totalItems}`);
 console.log(`   Categories: ${unifiedIndex.stats.categories.length}`);
 console.log(`   Skill tools: ${unifiedIndex.stats.skillTools.length}`);

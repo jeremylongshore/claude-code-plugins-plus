@@ -383,6 +383,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         <button class="type-btn active" data-type="all">All</button>
         <button class="type-btn" data-type="plugin">Plugins</button>
         <button class="type-btn" data-type="skill">Skills</button>
+        <button class="type-btn" data-type="docs">Docs</button>
         <button class="type-btn" data-type="favorites" id="favorites-btn">♡ Favorites</button>
       </div>
 
@@ -581,13 +582,21 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       const displayName = escHtml(item.type === 'plugin' && item.displayName ? item.displayName : item.name);
       const href = item.type === 'plugin'
         ? `/plugins/${escHtml(item.name)}/`
-        : (item.parentPlugin ? `/cowork` : `/skills/${escHtml(item.slug)}/`);
+        : item.type === 'docs'
+          ? escHtml(item.url || `/docs/${item.slug}/`)
+          : (item.parentPlugin ? `/cowork` : `/skills/${escHtml(item.slug)}/`);
       const installName = item.type === 'plugin' ? item.name : (item.parentPlugin?.name || item.name);
-      const installCmd = `/plugin install ${escHtml(installName)}@claude-code-plugins-plus`;
+      // Docs are pages, not installables — no install command on their cards.
+      const installHtml = item.type === 'docs'
+        ? ''
+        : `<code>/plugin install ${escHtml(installName)}@claude-code-plugins-plus</code>`;
 
       const metaParts = [];
       if (item.type === 'skill' && item.parentPlugin) {
         metaParts.push(`<span>Provided by ${escHtml(item.parentPlugin.name)}</span>`);
+      }
+      if (item.type === 'docs') {
+        metaParts.push(`<span>Docs · ${escHtml(item.category)}</span>`);
       }
       if (item.skillCount > 0) {
         metaParts.push(`<span>${item.skillCount} skills</span>`);
@@ -605,7 +614,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
           <a class="pcard" href="${href}">
             <h3>${displayName}</h3>
             <p>${escHtml(item.description)}</p>
-            <code>${installCmd}</code>
+            ${installHtml}
             ${metaHtml}
           </a>
         </div>`;
@@ -645,7 +654,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       const typeParam = urlParams.get('type');
       const searchParam = urlParams.get('q');
 
-      if (typeParam && ['all', 'plugin', 'skill'].includes(typeParam)) {
+      if (typeParam && ['all', 'plugin', 'skill', 'docs'].includes(typeParam)) {
         activeFilters.type = typeParam;
         document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
         const targetBtn = document.querySelector(`.type-btn[data-type="${typeParam}"]`);
