@@ -6,7 +6,7 @@ description: 'Implement data privacy controls for OpenRouter API usage. Use when
   handling''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 When sending data through OpenRouter to upstream LLM providers, you're responsible for ensuring prompts don't leak PII inappropriately. OpenRouter itself does not train on API data, but each upstream provider has its own data retention and training policies. This skill covers PII detection and redaction, placeholder substitution, provider selection for privacy, and consent tracking.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK (`pip install openai`) — every pattern in this skill is Python
+- A sensitivity classification for your workloads (`public` / `standard` / `sensitive`) so `privacy_aware_completion()` can route each one
+- A list of providers your org approves for sensitive data, to plug into `provider.order` with `allow_fallbacks: False`
+
+## Instructions
+
+1. Start with PII Detection and Redaction: adapt `PII_RULES` (email, phone, SSN, credit card, `sk-or-v1-` API keys, IPs) to your data, then run `scan_and_redact()` on representative inputs and review the `findings` for false positives.
+2. When downstream code needs the original values back, use the Placeholder Substitution Pattern instead of plain redaction — `PrivacyProxy.anonymize()` before the API call, `deanonymize()` on the model's reply.
+3. Classify each workload and route it via Provider Selection for Privacy: `privacy_aware_completion()` maps sensitivity to a model plus a `provider` block (`order: ["Anthropic"]`, `allow_fallbacks: False` for standard/sensitive).
+4. Wire the Privacy Middleware into every call path, choosing `block_on_pii=True` (raise on detection) or `auto_redact=True` (scrub and continue) per workload.
+5. Apply the Enterprise Considerations: hash logged prompts (SHA-256) for GDPR right-to-erasure, and use BYOK for the most sensitive workloads.
 
 ## PII Detection and Redaction
 
@@ -184,6 +199,28 @@ class PrivacyMiddleware:
             processed.append(msg)
         return processed
 ```
+
+## Output
+
+The privacy flows in this skill produce:
+
+- A `PiiScanResult` per scan: `clean_text` with placeholders substituted, `findings` (PII type + first-4-chars value prefix per match), and a `has_pii` flag
+- Anonymized prompts like `"Contact [EMAIL_0] or call [PHONE_1]"` plus the placeholder→original map that `deanonymize()` uses to restore values in the response
+- Chat completions served only by approved providers when the `provider.order` + `allow_fallbacks: False` config is applied
+- A `ValueError` listing the detected PII types when `PrivacyMiddleware` runs with `block_on_pii=True`
+
+## Examples
+
+Scanning a support message before it leaves your infrastructure:
+
+```python
+result = scan_and_redact("Contact john@example.com or call 555-123-4567")
+print(result.clean_text)  # Contact [EMAIL] or call [PHONE]
+print(result.has_pii)     # True
+print(result.findings)    # [{'type': 'email', 'value_prefix': 'john...'}, {'type': 'phone', ...}]
+```
+
+To keep the values recoverable, run the same input through `PrivacyProxy.anonymize()` instead, send the placeholder version to the model, then `deanonymize()` the reply. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

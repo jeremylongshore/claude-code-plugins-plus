@@ -6,7 +6,7 @@ description: 'Optimize context window usage for OpenRouter models to reduce cost
   token limit'', ''reduce tokens openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter models have varying context windows (4K to 1M+ tokens). Since pricing is per-token, stuffing unnecessary context wastes money and can degrade output quality. This skill covers context window lookup, token estimation, conversation trimming, chunking strategies, and Anthropic prompt caching for large contexts.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK and `requests` for model-metadata lookup; `tiktoken` for exact token counting per the references
+- `curl` and `jq` to query context windows and pricing from `/api/v1/models`
+- Node.js 18+ if you use the TypeScript context-budget calculator in the references
+
+## Instructions
+
+1. Run the Query Context Limits one-liner — it returns `context_length` and prompt price per 1M tokens for each candidate model, so you know the real budget before writing code.
+2. Estimate input size (~4 characters per token, or exactly with `tiktoken` per the references) and pick a model with `select_model_for_context()` from Context-Aware Model Selection — it applies an 80% safety margin and falls back through gpt-4o-mini (128K) → Claude 3.5 Sonnet (200K) → Gemini 2.0 Flash (1M).
+3. Keep long conversations inside budget with `trim_conversation()` per Conversation Trimming: system prompt plus the last N messages, with a trim-marker note injected where history was dropped.
+4. For documents that exceed any window, use `chunk_and_process()` per Chunking for Large Documents — 8,000-char chunks with 500-char overlap, analyzed independently at `temperature=0` and then synthesized.
+5. Mark large static blocks with `cache_control: {"type": "ephemeral"}` per Prompt Caching for Repeated Context to cut repeated input cost by 90% on Anthropic models.
+6. Monitor `prompt_tokens` on every response (Enterprise Considerations) to catch context bloat before it becomes a 400 `context_length_exceeded`.
 
 ## Query Context Limits
 
@@ -172,6 +188,25 @@ response = client.chat.completions.create(
 # First request: cache_creation_input_tokens at 1.25x rate
 # Subsequent: cache_read_input_tokens at 0.1x rate (90% savings)
 ```
+
+## Output
+
+- A jq-formatted listing of model IDs with `context_length` and per-1M prompt pricing from `/api/v1/models`
+- A model ID selected to fit the estimated token count within an 80% safety margin, or a `ValueError` when nothing fits
+- A trimmed message list containing the system prompt, a `[Previous N messages trimmed for context limits]` note, and the most recent turns
+- A single synthesized answer assembled from per-chunk analyses of an oversized document
+
+## Examples
+
+Multi-turn chat with the references' `prune_conversation()` holding a 2,000-token budget — oldest messages drop as the conversation grows:
+
+```text
+[Pruned] 9 -> 7 messages (1876 tokens)
+Q: What about class-based decorators?...
+Tokens: 412
+```
+
+The pruner always keeps the system message and removes the oldest non-system turns first. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

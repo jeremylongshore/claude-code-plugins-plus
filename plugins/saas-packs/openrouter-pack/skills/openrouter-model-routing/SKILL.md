@@ -6,7 +6,7 @@ description: 'Implement intelligent model routing to optimize cost, quality, and
   ''model selection openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter gives you access to 100+ models through one API. The key to cost efficiency is routing each request to the right model based on task complexity, required capabilities, cost budget, and latency requirements. This skill covers task-based routing, complexity classification, cost-aware selection, and OpenRouter's native routing features.
+
+## Prerequisites
+
+- An OpenRouter API key exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK and `requests` (`pip install openai requests`)
+- A rough inventory of your task mix (classification, summarization, code generation, deep reasoning, ...) to seed the `TASK_ROUTING` table
+- Credits sized for the tiers you route to — the premium tier (`openai/o1`) runs $15/$60 per 1M tokens, 250x the budget tier
+
+## Instructions
+
+1. Define your tiers per Task-Based Router: the `MODELS` dict (free → budget → mid → standard → premium) and the `TASK_ROUTING` map, then send requests through `route_request()`, which returns `content`, the serving `model`, `tier`, and token count.
+2. When callers can't label tasks, switch to the Complexity-Based Auto-Router — `classify_complexity()` scores word count, code, reasoning, and math markers to pick a tier inside `auto_route()`.
+3. Add resilience per OpenRouter Native Routing: `extra_body={"models": [...], "route": "fallback"}` tries models in order, `provider.order` controls which provider serves, and the `:floor` variant picks the cheapest provider automatically.
+4. Keep pricing current per Cost-Aware Router — `get_model_pricing()` pulls live per-1M rates from `GET /api/v1/models`, and `cheapest_model_for_task()` selects under context/tooling constraints.
+5. Log every routing decision (task type, tier, model, cost) and tune per Error Handling and Enterprise Considerations — escalate the tier on quality regressions and cap per-request cost with `max_tokens`.
 
 ## Task-Based Router
 
@@ -171,6 +186,26 @@ def cheapest_model_for_task(pricing: dict, min_context: int = 4096,
     candidates.sort(key=lambda x: x[1]["prompt"] + x[1]["completion"])
     return candidates[0][0] if candidates else "openai/gpt-4o-mini"
 ```
+
+## Output
+
+- Routed completion dicts from `route_request()`: the reply `content`, the actual `model` that served, the `tier` chosen, and total `tokens` consumed
+- Router decision traces per request, e.g. `[Router] Task=code -> Model=anthropic/claude-3.5-sonnet`, giving you an audit trail to tune the routing table against
+- A live pricing map from `get_model_pricing()` keyed by model ID: per-1M `prompt`/`completion` cost plus `context` length for cost-aware selection
+
+## Examples
+
+The same router sends trivial and demanding prompts to opposite ends of the cost spectrum:
+
+```python
+print(routed_completion("What is 2+2?"))
+# [Router] Task=simple -> Model=google/gemma-2-9b-it:free
+
+print(routed_completion("Write a Python function to merge two sorted lists."))
+# [Router] Task=code -> Model=anthropic/claude-3.5-sonnet
+```
+
+The 4-word arithmetic prompt lands on the free tier while the code request escalates to Claude 3.5 Sonnet — the spread between those two decisions is where the cost savings live. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

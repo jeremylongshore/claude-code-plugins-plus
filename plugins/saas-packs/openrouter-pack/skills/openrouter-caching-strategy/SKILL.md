@@ -6,7 +6,7 @@ description: 'Implement caching for OpenRouter API responses to reduce cost and 
   ''reduce openrouter cost''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter charges per token, so caching identical or similar requests can dramatically cut costs. Deterministic requests (`temperature=0`) with the same model and messages produce identical outputs -- these are safe to cache. This skill covers in-memory caching, persistent caching with TTL, and Anthropic prompt caching via OpenRouter.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK, plus the `redis` client package for the persistent cache; Node.js 18+ with the OpenAI SDK for the TypeScript variant in the references
+- A Redis server reachable at `localhost:6379` for Persistent Cache with Redis (the in-memory `LLMCache` needs no infrastructure)
+- Deterministic request settings — caching is only safe at `temperature=0`
+
+## Instructions
+
+1. Confirm the requests you want to cache are deterministic (`temperature=0`); non-zero temperatures produce different outputs each call and must never be cached.
+2. Start with the In-Memory Cache: `LLMCache` plus `cached_completion()` gives you TTL expiry and hit/miss counters in a single process.
+3. For multi-instance deployments, switch to Persistent Cache with Redis — `redis_cached_completion()` stores results under `or:<sha256>` keys with `r.setex` TTL expiry and falls through to a direct API call on a miss.
+4. Build keys per Cache Key Design: include the model ID (with variants like `:floor`), messages, temperature, max_tokens, and top_p; exclude `stream` and the HTTP-Referer/X-Title headers.
+5. For large static system prompts (RAG context), add `cache_control: {"type": "ephemeral"}` per Anthropic Prompt Caching via OpenRouter — cache reads bill at 0.1x the input rate.
+6. Wire the Cache Invalidation table: flush per-model keys on model version updates, flush everything on system prompt changes, and let TTL handle the rest.
 
 ## In-Memory Cache
 
@@ -163,6 +179,25 @@ def cache_key(model: str, messages: list, **params) -> str:
 | System prompt change | Flush all keys | Output semantics changed |
 | TTL expiry | Automatic eviction | Prevents stale data |
 | Manual purge | `r.delete(key)` or clear by prefix | Debugging or policy change |
+
+## Output
+
+- Cached completion payloads returned without an API round-trip: `{"content", "model", "usage"}` from the in-memory cache or `{"content", "model", "tokens"}` from Redis
+- Redis keys of the form `or:<sha256-of-canonical-request>` that expire automatically via TTL
+- Hit/miss counters and a `hit_rate` figure you can use to justify the caching infrastructure
+- On Anthropic models, `cache_creation_input_tokens` billed at 1.25x on the first call and `cache_read_input_tokens` at 0.1x (90% savings) on subsequent hits
+
+## Examples
+
+Two identical deterministic calls through the `ResponseCache` from the references — the second returns instantly from cache:
+
+```python
+result1 = cached_completion("What is Python?")   # [Cache MISS] key=3f8a92c1... (stored)
+result2 = cached_completion("What is Python?")   # [Cache HIT] key=3f8a92c1...
+print(f"Hit rate: {cache.hit_rate:.0%}")         # Hit rate: 50%
+```
+
+More worked examples, including a TypeScript Redis-style cache: `references/examples.md`.
 
 ## Error Handling
 

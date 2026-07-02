@@ -6,7 +6,7 @@ description: 'Implement streaming responses with OpenRouter for real-time UIs. U
   openrouter'', ''real-time openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter supports Server-Sent Events (SSE) streaming via `stream: true`, compatible with the OpenAI SDK. Streaming returns tokens as they're generated, reducing time-to-first-token (TTFT) from seconds to milliseconds. Usage stats are available via `stream_options: {include_usage: true}` in the final chunk. This skill covers Python and TypeScript streaming, SSE forwarding to browsers, and error recovery.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ or Node.js 18+ with the OpenAI SDK (the async example uses `AsyncOpenAI` from the same Python package)
+- FastAPI if you plan to forward the SSE stream to browsers per the SSE Forwarding section
+- A streaming-appropriate client timeout (e.g. 120s) — longer than for non-streaming requests
+
+## Instructions
+
+1. Start with Python: Basic Streaming — pass `stream=True` plus `stream_options={"include_usage": True}` so the final chunk carries token counts, and print each `chunk.choices[0].delta.content` as it arrives.
+2. Wrap that loop in the Python: Streaming with Metrics generator to capture TTFT and total time per request; the metrics dict is available after the generator is exhausted.
+3. For Node services, use the TypeScript: Streaming `for await` loop over the same `stream: true` request.
+4. To reach a browser UI, expose the FastAPI endpoint in SSE Forwarding to Browser — it re-emits each token as a `data: {"token": ...}` SSE line and terminates with `data: [DONE]`.
+5. Consume that endpoint with the Browser Client (JavaScript) reader loop, appending tokens to the DOM as they decode.
+6. In async web frameworks, switch to the Async Streaming pattern built on `AsyncOpenAI`.
+7. Handle mid-stream failures (cut-offs, missing `usage`, keep-alive pings, `finish_reason: "length"`) per the Error Handling table.
 
 ## Python: Basic Streaming
 
@@ -216,6 +233,30 @@ async def async_stream(messages, model="openai/gpt-4o-mini", **kwargs):
         if chunk.choices and chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 ```
+
+## Output
+
+- Token-by-token console output as the model generates, followed by usage counts from the final chunk (`Tokens: 14 in + 132 out`)
+- A metrics dict after the generator is exhausted: `ttft_ms`, `total_ms`, `usage` token counts, and the `model` used
+- A FastAPI SSE endpoint emitting `data: {"token": ...}` lines and a terminating `data: [DONE]` for browser consumption
+- Incrementally rendered text in the browser as the JavaScript reader loop decodes each SSE line
+
+## Examples
+
+Stream with metrics and inspect TTFT after the tokens finish printing:
+
+```python
+for token in stream_with_metrics(
+    [{"role": "user", "content": "Write a haiku about programming"}],
+    model="openai/gpt-4o-mini", max_tokens=60,
+):
+    print(token, end="", flush=True)
+print(f"\nMetrics: {stream_with_metrics.last_metrics}")
+# Code flows like a stream / bugs surface then sink away / green tests light the dawn
+# Metrics: {'ttft_ms': 412, 'total_ms': 1875, 'usage': {'prompt_tokens': 14, 'completion_tokens': 21}, 'model': 'openai/gpt-4o-mini'}
+```
+
+More worked examples: `references/examples.md`.
 
 ## Error Handling
 

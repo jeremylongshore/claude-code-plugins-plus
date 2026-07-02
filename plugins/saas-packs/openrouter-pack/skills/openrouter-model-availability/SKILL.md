@@ -5,7 +5,7 @@ description: 'Monitor OpenRouter model availability and implement health checks.
   model status'', ''is model available'', ''openrouter health check'', ''model availability''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter's `/api/v1/models` endpoint is the source of truth for model availability. Models can be temporarily unavailable, have degraded performance, or be permanently removed. This skill covers querying model status, building health probes, tracking availability over time, and automating failover.
+
+## Prerequisites
+
+- An OpenRouter API key exported as `OPENROUTER_API_KEY` for live probes (the catalog query itself needs no auth) — see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` for the catalog status queries and the cron monitoring script
+- Python 3.8+ with the OpenAI SDK and `requests` (`pip install openai requests`) for the health-check service
+- A small credit balance — each `max_tokens: 1` probe costs roughly $0.0001
+
+## Instructions
+
+1. Confirm your models exist in the catalog with `curl -s https://openrouter.ai/api/v1/models | jq ...` per Query Model Status — pull `context_length` and per-million pricing without spending any tokens.
+2. For a zero-cost existence check inside code, use `check_model_exists()` from Catalog-Based Availability Check; on a miss it calls `find_similar()` to suggest same-provider replacements.
+3. Probe live health with `probe_model()` from Health Check Service — a `max_tokens: 1` request that returns a `HealthStatus` with `available`, `latency_ms`, and `checked_at`.
+4. Sweep your critical set with `check_critical_models()`, which logs `OK`/`FAIL` plus latency per model.
+5. Automate via the Availability Monitoring Script as a `*/5 * * * *` cron job appending timestamped status lines to `/var/log/openrouter-health.log`.
+6. Tune alerting per Error Handling — require 2-3 consecutive failures before marking a model down to avoid false positives.
 
 ## Query Model Status
 
@@ -157,6 +173,24 @@ for MODEL in "${MODELS[@]}"; do
   echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $STATUS $MODEL $HTTP_CODE ${LATENCY}ms" >> "$LOG_FILE"
 done
 ```
+
+## Output
+
+- `HealthStatus` records per probed model: `available`, `latency_ms`, an ISO-8601 `checked_at` timestamp, and the error string when a model is down
+- Catalog check dicts: `{"exists": True, "context_length": ..., "pricing": ...}` on a hit, or `{"exists": False, "suggestion": [...]}` listing similar model IDs on a miss
+- Append-only log lines from the cron script, e.g. `2026-07-02T14:05:01Z OK anthropic/claude-3.5-sonnet 200 842ms`, one per critical model every 5 minutes
+
+## Examples
+
+Check that a critical model is still in the catalog before spending tokens on a probe:
+
+```bash
+curl -s https://openrouter.ai/api/v1/models | jq '[.data[] | select(
+  .id == "anthropic/claude-3.5-sonnet") | {id, context_length}]'
+# [{"id": "anthropic/claude-3.5-sonnet", "context_length": 200000}]
+```
+
+Then run the Python health sweep — `run_health_checks()` in `references/examples.md` prints `[OK] anthropic/claude-3.5-sonnet: 842.3ms` per model, a `3/3 models healthy` summary, and the mapped fallback (e.g. `openai/gpt-4-turbo`) for any failure. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

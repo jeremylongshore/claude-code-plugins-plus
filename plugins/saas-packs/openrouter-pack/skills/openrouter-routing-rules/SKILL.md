@@ -5,7 +5,7 @@ description: 'Define custom routing rules for OpenRouter requests based on user 
   rules'', ''custom routing openrouter'', ''conditional model selection''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Beyond simple task-based model selection, production systems need configurable routing rules that consider user tier, cost budget, time of day, model availability, and feature requirements. This skill covers building a rules engine for OpenRouter model selection with config-driven rules, dynamic conditions, and override capabilities.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK — the rules engine itself is stdlib (`dataclasses`, `json`, `random`) layered on top
+- Per-request metadata available in your app: user tier, task type, remaining budget, tool/vision needs, latency SLA (the `RoutingContext` fields)
+- Budget tracking wired up (see `openrouter-cost-controls`) if you use budget-conditioned rules like `low-budget`
+
+## Instructions
+
+1. Model each request's metadata as a `RoutingContext` (user tier, task type, budget remaining, tools/vision flags, latency SLA) per Rules Engine.
+2. Define `RoutingRule` entries in priority order — free-tier first, then budget, capability (tools/vision), task type, latency, and always a `priority=99` default catch-all.
+3. Resolve the winning rule with `evaluate_rules(ctx)`: first match by ascending priority wins; failing conditions return False instead of raising.
+4. Execute through `routed_completion()` per Routed Completion — it applies the rule's model, fallback chain (`models` + `route: "fallback"`), and `max_tokens`.
+5. To make rules hot-reloadable, express them as JSON per Config-Driven Rules and match with `match_config_rule()` instead of lambdas.
+6. Validate any rule change on a slice of traffic with `ab_test_routing()` per A/B Testing Rules before full rollout.
 
 ## Rules Engine
 
@@ -240,6 +256,26 @@ def ab_test_routing(ctx: RoutingContext, test_name: str, variant_b_pct: float = 
         )
     return rule
 ```
+
+## Output
+
+- A resolved `RoutingRule` per request — name, model, fallbacks, `max_tokens` — from `evaluate_rules()`
+- A completion result dict from `routed_completion()`: `{content, model, rule, tokens}`; the `rule` field makes every routing decision auditable
+- A JSON rules config (Config-Driven Rules) that can be hot-reloaded without redeployment
+- A/B variant assignments (`<rule-name>:variant-b`) for a configurable percentage of traffic
+
+## Examples
+
+A pro-tier code request falls through the free-tier, budget, tools, and vision rules and matches `code-tasks`:
+
+```python
+ctx = RoutingContext(user_tier="pro", task_type="code", budget_remaining=50.0)
+result = routed_completion([{"role": "user", "content": "Refactor this function..."}], ctx=ctx)
+print(f"Rule: {result['rule']}, Model: {result['model']}")
+# Rule: code-tasks, Model: anthropic/claude-3.5-sonnet
+```
+
+The same context with `user_tier="free"` matches the priority-1 `free-tier` rule instead, landing on `google/gemma-2-9b-it:free` capped at 512 tokens. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

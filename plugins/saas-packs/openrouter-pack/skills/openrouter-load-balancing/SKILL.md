@@ -6,7 +6,7 @@ description: 'Distribute OpenRouter requests across multiple keys and models for
   openrouter requests'', ''multiple api keys''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 A single OpenRouter API key has rate limits (requests/minute and tokens/minute). To scale beyond those limits, distribute requests across multiple keys. OpenRouter also provides server-side load balancing via provider routing and the `:nitro` variant for low-latency inference. This skill covers multi-key rotation, health-based routing, circuit breakers, and concurrent request patterns.
+
+## Prerequisites
+
+- Two or more OpenRouter API keys exported as `OPENROUTER_KEY_1`, `OPENROUTER_KEY_2`, `OPENROUTER_KEY_3` so the `KeyPool` has keys to rotate — see the `openrouter-install-auth` skill for creating and exporting keys
+- `OPENROUTER_API_KEY` exported for the single-key concurrent-processing pattern
+- Python 3.8+ with the OpenAI SDK and `requests` (`pip install openai requests`) — the concurrent example uses `AsyncOpenAI` from the same package
+- Adequate credits on every key in the pool; per-key quota is visible via `GET /api/v1/auth/key`
+
+## Instructions
+
+1. Export your pool keys and build the `KeyPool` from Multi-Key Round Robin — it round-robins across keys, trips a circuit breaker after 3 consecutive errors, and auto-recovers a key after a 60s cooldown.
+2. Send traffic through `balanced_completion()`: on `RateLimitError` it calls `pool.mark_error(key)` and retries with the next healthy key.
+3. For batch workloads, use `parallel_completions()` from Concurrent Request Processing — an `asyncio.Semaphore` (`max_concurrent=3-5`) caps in-flight requests against a single key.
+4. Layer on server-side distribution per Provider-Level Load Balancing: pass `extra_body={"provider": {"order": [...], "allow_fallbacks": True}}` so OpenRouter spreads the same model across Anthropic, AWS Bedrock, and GCP Vertex.
+5. Monitor quota per key with `check_rate_limits()` (`GET /api/v1/auth/key`) from Rate Limit Awareness, and when 429s hit all keys simultaneously, apply the fixes in Error Handling (more keys, request queuing).
 
 ## Multi-Key Round Robin
 
@@ -175,6 +190,26 @@ for key in pool.keys:
     limits = check_rate_limits(key)
     print(f"Key {key[:12]}...: {limits}")
 ```
+
+## Output
+
+- Chat completion responses served through whichever pool key was healthy at send time, plus per-key health state: error counts, `healthy` flags, and log lines like `Key sk-or-v1-abc... marked unhealthy after 3 errors`
+- An ordered list of completion strings from `parallel_completions()` — one per input prompt, gathered concurrently
+- Rate-limit status dicts per key from `check_rate_limits()`: `requests_limit`, `interval`, `credits_used`, `credits_limit`
+
+## Examples
+
+Six requests through a two-key pool split evenly, and the pool's stats confirm the distribution:
+
+```python
+for i in range(6):
+    balanced_completion(f"Request {i}: Hello!")
+print(pool.get_stats())
+# {'sk-or-v1-abc': {'requests': 3, 'errors': 0},
+#  'sk-or-v1-def': {'requests': 3, 'errors': 0}}
+```
+
+Zero errors means no key tripped the circuit breaker; a nonzero `errors` count on one key with requests skewing to the other shows health-based routing doing its job. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

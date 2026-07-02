@@ -5,7 +5,7 @@ description: 'Implement cost controls for OpenRouter API usage. Use when setting
   ''openrouter cost limit'', ''openrouter spending'', ''control openrouter cost''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(curl:*), Bash(jq:*), Bash(bc:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter provides per-key credit limits, a credit balance API, and per-generation cost queries. Combined with client-side budget middleware, you can enforce hard spending caps at the key level and soft caps in your application. This skill covers key-level limits, per-request cost tracking, budget enforcement middleware, and alert systems.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK and `requests`; Node.js 18+ for the TypeScript per-request cost logger in the references
+- `curl`, `jq`, and `bc` for the balance check and the Budget Alert Script
+- An OpenRouter management key exported as `OPENROUTER_MGMT_KEY` if you provision per-key credit limits via `POST /api/v1/keys`
+
+## Instructions
+
+1. Query `GET /api/v1/auth/key` per Check Credit Balance to see credits used, the key's limit, remaining balance, free-tier status, and rate limit.
+2. Provision scoped keys per Per-Key Credit Limits — `POST /api/v1/keys` with a dollar `limit` (e.g. $50 for `backend-prod`) using the management key, then list keys to review usage against limits per service.
+3. Deploy the `BudgetEnforcer` from Budget Enforcement Middleware: `check_budget()` rejects any request whose pre-flight estimate exceeds the per-request or daily cap, and `record_cost()` books the exact spend from `GET /api/v1/generation?id=`.
+4. Cut unit cost with Cost-Saving Model Variants: `:floor` picks the cheapest provider, `:free` costs nothing where available, and the task-based `ROUTING` table sends classification to gpt-4o-mini and simple Q&A to Llama 3.1 8B.
+5. Schedule the Budget Alert Script (cron) so a balance drop below the threshold fires an alert to Slack or PagerDuty.
+6. Set `max_tokens` on every request and enable auto-topup per Enterprise Considerations to cap completion cost without risking an outage.
 
 ## Check Credit Balance
 
@@ -173,6 +189,31 @@ if (( $(echo "$REMAINING < $THRESHOLD" | bc -l) )); then
   # Send to Slack, PagerDuty, etc.
 fi
 ```
+
+## Output
+
+- A credit-balance JSON summary: `credits_used`, `credit_limit`, `remaining`, `is_free_tier`, and `rate_limit` for the active key
+- Newly provisioned API keys with hard dollar limits, plus a per-key `usage / limit` listing from the management API
+- `ValueError` rejections from the middleware when a request would exceed the per-request or daily budget, and a running daily-spend total booked from actual generation costs
+- Alert lines such as `ALERT: OpenRouter credits low: $4.87 remaining` whenever the balance crosses the configured threshold
+
+## Examples
+
+Check what's left on a key before turning on traffic:
+
+```bash
+curl -s https://openrouter.ai/api/v1/auth/key \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  | jq '{used: .data.usage, limit: .data.limit, remaining: (.data.limit - .data.usage)}'
+```
+
+Expected output:
+
+```json
+{"used": 3.42, "limit": 50, "remaining": 46.58}
+```
+
+More worked examples, including thread-safe budget middleware and a TypeScript cost logger: `references/examples.md`.
 
 ## Error Handling
 

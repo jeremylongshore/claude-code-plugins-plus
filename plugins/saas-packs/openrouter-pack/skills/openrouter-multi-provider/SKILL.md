@@ -6,7 +6,7 @@ description: 'Use multiple AI providers (OpenAI, Anthropic, Google, Meta) throug
   provider'', ''openrouter openai anthropic'', ''compare models openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter's unified API lets you access models from OpenAI, Anthropic, Google, Meta, Mistral, and others with a single API key and endpoint. Model IDs use `provider/model-name` format. The same OpenAI SDK code works for any provider by simply changing the model ID. This skill covers provider comparison, cross-provider routing, feature normalization, and BYOK (Bring Your Own Key).
+
+## Prerequisites
+
+- A single OpenRouter API key exported as `OPENROUTER_API_KEY` — it covers every provider (OpenAI, Anthropic, Google, Meta, Mistral); see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` for the provider-landscape query
+- Python 3.8+ with the OpenAI SDK (`pip install openai`)
+- For BYOK only: your own provider API key (e.g. an OpenAI key) added in the OpenRouter dashboard under Settings > Integrations > Add Provider Key
+
+## Instructions
+
+1. Survey what's on offer per Provider Landscape: `curl -s https://openrouter.ai/api/v1/models | jq ...` groups model IDs by their `provider/` prefix and sorts by model count.
+2. Benchmark candidates with `compare_models()` from Cross-Provider Comparison — the same prompt at `temperature=0` across Anthropic, OpenAI, Google, and Meta, capturing latency, tokens, and the actual serving endpoint (`response.model`).
+3. Shortlist by task using the Provider Strength Matrix — Anthropic for analysis/long context, OpenAI for code and tool calling, Google for multimodal and 1M context, Meta for budget work, Mistral for European data residency.
+4. Pin or fail over per Provider-Specific Routing: `provider.order` with `allow_fallbacks: False` forces one provider (e.g. for regulated data); `allow_fallbacks: True` fails across providers such as Anthropic → AWS Bedrock.
+5. For high-volume production, configure BYOK — requests route to your own provider key with the first 1M requests/month free, then 5% of normal provider cost.
+6. Smooth capability gaps with `normalized_completion()` per Feature Normalization — JSON mode uses `response_format` natively on `openai/` models and a system-prompt instruction elsewhere.
 
 ## Provider Landscape
 
@@ -163,6 +179,25 @@ def normalized_completion(messages, model, **kwargs):
 
     return client.chat.completions.create(model=model, messages=messages, **kwargs)
 ```
+
+## Output
+
+- Comparison result rows per model: `served_by` (the endpoint that actually answered), truncated `content`, token totals, `latency_ms`, and `status` (`ok` or the error)
+- A provider census from the jq query: `{provider, models}` objects sorted by model count, showing which namespaces dominate the catalog
+- Completions attributed to their exact serving provider via `response.model` — the raw material for cost/quality attribution across providers
+
+## Examples
+
+One prompt — "Explain what an API gateway is in 2 sentences." — fanned across four providers through the same client produces a directly comparable scoreboard:
+
+```text
+[OpenAI] 450ms, 65 tokens — ok
+[Anthropic] 380ms, 58 tokens — ok
+[Google] 620ms, 71 tokens — ok
+[Meta] 510ms, 63 tokens — ok
+```
+
+Anthropic answered fastest with the fewest tokens on this run; the point is that switching providers cost zero code changes beyond the model ID. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

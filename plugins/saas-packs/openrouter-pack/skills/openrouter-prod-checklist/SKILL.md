@@ -5,7 +5,7 @@ description: 'Validate production readiness of your OpenRouter integration. Use 
   ''openrouter launch'', ''production checklist openrouter'', ''openrouter deploy''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 A comprehensive production readiness checklist for OpenRouter integrations covering security, reliability, observability, cost management, and operational procedures. Each item includes the specific API endpoint or configuration needed to verify compliance.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- A working OpenRouter integration ready to launch — this skill validates an existing integration, it doesn't build one
+- `curl` and `jq` for the pre-launch validation script and the auth/credit-limit checks
+- Python 3.8+ if you turn the checklist dicts (`SECURITY`, `RELIABILITY`, `OBSERVABILITY`) into automated CI checks
+- A secret scanner in CI (gitleaks or trufflehog) — the security checklist verifies its presence
+
+## Instructions
+
+1. Work through the Security Checklist: keys in a secrets manager, 90-day rotation, per-key credit limits (`GET /api/v1/auth/key` → `.data.limit`), secret scanning in CI, HTTPS-only endpoints.
+2. Verify the Reliability Checklist: a fallback chain (`models` array + `route: "fallback"`), SDK `max_retries=3` with built-in backoff, `timeout=30.0`, a circuit breaker on the primary model, and `max_tokens` on every request.
+3. Confirm the Observability Checklist: structured logs carrying `generation_id`/model/latency/tokens/cost, error-rate alerts (>5% over 5 min), P50/P95 latency per model, daily cost tracking via `GET /api/v1/generation?id=`, and credit-balance alerts.
+4. Run the Pre-Launch Validation Script — it exercises auth, credit limit, primary-model availability, a live test request, and a hardcoded-key scan.
+5. Fix every FAIL and re-run until the script prints `READY FOR PRODUCTION`, then wire it into CI as a pre-deploy gate per Enterprise Considerations.
 
 ## Security Checklist
 
@@ -153,6 +169,30 @@ echo ""
 echo "Results: $PASS passed, $FAIL failed"
 [ $FAIL -eq 0 ] && echo "READY FOR PRODUCTION" || echo "FIX FAILURES BEFORE LAUNCH"
 ```
+
+## Output
+
+- A pass/fail pre-launch validation report: five numbered checks, a `Results: N passed, M failed` summary, and a final `READY FOR PRODUCTION` / `FIX FAILURES BEFORE LAUNCH` verdict
+- A completed three-part readiness checklist (security, reliability, observability) with the verify command or API endpoint recorded per item
+- A hardcoded-key scan result — zero `sk-or-v1-` matches in source outside `.env` and `node_modules`
+
+## Examples
+
+A correctly configured production key produces a clean run of the Pre-Launch Validation Script:
+
+```text
+=== OpenRouter Production Readiness ===
+1. API Authentication: PASS (my-app-prod)
+2. Credit Limit: PASS ($100)
+3. Primary Model Available: PASS (anthropic/claude-3.5-sonnet)
+4. Test Request: PASS
+5. No Hardcoded Keys: PASS
+
+Results: 5 passed, 0 failed
+READY FOR PRODUCTION
+```
+
+A key with no credit limit instead shows `WARN (no limit set)` on check 2 and counts as a failure — set a per-key limit to bound blast radius before launch. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

@@ -6,7 +6,7 @@ description: 'Set up OpenRouter API authentication and configure API keys. Use w
   ''sk-or key''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(pip:*), Bash(npm:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -30,7 +30,7 @@ Set up OpenRouter API credentials, configure the OpenAI-compatible client, verif
 - Python 3.8+ or Node.js 18+
 - OpenAI SDK (`pip install openai` or `npm install openai`)
 
-## Quick Setup
+## Instructions
 
 ### 1. Generate an API Key
 
@@ -127,6 +127,29 @@ print(f"Tokens: {response.usage.prompt_tokens} in / {response.usage.completion_t
 | Standard key | `sk-or-v1-...` | API access (chat completions, models) |
 | Management key | `sk-or-v1-...` | Key provisioning only (cannot call completions) |
 | BYOK provider key | Varies by provider | Bring-your-own-key for direct provider access |
+
+## Output
+
+A completed setup leaves you with:
+
+- `OPENROUTER_API_KEY` set in your environment (or a gitignored `.env` file), holding the `sk-or-v1-...` key from [openrouter.ai/keys](https://openrouter.ai/keys)
+- A configured OpenAI-SDK client pointed at `https://openrouter.ai/api/v1` with `HTTP-Referer` and `X-Title` headers for dashboard attribution
+- An auth-verification printout from `/api/v1/auth/key`: key label, credits used, credit limit, free-tier flag, and rate limit
+- A test completion from the free model (`google/gemma-2-9b-it:free`) with its reply text and prompt/completion token counts
+
+## Examples
+
+Running the step-4 verification against a fresh key prints something like:
+
+```text
+Key: my-app-dev
+Credits used: $0.0000
+Credit limit: unlimited
+Free tier: True
+Rate limit: 10 req / 10s
+```
+
+Then the step-5 test request returns a greeting plus `Tokens: 9 in / 12 out`, confirming the key can call completions end-to-end. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

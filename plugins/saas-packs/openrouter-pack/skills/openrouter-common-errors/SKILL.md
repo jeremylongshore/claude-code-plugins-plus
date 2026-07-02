@@ -5,7 +5,7 @@ description: 'Diagnose and fix common OpenRouter API errors. Use when encounteri
   error'', ''openrouter 401'', ''openrouter 429'', ''openrouter 402'', ''fix openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter returns standard HTTP error codes plus OpenRouter-specific error codes in the response body. The most common: 401 (auth), 402 (credits), 429 (rate limit), 400 (bad request), and 5xx (upstream provider errors). Each error includes a `code` field and a human-readable `message`. This skill covers every common error, its root cause, and the exact fix.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` to run the Diagnostic Script
+- Python 3.8+ with the OpenAI SDK for the categorized error handler; Node.js 18+ for the TypeScript typed-error classifier in the references
+- The `requests` package if you use the Prevention Middleware's pre-flight model check
+
+## Instructions
+
+1. Identify the failure by HTTP status and `code` using the Complete Error Reference table (400/401/402/403/408/429/5xx each map to a specific fix).
+2. Inspect the body per Error Response Format — `error.code`, `error.message`, and `error.metadata.provider_name` tell you whether OpenRouter or the upstream provider failed.
+3. Run the Diagnostic Script: it checks auth via `GET /api/v1/auth/key`, computes remaining credits, verifies the model exists in `/api/v1/models`, and fires a minimal 1-token completion.
+4. Wrap production calls with `safe_completion()` from Python Error Handler — `max_retries=3` auto-retries 429 and 5xx, and each exception class raises with its exact remedy.
+5. Add `validate_before_send()` from Prevention Middleware to catch bad model IDs (with suggestions), malformed messages, and context overflows before spending money on a 400.
+6. If errors persist across retries and providers, check [status.openrouter.ai](https://status.openrouter.ai) per the Error Handling table.
 
 ## Complete Error Reference
 
@@ -172,6 +188,26 @@ def validate_before_send(model: str, messages: list, max_tokens: int = 1024):
     if errors:
         raise ValueError("Pre-flight validation failed:\n" + "\n".join(f"  - {e}" for e in errors))
 ```
+
+## Output
+
+- A four-line diagnostic report: auth OK/FAIL, dollars of credit remaining, model availability in `/api/v1/models`, and the HTTP status of a minimal live request
+- Categorized exceptions from `safe_completion()` — auth failures exit pointing at the key, 402s point at credit top-up, context overflows raise `ValueError` naming the model to trim for
+- Pre-flight `ValueError`s from `validate_before_send()` listing every problem found (unknown model with suggested IDs, missing `role`/`content` fields, estimated-token overflow) before any API call is made
+
+## Examples
+
+A healthy integration produces this from the Diagnostic Script:
+
+```text
+=== OpenRouter Error Diagnostics ===
+1. Auth: OK
+2. Credits: $46.58 remaining
+3. Model: openai/gpt-4o-mini available
+4. Request: OK
+```
+
+Any FAIL line maps straight to a row in the Complete Error Reference table — e.g. `1. Auth: FAIL (HTTP 401)` means regenerating the key at openrouter.ai/keys. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

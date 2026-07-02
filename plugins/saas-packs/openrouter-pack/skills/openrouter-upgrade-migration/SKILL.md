@@ -5,7 +5,7 @@ description: 'Migrate to OpenRouter from direct provider APIs or upgrade between
   openrouter'', ''migrate from openai to openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(npm:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -26,6 +26,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Migrating to OpenRouter from a direct provider API (OpenAI, Anthropic) is minimal: change `base_url` and `api_key`, add two headers. The OpenAI SDK works natively with OpenRouter. This skill covers migrating from direct APIs, switching between models, upgrading SDK versions, and running comparison tests.
+
+## Prerequisites
+
+- An existing direct OpenAI or Anthropic integration to migrate — the Current State block above checks your installed `openai` SDK via `npm list openai` / `pip show openai`
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ or Node.js 18+ with the OpenAI SDK (Anthropic SDK users switch to the OpenAI SDK as part of the migration)
+- The old provider key (`OPENAI_API_KEY` / `ANTHROPIC_API_KEY`) kept active during migration for comparison tests and quick rollback
+
+## Instructions
+
+1. Confirm your installed SDK versions from the Current State output at the top of this skill.
+2. Apply the 3-line change per Migration from Direct OpenAI, Migration from Direct Anthropic, or TypeScript Migration: swap `base_url` to `https://openrouter.ai/api/v1`, switch to `OPENROUTER_API_KEY`, and add the `HTTP-Referer` / `X-Title` headers. Anthropic migrations also change response parsing to `.choices[0].message.content`.
+3. Prefix every model ID with its provider per the Model ID Migration Map (e.g. `gpt-4o` → `openai/gpt-4o`).
+4. Work through the Migration Checklist — config, code, testing, and operations items — before flipping traffic.
+5. Run the Comparison Test Script on your critical prompts (`temperature=0`) to compare content, tokens, and latency against the old backend.
+6. Roll out gradually with the Feature Flag Migration pattern (`USE_OPENROUTER` env var plus `get_model_id` mapping), moving 10% → 50% → 100%.
+7. Watch for post-migration failures (401, `model_not_found`, response-format drift, +50–100ms latency) per the Error Handling table.
 
 ## Migration from Direct OpenAI
 
@@ -217,6 +234,32 @@ def get_model_id(model: str) -> str:
         return MODEL_MAP.get(model, f"openai/{model}")
     return model
 ```
+
+## Output
+
+- Migrated client initialization code: 3 changed lines (`base_url`, `api_key`, headers) plus provider-prefixed model IDs across routes/configs
+- A comparison test JSON per prompt with the served `model`, a content preview, combined token count, and `latency_ms`
+- A four-category migration checklist (config / code / testing / operations) to track cutover readiness
+- A feature-flagged `get_llm_client()` that flips between direct OpenAI and OpenRouter via the `USE_OPENROUTER` env var
+
+## Examples
+
+Verify a migrated model on the same prompt before flipping traffic:
+
+```python
+result = compare_migration("What is 2+2?", old_model="gpt-4o", new_model="openai/gpt-4o")
+print(json.dumps(result, indent=2))
+# {
+#   "openrouter": {
+#     "model": "openai/gpt-4o",
+#     "content": "2 + 2 = 4",
+#     "tokens": 21,
+#     "latency_ms": 934
+#   }
+# }
+```
+
+Expect OpenRouter latency to run ~50-100ms above the direct API. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

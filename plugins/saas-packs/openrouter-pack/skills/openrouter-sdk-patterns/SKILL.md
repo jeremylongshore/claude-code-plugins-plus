@@ -5,7 +5,7 @@ description: 'Build reusable OpenRouter client wrappers with retries, typing, an
   ''openrouter client wrapper'', ''openrouter patterns'', ''openrouter library''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Build production-grade OpenRouter client wrappers using the OpenAI SDK. The OpenAI Python/TypeScript SDKs work natively with OpenRouter by changing `base_url` to `https://openrouter.ai/api/v1`. This skill covers typed wrappers, retry strategies, middleware, and reusable patterns.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK plus `requests` (used for the `/auth/key` credits check and `/generation` cost lookups), or Node.js 18+ with the OpenAI SDK
+- Optional: `tenacity` if you want the custom retry decorator beyond the SDK's built-in backoff
+- An app name and URL to send as `HTTP-Referer` / `X-Title` default headers for dashboard attribution
+
+## Instructions
+
+1. Start from the Python: Production Client Wrapper (or the TypeScript variant): point the OpenAI SDK at `base_url="https://openrouter.ai/api/v1"`, read `OPENROUTER_API_KEY` from the environment, and set the `HTTP-Referer` / `X-Title` default headers in the constructor.
+2. Return typed results from every call — the `CompletionResult` dataclass/interface captures `content`, the served `model`, `prompt_tokens`/`completion_tokens`, `generation_id`, and `latency_ms`.
+3. Tune the SDK's built-in retries per the Retry Strategy section (`max_retries`, `timeout` in the constructor); add the `tenacity` decorator only when you need retry behavior beyond the SDK's 429/5xx/connection handling.
+4. Layer cross-cutting concerns via the Middleware Pattern — `with_cost_tracking` queries `GET /api/v1/generation?id=` after each request and accumulates a session cost total.
+5. Surface remaining credits and rate limits with `check_credits()`, which calls `GET /api/v1/auth/key` with the same key.
+6. Map SDK exceptions using the Error Handling table, then apply the Enterprise Considerations (single central wrapper, dependency injection for tests, SLA-based `max_retries`).
 
 ## Python: Production Client Wrapper
 
@@ -250,6 +266,26 @@ def with_cost_tracking(fn: Callable) -> Callable:
     wrapper.total_cost = total_cost
     return wrapper
 ```
+
+## Output
+
+- A typed `CompletionResult` per call: `content`, the `model` that actually served the request, `prompt_tokens`/`completion_tokens`, the `gen-...` `generation_id`, and `latency_ms`
+- A structured log line per request, e.g. `[openai/gpt-4o-mini] 12+87 tokens, 843.2ms`
+- Cost-tracking middleware output: per-request cost plus a running session total, e.g. `Request cost: $0.000123 | Session total: $0.0045`
+- A credits dict from `check_credits()` with usage and limit data from `/api/v1/auth/key`
+
+## Examples
+
+Instantiate the wrapper once and make a typed call:
+
+```python
+or_client = OpenRouterClient(app_name="my-saas")
+result = or_client.complete("Explain recursion", model="openai/gpt-4o-mini", max_tokens=200)
+print(f"{result.model} | {result.latency_ms}ms | {result.prompt_tokens}+{result.completion_tokens} tokens")
+# openai/gpt-4o-mini | 812.4ms | 11+142 tokens
+```
+
+The reference implementation also shows task helpers (`summarize`, `classify`) built on the same wrapper. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

@@ -5,7 +5,7 @@ description: 'Understand and handle OpenRouter rate limits. Use when hitting 429
   rate limit'', ''openrouter 429'', ''openrouter throttle'', ''rate limiting openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter rate limits are per-key, not per-account. Free tier keys get lower limits; paid keys get higher limits that scale with credit balance. The OpenAI SDK has built-in retry with exponential backoff for 429 responses. Check your current limits via `GET /api/v1/auth/key`. Rate limit headers are returned on every response.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` for querying your key's limits from `GET /api/v1/auth/key`
+- Python 3.8+ with the OpenAI SDK (sync `OpenAI` and `AsyncOpenAI`) plus the `requests` package for reading rate-limit headers directly
+- Awareness of your tier: free keys get 20 req/10s, keys with any credits 200 req/10s (see Rate Limit Tiers)
+
+## Instructions
+
+1. Query your key's limits via `GET /api/v1/auth/key` per Check Your Rate Limits — note `rate_limit.requests` and `rate_limit.interval`.
+2. Place yourself in the Rate Limit Tiers table, remembering free models carry separate daily caps (50 req/day free, 1000 req/day with $10+ credits).
+3. Inspect live headroom with `check_rate_headers()` per Read Rate Limit Headers — watch `x-ratelimit-remaining` and `retry-after`.
+4. Configure SDK retries per Retry Strategy with OpenAI SDK: `max_retries=5`, `timeout=60.0`; the SDK catches 429s and backs off with jitter automatically.
+5. Add the client-side `TokenBucket` limiter from Custom Rate Limiter, set below the server limit (e.g. 150 per 10s under a 200/10s cap) so you rarely hit 429 at all.
+6. For bulk jobs, use `batch_with_rate_limit()` per Batch Processing with Rate Awareness — staggered starts plus semaphore-capped concurrency instead of bursts.
 
 ## Check Your Rate Limits
 
@@ -182,6 +198,25 @@ async def batch_with_rate_limit(prompts: list[str], model="openai/gpt-4o-mini",
 
     return await asyncio.gather(*[process(p, i) for i, p in enumerate(prompts)])
 ```
+
+## Output
+
+- A key-limit snapshot from `/api/v1/auth/key`: `label`, `rate_limit` (requests + interval), `is_free_tier`, and credit usage
+- Per-request header readings from `check_rate_headers()`: `x-ratelimit-limit`, `x-ratelimit-remaining`, `x-ratelimit-reset`, `retry-after`
+- A rate-limited client: SDK auto-retry on 429 plus a `TokenBucket` that blocks (up to a timeout) instead of erroring
+- Ordered batch results from `batch_with_rate_limit()` produced without triggering a retry storm
+
+## Examples
+
+Read your server-side limit, then size the client-side limiter under it:
+
+```bash
+curl -s https://openrouter.ai/api/v1/auth/key \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq '.data.rate_limit'
+# {"requests": 200, "interval": "10s"}
+```
+
+With that 200/10s ceiling, configure `TokenBucket(rate=150, interval=10.0)` so steady-state traffic stays ~25% below the limit, and let the SDK's `max_retries=5` absorb whatever bursts through. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

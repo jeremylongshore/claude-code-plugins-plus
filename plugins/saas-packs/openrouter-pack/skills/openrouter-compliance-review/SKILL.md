@@ -6,7 +6,7 @@ description: 'Review OpenRouter integration for regulatory compliance (SOC2, GDP
   soc2'', ''openrouter data residency''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter is a proxy that routes requests to upstream providers (OpenAI, Anthropic, Google, etc.). Compliance depends on both OpenRouter's data handling and the selected provider's policies. Key considerations: data transit through OpenRouter infrastructure, provider-specific data retention, model selection for regulated data, and audit trail requirements.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK for provider-pinned requests and the automated checker in the references
+- `curl` and `jq` to run the Compliance Audit Script
+- An existing OpenRouter integration to review — the audit script scans its source tree for hardcoded `sk-or-v1-` keys
+- Knowledge of which regimes apply (SOC2, GDPR, HIPAA) and how your data is classified
+
+## Instructions
+
+1. Work through the four areas of the Compliance Checklist — `data_handling`, `access_control`, `audit_trail`, and `provider_selection` — recording pass/fail per item.
+2. Classify each workload with the Data Classification Matrix (Public → Internal → Confidential → Restricted/PHI) to determine allowed providers and required controls.
+3. Pin regulated traffic per Provider Routing for Compliance: set `provider.order` plus `allow_fallbacks: False`, then verify `response.model` confirms the approved provider actually served the request.
+4. For data-sovereignty requirements, configure BYOK per BYOK for Data Sovereignty so inference runs on your own provider account and OpenRouter only routes.
+5. Run the Compliance Audit Script: key label/limit check via `GET /api/v1/auth/key`, a free-tier warning (free tier is unsuitable for regulated data), and the hardcoded-key scan.
+6. Document the data flow for auditors — client → OpenRouter (routing) → provider (inference) — per Enterprise Considerations.
 
 ## Compliance Checklist
 
@@ -136,6 +153,28 @@ IS_FREE=$(curl -s https://openrouter.ai/api/v1/auth/key \
 FOUND=$(grep -r "sk-or-v1-" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | wc -l)
 echo "Hardcoded keys found: $FOUND"
 ```
+
+## Output
+
+- A pass/fail/warn compliance report from the automated checker in the references, one line per control (API key storage, HTTPS enforcement, max_tokens, error handling, audit logging)
+- Key-configuration JSON (`label`, `limit`, `is_free_tier`) plus a free-tier warning and a count of hardcoded keys found in source, from the Compliance Audit Script
+- A provider-pinned client configuration (`provider.order` + `allow_fallbacks: False`) that cannot route regulated data to unapproved providers
+- A filled-in markdown compliance checklist (template in the references) covering security, data privacy, reliability, observability, and cost controls
+
+## Examples
+
+Running `run_compliance_review()` from the references against a healthy integration:
+
+```text
+Compliance: 5/5 passed, 0 failed, 0 warnings
+  [OK] api_key_storage: Key loaded from environment variable
+  [OK] https_enforcement: HTTPS enforced
+  [OK] max_tokens: max_tokens set to 500
+  [OK] error_handling: Error handling present
+  [OK] audit_logging: Audit logging configured
+```
+
+Any `[FAIL]` line maps to a checklist item above — fix it and re-run until clean. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

@@ -5,7 +5,7 @@ description: 'Query, filter, and select from OpenRouter''s 400+ model catalog. U
   models'', ''list models'', ''model catalog'', ''compare models'', ''available models''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Query the `GET /api/v1/models` endpoint to browse 400+ models, filter by capabilities, compare pricing, and check provider endpoints. No API key required for the models endpoint.
+
+## Prerequisites
+
+- `curl` and `jq` for the command-line catalog queries — `GET /api/v1/models` itself requires no auth
+- An OpenRouter API key exported as `OPENROUTER_API_KEY` only for the Special Routers completion example — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with `requests` for filtering, plus the OpenAI SDK for the `openrouter/auto` example (`pip install requests openai`)
+
+## Instructions
+
+1. List the catalog per List All Models: `curl -s https://openrouter.ai/api/v1/models | jq '.data | length'`; add `?supported_parameters=tools` to filter to tool-calling models.
+2. Read Model Object Shape to interpret each entry — `pricing.prompt`/`pricing.completion` are per token (multiply by 1M for readable rates), plus `context_length`, `top_provider.max_completion_tokens`, and `architecture.modality`.
+3. Filter programmatically per Python: Query and Filter — free models, tool-calling models, cheapest paid models sorted by prompt price, and 128K+ context models.
+4. Compare per-provider pricing and quantization for a single model via `GET /api/v1/models/{id}/endpoints` per List Providers for a Model.
+5. Pick behavior with a suffix per Model Variants (`:free`, `:nitro`, `:floor`, `:extended`, `:thinking`), or delegate selection entirely to `openrouter/auto` per Special Routers.
+6. Sanity-check choices against the Popular Model Quick Reference, but always verify live pricing via `/api/v1/models` — prices change frequently.
 
 ## List All Models
 
@@ -153,6 +168,27 @@ print(f"Auto-selected: {response.model}")  # Shows which model was chosen
 | `openai/o1` | 200K | $15.00 / $60.00 |
 
 *Prices change frequently. Always verify via `/api/v1/models`.*
+
+## Output
+
+- Raw catalog JSON: one object per model with `id`, `context_length`, `pricing`, `top_provider`, and `architecture` fields
+- Filtered console listings, e.g. counts of free / tool-calling / 128K+ models and cheapest-paid lines like `$0.06/M tokens — meta-llama/llama-3.1-8b-instruct (128K ctx)`
+- Per-provider endpoint rows for one model: `provider_name`, prompt/completion pricing, `context_length`, `quantization`
+- For `openrouter/auto` requests, `response.model` reveals which model the router actually selected
+
+## Examples
+
+Fetch the catalog once, then slice it three ways with the filters from Python: Query and Filter:
+
+```python
+models = requests.get("https://openrouter.ai/api/v1/models").json()["data"]
+free = [m for m in models if m["pricing"]["prompt"] == "0"]
+large = [m for m in models if m["context_length"] >= 128_000]
+print(f"Total: {len(models)}, free: {len(free)}, 128K+: {len(large)}")
+# Total: 267, free: 12, 128K+: 45   (counts drift as the catalog changes)
+```
+
+The same pass sorted by prompt price surfaces the cheapest paid options — `meta-llama/llama-3-8b-instruct: $0.05/1M prompt tokens` leads the list in the worked run. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

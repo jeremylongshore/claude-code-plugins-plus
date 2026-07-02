@@ -6,7 +6,7 @@ description: 'Implement audit logging for OpenRouter API calls. Use when buildin
   openrouter requests''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(sqlite3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Every OpenRouter API call returns a generation ID and metadata that enables comprehensive audit logging. The generation endpoint (`GET /api/v1/generation?id=`) provides exact cost, token counts, provider used, and latency -- data that the initial response doesn't always include. This skill covers structured logging, cost tracking, PII redaction, and compliance-ready audit trails.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK and `requests` (`pip install openai requests`) — the audit wrapper fetches exact cost from the generation endpoint with `requests`
+- SQLite: the Python stdlib `sqlite3` module writes the audit table; the `sqlite3` CLI runs the Audit Queries against `openrouter_audit.db`
+- Optional: a SIEM destination (Splunk, Datadog, ELK) if you ship the structured JSON log lines downstream
+
+## Instructions
+
+1. Export your key and wire `audited_completion()` from Core: Generation Metadata Retrieval — it hashes the prompt (SHA-256), times the call, and fetches exact cost via `GET /api/v1/generation?id=` after each request.
+2. Create the append-only store with `init_audit_db()` per Structured Log Storage, then persist every `AuditEntry` with `write_audit()` — `INSERT OR IGNORE` keeps retries from double-writing a `generation_id`.
+3. Run `redact_pii()` from PII Redaction Before Logging over any prompt preview before it touches a log: emails, phones, SSNs, card numbers, and `sk-or-v1-` keys are scrubbed, and raw prompts are never stored (hashes only).
+4. Answer operational questions with the Audit Queries SQL: daily cost by model, error rate per model over the last 24 hours, and top spenders by `user_id`.
+5. If the generation fetch 404s or `total_cost` comes back missing, apply the fixes in Error Handling (fetch within 30 minutes; retry after 1-2 seconds).
+6. Harden per Enterprise Considerations: append-only storage (SQLite WAL, S3), retention policy (90 days operational, 7 years financial), and SIEM shipping.
 
 ## Core: Generation Metadata Retrieval
 
@@ -201,6 +217,33 @@ GROUP BY model_requested;
 SELECT user_id, COUNT(*) as requests, SUM(total_cost) as total_cost
 FROM audit_log GROUP BY user_id ORDER BY total_cost DESC LIMIT 10;
 ```
+
+## Output
+
+- One structured JSON `AuditEntry` per request: `timestamp`, `generation_id`, `model_requested` vs `model_used`, prompt/completion token counts, exact `total_cost`, `latency_ms`, `status`, `user_id`, and a 16-char `prompt_hash`
+- An append-only SQLite `audit_log` table (`openrouter_audit.db`) indexed on `timestamp` and `user_id`, protected against duplicate writes by `INSERT OR IGNORE`
+- SQL report rows from the Audit Queries: per-day per-model cost, 24-hour error percentage per model, and the top-10 spenders by `user_id`
+
+## Examples
+
+Wrap a call with the JSONL `AuditLogger` variant from the references and read back the entry it appends:
+
+```python
+result = audited_completion("user-123", "What is machine learning?")
+# [Audit] user=user-123 tokens=97 latency=450ms
+```
+
+The corresponding line in `audit.jsonl`:
+
+```json
+{"timestamp": "2026-03-17T10:00:00Z", "user_id": "user-123",
+ "model": "openai/gpt-3.5-turbo", "prompt_hash": "a1b2c3d4e5f6g7h8",
+ "prompt_preview": "What is machine learning?", "prompt_tokens": 12,
+ "completion_tokens": 85, "total_tokens": 97, "status": "success",
+ "latency_ms": 450, "generation_id": "gen-abc123"}
+```
+
+More worked examples: `references/examples.md`.
 
 ## Error Handling
 

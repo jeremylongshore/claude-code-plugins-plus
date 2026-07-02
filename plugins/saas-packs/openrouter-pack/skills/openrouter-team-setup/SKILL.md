@@ -5,7 +5,7 @@ description: 'Configure OpenRouter for multi-user teams with per-user keys, budg
   ''openrouter organization'', ''team api keys openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter supports team usage through per-user API keys with individual credit limits, management keys for programmatic key provisioning, and usage attribution via headers. This skill covers key provisioning, per-user budgets, usage tracking, and governance policies for multi-user deployments.
+
+## Prerequisites
+
+- A management key (`sk-or-v1-...`) with provisioning rights exported as `OPENROUTER_MGMT_KEY` — created separately at openrouter.ai/keys; it can create/list/delete API keys but cannot call completions
+- A regular OpenRouter API key exported as `OPENROUTER_API_KEY` for the shared-key attribution pattern — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK and `requests`; `sqlite3` (stdlib) backs the per-user budget database
+- `curl` and `jq` for the Team Key Dashboard Script
+
+## Instructions
+
+1. Create a management key at openrouter.ai/keys and export it as `OPENROUTER_MGMT_KEY`.
+2. Provision one key per team member via Key Provisioning via Management API — `create_team_key(name, credit_limit)` posts to `/api/v1/keys`; record the one-time `key` value and keep the `key_hash` for later listing/revocation.
+3. Alternatively, keep a single shared key and attribute usage per user with the Shared Key with User Attribution pattern (`X-Title: my-app:{user_id}` header shows each user in the dashboard).
+4. Enforce spend locally with Per-User Budget Enforcement — initialize the `user_usage` / `user_budgets` sqlite tables, call `check_user_budget` before each request and `record_user_usage` after.
+5. Gate expensive models per tier with the Model Governance allowlists (`enforce_model_policy` downgrades disallowed requests).
+6. Monitor continuously: run the Team Key Dashboard Script (curl + jq against `/api/v1/keys`) and generate the weekly Team Usage Report from the sqlite DB.
+7. Revoke keys for departed members with `delete_team_key(key_hash)` (`DELETE /api/v1/keys/{hash}`).
 
 ## Key Provisioning via Management API
 
@@ -223,6 +240,28 @@ def enforce_model_policy(user_tier: str, requested_model: str) -> str:
     # Downgrade to best allowed model
     return allowlist[-1]
 ```
+
+## Output
+
+- Per-member API keys (`sk-or-v1-...`, shown once at creation) plus `key_hash` records carrying name, usage, and credit limit
+- A `team_usage.db` sqlite database with per-user daily `total_cost` and `request_count` rows plus per-user budgets and model allowlists
+- A columnar key dashboard from the curl + jq script: key name, spend, and limit per row, plus a total-spend line
+- A weekly team usage report list sorted by `weekly_cost`, one dict per user with requests and daily limit
+
+## Examples
+
+Provision keys for three team members with a $50 credit limit each:
+
+```python
+for member in ["alice-backend", "bob-frontend", "carol-ml"]:
+    key_info = create_team_key(member, credit_limit=50.0)
+    print(f"Created key for {member}: {key_info['key'][:20]}...")
+# Created key for alice-backend: sk-or-v1-a1b2c3d4e5...
+# Created key for bob-frontend: sk-or-v1-f6a7b8c9d0...
+# Created key for carol-ml: sk-or-v1-e1f2a3b4c5...
+```
+
+Each key value is only returned once — store it securely and keep the hash for revocation. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

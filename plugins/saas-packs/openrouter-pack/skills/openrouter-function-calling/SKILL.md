@@ -6,7 +6,7 @@ description: 'Implement function/tool calling with OpenRouter models. Use when b
   openrouter''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter supports OpenAI-compatible tool/function calling across multiple providers. Define tools as JSON Schema, send them with your request, and the model returns structured `tool_calls` instead of free text. This works with GPT-4o, Claude 3.5, Gemini, and other tool-capable models via the same API. The key difference from direct provider APIs: OpenRouter normalizes the tool calling interface, so the same code works across providers.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ or Node.js 18+ with the OpenAI SDK (`pip install openai` / `npm install openai`)
+- A tool-capable model — check the Model Compatibility table below or query `/api/v1/models` (e.g., `openai/gpt-4o`, `anthropic/claude-3.5-sonnet`)
+- Real function implementations to dispatch tool calls to (the `execute_tool()` dispatcher below stubs `get_weather` and `search_database`)
+
+## Instructions
+
+1. Pick a model from the Model Compatibility table that supports the features you need (tool calling, JSON mode, parallel tools).
+2. Define your tools as JSON Schema per Basic Tool Calling and send them with `tool_choice="auto"` (or `"required"` to force a call, or a specific function name).
+3. Read `response.choices[0].message.tool_calls` — each entry carries `function.name` and JSON-encoded `function.arguments` to parse with `json.loads()`.
+4. For agents, wire the Multi-Turn Tool Loop: append the assistant message, execute each tool via `execute_tool()`, append `role: "tool"` results keyed by `tool_call_id`, and loop until the model returns plain text (bounded by `max_rounds`).
+5. Use the TypeScript Tool Calling section for the identical flow in Node — same schema, same `tool_calls` shape.
+6. When you only need structured data (no function execution), skip tools and use Structured Output (JSON Mode) with `response_format={"type": "json_object"}`.
+7. Handle failures per the Error Handling table: force `tool_choice: "required"` for extraction pipelines and validate arguments server-side before executing.
 
 ## Basic Tool Calling
 
@@ -203,6 +220,27 @@ data = json.loads(response.choices[0].message.content)
 | `anthropic/claude-3.5-sonnet` | Yes | Via system prompt | Sequential |
 | `google/gemini-2.0-flash-001` | Yes | Yes | Yes |
 | `meta-llama/llama-3.1-70b-instruct` | Yes (varies) | Via prompt | No |
+
+## Output
+
+The tool-calling flows produce:
+
+- `message.tool_calls` entries — each with a `function.name` and JSON-encoded `function.arguments` (e.g., `get_weather` with `{"location": "Tokyo", "unit": "celsius"}`) plus a `tool_call_id` for pairing results
+- The final assistant text once the Multi-Turn Tool Loop resolves — or the `"Max tool rounds exceeded"` sentinel if it hits `max_rounds`
+- From JSON Mode: a parseable JSON object matching your system-prompt schema (e.g., `{"name": "Jane Smith", "email": "jane@acme.co", "company": "Acme Corp"}`)
+
+## Examples
+
+Asking a weather question with the `get_weather` tool registered:
+
+```python
+message = response.choices[0].message
+for tc in message.tool_calls:
+    print(tc.function.name, json.loads(tc.function.arguments))
+# get_weather {'location': 'Tokyo', 'unit': 'celsius'}
+```
+
+Feed that result back as a `role: "tool"` message and the next completion returns prose ("It's currently 22°C and sunny in Tokyo..."). More worked examples: `references/examples.md`.
 
 ## Error Handling
 

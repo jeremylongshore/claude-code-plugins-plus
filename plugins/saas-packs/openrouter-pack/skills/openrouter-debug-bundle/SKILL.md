@@ -6,7 +6,7 @@ description: 'Create debug bundles for troubleshooting OpenRouter API issues. Us
   issue''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -27,6 +27,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 When an OpenRouter request fails or returns unexpected results, you need a structured debug bundle: the exact request, response, headers, generation metadata, and environment info. The generation ID (`gen-*` prefix in `response.id`) is the key correlator -- it lets you look up exact cost, provider used, and latency via `GET /api/v1/generation?id=`.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` for the quick-debug flow and the Common Debug Checks
+- Python 3.8+ with the `openai` and `requests` packages for the Debug Bundle Generator
+- A failing or suspect request you can reproduce — its `gen-*` generation ID is what everything else correlates on
+
+## Instructions
+
+1. Rule out environment problems first with the Common Debug Checks: verify the key via `/api/v1/auth/key`, confirm the model exists in `/api/v1/models`, and check `status.openrouter.ai`.
+2. Reproduce the failure with the Quick Debug: curl command — `curl -v ... | tee /tmp/openrouter-debug.txt` captures request headers, response headers, and body in one transcript.
+3. Extract the generation ID (`jq -r '.id'`) and query `GET /api/v1/generation?id=$GEN_ID` to get exact cost, token counts, `generation_time`, and `provider_name`.
+4. For failures inside an application, call `debug_request()` from the Python Debug Bundle Generator to capture the same request/response/error/latency/environment data as a `DebugBundle` and save it with `bundle.save("debug_bundle.json")`.
+5. Match the symptoms against the Error Handling table (missing generation ID, 502/503, `model_not_found`, slow TTFT).
+6. Before sharing a bundle, redact API keys per Enterprise Considerations (`sk-or-v1-...` -> `sk-or-v1-[REDACTED]`) and include the generation ID in any OpenRouter support request.
 
 ## Quick Debug: curl
 
@@ -193,6 +209,35 @@ curl -s https://openrouter.ai/api/v1/models | jq --arg m "$MODEL" '.data[] | sel
 # 3. Check OpenRouter status
 curl -s https://status.openrouter.ai/api/v2/status.json | jq '.status'
 ```
+
+## Output
+
+Running these flows leaves you with concrete debug artifacts:
+
+- `/tmp/openrouter-debug.txt` — the full verbose curl transcript (request/response headers plus the completion JSON) from the quick-debug step
+- A generation-metadata JSON from `/api/v1/generation`: `model`, `total_cost`, `tokens_prompt`, `tokens_completion`, `generation_time`, and `provider_name`
+- `debug_bundle.json` — the serialized `DebugBundle`: timestamp, generation ID, request model/messages/params, response status and content, error type/message/code, `latency_ms`, generation metadata, and environment info (Python version, platform, SDK version)
+- One-line JSON results from the three Common Debug Checks (key label/usage/limit, model existence, OpenRouter status)
+
+## Examples
+
+Looking up a request you just sent by its generation ID:
+
+```bash
+curl -s "https://openrouter.ai/api/v1/generation?id=$GEN_ID" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq '.data | {model, total_cost, generation_time, provider: .provider_name}'
+```
+
+```json
+{
+  "model": "openai/gpt-4o-mini",
+  "total_cost": 0.000021,
+  "generation_time": 412,
+  "provider": "OpenAI"
+}
+```
+
+If the metadata comes back empty, wait 1-2 seconds and retry with the same key that made the request. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

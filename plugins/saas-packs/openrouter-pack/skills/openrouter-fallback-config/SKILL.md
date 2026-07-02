@@ -6,7 +6,7 @@ description: 'Configure automatic model fallbacks for high availability on OpenR
   backup model''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter supports native model fallbacks: pass multiple model IDs and OpenRouter tries each in order until one succeeds. You can also use `provider.order` to control which provider serves a specific model. This skill covers native fallbacks, provider routing, client-side fallback chains, and timeout configuration.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK (`pip install openai`) for the fallback patterns; `curl` and `jq` for the Testing Fallbacks step
+- A ranked list of acceptable models for your workload, matched by capability (tool calling, vision, context length) so a fallback never silently drops a feature you depend on
+
+## Instructions
+
+1. Start with Native Model Fallback (Server-Side): pass a `models` array plus `route: "fallback"` in `extra_body` and let OpenRouter try each model in order.
+2. Log `response.model` after every call — it tells you which model actually served the request, which is how you detect that a fallback fired.
+3. If you need the *same* model from specific vendors (e.g., Claude via Anthropic direct vs AWS Bedrock), use Provider Fallback with `provider.order` and `allow_fallbacks`.
+4. For per-model timeouts and custom error handling, implement the Client-Side Fallback Chain: `resilient_completion()` walks `FALLBACK_CHAIN` (primary → secondary → budget-fallback → last-resort) and raises once every entry fails.
+5. Pick chains per feature with Fallback with Capability Matching — `CAPABILITY_CHAINS` keeps tool-calling, vision, long-context, and budget workloads on models that actually support them.
+6. Verify the behavior with Testing Fallbacks: send the curl request with an invalid primary model and confirm the response comes back from `openai/gpt-4o-mini`.
 
 ## Native Model Fallback (Server-Side)
 
@@ -165,6 +180,34 @@ curl -s https://openrouter.ai/api/v1/chat/completions \
   }' | jq '{model: .model, content: .choices[0].message.content}'
 # Should succeed with openai/gpt-4o-mini
 ```
+
+## Output
+
+A configured fallback setup produces:
+
+- Chat completions whose `response.model` field reveals the model that actually served each request — the primary when healthy, a chain entry when a fallback fired
+- Log lines from `resilient_completion()`: `Served by primary: anthropic/claude-3.5-sonnet` on success, `primary failed (anthropic/claude-3.5-sonnet): ...` warnings per failed hop
+- A `RuntimeError("All fallbacks exhausted. Last error: ...")` when every model in `FALLBACK_CHAIN` fails — the signal to alert on
+- From the Testing Fallbacks curl: a `{model, content}` JSON showing the request survived an invalid primary model
+
+## Examples
+
+Force a fallback by putting an invalid model first in the `models` array:
+
+```bash
+curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "invalid/model-name", "messages": [{"role": "user", "content": "test"}],
+       "max_tokens": 10, "models": ["invalid/model-name", "openai/gpt-4o-mini"], "route": "fallback"}' \
+  | jq '{model: .model, content: .choices[0].message.content}'
+```
+
+```json
+{"model": "openai/gpt-4o-mini", "content": "Test received!"}
+```
+
+The `model` field proves the fallback chain worked. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

@@ -6,7 +6,7 @@ description: 'Optimize OpenRouter request latency and throughput. Use when build
   throughput''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter adds minimal overhead (~50-100ms) to direct provider calls. Most latency comes from the upstream model. Key levers: model selection (smaller = faster), streaming (lower TTFT), parallel requests, prompt size reduction, and provider routing to faster infrastructure. This skill covers benchmarking, streaming optimization, concurrent processing, and connection tuning.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK (`openai` package) — the examples use both the sync `OpenAI` client and `AsyncOpenAI` for parallel processing
+- Credits on the key if you benchmark paid models like `anthropic/claude-3.5-sonnet`; a `:free` model is enough to validate the benchmark harness itself
+- `HTTP-Referer` / `X-Title` header values for your app (set in every client constructor here)
+
+## Instructions
+
+1. Establish a baseline: run `benchmark_model()` from Benchmark Latency against your candidate models (e.g. `openai/gpt-4o-mini` vs `anthropic/claude-3.5-sonnet`) and record p50/p95.
+2. Check the results against the Model Speed Tiers table to confirm each candidate sits in the right tier for your latency budget (200-500ms TTFT fastest tier; 5-30s for reasoning models).
+3. Switch user-facing paths to `stream_completion()` per Streaming for Lower TTFT and verify `ttft_ms` drops (typically 2-10x).
+4. Move batch workloads to `parallel_completions()` per Parallel Request Processing, capping concurrency with `asyncio.Semaphore` (`max_concurrent=5-10`).
+5. Apply Connection Optimization — one shared client with `timeout=30.0` and `max_retries=2` instead of a new client per request.
+6. Work through the Performance Optimization Checklist (set `max_tokens`, shrink prompts, consider `:nitro` variants and provider routing), then re-run the benchmark to quantify each change.
 
 ## Benchmark Latency
 
@@ -169,6 +185,27 @@ client = OpenAI(
 for prompt in prompts:
     client.chat.completions.create(...)  # Reuses HTTP connection
 ```
+
+## Output
+
+- A latency benchmark table per model from `benchmark_model()`: `p50_ms`, `p95_ms`, `avg_ms`, `min_ms`, `max_ms` over N sample requests
+- Streaming metrics from `stream_completion()`: the full `content` plus `ttft_ms` and `total_ms` for each request
+- A list of completions from `parallel_completions()` produced in roughly one request's wall-clock time instead of N sequential round-trips
+- A prioritized tuning plan drawn from the Performance Optimization Checklist (lever, expected impact, effort)
+
+## Examples
+
+Benchmark two fastest-tier candidates before committing to one:
+
+```python
+for model in ["openai/gpt-4o-mini", "anthropic/claude-3-haiku"]:
+    r = benchmark_model(model, n=5)
+    print(f"{r['model']}: p50={r['p50_ms']}ms p95={r['p95_ms']}ms avg={r['avg_ms']}ms")
+# openai/gpt-4o-mini: p50=430ms p95=610ms avg=455ms
+# anthropic/claude-3-haiku: p50=395ms p95=580ms avg=418ms
+```
+
+Both land in the fastest tier (200-500ms typical TTFT), so choose on cost or quality — then `stream_completion()` cuts perceived latency further for user-facing paths. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

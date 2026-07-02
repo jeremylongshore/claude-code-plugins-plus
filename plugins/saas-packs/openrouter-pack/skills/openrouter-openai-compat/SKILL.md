@@ -6,7 +6,7 @@ description: 'Migrate from OpenAI to OpenRouter with minimal code changes. Use w
   migration''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter implements the OpenAI Chat Completions API specification (`/v1/chat/completions`). Existing OpenAI SDK code works with OpenRouter by changing two values: `base_url` and `api_key`. This gives you access to 400+ models from all providers through the same SDK interface.
+
+## Prerequisites
+
+- An existing OpenAI SDK integration to migrate — Python or TypeScript code calling `chat.completions.create`
+- An OpenRouter API key exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the `openai` package, or Node.js 18+ with the `openai` npm package — the same SDK you already use, no new dependency
+- Optionally keep `OPENAI_API_KEY` exported too, so the Dual-Provider Pattern can switch back to direct OpenAI
+
+## Instructions
+
+1. Apply The Two-Line Migration: point `base_url` at `https://openrouter.ai/api/v1` and swap `api_key` to `OPENROUTER_API_KEY`; optionally add the `HTTP-Referer` / `X-Title` headers for app attribution.
+2. Prefix every model string per Model ID Mapping — `gpt-4o` becomes `openai/gpt-4o`, `o1` becomes `openai/o1` — and try a non-OpenAI model (`anthropic/claude-3.5-sonnet`) through the same client.
+3. Confirm your feature usage against What Works Identically (streaming, `tools`, JSON mode, `stop`, `n`) and adjust per What Differs — remove the `organization` param, plan around limited embeddings, and check `logprobs` support per model via `/api/v1/models`.
+4. Layer in OpenRouter-Only Features through `extra_body`: ordered fallback model lists with `"route": "fallback"`, provider preferences with `sort: "price"`, or the `plugins: [{"id": "web"}]` web-search plugin.
+5. Keep the migration reversible with the Dual-Provider Pattern — `create_client()` switches between direct OpenAI and OpenRouter off the `LLM_PROVIDER` environment variable.
 
 ## The Two-Line Migration
 
@@ -183,6 +198,30 @@ def create_client(provider: str = "openrouter") -> OpenAI:
 # Switch providers without changing application code
 client = create_client(os.environ.get("LLM_PROVIDER", "openrouter"))
 ```
+
+## Output
+
+- Standard OpenAI-SDK `ChatCompletion` objects — `choices[0].message.content`, `usage` token counts, and `model` reporting the provider-prefixed ID that actually served the request
+- The identical code path returning completions from non-OpenAI models (Claude, Gemini) with only the model string changed
+- A provider-switchable client from `create_client()` — flipping `LLM_PROVIDER` moves traffic between direct OpenAI and OpenRouter with zero application-code changes
+
+## Examples
+
+After the two-line change, the untouched OpenAI SDK call round-trips through OpenRouter:
+
+```python
+client = OpenAI(base_url="https://openrouter.ai/api/v1",
+                api_key=os.environ["OPENROUTER_API_KEY"])
+response = client.chat.completions.create(
+    model="openai/gpt-3.5-turbo",
+    messages=[{"role": "user", "content": "What is the capital of France?"}],
+    max_tokens=100,
+)
+print(response.choices[0].message.content)  # The capital of France is Paris.
+print(response.model)                        # openai/gpt-3.5-turbo
+```
+
+Swap the model string to `anthropic/claude-3.5-sonnet` and the same code returns Claude's answer — that swap is the entire multi-provider story. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

@@ -5343,7 +5343,7 @@
       "name": "openrouter-pack",
       "source": "./plugins/saas-packs/openrouter-pack",
       "description": "Complete OpenRouter integration skill pack with 30 skills covering LLM routing, model selection, cost optimization, and multi-provider orchestration. Flagship+ tier vendor pack.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "saas-packs",
       "keywords": [
         "openrouter",

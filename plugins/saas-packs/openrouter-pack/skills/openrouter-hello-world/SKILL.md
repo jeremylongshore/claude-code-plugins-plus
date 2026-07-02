@@ -6,7 +6,7 @@ description: 'Send your first OpenRouter API request and understand the response
   quickstart''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(python3:*), Bash(node:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -22,6 +22,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Send a minimal chat completion request through OpenRouter, understand the response format, try different models, and verify the full round-trip works. All requests go to the single endpoint `POST https://openrouter.ai/api/v1/chat/completions`.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- `curl` and `jq` for the command-line request, or Python 3.8+ / Node.js 18+ with the OpenAI SDK (`pip install openai` / `npm install openai`)
+- A free-tier model works for every step here (no credits required for `:free` models)
+
+## Instructions
+
+1. Export your key: `export OPENROUTER_API_KEY="sk-or-v1-..."`.
+2. Send the minimal cURL request below and confirm you get a `choices[0].message.content` back.
+3. Read the Response Format section to identify the four key fields (`id`, `model`, `usage`, `finish_reason`).
+4. Repeat the same request from your app language using the Python or TypeScript example.
+5. Swap model IDs per Try Different Models to confirm multi-model access works with the same code.
+6. Query `GET /api/v1/generation?id=gen-...` per Check Generation Cost to verify cost tracking on the request you just sent.
 
 ## Minimal Request (cURL)
 
@@ -151,6 +166,33 @@ curl -s "https://openrouter.ai/api/v1/generation?id=gen-abc123xyz" \
     total_cost: .data.total_cost
   }'
 ```
+
+## Output
+
+A successful round-trip produces:
+
+- A chat completion JSON with `choices[0].message.content` holding the model's reply, a `gen-...` request `id`, the `model` that actually served the request, and `usage` token counts
+- Console output from the Python/TypeScript examples: the reply text plus model name and prompt/completion token counts
+- A cost record from the generation endpoint: `tokens_prompt`, `tokens_completion`, and `total_cost` for the request
+
+## Examples
+
+End-to-end run with the minimal cURL request:
+
+```text
+$ curl -s https://openrouter.ai/api/v1/chat/completions ... | jq .choices[0].message.content
+"Hello! Bonjour! Hola!"
+```
+
+The Python and TypeScript sections above are the same request in SDK form; expected console output:
+
+```text
+OpenRouter is a unified API gateway that routes requests to 400+ LLMs.
+Model: google/gemma-2-9b-it:free
+Tokens: 21 prompt + 17 completion
+```
+
+More worked examples (cURL with full expected response, SDK variants): `references/examples.md`.
 
 ## Error Handling
 

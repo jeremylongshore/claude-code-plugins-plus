@@ -5,7 +5,7 @@ description: 'Avoid common OpenRouter integration mistakes and gotchas. Use proa
   pitfalls'', ''openrouter gotchas'', ''openrouter mistakes'', ''openrouter best practices''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,6 +21,23 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 A curated list of real-world mistakes developers make when integrating OpenRouter, each with the specific API behavior that causes the problem and the exact fix. These are not theoretical -- they come from production incidents and support requests.
+
+## Prerequisites
+
+- An existing (or in-progress) OpenRouter integration to audit against the 10 pitfalls below
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK (`pip install openai`) to run the validation snippets (e.g., the startup check against `/api/v1/models`)
+- Grep access to the codebase to hunt hardcoded `sk-or-v1-` keys and scattered model IDs
+
+## Instructions
+
+1. Audit request format first: every model ID uses the `provider/model` form (Pitfall 1), and model IDs live in one `MODELS` config validated against `/api/v1/models` at startup instead of being scattered through the code (Pitfall 3).
+2. Check cost controls: `max_tokens` is set on every request (Pitfall 2) and no `:free` models are used in production, where the 50-1000 req/day limits will 429 you (Pitfall 5).
+3. Review routing: sensitive-data requests pin `provider.order` with `allow_fallbacks: False` (Pitfall 4), and `response.model` is logged on every call to catch unexpected fallbacks (Pitfall 6).
+4. Inspect client hygiene: one shared client instance with connection pooling (Pitfall 7) configured with `timeout` and `max_retries` (Pitfall 9).
+5. Sweep for secrets: grep for hardcoded `sk-or-v1-` strings and move any hits to env vars or a secrets manager, rotating the exposed keys (Pitfall 8).
+6. Verify caching only stores deterministic `temperature=0` responses (Pitfall 10).
+7. Finish by walking the Quick Checklist (`PITFALL_CHECKLIST`) top to bottom — it condenses all 10 pitfalls into a code-review pass.
 
 ## Pitfall 1: Missing Provider Prefix on Model ID
 
@@ -215,6 +232,29 @@ PITFALL_CHECKLIST = [
     "Only deterministic responses (temp=0) are cached",
 ]
 ```
+
+## Output
+
+An audit pass with this skill produces:
+
+- A pitfall-by-pitfall verdict on your integration — each of the 10 items either confirmed clean or flagged with the exact fix from its section
+- Startup validation output from the Pitfall 3 snippet: `WARNING: primary model 'anthropic/claude-3.5-sonnet' not available!` for any config entry missing from `/api/v1/models`
+- Fallback-detection log lines from Pitfall 6: `Fallback triggered: requested claude-3.5-sonnet, got <response.model>`
+- The completed `PITFALL_CHECKLIST` — a 10-line review artifact to attach to the integration PR
+
+## Examples
+
+Validating your centralized model config at startup (Pitfall 3):
+
+```python
+available = {m["id"] for m in requests.get("https://openrouter.ai/api/v1/models").json()["data"]}
+for name, model_id in MODELS.items():
+    if model_id not in available:
+        print(f"WARNING: {name} model '{model_id}' not available!")
+# WARNING: primary model 'anthropic/claude-3-opus' not available!
+```
+
+A warning here means a rename or removal upstream — update the one `MODELS` entry instead of chasing hardcoded IDs across the codebase. More worked examples: `references/examples.md`.
 
 ## Error Handling
 

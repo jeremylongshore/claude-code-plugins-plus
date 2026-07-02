@@ -6,7 +6,7 @@ description: 'Track and analyze OpenRouter API usage patterns, costs, and perfor
   openrouter spend''.
 
   '
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(curl:*), Bash(jq:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 OpenRouter provides usage data through three endpoints: `GET /api/v1/auth/key` (credit balance and rate limits), `GET /api/v1/generation?id=` (per-request cost and metadata), and response `usage` fields (token counts). This skill covers collecting metrics from these sources, building analytics pipelines, cost reporting, and performance dashboards.
+
+## Prerequisites
+
+- An OpenRouter API key (`sk-or-v1-...`) exported as `OPENROUTER_API_KEY` — see the `openrouter-install-auth` skill for setup
+- Python 3.8+ with the OpenAI SDK plus `requests` (used to fetch exact per-request cost from the generation endpoint); `sqlite3` (stdlib) backs the analytics database
+- `curl` and `jq` for the Credit Balance Monitoring one-liner
+- `HTTP-Referer` / `X-Title` headers set on the client if you also want OpenRouter dashboard attribution
+
+## Instructions
+
+1. Route completions through `tracked_completion` (Collect Per-Request Metrics) — it times each call, then fetches the exact `total_cost` from `GET /api/v1/generation?id=` and emits a JSON metric with tokens, latency, and `model_requested` vs `model_used`.
+2. Initialize `openrouter_analytics.db` with `init_analytics_db` (Analytics Database) and persist every metric via `store_metric` — the `generation_id` unique constraint plus `INSERT OR IGNORE` deduplicates retries.
+3. Query the store with the Analytics Queries: daily cost summary, cost by model, top users by spend, hourly request pattern, and 30-day cost trend.
+4. Watch remaining credits with the Credit Balance Monitoring snippet — curl + jq against `/api/v1/auth/key` reports `credits_used`, `credit_limit`, and `remaining`.
+5. Generate the Weekly Report Generator output for stakeholders (totals plus top 5 models by cost).
+6. Apply the retention and alerting policies from Enterprise Considerations (aggregate raw rows after 30 days, alert when daily cost exceeds 2x the historical average).
 
 ## Collect Per-Request Metrics
 
@@ -210,6 +226,28 @@ Top Models by Cost:
 
     return report
 ```
+
+## Output
+
+- A JSON-logged metric per request: timestamp, `generation_id`, `model_requested` vs `model_used`, prompt/completion tokens, exact `total_cost`, `latency_ms`, and `user_id`
+- An `openrouter_analytics.db` sqlite store with an indexed `metrics` table ready for the daily/model/user/hourly queries
+- A credit-status JSON from the curl + jq snippet: `credits_used`, `credit_limit`, and `remaining`
+- A weekly text report with request count, total cost, average latency, total tokens, avg cost/request, and the top 5 models by cost
+
+## Examples
+
+Track a single call and read the captured metric:
+
+```python
+response, metric = tracked_completion(
+    [{"role": "user", "content": "Summarize HTTP/2 in one line"}],
+    model="openai/gpt-4o-mini", user_id="alice", max_tokens=60,
+)
+print(metric["model_used"], metric["total_cost"], metric["latency_ms"])
+# openai/gpt-4o-mini 8.4e-05 912.3
+```
+
+After a week of stored metrics, `print(weekly_report(conn))` renders the `=== OpenRouter Weekly Report ===` block with totals and top models. More worked examples: `references/examples.md`.
 
 ## Error Handling
 
