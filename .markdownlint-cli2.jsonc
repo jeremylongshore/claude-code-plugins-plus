@@ -87,7 +87,8 @@
     "CHANGELOG.md",
     "AGENTS.md",
     "RELEASING.md",
-    "SECURITY.md"
+    "SECURITY.md",
+    "STANDARDS.md"
   ],
   "ignores": [
     "node_modules/**",
