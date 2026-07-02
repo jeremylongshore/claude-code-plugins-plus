@@ -339,3 +339,19 @@ npm surface only).
 | `claude-uezf.33` | vercel | one-pagers | Vercel Pack: Generate one-pagers for all 30 skills |
 
 _Generated from the wave-start snapshot of .beads/issues.jsonl; 260 beads._
+
+## Post-close verification (addendum, 2026-07-02)
+
+- **Full-set check:** 260/260 closed, 0 unclosed, verified per-bead against the re-exported
+  `issues.jsonl` (one `bd export` flush after every write batch).
+- **Ordering:** the initial one-at-a-time loop hit dependency-refused closes (one-pagers and
+  final-validation beads are dep-blocked by their build-skill siblings; epics by their
+  children). Re-run as ordered batches — children → one-pagers → epics — after which every
+  close landed clean. No `--force` was needed: all blockers were in-tree and closed first.
+- **Stratified sample audit:** 27 sampled (3 per pack, random): 26 PASS on
+  status+disk+reason-evidence; 1 evidence-string artifact (the duplicate-class close reason
+  did not name its pack — amended to cite the duplicate target bead explicitly; the sentry
+  pack was then fully reverified: its earlier build closes carry per-PR evidence, e.g.
+  "Built sentry-load-scale → PR #416").
+- **Database effect:** claude-code-plugins open count 487 → 230. Survivors: the supersession
+  epic, its 2 needs-human decision beads, and the 8 carve-outs.
