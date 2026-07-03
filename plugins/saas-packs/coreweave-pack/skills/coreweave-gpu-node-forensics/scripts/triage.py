@@ -281,10 +281,14 @@ def apply_remap_override(base: dict, pending: bool | None, remap_failure: bool |
     - Remapping Failure Occurred: Yes  -> terminal, RMA (overrides any base).
     - Pending: Yes (no failure)         -> reset-gpu (the remap applies on reset).
     Anything else leaves the base verdict untouched.
+
+    An override builds a FRESH verdict, so it must carry forward the forensic
+    context the base accumulated — the co-occurring Xids and any [unverified]
+    hedges — rather than silently dropping them.
     """
     xid = base.get("xid")
     if remap_failure:
-        return _verdict(
+        v = _verdict(
             xid=xid,
             classification="ECC row-remapper FAILURE (terminal)",
             severity="critical",
@@ -296,8 +300,8 @@ def apply_remap_override(base: dict, pending: bool | None, remap_failure: bool |
             ),
             next_command="Cordon + drain the node and open a CoreWeave RMA for the GPU.",
         )
-    if pending:
-        return _verdict(
+    elif pending:
+        v = _verdict(
             xid=xid,
             classification="ECC row-remap PENDING (routine)",
             severity="high",
@@ -309,7 +313,19 @@ def apply_remap_override(base: dict, pending: bool | None, remap_failure: bool |
             ),
             next_command="Drain the GPU and reset it (nvidia-smi -r or node reset) to apply the pending remap.",
         )
-    return base
+    else:
+        return base
+
+    # The override verdict is fresh — carry forward the base's forensic context
+    # so a remap-driven RMA/reset still shows the ALSO-SEEN co-occurring Xids and
+    # preserves the base's [unverified] hedges.
+    if base.get("co_occurring_xids"):
+        v["co_occurring_xids"] = base["co_occurring_xids"]
+    base_hedges = base.get("unverified") or []
+    if base_hedges:
+        # union, dedup — do NOT double-append _verdict's own standard hedges
+        v["unverified"] = list(dict.fromkeys([*base_hedges, *v.get("unverified", [])]))
+    return v
 
 
 # ---------------------------------------------------------------------------
@@ -317,7 +333,7 @@ def apply_remap_override(base: dict, pending: bool | None, remap_failure: bool |
 # pasted dmesg / nvidia-smi dump.
 # ---------------------------------------------------------------------------
 # Matches:  "NVRM: Xid (PCI:0000:3b:00): 79, pid=..."  and  "[Xid 48]"  and  "Xid: 94"
-_XID_RE = re.compile(r"Xid\s*(?:\([^)]*\))?\s*[:,]?\s*(\d{1,3})\b")
+_XID_RE = re.compile(r"Xid\s*(?:\([^)]*\))?\s*[:,]?\s*(\d{1,4})\b")
 _REMAP_FAIL_RE = re.compile(r"Remapping\s+Failure\s+Occurred\s*:\s*(Yes|No)", re.IGNORECASE)
 _PENDING_RE = re.compile(r"\bPending\s*:\s*(Yes|No)", re.IGNORECASE)
 _THERMAL_RE = re.compile(r"(HW|SW)\s+Thermal\s+Slowdown\s*:\s*Active", re.IGNORECASE)
@@ -499,6 +515,52 @@ def _run_self_test() -> int:
         else:
             failed += 1
         print(f"[{status}] {label}: expected={expected} got={got}{note}")
+
+    # ---- context-preservation checks for the remap override ----------------
+    # A remap override builds a FRESH verdict; it must still carry forward the
+    # base verdict's forensic context — co-occurring Xids AND [unverified]
+    # hedges — deduping against _verdict's own standard hedges.
+    ctx_checks = []
+
+    # remap FAILURE (-> RMA): preserve co-occurring Xids + base hedges, and dedup
+    # against _verdict's own standard RMA hedge (seeded into the base to prove it).
+    base_fail = classify_xid(48)
+    base_fail["co_occurring_xids"] = [79, 94]
+    base_fail["unverified"] = ["[unverified] base-only forensic hedge", UNVERIFIED_RMA_THRESHOLD]
+    v_fail = apply_remap_override(base_fail, pending=None, remap_failure=True)
+    ctx_checks.append(
+        (
+            "remap-failure override preserves co_occurring_xids + base hedge (no dupes)",
+            v_fail.get("action") == "rma"
+            and v_fail.get("co_occurring_xids") == [79, 94]
+            and "[unverified] base-only forensic hedge" in v_fail.get("unverified", [])
+            and UNVERIFIED_RMA_THRESHOLD in v_fail.get("unverified", [])
+            and len(v_fail.get("unverified", [])) == len(set(v_fail.get("unverified", []))),
+        )
+    )
+
+    # pending (-> reset-gpu): likewise preserve the base's forensic context.
+    base_pending = classify_xid(48)
+    base_pending["co_occurring_xids"] = [92]
+    base_pending["unverified"] = ["[unverified] base-only pending hedge"]
+    v_pending = apply_remap_override(base_pending, pending=True, remap_failure=False)
+    ctx_checks.append(
+        (
+            "pending override preserves co_occurring_xids + base hedge (no dupes)",
+            v_pending.get("action") == "reset-gpu"
+            and v_pending.get("co_occurring_xids") == [92]
+            and "[unverified] base-only pending hedge" in v_pending.get("unverified", [])
+            and len(v_pending.get("unverified", [])) == len(set(v_pending.get("unverified", []))),
+        )
+    )
+
+    for label, ok in ctx_checks:
+        status = "PASS" if ok else "FAIL"
+        if ok:
+            passed += 1
+        else:
+            failed += 1
+        print(f"[{status}] {label}")
 
     print(f"\nself-test: {passed} passed, {failed} failed")
     return 0 if failed == 0 else 1
