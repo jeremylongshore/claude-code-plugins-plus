@@ -1,7 +1,7 @@
 {
   "name": "coreweave-pack",
-  "version": "1.3.0",
-  "description": "Claude Code skill pack for CoreWeave (22 skills). Community-contributed; not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.",
+  "version": "1.4.0",
+  "description": "Claude Code skill pack for CoreWeave (23 skills). Community-contributed; not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
