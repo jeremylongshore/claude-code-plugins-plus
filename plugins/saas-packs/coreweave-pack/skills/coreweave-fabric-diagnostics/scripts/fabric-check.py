@@ -165,7 +165,7 @@ def diagnose(text: str) -> dict:
             missing.append("`NCCL_IB_HCA` not set (e.g. `ibp`) -- unless the MPI Operator manages it")
         if not have_ifname:
             missing.append("`NCCL_SOCKET_IFNAME` not set (e.g. `eth0`) -- unless the MPI Operator manages it")
-    if re.search(r"nccl_ib_disable\s*[:=]\s*\"?1", low):
+    if re.search(r"nccl_ib_disable\s*[:=]\s*['\"]?1\b", low):
         missing.append("`NCCL_IB_DISABLE=1` is forcing the socket fallback -- set it to 0")
 
     degraded: list[str] = list(ib_notes)
@@ -303,6 +303,27 @@ CA 'ibp0'
         Physical state: Polling
 """
 
+# NCCL_IB_DISABLE set via a SINGLE-quoted value -- the shape the old `\"?1` pattern missed.
+NCCL_IB_DISABLE_ON = """\
+export NCCL_IB_HCA=ibp
+export NCCL_SOCKET_IFNAME=eth0
+export NCCL_IB_DISABLE='1'
+"""
+
+# NCCL_IB_DISABLE explicitly off -- the finding must NOT fire.
+NCCL_IB_DISABLE_OFF = """\
+export NCCL_IB_HCA=ibp
+export NCCL_SOCKET_IFNAME=eth0
+export NCCL_IB_DISABLE=0
+"""
+
+# A value whose first digit is 1 but is not a literal 1 -- the trailing \\b must reject it.
+NCCL_IB_DISABLE_LOOKALIKE = """\
+export NCCL_IB_HCA=ibp
+export NCCL_SOCKET_IFNAME=eth0
+export NCCL_IB_DISABLE=16
+"""
+
 
 def self_test() -> int:
     # Fixture 1: a NET/Socket log -> "on TCP, fallback".
@@ -328,6 +349,17 @@ def self_test() -> int:
     # Bonus: ibstat down port surfaces as a degraded signal.
     d = diagnose(NET_IB_LOG + IBSTAT_DOWN)
     assert d["degraded_signals"], d
+
+    # Regression: a SINGLE-quoted NCCL_IB_DISABLE='1' must raise the socket-fallback
+    # finding (the old `\"?1` pattern only caught double-quoted / bare 1).
+    e = diagnose(NCCL_IB_DISABLE_ON)
+    assert any("forcing the socket fallback" in m for m in e["missing_conditions"]), e
+    # ...and NCCL_IB_DISABLE=0 must NOT raise it.
+    f = diagnose(NCCL_IB_DISABLE_OFF)
+    assert not any("forcing the socket fallback" in m for m in f["missing_conditions"]), f
+    # ...and a 1-prefixed lookalike (16) must NOT false-trigger -- the trailing \b guards it.
+    g = diagnose(NCCL_IB_DISABLE_LOOKALIKE)
+    assert not any("forcing the socket fallback" in m for m in g["missing_conditions"]), g
 
     # Bonus: no bandwidth constant is baked in -- the module source cites no GB/s literal
     # as a baseline (only the [unverified vs baseline] echo path).
