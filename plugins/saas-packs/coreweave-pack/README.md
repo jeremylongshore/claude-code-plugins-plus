@@ -2,7 +2,7 @@
 
 > **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
 
-20 production-grade Claude Code skills for GPU cloud computing with CoreWeave Kubernetes Service.
+21 production-grade Claude Code skills for GPU cloud computing with CoreWeave Kubernetes Service.
 
 ## What Is CoreWeave?
 
@@ -70,6 +70,7 @@ This skill pack provides real kubectl commands, YAML manifests, and Python patte
 | `coreweave-incident-runbook` | GPU workload failure triage and remediation |
 | `coreweave-data-handling` | PVC storage classes, model downloading, dataset management |
 | `coreweave-enterprise-rbac` | Namespace isolation, GPU quotas per team, role bindings |
+| `coreweave-gpu-cost-leak-hunter` | Find GPU cost leaks from PromQL usage (no billing API) and emit a dollar-ranked CFO report |
 
 ## Quick Start
 
