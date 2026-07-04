@@ -30,3 +30,10 @@ This repo is the **Tons of Skills** marketplace for Claude Code plugins and skil
 ## Related repos (multi-repo context)
 
 This repo depends on **`@intentsolutions/core`** (the authoring-schema kernel SSoT — a separate package/repo) and deploys to tonsofskills.com via the **intentsolutions-vps-runbook** repo. Greptile's current config schema does not expose a multi-repo `patternRepositories` key, so these are noted here for reviewer context rather than wired into `config.json`.
+
+## Reviewing a `sources.yaml` entry
+
+A `sources.yaml` entry is a **pointer** to an external repo, not the plugin, and it is validated at **sync time, not PR time**: the weekly `sync-external.mjs --strict` clones the upstream and runs it through `scripts/validate-skills-schema.py` before mirroring into `plugins/community/`.
+
+- **Review the entry's schema** (`name`, `description`, `repo`, `source_path`, `target_path`, `include`/`exclude`, `license`, `category`) against the established format.
+- **Do NOT assert whether the upstream repo exists, is reachable, or has valid frontmatter from a web search.** Repo existence is time-sensitive (a repo can be created minutes after review) and non-deterministic; the `--strict` clone and `validate-skills-schema.py` are the real gates. If you flag upstream risk, say "the sync will verify this at clone time," not "the repo does not exist."
