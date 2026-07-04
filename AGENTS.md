@@ -129,6 +129,15 @@ The decision record for this model is `000-docs/694-AT-DECR`; the earlier shared
 
 <!-- BEGIN BEADS INTEGRATION -->
 
+## Note to automated PR reviewers
+
+If you are an AI PR reviewer (Codex, Greptile, or similar), review against **this repo's specs**, not general priors or a web search:
+
+- **The deterministic gate is `scripts/validate-skills-schema.py`** plus the required CI checks. Ground any skill / plugin / agent frontmatter finding in the validator and `000-docs/SCHEMA_CHANGELOG.md` (the 8-field `ALWAYS_REQUIRED` set; at marketplace tier a missing required field is an ERROR, not a warning). If the validator would accept it, do not invent a frontmatter objection.
+- **A `sources.yaml` entry is a pointer**, validated at weekly-sync time by `sync-external.mjs --strict` plus the validator, not at PR time. Do **not** assert whether an upstream repo exists, is reachable, or has valid frontmatter from a web search; repo existence is time-sensitive and non-deterministic at review time. Phrase any upstream risk as "the sync will verify at clone time," never "the repo does not exist."
+- **Defer style** (naming, formatting, import order) to eslint / prettier / ruff / markdownlint / shellcheck. Prioritize correctness, security, and gate integrity.
+- **Never suggest weakening a gate** (a threshold, test, assertion, security check, or required field) unless the same PR replaces it with a stronger equivalent. See `CLAUDE.md` and `.greptile/rules.md`.
+
 ## Issue Tracking with bd (beads)
 
 **IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
