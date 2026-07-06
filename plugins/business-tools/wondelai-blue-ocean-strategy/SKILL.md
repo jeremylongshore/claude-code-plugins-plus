@@ -1,10 +1,10 @@
 ---
 name: blue-ocean-strategy
-description: 'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions "blue ocean", "red ocean", "strategy canvas", "ERRC framework", "value innovation", "non-customers", "buyer utility map", "eliminate-reduce-raise-create", or "uncontested market". Also trigger when comparing pricing strategies, exploring new market categories, finding underserved customer segments, or asking how to stop competing on price. Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'
+description: 'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions "blue ocean", "red ocean", "strategy canvas", "ERRC framework", "value innovation", "non-customers", "buyer utility map", "the market is too crowded", "how do we stand out", or "escape the price war". Also trigger when exploring a new market category, or finding underserved or non-customers. Covers the Four Actions Framework, Six Paths, buyer utility map, and value-cost trade-offs. For real strategy formulation and bad-strategy detection, see good-strategy-bad-strategy. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.1"
 ---
 
 # Blue Ocean Strategy Framework
@@ -17,7 +17,14 @@ Strategic framework for creating uncontested market space that makes the competi
 
 ## Scoring
 
-**Goal: 10/10.** Rate any business strategy or value proposition 0-10 against blue ocean principles: clear value innovation, elimination of unnecessary factors, and creation of new demand. Report the current score and the specific moves needed to reach 10/10; low scores mean competing in a red ocean.
+**Goal: 10/10.** Score a strategy by how many of the five Quick Diagnostic rows it satisfies, mapped to the bands below:
+
+- **9-10** — divergent strategy-canvas curve, eliminates AND creates factors, breaks the value-cost trade-off, converts non-customers, and delivers a 10x utility leap (all 5 rows).
+- **7-8** — value innovation is real but one gate is weak (e.g. strong divergence and cost cuts, but still chasing existing customers rather than non-customers).
+- **5-6** — differentiation without cost cuts, or cost cuts without a value leap: better than rivals on the same factors, not yet value innovation (2-3 rows).
+- **<=3** — competes on the same factors as rivals with a look-alike canvas curve: a red ocean (0-1 rows).
+
+Report the current score, which diagnostic rows fail, and the specific ERRC/Six-Paths moves needed to reach 10/10.
 
 ## Framework
 
@@ -35,13 +42,11 @@ Strategic framework for creating uncontested market space that makes the competi
 
 **Examples:** Airlines competing on routes, amenities, and price are red ocean; Cirque du Soleil inventing a new entertainment form, Netflix replacing rental with streaming, and Nintendo Wii trading graphics power for accessible motion gaming are blue.
 
-See: [references/blue-ocean-examples.md](references/blue-ocean-examples.md) for detailed case studies.
+See [references/blue-ocean-examples.md](references/blue-ocean-examples.md) when you want a full worked case to model a move on — Cirque du Soleil, Netflix, Yellow Tail, and Nintendo Wii broken down factor by factor.
 
 ### 2. Value Innovation
 
-**Core concept:** The cornerstone of blue ocean strategy — pursue differentiation and low cost simultaneously, creating a leap in value for buyers and the company (Value Innovation = Utility × Price × Cost).
-
-**Why it works:** Eliminating and reducing over-served factors cuts costs at the same time that raising and creating factors lifts buyer value — value rises more than cost, breaking the trade-off competitors assume is fixed.
+**Core concept:** The cornerstone of blue ocean strategy — pursue differentiation and low cost simultaneously, creating a leap in value for buyers and the company. Eliminating and reducing over-served factors cuts cost at the same time raising and creating factors lifts buyer value, so value rises faster than cost and the trade-off competitors assume is fixed breaks.
 
 | Traditional View | Value Innovation View |
 |-----------------|---------------------|
@@ -51,7 +56,7 @@ See: [references/blue-ocean-examples.md](references/blue-ocean-examples.md) for 
 
 **Example — Cirque du Soleil:** eliminated animal shows, star performers, multiple arenas (cost down); reduced thrill and humor; raised venue quality, artistic music and dance; created theme, refined environment, multiple productions. Outcome: priced above circus, costs below theater, a new market.
 
-See: [references/value-innovation.md](references/value-innovation.md) for value innovation frameworks.
+See [references/value-innovation.md](references/value-innovation.md) when testing whether an idea is genuine value innovation — the Utility x Price x Cost formula with all three terms and the test questions for each.
 
 ### 3. Strategy Canvas
 
@@ -73,7 +78,7 @@ See: [references/value-innovation.md](references/value-innovation.md) for value 
 
 **Result:** A different curve = blue ocean.
 
-See: [references/strategy-canvas.md](references/strategy-canvas.md) for templates and examples.
+See [references/strategy-canvas.md](references/strategy-canvas.md) when plotting your own canvas — a blank template and step-by-step build instructions.
 
 ### 4. Four Actions Framework (ERRC Grid)
 
@@ -86,11 +91,9 @@ See: [references/strategy-canvas.md](references/strategy-canvas.md) for template
 | **Raise** | What should go well above industry standard? | Cirque: artistic value; Dyson: suction, design; Apple: UX | Value up; hard to match |
 | **Create** | What has the industry never offered? | Netflix: unlimited streaming, no late fees; Uber: live tracking, cashless payment | New demand; attracts non-customers |
 
-**Net result:** value increases more than cost — value innovation.
-
 **Ethical boundary:** Don't eliminate factors buyers truly value (especially safety or accessibility) — test assumptions before cutting.
 
-See: [references/errc-grid.md](references/errc-grid.md) for ERRC templates and exercises.
+See [references/errc-grid.md](references/errc-grid.md) when running the exercise with a team — a 3.5-hour workshop format, validation checklists, and fresh ERRC matrices for Zoom, IKEA, MinuteClinic, and Khan Academy.
 
 ### 5. Six Paths Framework
 
@@ -105,7 +108,7 @@ See: [references/errc-grid.md](references/errc-grid.md) for ERRC templates and e
 | **5. Functional ↔ emotional appeal** | Flip the industry's basis of appeal | Swatch: watches as fashion; The Body Shop: cosmetics as ethics | Identify current appeal → build the hybrid |
 | **6. Time** | Irreversible trends | iPod/iTunes anticipating digital music; Tesla on EVs | Project the trend's endpoint → build for it today |
 
-See: [references/six-paths.md](references/six-paths.md) for detailed path exercises.
+See [references/six-paths.md](references/six-paths.md) when hunting for opportunities path by path — the prompting questions and a worked example for each of the six.
 
 ### 6. Three Tiers of Non-Customers
 
@@ -119,7 +122,7 @@ See: [references/six-paths.md](references/six-paths.md) for detailed path exerci
 
 **Process:** map all three tiers → find commonalities across tiers → identify what would unlock massive demand → build the offering to convert them.
 
-See: [references/non-customers.md](references/non-customers.md) for non-customer analysis frameworks.
+See [references/non-customers.md](references/non-customers.md) when sizing latent demand — how to map each of the three tiers and find the commonalities that unlock them.
 
 ### 7. Strategic Sequence: Utility → Price → Cost → Adoption
 
@@ -134,7 +137,7 @@ See: [references/non-customers.md](references/non-customers.md) for non-customer
 
 **Ethical boundary:** Win adoption by genuinely addressing stakeholder concerns, not by steamrolling the employees and partners who bear the costs of the shift.
 
-See: [references/sequence.md](references/sequence.md) for sequence templates; [references/implementation.md](references/implementation.md) for execution and organizational alignment.
+See [references/sequence.md](references/sequence.md) when validating an idea gate by gate — the buyer-utility map, strategic-pricing corridor, and target-costing worksheet. See [references/implementation.md](references/implementation.md) when moving from idea to rollout — overcoming the four organizational hurdles and aligning the team behind the shift.
 
 ## Common Mistakes
 
@@ -155,17 +158,6 @@ See: [references/sequence.md](references/sequence.md) for sequence templates; [r
 | Are we breaking the value-cost trade-off? | Traditional competition | Identify over-served factors to cut |
 | Are we converting non-customers? | Fighting for existing share | Map the three tiers of non-customers |
 | Is there a leap in buyer utility? | Incremental improvement | Aim for 10x on key utility levers |
-
-## Reference Files
-
-- [blue-ocean-examples.md](references/blue-ocean-examples.md): Cirque du Soleil, Netflix, Yellow Tail, Nintendo Wii case studies
-- [value-innovation.md](references/value-innovation.md): Value innovation frameworks and formulas
-- [strategy-canvas.md](references/strategy-canvas.md): Templates, examples, how to create
-- [errc-grid.md](references/errc-grid.md): Four Actions Framework exercises and templates
-- [six-paths.md](references/six-paths.md): Detailed exercises for each path
-- [non-customers.md](references/non-customers.md): Three-tier analysis frameworks
-- [sequence.md](references/sequence.md): Utility, price, cost, adoption templates
-- [implementation.md](references/implementation.md): Execution, organizational alignment
 
 ## Further Reading
 

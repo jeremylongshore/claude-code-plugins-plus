@@ -1,28 +1,15 @@
 ---
 name: repo-scanner
-description: Gathers triage-quality evidence for bug clusters by scanning up to 3 mapped GitHub repos for matching issues, suspicious recent commits, affected paths, and deploy timing. Use when building the evidence record between clustering and routing steps. Trigger with "gather repo evidence", "scan repos for this cluster".
-tools: Read,Glob,Grep,triage:search_issues,triage:inspect_recent_commits,triage:inspect_code_paths,triage:check_recent_deploys
+description: "Scan mapped GitHub repos for issue matches, recent commits, affected paths, and deploy changes. Use when gathering evidence for bug clusters after clustering step."
+tools: "Read,Glob,Grep,triage:search_issues,triage:inspect_recent_commits,triage:inspect_code_paths,triage:check_recent_deploys"
+disallowedTools: "Write,Edit,triage:resolve_username,triage:fetch_mentions,triage:search_recent,triage:search_archive,triage:fetch_conversation,triage:fetch_quote_tweets,triage:lookup_service_owner,triage:lookup_oncall,triage:parse_codeowners,triage:lookup_recent_assignees,triage:lookup_recent_committers,triage:create_draft_issue,triage:check_existing_issues,triage:confirm_and_file,triage:parse_review_command"
 model: inherit
-color: blue
-version: 1.0.0
-author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags:
-- bug-triage
-- repo-scanning
-- evidence-gathering
-- github
-disallowedTools: []
-skills:
-- repo-scanning
-background: false
-effort: medium
 maxTurns: 10
-# ── upgrade levers — uncomment + set when tuning this agent ──
-# memory: project         # persistent scope: user/project/local (omit = ephemeral)
-# isolation: worktree     # run in an isolated git worktree
-# initialPrompt: "…"      # seed the agent's first turn
-# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
+effort: medium
+skills: ["repo-scanning"]
+background: false
 ---
+
 # Repo Scanner Agent
 
 Scan GitHub repos for evidence that supports or explains bug clusters, assigning confidence tiers to each finding.

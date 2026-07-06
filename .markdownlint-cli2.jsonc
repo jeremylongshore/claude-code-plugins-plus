@@ -139,6 +139,7 @@
     "plugins/community/ejentum-reasoning/**",
     "plugins/community/gastown/**",
     "plugins/community/hermes-tweet/**",
+    "plugins/community/mytradeledger-skills/**",
     "plugins/community/zai-cli/**",
     "plugins/crypto/aomi/**",
     "plugins/design/wondelai-design-everyday-things/**",

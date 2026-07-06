@@ -13,7 +13,10 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, statSyn
 import { chmod, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { basename, join, resolve, sep } from 'node:path'
 import { z } from 'zod'
-import { DEFAULT_PEER_BOT_RATE_LIMIT } from './peer-bot-rate-limit.ts'
+import {
+  DEFAULT_CHANNEL_CIRCUIT_BREAKER,
+  DEFAULT_PEER_BOT_RATE_LIMIT,
+} from './peer-bot-rate-limit.ts'
 
 // ---------------------------------------------------------------------------
 // Constants (re-exported so server.ts and tests share the same values)
@@ -77,6 +80,20 @@ export interface ChannelPolicy {
    *  applies (10 msgs in 60s). Set `{ count: 0, windowMs: 0 }` only
    *  to explicitly DISABLE the limit; default-on is intentional. */
   peerBotRateLimit?: { count: number; windowMs: number }
+  /** Channel-wide circuit breaker for N-cycle (A→B→C→A) peer-bot loops
+   *  (ccsc-0k7x2). The per-(channel, bot) `peerBotRateLimit` only breaks
+   *  PAIRWISE loops; a 3+-bot ring keeps each sender under its own cap, so
+   *  this aggregate counter trips the whole channel's bot traffic when total
+   *  peer-bot velocity is runaway-high. Absent →
+   *  DEFAULT_CHANNEL_CIRCUIT_BREAKER (40 msgs in 60s). Set
+   *  `{ count: 0, windowMs: 0 }` to DISABLE; default-on is intentional. */
+  channelCircuitBreaker?: { count: number; windowMs: number }
+  /** Per-user session isolation (ccsc-kl410). When true, each distinct sender
+   *  in this channel gets their own session within a shared thread — separate
+   *  state file + supervisor handle + ownerId — so two humans in one thread do
+   *  not share context/ownership. Absent or false → one shared session per
+   *  (channel, thread) (the default; behavior unchanged). */
+  perUserSessions?: boolean
 }
 
 export interface PendingEntry {
@@ -109,14 +126,29 @@ export interface Access {
 
 export type GateAction = 'deliver' | 'drop' | 'pair'
 
-/** Structured reason for a drop. Optional — only set by drop paths
- *  that benefit from operator-visible distinguishing. Self-echo and
- *  generic policy-miss drops omit it; rate-limit drops (ccsc-gyt)
- *  surface as `'rate.cross_bot_loop'` so an operator can grep the
- *  journal for runaway-loop incidents. */
+/** Structured reason for a drop. As of ccsc-apj.2 EVERY inbound gate
+ *  drop carries one, so an operator reading the journal can always tell
+ *  *why* Claude stayed silent (gate.inbound.drop records it — server.ts).
+ *  Grouped by the stage that produced the drop. */
 export type GateDropReason =
-  | 'rate.cross_bot_loop' // ccsc-gyt — peer-bot exceeded per-(channel, bot_id) sliding window
-  | 'admin.muted' // ccsc-gjm (future) — operator muted this peer bot in this channel
+  // -- bot-event stage (handleBotEvent) --
+  | 'self.echo' // dropped our own message (bot_id / app_id / botUserId match)
+  | 'bot.not_allowlisted' // peer bot not in the channel's allowBotIds
+  | 'admin.muted' // ccsc-gjm — operator muted this peer bot in this channel
+  | 'rate.cross_bot_loop' // ccsc-gyt — peer bot exceeded per-(channel, bot_id) sliding window
+  | 'rate.channel_cycle' // ccsc-0k7x2 — channel-wide peer-bot velocity tripped the circuit breaker (N-cycle ring)
+  | 'bot.permission_relay' // peer-bot message looked like a permission-approval relay
+  // -- top-level stage (gate) --
+  | 'subtype.filtered' // non-message subtype (message_changed, message_deleted, …) — see ccsc-apj.3
+  | 'event.no_user' // event carried no user id
+  // -- DM stage (handleDmEvent) --
+  | 'dm.policy_closed' // dmPolicy is 'allowlist'/'disabled' and sender not allowlisted
+  | 'dm.pairing_cap' // sender hit MAX_PAIRING_REPLIES for their pending code
+  | 'dm.pending_full' // MAX_PENDING pairing codes outstanding
+  // -- channel stage (handleChannelEvent) --
+  | 'channel.not_opted' // channel not opted in (no ChannelPolicy)
+  | 'channel.allowfrom_miss' // sender not in the channel's allowFrom
+  | 'channel.require_mention' // requireMention channel, no mention, thread not engaged (ccsc-apj.1)
 
 export interface GateResult {
   action: GateAction
@@ -145,6 +177,13 @@ export interface SessionKey {
   /** Slack thread_ts, e.g. `1711000000.000100`. For top-level messages the
    *  supervisor uses the message `ts` as the thread value. */
   thread: string
+  /** Optional Slack user_id for per-user session isolation (ccsc-kl410). When a
+   *  channel sets `perUserSessions`, each distinct sender gets their own
+   *  session WITHIN a shared thread — a distinct supervisor `keyId` and a
+   *  distinct on-disk file (`sessions/<channel>/<userId>/<thread>.json`) — so
+   *  two humans talking in one thread don't share session state / ownerId.
+   *  Absent → the legacy shared per-(channel, thread) session. */
+  userId?: string
 }
 
 /** Schema version for a persisted Session file. Bumped on incompatible
@@ -223,6 +262,21 @@ export interface DeliveryObligation {
    *  was abandoned, never a silent black hole. Absent until the first failure;
    *  additive + optional so 2.1-era records and clean sends carry no field. */
   lastError?: string
+  /** ccsc-o7x.5 — file-upload obligation. When present, this obligation is a
+   *  durable FILE upload (`filesUploadV2`), NOT a text post: the send branches to
+   *  upload `upload.path` as `upload.filename` (with optional `upload.comment` as
+   *  the initial comment) and `payload` is unused. The send re-runs the outbound
+   *  file exfil guards on `upload.path` before EVERY upload (incl. poller
+   *  redelivery), because a file's bytes can change between record and redelivery
+   *  (ADR-002 addendum). Additive + optional, so text obligations and pre-o7x.5
+   *  records are unchanged. */
+  upload?: { path: string; filename: string; comment?: string }
+  /** ccsc-o7x.5 — Slack file id recorded AFTER a successful upload. A poller
+   *  redelivery of the same file obligation dedups by checking this file is still
+   *  shared in the thread (file shares carry no app `metadata`, so this recorded
+   *  id — plus a `(filename, size)` thread scan — is the dedup anchor). Absent
+   *  until the first successful upload. */
+  uploadedFileId?: string
 }
 
 /** How the delivery poller (ccsc-o7x.2.2) treats a failed send. `retryable`
@@ -296,6 +350,21 @@ export function extractSlackErrorCode(err: unknown): string | undefined {
   }
   if (typeof e.code === 'string' && e.code.length > 0) return e.code
   return undefined
+}
+
+/** Thrown when an outbound file fails the exfil guard (`assertSendable` denylist,
+ *  or a secret value in the content/filename) — ccsc-o7x.5. Lives in the kernel
+ *  (not `slack-delivery.ts`) so BOTH the inline durable file path AND the delivery
+ *  poller (`supervisor.ts` `drainOutbox`) can classify it as **non-retryable**
+ *  without a slack-delivery↔supervisor import cycle: a blocked file is marked
+ *  `dead`, never uploaded, never retried (its bytes won't pass on a retry, and
+ *  the agent must see the block). The guard impl journals `exfil.block` before
+ *  throwing this. */
+export class ExfilBlockedError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ExfilBlockedError'
+  }
 }
 
 /** Tunables for `computeBackoffMs`. */
@@ -456,6 +525,18 @@ export const SessionSchema = z
             // ccsc-o7x.2.2 — optional last-failure marker (Slack error code or
             // message). Optional so 2.1-era records validate under `.strict()`.
             lastError: z.string().optional(),
+            // ccsc-o7x.5 — optional file-upload descriptor + recorded file id.
+            // Optional so text obligations + pre-o7x.5 records validate under
+            // the outer `.strict()`.
+            upload: z
+              .object({
+                path: z.string(),
+                filename: z.string(),
+                comment: z.string().optional(),
+              })
+              .strict()
+              .optional(),
+            uploadedFileId: z.string().optional(),
           })
           .strict(),
       )
@@ -518,30 +599,39 @@ export function sessionPath(root: string, key: SessionKey): string {
   if (!isValidSessionComponent(key.thread)) {
     throw new Error(`sessionPath: invalid thread component: ${JSON.stringify(key.thread)}`)
   }
+  // ccsc-kl410 — per-user isolation adds a `userId` directory level. Validate
+  // it with the SAME component rule (no `.`/`..`, restricted charset) so it
+  // can never inject path traversal — the on-disk leaf becomes
+  // `sessions/<channel>/<userId>/<thread>.json`.
+  if (key.userId !== undefined && (key.userId === '' || !isValidSessionComponent(key.userId))) {
+    throw new Error(`sessionPath: invalid userId component: ${JSON.stringify(key.userId)}`)
+  }
 
   // Canonicalize the state root. Throws ENOENT if the caller did not
   // pre-create it — matches server.ts bootstrap which mkdirs STATE_DIR
   // before any session activity.
   const resolvedRoot = realpathSync.native(resolve(root))
 
-  // Rule 3: create sessions/<channel>/ at 0o700. mkdirSync(recursive)
-  // is idempotent; the mode applies only to newly created dirs, which
-  // is the doc's "on first use" semantic.
+  // Rule 3: create the session leaf dir at 0o700 — `sessions/<channel>/`
+  // (shared) or `sessions/<channel>/<userId>/` (per-user). mkdirSync(recursive)
+  // is idempotent; the mode applies only to newly created dirs, which is the
+  // doc's "on first use" semantic.
   const channelDir = join(resolvedRoot, 'sessions', key.channel)
-  mkdirSync(channelDir, { recursive: true, mode: 0o700 })
+  const leafDir = key.userId !== undefined ? join(channelDir, key.userId) : channelDir
+  mkdirSync(leafDir, { recursive: true, mode: 0o700 })
 
-  // Rule 2: realpath the (now-extant) per-channel dir and assert the
-  // state root is still a prefix. Catches symlink-based escape.
-  const resolvedChannelDir = realpathSync.native(channelDir)
-  if (!isUnderRoot(resolvedChannelDir, resolvedRoot)) {
+  // Rule 2: realpath the (now-extant) leaf dir and assert the state root is
+  // still a prefix. Catches symlink-based escape via channel OR userId.
+  const resolvedLeafDir = realpathSync.native(leafDir)
+  if (!isUnderRoot(resolvedLeafDir, resolvedRoot)) {
     throw new Error(
-      `sessionPath: resolved channel dir escapes state root (channel=${JSON.stringify(
+      `sessionPath: resolved session dir escapes state root (channel=${JSON.stringify(
         key.channel,
-      )})`,
+      )}, userId=${JSON.stringify(key.userId)})`,
     )
   }
 
-  return join(resolvedChannelDir, `${key.thread}.json`)
+  return join(resolvedLeafDir, `${key.thread}.json`)
 }
 
 /** Atomic writer for session files.
@@ -1635,6 +1725,21 @@ export interface GateOptions {
    *  tests can use a deterministic Date.now(). Defaults to wall
    *  clock. */
   now?: () => number
+  /** Session-thread keys — `deliveredThreadKey(channel, thread_ts ?? ts)` —
+   *  for threads that have already delivered an inbound message this
+   *  process, i.e. threads a HUMAN has "engaged" by mentioning the bot at
+   *  least once (ccsc-apj.1). On a `requireMention` channel, a human
+   *  message in an already-engaged thread is delivered WITHOUT a fresh
+   *  mention ("mention once, then converse"). Keyed by the SESSION thread
+   *  (`thread_ts ?? ts`), NOT the raw `thread_ts`, so a top-level mention
+   *  and its in-thread follow-ups resolve to the same slot — this is why it
+   *  is a distinct set from the outbound `deliveredThreads` (which is keyed
+   *  by raw `thread_ts` for the cross-thread leak guard). Peer bots
+   *  (`ev.bot_id`) are NEVER sticky — they must mention every message,
+   *  which keeps the loop/noise risk bounded (the peer-bot rate limiter is
+   *  the backstop). Absent (tests / no wiring) → no thread is engaged, so
+   *  `requireMention` behaves exactly as before. */
+  engagedThreads?: ReadonlySet<string>
 }
 
 /**
@@ -1654,7 +1759,7 @@ function handleBotEvent(ev: Record<string, unknown>, opts: GateOptions): GateRes
     (opts.selfBotId && ev.bot_id === opts.selfBotId) ||
     (opts.selfAppId && botProfile.app_id === opts.selfAppId) ||
     (ev.user && ev.user === opts.botUserId)
-  if (isSelfEcho) return { action: 'drop' }
+  if (isSelfEcho) return { action: 'drop', dropReason: 'self.echo' }
 
   // Per-channel opt-in: only deliver if the channel explicitly lists this
   // bot's user ID in allowBotIds. No allowBotIds = all bots dropped.
@@ -1662,7 +1767,7 @@ function handleBotEvent(ev: Record<string, unknown>, opts: GateOptions): GateRes
   const policy = opts.access.channels[channel]
   const botUser = ev.user as string | undefined
   if (!policy?.allowBotIds?.length || !botUser || !policy.allowBotIds.includes(botUser)) {
-    return { action: 'drop' }
+    return { action: 'drop', dropReason: 'bot.not_allowlisted' }
   }
 
   // ccsc-gjm — operator-initiated mute. Check the mute store BEFORE
@@ -1700,12 +1805,28 @@ function handleBotEvent(ev: Record<string, unknown>, opts: GateOptions): GateRes
     }
   }
 
+  // ccsc-0k7x2 — channel-wide circuit breaker for N-cycle (A→B→C→A) rings.
+  // The per-(channel, bot) check above only breaks PAIRWISE loops; a 3+-bot
+  // ring keeps each sender under its own cap, so it slips through. This
+  // aggregate counter trips the whole channel's peer-bot traffic when total
+  // velocity is runaway-high. Default-on at DEFAULT_CHANNEL_CIRCUIT_BREAKER
+  // (40 msgs in 60s); { count: 0, windowMs: 0 } disables.
+  if (opts.peerBotRateLimitStore !== undefined) {
+    const breaker = policy.channelCircuitBreaker ?? DEFAULT_CHANNEL_CIRCUIT_BREAKER
+    if (breaker.count > 0 && breaker.windowMs > 0) {
+      const now = opts.now !== undefined ? opts.now() : Date.now()
+      if (!opts.peerBotRateLimitStore.checkChannel(channel, now, breaker)) {
+        return { action: 'drop', dropReason: 'rate.channel_cycle' }
+      }
+    }
+  }
+
   // Belt-and-suspenders: drop peer-bot messages that look like permission
   // relay replies. The global allowFrom check at server.ts already blocks
   // peer bots from approving tool calls, but this gate-level check prevents
   // regression if that guard is ever loosened.
   const text = ((ev.text as string) || '').trim()
-  if (PERMISSION_REPLY_RE.test(text)) return { action: 'drop' }
+  if (PERMISSION_REPLY_RE.test(text)) return { action: 'drop', dropReason: 'bot.permission_relay' }
 
   // Fall through to normal access-control checks (subtype, allowFrom,
   // requireMention). The channel policy's allowFrom and requireMention
@@ -1725,7 +1846,7 @@ async function handleDmEvent(ev: Record<string, unknown>, opts: GateOptions): Pr
     return { action: 'deliver', access }
   }
   if (access.dmPolicy === 'allowlist' || access.dmPolicy === 'disabled') {
-    return { action: 'drop' }
+    return { action: 'drop', dropReason: 'dm.policy_closed' }
   }
 
   // Pairing mode — check if there's already a pending code for this user
@@ -1736,13 +1857,13 @@ async function handleDmEvent(ev: Record<string, unknown>, opts: GateOptions): Pr
         if (!staticMode) saveAccess(access)
         return { action: 'pair', code, isResend: true }
       }
-      return { action: 'drop' } // Hit reply cap
+      return { action: 'drop', dropReason: 'dm.pairing_cap' } // Hit reply cap
     }
   }
 
   // Cap total pending
   if (Object.keys(access.pending).length >= MAX_PENDING) {
-    return { action: 'drop' }
+    return { action: 'drop', dropReason: 'dm.pending_full' }
   }
 
   // Generate new pairing code
@@ -1766,14 +1887,29 @@ function handleChannelEvent(ev: Record<string, unknown>, opts: GateOptions): Gat
   const { access, botUserId } = opts
   const channel = ev.channel as string
   const policy = access.channels[channel]
-  if (!policy) return { action: 'drop' }
+  if (!policy) return { action: 'drop', dropReason: 'channel.not_opted' }
 
   if (policy.allowFrom.length > 0 && !policy.allowFrom.includes(ev.user as string)) {
-    return { action: 'drop' }
+    return { action: 'drop', dropReason: 'channel.allowfrom_miss' }
   }
 
   if (policy.requireMention && !isMentioned(ev, botUserId)) {
-    return { action: 'drop' }
+    // ccsc-apj.1 — thread-sticky engagement. Once a HUMAN has engaged a
+    // thread by mentioning the bot, subsequent human messages in that same
+    // thread are delivered without a fresh mention ("mention once, then
+    // converse"). The engaged set is keyed by the SESSION thread
+    // (thread_ts ?? ts) so a top-level mention (ts=T1) and its in-thread
+    // follow-ups (thread_ts=T1) resolve to the same slot. Peer bots
+    // (ev.bot_id) are NEVER sticky — they must mention every message, so
+    // the loop/noise risk stays bounded (the peer-bot rate limiter is the
+    // backstop). A mention is still required to OPEN a thread.
+    if (!ev.bot_id && opts.engagedThreads !== undefined) {
+      const threadTs = (ev.thread_ts as string | undefined) ?? (ev.ts as string | undefined)
+      if (opts.engagedThreads.has(deliveredThreadKey(channel, threadTs))) {
+        return { action: 'deliver', access }
+      }
+    }
+    return { action: 'drop', dropReason: 'channel.require_mention' }
   }
 
   return { action: 'deliver', access }
@@ -1789,10 +1925,12 @@ export async function gate(event: unknown, opts: GateOptions): Promise<GateResul
   }
 
   // 2. Drop non-message subtypes (message_changed, message_deleted, etc.)
-  if (ev.subtype && ev.subtype !== 'file_share') return { action: 'drop' }
+  if (ev.subtype && ev.subtype !== 'file_share') {
+    return { action: 'drop', dropReason: 'subtype.filtered' }
+  }
 
   // 3. No user ID = drop
-  if (!ev.user) return { action: 'drop' }
+  if (!ev.user) return { action: 'drop', dropReason: 'event.no_user' }
 
   // 4. DM handling
   if (ev.channel_type === 'im') return handleDmEvent(ev, opts)
@@ -1801,8 +1939,53 @@ export async function gate(event: unknown, opts: GateOptions): Promise<GateResul
   return handleChannelEvent(ev, opts)
 }
 
+/** True when `botUserId` is mentioned in a way that should ENGAGE the bot
+ *  (ccsc-apj.4). Prefers Slack's structured `blocks`: a real mention is a
+ *  `user` element whose `user_id` is the bot, sitting in a normal
+ *  rich-text section/list — NOT inside a code block
+ *  (`rich_text_preformatted`) or a blockquote (`rich_text_quote`), where a
+ *  `<@bot>` is being quoted/displayed, not addressed. When `blocks` are
+ *  present they are authoritative (no substring fallback) so a mention
+ *  buried in a code block cannot falsely engage on a requireMention
+ *  channel. When `blocks` are absent (minimal events), fall back to the
+ *  legacy raw-text substring check. */
+function richTextMentionsBot(blocks: unknown, botUserId: string): boolean {
+  // Recursive walk over the rich-text tree. A `user` node addressing the bot
+  // counts UNLESS it sits inside a code block (`rich_text_preformatted`) or a
+  // blockquote (`rich_text_quote`) — those subtrees are pruned so a quoted
+  // `<@bot>` cannot engage. Handles arbitrary nesting (sections, lists).
+  const walk = (node: unknown): boolean => {
+    if (Array.isArray(node)) {
+      for (const n of node) if (walk(n)) return true
+      return false
+    }
+    if (!node || typeof node !== 'object') return false
+    const o = node as Record<string, unknown>
+    if (o.type === 'user' && o.user_id === botUserId) return true
+    if (o.type === 'rich_text_preformatted' || o.type === 'rich_text_quote') return false
+    return walk(o.elements)
+  }
+  return walk(blocks)
+}
+
 function isMentioned(event: Record<string, unknown>, botUserId: string): boolean {
   if (!botUserId) return false
+  // The structured path is authoritative ONLY when the message actually carries
+  // a `rich_text` block — that is where Slack encodes code/quote containers, so
+  // we can distinguish an addressed mention from a quoted one and must NOT fall
+  // back to substring (which would re-match a `<@bot>` inside a code block).
+  // Messages with only LAYOUT blocks (Block Kit `section`/`context`, common for
+  // bots/integrations posting via the API) carry no rich_text, so they fall
+  // through to the substring check — otherwise a real peer-bot mention would be
+  // missed and multi-agent coordination (`allowBotIds`) would break.
+  const blocks = event.blocks
+  if (
+    Array.isArray(blocks) &&
+    blocks.some((b) => (b as Record<string, unknown> | null)?.type === 'rich_text')
+  ) {
+    return richTextMentionsBot(blocks, botUserId)
+  }
+  // Fallback: no blocks, or layout-only blocks → legacy raw-text substring check.
   const text = (event.text as string | undefined) || ''
   return text.includes(`<@${botUserId}>`)
 }

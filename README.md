@@ -124,7 +124,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
 | 🔌  | [API Development](#api-development)                |      26 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      19 |
+| 👥  | [Community](#community)                            |      20 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
@@ -133,7 +133,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🧩  | [MCP Servers](#mcp-servers)                        |      15 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      28 |
+| ✅  | [Productivity](#productivity)                      |      29 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -271,7 +271,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **19 plugins** · category slug: `community`
+👥 **20 plugins** · category slug: `community`
 
 | Plugin                   | Description                                                                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -292,6 +292,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `hermes-tweet`           | Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions                                                          |
 | `jeremy-firebase`        | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
 | `jeremy-firestore`       | Firestore database specialist for schema design, queries, and real-time sync                                                                |
+| `mytradeledger-skills`   | Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries (CRUD + bulk-import + P&L recompute), account…    |
 | `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
 | `zai-cli`                | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
 
@@ -517,7 +518,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **28 plugins** · category slug: `productivity`
+✅ **29 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -529,6 +530,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
 | `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
+| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |

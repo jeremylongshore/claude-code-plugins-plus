@@ -1,10 +1,10 @@
 ---
 name: contagious
-description: 'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions "go viral", "word of mouth", "shareable content", "social currency", "why people share", "viral loop", "referral program", or "organic growth". Also trigger when designing shareable features, crafting social media campaigns, or building products that spread through peer recommendation. Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'
+description: 'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions "go viral", "word of mouth", "shareable content", "social currency", "why people share", "referral program", "nobody is sharing it", or "make this spread". Also trigger when designing shareable features, crafting social campaigns, or building products that spread through peer recommendation. Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Word-of-Mouth & Virality Framework
@@ -15,9 +15,16 @@ A framework for engineering word-of-mouth and making products, ideas, and conten
 
 **Virality is not born — it is engineered.** Products spread because they were designed — consciously or not — to be shared. Only 7% of word-of-mouth happens online; the other 93% happens in offline conversations, so virality is about the psychology of sharing, not social media mechanics. Those psychological patterns are predictable and can be engineered into anything using the STEPPS framework.
 
+See: [references/word-of-mouth.md](references/word-of-mouth.md) when the brief over-indexes on social media — it makes the offline-vs-online case, lists conversation triggers, and gives a WOM measurement/audit method.
+
 ## Scoring
 
-**Goal: 10/10.** Rate any product, campaign, content, or feature 0-10 on how many STEPPS drivers it activates and how well. Report the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score each of the six STEPPS drivers (the six Quick Diagnostic rows) — **0** absent, **1** present but weak, **2** strong and deliberate — for a raw 0-12, then map: 11-12 -> 10, 9-10 -> 8-9, 6-8 -> 6-7, 3-5 -> 4-5, 0-2 -> <=3. Bands:
+- **9-10** — three or more drivers at strength 2, at least one of them Public or Social Currency (the self-propagating ones), and the brand survives the Trojan Horse test.
+- **6-8** — two drivers genuinely strong, but spread still leans on paid reach or product quality alone.
+- **<=5** — at most one weak driver; sharing is incidental, not engineered.
+
+Report the raw count, the mapped score, and the specific driver(s) to raise next to reach 10/10.
 
 ## STEPPS Overview
 
@@ -38,7 +45,7 @@ A framework for engineering word-of-mouth and making products, ideas, and conten
 
 **Core concept:** People share things that make them look good — smart, cool, in-the-know. Make people feel like insiders and they'll spread it to boost their own image.
 
-**Why it works:** Brands and information are social signals; people don't just share what they think — they share what makes them look good for thinking it.
+**Why it works:** Sharing is self-presentation — listeners infer the sharer's traits from what they pass on, so people curate shares the way they curate clothes. Mechanism: give the sharer a payoff in status or identity and you outsource your marketing to their ego.
 
 **Key insights:**
 - **Remarkability** — surprising, novel, or extreme things make the sharer seem interesting; "Did you know...?" is a powerful sharing trigger
@@ -61,7 +68,7 @@ A framework for engineering word-of-mouth and making products, ideas, and conten
 
 **Ethical boundary:** Create real insider value, not false scarcity or manufactured exclusivity that breeds toxicity.
 
-See: [references/social-currency.md](references/social-currency.md) for remarkability exercises and game mechanics design.
+See: [references/social-currency.md](references/social-currency.md) when a product feels unremarkable — it has the inner-remarkability exercise, game-mechanic design, exclusivity types, and a scored audit.
 
 ### 2. Triggers
 
@@ -90,7 +97,7 @@ See: [references/social-currency.md](references/social-currency.md) for remarkab
 
 **Ethical boundary:** Build genuine, helpful associations — hijacking sensitive contexts (grief, health scares) as triggers backfires.
 
-See: [references/triggers.md](references/triggers.md) for habitat analysis and trigger design frameworks.
+See: [references/triggers.md](references/triggers.md) when picking a cue to attach to — it has the habitat-analysis worksheet, the frequency matrix, and the 4-step trigger design process.
 
 ### 3. Emotion
 
@@ -119,13 +126,13 @@ See: [references/triggers.md](references/triggers.md) for habitat analysis and t
 
 **Ethical boundary:** Engineering outrage for clicks corrodes trust — use high-arousal negative emotion sparingly and only when the cause genuinely warrants it.
 
-See: [references/emotion.md](references/emotion.md) for emotional arousal mapping and content audit tools.
+See: [references/emotion.md](references/emotion.md) when content feels flat — it has the emotion-sharing matrix, awe-engineering techniques, and humor design rules.
 
 ### 4. Public
 
 **Core concept:** Built to show, built to grow. If people can see others using your product, they're more likely to adopt it — design for observability.
 
-**Why it works:** People imitate what they can see; invisible usage forfeits the most powerful adoption channel, social proof through observation.
+**Why it works:** Visible choices resolve uncertainty for the observer — seeing others use a product lowers their perceived risk and supplies social proof at zero marginal cost, so observability turns each user into a passive, continuous billboard.
 
 **Key insights:**
 - **Behavioral residue** — design visible traces that outlast use: a Livestrong wristband long outlives the donation
@@ -147,7 +154,7 @@ See: [references/emotion.md](references/emotion.md) for emotional arousal mappin
 
 **Ethical boundary:** Visibility must empower, never shame — users always control what becomes public, and private data (failures, health, finances) stays private.
 
-See: [references/public-visibility.md](references/public-visibility.md) for observability design and behavioral residue strategies.
+See: [references/public-visibility.md](references/public-visibility.md) when usage is invisible — it has the public-vs-private breakdown, the behavioral-residue design checklist, and the Apple-logo design lesson.
 
 ### 5. Practical Value
 
@@ -176,7 +183,7 @@ See: [references/public-visibility.md](references/public-visibility.md) for obse
 
 **Ethical boundary:** Value must be genuine — inflated "original" prices and clickbait life hacks destroy trust faster than they generate shares.
 
-See: [references/practical-value.md](references/practical-value.md) for Prospect Theory applications and knowledge packaging formats.
+See: [references/practical-value.md](references/practical-value.md) when framing a deal or packaging tips — it applies Prospect Theory, the Rule of 100 quick reference, and the knowledge-packaging hierarchy.
 
 ### 6. Stories
 
@@ -205,11 +212,11 @@ See: [references/practical-value.md](references/practical-value.md) for Prospect
 
 **Ethical boundary:** Stories must be true or clearly fictional — fabricated testimonials and invented origins eventually surface and poison future word-of-mouth.
 
-See: [references/stories-trojan-horse.md](references/stories-trojan-horse.md) for narrative templates and the Trojan Horse integration test.
+See: [references/stories-trojan-horse.md](references/stories-trojan-horse.md) when shaping the narrative — it has the brand-integration test and four story templates (demo, stunt, origin, customer-hero).
 
 ## Engineering Word of Mouth
 
-STEPPS principles compound when combined:
+STEPPS principles compound when combined. See: [references/case-studies.md](references/case-studies.md) for end-to-end STEPPS breakdowns (Blendtec, Barclay Prime, Kit Kat, Livestrong, Dove, Hotmail) when you need a worked precedent to model a campaign on.
 
 ### Product Launch
 
@@ -228,6 +235,8 @@ STEPPS principles compound when combined:
 | How-to guides | Practical Value | Triggers | Tips tied to recurring situations |
 | Brand films | Emotion | Stories | Awe-inspiring narrative with brand at center |
 | Interactive tools | Practical Value | Public | Calculator/quiz with shareable results |
+
+See: [references/viral-content-patterns.md](references/viral-content-patterns.md) when choosing a content format — it ranks formats by shareability, gives platform-specific patterns, and defines the viral coefficient.
 
 ### Feature Design
 
@@ -259,18 +268,6 @@ STEPPS principles compound when combined:
 | Can others see people using it? | Invisible usage | Add observable signals or branded outputs |
 | Is it useful enough to forward? | Low practical value | Package as tips, lists, or tools people would send a friend |
 | Is the brand embedded in a retellable story? | No narrative vehicle | Create a Trojan Horse story that needs your brand |
-
-## Reference Files
-
-- [references/social-currency.md](references/social-currency.md) — Remarkability techniques, game mechanics, exclusivity design, identity signaling
-- [references/triggers.md](references/triggers.md) — Habitat analysis, trigger frequency matrix, competitive triggers, Kit Kat case study
-- [references/emotion.md](references/emotion.md) — High vs. low arousal mapping, awe engineering, humor design, emotional audit tools
-- [references/public-visibility.md](references/public-visibility.md) — Behavioral residue, observable consumption, self-advertising products, the Apple logo story
-- [references/practical-value.md](references/practical-value.md) — Prospect Theory for marketers, Rule of 100, knowledge packaging, deal framing
-- [references/stories-trojan-horse.md](references/stories-trojan-horse.md) — Trojan Horse narrative design, brand integration testing, story templates
-- [references/word-of-mouth.md](references/word-of-mouth.md) — Offline vs. online WOM, conversation triggers, measurement, WOM audit
-- [references/viral-content-patterns.md](references/viral-content-patterns.md) — Content formats that spread, platform patterns, viral coefficient, shareability audit
-- [references/case-studies.md](references/case-studies.md) — Breakdowns of Blendtec, Barclay Prime, Kit Kat, Livestrong, Dove, and Hotmail
 
 ## Further Reading
 

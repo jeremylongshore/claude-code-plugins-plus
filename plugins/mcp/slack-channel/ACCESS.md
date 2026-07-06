@@ -66,10 +66,26 @@ Array of Slack user IDs (e.g., `U12345678`) allowed to send DMs. Managed via `/s
 ### `channels`
 Map of channel IDs to policies. Only channels listed here are monitored.
 
-- `requireMention`: If true, only messages that @mention the bot are delivered
+- `requireMention`: If true (**the default for newly opted-in channels** — "mention-to-engage"), only messages that @mention the bot are delivered. Once a human has mentioned the bot in a thread, their later messages in that same thread are delivered **without re-mentioning** (thread-stickiness, `ccsc-apj.1`); peer agents are never sticky and must @mention every message. If false ("ambient"), every message in the channel is delivered.
 - `allowFrom`: If non-empty, only these user IDs are delivered from this channel
 - `allowBotIds`: Opt-in list of bot user IDs allowed to deliver messages in this channel. Absent or empty (default) = all bot messages dropped. See "Multi-agent coordination" below.
 - `audit`: Audit-log projection mode for this channel. See "Audit projection (`audit`)" below. Absent or `'off'` (default) = no projection. Values: `'off'` | `'compact'` | `'full'`.
+- `perUserSessions`: If true, each distinct sender gets their **own** session within a shared thread — separate state file, supervisor handle, and `ownerId` — so two humans talking in one thread don't share bridge-session state (`ccsc-kl410`). Absent or false (default) = one shared session per (channel, thread). Isolates the bridge's per-thread book-keeping, not Claude's own conversation memory.
+- `channelCircuitBreaker`: Channel-wide peer-bot circuit breaker (`ccsc-0k7x2`) — trips when total bot velocity across **all** allowlisted bots is runaway-high, catching A→B→C→A rings the per-bot limit misses. Absent = default (40 msgs / 60s). `{ "count": 0, "windowMs": 0 }` disables.
+
+### Interaction modes
+
+A channel runs in one of three operator-chosen modes. This is CCSC's edge over a single-mode `@`-bot: you decide whether humans can talk past Claude, and whether Claude must be addressed explicitly.
+
+| Mode | `access.json` | When to use |
+|---|---|---|
+| **Mention-to-engage** (default) | `"requireMention": true` | Shared human channels. People converse freely; Claude only hears messages that `@`-mention it. After one mention, the thread stays engaged so the human can keep talking without re-mentioning (thread-stickiness). |
+| **Ambient** | `"requireMention": false` | A dedicated bot channel where every message is meant for Claude. |
+| **Per-user allowlist** | `"allowFrom": ["U…"]` | Restrict *which humans* Claude even hears; composes with either mode above. |
+
+**Default:** newly opted-in channels default to **mention-to-engage** (`/slack-channel:access channel <id>`); pass `--ambient` to opt into ambient instead. This keeps Claude quiet by default in shared channels — humans can talk to each other without any agent receiving the message until someone `@`-mentions it.
+
+**Thread-stickiness is human-only (`ccsc-apj.1`).** Once a human engages a thread by mentioning the bot, their subsequent messages *in that thread* are delivered without a fresh mention ("mention once, then converse"). **Peer agents (`allowBotIds`) are never sticky** — a peer bot must `@`-mention the bot on every message. Making agents sticky would re-open the bot-loop/noise problem the peer-bot rate limiter guards, so agent engagement stays per-message-explicit.
 
 ### Multi-agent coordination (`allowBotIds`)
 

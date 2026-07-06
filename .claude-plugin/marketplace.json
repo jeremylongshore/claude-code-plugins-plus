@@ -8875,6 +8875,49 @@
       },
       "repository": "https://github.com/Xquik-dev/x-twitter-scraper",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "mytradeledger-skills",
+      "source": "./plugins/community/mytradeledger-skills",
+      "description": "Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries (CRUD + bulk-import + P&L recompute), account balances and realized P&L, CSV export, asset registry, entry metadata, and personal access token management.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "crypto",
+        "trading",
+        "mytradeledger",
+        "ledger",
+        "pnl"
+      ],
+      "author": {
+        "name": "trpsbill",
+        "url": "https://github.com/trpsbill"
+      },
+      "homepage": "https://github.com/trpsbill/skills",
+      "repository": "https://github.com/trpsbill/skills",
+      "license": "MIT"
     }
   ]
 }

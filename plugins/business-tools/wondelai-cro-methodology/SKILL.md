@@ -1,10 +1,10 @@
 ---
 name: cro-methodology
-description: 'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isnt converting", "conversion rate", "A/B test", "why visitors leave", "objection handling", "bounce rate", "split testing", or "conversion funnel". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'
+description: 'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isnt converting", "conversion rate", "A/B test", "why visitors leave", "objection handling", "bounce rate", "conversion funnel", "increase signups", or "people add to cart but dont buy". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # CRO Methodology
@@ -17,7 +17,7 @@ Scientific, customer-centric approach to conversion rate optimization based on t
 
 ## Scoring
 
-**Goal: 10/10.** Rate any landing page, funnel, or conversion flow 0-10 against the principles below. Report the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score any landing page, funnel, or conversion flow against the seven Quick Diagnostic rows below: award ~1.4 points per row answered "yes" (7 rows = 9.8, capped at 10). Bands: **9-10** = single clear action, research-grounded O/CO table, value prop legible in 5 seconds, proof at every friction point, funnel mapped, path free of UX blockers; **5-6** = guessed objections, generic best-practices copy, proof buried in FAQs; **<=3** = competing CTAs, no funnel map, claims with no proof. Report the current score and the specific diagnostic rows failing.
 
 ## The CRO Frameworks
 
@@ -46,11 +46,8 @@ Scientific, customer-centric approach to conversion rate optimization based on t
 **Copy patterns:**
 - "What's preventing you from [action] today?" (exit survey to discover objections)
 - "Here's what [X] customers found..." (counter-objection with social proof)
-- Hypothesis template: "If we [change X], then [metric Y] will improve because [reason from research]"
 
-**Ethical boundary:** Never manipulate test results or cherry-pick data; report all tests, including failures.
-
-See: [testing-methodology.md](references/testing-methodology.md) for ICE scoring, A/B vs. multivariate guidance, and statistical rigor.
+See [funnel-analysis.md](references/funnel-analysis.md) when mapping the funnel -- step-by-step mapping, blocked-artery/missing-link diagnosis, industry funnel benchmarks, and impact-based prioritization.
 
 ### 2. Customer Research & Objections
 
@@ -79,7 +76,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for ICE scoring
 
 **Ethical boundary:** Anonymize data, get consent for recordings, and don't survey so aggressively that you degrade the experience.
 
-See: [RESEARCH.md](references/RESEARCH.md) for tools, survey questions, and data analysis methods.
+See [RESEARCH.md](references/RESEARCH.md) when planning research -- ready-to-use survey questions per channel, recommended tools, and how to turn raw responses into a ranked objection list.
 
 ### 3. Persuasion Assets
 
@@ -109,13 +106,13 @@ See: [RESEARCH.md](references/RESEARCH.md) for tools, survey questions, and data
 
 **Ethical boundary:** Never fabricate testimonials, inflate statistics, or display fake trust badges -- all proof must be genuine and verifiable.
 
-See: [PERSUASION.md](references/PERSUASION.md) for the full persuasion assets checklist and psychological triggers.
+See [PERSUASION.md](references/PERSUASION.md) when auditing or acquiring proof -- the full five-category asset checklist and psychological triggers. See [COPYWRITING.md](references/COPYWRITING.md) when writing the proof copy itself -- headline formulas, benefit-led phrasing, and proof-element wording.
 
 ### 4. The O/CO Framework
 
 **Core concept:** The Objection/Counter-Objection table is the core CRE technique: map every visitor objection to a specific, evidence-backed counter-objection.
 
-**Why it works:** Visitors arrive with objections; if the page doesn't address them, they leave. The O/CO table ensures no objection goes unanswered, each counter placed where the objection arises in the reading flow.
+**Why it works:** The table forces every counter to be placed where its objection arises in the reading flow, so a concern is answered the instant the visitor feels it -- not pages later, by which point they have already left.
 
 **Key insights:**
 - Research objections from surveys, chat logs, tickets, and sales calls -- don't guess
@@ -139,9 +136,9 @@ See: [PERSUASION.md](references/PERSUASION.md) for the full persuasion assets ch
 - Good (CO Only): "Let the audio do the work for you."
 - "What almost stopped you from buying?" (post-purchase survey to validate the O/CO table)
 
-**Ethical boundary:** Address real objections honestly -- never dismiss legitimate concerns or use deception to overcome valid hesitations.
+**Ethical boundary:** A counter-objection must resolve the concern with real evidence, not dismiss a legitimate worry as unfounded.
 
-See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, research methods, and counter-objection techniques.
+See [OBJECTIONS.md](references/OBJECTIONS.md) when building the O/CO table -- per-category counter-objection technique catalogs, CO-Only patterns for implicit objections, and how to mine objections from support logs.
 
 ### 5. Hypothesis Design
 
@@ -152,23 +149,16 @@ See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, rese
 **Key insights:**
 - Format: "If we [change X], then [metric Y] will improve because [reason based on research]"
 - Define primary (decides winner), secondary (monitoring), and guardrail (must not decrease) metrics before testing
-- ICE, 1-10 each: Impact (could this double conversion?), Confidence (how strong is the research?), Ease (how easy to implement?)
-- Worth testing: complete redesign, new value proposition, fundamentally different offer. Not worth testing: button color, font size, image swap
-- Before testing, ask: "Could this 10x our results?" If not, reconsider priority
+- ICE, 1-10 each: Impact (could this double conversion?), Confidence (how strong is the research?), Ease (how easy to implement?); prioritize by the average
+- The 10x screen: if a change couldn't 10x results, deprioritize it. Worth testing: complete redesign, new value proposition, fundamentally different offer. Not worth testing: button color, font size, image swap
 
-**Product applications:**
-
-| Context | Hypothesis Example | ICE Score |
-|---------|-------------------|-----------|
-| **Headline rewrite** | "Customer language from surveys will lift conversion because visitors see their own words" | I:8, C:9, E:10 = 9.0 |
-| **Checkout redesign** | "One-page checkout will lift completion because analytics show 40% drop at step 2" | I:9, C:6, E:3 = 6.0 |
-| **Button color** | "Green button will lift clicks because green means go" | I:2, C:2, E:10 = 4.7 (skip) |
+**Worked example:** "Customer language from surveys will lift signups because visitors see their own words" scores I:8, C:9, E:10 = 9.0 -- a top-priority test. A button-color swap scores ~I:2, C:2, E:10 = 4.7 and gets skipped despite being trivial to build.
 
 **Copy patterns:**
 - "Based on our research, visitors' #1 objection is [X]. This test addresses it by [Y]."
 - Document before: hypothesis, primary metric, sample size, duration. Document after: raw numbers, confidence interval, learnings, next steps
 
-**Ethical boundary:** Report all results honestly -- never cherry-pick data or rerun tests until you get the answer you want.
+See [testing-methodology.md](references/testing-methodology.md) when prioritizing or scoring a backlog -- per-axis ICE scoring rubrics, a worked prioritization table, and the weighted-ICE variant.
 
 ### 6. A/B Testing Methodology
 
@@ -189,7 +179,7 @@ See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, rese
 | Context | Test Type | Example |
 |---------|----------|---------|
 | **Concept validation** | A/B test (2-4 variants) | Two fundamentally different layouts based on different customer insights |
-| **Low traffic** | Bold A/B test | Dramatic changes detectable with smaller samples (~4,000 visitors for 50% lift) |
+| **Low traffic** | Bold A/B test | Dramatic changes reach significance on far smaller samples than timid ones |
 | **Post-test** | Scale wins | Apply winning insights to landing pages, ad copy, email sequences |
 
 **Copy patterns:**
@@ -197,7 +187,7 @@ See: [OBJECTIONS.md](references/OBJECTIONS.md) for the full O/CO framework, rese
 - "Test showed no significant difference, teaching us that [insight about customers]"
 - Document learnings: Test, Hypothesis, Result, Learning, Applicable to
 
-**Ethical boundary:** Never manipulate statistics to manufacture significance; report confidence intervals honestly and acknowledge inconclusive results.
+**Reporting rule:** Decide sample size and duration up front, then report whatever the pre-set test returns -- never stop early on a peeked "winner," rerun a test until it yields the answer you want, or bury an inconclusive result. (This is the one honest-reporting constraint for the whole methodology.)
 
 ## Common Mistakes
 
@@ -224,27 +214,7 @@ Audit any landing page or conversion flow:
 | Is the value proposition clear within 5 seconds? | Visitors bounce before understanding | Run a 5-second test; rewrite headline in customer language |
 | Are persuasion assets visible (testimonials, awards, guarantees)? | Claims without proof aren't believed | Audit assets, acquire missing ones, display prominently |
 | Have we mapped the funnel for blocked arteries? | Optimizing the wrong page | Map traffic per stage, compare to benchmarks, prioritize |
-
-## Quick-Start Checklist
-
-When optimizing any page:
-
-1. [ ] What is the ONE action visitors should take?
-2. [ ] Who are the visitors? What stage of the buying journey?
-3. [ ] What are their top 3-5 objections? (Research, don't guess)
-4. [ ] What proof/counter-objections address each?
-5. [ ] Is the value proposition clear in 5 seconds?
-6. [ ] Are there UX blockers? (speed, mobile, forms)
-7. [ ] What persuasion assets are missing or hidden?
-
-## Reference Files
-
-- [OBJECTIONS.md](references/OBJECTIONS.md): O/CO framework, research methods, counter-objection techniques
-- [COPYWRITING.md](references/COPYWRITING.md): Headlines, proof elements, persuasive writing
-- [PERSUASION.md](references/PERSUASION.md): Persuasion assets checklist, psychological triggers
-- [RESEARCH.md](references/RESEARCH.md): Tools, survey questions, data analysis
-- [testing-methodology.md](references/testing-methodology.md): A/B testing, statistical significance, ICE prioritization, multivariate testing
-- [funnel-analysis.md](references/funnel-analysis.md): Blocked arteries, missing links, industry funnels, cross-sell mapping
+| Is the path free of UX blockers (speed, mobile, form length)? | Friction kills converts who already decided to act | Fix load time, mobile layout, and over-long forms first |
 
 ## Further Reading
 

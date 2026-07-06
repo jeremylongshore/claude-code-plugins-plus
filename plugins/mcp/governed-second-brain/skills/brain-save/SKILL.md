@@ -6,7 +6,7 @@ description: |
   corpus, so it never auto-fires — invoke it explicitly. Use when you want the brain to remember
   something specific going forward without a full recompile, or to mark an old memory outdated.
   Trigger with "/brain-save".
-allowed-tools: 'mcp__governed-brain__brain_capture, mcp__governed-brain__brain_govern, mcp__governed-brain__brain_transition, mcp__governed-brain__brain_status, mcp__governed-brain__brain_audit_verify'
+allowed-tools: 'mcp__governed-brain__brain_search, mcp__governed-brain__brain_capture, mcp__governed-brain__brain_govern, mcp__governed-brain__brain_transition, mcp__governed-brain__brain_status, mcp__governed-brain__brain_audit_verify'
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
@@ -34,8 +34,9 @@ are proposing an item for the brain to keep; the deterministic curator owns whet
 
 `disable-model-invocation: true` means Claude will not trigger this from conversation — it runs only
 when you explicitly type it. Writing to **your durable brain** is a deliberate act, not a chat side
-effect. Everything here is **local and single-user**: there is no server, no token, no role — you own
-the brain, and the only gate on a write is that you asked for it.
+effect. In **local mode** you own the brain outright — no server, token, or role; the only gate is
+that you asked. In **team mode** the same deliberate-act rule holds, and the server *additionally*
+enforces your role (a member proposes; an admin governs and retires).
 
 ## Prerequisites
 
@@ -43,10 +44,23 @@ the brain, and the only gate on a write is that you asked for it.
   with the capture + govern tools).
 - `qmd` is on your `PATH` so the govern step can refresh the search index after a promotion. If qmd is
   absent, capture + govern + the audit receipt still complete; only fresh-search visibility waits.
+- **Works in both modes.** In **local mode** (default, no `TEAMKB_API_URL`) all the tools below run
+  in-process. In **team mode** (`TEAMKB_API_URL` set) the brain is governed centrally on the server:
+  you **propose** with `brain_capture` and the server **disposes** (govern runs server-side, so there
+  is no client `brain_govern`); `brain_transition` is exposed but **admin-only** (a member gets a clear
+  403); `brain_status` and `brain_audit_verify` are not exposed in team mode. Use `/brain` to query.
 
 ## Instructions
 
 ### Save a new fact (capture → govern)
+
+**First, search the brain (search-before-save).** Call **`brain_search`** with
+`{ query: "<proposed title + key terms>", scope: "all" }` and summarize what the brain already knows
+from the `qmd://` hits. If the fact is **already covered, stop and say so** — don't duplicate it (the
+inbox does *not* dedupe at intake; only promotion dedupes, so this pre-save search is what keeps the
+inbox from piling up). An empty `results` list (e.g. `qmd` isn't on `PATH`, or the brain is empty)
+means *no known coverage* — proceed to capture; it is **not** a block. Then capture only the
+genuinely-new delta:
 
 1. Confirm it's worth keeping — *"Would I benefit from finding this in 30 days?"* Skip ephemeral
    debugging steps, throwaway preferences, secrets, or anything already in a CLAUDE.md/README.
@@ -64,6 +78,9 @@ the brain, and the only gate on a write is that you asked for it.
 2. Call **`brain_transition`** with `{ memoryId, to, reason, actor }`. Valid moves:
    `active → {deprecated, superseded, archived}`, `deprecated → {active, archived}`,
    `superseded → archived`. Every transition writes a hash-chained audit event.
+
+> **Team mode:** `brain_transition` is **admin-only** — a member token gets a clear 403 and nothing is
+> applied. (In local mode you are always the owner, so it always works.)
 
 ### Check brain health
 

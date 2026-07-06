@@ -1,10 +1,10 @@
 ---
 name: predictable-revenue
-description: 'Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "prospecting emails", "sales pipeline", "SDR process", "B2B SaaS sales", "sales development", or "pipeline velocity". Also trigger when setting up a sales team from scratch, designing cold email sequences, or building qualification frameworks to improve close rates. Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'
+description: 'Build a scalable outbound B2B sales machine with specialized roles (SDR, AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "cold email sequences", "sales pipeline", "SDR process", "sales development", "build an outbound sales team", or "fill my pipeline". Also trigger when setting up a B2B SaaS sales team from scratch or building a lead-qualification framework to improve close rates. Covers the three lead types (seeds/nets/spears), role specialization, the referral-email method, ANUM qualification, and pipeline math. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Predictable Revenue Framework
@@ -17,7 +17,7 @@ A systematic approach to building a scalable, predictable B2B sales machine — 
 
 ## Scoring
 
-**Goal: 10/10.** Rate any sales process 0-10 on predictability, specialization, and process maturity: 10/10 means clear role separation, repeatable prospecting, and predictable pipeline generation; lower scores mean ad-hoc sales or reliance on heroics. Always give the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score a sales process 0-10 by awarding 2 points for each of the five [Quick Diagnostic](#quick-diagnostic) rows it satisfies (prospecting/closing separated, defined outbound process, 3-month pipeline predictability, known lead-type mix, standardized SDR→AE handoff). Bands: **9-10** = role separation plus a repeatable process that predicts pipeline; **5-6** = some specialization but ad-hoc prospecting or unpredictable pipeline; **≤3** = one person prospects and closes, revenue depends on heroics. Always give the current score and the specific diagnostic rows blocking 10/10.
 
 ## The Three Types of Leads
 
@@ -31,7 +31,7 @@ A systematic approach to building a scalable, predictable B2B sales machine — 
 
 **Key insight:** Most companies over-invest in nets and under-invest in spears; seeds are the best but can't be manufactured quickly. Invest accordingly — customer success and referral programs (seeds), content and paid acquisition (nets), SDR team (spears).
 
-See: [references/lead-types.md](references/lead-types.md) for lead source strategy and investment allocation.
+See [references/lead-types.md](references/lead-types.md) when deciding where to invest — it sizes the seeds/nets/spears budget split by company stage.
 
 ## Sales Role Specialization
 
@@ -58,7 +58,7 @@ Retain and grow accounts: onboard, drive adoption, surface expansion opportuniti
 
 **The virtuous cycle:** SDR generates pipeline → AE closes → CSM retains/grows → happy customer refers (Seeds).
 
-See: [references/roles.md](references/roles.md) for role definitions, career paths, and hiring profiles.
+See [references/roles.md](references/roles.md) when defining a new role or org chart — it has full charters, career paths, and hiring profiles for each role.
 
 ## Cold Calling 2.0
 
@@ -74,22 +74,7 @@ Define your Ideal Customer Profile (company size, industry, tech stack, geograph
 
 ### Step 2: The Referral Email
 
-**The core innovation: don't email the decision maker — email above them and ask for a referral down.** Senior people forward emails, and referrals get 3-5x higher response because the introduction comes from inside the company.
-
-**Subject:** Quick question
-
-> Hi [Name],
->
-> I'm not sure if you're the right person to speak to about [specific topic] at [Company], but I was hoping you could point me to the right person.
->
-> We help [companies like theirs] with [specific value prop].
->
-> Would you mind pointing me to the right person to talk to?
->
-> Thanks,
-> [Your name]
-
-Keep it short (<100 words), no pitch, no attachments or links; ask for a referral, not a meeting; make it easy to forward. Response rate: 9-15% vs. 1-3% for traditional cold emails.
+**The core innovation: don't email the decision maker — email above them and ask for a referral down.** Senior people forward emails, and referrals get 3-5x higher response because the introduction comes from inside the company. The email asks one thing — "who is the right person?" — under 100 words, no pitch, no attachments, no links, easy to forward. Response rate: 9-15% vs. 1-3% for traditional cold emails. For the verbatim template, subject-line open-rate table, and the full Day 1/3/7/14/30 sequence bodies, open [references/cold-calling-2.md](references/cold-calling-2.md).
 
 ### Step 3: Follow Up
 
@@ -101,13 +86,7 @@ Keep it short (<100 words), no pitch, no attachments or links; ask for a referra
 | 14 | Break-up email ("Should I close your file?") |
 | 30 | Re-engage (new trigger event or content) |
 
-Break-up emails work because people respond to losing the opportunity (scarcity):
-
-> Hi [Name],
->
-> I haven't heard back from you. I don't want to be a pest.
->
-> Should I close your file, or would it make sense to chat?
+The **break-up email** on Day 14 often draws the highest response in the sequence — people respond to losing the opportunity (scarcity).
 
 ### Step 4: Qualify with ANUM
 
@@ -124,9 +103,9 @@ Call structure: rapport (2 min) → set agenda ("understand your situation, see 
 
 Include account background and ICP match, contact details and role, pain points, ANUM notes, agreed next steps, and competitive intel. SDR introduces AE on a brief 3-way call or email, then drops off.
 
-**Ethical boundary:** Comply with spam laws (CAN-SPAM, GDPR), honor opt-outs immediately, and represent your offer honestly — referral emails work because they're genuine requests, not tricks.
+**Ethical boundary:** Comply with spam laws (CAN-SPAM, GDPR) and honor opt-outs immediately — including removing a hostile "stop emailing me" from the sequence on the spot, not at the next scheduled touch.
 
-See: [references/cold-calling-2.md](references/cold-calling-2.md) for email templates, sequences, and scripts; [references/qualification.md](references/qualification.md) for ANUM discovery questions.
+See [references/qualification.md](references/qualification.md) when running the ANUM discovery call — it has the full discovery question bank per criterion.
 
 ## Pipeline Math
 
@@ -149,9 +128,11 @@ Prospects Needed ÷ Response Rate = Emails Needed
 | AE demo-to-close rate | 20-30% |
 | Average sales cycle | 30-90 days |
 
-See: [references/pipeline-math.md](references/pipeline-math.md) for revenue modeling templates.
+See [references/pipeline-math.md](references/pipeline-math.md) when sizing the SDR team to a revenue target — it has the full capacity-planning and revenue-modeling templates.
 
 ## Building the Sales Development Team
+
+See [references/case-studies.md](references/case-studies.md) when you want a worked precedent for standing up or scaling the machine — it walks through Salesforce, HubSpot, and other implementations with starting state, results, and failure modes.
 
 ### Hiring SDRs
 
@@ -172,7 +153,7 @@ Expect 3-4 months to full productivity.
 
 Base + variable, typically 60/40 or 70/30. Pay variable per qualified opportunity generated, with bonuses for opportunities that close and for exceeding quota.
 
-See: [references/team-building.md](references/team-building.md) for hiring, onboarding, and compensation detail.
+See [references/team-building.md](references/team-building.md) when hiring or building the comp plan — it has interview scorecards, the onboarding curriculum, and detailed compensation structures.
 
 ## Metrics and Dashboards
 
@@ -190,7 +171,7 @@ Cost per qualified opportunity, SDR:AE ratio (typically 2-3 SDRs per AE), LTV:CA
 
 **Cadence:** daily activity metrics → weekly pipeline → monthly revenue → quarterly efficiency.
 
-See: [references/metrics.md](references/metrics.md) for dashboard templates.
+See [references/metrics.md](references/metrics.md) when building the sales dashboard — it has KPI definitions, formulas, and dashboard layouts by cadence.
 
 ## Common Mistakes
 
@@ -214,17 +195,6 @@ Audit any B2B sales process:
 | Can you predict pipeline 3 months out? | Revenue is unpredictable | Build pipeline math model |
 | Do you know your lead type mix? | Over-reliance on one source | Balance seeds, nets, spears |
 | Is SDR→AE handoff standardized? | Leads lost in transition | Create handoff checklist |
-
-## Reference Files
-
-- [lead-types.md](references/lead-types.md): Seeds, nets, spears strategy and investment
-- [roles.md](references/roles.md): SDR, MDR, AE, CSM role definitions and hiring
-- [cold-calling-2.md](references/cold-calling-2.md): Email templates, sequences, follow-up cadence
-- [pipeline-math.md](references/pipeline-math.md): Revenue modeling, capacity planning
-- [team-building.md](references/team-building.md): Hiring, onboarding, compensation, career paths
-- [metrics.md](references/metrics.md): Dashboard templates, KPI tracking
-- [qualification.md](references/qualification.md): ANUM framework, discovery questions
-- [case-studies.md](references/case-studies.md): Salesforce, HubSpot, and scaling stories
 
 ## Further Reading
 

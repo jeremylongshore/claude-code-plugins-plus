@@ -1,10 +1,10 @@
 ---
 name: scorecard-marketing
-description: 'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions "lead magnet", "quiz funnel", "assessment tool", "lead generation", "score-based segmentation", "interactive content", "lead qualification", or "quiz marketing". Also trigger when designing self-assessment tools, building calculators or graders for marketing, or creating personalized result pages that drive conversions. Covers question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'
+description: 'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions "quiz funnel", "scorecard", "lead magnet", "score-based segmentation", or "lead qualification". Also trigger when designing self-assessment tools, building calculators or graders for marketing, or creating personalized result pages that drive conversions. Covers concept hooks, question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Scorecard Marketing Skill
@@ -15,11 +15,11 @@ A proven 4-step system for generating qualified leads through interactive assess
 
 **Everything is downstream from lead generation.** People buy to resolve psychological tension between their current reality and desired reality — a scorecard awakens dormant desires by asking revealing questions.
 
-**The foundation:** Active searchers are harder to sell to (already decided, set budget); people with dormant desires buy from whoever helped them uncover the need. A well-designed scorecard converts 30-50% of visitors vs. 3-10% for PDF lead magnets, because interactive assessments create psychological engagement static content cannot.
+**The foundation:** Active searchers are harder to sell to (already decided, set budget); people with dormant desires buy from whoever helped them uncover the need. Interactive assessments create psychological engagement static content cannot — which is why they convert several times better than a PDF download (see [Conversion Benchmarks](#conversion-benchmarks)).
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating assessment funnels or quiz landing pages, rate them 0-10 against the principles below — 10/10 means full alignment, lower scores indicate gaps. Always give the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score a funnel against the six [Quick Diagnostic](#quick-diagnostic) rows: `score = round(satisfied_rows / 6 × 10)`. Read the bands as: **9-10** = all six pass (dormant-desire hook, email captured first, scored categories, unique per-tier content and CTA, tier-segmented follow-up); **5-7** = the funnel exists but generic results or late email capture cost it 2-3 rows; **≤3** = no concept hook or no scoring. Always give the current score and the specific rows to close to reach 10/10.
 
 ## The 4-Step Scorecard System
 
@@ -30,7 +30,7 @@ A proven 4-step system for generating qualified leads through interactive assess
 **Why it works:** A concept hook taps a dormant desire; framing around a score triggers the primal drive to measure, rank, and improve. Curiosity plus low commitment ("takes 3 minutes") removes friction.
 
 **Key insights:**
-- The concept hook is the single most important element — it defines what visitors score themselves on
+- The concept hook is the single most important element — it defines what visitors score themselves on. The 5 hook types: **moving toward** (goal), **pain removal**, **readiness** (decision validation), **category** (compare yourself to a standard), **knowledge** (test what you know)
 - "Moving toward" hooks ("Are you ready to [goal]?") outperform fear-based hooks
 - The 3 Cs — Clarity, Credibility, Connection — must all be present
 - Bonuses (free book, consultation, report) lift completion; a time expectation ("less than 3 minutes") reduces abandonment
@@ -50,7 +50,7 @@ A proven 4-step system for generating qualified leads through interactive assess
 
 **Ethical boundary:** The hook must promise value the assessment actually delivers — never bait-and-switch into a sales pitch disguised as results.
 
-See: [references/industry-examples.md](references/industry-examples.md) for 50+ scorecard concepts and landing page hooks across industries.
+See [references/industry-examples.md](references/industry-examples.md) when you need a starting hook for a specific niche — 50+ scorecard concepts and landing-page headlines across industries.
 
 ### 2. Questionnaire
 
@@ -78,9 +78,9 @@ See: [references/industry-examples.md](references/industry-examples.md) for 50+ 
 - Progress indicators ("Question 5 of 12") reduce abandonment; "Almost done!" maintains momentum
 - Category names should be meaningful to the respondent, not internal jargon
 
-**Ethical boundary:** Never disguise sales qualification as helpful assessment — qualifying questions should be transparently useful to both parties, and don't collect data you won't use to improve their results.
+**Ethical boundary:** Don't collect data you won't use to improve their results — every qualifying question (budget, urgency, size) must visibly shape the recommendation, not just route them to sales.
 
-See: [references/psychology.md](references/psychology.md) for the psychological foundations of question design and tension creation.
+See [references/psychology.md](references/psychology.md) when writing or critiquing questions — the tension taxonomy (pain/desire/frustration), the 4-6 quantification sweet spot, and the personalization stats.
 
 ### 3. Results Page
 
@@ -108,9 +108,9 @@ See: [references/psychology.md](references/psychology.md) for the psychological 
 - Low tier: "This area needs attention. Here are easy first steps... Our team specializes in helping people at your stage."
 - High tier: "Excellent foundation! Focus on maintaining standards. We work with advanced clients like yourself on [specific advanced offer]."
 
-**Ethical boundary:** Results must deliver genuine insight, not manufactured anxiety — give low scorers actionable help, and never inflate or deflate scores to push an offer.
+**Ethical boundary:** Never inflate or deflate the computed score to steer a prospect toward the offer — the tier must reflect their actual answers.
 
-See: [references/technical-implementation.md](references/technical-implementation.md) for scoring logic, conditional content, PDF generation, and platform integration.
+See [references/technical-implementation.md](references/technical-implementation.md) when building the actual tool — scoring/weighting logic, conditional content rules, PDF generation, and platform comparison.
 
 ### 4. Sales and Marketing
 
@@ -137,9 +137,9 @@ See: [references/technical-implementation.md](references/technical-implementatio
 - Results email: "Your [Topic] Score is ready. Here's what we recommend based on your results."
 - Nurture: "Last week you scored [X] on [category]. Here are 3 ways to improve that score this month."
 
-**Ethical boundary:** Follow-up must respect consent and provide genuine value — never use assessment data to pressure, honor unsubscribes immediately, and never share individual data without permission.
+**Ethical boundary:** Never weaponize self-reported pain points to pressure a prospect — the data they volunteered is for tailoring help, not for manufacturing urgency.
 
-See: [references/analytics-optimization.md](references/analytics-optimization.md) for key metrics, A/B testing, funnel analysis, CRM integration, and lead scoring.
+See [references/analytics-optimization.md](references/analytics-optimization.md) when a live funnel underperforms or you're setting up tracking — key metrics, what to A/B test, funnel-drop analysis, CRM integration, and lead scoring.
 
 ## Scorecard Naming Strategy
 
@@ -162,14 +162,14 @@ See: [references/analytics-optimization.md](references/analytics-optimization.md
 1. **Tension creation:** Questions surface dormant desires
 2. **Reciprocity:** You gave value (insights), they're open to conversation
 3. **Self-qualification:** They told you their problems and budget
-4. **Personalization:** 83% of consumers share data for a personalized experience
+4. **Personalization:** people willingly trade data for a tailored result, then expect the offer to match it (the supporting stats live in references/psychology.md)
 5. **Gamification:** Primal drive to score, rank, and improve
 6. **Commitment:** Time invested increases follow-through
 
 ## Implementation Checklist
 
 1. [ ] Define ideal customer and their desired outcome
-2. [ ] Choose concept hook (readiness/category/knowledge/pain removal)
+2. [ ] Choose a concept hook (one of the 5 types from the Landing Page section)
 3. [ ] Write 2-7 scoring categories based on your methodology
 4. [ ] Create 10-40 questions with point values
 5. [ ] Set up 3 scoring tiers with dynamic content
@@ -195,19 +195,12 @@ See: [references/analytics-optimization.md](references/analytics-optimization.md
 
 | Question | If No | Action |
 |----------|-------|--------|
-| Does the hook target a dormant desire? | Landing page underperforms | Rewrite using one of the 5 hook types (moving toward, pain removal, readiness, category, knowledge) |
+| Does the hook target a dormant desire? | Landing page underperforms | Rewrite using one of the 5 hook types (see Landing Page section) |
 | Is email captured before questions? | Losing all abandon leads | Move lead capture before the questionnaire |
 | Are questions grouped into scored categories? | Results feel arbitrary | Create 2-7 categories with point values |
 | Does each tier have unique dynamic content? | Generic results, no tension | Write personalized insights and CTAs per tier |
 | Is there a specific CTA per tier? | Prospects leave without converting | Map each tier to a next step (event, call, consultation) |
 | Are follow-up emails segmented by score? | Nurture feels irrelevant | Separate sequences per tier with tailored content |
-
-## Reference Files
-
-- [industry-examples.md](references/industry-examples.md): 50+ specific scorecard concepts across industries with hook templates
-- [psychology.md](references/psychology.md): Buyer psychology, tension creation, dormant desires, and why assessments convert
-- [technical-implementation.md](references/technical-implementation.md): Platform comparison, conditional logic, scoring patterns, PDF generation, integrations
-- [analytics-optimization.md](references/analytics-optimization.md): Key metrics, A/B testing elements, funnel analysis, CRM integration, lead scoring
 
 ## Further Reading
 

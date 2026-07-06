@@ -1,10 +1,10 @@
 ---
 name: ios-hig-design
-description: 'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", "HIG compliance", "SF Symbols", "haptic feedback", or "iOS accessibility". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts for different screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'
+description: 'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", "HIG compliance", "SF Symbols", "haptic feedback", "iOS accessibility", "make my app feel native", or "follow Apple design guidelines". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts across screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # iOS Human Interface Guidelines Design Skill
@@ -19,15 +19,13 @@ Apple's iOS design philosophy rests on three pillars: **clarity** (every element
 
 ## Scoring
 
-**Goal: 10/10.** Rate iOS interfaces or SwiftUI/UIKit code 0-10 against the principles below. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score 1 point per satisfied row of the Quick Diagnostic (6 rows), plus up to 4 points for native idiom: +1 semantic colors/text styles throughout (no hardcoded values), +1 system controls over custom reimplementations, +1 standard gestures and meaningful haptics, +1 SF Symbols and correct app-icon shape. Bands: **9-10** = native, accessible, adapts to Dark Mode and Dynamic Type, zero foreign patterns; **5-6** = works but leaks Android idioms or hardcodes color/size; **<=3** = fails safe areas, touch targets, or VoiceOver. Always state the score and the specific improvements needed to reach 10/10.
 
 ## iOS Design Framework
 
 ### 1. Layout & Safe Areas
 
 **Core concept:** iOS devices have specific screen dimensions, safe area insets, and hardware intrusions (notch, Dynamic Island, home indicator) that every layout must respect.
-
-**Why it works:** When layouts respect safe areas and standard spacing, the app feels native and trustworthy---no content hides behind hardware features, and the visual rhythm matches the platform.
 
 **Key insights:**
 - Design for the smallest screen first (375pt width, iPhone SE)
@@ -39,8 +37,8 @@ Apple's iOS design philosophy rests on three pillars: **clarity** (every element
 
 | Context | Layout Pattern | Example |
 |---------|---------------|---------|
-| **Status bar** | 59pt height, always respected | Time, signal, battery area |
-| **Navigation bar** | 44pt standard row + 58pt large title | Back button, title, actions |
+| **Status bar** | 20pt classic, 44-54pt on Dynamic Island devices | Time, signal, battery area |
+| **Navigation bar** | 44pt standard row + ~52pt large title (~96pt total) | Back button, title, actions |
 | **Content area** | Flexible, scrollable, respects safe area | Main app content |
 | **Tab bar** | 49pt height, translucent with blur | 2-5 primary destinations |
 | **Home indicator** | 34pt inset at bottom | System gesture area |
@@ -50,19 +48,15 @@ Apple's iOS design philosophy rests on three pillars: **clarity** (every element
 - Use `.ignoresSafeArea()` only for backgrounds and decoration, never interactive content
 - Test on multiple sizes, including iPhone SE and Pro Max
 
-**Ethical boundary:** Never hide critical content or controls behind hardware intrusions---every device deserves equal access to all functionality.
-
-See: [references/navigation.md](references/navigation.md) for detailed navigation bar and tab bar specifications.
+See [references/navigation.md](references/navigation.md) when laying out chrome---exact nav bar and tab bar dimensions, large-title behavior, and split-view rules.
 
 ### 2. Typography & Dynamic Type
 
-**Core concept:** iOS uses the San Francisco (SF Pro) typeface with semantic text styles that automatically scale for accessibility via Dynamic Type.
-
-**Why it works:** Semantic styles create consistent hierarchy across the platform, and Dynamic Type lets every user---including those with visual impairments---read at their preferred size without breaking layouts.
+**Core concept:** iOS uses the San Francisco (SF Pro) typeface with semantic text styles that automatically scale for accessibility via Dynamic Type. Semantic styles give consistent platform hierarchy; Dynamic Type lets users read at their preferred size without breaking layouts.
 
 **Key insights:**
 - Large Title: 34pt Bold; Title: 17pt Medium; Body: 17pt Regular; Caption: 12-13pt; secondary text: 15pt at 60% opacity
-- Minimum text size 11pt (captions/secondary only); minimum contrast 4.5:1 (WCAG AA)
+- Minimum text size 11pt (captions/secondary only)
 - Line height at least 1.3x font size; optimal line length 35-50 characters on mobile
 - Always left-aligned, non-justified text
 
@@ -81,15 +75,11 @@ See: [references/navigation.md](references/navigation.md) for detailed navigatio
 - Prefer weight and color variation over extreme size differences for hierarchy
 - Test all layouts at the largest Dynamic Type size
 
-**Ethical boundary:** Never disable Dynamic Type or fix font sizes that block accessibility scaling---every user deserves readable text.
-
-See: [references/typography.md](references/typography.md) for complete text styles, font sizes, and Dark Mode typography rules.
+See [references/typography.md](references/typography.md) when matching a design to exact specs---per-style hex values and the Dark Mode text-color mapping.
 
 ### 3. Color & Dark Mode
 
 **Core concept:** iOS provides semantic system colors that automatically adapt between light and dark appearances while preserving contrast and hierarchy.
-
-**Why it works:** Semantic colors maintain readability across appearances without manual intervention, so Dark Mode users get a first-class experience and the app feels polished and native.
 
 **Key insights:**
 - Use `Color(.label)`, `Color(.secondaryLabel)`, `Color(.systemBackground)` instead of hardcoded colors
@@ -112,15 +102,11 @@ See: [references/typography.md](references/typography.md) for complete text styl
 - Define custom colors in the Asset Catalog with light/dark variants, not in code
 - Never assume a background is white or black; test with Increase Contrast enabled
 
-**Ethical boundary:** Dark Mode is not optional polish---never ship an app that is unreadable or broken in it.
-
-See: [references/colors-depth.md](references/colors-depth.md) for semantic colors, Dark Mode palette, and contrast ratio guidelines.
+See [references/colors-depth.md](references/colors-depth.md) when checking contrast---the full WCAG ratio table (normal text, large text, UI components) and the tertiary/grouped-background tokens.
 
 ### 4. Navigation Patterns
 
-**Core concept:** iOS uses a layered navigation model: tab bars for primary destinations, navigation stacks for hierarchical drilling, and modals for focused tasks.
-
-**Why it works:** Consistent navigation means users always know where they are, how they got there, and how to go back; violating these patterns makes the app feel foreign on iOS.
+**Core concept:** iOS uses a layered navigation model: tab bars for primary destinations, navigation stacks for hierarchical drilling, and modals for focused tasks. Users rely on these patterns to know where they are and how to get back; reinventing them makes the app feel foreign.
 
 **Key insights:**
 - Tab bar: 2-5 primary destinations, always visible, remembers state per tab
@@ -143,8 +129,6 @@ See: [references/colors-depth.md](references/colors-depth.md) for semantic color
 - Back button text should be the previous screen's title, not "Back"
 - Tab labels are single words ("Home", "Search"); modal titles describe the task ("New Message", "Edit Profile")
 - Use `NavigationStack` (not deprecated `NavigationView`) in SwiftUI
-
-**Ethical boundary:** Never trap users in flows without a clear exit---every screen needs an obvious way back or out.
 
 ### 5. Controls & Inputs
 
@@ -176,19 +160,17 @@ See: [references/colors-depth.md](references/colors-depth.md) for semantic color
 
 **Ethical boundary:** Never disguise ads as native controls or make destructive actions easy to trigger accidentally.
 
-See: [references/components.md](references/components.md) for buttons, lists, input controls, menus, and confirmation dialogs. See also: [references/keyboard-input.md](references/keyboard-input.md) for keyboard types and input patterns.
+See [references/components.md](references/components.md) when building a specific control---button styles, list/section variants, picker vs segmented-control choice, and confirmation-dialog wiring. See [references/keyboard-input.md](references/keyboard-input.md) when building forms---keyboard-type table, input accessory views, and hardware-keyboard shortcuts.
 
 ### 6. Accessibility
 
-**Core concept:** iOS has world-class accessibility features (VoiceOver, Dynamic Type, Switch Control, Voice Control), and every app must support them as a first-class concern.
-
-**Why it works:** Over 1 billion people live with some form of disability, and accessible apps benefit everyone (larger text in sunlight, VoiceOver while driving). App Store guidelines require it.
+**Core concept:** iOS has world-class accessibility features (VoiceOver, Dynamic Type, Switch Control, Voice Control), and every app must support them as a first-class concern. App Store review can reject apps that are unusable with assistive technologies.
 
 **Key insights:**
 - Every interactive element needs an `.accessibilityLabel`; use `.accessibilityValue` for state and `.accessibilityHint` for effect
 - Group related elements with `.accessibilityElement(children: .combine)`
 - Support Dynamic Type at all sizes; test at the largest setting
-- Minimum touch target 44 x 44pt; minimum text contrast 4.5:1 (WCAG AA)
+- Honor the 44 x 44pt touch target (section 1) and 4.5:1 contrast minimum (section 3) as accessibility requirements, not just visual defaults
 - Never convey meaning through color alone
 
 **Product applications:**
@@ -206,15 +188,11 @@ See: [references/components.md](references/components.md) for buttons, lists, in
 - Test the complete app flow using only VoiceOver
 - Use Xcode's Accessibility Inspector to audit contrast and labels
 
-**Ethical boundary:** Shipping an inaccessible app excludes real people---treat VoiceOver testing as seriously as visual testing.
-
-See: [references/accessibility.md](references/accessibility.md) for VoiceOver implementation, Dynamic Type support, and the accessibility checklist.
+See [references/accessibility.md](references/accessibility.md) before sign-off---the full VoiceOver-implementation patterns and a pre-ship accessibility checklist to run the app against.
 
 ### 7. Icons & Images
 
-**Core concept:** iOS uses SF Symbols as the standard icon system and requires app icons in specific sizes with the signature superellipse ("squircle") mask applied automatically.
-
-**Why it works:** SF Symbols align perfectly with San Francisco text, scale with Dynamic Type, and adapt to weights and sizes; consistent iconography makes the interface feel cohesive and native.
+**Core concept:** iOS uses SF Symbols as the standard icon system and requires app icons in specific sizes with the signature superellipse ("squircle") mask applied automatically. SF Symbols align optically with San Francisco text and scale with Dynamic Type, so they stay aligned and crisp at every weight and size.
 
 **Key insights:**
 - Use SF Symbols (`Image(systemName:)`) for all standard icons---they scale with text
@@ -238,13 +216,11 @@ See: [references/accessibility.md](references/accessibility.md) for VoiceOver im
 
 **Ethical boundary:** Never use icons that suggest functionality that doesn't exist or contradict iOS conventions (trash = delete, not archive).
 
-See: [references/app-icons.md](references/app-icons.md) for icon size tables, shape specifications, and design guidelines.
+See [references/app-icons.md](references/app-icons.md) when exporting the app icon---per-context size table, exact squircle math, and the iOS 18 light/dark/tinted variant requirements.
 
 ### 8. Gestures & Haptics
 
-**Core concept:** iOS defines standard gestures (swipe back, pull to refresh, long press for context menu) and haptic feedback patterns that must be respected and never overridden.
-
-**Why it works:** Gestures are muscle memory---overriding swipe-back or repurposing pull-to-refresh disorients users. Haptics provide invisible confirmation that an action registered.
+**Core concept:** iOS defines standard gestures (swipe back, pull to refresh, long press for context menu) and haptic feedback patterns that must be respected and never overridden. Gestures are muscle memory---repurposing swipe-back or pull-to-refresh disorients users; haptics give invisible confirmation that an action registered.
 
 **Key insights:**
 - Never override: swipe-right-from-edge (back), swipe-down on modal (dismiss), pull-down on list (refresh)
@@ -267,9 +243,7 @@ See: [references/app-icons.md](references/app-icons.md) for icon size tables, sh
 - `UINotificationFeedbackGenerator()` with `.success`, `.warning`, `.error` for outcomes
 - Call `.prepare()` before triggering haptics to minimize latency
 
-**Ethical boundary:** Haptic feedback should confirm, never coerce.
-
-See: [references/gestures.md](references/gestures.md) for the standard gesture table, haptic patterns, and animation guidelines.
+See [references/gestures.md](references/gestures.md) when wiring gestures or animation---the full reserved-gesture table, haptic-generator recipes, and standard animation timing/curves.
 
 ## Common Mistakes
 
@@ -297,19 +271,13 @@ Audit any iOS interface design:
 | Can a VoiceOver user complete every task? | App inaccessible to blind users | Add labels, values, hints to all interactive elements |
 | Are navigation patterns native iOS? | App feels foreign | Replace hamburger menus with tab bars; standard push/modal navigation |
 
-## Reference Files
+## Beyond Core UI
 
-- [typography.md](references/typography.md): Text styles, font sizes, Dynamic Type, Dark Mode typography
-- [navigation.md](references/navigation.md): Tab bar, navigation bar, modals, search patterns, split views
-- [components.md](references/components.md): Buttons, lists, input controls, menus, confirmation dialogs
-- [colors-depth.md](references/colors-depth.md): Semantic colors, Dark Mode, contrast ratios
-- [gestures.md](references/gestures.md): Standard gestures, haptics, animations
-- [accessibility.md](references/accessibility.md): VoiceOver, Dynamic Type, accessibility checklist
-- [app-icons.md](references/app-icons.md): Icon sizes, shape, SF Symbols guidelines
-- [keyboard-input.md](references/keyboard-input.md): Keyboard types, input accessory views, hardware keyboard support
-- [privacy-permissions.md](references/privacy-permissions.md): Permission request timing, pre-permission screens, handling denial
-- [widgets-extensions.md](references/widgets-extensions.md): Widget sizes, App Clips design, Live Activities
-- [system-integration.md](references/system-integration.md): Siri, Shortcuts, Handoff, drag-drop, universal links
+The eight framework sections above each link their deep-dive reference inline at the point of need. Three further references cover system surfaces that sit outside the on-screen UI:
+
+- See [references/privacy-permissions.md](references/privacy-permissions.md) when the app requests camera, location, contacts, or any protected resource---request timing, pre-permission priming screens, usage-string wording, and the denied-permission recovery path.
+- See [references/widgets-extensions.md](references/widgets-extensions.md) when building a Home Screen widget, App Clip, Live Activity, or share/action extension---supported sizes and per-surface design constraints.
+- See [references/system-integration.md](references/system-integration.md) when wiring the app into the OS---Siri/Shortcuts intents, Handoff, drag-and-drop, universal links, and Spotlight indexing.
 
 ## Further Reading
 
