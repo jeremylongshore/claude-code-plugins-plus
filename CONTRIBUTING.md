@@ -53,6 +53,26 @@ The bar isn't _size_, it's _completeness of what you do ship_. Start from `templ
 
 Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you push. That script runs the same validators CI runs — passing it locally means your PR will pass the hard gates.
 
+## What a submission must include
+
+Two things, and both help you more than they cost you:
+
+**1. The submission issue comes first.** Every plugin/source submission starts as a GitHub issue using the [plugin-submission template](.github/ISSUE_TEMPLATE/plugin-submission.yml) — it captures the PRD essentials (problem, users, success criteria, top requirements) before anyone reads code. Your PR then links that issue (`Closes #N` / `Refs #N`). A PR that arrives without one isn't rejected — you'll just be asked to file the issue before review continues.
+
+**2. The docs that match your tier.** The bar scales with the claim, not the size:
+
+| Tier | What it covers | Required docs |
+|------|----------------|---------------|
+| **Micro-skill** | a single command or skill, no scripts | `PRD.md` (short form OK) |
+| **Standard plugin** | skills plus scripts/commands | `PRD.md` + `ADR.md` |
+| **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
+
+Fill-in-the-blank templates live in [`templates/skill-docs/`](templates/skill-docs/README.md) — copy the ones your tier needs into your plugin directory as `docs/PRD.md`, `docs/ADR.md`, etc. Your issue answers ARE most of the PRD, so this is minutes, not hours. The same matrix applies to Intent Solutions' own skills — this isn't a hoop for outsiders, it's the house standard. Full process: [`000-docs/700-DR-GUID-skill-submission-standard.md`](000-docs/700-DR-GUID-skill-submission-standard.md).
+
+## Getting featured
+
+Nominate any skill — yours or one you love — via the [killer-skill nomination template](.github/ISSUE_TEMPLATE/killer-skill-nomination.yml). Eligibility for featuring is A-grade at marketplace tier (the 8-field frontmatter per [STANDARDS.md](STANDARDS.md)) plus the pack/flagship doc set, plus an editorial pick. We help you get there — either a PR you own, or a credited hardened mirror (`curated: true`) on our side; a stalled upstream never blocks featuring.
+
 ---
 
 ## Quick Start
@@ -135,6 +155,8 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
 3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.
 4. For an immediate first sync (instead of waiting for Monday), a maintainer can trigger the workflow manually via `gh workflow run sync-external.yml`.
 5. Every subsequent push you make to your own repo gets picked up by the next weekly sync — no further action on your end.
+
+Every listed source is vetted per the [external-source vetting playbook](000-docs/699-DR-GUID-external-source-vetting-playbook.md) and pinned via `sources.lock.json`, and synced content is gated by the payload scanner (`scripts/scan-synced-content.mjs`) before the sync PR lands.
 
 **What `verified:` and `curated:` mean for you as an author.** These two flags are separate and independent:
 
