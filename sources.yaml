@@ -1332,33 +1332,43 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # NOTE (2026-07-07): mytradeledger-skills (trpsbill/skills) was removed
+  # from this list. Its mtl.py trips the unwaivable secret-exfil-cooccur
+  # REFUSE at sync time (run 28886237377) — code review shows an own-service
+  # API client (own .env token → own configured MTL_URL), i.e. a rule-fidelity
+  # gap, not malware. Re-add once the rule distinguishes own-service clients
+  # from foreign-credential exfil. Tracked in #985 (defect 1).
+
   # ============================================================
-  # MyTradeLedger Skills (trpsbill)
-  # https://github.com/trpsbill/skills
-  # MyTradeLedger REST API skill — journaled crypto trades,
-  # account balances / realized P&L, CSV export, asset registry.
+  # mnemos (Polyx Media)
+  # https://github.com/polyxmedia/mnemos
+  # Persistent memory for Claude Code — 2026-W28 featured skill.
+  # Killer-skill nomination #833: 8/8 required frontmatter fields
+  # at upstream HEAD, MIT, active. Pure pinned mirror (no local
+  # hardening needed — upstream is already A-grade).
   # ============================================================
 
-  - name: mytradeledger-skills
-    description: Access and manage MyTradeLedger journaled crypto trades via the REST API — ledger entries (CRUD + bulk-import + P&L recompute), account balances and realized P&L, CSV export, asset registry, entry metadata, and personal access token management.
-    repo: trpsbill/skills
+  - name: mnemos
+    description: Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.
+    repo: polyxmedia/mnemos
     source_path: .
-    target_path: plugins/community/mytradeledger-skills
+    target_path: plugins/community/mnemos
     author:
-      name: trpsbill
-      github: trpsbill
-      email: trpsbill@gmail.com
+      name: Polyx Media
+      github: polyxmedia
     license: MIT
     category: community
     verified: false
     include:
       - '.claude-plugin/plugin.json'
-      - 'skills/**'
+      - '.claude/skills/mnemos/SKILL.md'
+      - 'README.md'
       - 'LICENSE'
     exclude:
-      - 'node_modules/**'
       - '.git/**'
+      - 'node_modules/**'
       - '*.log'
+
   # ============================================================
   # PortalJS (Datopian)
   # https://github.com/datopian/portaljs

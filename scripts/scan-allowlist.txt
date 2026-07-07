@@ -23,7 +23,8 @@ plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the
 plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs
 plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI install step inside a SaaS-pack skill
 
-# ── TEMPORARY per-PR source-vetting sign-off (remove after merge — tracked in the
-# sources-hygiene follow-up PR). sources-change-unscanned is a per-review gate;
-# leaving this line on main would auto-waive FUTURE source-list changes too.
-sources.yaml:sources-change-unscanned  portaljs vetted 2026-07-07 per 699 playbook: datopian/portaljs (2.3k-star, MIT, active), least-privilege include globs verified upstream, verified:false tier
+# ── TEMPORARY per-PR source-vetting sign-off. sources-change-unscanned is a
+# per-review gate; a persistent line here would auto-waive FUTURE source-list
+# changes too, so each sources PR swaps this line for its own scoped reason and
+# the one-shot-waiver fix (#985 defect 3) retires the convention entirely.
+sources.yaml:sources-change-unscanned  2026-07-07 sources-hygiene PR reviewed: removes REFUSEd mytradeledger source (risk-reducing) + adds mnemos pinned mirror vetted per 699 (polyxmedia/mnemos, 8/8 fields, MIT, 20-star, least-privilege globs)
