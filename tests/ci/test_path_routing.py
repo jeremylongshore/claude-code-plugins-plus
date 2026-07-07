@@ -1,4 +1,12 @@
-"""Path-routing dry-run tests for the new-track workflow split.
+"""Path-routing dry-run tests for the CI workflow set.
+
+The 2026-07 consolidation retired the split lint workflows (lint-markdown /
+lint-python / lint-shell / lint-typescript / lint-skill-codeblocks); their jobs
+now run inside the UNFILTERED "Validate Plugins" workflow, which fires on every
+PR. So lint coverage is no longer path-routed — it runs unconditionally, which
+is what fixes the "N Expected forever" stuck-PR class. These tests pin the new
+invariant; the glob / paths-ignore / YAML-extraction tests below are
+architecture-independent library tests.
 
 Pin which workflows fire for synthetic PR diffs. Catches:
     - Glob typos in a workflow's `paths:` filter
@@ -47,91 +55,71 @@ def fires_for(files: list[str]) -> set[str]:
 
 
 # =============================================================================
-# Per-domain routing tests
+# Lint consolidation (2026-07)
 # =============================================================================
 
-
-class TestMarkdownRouting:
-    def test_pure_markdown_change_fires_lint_markdown(self):
-        fired = fires_for(["README.md"])
-        assert "Lint Markdown" in fired
-
-    def test_plugin_skill_md_fires_both_markdown_and_skill_codeblocks(self):
-        fired = fires_for([
-            "plugins/security/penetration-tester/skills/x/SKILL.md",
-        ])
-        assert "Lint Markdown" in fired
-        assert "Lint Skill Code Blocks" in fired
-
-    def test_doc_only_change_does_not_fire_python_or_typescript(self):
-        fired = fires_for(["000-docs/some-doc.md"])
-        assert "Lint Markdown" in fired
-        assert "Lint Python" not in fired
-        assert "Lint TypeScript" not in fired
-        assert "Lint Shell" not in fired
+RETIRED_LINT_WORKFLOWS = {
+    "Lint Markdown",
+    "Lint Python",
+    "Lint Shell",
+    "Lint TypeScript",
+    "Lint Skill Code Blocks",
+}
 
 
-class TestPythonRouting:
-    def test_python_source_fires_lint_python(self):
-        fired = fires_for(["scripts/foo.py"])
-        assert "Lint Python" in fired
-
-    def test_python_source_does_not_fire_typescript_lint(self):
-        fired = fires_for(["scripts/foo.py"])
-        assert "Lint TypeScript" not in fired
-
-    def test_pyproject_change_fires_lint_python(self):
-        fired = fires_for(["plugins/security/penetration-tester/pyproject.toml"])
-        assert "Lint Python" in fired
-
-    def test_requirements_change_fires_lint_python(self):
-        fired = fires_for(["plugins/x/requirements.txt"])
-        assert "Lint Python" in fired
+def all_workflow_names() -> set[str]:
+    return {wf["name"] for wf in list_all_workflows()}
 
 
-class TestTypeScriptRouting:
-    def test_ts_source_fires_lint_typescript(self):
-        fired = fires_for(["packages/cli/src/index.ts"])
-        assert "Lint TypeScript" in fired
-
-    def test_js_source_fires_lint_typescript(self):
-        fired = fires_for(["scripts/sync-marketplace.cjs"])
-        assert "Lint TypeScript" in fired
-
-    def test_tsconfig_change_fires_lint_typescript(self):
-        fired = fires_for(["packages/cli/tsconfig.json"])
-        assert "Lint TypeScript" in fired
-
-    def test_package_json_fires_lint_typescript(self):
-        fired = fires_for(["package.json"])
-        assert "Lint TypeScript" in fired
+def validate_plugins_fires(files: list[str]) -> bool:
+    """Validate Plugins is unfiltered → fires on every PR → lint coverage runs."""
+    return "Validate Plugins" in run_routing(files)["_no_filter"]
 
 
-class TestShellRouting:
-    def test_shell_script_fires_lint_shell(self):
-        fired = fires_for(["scripts/quick-test.sh"])
-        assert "Lint Shell" in fired
+class TestLintConsolidation:
+    """The split lint workflows were retired; their jobs run inside the
+    unfiltered Validate Plugins workflow, so lint runs on every PR without
+    path-routing fragility."""
 
-    def test_shell_script_does_not_fire_python_lint(self):
-        fired = fires_for(["scripts/quick-test.sh"])
-        assert "Lint Python" not in fired
+    def test_split_lint_workflows_are_retired(self):
+        present = all_workflow_names()
+        for name in RETIRED_LINT_WORKFLOWS:
+            assert name not in present, (
+                f"'{name}' should have been consolidated into Validate Plugins, "
+                f"not left as a standalone path-filtered workflow"
+            )
 
+    def test_validate_plugins_covers_every_change_kind(self):
+        # A markdown, python, typescript, shell, or skill change is all covered
+        # by the unfiltered Validate Plugins run (which carries the lint jobs).
+        for files in (
+            ["README.md"],
+            ["scripts/foo.py"],
+            ["plugins/security/penetration-tester/pyproject.toml"],
+            ["plugins/x/requirements.txt"],
+            ["packages/cli/src/index.ts"],
+            ["scripts/sync-marketplace.cjs"],
+            ["packages/cli/tsconfig.json"],
+            ["package.json"],
+            ["scripts/quick-test.sh"],
+            ["plugins/security/penetration-tester/skills/x/SKILL.md"],
+            ["plugins/security/penetration-tester/README.md"],
+        ):
+            assert validate_plugins_fires(files), (
+                f"Validate Plugins must fire (carry lint) for {files}"
+            )
 
-class TestSkillCodeblocksRouting:
-    def test_skill_md_fires_skill_codeblocks(self):
-        fired = fires_for([
-            "plugins/security/penetration-tester/skills/x/SKILL.md",
-        ])
-        assert "Lint Skill Code Blocks" in fired
-
-    def test_plugin_readme_fires_skill_codeblocks(self):
-        fired = fires_for(["plugins/security/penetration-tester/README.md"])
-        assert "Lint Skill Code Blocks" in fired
-
-    def test_top_level_readme_does_not_fire_skill_codeblocks(self):
-        """README.md at repo root is NOT a plugin SKILL.md / README.md."""
-        fired = fires_for(["README.md"])
-        assert "Lint Skill Code Blocks" not in fired
+    def test_no_retired_lint_workflow_fires_for_any_change(self):
+        for files in (
+            ["README.md"],
+            ["scripts/foo.py"],
+            ["packages/cli/src/index.ts"],
+            ["scripts/quick-test.sh"],
+            ["plugins/security/penetration-tester/skills/x/SKILL.md"],
+        ):
+            assert RETIRED_LINT_WORKFLOWS.isdisjoint(fires_for(files)), (
+                f"a retired lint workflow unexpectedly fired for {files}"
+            )
 
 
 class TestActionlintRouting:
@@ -150,29 +138,21 @@ class TestActionlintRouting:
 
 
 class TestMultiFileRouting:
-    def test_mixed_python_and_typescript_fires_both(self):
-        fired = fires_for([
-            "scripts/foo.py",
-            "packages/cli/src/x.ts",
-        ])
-        assert "Lint Python" in fired
-        assert "Lint TypeScript" in fired
+    def test_mixed_code_change_is_covered_by_validate_plugins(self):
+        files = ["scripts/foo.py", "packages/cli/src/x.ts"]
+        assert validate_plugins_fires(files)
+        assert RETIRED_LINT_WORKFLOWS.isdisjoint(fires_for(files))
 
-    def test_doc_only_pr_fires_only_markdown_workflows(self):
-        """The PR #823 failure mode: doc-only edit should fire ONLY markdown
-        workflows. The plugin-structure required check (which still runs
-        unfiltered from validate-plugins.yml) is not in this set because
-        it has no paths filter."""
-        fired = fires_for([
+    def test_doc_only_pr_gets_lint_but_does_not_fire_actionlint(self):
+        """A doc-only edit is still linted (via the unfiltered Validate Plugins
+        run), but no code/workflow-specific path-filtered workflow (Actionlint)
+        fires for it."""
+        files = [
             "plugins/saas-packs/databricks-pack/000-docs/000-INDEX.md",
             "plugins/saas-packs/databricks-pack/000-docs/014-spec.md",
-        ])
-        assert "Lint Markdown" in fired
-        # NO python, TS, shell, actionlint
-        assert "Lint Python" not in fired
-        assert "Lint TypeScript" not in fired
-        assert "Lint Shell" not in fired
-        assert "Actionlint" not in fired
+        ]
+        assert validate_plugins_fires(files)
+        assert "Actionlint" not in fires_for(files)
 
 
 # =============================================================================
@@ -180,22 +160,21 @@ class TestMultiFileRouting:
 # =============================================================================
 
 
-class TestEveryNewWorkflowHasPathsFilter:
-    """The point of PR 2's split is that each new workflow has a paths filter.
-    If a new workflow gains a `paths:` filter only by accident (e.g. fires
-    on every PR), this test catches it."""
+class TestPathFilteredWorkflowsHaveFilters:
+    """After the lint consolidation, Actionlint is the remaining path-filtered
+    lint-adjacent workflow (it should fire only on workflow/config changes, not
+    every PR). If it loses its filter and starts firing on every PR — or goes
+    missing — this catches it."""
 
     EXPECTED_FILTERED_WORKFLOWS = {
-        "Lint Markdown",
-        "Lint TypeScript",
-        "Lint Python",
-        "Lint Shell",
-        "Lint Skill Code Blocks",
         "Actionlint",
     }
 
-    def test_all_new_workflows_have_paths_filters(self):
+    def test_expected_workflows_are_present_and_filtered(self):
         all_wfs = list_all_workflows()
+        names = {wf["name"] for wf in all_wfs}
+        for expected in self.EXPECTED_FILTERED_WORKFLOWS:
+            assert expected in names, f"expected workflow '{expected}' is missing"
         for wf in all_wfs:
             if wf["name"] in self.EXPECTED_FILTERED_WORKFLOWS:
                 assert wf["paths"], (
@@ -394,16 +373,15 @@ class TestYamlExtractionEdgeCases:
 class TestWorkflowMetadataExtraction:
     def test_extracts_workflow_name(self):
         wf = extract_workflow_metadata(
-            _REPO_ROOT / ".github" / "workflows" / "lint-markdown.yml"
+            _REPO_ROOT / ".github" / "workflows" / "validate-plugins.yml"
         )
-        assert wf["name"] == "Lint Markdown"
+        assert wf["name"] == "Validate Plugins"
 
     def test_extracts_paths_filter(self):
         wf = extract_workflow_metadata(
-            _REPO_ROOT / ".github" / "workflows" / "lint-python.yml"
+            _REPO_ROOT / ".github" / "workflows" / "actionlint.yml"
         )
-        assert "**/*.py" in wf["paths"]
-        assert "**/pyproject.toml" in wf["paths"]
+        assert ".github/workflows/**" in wf["paths"]
 
     def test_workflow_without_filter_returns_empty_paths(self):
         """validate-plugins.yml has no paths: filter (transition baseline)."""
