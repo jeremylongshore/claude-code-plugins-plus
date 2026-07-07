@@ -27,6 +27,10 @@ on:
       - 'marketplace/src/styles/**'
       - 'marketplace/src/scripts/**'
       - 'marketplace/public/**'
+      # Regenerated catalog data (JSON) is not a UI change — excluding it stops
+      # every plugin PR (which touches this dir via sync-marketplace) from
+      # triggering the ~14-min Playwright E2E. Honors this workflow's own policy.
+      - '!marketplace/public/data/**'
       - 'marketplace/astro.config.mjs'
       - 'marketplace/playwright.config.ts'
       - 'marketplace/playwright.production.config.ts'
@@ -40,6 +44,10 @@ on:
       - 'marketplace/src/styles/**'
       - 'marketplace/src/scripts/**'
       - 'marketplace/public/**'
+      # Regenerated catalog data (JSON) is not a UI change — excluding it stops
+      # every plugin PR (which touches this dir via sync-marketplace) from
+      # triggering the ~14-min Playwright E2E. Honors this workflow's own policy.
+      - '!marketplace/public/data/**'
       - 'marketplace/astro.config.mjs'
       - 'marketplace/playwright.config.ts'
       - 'marketplace/playwright.production.config.ts'

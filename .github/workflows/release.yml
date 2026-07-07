@@ -49,12 +49,14 @@ jobs:
       - name: Run validation tests
         if: ${{ !inputs.skip_tests }}
         run: |
-          echo "Running plugin validation..."
-          chmod +x scripts/*.sh scripts/*.py
-          ./scripts/validate-all.sh plugins
-
-          echo "Testing git-commit-smart installation..."
-          ./scripts/test-installation.sh plugins/devops/git-commit-smart
+          # scripts/validate-all.sh + test-installation.sh were removed; the full
+          # gate now runs in CI (the ci-required aggregate on every PR + on push
+          # to main, which is where releases are cut from). This step re-runs the
+          # two deterministic, self-contained validators as a release smoke check.
+          echo "Running plugin schema validation (standard tier)…"
+          python3 scripts/validate-skills-schema.py --standard
+          echo "Validating catalog invariants…"
+          python3 scripts/validate-catalog-invariants.py
 
       - name: Get current version
         id: current_version
