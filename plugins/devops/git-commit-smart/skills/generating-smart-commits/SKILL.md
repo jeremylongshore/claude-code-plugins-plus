@@ -8,7 +8,6 @@ description: 'Execute use when generating conventional commit messages from stag
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*)
-version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:
@@ -90,3 +89,5 @@ BREAKING CHANGE: description (if applicable)
 - Conventional Commits specification: https://www.conventionalcommits.org/en/v1.0.0/
 - Angular commit guidelines: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit
 - Git commit best practices: https://cbea.ms/git-commit/
+
+Scratch line for end-to-end prescreen verification (PR will be closed).
