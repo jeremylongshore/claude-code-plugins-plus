@@ -1,17 +1,17 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-06-02T03:50:28.570Z",
+    "generated": "2026-07-07T22:35:08.086Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 448,
+    "totalPlugins": 450,
     "totalSkills": 3022,
     "totalCommands": 81,
     "pluginsWithSkills": 417,
     "byCategory": {
-      "productivity": 50,
+      "productivity": 51,
       "security": 29,
       "testing": 27,
       "ai-ml": 76,
@@ -36,15 +36,16 @@
       "data-engineering": 2,
       "enterprise": 2,
       "analytics": 3,
-      "saas-packs": 2
+      "saas-packs": 2,
+      "mcp": 1
     },
     "byStatus": {
-      "active": 429,
+      "active": 431,
       "maintained": 19
     },
     "featured": 7,
-    "new": 427,
-    "generatedAt": "2026-06-02T03:50:28.570Z"
+    "new": 429,
+    "generatedAt": "2026-07-07T22:35:08.086Z"
   },
   "plugins": [
     {
@@ -15265,6 +15266,84 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "schedule-after-usage-reset",
+      "name": "schedule-after-usage-reset",
+      "displayName": "schedule after usage reset",
+      "description": "Find the real Claude usage-limit reset time from the Anthropic usage API and schedule a deferred task to run right after the limit lifts (macOS)",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "schedule",
+        "usage-reset",
+        "rate-limit",
+        "claude-code",
+        "automation"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install schedule-after-usage-reset",
+      "sourcePath": "./plugins/productivity/schedule-after-usage-reset",
+      "lastUpdatedEpoch": 1783463708,
+      "lastUpdatedDate": "2026-07-07T22:35:08.086Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "patricksong1993",
+        "url": "https://github.com/patricksong1993"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "servicegraph",
+      "name": "servicegraph",
+      "displayName": "servicegraph",
+      "description": "ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)",
+      "version": "0.2.0",
+      "category": "mcp",
+      "keywords": [
+        "servicegraph",
+        "service-providers",
+        "agencies",
+        "law-firms",
+        "consulting",
+        "accounting",
+        "marketing",
+        "lead-generation",
+        "professional-services",
+        "us-firms",
+        "product-directories",
+        "saas-directories",
+        "mcp-directories",
+        "ai-directories",
+        "product-launch",
+        "backlinks"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install servicegraph",
+      "sourcePath": "./plugins/mcp/servicegraph",
+      "lastUpdatedEpoch": 1783463708,
+      "lastUpdatedDate": "2026-07-07T22:35:08.086Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Artur Briugeman",
+        "url": "https://servicegraph.co",
+        "email": "artur@nostr.band"
       },
       "type": "instruction-plugin"
     }

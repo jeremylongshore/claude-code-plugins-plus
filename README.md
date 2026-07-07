@@ -130,10 +130,10 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎨  | [Design](#design)                                  |       7 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      15 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      28 |
+| ✅  | [Productivity](#productivity)                      |      29 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -445,7 +445,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **15 plugins** · category slug: `mcp`
+🧩 **16 plugins** · category slug: `mcp`
 
 | Plugin                        | Description                                                                                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -460,6 +460,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `lumera-agent-memory`         | Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across…  |
 | `pr-to-spec`                  | The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection    |
 | `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                      |
+| `servicegraph`                | ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US…   |
 | `slack-channel`               | Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode                                                    |
 | `workflow-orchestrator`       | DAG-based workflow automation with parallel task execution and dependency management                                                        |
 | `x-bug-triage`                | Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues                              |
@@ -517,7 +518,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **28 plugins** · category slug: `productivity`
+✅ **29 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -543,6 +544,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `pm-ai-partner`                            | 12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers                                                   |
 | `prettier-markdown-hook`                   | Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions          |
 | `publishing-skills`                        | Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline — topic research, drafting, SVG…    |
+| `schedule-after-usage-reset`               | Find the real Claude usage-limit reset time from the Anthropic usage API and schedule a deferred task to run right after the limit lifts…   |
 | `skyvern`                                  | AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins                                                     |
 | `travel-assistant`                         | Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete…  |
 | `vibe-guide`                               | Non-technical progress summaries for Claude Code work (hides diffs/log noise).                                                              |

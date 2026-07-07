@@ -42,6 +42,12 @@ marketplace/src/data/npm-stats.json
 .claude-plugin/marketplace.extended.json
 
 
+# Curated external mirrors (frozen from sync — upstream bytes, never reformat).
+# Explicit even though plugins/ below already covers them: these two must stay
+# byte-identical to their pinned fork SHAs (see sources.lock.json).
+plugins/mcp/servicegraph/
+plugins/productivity/schedule-after-usage-reset/
+
 # Out-of-scope subtrees (own formatters / large surface area — handle in follow-up PRs)
 marketplace/
 plugins/

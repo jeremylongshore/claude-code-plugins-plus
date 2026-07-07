@@ -1,0 +1,50 @@
+{
+  "name": "@intentsolutionsio/servicegraph",
+  "version": "0.2.0",
+  "description": "Drive the ServiceGraph API — metrics-enriched business datasets for founders (agencies, directories, newsletters, and more). Ships a branded `servicegraph` skill that works against any dataset, plus 1",
+  "keywords": [
+    "servicegraph",
+    "service-providers",
+    "agencies",
+    "law-firms",
+    "consulting",
+    "accounting",
+    "marketing",
+    "lead-generation",
+    "professional-services",
+    "us-firms",
+    "product-directories",
+    "saas-directories",
+    "mcp-directories",
+    "ai-directories",
+    "product-launch",
+    "backlinks",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/mcp/servicegraph"
+  },
+  "homepage": "https://tonsofskills.com/plugins/servicegraph",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Artur Briugeman",
+    "email": "artur@nostr.band",
+    "url": "https://servicegraph.co"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install servicegraph\\\\n  or /plugin install servicegraph@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

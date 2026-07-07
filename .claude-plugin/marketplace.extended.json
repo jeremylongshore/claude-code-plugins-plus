@@ -10439,6 +10439,60 @@
       },
       "repository": "https://github.com/Xquik-dev/x-twitter-scraper",
       "license": "MIT"
+    },
+    {
+      "name": "servicegraph",
+      "source": "./plugins/mcp/servicegraph",
+      "description": "ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)",
+      "version": "0.2.0",
+      "category": "mcp",
+      "keywords": [
+        "servicegraph",
+        "service-providers",
+        "agencies",
+        "law-firms",
+        "consulting",
+        "accounting",
+        "marketing",
+        "lead-generation",
+        "professional-services",
+        "us-firms",
+        "product-directories",
+        "saas-directories",
+        "mcp-directories",
+        "ai-directories",
+        "product-launch",
+        "backlinks"
+      ],
+      "author": {
+        "name": "Artur Briugeman",
+        "url": "https://servicegraph.co",
+        "email": "artur@nostr.band"
+      },
+      "homepage": "https://servicegraph.co",
+      "repository": "https://github.com/nostrband/servicegraph",
+      "license": "MIT"
+    },
+    {
+      "name": "schedule-after-usage-reset",
+      "source": "./plugins/productivity/schedule-after-usage-reset",
+      "description": "Find the real Claude usage-limit reset time from the Anthropic usage API and schedule a deferred task to run right after the limit lifts (macOS)",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "schedule",
+        "usage-reset",
+        "rate-limit",
+        "claude-code",
+        "automation"
+      ],
+      "author": {
+        "name": "patricksong1993",
+        "url": "https://github.com/patricksong1993"
+      },
+      "homepage": "https://github.com/patricksong1993/schedule-after-usage-reset",
+      "repository": "https://github.com/patricksong1993/schedule-after-usage-reset",
+      "license": "MIT"
     }
   ]
 }
