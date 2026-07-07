@@ -23,8 +23,12 @@ plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the
 plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs
 plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI install step inside a SaaS-pack skill
 
+# ── Remote MCP servers that ARE the plugin's engine (reviewed, no credentials embedded). ──
+plugins/mcp/servicegraph/.mcp.json:mcp-remote  the plugin IS an agent-skills front-end to the remote ServiceGraph MCP server (https://mcp.servicegraph.co, plain HTTP transport, no embedded credentials) — reviewed 2026-07-07, curated mirror pinned at fork SHA df4648a4
+plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint documented as the setup step in the upstream README — reviewed 2026-07-07 with the .mcp.json above
+
 # ── TEMPORARY per-PR source-vetting sign-off. sources-change-unscanned is a
 # per-review gate; a persistent line here would auto-waive FUTURE source-list
 # changes too, so each sources PR swaps this line for its own scoped reason and
 # the one-shot-waiver fix (#985 defect 3) retires the convention entirely.
-sources.yaml:sources-change-unscanned  2026-07-07 sources-hygiene PR reviewed: removes REFUSEd mytradeledger source (risk-reducing) + adds mnemos pinned mirror vetted per 699 (polyxmedia/mnemos, 8/8 fields, MIT, 20-star, least-privilege globs)
+sources.yaml:sources-change-unscanned  2026-07-07 curated-vendoring PR reviewed: adds servicegraph (nostrband/ServiceGraph, nomination #828) + schedule-after-usage-reset (lemondepat/schedule-after-usage-reset, nomination #830) as curated frozen mirrors vetted per 699 — both MIT, 8/8 fields, content pinned to the reviewed fork SHAs df4648a4/a83ea165

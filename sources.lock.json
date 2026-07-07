@@ -510,6 +510,48 @@
         "skills/seo-blog-writer/references/glossary-schema.md": "sha256:040eb9b94c2ef17ad9599fd23b664d354b041d8cc8ca6a78f801d883156d8980"
       }
     },
+    "schedule-after-usage-reset": {
+      "repo": "lemondepat/schedule-after-usage-reset",
+      "resolved_ref": "a83ea16590b5c7895987b496785d228c3d4b5346",
+      "locked_at": "2026-07-07T22:29:06.789Z",
+      "files": {
+        ".claude-plugin/plugin.json": "sha256:0fe20fd6a657b372d982e53c98fad0b81dd69f19d0385da72f4d36a0d8c46338",
+        "LICENSE": "sha256:9406450e19aae35301ee058fa7c8d21fbd9ad702b3ac0c5d14d05d1ca58cfbc7",
+        "README.md": "sha256:1bf05090a2f3dd95c69e597f978887176bf640e5382f433d0d15e13d92d949c1",
+        "skills/schedule-after-usage-reset/SKILL.md": "sha256:c7d6d232358a10733271c22dcc22de182493e3327df67502379a7fbcc7f8d94a"
+      }
+    },
+    "servicegraph": {
+      "repo": "nostrband/ServiceGraph",
+      "resolved_ref": "df4648a40426762c4001d064e9f39d1ebabf1540",
+      "locked_at": "2026-07-07T22:29:06.789Z",
+      "files": {
+        ".claude-plugin/plugin.json": "sha256:5e75ec6d06cb94cc2f1ce0704ea5d2f7016144b1de08f1250dc1b1662b041de3",
+        ".mcp.json": "sha256:9068a062df8af772b2aeb100a19e406ba2a5f996c9b3228c3a9b61e0efadf47f",
+        "LICENSE": "sha256:63216822f8e4f981382a08a47ac618565ef004cb4c15ebd90e2afc27eda9c032",
+        "README.md": "sha256:9086558e1bcb588dc1b8f1a25e8c41ec23e3f57176d763b5189d58cba997eb0d",
+        "assets/mark-128.png": "sha256:f8c706bd47ba3b84c852f132a44a2ab56bd5f8e1c3433c5fd339e245a9536f46",
+        "assets/servicegraph-datasets.png": "sha256:9272590cf30b116e2f807f8afe0029d0132d86f8682da7a066e2cfc9b39a1f79",
+        "skills/find-ai-consultancy/SKILL.md": "sha256:7e27daf7d14eb2670286070176ffba62edf05454b391d7667f3cde05279ca1da",
+        "skills/find-ai-directories/SKILL.md": "sha256:06450bbe33e8038e1d5bf2451447ff31487f0994bd01879e7ddb16cb2481770f",
+        "skills/find-cpa-firm/SKILL.md": "sha256:02ba15bc0ee5824c35579158fb5156bd07b1fe544a9c1f8a05921bff882a1998",
+        "skills/find-cybersecurity-firm/SKILL.md": "sha256:6d22826f26ff5a62c94d8712b0b15760d008173d6b599f254490394b9b4cd749",
+        "skills/find-design-agency/SKILL.md": "sha256:310f956a86d386ac54b63a9072751e1a89dcbace65b8eb597c5a30397ad576b5",
+        "skills/find-engineering-firm/SKILL.md": "sha256:a91a59983a1a4a883537d988fc9e0c226599fe13e2c2404b18725846470c5cf2",
+        "skills/find-law-firm/SKILL.md": "sha256:a05b937f1e3ae0d7047ae8875ece35783dcc3939975a590a2e8365df91cee97b",
+        "skills/find-management-consultant/SKILL.md": "sha256:afc74a3e5c86a4419e61c2c3e532e0cd6ca4bd2834bbd1bbec54b2371b79c94e",
+        "skills/find-marketing-agency/SKILL.md": "sha256:43f9ef1ee300a9b060f07832b7a2e2f82ceba4cde49884e2bc4818e37eb6a9ae",
+        "skills/find-mcp-directories/SKILL.md": "sha256:8b8da549c00b3b72d9a33ad5a1d69e339a315bc90be25d012e44f7caad28b560",
+        "skills/find-pr-agency/SKILL.md": "sha256:9a01c2468773d8e6a4cfc3168bd0f444cb5eddae4c86a538180052f93a0cbca5",
+        "skills/find-product-directories/SKILL.md": "sha256:9c285c72ef29d84fddcf5003a137fcd7cea810947ceb240e42454077469119b1",
+        "skills/find-recruiting-firm/SKILL.md": "sha256:a2a2d7014212d45e514644ba5b20f20fd0033668817bcb8fb6e2ec5bc773fb50",
+        "skills/find-seo-agency/SKILL.md": "sha256:5401fb7050a8b89fda50daf4d0a971e136d8602ff81159841717b9e4afc42d43",
+        "skills/find-service-providers/SKILL.md": "sha256:c7c889469d1ac4b63ed44e9aecda0742044d2f0b5e9170ca02c42081185af40a",
+        "skills/find-software-developer/SKILL.md": "sha256:b16c942d4430542e0089f3fa4e6d021ccb42aad46540e8ef28d9f0d360e0d27b",
+        "skills/find-web-developer/SKILL.md": "sha256:90b7fac4df2ec671a7df1df6f754819834d12a50f3614eb01733ded3cbe60495",
+        "skills/servicegraph/SKILL.md": "sha256:3e358f9451696f5690bc90006eff12737a76b4b5aad3eeb550343233ed9042dc"
+      }
+    },
     "skyvern": {
       "repo": "Skyvern-AI/skyvern",
       "resolved_ref": null,

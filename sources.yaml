@@ -1441,6 +1441,91 @@ sources:
       - 'dist/**'
       - 'contrib/**'
 
+  # ============================================================
+  # ServiceGraph (Artur Briugeman / nostrband)
+  # https://github.com/nostrband/ServiceGraph
+  # Agent-skills front-end to servicegraph.co's metrics-enriched
+  # business datasets for founders (110k+ US agencies, product /
+  # business directories, newsletters) — 1 branded dataset-agnostic
+  # skill + 17 find-* skills driving api/mcp.servicegraph.co.
+  # ============================================================
+
+  - name: servicegraph
+    description: ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)
+    repo: nostrband/ServiceGraph
+    source_path: .
+    target_path: plugins/mcp/servicegraph
+    author:
+      name: Artur Briugeman
+      github: nostrband
+      email: artur@nostr.band
+    license: MIT
+    category: mcp
+    verified: false
+    # curated: killer-skill nomination #828 (featuring doctrine 000-docs/700:
+    # featuring = mirror + curated: true). Content vendored byte-for-byte from
+    # jeremylongshore/ServiceGraph @ skill-frontmatter-spec (df4648a4), the
+    # staged fix branch 1 commit ahead of upstream main — it brings all 18
+    # SKILL.md files to the 8-field marketplace frontmatter standard. The fix
+    # was offered upstream but the maintainer has been silent 17 days (upstream
+    # frozen since 2026-06-02), so we feature the hardened copy; `curated: true`
+    # FREEZES the mirror. The upstream PR remains the courtesy off-ramp — once
+    # merged, drop `curated:` to resume normal mirroring. See tonone above.
+    curated: true
+    include:
+      - '.claude-plugin/plugin.json'
+      - '.mcp.json'
+      - 'skills/**'
+      - 'assets/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'eval/**'
+
+  # ============================================================
+  # schedule-after-usage-reset (patricksong1993 / lemondepat)
+  # https://github.com/lemondepat/schedule-after-usage-reset
+  # macOS-only skill: reads the real usage-limit reset time from
+  # the Anthropic usage API (Keychain creds) and calls /schedule
+  # with a 5-minute buffer to queue work for when the limit lifts.
+  # ============================================================
+
+  - name: schedule-after-usage-reset
+    description: Find the real Claude usage-limit reset time from the Anthropic usage API and schedule a deferred task to run right after the limit lifts (macOS)
+    repo: lemondepat/schedule-after-usage-reset
+    source_path: .
+    target_path: plugins/productivity/schedule-after-usage-reset
+    author:
+      name: patricksong1993
+      github: patricksong1993
+    license: MIT
+    category: productivity
+    verified: false
+    # curated: killer-skill nomination #830 (featuring doctrine 000-docs/700:
+    # featuring = mirror + curated: true). Content vendored byte-for-byte from
+    # jeremylongshore/schedule-after-usage-reset @ skill-frontmatter-spec
+    # (a83ea165), the staged fix branch 1 commit ahead of upstream main — it
+    # fixes the broken frontmatter YAML and adds the 8 required fields. The fix
+    # was offered upstream but the maintainer has been silent 17 days (upstream
+    # frozen since 2026-05-23), so we feature the hardened copy; `curated: true`
+    # FREEZES the mirror. The upstream PR remains the courtesy off-ramp — once
+    # merged, drop `curated:` to resume normal mirroring. See tonone above.
+    # Attribution: repo owner is lemondepat; plugin.json author/homepage point
+    # at patricksong1993 — both credited.
+    curated: true
+    include:
+      - '.claude-plugin/plugin.json'
+      - 'skills/schedule-after-usage-reset/SKILL.md'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
