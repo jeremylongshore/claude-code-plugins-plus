@@ -1,0 +1,47 @@
+{
+  "synced_from": {
+    "repo": "nostrband/ServiceGraph",
+    "path": ".",
+    "branch": "main"
+  },
+  "curated_from": {
+    "repo": "jeremylongshore/ServiceGraph",
+    "branch": "skill-frontmatter-spec",
+    "commit": "df4648a40426762c4001d064e9f39d1ebabf1540",
+    "note": "Curated mirror (sources.yaml curated: true — frozen from sync). Content vendored byte-for-byte from the fork branch that carries the spec-compliance frontmatter fix; upstream PR to nostrband/ServiceGraph is the standing off-ramp. Killer-skill nomination #828."
+  },
+  "last_sync": "2026-07-07T00:00:00.000Z",
+  "author": {
+    "name": "Artur Briugeman",
+    "github": "nostrband",
+    "email": "artur@nostr.band"
+  },
+  "license": "MIT",
+  "files_synced": 24,
+  "files": [
+    ".claude-plugin/plugin.json",
+    ".mcp.json",
+    "LICENSE",
+    "README.md",
+    "assets/mark-128.png",
+    "assets/servicegraph-datasets.png",
+    "skills/find-ai-consultancy/SKILL.md",
+    "skills/find-ai-directories/SKILL.md",
+    "skills/find-cpa-firm/SKILL.md",
+    "skills/find-cybersecurity-firm/SKILL.md",
+    "skills/find-design-agency/SKILL.md",
+    "skills/find-engineering-firm/SKILL.md",
+    "skills/find-law-firm/SKILL.md",
+    "skills/find-management-consultant/SKILL.md",
+    "skills/find-marketing-agency/SKILL.md",
+    "skills/find-mcp-directories/SKILL.md",
+    "skills/find-pr-agency/SKILL.md",
+    "skills/find-product-directories/SKILL.md",
+    "skills/find-recruiting-firm/SKILL.md",
+    "skills/find-seo-agency/SKILL.md",
+    "skills/find-service-providers/SKILL.md",
+    "skills/find-software-developer/SKILL.md",
+    "skills/find-web-developer/SKILL.md",
+    "skills/servicegraph/SKILL.md"
+  ]
+}

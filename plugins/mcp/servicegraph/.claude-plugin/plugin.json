@@ -1,0 +1,31 @@
+{
+  "name": "servicegraph",
+  "version": "0.2.0",
+  "description": "Drive the ServiceGraph API — metrics-enriched business datasets for founders (agencies, directories, newsletters, and more). Ships a branded `servicegraph` skill that works against any dataset, plus 14 specific skills for the US professional-services catalog (law, marketing, consulting, accounting, IT services, engineering, HR, PR, design, and more) and 3 product-directory skills for where to launch a software product and earn backlinks (general product/SaaS directories, MCP-server registries, and AI-tool/agent directories).",
+  "author": {
+    "name": "Artur Briugeman",
+    "email": "artur@nostr.band",
+    "url": "https://servicegraph.co"
+  },
+  "repository": "https://github.com/nostrband/servicegraph",
+  "homepage": "https://servicegraph.co",
+  "license": "MIT",
+  "keywords": [
+    "servicegraph",
+    "service-providers",
+    "agencies",
+    "law-firms",
+    "consulting",
+    "accounting",
+    "marketing",
+    "lead-generation",
+    "professional-services",
+    "us-firms",
+    "product-directories",
+    "saas-directories",
+    "mcp-directories",
+    "ai-directories",
+    "product-launch",
+    "backlinks"
+  ]
+}
