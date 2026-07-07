@@ -26,6 +26,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  statuses: write # advisory `prescreen-grade` commit status (never a required context)
 
 concurrency:
   group: 'pr-prescreen-${{ github.event.pull_request.number || inputs.pr_number }}'
@@ -308,14 +309,63 @@ jobs:
           PY
           echo "Wrote PR comment body to /tmp/pr-comment.md"
 
-      # NOTE (2026-06): the PR-facing review/comment was removed to stop
-      # prescreen noise on PRs (the 🛑 HARD_BLOCK wall read as "they don't
-      # know what they're doing" to contributors browsing their PRs). The
-      # grade signal still flows to Slack (next step) + the audit-log row,
-      # so prescreen stays useful without polluting the PR conversation.
-      # To restore PR posting, re-add a `gh pr comment --body-file
-      # /tmp/pr-comment.md` step here (avoid `--request-changes`, which
-      # leaves a sticky blocking review).
+      # RESPOND leg (2026-07): the grade previously went only to Slack + the audit
+      # log, so contributors saw nothing. We now surface it two low-noise ways:
+      #   1. an advisory `prescreen-grade` commit STATUS every run (below), and
+      #   2. a single upserted PR comment, but ONLY on CHANGES_REQUESTED/HARD_BLOCK.
+      # Neither is a required context (never added to branch protection), and the
+      # whole job is still gated by the vars.ENABLE_PR_PRESCREEN kill switch.
+
+      # 1) Advisory commit status carrying the grade. Shows in the PR's checks
+      # list; NEVER a required check, so it informs without blocking.
+      - name: Post prescreen-grade commit status
+        if: steps.diff.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ steps.meta.outputs.head_sha }}
+          VERDICT: ${{ steps.classify.outputs.verdict }}
+          SUMMARY: ${{ steps.classify.outputs.summary }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          case "$VERDICT" in
+            PASS) STATE=success ;;
+            CHANGES_REQUESTED|HARD_BLOCK) STATE=failure ;;
+            *) STATE=error ;;
+          esac
+          # GitHub caps a status description at 140 chars.
+          DESC="$(printf '%s: %s' "$VERDICT" "$SUMMARY" | cut -c1-138)"
+          gh api "repos/${REPO}/statuses/${SHA}" \
+            -f state="$STATE" \
+            -f context='prescreen-grade' \
+            -f description="$DESC" \
+            -f target_url="$RUN_URL" >/dev/null
+          echo "Posted prescreen-grade=$STATE ($VERDICT) on $SHA"
+
+      # 2) Single upserted PR comment, ONLY when the contributor needs to act.
+      # Silent on PASS. Edits the same marker comment in place on re-runs so the
+      # PR conversation is not spammed.
+      - name: Upsert prescreen comment (changes-requested / hard-block only)
+        if: (steps.classify.outputs.verdict == 'CHANGES_REQUESTED' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          MARKER='<!-- pr-prescreen-marker -->'
+          { printf '%s\n\n' "$MARKER"; cat /tmp/pr-comment.md; } > /tmp/pr-comment-marked.md
+          existing=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments?per_page=100" \
+            --jq "map(select(.body | contains(\"$MARKER\"))) | .[0].id // empty")
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${REPO}/issues/comments/${existing}" \
+              -F body=@/tmp/pr-comment-marked.md >/dev/null
+            echo "Edited existing prescreen comment $existing"
+          else
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file /tmp/pr-comment-marked.md
+            echo "Created prescreen comment"
+          fi
 
       - name: Notify Slack (PASS / HARD_BLOCK only)
         if: (steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'
