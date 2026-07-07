@@ -157,6 +157,16 @@ test('diffSource: only the named source entry is consulted', () => {
   assert.equal(d.status, 'new-source', 'a different source name must not match');
 });
 
+test('diffSource: a present-but-corrupt entry (no "files") THROWS — fail closed, never silent re-baseline', () => {
+  // A rogue/truncated lock entry that is present but missing `files` must not be
+  // laundered into a `new-source` re-baseline (which would skip drift quarantine).
+  const lock = { version: LOCK_VERSION, sources: { rogue: { repo: 'o/r', resolved_ref: 'x' } } };
+  assert.throws(
+    () => diffSource(lock, 'rogue', digests({ 'SKILL.md': 'a' })),
+    /corrupt or malformed/,
+  );
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // serializeLock / saveLock — deterministic, review-surface-stable output.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -230,6 +240,12 @@ test('loadLock: a JSON array is rejected (lock must be an object)', () => {
   const lockPath = tmpLockPath();
   fs.writeFileSync(lockPath, '[]\n');
   assert.throws(() => loadLock(lockPath), /must be a JSON object/);
+});
+
+test('loadLock: a present non-object "sources" field is rejected (fail closed, no silent re-baseline)', () => {
+  const lockPath = tmpLockPath();
+  fs.writeFileSync(lockPath, JSON.stringify({ version: 1, sources: [] }) + '\n');
+  assert.throws(() => loadLock(lockPath), /invalid "sources" field/);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

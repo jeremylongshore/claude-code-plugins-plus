@@ -96,13 +96,24 @@ export function loadLock(lockPath) {
   if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
     throw new Error(`sources lock at ${lockPath} must be a JSON object`);
   }
+  // A present `sources` field that is not a JSON object (array, string, null)
+  // must fail closed. Silently defaulting to `{}` would classify every pinned
+  // source as new-source and re-baseline the whole lock — exactly the drift
+  // quarantine bypass this file exists to prevent. An ABSENT `sources` field is
+  // still fine (the empty-lock bootstrap path).
+  if (
+    parsed.sources !== undefined &&
+    (parsed.sources === null || typeof parsed.sources !== 'object' || Array.isArray(parsed.sources))
+  ) {
+    throw new Error(
+      `sources lock at ${lockPath} has an invalid "sources" field (must be a JSON object) — ` +
+        'refusing to silently re-baseline every source. Fix or restore it from git.',
+    );
+  }
   return {
     $comment: typeof parsed.$comment === 'string' ? parsed.$comment : LOCK_COMMENT,
     version: typeof parsed.version === 'number' ? parsed.version : LOCK_VERSION,
-    sources:
-      parsed.sources && typeof parsed.sources === 'object' && !Array.isArray(parsed.sources)
-        ? parsed.sources
-        : {},
+    sources: parsed.sources ?? {},
   };
 }
 
@@ -160,15 +171,28 @@ export function saveLock(lockPath, lock) {
  */
 export function diffSource(lock, sourceName, currentFiles) {
   const current = new Map(currentFiles.map((f) => [f.path, f.sha256]));
-  const entry = lock?.sources?.[sourceName];
+  const hasEntry =
+    lock?.sources != null && Object.prototype.hasOwnProperty.call(lock.sources, sourceName);
+  const entry = hasEntry ? lock.sources[sourceName] : null;
 
-  if (!entry || !entry.files || typeof entry.files !== 'object') {
+  // Only a genuinely ABSENT source is new. A source that is present in the lock
+  // but whose entry is corrupt (missing/invalid `files`) must fail closed — not
+  // be silently treated as new-source, which would re-baseline it and skip the
+  // drift quarantine.
+  if (!hasEntry) {
     return {
       status: 'new-source',
       added: [...current.keys()].sort(),
       removed: [],
       changed: [],
     };
+  }
+
+  if (!entry || !entry.files || typeof entry.files !== 'object' || Array.isArray(entry.files)) {
+    throw new Error(
+      `lock entry for source "${sourceName}" is corrupt or malformed (missing/invalid "files") — ` +
+        'refusing to silently re-baseline it as a new source.',
+    );
   }
 
   const locked = entry.files;
