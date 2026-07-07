@@ -62,6 +62,23 @@ Plugin zip packages (cowork downloads) are built with:
 | **Verified**  | Full review + 2 maintainer approvals + 7-day public review | Safe for production           |
 | **Featured**  | Verified + active maintenance + community adoption         | Recommended                   |
 
+## External Plugin Sync — Supply-Chain Security
+
+Some plugins are mirrored weekly from external repositories listed in `sources.yaml`
+(via `scripts/sync-external.mjs` and the `sync-external.yml` workflow). Because those
+upstreams are outside our control, the sync is defended in layers: content pinning with
+drift quarantine (`sources.lock.json`), a deterministic REFUSE/CHALLENGE/FLAG security
+scan, surface tiers by blast radius (`markdown-only` / `scripted` / `hooks-mcp`), the
+curated freeze, and a mandatory human review gate on every sync PR.
+
+- **Threat model** (assets, trust boundary, attack vectors, mitigations, residual risk):
+  [000-docs/698-TQ-SECU-external-sync-threat-model.md](000-docs/698-TQ-SECU-external-sync-threat-model.md)
+- **Vetting playbook** (listing checklist, drift review, scan sign-off, tier policy):
+  [000-docs/699-DR-GUID-external-source-vetting-playbook.md](000-docs/699-DR-GUID-external-source-vetting-playbook.md)
+
+Suspected compromise of a synced upstream is a vulnerability — report it privately per
+"Reporting a Vulnerability" above.
+
 ## For Plugin Developers
 
 - Never hardcode secrets — use environment variables
