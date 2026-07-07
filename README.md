@@ -35,17 +35,17 @@ Or use Claude's built-in command:
 
 <!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
 
-> **Killer Skill of the Week** — [databricks-pack](https://tonsofskills.com/plugins/databricks-pack) by [Jeremy Longshore](https://github.com/jeremylongshore)
+> **Killer Skill of the Week** — [mnemos](https://github.com/polyxmedia/mnemos) by [Polyx Media](https://github.com/polyxmedia)
 >
-> **Find the ~$27K/month leaking out of a $100K Databricks workspace — from the billing table, not a guess**
+> **Persistent memory for Claude Code that actually gets written — measured, not promised**
 >
-> The databricks-cost-leak-hunter skill audits a workspace for real-dollar cost leaks and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure is computed from the customer's own system.billing.usage joined to list_prices — never an estimate. Four named leaks — idle clusters that never auto-terminate, scheduled jobs on All-Purpose compute (2–3× overpay), overprovisioned clusters, and the Photon premium paid without the speedup — each tagged confirmed / estimated / at-risk so a CFO never confuses billed waste with modeled savings. A deterministic Python ranker does the arithmetic (the LLM never eyeballs a number), and the databricks-workspace-mcp control plane turns each leak into a single-config-change fix. One of 24 skills in the Databricks pack.
+> The mnemos skill closes the loop most memory tools leave open: getting anything recorded at all. A SessionStart hook prewarms a token-budgeted context block and a UserPromptSubmit hook pattern-matches correction-shaped prompts into a non-skippable capture directive — upstream measured capture jumping from a 7% baseline to 53%, with a +40% behavior lift on paired Claude runs. Corrections persist as structured tried/wrong_because/fix records, and three that cluster auto-promote into a skill deterministically, no LLM in the loop. The engine is a dependency-free single Go binary (~15 MB, pure-Go SQLite) keeping everything local. MIT-licensed, with all 8/8 required frontmatter fields verified at upstream HEAD.
 >
-> _"A $100K/month Databricks workspace is likely burning ~$27,000/month — and every line is one config change."_ — Jeremy Longshore
+> _"A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."_ — Polyx Media
 >
-> Grade: A | Week of June 30, 2026 (W27) | [Browse on Marketplace](https://tonsofskills.com/plugins/databricks-pack)
+> Grade: A | Week of July 7, 2026 (W28) | [View on GitHub](https://github.com/polyxmedia/mnemos)
 >
-> Previous picks: [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 <!-- KILLER-SKILL:END -->
 

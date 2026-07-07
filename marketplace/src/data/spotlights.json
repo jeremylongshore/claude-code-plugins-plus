@@ -1,19 +1,32 @@
 {
-  "week": "2026-W27",
+  "week": "2026-W28",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "databricks-pack",
-    "headline": "Find the ~$27K/month leaking out of a $100K Databricks workspace — from the billing table, not a guess",
-    "whyKiller": "The databricks-cost-leak-hunter skill audits a workspace for real-dollar cost leaks and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure is computed from the customer's own system.billing.usage joined to list_prices — never an estimate. Four named leaks — idle clusters that never auto-terminate, scheduled jobs on All-Purpose compute (2–3× overpay), overprovisioned clusters, and the Photon premium paid without the speedup — each tagged confirmed / estimated / at-risk so a CFO never confuses billed waste with modeled savings. A deterministic Python ranker does the arithmetic (the LLM never eyeballs a number), and the databricks-workspace-mcp control plane turns each leak into a single-config-change fix. One of 24 skills in the Databricks pack.",
-    "author": "Jeremy Longshore",
-    "authorGithub": "jeremylongshore",
+    "pluginSlug": "mnemos",
+    "headline": "Persistent memory for Claude Code that actually gets written — measured, not promised",
+    "whyKiller": "The mnemos skill closes the loop most memory tools leave open: getting anything recorded at all. A SessionStart hook prewarms a token-budgeted context block and a UserPromptSubmit hook pattern-matches correction-shaped prompts into a non-skippable capture directive — upstream measured capture jumping from a 7% baseline to 53%, with a +40% behavior lift on paired Claude runs. Corrections persist as structured tried/wrong_because/fix records, and three that cluster auto-promote into a skill deterministically, no LLM in the loop. The engine is a dependency-free single Go binary (~15 MB, pure-Go SQLite) keeping everything local. MIT-licensed, with all 8/8 required frontmatter fields verified at upstream HEAD.",
+    "author": "Polyx Media",
+    "authorGithub": "polyxmedia",
     "grade": "A",
-    "skillCount": 24,
-    "category": "saas-packs",
-    "link": "/plugins/databricks-pack",
-    "quote": "A $100K/month Databricks workspace is likely burning ~$27,000/month — and every line is one config change."
+    "skillCount": 1,
+    "category": "community",
+    "link": "https://github.com/polyxmedia/mnemos",
+    "quote": "A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W27",
+      "pluginSlug": "databricks-pack",
+      "headline": "Find the ~$27K/month leaking out of a $100K Databricks workspace — from the billing table, not a guess",
+      "whyKiller": "The databricks-cost-leak-hunter skill audits a workspace for real-dollar cost leaks and emits a CFO-grokkable, dollar-ranked FinOps report. Every confirmed figure is computed from the customer's own system.billing.usage joined to list_prices — never an estimate. Four named leaks — idle clusters that never auto-terminate, scheduled jobs on All-Purpose compute (2–3× overpay), overprovisioned clusters, and the Photon premium paid without the speedup — each tagged confirmed / estimated / at-risk so a CFO never confuses billed waste with modeled savings. A deterministic Python ranker does the arithmetic (the LLM never eyeballs a number), and the databricks-workspace-mcp control plane turns each leak into a single-config-change fix. One of 24 skills in the Databricks pack.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 24,
+      "category": "saas-packs",
+      "link": "/plugins/databricks-pack",
+      "quote": "A $100K/month Databricks workspace is likely burning ~$27,000/month — and every line is one config change."
+    },
     {
       "week": "2026-W21",
       "pluginSlug": "kobiton-automate",
@@ -126,8 +139,8 @@
     }
   ],
   "meta": {
-    "version": "2.5.0",
-    "lastUpdated": "2026-06-30",
+    "version": "2.6.0",
+    "lastUpdated": "2026-07-07",
     "curatedBy": "Jeremy Longshore"
   }
 }
