@@ -54,6 +54,23 @@ jobs:
       - name: Enforce CI deadlines (no report-only rot)
         run: python3 scripts/check-ci-deadlines.py
 
+      # Agent-frontmatter validation — surfaces agent.md schema findings on every
+      # PR (previously ungated). REPORT-ONLY for now: the agent corpus is
+      # unbaselined (currently has pre-existing errors), so this reports without
+      # walling merges; flip to a blocking gate once the corpus is curated.
+      # REPORT-ONLY-UNTIL: 2026-10-31 (agent corpus unbaselined; flip to blocking once curated)
+      - name: Validate agent frontmatter (report-only)
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml || true
+          python3 scripts/validate-skills-schema.py --agents-only || true
+
+      # .mcp.json advisory validation — surfaces MCP-config findings on every PR.
+      # (kernel-shadow-validation runs this same validator, but only when the
+      # validator itself changes.) ADVISORY ONLY — never pass --strict here; the
+      # promotion to a blocking gate is the DR-049 soak checklist's call.
+      - name: Validate .mcp.json configs (advisory)
+        run: node scripts/validate-mcp-config.mjs || true
+
       # Design-tell gate (VibeCheck 25/100 regression guard, 2026-05-31).
       # Fails on chrome gradients, glassmorphism, purple/indigo/violet
       # utilities, or em-dash density >12 in visible chrome.
