@@ -1,0 +1,27 @@
+{
+  "synced_from": {
+    "repo": "lemondepat/schedule-after-usage-reset",
+    "path": ".",
+    "branch": "main"
+  },
+  "curated_from": {
+    "repo": "jeremylongshore/schedule-after-usage-reset",
+    "branch": "skill-frontmatter-spec",
+    "commit": "a83ea16590b5c7895987b496785d228c3d4b5346",
+    "note": "Curated mirror (sources.yaml curated: true — frozen from sync). Content vendored byte-for-byte from the fork branch that carries the spec-compliance frontmatter fix; upstream PR to lemondepat/schedule-after-usage-reset is the standing off-ramp. Killer-skill nomination #830."
+  },
+  "last_sync": "2026-07-07T00:00:00.000Z",
+  "author": {
+    "name": "patricksong1993",
+    "github": "patricksong1993",
+    "note": "Repo owner is lemondepat; plugin.json author/homepage point at patricksong1993 (https://github.com/patricksong1993/schedule-after-usage-reset) — both carried for attribution."
+  },
+  "license": "MIT",
+  "files_synced": 4,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "skills/schedule-after-usage-reset/SKILL.md"
+  ]
+}

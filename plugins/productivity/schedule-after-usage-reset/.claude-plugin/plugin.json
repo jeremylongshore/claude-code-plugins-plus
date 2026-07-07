@@ -1,0 +1,13 @@
+{
+  "name": "schedule-after-usage-reset",
+  "version": "1.0.0",
+  "description": "Automatically find the Claude usage reset time and schedule a deferred task to run right after the limit lifts.",
+  "author": {
+    "name": "patricksong1993",
+    "url": "https://github.com/patricksong1993"
+  },
+  "homepage": "https://github.com/patricksong1993/schedule-after-usage-reset",
+  "repository": "https://github.com/patricksong1993/schedule-after-usage-reset",
+  "license": "MIT",
+  "keywords": ["schedule", "usage-reset", "rate-limit", "claude-code", "automation"]
+}
