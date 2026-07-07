@@ -155,10 +155,22 @@ function stripLineComment(line, cls) {
   const cutAt = (idx) => (idx >= 0 ? line.slice(0, idx) : line);
   if (cls === 'shell' || cls === 'python' || cls === 'yaml') {
     // Cut at the first `#` that is not inside single/double quotes.
+    // Escape-aware: a backslash-escaped quote (`\"`) outside single quotes does
+    // NOT toggle the string state, so `echo "x \" # " && curl url|sh` can't hide
+    // the payload behind a fake trailing comment (red-team: escaped-quote bypass).
     let inS = false;
     let inD = false;
+    let esc = false;
     for (let i = 0; i < line.length; i++) {
       const c = line[i];
+      if (esc) {
+        esc = false;
+        continue;
+      }
+      if (c === '\\' && !inS) {
+        esc = true; // single quotes don't process backslash escapes in shell
+        continue;
+      }
       if (c === "'" && !inD) inS = !inS;
       else if (c === '"' && !inS) inD = !inD;
       else if (c === '#' && !inS && !inD) {
@@ -171,11 +183,22 @@ function stripLineComment(line, cls) {
   }
   if (cls === 'js') {
     // Cut at `//` that is not part of `://` and not inside a quote.
+    // Escape-aware: an escaped quote inside a string (`"\""`, `'\''`, \`\\\`\`)
+    // doesn't close it, so a `//` cut can't be smuggled past an escaped quote.
     let inS = false;
     let inD = false;
     let inB = false;
+    let esc = false;
     for (let i = 0; i < line.length - 1; i++) {
       const c = line[i];
+      if (esc) {
+        esc = false;
+        continue;
+      }
+      if (c === '\\' && (inS || inD || inB)) {
+        esc = true; // backslash escapes only matter inside a string literal
+        continue;
+      }
       if (c === "'" && !inD && !inB) inS = !inS;
       else if (c === '"' && !inS && !inB) inD = !inD;
       else if (c === '`' && !inS && !inD) inB = !inB;
@@ -189,10 +212,12 @@ function stripLineComment(line, cls) {
   return line; // doc / json / other → no line-comment stripping
 }
 
-/** Collapse quote/`+`/backslash concatenation, KEEPING spaces so `\s+`
- *  patterns still match. Reveals `"cur"+"l"` → `curl`, `c'u'rl` → `curl`. */
+/** Collapse quote/`+`/backslash concatenation, KEEPING unrelated spaces so `\s+`
+ *  patterns still match. Reveals `"cur"+"l"` → `curl`, `"cur" + "l"` → `curl`,
+ *  `c'u'rl` → `curl`. The whitespace AROUND a `+` is part of the concatenation
+ *  and is dropped; other spaces are preserved. */
 export function concatCollapse(line) {
-  return line.replace(/["'`\\+]/g, '');
+  return line.replace(/\s*\+\s*/g, '').replace(/["'`\\]/g, '');
 }
 
 /**
@@ -209,9 +234,11 @@ export function normalizeLines(rawText, cls) {
     let text = stripped[i];
     const startN = i + 1;
     // Join trailing-backslash continuations (shell/js) so a pipe split across
-    // a continuation is scanned as one logical line.
+    // a continuation is scanned as one logical line. Join with '' (not ' ') —
+    // a shell line-continuation deletes the backslash-newline entirely, so
+    // `cu\<NL>rl` is the token `curl`, not `cu rl` (red-team: continuation split).
     while ((cls === 'shell' || cls === 'js') && /\\\s*$/.test(text) && i + 1 < stripped.length) {
-      text = text.replace(/\\\s*$/, ' ') + stripped[i + 1];
+      text = text.replace(/\\\s*$/, '') + stripped[i + 1];
       i++;
     }
     out.push({ n: startN, text });
@@ -733,6 +760,34 @@ function main() {
     }
     if (findings.length) perFile.push({ rel, findings });
     all = all.concat(findings);
+  }
+
+  // F6/F7 — trust-surface change with nothing to scan must not pass silently.
+  // In --changed-only mode we scope to plugins/**, so a root sources.yaml /
+  // sources.lock.json edit (adding or repointing an upstream source) scans zero
+  // files and would go green. The mirrored content of the new source is scanned
+  // at sync time, but a human must still confirm the source is vetted + pinned —
+  // so emit a waivable CHALLENGE (fails the gate loudly; a reviewer clears it with
+  // a `sources.yaml:sources-change-unscanned  <reason>` line in scan-allowlist.txt).
+  if (opts.changedOnly && scanned === 0) {
+    const trustFiles = changedFiles(opts.base || 'origin/main').filter(
+      (r) => r === 'sources.yaml' || r === 'sources.yml' || r === 'sources.lock.json',
+    );
+    if (trustFiles.length) {
+      const f = {
+        id: 'sources-change-unscanned',
+        grade: GRADE.CHALLENGE,
+        line: 1,
+        label:
+          'source-list change with no mirrored content in this diff — the changed source is ' +
+          'scanned at sync time; confirm it is vetted and pinned in sources.lock.json',
+        snippet: trustFiles.join(', ').slice(0, 100),
+        file: trustFiles[0],
+      };
+      f.waivedReason = isWaived(waivers, f.file, f.id, f.grade);
+      perFile.push({ rel: f.file, findings: [f] });
+      all = all.concat(f);
+    }
   }
 
   const exitCode = decideExit(all, { warnOnly: opts.warnOnly });
