@@ -19,6 +19,14 @@ body:
 
         Also worth reading: [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this) and the [PR Pre-screen runbook](../blob/main/000-docs/265-DR-GUID-pr-prescreen-system.md).
 
+        ### This issue comes first
+
+        Every submission starts here — **a PR opened without this issue will be asked to
+        file one before review continues.** The questions below are the PRD essentials;
+        your answers carry straight into the `docs/PRD.md` your PR includes (templates:
+        [`templates/skill-docs/`](../blob/main/templates/skill-docs/README.md), process:
+        [submission standard](../blob/main/000-docs/700-DR-GUID-skill-submission-standard.md)).
+
   - type: input
     id: plugin-name
     attributes:
@@ -44,6 +52,61 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve?
+      description: What hurts, for whom, and how you know. Cite evidence if you have it (an issue link, a benchmark, your own experience).
+      placeholder: "Developers doing X keep hitting Y, which costs them Z..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: target-users
+    attributes:
+      label: Who is it for?
+      description: The 2–4 user types who reach for this, and when.
+      placeholder: |
+        - Backend devs debugging flaky CI — need fast failure triage
+        - Team leads reviewing PRs — need consistent quality signals
+    validations:
+      required: true
+
+  - type: textarea
+    id: success-criteria
+    attributes:
+      label: Success criteria
+      description: 2–4 measurable statements. "Works well" is not measurable; "resolves X without manual edits across the three README examples" is.
+      placeholder: |
+        1. Correctly classifies all three failure classes in the README examples
+        2. Runs end-to-end in under 60 seconds on a typical repo
+    validations:
+      required: true
+
+  - type: textarea
+    id: functional-requirements
+    attributes:
+      label: Top functional requirements
+      description: The top 3–5 things it must do, numbered FR-1… One line each.
+      placeholder: |
+        FR-1: Parse the CI log and extract failing test names
+        FR-2: Map each failure to the owning module
+        FR-3: Produce a triage summary with suggested owners
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Submission tier
+      description: "Determines which docs your PR must include — see the [tier→docs matrix](../blob/main/templates/skill-docs/README.md). Micro-skill: PRD only. Standard plugin: PRD + ADR. Pack/flagship: PRD + ADR + one-pager(s)."
+      options:
+        - micro-skill (single command/skill, no scripts)
+        - standard plugin (skills + scripts/commands)
+        - pack / flagship (multi-skill pack, featured or paid-tier)
+    validations:
+      required: true
+
   - type: dropdown
     id: category
     attributes:
@@ -66,6 +129,8 @@ body:
       label: Checklist (per spec v3.6.0)
       options:
         - label: I have read the [skill spec](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)
+          required: true
+        - label: I've read the [tier→docs matrix](../blob/main/templates/skill-docs/README.md) and will include the required docs in my PR
           required: true
         - label: Has `plugin.json` + `.claude-plugin/marketplace.json`
           required: true

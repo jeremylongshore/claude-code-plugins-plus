@@ -40,6 +40,22 @@
 
 <!-- Link to related issues: Closes #123, Fixes #456 -->
 
+## Submission Standard (plugin & source submissions)
+
+<!-- Required for new plugin/source submissions — see
+     000-docs/700-DR-GUID-skill-submission-standard.md and templates/skill-docs/ -->
+
+- [ ] This PR links its submission issue (`Closes #N` / `Refs #N`) — submissions start
+      as an issue using the plugin-submission template; a PR without one will be asked
+      to file it
+- [ ] The required docs for my declared tier are included (`docs/PRD.md` at minimum —
+      see the [tier→docs matrix](../templates/skill-docs/README.md))
+- [ ] Validator run locally (`python3 scripts/validate-skills-schema.py --marketplace --verbose <plugin-dir>`)
+- [ ] For `feat(sources)` PRs: source vetted per the
+      [external-source vetting playbook](../000-docs/699-DR-GUID-external-source-vetting-playbook.md)
+- [ ] `verified:` / `curated:` flags in `sources.yaml` are honest (no `verified: true`
+      without maintainer vetting; no silently hardened mirrors without `curated: true`)
+
 ## Security
 
 - Related alerts: GHSA-/CVE-
