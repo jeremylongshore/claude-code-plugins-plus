@@ -1,0 +1,69 @@
+name: Sync Lockfile Pinning (unit corpus)
+
+# BLOCKING unit corpus for the external-sync content-pinning lockfile
+# (sources.lock.json + scripts/sync-lockfile.mjs). The lockfile is the
+# supply-chain gate that quarantines upstream drift before it can ride the
+# weekly sync auto-PR into the marketplace — a broken digest/diff/serializer
+# is a real security bug, so a failing corpus turns this check red.
+#
+# Also verifies the COMMITTED sources.lock.json is canonical: it must load
+# and re-serialize byte-identically (deterministic sorted-key form). A
+# hand-edited or merge-mangled lock would silently change what counts as
+# "approved baseline", so canonical-form drift fails here instead.
+#
+# Refs jeremylongshore/claude-code-plugins-plus-skills#966.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/sync-lockfile.mjs'
+      - 'scripts/sync-lockfile.test.mjs'
+      - 'scripts/sync-external.mjs'
+      - 'sources.lock.json'
+      - 'sources.yaml'
+      - '.github/workflows/sync-lockfile-test.yml'
+
+# Read-only — pure unit tests plus a read of the committed lock.
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-lockfile-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-lockfile-test:
+    name: sync-lockfile unit corpus + lock canonical-form check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      # Zero-install: the module and its tests use only node built-ins
+      # (node:test, node:crypto, node:fs) by design.
+      - name: Lockfile unit corpus (blocking)
+        run: node --test scripts/sync-lockfile.test.mjs
+
+      - name: Committed sources.lock.json is canonical + parseable (blocking)
+        run: |
+          node -e '
+            import("./scripts/sync-lockfile.mjs").then(({ loadLock, serializeLock }) => {
+              const fs = require("fs");
+              const onDisk = fs.readFileSync("sources.lock.json", "utf8");
+              const lock = loadLock("sources.lock.json"); // throws on corrupt JSON (fail closed)
+              const canonical = serializeLock(lock);
+              if (onDisk !== canonical) {
+                console.error("✗ sources.lock.json is NOT in canonical deterministic form.");
+                console.error("  Hand-edits / merge artifacts detected — regenerate it via the sync");
+                console.error("  engine (--relock after review) instead of editing digests by hand.");
+                process.exit(1);
+              }
+              const n = Object.keys(lock.sources).length;
+              console.log("✓ sources.lock.json canonical and parseable (" + n + " pinned sources)");
+            }).catch((err) => { console.error("✗ " + err.message); process.exit(1); });
+          '

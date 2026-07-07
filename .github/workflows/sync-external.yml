@@ -27,6 +27,13 @@ on:
         description: 'Dry run - show what would change without making changes'
         type: boolean
         default: false
+      relock:
+        description: >-
+          Approve drifted source(s) after HUMAN review of the upstream diff:
+          comma-separated source names, or "all". Re-baselines their
+          sources.lock.json entries and mirrors their current upstream state.
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -81,6 +88,10 @@ jobs:
           # be expanded verbatim into the script (command execution on the
           # runner). Env values arrive as data, not code.
           SYNC_SOURCE: ${{ inputs.source || github.event.client_payload.source }}
+          # Same injection hygiene as SYNC_SOURCE: workflow_dispatch-only (a
+          # repository_dispatch payload can NOT relock — approval stays a
+          # deliberate human action in the Actions UI).
+          SYNC_RELOCK: ${{ inputs.relock }}
         run: |
           ARGS=()
           if [ "${{ inputs.force }}" = "true" ]; then
@@ -95,6 +106,19 @@ jobs:
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             ARGS+=(--dry-run)
           fi
+          # Drift approval: "all" → --relock-all, else one --relock=<name>
+          # per comma-separated entry (whitespace trimmed), each as one argv.
+          if [ "$SYNC_RELOCK" = "all" ]; then
+            ARGS+=(--relock-all)
+          elif [ -n "$SYNC_RELOCK" ]; then
+            IFS=',' read -r -a RELOCKS <<< "$SYNC_RELOCK"
+            for r in "${RELOCKS[@]}"; do
+              r="${r//[[:space:]]/}"
+              if [ -n "$r" ]; then
+                ARGS+=("--relock=$r")
+              fi
+            done
+          fi
           ARGS+=(--force --verbose)
 
           node scripts/sync-external.mjs "${ARGS[@]}"
@@ -108,7 +132,7 @@ jobs:
       # rides along in the same auto-PR. (Skipped on dry-run and on a partial
       # sync, matching the commit/PR gating downstream.)
       - name: Sync lint-ignore exclusions
-        if: inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        if: inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
         run: node scripts/sync-lint-ignores.mjs
 
       - name: Check for changes
@@ -121,7 +145,7 @@ jobs:
           fi
 
       - name: Sync marketplace catalog
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
         # Use --no-frozen-lockfile here intentionally: the sync step above can
         # overwrite synced plugins' package.json from upstream, which legitimately
         # diverges from the committed pnpm-lock.yaml. The auto-PR this workflow
@@ -148,7 +172,7 @@ jobs:
         # earlier shared-branch clobber, 000-docs/691-AT-AUDT); this step only
         # prunes the pileup that model produced. See 000-docs AT-DECR
         # (mirror-by-default external-plugin sync model).
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -164,7 +188,7 @@ jobs:
             done
 
       - name: Create Pull Request
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
         # Hand-rolled commit + push + PR-create instead of peter-evans/create-pull-request.
         #
         # Why: sync diffs are large (hundreds of files / 100K+ lines from upstream
@@ -241,6 +265,27 @@ jobs:
             echo "Failed: ${{ steps.sync.outputs.failed_sources }}"
           } >> "$GITHUB_STEP_SUMMARY"
           echo "::error::Partial external sync (${{ steps.sync.outputs.failed_sources }}) — investigate before re-running."
+          exit 1
+
+      # A locked source whose upstream content drifted from the committed
+      # sources.lock.json baseline was QUARANTINED by the sync engine (nothing
+      # of it mirrored). Like the partial-sync path above, the commit + PR
+      # steps are gated on `quarantined == '0'`, so drifted content can never
+      # ride into the routine auto-PR. This step makes the run visibly RED and
+      # names the drifted sources; a human reviews each upstream diff, then
+      # approves via workflow_dispatch with relock=<names> (or relock=all).
+      - name: Flag quarantined drift
+        if: steps.sync.outputs.quarantined != '0' && steps.sync.outputs.quarantined != ''
+        run: |
+          {
+            echo "## 🔒 Upstream drift quarantined — needs human review"
+            echo ""
+            echo "${{ steps.sync.outputs.quarantined }} source(s) drifted from their sources.lock.json baseline; no PR was opened."
+            echo "Drifted: ${{ steps.sync.outputs.quarantined_sources }}"
+            echo ""
+            echo "Review each upstream diff, then re-run this workflow (workflow_dispatch) with \`relock\` set to the approved source names (comma-separated) or \`all\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::Drift quarantined (${{ steps.sync.outputs.quarantined_sources }}) — review upstream diffs, then approve via the relock input."
           exit 1
 
       - name: Summary

@@ -9,9 +9,14 @@
  *   node scripts/sync-external.mjs [options]
  *
  * Options:
- *   --force        Force sync even if no changes detected
+ *   --force        Force sync even if no changes detected (does NOT bypass the
+ *                  sources.lock.json drift quarantine — only --relock does)
  *   --dry-run      Show what would be synced without making changes
  *   --source=NAME  Sync only the specified source
+ *   --relock=NAME  Approve + re-baseline a DRIFTED source: mirror its current
+ *                  upstream state and advance its sources.lock.json entry.
+ *                  Repeatable. Only for use after a human reviewed the drift.
+ *   --relock-all   Re-baseline every drifted source (post-review bulk approve)
  *   --verbose      Show detailed output
  *
  * 2026-06-02 rewrite (claude-5h8v):
@@ -35,11 +40,23 @@ import os from 'os';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
 import yaml from 'js-yaml';
+import {
+  computeFileDigest,
+  loadLock,
+  saveLock,
+  buildLockEntry,
+  diffSource,
+} from './sync-lockfile.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
 const SOURCES_FILE = path.join(ROOT_DIR, 'sources.yaml');
 const CATALOG_FILE = path.join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
+// Content-pinning lockfile: per source, the resolved upstream sha + a sha256
+// per mirrored file. A locked source whose upstream bytes moved is QUARANTINED
+// (skipped) until a human approves the new state via --relock. See
+// scripts/sync-lockfile.mjs for the threat model.
+const LOCK_FILE = path.join(ROOT_DIR, 'sources.lock.json');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -52,6 +69,16 @@ const options = {
   // with --strict and routes a failing run to a human).
   strict: args.includes('--strict'),
   source: args.find((a) => a.startsWith('--source='))?.split('=')[1] || null,
+  // --relock=NAME / --relock-all: the ONLY way to advance sources.lock.json
+  // for a source whose upstream content drifted from the locked baseline.
+  // Deliberately separate from --force (which the weekly workflow always
+  // passes): forcing file writes must never double as approving new upstream
+  // content sight-unseen.
+  relockAll: args.includes('--relock-all'),
+  relock: args
+    .filter((a) => a.startsWith('--relock='))
+    .map((a) => a.split('=')[1])
+    .filter(Boolean),
 };
 
 // Colors for terminal output
@@ -463,8 +490,11 @@ function ensureCatalogEntry(source) {
 
 /**
  * Sync a single source via sparse git clone.
+ *
+ * `lock` is the loaded sources.lock.json object (shared across sources,
+ * mutated in-memory here; main() persists it once after the loop).
  */
-async function syncSource(source, config) {
+async function syncSource(source, config, lock) {
   log(`\n📦 Syncing: ${source.name}`, colors.cyan);
   log(`   From: ${source.repo}/${source.source_path}`, colors.dim);
   log(`   To:   ${source.target_path}`, colors.dim);
@@ -535,6 +565,78 @@ async function syncSource(source, config) {
       return included && !excluded;
     });
     logVerbose(`${filteredFiles.length} files after filtering`);
+
+    // ── Lockfile pinning gate (sources.lock.json) ────────────────────────
+    // Compare the freshly-cloned upstream bytes against the committed lock
+    // BEFORE any file is written. Three outcomes:
+    //   new-source → first sync of a human-listed source: mirror + baseline.
+    //   unchanged  → mirror as today (no-op diffs).
+    //   drifted    → QUARANTINE: skip this source entirely this run; a human
+    //                reviews the upstream diff and approves via --relock.
+    // NOTE: --force does NOT bypass this gate (the weekly workflow always
+    // passes --force); only an explicit --relock advances a drifted lock.
+    let resolvedRef = null;
+    try {
+      resolvedRef = execFileSync('git', ['-C', tmpdir, 'rev-parse', 'HEAD'], {
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .toString()
+        .trim();
+    } catch {
+      // Ref capture is best-effort metadata; the content digests below are
+      // the actual gate.
+    }
+
+    const currentDigests = filteredFiles.map((file) => ({
+      path: file.path,
+      sha256: computeFileDigest(file.content),
+    }));
+    const lockDiff = diffSource(lock, source.name, currentDigests);
+    const relockRequested = options.relockAll || options.relock.includes(source.name);
+    let lockStatus = lockDiff.status;
+
+    if (lockDiff.status === 'drifted' && !relockRequested) {
+      log(
+        `   🔒 QUARANTINED — upstream drifted from sources.lock.json baseline; nothing mirrored this run`,
+        colors.red,
+      );
+      log(
+        `      +${lockDiff.added.length} added  ~${lockDiff.changed.length} changed  -${lockDiff.removed.length} removed (upstream @ ${resolvedRef ? resolvedRef.slice(0, 12) : 'unknown'})`,
+        colors.red,
+      );
+      for (const p of lockDiff.added) logVerbose(`drift added:   ${p}`);
+      for (const p of lockDiff.changed) logVerbose(`drift changed: ${p}`);
+      for (const p of lockDiff.removed) logVerbose(`drift removed: ${p}`);
+      log(
+        `      Review the upstream diff, then approve with: node scripts/sync-external.mjs --source=${source.name} --relock=${source.name}`,
+        colors.yellow,
+      );
+      return {
+        source: source.name,
+        changes: [],
+        error: null,
+        lockStatus: 'quarantined',
+        quarantined: {
+          added: lockDiff.added,
+          removed: lockDiff.removed,
+          changed: lockDiff.changed,
+          resolved_ref: resolvedRef,
+        },
+      };
+    }
+
+    if (lockDiff.status === 'new-source') {
+      log(
+        `   🔏 New source — ${options.dryRun ? 'would record' : 'recording'} lock baseline (${currentDigests.length} files @ ${resolvedRef ? resolvedRef.slice(0, 12) : 'unknown'})`,
+        colors.green,
+      );
+    } else if (lockDiff.status === 'drifted' && relockRequested) {
+      lockStatus = 'relocked';
+      log(
+        `   🔏 Re-baselining via --relock: +${lockDiff.added.length} added  ~${lockDiff.changed.length} changed  -${lockDiff.removed.length} removed`,
+        colors.yellow,
+      );
+    }
 
     for (const file of filteredFiles) {
       const targetPath = path.join(ROOT_DIR, source.target_path, file.path);
@@ -682,7 +784,31 @@ async function syncSource(source, config) {
       log(`   ✓ No changes detected`, colors.dim);
     }
 
-    return { source: source.name, changes, error: null };
+    // Advance the in-memory lock (persisted once by main()) only AFTER the
+    // mirror writes above succeeded — a throw mid-mirror must never leave an
+    // approved baseline for content that never landed on disk:
+    //   new-source / relocked → full fresh baseline entry.
+    //   unchanged             → refresh nothing, EXCEPT backfilling a null
+    //                           resolved_ref (bootstrap entries were built
+    //                           from in-tree files without a clone). Never
+    //                           bump an existing ref on unchanged content —
+    //                           the recorded ref stays the one whose content
+    //                           a human approved, and the lock diff stays
+    //                           quiet when nothing actually changed.
+    if (!options.dryRun) {
+      if (lockStatus === 'new-source' || lockStatus === 'relocked') {
+        lock.sources[source.name] = buildLockEntry(
+          source,
+          resolvedRef,
+          currentDigests,
+          new Date().toISOString(),
+        );
+      } else if (lockStatus === 'unchanged' && lock.sources[source.name].resolved_ref == null) {
+        lock.sources[source.name].resolved_ref = resolvedRef;
+      }
+    }
+
+    return { source: source.name, changes, error: null, lockStatus };
   } catch (error) {
     log(`   ❌ Error: ${error.message}`, colors.red);
     return { source: source.name, changes: [], error: error.message };
@@ -730,10 +856,30 @@ async function main() {
     process.exit(1);
   }
 
+  // Fail closed on an unreadable lock: a corrupt sources.lock.json must never
+  // degrade into "nothing is pinned" (which would classify every source as
+  // new-source and re-baseline drifted content sight-unseen).
+  let lock;
+  try {
+    lock = loadLock(LOCK_FILE);
+  } catch (error) {
+    log(`❌ ${error.message}`, colors.red);
+    process.exit(1);
+  }
+
   const results = [];
   for (const source of sourcesToSync) {
-    const result = await syncSource(source, config);
+    const result = await syncSource(source, config, lock);
     results.push(result);
+  }
+
+  // Persist the lock advanced by new-source / --relock entries. Written even
+  // when quarantines exist: quarantined entries were NOT advanced, so the
+  // committed lock keeps demanding review for them on every subsequent run.
+  if (!options.dryRun) {
+    if (saveLock(LOCK_FILE, lock)) {
+      logVerbose(`Updated ${path.basename(LOCK_FILE)}`);
+    }
   }
 
   log('\n' + '='.repeat(50), colors.blue);
@@ -745,6 +891,10 @@ async function main() {
     0,
   );
   const errors = results.filter((r) => r.error);
+  const quarantined = results.filter((r) => r.lockStatus === 'quarantined');
+  const lockUnchanged = results.filter((r) => r.lockStatus === 'unchanged').length;
+  const lockNew = results.filter((r) => r.lockStatus === 'new-source').length;
+  const lockRelocked = results.filter((r) => r.lockStatus === 'relocked').length;
 
   if (totalChanges > 0) {
     log(`✅ ${totalChanges} file(s) ${options.dryRun ? 'would be ' : ''}synced`, colors.green);
@@ -757,6 +907,19 @@ async function main() {
   } else {
     log('✓ All sources up to date', colors.dim);
   }
+
+  // Lock accounting — mirrors the existing summary block. Quarantined sources
+  // are the drift-review queue: nothing of theirs was mirrored this run.
+  log(
+    `🔒 Lock: ${lockUnchanged} unchanged, ${lockNew} new (locked), ${lockRelocked} re-baselined, ${quarantined.length} quarantined (need --relock after review)`,
+    quarantined.length > 0 ? colors.yellow : colors.dim,
+  );
+  quarantined.forEach((q) =>
+    log(
+      `   - ${q.source}: +${q.quarantined.added.length} added ~${q.quarantined.changed.length} changed -${q.quarantined.removed.length} removed vs locked baseline`,
+      colors.red,
+    ),
+  );
 
   if (errors.length > 0) {
     log(`⚠️  ${errors.length} source(s) had errors`, colors.yellow);
@@ -773,14 +936,24 @@ async function main() {
     // a human instead of auto-PR'ing it as a clean full sync.
     fs.appendFileSync(outputFile, `errors=${errors.length}\n`);
     fs.appendFileSync(outputFile, `failed_sources=${errors.map((e) => e.source).join(',')}\n`);
+    // Drift-quarantine signal: the workflow treats a quarantined run like the
+    // existing partial-sync path (no commit / no auto-PR; visibly red), so a
+    // routine sync PR never silently carries drifted upstream content.
+    fs.appendFileSync(outputFile, `quarantined=${quarantined.length}\n`);
+    fs.appendFileSync(
+      outputFile,
+      `quarantined_sources=${quarantined.map((q) => q.source).join(',')}\n`,
+    );
   }
 
   log('\n');
   // Exit non-zero on TOTAL failure (no source succeeded) always; and on ANY
-  // partial failure when --strict is set, so a partial sync is never committed
-  // and auto-PR'd as if it were a clean full sync.
+  // partial failure OR drift quarantine when --strict is set, so a partial or
+  // drift-tainted sync is never committed and auto-PR'd as a clean full sync.
   const totalFailures = errors.length === sourcesToSync.length;
-  process.exit(totalFailures || (options.strict && errors.length > 0) ? 1 : 0);
+  process.exit(
+    totalFailures || (options.strict && (errors.length > 0 || quarantined.length > 0)) ? 1 : 0,
+  );
 }
 
 main().catch((error) => {
