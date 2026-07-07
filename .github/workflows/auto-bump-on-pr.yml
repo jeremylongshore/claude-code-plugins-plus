@@ -28,6 +28,15 @@ name: Auto-bump changed plugin patch versions
 #   - PR head branch starts with `automation/` (avoids self-bumping the
 #     automation/npm-stats and similar generated PRs).
 #   - PR title or body contains `[skip auto-bump]`.
+#
+# Runs on `pull_request` (NOT pull_request_target) BY DESIGN: the bump needs a
+# write token to commit back to the PR branch, and pull_request_target would hand
+# that token to fork-PR code — a code-execution-with-secrets risk not worth a
+# patch bump. The accepted cost is that a first-time fork contributor's run sits
+# in the "Approve and run" queue until a maintainer approves it; since the job
+# skips forks anyway (first skip condition above), approving it just lets it
+# no-op cleanly. Fixing the queue entry would require raising the CI blast
+# radius, so it stays.
 
 on:
   pull_request:

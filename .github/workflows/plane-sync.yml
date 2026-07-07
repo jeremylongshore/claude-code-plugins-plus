@@ -3,7 +3,13 @@ name: Plane Sync (quiet mode)
 on:
   issues:
     types: [opened]
-  pull_request:
+  # pull_request_target (not pull_request) so the close-out fires with repo
+  # secrets on FORK PRs too — fork pull_request runs get no PLANE_API_KEY, so the
+  # Plane issue never flipped Done when a fork PR merged. SAFE here ONLY because
+  # no job below checks out or executes PR code: they read the PR title/body from
+  # the event context into quoted env vars and curl to Plane. NEVER add an
+  # `actions/checkout` of the PR head to this workflow.
+  pull_request_target:
     types: [closed]
 
 env:
@@ -51,7 +57,7 @@ jobs:
           echo "::notice::created $PLANE_IDENTIFIER-${SEQ:-?} from GH issue #${{ github.event.issue.number }}"
 
   pr-closes-plane-issue:
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Parse closing references
