@@ -54,16 +54,6 @@ jobs:
       - name: Enforce CI deadlines (no report-only rot)
         run: python3 scripts/check-ci-deadlines.py
 
-      # TODO(cleanup-pr-followup): These run in reporting mode (|| true) until
-      # the ~5 pre-existing ESLint errors and ~36 prettier formatting deltas
-      # are cleaned up in a follow-up PR. Once clean, drop the `|| true` so CI
-      # blocks on style regressions. Tracking: see #582 / #584 / Phase 5 PR2.
-      - name: Lint (root ESLint, reporting mode)
-        run: pnpm run lint:root || true
-
-      - name: Format check (root Prettier, reporting mode)
-        run: pnpm run format:check || true
-
       # Design-tell gate (VibeCheck 25/100 regression guard, 2026-05-31).
       # Fails on chrome gradients, glassmorphism, purple/indigo/violet
       # utilities, or em-dash density >12 in visible chrome.
@@ -1123,3 +1113,51 @@ jobs:
             automation/sync-external-*) WARN="--warn-only" ;;
           esac
           node scripts/scan-synced-content.mjs --changed-only --base "origin/$BASE_REF" $WARN
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Aggregate required gate. This is the SINGLE pull_request status context in
+  # branch protection (alongside `gitleaks`). Because this workflow runs on
+  # EVERY pull_request (no path filter — see `on:` above), this job always
+  # reports, which is what fixes the "N Expected forever" stuck-PR class where a
+  # path-filtered required check never runs and the PR can never merge (#778).
+  #
+  # It fails if ANY needed job ended in `failure` or `cancelled`. A `skipped`
+  # result counts as PASS — but that is ONLY legitimate for a job that skipped
+  # via a DESIGNED job-level `if:` (a conditional gate that correctly did not
+  # apply). Do not add a job to `needs:` that can skip for an undesigned reason,
+  # or a real gate could be silently bypassed by a green aggregate.
+  # ───────────────────────────────────────────────────────────────────────────
+  ci-required:
+    name: ci-required
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - validate
+      - verify
+      - test
+      - check-package-manager
+      - marketplace-validation
+      - cli-smoke-tests
+      - shellcheck-skills
+      - skill-codeblock-syntax
+      - typescript-coverage-audit
+      - eslint-check
+      - format-check
+      - ruff-check
+      - ruff-format-check
+      - markdownlint
+      - scan-synced-content
+    steps:
+      - name: Assert every gated job passed (skipped == a designed conditional gate)
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "$NEEDS_JSON"
+          bad=$(printf '%s' "$NEEDS_JSON" \
+            | jq -r '[to_entries[] | select(.value.result == "failure" or .value.result == "cancelled") | .key] | join(", ")')
+          if [ -n "$bad" ]; then
+            echo "::error::ci-required: these gated jobs did not pass: $bad"
+            exit 1
+          fi
+          echo "✅ ci-required — every gated job passed (or was designed-skipped)."
