@@ -1428,4 +1428,3 @@ config:
     {sources}
 
     See `sources.yaml` for configured sources.
-
