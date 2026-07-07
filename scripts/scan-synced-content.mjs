@@ -229,10 +229,15 @@ export function normalizeLines(rawText, cls) {
 const LINE_RULES = [
   {
     id: 'pipe-to-shell',
-    langs: ['shell', 'python', 'js', 'doc'],
-    re: /\b(?:curl|wget)\b[^\n|]{0,200}\|\s*(?:sudo\s+)?(?:sh|bash|zsh|dash|ksh)\b/i,
+    // json/yaml added (red-team F1): `.mcp.json` stdio commands + hook/config
+    // YAML are canonical auto-execute surfaces, and `curl|sh` inside them was
+    // previously invisible. Interpreters beyond sh added (F3): fetch-and-run via
+    // python/node/perl/ruby is identical RCE. Process-substitution added (F2):
+    // `bash <(curl …)` is unobfuscated textbook RCE the pipe anchor missed.
+    langs: ['shell', 'python', 'js', 'doc', 'json', 'yaml'],
+    re: /\b(?:curl|wget)\b[^\n|]{0,200}\|\s*(?:sudo\s+)?(?:sh|bash|zsh|dash|ksh|python[0-9.]*|node|perl|ruby)\b|(?:\b(?:sh|bash|zsh|dash|ksh|source)\b|(?:^|[;&|])\s*\.)\s+<\(\s*(?:curl|wget)\b/i,
     grade: (cls) => (cls === 'doc' ? GRADE.CHALLENGE : GRADE.REFUSE),
-    label: 'pipe-to-shell (curl/wget piped into a shell)',
+    label: 'pipe-to-shell (curl/wget fetched into a shell/interpreter)',
   },
   {
     id: 'reverse-shell',
@@ -267,7 +272,9 @@ const LINE_RULES = [
   },
   {
     id: 'dynamic-exec',
-    langs: ['shell', 'python', 'js'],
+    // json/yaml added (red-team F1): a config string value can carry an exec()
+    // that runs when the config is loaded/executed.
+    langs: ['shell', 'python', 'js', 'json', 'yaml'],
     // Dual-use dynamic code execution. redis `.eval(` (a Lua call, not code
     // exec) is excluded to match the repo's existing dangerous-pattern gate.
     re: /(?:\bnew\s+Function\s*\(|\bos\.system\s*\(|subprocess\.(?:run|call|Popen|check_output|check_call)\s*\([^\n]*shell\s*=\s*True|(?<!redis\.)(?<!\.redis)\beval\s*\(|(?<![.\w])exec\s*\()/i,
@@ -276,7 +283,9 @@ const LINE_RULES = [
   },
   {
     id: 'outbound-network',
-    langs: ['shell', 'python'],
+    // json/yaml added (red-team F1): an outbound call embedded in a config
+    // string (e.g. an .mcp.json stdio command) must at least be SEEN (CHALLENGE).
+    langs: ['shell', 'python', 'json', 'yaml'],
     re: /(?:\b(?:curl|wget|nc|ncat|telnet)\b|\brequests\.(?:get|post|put|delete|patch|head)\s*\(|\burllib(?:2|\.request)?\b|\bhttpx\b|\bhttp\.client\b|\bsocket\.connect\b)/i,
     grade: () => GRADE.CHALLENGE,
     label: 'outbound network call in a shell/py script',
@@ -320,9 +329,12 @@ function detectHookDefinition(relPath, text, cls) {
   const findings = [];
   const inHooksDir = /(?:^|\/)hooks\//.test(relPath);
   const base = path.basename(relPath).toLowerCase();
-  const hooksKey = /"hooks"\s*:/;
+  // Match BOTH quoted (JSON) and unquoted (YAML) keys (red-team F1): a YAML hook
+  // block uses `hooks:` / `PostToolUse:` with no quotes, which the quoted-only
+  // pattern missed entirely — so an unquoted-YAML hook did not even CHALLENGE.
+  const hooksKey = /(?:"hooks"|(?:^|\n)[ \t]*hooks)\s*:/;
   const eventKey =
-    /"(?:PreToolUse|PostToolUse|PreCompact|SessionStart|SessionEnd|UserPromptSubmit|Notification|Stop|SubagentStop)"\s*:/;
+    /(?:"(?:PreToolUse|PostToolUse|PreCompact|SessionStart|SessionEnd|UserPromptSubmit|Notification|Stop|SubagentStop)"|(?:^|\n)[ \t]*(?:PreToolUse|PostToolUse|PreCompact|SessionStart|SessionEnd|UserPromptSubmit|Notification|Stop|SubagentStop))\s*:/;
   if (
     (cls === 'json' || cls === 'yaml' || cls === 'doc' || inHooksDir) &&
     (hooksKey.test(text) || eventKey.test(text) || (inHooksDir && isScript(cls)))
@@ -334,6 +346,36 @@ function detectHookDefinition(relPath, text, cls) {
       line,
       label: 'hook definition (auto-executes in the agent)',
       snippet: base,
+    });
+  }
+  return findings;
+}
+
+/**
+ * Detect single-file secret exfiltration (red-team F4): a read of a credential
+ * file / env co-occurring with a network SINK in the same file. The line-level
+ * `secret-exfil` rule is curl/wget-piped-specific and misses the python idiom
+ * `open('~/.ssh/id_rsa').read()` … `urllib.request.urlopen(url, data)` /
+ * `requests.post(url, data=os.environ)` split across statements. This is a
+ * file-level co-occurrence check: a secret READ + a network SINK anywhere in a
+ * script → REFUSE (the bytes exfiltrate on execution), doc → CHALLENGE.
+ */
+function detectSecretExfilCoOccurrence(relPath, text, cls) {
+  const findings = [];
+  if (!['shell', 'python', 'js', 'doc'].includes(cls)) return findings;
+  const secretRead =
+    /(?:open\s*\(\s*['"][^'"\n]*(?:\.ssh\/|id_rsa|id_ed25519|id_dsa|\.aws\/credentials|\.netrc|\.env\b|\.git-credentials)|\bos\.environ\b|\bprocess\.env\b|\breadFileSync\s*\(\s*['"][^'"\n]*(?:\.ssh\/|id_rsa|\.aws\/credentials|\.env\b))/;
+  const networkSink =
+    /(?:urllib\.request\.urlopen|urllib2\.urlopen|requests\.(?:post|put|patch)|httpx\.(?:post|put|patch)|http\.client|socket\.(?:connect|sendall)|\.sendall\s*\(|fetch\s*\(|axios\.(?:post|put)|https?\.request\s*\()/;
+  if (secretRead.test(text) && networkSink.test(text)) {
+    const line = lineOf(text, secretRead) || 1;
+    const grade = cls === 'doc' ? GRADE.CHALLENGE : GRADE.REFUSE;
+    findings.push({
+      id: 'secret-exfil-cooccur',
+      grade,
+      line,
+      label: 'secret/credential read co-occurring with a network sink (single-file exfil)',
+      snippet: path.basename(relPath),
     });
   }
   return findings;
@@ -434,6 +476,7 @@ export function scanContent(text, relPath) {
 
   // File-level signals.
   for (const f of detectHookDefinition(relPath, text, cls)) push(f);
+  for (const f of detectSecretExfilCoOccurrence(relPath, text, cls)) push(f);
   for (const f of detectMcpRemote(relPath, text, cls)) push(f);
   for (const f of detectPrivilegedTools(relPath, text, cls)) push(f);
 
