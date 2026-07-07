@@ -186,7 +186,7 @@ Run `./scripts/quick-test.sh` locally to catch most issues before pushing.
 ### What happens when you open the PR
 
 1. GitHub runs all 15+ validators (`validate-plugins.yml`). **These required checks are the gate** — your PR is mergeable once they're green.
-2. An AI reviewer posts inline comments when it's active on the PR. Treat its findings like any review: address them, or reply if you think it got something wrong and a human will weigh in.
+2. **Greptile** (the repo's AI reviewer) posts inline comments. Treat its findings like any review: address them, or reply if you think it got something wrong and a human will weigh in. If you've installed your own Codex connector on your fork it may also comment — that's contributor-side, not repo-controlled, so maintainers don't act on it.
 3. A maintainer gets a Slack ping and follows up.
 4. Push fixes; the required checks re-run on each push.
 5. Once the required checks pass and any review threads are resolved, a maintainer reviews and merges.
