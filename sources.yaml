@@ -1383,7 +1383,9 @@ sources:
       - '.claude-plugin/**'
       - 'skills/**'
       - 'README.md'
-      - 'LICENSE'
+      # upstream stores its license file as lowercase `license`; the sync
+      # glob match is case-sensitive, so the casing must match theirs
+      - 'license'
     exclude:
       - 'node_modules/**'
       - '.git/**'
