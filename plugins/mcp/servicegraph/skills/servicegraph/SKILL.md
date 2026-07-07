@@ -25,6 +25,8 @@ metadata:
 
 # servicegraph
 
+## Overview
+
 The generic way to drive **ServiceGraph** — a platform of metrics-enriched
 business datasets for founders: *where to launch, who to email, who to hire.*
 Use this skill when the user explicitly reaches for ServiceGraph. For
@@ -38,7 +40,18 @@ from the API, discover each dataset's schema and filters from the API, then
 search and unlock against it. Never assume a dataset id, a field name, or a
 price — ask the API.
 
-## Two ways to call
+## Prerequisites
+
+- **ServiceGraph access**, either:
+  - the **ServiceGraph MCP server** (`https://mcp.servicegraph.co`) loaded in
+    your harness — this plugin's `.mcp.json` wires it up; OAuth handles
+    credentials in the harness sandbox, no token enters the model context — or
+  - a **ServiceGraph API key** (`vk_…`, minted at
+    <https://servicegraph.co/profile/api-keys>) available as
+    `SERVICEGRAPH_API_KEY` for the REST path (see Auth below).
+- An HTTP client for the REST path — Bearer-auth with the `vk_…` key.
+
+### Two ways to call
 
 Both speak to the same backend; use whichever your harness has.
 
@@ -48,7 +61,7 @@ Both speak to the same backend; use whichever your harness has.
 - **REST** — `https://api.servicegraph.co`, any HTTP client, Bearer-auth with
   a `vk_…` key. The universal fallback.
 
-## What the API does
+## How it works
 
 Everything except unlocking is **free** — discover, inspect, validate, and
 browse as much as you like; only revealing detail costs credits.
@@ -88,3 +101,49 @@ read it, don't assume it. Unlocks are atomic (a 402 charges nothing) and
 cached for the dataset's TTL (re-unlocking within it is free). Confirm the
 cost with the user before unlocking a batch, and check `get_credit_balance`
 first if it's large.
+
+## Output
+
+All responses are JSON.
+
+- **Dataset discovery** (`list_datasets` / `GET /v1/datasets`) returns each
+  dataset's id, size, and unlock pricing — read those, never assume them.
+- **Search** returns free **brief** rows keyed by apex domain — identity plus
+  headline metrics — with a per-row unlock hint and the match total.
+- **Unlock** (`unlock_rows` / `POST …/unlocks`) reveals a row's gated detail —
+  contacts plus full metrics — at the per-row price the dataset reports,
+  cached for the dataset's TTL.
+- **Credit balance** (`get_credit_balance` / `GET /v1/me/credits`) returns the
+  current balance.
+
+## Errors
+
+- **401** on the REST path — the key is missing or invalid. Ask the user to
+  set `SERVICEGRAPH_API_KEY` (env or `.env.local`) and retry; never accept the
+  key pasted into chat.
+- **402** on unlock — balance is short. Unlocks are atomic, so nothing was
+  charged; report the shortfall and check `get_credit_balance`.
+- **Zero-result searches** — the filter parser accepts invented field and
+  value names silently. Re-confirm names via `list_fields` /
+  `list_field_values` before trusting an empty result.
+
+## Examples
+
+**"What datasets does ServiceGraph have?"**
+`list_datasets` (or `GET /v1/datasets`) → present each dataset's id, size, and
+unlock price. Free.
+
+**"Search ServiceGraph for design agencies in New York and unlock the top 3."**
+Discover the matching dataset (`list_datasets`), inspect its schema
+(`describe_dataset` / `list_fields`), validate a filter (`check_filter`),
+`search_dataset` → present the free briefs, confirm the unlock cost with the
+user, then `unlock_rows` on the three chosen apexes.
+
+## Resources
+
+- Upstream source: <https://github.com/nostrband/ServiceGraph>
+- ServiceGraph API: <https://api.servicegraph.co> — keys at
+  <https://servicegraph.co/profile/api-keys>
+- Specific skills in this plugin (`find-law-firm`, `find-marketing-agency`,
+  `find-pr-agency`, …) — prefer them when the user states an intent without
+  naming ServiceGraph.

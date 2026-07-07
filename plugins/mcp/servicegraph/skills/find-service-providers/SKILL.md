@@ -23,6 +23,8 @@ metadata:
 
 # find-service-providers
 
+## Overview
+
 Drive the **ServiceGraph API** (`https://api.servicegraph.co`) to find,
 shortlist, and enrich US professional-services firms.
 
@@ -34,7 +36,39 @@ location, size, and third-party rating signals.
 
 Any HTTP client works (curl, fetch, requests). Examples below use curl.
 
-## MCP server (preferred for authed calls)
+## Prerequisites
+
+- **ServiceGraph access**, either:
+  - the **ServiceGraph MCP server** (`https://mcp.servicegraph.co`) loaded in
+    your harness — this plugin's `.mcp.json` wires it up; OAuth 2.1 + PKCE
+    keeps credentials in the harness sandbox — or
+  - a **ServiceGraph API key** (`vk_…`, minted at
+    <https://servicegraph.co/profile/api-keys>) available as
+    `SERVICEGRAPH_API_KEY` in the environment or `.env.local` for the REST
+    path (setup steps under Auth below).
+- An HTTP client for the REST path — the examples use `curl`.
+
+## Instructions
+
+The loop is free-first: discovery, validation, search, and brief reads cost
+nothing; only unlock after the user confirms the spend.
+
+1. Pick the call path — the ServiceGraph MCP tools if loaded, otherwise the
+   REST flow (MCP server and Auth sections below).
+2. `GET /v1/datasets/pro_services/fields?include_values=1` — confirm the
+   fields and values you plan to filter on exist.
+3. Build the filter (Filter DSL below) and validate it with
+   `GET /v1/datasets/pro_services/check` — or draft it from plain English via
+   `POST /v1/datasets/pro_services/translate-intent`.
+4. `GET /v1/datasets/pro_services/search` — present the free brief cards and
+   let the user pick.
+5. Quote the unlock cost (10 credits per row, 30-day TTL) and get an explicit
+   go-ahead.
+6. `POST /v1/datasets/pro_services/unlocks` with the chosen apexes; report the
+   revealed detail.
+7. `GET /v1/me/credits` to report the remaining balance when asked.
+
+### MCP server (preferred for authed calls)
 
 If your agent harness has the **ServiceGraph MCP server** loaded
 (`https://mcp.servicegraph.co`) — recognizable by tool names
@@ -43,7 +77,7 @@ MCP server uses OAuth 2.1 + PKCE so the harness handles credentials
 in its own sandbox and no token value ever enters the LLM context.
 Otherwise, fall through to the REST flow described below.
 
-## API surface
+### API surface
 
 Every endpoint requires the bearer (`Authorization: Bearer vk_…`).
 There is no anonymous tier.
@@ -70,7 +104,7 @@ TTL is free — both the detail GET and the unlock POST honor the
 cache. Charges are atomic per `POST /unlocks` call: a 402 leaves
 balance untouched.
 
-## Auth
+### Auth
 
 Tokens are `vk_*` API keys minted in the dashboard. The user creates
 them themselves; this skill never sees raw email/password.
@@ -115,7 +149,7 @@ For the user's convenience: if `SERVICEGRAPH_API_KEY` is already set
 or already in `.env.local`, the very first call will succeed and the
 prompt step never happens.
 
-## Filter DSL
+### Filter DSL
 
 One query parameter, GitHub-search-style.
 
@@ -175,7 +209,7 @@ Don't put `kind:` in the filter — the dataset URL is authoritative and
 the API will reject it. Don't use fields outside this dataset's allowed
 list either; `/check` will tell you which ones.
 
-## Identifying firms — `apex`
+### Identifying firms — `apex`
 
 Firms are identified by their **apex domain** (registered domain only:
 `mckinsey.com`, not `www.mckinsey.com/about`). When the user gives you
@@ -183,7 +217,21 @@ URLs, strip to the apex before calling `/datasets/pro_services/:apex`
 or `POST /unlocks`. The endpoint accepts any lowercase host-shaped
 string; a 404 means the firm isn't in this dataset (no charge).
 
-## Recipes
+## Output
+
+All responses are JSON.
+
+- **Search** returns free **brief** firm cards — `apex`, `name`, location, and
+  rating signals — plus a per-row unlock hint and the match `total`. Briefs
+  never include `url`, `phone_primary`, `email_primary`, `legal_name`,
+  `address_full`, or the full `platforms` map.
+- **Unlock** (`POST …/unlocks`) returns each unlocked firm's detail block —
+  contact fields, address, socials, the `platforms` map — plus per-item
+  billing; detail stays readable for 30 days.
+- **Errors** arrive as a JSON envelope
+  `{"error": {"code": "…", "message": "…"}}` — see Errors below.
+
+## Examples
 
 ### A. Shortlist by industry + state
 
@@ -313,3 +361,11 @@ POST /v1/datasets/pro_services/unlocks
 # 6. (Optional) Confirm remaining balance
 GET /v1/me/credits
 ```
+
+## Resources
+
+- Upstream source: <https://github.com/nostrband/ServiceGraph>
+- ServiceGraph API: <https://api.servicegraph.co> — keys at
+  <https://servicegraph.co/profile/api-keys>
+- Hub skill: `servicegraph` (this plugin) — the dataset-agnostic entry point
+  when the user names ServiceGraph explicitly.

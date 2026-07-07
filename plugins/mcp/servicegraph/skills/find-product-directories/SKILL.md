@@ -24,6 +24,8 @@ metadata:
 
 # find-product-directories
 
+## Overview
+
 Drive the **ServiceGraph API** (`https://api.servicegraph.co`) to find and
 rank **directories where a founder can submit a software product** — SaaS
 review sites (Capterra, G2, SaaSHub), launch platforms (Product Hunt and its
@@ -54,14 +56,46 @@ This skill is the **umbrella** for everything else founders launch — SaaS,
 web apps, mobile apps, dev tools, startups in general — and is the right pick
 when the ask spans niches or names none.
 
-## MCP server (preferred for authed calls)
+## Prerequisites
+
+- **ServiceGraph access**, either:
+  - the **ServiceGraph MCP server** (`https://mcp.servicegraph.co`) loaded in
+    your harness — this plugin's `.mcp.json` wires it up; OAuth 2.1 + PKCE
+    keeps credentials in the harness sandbox — or
+  - a **ServiceGraph API key** (`vk_…`, minted at
+    <https://servicegraph.co/profile/api-keys>) available as
+    `SERVICEGRAPH_API_KEY` in the environment or `.env.local` for the REST
+    path (setup steps under Auth below).
+- An HTTP client for the REST path — the examples use `curl`.
+
+## Instructions
+
+The loop is free-first: discovery, validation, search, and brief reads cost
+nothing; only unlock after the user confirms the spend.
+
+1. Pick the call path — the ServiceGraph MCP tools if loaded, otherwise the
+   REST flow (MCP server and Auth sections below).
+2. `GET /v1/datasets/product_directory/fields?include_values=1` — confirm the
+   fields and values you plan to filter on exist.
+3. Build the filter (Filter DSL below) and validate it with
+   `GET /v1/datasets/product_directory/check` — or draft it from plain English via
+   `POST /v1/datasets/product_directory/translate-intent`.
+4. `GET /v1/datasets/product_directory/search` — present the free brief cards and
+   let the user pick.
+5. Quote the unlock cost (10 credits per row, 30-day TTL) and get an explicit
+   go-ahead.
+6. `POST /v1/datasets/product_directory/unlocks` with the chosen apexes; report the
+   revealed detail.
+7. `GET /v1/me/credits` to report the remaining balance when asked.
+
+### MCP server (preferred for authed calls)
 
 If your harness has the ServiceGraph MCP server loaded (recognizable by tool
 names containing `servicegraph`), prefer those tools — the harness handles
 credentials in its own sandbox via OAuth 2.1 + PKCE, so no token enters LLM
 context. Otherwise use the REST flow below.
 
-## API surface (dataset id: `product_directory`)
+### API surface (dataset id: `product_directory`)
 
 Every endpoint requires the bearer (`Authorization: Bearer vk_…`). There is
 no anonymous tier.
@@ -84,7 +118,7 @@ hand-written submission note — *how* to submit and *whether the listing gives
 a backlink*), `organic_traffic`, and `total_visits`. Re-fetching an unlocked
 row within TTL is free.
 
-## Auth
+### Auth
 
 Tokens are `vk_*` API keys minted in the dashboard.
 
@@ -109,7 +143,7 @@ context; dispatch every authed call through a shell wrapper.
 3. **Retry** the same call after the user signals ready. A later 401 means the
    key was rotated/revoked — re-prompt.
 
-## Filter DSL
+### Filter DSL
 
 GitHub-search-style.
 
@@ -133,7 +167,7 @@ op       := ":" | "=" | ">=" | "<=" | ">" | "<"
    tag** (so `saas` matches dirs whose niche is "SaaS products"). Multiple
    barewords AND. Wrap multi-word phrases in double quotes (`"product launch"`).
 
-## Fields that matter here
+### Fields that matter here
 
 This dataset ranks directories by *SEO value and reach*, so the numeric
 signals are the point:
@@ -154,13 +188,27 @@ Because `dr` is free and briefs are pre-sorted by it, **you can rank a
 shortlist by authority without spending a single credit** — unlock only the
 ones the user wants submission instructions for.
 
-## Identifying rows — `apex`
+### Identifying rows — `apex`
 
 Directories are keyed by **apex domain** (`producthunt.com`, not
 `www.producthunt.com/posts`). Strip user-supplied URLs to the apex before
 calling `:apex` endpoints or building unlock batches.
 
-## Recipes
+## Output
+
+All responses are JSON.
+
+- **Search** returns free **brief** directory cards — `apex`, name, and the
+  `dr` (Domain Rating) signal, pre-sorted by `dr` descending — plus a per-row
+  unlock hint and the match `total`.
+- **Unlock** (`POST …/unlocks`) reveals each directory's gated fields —
+  `editor_note` (how to submit and whether the listing gives a backlink),
+  `organic_traffic`, and `total_visits` — with per-item billing and a 30-day
+  TTL (`was_cached:true` rows are free).
+- **Errors** arrive as a JSON envelope
+  `{"error": {"code": "…", "message": "…"}}` — see Errors below.
+
+## Examples
 
 ### A. Launch platforms (Product Hunt alternatives)
 
@@ -318,3 +366,11 @@ POST /v1/datasets/product_directory/unlocks
 
 # 6. Surface each editor_note verbatim + traffic so the user can prioritize.
 ```
+
+## Resources
+
+- Upstream source: <https://github.com/nostrband/ServiceGraph>
+- ServiceGraph API: <https://api.servicegraph.co> — keys at
+  <https://servicegraph.co/profile/api-keys>
+- Hub skill: `servicegraph` (this plugin) — the dataset-agnostic entry point
+  when the user names ServiceGraph explicitly.

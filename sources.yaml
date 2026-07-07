@@ -1471,6 +1471,7 @@ sources:
     # frozen since 2026-06-02), so we feature the hardened copy; `curated: true`
     # FREEZES the mirror. The upstream PR remains the courtesy off-ramp — once
     # merged, drop `curated:` to resume normal mirroring. See tonone above.
+    # 2026-07-07: curated hardening extended in-PR — marketplace-tier body restructuring (the 6 required sections) across all 18 SKILL.md, on top of the fork's frontmatter fix; upstream prose preserved, moved not rewritten.
     curated: true
     include:
       - '.claude-plugin/plugin.json'

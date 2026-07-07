@@ -24,6 +24,8 @@ metadata:
 
 # find-mcp-directories
 
+## Overview
+
 Drive the **ServiceGraph API** (`https://api.servicegraph.co`) to find and
 rank **directories and registries where a builder can list an MCP server**
 (Model Context Protocol) via the `product_directory` dataset. The catalog has
@@ -48,13 +50,45 @@ Any HTTP client works (curl, fetch, requests). Examples below use curl.
 - **General SaaS / software / app launch** ("Product Hunt alternatives") →
   `find-product-directories`.
 
-## MCP server (preferred for authed calls)
+## Prerequisites
+
+- **ServiceGraph access**, either:
+  - the **ServiceGraph MCP server** (`https://mcp.servicegraph.co`) loaded in
+    your harness — this plugin's `.mcp.json` wires it up; OAuth 2.1 + PKCE
+    keeps credentials in the harness sandbox — or
+  - a **ServiceGraph API key** (`vk_…`, minted at
+    <https://servicegraph.co/profile/api-keys>) available as
+    `SERVICEGRAPH_API_KEY` in the environment or `.env.local` for the REST
+    path (setup steps under Auth below).
+- An HTTP client for the REST path — the examples use `curl`.
+
+## Instructions
+
+The loop is free-first: discovery, validation, search, and brief reads cost
+nothing; only unlock after the user confirms the spend.
+
+1. Pick the call path — the ServiceGraph MCP tools if loaded, otherwise the
+   REST flow (MCP server and Auth sections below).
+2. `GET /v1/datasets/product_directory/fields?include_values=1` — confirm the
+   fields and values you plan to filter on exist.
+3. Build the filter (Filter DSL below) and validate it with
+   `GET /v1/datasets/product_directory/check` — or draft it from plain English via
+   `POST /v1/datasets/product_directory/translate-intent`.
+4. `GET /v1/datasets/product_directory/search` — present the free brief cards and
+   let the user pick.
+5. Quote the unlock cost (10 credits per row, 30-day TTL) and get an explicit
+   go-ahead.
+6. `POST /v1/datasets/product_directory/unlocks` with the chosen apexes; report the
+   revealed detail.
+7. `GET /v1/me/credits` to report the remaining balance when asked.
+
+### MCP server (preferred for authed calls)
 
 If your harness has the ServiceGraph MCP server loaded (tool names contain
 `servicegraph`), prefer those tools — credentials stay in the harness sandbox
 via OAuth 2.1 + PKCE, no token in LLM context. Otherwise use the REST flow.
 
-## API surface (dataset id: `product_directory`)
+### API surface (dataset id: `product_directory`)
 
 Every endpoint requires the bearer (`Authorization: Bearer vk_…`).
 
@@ -74,7 +108,7 @@ ranking signal. Unlocking a row costs **10 credits**, lasts **30 days**, and
 reveals the **gated fields**: `editor_note` (how to submit + whether the
 listing gives a backlink), `organic_traffic`, and `total_visits`.
 
-## Auth
+### Auth
 
 Tokens are `vk_*` API keys. **Keep the token out of the LLM context** — never
 read `.env*` into context; route authed calls through a shell wrapper.
@@ -95,7 +129,7 @@ read `.env*` into context; route authed calls through a shell wrapper.
 
 3. **Retry** after the user signals ready.
 
-## Filter DSL
+### Filter DSL
 
 GitHub-search-style. AND binds tighter than OR; comma list = OR within one
 predicate; negation is `-x` / `NOT x`; any **bareword is a keyword search**
@@ -109,7 +143,7 @@ mcp OR "model context protocol"
 mcp servers          # → keyword:mcp AND keyword:servers
 ```
 
-## Fields that matter here
+### Fields that matter here
 
 | Field | Free in brief? | Use it for |
 |---|---|---|
@@ -122,13 +156,27 @@ mcp servers          # → keyword:mcp AND keyword:servers
 Because `dr` is free and briefs are pre-sorted by it, **rank a shortlist by
 authority for zero credits** — unlock only to reveal submission notes + traffic.
 
-## Identifying rows — `apex`
+### Identifying rows — `apex`
 
 Keyed by **apex domain** (`smithery.ai`, not a full URL; subdomains like
 `registry.modelcontextprotocol.io` are kept as-is when that's the catalog
 key). Strip user-supplied URLs before `:apex` or unlock calls.
 
-## Recipes
+## Output
+
+All responses are JSON.
+
+- **Search** returns free **brief** directory cards — `apex`, name, and the
+  `dr` (Domain Rating) signal, pre-sorted by `dr` descending — plus a per-row
+  unlock hint and the match `total`.
+- **Unlock** (`POST …/unlocks`) reveals each directory's gated fields —
+  `editor_note` (how to submit and whether the listing gives a backlink),
+  `organic_traffic`, and `total_visits` — with per-item billing and a 30-day
+  TTL (`was_cached:true` rows are free).
+- **Errors** arrive as a JSON envelope
+  `{"error": {"code": "…", "message": "…"}}` — see Errors below.
+
+## Examples
 
 ### A. The MCP registry shortlist
 
@@ -244,3 +292,11 @@ POST /v1/datasets/product_directory/unlocks
 
 # 6. Surface each editor_note verbatim + traffic so the user can prioritize.
 ```
+
+## Resources
+
+- Upstream source: <https://github.com/nostrband/ServiceGraph>
+- ServiceGraph API: <https://api.servicegraph.co> — keys at
+  <https://servicegraph.co/profile/api-keys>
+- Hub skill: `servicegraph` (this plugin) — the dataset-agnostic entry point
+  when the user names ServiceGraph explicitly.

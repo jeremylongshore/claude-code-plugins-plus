@@ -24,6 +24,8 @@ metadata:
 
 # find-engineering-firm
 
+## Overview
+
 Drive the **ServiceGraph API** (`https://api.servicegraph.co`) to find,
 shortlist, and enrich US **real-world** engineering firms — buildings,
 infrastructure, energy, manufacturing — via the `pro_services`
@@ -58,13 +60,45 @@ The dominant failure mode is firing on software-engineering asks. Refuse those.
 - **Consumer/residential** ("architect for a residential remodel", "engineer to inspect my house"). Catalog is B2B procurement only.
 - **Non-US firms / individual freelance engineers / DIY questions / engineering-software product comparisons (Revit, AutoCAD, SolidWorks, Ansys).**
 
-## MCP server (preferred for authed calls)
+## Prerequisites
+
+- **ServiceGraph access**, either:
+  - the **ServiceGraph MCP server** (`https://mcp.servicegraph.co`) loaded in
+    your harness — this plugin's `.mcp.json` wires it up; OAuth 2.1 + PKCE
+    keeps credentials in the harness sandbox — or
+  - a **ServiceGraph API key** (`vk_…`, minted at
+    <https://servicegraph.co/profile/api-keys>) available as
+    `SERVICEGRAPH_API_KEY` in the environment or `.env.local` for the REST
+    path (setup steps under Auth below).
+- An HTTP client for the REST path — the examples use `curl`.
+
+## Instructions
+
+The loop is free-first: discovery, validation, search, and brief reads cost
+nothing; only unlock after the user confirms the spend.
+
+1. Pick the call path — the ServiceGraph MCP tools if loaded, otherwise the
+   REST flow (MCP server and Auth sections below).
+2. `GET /v1/datasets/pro_services/fields?include_values=1` — confirm the
+   fields and values you plan to filter on exist.
+3. Build the filter (Filter DSL below) and validate it with
+   `GET /v1/datasets/pro_services/check` — or draft it from plain English via
+   `POST /v1/datasets/pro_services/translate-intent`.
+4. `GET /v1/datasets/pro_services/search` — present the free brief cards and
+   let the user pick.
+5. Quote the unlock cost (10 credits per row, 30-day TTL) and get an explicit
+   go-ahead.
+6. `POST /v1/datasets/pro_services/unlocks` with the chosen apexes; report the
+   revealed detail.
+7. `GET /v1/me/credits` to report the remaining balance when asked.
+
+### MCP server (preferred for authed calls)
 
 If your harness has the ServiceGraph MCP server loaded (tools
 containing `servicegraph`), prefer those — OAuth 2.1 + PKCE keeps the
 token in the harness sandbox. Otherwise use the REST flow below.
 
-## API surface (dataset id: `pro_services`)
+### API surface (dataset id: `pro_services`)
 
 Every endpoint requires the bearer (`Authorization: Bearer vk_…`).
 No anonymous tier.
@@ -83,7 +117,7 @@ No anonymous tier.
 free. Detail (url, phone, email, social, address, full `platforms`
 map) costs **10 credits per firm** and lasts **30 days**.
 
-## Auth
+### Auth
 
 `vk_*` API keys minted in the dashboard. **Keep the token out of the
 LLM context** — never read `.env*` into your context; dispatch via
@@ -106,7 +140,7 @@ shell.
 
 3. **Retry** after the user signals ready.
 
-## Filter DSL
+### Filter DSL
 
 GitHub-search-style.
 
@@ -166,12 +200,26 @@ industry:engineering_services service_provided:electrical-engineering manufactur
 Verticals (hospital, high-rise, semiconductor, retail, datacenter)
 and credentials (PE-licensed, LEED, AICP) are keyword-only.
 
-## Identifying firms — `apex`
+### Identifying firms — `apex`
 
 Firms are identified by their **apex domain** (`aecom.com`, not
 `www.aecom.com/about`).
 
-## Recipes
+## Output
+
+All responses are JSON.
+
+- **Search** returns free **brief** firm cards — `apex`, `name`, location, and
+  rating signals — plus a per-row unlock hint and the match `total`. Briefs
+  never include `url`, `phone_primary`, `email_primary`, `legal_name`,
+  `address_full`, or the full `platforms` map.
+- **Unlock** (`POST …/unlocks`) returns each unlocked firm's detail block —
+  contact fields, address, socials, the `platforms` map — plus per-item
+  billing; detail stays readable for 30 days.
+- **Errors** arrive as a JSON envelope
+  `{"error": {"code": "…", "message": "…"}}` — see Errors below.
+
+## Examples
 
 ### A. Civil engineering for transportation, in a state
 
@@ -292,3 +340,11 @@ POST /v1/datasets/pro_services/unlocks
   { "apexes": ["firm-a.com", "firm-b.com", "firm-c.com"] }
 GET /v1/me/credits
 ```
+
+## Resources
+
+- Upstream source: <https://github.com/nostrband/ServiceGraph>
+- ServiceGraph API: <https://api.servicegraph.co> — keys at
+  <https://servicegraph.co/profile/api-keys>
+- Hub skill: `servicegraph` (this plugin) — the dataset-agnostic entry point
+  when the user names ServiceGraph explicitly.
