@@ -137,6 +137,7 @@ If you are an AI PR reviewer (Codex, Greptile, or similar), review against **thi
 - **Never suggest weakening a gate** (a threshold, test, assertion, security check, or required field) unless the same PR replaces it with a stronger equivalent. See `CLAUDE.md` and `.greptile/rules.md`.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
+
 ## Beads Issue Tracker
 
 This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
