@@ -1387,3 +1387,32 @@ config:
     {sources}
 
     See `sources.yaml` for configured sources.
+
+  - name: llm-box
+    description: Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.
+    repo: alib8b8/llm-box
+    source_path: .
+    target_path: plugins/community/llm-box
+    author:
+      name: alib8b8
+      github: alib8b8
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '.claude-plugin/plugin.json'
+      - '.claude-plugin/marketplace.json'
+      - 'skills/llm-box/SKILL.md'
+      - 'skills/setup/SKILL.md'
+      - 'commands/create-workflow.md'
+      - 'commands/run-workflow.md'
+      - 'commands/list-nodes.md'
+      - '.mcp.json'
+      - 'README.md'
+      - 'README.zh-CN.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'dist/**'
+      - 'contrib/**'
