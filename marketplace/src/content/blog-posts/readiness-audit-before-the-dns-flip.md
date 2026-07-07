@@ -119,4 +119,3 @@ Take this to your own cutover:
 ## The rule
 
 The moment before an irreversible cutover is the **cheapest time you will ever have** to find catastrophic bugs. After the DNS flip, the schema drift is a live payment incident with charged customers and no records. Before it, it is a diff. The distance between those two costs is one adversarial audit of the new stack plus a revenue-path test suite — run while rollback is still nothing more than reverting a config. Buy the safety while it is free.
-

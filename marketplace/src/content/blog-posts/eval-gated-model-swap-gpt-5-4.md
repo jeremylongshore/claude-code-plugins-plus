@@ -59,4 +59,3 @@ Cost: ~$0.079/report (~3x gpt-4o) but under 2% of the $4.99 ticket. Rollback is 
 - [BM25 Before Vectors: An Eval-Gated Retrieval ADR](/posts/bm25-before-vectors-retrieval-backend-adr/) — the same "gate the decision on an eval" discipline, applied to a retrieval backend.
 - [Run the Readiness Audit Before You Flip DNS](/posts/readiness-audit-before-the-dns-flip/) — the DiagnosticPro self-host rollout, one door earlier.
 - [The LLM Should Never Do the Math](/posts/llm-never-does-the-math/) — where to draw the line on what the model is allowed to decide.
-

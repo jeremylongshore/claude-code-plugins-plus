@@ -58,4 +58,3 @@ Progress on a backlog is measured in **waves**, not individual closures. A wave 
 Run the machine again next week. The estate will shrink in the same predictable, verifiable way.
 
 The backlog is not the enemy. The *absence of a repeatable triage method* is.
-

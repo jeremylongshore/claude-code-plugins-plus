@@ -262,4 +262,3 @@ Two secondary repos had minor activity on 2026-07-04. `intent-os` took a beads-b
 - [BM25 Before Vectors: An Eval-Gated Retrieval ADR](/bm25-before-vectors-retrieval-backend-adr/) — the deeper dive on NEXUS's P3 retrieval decision, including why the hybrid `qmd` backend exists and how the eval gate drove the call.
 - [When LLM Output Lies Instead of Crashing](/when-llm-output-lies-instead-of-crashing/) — the exact failure mode the code-enforced refusal and the groundedness gate exist to catch: output that looks fine while the pipeline underneath is broken.
 - [Shipping gpt-5.4 as One Config Line](/eval-gated-model-swap-gpt-5-4/) — the same eval-gated-change discipline applied to a model swap, where the gate is what lets a provider change be a one-line diff instead of a leap of faith.
-
