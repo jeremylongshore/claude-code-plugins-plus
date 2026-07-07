@@ -1,0 +1,5 @@
+Scratch file for end-to-end CI verification (PR will be closed, not merged).
+Repro of the #778/#964 stuck class: a diff with NO lintable/path-matched files.
+Under the old 10-context protection, path-filtered required checks never ran and
+the PR hung on "Expected" forever. Expected now: ci-required + gitleaks both
+report and pass.
