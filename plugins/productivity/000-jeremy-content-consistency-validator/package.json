@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/000-jeremy-content-consistency-validator",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across ANY HTML-based website (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.), GitHub rep",
   "keywords": [
     "documentation",
