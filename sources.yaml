@@ -1387,3 +1387,5 @@ config:
     {sources}
 
     See `sources.yaml` for configured sources.
+
+# scratch: end-to-end verify of the sources-change-unscanned fail-loud gate (PR will be closed)
