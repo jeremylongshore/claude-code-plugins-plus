@@ -8,6 +8,7 @@ description: 'Execute use when generating conventional commit messages from stag
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*)
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:
