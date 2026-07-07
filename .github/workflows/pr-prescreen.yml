@@ -143,13 +143,24 @@ jobs:
           CI: 'true'
         run: |
           set -euo pipefail
-          # We deliberately run the validator FROM the PR tree so the schema
-          # version + rubric matches what the PR ships against. The validator
-          # is pure read — no exec, no install. If the PR ships a malicious
-          # validator script, the catalog check below will flag it as a
-          # structural concern (validator path modified).
-          python3 ../base/scripts/validate-skills-schema.py --marketplace --json \
+          # SCAN-ROOT FIX (2026-07): the validator anchors its scan root to ITS
+          # OWN location (Path(__file__).resolve().parents[1]), NOT the cwd. The
+          # previous invocation (`python3 ../base/scripts/...` from cwd=pr) made
+          # parents[1] == base/, so prescreen graded MAIN's pristine tree and any
+          # PR that broke a skill's frontmatter got a false PASS (verified live:
+          # a SKILL.md with `version` removed scored errors:0 from base vs
+          # errors:1 against the PR tree).
+          #
+          # Fix: copy the BASE-authored validator INTO the PR tree (overwriting
+          # anything a malicious PR may have planted at that path), then run the
+          # copy so parents[1] == the PR tree. We still execute ONLY
+          # base-authored bytes — never PR-authored code (pull_request_target
+          # safety). The validator is pure read — no exec, no install.
+          install -m 0644 ../base/scripts/validate-skills-schema.py \
+            ./scripts/.prescreen-validator.py
+          python3 scripts/.prescreen-validator.py --marketplace --json \
             > /tmp/validator-results.json 2>/tmp/validator.log || true
+          rm -f ./scripts/.prescreen-validator.py
           echo "Validator stderr/info:" >&2
           tail -50 /tmp/validator.log >&2 || true
           # Filter to only changed plugin paths (if any). Otherwise we pass
@@ -334,8 +345,13 @@ jobs:
             CHANGES_REQUESTED|HARD_BLOCK) STATE=failure ;;
             *) STATE=error ;;
           esac
-          # GitHub caps a status description at 140 chars.
-          DESC="$(printf '%s: %s' "$VERDICT" "$SUMMARY" | cut -c1-138)"
+          # GitHub caps a status description at 140 chars. classify.py's summary
+          # already leads with the verdict ("PASS: …"), so don't prefix it again;
+          # only prepend when the summary doesn't carry it.
+          case "$SUMMARY" in
+            "$VERDICT"*) DESC="$(printf '%s' "$SUMMARY" | cut -c1-138)" ;;
+            *) DESC="$(printf '%s: %s' "$VERDICT" "$SUMMARY" | cut -c1-138)" ;;
+          esac
           gh api "repos/${REPO}/statuses/${SHA}" \
             -f state="$STATE" \
             -f context='prescreen-grade' \
