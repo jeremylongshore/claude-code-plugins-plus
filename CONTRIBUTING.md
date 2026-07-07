@@ -144,12 +144,12 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
      category: community
      verified: true
      include:
-       - "SKILL.md"
-       - "README.md"
-       - "references/**"
+       - 'SKILL.md'
+       - 'README.md'
+       - 'references/**'
      exclude:
-       - "node_modules/**"
-       - ".git/**"
+       - 'node_modules/**'
+       - '.git/**'
    ```
 
 3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.
