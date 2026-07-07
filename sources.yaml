@@ -1383,7 +1383,7 @@ sources:
       - '.claude-plugin/**'
       - 'skills/**'
       - 'README.md'
-      - 'license'
+      - 'LICENSE'
     exclude:
       - 'node_modules/**'
       - '.git/**'
