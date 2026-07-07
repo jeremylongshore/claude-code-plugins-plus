@@ -61,10 +61,10 @@ Two things, and both help you more than they cost you:
 
 **2. The docs that match your tier.** The bar scales with the claim, not the size:
 
-| Tier | What it covers | Required docs |
-|------|----------------|---------------|
-| **Micro-skill** | a single command or skill, no scripts | `PRD.md` (short form OK) |
-| **Standard plugin** | skills plus scripts/commands | `PRD.md` + `ADR.md` |
+| Tier                                       | What it covers                                   | Required docs                                                                        |
+| ------------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **Micro-skill**                            | a single command or skill, no scripts            | `PRD.md` (short form OK)                                                             |
+| **Standard plugin**                        | skills plus scripts/commands                     | `PRD.md` + `ADR.md`                                                                  |
 | **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
 
 Fill-in-the-blank templates live in [`templates/skill-docs/`](templates/skill-docs/README.md) — copy the ones your tier needs into your plugin directory as `docs/PRD.md`, `docs/ADR.md`, etc. Your issue answers ARE most of the PRD, so this is minutes, not hours. The same matrix applies to Intent Solutions' own skills — this isn't a hoop for outsiders, it's the house standard. Full process: [`000-docs/700-DR-GUID-skill-submission-standard.md`](000-docs/700-DR-GUID-skill-submission-standard.md).
@@ -144,12 +144,12 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
      category: community
      verified: true
      include:
-       - 'SKILL.md'
-       - 'README.md'
-       - 'references/**'
+       - "SKILL.md"
+       - "README.md"
+       - "references/**"
      exclude:
-       - 'node_modules/**'
-       - '.git/**'
+       - "node_modules/**"
+       - ".git/**"
    ```
 
 3. After your `sources.yaml` PR merges, the next weekly sync (Mondays 06:00 UTC) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR. Once that PR merges, your plugin is live on the site.

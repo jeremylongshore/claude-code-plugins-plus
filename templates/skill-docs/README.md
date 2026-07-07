@@ -9,20 +9,20 @@ skills use the same templates and are held to the same standard. Full process:
 
 The bar scales with the tier — a bigger claim carries more paperwork, not a bigger skill.
 
-| Tier | What it covers | Required docs |
-|------|----------------|---------------|
-| **Micro-skill** | a single command or skill, no scripts | `PRD.md` (short form OK) |
-| **Standard plugin** | skills plus scripts/commands | `PRD.md` + `ADR.md` |
+| Tier                                       | What it covers                                   | Required docs                                                                        |
+| ------------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **Micro-skill**                            | a single command or skill, no scripts            | `PRD.md` (short form OK)                                                             |
+| **Standard plugin**                        | skills plus scripts/commands                     | `PRD.md` + `ADR.md`                                                                  |
 | **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
 
 ## The templates
 
-| Template | What it proves |
-|----------|----------------|
-| [`PRD.md`](PRD.md) | The problem is real, the users exist, success is measurable |
-| [`ADR.md`](ADR.md) | The design was a decision, not an accident — including least-privilege tool scope |
-| [`ONE-PAGER.md`](ONE-PAGER.md) | An installer-in-a-hurry can evaluate it from one screen |
-| [`CFO-ONE-PAGER.md`](CFO-ONE-PAGER.md) | The money claim survives a skeptical reader (enterprise/flagship/paid only) |
+| Template                               | What it proves                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------------- |
+| [`PRD.md`](PRD.md)                     | The problem is real, the users exist, success is measurable                       |
+| [`ADR.md`](ADR.md)                     | The design was a decision, not an accident — including least-privilege tool scope |
+| [`ONE-PAGER.md`](ONE-PAGER.md)         | An installer-in-a-hurry can evaluate it from one screen                           |
+| [`CFO-ONE-PAGER.md`](CFO-ONE-PAGER.md) | The money claim survives a skeptical reader (enterprise/flagship/paid only)       |
 
 ## How to use them
 

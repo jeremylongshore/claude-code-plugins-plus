@@ -9,29 +9,29 @@
 
 ## Context
 
-*What situation forced a decision — the constraints, the PRD requirement it serves,
-what breaks if you do nothing. 1–2 paragraphs.*
+_What situation forced a decision — the constraints, the PRD requirement it serves,
+what breaks if you do nothing. 1–2 paragraphs._
 
 <Describe the forces at play.>
 
 ## Decision
 
-*The choice, stated as a decision ("We use X to do Y"), not a description of the code.*
+_The choice, stated as a decision ("We use X to do Y"), not a description of the code._
 
 <State the decision.>
 
 ## Alternatives considered
 
-*2–3 alternatives with why each was rejected. If nothing was rejected, no decision was made.*
+_2–3 alternatives with why each was rejected. If nothing was rejected, no decision was made._
 
-| Alternative | Why rejected |
-|-------------|--------------|
+| Alternative     | Why rejected      |
+| --------------- | ----------------- |
 | <alternative 1> | <specific reason> |
 | <alternative 2> | <specific reason> |
 
 ## Consequences
 
-*Both directions. A decision with no negative consequences is a description, not a decision.*
+_Both directions. A decision with no negative consequences is a description, not a decision._
 
 **Positive:**
 
@@ -43,11 +43,11 @@ what breaks if you do nothing. 1–2 paragraphs.*
 
 ## Tool-permission scope
 
-*Which `allowed-tools` the skill declares and why each one is needed. Least privilege:
-`Bash(git:*)` beats bare `Bash`. If a tool can't be justified here, remove it from the
-frontmatter.*
+_Which `allowed-tools` the skill declares and why each one is needed. Least privilege:
+`Bash(git:_)`beats bare`Bash`. If a tool can't be justified here, remove it from the
+frontmatter.\*
 
-| Tool | Why it's needed |
-|------|-----------------|
-| <Read> | <reason> |
-| <Bash(npm:*)> | <reason> |
+| Tool           | Why it's needed |
+| -------------- | --------------- |
+| <Read>         | <reason>        |
+| <Bash(npm:\*)> | <reason>        |
