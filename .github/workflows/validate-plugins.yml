@@ -1077,3 +1077,49 @@ jobs:
       - name: Run markdownlint-cli2
         run: |
           npx -y markdownlint-cli2
+
+  # Supply-chain scanner over the mirrored plugin content changed in this PR.
+  # This is the PR-side twin of the scan step inside sync-external.yml: the
+  # weekly sync opens an auto-PR, and this job re-grades that PR's plugin diff so
+  # an injected payload is caught even if the sync-side step was bypassed (e.g. a
+  # hand-pushed change to plugins/**). Runs on every PR (no path filter, so a
+  # required-status entry never hangs "Expected forever" on a PR that doesn't
+  # touch plugins/); it scopes internally to changed files under plugins/**.
+  #   REFUSE (pipe-to-shell in a script, reverse shell, decode-then-exec, secret
+  #   exfil, crypto-miner) → exit 2, fails the job. CHALLENGE (dual-use: hooks,
+  #   remote MCP url, outbound calls, dynamic exec) → exit 1, fails the job UNLESS
+  #   a `path:rule  reason` waiver is added to scripts/scan-allowlist.txt in the
+  #   same PR. The bot's own sync PR (branch automation/sync-external-*) runs with
+  #   --warn-only so routine dual-use churn doesn't wall it — REFUSE still blocks.
+  scan-synced-content:
+    runs-on: ubuntu-latest
+    name: scan-synced-content (supply-chain)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Run scanner + its fixture corpus
+        run: node --test scripts/scan-synced-content.test.mjs
+
+      - name: Scan changed plugin content
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          # The bot's own sync PR already REFUSE-scanned upstream at sync time;
+          # re-grade it with --warn-only so dual-use CHALLENGE churn doesn't wall
+          # the automated PR (REFUSE still hard-blocks). Human PRs get full grading.
+          WARN=""
+          case "$HEAD_REF" in
+            automation/sync-external-*) WARN="--warn-only" ;;
+          esac
+          node scripts/scan-synced-content.mjs --changed-only --base "origin/$BASE_REF" $WARN

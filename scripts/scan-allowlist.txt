@@ -1,0 +1,24 @@
+# scan-synced-content.mjs — CHALLENGE / FLAG waivers
+#
+# One waiver per line:  <path-or-glob>:<rule-id>  <reason>
+#   - path-or-glob : repo-relative path; `*` = one segment, `**` = any depth.
+#   - rule-id      : the finding id printed by the scanner (e.g. pipe-to-shell-doc,
+#                    outbound-network, hook-definition, mcp-remote, dynamic-exec).
+#   - reason       : REQUIRED free text (why this dual-use pattern is legitimate).
+#                    Separate it from the rule id with 2+ spaces or a `#`.
+#
+# A waiver downgrades a CHALLENGE or FLAG finding to a reported-but-PASSING note.
+# REFUSE findings are NEVER waivable here — a real hard-block must be fixed at the
+# source, not signed away. Malformed lines (missing reason) are IGNORED, not honored.
+#
+# The point of an in-repo allowlist: a legitimate CHALLENGE gets signed off in a
+# reviewed commit (this file) instead of by weakening a detection pattern.
+
+# ── Known upstream one-line installers (documented install steps in READMEs). ──
+# These are legitimate `curl … | sh` install instructions, not executable payloads
+# (they live in markdown docs, hence graded CHALLENGE not REFUSE). Pre-signed so
+# routine doc edits don't wall a human PR; a NEW install target still surfaces.
+plugins/**/README.md:pipe-to-shell  documented upstream one-line installer (ollama/bun/gcloud/etc.) in a README
+plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the documented setup path for this skill
+plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs
+plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI install step inside a SaaS-pack skill

@@ -111,6 +111,21 @@ jobs:
         if: inputs.dry_run != true && steps.sync.outputs.errors == '0'
         run: node scripts/sync-lint-ignores.mjs
 
+      # Supply-chain gate on the freshly-mirrored content BEFORE it is committed
+      # and auto-PR'd. A compromised/rogue upstream's next push lands here as
+      # untracked/modified files under plugins/**; this scans exactly that diff
+      # (--base HEAD picks up the working-tree changes the sync just wrote) and
+      # HARD-fails on a REFUSE finding (pipe-to-shell in a script, reverse shell,
+      # decode-then-exec, secret exfil, crypto-miner) — so a poisoned upstream
+      # fails the sync itself and no PR is opened. --warn-only means dual-use
+      # CHALLENGE findings (a new hook, a remote MCP url, an outbound call) do
+      # NOT halt the weekly sync on routine upstream churn; they still print here
+      # and are re-graded (blocking) on the resulting PR for a human to sign off.
+      # A failed step halts the job, so the commit/PR-create steps below never run.
+      - name: Scan synced content for injected payloads
+        if: inputs.dry_run != true && steps.sync.outputs.errors == '0'
+        run: node scripts/scan-synced-content.mjs --changed-only --base HEAD --warn-only
+
       - name: Check for changes
         id: changes
         run: |
