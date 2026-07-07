@@ -170,13 +170,42 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 - **Defense-in-depth disallow list (3.7.0):** `disallowed-tools` — kebab-case string or YAML list of tool patterns. Removes those tools from the model while the skill is active. Parallel to (not a replacement for) `allowed-tools`. Cross-field overlap with `allowed-tools` is an ERROR (mirrors the 3.5.0 visibility-gating overlap rule). Defense-in-depth for skills that legitimately need broad `allowed-tools` but should never reach for specific high-risk operations (`rm`, `curl`, `wget`, `.env` writes). Full reference: `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Change 1.
 - **NON-NEGOTIABLE:** these are optional. `ALWAYS_REQUIRED` is still the 8-field set above. See issue #612 + `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Implementation directives before proposing any change to required fields — the 8-field set is preserved; `disallowed-tools` is additive, not required.
 
+## CI gate architecture — two required checks (rebuilt 2026-07)
+
+**Branch protection on `main` requires exactly TWO always-reporting contexts: `ci-required` + `gitleaks`** (both from the GitHub Actions app; `strict:false`, `enforce_admins:false`, 1 approving review). Every other blocking check gates _through_ the aggregate:
+
+- **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 15 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
+- **`gitleaks`** comes from `secret-scan.yml` (also unfiltered).
+
+**Why, and the rules that keep it fixed (do not regress):** the previous 10-context required set sourced checks from path-filtered workflows, so a PR without matching files left them "Expected" forever and could never merge (the #778/#964 stuck-PR class).
+
+1. `validate-plugins.yml` runs on **every** `pull_request` — never add a `paths:` filter to it.
+2. **Never add a path-filtered workflow's context to the required-status set.** To make a new check blocking: add it as a job in `validate-plugins.yml` and list it in `ci-required`'s `needs:`.
+3. A job in the aggregate's `needs:` may only skip via a _designed_ `if:` — an undesigned skip silently passes the gate.
+4. The five split lint workflows (`lint-markdown/python/shell/typescript/skill-codeblocks.yml`) were retired 2026-07; their identically-named jobs live in `validate-plugins.yml`. Do not re-split them. `tests/ci/test_path_routing.py` pins this invariant.
+
+**Supply-chain gate:** `scan-synced-content` (the REFUSE/CHALLENGE/FLAG scanner over `plugins/**`, `scripts/scan-synced-content.mjs`) blocks via the aggregate. A `sources.yaml`-only PR scans zero files and deliberately fails with a **waivable** `sources-change-unscanned` CHALLENGE — a reviewer clears it with a `sources.yaml:sources-change-unscanned  <reason>` line in `scripts/scan-allowlist.txt` after confirming the source is vetted and pinned in `sources.lock.json`. REFUSE is never waivable.
+
+**Advisory lanes (report, never block — never promote into the required set from a side PR):** the two kernel lanes (next section); agent frontmatter (`validate-skills-schema.py --agents-only`, report-only with a tracked `REPORT-ONLY-UNTIL:` marker — corpus unbaselined); `.mcp.json` (`scripts/validate-mcp-config.mjs`, never `--strict` — that promotion belongs to the DR-049 soak checklist); CodeQL (PR trigger scoped to `packages/**` + `marketplace/src/**` so it adds no fan-out to plugin PRs); and the PR pre-screen (below).
+
+### AI review — Greptile only
+
+Greptile is the single repo-controlled AI reviewer (config in `.greptile/`). Gemini Code Assist is disabled (`.gemini/config.yaml` → `code_review.disable: true`; the consumer product sunsets 2026-07-17) — note that fully removing it requires uninstalling the GitHub App, a UI/admin action. A contributor's Codex connector is contributor-side, not repo-controlled. The deterministic gate is always `ci-required` + `gitleaks`, never the AI review.
+
+### PR pre-screen (advisory respond leg)
+
+`pr-prescreen.yml` (`pull_request_target`; kill switch `vars.ENABLE_PR_PRESCREEN`) grades changed plugins with the pinned validator and responds in two low-noise ways: a **`prescreen-grade` commit status** on every run (advisory forever — never a required context) and **one upserted marker comment** only on `CHANGES_REQUESTED`/`HARD_BLOCK` (silent on PASS; re-runs edit the same comment). Two hard-won invariants:
+
+- **The validator anchors its scan root to its own script location** (`Path(__file__).resolve().parents[1]`), not the cwd. Prescreen therefore copies the BASE-authored validator into the PR tree and runs the copy — invoking `../base/scripts/…` directly grades **main's** tree and false-PASSes every frontmatter change (the 2026-07 bug, fixed in #980). Do not "simplify" this back.
+- **Never checkout or execute PR-authored code in a `pull_request_target` workflow.** Applies equally to `plane-sync.yml` (which runs on `pull_request_target` so fork-PR close-outs get secrets — it reads event context only).
+
 ## Validation & the kernel SSoT — CI/CD posture
 
 Two things grade frontmatter in this repo today, and the relationship between them is the load-bearing context to preserve.
 
 ### The two validators
 
-- **Prose-spec validator (authoritative):** `scripts/validate-skills-schema.py`. This is the canonical gate. It runs at standard and marketplace tiers, it grades both frontmatter AND markdown body sections, and at marketplace tier a missing required field is an **ERROR** (not a warning). It is the one in the branch-protection required-status set. `ALWAYS_REQUIRED` (the IS 8-field set) is hand-authored here and stays **AUTHORITATIVE** — read `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES before touching it. The IS rubric sits on top of Anthropic's permissive spec; the marketplace tier is intentionally strict. Do not reduce the 8-field set, do not demote marketplace errors to warnings, and do not "realign" to Anthropic's floor — any change to required-fields / tier model / error-vs-warning semantics is approval-gated per that doc.
+- **Prose-spec validator (authoritative):** `scripts/validate-skills-schema.py`. This is the canonical gate. It runs at standard and marketplace tiers, it grades both frontmatter AND markdown body sections, and at marketplace tier a missing required field is an **ERROR** (not a warning). Its CI jobs block merges through the `ci-required` aggregate (see "CI gate architecture" above). `ALWAYS_REQUIRED` (the IS 8-field set) is hand-authored here and stays **AUTHORITATIVE** — read `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES before touching it. The IS rubric sits on top of Anthropic's permissive spec; the marketplace tier is intentionally strict. Do not reduce the 8-field set, do not demote marketplace errors to warnings, and do not "realign" to Anthropic's floor — any change to required-fields / tier model / error-vs-warning semantics is approval-gated per that doc.
 
 - **Kernel machine-spec (the SSoT being migrated to):** `@intentsolutions/core` — its `schemas/authoring/v1` family (byte-frozen) plus the strict fork `authoring/v2` — is the single internal source of truth for "what is a valid agent-native artifact." The kernel's `skill-frontmatter` schema encodes the **same** IS 8-field required set as a pure `allOf` of upstream-base + universal folds + the IS overlay. The plan of record is for `validate-skills-schema.py` to **consume the kernel folds** instead of its hand-rolled rule sets. That migration is in progress; the kernel pin is **exactly `0.9.0`** in `package.json` (no `^`/`~`). The `authoring/v1` schema family is byte-frozen across kernel package versions, so this pin bump tracks the latest published kernel without changing the `authoring/v1` contract the shadow lane reads. Contract semantics for `authoring/v1` fields are canonical in the kernel's own changelog — cite it, do not duplicate it (see `000-docs/SCHEMA_CHANGELOG.md` § "Kernel changelog citation").
 
@@ -210,7 +239,7 @@ A recent cleanup removed 74 dead duplicate `validation.sh` stubs, collapsed prev
 
 ### auto-bump posture for contributors
 
-`.github/workflows/auto-bump-on-pr.yml` auto-bumps changed plugins' patch versions on PRs (only on `plugins/**` / `packages/**` changes). For a docs-only or otherwise non-release PR, put **`[skip auto-bump]`** in the PR title or body so the auto-bumper steps aside. Minor/major bumps stay a deliberate human choice — hand-edit the version in the same PR.
+`.github/workflows/auto-bump-on-pr.yml` auto-bumps changed plugins' patch versions on PRs (only on `plugins/**` / `packages/**` changes). For a docs-only or otherwise non-release PR, put **`[skip auto-bump]`** in the PR title or body so the auto-bumper steps aside. Minor/major bumps stay a deliberate human choice — hand-edit the version in the same PR. It stays on `pull_request` (not `pull_request_target`) by design — the bump needs a write token, which must never be handed to fork code; fork PRs are skipped cleanly, and a first-time fork contributor's queued "Approve and run" entry just no-ops when approved.
 
 ## Adding a New Plugin
 

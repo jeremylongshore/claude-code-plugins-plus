@@ -1361,6 +1361,38 @@ sources:
       - '*.log'
 
   # ============================================================
+  # PortalJS (Datopian)
+  # https://github.com/datopian/portaljs
+  # Open source, AI-native framework for data portals — 12 skills
+  # to scaffold portals, add datasets/charts/maps, connect CKAN,
+  # and generate DCAT + Croissant metadata
+  # ============================================================
+
+  - name: portaljs
+    description: Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata
+    repo: datopian/portaljs
+    source_path: .
+    target_path: plugins/community/portaljs
+    author:
+      name: Datopian
+      github: datopian
+      email: anuar.ustayev@datopian.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'README.md'
+      # upstream stores its license file as lowercase `license`; the sync
+      # glob match is case-sensitive, so the casing must match theirs
+      - 'license'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
   # llm-box (alib8b8)
   # https://github.com/alib8b8/llm-box
   # ============================================================

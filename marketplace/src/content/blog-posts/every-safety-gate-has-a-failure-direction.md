@@ -154,4 +154,3 @@ In parallel, a control-bypass after-action was filed in the `intent-os` governan
   "keywords": "fail-closed, fail-open, safety gate, error handling, CI/CD, automation, observability, debugging"
 }
 </script>
-

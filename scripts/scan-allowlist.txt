@@ -22,3 +22,8 @@ plugins/**/README.md:pipe-to-shell  documented upstream one-line installer (olla
 plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the documented setup path for this skill
 plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs
 plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI install step inside a SaaS-pack skill
+
+# ── TEMPORARY per-PR source-vetting sign-off (remove after merge — tracked in the
+# sources-hygiene follow-up PR). sources-change-unscanned is a per-review gate;
+# leaving this line on main would auto-waive FUTURE source-list changes too.
+sources.yaml:sources-change-unscanned  portaljs vetted 2026-07-07 per 699 playbook: datopian/portaljs (2.3k-star, MIT, active), least-privilege include globs verified upstream, verified:false tier
