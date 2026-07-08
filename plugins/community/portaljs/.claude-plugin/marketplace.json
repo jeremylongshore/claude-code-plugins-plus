@@ -1,0 +1,18 @@
+{
+  "name": "datopian-portaljs",
+  "owner": {
+    "name": "Datopian",
+    "url": "https://www.datopian.com"
+  },
+  "metadata": {
+    "description": "PortalJS agentic skills — build data portals with AI.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "portaljs",
+      "source": ".",
+      "description": "Scaffold and extend PortalJS data portals: /portaljs-new-portal, /portaljs-add-dataset, /portaljs-add-chart, /portaljs-add-map, /portaljs-deploy."
+    }
+  ]
+}

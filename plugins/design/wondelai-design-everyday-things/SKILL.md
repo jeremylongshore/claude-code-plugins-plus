@@ -1,10 +1,10 @@
 ---
 name: design-everyday-things
-description: 'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", "fault tolerance", "mental model", "mapping", or "seven stages of action". Also trigger when diagnosing why users make mistakes, reducing product complexity, or improving error messages and feedback systems. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'
+description: 'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", "mental model", "mapping", "seven stages of action", "users keep making mistakes", "this is unintuitive", or "people cant figure out how to use it". Also trigger when reducing product complexity or feature creep. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Design of Everyday Things Framework
@@ -17,7 +17,7 @@ Foundational design principles for creating products that are intuitive, discove
 
 ## Scoring
 
-**Goal: 10/10.** Rate any design 0-10 on discoverability, understandability, and error prevention. A 10/10 means users figure out what to do without instructions, understand what happened, and recover from errors easily. Report the current score and the improvements needed to reach 10/10.
+**Goal: 10/10.** Score 2 points per satisfied row of the Quick Diagnostic (5 rows = discoverability, evaluation, error recovery, mapping, constraints). Bands: **9-10** = users act without instructions, understand every outcome, and recover from any error; **5-6** = one gulf or error path is broken; **<=3** = users must consult a manual or routinely blame themselves. Report the current score and the diagnostic rows failing it.
 
 ## The Two Gulfs
 
@@ -105,7 +105,7 @@ See: [references/affordances.md](references/affordances.md) for affordance desig
 
 **Design rule:** When in doubt, add a signifier — better to over-communicate than leave users guessing.
 
-See: [references/signifiers.md](references/signifiers.md) for signifier patterns and examples.
+See: [references/signifiers.md](references/signifiers.md) when deciding which signifier to add to an unclear control.
 
 ### 4. Mappings
 
@@ -174,7 +174,7 @@ See: [references/constraints.md](references/constraints.md) for constraint desig
 
 **Common failures:** no feedback (did my click register?), delayed feedback (feels broken), unclear feedback, alert overload.
 
-See: [references/feedback.md](references/feedback.md) for feedback design patterns.
+See: [references/feedback.md](references/feedback.md) when an action gives no clear result and you need the right feedback type and timing.
 
 ### 7. Conceptual Models
 
@@ -192,7 +192,7 @@ See: [references/feedback.md](references/feedback.md) for feedback design patter
 
 **Build correct models with:** familiar metaphors (desktop, trash), visible system state, clear feedback, consistent behavior, progressive disclosure.
 
-See: [references/conceptual-models.md](references/conceptual-models.md) for model design frameworks.
+See: [references/conceptual-models.md](references/conceptual-models.md) when the user's model diverges from how the product works. For fully worked teardowns (door handles, thermostats, digital products), see [references/case-studies.md](references/case-studies.md).
 
 ## Human Error
 
@@ -257,21 +257,7 @@ See: [references/seven-stages.md](references/seven-stages.md) for stage-by-stage
 Observation → Idea Generation → Prototyping → Testing → (iterate)
 ```
 
-### 1. Observation
-
-Watch real users in real contexts. Don't ask what they want (they don't know) — look for workarounds, frustrations, and adaptations across whole activities.
-
-### 2. Idea Generation
-
-Generate many ideas before converging; defer judgment and build on others' ideas.
-
-### 3. Prototyping
-
-Quick, cheap, disposable — test concepts, not polish. Paper for early ideas, interactive for validation.
-
-### 4. Testing
-
-Test with real users, not designers: 5 users reveal 85% of problems. Observe behavior, not just opinions, then iterate.
+Two specifics that change how you run this loop: in **Observation**, don't ask users what they want (they don't know) — watch for workarounds and frustrations in real contexts. In **Testing**, use real users not designers — 5 reveal ~85% of problems, so observe behavior over opinions and iterate.
 
 ## Common Mistakes
 
@@ -295,19 +281,6 @@ Audit any design:
 | Can users recover from errors? | No error tolerance | Add undo, confirmation, clear messages |
 | Does the control layout match the output? | Poor mapping | Reorganize controls to match spatial layout |
 | Are impossible/irrelevant options hidden? | Missing constraints | Disable, hide, or remove invalid options |
-
-## Reference Files
-
-- [two-gulfs.md](references/two-gulfs.md): Gulf analysis exercises, bridging strategies
-- [affordances.md](references/affordances.md): Affordance types, design patterns
-- [signifiers.md](references/signifiers.md): Signifier patterns, examples, best practices
-- [mappings.md](references/mappings.md): Natural mapping analysis, spatial layout
-- [constraints.md](references/constraints.md): Constraint types, digital implementations
-- [feedback.md](references/feedback.md): Feedback patterns, timing, modality
-- [conceptual-models.md](references/conceptual-models.md): Model design, metaphors, mental models
-- [human-error.md](references/human-error.md): Error types, prevention, recovery
-- [seven-stages.md](references/seven-stages.md): Stage analysis, evaluation tool
-- [case-studies.md](references/case-studies.md): Door handles, thermostats, digital products
 
 ## Further Reading
 

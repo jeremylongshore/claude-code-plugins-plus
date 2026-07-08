@@ -1,10 +1,10 @@
 ---
 name: design-sprint
-description: 'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions "design sprint", "validate in a week", "rapid prototype", "test with users", "de-risk before building", "GV sprint", "prototype testing", or "design workshop". Also trigger when a team needs to make a critical product decision quickly, resolve stakeholder disagreements, or test risky ideas before investing in development. Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done.'
+description: 'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions "design sprint", "validate before we build", "rapid prototype", "test with users", or "should we build this". Also trigger when a team is stuck in endless debate over a high-stakes product decision, or wants to de-risk a costly idea before investing in development. Covers mapping, sketching, deciding, prototyping, and testing across Monday-Friday. For ongoing experimentation and MVPs, see lean-startup. For customer job analysis, see jobs-to-be-done. For non-leading user interviews, see mom-test.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Design Sprint Framework
@@ -13,11 +13,24 @@ A five-day process for answering critical business questions through design, pro
 
 ## Core Principle
 
-**Great solutions require both deep work and fast iteration.** The Design Sprint compresses months of debate, design, and testing into one week, replacing endless discussion with focus and urgency. It de-risks product decisions by testing with real users before any production code is written.
+**Compress months of debate, design, and testing into one week — and test with real users before writing any production code.** The sprint replaces endless discussion with a fixed Monday-to-Friday spine, hard time-boxes, and a single Decider, so a high-stakes product question gets a real answer in five days instead of five months.
 
 ## Scoring
 
-**Goal: 10/10.** Rate any sprint plan or execution 0-10 against the principles below: proper structure, time-boxing, prototyping, and user testing. Lower scores mean skipped steps or insufficient testing. Report the current score and the improvements needed to reach 10/10.
+**Goal: 10/10.** Score a sprint plan or execution by awarding 1 point for each item present and correct (10 total). Report the score and the missing items needed to reach 10/10.
+
+1. Decider committed for the full week; one Sprint Master facilitating.
+2. Monday produces a target customer and moment (not a vague "test the product").
+3. Hard time-boxes used (Crazy 8s in 8 min, 10am-5pm days, no open-ended sessions).
+4. Solution sketches done alone and anonymous — no group brainstorming.
+5. Wednesday ends with a single Decider Supervote, not consensus.
+6. Storyboard specified before any prototype is built.
+7. Prototype is a Goldilocks-fidelity facade, testable in 5-15 min, with a trial run done.
+8. Exactly 5 target users recruited via screener (6 scheduled to absorb a no-show).
+9. Friday uses the Five-Act Interview; users interpret the prototype unexplained.
+10. End-of-sprint debrief converts the +/-/~ pattern grid into a decision on next steps.
+
+A plan missing the Decider, real users, or a same-day prototype caps at 6 — those are the failure modes the sprint exists to prevent.
 
 ## The 5-Day Sprint Process
 
@@ -27,6 +40,8 @@ Monday → Tuesday → Wednesday → Thursday → Friday
 ```
 
 **Prerequisites:** a big challenge worth a week's focus; the right team (Decider plus 4-7 people with diverse expertise); five full days (10am-5pm) with no interruptions; a dedicated room with whiteboards. One **Sprint Master** facilitates, keeps time, and manages energy.
+
+See [references/facilitation.md](references/facilitation.md) when you are the Sprint Master — it has the full facilitation guide, time-boxing tactics, and energy-management moves for keeping a stuck or low-energy room productive.
 
 ## Monday: Map
 
@@ -49,7 +64,7 @@ Choose which customer and moment on the map to focus on — the biggest risk or 
 
 **Monday output:** long-term goal, sprint questions, journey map, expert insights, organized HMW notes, target customer and moment.
 
-See: [references/monday.md](references/monday.md) for detailed Monday exercises and facilitation.
+See [references/monday.md](references/monday.md) while facilitating Monday — step-by-step exercise scripts, HMW examples, and the target-selection method.
 
 ## Tuesday: Sketch
 
@@ -71,7 +86,7 @@ Everyone sketches alone — **no group brainstorming**. Individual work produces
 
 **Tuesday output:** one detailed, anonymous, self-explanatory solution sketch per person.
 
-See: [references/tuesday.md](references/tuesday.md) for sketching templates and examples.
+See [references/tuesday.md](references/tuesday.md) before the Four-Step Sketch — Crazy 8s and solution-sketch templates plus worked examples to show the team.
 
 ## Wednesday: Decide
 
@@ -92,7 +107,7 @@ If multiple sketches win, choose: **Rumble** (competing prototypes testing diffe
 
 **Wednesday output:** winning solution(s) and a detailed storyboard ready to prototype.
 
-See: [references/wednesday.md](references/wednesday.md) for decision exercises and storyboard templates.
+See [references/wednesday.md](references/wednesday.md) when running the Sticky Decision and storyboard — facilitation steps for the vote and a panel-by-panel storyboard template.
 
 ## Thursday: Prototype
 
@@ -126,7 +141,7 @@ Morning: divide the storyboard into scenes and assign them to makers. Afternoon:
 
 **Thursday output:** realistic prototype, interview script, prepared interview room.
 
-See: [references/thursday.md](references/thursday.md) for prototyping tools and techniques.
+See [references/thursday.md](references/thursday.md) while building the prototype — tool-by-tool techniques (Keynote/Figma facades, video, mockups) for hitting Goldilocks fidelity in a day.
 
 ## Friday: Test
 
@@ -138,7 +153,7 @@ Interview room: quiet space, laptop with the prototype, camera recording screen 
 
 ### The Five-Act Interview
 
-About 30 minutes per customer, with 30-minute breaks between to discuss observations and adjust questions.
+About 45 minutes per customer (the five acts run ~35 min plus setup and transitions), with 30-minute breaks between to discuss observations and adjust questions. See references/friday.md for the full 9am-5pm schedule.
 
 | Act | Time | What to Do |
 |-----|------|------------|
@@ -150,7 +165,9 @@ About 30 minutes per customer, with 30-minute breaks between to discuss observat
 
 ### Five Is the Magic Number
 
-Patterns emerge after 3-5 people and returns diminish after 5 — and five 1-hour slots fit one day. Recruit target customers via a screener survey, offer an incentive ($100-$200 B2B, $50-$100 B2C), and schedule 6 to absorb a no-show.
+Patterns emerge after 3-5 people and returns diminish after 5 — and five interview-plus-break slots fit one day (see references/friday.md). Recruit target customers via a screener survey and offer an incentive ($100-$200 B2B, $50-$100 B2C).
+
+See [references/recruiting.md](references/recruiting.md) two weeks before the sprint — it has screener-survey questions, recruiting channels, scheduling logistics, and incentive guidance for locking in five on-target users.
 
 ### Take Notes: Pattern Recognition
 
@@ -172,7 +189,7 @@ Organize findings: **✓ what worked** (flows everyone understood, messaging tha
 
 **Friday output:** interview recordings, pattern notes, a clear list of what works and what doesn't, decision on next steps.
 
-See: [references/friday.md](references/friday.md) for interview scripts and note-taking templates.
+See [references/friday.md](references/friday.md) before interviewing — verbatim Five-Act scripts, note-taking templates, the fuller next-steps decision table, and the common Friday mistakes to avoid.
 
 ## When to Run a Design Sprint
 
@@ -180,10 +197,12 @@ See: [references/friday.md](references/friday.md) for interview scripts and note
 
 **Don't run when:** the problem and solution are obvious and you just need to execute, the team isn't bought in, or you can't get the Decider for the full week.
 
+See [references/case-studies.md](references/case-studies.md) for worked sprint walk-throughs (Slack, Blue Bottle Coffee, Savioke and more) when you need a concrete precedent for how a sprint played out in a domain like yours.
+
 ## Variations
 
 - **4-Day Sprint:** Day 1 Map + Sketch (compressed), Day 2 Decide, Day 3 Prototype, Day 4 Test.
-- **Remote Sprint:** Same schedule with Miro/FigJam whiteboards and Zoom.
+- **Remote Sprint:** Same schedule with Miro/FigJam whiteboards and Zoom. See [references/remote-sprints.md](references/remote-sprints.md) when the team is distributed — it adapts each exercise to digital whiteboards, sets remote time-boxes, and handles video-based prototype testing.
 - **Multi-Sprint:** Sprint 1 chooses direction on a broad problem, Sprint 2 deep-dives the chosen solution, Sprint 3 refines details.
 
 ## Common Mistakes
@@ -193,7 +212,7 @@ See: [references/friday.md](references/friday.md) for interview scripts and note
 | **Skip prototyping** | Nothing to test | Always prototype, even if simple |
 | **Over-engineer prototype** | Waste time on details that don't matter | Facade only, not working code |
 | **Test with wrong users** | Invalid feedback | Screen for target customers |
-| **Explain prototype to users** | Defeats the test | Let them struggle, observe confusion |
+| **Explain prototype to users** | Defeats the test; confusion is the data | Run Acts 3-4 as written — they interpret and struggle unaided |
 | **No decision maker** | Can't commit to decision | Get Decider for full week or don't sprint |
 | **Interruptions** | Breaks focus | Protect the week, no meetings/emails |
 
@@ -208,18 +227,6 @@ Audit any sprint plan:
 | Can we prototype in 1 day? | Wrong problem for sprint | Choose more concrete problem |
 | Can we recruit 5 target users? | Can't test properly | Start recruiting now (2 weeks ahead) |
 | Will team commit to no interruptions? | Won't maintain focus | Get buy-in from leadership |
-
-## Reference Files
-
-- [monday.md](references/monday.md): Map exercises, HMW notes, target selection
-- [tuesday.md](references/tuesday.md): Sketching templates, Crazy 8s, solution sketches
-- [wednesday.md](references/wednesday.md): Decision exercises, storyboard templates
-- [thursday.md](references/thursday.md): Prototyping tools, techniques, checklists
-- [friday.md](references/friday.md): Interview scripts, note-taking, pattern analysis
-- [facilitation.md](references/facilitation.md): Sprint Master guide, time-boxing, energy management
-- [recruiting.md](references/recruiting.md): User recruitment, screener surveys, scheduling
-- [case-studies.md](references/case-studies.md): Slack, Blue Bottle Coffee, Savioke, and more
-- [remote-sprints.md](references/remote-sprints.md): Adapting sprint for distributed teams
 
 ## Further Reading
 

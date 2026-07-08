@@ -252,17 +252,22 @@ tools:
           type: object
           description: >-
             How to choose which test cases to run. Either provide a
-            `testSuiteId` (run a suite) or a `testCaseSelections` list (run
-            specific versions).
+            `testSuiteId` (with `type: TEST_SUITE`) or a `testCaseSelections`
+            list (with `type: TEST_CASE`).
           properties:
             type:
               type: string
-              description: Selection type identifier (e.g. `test_suite`, `test_cases`)
+              enum: [TEST_CASE, TEST_SUITE]
+              description: >-
+                Selection type. Use `TEST_CASE` with `testCaseSelections`, or
+                `TEST_SUITE` with `testSuiteId`. Exact upper-case values
+                required (not `test_case`/`test_suite`).
             testSuiteId:
               type: string
-              description: Run all test cases in this suite (mutually exclusive with `testCaseSelections`)
+              description: "Run all test cases in this suite (use with type TEST_SUITE; mutually exclusive with testCaseSelections)"
             testCaseSelections:
               type: array
+              description: "Specific test case versions to run (use with type TEST_CASE)"
               items:
                 type: object
                 properties:
@@ -276,12 +281,17 @@ tools:
           properties:
             type:
               type: string
-              description: Selection type (e.g. `device_bundle`, `specific_devices`)
+              enum: [INDIVIDUAL_DEVICES, DEVICE_BUNDLE]
+              description: >-
+                Selection type. Use `INDIVIDUAL_DEVICES` with `specificDevices`,
+                or `DEVICE_BUNDLE` with `deviceBundleId`. Exact upper-case values
+                required (not `specific_devices`/`device_bundle`).
             deviceBundleId:
               type: integer
-              description: Run on devices in the named device bundle
+              description: "Run on devices in the named device bundle (use with type DEVICE_BUNDLE)"
             specificDevices:
               type: array
+              description: "Explicit devices to run on (use with type INDIVIDUAL_DEVICES)"
               items:
                 type: object
                 properties:
@@ -307,7 +317,11 @@ tools:
           description: App versions to install on the run devices
         deviceAllocationStrategy:
           type: string
-          description: How to allocate devices across the selected test cases
+          enum: [CROSS_DEVICE, SINGLE_DEVICE]
+          description: >-
+            How to allocate devices across the selected test cases. `CROSS_DEVICE`
+            (default) runs each test case across all devices; `SINGLE_DEVICE` pins
+            a test case to one device. Exact upper-case values required.
       required:
         - userIntent
   - name: listTestRuns
