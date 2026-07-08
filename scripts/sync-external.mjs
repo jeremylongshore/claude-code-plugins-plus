@@ -215,13 +215,20 @@ function walkFiles(baseDir, relPrefix = '') {
  * the strict match dropped real files. Auto-prefixing fixes that without
  * needing every sources.yaml entry rewritten.
  */
-function matchesPattern(filePath, patterns) {
+export function matchesPattern(filePath, patterns) {
   if (!patterns || patterns.length === 0) return true;
 
   return patterns.some((rawPattern) => {
-    // Auto-prefix `**/` unless the pattern already starts with `**` or `/`
-    const pattern =
-      rawPattern.startsWith('**') || rawPattern.startsWith('/') ? rawPattern : `**/${rawPattern}`;
+    // Auto-prefix `**/` unless the pattern already starts with `**` or `/`.
+    // A leading `/` means "anchored to the source root": skip the auto-prefix
+    // AND strip the slash, because candidate paths are root-relative (a
+    // pattern compiled to ^/skills/... could never match 'skills/...' — the
+    // anchor form was dead code until 2026-07-08, #985 defect 6).
+    const pattern = rawPattern.startsWith('**')
+      ? rawPattern
+      : rawPattern.startsWith('/')
+        ? rawPattern.slice(1)
+        : `**/${rawPattern}`;
 
     // Order matters: handle `?` (single-char glob) BEFORE we insert any
     // literal `?` chars (like `(?:.*/)?`) into the regex pattern. Then
@@ -956,7 +963,14 @@ async function main() {
   );
 }
 
-main().catch((error) => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-});
+// Only run when executed directly (node scripts/sync-external.mjs …) —
+// the unit corpus imports matchesPattern from this module and must not
+// trigger a live sync on import.
+const invokedDirectly =
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  main().catch((error) => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
+}

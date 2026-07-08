@@ -258,3 +258,42 @@ test('buildLockEntry: null resolved ref is preserved as null (bootstrap has no c
   assert.equal(e.locked_at, '2026-07-06T00:00:00Z');
   assert.match(e.files['a.md'], /^sha256:[0-9a-f]{64}$/);
 });
+
+// ── matchesPattern — include/exclude glob semantics (sync-external.mjs) ──
+// Added 2026-07-08 with the anchored-pattern fix (#985 defect 6): a leading
+// `/` anchors a pattern to the source root; anything else is auto-prefixed
+// `**/` (recursive by design, for nested contributor layouts). The anchored
+// form was dead code before this corpus existed — these tests keep it alive.
+import { matchesPattern } from './sync-external.mjs';
+
+test('anchored /README.md matches only the root README', () => {
+  assert.equal(matchesPattern('README.md', ['/README.md']), true);
+  assert.equal(matchesPattern('examples/portaljs-catalog/README.md', ['/README.md']), false);
+  assert.equal(matchesPattern('giftless/cloudflare/README.md', ['/README.md']), false);
+});
+
+test('anchored exact deep path matches itself and nothing nested above it', () => {
+  assert.equal(matchesPattern('skills/llm-box/SKILL.md', ['/skills/llm-box/SKILL.md']), true);
+  assert.equal(
+    matchesPattern('contrib/skills/llm-box/SKILL.md', ['/skills/llm-box/SKILL.md']),
+    false,
+  );
+});
+
+test('anchored /skills/** matches the root skills tree only', () => {
+  assert.equal(matchesPattern('skills/a/SKILL.md', ['/skills/**']), true);
+  assert.equal(matchesPattern('skills/deep/nested/ref.md', ['/skills/**']), true);
+  assert.equal(matchesPattern('nested/skills/a/SKILL.md', ['/skills/**']), false);
+});
+
+test('unanchored patterns stay recursive (the documented auto-prefix default)', () => {
+  assert.equal(matchesPattern('README.md', ['README.md']), true);
+  assert.equal(matchesPattern('examples/x/README.md', ['README.md']), true);
+  assert.equal(matchesPattern('skills/tools/x/skills/x/SKILL.md', ['skills/**']), true);
+});
+
+test('single-star stays single-segment; ? stays single-char', () => {
+  assert.equal(matchesPattern('docs/a.md', ['/docs/*.md']), true);
+  assert.equal(matchesPattern('docs/sub/a.md', ['/docs/*.md']), false);
+  assert.equal(matchesPattern('a.md', ['?.md']), true);
+});
