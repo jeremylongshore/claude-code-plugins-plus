@@ -133,7 +133,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      30 |
+| ✅  | [Productivity](#productivity)                      |      31 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -521,7 +521,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **30 plugins** · category slug: `productivity`
+✅ **31 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -538,6 +538,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
+| `j-rig`                                    | Skill Refiner — the eval-guided SKILL.md improvement loop. Thin wrapper over the published @intentsolutions/refiner CLI…                    |
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
 | `neurodivergent-visual-org`                | Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes |
 | `obsidian-project-documentation`           | Automatically documents technical projects in Obsidian vaults during Claude Code sessions                                                   |

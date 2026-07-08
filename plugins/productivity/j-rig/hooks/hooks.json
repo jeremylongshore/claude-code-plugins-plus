@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "description": "L1 Sinker ($0, no model call): after any Edit/Write, if the touched file is a SKILL.md, run the deterministic validate-skillmd Tier-2 frontmatter check and surface warnings to context.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/sinker.sh\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "description": "L2 Line ($ mid-tier): at end of turn, capture scored rollouts for any skill invoked this turn into .j-rig/refiner/log.jsonl; once N rollouts accumulate on a skill, fire the refiner in the background and surface the candidate next turn.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/line.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "description": "L3 Hook ($$ top-tier, rate-limited): before a git commit/push, if the staged diff modifies a SKILL.md, run the agentic gate (surrounding-dir read + regression-against-rejected-buffer + optional shadow-validation). PreToolUse can BLOCK via exit code 2 — chosen over PostToolUse:Bash, which fires after the bash already ran and cannot prevent the commit.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/hook.sh\"",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
