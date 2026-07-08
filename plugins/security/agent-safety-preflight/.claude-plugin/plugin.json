@@ -1,0 +1,22 @@
+{
+  "name": "agent-safety-preflight",
+  "version": "1.0.0",
+  "description": "Generate a local repo-risk receipt before Claude Code or other AI-agent edits",
+  "author": {
+    "name": "el-zachariah",
+    "url": "https://github.com/el-zachariah"
+  },
+  "repository": "https://github.com/el-zachariah/ai-agent-safety-starter-pack",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "claude-code",
+    "agent-safety",
+    "preflight",
+    "repo-risk",
+    "mcp",
+    "hooks",
+    "ai-agent",
+    "agent-skills"
+  ]
+}

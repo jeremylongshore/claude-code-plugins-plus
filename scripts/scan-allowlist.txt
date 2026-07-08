@@ -40,3 +40,6 @@ sources.yaml:sources-change-unscanned  2026-07-08 verified-flag honesty PR revie
 # network, no embedded credentials, no dynamic-exec of untrusted input. SKILL_ID
 # is validated (^[a-zA-Z0-9_-]+$) before any use. Reviewed 2026-07-09.
 plugins/productivity/j-rig/**:hook-definition  the sinker/line/hook 3-layer architecture is this plugin's purpose; hooks only wrap the published @intentsolutions/refiner CLI + a deterministic validator, no network/credentials/dynamic-exec — reviewed 2026-07-09
+
+# ── Reviewed defensive scanner signatures. ──
+plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound-network  defensive scanner regex detects curl/wget install chains; it does not perform network calls
