@@ -113,7 +113,11 @@
 .idea/
 .lycheecache
 .lycheecache/
-.mcp.json
+# Root-anchored: ignore ONLY the repo-root local MCP config. Plugin-shipped
+# .mcp.json files under plugins/** are product content and MUST be tracked —
+# the unanchored form here silently re-ignored them (last-match-wins beat the
+# !plugins/**/.mcp.json negations above; #985, llm-box casualty in sync #998).
+/.mcp.json
 .project
 .pytest_cache/
 .settings/
