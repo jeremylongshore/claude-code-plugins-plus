@@ -4,12 +4,25 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:12.611Z",
+  "last_sync": "2026-07-08T01:11:39.778Z",
   "author": {
     "name": "Jeremy Longshore",
     "github": "jeremylongshore",
     "email": "jeremy@intentsolutions.io"
   },
   "license": "MIT",
-  "files_synced": 11
+  "files_synced": 11,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "hooks/hooks.json",
+    "scripts/box-init-workspace.sh",
+    "scripts/box-sync-on-write.sh",
+    "scripts/box-sync-summary.sh",
+    "scripts/update-gist.sh",
+    "skills/box-cloud-filesystem/SKILL.md",
+    "skills/box-cloud-filesystem/references/operations-guide.md",
+    "skills/box-cloud-filesystem/references/sync-pattern.md"
+  ]
 }

@@ -4,11 +4,22 @@
     "path": "obviously-awesome",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:01.007Z",
+  "last_sync": "2026-07-08T01:11:35.424Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 9
+  "files_synced": 9,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/competitive-alternatives.md",
+    "references/market-category.md",
+    "references/positioning-canvas.md",
+    "references/target-customers.md",
+    "references/team-exercise.md",
+    "references/unique-attributes.md",
+    "references/value-mapping.md"
+  ]
 }

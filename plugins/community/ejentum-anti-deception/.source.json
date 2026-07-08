@@ -4,12 +4,15 @@
     "path": "skills/anti-deception",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:39.841Z",
+  "last_sync": "2026-07-08T01:11:49.900Z",
   "author": {
     "name": "Ejentum",
     "github": "ejentum",
     "email": "info@ejentum.com"
   },
   "license": "MIT",
-  "files_synced": 1
+  "files_synced": 1,
+  "files": [
+    "SKILL.md"
+  ]
 }

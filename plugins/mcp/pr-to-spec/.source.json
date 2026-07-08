@@ -4,12 +4,21 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:13.874Z",
+  "last_sync": "2026-07-08T01:11:40.311Z",
   "author": {
     "name": "Jeremy Longshore",
     "github": "jeremylongshore",
     "email": "jeremy@intentsolutions.io"
   },
   "license": "MIT",
-  "files_synced": 7
+  "files_synced": 7,
+  "files": [
+    ".beads/README.md",
+    ".claude-plugin/plugin.json",
+    ".claude/skills/pr-to-spec/SKILL.md",
+    ".mcp.json",
+    "LICENSE",
+    "README.md",
+    "src/servers/pr-spec-analyzer.ts"
+  ]
 }

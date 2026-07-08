@@ -8,7 +8,7 @@ The tab bar provides access to main app destinations.
 - **Items**: 2-5 tabs maximum
 - **Overflow**: Use "More" tab if >5 destinations needed
 - **Selected state**: Fill color indicates active tab
-- **Labels**: 10-11pt SF text
+- **Labels**: 10pt SF text
 - **Background**: Slightly translucent with background blur ("frosted glass")
 
 **Behavior**:

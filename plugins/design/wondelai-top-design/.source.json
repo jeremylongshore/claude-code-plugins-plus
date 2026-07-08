@@ -4,11 +4,19 @@
     "path": "top-design",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:08.049Z",
+  "last_sync": "2026-07-08T01:11:38.042Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 6
+  "files_synced": 6,
+  "files": [
+    "SKILL.md",
+    "references/animation-patterns.md",
+    "references/case-studies.md",
+    "references/layout-systems.md",
+    "references/technical-stack.md",
+    "references/typography.md"
+  ]
 }

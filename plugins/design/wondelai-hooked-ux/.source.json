@@ -4,11 +4,21 @@
     "path": "hooked-ux",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:51.720Z",
+  "last_sync": "2026-07-08T01:11:31.484Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 8
+  "files_synced": 8,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/ethical-boundaries.md",
+    "references/habit-testing.md",
+    "references/neuroscience-foundations.md",
+    "references/product-applications.md",
+    "references/rewards.md",
+    "references/triggers.md"
+  ]
 }

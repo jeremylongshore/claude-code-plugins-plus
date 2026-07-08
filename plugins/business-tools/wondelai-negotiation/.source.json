@@ -4,11 +4,15 @@
     "path": "negotiation",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:59.842Z",
+  "last_sync": "2026-07-08T01:11:34.973Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 2
+  "files_synced": 2,
+  "files": [
+    "SKILL.md",
+    "references/techniques.md"
+  ]
 }

@@ -4,11 +4,25 @@
     "path": "lean-startup",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:57.503Z",
+  "last_sync": "2026-07-08T01:11:34.096Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 12
+  "files_synced": 12,
+  "files": [
+    "SKILL.md",
+    "references/applications.md",
+    "references/assumptions.md",
+    "references/build-measure-learn.md",
+    "references/case-studies.md",
+    "references/five-whys.md",
+    "references/growth-engines.md",
+    "references/innovation-accounting.md",
+    "references/metrics.md",
+    "references/mvp-design.md",
+    "references/pivots.md",
+    "references/small-batches.md"
+  ]
 }

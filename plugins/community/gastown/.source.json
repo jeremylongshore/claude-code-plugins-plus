@@ -4,12 +4,20 @@
     "path": "skills/tools/gastown",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:39.956Z",
+  "last_sync": "2026-07-08T01:11:26.880Z",
   "author": {
     "name": "Numman Ali",
     "github": "numman-ali",
     "email": "numman.ali@gmail.com"
   },
   "license": "Apache-2.0",
-  "files_synced": 6
+  "files_synced": 6,
+  "files": [
+    "skills/gastown/SKILL.md",
+    "skills/gastown/references/commands.md",
+    "skills/gastown/references/concepts.md",
+    "skills/gastown/references/setup.md",
+    "skills/gastown/references/troubleshooting.md",
+    "skills/gastown/references/tutorial.md"
+  ]
 }

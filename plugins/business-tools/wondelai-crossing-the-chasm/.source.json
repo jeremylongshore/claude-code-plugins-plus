@@ -4,11 +4,22 @@
     "path": "crossing-the-chasm",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:47.085Z",
+  "last_sync": "2026-07-08T01:11:29.531Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 9
+  "files_synced": 9,
+  "files": [
+    "SKILL.md",
+    "references/b2b-saas.md",
+    "references/beachhead-selection.md",
+    "references/buyer-segments.md",
+    "references/case-studies.md",
+    "references/expansion.md",
+    "references/go-to-market.md",
+    "references/positioning.md",
+    "references/whole-product.md"
+  ]
 }

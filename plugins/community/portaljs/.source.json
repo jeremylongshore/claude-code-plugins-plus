@@ -1,0 +1,33 @@
+{
+  "synced_from": {
+    "repo": "datopian/portaljs",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-08T01:12:03.548Z",
+  "author": {
+    "name": "Datopian",
+    "github": "datopian",
+    "email": "anuar.ustayev@datopian.com"
+  },
+  "license": "MIT",
+  "files_synced": 16,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    "README.md",
+    "license",
+    "skills/portaljs-add-chart/SKILL.md",
+    "skills/portaljs-add-dataset/SKILL.md",
+    "skills/portaljs-add-dcat/SKILL.md",
+    "skills/portaljs-add-map/SKILL.md",
+    "skills/portaljs-add-resource/SKILL.md",
+    "skills/portaljs-architect/SKILL.md",
+    "skills/portaljs-check-data-quality/SKILL.md",
+    "skills/portaljs-connect-ckan/SKILL.md",
+    "skills/portaljs-define-schema/SKILL.md",
+    "skills/portaljs-deploy/SKILL.md",
+    "skills/portaljs-migrate/SKILL.md",
+    "skills/portaljs-new-portal/SKILL.md"
+  ]
+}

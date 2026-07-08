@@ -4,11 +4,23 @@
     "path": "design-sprint",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:49.371Z",
+  "last_sync": "2026-07-08T01:11:30.407Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 10
+  "files_synced": 10,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/facilitation.md",
+    "references/friday.md",
+    "references/monday.md",
+    "references/recruiting.md",
+    "references/remote-sprints.md",
+    "references/thursday.md",
+    "references/tuesday.md",
+    "references/wednesday.md"
+  ]
 }

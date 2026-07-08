@@ -1,0 +1,41 @@
+{
+  "name": "portaljs",
+  "version": "0.1.0",
+  "description": "Agentic skills for building PortalJS data portals — recommend an architecture, scaffold a portal, add datasets, charts, and maps, connect a CKAN backend, deploy, and audit data quality.",
+  "author": {
+    "name": "Datopian",
+    "url": "https://www.datopian.com"
+  },
+  "homepage": "https://github.com/datopian/portaljs",
+  "repository": "https://github.com/datopian/portaljs",
+  "license": "MIT",
+  "keywords": ["portaljs", "data-portal", "ckan", "nextjs", "data-catalog"],
+  "commands": [
+    "./.claude/commands/portaljs-architect.md",
+    "./.claude/commands/portaljs-new-portal.md",
+    "./.claude/commands/portaljs-add-dataset.md",
+    "./.claude/commands/portaljs-add-resource.md",
+    "./.claude/commands/portaljs-add-chart.md",
+    "./.claude/commands/portaljs-add-map.md",
+    "./.claude/commands/portaljs-connect-ckan.md",
+    "./.claude/commands/portaljs-migrate.md",
+    "./.claude/commands/portaljs-define-schema.md",
+    "./.claude/commands/portaljs-deploy.md",
+    "./.claude/commands/portaljs-check-data-quality.md",
+    "./.claude/commands/portaljs-add-dcat.md"
+  ],
+  "skills": [
+    "./skills/portaljs-architect",
+    "./skills/portaljs-new-portal",
+    "./skills/portaljs-add-dataset",
+    "./skills/portaljs-add-resource",
+    "./skills/portaljs-add-chart",
+    "./skills/portaljs-add-map",
+    "./skills/portaljs-connect-ckan",
+    "./skills/portaljs-migrate",
+    "./skills/portaljs-define-schema",
+    "./skills/portaljs-deploy",
+    "./skills/portaljs-check-data-quality",
+    "./skills/portaljs-add-dcat"
+  ]
+}

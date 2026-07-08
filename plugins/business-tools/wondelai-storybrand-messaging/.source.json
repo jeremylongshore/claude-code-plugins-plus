@@ -4,11 +4,20 @@
     "path": "storybrand-messaging",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:06.881Z",
+  "last_sync": "2026-07-08T01:11:37.618Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 7
+  "files_synced": 7,
+  "files": [
+    "SKILL.md",
+    "references/brand-script.md",
+    "references/email-sequences.md",
+    "references/multi-channel-consistency.md",
+    "references/one-liners.md",
+    "references/sales-conversations.md",
+    "references/website-wireframe.md"
+  ]
 }

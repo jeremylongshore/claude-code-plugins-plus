@@ -1,10 +1,10 @@
 ---
 name: crossing-the-chasm
-description: 'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs. mainstream", "tech go-to-market", "bowling pin strategy", "technology adoption lifecycle", or "pragmatist buyers". Also trigger when a startup has early traction but struggles to grow beyond initial users, or when planning go-to-market for technical products. Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'
+description: 'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs mainstream", "tech go-to-market", "bowling pin strategy", "technology adoption lifecycle", "pragmatist buyers", "growth stalled after early adopters", or "our go-to-market plan". Also trigger when planning go-to-market for a technical product. Covers the D-Day analogy, bowling-pin strategy, the tornado, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Crossing the Chasm Framework
@@ -15,9 +15,17 @@ Strategic framework for marketing and selling disruptive technology products, pa
 
 **There is a chasm between early adopters and the mainstream market.** Most tech companies fail not because they can't build great products, but because they can't cross from visionaries who love new technology to pragmatists who just want solutions that work. The two groups want fundamentally different things -- what wins over innovators actively repels the early majority -- so you must change your strategy, and your whole product, to cross.
 
+If the product is modern PLG/freemium B2B SaaS, read [references/b2b-saas.md](references/b2b-saas.md) first -- it remaps every step below (the chasm, beachhead, whole product, metrics) for self-serve trials, free tiers, and the false-signal trap where 1,000 free users looks like a crossing but isn't.
+
 ## Scoring
 
-**Goal: 10/10.** Rate any tech go-to-market strategy 0-10 against chasm-crossing principles: proper beachhead selection, whole product strategy, and positioning for pragmatist buyers. Low scores mean early-market tactics applied to the mainstream. Report the current score and the improvements needed to reach 10/10.
+**Goal: 10/10.** Score any tech go-to-market by the Quick Diagnostic at the end: count the rows answered "yes" and map the 7 rows onto a 0-10 scale (roughly 1.4 points per satisfied row).
+
+- **9-10:** single dominable beachhead chosen, 10+ in-segment references, whole product complete via partners, evolution-not-revolution positioning, pragmatist-aligned channel -- adoption is accelerating. You've crossed.
+- **5-6:** beachhead picked but whole product or references still thin, or positioning still reads "revolutionary." You're mid-chasm; ship the missing whole-product layers and case studies.
+- **<=3:** multiple beachheads (or none), visionary messaging, MVP-grade product. Classic early-market tactics aimed at the mainstream -- the most common reason to stall.
+
+Report the score, name the failing diagnostic rows, and give the fix for each.
 
 ## The Technology Adoption Life Cycle
 
@@ -51,13 +59,9 @@ Innovators → Early Adopters → [CHASM] → Early Majority → Late Majority �
 
 **Why this matters:** You can't market to both simultaneously -- visionary testimonials scare off pragmatists.
 
-See: [references/buyer-segments.md](references/buyer-segments.md) for detailed buyer psychographics.
+See: [references/buyer-segments.md](references/buyer-segments.md) when you need to identify which group a specific prospect belongs to, or to write segment-specific messaging -- it has full psychographics and buying triggers per group.
 
-## Why the Chasm Exists
-
-- **Reference gap:** The early majority won't buy without references from other early majority companies -- but none exist until someone crosses first. Classic catch-22.
-- **Whole product gap:** Early adopters tolerate incomplete products; the early majority demands complete, integrated solutions. The MVP that wowed visionaries is unshippable to pragmatists.
-- **Positioning gap:** "Revolutionary" excites early adopters and terrifies the early majority, who read "disruptive" as risky, expensive, unproven. Pragmatists want evolution, not revolution.
+**The reference catch-22:** Pragmatists won't buy without references from other pragmatists -- but none exist until someone crosses first. This is *why* the chasm is a chasm and not a slope: the social proof the early majority requires cannot accumulate gradually. Breaking it is the whole game (Steps 1-2 below).
 
 ## The D-Day Strategy: Crossing the Chasm
 
@@ -81,7 +85,7 @@ See: [references/buyer-segments.md](references/buyer-segments.md) for detailed b
 
 **Process:** Brainstorm 20+ segments, score each against the criteria, choose ONE (resist keeping options open), commit to dominating it.
 
-See: [references/beachhead-selection.md](references/beachhead-selection.md) for segment evaluation frameworks.
+See: [references/beachhead-selection.md](references/beachhead-selection.md) when running the brainstorm-and-score step above -- it has the scoring matrix, weighting, and the target-customer characterization worksheet to pick the one segment.
 
 ### Step 2: Assemble the Invasion Force
 
@@ -110,7 +114,7 @@ Whole product layers: Generic (what you ship) → Expected (minimum viable) → 
 
 **Partnerships:** Identify gaps between generic and augmented, partner with companies that fill them, go to market jointly for the beachhead.
 
-See: [references/whole-product.md](references/whole-product.md) for whole product planning.
+See: [references/whole-product.md](references/whole-product.md) when mapping your gaps -- it extends the layers above with a 12-row gap-analysis matrix, the 80% rule, support-tier SLAs, and a planning canvas.
 
 ### Step 3: Define the Battle
 
@@ -128,7 +132,7 @@ See: [references/whole-product.md](references/whole-product.md) for whole produc
 
 **Competitive positioning:** The market alternative is often NOT a direct competitor -- it's manual processes, spreadsheets, or legacy systems. Differentiate on a dimension you dominate and make the incumbent's strength irrelevant: Salesforce's "No software" positioning turned feature-rich Siebel's complexity into a weakness.
 
-See: [references/positioning.md](references/positioning.md) for competitive positioning frameworks.
+See: [references/positioning.md](references/positioning.md) when filling in the formula above or choosing the competitive alternative to displace -- it has the claim-and-evidence structure and the "make the incumbent's strength irrelevant" patterns.
 
 ### Step 4: Launch the Invasion
 
@@ -151,7 +155,7 @@ See: [references/positioning.md](references/positioning.md) for competitive posi
 | "Change everything" | "Improve [specific metric] by X%" |
 | "Visionary" | "Pragmatic" |
 
-See: [references/go-to-market.md](references/go-to-market.md) for launch strategies.
+See: [references/go-to-market.md](references/go-to-market.md) when building the launch plan -- it details channel selection by buyer type, the reference-and-case-study engine, and pricing/pilot tactics for pragmatists.
 
 ## Bowling Pin Strategy
 
@@ -163,7 +167,7 @@ See: [references/go-to-market.md](references/go-to-market.md) for launch strateg
 
 **Anti-pattern:** Jumping to distant segments before dominating the beachhead.
 
-See: [references/expansion.md](references/expansion.md) for segment expansion strategies.
+See: [references/expansion.md](references/expansion.md) when sequencing your next 2-3 segments -- adjacency scoring and the bowling-pin ordering rules. For full worked arcs (Salesforce, VMware, Zoom, Atlassian) and stuck-in-the-chasm failures (Palm, Segway), see [references/case-studies.md](references/case-studies.md) when you need a pattern-match for your own situation.
 
 ## The Tornado: After the Chasm
 
@@ -185,38 +189,17 @@ See: [references/expansion.md](references/expansion.md) for segment expansion st
 
 ## Quick Diagnostic
 
-Audit any tech product go-to-market:
+Audit any tech go-to-market, and re-run it as the completion gate before declaring the chasm crossed. Each "If No" is a chasm symptom; act on the failing rows first.
 
 | Question | If No | Action |
 |----------|-------|--------|
-| Have we chosen a single beachhead segment? | You're in the chasm | Define narrow target market |
-| Do we have references from that segment? | Pragmatists won't buy | Build lighthouse customers |
-| Is the whole product complete? | Product won't meet needs | Identify gaps, build partnerships |
-| Does positioning emphasize proven value? | Wrong message for early majority | Reframe: evolution not revolution |
-| Can we dominate this segment? | Wrong beachhead | Choose narrower or different segment |
-
-## Chasm-Crossing Checklist
-
-**Before declaring victory:**
-- [ ] Single, narrowly defined beachhead segment chosen
-- [ ] Segment has urgent, expensive problem
-- [ ] We can assemble whole product for segment
-- [ ] 10+ reference customers from beachhead segment
-- [ ] Positioning emphasizes proven value, not revolution
-- [ ] Distribution channel aligned with pragmatist buying behavior
-- [ ] Partnerships in place to deliver whole product
-- [ ] Metrics show adoption accelerating (moving into tornado)
-
-## Reference Files
-
-- [buyer-segments.md](references/buyer-segments.md): Detailed psychographics for each buyer type
-- [beachhead-selection.md](references/beachhead-selection.md): Segment evaluation, scoring frameworks
-- [whole-product.md](references/whole-product.md): Whole product planning, gap analysis
-- [positioning.md](references/positioning.md): Competitive positioning frameworks and templates
-- [go-to-market.md](references/go-to-market.md): Distribution, messaging, launch strategies
-- [expansion.md](references/expansion.md): Bowling pin strategy, adjacency criteria
-- [case-studies.md](references/case-studies.md): Salesforce, Documentum, Ariba, and failures
-- [b2b-saas.md](references/b2b-saas.md): Chasm-crossing for modern SaaS companies
+| Have we chosen a single, narrowly defined beachhead with an urgent, expensive problem? | You're in the chasm | Define one narrow target market; resist multiple beachheads |
+| Can we plausibly dominate this segment? | Wrong beachhead | Choose a narrower or different segment |
+| Do we have 10+ reference customers from that exact segment? | Pragmatists won't buy | Build lighthouse customers and case studies |
+| Is the whole product complete -- partnerships in place to fill the gaps? | Product won't meet pragmatist needs | Identify generic-to-augmented gaps, partner to fill them |
+| Does positioning emphasize proven value over revolution? | Wrong message for the early majority | Reframe: evolution, not revolution |
+| Is the distribution channel aligned with pragmatist buying behavior? | You reach visionaries, not pragmatists | Sell through analysts, integrators, references, channel |
+| Are adoption metrics accelerating (entering the tornado)? | Still stuck before the chasm | Re-check the rows above -- something is still early-market |
 
 ## Further Reading
 

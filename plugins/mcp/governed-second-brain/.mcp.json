@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "governed-brain": {
+      "name": "governed-brain",
+      "description": "Governed second brain — ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb) — cited search plus governed capture → govern → promote with a SHA-256 hash-chained audit trail, no daemon, no network. Team (set TEAMKB_API_URL): a remote proxy to your team's single governed brain over the tailnet, with a per-user token. Mode is auto-detected from TEAMKB_API_URL.",
+      "version": "1.0.0",
+      "enabled": true,
+      "transport": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/plugin-runtime/governed-brain.cjs"],
+      "env": {
+        "TEAMKB_API_URL": "${TEAMKB_API_URL}",
+        "TEAMKB_API_TOKEN": "${TEAMKB_API_TOKEN}"
+      }
+    }
+  }
+}

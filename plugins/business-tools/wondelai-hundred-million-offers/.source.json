@@ -4,11 +4,24 @@
     "path": "hundred-million-offers",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:52.920Z",
+  "last_sync": "2026-07-08T01:11:32.178Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 11
+  "files_synced": 11,
+  "files": [
+    "SKILL.md",
+    "references/bonuses-stacking.md",
+    "references/case-studies.md",
+    "references/grand-slam-offers.md",
+    "references/guarantees.md",
+    "references/naming-offers.md",
+    "references/offer-creation-checklist.md",
+    "references/pricing-strategy.md",
+    "references/scarcity-urgency.md",
+    "references/starving-crowd.md",
+    "references/value-equation.md"
+  ]
 }

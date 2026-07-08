@@ -4,11 +4,21 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:33.037Z",
+  "last_sync": "2026-07-08T01:11:47.446Z",
   "author": {
     "name": "Alister Lewis-Bowen",
     "github": "ali5ter"
   },
   "license": "MIT",
-  "files_synced": 8
+  "files_synced": 8,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "agents/manager.md",
+    "skills/obsidian-project-documentation/SKILL.md",
+    "skills/obsidian-project-documentation/area-mapping.md",
+    "skills/obsidian-project-documentation/context-detection.md",
+    "skills/obsidian-project-documentation/project-template.md"
+  ]
 }

@@ -4,11 +4,21 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:35.298Z",
+  "last_sync": "2026-07-08T01:11:48.274Z",
   "author": {
     "name": "Alister Lewis-Bowen",
     "github": "ali5ter"
   },
   "license": "MIT",
-  "files_synced": 8
+  "files_synced": 8,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "agents/cli-ux-tester.md",
+    "skills/cli-ux-tester/SKILL.md",
+    "skills/cli-ux-tester/scripts/example-test.sh",
+    "skills/cli-ux-tester/test-scenarios.md",
+    "skills/cli-ux-tester/testing-checklist.md"
+  ]
 }

@@ -4,11 +4,19 @@
     "path": "web-typography",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:11.589Z",
+  "last_sync": "2026-07-08T01:11:39.352Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 6
+  "files_synced": 6,
+  "files": [
+    "SKILL.md",
+    "references/css-implementation.md",
+    "references/evaluating-typefaces.md",
+    "references/pairing-strategies.md",
+    "references/responsive-typography.md",
+    "references/typeface-anatomy.md"
+  ]
 }

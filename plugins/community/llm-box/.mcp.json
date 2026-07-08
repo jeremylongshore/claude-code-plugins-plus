@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "llm-box": {
+      "type": "stdio",
+      "command": "llm-box",
+      "args": ["--mcp-server"]
+    }
+  }
+}

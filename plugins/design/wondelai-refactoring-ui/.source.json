@@ -4,11 +4,19 @@
     "path": "refactoring-ui",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:04.602Z",
+  "last_sync": "2026-07-08T01:11:36.743Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 6
+  "files_synced": 6,
+  "files": [
+    "SKILL.md",
+    "references/accessibility-depth.md",
+    "references/advanced-patterns.md",
+    "references/animation-microinteractions.md",
+    "references/data-visualization.md",
+    "references/theming-dark-mode.md"
+  ]
 }

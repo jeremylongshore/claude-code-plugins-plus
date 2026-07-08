@@ -4,11 +4,22 @@
     "path": "predictable-revenue",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:03.503Z",
+  "last_sync": "2026-07-08T01:11:36.286Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 9
+  "files_synced": 9,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/cold-calling-2.md",
+    "references/lead-types.md",
+    "references/metrics.md",
+    "references/pipeline-math.md",
+    "references/qualification.md",
+    "references/roles.md",
+    "references/team-building.md"
+  ]
 }

@@ -4,11 +4,23 @@
     "path": "traction-eos",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:09.245Z",
+  "last_sync": "2026-07-08T01:11:38.476Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 10
+  "files_synced": 10,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/data.md",
+    "references/implementation.md",
+    "references/issues.md",
+    "references/level-10.md",
+    "references/people.md",
+    "references/process.md",
+    "references/rocks.md",
+    "references/vto.md"
+  ]
 }

@@ -4,11 +4,24 @@
     "path": "influence-psychology",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:54.070Z",
+  "last_sync": "2026-07-08T01:11:32.719Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 11
+  "files_synced": 11,
+  "files": [
+    "SKILL.md",
+    "references/authority.md",
+    "references/case-studies.md",
+    "references/commitment-consistency.md",
+    "references/copywriting.md",
+    "references/ethics.md",
+    "references/liking.md",
+    "references/reciprocity.md",
+    "references/scarcity.md",
+    "references/social-proof.md",
+    "references/unity.md"
+  ]
 }

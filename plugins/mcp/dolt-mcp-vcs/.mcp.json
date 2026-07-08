@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "dolt-mcp-vcs": {
+      "command": "dolt-mcp-server",
+      "args": [
+        "--stdio",
+        "--dolt",
+        "--host", "${DOLT_HOST:-127.0.0.1}",
+        "--port", "${DOLT_PORT:-3308}",
+        "--user", "${DOLT_USER:-root}",
+        "--database", "${DOLT_DATABASE:-beads}"
+      ],
+      "env": {
+        "DOLT_PASSWORD": "${DOLT_PASSWORD:-}"
+      }
+    }
+  }
+}

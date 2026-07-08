@@ -4,11 +4,25 @@
     "path": "ios-hig-design",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:55.161Z",
+  "last_sync": "2026-07-08T01:11:33.161Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 12
+  "files_synced": 12,
+  "files": [
+    "SKILL.md",
+    "references/accessibility.md",
+    "references/app-icons.md",
+    "references/colors-depth.md",
+    "references/components.md",
+    "references/gestures.md",
+    "references/keyboard-input.md",
+    "references/navigation.md",
+    "references/privacy-permissions.md",
+    "references/system-integration.md",
+    "references/typography.md",
+    "references/widgets-extensions.md"
+  ]
 }

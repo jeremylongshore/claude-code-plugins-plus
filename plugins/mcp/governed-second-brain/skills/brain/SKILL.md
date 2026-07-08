@@ -12,8 +12,8 @@ allowed-tools: 'mcp__governed-brain__brain_search'
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
-compatibility: 'Designed for Claude Code; ships with the governed-second-brain plugin, which auto-wires the local governed-brain MCP server. Requires qmd on PATH for retrieval.'
-tags: [brain, knowledge, search, citations, governance, local-first]
+compatibility: 'Designed for Claude Code; ships with the governed-second-brain plugin, which auto-wires the governed-brain MCP server. Works in both modes: local (in-process, needs qmd on PATH) and team (proxies to your team brain when TEAMKB_API_URL is set). Same brain_search either way.'
+tags: [brain, knowledge, search, citations, governance, local-first, team]
 argument-hint: '[question]'
 ---
 
@@ -34,10 +34,14 @@ citations support.
 
 ## Prerequisites
 
-- The `governed-second-brain` plugin is installed, which auto-wires the local
+- The `governed-second-brain` plugin is installed, which auto-wires the
   `governed-brain` MCP server.
-- `qmd` is on your `PATH` (the local retrieval engine). Search runs **in-process**
-  against your local `~/.teamkb` index — no network, no API key, no token.
+- **Mode is automatic.** In **local mode** (default) search runs **in-process**
+  against your local `~/.teamkb` index — no network, no API key, no token; `qmd`
+  must be on your `PATH`. In **team mode** (when `TEAMKB_API_URL` is set) the same
+  `brain_search` proxies to your team's governed brain over the tailnet with your
+  per-user token; nothing extra is needed on your machine. Either way every hit is
+  a `qmd://` citation.
 
 ## Instructions
 

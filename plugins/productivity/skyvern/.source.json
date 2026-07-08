@@ -4,11 +4,36 @@
     "path": "skyvern/cli/skills/skyvern",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:19.891Z",
+  "last_sync": "2026-07-08T01:11:43.522Z",
   "author": {
     "name": "Skyvern-AI",
     "github": "Skyvern-AI"
   },
   "license": "AGPL-3.0",
-  "files_synced": 23
+  "files_synced": 23,
+  "files": [
+    "SKILL.md",
+    "examples/conditional-retry.json",
+    "examples/login-and-extract.json",
+    "examples/multi-page-form.json",
+    "references/agent-mode.md",
+    "references/ai-actions.md",
+    "references/block-types.md",
+    "references/cli-parity.md",
+    "references/common-failures.md",
+    "references/complex-inputs.md",
+    "references/credentials.md",
+    "references/engines.md",
+    "references/pagination.md",
+    "references/parameters.md",
+    "references/precision-actions.md",
+    "references/prompt-writing.md",
+    "references/quick-start-patterns.md",
+    "references/rerun-playbook.md",
+    "references/schemas.md",
+    "references/screenshots.md",
+    "references/sessions.md",
+    "references/status-lifecycle.md",
+    "references/tool-map.md"
+  ]
 }

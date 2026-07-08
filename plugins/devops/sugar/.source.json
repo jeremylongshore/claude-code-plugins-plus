@@ -4,12 +4,29 @@
     "path": ".claude-plugin",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:42.287Z",
+  "last_sync": "2026-07-08T01:11:27.758Z",
   "author": {
     "name": "Steven Leggett",
     "github": "cdnsteve",
     "email": "contact@roboticforce.io"
   },
   "license": "MIT",
-  "files_synced": 15
+  "files_synced": 15,
+  "files": [
+    "PLUGIN_OVERVIEW.md",
+    "README.md",
+    "agents/quality-guardian.md",
+    "agents/sugar-orchestrator.md",
+    "agents/task-planner.md",
+    "commands/sugar-analyze.md",
+    "commands/sugar-review.md",
+    "commands/sugar-run.md",
+    "commands/sugar-status.md",
+    "commands/sugar-task.md",
+    "commands/sugar-thinking.md",
+    "hooks/hooks.json",
+    "mcp-server/package.json",
+    "mcp-server/sugar-mcp.js",
+    "plugin.json"
+  ]
 }

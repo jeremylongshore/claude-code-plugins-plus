@@ -4,11 +4,20 @@
     "path": "cro-methodology",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:45.827Z",
+  "last_sync": "2026-07-08T01:11:29.083Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 7
+  "files_synced": 7,
+  "files": [
+    "SKILL.md",
+    "references/COPYWRITING.md",
+    "references/OBJECTIONS.md",
+    "references/PERSUASION.md",
+    "references/RESEARCH.md",
+    "references/funnel-analysis.md",
+    "references/testing-methodology.md"
+  ]
 }

@@ -4,11 +4,26 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:29.610Z",
+  "last_sync": "2026-07-08T01:11:45.777Z",
   "author": {
     "name": "Yuriy Kotik",
     "github": "ykotik"
   },
   "license": "MIT",
-  "files_synced": 13
+  "files_synced": 13,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    "INSTALL.md",
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "skills/api-testing/SKILL.md",
+    "skills/ci-automation/SKILL.md",
+    "skills/data-processing/SKILL.md",
+    "skills/python-tooling/SKILL.md",
+    "skills/security-scanning/SKILL.md",
+    "skills/web-crawling/SKILL.md",
+    "skills/web-research/SKILL.md"
+  ]
 }

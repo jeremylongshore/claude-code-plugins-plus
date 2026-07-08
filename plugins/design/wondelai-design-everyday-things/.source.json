@@ -4,11 +4,24 @@
     "path": "design-everyday-things",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:48.236Z",
+  "last_sync": "2026-07-08T01:11:29.975Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 11
+  "files_synced": 11,
+  "files": [
+    "SKILL.md",
+    "references/affordances.md",
+    "references/case-studies.md",
+    "references/conceptual-models.md",
+    "references/constraints.md",
+    "references/feedback.md",
+    "references/human-error.md",
+    "references/mappings.md",
+    "references/seven-stages.md",
+    "references/signifiers.md",
+    "references/two-gulfs.md"
+  ]
 }

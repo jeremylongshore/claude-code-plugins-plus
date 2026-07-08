@@ -1,10 +1,10 @@
 ---
 name: storybrand-messaging
-description: 'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isnt resonating", "brand script", "StoryBrand framework", or "customer as hero". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales collateral and marketing materials. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'
+description: 'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "brand script", "StoryBrand framework", "customer as hero", or "my messaging isnt resonating". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales and marketing collateral. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # StoryBrand Messaging Framework
@@ -17,7 +17,7 @@ Clarify your message so customers will listen. Customers don't buy the best prod
 
 ## Scoring
 
-**Goal: 10/10.** Rate any marketing copy or brand messaging 0-10 against the principles below. Always state the current score and the specific changes needed to reach 10/10.
+**Goal: 10/10.** Score any marketing copy or brand messaging by the Quick Diagnostic: 1 point per satisfied row (7 rows) plus up to 3 points for a one-liner that passes the cocktail party test (clear + repeatable in one hearing). Bands: 9-10 = customer is the hero, all three problem levels named, empathy + authority both shown, a 3-step plan, one obvious Direct CTA, and both success and failure stakes painted; 5-6 = SB7 partly applied but the internal problem, stakes, or CTA is missing; <=3 = brand-as-hero, feature-led, or no clear ask. Always state the current score and the specific changes needed to reach 10/10.
 
 ## The SB7 Framework
 
@@ -48,9 +48,7 @@ Every compelling story follows the same pattern. Use this structure for all mess
 - "Imagine [aspirational identity]..."
 - "What if you could [single clear outcome]?"
 
-**Ethical boundary:** Ground desires in real research or observed behavior — never fabricate aspirations the customer does not hold.
-
-See: [references/brand-script.md](references/brand-script.md) for the complete BrandScript worksheet covering all seven elements.
+See: [references/brand-script.md](references/brand-script.md) — fill out the BrandScript worksheet here when you need to draft all seven elements for a client from scratch.
 
 ### 2. Has a Problem
 
@@ -76,8 +74,6 @@ See: [references/brand-script.md](references/brand-script.md) for the complete B
 - "[Villain] has been keeping you from [desire]..."
 - "It's not right that [philosophical problem]..."
 
-**Ethical boundary:** Name real frustrations honestly — never exaggerate problems or invent suffering to create fear.
-
 ### 3. And Meets a Guide
 
 **Core concept:** Your brand is the guide, expressing empathy AND authority. Empathy shows you understand the pain; authority proves you can solve it.
@@ -85,7 +81,6 @@ See: [references/brand-script.md](references/brand-script.md) for the complete B
 **Why it works:** Customers are looking for a guide, not another hero — think Yoda, not Luke. Empathy makes them feel seen, authority (testimonials, logos, statistics) makes them feel safe, and together they create trust.
 
 **Key insights:**
-- Empathy without authority seems weak; authority without empathy seems arrogant
 - Show empathy with "we understand" language; show authority with testimonials, client logos, statistics, awards
 - Never make your origin story the centerpiece — that is hero behavior; brief, relevant credentials suffice
 
@@ -102,9 +97,7 @@ See: [references/brand-script.md](references/brand-script.md) for the complete B
 - "We've helped [number] [customers] achieve [result]..."
 - "You don't have to figure this out alone..."
 
-**Ethical boundary:** Claim only earned authority — real testimonials, accurate statistics, verifiable credentials.
-
-See: [references/sales-conversations.md](references/sales-conversations.md) for discovery questions, objection handling, and sales scripts.
+See: [references/sales-conversations.md](references/sales-conversations.md) — open when scripting a sales call or discovery session; covers discovery questions, objection handling, and full SB7 sales scripts.
 
 ### 4. Who Gives Them a Plan
 
@@ -130,8 +123,6 @@ See: [references/sales-conversations.md](references/sales-conversations.md) for 
 - "Getting started is easy. Just [step 1]."
 - "We promise [agreement plan commitment]."
 
-**Ethical boundary:** Promise only outcomes you reliably deliver, and honor agreement-plan commitments without exception.
-
 ### 5. And Calls Them to Action
 
 **Core concept:** If you don't ask, they won't act. Use a Direct CTA (primary conversion action) plus a Transitional CTA (lower-commitment alternative).
@@ -156,9 +147,9 @@ See: [references/sales-conversations.md](references/sales-conversations.md) for 
 - "Start your free [trial/demo/assessment] today."
 - "Download your free [lead magnet]."
 
-**Ethical boundary:** CTAs must honestly represent what happens on click — never disguise a purchase as a free action.
+**Ethical boundary:** Never label a paid action as "free" or a Transitional CTA — the button text must match what happens on click.
 
-See: [references/website-wireframe.md](references/website-wireframe.md) for page-by-page structure and interior page templates.
+See: [references/website-wireframe.md](references/website-wireframe.md) — open when laying out a homepage or site; gives section-by-section structure and interior page templates.
 
 ### 6. That Helps Them Avoid Failure
 
@@ -184,8 +175,6 @@ See: [references/website-wireframe.md](references/website-wireframe.md) for page
 - "How long will you wait before [addressing the problem]?"
 - "Every day without [solution], you're [cost of inaction]."
 
-**Ethical boundary:** State real, proportionate consequences of inaction — no fear-mongering or fabricated urgency.
-
 ### 7. And Ends in Success
 
 **Core concept:** Paint a vivid picture of life after working with you — in terms of status, completeness, and self-realization. Success closes the story gap opened in Element 1.
@@ -210,8 +199,6 @@ See: [references/website-wireframe.md](references/website-wireframe.md) for page
 - "Join [number] [customers] who now [success outcome]..."
 - "Finally, [completeness outcome] — without [old frustration]."
 
-**Ethical boundary:** Promise only substantiated results; testimonials must reflect genuine customer experiences.
-
 ## The One-Liner
 
 A single sentence that explains what you do. Use it everywhere.
@@ -222,9 +209,9 @@ A single sentence that explains what you do. Use it everywhere.
 
 **Example:** "We help small business owners who feel overwhelmed by marketing create a clear message so they can grow their revenue."
 
-**Test:** Can someone repeat it after hearing it once?
+**Test:** Can someone repeat it after hearing it once? (the cocktail party test)
 
-See: [references/one-liners.md](references/one-liners.md) for industry examples and variations.
+See: [references/one-liners.md](references/one-liners.md) — open when drafting a one-liner; ~20 industry examples plus three alternative formulas (PSR, BAB, "We Exist Because").
 
 ## Tone and Voice Guidelines
 
@@ -234,7 +221,8 @@ Keep brand voice consistent across channels while adapting to context.
 
 **Avoid:** hero language ("We're the best at..."), jargon (use the customer's words), condescension, and tentative weakness.
 
-See: [references/multi-channel-consistency.md](references/multi-channel-consistency.md) for social media, video, podcast, and PR adaptation.
+See: [references/email-sequences.md](references/email-sequences.md) — open when building a nurture or welcome sequence; SB7-mapped templates and subject-line formulas.
+See: [references/multi-channel-consistency.md](references/multi-channel-consistency.md) — open when adapting the message to a channel; social, video, podcast, and PR playbooks.
 
 ## Common Mistakes
 
@@ -259,15 +247,6 @@ See: [references/multi-channel-consistency.md](references/multi-channel-consiste
 | Is there a clear 3-step plan? | Path feels risky | Add Process + Agreement plans |
 | Is there one obvious CTA? | Nobody acts | Add prominent, repeated Direct CTA |
 | Do you show success AND failure stakes? | No narrative tension | Paint both outcome pictures |
-
-## Reference Files
-
-- [brand-script.md](references/brand-script.md): Complete BrandScript worksheet for all seven elements
-- [one-liners.md](references/one-liners.md): One-liner formula, industry examples, variations
-- [website-wireframe.md](references/website-wireframe.md): Page-by-page website structure, interior page templates
-- [email-sequences.md](references/email-sequences.md): Nurture and welcome sequences, templates, subject line formulas
-- [sales-conversations.md](references/sales-conversations.md): Discovery questions, objection handling, sales scripts
-- [multi-channel-consistency.md](references/multi-channel-consistency.md): Social media adaptation, video scripts, podcast, PR, brand voice guidelines
 
 ## Further Reading
 

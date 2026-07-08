@@ -4,12 +4,16 @@
     "path": "skills/tools/zai-cli",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:40.998Z",
+  "last_sync": "2026-07-08T01:11:27.291Z",
   "author": {
     "name": "Numman Ali",
     "github": "numman-ali",
     "email": "numman.ali@gmail.com"
   },
   "license": "Apache-2.0",
-  "files_synced": 2
+  "files_synced": 2,
+  "files": [
+    "skills/zai-cli/SKILL.md",
+    "skills/zai-cli/references/advanced.md"
+  ]
 }

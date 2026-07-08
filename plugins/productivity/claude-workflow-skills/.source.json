@@ -4,11 +4,22 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:30.696Z",
+  "last_sync": "2026-07-08T01:11:46.629Z",
   "author": {
     "name": "Alister Lewis-Bowen",
     "github": "ali5ter"
   },
   "license": "MIT",
-  "files_synced": 9
+  "files_synced": 9,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "skills/audit-plugin/SKILL.md",
+    "skills/audit-standards/SKILL.md",
+    "skills/improve/SKILL.md",
+    "skills/promote/SKILL.md",
+    "skills/review-pr/SKILL.md",
+    "skills/triage/SKILL.md"
+  ]
 }

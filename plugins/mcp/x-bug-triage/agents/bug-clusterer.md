@@ -1,28 +1,15 @@
 ---
 name: bug-clusterer
-description: Normalizes raw X/Twitter posts into 33-field BugCandidates with PII redaction, reliability scoring, and deterministic clustering by bug family and signature. Use when processing a triage run's raw social posts into structured clusters. Trigger with "cluster these posts", "run bug clustering".
-tools: Read,Glob,Grep,triage:fetch_mentions,triage:search_recent,triage:fetch_conversation
+description: "Parse, classify, redact PII, score reliability, and cluster bug candidates by family and signal layers. Use when processing raw X/Twitter posts into structured bug clusters."
+tools: "Read,Glob,Grep,triage:fetch_mentions,triage:search_recent,triage:fetch_conversation"
+disallowedTools: "Write,Edit,triage:search_issues,triage:inspect_recent_commits,triage:inspect_code_paths,triage:check_recent_deploys,triage:lookup_service_owner,triage:lookup_oncall,triage:parse_codeowners,triage:lookup_recent_assignees,triage:lookup_recent_committers,triage:create_draft_issue,triage:check_existing_issues,triage:confirm_and_file,triage:parse_review_command"
 model: inherit
-color: cyan
-version: 1.0.0
-author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags:
-- bug-triage
-- clustering
-- pii-redaction
-- social-signals
-disallowedTools: []
-skills:
-- bug-clustering
-background: false
-effort: high
 maxTurns: 15
-# ── upgrade levers — uncomment + set when tuning this agent ──
-# memory: project         # persistent scope: user/project/local (omit = ephemeral)
-# isolation: worktree     # run in an isolated git worktree
-# initialPrompt: "…"      # seed the agent's first turn
-# hooks / mcpServers / permissionMode → set at the PLUGIN level, not on a plugin agent
+effort: high
+skills: ["bug-clustering"]
+background: false
 ---
+
 # Bug Clusterer Agent
 
 Process raw X/Twitter posts into structured, clustered bug candidates with PII redaction and reliability scoring.

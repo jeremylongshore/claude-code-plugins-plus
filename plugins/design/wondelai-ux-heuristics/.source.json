@@ -4,11 +4,21 @@
     "path": "ux-heuristics",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:10.430Z",
+  "last_sync": "2026-07-08T01:11:38.921Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 8
+  "files_synced": 8,
+  "files": [
+    "SKILL.md",
+    "references/audit-template.md",
+    "references/cultural-ux.md",
+    "references/dark-patterns.md",
+    "references/heuristic-conflicts.md",
+    "references/krug-principles.md",
+    "references/nielsen-heuristics.md",
+    "references/wcag-checklist.md"
+  ]
 }

@@ -4,11 +4,19 @@
     "path": "jobs-to-be-done",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:56.334Z",
+  "last_sync": "2026-07-08T01:11:33.611Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 6
+  "files_synced": 6,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/competitive-strategy.md",
+    "references/diagnostics.md",
+    "references/innovation-process.md",
+    "references/organizational-change.md"
+  ]
 }

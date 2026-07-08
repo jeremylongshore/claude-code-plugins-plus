@@ -4,11 +4,24 @@
     "path": "one-page-marketing",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:02.164Z",
+  "last_sync": "2026-07-08T01:11:35.852Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 11
+  "files_synced": 11,
+  "files": [
+    "SKILL.md",
+    "references/advertising-media.md",
+    "references/capture-leads.md",
+    "references/craft-message.md",
+    "references/customer-experience.md",
+    "references/lifetime-value.md",
+    "references/nurture-leads.md",
+    "references/one-page-plan-template.md",
+    "references/referral-systems.md",
+    "references/sales-conversion.md",
+    "references/target-market.md"
+  ]
 }

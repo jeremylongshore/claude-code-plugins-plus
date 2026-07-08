@@ -1,10 +1,10 @@
 ---
 name: hooked-ux
-description: 'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions "users arent coming back", "engagement loops", "habit formation", "push notifications", "variable rewards", "daily active users", "habit zone", or "user retention loops". Also trigger when designing notification strategies, building streaks or progress systems, or analyzing why users stop using a product after initial signup. Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'
+description: 'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions "users arent coming back", "habit formation", "engagement loops", "habit zone", or "the manipulation matrix". Also trigger when designing notification or re-engagement strategies, building streaks or progress systems, or analyzing why users stop after signup. Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.1"
 ---
 
 # Hook Model Framework
@@ -23,7 +23,7 @@ Trigger → Action → Variable Reward → Investment
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating product engagement mechanics, rate them 0-10 based on adherence to the principles below. A 10/10 means full alignment with all guidelines; lower scores indicate gaps to address. Always provide the current score and specific improvements needed to reach 10/10.
+**Goal: 10/10.** When reviewing or creating product engagement mechanics, score the loop by the four Quick Diagnostic rows (internal trigger, dead-simple action, variable reward, investment loads next trigger): each row earns 2 (fully satisfied), 1 (partial), or 0 (absent), then `score = round(total / 8 × 10)`. Then apply the ethics gate: if the Manipulation Matrix places the product as Dealer (or it hits any "When NOT to Use" condition), cap the score at 3 regardless of mechanics. Bands: 9-10 = complete loop, internal trigger identified, ethics clear; 5-6 = loop runs but leans on external triggers or predictable rewards; <=3 = broken loop or extractive design. Always state the current score and the specific diagnostic rows blocking 10/10.
 
 ## The Four Phases
 
@@ -31,7 +31,7 @@ Trigger → Action → Variable Reward → Investment
 
 **Core concept:** The actuator of behavior. Triggers are external (environment-driven: notifications, emails, ads) or internal (emotion-driven) — and the goal is to migrate users from external to internal triggers.
 
-**Why it works:** Every habit starts with a cue. External triggers get users started, but internal triggers — boredom, loneliness, uncertainty, FOMO — drive unprompted usage; when your product becomes the automatic response to an emotion, you have a habit.
+**Why it works:** Every habit starts with a cue. External triggers get users started, but internal triggers — boredom, loneliness, uncertainty, FOMO — drive unprompted usage because the emotion itself fires before any reminder can.
 
 **Key insights:**
 - Map your product to the specific negative emotion it resolves (boredom, loneliness, confusion, FOMO)
@@ -51,9 +51,9 @@ Trigger → Action → Variable Reward → Investment
 - "Your friend just..." (social trigger bridging to internal)
 - "Pick up where you left off" (routine trigger)
 
-**Ethical boundary:** Never exploit vulnerable emotional states (depression, addiction, grief) — triggers should connect users to genuine value, not manufacture anxiety to drive opens.
+**Ethical boundary:** Don't build triggers that fire on vulnerable emotional states (depression, addiction, grief) — those users can't exercise the autonomy the loop assumes.
 
-See: [references/triggers.md](references/triggers.md) for trigger design, emotion mapping, and external-to-internal transition strategies.
+See [references/triggers.md](references/triggers.md) when mapping triggers — the emotion-to-product mapping exercise and the external-to-internal transition plan.
 
 ### 2. Action
 
@@ -79,9 +79,9 @@ See: [references/triggers.md](references/triggers.md) for trigger design, emotio
 - "No credit card required" (money/risk simplicity)
 - Buttons should be verbs: "Post", "Save", "Share" — not "Submit" or "Continue"
 
-**Ethical boundary:** Reduce friction on genuinely valuable actions only — dark patterns that hide costs or consequences behind simple actions are unethical.
+**Ethical boundary:** When you simplify an action, don't strip the cost or consequence with it — a one-tap purchase must still surface the price and the commitment.
 
-See: [references/product-applications.md](references/product-applications.md) for action and investment design across product types.
+See [references/product-applications.md](references/product-applications.md) when adapting the loop to your context — action and investment patterns for B2B SaaS, e-commerce, health, and productivity tools.
 
 ### 3. Variable Reward
 
@@ -109,7 +109,7 @@ See: [references/product-applications.md](references/product-applications.md) fo
 
 **Ethical boundary:** If users consistently feel worse after engaging (regret, time loss, anxiety), the reward system is extractive — avoid infinite scroll without natural stopping points.
 
-See: [references/rewards.md](references/rewards.md) for reward design patterns, reinforcement schedules, and reward timing.
+See [references/rewards.md](references/rewards.md) when designing a reward — tribe/hunt/self patterns, the four reinforcement schedules, and reward timing. For the dopamine/anticipation mechanism behind variable rewards, see [references/neuroscience-foundations.md](references/neuroscience-foundations.md).
 
 ### 4. Investment
 
@@ -157,7 +157,7 @@ The 5% rule: a habit has formed when at least 5% of users show unprompted, habit
 2. **What are they doing?** Identify the "Habit Path" — the action sequence that separates power users from casual users.
 3. **Why are they doing it?** What internal trigger and emotion precede usage?
 
-See: [references/habit-testing.md](references/habit-testing.md) for testing methodology.
+See [references/habit-testing.md](references/habit-testing.md) when running the test — cohort analysis, finding the Habit Path, and confirming the 5% threshold. For worked teardowns of these loops in real products (Instagram, Slack, Duolingo, Pinterest, and failures), see [references/case-studies.md](references/case-studies.md).
 
 ## The Manipulation Matrix
 
@@ -177,7 +177,7 @@ Ask: would I use this myself? Does it genuinely help users achieve their goals? 
 - The business model depends on user regret
 - Engagement conflicts with user wellbeing
 
-See: [references/ethical-boundaries.md](references/ethical-boundaries.md) for comprehensive ethics guidance.
+See [references/ethical-boundaries.md](references/ethical-boundaries.md) when the Manipulation Matrix flags a concern — dark-pattern catalog and how to protect vulnerable users.
 
 ### Regulatory Context
 
@@ -227,16 +227,6 @@ Audit any product feature:
 | Is the action dead simple? | Users start but don't complete | Remove friction |
 | Is the reward variable? | Users get bored | Add unpredictability |
 | Does investment load next trigger? | Users don't return | Connect investment to triggers |
-
-## Reference Files
-
-- [triggers.md](references/triggers.md): External and internal trigger design, emotion mapping
-- [rewards.md](references/rewards.md): Variable reward types, reinforcement schedules, reward timing
-- [habit-testing.md](references/habit-testing.md): Testing methodology, habit zone identification
-- [case-studies.md](references/case-studies.md): Instagram, Slack, Duolingo, Pinterest, and failed products analysis
-- [ethical-boundaries.md](references/ethical-boundaries.md): Dark patterns vs. ethical engagement, protecting vulnerable users
-- [neuroscience-foundations.md](references/neuroscience-foundations.md): Dopamine, variable reinforcement schedules, habit loop neuroscience
-- [product-applications.md](references/product-applications.md): B2B SaaS, e-commerce, health apps, productivity tools patterns
 
 ## Further Reading
 

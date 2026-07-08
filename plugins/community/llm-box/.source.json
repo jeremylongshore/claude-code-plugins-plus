@@ -1,0 +1,25 @@
+{
+  "synced_from": {
+    "repo": "alib8b8/llm-box",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-08T01:12:04.166Z",
+  "author": {
+    "name": "alib8b8",
+    "github": "alib8b8"
+  },
+  "license": "MIT",
+  "files_synced": 9,
+  "files": [
+    ".claude-plugin/plugin.json",
+    ".mcp.json",
+    "README.md",
+    "README.zh-CN.md",
+    "commands/create-workflow.md",
+    "commands/list-nodes.md",
+    "commands/run-workflow.md",
+    "skills/llm-box/SKILL.md",
+    "skills/setup/SKILL.md"
+  ]
+}

@@ -4,11 +4,23 @@
     "path": "contagious",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:44.621Z",
+  "last_sync": "2026-07-08T01:11:28.642Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 10
+  "files_synced": 10,
+  "files": [
+    "SKILL.md",
+    "references/case-studies.md",
+    "references/emotion.md",
+    "references/practical-value.md",
+    "references/public-visibility.md",
+    "references/social-currency.md",
+    "references/stories-trojan-horse.md",
+    "references/triggers.md",
+    "references/viral-content-patterns.md",
+    "references/word-of-mouth.md"
+  ]
 }

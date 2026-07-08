@@ -4,11 +4,33 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:28:23.785Z",
+  "last_sync": "2026-07-08T01:11:45.355Z",
   "author": {
     "name": "Rohit Hazra",
     "github": "rohithzr"
   },
   "license": "MIT",
-  "files_synced": 20
+  "files_synced": 20,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".sync-manifest.json",
+    "LICENSE",
+    "README.md",
+    "hooks/hooks.json",
+    "hooks/run-hook.cmd",
+    "scripts/common.sh",
+    "scripts/config-manager.sh",
+    "scripts/diff-config.sh",
+    "scripts/ensure-repo.sh",
+    "scripts/profile-manager.sh",
+    "scripts/sync-pull.sh",
+    "scripts/sync-push.sh",
+    "skills/sync-config/SKILL.md",
+    "skills/sync-profiles/SKILL.md",
+    "skills/sync-pull/SKILL.md",
+    "skills/sync-push/SKILL.md",
+    "skills/sync-setup/SKILL.md",
+    "skills/sync-status/SKILL.md"
+  ]
 }

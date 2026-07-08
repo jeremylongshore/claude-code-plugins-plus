@@ -3,7 +3,7 @@
 <p align="center">
   A local-first Claude Code + Cowork plugin: turn <em>your own</em> files into a governed,
   <code>qmd://</code>-cited second brain with a tamper-evident, SHA-256 hash-chained audit trail.<br>
-  <strong>Compile, then govern.</strong> Runs in-process — no daemon, no network, no API key for retrieval.
+  <strong>Compile, then govern.</strong> One plugin, two modes: <strong>local</strong> (default — in-process, no daemon, no network, no API key for retrieval) or <strong>team</strong> (proxy to a shared governed brain over your network).
 </p>
 
 <p align="center">
@@ -46,6 +46,7 @@ optional ICO *compile* step is the only thing that egresses, and it's opt-in).
 |---|---|---|
 | `brain_search` | read | Cited search over your governed memory (`qmd://` receipts), in-process |
 | `brain_status` | read | Counts by lifecycle state + category |
+| `brain_audit_verify` | read | Verify the audit trail — the SHA-256 hash chain **and** the external anchor log; flags any tamper |
 | `brain_capture` | write | Capture a fact as a governance **proposal** (to the local spool) |
 | `brain_govern` | write | Drain the spool → dedupe → policy → **promote**, with a hash-chained audit receipt — daemon-free |
 | `brain_transition` | write | Retire / re-lifecycle a memory (audited) |
@@ -59,6 +60,43 @@ so an edited or reordered record is caught by `verify`. It is **not** tamper-pro
 a writer with access can edit an event *and* re-hash the chain forward. Within a single trust boundary
 (your machine) that's exactly the integrity guarantee you want; cross-actor non-repudiation needs an
 external chain-head anchor (on the roadmap). It is **not** a blockchain and **not** immutable storage.
+
+## Independently verify the anchor log
+
+`brain_audit_verify` is the *in-box* check — it runs inside the same codebase that wrote the chain
+(circular trust). For "don't trust us, run it yourself," there's a **standalone, zero-dependency
+verifier** that re-derives every anchor hash itself, importing **nothing** from this plugin or the
+engines. It's the `cat log.md` of receipts — one file, node built-ins only (`crypto`, `fs`,
+`child_process`), no build step:
+
+```bash
+# defaults to $HOME/.teamkb/audit/anchors.jsonl
+node scripts/verify-anchors.mjs
+
+# be explicit, and cross-check the live DB head against the latest anchor
+node scripts/verify-anchors.mjs \
+  --anchors "$HOME/.teamkb/audit/anchors.jsonl" \
+  --audit-dir "$HOME/.teamkb/audit" \
+  --db "$HOME/.teamkb/teamkb.db"
+
+npm run verify-anchors        # same, via the package script
+node scripts/verify-anchors.mjs --json   # machine-readable output
+```
+
+It checks four things against the external anchor log (`anchors.jsonl`, an append-only hash chain):
+
+1. **Per-record integrity** — recomputes each `anchorHash` from the canonical body; any edit is an
+   `ANCHOR_HASH_MISMATCH`.
+2. **Chain linkage** — `record[0].prevAnchorHash` is `null`, each subsequent `prevAnchorHash` equals
+   the prior record's `anchorHash`, and `chainedRows` never regresses.
+3. **External witness (git)** — confirms the anchor log is committed and clean (an uncommitted or
+   un-pushed log is only *locally* witnessed — surfaced as a warning, not a hard fail).
+4. **Optional DB cross-check** (`--db`, needs `sqlite3` on PATH) — the latest anchor's `chainHead`
+   must equal the live audit chain's current head and its `chainedRows` must not exceed the current
+   count, catching a silent rewrite of history the in-box chain-walk alone would miss.
+
+Exit `0` on pass (witness-only warnings still exit `0`); non-zero on any integrity, linkage, or
+history-rewrite failure. Run the verifier's own tests with `npm run verify-anchors:test`.
 
 ## Install
 
@@ -80,6 +118,27 @@ prompt). Requires Node 20+, a C/C++ toolchain (for `better-sqlite3`), and `qmd` 
 After it finishes, start a new Claude Code session — the `governed-brain` tools are live. For the
 `/brain` and `/brain-save` skills too, `claude plugin install governed-second-brain`.
 
+### Team mode — point it at a shared brain
+
+The **same** plugin runs in **team mode** when `TEAMKB_API_URL` is set: instead of an in-process local
+brain, it proxies to a shared governed-brain HTTP API (INTKB's `apps/api`) over your network — so a
+whole team queries and contributes to **one** governed brain. Set two environment variables:
+
+- **`TEAMKB_API_URL`** — your team brain's API base (e.g. `http://localhost:3847`)
+- **`TEAMKB_API_TOKEN`** — your personal bearer token (issued by the brain's operator)
+
+You need network reachability to that API — typically a private network / VPN such as **Tailscale**
+(the brain is meant to stay off the public internet). The dispatcher auto-detects mode from
+`TEAMKB_API_URL`: set → team, unset → local. Same `/brain` + `/brain-save` skills either way.
+
+In team mode the tool surface is **`brain_search`** (read) + **`brain_capture`** (propose) +
+**`brain_transition`** (admin-only) — govern runs server-side, so there's no client `brain_govern`:
+**the model proposes, the server disposes**, and each promotion gets a hash-chained receipt. A member
+token can read + propose; admin actions (transition) return a clear 403 otherwise.
+
+> Team mode is **dependency-free** — it uses only `fetch` + the MCP SDK, never the native store — so it
+> runs straight from a marketplace clone with zero build.
+
 <details><summary><strong>Build from source</strong> (to hack on the runtime)</summary>
 
 ```bash
@@ -89,8 +148,11 @@ node bin/init.mjs init <your-folder> --index-only
 ```
 </details>
 
-**Coming:** npm provenance + checksums (the `gsb.lock.json` reproducible pin) and
-automatic Cowork MCP registration.
+**Supply chain (shipped in 0.1.4):** npm **provenance** (via the CI release workflow) and the
+`gsb.lock.json` reproducible pin — the exact ICO × INTKB × qmd × plugin tuple, verified by a
+hermetic full-chain CI smoke against the pinned set.
+
+**Coming:** automatic Cowork MCP registration.
 
 ## License
 

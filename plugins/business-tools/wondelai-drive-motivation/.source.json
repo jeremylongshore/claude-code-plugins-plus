@@ -4,11 +4,21 @@
     "path": "drive-motivation",
     "branch": "main"
   },
-  "last_sync": "2026-06-17T16:27:50.544Z",
+  "last_sync": "2026-07-08T01:11:30.882Z",
   "author": {
     "name": "Wondel.ai",
     "github": "wondelai"
   },
   "license": "MIT",
-  "files_synced": 8
+  "files_synced": 8,
+  "files": [
+    "SKILL.md",
+    "references/applications.md",
+    "references/autonomy.md",
+    "references/case-studies.md",
+    "references/extrinsic-rewards.md",
+    "references/mastery.md",
+    "references/purpose.md",
+    "references/type-i.md"
+  ]
 }

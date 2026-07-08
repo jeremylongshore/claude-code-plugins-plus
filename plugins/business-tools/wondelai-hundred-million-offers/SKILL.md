@@ -1,10 +1,10 @@
 ---
 name: hundred-million-offers
-description: 'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", "offer naming", "grand slam offer", "guarantee strategy", or "premium pricing justification". Also trigger when packaging products for higher perceived value, designing money-back guarantees, or structuring pricing tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'
+description: 'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "grand slam offer", "make my offer more compelling", "what bonuses should I add", "guarantee strategy", "offer naming", or "people say its too expensive". Also trigger when packaging a product for higher perceived value, justifying premium pricing instead of discounting, designing a money-back guarantee, or structuring tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Grand Slam Offer Creation Framework
@@ -17,7 +17,7 @@ Framework for creating offers so good people feel stupid saying no. What you sel
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating offers, rate them 0-10 against the principles below. A 10/10 is genuinely irresistible — high perceived value, reversed risk, ethical scarcity, compelling bonuses, and a name that demands attention. Always provide the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score any offer by the 7-row Quick Diagnostic at the end of this file — award ~1.4 points per row answered "yes," rounding to a 0-10 scale. Bands: **9-10** = all/nearly all rows pass (irresistible: 10x perceived value, reversed risk, ethical scarcity, named dollar-valued bonuses, a category-of-one bundle, a MAGIC name); **5-6** = value and market are right but risk, bonuses, or scarcity are missing; **<=3** = a commodity priced on cost with no guarantee or reason to act now. Always report the current score and the specific diagnostic rows that must flip to "yes" to reach 10/10.
 
 ## The Grand Slam Offer Framework
 
@@ -47,9 +47,9 @@ Framework for creating offers so good people feel stupid saying no. What you sel
 - "Guaranteed [result] or [risk reversal]"
 - "We do [hard part] so you don't have to"
 
-**Ethical boundary:** Never promise outcomes you cannot reasonably deliver — substantiate every speed, effort, and results claim with real data or state it as aspirational.
+**Ethical boundary:** Back every speed, effort, and results claim with data, or label it aspirational rather than asserting it.
 
-See: [references/value-equation.md](references/value-equation.md) for the four levers, optimization tactics, and scoring rubric.
+See [references/value-equation.md](references/value-equation.md) when scoring an offer's value: per-lever 1-10 rubric, a composite-score calculator, and lever-interaction effects.
 
 ### 2. The Grand Slam Offer
 
@@ -76,9 +76,9 @@ See: [references/value-equation.md](references/value-equation.md) for the four l
 - "Total value: $[sum of components]. Your investment: $[price]."
 - "Everything you need to [Dream Outcome] in one package"
 
-**Ethical boundary:** Assign honest, defensible dollar values to each component — never inflate values to fake a value-price gap.
+**Ethical boundary:** Price each component at what someone would actually pay for it standalone — never inflate values to fake the value-price gap.
 
-See: [references/grand-slam-offers.md](references/grand-slam-offers.md) for the full offer assembly process and problem-solution mapping.
+See [references/grand-slam-offers.md](references/grand-slam-offers.md) when assembling the full package: problem-solution mapping and the Trim & Stack method worked end to end.
 
 ### 3. Finding Your Starving Crowd
 
@@ -107,7 +107,7 @@ See: [references/grand-slam-offers.md](references/grand-slam-offers.md) for the 
 
 **Ethical boundary:** Target genuine need and fit, never vulnerability — avoid people in crisis who cannot make rational decisions.
 
-See: [references/starving-crowd.md](references/starving-crowd.md) for market selection criteria and the niche scorecard.
+See [references/starving-crowd.md](references/starving-crowd.md) when choosing or validating a market: the four-criteria niche scorecard and demand-validation checks.
 
 ### 4. Value-Based Pricing
 
@@ -135,15 +135,13 @@ See: [references/starving-crowd.md](references/starving-crowd.md) for market sel
 - "The cost of doing nothing is $[opportunity cost] per [time period]"
 - "An investment of $[price] for $[10x value] in [outcome]"
 
-**Ethical boundary:** Substantiate value claims — if you claim 10x ROI, have data, case studies, or a clear logical basis.
-
-See: [references/pricing-strategy.md](references/pricing-strategy.md) for value-based pricing frameworks and anchoring techniques.
+See [references/pricing-strategy.md](references/pricing-strategy.md) when setting a price: value-based pricing frameworks, cost-of-inaction anchoring, and payment-plan structures.
 
 ### 5. Bonuses: Value Stacking
 
 **Core concept:** Bonuses are added components that address remaining objections and make the offer feel like an overwhelming deal — each solving a specific problem with an independently justifiable dollar value.
 
-**Why it works:** When total bonus value exceeds the price, the core product feels "free," and each bonus preemptively removes a reason not to buy.
+**Why it works:** Each bonus is attached to a specific unspoken objection, so the prospect's reasons not to buy are answered before they surface — and once stacked value exceeds the price, the core product reads as "free."
 
 **Key insights:**
 - Each bonus should kill a specific objection or obstacle to success
@@ -164,9 +162,7 @@ See: [references/pricing-strategy.md](references/pricing-strategy.md) for value-
 - "We added this because we noticed [objection] was holding people back"
 - "Total bonus value: $[sum]. Yours free when you join today."
 
-**Ethical boundary:** Every bonus dollar value must be defensible — price it at what someone would actually pay for it on its own.
-
-See: [references/bonuses-stacking.md](references/bonuses-stacking.md) for bonus design frameworks and stacking strategies.
+See [references/bonuses-stacking.md](references/bonuses-stacking.md) when designing bonuses: objection-to-bonus mapping, dollar-value assignment, and stack-order strategy.
 
 ### 6. Guarantees: Reversing Risk
 
@@ -194,15 +190,15 @@ See: [references/bonuses-stacking.md](references/bonuses-stacking.md) for bonus 
 - "Try it for [time period]. If you're not [specific outcome], we'll [reversal]."
 - "You literally cannot lose."
 
-**Ethical boundary:** Honor every guarantee without friction or fine-print traps — a guarantee that's hard to claim destroys trust permanently.
+**Ethical boundary:** Make the guarantee frictionless to claim — no fine-print traps or hoops; a guarantee that's hard to invoke destroys trust permanently.
 
-See: [references/guarantees.md](references/guarantees.md) for the five guarantee types, naming strategies, and stacking approaches.
+See [references/guarantees.md](references/guarantees.md) when choosing or wording a guarantee: the five types compared, naming strategies, and how to stack them.
 
 ### 7. Scarcity and Urgency
 
 **Core concept:** Scarcity limits quantity (how many); urgency limits time (how long). Both give people who already want the offer a reason to act now.
 
-**Why it works:** Without a reason to act now, prospects default to "I'll think about it" — which functionally means no. Loss aversion makes the fear of missing out outweigh the inertia of inaction.
+**Why it works:** Loss aversion makes a looming "you'll miss out" outweigh the inertia of "I'll think about it" — and "I'll think about it" functionally means no.
 
 **Key insights:**
 - Scarcity of supply: limited seats, enrollment caps, production runs; urgency of time: enrollment windows, deadline-driven bonuses
@@ -223,9 +219,9 @@ See: [references/guarantees.md](references/guarantees.md) for the five guarantee
 - "Enrollment closes [specific date] at midnight"
 - "First [X] people to join also receive [bonus]"
 
-**Ethical boundary:** Every scarcity and urgency claim must be 100% true — if you say 20 spots, there are 20 spots; fake scarcity (e.g., resetting countdown timers) is the fastest way to destroy a brand.
+**Ethical boundary:** Every scarcity and urgency claim must be 100% true — if you say 20 spots, there are 20 spots. Never reset a countdown timer or fake a sold-out; it is the fastest way to destroy a brand.
 
-See: [references/scarcity-urgency.md](references/scarcity-urgency.md) for ethical scarcity patterns and evergreen urgency techniques.
+See [references/scarcity-urgency.md](references/scarcity-urgency.md) when adding a reason to act now: ethical scarcity patterns, cohort models, and evergreen urgency tied to real events.
 
 ### 8. Naming the Offer
 
@@ -254,24 +250,26 @@ See: [references/scarcity-urgency.md](references/scarcity-urgency.md) for ethica
 - "[Goal] [Container] for [Avatar]"
 - "[Number]-Day [Goal] [Container] for [Avatar]"
 
-**Ethical boundary:** The name must accurately represent the offer — aspirational is fine, deceptive is not (no "6-Figure Blueprint" if customers don't reach six figures).
+**Ethical boundary:** The name may be aspirational but never deceptive — don't promise an outcome in the name (e.g. "6-Figure Blueprint") that customers don't actually reach.
 
-See: [references/naming-offers.md](references/naming-offers.md) for the MAGIC formula breakdown, 20+ examples, and naming dos and don'ts.
+See [references/naming-offers.md](references/naming-offers.md) when naming or A/B-testing a name: the MAGIC breakdown, container-word tables, 20+ worked examples, and test methods.
 
 ## Offer Creation Process
 
-Follow these 10 steps in order to build a Grand Slam Offer from scratch:
+To build a Grand Slam Offer from scratch, run the eight sections above in this order:
 
-1. **Identify your starving crowd** — score markets on pain, purchasing power, targetability, growth.
-2. **Define the Dream Outcome** — the single most desirable result, in the customer's words.
+1. **Identify your starving crowd** (§3) — score markets on pain, purchasing power, targetability, growth.
+2. **Define the Dream Outcome** (§1) — the single most desirable result, in the customer's words.
 3. **List every obstacle** — every problem, fear, objection, and friction point on the way.
 4. **Create solutions for each obstacle** — with a delivery vehicle (1-on-1, group, DIY, done-for-you, software, physical).
-5. **Apply Trim & Stack** — cut low-value/high-cost solutions; keep high-value/low-cost ones.
-6. **Set value-based pricing** — price at 10-20% of the Dream Outcome's value (10:1 to 5:1).
-7. **Design your bonuses** — one per remaining objection, each named with a defensible dollar value.
-8. **Choose your guarantee** — pick the type that fits your model and risk tolerance; name it; make it bold.
-9. **Add ethical scarcity and urgency** — real limits (seats, cohorts) and real deadlines.
-10. **Name the offer using MAGIC** — combine avatar, goal, timeframe, container; test 3-5 variations.
+5. **Apply Trim & Stack** (§2) — cut low-value/high-cost solutions; keep high-value/low-cost ones.
+6. **Set value-based pricing** (§4) — price at 10-20% of the Dream Outcome's value (10:1 to 5:1).
+7. **Design your bonuses** (§5) — one per remaining objection, each named with a defensible dollar value.
+8. **Choose your guarantee** (§6) — pick the type that fits your model and risk tolerance; name it; make it bold.
+9. **Add ethical scarcity and urgency** (§7) — real limits (seats, cohorts) and real deadlines.
+10. **Name the offer using MAGIC** (§8) — combine avatar, goal, timeframe, container; test 3-5 variations.
+
+See [references/offer-creation-checklist.md](references/offer-creation-checklist.md) to run this process as a fill-in worksheet (per-step prompts, scoring rubric, assembly template), and [references/case-studies.md](references/case-studies.md) for six full before/after offer redesigns (SaaS, coaching, e-commerce, agency, local, info product).
 
 ## Common Mistakes
 
@@ -298,19 +296,6 @@ Use this table to audit any existing offer:
 | Is there a real reason to act now? | "I'll think about it" | Add ethical scarcity/urgency with a real deadline |
 | Could a competitor offer the exact same thing? | Commodity; price war | Bundle elements that defy comparison |
 | Does the name say who it's for and what they get? | No self-selection | Rename using MAGIC |
-
-## Reference Files
-
-- [value-equation.md](references/value-equation.md): The four levers of the Value Equation, optimization tactics for each, and scoring rubric
-- [grand-slam-offers.md](references/grand-slam-offers.md): Full offer assembly process, problem-solution mapping, and the Trim & Stack method
-- [starving-crowd.md](references/starving-crowd.md): Market selection criteria, demand validation, and niche scorecard template
-- [pricing-strategy.md](references/pricing-strategy.md): Value-based pricing, anchoring techniques, payment plans, and the premium pricing cycle
-- [bonuses-stacking.md](references/bonuses-stacking.md): Bonus design framework, dollar value assignment, stacking order, and naming strategies
-- [guarantees.md](references/guarantees.md): Five guarantee types, naming guarantees, stacking guarantees, and legal considerations
-- [scarcity-urgency.md](references/scarcity-urgency.md): Ethical scarcity patterns, cohort models, evergreen urgency, and what not to do
-- [naming-offers.md](references/naming-offers.md): MAGIC formula breakdown, 20+ name examples, and A/B testing offer names
-- [case-studies.md](references/case-studies.md): Detailed offer breakdowns across SaaS, coaching, e-commerce, agency, local business, and info products
-- [offer-creation-checklist.md](references/offer-creation-checklist.md): Step-by-step worksheet, scoring rubric, and fill-in templates
 
 ## Further Reading
 
