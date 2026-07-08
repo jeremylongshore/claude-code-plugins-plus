@@ -1,10 +1,10 @@
 ---
 name: lean-startup
-description: 'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated learning", "pivot or persevere", "vanity metrics", "test assumptions", "innovation accounting", "build-measure-learn", or "minimum viable experiment". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'
+description: 'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated learning", "pivot or persevere", "vanity metrics", "test assumptions", "innovation accounting", "build-measure-learn", "minimum viable experiment", "should we pivot", "test a business idea cheaply", or "build the smallest version first". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Lean Startup Methodology
@@ -13,13 +13,17 @@ A systematic approach to building startups and launching new products that short
 
 ## Core Principle
 
-**Entrepreneurship is a form of management.** Success doesn't require a perfect plan or brilliant insight—it requires a systematic process for testing assumptions, learning from customers, and iterating rapidly.
-
-**The foundation:** Most startups fail not because they couldn't build what they planned, but because they built the wrong thing. Lean Startup applies scientific experimentation to eliminate waste and accelerate validated learning.
+**Entrepreneurship is a form of management.** Success doesn't require a perfect plan or brilliant insight—it requires a systematic process for testing assumptions, learning from customers, and iterating rapidly. Most startups fail not because they couldn't build what they planned, but because they built the wrong thing: treat every plan as a set of hypotheses to falsify, and spend effort to eliminate waste and accelerate **validated learning**, not to execute a fixed roadmap.
 
 ## Scoring
 
-**Goal: 10/10.** Rate product development plans, experiments, or metrics 0-10 against Lean Startup principles: full Build-Measure-Learn application and evidence-based decisions score 10; waterfall thinking or waste lowers the score. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score a plan, experiment, or metric set by the five Quick Diagnostic rows—**1 point each** when the answer is yes, **2 points** when it is also backed by evidence on the Validation Ladder (Level 3+):
+
+- **9-10:** every leap-of-faith assumption named and ranked by risk, the riskiest tested by a real MVP, actionable metrics defined, and explicit pivot criteria set before building.
+- **5-6:** a hypothesis and some MVP exist, but metrics are vanity or pivot criteria are undefined—decisions can't be made from the data.
+- **≤3:** waterfall thinking—building the full product first, asking customers what they want, or scaling before product/market fit.
+
+State the current score and the lowest-scoring diagnostic row to fix next.
 
 ## The Build-Measure-Learn Loop
 
@@ -32,7 +36,7 @@ The fundamental cycle: **IDEAS → BUILD (product) → MEASURE (data) → LEARN 
 
 **Goal:** Minimize total time through the loop.
 
-See: [references/build-measure-learn.md](references/build-measure-learn.md) for detailed loop execution and reverse planning.
+See [references/build-measure-learn.md](references/build-measure-learn.md) when planning an experiment—reverse-planning sequence, an experiment-design template, per-product-type loop examples, and the build/vanity-metric loop traps.
 
 ## Validated Learning
 
@@ -66,7 +70,7 @@ The version of a new product that allows maximum validated learning with the lea
 
 **Design questions:** What's the riskiest assumption? What's the minimum that tests it? How do we measure whether it was validated?
 
-See: [references/mvp-design.md](references/mvp-design.md) for MVP types, design patterns, and sizing.
+See [references/mvp-design.md](references/mvp-design.md) when choosing and sizing an MVP—seven types in depth, a type-selection decision matrix, lower/upper sizing bounds, and the MVP Design Canvas.
 
 ## Leap-of-Faith Assumptions
 
@@ -81,7 +85,7 @@ The assumptions that, if wrong, will cause your business to fail. Identify them,
 
 **Example—Dropbox:** Leap of faith: "people will download and use a file sync tool." Test: explainer video before building scale infrastructure. Result: beta list grew from 5,000 to 75,000 overnight—demand validated.
 
-See: [references/assumptions.md](references/assumptions.md) for assumption mapping frameworks.
+See [references/assumptions.md](references/assumptions.md) when mapping and ranking assumptions—the Impact-Uncertainty matrix, a prioritization scoring template, test methods per assumption type, and industry-specific assumption lists.
 
 ## Innovation Accounting
 
@@ -97,9 +101,9 @@ Run experiments to improve baseline metrics: A/B test pricing ($9 vs. $19/mo), o
 
 ### 3. Pivot or Persevere
 
-Decide from evidence: Are metrics moving the right way? Is the rate of improvement acceptable given the runway? Are we learning what we expected?
+When tuning stalls, make the evidence-based call (criteria and pivot types below in **Pivot or Persevere**).
 
-See: [references/innovation-accounting.md](references/innovation-accounting.md) for metric frameworks and dashboards.
+See [references/innovation-accounting.md](references/innovation-accounting.md) when building the baseline dashboard—funnel, cohort, and economics metric frameworks.
 
 ## Actionable vs. Vanity Metrics
 
@@ -119,7 +123,7 @@ Vanity metrics make you feel good but don't change behavior; actionable metrics 
 
 **Cohort analysis:** Group users by signup date and track behavior over time—the only way to see whether the product is actually improving.
 
-See: [references/metrics.md](references/metrics.md) for metric selection and tracking.
+See [references/metrics.md](references/metrics.md) when building a cohort table or choosing what to track—a five-step cohort walkthrough and AARRR (Pirate Metrics) aligned with Lean Startup stages.
 
 ## Pivot or Persevere
 
@@ -144,7 +148,7 @@ A pivot is a structured course correction designed to test a new hypothesis abou
 
 **Cadence:** Successful startups commonly pivot 1-5 times before product-market fit. **Anti-pattern:** "pivoting" without validating that the new direction solves the core problem.
 
-See: [references/pivots.md](references/pivots.md) for pivot decision frameworks and case studies.
+See [references/pivots.md](references/pivots.md) when the data suggests a pivot—the data-driven pivot signals, a structured pivot-meeting agenda, leading indicators, and the Instagram/Slack/YouTube pivot stories.
 
 ## The Three Engines of Growth
 
@@ -162,7 +166,7 @@ Customers bring customers: `viral coefficient = (% who invite) × (invites sent)
 
 Spend to acquire: requires `LTV > CAC` (target LTV/CAC > 3x). Track CAC, LTV, and payback period. Fits e-commerce and traditional businesses. Strategy: optimize until each customer's profit funds acquiring more.
 
-See: [references/growth-engines.md](references/growth-engines.md) for engine selection and optimization.
+See [references/growth-engines.md](references/growth-engines.md) when picking or tuning an engine—churn-reduction tactics, the K-factor and viral-loop design, LTV/CAC optimization, a channel-economics table, and the product-to-engine matching framework.
 
 ## The Five Whys
 
@@ -177,7 +181,7 @@ Root cause analysis: when a problem occurs, ask "why?" five times, then invest p
 
 **Proportional investments:** fix the bug (1), add memory monitoring (2), implement code review (3-4), slow down to build quality processes (5). **Anti-pattern:** stopping at level 1.
 
-See: [references/five-whys.md](references/five-whys.md) for facilitation guides.
+See [references/five-whys.md](references/five-whys.md) when facilitating a session—three worked examples (outage, churn spike, launch failure) and how to handle diverging chains, blame creep, and root causes outside your control.
 
 ## Small Batches
 
@@ -192,7 +196,7 @@ Work in small batches for faster feedback loops, easier pivots, less waste when 
 
 **Continuous deployment** is the ultimate small batch: deploy every commit, catch bugs immediately, learn continuously, reduce risk per release.
 
-See: [references/small-batches.md](references/small-batches.md) for implementation patterns.
+See [references/small-batches.md](references/small-batches.md) when setting up faster release cadence—the continuous-deployment pipeline and prerequisites, feature-flag types, a progressive-rollout checklist, and work-decomposition techniques.
 
 ## Lean Startup Applied: From Idea to Scale
 
@@ -207,7 +211,7 @@ See: [references/small-batches.md](references/small-batches.md) for implementati
 - **Corporate innovation:** separate innovation accounting from core-business metrics, shield teams from quarterly revenue pressure, unlock metered funding on validated-learning milestones
 - **Product features:** deploy behind a feature flag → A/B test against core metrics → kill, iterate, or scale based on data
 
-See: [references/applications.md](references/applications.md) for context-specific guides.
+See [references/applications.md](references/applications.md) for context-specific playbooks (SaaS, corporate innovation, features), and [references/case-studies.md](references/case-studies.md) for the full Dropbox, IMVU, Zappos, and Groupon stories—including failures—when you want a worked precedent for the bet in front of you.
 
 ## Common Mistakes
 
@@ -232,20 +236,6 @@ Audit any product development plan:
 | What metric will validate/invalidate? | You won't learn | Define actionable metrics |
 | Can you test with less than this? | Over-building | Shrink the MVP further |
 | What will you do if the experiment fails? | No pivot criteria | Define pivot triggers upfront |
-
-## Reference Files
-
-- [build-measure-learn.md](references/build-measure-learn.md): Detailed loop execution, reverse planning
-- [mvp-design.md](references/mvp-design.md): MVP types, design patterns, sizing
-- [assumptions.md](references/assumptions.md): Leap-of-faith assumption mapping
-- [innovation-accounting.md](references/innovation-accounting.md): Metric frameworks, dashboards
-- [metrics.md](references/metrics.md): Actionable vs. vanity, cohort analysis, metric selection
-- [pivots.md](references/pivots.md): Pivot types, decision frameworks, case studies
-- [growth-engines.md](references/growth-engines.md): Sticky, viral, paid engines in depth
-- [five-whys.md](references/five-whys.md): Root cause analysis, facilitation guides
-- [small-batches.md](references/small-batches.md): Batch size reduction, continuous deployment
-- [applications.md](references/applications.md): SaaS, corporate innovation, features
-- [case-studies.md](references/case-studies.md): Dropbox, IMVU, Zappos, Groupon, and failures
 
 ## Further Reading
 

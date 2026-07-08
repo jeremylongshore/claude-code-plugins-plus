@@ -1,15 +1,15 @@
 ---
 name: influence-psychology
-description: 'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions "social proof", "persuasive copy", "why users dont convert", "ethical persuasion", "reciprocity", "scarcity tactics", or "commitment and consistency". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'
+description: 'Apply the seven principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity, unity) to product design, copy, and sales. Use when the user mentions "social proof", "persuasive copy", "why users dont convert", "ethical persuasion", "reciprocity", "scarcity tactics", "commitment and consistency", "shared identity", "in-group", "make my copy more persuasive", "increase trust", or "get more people to say yes". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. Covers the principles, when each applies, and ethical limits. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.1"
 ---
 
 # Influence Psychology Framework
 
-Framework for applying the science of persuasion ethically and effectively — six decades of research into why people say "yes."
+Apply six decades of persuasion science — Cialdini's research into why people say "yes" — to product, copy, and sales, ethically.
 
 ## Core Principle
 
@@ -17,7 +17,12 @@ Framework for applying the science of persuasion ethically and effectively — s
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating persuasive elements (features, copy, flows, campaigns), rate them 0-10 based on adherence to the principles below. A 10/10 means ethical, effective application of influence psychology; lower scores indicate missed opportunities or ethical concerns. Always provide the current score and specific improvements needed to reach 10/10.
+**Goal: 10/10.** When reviewing or creating persuasive elements (features, copy, flows, campaigns), run the Quick Diagnostic, then score against the bands below and apply the ethics gate. Always report the current score and the specific change needed to reach 10/10.
+
+- **9-10** — Multiple principles deliberately layered; every claim truthful; users can reverse the decision; passes the transparency test (still works if the user knows the strategy); safe for vulnerable users.
+- **7-8** — Principles deliberately layered and honest, but one gap (e.g. weak reversibility, or a single principle where layering was possible).
+- **5-6** — One principle present but generic, or leverage left on the table.
+- **<=3** — No principle deliberately designed (relying on luck), OR any tactic is deceptive/coercive. Any fabricated proof, fake scarcity, or hidden-cost dark pattern caps the score at 3 regardless of other strengths.
 
 ## The Seven Principles of Influence
 
@@ -45,9 +50,7 @@ Framework for applying the science of persuasion ethically and effectively — s
 - "As a thank you for signing up..."
 - "We noticed you needed help with X, so we..."
 
-**Ethical boundary:** Give genuine value — don't create artificial debts or exploit obligation.
-
-See: [references/reciprocity.md](references/reciprocity.md) for reciprocity techniques and case studies.
+See [references/reciprocity.md](references/reciprocity.md) when building free trials, lead magnets, or referral rewards — gift tiers, email templates, day-by-day reciprocity-stacking, and A/B variables.
 
 ### 2. Commitment & Consistency
 
@@ -75,9 +78,9 @@ See: [references/reciprocity.md](references/reciprocity.md) for reciprocity tech
 
 **Onboarding sequence:** micro-commitment ("What brings you here?") → small action (click, choice) → public/written commitment (goal) → reinforce ("Based on what you told us...").
 
-**Ethical boundary:** Don't lock users into commitments they didn't freely make — allow easy reversibility.
+**Ethical boundary:** Make every commitment freely chosen and easily reversible — no trick opt-ins or locked-in defaults the user can't undo.
 
-See: [references/commitment-consistency.md](references/commitment-consistency.md) for commitment tactics and flows.
+See [references/commitment-consistency.md](references/commitment-consistency.md) when designing onboarding or goal-setting flows — foot-in-the-door sequences and public-commitment tactics.
 
 ### 3. Social Proof
 
@@ -114,9 +117,9 @@ See: [references/commitment-consistency.md](references/commitment-consistency.md
 - "[Name/Company] increased [metric] by [%]"
 - "Don't take our word for it. Here's what [users] say..."
 
-**Ethical boundary:** Never fabricate social proof — real numbers, real testimonials, and disclose when proof is curated.
+**Ethical boundary:** Disclose when proof is curated or cherry-picked (e.g. "selected reviews") rather than presenting it as representative.
 
-See: [references/social-proof.md](references/social-proof.md) for social proof types and implementation patterns.
+See [references/social-proof.md](references/social-proof.md) when building testimonial sections or trust bars — proof types and implementation patterns.
 
 ### 4. Authority
 
@@ -152,15 +155,13 @@ See: [references/social-proof.md](references/social-proof.md) for social proof t
 - "Research shows that [cite source]..."
 - "Our team includes [credentials]"
 
-**Ethical boundary:** Never fake credentials or fabricate expertise — cite real sources, and be transparent about what you're not good at.
-
-See: [references/authority.md](references/authority.md) for authority-building strategies.
+See [references/authority.md](references/authority.md) when writing About pages, bylines, or trust badges — credential framing and thought-leadership strategies.
 
 ### 5. Liking
 
 **Core concept:** People prefer to say yes to those they like.
 
-**Why it works:** Liking creates psychological safety and reduces resistance — we're more persuaded by people we trust and feel connected to.
+**Why it works:** Each liking factor (similarity, compliments, cooperation) is a separate lever that independently lowers a person's resistance to a request — they stack.
 
 **Factors that increase liking:**
 
@@ -186,9 +187,7 @@ See: [references/authority.md](references/authority.md) for authority-building s
 - "We built this because we were frustrated with..."
 - Casual, warm language ("Hey", "Awesome!", "We got you")
 
-**Ethical boundary:** Be genuinely helpful and authentic — don't manufacture false rapport or manipulate emotions.
-
-See: [references/liking.md](references/liking.md) for liking techniques and tone guidelines.
+See [references/liking.md](references/liking.md) when setting brand voice or writing support replies — liking factors and tone guidelines. For ready-to-adapt persuasive copy across all seven principles, see [references/copywriting.md](references/copywriting.md).
 
 ### 6. Scarcity
 
@@ -223,9 +222,9 @@ See: [references/liking.md](references/liking.md) for liking techniques and tone
 - "Offer expires [specific date]"
 - "[X] people are viewing this right now"
 
-**Ethical boundaries:** Never fake scarcity, and let users decide rationally. Ethical: real inventory counts, genuine deadlines, legitimate capacity limits. Unethical: artificial limits, resetting countdown timers, "Only 2 left!" repeated daily, pressuring vulnerable users.
+**Ethical boundary:** Ethical scarcity reflects real constraints (true inventory counts, genuine deadlines, legitimate capacity limits). Unethical: invented limits, countdown timers that reset, "Only 2 left!" shown daily, pressuring vulnerable users.
 
-See: [references/scarcity.md](references/scarcity.md) for scarcity tactics and ethical implementation.
+See [references/scarcity.md](references/scarcity.md) when adding urgency or waitlists — five scarcity types, each with an "ethical when" line and the dark patterns to avoid.
 
 ### 7. Unity
 
@@ -257,9 +256,9 @@ See: [references/scarcity.md](references/scarcity.md) for scarcity tactics and e
 - "Join [X] others who believe..."
 - "We're building this together"
 
-**Ethical boundary:** Don't create toxic in-groups or vilify out-groups — unity should unite, not divide maliciously.
+**Ethical boundary:** Build the in-group by what it stands for, not by vilifying an out-group — define "us" without manufacturing a "them" to resent.
 
-See: [references/unity.md](references/unity.md) for unity-building strategies.
+See [references/unity.md](references/unity.md) when defining a brand tribe or community — identity-marketing and co-creation strategies.
 
 ## Combining Principles
 
@@ -269,21 +268,13 @@ The most powerful persuasion layers multiple principles:
 
 **Referral program:** reciprocity (reward both parties) + social proof ("X friends already joined") + unity ("Invite your team") + commitment (ask after a good experience).
 
-## Ethical Application Checklist
+See [references/case-studies.md](references/case-studies.md) for full worked teardowns of multi-principle stacks across industries.
 
-Before deploying influence tactics:
+## The Ethical Line
 
-- [ ] **Is it truthful?** No fake scarcity, fabricated proof, or false credentials
-- [ ] **Does it help the user?** Persuasion should align with user goals, not exploit them
-- [ ] **Is it transparent?** You're not hiding how you're influencing
-- [ ] **Is it reversible?** Users can easily undo commitments
-- [ ] **Would you use it on yourself/family?** The golden rule of persuasion
-- [ ] **Does it respect autonomy?** Users feel in control, not manipulated
-- [ ] **Are you targeting vulnerable groups?** Extra caution with children, elderly, desperate
+**Persuasion helps people see value they'd appreciate anyway; manipulation tricks people into choices against their interests.** The deciding tests are in the Quick Diagnostic below — run every persuasive element through them before shipping.
 
-**The line:** persuasion helps people see value they'd appreciate anyway; manipulation tricks people into choices against their interests.
-
-See: [references/ethics.md](references/ethics.md) for comprehensive ethical boundaries.
+See [references/ethics.md](references/ethics.md) when a tactic feels borderline or you ship to vulnerable users — the persuasion-vs-manipulation decision tree, the regulatory landscape (FTC, GDPR, DSA, dark-patterns law), vulnerable-population safeguards, and audit templates.
 
 ## Common Mistakes
 
@@ -302,23 +293,12 @@ Audit any persuasive element:
 | Question | If No | Action |
 |----------|-------|--------|
 | Which principle(s) am I using? | You're relying on luck | Explicitly design for influence |
-| Is this claim/tactic truthful? | You're manipulating | Remove or replace with truth |
-| Would this work on me? | It probably won't work on others | Redesign with genuine value |
 | Am I combining principles? | Missing leverage | Layer multiple principles |
-| Can users easily reverse? | Ethical concern | Add clear opt-outs |
-
-## Reference Files
-
-- [reciprocity.md](references/reciprocity.md): Reciprocity techniques, gift strategies, examples
-- [commitment-consistency.md](references/commitment-consistency.md): Commitment flows, foot-in-the-door, public commitment tactics
-- [social-proof.md](references/social-proof.md): Social proof types, implementation patterns, case studies
-- [authority.md](references/authority.md): Building authority, credentials, thought leadership
-- [liking.md](references/liking.md): Liking factors, brand voice, rapport-building
-- [scarcity.md](references/scarcity.md): Scarcity tactics, ethical vs. manipulative scarcity
-- [unity.md](references/unity.md): Tribe-building, identity marketing, community
-- [ethics.md](references/ethics.md): Ethical boundaries, manipulation vs. persuasion
-- [case-studies.md](references/case-studies.md): Real-world applications across industries
-- [copywriting.md](references/copywriting.md): Influence-based copy frameworks
+| Is this claim/tactic truthful? | You're manipulating | Remove or replace with truth |
+| Does it help the user (not just convert)? | You're exploiting, not persuading | Realign the tactic with the user's goal |
+| Would it still work if the user knew the strategy? | The tactic relies on deception | Replace with a transparent version |
+| Can users easily reverse the decision? | Ethical concern | Add clear opt-outs |
+| Safe for vulnerable users (children, elderly, distressed)? | Heightened-harm risk | Apply ethics.md safeguards or exclude them |
 
 ## Further Reading
 

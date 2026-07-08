@@ -59,6 +59,10 @@ Configure the Slack channel with your bot token and app-level token.
 
    Or for development:
      claude --dangerously-load-development-channels server:slack
+
+   Next: opt in a channel and pick its interaction mode with
+   /slack-channel:access channel <id>  (defaults to mention-to-engage;
+   pass --ambient for a dedicated bot channel). See ACCESS.md "Interaction modes".
    ```
 
 ## Security

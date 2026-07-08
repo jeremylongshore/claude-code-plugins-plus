@@ -1,0 +1,44 @@
+{
+  "name": "@intentsolutionsio/mnemos",
+  "version": "0.9.0",
+  "description": "Persistent memory and learning-loop skills for AI coding agents. MCP-native with 20 tools, single Go binary, ships with measured efficacy harness.",
+  "keywords": [
+    "memory",
+    "mcp",
+    "claude-code",
+    "persistent-memory",
+    "agent-memory",
+    "knowledge-graph",
+    "context",
+    "skill",
+    "observations",
+    "provenance",
+    "learning-loop",
+    "golang",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/mnemos"
+  },
+  "homepage": "https://tonsofskills.com/plugins/mnemos",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "André Figueira",
+    "email": "andre@polyxmedia.com",
+    "url": "https://polyxmedia.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install mnemos\\\\n  or /plugin install mnemos@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

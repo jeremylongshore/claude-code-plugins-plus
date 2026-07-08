@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/portaljs",
+  "version": "0.1.0",
+  "description": "Agentic skills for building PortalJS data portals — recommend an architecture, scaffold a portal, add datasets, charts, and maps, connect a CKAN backend, deploy, and audit data quality.",
+  "keywords": [
+    "portaljs",
+    "data-portal",
+    "ckan",
+    "nextjs",
+    "data-catalog",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/portaljs"
+  },
+  "homepage": "https://tonsofskills.com/plugins/portaljs",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Datopian",
+    "url": "https://www.datopian.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install portaljs\\\\n  or /plugin install portaljs@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

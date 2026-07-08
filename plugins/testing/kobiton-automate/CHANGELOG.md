@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.7.1 - 2026-07-03
+
+### Fix: `run-automation-suite` launches the chromeless launcher in the background
+
+Step 5 now instructs the host to invoke the chromeless launcher in the background (Claude Code: `Bash` with `run_in_background: true`; other hosts: `&` + `disown`), matching `drive-automation-session`. Previously the synchronous invocation let the launcher's resize-polling loop block the skill from reaching Step 6 (session/result collection). Launcher exit codes now arrive in the background-task completion event rather than synchronously.
+
+### `run-automation-suite` asks how to observe the run up front
+
+The "open the live view or run in the background?" question now happens in Step 2 alongside device selection (mirroring `drive-automation-session`'s Step 0), instead of after the script has already launched in the old Step 5. Step 5 acts on the remembered choice without re-asking. `AGENTS.md` mirrors the reordering for non-Claude hosts.
+
+## 1.7.0 - 2026-06-24
+
+KOB-53297 (Epic): the `getOrgSettings` tool plus the `create-test-run` and `monitor-test-run` skills for creating and watching test runs with live remediation.
+
+### New `getOrgSettings` tool (`tools/user.yaml`)
+
+Read-only MCP tool that returns the calling user's organization settings block — org-level feature flags and preferences, including `live_remediation_enabled` (governs whether a blocked test-run execution pauses for interactive live remediation or auto-fails with `BLOCKER_ENCOUNTERED`). Resolves the org from the OAuth context; `userIntent`-only input. Full 4-hint annotation block (`readOnlyHint: true`, `destructiveHint: false`, `openWorldHint: false`); `getCredential` upgraded to the same 4-hint shape in passing. Server handler ships in `kobiton/api` (the MCP server) — see KOB-53298.
+
+### New `create-test-run` skill (`skills/create-test-run/`)
+
+`automate:create-test-run` turns a "run this" request into a created test run with minimal friction, then offers to watch it. When details are omitted it fills defaults from the `createTestRun` schema (1 device matching the target platform via `INDIVIDUAL_DEVICES`, latest test-case version, the case's app, `CROSS_DEVICE`), shows a one-screen summary, and asks to proceed or customize before creating. After creation it offers monitoring in a **single** prompt — monitor + auto-open live remediation (only when the org flag is ON), monitor only, or don't monitor — and delegates the watch to `monitor-test-run` (passing the auto-open choice so that skill doesn't re-ask). The summary shows human-readable allocation labels matching the Portal dropdown (`CROSS_DEVICE` → "All Permutations — run each test case on each device"; `SINGLE_DEVICE` → "Random Allocation — run each test case once, randomly chosen from the selected devices"), never the bare enum. Conversational glue over `createTestRun` / `getOrgSettings` / `listDevices`; no local runtime.
+
+### `createTestRun` tool schema — exact enum values
+
+`tools/test-management.yaml` now declares the real `enum`s for `createTestRun`, fixing a recurring first-call rejection where the model used the documented lower-case examples (`test_case`, `specific_devices`). Authoritative values: `testSelection.type` ∈ `TEST_CASE`/`TEST_SUITE`, `deviceSelection.type` ∈ `INDIVIDUAL_DEVICES`/`DEVICE_BUNDLE`, `deviceAllocationStrategy` ∈ `CROSS_DEVICE`/`SINGLE_DEVICE`.
+
+### New `monitor-test-run` skill (`skills/monitor-test-run/`)
+
+`automate:monitor-test-run` watches a running Kobiton test run and narrates it: reads the live-remediation flag once via `getOrgSettings`, watches the run via a bundled poller until every execution is terminal, surfaces the live-remediation URL the moment an execution is blocked, and post-mortems so a `COMPLETED` execution with `failure_type = BLOCKER_ENCOUNTERED` is never reported as passed. Quiet on passes, loud on blockers and the final summary; suite runs grouped by test case. Uses `getOrgSettings` (up front) and `terminateTestRun` (on request); the watch is the bundled script. See KOB-53299.
+
+- **Execution-status model** follows the revisit-execution contract: terminal status is `COMPLETED`, with the outcome carried by `failure_type` (`NONE` = passed, `BLOCKER_ENCOUNTERED`, `TERMINATED_BY_USER`/`TERMINATED_BY_SYSTEM` = terminated, others = failed). The blocked moment is flag-dependent — with live remediation **on** the execution pauses in a blocked-waiting state and waits; with it **off** it ends immediately as `COMPLETED + BLOCKER_ENCOUNTERED`.
+- **Device id + live-remediation window.** Reads `assigned_device_id` straight off each execution to build the live-remediation URL (paired with an `api` change that passes `assigned_device_id` through the `getTestRun` MCP response). The portal base is derived from the MCP server's env (`api-{env}` → `portal-{env}`), not hardcoded to production. When live remediation is on, the skill asks **up front** (before monitoring) whether to auto-open the live-remediation window on a blocker; if yes, it opens the view via the shared chromeless launcher when a blocker hits — full default view in a wider-than-phone 1400×900 window — falling back to the printed URL otherwise or if Chrome is absent.
+- **Bundled emit-on-change poller** (`scripts/poll-test-run.js`). The watch loop is a Node script (no deps; reads `~/.kobiton/.credentials` for auth, skipping commented/INI lines) that polls run state over REST and prints a line **only when an execution's state changes** (dispatched / blocked / resumed / terminal), backing off during quiet stretches and exiting on `DONE`. (A background process can't call the MCP `getTestRun` tool, hence REST.) The host must **stream** the poller's stdout so each line re-engages it: on Claude Code via the `Monitor` tool (not `run_in_background`, which doesn't stream back — a real prior failure); other hosts use their native streamed-shell / watch / loop affordance, falling back to a foreground loop rather than a silent detached process.
+- **Blocked-waiting is treated as an open ask of the user, not a passive watch.** A flag-ON blocker is on a resolution countdown, so the skill frames it urgently ("action needed now — will auto-fail on timeout") and the poller emits a throttled `WAITING blocked=<n>` heartbeat (default 60 s, `--waiting-heartbeat 0` disables) while executions stay blocked, so the host keeps nudging instead of going silent until the timeout. A blocked execution that ends `BLOCKER_ENCOUNTERED` is reported as **timed out / unresolved**, never as a pass.
+- `.codex/` mirror included.
+
 ## 1.6.0 - 2026-06-12
 
 ### New `drive-automation-session` skill

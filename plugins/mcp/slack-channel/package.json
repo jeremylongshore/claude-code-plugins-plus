@@ -1,6 +1,6 @@
 {
   "name": "claude-channel-slack",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Slack channel for Claude Code — two-way chat via Socket Mode",
   "type": "module",
   "bin": "./server.ts",
@@ -20,7 +20,10 @@
   },
   "overrides": {
     "axios": "^1.16.1",
-    "fast-uri": "^3.1.2"
+    "fast-uri": "^3.1.2",
+    "form-data": "^4.0.6",
+    "ws": "^8.21.0",
+    "hono": "^4.12.25"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",

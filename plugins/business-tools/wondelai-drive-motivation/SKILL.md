@@ -1,15 +1,15 @@
 ---
 name: drive-motivation
-description: 'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions "intrinsic motivation", "gamification isnt working", "team incentives", "autonomy", "mastery", "purpose-driven", "employee engagement", or "reward systems". Also trigger when designing onboarding progression systems, fixing broken gamification, or building team structures that sustain high performance. Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'
+description: 'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions "intrinsic motivation", "gamification isnt working", "rewards arent working", "autonomy", "mastery", "purpose-driven", "my team is disengaged", or "how do I motivate people". Also trigger when designing onboarding progression, fixing broken gamification, or building team structures that sustain high performance. Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Drive Motivation Framework
 
-Design motivation systems for products, teams, and organizations based on the science of what actually motivates humans — replacing carrot-and-stick thinking with intrinsic motivation.
+Design motivation systems for products, teams, and organizations using the science of intrinsic motivation.
 
 ## Core Principle
 
@@ -17,7 +17,13 @@ Design motivation systems for products, teams, and organizations based on the sc
 
 ## Scoring
 
-**Goal: 10/10.** Rate any motivation system (product features, team incentives, gamification, engagement loops) 0-10 against the AMP principles below. A 10/10 supports autonomy, enables mastery, and connects to purpose; lower scores indicate reliance on extrinsic rewards or controlling behaviors. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score any motivation system (product features, team incentives, gamification, engagement loops) against the [Quick Diagnostic](#quick-diagnostic): start at 5, add 1 for each of the first five rows answered "yes," then **subtract 2 if the sixth row is also "yes"** — an "if-then" reward doing the motivating crowds out the rest. Bands:
+
+- **9-10** — autonomy, mastery, and purpose all present; no if-then crowding-out.
+- **5-6** — one pillar carries the system; the other two are weak or extrinsic.
+- **≤3** — relies on rewards, mandates, or controlling behaviors; intrinsic motivation absent.
+
+Always state the current score, which diagnostic rows failed, and the specific fixes to reach 10/10.
 
 ## Motivation 1.0, 2.0, and 3.0
 
@@ -26,8 +32,6 @@ Design motivation systems for products, teams, and organizations based on the sc
 | **1.0** | Humans are biological | Survival drives | Pre-industrial |
 | **2.0** | Humans respond to rewards/punishments | Carrot and stick | Industrial age |
 | **3.0** | Humans seek autonomy, mastery, purpose | Intrinsic motivation | Knowledge economy |
-
-Most organizations still run on Motivation 2.0 — fundamentally broken for modern cognitive work.
 
 ### The Seven Deadly Flaws of Extrinsic Rewards
 
@@ -45,7 +49,7 @@ Most organizations still run on Motivation 2.0 — fundamentally broken for mode
 
 **The boundary:** extrinsic rewards work only for routine, algorithmic tasks with no intrinsic interest. For creative work, complex problem-solving, or long-term engagement, they backfire.
 
-See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the science behind reward failures.
+See [references/extrinsic-rewards.md](references/extrinsic-rewards.md) when a reward or incentive scheme is backfiring — the named studies behind each flaw and a decision rule for when rewards are safe to use.
 
 ## The Three Pillars: Autonomy, Mastery, Purpose
 
@@ -70,9 +74,9 @@ See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the 
 | **Content** | Algorithm-only feed | User-controlled feeds, filters |
 | **Workflow** | Rigid process, feature bloat | Custom automations, show/hide, progressive disclosure |
 
-**Autonomy audit:** can users choose WHAT to do, WHEN to engage, HOW to complete tasks, and their own path through the experience? "You must complete X before Y", unskippable tutorials, and mandatory notifications are violations.
+**Autonomy violations:** "You must complete X before Y", unskippable tutorials, mandatory notifications, and forced single paths through the experience.
 
-See: [references/autonomy.md](references/autonomy.md) for autonomy design patterns.
+See [references/autonomy.md](references/autonomy.md) when designing onboarding, feeds, or workflow controls — full Four T's patterns plus the autonomy audit checklist.
 
 ### 2. Mastery
 
@@ -94,9 +98,9 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 | **Difficulty** | Adaptive challenge | Games that adjust to player skill |
 | **Feedback** | Immediate, clear signals | Grammarly real-time writing analysis |
 
-**Mastery audit:** can users see progress over time, get immediate feedback, and find a clear next step? Flat difficulty and punished failure are violations.
+**Mastery violations:** flat difficulty that never adapts, and failure that is punished rather than framed as learning.
 
-See: [references/mastery.md](references/mastery.md) for mastery design patterns and flow state principles.
+See [references/mastery.md](references/mastery.md) when designing progress, difficulty, or feedback systems — flow-state calibration, deliberate practice, and the mastery audit checklist.
 
 ### 3. Purpose
 
@@ -118,9 +122,9 @@ See: [references/mastery.md](references/mastery.md) for mastery design patterns 
 | **Community** | Connect to something bigger | Open source contributions, community goals |
 | **Values** | Align product with beliefs | Ecosia: "Search the web to plant trees" |
 
-**Purpose audit:** does the user know WHY this exists, see their impact on something bigger, and find alignment with their values? Show aggregate impact ("Together, our users have saved 1M hours"), connect individual actions to collective outcomes, and celebrate meaningful milestones over vanity metrics.
+**Purpose prescriptions:** show aggregate impact ("Together, our users have saved 1M hours"), connect individual actions to collective outcomes, and celebrate meaningful milestones over vanity metrics.
 
-See: [references/purpose.md](references/purpose.md) for purpose-driven design patterns.
+See [references/purpose.md](references/purpose.md) when wiring impact, community, or values features — Goals/Words/Policies patterns and the purpose audit checklist.
 
 ## AMP Applied: Product Design
 
@@ -146,7 +150,7 @@ See: [references/purpose.md](references/purpose.md) for purpose-driven design pa
 
 Pay people enough to take money off the table — fair, ideally above-market — then focus on AMP; beyond "enough," more money doesn't increase motivation. Prefer "now-that" rewards (unexpected recognition after the fact: "You hit target! Here's a bonus.") over "if-then" rewards ("If you hit target, you get a bonus"), which create pressure and short-term thinking.
 
-See: [references/applications.md](references/applications.md) for product and team applications.
+See [references/applications.md](references/applications.md) when applying AMP to a concrete gamification, team-management, or compensation design — worked examples and escalation tables.
 
 ## Type I vs. Type X Behavior
 
@@ -157,6 +161,8 @@ See: [references/applications.md](references/applications.md) for product and te
 | Short-term focus, fixed mindset | Long-term focus, growth mindset |
 
 Design products and teams that cultivate Type I behavior: it's made, not born; it doesn't disdain money or recognition; it's renewable; and it promotes well-being.
+
+See [references/type-i.md](references/type-i.md) when shifting a team or user base from Type X to Type I — the full behavioral contrast and conversion tactics. For real-world AMP programs (Atlassian ShipIt, 3M, ROWE, Duolingo, Wikipedia), see [references/case-studies.md](references/case-studies.md).
 
 ## Common Mistakes
 
@@ -181,16 +187,6 @@ Audit any motivation system:
 | Is there immediate feedback? | Can't improve | Add real-time response to actions |
 | Does the user know WHY this matters? | No purpose | Connect to mission, show impact |
 | Are we using "if-then" rewards? | Extrinsic crowding-out | Switch to "now-that" or intrinsic design |
-
-## Reference Files
-
-- [extrinsic-rewards.md](references/extrinsic-rewards.md): The seven flaws, when rewards work and don't
-- [autonomy.md](references/autonomy.md): Four T's, product and team autonomy design
-- [mastery.md](references/mastery.md): Flow state, growth mindset, deliberate practice
-- [purpose.md](references/purpose.md): Purpose-driven design, mission alignment
-- [applications.md](references/applications.md): Product gamification, team management, compensation
-- [type-i.md](references/type-i.md): Type I vs. Type X, cultivating intrinsic motivation
-- [case-studies.md](references/case-studies.md): Atlassian, 3M, Duolingo, ROWE, Wikipedia
 
 ## Further Reading
 

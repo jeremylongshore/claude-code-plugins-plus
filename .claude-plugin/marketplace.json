@@ -8929,6 +8929,101 @@
       "homepage": "https://github.com/patricksong1993/schedule-after-usage-reset",
       "repository": "https://github.com/patricksong1993/schedule-after-usage-reset",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "mnemos",
+      "source": "./plugins/community/mnemos",
+      "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+      "version": "0.9.0",
+      "category": "community",
+      "keywords": [
+        "memory",
+        "mcp",
+        "claude-code",
+        "persistent-memory",
+        "agent-memory",
+        "knowledge-graph",
+        "context",
+        "skill",
+        "observations",
+        "provenance",
+        "learning-loop",
+        "golang"
+      ],
+      "author": {
+        "name": "André Figueira",
+        "url": "https://polyxmedia.com",
+        "email": "andre@polyxmedia.com"
+      },
+      "homepage": "https://github.com/polyxmedia/mnemos",
+      "repository": "https://github.com/polyxmedia/mnemos",
+      "license": "MIT"
+    },
+    {
+      "name": "portaljs",
+      "source": "./plugins/community/portaljs",
+      "description": "Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
+      "version": "0.1.0",
+      "category": "community",
+      "keywords": [
+        "portaljs",
+        "data-portal",
+        "ckan",
+        "nextjs",
+        "data-catalog"
+      ],
+      "author": {
+        "name": "Datopian",
+        "url": "https://www.datopian.com"
+      },
+      "homepage": "https://github.com/datopian/portaljs",
+      "repository": "https://github.com/datopian/portaljs",
+      "license": "MIT"
+    },
+    {
+      "name": "llm-box",
+      "source": "./plugins/community/llm-box",
+      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
+      "version": "0.3.0",
+      "category": "community",
+      "keywords": [
+        "workflow",
+        "automation",
+        "terminal",
+        "cli",
+        "yaml",
+        "llm",
+        "mcp"
+      ],
+      "author": {
+        "name": "alib8b8",
+        "url": "https://github.com/alib8b8"
+      },
+      "homepage": "https://github.com/alib8b8/llm-box",
+      "repository": "https://github.com/alib8b8/llm-box",
+      "license": "MIT"
     }
   ]
 }

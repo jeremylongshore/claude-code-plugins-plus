@@ -61,9 +61,11 @@ export interface MuteStore {
   /** Diagnostic — list live mutes for a channel. Used by audit
    *  projection and operator-facing status commands. */
   list(channelId: string, now: number): readonly MuteEntry[]
-  /** Sweep all expired entries across all channels. Returns the
-   *  count removed. Called periodically by the reaper. */
-  prune(now: number): number
+  /** Sweep all expired entries across all channels. Returns the removed
+   *  entries (ccsc-yl6k9) so the reaper can post a "mute expired" notice for
+   *  each — operators aren't surprised when a bot silently un-mutes. Called
+   *  periodically by the reaper. */
+  prune(now: number): readonly MuteEntry[]
   /** Diagnostic — total live entries across all channels. */
   size(): number
 }
@@ -117,14 +119,14 @@ export function createMuteStore(): MuteStore {
       return result
     },
     prune(now) {
-      let removed = 0
+      const expired: MuteEntry[] = []
       for (const [key, entry] of entries) {
         if (entry.expiresAt <= now) {
           entries.delete(key)
-          removed += 1
+          expired.push(entry)
         }
       }
-      return removed
+      return expired
     },
     size() {
       return entries.size

@@ -1,0 +1,20 @@
+{
+  "synced_from": {
+    "repo": "polyxmedia/mnemos",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-08T00:56:30.841Z",
+  "author": {
+    "name": "Polyx Media",
+    "github": "polyxmedia"
+  },
+  "license": "MIT",
+  "files_synced": 4,
+  "files": [
+    ".claude-plugin/plugin.json",
+    ".claude/skills/mnemos/SKILL.md",
+    "LICENSE",
+    "README.md"
+  ]
+}

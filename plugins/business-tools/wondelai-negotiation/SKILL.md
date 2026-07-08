@@ -1,10 +1,10 @@
 ---
 name: negotiation
-description: 'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions "salary negotiation", "contract terms", "handling objections", "mirroring and labeling", "difficult conversation", "deal terms", "BATNA", or "anchoring". Also trigger when preparing for vendor negotiations, resolving pricing disputes, or navigating high-stakes conversations where both parties need to feel heard. Covers accusation audits, Black Swan discovery, and the "Thats Right" technique. For persuasion in product/marketing, see influence-psychology.'
+description: 'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions "salary negotiation", "contract terms", "handling objections", "mirroring and labeling", "difficult conversation", "deal terms", "BATNA", "anchoring", "how do I ask for a raise", "get a better deal", or "they wont budge on price". Also trigger when preparing for a vendor negotiation, resolving a pricing dispute, or navigating a high-stakes conversation where both sides need to feel heard. Covers accusation audits, Black Swan discovery, and the "Thats Right" technique. For persuasion in product and marketing, see influence-psychology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Negotiation
@@ -17,7 +17,7 @@ Tactical empathy-based negotiation framework from FBI hostage negotiator Chris V
 
 ## Scoring
 
-**Goal: 10/10.** Rate negotiation preparation or execution 0-10 against the principles below: a 10/10 means full tactical empathy, calibrated questions prepared, accusation audit delivered, emotions labeled, "That's right" achieved, and Black Swans actively hunted. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score 1 point per satisfied Quick Diagnostic row (6 rows), plus up to 4 points for execution quality: emotions labeled out loud (+1), "That's right" earned not "You're right" (+1), no "Why?" / no splitting the difference / no chasing "yes" (+1), at least one Black Swan surfaced (+1). Bands: **9-10** = audit delivered, calibrated questions and BATNA prepared, "That's right" achieved, Black Swans hunted; **5-6** = some prep but arguing the position or chasing "yes"; **<=3** = no audit, no BATNA, splitting the difference. Always state the current score and the specific gaps to reach 10/10.
 
 ## Framework
 
@@ -47,9 +47,7 @@ Tactical empathy-based negotiation framework from FBI hostage negotiator Chris V
 - "It seems like this is creating pressure for your team..."
 - "Before we talk about next steps, I want to make sure I understand where you're coming from..."
 
-**Ethical boundary:** Use empathy to genuinely understand, not to manipulate emotions.
-
-See: [references/techniques.md](references/techniques.md) for complete breakdowns, psychological triggers, and worked examples for every technique in this skill.
+See [references/techniques.md](references/techniques.md) for the full 21-technique reference -- each section below points to the part you need at the moment you need it. Open it now for The Power of Apology and Pause, which has no section here.
 
 ### 2. Mirroring
 
@@ -76,8 +74,6 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "You mentioned [their exact words]..."
 - "When you say [mirror], what does that look like?"
 
-**Ethical boundary:** Mirror to understand, not to pry out information people want to keep private.
-
 ### 3. Labeling
 
 **Core concept:** Identify and verbalize the counterpart's emotions or perspective using neutral phrases: "It seems like...", "It sounds like...", "It looks like..."
@@ -102,8 +98,6 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "It seems like..."
 - "It sounds like you're feeling..."
 - "If I'm reading this right, it feels like..."
-
-**Ethical boundary:** Label emotions to show understanding, not to weaponize feelings.
 
 ### 4. Calibrated Questions
 
@@ -131,7 +125,7 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "What's the biggest challenge you're facing?"
 - "What would it take to make this happen?"
 
-**Ethical boundary:** Create genuine collaboration, not traps into commitments people don't want to make.
+For No-oriented questions ("Would it be unreasonable to...?") and tactical mislabeling to draw out a corrective "No", see techniques.md section 8 when a counterpart is guarded or stalling.
 
 ### 5. Accusation Audit
 
@@ -158,8 +152,6 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "I know this might seem like..."
 - "You might be wondering why you should even listen to..."
 
-**Ethical boundary:** Build trust through transparency -- never use audits to preemptively shut down legitimate concerns.
-
 ### 6. "That's Right"
 
 **Core concept:** Summarize the counterpart's position -- facts, emotions, and concerns -- so accurately that they respond with "That's right." This is the breakthrough moment in any negotiation.
@@ -185,7 +177,7 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "If I'm hearing you correctly..."
 - "It sounds like [complete summary of their position including emotions]..."
 
-**Ethical boundary:** Earn "That's right" through genuine understanding, not manipulative reframing of their position.
+For the three types of Yes (counterfeit, confirmation, commitment) and the Rule of Three confirmation sequence, see techniques.md sections 10-11 when closing or locking in a commitment.
 
 ### 7. Ackerman Bargaining
 
@@ -198,7 +190,6 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - Use precise, non-round numbers on the final offer ($10,230 not $10,000)
 - Attach a non-monetary bonus to the final offer ("...and I'll include X")
 - Never make a concession without getting something in return
-- Against an extreme anchor, don't counter -- ask "How did you arrive at that figure?"
 
 **Product applications:**
 
@@ -213,7 +204,7 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "We've stretched as far as we can -- $[precise number], and we'll include [non-monetary bonus]"
 - "I've gone back to my team and the absolute best we can do is $[precise number]"
 
-**Ethical boundary:** Use the Ackerman method for fair negotiations, not to lowball or exploit people who lack negotiation skills.
+For setting the opening anchor, soft range-anchoring, and framing loss aversion, see techniques.md section 14 before you name the first number.
 
 ### 8. Black Swans
 
@@ -240,7 +231,7 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - "Help me understand -- what's really driving this?"
 - "What would change everything about this situation?"
 
-**Ethical boundary:** Hunt Black Swans to create better outcomes for both sides, not to exploit private or sensitive information.
+For applying the three leverage types, reading pronoun shifts that reveal who really decides, and using dynamic silence to draw out hidden information, see techniques.md sections 16, 20, and 21 when a negotiation stalls or you suspect a hidden decision-maker.
 
 ## Handling Common Situations
 
@@ -266,6 +257,8 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 - **After key statements**: Pause 4+ seconds (tactical silence)
 - **Watch their nonverbals**: 7% words, 38% tone, 55% body language
 
+See techniques.md sections 4 and 19 when you need the full Late-Night DJ Voice mechanics and the cues to read in their body language.
+
 ## Common Mistakes
 
 | Mistake | Why It Fails | Fix |
@@ -288,10 +281,6 @@ See: [references/techniques.md](references/techniques.md) for complete breakdown
 | Am I aiming for "That's right"? | You'll chase counterfeit "yes" | Summarize their position until they affirm genuinely |
 | Have I considered their negotiation style? | One-size-fits-all will misfire | Assess if they're Analyst, Accommodator, or Assertive |
 | Am I hunting for Black Swans? | You'll miss game-changing information | Stay curious; watch for anomalies; ask about the unexpected |
-
-## Reference Files
-
-- [techniques.md](references/techniques.md): Complete technique breakdowns -- mirroring, labeling, tactical empathy, voice control, accusation audits, calibrated questions, no-oriented questions, "That's right", the Ackerman method, Black Swans, counterpart styles, body language, and pronoun analysis -- with examples and psychological triggers
 
 ## Further Reading
 

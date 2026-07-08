@@ -1,0 +1,27 @@
+{
+  "name": "mnemos",
+  "version": "0.9.0",
+  "description": "Persistent memory and learning-loop skills for AI coding agents. MCP-native with 20 tools, single Go binary, ships with measured efficacy harness.",
+  "author": {
+    "name": "André Figueira",
+    "email": "andre@polyxmedia.com",
+    "url": "https://polyxmedia.com"
+  },
+  "repository": "https://github.com/polyxmedia/mnemos",
+  "homepage": "https://github.com/polyxmedia/mnemos",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "mcp",
+    "claude-code",
+    "persistent-memory",
+    "agent-memory",
+    "knowledge-graph",
+    "context",
+    "skill",
+    "observations",
+    "provenance",
+    "learning-loop",
+    "golang"
+  ]
+}
