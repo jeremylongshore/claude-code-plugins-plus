@@ -378,30 +378,137 @@ function detectHookDefinition(relPath, text, cls) {
   return findings;
 }
 
+// ── secret-exfil-cooccur helpers (split by READ fidelity, see #985 defect 1) ──
+// A read call whose argument (inside quotes) can name a credential file. Anchored
+// to a READ so a security *denylist* of credential-file names (e.g. the slack MCP
+// server's `SENDABLE_BASENAME_DENY` regex literals `/^id_rsa$/`, `/^\.netrc$/`)
+// is NOT mistaken for a read of those files — the denylist is defence, not theft.
+const SECRET_READ_CALL = String.raw`(?:open|io\.open|readFileSync|readFile|read_text|Path\([^)]*\)\.read_text)`;
+// FOREIGN credential stores — reading one and shipping it off-host is theft, never
+// the own-config API-client shape. Explicit list (extend deliberately): SSH keys,
+// AWS/kube/docker/gcloud creds, system password files, netrc/git/npm/pypi/gnupg
+// token stores, and browser cookie/login/keychain databases.
+const FOREIGN_CRED_PATHS = String.raw`(?:\.ssh\/|id_rsa|id_ed25519|id_dsa|\.aws\/credentials|\.aws\/|\.kube\/config|\.docker\/config\.json|\.config\/gcloud|/etc\/shadow|/etc\/passwd|\.netrc|\.git-credentials|\.npmrc|\.pypirc|\.gnupg|Cookies|Login Data|Keychains|keychain|\.mozilla)`;
+// Foreign-store read in python/js — a read call consuming a foreign path literal.
+const FOREIGN_READ_SCRIPT = new RegExp(
+  `${SECRET_READ_CALL}\\s*\\(\\s*[^\\n)]{0,60}['"\`][^'"\`\\n]*${FOREIGN_CRED_PATHS}`,
+);
+// Foreign-store read in shell — a read command (cat/head/…/source) consuming one.
+const FOREIGN_READ_SHELL = new RegExp(
+  `\\b(?:cat|head|tail|less|xxd|base64|od|read|source|\\.)\\b[^\\n]{0,80}${FOREIGN_CRED_PATHS}`,
+);
+// WHOLESALE environment harvest — dumping/iterating the ENTIRE environment (not a
+// single named var). Theft-grade with a sink. The legit subprocess-merge idioms
+// (`{ ...process.env }`, `Object.assign({}, process.env)`) are deliberately NOT
+// here — a bundled runtime spreads the parent env into a child_process every day.
+const ENV_HARVEST = new RegExp(
+  '(?:dict\\s*\\(\\s*os\\.environ|os\\.environ\\.(?:copy|items|keys|values)\\s*\\(|' +
+    '\\*\\*\\s*os\\.environ|json\\.dumps\\s*\\(\\s*os\\.environ|str\\s*\\(\\s*os\\.environ|' +
+    'print\\s*\\(\\s*os\\.environ|for\\s+\\w+\\s+in\\s+os\\.environ|' +
+    'JSON\\.stringify\\s*\\(\\s*process\\.env|Object\\.(?:keys|entries|values)\\s*\\(\\s*process\\.env|' +
+    'for\\s*\\([^)]*\\bin\\s+process\\.env)',
+);
+// NAMED credential access — reading a SPECIFIC env var (`process.env.MYSERVICE_TOKEN`,
+// `os.environ['X']`, `os.getenv('X')`). This is the standard API-client shape.
+const NAMED_ENV_READ =
+  /(?:process\.env\s*(?:\.[A-Za-z_$]|\[)|os\.environ\s*(?:\.get\s*\(|\[)|os\.getenv\s*\()/;
+// A read of the skill's OWN local `.env` (config), anchored to a read call.
+const LOCAL_ENV_READ = new RegExp(
+  `${SECRET_READ_CALL}\\s*\\(\\s*[^\\n)]{0,60}['"\`][^'"\`\\n]*\\.env\\b`,
+);
+// Network SINK. curl/wget/nc added (beyond the py/js library calls) so a multi-line
+// shell exfil (`CREDS=$(cat ~/.aws/credentials); curl --data …`) — which the
+// single-line `secret-exfil` rule misses — co-occurs here.
+const EXFIL_SINK =
+  /(?:urllib\.request\.urlopen|urllib2\.urlopen|requests\.(?:post|put|patch)|httpx\.(?:post|put|patch)|http\.client|socket\.(?:connect|sendall)|\.sendall\s*\(|fetch\s*\(|axios\.(?:post|put)|https?\.request\s*\(|\b(?:curl|wget|ncat|nc)\b)/;
+
 /**
- * Detect single-file secret exfiltration (red-team F4): a read of a credential
- * file / env co-occurring with a network SINK in the same file. The line-level
- * `secret-exfil` rule is curl/wget-piped-specific and misses the python idiom
- * `open('~/.ssh/id_rsa').read()` … `urllib.request.urlopen(url, data)` /
- * `requests.post(url, data=os.environ)` split across statements. This is a
- * file-level co-occurrence check: a secret READ + a network SINK anywhere in a
- * script → REFUSE (the bytes exfiltrate on execution), doc → CHALLENGE.
+ * Detect single-file secret exfiltration (red-team F4), graded by the FIDELITY of
+ * the secret READ (#985 defect 1). The line-level `secret-exfil` rule is
+ * curl/wget-piped-specific and misses the split-statement idiom
+ * `open('~/.ssh/id_rsa').read()` … `urllib.request.urlopen(url, data)`; this is a
+ * file-level co-occurrence check — a secret READ + a network SINK anywhere in the
+ * same file.
+ *
+ * Grading split (both require a network sink present):
+ *   REFUSE (theft — high-confidence) when the read is any of:
+ *     • a FOREIGN credential store (another app's/user's secrets — ~/.aws, ~/.ssh,
+ *       ~/.kube/config, /etc/shadow, browser cookie/keychain stores, …);
+ *     • a WHOLESALE environment harvest (dumping/iterating all of process.env /
+ *       os.environ) — the "scoop everything and POST it" shape;
+ *     • OBFUSCATED — the secret read OR the sink is revealed only after the
+ *       anti-evasion normalizer collapses split-token string concatenation.
+ *     (doc → CHALLENGE, as before: prose does not auto-execute.)
+ *   CHALLENGE (waivable, must be SEEN) when it is the OWN-CONFIG client shape:
+ *     reads a SPECIFIC named env var / its own local `.env` and sends to a sink —
+ *     the standard shape of every API-integration skill (its own token → its own
+ *     service). Before #985 this hard-blocked the whole sync (mytradeledger mtl.py,
+ *     the slack-channel MCP server, the governed-second-brain runtime). It is now a
+ *     visible-but-waivable CHALLENGE; the sync PR runs `--warn-only`, so these
+ *     surface without walling the pipeline while a real ~/.ssh harvester still
+ *     REFUSEs (unwaivable by design).
  */
 function detectSecretExfilCoOccurrence(relPath, text, cls) {
   const findings = [];
   if (!['shell', 'python', 'js', 'doc'].includes(cls)) return findings;
-  const secretRead =
-    /(?:open\s*\(\s*['"][^'"\n]*(?:\.ssh\/|id_rsa|id_ed25519|id_dsa|\.aws\/credentials|\.netrc|\.env\b|\.git-credentials)|\bos\.environ\b|\bprocess\.env\b|\breadFileSync\s*\(\s*['"][^'"\n]*(?:\.ssh\/|id_rsa|\.aws\/credentials|\.env\b))/;
-  const networkSink =
-    /(?:urllib\.request\.urlopen|urllib2\.urlopen|requests\.(?:post|put|patch)|httpx\.(?:post|put|patch)|http\.client|socket\.(?:connect|sendall)|\.sendall\s*\(|fetch\s*\(|axios\.(?:post|put)|https?\.request\s*\()/;
-  if (secretRead.test(text) && networkSink.test(text)) {
-    const line = lineOf(text, secretRead) || 1;
-    const grade = cls === 'doc' ? GRADE.CHALLENGE : GRADE.REFUSE;
+
+  // Concat-collapsed view (per-line, mirroring the line-rule scan) reveals
+  // string-split tokens like `"fet"+"ch"(` → `fetch(` around the secret or sink.
+  const collapsed = text.split('\n').map(concatCollapse).join('\n');
+
+  const foreignRaw =
+    cls === 'shell'
+      ? FOREIGN_READ_SHELL.test(text)
+      : FOREIGN_READ_SCRIPT.test(text) || FOREIGN_READ_SHELL.test(text);
+  const harvestRaw = ENV_HARVEST.test(text);
+  const namedRaw = NAMED_ENV_READ.test(text);
+  const localEnvRaw = cls !== 'shell' && LOCAL_ENV_READ.test(text);
+  const anySecretRaw = foreignRaw || harvestRaw || namedRaw || localEnvRaw;
+
+  const sinkRaw = EXFIL_SINK.test(text);
+  const sinkCollapsed = EXFIL_SINK.test(collapsed);
+  if (!sinkRaw && !sinkCollapsed) return findings; // no network egress → not this rule
+
+  // Obfuscation the normalizer flagged: a sink (or a secret read) that only
+  // appears once split-token concatenation is collapsed. Scoped to the token so a
+  // minified bundle's unrelated hex/escape noise does not trip it.
+  const collapsedSecret =
+    (cls === 'shell'
+      ? FOREIGN_READ_SHELL.test(collapsed)
+      : FOREIGN_READ_SCRIPT.test(collapsed) || FOREIGN_READ_SHELL.test(collapsed)) ||
+    ENV_HARVEST.test(collapsed) ||
+    NAMED_ENV_READ.test(collapsed);
+  const obfuscated = (sinkCollapsed && !sinkRaw) || (collapsedSecret && !anySecretRaw);
+
+  if (!anySecretRaw && !obfuscated) return findings; // sink but no secret read
+
+  const theft = foreignRaw || harvestRaw || obfuscated;
+  const line =
+    lineOf(text, FOREIGN_READ_SCRIPT) ||
+    lineOf(text, FOREIGN_READ_SHELL) ||
+    lineOf(text, ENV_HARVEST) ||
+    lineOf(text, NAMED_ENV_READ) ||
+    lineOf(text, LOCAL_ENV_READ) ||
+    lineOf(text, EXFIL_SINK) ||
+    1;
+
+  if (theft) {
     findings.push({
       id: 'secret-exfil-cooccur',
-      grade,
+      grade: cls === 'doc' ? GRADE.CHALLENGE : GRADE.REFUSE,
       line,
-      label: 'secret/credential read co-occurring with a network sink (single-file exfil)',
+      label:
+        'foreign-store / wholesale-env / obfuscated secret read co-occurring with a network sink (single-file exfil)',
+      snippet: path.basename(relPath),
+    });
+  } else {
+    // Own-config client shape: a specific named credential / own `.env` → a sink.
+    findings.push({
+      id: 'secret-exfil-cooccur',
+      grade: GRADE.CHALLENGE,
+      line,
+      label:
+        'own-config credential + network sink — standard API-client shape; confirm the sink is the credential’s own service',
       snippet: path.basename(relPath),
     });
   }
