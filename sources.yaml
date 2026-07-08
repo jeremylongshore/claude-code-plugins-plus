@@ -1360,10 +1360,10 @@ sources:
     category: community
     verified: false
     include:
-      - '.claude-plugin/plugin.json'
-      - '.claude/skills/mnemos/SKILL.md'
-      - 'README.md'
-      - 'LICENSE'
+      - '/.claude-plugin/plugin.json'
+      - '/.claude/skills/mnemos/SKILL.md'
+      - '/README.md'
+      - '/LICENSE'
     exclude:
       - '.git/**'
       - 'node_modules/**'
@@ -1390,12 +1390,12 @@ sources:
     category: community
     verified: false
     include:
-      - '.claude-plugin/**'
-      - 'skills/**'
-      - 'README.md'
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/README.md'
       # upstream stores its license file as lowercase `license`; the sync
       # glob match is case-sensitive, so the casing must match theirs
-      - 'license'
+      - '/license'
     exclude:
       - 'node_modules/**'
       - '.git/**'
@@ -1425,15 +1425,15 @@ sources:
       - llm
       - mcp
     include:
-      - '.claude-plugin/plugin.json'
-      - 'skills/llm-box/SKILL.md'
-      - 'skills/setup/SKILL.md'
-      - 'commands/create-workflow.md'
-      - 'commands/run-workflow.md'
-      - 'commands/list-nodes.md'
-      - '.mcp.json'
-      - 'README.md'
-      - 'README.zh-CN.md'
+      - '/.claude-plugin/plugin.json'
+      - '/skills/llm-box/SKILL.md'
+      - '/skills/setup/SKILL.md'
+      - '/commands/create-workflow.md'
+      - '/commands/run-workflow.md'
+      - '/commands/list-nodes.md'
+      - '/.mcp.json'
+      - '/README.md'
+      - '/README.zh-CN.md'
     exclude:
       - 'node_modules/**'
       - '.git/**'

@@ -31,4 +31,4 @@ plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint document
 # per-review gate; a persistent line here would auto-waive FUTURE source-list
 # changes too, so each sources PR swaps this line for its own scoped reason and
 # the one-shot-waiver fix (#985 defect 3) retires the convention entirely.
-sources.yaml:sources-change-unscanned  2026-07-07 curated-vendoring PR reviewed: adds servicegraph (nostrband/ServiceGraph, nomination #828) + schedule-after-usage-reset (lemondepat/schedule-after-usage-reset, nomination #830) as curated frozen mirrors vetted per 699 — both MIT, 8/8 fields, content pinned to the reviewed fork SHAs df4648a4/a83ea165
+sources.yaml:sources-change-unscanned  2026-07-08 glob-anchoring PR reviewed: strictly risk-reducing — anchors the portaljs/llm-box/mnemos include patterns with `/` so the matcher's **/ auto-prefix stops mirroring nested unintended files (#985 defect 6); no source added or repointed
