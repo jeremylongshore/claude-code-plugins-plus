@@ -266,6 +266,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `wondelai-scorecard-marketing`    | Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and…     |
 | `wondelai-storybrand-messaging`   | StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners,…  |
 | `wondelai-traction-eos`           | Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build…              |
+- [JMT x402 Agent Tools](https://jmt-x402-proxy.jmthomasofficial.workers.dev) — 25 paid x402 endpoints on Base mainnet: web search, AI analysis, crypto/stock data, SEC filings, company intel, news, sentiment, macro dashboard. $0.001-$0.15/call USDC. Local LLM-powered.
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
