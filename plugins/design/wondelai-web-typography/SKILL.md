@@ -1,10 +1,10 @@
 ---
 name: web-typography
-description: 'Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", "type hierarchy", "variable fonts", "FOUT/FOIT", or "typographic scale". Also trigger when choosing between system fonts and web fonts, optimizing font loading performance, or designing readable long-form content layouts. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'
+description: 'Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", "type hierarchy", "variable fonts", "FOUT/FOIT", "typographic scale", or "the text is hard to read". Also trigger when choosing between system fonts and web fonts, optimizing font-loading performance, or designing readable long-form content. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Web Typography
@@ -17,7 +17,7 @@ A practical guide to choosing, pairing, and implementing typefaces for the web. 
 
 ## Scoring
 
-**Goal: 10/10.** Rate any typography implementation 0-10 against the principles below. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score = number of the 10 Quick Diagnostic rows the implementation satisfies. Bands: **9-10** = body 16px+, measure under 75ch, line-height 1.4+, clear level contrast, font payload under 200KB, fallbacks set, survives 200% zoom; **5-6** = readable but missing measure control, fallbacks, or zoom resilience; **<=3** = sub-16px body, no measure cap, FOIT, or unreadable hierarchy. Always state the current score and the specific diagnostic rows failing.
 
 ## Two Contexts for Type
 
@@ -36,7 +36,7 @@ All typography falls into two categories:
 
 **Core concept:** Understanding reading mechanics is the foundation for every typography decision. Eyes don't scan smoothly — they jump in bursts.
 
-**Why it works:** When typography aligns with how the brain processes text — word shapes, consistent rhythm, distinct letterforms — readers absorb content faster with less fatigue. Fighting these mechanics creates friction that drives readers away.
+**Why it works:** Fighting these mechanics creates friction that drives readers away; aligning with them lets readers absorb content faster with less fatigue.
 
 **Key insights:**
 - **Saccades** — eyes jump in 7-9 character bursts; line length and letter spacing directly affect saccade efficiency
@@ -61,9 +61,7 @@ All typography falls into two categories:
 }
 ```
 
-**Ethical boundary:** Prioritize reader comprehension over visual novelty — sacrificing readability for aesthetics excludes readers.
-
-See: [references/typeface-anatomy.md](references/typeface-anatomy.md) for terminology, letterform parts, and classification systems.
+See: [references/typeface-anatomy.md](references/typeface-anatomy.md) when you need to name letterform parts (x-height, counter, aperture) or place a face in a classification system to justify a choice.
 
 ### 2. Evaluating Typefaces
 
@@ -93,9 +91,9 @@ body { font-size: 16px; }
 h1 { font-size: 3rem; }
 ```
 
-**Ethical boundary:** Always verify licensing — unlicensed fonts create legal risk and undermine the type design community.
+**Ethical boundary:** Always verify the web license before shipping a font — desktop/print licenses rarely cover web embedding, and unlicensed use creates real legal liability.
 
-See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) for detailed quality assessment criteria and structural analysis.
+See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) when vetting a candidate face — full quality checklist, red-flags table, and the structural criteria to inspect.
 
 ### 3. Choosing Typefaces
 
@@ -126,7 +124,7 @@ body {
 }
 ```
 
-**Ethical boundary:** Never choose trendiness over readability — typography that excludes readers with lower vision fails its purpose.
+See: [references/evaluating-typefaces.md](references/evaluating-typefaces.md) when narrowing finalists or weighing free vs. paid faces — the side-by-side comparison method and quality-option shortlists.
 
 ### 4. Pairing Typefaces
 
@@ -155,9 +153,7 @@ h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
 body { font-family: 'Source Sans Pro', -apple-system, sans-serif; }
 ```
 
-**Ethical boundary:** When in doubt, use one family with weight variation — forced pairings add complexity that serves the designer's ego, not the reader.
-
-See: [references/pairing-strategies.md](references/pairing-strategies.md) for specific combinations, contrast methods, and proven pairings.
+See: [references/pairing-strategies.md](references/pairing-strategies.md) when picking a second face — proven combinations, the contrast-type table, and same-designer/superfamily shortcuts.
 
 ### 5. Typographic Measurements
 
@@ -192,15 +188,13 @@ h1, h2 { line-height: 1.1; }      /* headlines: 1.1-1.25 */
 .body-text { line-height: 1.6; }  /* body: 1.5-1.7 */
 ```
 
-**Ethical boundary:** Never cram text into tiny sizes or narrow columns to "fit the design" — that prioritizes visual arrangement over human comprehension.
-
-See: [references/responsive-typography.md](references/responsive-typography.md) for fluid sizing and viewport-based measurement strategies.
+See: [references/responsive-typography.md](references/responsive-typography.md) when writing the `clamp()` formulas — how to derive min/preferred/max and viewport-based measurement strategies.
 
 ### 6. Building Type Hierarchies
 
 **Core concept:** Hierarchy tells readers what matters most. Create distinction through controlled variation in size, weight, and color — but don't pull all three levers at once.
 
-**Why it works:** When differences between levels are deliberate and consistent, readers scan a page and instantly understand its structure. Without hierarchy, everything competes and nothing wins.
+**Why it works:** Deliberate, consistent differences between levels let readers grasp page structure at a glance; without hierarchy everything competes and nothing wins.
 
 **Key insights:**
 - **Three levers** — size, weight, color; vary one or two between adjacent levels, never all three
@@ -226,9 +220,9 @@ body { font-size: 1rem; font-weight: 400; color: #333; }
 h1, h2, h3 { margin: 1.5em 0 0.5em; line-height: 1.2; }
 ```
 
-**Ethical boundary:** Hierarchy must guide readers honestly — burying fees in small text or spotlighting manipulative CTAs weaponizes typography against the reader.
+**Ethical boundary:** Don't bury fees, disclaimers, or opt-outs in small or low-contrast type to demote what users need to see — hierarchy that hides material information weaponizes typography against the reader.
 
-See: [references/css-implementation.md](references/css-implementation.md) for complete hierarchy implementation patterns and variable font techniques.
+See: [references/css-implementation.md](references/css-implementation.md) when implementing the CSS — full hierarchy patterns, `@font-face` loading, `font-variation-settings` axes, and subsetting with pyftsubset.
 
 ### 7. Responsive Typography and Web Font Performance
 
@@ -293,14 +287,6 @@ h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3.5rem); }
 | Does the page work at 200% zoom? | Accessibility failure for low vision | Fix overflow and truncation at 200% |
 | Are headings free of orphaned words? | Trailing words look unfinished | `text-wrap: balance` or manual breaks |
 | Are links visually distinct? | Users can't find interactive elements | Color and/or underline distinction |
-
-## Reference Files
-
-- [typeface-anatomy.md](references/typeface-anatomy.md): Terminology, letterform parts, classification systems
-- [evaluating-typefaces.md](references/evaluating-typefaces.md): Quality assessment, structural analysis, technical requirements
-- [pairing-strategies.md](references/pairing-strategies.md): Combining typefaces, contrast methods, proven combinations
-- [responsive-typography.md](references/responsive-typography.md): Fluid type, viewport units, breakpoint strategies
-- [css-implementation.md](references/css-implementation.md): @font-face, loading strategies, variable fonts, performance
 
 ## Further Reading
 

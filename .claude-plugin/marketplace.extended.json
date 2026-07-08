@@ -10493,6 +10493,76 @@
       "homepage": "https://github.com/patricksong1993/schedule-after-usage-reset",
       "repository": "https://github.com/patricksong1993/schedule-after-usage-reset",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "mnemos",
+      "source": "./plugins/community/mnemos",
+      "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+      "version": "0.1.0",
+      "category": "community",
+      "author": {
+        "name": "Polyx Media",
+        "url": "https://github.com/polyxmedia"
+      },
+      "repository": "https://github.com/polyxmedia/mnemos",
+      "license": "MIT"
+    },
+    {
+      "name": "portaljs",
+      "source": "./plugins/community/portaljs",
+      "description": "Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
+      "version": "0.1.0",
+      "category": "community",
+      "author": {
+        "name": "Datopian",
+        "url": "https://github.com/datopian",
+        "email": "anuar.ustayev@datopian.com"
+      },
+      "repository": "https://github.com/datopian/portaljs",
+      "license": "MIT"
+    },
+    {
+      "name": "llm-box",
+      "source": "./plugins/community/llm-box",
+      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
+      "version": "0.1.0",
+      "category": "community",
+      "keywords": [
+        "workflow",
+        "automation",
+        "cli",
+        "yaml",
+        "llm",
+        "mcp"
+      ],
+      "author": {
+        "name": "alib8b8",
+        "url": "https://github.com/alib8b8"
+      },
+      "repository": "https://github.com/alib8b8/llm-box",
+      "license": "MIT"
     }
   ]
 }

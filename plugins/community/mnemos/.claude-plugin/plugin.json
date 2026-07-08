@@ -1,0 +1,11 @@
+{
+  "name": "mnemos",
+  "version": "0.1.0",
+  "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+  "author": {
+    "name": "Polyx Media",
+    "url": "https://github.com/polyxmedia"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/polyxmedia/mnemos"
+}

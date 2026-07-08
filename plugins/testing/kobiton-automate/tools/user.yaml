@@ -15,6 +15,35 @@ tools:
     annotations:
       readOnlyHint: false
       destructiveHint: false
+      idempotentHint: false
+      openWorldHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+      required:
+        - userIntent
+  - name: getOrgSettings
+    title: Get Org Settings
+    description: >
+      Return the settings block for the current OAuth-authenticated user's
+      organization - org-level feature flags and preferences (for example
+      live_remediation_enabled, which governs whether a blocked test-run
+      execution pauses for interactive live remediation or auto-fails with
+      BLOCKER_ENCOUNTERED). Resolves the organization from the authenticated
+      OAuth context; aside from userIntent the tool accepts no input. Read-only,
+      no side effects. A natural precursor to monitorTestRun, which reads the
+      flag up front to explain deterministically what happens at the first
+      blocker.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+      openWorldHint: false
     inputSchema:
       type: object
       properties:

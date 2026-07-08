@@ -1,10 +1,10 @@
 ---
 name: one-page-marketing
-description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", "referral program", "marketing strategy", or "PVP Index". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
+description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "marketing strategy", "target market", "USP", "lead nurture", "customer lifetime value", "PVP Index", or "I dont know where to start with marketing". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer-lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # The 1-Page Marketing Plan Framework
@@ -19,14 +19,14 @@ Most businesses treat marketing as disconnected tactics: an ad here, a social po
 
 ## Scoring
 
-**Goal: 10/10.** Rate the marketing plan 0-10 by how completely and specifically all nine squares are filled in: a 10 means named target segments, a written USP, channels with budgets, a designed lead magnet, a mapped nurture sequence, a defined sales process, a documented experience, an ascension model with pricing tiers, and a referral system with scripts and tracking. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score by counting how many of the nine squares are filled in *specifically and measurably* -- a square counts only when it would pass its row in the Quick Diagnostic (e.g. square 1 counts only if you can describe the ideal customer in one specific paragraph; square 2 only if you can complete "We are the only ___ that ___"). Map the count to the band below. Always state the current score and the specific improvements needed to reach 10/10.
 
-| Score | Meaning |
-|-------|---------|
-| 0-3 | Fragmented tactics, no cohesive plan, significant gaps |
-| 4-6 | Some squares filled but vague; key phases missing (usually AFTER) |
-| 7-8 | All squares addressed with reasonable specificity; some lack detail |
-| 9-10 | Every square specific, measurable, and ready for execution |
+| Score | Squares passing the diagnostic | Meaning |
+|-------|-------------------------------|---------|
+| 0-3 | 0-2 | Fragmented tactics, no cohesive plan, significant gaps |
+| 4-6 | 3-5 | Some squares filled but vague; key phases missing (usually AFTER) |
+| 7-8 | 6-7 | All squares addressed with reasonable specificity; some lack detail |
+| 9-10 | 8-9 | Every square specific, measurable, and ready for execution |
 
 ## The 9-Square Grid
 
@@ -35,6 +35,8 @@ Most businesses treat marketing as disconnected tactics: an ad here, a social po
 | **BEFORE** | Prospect | 1. Target Market · 2. Message · 3. Media |
 | **DURING** | Lead | 4. Capture Leads · 5. Nurture · 6. Convert |
 | **AFTER** | Customer | 7. Experience · 8. Lifetime Value · 9. Referrals |
+
+See [references/one-page-plan-template.md](references/one-page-plan-template.md) when filling the grid -- it has the blank 9-square template with per-square prompts plus two fully worked examples.
 
 ## BEFORE Phase (Prospect to Lead)
 
@@ -63,15 +65,11 @@ Most businesses treat marketing as disconnected tactics: an ad here, a social po
 - "The only [product/service] designed specifically for [target market]"
 - "Unlike generic solutions, this was built from the ground up for [niche]"
 
-**Ethical boundary:** Select niches you can genuinely serve well -- never target vulnerable populations for exploitation.
-
-See: [references/target-market.md](references/target-market.md) for PVP scoring and the avatar worksheet.
+See [references/target-market.md](references/target-market.md) when selecting the niche -- it has the anchored PVP scoring rubric and the fillable avatar worksheet.
 
 ### 2. Craft Your Message
 
 **Core concept:** Your message must answer one question: "Why should I buy from you rather than your nearest competitor?" That answer is your Unique Selling Proposition (USP) -- without it you are a commodity competing on price.
-
-**Why it works:** A clear USP gives prospects a reason to choose you, gives marketing a consistent theme, and eliminates price competition -- transforming you from "one of many" to "the only one."
 
 **Key insights:**
 - A USP is not a slogan -- it is a defensible, provable market position
@@ -92,15 +90,11 @@ See: [references/target-market.md](references/target-market.md) for PVP scoring 
 - "The only [category] that [unique differentiator]"
 - "We guarantee [specific result] or [risk reversal]"
 
-**Ethical boundary:** Your USP must be truthful and deliverable -- never claim results you cannot substantiate or guarantees you won't honor.
-
-See: [references/craft-message.md](references/craft-message.md) for the USP creation process and elevator pitch formula.
+See [references/craft-message.md](references/craft-message.md) when drafting the USP -- it has the five USP strategies, the creation process, and the commodity-trap escapes.
 
 ### 3. Advertising Media
 
 **Core concept:** Apply direct response principles to every advertising dollar: trackable, measurable, and designed to provoke a specific action -- never vague "brand awareness." Choose channels where your target market actually spends time.
-
-**Why it works:** Direct response eliminates waste -- you ask for a specific action now and measure whether it happened, turning marketing from a cost center into a profit center.
 
 **Key insights:**
 - Pick channels by where the target market actually is, not what is trendy
@@ -121,9 +115,7 @@ See: [references/craft-message.md](references/craft-message.md) for the USP crea
 - "Attention [target market]: [headline about their pain/desire]"
 - "Call [tracked number] / Visit [tracked URL] to claim your [specific offer]"
 
-**Ethical boundary:** Keep all advertising truthful and compliant -- no deceptive claims or bait-and-switch.
-
-See: [references/advertising-media.md](references/advertising-media.md) for channel selection, CAC tracking, and attribution.
+See [references/advertising-media.md](references/advertising-media.md) when choosing channels -- it has the selection matrix, CAC-vs-LTV tracking, and attribution.
 
 ## DURING Phase (Lead to Customer)
 
@@ -153,9 +145,9 @@ See: [references/advertising-media.md](references/advertising-media.md) for chan
 - "Take the free [quiz/assessment] and discover your [score/type/result]"
 - "Get instant access to [resource] — no credit card required"
 
-**Ethical boundary:** Always deliver on the lead magnet's promise -- never use deceptive opt-ins or sell contact data without explicit consent.
+**Ethical boundary:** Collect only data you will use, and never sell or share contact data without explicit opt-in consent.
 
-See: [references/capture-leads.md](references/capture-leads.md) for lead magnet types, opt-in page design, and lead scoring.
+See [references/capture-leads.md](references/capture-leads.md) when designing the lead magnet and opt-in -- it has lead-magnet types, opt-in page design, and lead scoring.
 
 ### 5. Nurture Leads
 
@@ -183,9 +175,9 @@ See: [references/capture-leads.md](references/capture-leads.md) for lead magnet 
 - "How [client name] went from [before state] to [after state] in [time period]"
 - "I noticed you downloaded [lead magnet]. Here is the next step..."
 
-**Ethical boundary:** Provide one-click unsubscribe, honest frequency, and anti-spam compliance -- always respect communication preferences.
+**Ethical boundary:** Put one-click unsubscribe in every send and honor it immediately (CAN-SPAM / GDPR).
 
-See: [references/nurture-leads.md](references/nurture-leads.md) for sequence templates, cadence, and segmentation.
+See [references/nurture-leads.md](references/nurture-leads.md) when building the welcome sequence -- it has sequence templates, cadence, and behavioral segmentation.
 
 ### 6. Sales Conversion
 
@@ -213,9 +205,9 @@ See: [references/nurture-leads.md](references/nurture-leads.md) for sequence tem
 - "Join [number] [target market] who have already [achieved result]"
 - "Your investment is protected by our [guarantee name]"
 
-**Ethical boundary:** No high-pressure tactics, artificial scarcity, or manipulative closes -- the sale should follow naturally from demonstrated value and genuine fit.
+**Ethical boundary:** Use only real deadlines and genuine stock limits -- fabricated countdowns and fake scarcity destroy trust on the second purchase.
 
-See: [references/sales-conversion.md](references/sales-conversion.md) for pricing psychology, risk reversal, and objection handling.
+See [references/sales-conversion.md](references/sales-conversion.md) when handling price and objections -- it has pricing psychology, risk-reversal structures, and an objection map.
 
 ## AFTER Phase (Customer to Raving Fan)
 
@@ -245,9 +237,9 @@ See: [references/sales-conversion.md](references/sales-conversion.md) for pricin
 - "We just completed [milestone]. Here is what we found and what is next."
 - "You have been a customer for [X months]. We wanted to say thank you with [surprise]."
 
-**Ethical boundary:** Experience systems must genuinely serve the customer, not trap them -- make leaving easy; that confidence is what makes them stay.
+**Ethical boundary:** Make cancelling as easy as signing up -- no retention mazes or hidden offboarding; that confidence is what makes customers stay.
 
-See: [references/customer-experience.md](references/customer-experience.md) for moments of truth, NPS, and community building.
+See [references/customer-experience.md](references/customer-experience.md) when designing the post-sale experience -- it has moments of truth, NPS, and community building.
 
 ### 8. Increase Lifetime Value
 
@@ -275,9 +267,7 @@ See: [references/customer-experience.md](references/customer-experience.md) for 
 - "Upgrade to [tier] and unlock [specific benefit they care about]"
 - "We noticed you haven't [used product/visited] in a while. Here is a special reason to come back."
 
-**Ethical boundary:** Upsell only what genuinely benefits the customer -- the ascension model should reflect increasing value, not just increasing price.
-
-See: [references/lifetime-value.md](references/lifetime-value.md) for LTV formulas, ascension design, and reactivation.
+See [references/lifetime-value.md](references/lifetime-value.md) when building the ascension model -- it has LTV formulas, tier design, and reactivation campaigns.
 
 ### 9. Orchestrate Referrals
 
@@ -305,25 +295,21 @@ See: [references/lifetime-value.md](references/lifetime-value.md) for LTV formul
 - "You mentioned you are happy with [result]. Would you be open to sharing that experience with [specific person]?"
 - "We have a partnership with [trusted brand]. Their customers get [special offer]."
 
-**Ethical boundary:** Disclose incentives transparently and never reward dishonest reviews -- referrals should benefit referrer, referred, and business alike.
+**Ethical boundary:** Disclose paid incentives in reviews and testimonials (FTC), and reward the referral, never a faked review.
 
-See: [references/referral-systems.md](references/referral-systems.md) for program design, partnership models, and scripts.
+See [references/referral-systems.md](references/referral-systems.md) when designing the referral program -- it has program design, partnership models, and ask scripts.
 
 ## Direct Response Principles
 
-Cross-cutting principles that apply across all nine squares:
+The direct-response doctrine that underpins all nine squares -- every campaign should satisfy these:
 
-| Principle | Description | Application |
-|-----------|-------------|-------------|
-| Trackable | Every marketing action measurable | Unique URLs, phone numbers, promo codes per channel |
-| Measurable | Know the ROI of every dollar | CAC, LTV, conversion rates per channel and campaign |
-| Compelling headlines | Lead with the desired outcome | Benefit-driven headlines, not product features |
-| Specific audience | Speak to one person, not everyone | Niche-specific language, examples, references |
-| Specific offer | Tell people exactly what to do next | "Download the guide," "Book your call," "Start your trial" |
-| Demands a response | Create a reason to act now | Genuine deadlines, limited availability, fast-action bonuses |
-| Multi-step follow-up | One touch is never enough | Automated sequences across email, retargeting, phone, mail |
-| Value first | Lead with generosity, not a pitch | Free content, tools, assessments before asking for money |
-| Has a backend | Real profit is in the second and third sale | Design the product ladder before the first campaign |
+| Principle | What it demands in practice |
+|-----------|-----------------------------|
+| Trackable & measurable | Unique URLs, numbers, and promo codes per channel so you know CAC, LTV, and ROI of every dollar |
+| Compelling headline | Lead with the desired outcome, not product features |
+| Specific offer | Tell people exactly what to do next -- "Download the guide," "Book your call," "Start your trial" |
+| Demands a response | Give a real reason to act now: genuine deadline, limited availability, fast-action bonus |
+| Has a backend | Real profit is the second and third sale -- design the product ladder before the first campaign |
 
 ## Common Mistakes
 
@@ -331,7 +317,7 @@ Cross-cutting principles that apply across all nine squares:
 |---------|-------------|-----|
 | Targeting everyone | Dilutes message, inflates acquisition cost | Use the PVP Index to pick one niche and dominate it first |
 | No USP — competing on price | Attracts price-shoppers, destroys margins | Build a genuine USP: specialization, unique mechanism, or bold guarantee |
-| Brand awareness ads with no tracking | No ROI accountability; money disappears | Apply direct response to every ad: track, measure, call to action |
+| Brand awareness ads with no tracking | No ROI accountability; money disappears | Apply the Direct Response Principles to every ad |
 | Sending traffic to the home page | 97% of visitors aren't ready to buy and leave forever | Use lead magnets and dedicated landing pages |
 | Ignoring existing customers | Misses the highest-ROI marketing (retention, upsells) | Build the AFTER phase: experience, LTV, referrals |
 | No follow-up system | Leads go cold; money left on the table | Automate nurture sequences in a CRM from day one |
@@ -346,19 +332,6 @@ Cross-cutting principles that apply across all nine squares:
 | Do you have a lead magnet converting at 20%+ on its landing page? | Lead capture is underperforming | Test new lead magnets; optimize the opt-in page |
 | Do you have an automated 5+ email sequence for new leads? | Leads go cold without nurture | Build a welcome sequence from the nurture templates |
 | Do you proactively ask for referrals with a script and system? | Your best channel is left to chance | Design a referral program from the referral frameworks |
-
-## Reference Files
-
-- [target-market.md](references/target-market.md) — PVP Index scoring, ideal customer avatar worksheet, niche selection framework
-- [craft-message.md](references/craft-message.md) — USP creation process, elevator pitch formula, commodity trap avoidance
-- [advertising-media.md](references/advertising-media.md) — Direct response channel selection, CAC tracking, organic vs paid, attribution
-- [capture-leads.md](references/capture-leads.md) — Lead magnet types, CRM setup, opt-in page design, speed-to-lead, lead scoring
-- [nurture-leads.md](references/nurture-leads.md) — Email sequence templates, content cadence, multi-channel nurture, segmentation
-- [sales-conversion.md](references/sales-conversion.md) — Pricing psychology, risk reversal, objection handling, sales call structure, proposals
-- [customer-experience.md](references/customer-experience.md) — Moments of truth, NPS, surprise and delight, tribes and community
-- [lifetime-value.md](references/lifetime-value.md) — LTV formulas, ascension model design, reactivation campaigns, raising prices
-- [referral-systems.md](references/referral-systems.md) — Referral program design, partnerships, affiliate programs, scripts, tracking
-- [one-page-plan-template.md](references/one-page-plan-template.md) — Blank 9-square template with prompts, two worked examples, planning exercise
 
 ## Further Reading
 

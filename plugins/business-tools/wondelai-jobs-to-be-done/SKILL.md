@@ -1,10 +1,10 @@
 ---
 name: jobs-to-be-done
-description: 'Discover what customers truly need by analyzing the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", "product-market fit", "switching behavior", "milkshake moment", or "functional vs emotional jobs". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing product value propositions. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint.'
+description: 'Discover what customers truly need by analyzing the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", "product-market fit", "switching behavior", "milkshake moment", or "functional vs emotional jobs". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing a value proposition. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. For non-leading interview technique, see mom-test.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Jobs to Be Done Framework
@@ -22,7 +22,7 @@ Key elements of the definition:
 
 ## Scoring
 
-**Goal: 10/10.** Rate product strategy or positioning 0-10 against the principles below. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score 1 point per satisfied row in the Quick Diagnostic (7 rows) plus up to 3 points for depth: +1 if all three job dimensions are evidenced, +1 if the job statement avoids any product/solution name, +1 if competition includes non-consumption. Bands: **9-10** = job stated without the product, all four forces mapped, three dimensions evidenced, non-obvious competition and Little Hire tracked; **5-6** = job named but one or two diagnostic rows fail (usually missing forces or emotional/social dimensions); **<=3** = product-first framing, demographic segmentation, or Pull-only thinking. Always state the current score and the specific diagnostic rows to fix.
 
 ## Three Dimensions of Every Job
 
@@ -40,7 +40,7 @@ Every job has three inseparable dimensions -- omitting any means failure:
 
 **Core concept:** A job statement captures the progress a customer seeks in a specific circumstance, in a structured format separating context, desired progress, and expected outcome.
 
-**Why it works:** Forcing teams to articulate the job in the customer's language and circumstances prevents solution-first thinking and grounds innovation in real human progress.
+**Why it works:** Because jobs are stable while solutions churn, anchoring on the job protects a roadmap from chasing features that the next technology shift makes irrelevant.
 
 **Key insights:**
 - Format: "When [circumstances], I want to [progress], so I can [outcome]"
@@ -61,9 +61,7 @@ Every job has three inseparable dimensions -- omitting any means failure:
 - Lead with the situation the customer recognizes, not the product category
 - Mirror the emotional and social dimensions alongside the functional one
 
-**Ethical boundary:** Never fabricate or exaggerate circumstances to manufacture urgency -- the job must reflect genuine progress, not artificial anxiety.
-
-See: [references/innovation-process.md](references/innovation-process.md) for job hunting methodology, the job atlas, and statement templates.
+See [references/innovation-process.md](references/innovation-process.md) when running an innovation project end-to-end -- the job-hunting methodology, the job atlas, and fill-in statement templates.
 
 ### 2. Forces of Progress (Push, Pull, Anxiety, Habit)
 
@@ -89,9 +87,7 @@ See: [references/innovation-process.md](references/innovation-process.md) for jo
 - Name the push: "Tired of [frustration]? There's a better way"
 - Reduce habit friction: "Switch in 5 minutes -- we import everything automatically"
 
-**Ethical boundary:** Reducing real anxiety is ethical; manufacturing fear or exaggerated pain to drive sales is manipulation.
-
-See: [references/competitive-strategy.md](references/competitive-strategy.md) for forces analysis, non-obvious competition, and jobs-based positioning.
+See [references/competitive-strategy.md](references/competitive-strategy.md) when mapping competitors or writing positioning -- forces analysis, the non-obvious-competition tables, and the jobs-based positioning formula with worked examples.
 
 ### 3. The Big Hire & Little Hire
 
@@ -117,9 +113,7 @@ See: [references/competitive-strategy.md](references/competitive-strategy.md) fo
 - Little Hire copy sells ease: "One click and you're done"
 - Re-engagement copy addresses the failure: "We've made [specific friction] easier"
 
-**Ethical boundary:** Never use dark patterns that win the Big Hire (hidden fees, misleading trials) while failing the Little Hire -- both decisions must deliver genuine progress.
-
-See: [references/case-studies.md](references/case-studies.md) for detailed analyses (SNHU, American Girl, Intuit).
+See [references/case-studies.md](references/case-studies.md) when you need a worked precedent to reason from -- full Big Hire / Little Hire breakdowns of SNHU, American Girl, and Intuit.
 
 ### 4. Competitive Landscape (Non-Obvious Competition)
 
@@ -146,8 +140,6 @@ See: [references/case-studies.md](references/case-studies.md) for detailed analy
 - "You wouldn't hire a [bad fit] to [job] -- so why are you using [current hack]?"
 - Position around the job outcome, not feature comparison charts
 
-**Ethical boundary:** Honest competitive framing based on the job is powerful; misrepresenting alternatives is deceptive.
-
 ### 5. Customer Discovery Interviews
 
 **Core concept:** Don't ask customers "what do you need" -- they don't know. Instead, reconstruct the purchase timeline (first thought, search, purchase, usage) to uncover the real job.
@@ -160,6 +152,7 @@ See: [references/case-studies.md](references/case-studies.md) for detailed analy
 - Purchase: "Where were you? What ultimately convinced you? What were you afraid of?"
 - Usage: "Is it doing what you expected? What surprised you? What's still missing?"
 - Signals of undiscovered jobs: workarounds, non-consumption, compensating behaviors, negative emotions toward current solutions
+- Ask only about past events, never hypotheticals ("would you...", "do you wish...") -- a question that names your solution or a benefit leads the subject and produces confirmation, not discovery
 
 **Product applications:**
 
@@ -173,8 +166,6 @@ See: [references/case-studies.md](references/case-studies.md) for detailed analy
 - Use exact customer language from interviews in marketing copy
 - "We heard you say [verbatim quote] -- so we built [feature]"
 - Frame benefits in the circumstances and emotions customers actually described
-
-**Ethical boundary:** Never lead interview subjects toward predetermined conclusions -- the goal is discovery, not confirmation.
 
 ### 6. Designing for the Job
 
@@ -200,9 +191,7 @@ See: [references/case-studies.md](references/case-studies.md) for detailed analy
 - "Everything you need to [job] -- nothing you don't"
 - Emphasize outcome and progress, not features and specifications
 
-**Ethical boundary:** Never design addictive patterns that serve engagement metrics over genuine progress -- the customer's progress is the true north, not your retention numbers.
-
-See: [references/organizational-change.md](references/organizational-change.md) for the feature-factory trap, executive buy-in, and change management.
+See [references/organizational-change.md](references/organizational-change.md) when adoption is the bottleneck rather than the analysis -- escaping the feature-factory trap, winning executive buy-in, and managing the change.
 
 ## Common Mistakes
 
@@ -228,15 +217,7 @@ See: [references/organizational-change.md](references/organizational-change.md) 
 | Can your team explain how each feature serves the job? | Building without strategic grounding | Require proposals to name the job dimension served |
 | Have you interviewed customers about their purchase timeline? | Job understanding based on assumptions | Run 10+ interviews reconstructing first-thought-to-usage |
 
-See: [references/diagnostics.md](references/diagnostics.md) for the full diagnostic checklist.
-
-## Reference Files
-
-- [innovation-process.md](references/innovation-process.md): Job hunting methodology, job atlas, prototype testing, job statements
-- [competitive-strategy.md](references/competitive-strategy.md): Non-obvious competition, jobs-based positioning, pricing strategy
-- [organizational-change.md](references/organizational-change.md): Overcoming objections, feature-factory trap, executive buy-in, change management
-- [diagnostics.md](references/diagnostics.md): Diagnostic checklist for evaluating products through the jobs lens
-- [case-studies.md](references/case-studies.md): Detailed analyses of SNHU, American Girl, Intuit, and more
+When the inline Quick Diagnostic above is not enough -- you are diagnosing a *symptom* (low signups, high churn, "used wrong") or need JTBD-specific metrics -- see [references/diagnostics.md](references/diagnostics.md): the "why aren't they buying" symptom table, churn-pattern tables, and traditional-vs-JTBD metric swaps.
 
 ## Further Reading
 

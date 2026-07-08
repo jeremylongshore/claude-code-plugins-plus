@@ -1,10 +1,10 @@
 ---
 name: made-to-stick
-description: 'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", "why the message isnt landing", "knowledge curse", "surprise gap", or "concrete language". Also trigger when writing pitch decks, simplifying complex product explanations, or making presentations more compelling and memorable. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'
+description: 'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "no one remembers our pitch", "tagline", "value proposition", "why the message isnt landing", "curse of knowledge", or "concrete language". Also trigger when writing a pitch deck, simplifying a complex product explanation, or making a presentation more compelling. Covers the six SUCCESs traits and the curse of knowledge. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Made to Stick Framework
@@ -17,13 +17,13 @@ A framework for crafting ideas and messages that are understood, remembered, and
 
 ## Scoring
 
-**Goal: 10/10.** Rate any messaging (copy, presentations, campaigns, onboarding) 0-10 against the SUCCESs principles: simple, surprising, concrete, credible, emotional, and wrapped in a story scores 10; forgettable communication scores low. Always state the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score any messaging (copy, presentations, campaigns, onboarding) by running the [Quick Diagnostic](#quick-diagnostic): rate each of the six traits 1-10, then map the 6-60 total to a band (50-60 = 9-10, extremely sticky; 35-49 = 7-8, strong; 20-34 = 4-6, forgettable; below 20 = ≤3, won't stick). Always state the current score, which traits scored lowest, and the specific fix from the diagnostic's Fix column.
 
 ## The SUCCESs Framework
 
 **S**imple · **U**nexpected · **C**oncrete · **C**redible · **E**motional · **S**tories
 
-**Not a checklist—a toolkit.** Not every sticky idea uses all six, but the stickiest ideas tend to use most of them. **Ethical boundary:** use SUCCESs to make true ideas stick—never to make false claims memorable.
+**Not a checklist—a toolkit.** Not every sticky idea uses all six, but the stickiest ideas tend to use most of them—don't force all six onto a message that only needs two.
 
 ### 1. Simple
 
@@ -49,7 +49,7 @@ A framework for crafting ideas and messages that are understood, remembered, and
 
 **The test:** Can you explain it to a smart 12-year-old? **Warning:** don't simplify into emptiness—"we make the world better" is simple but meaningless.
 
-See: [references/simple.md](references/simple.md) for simplification exercises and templates.
+See [references/simple.md](references/simple.md) when you can't reduce a message to one core idea—it has the Commander's Intent exercise, the inverted-pyramid pattern, and five "find the core" drills.
 
 ### 2. Unexpected
 
@@ -74,7 +74,7 @@ See: [references/simple.md](references/simple.md) for simplification exercises a
 
 **Anti-pattern:** Gimmicky surprise without substance.
 
-See: [references/unexpected.md](references/unexpected.md) for pattern-breaking techniques.
+See [references/unexpected.md](references/unexpected.md) when a message reads as predictable—it has techniques for finding the counterintuitive angle and engineering curiosity gaps.
 
 ### 3. Concrete
 
@@ -103,7 +103,7 @@ See: [references/unexpected.md](references/unexpected.md) for pattern-breaking t
 
 **Application:** features → outcomes; percentages → real numbers ("saves 40%" → "saves 16 hours/month"); categories → specific examples ("restaurants" → "pizza shops in Brooklyn"); demos > feature lists.
 
-See: [references/concrete.md](references/concrete.md) for concreteness exercises.
+See [references/concrete.md](references/concrete.md) when a message stays abstract—it has sensory-language drills and the abstract-to-concrete conversion process.
 
 ### 4. Credible
 
@@ -130,7 +130,7 @@ See: [references/concrete.md](references/concrete.md) for concreteness exercises
 
 **Making statistics stick:** put them in a context people understand—not "37 grams of saturated fat" but "more saturated fat than a Big Mac, fries, and milkshake combined."
 
-See: [references/credible.md](references/credible.md) for credibility-building techniques.
+See [references/credible.md](references/credible.md) when a claim sounds unbelievable—it has authority types, the Sinatra Test, and methods for making statistics human-scale.
 
 ### 5. Emotional
 
@@ -155,7 +155,7 @@ See: [references/credible.md](references/credible.md) for credibility-building t
 
 **Avoid the "semantic stretch":** don't over-abstract the emotion—"Support the troops" beats "Support our national defense infrastructure."
 
-See: [references/emotional.md](references/emotional.md) for emotional appeal frameworks.
+See [references/emotional.md](references/emotional.md) when a message is all logic and no feeling—it has the individual-focus, identity, and self-interest appeal frameworks.
 
 ### 6. Stories
 
@@ -176,7 +176,7 @@ See: [references/emotional.md](references/emotional.md) for emotional appeal fra
 
 **Spotting stories in the wild:** support tickets (problems + resolutions), sales calls (objections + breakthroughs), user interviews (before/after moments), internal Slack (team wins).
 
-See: [references/stories.md](references/stories.md) for story templates and collection methods.
+See [references/stories.md](references/stories.md) when you need to build a narrative—it has the three story plots, the product-story structure, and methods for collecting real stories.
 
 ## The Curse of Knowledge
 
@@ -184,22 +184,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 
 **Solutions:** test messaging with outsiders (not your team); use concrete language, not abstractions; tell stories, not bullet points; ask "would my mom understand this?"
 
-See: [references/curse-of-knowledge.md](references/curse-of-knowledge.md) for diagnosis and remedies.
-
-## Sticky Messaging Audit
-
-Rate your message on each principle:
-
-| Principle | Question | Score (1-10) |
-|-----------|----------|-------------|
-| **Simple** | Is there ONE clear core message? | |
-| **Unexpected** | Does it break a pattern or create curiosity? | |
-| **Concrete** | Can you picture it? Are there specific details? | |
-| **Credible** | Why should someone believe this? | |
-| **Emotional** | Does it make you feel something? | |
-| **Stories** | Is there a narrative or character? | |
-
-**Scoring:** 50-60 extremely sticky (rare, aim for this) · 35-49 strong (most good messaging) · 20-34 average (forgettable, needs work) · below 20 won't stick (fundamental rework).
+See [references/curse-of-knowledge.md](references/curse-of-knowledge.md) when your own message reads clearly but lands flat on others—it has diagnosis and remedies for shared-context blind spots.
 
 ## Applying SUCCESs to Product
 
@@ -224,7 +209,7 @@ Rate your message on each principle:
 - **Credible:** "Join 5,000 teams already using..."
 - **Emotional + Stories:** celebrate first success; "here's how [user] got started..."
 
-See: [references/applications.md](references/applications.md) for presentations and more application patterns.
+See [references/applications.md](references/applications.md) when applying SUCCESs to a specific format—it has element-by-element tables, fill-in templates, and before/after examples for landing pages, demos, onboarding, presentations, email campaigns, internal comms, and documentation. See [references/case-studies.md](references/case-studies.md) for full worked teardowns (JFK's moonshot, the Subway diet, Don't Mess with Texas) when you want to see all six traits operating together in a famous message.
 
 ## Common Mistakes
 
@@ -238,28 +223,18 @@ See: [references/applications.md](references/applications.md) for presentations 
 
 ## Quick Diagnostic
 
-Audit any message:
+The single scoring instrument. Score each trait 1-10, fix the lowest, then re-score:
 
-| Question | If No | Action |
-|----------|-------|--------|
-| Can I state the core in one sentence? | Too complex | Find Commander's Intent |
-| Would this surprise someone? | Predictable = forgettable | Find the counterintuitive angle |
-| Can I picture it happening? | Too abstract | Add specific, sensory details |
-| Why should someone believe this? | No credibility | Add proof, examples, Sinatra Test |
-| Does it make me feel something? | Purely logical | Focus on one person, not statistics |
-| Is there a story? | List of facts | Wrap in character + problem + resolution |
+| Trait | Question | If weak | Fix |
+|-------|----------|---------|-----|
+| **Simple** | Can I state the core in one sentence? | Too complex | Find the Commander's Intent |
+| **Unexpected** | Would this surprise someone? | Predictable = forgettable | Find the counterintuitive angle |
+| **Concrete** | Can I picture it happening? | Too abstract | Add specific, sensory details |
+| **Credible** | Why should someone believe this? | No credibility | Add proof, examples, Sinatra Test |
+| **Emotional** | Does it make me feel something? | Purely logical | Focus on one person, not statistics |
+| **Stories** | Is there a story? | List of facts | Wrap in character + problem + resolution |
 
-## Reference Files
-
-- [simple.md](references/simple.md): Commander's Intent, core finding, simplification
-- [unexpected.md](references/unexpected.md): Surprise techniques, curiosity gaps
-- [concrete.md](references/concrete.md): Sensory language, specificity, demonstrations
-- [credible.md](references/credible.md): Authority types, Sinatra Test, human-scale statistics
-- [emotional.md](references/emotional.md): Individual focus, identity appeals, Maslow
-- [stories.md](references/stories.md): Three plots, story structure, collection methods
-- [curse-of-knowledge.md](references/curse-of-knowledge.md): Diagnosis and remedies
-- [applications.md](references/applications.md): Landing pages, demos, onboarding, presentations
-- [case-studies.md](references/case-studies.md): JFK moonshot, Subway diet, Don't Mess with Texas
+Sum the six scores and band per [Scoring](#scoring) above.
 
 ## Further Reading
 

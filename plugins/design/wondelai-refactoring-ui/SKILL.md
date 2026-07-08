@@ -1,10 +1,10 @@
 ---
 name: refactoring-ui
-description: 'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions "my UI looks off", "fix the design", "Tailwind styling", "color palette", "visual hierarchy", "design system", "spacing scale", or "component styling". Also trigger when building consistent design tokens, creating dark mode themes, improving data visualization clarity, or polishing UI details before launch. Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'
+description: 'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions "my UI looks off" (or amateur/unprofessional), "fix the design", "Tailwind styling", "color palette", "visual hierarchy", "design system", "spacing scale", or "component styling". Also trigger when building consistent design tokens, creating dark mode themes, improving data-visualization clarity, or polishing UI details before launch. Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'
 license: MIT
 metadata:
   author: wondelai
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Refactoring UI Design System
@@ -19,7 +19,7 @@ A practical, opinionated approach to UI design. Apply these principles when gene
 
 ## Scoring
 
-**Goal: 10/10.** When reviewing or creating UI designs or frontend code, rate 0-10 against the principles below — 10/10 means full alignment, lower scores indicate gaps. Always give the current score and the specific improvements needed to reach 10/10.
+**Goal: 10/10.** Score by counting satisfied rows in the [Quick Diagnostic](#quick-diagnostic) (8 yes/no checks): `score = round(satisfied / 8 × 10)`. Bands follow directly: **10** = all 8 pass (hierarchy reads blurred and in grayscale, every value on a scale); **9** = exactly 1 gap (usually weak hierarchy or thin white space); **6-8** = 2-3 gaps; **<=5** = 4+ gaps (arbitrary spacing, color doing the work hierarchy should, or failing contrast). Always state the current score and the specific diagnostic rows to fix to reach 10/10.
 
 ## The Refactoring UI Framework
 
@@ -50,7 +50,7 @@ Seven principles for building professional interfaces without a designer:
 
 **Ethical boundary:** Don't use hierarchy tricks to hide important information like pricing, terms, or cancellation options.
 
-See: [references/advanced-patterns.md](references/advanced-patterns.md) for interaction states, form design, empty states, and responsive patterns.
+See [references/advanced-patterns.md](references/advanced-patterns.md) when designing components beyond static layout — interaction/hover/focus states, form design, empty states, border-radius systems, text truncation, and responsive breakpoints.
 
 ### 2. Spacing & Sizing
 
@@ -77,16 +77,14 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 - `max-w-prose`(65ch) `max-w-md`(28rem) `max-w-lg`(32rem) `max-w-xl`(36rem)
 - `gap-2` for related items, `gap-6` for section separation
 
-**Ethical boundary:** Don't use spacing to bury important UI elements like unsubscribe buttons or privacy controls.
-
 ### 3. Typography
 
 **Core concept:** Use a modular type scale, constrain line heights by context, and limit to two font families maximum.
 
-**Why it works:** A modular scale (e.g., 1.25 ratio) creates natural visual rhythm; tight line heights on headings and relaxed on body text improve readability in each context.
+**Why it works:** A modular scale (steps growing ~1.2× each) creates natural visual rhythm; tight line heights on headings and relaxed on body text improve readability in each context.
 
 **Key insights:**
-- Scale: 12, 14, 16, 20, 24, 30, 36px (1.25 ratio)
+- Scale: 12, 14, 16, 18, 20, 24, 30, 36px (~1.2 modular, hand-tuned)
 - Headings: tight line height (1.0-1.25); body: relaxed (1.5-1.75); wider text needs more line height
 - Avoid weights below 400 for body text; use bold (600-700) for emphasis, not everything
 - Two fonts max: one for headings, one for body (or one family with weight variation)
@@ -103,8 +101,6 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 - `text-xs`(12px) `text-sm`(14px) `text-base`(16px) `text-lg`(18px) `text-xl`(20px)
 - `font-normal`(400) `font-medium`(500) `font-semibold`(600) `font-bold`(700)
 - `leading-tight`(1.25) `leading-normal`(1.5) `leading-relaxed`(1.75)
-
-**Ethical boundary:** Don't use tiny type sizes to hide terms, conditions, or fees from users.
 
 ### 4. Color
 
@@ -131,15 +127,13 @@ See: [references/advanced-patterns.md](references/advanced-patterns.md) for inte
 - `bg-blue-50` for subtle backgrounds, `bg-blue-500` for primary actions
 - `border-gray-200` for subtle borders, `border-gray-300` for stronger
 
-**Ethical boundary:** Don't use color alone to convey information — always pair with text or icons for accessibility.
-
-See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark palette creation and theme implementation.
+See [references/theming-dark-mode.md](references/theming-dark-mode.md) when building a dark theme — hex shade scales, why darkest is `#111827` not black (halation), and conveying elevation via lightness instead of shadow. See [references/accessibility-depth.md](references/accessibility-depth.md) when contrast, focus rings, keyboard nav, or screen-reader support is in scope — full WCAG 2.1 AA checklist and fixes.
 
 ### 5. Depth & Shadows
 
 **Core concept:** Use a shadow scale to convey elevation — small shadows for slightly raised elements, large shadows for floating ones.
 
-**Why it works:** Shadows create physical depth that tells users which elements are interactive, floating, or background.
+**Why it works:** The eye reads shadow size as height above the page; a consistent scale makes elevation legible, so users intuit what's interactive, floating, or background.
 
 **Key insights:**
 - Small shadows = raised slightly (buttons, cards); large = floating (modals, dropdowns)
@@ -161,7 +155,7 @@ See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark
 - `shadow-lg`: `0 10px 15px rgba(0,0,0,0.1)`
 - `shadow-xl`: `0 20px 25px rgba(0,0,0,0.15)`
 
-**Ethical boundary:** Don't use excessive shadows or visual emphasis to draw attention to deceptive UI elements (dark patterns).
+See [references/animation-microinteractions.md](references/animation-microinteractions.md) when adding motion to interactive elements — durations, easing curves, loading states, and the `prefers-reduced-motion` rule.
 
 ### 6. Images & Icons
 
@@ -188,13 +182,11 @@ See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark
 - Icon sizing: `w-4 h-4` inline, `w-6 h-6` navigation, `w-8 h-8` feature icons
 - Overlay: `bg-gradient-to-t from-black/60 to-transparent` for text on images
 
-**Ethical boundary:** Don't use misleading images or icons that misrepresent functionality or product capabilities.
-
 ### 7. Layout & Composition
 
 **Core concept:** Don't center everything. Use alignment, overlap, and emphasis variation to create engaging compositions.
 
-**Why it works:** Left-aligned text is easier to read, and varied layouts that break out of rigid boxes feel dynamic and intentional.
+**Why it works:** A consistent left edge gives the eye a fixed return point per line, so it costs less to scan; centered multi-line text moves that edge every line and slows reading.
 
 **Key insights:**
 - Left-align by default; center only short headlines, heroes, single-action CTAs, and empty states
@@ -215,7 +207,7 @@ See: [references/theming-dark-mode.md](references/theming-dark-mode.md) for dark
 - `grid grid-cols-3 gap-6` for feature grids; `max-w-4xl mx-auto` for page containers
 - `overflow-hidden` on cards with `object-fit: cover` images that bleed to edges
 
-**Ethical boundary:** Don't use layout tricks to hide or obscure important user choices like opt-outs or data permissions.
+See [references/data-visualization.md](references/data-visualization.md) when laying out charts, tables, or dashboards — chart-type selection, color use in charts, table density, and dashboard composition.
 
 ## Common Mistakes
 
@@ -244,14 +236,6 @@ Audit any UI design:
 | Is text width constrained? | Long lines fatigue readers | Apply `max-w-prose` (~65ch) |
 | Do colors have sufficient contrast? | Accessibility failure | WCAG-check; use gray-700+ on white |
 | Are shadows appropriate for elevation? | Elements float at wrong level | Match shadow scale to element purpose |
-
-## Reference Files
-
-- [advanced-patterns.md](references/advanced-patterns.md): Empty states, form design, image treatment, icon sizing, interaction states, color psychology, border radius systems, text truncation, responsive breakpoints
-- [animation-microinteractions.md](references/animation-microinteractions.md): When to animate, easing functions, durations, loading states, animation performance
-- [accessibility-depth.md](references/accessibility-depth.md): WCAG 2.1 AA checklist, focus management, screen reader support, keyboard navigation
-- [data-visualization.md](references/data-visualization.md): Chart selection, color in charts, table design, dashboard layouts
-- [theming-dark-mode.md](references/theming-dark-mode.md): Dark palette creation, elevation in dark mode, theme implementation strategies
 
 ## Further Reading
 

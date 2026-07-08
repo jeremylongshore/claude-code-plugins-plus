@@ -1,0 +1,32 @@
+{
+  "name": "@intentsolutionsio/mnemos",
+  "version": "0.1.0",
+  "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+  "keywords": [
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/mnemos"
+  },
+  "homepage": "https://tonsofskills.com/plugins/mnemos",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Polyx Media",
+    "url": "https://github.com/polyxmedia"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install mnemos\\\\n  or /plugin install mnemos@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

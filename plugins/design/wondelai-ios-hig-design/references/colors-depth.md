@@ -1,41 +1,30 @@
-# iOS Colors & Theming
+# iOS Colors & Theming Reference
 
-## Semantic Colors
+SKILL.md section 3 covers the core semantic palette (`label`, `secondaryLabel`, `systemBackground`, `systemBlue`/`systemRed`/`systemGreen`) and the three Dark Mode adaptation rules. This file adds what it does not carry: the extra layering tokens and the full WCAG contrast table.
 
-Use semantic colors that automatically adapt to light/dark mode:
+## Extra Semantic Tokens (beyond the core set)
 
-```swift
-Color(.label)              // Primary text
-Color(.secondaryLabel)     // Secondary text
-Color(.tertiaryLabel)      // Tertiary text
-Color(.systemBackground)   // Primary background
-Color(.secondarySystemBackground)  // Elevated/grouped
-Color(.systemBlue)         // Default tint/accent
-Color(.systemRed)          // Destructive actions
-Color(.systemGreen)        // Success/confirmation
-```
-
-## Dark Mode Guidelines
-
-1. **Text**: Invert colors (dark → light)
-2. **Backgrounds**: Shift darker while maintaining relative hierarchy
-3. **Accent colors**: Adjust to pop against dark backgrounds (often lower brightness, higher saturation)
+For multi-level hierarchy and grouped layouts, reach past the core six:
 
 ```swift
-// Preview both modes during development
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .preferredColorScheme(.light)
-        ContentView()
-            .preferredColorScheme(.dark)
-    }
-}
+Color(.tertiaryLabel)              // 3rd-level text (placeholders, disabled)
+Color(.quaternaryLabel)            // 4th-level (separators, faint glyphs)
+Color(.secondarySystemBackground)  // elevated cards / grouped table sections
+Color(.tertiarySystemBackground)   // a layer above secondary
+Color(.systemGroupedBackground)    // base behind grouped lists (Settings style)
+Color(.separator)                  // hairline dividers (already mode-aware)
 ```
 
-## Color Contrast
+Use the grouped-background family for `.insetGrouped` lists; use the plain `systemBackground` family for full-bleed content.
 
-Minimum contrast ratios (WCAG):
-- **4.5:1** for normal text
-- **3:1** for large text (18pt+ or 14pt+ bold)
-- **3:1** for UI components
+## Color Contrast (full WCAG table)
+
+SKILL.md states the 4.5:1 floor for body text. The complete set of minimums:
+
+| Content | Minimum ratio |
+|---------|---------------|
+| Normal text (< 18pt, or < 14pt bold) | 4.5:1 |
+| Large text (>= 18pt, or >= 14pt bold) | 3:1 |
+| UI components and graphical objects (icons, control borders, focus rings) | 3:1 |
+
+Verify with Xcode's Accessibility Inspector color contrast check, in both light and dark modes and with Increase Contrast enabled.

@@ -1,27 +1,6 @@
 # Product Diagnostics Through JTBD Lens
 
-## Checklist: Do You Know Your Product's Job?
-
-### Level 1: Basic Understanding
-
-- [ ] You can describe the job in one sentence without using the product name
-- [ ] You know the circumstances in which the job arises
-- [ ] You know what customer did BEFORE using your product
-- [ ] You understand the functional, emotional, AND social dimensions
-
-### Level 2: Deep Understanding
-
-- [ ] You know what you really compete with (not just "direct competitors")
-- [ ] You understand push/pull and habit/anxiety forces for your customer
-- [ ] You can distinguish Big Hire from Little Hire
-- [ ] You know why customers "fire" your product
-
-### Level 3: Organizational Implementation
-
-- [ ] Product decisions are filtered through the job lens
-- [ ] Metrics measure job completion, not just usage
-- [ ] Roadmap is oriented toward better job execution
-- [ ] Team can articulate the customer's job
+This file is the deep diagnostic layer behind SKILL.md. Run the **Quick Diagnostic** table in SKILL.md first for the seven pass/fail readiness checks; come here when a symptom needs a probable cause, when you need JTBD metrics, or when you are running a churn analysis.
 
 ## Red Flags - Signs You Don't Know the Job
 
@@ -43,26 +22,7 @@
 | They buy but don't use | Little Hire lost | Redesign the moment of use |
 | They use but churn | Job changed or better "employee" appeared | Investigate "firing" reasons |
 
-### "Firing" Interview (Churn Interview)
-
-Questions for customers who left:
-
-1. "What did you do before us? Why did you come to us?"
-2. "What changed that made you start looking for alternatives?"
-3. "What ultimately convinced you to leave?"
-4. "What do you do now instead of us? Does it do the job better?"
-5. "If we could change one thing, what would it be?"
-
-### "Hiring" Interview (New Customer Interview)
-
-Questions for new customers (within 2 weeks):
-
-1. "When did you first think about looking for a solution?"
-2. "What was the trigger - what was happening then?"
-3. "What alternatives did you look for? What disqualified them?"
-4. "What ultimately convinced you to choose us?"
-5. "What were you afraid of before buying?"
-6. "Is the product doing what you expected?"
+For the full timeline-interview question set (first-thought -> search -> purchase -> usage), see SKILL.md section 5; for the structured churn ("firing") interview, see the Churn Interview Framework table below.
 
 ## JTBD Metrics
 

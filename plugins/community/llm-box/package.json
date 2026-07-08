@@ -1,0 +1,32 @@
+{
+  "name": "@intentsolutionsio/llm-box",
+  "version": "0.1.0",
+  "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
+  "keywords": [
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/llm-box"
+  },
+  "homepage": "https://tonsofskills.com/plugins/llm-box",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "alib8b8",
+    "url": "https://github.com/alib8b8"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install llm-box\\\\n  or /plugin install llm-box@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
