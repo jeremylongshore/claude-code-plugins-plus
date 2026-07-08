@@ -1,23 +1,23 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-07-07T22:35:08.086Z",
+    "generated": "2026-07-08T01:29:13.586Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 450,
-    "totalSkills": 3022,
+    "totalPlugins": 460,
+    "totalSkills": 3082,
     "totalCommands": 81,
-    "pluginsWithSkills": 417,
+    "pluginsWithSkills": 428,
     "byCategory": {
-      "productivity": 51,
-      "security": 29,
+      "productivity": 52,
+      "security": 30,
       "testing": 27,
       "ai-ml": 76,
       "performance": 25,
       "devops": 42,
-      "api-development": 25,
+      "api-development": 26,
       "crypto": 27,
       "skill-enhancers": 9,
       "debugging": 1,
@@ -31,21 +31,21 @@
       "finance": 1,
       "code-quality": 4,
       "automation": 3,
-      "community": 13,
+      "community": 16,
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
       "analytics": 3,
       "saas-packs": 2,
-      "mcp": 1
+      "mcp": 5
     },
     "byStatus": {
-      "active": 431,
+      "active": 441,
       "maintained": 19
     },
     "featured": 7,
-    "new": 429,
-    "generatedAt": "2026-07-07T22:35:08.086Z"
+    "new": 439,
+    "generatedAt": "2026-07-08T01:29:13.586Z"
   },
   "plugins": [
     {
@@ -5867,7 +5867,7 @@
         "exploitation"
       ],
       "hasSkills": true,
-      "skillCount": 16,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install penetration-tester",
       "sourcePath": "./plugins/security/penetration-tester",
@@ -9472,7 +9472,7 @@
         "lakehouse"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 25,
       "commandCount": 0,
       "installCommand": "/plugin install databricks-pack",
       "sourcePath": "./plugins/saas-packs/databricks-pack",
@@ -11679,41 +11679,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "geepers",
-      "name": "geepers",
-      "displayName": "geepers",
-      "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built with MCP tools and Claude Code plugin agents.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "mcp",
-        "orchestration",
-        "multi-agent",
-        "development-workflow",
-        "code-quality",
-        "deployment",
-        "geepers",
-        "claude-code"
-      ],
-      "hasSkills": false,
-      "skillCount": 0,
-      "commandCount": 0,
-      "installCommand": "/plugin install geepers",
-      "sourcePath": "./plugins/community/geepers-agents",
-      "lastUpdatedEpoch": 1773792355,
-      "lastUpdatedDate": "2026-03-18T00:05:55.682Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Luke Steuber"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "lumera-agent-memory",
       "name": "lumera-agent-memory",
       "displayName": "lumera agent memory",
@@ -11832,7 +11797,7 @@
         "claude-code"
       ],
       "hasSkills": true,
-      "skillCount": 3,
+      "skillCount": 4,
       "commandCount": 0,
       "installCommand": "/plugin install slack-channel",
       "sourcePath": "./plugins/mcp/slack-channel",
@@ -12494,7 +12459,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 23,
       "commandCount": 0,
       "installCommand": "/plugin install coreweave-pack",
       "sourcePath": "./plugins/saas-packs/coreweave-pack",
@@ -14750,7 +14715,7 @@
         "mcp"
       ],
       "hasSkills": true,
-      "skillCount": 2,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install aomi",
       "sourcePath": "./plugins/crypto/aomi",
@@ -14804,40 +14769,6 @@
       "author": {
         "name": "Alister Lewis-Bowen",
         "url": "https://github.com/ali5ter"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "Claudebase",
-      "name": "Claudebase",
-      "displayName": "claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "hasSkills": false,
-      "skillCount": 0,
-      "commandCount": 0,
-      "installCommand": "/plugin install Claudebase",
-      "sourcePath": "./plugins/productivity/claudebase",
-      "lastUpdatedEpoch": 1780371289,
-      "lastUpdatedDate": "2026-06-02T03:34:49.587Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
       },
       "type": "instruction-plugin"
     },
@@ -15283,8 +15214,8 @@
         "claude-code",
         "automation"
       ],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install schedule-after-usage-reset",
       "sourcePath": "./plugins/productivity/schedule-after-usage-reset",
@@ -15327,8 +15258,8 @@
         "product-launch",
         "backlinks"
       ],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 18,
       "commandCount": 0,
       "installCommand": "/plugin install servicegraph",
       "sourcePath": "./plugins/mcp/servicegraph",
@@ -15344,6 +15275,430 @@
         "name": "Artur Briugeman",
         "url": "https://servicegraph.co",
         "email": "artur@nostr.band"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "agent-safety-preflight",
+      "name": "agent-safety-preflight",
+      "displayName": "agent safety preflight",
+      "description": "Local Claude Code command that generates a repo-risk receipt before AI-agent edits.",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "claude-code",
+        "agent-safety",
+        "preflight",
+        "repo-risk",
+        "mcp",
+        "hooks",
+        "ai-agent"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install agent-safety-preflight",
+      "sourcePath": "./plugins/security/agent-safety-preflight",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "el-zachariah",
+        "url": "https://github.com/el-zachariah"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "beads-dolt",
+      "name": "beads-dolt",
+      "displayName": "beads dolt",
+      "description": "⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead. Same plugin: a Dolt/DoltHub version-control toolkit shipping the beads (bd) task-tracker adapter.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "beads",
+        "bd",
+        "dolt",
+        "dolthub",
+        "task-tracking",
+        "mcp",
+        "version-control",
+        "sql"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install beads-dolt",
+      "sourcePath": "./plugins/mcp/dolt-mcp-vcs",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "claudebase",
+      "name": "claudebase",
+      "displayName": "claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "hasSkills": true,
+      "skillCount": 6,
+      "commandCount": 0,
+      "installCommand": "/plugin install claudebase",
+      "sourcePath": "./plugins/productivity/claudebase",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "databricks-workspace-mcp",
+      "name": "databricks-workspace-mcp",
+      "displayName": "databricks workspace mcp",
+      "description": "MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The endpoint families no managed Databricks MCP exposes; pairs with the managed SQL MCP for system.* reads.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "mcp",
+        "model-context-protocol",
+        "databricks",
+        "lakehouse",
+        "unity-catalog",
+        "clusters",
+        "dlt",
+        "finops"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install databricks-workspace-mcp",
+      "sourcePath": "./plugins/mcp/databricks-workspace-mcp",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "dolt-mcp-vcs",
+      "name": "dolt-mcp-vcs",
+      "displayName": "dolt mcp vcs",
+      "description": "Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "dolt-mcp-vcs",
+        "dolt",
+        "dolthub",
+        "dolt-mcp",
+        "version-control",
+        "vcs",
+        "mcp",
+        "sql",
+        "beads",
+        "bd"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install dolt-mcp-vcs",
+      "sourcePath": "./plugins/mcp/dolt-mcp-vcs",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "url": "https://github.com/jeremylongshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "governed-second-brain",
+      "name": "governed-second-brain",
+      "displayName": "governed second brain",
+      "description": "Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident, hash-chained audit trail. Install via `npx governed-second-brain init <folder>`.",
+      "version": "0.1.6",
+      "category": "mcp",
+      "keywords": [
+        "memory",
+        "knowledge",
+        "governance",
+        "qmd",
+        "brain",
+        "citations",
+        "local-first",
+        "second-brain"
+      ],
+      "hasSkills": true,
+      "skillCount": 2,
+      "commandCount": 0,
+      "installCommand": "/plugin install governed-second-brain",
+      "sourcePath": "./plugins/mcp/governed-second-brain",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "hermes-tweet",
+      "name": "hermes-tweet",
+      "displayName": "hermes tweet",
+      "description": "Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions",
+      "version": "0.1.6",
+      "category": "community",
+      "keywords": [
+        "hermes-agent",
+        "hermes-plugin",
+        "xquik",
+        "twitter",
+        "x",
+        "social-media",
+        "automation"
+      ],
+      "hasSkills": true,
+      "skillCount": 2,
+      "commandCount": 0,
+      "installCommand": "/plugin install hermes-tweet",
+      "sourcePath": "./plugins/community/hermes-tweet",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "publishing-skills",
+      "name": "publishing-skills",
+      "displayName": "publishing skills",
+      "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline — topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "ghost",
+        "blogging",
+        "seo",
+        "content-creation",
+        "publishing",
+        "claude-code",
+        "ai-writing"
+      ],
+      "hasSkills": true,
+      "skillCount": 4,
+      "commandCount": 0,
+      "installCommand": "/plugin install publishing-skills",
+      "sourcePath": "./plugins/productivity/publishing-skills",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "AutomateLab",
+        "url": "https://github.com/AutomateLab-tech",
+        "email": "hello@automatelab.tech"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "x-twitter-scraper",
+      "name": "x-twitter-scraper",
+      "displayName": "x twitter scraper",
+      "description": "X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.",
+      "version": "0.1.0",
+      "category": "api-development",
+      "keywords": [],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install x-twitter-scraper",
+      "sourcePath": "./plugins/api-development/x-twitter-scraper",
+      "lastUpdatedEpoch": 1783466385,
+      "lastUpdatedDate": "2026-07-07T23:19:45.920Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Xquik",
+        "url": "https://github.com/Xquik-dev"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "llm-box",
+      "name": "llm-box",
+      "displayName": "llm box",
+      "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.",
+      "version": "0.3.0",
+      "category": "community",
+      "keywords": [
+        "workflow",
+        "automation",
+        "terminal",
+        "cli",
+        "yaml",
+        "llm",
+        "mcp"
+      ],
+      "hasSkills": true,
+      "skillCount": 2,
+      "commandCount": 0,
+      "installCommand": "/plugin install llm-box",
+      "sourcePath": "./plugins/community/llm-box",
+      "lastUpdatedEpoch": 1783474153,
+      "lastUpdatedDate": "2026-07-08T01:29:13.586Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "alib8b8",
+        "url": "https://github.com/alib8b8"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "mnemos",
+      "name": "mnemos",
+      "displayName": "mnemos",
+      "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+      "version": "0.9.0",
+      "category": "community",
+      "keywords": [
+        "memory",
+        "mcp",
+        "claude-code",
+        "persistent-memory",
+        "agent-memory",
+        "knowledge-graph",
+        "context",
+        "skill",
+        "observations",
+        "provenance",
+        "learning-loop",
+        "golang"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install mnemos",
+      "sourcePath": "./plugins/community/mnemos",
+      "lastUpdatedEpoch": 1783474153,
+      "lastUpdatedDate": "2026-07-08T01:29:13.586Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "André Figueira",
+        "url": "https://polyxmedia.com",
+        "email": "andre@polyxmedia.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "portaljs",
+      "name": "portaljs",
+      "displayName": "portaljs",
+      "description": "Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
+      "version": "0.1.0",
+      "category": "community",
+      "keywords": [
+        "portaljs",
+        "data-portal",
+        "ckan",
+        "nextjs",
+        "data-catalog"
+      ],
+      "hasSkills": true,
+      "skillCount": 12,
+      "commandCount": 0,
+      "installCommand": "/plugin install portaljs",
+      "sourcePath": "./plugins/community/portaljs",
+      "lastUpdatedEpoch": 1783474153,
+      "lastUpdatedDate": "2026-07-08T01:29:13.586Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Datopian",
+        "url": "https://www.datopian.com"
       },
       "type": "instruction-plugin"
     }

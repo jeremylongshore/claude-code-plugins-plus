@@ -10588,6 +10588,30 @@
       "homepage": "https://github.com/alib8b8/llm-box",
       "repository": "https://github.com/alib8b8/llm-box",
       "license": "MIT"
+    },
+    {
+      "name": "agent-safety-preflight",
+      "source": "./plugins/security/agent-safety-preflight",
+      "description": "Local Claude Code command that generates a repo-risk receipt before AI-agent edits.",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "claude-code",
+        "agent-safety",
+        "preflight",
+        "repo-risk",
+        "mcp",
+        "hooks",
+        "ai-agent"
+      ],
+      "author": {
+        "name": "el-zachariah",
+        "url": "https://github.com/el-zachariah"
+      },
+      "homepage": "https://github.com/el-zachariah/ai-agent-safety-starter-pack#readme",
+      "repository": "https://github.com/el-zachariah/ai-agent-safety-starter-pack",
+      "license": "MIT"
     }
   ]
 }

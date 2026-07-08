@@ -135,7 +135,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      30 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
-| 🔐  | [Security](#security)                              |      26 |
+| 🔐  | [Security](#security)                              |      27 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
 | 🧪  | [Testing](#testing)                                |      28 |
 | 📁  | [Analytics](#analytics)                            |       1 |
@@ -675,11 +675,12 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Security
 
-🔐 **26 plugins** · category slug: `security`
+🔐 **27 plugins** · category slug: `security`
 
 | Plugin                             | Description                                                                                                                              |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `access-control-auditor`           | Audit access control implementations                                                                                                     |
+| `agent-safety-preflight`           | Local Claude Code command that generates a repo-risk receipt before AI-agent edits.                                                      |
 | `authentication-validator`         | Validate authentication implementations                                                                                                  |
 | `compliance-report-generator`      | Generate compliance reports                                                                                                              |
 | `cors-policy-validator`            | Validate CORS policies                                                                                                                   |
