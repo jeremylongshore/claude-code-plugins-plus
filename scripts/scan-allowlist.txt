@@ -31,4 +31,4 @@ plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint document
 # per-review gate; a persistent line here would auto-waive FUTURE source-list
 # changes too, so each sources PR swaps this line for its own scoped reason and
 # the one-shot-waiver fix (#985 defect 3) retires the convention entirely.
-sources.yaml:sources-change-unscanned  2026-07-08 glob-anchoring PR reviewed: strictly risk-reducing — anchors the portaljs/llm-box/mnemos include patterns with `/` so the matcher's **/ auto-prefix stops mirroring nested unintended files (#985 defect 6); no source added or repointed
+sources.yaml:sources-change-unscanned  2026-07-08 verified-flag honesty PR reviewed: strictly risk-reducing — flips verified:true to false on the 27 census-drifted entries (wondelai family + n-skills, graded D/F) until upstream fixes land; no source added, repointed, or re-included

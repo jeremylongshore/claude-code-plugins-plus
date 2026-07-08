@@ -46,7 +46,8 @@ sources:
       email: numman.ali@gmail.com
     license: Apache-2.0
     category: community
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     # Files to sync (relative to source_path)
     include:
       - 'SKILL.md'
@@ -69,7 +70,8 @@ sources:
       email: numman.ali@gmail.com
     license: Apache-2.0
     category: community
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'README.md'
@@ -126,7 +128,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -145,7 +148,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -164,7 +168,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -183,7 +188,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -202,7 +208,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -221,7 +228,8 @@ sources:
       github: wondelai
     license: MIT
     category: productivity
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -240,7 +248,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -259,7 +268,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -278,7 +288,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -297,7 +308,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -316,7 +328,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -335,7 +348,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -354,7 +368,8 @@ sources:
       github: wondelai
     license: MIT
     category: productivity
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -373,7 +388,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -392,7 +408,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -411,7 +428,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -430,7 +448,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -449,7 +468,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -468,7 +488,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -487,7 +508,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -506,7 +528,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -525,7 +548,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -544,7 +568,8 @@ sources:
       github: wondelai
     license: MIT
     category: business-tools
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -563,7 +588,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
@@ -582,7 +608,8 @@ sources:
       github: wondelai
     license: MIT
     category: design
-    verified: true
+    # census 2026-07-08: graded D/F — verified flips back to true when the upstream fix lands (deadline 2026-07-22)
+    verified: false
     include:
       - 'SKILL.md'
       - 'references/**'
