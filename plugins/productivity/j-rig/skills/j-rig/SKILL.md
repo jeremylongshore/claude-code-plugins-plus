@@ -182,7 +182,7 @@ j-rig refine score skills/my-skill --model sonnet
 ANTHROPIC_API_KEY=... j-rig refine propose skills/my-skill --strategy skill-opt-style
 
 # 4. If accepted, apply it, producing a new candidate version (human-gated promote).
-j-rig refine apply skills/my-skill --proposal <hash>
+j-rig refine apply skills/my-skill --proposal "<hash>"
 
 # 5. Inspect the trajectory, best pointer, and event log any time.
 j-rig refine status my-skill
