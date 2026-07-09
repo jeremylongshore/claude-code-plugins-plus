@@ -9024,6 +9024,24 @@
       "homepage": "https://github.com/alib8b8/llm-box",
       "repository": "https://github.com/alib8b8/llm-box",
       "license": "MIT"
+    },
+    {
+      "name": "j-rig",
+      "source": "./plugins/productivity/j-rig",
+      "description": "Skill Refiner — the eval-guided SKILL.md improvement loop. Thin wrapper over the published @intentsolutions/refiner CLI (bootstrap/score/propose/apply/status) with a 3-layer cost-tiered hook architecture (sinker/line/hook) that gates skill quality at edit time, end of turn, and commit time.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "skill-refiner",
+        "eval-guided",
+        "skill-md",
+        "meta-tooling",
+        "hooks"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
     }
   ]
 }

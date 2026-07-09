@@ -32,3 +32,11 @@ plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint document
 # changes too, so each sources PR swaps this line for its own scoped reason and
 # the one-shot-waiver fix (#985 defect 3) retires the convention entirely.
 sources.yaml:sources-change-unscanned  2026-07-08 verified-flag honesty PR reviewed: strictly risk-reducing — flips verified:true to false on the 27 census-drifted entries (wondelai family + n-skills, graded D/F) until upstream fixes land; no source added, repointed, or re-included
+
+# ── Skill Refiner plugin: the 3-layer hook architecture IS the product. ──
+# /j-rig is the eval-guided SKILL.md improvement loop; its sinker/line/hook hooks
+# are the reviewed, intended feature (not an injected payload). They only invoke
+# the published @intentsolutions/refiner CLI + a deterministic validator — no
+# network, no embedded credentials, no dynamic-exec of untrusted input. SKILL_ID
+# is validated (^[a-zA-Z0-9_-]+$) before any use. Reviewed 2026-07-09.
+plugins/productivity/j-rig/**:hook-definition  the sinker/line/hook 3-layer architecture is this plugin's purpose; hooks only wrap the published @intentsolutions/refiner CLI + a deterministic validator, no network/credentials/dynamic-exec — reviewed 2026-07-09
