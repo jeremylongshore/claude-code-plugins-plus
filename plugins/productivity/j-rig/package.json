@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/j-rig",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Skill Refiner — the eval-guided SKILL.md improvement loop, delivered as a thin wrapper over the published @intentsolutions/refiner CLI with a 3-layer cost-tiered hook architecture (sinker/line/hook)",
   "keywords": [
     "skill-refiner",
