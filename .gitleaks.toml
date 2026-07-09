@@ -72,6 +72,36 @@ paths = [
     # strings as if they were keys. Allowlist the file so the detector
     # library is not re-read as a leak surface.
     '''^plugins/security/penetration-tester/skills/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
+
+    # --- Documentation / illustrative-example surfaces (2026-07-09 audit) ---
+    # The weekly full-history scan (fetch-depth: 0) surfaced 87 findings, all
+    # illustrative example creds in prose/templates — no real credential. Each
+    # pattern below is grounded in a real finding from run 28731012059.
+    #
+    # Home-level security guides carry `API_KEY="sk-..."` teaching examples
+    # (generic-api-key, stripe-access-token hits in 000-docs/*.md incl. the
+    # 6767-d extensions-schema and 071 user-security guide).
+    '''^000-docs/.*\.md$''',
+    '''^SECURITY\.md$''',
+    '''^CREDENTIAL-MIGRATION-READY\.md$''',
+    # Prior path of the user-security guide (renamed into 000-docs/); still
+    # reachable via history on the full-depth scan.
+    '''^docs/USER_SECURITY_GUIDE\.md$''',
+    # Plugin documentation surfaces — command/agent/plugin-docs markdown and
+    # skill-adapter example assets hold curl-auth-header / generic-api-key /
+    # jwt teaching examples (security-scanner, penetration-tester, crypto
+    # audit, api-* generators, on-chain-analytics, etc.). These are prose docs
+    # and generated example templates, not executable secrets; real plugin
+    # code (.py/.ts/.js/.sh) stays in scope.
+    '''^plugins/.*/commands/.*\.md$''',
+    '''^plugins/.*/agents/.*\.md$''',
+    '''^plugins/.*/docs/.*\.md$''',
+    '''^plugins/.*/skills/skill-adapter/assets/.*''',
+    # Deleted `backups/` tree — a snapshot of plugin docs removed from HEAD but
+    # still reachable through git history under fetch-depth: 0. It re-tripped
+    # ~60 of the 87 findings every scheduled run. The tree no longer exists in
+    # the working copy; scope it out of the history scan so it stops re-firing.
+    '''^backups/.*''',
 ]
 
 regexes = [
@@ -85,4 +115,15 @@ regexes = [
     '''placeholder''',
     '''replace[-_]me''',
     '''example\.com''',
+    # Firebase Web (browser) API key from the now-retired Firebase-hosted
+    # version of marketplace/src/layouts/BaseLayout.astro (the single
+    # gcp-api-key hit at commit 44933759:52; the firebaseConfig block has since
+    # been removed — the current site uses Umami, no Firebase). Firebase Web
+    # API keys are public by design: Google ships them in client-side config
+    # and documents that they are safe to commit (access is gated by Security
+    # Rules + App Check, not by key secrecy). The default gcp-api-key rule
+    # flags the AIzaSy… shape regardless. Allowlist the exact value, NOT the
+    # .astro path, so a real server key ever added to an .astro file still
+    # surfaces.
+    '''AIzaSyAUbgBuoMCtcjEdRcYzqu08kuVFVDeiHsM''',
 ]
