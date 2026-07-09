@@ -57,12 +57,15 @@ if [ -f "$STAMP" ]; then
     exit 0
   fi
 fi
-echo "$NOW" > "$STAMP"
+# NOTE: the rate-limit stamp is written AFTER the gate runs (end of file), not
+# here — so a gate that crashes does not silently consume the 300s window.
 
 # ── Agentic gate ($$ Opus, rate-limited) ─────────────────────────────────────
-# Thin wrapper over the published refiner CLI: shadow-validate the staged
-# candidate against the held-out eval set. A non-zero refiner exit = regression
-# → BLOCK the commit with exit 2 (Anthropic "Can block" semantics).
+# STATUS: ADVISORY-ONLY STUB in this version. The full Opus agentic gate +
+# shadow-validation — and the `exit 2` that BLOCKS a regressing commit — land in
+# jsy3.8 (the MVP end-to-end demo, which needs a real refiner run). Until then
+# this layer NEVER blocks a commit; it only surfaces advisory notes. The
+# blocking path is kept explicit below so it is legible and easy to activate.
 if command -v j-rig >/dev/null 2>&1; then
   for skill_md in $STAGED_SKILLS; do
     skill_dir=$(dirname "$skill_md")
@@ -71,17 +74,22 @@ if command -v j-rig >/dev/null 2>&1; then
       echo "[j-rig · Hook L3] No refiner history for ${skill_dir}; run '/j-rig refine bootstrap ${skill_dir}' to enable shadow-validation." >&2
       continue
     fi
-    # A real deployment runs the Opus agentic gate + shadow-validation here and
-    # exits 2 on a regression against the rejected-edit buffer. Kept explicit so
-    # the blocking path is legible:
+    # jsy3.8 activates the real gate here: run the Opus agentic pass +
+    # shadow-validation against the held-out eval set and exit 2 on a regression
+    # against the rejected-edit buffer (Anthropic "Can block" semantics):
     #   if regression_detected; then
     #     echo "[j-rig · Hook L3] BLOCKED: staged ${skill_md} regresses the held-out eval set." >&2
     #     exit 2
     #   fi
-    :
+    echo "[j-rig · Hook L3] Advisory only (the agentic blocking gate lands in jsy3.8); ${skill_md} not shadow-validated yet." >&2
   done
 else
   echo "[j-rig · Hook L3] j-rig CLI not installed; install @intentsolutions/jrig-cli to enable the commit-time agentic gate." >&2
 fi
+
+# Record the rate-limit stamp only AFTER the gate has run to completion, so a
+# gate crash (set -e mid-loop) does NOT consume the 300s window — a failed gate
+# re-runs on the next commit rather than being silently suppressed.
+echo "$NOW" > "$STAMP"
 
 exit 0

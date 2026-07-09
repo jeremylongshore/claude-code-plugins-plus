@@ -30,19 +30,37 @@ if [ -z "$SKILL_ID" ]; then
   exit 0
 fi
 
+# Validate before use: a skill id is a simple slug. Reject anything with regex
+# metacharacters or path separators BEFORE it reaches a grep pattern (count
+# inflation) or a CLI path argument (`../../…` traversal outside skills/).
+if ! printf '%s' "$SKILL_ID" | grep -qE '^[a-zA-Z0-9_-]+$'; then
+  exit 0
+fi
+
 mkdir -p "$LOG_DIR"
 TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 printf '{"type":"rollout-captured","skill_id":"%s","at":"%s"}\n' "$SKILL_ID" "$TS" >> "$LOG_FILE"
 
-# Count rollouts for this skill; once the threshold is met, fire the refiner
-# in the background (Sonnet propose / Haiku score) and surface next turn.
-COUNT=$(grep -c "\"skill_id\":\"${SKILL_ID}\"" "$LOG_FILE" 2>/dev/null || echo 0)
-if [ "$COUNT" -ge "$JRIG_LINE_ROLLOUT_THRESHOLD" ]; then
+# Count rollouts for this skill. -F (fixed-string) match — SKILL_ID is a
+# validated slug, and -F removes any doubt about regex interpretation.
+COUNT=$(grep -Fc "\"skill_id\":\"${SKILL_ID}\"" "$LOG_FILE" 2>/dev/null || echo 0)
+
+# Amortize correctly: fire only when THRESHOLD *new* rollouts have accumulated
+# SINCE THE LAST background fire for this skill — not on every turn once the
+# lifetime count first crosses the threshold (which would fire indefinitely and
+# silently burn budget). Track the count at last fire, per skill.
+FIRED_FILE="${LOG_DIR}/.last-fired-${SKILL_ID}"
+LAST_FIRED=$(cat "$FIRED_FILE" 2>/dev/null || echo 0)
+case "$LAST_FIRED" in '' | *[!0-9]*) LAST_FIRED=0 ;; esac
+if [ "$((COUNT - LAST_FIRED))" -ge "$JRIG_LINE_ROLLOUT_THRESHOLD" ]; then
   {
-    echo "[j-rig · Line L2] ${COUNT} rollouts accumulated on skill '${SKILL_ID}'."
+    echo "[j-rig · Line L2] ${COUNT} rollouts on skill '${SKILL_ID}' ($((COUNT - LAST_FIRED)) since last pass)."
     echo "  Firing a background refiner pass. Review the candidate next turn with:"
     echo "    /j-rig refine status ${SKILL_ID}"
   } >&2
+  # Record the fire BEFORE launching so a rapid second Stop in the same window
+  # cannot double-fire; the next fire waits for another THRESHOLD rollouts.
+  echo "$COUNT" > "$FIRED_FILE"
   # Thin wrapper over the published refiner CLI; background + detached so the
   # Stop hook returns immediately (mid-tier cost is paid off-turn).
   if command -v j-rig >/dev/null 2>&1; then
