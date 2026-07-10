@@ -91,7 +91,7 @@ echo "Authority registry: [path]"
 echo "Fact classes registered: [n] — [list of class names]"
 ```
 
-3. If the registry is missing or unparseable, announce **bootstrap mode**: every fact class is unowned. Conflicts are still detected and reported, but no winner is ever named — each is emitted as `unowned fact-class — human adjudication needed`, and the report includes drafted registry rows for a human to adjudicate (see [Bootstrap](#bootstrap-drafting-registry-rows)).
+1. If the registry is missing or unparseable, announce **bootstrap mode**: every fact class is unowned. Conflicts are still detected and reported, but no winner is ever named — each is emitted as `unowned fact-class — human adjudication needed`, and the report includes drafted registry rows for a human to adjudicate (see [Bootstrap](#bootstrap-drafting-registry-rows)).
 
 **Registry row shape:**
 
@@ -135,6 +135,7 @@ echo "Scanning for documentation artifacts..."
 ```
 
 Use Glob to find:
+
 - `README.md`, `README.*`
 - `CLAUDE.md`
 - `CHANGELOG.md`, `CHANGES.md`
@@ -146,6 +147,7 @@ Use Glob to find:
 - Package manifests: `package.json`, `Gemfile`, `*.gemspec`, `pyproject.toml`, `Cargo.toml`, `go.mod`
 
 Print a summary of what was found:
+
 ```
 echo "Documentation artifacts found:"
 echo "  - README: [yes/no]"
@@ -163,6 +165,7 @@ echo "  - Package manifests: [list]"
 Execute ALL applicable checks from the list below. Each check is independent — run every check that has the required files present. Skip checks whose input files don't exist (note the skip, don't error).
 
 Every check carries a **Lane** tag:
+
 - **Deterministic** — existence, string-equality, and exact-comparison checks. Findings may be Critical, Warning, or Info.
 - **LLM-judged (advisory)** — checks requiring semantic judgment. Findings are ⚪ Advisory, always — never Critical, never blocking.
 
@@ -173,6 +176,7 @@ Every check carries a **Lane** tag:
 **Lane:** Deterministic (referential integrity — no registry row needed; the filesystem is the definitional referent).
 
 If `000-docs/000-INDEX.md` exists:
+
 1. Read the index file
 2. Extract all file paths listed in the index
 3. For each path, verify the file exists on disk using Glob
@@ -184,6 +188,7 @@ If `000-docs/000-INDEX.md` exists:
 **Lane:** Deterministic. **Fact class:** `version-string`.
 
 Collect version strings from ALL available sources:
+
 - `VERSION` or `version.txt` file
 - `package.json` → `version` field
 - `*.gemspec` → `version` attribute
@@ -200,6 +205,7 @@ Compare all found version strings. If they disagree, resolve via the `version-st
 **Lane:** Deterministic. **Fact class:** `ci-commands`.
 
 If both README and `.github/workflows/` exist:
+
 1. Extract shell commands from README code blocks (look for `bash`, `shell`, `sh` fenced blocks and inline backtick commands in "Getting Started", "Development", "Testing", "Usage" sections)
 2. Extract `run:` step commands from all workflow YAML files
 3. Compare test commands, build commands, lint commands (exact string comparison)
@@ -210,6 +216,7 @@ If both README and `.github/workflows/` exist:
 **Lane:** Deterministic (referential integrity — no registry row needed).
 
 If `CLAUDE.md` references specific files or directories:
+
 1. Extract all file/directory paths mentioned in CLAUDE.md
 2. Verify each path exists
 3. Flag references to non-existent files or directories
@@ -219,6 +226,7 @@ If `CLAUDE.md` references specific files or directories:
 **Lane:** LLM-judged (advisory). **Fact class:** `phase-status`.
 
 Search all documentation for phrases that may indicate stale status:
+
 - "no application code" / "no code exists" / "scaffold only" / "placeholder" — flag if `lib/`, `src/`, or `app/` contains actual source files
 - "pre-release" / "not yet released" — flag if git tags show version releases
 - "planned" / "upcoming" / "future" — flag if the described feature exists in code
@@ -231,6 +239,7 @@ Use Grep to search for these phrases, then validate against the filesystem. The 
 **Lane:** LLM-judged (advisory). **Fact class:** `capability-claims`.
 
 If README has a features section (look for `## Features`, `## Capabilities`, `## What it does`, bullet lists under these headers):
+
 1. Extract each claimed feature/capability
 2. For each claim, search the codebase for corresponding implementation
 3. Flag overclaims (feature listed but no code found)
@@ -243,6 +252,7 @@ Mapping a prose claim to an implementation is semantic judgment — every findin
 **Lane:** Deterministic for exact-value facts; LLM-judged (advisory) for the description comparison.
 
 Extract and compare key facts across documents:
+
 - **License** (fact class `license`): README license mention vs LICENSE file vs package manifest license field — deterministic
 - **Language/runtime version** (fact class `runtime-version`): README vs package manifest vs CI workflow matrix — deterministic
 - **Repository URL** (fact class `repository-url`): README badges/links vs package manifest repository field vs git remote — deterministic
@@ -255,6 +265,7 @@ Flag any contradictions. Resolve each via its fact-class registry row; no row �
 **Lane:** Deterministic (referential integrity — no registry row needed).
 
 Scan all markdown files for internal links and references:
+
 1. Find all `[text](path)` links where path is a relative file path (not URL)
 2. Find all explicit file path references in prose (e.g., "see `docs/setup.md`")
 3. Verify each referenced file exists
@@ -265,6 +276,7 @@ Scan all markdown files for internal links and references:
 **Lane:** LLM-judged (advisory). **Fact class:** `planning-status`.
 
 If `planning/` directory exists:
+
 1. Read planning documents for listed epics, features, milestones
 2. Check which planned items have corresponding code implementations
 3. Flag: planning says "future" but code exists (stale planning)
@@ -326,6 +338,7 @@ Produce the report in this exact structure. Deterministic and advisory findings 
 ```
 
 **Each finding MUST include:**
+
 - **Severity:** 🔴 Critical / 🟡 Warning / 🔵 Info (deterministic) or ⚪ Advisory (LLM-judged)
 - **Fact class:** the registry row cited, or `unowned`
 - **What the authority says:** [value from the registered-authority artifact — omit for unowned; list values symmetrically instead]
@@ -343,6 +356,7 @@ echo "Audit complete: [n] critical, [n] warning, [n] info, [n] advisory findings
 ```
 
 If there are deterministic critical findings, add:
+
 ```
 echo "⚠️  Critical issues should be resolved before release."
 ```
@@ -375,14 +389,17 @@ When the registry is missing or a fact class is unowned, draft proposed rows for
 **1. Detect project type** by scanning the working directory for file markers.
 
 **Check for engineering markers:**
+
 - Directories: `lib/`, `src/`, `app/`, `spec/`, `test/`, `tests/`
 - Files: `Gemfile`, `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`, `*.gemspec`, `Makefile`, `CMakeLists.txt`, `pom.xml`, `build.gradle`
 
 **Check for marketing/content markers:**
+
 - Files: `index.html` (at root), `wp-content/`, `themes/`
 - Absence of `lib/`, `src/`, `app/`
 
 **Decision:**
+
 - Engineering markers found, no marketing-only markers → **Engineering repo**
 - Marketing markers found, no engineering markers → **Marketing/content site**
 - Both found → **Hybrid**
