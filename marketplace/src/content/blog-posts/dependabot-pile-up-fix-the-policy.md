@@ -66,4 +66,3 @@ The measure of the fix is not the empty board today. It's whether next month's r
 
 - [Backlog Zero: Burning Down the Estate with a Triage Machine](/posts/backlog-zero-estate-triage-machine/)
 - [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
-
