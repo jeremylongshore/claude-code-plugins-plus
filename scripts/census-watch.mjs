@@ -119,10 +119,16 @@ function main() {
     byRepo.get(s.repo).push(s.name);
   }
 
-  const prev = fs.existsSync(STATE_FILE)
-    ? JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
-    : { repos: {} };
-  const firstRun = !fs.existsSync(STATE_FILE);
+  // Read prior state by attempting the read directly (no existsSync check first) —
+  // an existsSync-then-readFileSync pair is a time-of-check/time-of-use race (CWE-367).
+  let prev = { repos: {} };
+  let firstRun = true;
+  try {
+    prev = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+    firstRun = false;
+  } catch {
+    // No readable prior state (file missing or unparseable) → treat as first run.
+  }
 
   const now = new Date();
   const daysLeft = Math.ceil((new Date(`${DEADLINE}T23:59:59Z`) - now) / 86_400_000);
