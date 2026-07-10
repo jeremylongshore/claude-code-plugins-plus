@@ -144,7 +144,7 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
             </a>
           )}
           {jrigBadge && (
-            <a href={`/plugins/${plugin.slug || plugin.name}/verification`} class="badge jrig-verified" title={`Behavioral eval: ${jrigBadge.layers} JRig layers passed across Haiku/Sonnet/Opus`}>
+            <a href={`/plugins/${plugin.slug || plugin.name}/verification`} class="badge jrig-verified" title={`Behavioral eval: ${jrigBadge.layers} JRig layers passed across the evaluated model matrix`}>
               {jrigBadge.label} &middot; {jrigBadge.layers} layers
             </a>
           )}

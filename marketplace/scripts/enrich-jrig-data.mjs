@@ -162,9 +162,10 @@ function main() {
     warn(
       'forge_proofs exists but has zero passing tier3-jrig rows — no plugin ' +
         'has a completed 7-layer behavioral eval yet, so every JRig-Verified ' +
-        'badge renders "pending". Populate a row with: `j-rig eval <plugin> ' +
-        '--models haiku,sonnet,opus --db freshie/inventory.sqlite` (once the ' +
-        'eval→forge_proofs write path lands).',
+        'badge renders "pending". Populate a row with: `scripts/run-jrig-eval.sh ' +
+        '--skill-dir <dir> --plugin <name> --inventory-db freshie/inventory.sqlite` ' +
+        '(evals against a /dev/shm scratch DB, then records the verdict via ' +
+        'scripts/record-jrig-proofs.mjs — never point j-rig itself at the inventory DB).',
     );
     return;
   }
