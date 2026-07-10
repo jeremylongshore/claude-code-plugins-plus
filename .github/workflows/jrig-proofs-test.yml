@@ -1,0 +1,55 @@
+name: JRig Proofs Recorder (unit corpus)
+
+# BLOCKING unit corpus for the eval→forge_proofs write path
+# (scripts/record-jrig-proofs.mjs). The recorder is what lights the
+# JRig-Verified badge on plugin detail pages — a broken upsert/stub-guard
+# would light badges dishonestly, so a failing corpus turns this check red.
+#
+# Zero-install by design: the module and its tests use only node built-ins
+# plus the sqlite3 CLI already present on ubuntu runners.
+#
+# Refs jeremylongshore/claude-code-plugins-plus-skills#935.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/record-jrig-proofs.mjs'
+      - 'scripts/record-jrig-proofs.test.mjs'
+      - 'scripts/run-jrig-eval.sh'
+      - '.github/workflows/jrig-proofs-test.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jrig-proofs-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  jrig-proofs-test:
+    name: record-jrig-proofs unit corpus
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Recorder unit corpus (blocking)
+        run: node --test scripts/record-jrig-proofs.test.mjs
+
+      - name: Runner refuses the tracked inventory DB as scratch (blocking)
+        run: |
+          mkdir -p /tmp/guard-skill && touch /tmp/i.db
+          out=$(bash scripts/run-jrig-eval.sh --stub --skill-dir /tmp/guard-skill --plugin x --scratch-db freshie/inventory.sqlite --inventory-db /tmp/i.db 2>&1) && {
+            echo "::error::runner accepted a freshie path as scratch DB — guard broken"
+            exit 1
+          }
+          echo "$out" | grep -q "refusing scratch DB path containing 'freshie'" || {
+            echo "::error::runner exited non-zero but NOT via the freshie guard — got: $out"
+            exit 1
+          }
+          echo "guard holds: freshie scratch path refused with the guard message"

@@ -20,7 +20,7 @@ const jrig = jrigData[plugin.name] ?? null;
 
 const title = `${plugin.name} — JRig Verification | Tons of Skills`;
 const description = jrig?.verified
-  ? `${plugin.name} passed all ${jrig.layers_passed ?? 7} JRig behavioral evaluation layers across Haiku, Sonnet, and Opus. Last verified ${jrig.verified_at ?? 'recently'}.`
+  ? `${plugin.name} passed all ${jrig.layers_passed ?? 7} JRig behavioral evaluation layers across the evaluated model matrix. Last verified ${jrig.verified_at ?? 'recently'}.`
   : `${plugin.name} hasn't yet completed JRig 7-layer behavioral evaluation. Verification status will appear here once a forge or eval run posts results.`;
 
 // 7-layer eval framework — for description, not real per-plugin data.
@@ -79,7 +79,7 @@ const layers = [
 
       <section class="layers">
         <h2>The 7 layers</h2>
-        <p class="lede">JRig evaluates each plugin against seven binary criteria. To pass, every layer must clear the threshold across all three models in the matrix (Haiku, Sonnet, Opus). This is what the JRig-Verified badge represents.</p>
+        <p class="lede">JRig evaluates each plugin against seven binary criteria. To pass, every layer must clear the threshold across every model in the evaluated matrix. This is what the JRig-Verified badge represents.</p>
         <ol class="layer-list">
           {layers.map((layer) => (
             <li class="layer">
@@ -123,8 +123,8 @@ const layers = [
             <h3>Why this plugin isn't verified yet</h3>
             <p>JRig verification is opt-in and runs through one of two paths:</p>
             <ol>
-              <li><strong>Forge generation</strong>: plugins produced by <code>/skill-creator --forge</code> run JRig as the final gate. The Tier 3 verdict is written to <code>forge_proofs</code> automatically.</li>
-              <li><strong>Manual eval</strong>: maintainers can run <code>j-rig eval &lt;skill-dir&gt; --models haiku,sonnet,opus --db freshie/inventory.sqlite</code> to post results.</li>
+              <li><strong>Forge generation</strong>: plugins produced by <code>/skill-creator --forge</code> run JRig as the final gate. The Tier 3 verdict is recorded to <code>forge_proofs</code> via the eval write path (<code>scripts/record-jrig-proofs.mjs</code>).</li>
+              <li><strong>Manual eval</strong>: maintainers can run <code>scripts/run-jrig-eval.sh --skill-dir &lt;dir&gt; --plugin &lt;name&gt; --inventory-db freshie/inventory.sqlite</code>, which evals against a scratch DB and records the verdict.</li>
             </ol>
             <p>Until one of those paths fires, the plugin's grade and Tier 2 production-gate results are still authoritative — JRig adds behavioral verification on top.</p>
           </div>
