@@ -218,3 +218,55 @@ export function diffSource(lock, sourceName, currentFiles) {
   const status = added.length + removed.length + changed.length === 0 ? 'unchanged' : 'drifted';
   return { status, added, removed, changed };
 }
+
+/**
+ * Check if a path matches any of the glob patterns.
+ *
+ * Pattern semantics (matches sources.yaml's intent):
+ *   - Bare filename (`SKILL.md`)   → matches at any depth (treated as `**\/SKILL.md`)
+ *   - Plain dir glob (`references/**`) → matches at any depth (treated as `**\/references/**`)
+ *   - Leading `**\/` or `/`        → explicit path semantics, no auto-prefix
+ *   - `**`                          → zero or more dirs (translated to `.*`)
+ *   - `*`                           → one path segment (no `/`)
+ *   - `?`                           → single char
+ *
+ * Why the auto-prefix: sources.yaml includes typically list `SKILL.md`,
+ * `README.md`, `references/**` with the intent "any depth," but the older
+ * regex anchored at the root of source_path. Many upstream repos nest one
+ * extra layer (e.g. skills/tools/<plugin>/skills/<plugin>/SKILL.md), so
+ * the strict match dropped real files. Auto-prefixing fixes that without
+ * needing every sources.yaml entry rewritten.
+ */
+export function matchesPattern(filePath, patterns) {
+  if (!patterns || patterns.length === 0) return true;
+
+  return patterns.some((rawPattern) => {
+    // Auto-prefix `**/` unless the pattern already starts with `**` or `/`.
+    // A leading `/` means "anchored to the source root": skip the auto-prefix
+    // AND strip the slash, because candidate paths are root-relative (a
+    // pattern compiled to ^/skills/... could never match 'skills/...' — the
+    // anchor form was dead code until 2026-07-08, #985 defect 6).
+    const pattern = rawPattern.startsWith('**')
+      ? rawPattern
+      : rawPattern.startsWith('/')
+        ? rawPattern.slice(1)
+        : `**/${rawPattern}`;
+
+    // Order matters: handle `?` (single-char glob) BEFORE we insert any
+    // literal `?` chars (like `(?:.*/)?`) into the regex pattern. Then
+    // substitute glob tokens left-to-right via unique placeholders so
+    // they don't overlap.
+    const escaped = pattern
+      .replace(/\?/g, '<<<Q>>>') // glob `?` placeholder (before we add literal `?`)
+      .replace(/\./g, '\\.') // escape literal dots (`.md` etc)
+      .replace(/\*\*\//g, '<<<DSS>>>') // `**/` → zero or more dirs
+      .replace(/\*\*/g, '<<<DS>>>') // bare `**` → anything
+      .replace(/\*/g, '[^/]*') // `*` → single segment
+      .replace(/<<<DSS>>>/g, '(?:.*/)?') // ← contains literal `?`, must come AFTER /\?/g
+      .replace(/<<<DS>>>/g, '.*')
+      .replace(/<<<Q>>>/g, '.');
+
+    const regex = new RegExp('^' + escaped + '$');
+    return regex.test(filePath);
+  });
+}
