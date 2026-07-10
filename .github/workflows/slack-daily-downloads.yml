@@ -3,6 +3,12 @@ name: Daily Slack download digest
 # Reads the latest marketplace/src/data/npm-stats.json and posts a concise
 # summary to #operation-hired. Runs daily at 18:00 UTC = 1pm Central.
 #
+# Data freshness: update-npm-stats.yml (the writer) refreshes the stats at
+# 00:15 UTC daily on the `automation/npm-stats` branch (main is protected,
+# so fresh data only reaches main when its PR merges). This digest therefore
+# prefers the writer branch's copy and falls back to main's if the branch
+# is absent (e.g. just merged and deleted, in which case main IS fresh).
+#
 # Follows the /slack skill conventions:
 #   - Webhook secret: SLACK_OPERATION_HIRED_WEBHOOK_URL
 #   - Target channel: #operation-hired
@@ -31,6 +37,21 @@ jobs:
           if [ -z "${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}" ]; then
             echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping. Configure the repo secret to enable."
             echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prefer freshest stats from the writer branch
+        if: steps.check.outputs.skip != 'true'
+        # update-npm-stats.yml force-recreates automation/npm-stats from
+        # current main + a fresh fetch every day at 00:15 UTC, so its copy of
+        # npm-stats.json is always at least as fresh as main's. Reading main
+        # alone posted 6-week-stale numbers (estate audit finding F5).
+        run: |
+          set -euo pipefail
+          if git fetch --depth 1 origin automation/npm-stats; then
+            git checkout FETCH_HEAD -- marketplace/src/data/npm-stats.json
+            echo "Using npm-stats.json from automation/npm-stats (writer branch)."
+          else
+            echo "automation/npm-stats branch not found; using main's copy."
           fi
 
       - name: Build Slack payload
