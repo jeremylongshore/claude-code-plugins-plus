@@ -122,7 +122,12 @@ export function sqlString(value) {
 
 export function parseArgs(argv) {
   const args = { allowStub: false };
-  const takesValue = { '--db': 'db', '--plugin': 'plugin', '--run-id': 'runId', '--result': 'result' };
+  const takesValue = {
+    '--db': 'db',
+    '--plugin': 'plugin',
+    '--run-id': 'runId',
+    '--result': 'result',
+  };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === '--allow-stub') {
@@ -139,7 +144,9 @@ export function parseArgs(argv) {
     if (!args[key]) fail(`Missing required argument: ${flag}`);
   }
   if (!/^\d+$/.test(args.runId)) {
-    fail(`--run-id must be a non-negative integer (got: ${args.runId}) — it is part of the UNIQUE(plugin_name, verification_type, run_id) upsert key.`);
+    fail(
+      `--run-id must be a non-negative integer (got: ${args.runId}) — it is part of the UNIQUE(plugin_name, verification_type, run_id) upsert key.`,
+    );
   }
   args.runId = Number(args.runId);
   return args;
@@ -162,19 +169,26 @@ export function extractModelEntries(parsed) {
         (v) => v !== null && typeof v === 'object' && !Array.isArray(v) && 'scoreCard' in v,
       );
   if (entries.length === 0) {
-    fail('No model entries with a scoreCard found in the result JSON — is this really `j-rig eval --json` output?');
+    fail(
+      'No model entries with a scoreCard found in the result JSON — is this really `j-rig eval --json` output?',
+    );
   }
   for (const entry of entries) {
     const sc = entry.scoreCard;
     if (
-      sc === null || typeof sc !== 'object' ||
-      !Number.isInteger(sc.passed) || sc.passed < 0 ||
-      !Number.isInteger(sc.total_criteria) || sc.total_criteria < 0
+      sc === null ||
+      typeof sc !== 'object' ||
+      !Number.isInteger(sc.passed) ||
+      sc.passed < 0 ||
+      !Number.isInteger(sc.total_criteria) ||
+      sc.total_criteria < 0
     ) {
       fail(`Malformed scoreCard (need integer passed/total_criteria >= 0): ${JSON.stringify(sc)}`);
     }
     if (!VALID_DECISIONS.has(entry.decision)) {
-      fail(`Malformed model entry: decision must be one of ${[...VALID_DECISIONS].join('|')} (got: ${JSON.stringify(entry.decision)})`);
+      fail(
+        `Malformed model entry: decision must be one of ${[...VALID_DECISIONS].join('|')} (got: ${JSON.stringify(entry.decision)})`,
+      );
     }
   }
   return entries;
@@ -197,7 +211,9 @@ export function aggregateEntries(entries, { allowStub = false } = {}) {
   }
   const totals = new Set(entries.map((e) => e.scoreCard.total_criteria));
   if (totals.size > 1) {
-    fail(`Model entries disagree on total_criteria (${[...totals].join(', ')}) — same eval spec should yield the same criteria count. Refusing to record an ambiguous row.`);
+    fail(
+      `Model entries disagree on total_criteria (${[...totals].join(', ')}) — same eval spec should yield the same criteria count. Refusing to record an ambiguous row.`,
+    );
   }
   return {
     passed: entries.every((e) => e.decision === 'ship') ? 1 : 0,
@@ -249,7 +265,9 @@ export function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
 
   if (!fs.existsSync(args.db)) {
-    fail(`DB not found: ${args.db} — refusing to create a fresh database at an arbitrary path. Point --db at the inventory DB (or a copy of it).`);
+    fail(
+      `DB not found: ${args.db} — refusing to create a fresh database at an arbitrary path. Point --db at the inventory DB (or a copy of it).`,
+    );
   }
   if (!fs.existsSync(args.result)) {
     fail(`Result file not found: ${args.result}`);
@@ -277,7 +295,8 @@ WHERE plugin_name = ${sqlString(args.plugin)}
   AND verification_type = ${sqlString(VERIFICATION_TYPE)}
   AND run_id = ${args.runId};`,
   ).trim();
-  if (!echo) fail('Upsert reported success but the row is not readable back — refusing to report success.');
+  if (!echo)
+    fail('Upsert reported success but the row is not readable back — refusing to report success.');
 
   const written = JSON.parse(echo)[0];
   console.log(

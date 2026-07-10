@@ -35,7 +35,13 @@ function tmpDir() {
 }
 
 /** Minimal fixture matching the `j-rig eval --json` model-keyed map shape. */
-function fixtureResult({ passed = 7, total = 7, decision = 'ship', groundTruth = true, model = 'deepseek-v4-flash' } = {}) {
+function fixtureResult({
+  passed = 7,
+  total = 7,
+  decision = 'ship',
+  groundTruth = true,
+  model = 'deepseek-v4-flash',
+} = {}) {
   return {
     [model]: {
       provider: groundTruth ? 'deepseek' : 'stub',
@@ -84,7 +90,11 @@ function record(args) {
 
 function recordExpectFail(args) {
   const result = spawnSync(process.execPath, [RECORD_SCRIPT, ...args], { encoding: 'utf8' });
-  assert.notEqual(result.status, 0, `expected non-zero exit, got ${result.status}\nstdout: ${result.stdout}`);
+  assert.notEqual(
+    result.status,
+    0,
+    `expected non-zero exit, got ${result.status}\nstdout: ${result.stdout}`,
+  );
   return result.stderr;
 }
 
@@ -96,9 +106,22 @@ function queryRows(db, sql) {
 test('(a) fresh insert lands one tier3-jrig row with the contracted bindings', () => {
   const dir = tmpDir();
   const db = freshDb(dir);
-  const result = writeFixture(dir, 'result.json', fixtureResult({ passed: 6, total: 7, decision: 'warn' }));
+  const result = writeFixture(
+    dir,
+    'result.json',
+    fixtureResult({ passed: 6, total: 7, decision: 'warn' }),
+  );
 
-  const stdout = record(['--db', db, '--plugin', 'coreweave-pack', '--run-id', '42', '--result', result]);
+  const stdout = record([
+    '--db',
+    db,
+    '--plugin',
+    'coreweave-pack',
+    '--run-id',
+    '42',
+    '--result',
+    result,
+  ]);
   assert.match(stdout, /Upserted tier3-jrig row for 'coreweave-pack' \(run_id=42\)/);
 
   const rows = queryRows(db, 'SELECT * FROM forge_proofs;');
@@ -142,8 +165,16 @@ test('(a2) all-ship multi-model result records passed=1 with the weakest layer c
 test('(b) idempotent re-run: same run_id upserts in place, never duplicates', () => {
   const dir = tmpDir();
   const db = freshDb(dir);
-  const first = writeFixture(dir, 'r1.json', fixtureResult({ passed: 7, total: 7, decision: 'ship' }));
-  const second = writeFixture(dir, 'r2.json', fixtureResult({ passed: 4, total: 7, decision: 'block' }));
+  const first = writeFixture(
+    dir,
+    'r1.json',
+    fixtureResult({ passed: 7, total: 7, decision: 'ship' }),
+  );
+  const second = writeFixture(
+    dir,
+    'r2.json',
+    fixtureResult({ passed: 4, total: 7, decision: 'block' }),
+  );
 
   record(['--db', db, '--plugin', 'plane', '--run-id', '100', '--result', first]);
   record(['--db', db, '--plugin', 'plane', '--run-id', '100', '--result', first]); // identical re-run
@@ -169,7 +200,16 @@ test('(c) malformed result JSON is rejected loudly with a non-zero exit', () => 
 
   // Not JSON at all.
   const garbage = writeFixture(dir, 'garbage.json', 'this is not json {');
-  let stderr = recordExpectFail(['--db', db, '--plugin', 'p', '--run-id', '1', '--result', garbage]);
+  let stderr = recordExpectFail([
+    '--db',
+    db,
+    '--plugin',
+    'p',
+    '--run-id',
+    '1',
+    '--result',
+    garbage,
+  ]);
   assert.match(stderr, /not valid JSON/);
 
   // Valid JSON, wrong shape (no scoreCard anywhere).
@@ -181,14 +221,32 @@ test('(c) malformed result JSON is rejected loudly with a non-zero exit', () => 
   const badCard = fixtureResult();
   badCard['deepseek-v4-flash'].scoreCard.passed = 'seven';
   const badCardFile = writeFixture(dir, 'badcard.json', badCard);
-  stderr = recordExpectFail(['--db', db, '--plugin', 'p', '--run-id', '1', '--result', badCardFile]);
+  stderr = recordExpectFail([
+    '--db',
+    db,
+    '--plugin',
+    'p',
+    '--run-id',
+    '1',
+    '--result',
+    badCardFile,
+  ]);
   assert.match(stderr, /Malformed scoreCard/);
 
   // Invalid decision.
   const badDecision = fixtureResult();
   badDecision['deepseek-v4-flash'].decision = 'maybe';
   const badDecisionFile = writeFixture(dir, 'baddecision.json', badDecision);
-  stderr = recordExpectFail(['--db', db, '--plugin', 'p', '--run-id', '1', '--result', badDecisionFile]);
+  stderr = recordExpectFail([
+    '--db',
+    db,
+    '--plugin',
+    'p',
+    '--run-id',
+    '1',
+    '--result',
+    badDecisionFile,
+  ]);
   assert.match(stderr, /decision must be one of/);
 
   // Non-integer run-id (would break the UNIQUE upsert key).
@@ -197,7 +255,10 @@ test('(c) malformed result JSON is rejected loudly with a non-zero exit', () => 
   assert.match(stderr, /--run-id must be a non-negative integer/);
 
   // Nothing was written by any failing invocation.
-  const rows = queryRows(db, "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name='forge_proofs';");
+  const rows = queryRows(
+    db,
+    "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name='forge_proofs';",
+  );
   assert.equal(rows[0].n, 0, 'failing runs must not touch the DB');
 });
 
@@ -226,10 +287,14 @@ test("(d) runner guard refuses j-rig scratch DB paths containing 'freshie'", () 
     'bash',
     [
       RUNNER_SCRIPT,
-      '--skill-dir', skillDir,
-      '--plugin', 'p',
-      '--inventory-db', db,
-      '--scratch-db', '/dev/shm/freshie-scratch.db',
+      '--skill-dir',
+      skillDir,
+      '--plugin',
+      'p',
+      '--inventory-db',
+      db,
+      '--scratch-db',
+      '/dev/shm/freshie-scratch.db',
       '--stub',
     ],
     { encoding: 'utf8' },
@@ -242,10 +307,14 @@ test("(d) runner guard refuses j-rig scratch DB paths containing 'freshie'", () 
     'bash',
     [
       RUNNER_SCRIPT,
-      '--skill-dir', skillDir,
-      '--plugin', 'p',
-      '--inventory-db', db,
-      '--scratch-db', path.join(dir, 'scratch.db'),
+      '--skill-dir',
+      skillDir,
+      '--plugin',
+      'p',
+      '--inventory-db',
+      db,
+      '--scratch-db',
+      path.join(dir, 'scratch.db'),
       '--stub',
     ],
     { encoding: 'utf8' },
