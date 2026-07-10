@@ -52,11 +52,11 @@ const JSON_OUT = process.argv.includes('--json');
 function onClockSources() {
   const raw = fs.readFileSync(SOURCES_FILE, 'utf8');
   // Split on the top-level list-item delimiter. slice(1) drops the file header.
-  const blocks = raw.split(/\n  - name:/).slice(1);
+  const blocks = raw.split(/\n {2}- name:/).slice(1);
   const out = [];
   for (const b of blocks) {
     if (!b.includes(DEADLINE_MARKER)) continue;
-    const name = (b.match(/^\s*(\S.*)$/m) || [, '(unknown)'])[1].trim();
+    const name = (b.match(/^\s*(\S.*)$/m)?.[1] || '(unknown)').trim();
     const repoM = b.match(/\n\s*repo:\s*(\S+)/);
     if (!repoM) continue;
     out.push({ name, repo: repoM[1].trim() });
@@ -69,8 +69,11 @@ function upstreamHead(repo) {
   let meta;
   try {
     meta = JSON.parse(
-      execFileSync('gh', ['api', `repos/${repo}`, '--jq',
-        '{default_branch, archived, pushed_at}'], { encoding: 'utf8' }),
+      execFileSync(
+        'gh',
+        ['api', `repos/${repo}`, '--jq', '{default_branch, archived, pushed_at}'],
+        { encoding: 'utf8' },
+      ),
     );
   } catch {
     return { gone: true };
@@ -78,15 +81,27 @@ function upstreamHead(repo) {
   if (meta.archived) return { gone: true, archived: true, pushedAt: meta.pushed_at };
   let head;
   try {
-    const line = execFileSync('gh', ['api',
-      `repos/${repo}/commits/${meta.default_branch}`, '--jq',
-      '.sha + "|" + .commit.committer.date'], { encoding: 'utf8' }).trim();
+    const line = execFileSync(
+      'gh',
+      [
+        'api',
+        `repos/${repo}/commits/${meta.default_branch}`,
+        '--jq',
+        '.sha + "|" + .commit.committer.date',
+      ],
+      { encoding: 'utf8' },
+    ).trim();
     const [sha, date] = line.split('|');
     head = { sha: sha.slice(0, 12), date };
   } catch {
     head = { sha: null, date: meta.pushed_at };
   }
-  return { gone: false, defaultBranch: meta.default_branch, headSha: head.sha, headDate: head.date };
+  return {
+    gone: false,
+    defaultBranch: meta.default_branch,
+    headSha: head.sha,
+    headDate: head.date,
+  };
 }
 
 function classify(info) {
@@ -121,7 +136,14 @@ function main() {
     if (firstRun || !before) delta = 'init';
     else if (before.headSha !== info.headSha) delta = 'CHANGED-since-last-run';
     else delta = 'same';
-    results.push({ repo, sources: names, class: cls, headSha: info.headSha || null, headDate: info.headDate || null, delta });
+    results.push({
+      repo,
+      sources: names,
+      class: cls,
+      headSha: info.headSha || null,
+      headDate: info.headDate || null,
+      delta,
+    });
   }
 
   const state = {
@@ -129,7 +151,9 @@ function main() {
     censusDate: CENSUS_DATE,
     deadline: DEADLINE,
     daysLeft,
-    repos: Object.fromEntries(results.map((r) => [r.repo, { headSha: r.headSha, headDate: r.headDate, class: r.class }])),
+    repos: Object.fromEntries(
+      results.map((r) => [r.repo, { headSha: r.headSha, headDate: r.headDate, class: r.class }]),
+    ),
   };
   fs.mkdirSync(STATE_DIR, { recursive: true });
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');
@@ -145,22 +169,36 @@ function main() {
   const changed = results.filter((r) => r.delta === 'CHANGED-since-last-run');
 
   const sourceCount = sources.length;
-  console.log(`\n  Census watch — ${CENSUS_DATE} D/F cohort · delist deadline ${DEADLINE} (${daysLeft} days left)`);
+  console.log(
+    `\n  Census watch — ${CENSUS_DATE} D/F cohort · delist deadline ${DEADLINE} (${daysLeft} days left)`,
+  );
   console.log(`  ${sourceCount} source-entries on the clock across ${byRepo.size} upstream repos`);
   console.log(`  state: ${STATE_FILE}${firstRun ? '  (initialized this run)' : ''}\n`);
 
   const pad = (s, n) => String(s).padEnd(n);
-  console.log(`  ${pad('UPSTREAM REPO', 34)}${pad('CLASS', 15)}${pad('HEAD DATE', 22)}${pad('Δ', 10)}SOURCES`);
+  console.log(
+    `  ${pad('UPSTREAM REPO', 34)}${pad('CLASS', 15)}${pad('HEAD DATE', 22)}${pad('Δ', 10)}SOURCES`,
+  );
   console.log(`  ${'-'.repeat(96)}`);
   for (const r of results) {
-    console.log(`  ${pad(r.repo, 34)}${pad(r.class, 15)}${pad((r.headDate || '—').slice(0, 19), 22)}${pad(r.delta === 'init' ? 'init' : r.delta === 'same' ? '·' : '⚑ NEW', 10)}${r.sources.join(', ')}`);
+    console.log(
+      `  ${pad(r.repo, 34)}${pad(r.class, 15)}${pad((r.headDate || '—').slice(0, 19), 22)}${pad(r.delta === 'init' ? 'init' : r.delta === 'same' ? '·' : '⚑ NEW', 10)}${r.sources.join(', ')}`,
+    );
   }
 
   console.log(`\n  SUMMARY`);
-  console.log(`   • ${moved.length} upstream(s) MOVED since ${CENSUS_DATE} → RE-GRADE candidates (a fix may have landed):`);
-  moved.forEach((r) => console.log(`       ${r.repo}  (${r.sources.length} skill(s): ${r.sources.join(', ')})`));
-  console.log(`   • ${dormant.length} upstream(s) DORMANT → DELIST candidates on ${DEADLINE} unless re-graded:`);
-  dormant.forEach((r) => console.log(`       ${r.repo}  (${r.sources.length} skill(s): ${r.sources.join(', ')})`));
+  console.log(
+    `   • ${moved.length} upstream(s) MOVED since ${CENSUS_DATE} → RE-GRADE candidates (a fix may have landed):`,
+  );
+  moved.forEach((r) =>
+    console.log(`       ${r.repo}  (${r.sources.length} skill(s): ${r.sources.join(', ')})`),
+  );
+  console.log(
+    `   • ${dormant.length} upstream(s) DORMANT → DELIST candidates on ${DEADLINE} unless re-graded:`,
+  );
+  dormant.forEach((r) =>
+    console.log(`       ${r.repo}  (${r.sources.length} skill(s): ${r.sources.join(', ')})`),
+  );
   if (gone.length) {
     console.log(`   • ${gone.length} upstream(s) GONE → auto-delist:`);
     gone.forEach((r) => console.log(`       ${r.repo}  [${r.class}]`));
@@ -169,8 +207,12 @@ function main() {
     console.log(`   • ${changed.length} upstream(s) CHANGED since last watch → re-grade now:`);
     changed.forEach((r) => console.log(`       ${r.repo}`));
   }
-  console.log(`\n  Next: re-grade the MOVED upstreams (validator), flip verified:true on any that now pass,`);
-  console.log(`  and on ${DEADLINE} delist whatever is still DORMANT/failing (bead claude-ss50.8).\n`);
+  console.log(
+    `\n  Next: re-grade the MOVED upstreams (validator), flip verified:true on any that now pass,`,
+  );
+  console.log(
+    `  and on ${DEADLINE} delist whatever is still DORMANT/failing (bead claude-ss50.8).\n`,
+  );
 }
 
 main();
