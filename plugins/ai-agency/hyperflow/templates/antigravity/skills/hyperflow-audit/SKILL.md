@@ -24,7 +24,7 @@ Default to L2; elevate to L3 when the diff touches auth, data, money, or externa
 1. **Resolve scope** (target arg or current diff). Read the changed files + their immediate dependencies.
 2. **Review** at the chosen level. Grade each finding `[Critical] / [Important] / [Suggestion] / [Praise]` with `file:line` + a concrete fix.
 3. **Write** the full report to `.hyperflow/audits/<YYYY-MM-DD-HHmm>-<scope>.md` (status table → TL;DR → findings → security-scan table). Print a one-line summary pointing at the file.
-4. **Fix gate** via AskUserQuestion (only when Critical/Important exist): `Fix all (Recommended) / Critical+Important / Critical only / No`. On a fix choice, route the findings into `hyperflow-scope` → `hyperflow-dispatch`. On `SECURITY_VIOLATION`, skip the gate and surface immediately.
+4. **Fix gate** via AskUserQuestion (only when Critical/Important exist): `Fix all (Recommended) / Critical+Important / Critical only / No`. On a fix choice, route the findings into `hyperflow-plan` → `hyperflow-dispatch`. On `SECURITY_VIOLATION`, skip the gate and surface immediately.
 
 ## Rules
 

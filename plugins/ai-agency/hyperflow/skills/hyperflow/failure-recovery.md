@@ -17,10 +17,10 @@ The Agent dispatch itself failed: tool crash, OOM, network 5xx, timeout, no outp
 | Step | Action |
 |---|---|
 | Attempt 1 fails | Retry once with identical prompt (caches may be cold; transient errors clear) |
-| Attempt 2 fails | Escalate tier: dispatch the same role at thinking-tier with `## Prior attempt` block injected — the error message + any partial output |
+| Attempt 2 fails | Escalate depth: dispatch the same role with a standalone review pass and `## Prior attempt` block injected — the error message + any partial output |
 | Attempt 3 fails | Abort the batch. Print `WORKER_ABORT: <role> · <error-chain>` to the user. Do not advance to the next batch. The chain is in a failed state |
 
-The `## Prior attempt` injection lets the thinking-tier Worker see exactly what went wrong on the worker tier and avoid the same failure mode.
+The `## Prior attempt` injection lets the escalated Worker see exactly what went wrong and avoid the same failure mode.
 
 ### 2. Worker malformed output
 
@@ -29,7 +29,7 @@ The Agent returned, but the output doesn't match the expected schema: a Writer t
 | Step | Action |
 |---|---|
 | Attempt 1 violates | Retry once with `## Violation` block: `Prior attempt produced X; expected Y. Conform to the schema in <prompt section>.` |
-| Attempt 2 violates | Escalate tier with same `## Violation` block |
+| Attempt 2 violates | Escalate with a standalone review pass and same `## Violation` block |
 | Attempt 3 violates | Abort. `WORKER_ABORT: <role> · schema violation · <last-violation>` |
 
 ### 3. Worker NEEDS_REVISION verdict
@@ -56,7 +56,7 @@ The "do not auto-fix" rule is a security rule: a lint failure in a security-rela
 
 ### 5. Reviewer error
 
-The Reviewer itself errored (tool crash, malformed output, timeout). Treated the same as Worker tool error (class 1): retry once → escalate tier → abort.
+The Reviewer itself errored (tool crash, malformed output, timeout). Treated the same as Worker tool error (class 1): retry once → escalate to a standalone review pass → abort.
 
 If the Reviewer errors after the Worker succeeded, the Worker's output is preserved (do not discard it). The retry / escalated Reviewer reviews the same Worker output. If all Reviewer attempts fail and the abort fires, the chain still has the Worker's output but no verdict — print `REVIEWER_ABORT: <role> · output preserved · no verdict` and surface to the user as a partial result.
 
@@ -83,7 +83,7 @@ Every retry, escalation, and abort emits exactly one status line in this format 
 
 ```
 [retry 1/3 · <role> · <error-class>]
-[escalate → thinking-tier · <role> · <error-class>]
+[escalate → standalone review · <role> · <error-class>]
 [abort · <role> · <error-class> · chain budget N/3]
 ```
 
@@ -98,7 +98,7 @@ Where:
 ```
 [retry 1/3 · Implementer · tool-error]
 [retry 2/3 · Writer · malformed-output]
-[escalate → thinking-tier · Searcher · timeout]
+[escalate → standalone review · Searcher · timeout]
 [abort · Reviewer · 5xx · chain budget 2/3]
 ```
 
@@ -108,11 +108,11 @@ The status line fires at the moment of the transition — before the retry or es
 
 | Failure class | Attempt 1 | Attempt 2 | Attempt 3 |
 |---|---|---|---|
-| Worker tool error | Retry | Escalate tier | Abort batch |
-| Worker malformed output | Retry with violation note | Escalate tier with violation note | Abort batch |
+| Worker tool error | Retry | Escalate (deeper review pass) | Abort batch |
+| Worker malformed output | Retry with violation note | Escalate with violation note | Abort batch |
 | Worker NEEDS_REVISION | Retry with learnings | Surface as partial; continue chain | — (no third dispatch) |
 | Quality gate failure | Retry (clear caches) | Surface stderr to user; halt push | — |
-| Reviewer error | Retry | Escalate tier | Surface partial output, no verdict |
+| Reviewer error | Retry | Escalate (deeper review pass) | Surface partial output, no verdict |
 | Security violation | Halt immediately | — | — |
 
 Chain-level: 3 cumulative aborts → chain aborts.

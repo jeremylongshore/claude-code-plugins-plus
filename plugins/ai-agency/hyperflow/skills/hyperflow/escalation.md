@@ -77,7 +77,7 @@ Downgrade decisions are made at natural batch boundaries, not mid-batch. The orc
 
 ## Profile budget reference
 
-Each profile's baseline token budget is defined in `model-config.md`. For escalation decisions, use these approximate values:
+For escalation decisions, use these approximate token budget values:
 
 | Profile | Baseline budget |
 |---|---|
@@ -90,7 +90,7 @@ Each profile's baseline token budget is defined in `model-config.md`. For escala
 
 Source of truth: `flow-profiles.md` — values must match.
 
-These are the denominators used when computing the overrun multiplier. If `model-config.md` defines a different value, that value takes precedence over this table.
+These are the denominators used when computing the overrun multiplier. If `flow-profiles.md` defines a different value, that value takes precedence over this table.
 
 ---
 
@@ -190,19 +190,19 @@ Token accounting is not optional and not approximate. The orchestrator tracks ex
 The orchestrator tracks token usage from every agent after each dispatch:
 
 ```text
-agent_id | role      | model       | input_tokens | output_tokens | total_tokens | timestamp
----------|-----------|-------------|--------------|---------------|--------------|----------
-t-01     | triage    | opus-4-8    | 1200         | 340           | 1540         | T+0s
-w-01     | searcher  | sonnet-4-6  | 3100         | 890           | 3990         | T+12s
-w-02     | implementer | sonnet-4-6 | 4200        | 1100          | 5300         | T+12s
-r-01     | reviewer  | opus-4-8    | 6800         | 420           | 7220         | T+28s
+agent_id | role        | input_tokens | output_tokens | total_tokens | timestamp
+---------|-------------|--------------|---------------|--------------|----------
+t-01     | triage      | 1200         | 340           | 1540         | T+0s
+w-01     | searcher    | 3100         | 890           | 3990         | T+12s
+w-02     | implementer | 4200         | 1100          | 5300         | T+12s
+r-01     | reviewer    | 6800         | 420           | 7220         | T+28s
 ```
 
 After each batch completes:
 
-1. Sum tokens by role (thinking agents vs. workers vs. reviewers).
+1. Sum tokens by role (orchestrator vs. workers vs. reviewers).
 2. Compute the running total across all batches so far.
-3. Compare against the profile's baseline budget (defined in `model-config.md`).
+3. Compare against the profile's baseline budget (defined in `flow-profiles.md`).
 4. Apply the thresholds in the Budget overrun handling table below.
 5. Append the batch summary to the in-memory usage log for the final summary.
 
@@ -246,8 +246,6 @@ Triage:      moderate   · flow: standard   · types: [api, db]
 Profile:     standard   · budget: 100k     · actual: 87k  (under)
 Spec depth:  light      · 1 question       · 2.3k tokens
 ─────────────────────────────────────────────────────
-Thinking  (Opus 4.8  )   2 agents    42.1k tokens
-Worker    (Sonnet 4.6)   3 agents    45.0k tokens
 Total                    5 agents    87.1k tokens
 ─────────────────────────────────────────────────────
 Escalations: 0   · Downgrades: 0   · Overruns: none

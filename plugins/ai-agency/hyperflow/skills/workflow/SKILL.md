@@ -1,14 +1,14 @@
 ---
 name: workflow
 description: |
-  Use when a task is too large for turn-by-turn orchestration and should run through the big-task workflow lane: system-wide changes, large migrations, repo-wide audits, high-confidence verification, or tasks explicitly asking to run a workflow. Claude Code uses native dynamic workflows; Codex and OpenCode use the portable workflow adapter.
+  Use when a task is too large for turn-by-turn orchestration and should run through the big-task workflow lane: system-wide changes, large migrations, repo-wide audits, high-confidence verification, or tasks explicitly asking to run a workflow. Claude Code uses native dynamic workflows; Codex, OpenCode, and Grok use the portable workflow adapter.
   Trigger with /hyperflow:workflow, "run a workflow", "dynamic workflow", "big task", "large migration", "repo-wide audit".
 allowed-tools: Read, Glob, Grep, AskUserQuestion, Skill
 argument-hint: "<big task description>"
 version: 1.0.0
 license: MIT
-compatibility: Claude Code native workflows; Codex/OpenCode portable adapter
-tags: [workflow, claude-code, codex, opencode, large-task, orchestration, verification]
+compatibility: Claude Code native workflows; Codex/OpenCode/Grok portable adapter
+tags: [workflow, claude-code, codex, opencode, grok, large-task, orchestration, verification]
 ---
 
 # Workflow
@@ -18,13 +18,14 @@ Big-task path for work that is too large for normal turn-by-turn orchestration: 
 - In Claude Code, use the host dynamic workflow runtime.
 - In Codex, run the portable workflow adapter with Codex subagents when exposed; otherwise run the same phases inline in the current thread.
 - In OpenCode, run the portable workflow adapter with Task/subagent dispatch when exposed; otherwise run the same phases inline in the current session.
-- In Antigravity, Desktop/web bridge mode, or any host that cannot preserve the adapter phases, say so in one line and route to `/hyperflow:scope` with `chain-mode=auto`.
+- In Grok, run the portable workflow adapter with `spawn_subagent` when enabled; otherwise run the same phases inline in the current session.
+- In Antigravity, Desktop/web bridge mode, or any host that cannot preserve the adapter phases, say so in one line and route to `/hyperflow:plan` with `chain-mode=auto`.
 
-Claude Code dynamic workflows require Claude Code v2.1.154 or later and can be disabled by `/config`, managed settings, `~/.claude/settings.json`, or `CLAUDE_CODE_DISABLE_WORKFLOWS=1`. When disabled, use the portable adapter if the host is Codex or OpenCode; otherwise route to `/hyperflow:scope` with `chain-mode=auto`.
+Claude Code dynamic workflows require Claude Code v2.1.154 or later and can be disabled by `/config`, managed settings, `~/.claude/settings.json`, or `CLAUDE_CODE_DISABLE_WORKFLOWS=1`. When disabled, use the portable adapter if the host is Codex, OpenCode, or Grok; otherwise route to `/hyperflow:plan` with `chain-mode=auto`.
 
 ## Routing Rules
 
-- Run this skill in Claude Code, Codex, and OpenCode.
+- Run this skill in Claude Code, Codex, OpenCode, and Grok.
 - Auto-route here when triage returns `flow=deep` or `flow=scientific`, `scope=system-wide`, or the user says `big task`, `large migration`, `repo-wide audit`, `run a workflow`, or `dynamic workflow`.
 - Do not route here for moderate multi-file work, routine bug fixes, or a task that needs user sign-off between implementation stages. Big-task workflow runs should not depend on arbitrary mid-run user input; split sign-off-heavy work into separate workflows or use `spec -> scope -> dispatch`.
 - Do not set `/effort ultracode` or `xhigh` automatically. The user can enable `/effort ultracode` manually for session-wide workflow selection.
@@ -101,7 +102,35 @@ OpenCode does not provide Claude Code's dynamic workflow runtime. Treat `/hyperf
 
 3. Adversarial verification
    - Run a separate verification pass for each completed unit before reporting it.
-   - Use the configured thinking model for verification and final integration review.
+   - Run verification and the final integration review as decision-agent passes on the current session model.
+
+4. Quality gates and commits
+   - Run the detected lint, typecheck, build, and relevant tests.
+   - Commit each accepted unit separately using conventional commits.
+   - Never use `--no-verify`.
+
+5. Final synthesis
+   - Return changed files, verification evidence, unresolved risks, and next actions.
+
+### Grok Portable Workflow Adapter
+
+Grok does not provide Claude Code's dynamic workflow runtime. Treat `/hyperflow:workflow` as a custom Hyperflow workflow envelope around Grok `spawn_subagent` and inline fallback:
+
+1. Research and planning
+   - Read the same `.hyperflow/` cache files listed above when present.
+   - Write or update `.hyperflow/tasks/<slug>.md` for implementation or audit work that needs durable progress tracking.
+   - Build an execution graph with parallelizable units, dependencies, expected commits, and verification commands.
+
+2. Parallel implementation or investigation
+   - If `spawn_subagent` is available and subagents are not disabled (`GROK_SUBAGENTS` / config), dispatch independent units together:
+     - implementer/writer → `subagent_type: general-purpose`
+     - searcher/research → `subagent_type: explore`
+   - Collect results before review; spawn independent siblings in parallel when the runtime allows.
+   - If subagents are unavailable, run each unit inline with explicit worker and reviewer labels.
+
+3. Adversarial verification
+   - Run a separate verification pass for each completed unit before reporting it.
+   - Run verification and the final integration review as decision-agent passes on the current session model.
 
 4. Quality gates and commits
    - Run the detected lint, typecheck, build, and relevant tests.
@@ -146,4 +175,4 @@ Acceptance:
 
 When a run succeeds and the user will repeat it, mention that Claude Code can save the generated workflow from `/workflows` with `s`. Project workflows save under `.claude/workflows/`; personal workflows save under `~/.claude/workflows/`. Do not create those files directly from this skill because plugin packaging does not currently ship `.claude/workflows/` as a first-class component.
 
-Codex and OpenCode adapters are not saved through `/workflows`; repeatable behavior comes from this skill, `.hyperflow/tasks/`, project memory, and provider-specific subagent/task configuration.
+Codex, OpenCode, and Grok adapters are not saved through `/workflows`; repeatable behavior comes from this skill, `.hyperflow/tasks/`, project memory, and provider-specific subagent/task configuration.

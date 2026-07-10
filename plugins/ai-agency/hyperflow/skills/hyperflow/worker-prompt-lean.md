@@ -7,6 +7,8 @@ Lean variant of `worker-prompt.md`. Use this as the default template for paralle
 ## Template
 
 ```
+hyperflow-role: worker
+
 ## Task
 [One clear objective — what to do, not how to think about it]
 
@@ -60,7 +62,7 @@ Return (no preamble, no postamble — see Constraints "Token economy"):
 | Condition | Template |
 |---|---|
 | Parallel sibling sub-tasks in a normal dispatch run | **lean** (this file) |
-| `depth=max` or `--thorough` flag passed by user | full `worker-prompt.md` |
+| `depth=max` or `--thorough` flag passed by user | full `worker-prompt.md` (adds a standalone final-integration review pass) |
 | Any referenced file is absent or is an unpopulated stub | lean — skip that file only; use inline defaults for that slot |
 | Single-worker run with no siblings | either — lean preferred |
 
@@ -71,7 +73,6 @@ If a referenced memory file is absent **or** appears to be an unpopulated stub (
 ```
 Agent({
   description: "Implement user avatar component",
-  model: "sonnet",
   prompt: `## Task
 Create a UserAvatar component that displays user initials with a colored background.
 

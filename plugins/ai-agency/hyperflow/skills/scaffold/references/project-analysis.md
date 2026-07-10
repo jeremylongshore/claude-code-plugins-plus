@@ -1,10 +1,10 @@
 # Project Analysis
 
-On first `/hyperflow` session in a project, analyze the entire codebase and generate a profile in `.hyperflow/`. On subsequent sessions, the **thinking model** evaluates staleness and decides what to refresh — it never blindly regenerates.
+On first `/hyperflow` session in a project, analyze the entire codebase and generate a profile in `.hyperflow/`. On subsequent sessions, the **orchestrator** evaluates staleness and decides what to refresh — it never blindly regenerates.
 
-## Decision Tree (Thinking Model Executes This)
+## Decision Tree (Orchestrator Executes This)
 
-The thinking model runs this decision tree at session start. No workers are dispatched until this completes.
+The orchestrator runs this decision tree at session start. No workers are dispatched until this completes.
 
 ```
 Step 1: Does .hyperflow/ exist at project root?
@@ -23,7 +23,7 @@ Step 1: Does .hyperflow/ exist at project root?
                   ├─ ALL MATCH + no new config files appeared
                   │  → SKIP ANALYSIS entirely
                   │    Print "Analysis cache fresh — skipping"
-                  │    The thinking model reads cached .hyperflow/*.md directly
+                  │    The orchestrator reads cached .hyperflow/*.md directly
                   │    Zero agents dispatched for analysis
                   │
                   ├─ SOME CHANGED, ADDED, or REMOVED
@@ -41,12 +41,12 @@ Step 1: Does .hyperflow/ exist at project root?
 
 ### Enforcement Rules
 
-1. **No agents if fresh.** If all checksums match, zero searcher agents are dispatched. The thinking model reads cached files with the Read tool.
+1. **No agents if fresh.** If all checksums match, zero searcher agents are dispatched. The orchestrator reads cached files with the Read tool.
 2. **Partial over full.** If only `package.json` changed, only `profile.md`, `dependencies.md`, and `testing.md` get refreshed. The other 3 files are untouched.
-3. **Thinking model decides.** Staleness evaluation is never delegated to a worker agent. The thinking model runs `sha256sum`, compares, and decides.
+3. **Thinking model decides.** Staleness evaluation is never delegated to a worker agent. The orchestrator runs `sha256sum`, compares, and decides.
 4. **New files trigger refresh.** A config file appearing on disk that wasn't in `.checksums` triggers refresh of its mapped analysis files.
 5. **Deleted files trigger refresh.** A config file in `.checksums` that no longer exists triggers refresh of its mapped analysis files.
-6. **Folder structure changes.** If the thinking model notices major folder additions/removals (via `ls` or `find`), it refreshes `architecture.md` even if no config checksums changed. This is a judgment call — not every new file warrants it.
+6. **Folder structure changes.** If the orchestrator notices major folder additions/removals (via `ls` or `find`), it refreshes `architecture.md` even if no config checksums changed. This is a judgment call — not every new file warrants it.
 
 ## Analysis Files
 

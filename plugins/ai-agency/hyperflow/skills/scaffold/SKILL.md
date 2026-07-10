@@ -3,9 +3,9 @@ name: scaffold
 description: |
   Use when starting hyperflow in a new project, refreshing the .hyperflow/ cache, or installing auto-detection shims (AGENTS.md, CLAUDE.md). One-shot project setup; does not start the spec → scope → dispatch chain.
   Trigger with /hyperflow:scaffold, "init hyperflow", "set up hyperflow", "refresh hyperflow", "install hyperflow shims".
-allowed-tools: Read, Write, Edit, Bash(git:*), Glob, Grep
-argument-hint: "[--tools all|claude-code|opencode|agents] [--force] [--dry-run]"
-version: 3.1.2
+allowed-tools: Read, Write, Edit, Bash(git:*), Bash(sha256sum:*), Bash(ls:*), Bash(find:*), Bash(scripts/*:*), Glob, Grep, Agent, AskUserQuestion
+argument-hint: "[--tools all|claude-code|opencode|agents|codex|cursor|antigravity|grok] [--force] [--dry-run]"
+version: 3.1.3
 license: MIT
 compatibility: Designed for Claude Code
 tags: [setup, initialization, project-analysis]
@@ -13,7 +13,7 @@ tags: [setup, initialization, project-analysis]
 
 # Scaffold
 
-One-shot project setup. Analyzes the codebase, builds the `.hyperflow/` cache, seeds the memory skeleton, and optionally installs detection shims for other AI tools. Does not start the spec → scope → dispatch chain — invoke `/hyperflow:spec` (or `/hyperflow:scope`) when you're ready for that.
+One-shot project setup. Analyzes the codebase, builds the `.hyperflow/` cache, seeds the memory skeleton, and optionally installs detection shims for other AI tools. Does not start the plan → dispatch chain — invoke `/hyperflow:plan` when you're ready for that.
 
 ## Step 1 — Analysis Cache
 
@@ -37,6 +37,7 @@ Compute SHA256 of tracked config files, compare against `.hyperflow/.checksums`.
 
 **After analysis:**
 - Write `.hyperflow/.checksums` (SHA256 of `package.json`, `tsconfig.json`, eslint/biome config, etc.)
+- Write `.hyperflow/.version` (the current plugin version from `skills/hyperflow/VERSION`) so the cache is stamped current. The session-start migrator (`scripts/migrate-cache.py`) reads this marker on later sessions and brings an older cache forward when the plugin version moves — a missing/older marker triggers an idempotent, additive migration (new memory files, refreshed doctrine copy).
 - Append to `.gitignore` if `.hyperflow/` is not already excluded
 
 ## Step 2 — Memory Skeleton
@@ -79,11 +80,11 @@ Scaffold creates the empty `.hyperflow/memory/` directory; it does NOT write `se
 
 ## Step 3 — Detection Shims
 
-Offer to run `scripts/setup-detection.sh --tools all` to generate AGENTS.md and CLAUDE.md.
+Offer to run `scripts/setup-detection.sh --tools all` to generate AGENTS.md, CLAUDE.md, and provider-specific shims.
 
-Supported tools: `claude-code` (writes CLAUDE.md), `opencode` / `agents` (writes AGENTS.md), `all` (both).
+Supported tools: `claude-code` (CLAUDE.md), `opencode` / `agents` / `codex` / `cursor` (AGENTS.md), `antigravity` (AGENTS.md + `.agent/workflows/`), `grok` (AGENTS.md + `.grok/rules/hyperflow.md`), `all` (every tool).
 
-Flags — `--tools <all|claude-code|opencode|agents>`, `--force`, `--dry-run`.
+Flags — `--tools <all|claude-code|opencode|agents|codex|cursor|antigravity|grok>`, `--force`, `--dry-run`.
 
 Default — `--tools all`. Ask once via `AskUserQuestion` if the user wants to skip any tool.
 
@@ -108,15 +109,15 @@ Pass --thorough to /hyperflow:dispatch to fall back to the full inlined template
 
 ## Hand-off
 
-This skill **does not** auto-chain. Init is project setup, not feature work. When the user wants to start a feature, they invoke `/hyperflow:spec` (for ambiguous scope) or `/hyperflow:scope` (for clear specs).
+This skill **does not** auto-chain. Init is project setup, not feature work. When the user wants to start a feature, they invoke `/hyperflow:plan`.
 
 ## Doctrine
 
-Full rules in [DOCTRINE.md](references/DOCTRINE.md). Output style in [output-style.md](references/output-style.md).
+Full rules in [DOCTRINE.md](../hyperflow/DOCTRINE.md). Output style in [output-style.md](references/output-style.md).
 
 ## Overview
 
-`/hyperflow:scaffold` is one-shot project setup. It analyzes the codebase via 6 parallel Sonnet searchers, builds the `.hyperflow/` cache (profile, architecture, conventions, dependencies, testing, git-workflow), seeds the memory skeleton, and optionally writes detection shims (CLAUDE.md for Claude Code, AGENTS.md for OpenCode). Does not start the spec → scope → dispatch chain — invoke `/hyperflow:spec` (ambiguous scope) or `/hyperflow:scope` (clear spec) when ready.
+`/hyperflow:scaffold` is one-shot project setup. It analyzes the codebase via 6 parallel searchers, builds the `.hyperflow/` cache (profile, architecture, conventions, dependencies, testing, git-workflow), seeds the memory skeleton, and optionally writes detection shims (CLAUDE.md, AGENTS.md, Grok rules, Antigravity workflows). Does not start the plan → dispatch chain — invoke `/hyperflow:plan` when ready.
 
 ## Prerequisites
 
@@ -132,7 +133,7 @@ Numbered steps are in [Step 1 — Analysis Cache](#step-1--analysis-cache) throu
 2. If present, recompute SHA256 checksums and refresh only stale files.
 3. Create `.hyperflow/memory/` skeleton: copy `skills/hyperflow/DOCTRINE.md` → `doctrine.md` (idempotent — re-copy only if source is newer); create `learnings.md` empty stub (skip if content exists); create `index.md`, `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` stubs if absent.
 4. Migrate matching entries from legacy `~/.claude/hyperflow-memory.md` if found.
-5. Offer `scripts/setup-detection.sh --tools all` to write CLAUDE.md + AGENTS.md.
+5. Offer `scripts/setup-detection.sh --tools all` to write CLAUDE.md, AGENTS.md, and Grok/Antigravity shims when those tools are selected.
 6. Print summary of created / skipped / migrated artifacts.
 
 ## Output
@@ -211,5 +212,5 @@ No files written.
 ## Resources
 
 - [project-analysis.md](references/project-analysis.md) — what each generated file captures.
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules (Layer 0 project analysis).
+- [DOCTRINE.md](../hyperflow/DOCTRINE.md) — orchestration rules (Layer 0 project analysis).
 - [output-style.md](references/output-style.md) — summary block formatting.

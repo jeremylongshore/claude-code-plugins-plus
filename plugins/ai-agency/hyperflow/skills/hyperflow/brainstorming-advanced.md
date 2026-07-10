@@ -1,6 +1,6 @@
 # Advanced Brainstorming Framework
 
-Extends Layer 4 with structured question clarification, multi-dimensional analysis, and AskUserQuestion UI integration. Use this as the reference for how Opus runs the brainstorming flow.
+Extends Layer 4 with structured question clarification, multi-dimensional analysis, and AskUserQuestion UI integration. Use this as the reference for how the orchestrator runs the brainstorming flow.
 
 ---
 
@@ -147,29 +147,29 @@ AskUserQuestion({
 ```
 User shares idea
     |
-[Opus] Explore context — check files, docs, recent commits
+Explore context — check files, docs, recent commits
     |
-[Opus] Multi-Dimensional Analysis (silent)
+Multi-Dimensional Analysis (silent)
     |   Score 6 dimensions: clear / uncertain / blind
     |   Map blind spots to question techniques
     |
-[Opus] Smart Question Sequence (via AskUserQuestion)
+Smart Question Sequence (via AskUserQuestion)
     |   1. Intent Clarification    (if UX/goal is blind)
     |   2. Constraint Discovery    (if Technical is blind)
     |   3. Assumption Challenging  (if uncertain dimensions exist)
     |   4. Scope Boundaries        (if multiple blind dimensions)
     |   Max 4-5 questions total. Skip obvious ones.
     |
-[Opus] Requirement Synthesis
+Requirement Synthesis
     |   Present structured summary — user confirms before proceeding
     |
-[Opus] Propose 2-3 approaches with trade-offs + recommendation
+Propose 2-3 approaches with trade-offs + recommendation
     |
 [User] Picks approach
     |
-[Opus] Present design in sections, get approval per section
+Present design in sections, get approval per section
     |
 [User] Approves full design
     |
-[Opus] Transition to Layer 3 (orchestrator) for implementation
+Transition to Layer 3 (orchestrator) for implementation
 ```

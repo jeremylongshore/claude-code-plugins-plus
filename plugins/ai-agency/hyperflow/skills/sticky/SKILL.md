@@ -112,14 +112,13 @@ When sticky is ON, the orchestrator MUST follow this routing on every new user m
 
 1. **Chat-shaped messages** (questions about prior output, "yes" / "no" answers to a pending gate, acknowledgments like "ok"/"thanks", short clarifications) — pass through normally, no chain routing.
 2. **Task-shaped messages** (any verb-led request for new work: "add X", "fix Y", "refactor Z", "build", "implement", "create", "design", "scope out", "decompose", "ship") — auto-route:
-   - **Ambiguous design** (the user asks *what* or *should we*) → invoke `/hyperflow:spec` with the user's message as `ARGUMENTS`.
-   - **Clear spec** (the user describes *how* or names concrete files / functions) → invoke `/hyperflow:scope` with the user's message as `ARGUMENTS`.
+   - **New work** (whether the user asks *what* / *should we* or describes *how* and names concrete files / functions) → invoke `/hyperflow:plan` with the user's message as `ARGUMENTS`. Plan internally bounces past the design phase straight to decomposition when the request is already clear.
    - **Existing task file referenced** (e.g. "resume the auth task") → invoke `/hyperflow:dispatch` with the matching slug.
 3. **Bug reports** ("X is broken", "Y test fails", "Z throws…") → invoke `/hyperflow:trace`.
 4. **Review requests** ("review this", "audit the diff", "any issues?") → invoke `/hyperflow:audit`.
 5. **Ship intent** ("ship it", "push", "release", "deploy") → invoke `/hyperflow:deploy`.
 
-The routing decision is made silently — print one short line (`Routing to /hyperflow:spec (sticky mode) …`) and invoke. Don't ask the user to confirm the routing (that would be an invented gate per DOCTRINE rule 8). The Step 0 chain-mode question still fires inside the routed skill.
+The routing decision is made silently — print one short line (`Routing to /hyperflow:plan (sticky mode) …`) and invoke. Don't ask the user to confirm the routing (that would be an invented gate per DOCTRINE rule 8). The Step 0 chain-mode question still fires inside the routed skill.
 
 **Override:** if the user message starts with `/` (any slash command) OR contains "without hyperflow" / "skip hyperflow" / "don't route" → bypass routing for that message; respond directly.
 
@@ -143,7 +142,7 @@ State is never silently changed by the orchestrator. Only the user's explicit `/
 - Skipping the Step 0 chain-mode question inside the routed skill — sticky controls *routing*, not *gates*
 - Routing chat-shaped messages — answering a question shouldn't fire a chain
 - Routing messages that start with `/` — those are explicit slash commands; honor them as-is
-- Echoing the routing decision as a long paragraph — one short line is enough (`Routing to /hyperflow:scope (sticky mode) …`)
+- Echoing the routing decision as a long paragraph — one short line is enough (`Routing to /hyperflow:plan (sticky mode) …`)
 
 ## Flow
 
@@ -190,7 +189,7 @@ Single one-line status per subcommand (`on` / `off` / `status`). No multi-line o
 /hyperflow:sticky on
 
 Sticky mode: ON
-Task-shaped messages now auto-route through /hyperflow:spec (or /hyperflow:scope when the design is clear).
+Task-shaped messages now auto-route through /hyperflow:plan (which bounces straight to decomposition when the design is clear).
 Chat-shaped messages (questions, answers, acknowledgments) still pass through normally.
 Disable with /hyperflow:sticky off.
 ```
@@ -204,8 +203,8 @@ Sticky mode: ON (activated by mention)
 Task-shaped messages now auto-route. Disable with /hyperflow:sticky off.
 
 You: add a search bar to the dashboard with debounced input
-[orchestrator: task-shaped, clear spec → routes to /hyperflow:scope]
-Routing to /hyperflow:scope (sticky mode) …
+[orchestrator: task-shaped, clear request → routes to /hyperflow:plan]
+Routing to /hyperflow:plan (sticky mode) …
 ```
 
 ### Check status
