@@ -1,403 +1,90 @@
-# 001-Jeremy Content Consistency Validator
+# Content Consistency Validator (v3)
 
-**Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across your website, GitHub repositories, and local documentation.**
+**Universal document consistency auditor. Deterministic drift checks across docs, code, tests, and CI — conflicts resolved through a per-fact-class authority registry, never a global ranking. Read-only: it reports, it never fixes.**
 
-## What It Does
+## What Changed in v3
 
-This plugin helps you maintain consistent messaging by:
+v3 folds the full consistency-audit engine into this plugin and retires the v1/v2 shell (design council, issue #991):
 
-1. **Scanning** your website, GitHub, and local docs
-2. **Comparing** key messaging elements across all sources
-3. **Identifying** discrepancies, conflicts, and inconsistencies
-4. **Generating** detailed read-only reports for human review
-5. **Recommending** specific fixes with file locations and line numbers
+- **The "website is truth" axiom is gone.** No source is globally authoritative anymore. Authority is declared per fact class, as data, by a human — in `sot-map.yaml`.
+- **Deterministic and LLM-judged checks are structurally separated.** Judged findings are advisory-only: never Critical, never blocking.
+- **Email/CRM sources are out of scope for v1 of this model.** No WebSearch, no WebFetch — filesystem and git only.
+- **The multi-agent roster is deferred** pending open design decisions. Phase 1 ships one skill plus a thin command; no agents.
+- **Fixture-gated.** The quality gate is a golden fixture corpus with seeded drifts; evals assert exact findings ("exactly these N, zero invented"), not procedure.
 
-**🔒 100% Read-Only** - This plugin NEVER modifies any files. It only generates reports.
+## How It Works
 
-## Your Workflow Problem (Solved)
+1. **Load the authority registry** — `sot-map.yaml` (default `~/000-projects/intent-os/sot-map.yaml`, path configurable). Each row maps a fact class (e.g. `version-string`, `license`, `ci-commands`) to the artifact class that owns it.
+2. **Inventory artifacts** — README, CLAUDE.md, CHANGELOG, `000-docs/`, `docs/`, `planning/`, CI workflows, package manifests.
+3. **Run the 9 drift checks** (below), each tagged deterministic or LLM-judged.
+4. **Resolve conflicts through the registry.** A conflict on a registered fact class is filed against the non-authoritative artifact. A conflict on an unregistered fact class is emitted as `unowned fact-class — human adjudication needed` — no winner is ever guessed.
+5. **Report** — Part A deterministic findings (Critical/Warning/Info), Part B advisory findings (LLM-judged), unowned-fact-class callouts, and bootstrap-drafted registry rows for human review.
 
-**Problem:** You keep your website up-to-date first, but internal paperwork lags behind, creating mixed messaging.
+### The 9 Checks
 
-**Solution:** This plugin validates that website, GitHub, and docs match BEFORE you update internal paperwork.
+| Check | Category | Lane |
+|-------|----------|------|
+| 3.1 Index vs filesystem | Index/Reference Drift | Deterministic |
+| 3.2 Version string consistency | Status Drift | Deterministic (`version-string`) |
+| 3.3 README commands vs CI workflows | CI/Validation Drift | Deterministic (`ci-commands`) |
+| 3.4 CLAUDE.md references vs actual docs | Index/Reference Drift | Deterministic |
+| 3.5 Stale phase/status language | Status Drift | LLM-judged — advisory |
+| 3.6 Capability claims vs code | Capability/Behavior Drift | LLM-judged — advisory |
+| 3.7 Cross-doc fact comparison | Cross-Doc Contradiction | Deterministic (license, runtime, repo URL); advisory (description) |
+| 3.8 Broken cross-references | Index/Reference Drift | Deterministic |
+| 3.9 Planning vs implementation | Planning-vs-Implementation | LLM-judged — advisory |
 
-## Use Cases
+### The Registry Model
 
-### Use Case 1: Pre-Update Validation
+`sot-map.yaml` is the source of truth for *who owns which fact* — declared as data, adjudicated by a human:
 
-**Before updating internal docs, check what changed on the website:**
-
-```bash
-/validate-consistency
+```yaml
+version: 1
+fact_classes:
+  version-string:
+    authority: package-manifest
+    adjudicated_by: jeremy
+    adjudicated_on: YYYY-MM-DD
 ```
 
-Or naturally:
-> "Before I update training materials, check if website matches GitHub"
+- **No row → no guess.** Unowned fact classes are reported for human adjudication.
+- **Bootstrap mode.** Without a registry, the skill still detects every conflict, names no winners, and drafts proposed rows (using project-type detection and the retired legacy hierarchy purely as a drafting heuristic). A human reviews and commits the rows — the skill never writes `sot-map.yaml`.
+- **Truth invariant.** The governed brain arbitrates asserted company/doctrine claims and the rules — never generated facts. The validator never reads the brain as ground truth for generated facts, and the brain ingests only human-adjudicated findings.
 
-**Result:** Report showing exactly what needs updating in your docs to match website.
-
-### Use Case 2: Post-Website Update
-
-**After updating website, check what's now inconsistent:**
-
-> "I just updated the pricing page. Check if GitHub and docs are out of sync."
-
-**Result:** List of files that need updating to match new website content.
-
-### Use Case 3: Version Consistency Audit
-
-**Ensure all platforms mention the same version:**
-
-> "Check if all documentation mentions v1.2.1"
-
-**Result:**
-
-```
-Version Analysis:
-- Website: v1.2.1 ✅
-- GitHub: v1.2.0 🔴 (needs update)
-- Docs: v1.2.0 🔴 (needs update)
-```
+Full specification: `skills/validate-consistency/references/sot-registry.md`.
 
 ## Installation
 
 ```bash
-# Add marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
-
-# Install plugin
-/plugin install 001-jeremy-content-consistency-validator@claude-code-plugins-plus
+/plugin install 000-jeremy-content-consistency-validator@claude-code-plugins-plus
 ```
 
-## How to Use
-
-### Method 1: Agent Skill (Automatic)
-
-Just mention your need naturally:
-
-- "Check consistency between website and GitHub"
-- "Validate documentation before I update training materials"
-- "Find mixed messaging across platforms"
-- "Ensure website matches local docs"
-
-**The Agent Skill activates automatically** and generates a report.
-
-### Method 2: Manual Command
-
-Run explicit validation:
+## Usage
 
 ```bash
 /validate-consistency
 ```
 
-## What Gets Validated
+Or naturally: "check consistency", "validate docs", "audit documentation", "doc drift check".
 
-### 1. Website Content (ALL HTML-Based Sites)
-
-**Automatically detects and validates:**
-
-- Static HTML sites (index.html, about.html)
-- Hugo/Astro static site generators
-- Jekyll/GitHub Pages sites
-- WordPress sites
-- Next.js/React applications
-- Vue/Nuxt applications
-- Gatsby sites
-- 11ty/Eleventy sites
-- Docusaurus sites
-- Any other HTML-based website
-
-**Content validated:**
-
-- Marketing pages
-- Product descriptions
-- Feature lists
-- Pricing information
-- Contact details
-- Version numbers
-
-### 2. GitHub Repositories
-
-- README.md
-- CONTRIBUTING.md
-- Documentation files
-- Code comments
-- Release notes
-
-### 3. Local Documentation
-
-- Internal SOPs
-- Training materials
-- Technical specifications
-- Process documentation
-- Knowledge base articles
-
-## Report Format
-
-### Executive Summary
-
-```markdown
-# Content Consistency Validation Report
-Generated: 2025-10-23 10:45:23
-
-## Summary
-- Sources analyzed: 47 files
-- 🔴 Critical issues: 3
-- 🟡 Warnings: 12
-- 🟢 Informational: 8
-```
-
-### Critical Discrepancies 🔴
-
-Issues that MUST be fixed:
-
-```markdown
-### 🔴 CRITICAL: Version Mismatch
-
-**Website:** v1.2.1 (index.html:45)
-**GitHub:** v1.2.0 (README.md:12)
-**Docs:** v1.2.0 (training-guide.md:156)
-
-**Impact:** Public-facing version inconsistency
-
-**Recommendation:**
-1. Update GitHub README.md line 12 to v1.2.1
-2. Update training-guide.md line 156 to v1.2.1
-
-**Priority:** HIGH
-```
-
-### Warnings 🟡
-
-Issues that SHOULD be reviewed:
-
-```markdown
-### 🟡 WARNING: Feature Count Inconsistency
-
-**Website:** "236 plugins"
-**GitHub:** "Over 230 plugins"
-**Docs:** "230+ plugins"
-
-**Recommendation:** Standardize on "236 plugins" everywhere
-```
-
-### Action Items
-
-Prioritized fix list:
-
-```markdown
-## Priority Action Items
-
-1. 🔴 Update GitHub version to v1.2.1
-2. 🔴 Fix contact email in local docs
-3. 🟡 Standardize plugin count messaging
-4. 🟡 Align installation instructions
-5. 🟢 Standardize terminology ("plugin" vs "extension")
-```
-
-## Report Location
-
-Reports are saved to:
-
-```
-consistency-reports/YYYY-MM-DD-HH-MM-SS-full-audit.md
-```
-
-Example:
-
-```
-consistency-reports/
-├── 2025-10-23-10-45-23-full-audit.md
-├── 2025-10-22-15-20-12-website-github.md
-└── 2025-10-20-09-15-33-docs-sync.md
-```
-
-## What It Checks
-
-### Version Numbers
-
-- Software versions (v1.2.0)
-- Release dates
-- Copyright years
-- API versions
-
-### Feature Claims
-
-- "Supports X plugins"
-- "Includes Y features"
-- Technical capabilities
-- Performance claims
-
-### Contact Information
-
-- Email addresses
-- Support URLs
-- Social media links
-- Physical addresses
-
-### Technical Specifications
-
-- System requirements
-- Dependencies
-- Installation steps
-- Configuration options
-
-### Terminology
-
-- Product names
-- Technical terms
-- Acronyms
-- Brand terminology
-
-## Source Priority
-
-When conflicts exist, trust this order:
-
-1. **Website** (public-facing, most authoritative)
-2. **GitHub** (developer-facing, technical accuracy)
-3. **Local Docs** (internal-use, lowest priority)
-
-**Recommended update flow:** Website → GitHub → Local Docs
-
-## Example Scenarios
-
-### Scenario 1: Pre-Training Update
-
-**You:** "Before I update our sales training, check if website pricing changed."
-
-**Plugin Actions:**
-
-1. Reads current website pricing page
-2. Reads existing training materials
-3. Compares pricing information
-4. Shows exactly what changed
-5. Provides line-by-line update recommendations
-
-**Result:** You update training with confidence, knowing it matches current website.
-
-### Scenario 2: Post-Website Redesign
-
-**You:** "I redesigned the website. What's now inconsistent with GitHub?"
-
-**Plugin Actions:**
-
-1. Reads new website content
-2. Reads GitHub documentation
-3. Identifies content that diverged
-4. Lists specific files needing updates
-
-**Result:** Checklist of GitHub files to update.
-
-### Scenario 3: Version Release
-
-**You:** "Just released v2.0.0. Validate consistency everywhere."
-
-**Plugin Actions:**
-
-1. Searches all sources for version mentions
-2. Identifies sources still showing old version
-3. Provides update checklist
-
-**Result:** Complete list of files to update with line numbers.
+Also invoked automatically by `/release` during Phase 1.6 — deterministic 🔴 Critical findings feed the release blocking gate; advisory findings are surfaced for review and never block.
 
 ## Read-Only Guarantee
 
-This plugin uses ONLY read-only operations:
+The skill's tool grant is `Read, Glob, Grep, Bash(echo:*), Bash(git:*), Bash(diff:*)` — no Write, no Edit, no WebSearch, no WebFetch. It reports discrepancies with file paths and line numbers; you decide what to fix.
 
-✅ **Allowed:**
+## Scope (Phase 1)
 
-- `Read` - Read local files
-- `Glob` - Find files by pattern
-- `Grep` - Search file contents
-- `Bash` (read-only): `cat`, `grep`, `find`, `wc`
-
-❌ **Never Used:**
-
-- `Write` - NO file modifications
-- `Edit` - NO file edits
-- `git commit` - NO version control changes
-- Any destructive operations
-
-**You maintain complete control.** The plugin only reports - you decide what to fix.
-
-## Technical Details
-
-### Sources Discovered Automatically
-
-**Website (ALL HTML-based sites):**
-
-- **Static HTML:** `**/*.html`
-- **Hugo:** `content/**/*.md`, `themes/**/*.html`, `layouts/**/*.html`
-- **Astro:** `src/pages/**/*.{astro,md}`
-- **Jekyll:** `_posts/**/*.md`, `_pages/**/*.md`, `_layouts/**/*.html`
-- **WordPress:** `wp-content/themes/**/*.php`, `wp-content/**/*.html`
-- **Next.js/React:** `pages/**/*.{tsx,jsx}`, `app/**/*.{tsx,jsx}`, `out/**/*.html`, `build/**/*.html`
-- **Vue/Nuxt:** `pages/**/*.vue`, `components/**/*.vue`, `dist/**/*.html`
-- **Gatsby:** `src/pages/**/*.{js,jsx}`, `public/**/*.html`
-- **11ty/Eleventy:** `**/*.{md,njk}`, `_site/**/*.html`
-- **Docusaurus:** `docs/**/*.{md,mdx}`, `blog/**/*.{md,mdx}`, `build/**/*.html`
-
-**GitHub:**
-
-- `README.md`
-- `CONTRIBUTING.md`
-- `docs/**/*.md`
-
-**Local Docs:**
-
-- `claudes-docs/**/*.md`
-- `000-docs/**/*.md`
-- `docs/**/*.md`
-
-### Comparison Algorithms
-
-1. **Exact Match:** Finds identical strings across sources
-2. **Fuzzy Match:** Detects similar phrasing (90%+ similarity)
-3. **Semantic Match:** Identifies same concept, different words
-4. **Pattern Match:** Regex-based detection (versions, emails, URLs)
-
-### Performance
-
-- Scans 100+ files in < 10 seconds
-- Generates comprehensive report in < 30 seconds
-- No external API calls required
-- 100% local processing
-
-## Troubleshooting
-
-### "No sources found"
-
-**Solution:** Ensure you're in project root directory with website/docs/GitHub files.
-
-### "Report too large"
-
-**Solution:** Use focused validation:
-> "Only check version consistency"
-
-### "Can't find website"
-
-**Solution:** Specify location:
-> "Check consistency, website is in ~/startaitools/"
-
-## Contributing
-
-Found an issue or have a suggestion? Open an issue at:
-https://github.com/jeremylongshore/claude-code-plugins/issues
+- One skill (`validate-consistency`) + one thin command. The multi-agent roster from the original design is **deferred** pending open decisions.
+- Sources: local filesystem + git. Email/CRM auditing is out of v1 entirely.
+- Quality gate: golden fixture corpus with seeded drifts — evals assert exact findings, zero invented.
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT — see LICENSE.
 
 ## Support
 
-- **Documentation:** This README
-- **Issues:** GitHub Issues
+- **Issues:** https://github.com/jeremylongshore/claude-code-plugins/issues
 - **Email:** jeremy@intentsolutions.io
-
----
-
-**Built by:** Jeremy Longshore
-**Version:** 1.0.0
-**Category:** Productivity
-**Type:** Read-Only Validator
-
-**Perfect for:** Content managers, documentation teams, technical writers, and anyone maintaining consistency across multiple platforms.

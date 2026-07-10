@@ -1,7 +1,7 @@
 {
   "name": "000-jeremy-content-consistency-validator",
-  "version": "2.0.0",
-  "description": "Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across ANY HTML-based website (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.), GitHub repositories, and local documentation. Detects mixed messaging without making changes.",
+  "version": "3.0.0",
+  "description": "Universal document consistency auditor. Runs deterministic drift checks across docs, code, tests, and CI; resolves conflicts through a per-fact-class authority registry (sot-map.yaml) instead of a global ranking; LLM-judged findings are structurally separated and advisory-only. Read-only — reports discrepancies, never fixes. Invoked automatically by /release Phase 1.6.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -12,18 +12,12 @@
     "documentation",
     "consistency",
     "validation",
-    "website",
-    "github",
-    "content-audit",
-    "messaging",
+    "drift-detection",
+    "audit",
+    "source-of-truth",
+    "release-gate",
     "quality-assurance",
-    "wordpress",
-    "hugo",
-    "nextjs",
-    "react",
-    "vue",
-    "static-site",
-    "jekyll",
-    "gatsby"
+    "doc-drift",
+    "read-only"
   ]
 }

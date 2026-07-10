@@ -1,0 +1,36 @@
+name: Consistency Validator Fixture Gate
+
+# BLOCKING golden-fixture gate for the content-consistency-validator plugin
+# (council Phase-1 step 4, GH #991: "rewrite evals to assert findings; wire
+# as the plugin's required CI check. Nothing else proceeds until red/green
+# exists"). The gate asserts the deterministic checker finds EXACTLY the
+# seeded drifts on fixtures/drifted/ (zero invented) and ZERO on
+# fixtures/clean/ — findings, not procedure.
+#
+# Zero-install: stdlib-only python3 + bash.
+#
+# Refs jeremylongshore/claude-code-plugins-plus-skills#991.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'plugins/productivity/000-jeremy-content-consistency-validator/**'
+      - '.github/workflows/consistency-fixture-gate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: consistency-fixture-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fixture-gate:
+    name: golden-fixture red/green gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Fixture gate (blocking)
+        run: bash plugins/productivity/000-jeremy-content-consistency-validator/tests/run-fixture-check.sh

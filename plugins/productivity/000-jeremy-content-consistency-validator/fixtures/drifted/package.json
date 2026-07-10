@@ -1,0 +1,11 @@
+{
+  "name": "acme-widgets",
+  "version": "2.3.0",
+  "private": true,
+  "description": "The fastest widget toolkit for the terminal.",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src",
+    "test:unit": "node --test"
+  }
+}

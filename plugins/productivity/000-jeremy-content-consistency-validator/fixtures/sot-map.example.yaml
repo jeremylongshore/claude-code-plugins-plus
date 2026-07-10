@@ -1,0 +1,114 @@
+# sot-map.example.yaml — per-fact-class authority registry (council schema,
+# GH issue #991). This is the WORKING registry for the golden-fixture project
+# in fixtures/clean/ and fixtures/drifted/.
+#
+# Council law encoded here:
+#   - Source of truth is declared PER FACT CLASS, as data. Never a global
+#     ranking ("code is truth" / "website is truth"), never auto-detected at
+#     runtime. Auto-detection survives only as a bootstrap that DRAFTS rows
+#     for a human to commit.
+#   - No registry row for a conflicting fact class => the checker emits
+#     "unowned fact-class — human adjudication needed". It never guesses.
+#   - determinism: deterministic  => mechanically checkable; may block.
+#     determinism: llm-judged     => advisory-only; NEVER Critical/blocking;
+#                                    ignored entirely by the fixture gate.
+#   - staleness_bound: N (days) => the owner surface carries a freshness stamp
+#     ("Last updated: YYYY-MM-DD") that must be within N days of the clock.
+#
+# Parsed by tests/fixture_checker.py, which supports a restricted YAML
+# subset: two-space-indented mappings, "- " lists of scalars, "key: value"
+# scalars, and comments. Keep this file inside that subset.
+
+schema: sot-map/v1
+
+# Fixed clock so the fixture gate's date math never rots. A real deployment
+# omits as_of and the checker falls back to today's date.
+as_of: "2026-07-01"
+
+fact_classes:
+  product.version:
+    owner: package.json
+    mirrors:
+      - README.md
+      - CHANGELOG.md
+    determinism: deterministic
+    staleness_bound: null
+
+  product.license:
+    owner: package.json
+    mirrors:
+      - README.md
+    determinism: deterministic
+    staleness_bound: null
+
+  product.commands:
+    owner: src/cli.js
+    mirrors:
+      - README.md
+    determinism: deterministic
+    staleness_bound: null
+
+  ci.test-command:
+    owner: .github/workflows/ci.yml
+    mirrors:
+      - README.md
+    determinism: deterministic
+    staleness_bound: null
+
+  docs.index:
+    owner: 000-docs
+    mirrors:
+      - 000-docs/000-INDEX.md
+    determinism: deterministic
+    staleness_bound: null
+
+  docs.crossrefs:
+    owner: filesystem
+    mirrors:
+      - "**/*.md"
+    determinism: deterministic
+    staleness_bound: null
+
+  docs.claude-refs:
+    owner: filesystem
+    mirrors:
+      - CLAUDE.md
+    determinism: deterministic
+    staleness_bound: null
+
+  docs.freshness:
+    owner: docs/index.md
+    mirrors: null
+    determinism: deterministic
+    staleness_bound: 180
+
+  project.phase:
+    owner: src
+    mirrors:
+      - README.md
+      - CLAUDE.md
+    determinism: deterministic
+    staleness_bound: null
+
+  roadmap.status:
+    owner: src/cli.js
+    mirrors:
+      - planning/roadmap.md
+    determinism: deterministic
+    staleness_bound: null
+
+  # Schema demonstration only: an LLM-judged fact class. Judged classes are
+  # advisory-only per council constraint — the deterministic fixture gate
+  # skips them entirely, and judged findings may never be Critical/blocking.
+  brand.voice:
+    owner: README.md
+    mirrors:
+      - docs/index.md
+    determinism: llm-judged
+    staleness_bound: null
+
+# DELIBERATELY UNREGISTERED: product.tagline.
+# The drifted fixture seeds a tagline conflict between README.md and
+# docs/index.md (DRIFT-12). Because no row owns that fact class, the checker
+# must emit "unowned fact-class — human adjudication needed" instead of
+# picking a winner. That behavior is part of the gate.
