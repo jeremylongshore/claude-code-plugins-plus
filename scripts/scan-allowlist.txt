@@ -34,6 +34,9 @@ plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint document
 sources.yaml:sources-change-unscanned  2026-07-10 hyperflow unfreeze PR reviewed: drops curated freeze after upstream merged the frontmatter uplift (Mohammed-Abdelhady/hyperflow#7, HEAD be6ae2d3) — field-parity evidence gate passed (0 regressions across 13 shared skills; amplify/scope/spec removal is upstream-intended merge into plan; unicode hygiene --strict + payload scan clean over all 87 mirror-scope files); include list gains agents/** + scripts/** (v5.x skills dispatch agents/*.md and run scripts/*); relock pins upstream HEAD hashes. No source added or repointed
 sources.lock.json:sources-change-unscanned  2026-07-10 same hyperflow unfreeze PR: the lock diff is the --relock re-baseline itself (hyperflow block only, verified by JSON key diff) pinning upstream HEAD be6ae2d3 hashes after the field-parity + hygiene review above
 
+# ── hyperflow orchestrator skill: upstream web-research feature. ──
+plugins/ai-agency/hyperflow/skills/hyperflow/SKILL.md:allowed-tools-network  upstream v5.8.x added WebFetch/WebSearch to the orchestrator skill for its web-research feature (skills/hyperflow/web-research.md); mirror content hand-reviewed 2026-07-10 (evidence gate on #1008 + the be6ae2d3->eae6e34c5 delta review) — external mirror, upstream's design, no credential surface
+
 # ── Skill Refiner plugin: the 3-layer hook architecture IS the product. ──
 # /j-rig is the eval-guided SKILL.md improvement loop; its sinker/line/hook hooks
 # are the reviewed, intended feature (not an injected payload). They only invoke
