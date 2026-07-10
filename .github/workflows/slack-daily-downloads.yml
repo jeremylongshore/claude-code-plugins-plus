@@ -13,8 +13,8 @@ name: Daily Slack download digest
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # 18:00 UTC daily = 1pm America/Chicago
-  workflow_dispatch:       # manual fire for testing
+    - cron: '0 18 * * *' # 18:00 UTC daily = 1pm America/Chicago
+  workflow_dispatch: # manual fire for testing
 
 permissions:
   contents: read
@@ -91,9 +91,11 @@ jobs:
           WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
           PAYLOAD: ${{ steps.build.outputs.payload }}
         run: |
-          # --fail so non-2xx aborts the job with a clear signal
+          # --fail so non-2xx aborts the job with a clear signal.
+          # `--` ends option parsing so a malformed webhook value (e.g. the
+          # placeholder '-') is treated as the URL argument, not a curl flag.
           curl --silent --show-error --fail \
             --header "Content-Type: application/json" \
             --data "$PAYLOAD" \
-            "$WEBHOOK" > /dev/null
+            -- "$WEBHOOK" > /dev/null
           echo "✓ Slack message posted."
