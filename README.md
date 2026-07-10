@@ -35,17 +35,17 @@ Or use Claude's built-in command:
 
 <!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
 
-> **Killer Skill of the Week** — [mnemos](https://github.com/polyxmedia/mnemos) by [Polyx Media](https://github.com/polyxmedia)
+> **Killer Skill of the Week** — [tonone](https://github.com/tonone-ai/tonone) by [tonone-ai](https://github.com/tonone-ai)
 >
-> **Persistent memory for Claude Code that actually gets written — measured, not promised**
+> **A 23-agent engineering and product team that ships from one session — two commands, zero meetings**
 >
-> The mnemos skill closes the loop most memory tools leave open: getting anything recorded at all. A SessionStart hook prewarms a token-budgeted context block and a UserPromptSubmit hook pattern-matches correction-shaped prompts into a non-skippable capture directive — upstream measured capture jumping from a 7% baseline to 53%, with a +40% behavior lift on paired Claude runs. Corrections persist as structured tried/wrong_because/fix records, and three that cluster auto-promote into a skill deterministically, no LLM in the loop. The engine is a dependency-free single Go binary (~15 MB, pure-Go SQLite) keeping everything local. MIT-licensed, with all 8/8 required frontmatter fields verified at upstream HEAD.
+> tonone turns Claude Code into a full delivery team: 23 specialist agents (architect, reviewers, product, QA and the rest of the org chart) coordinated through 125 skills, so one session runs discovery, build, review, and ship without you playing project manager between tools. The mirror featured here is the curated cut — every one of its 114 agent definitions verifies clean at the kernel-strict frontmatter floor in the latest inventory run, preserved by the marketplace's never-clobber freeze. MIT-licensed and actively developed upstream; a frontmatter sweep for the skill tier is offered upstream and the roster works as-is today.
 >
-> _"A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."_ — Polyx Media
+> _"One session. Two commands. Full team. Zero meetings."_ — tonone-ai
 >
-> Grade: A | Week of July 7, 2026 (W28) | [View on GitHub](https://github.com/polyxmedia/mnemos)
+> Grade: A | Week of July 10, 2026 (W28) | [View on GitHub](https://github.com/tonone-ai/tonone)
 >
-> Previous picks: [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [mnemos](https://github.com/polyxmedia/mnemos), [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 <!-- KILLER-SKILL:END -->
 

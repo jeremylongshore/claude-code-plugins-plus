@@ -2,18 +2,31 @@
   "week": "2026-W28",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "mnemos",
-    "headline": "Persistent memory for Claude Code that actually gets written — measured, not promised",
-    "whyKiller": "The mnemos skill closes the loop most memory tools leave open: getting anything recorded at all. A SessionStart hook prewarms a token-budgeted context block and a UserPromptSubmit hook pattern-matches correction-shaped prompts into a non-skippable capture directive — upstream measured capture jumping from a 7% baseline to 53%, with a +40% behavior lift on paired Claude runs. Corrections persist as structured tried/wrong_because/fix records, and three that cluster auto-promote into a skill deterministically, no LLM in the loop. The engine is a dependency-free single Go binary (~15 MB, pure-Go SQLite) keeping everything local. MIT-licensed, with all 8/8 required frontmatter fields verified at upstream HEAD.",
-    "author": "Polyx Media",
-    "authorGithub": "polyxmedia",
+    "pluginSlug": "tonone",
+    "headline": "A 23-agent engineering and product team that ships from one session — two commands, zero meetings",
+    "whyKiller": "tonone turns Claude Code into a full delivery team: 23 specialist agents (architect, reviewers, product, QA and the rest of the org chart) coordinated through 125 skills, so one session runs discovery, build, review, and ship without you playing project manager between tools. The mirror featured here is the curated cut — every one of its 114 agent definitions verifies clean at the kernel-strict frontmatter floor in the latest inventory run, preserved by the marketplace's never-clobber freeze. MIT-licensed and actively developed upstream; a frontmatter sweep for the skill tier is offered upstream and the roster works as-is today.",
+    "author": "tonone-ai",
+    "authorGithub": "tonone-ai",
     "grade": "A",
-    "skillCount": 1,
-    "category": "community",
-    "link": "https://github.com/polyxmedia/mnemos",
-    "quote": "A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."
+    "skillCount": 125,
+    "category": "ai-agency",
+    "link": "https://github.com/tonone-ai/tonone",
+    "quote": "One session. Two commands. Full team. Zero meetings."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W28",
+      "pluginSlug": "mnemos",
+      "headline": "Persistent memory for Claude Code that actually gets written — measured, not promised",
+      "whyKiller": "The mnemos skill closes the loop most memory tools leave open: getting anything recorded at all. A SessionStart hook prewarms a token-budgeted context block and a UserPromptSubmit hook pattern-matches correction-shaped prompts into a non-skippable capture directive — upstream measured capture jumping from a 7% baseline to 53%, with a +40% behavior lift on paired Claude runs. Corrections persist as structured tried/wrong_because/fix records, and three that cluster auto-promote into a skill deterministically, no LLM in the loop. The engine is a dependency-free single Go binary (~15 MB, pure-Go SQLite) keeping everything local. MIT-licensed, with all 8/8 required frontmatter fields verified at upstream HEAD.",
+      "author": "Polyx Media",
+      "authorGithub": "polyxmedia",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "community",
+      "link": "https://github.com/polyxmedia/mnemos",
+      "quote": "A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."
+    },
     {
       "week": "2026-W27",
       "pluginSlug": "databricks-pack",
@@ -139,8 +152,8 @@
     }
   ],
   "meta": {
-    "version": "2.6.0",
-    "lastUpdated": "2026-07-07",
+    "version": "2.7.0",
+    "lastUpdated": "2026-07-10",
     "curatedBy": "Jeremy Longshore"
   }
 }
