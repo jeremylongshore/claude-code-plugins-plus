@@ -2,7 +2,7 @@
 
 ## Overview
 
-After every worker completes, Opus runs a multi-level review. The number of levels scales with task complexity — Opus classifies complexity first, then dispatches a single reviewer covering all applicable levels in one pass.
+After every worker completes, a Reviewer runs a multi-level review. The number of levels scales with task complexity — the orchestrator classifies complexity first, then dispatches a single Reviewer covering all applicable levels in one pass.
 
 ---
 
@@ -29,7 +29,7 @@ After every worker completes, Opus runs a multi-level review. The number of leve
 **Complex** → levels 1–5
 - 4+ files created/modified, new feature from scratch, multi-component work, UI with user interactions, database schema changes, API endpoint changes
 
-Opus classifies before dispatching. Classification criteria:
+The orchestrator classifies before dispatching. Classification criteria:
 - Number of files in scope
 - New functionality vs modifying existing
 - UI/UX involved → triggers Level 5

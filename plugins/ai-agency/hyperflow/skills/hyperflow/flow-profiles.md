@@ -48,7 +48,7 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 **Token budget:** ≤ 30 000 tokens (soft target)
 
 **Agent counts:**
-- Thinking: 1 (orchestrator only; inline review = no separate dispatch)
+- Reviewer: 0 (inline review only — no separate reviewer dispatch)
 - Worker: 1
 
 **Skip conditions:** Never — fast is already the minimal profile; it cannot be downgraded further.
@@ -83,14 +83,14 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 2. Research: conditional — 1 searcher dispatched only if an external API, library behavior, or unknown pattern is involved
 3. Task file: yes — created before dispatching workers
 4. Workers: 1–2 parallel workers, implementer persona; split by file boundary when 2 are used
-5. Review: 1 batch reviewer (thinking model) after all workers complete
+5. Review: 1 batch reviewer after all workers complete
 6. Quality gates: full suite on changed files (lint, type-check, unit tests for touched modules)
 7. Commit: yes, single commit per logical task
 
 **Token budget:** ≤ 100 000 tokens (soft target)
 
 **Agent counts:**
-- Thinking: 1–2 (orchestrator + optional reviewer)
+- Reviewer: 0–1 (optional batch reviewer)
 - Worker: 1–2 implementers + 0–1 searcher
 
 **Skip conditions:** Discovered mid-flight to be single-file and trivial → downgrade to fast (save the task file overhead, skip batch reviewer).
@@ -125,14 +125,14 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 2. Research: parallel — 2–3 searchers dispatched simultaneously to cover affected subsystems
 3. Task file: yes — mandatory before any worker dispatch; includes sub-task breakdown
 4. Workers: 3–5+ parallel workers across multiple batches; each batch covers one logical slice; personas: implementer, test-writer, migration-writer as needed
-5. Review: per-batch reviewer after each batch, plus a final integration reviewer (thinking model) after all batches complete
+5. Review: per-batch reviewer after each batch, plus a final integration reviewer after all batches complete
 6. Quality gates: full suite — lint, type-check, unit tests, integration tests, no regressions
 7. Commit: yes, one commit per completed sub-task (not per batch)
 
 **Token budget:** 200 000–500 000 tokens (soft target; varies by subsystem count)
 
 **Agent counts:**
-- Thinking: batches + 1 minimum (integration reviewer always present per Layer 3 rule)
+- Reviewer: per-batch + 1 final integration (always present per Layer 3 rule)
 - Worker: 3–5+ implementers across batches
 
 **Skip conditions:** Mid-flight discovery that scope is smaller than triage suggested (e.g., only 2 files, no cross-cutting) → downgrade to standard; reuse already-created task file.
@@ -173,7 +173,7 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 **Token budget:** ≤ 80 000 tokens (searchers are cheap; output is mostly synthesis text)
 
 **Agent counts:**
-- Thinking: 1–2 (orchestrator performs heavy synthesis after searchers return)
+- Reviewer: 0–1 (only when code is changed)
 - Worker: 3+ searchers, 0–1 implementer
 
 **Skip conditions:** Not applicable — research cannot be downgraded; if less research is needed the triage should have returned a different type.
@@ -211,11 +211,11 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 6. Quality gates: lint, type-check, accessibility audit on changed components
 7. Commit: yes, after quality gates pass
 
-**Token budget:** ≤ 150 000 tokens (brainstorming is thinking-heavy)
+**Token budget:** ≤ 150 000 tokens (brainstorming phase is the deepest)
 
 **Agent counts:**
-- Thinking: 2–3 (brainstorming is the expensive phase)
-- Worker: 1–2 implementers + 1 reviewer
+- Reviewer: 1–2 (brainstorm approval + visual/a11y review)
+- Worker: 1–2 implementers
 
 **Skip conditions:** If brainstorm reveals the task is actually trivial (e.g., change a color variable) → downgrade to fast after brainstorm; skip task file.
 
@@ -256,7 +256,7 @@ The orchestrator reads the triage output and maps it to exactly one profile. Whe
 **Token budget:** 200 000–400 000 tokens (TDD multiplies tokens; correctness takes priority over speed)
 
 **Agent counts:**
-- Thinking: 3–5 (multi-level review is thinking-heavy)
+- Reviewer: 3–5 (multi-level L1–L5 review passes)
 - Worker: 2–3 (test-writer + 1–2 implementers)
 
 **Skip conditions:** Not applicable — scientific cannot be downgraded. If triage classified a task as scientific, that classification must be respected regardless of apparent simplicity.
@@ -331,9 +331,7 @@ Each profile has a soft budget. The orchestrator tracks cumulative token usage p
 ```text
 ── Hyperflow Usage ──────────────────────
 Profile: deep (budget: 300k)
-Thinking (Opus 4.8)   4 agents   80k
-Worker   (Sonnet 4.6) 9 agents  220k
-Total                13 agents  300k  · within budget
+Total    13 agents  300k  · within budget
 ─────────────────────────────────────────
 ```
 
@@ -366,7 +364,7 @@ If `Total > budget × 1.5` the orchestrator flags the overrun: `⚠ OVER BUDGET`
 Key constraints at a glance:
 - **fast:** inline review only; no task file; upgrade on any ESCALATE signal
 - **standard:** task file mandatory; 1 batch review; upgrade when scope expands past 5 files
-- **deep:** per-batch + integration review; sub-task commits; minimum 1 thinking agent always present
+- **deep:** per-batch + final integration review; sub-task commits; integration reviewer always present
 - **research:** no code committed unless prototype explicitly requested; synthesis by orchestrator
 - **creative:** code gate — zero implementation until brainstorm approved
 - **scientific:** test gate — zero implementation until test-writer completes; all tests must pass before commit

@@ -3,9 +3,9 @@ name: cache
 description: |
   Use when the user wants to view, search, add, edit, prune, archive, or clear hyperflow memory entries. CRUD interface for `.hyperflow/memory/` — never modifies source code, only memory files.
   Trigger with /hyperflow:cache, "show memory", "search memory for X", "clear memory", "what does hyperflow remember about Y".
-allowed-tools: Read, Write, Edit, Bash(ls:*), Bash(mv:*), Bash(rm:*), Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(ls:*), Bash(mv:*), Bash(rm:*), Glob, Grep, Agent, AskUserQuestion
 argument-hint: "<show|search|add|edit|prune|archive|clear|stats|migrate|off|compact> [args]"
-version: 3.1.2
+version: 3.1.3
 license: MIT
 compatibility: Designed for Claude Code
 tags: [memory, persistence, project-state]
@@ -203,4 +203,4 @@ Oldest: 2026-02-14   Newest: 2026-05-16
 - [memory-system.md](references/memory-system.md) — full protocol: files, tiers, tagging, pruning rules.
 - [compaction.md](references/compaction.md) — `/hyperflow:cache compact` protocol: stub format, archive sidecar, idempotency.
 - [output-style.md](references/output-style.md) — label and table conventions.
-- [DOCTRINE.md](references/DOCTRINE.md) — orchestration rules.
+- [DOCTRINE.md](../hyperflow/DOCTRINE.md) — orchestration rules.

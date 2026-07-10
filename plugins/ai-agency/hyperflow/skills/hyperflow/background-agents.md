@@ -7,7 +7,7 @@ Two distinct features both called "background agents" — task-level (this doctr
 | Layer | What it is | Surface | Use when |
 |---|---|---|---|
 | **Task-level** (this doctrine) | Individual worker / observer agents dispatched with `Agent({ ..., run_in_background: true })` within one Claude Code session. Managed via `/hyperflow:background list / show / cancel / prune`. | hyperflow plugin | Latency reduction inside a single chain (Layer 5 gates fired while next batch runs); CI watcher after push; speculative prefetch refreshing `.hyperflow/<analysis>.md` |
-| **Session-level** (Claude Code v2.1.139+, May 2026) | An entire Claude Code session runs detached in its own process. Managed via `claude agents` dashboard, launched via `claude --bg`, `/bg`, or `←←` keyboard shortcut. Optional `/goal <condition>` sets an autonomous completion criterion. Idle sessions auto-retire after 5 min. | Claude Code CLI native | Forking a long-running hyperflow chain (`/bg /hyperflow:scope "build user auth"`) so the user keeps the main session free; running multiple parallel features simultaneously across separate background sessions |
+| **Session-level** (Claude Code v2.1.139+, May 2026) | An entire Claude Code session runs detached in its own process. Managed via `claude agents` dashboard, launched via `claude --bg`, `/bg`, or `←←` keyboard shortcut. Optional `/goal <condition>` sets an autonomous completion criterion. Idle sessions auto-retire after 5 min. | Claude Code CLI native | Forking a long-running hyperflow chain (`/bg /hyperflow:plan "build user auth"`) so the user keeps the main session free; running multiple parallel features simultaneously across separate background sessions |
 
 They compose: a user can run `/bg /hyperflow:dispatch <slug>` to fire a hyperflow chain in a backgrounded session; inside that session, dispatch can still fire `run_in_background: true` workers for its Layer 5 gates and CI watcher. The two layers cover different scales.
 
@@ -59,7 +59,6 @@ The foreground orchestrator maintains an in-memory map (also persisted to `.hype
       "purpose": "Layer 5 quality gates for Batch 2 (lint+typecheck)",
       "fired_at": "2026-05-16T17:30:00Z",
       "timeout_at": "2026-05-16T18:00:00Z",
-      "model": "sonnet",
       "status": "running",
       "output_buffer": ".hyperflow/background/bg-1718049600-quality-gates-b2.md",
       "blocks_step": null
@@ -96,7 +95,7 @@ Background agent outputs land in `.hyperflow/background/<id>.md` as a structured
 | Fired at   | 2026-05-16T17:30:00Z                 |
 | Completed  | 2026-05-16T17:32:18Z (2m 18s)        |
 | Status     | complete                             |
-| Tokens     | worker 4.2k                          |
+| Tokens     | ~4.2k                                |
 
 ## Output
 
@@ -125,12 +124,12 @@ The `.hyperflow/background/` directory is gitignored along with the rest of `.hy
 
 `/hyperflow:status` includes a `Background` section that summarizes the registry (count of running / stalled / completed-uncollected).
 
-## Tier rules (alignment with DOCTRINE Layer 2)
+## Role rules (alignment with DOCTRINE Layer 2)
 
-Background agents follow the same tier-routing as foreground:
+Background agents follow the same role structure as foreground:
 
-- **Background workers** (Implementer / Searcher / Writer in latency-reduction or speculative-prefetch patterns) → Sonnet
-- **Background observers** (CI watcher, file-change monitor, deploy-status poller) → Sonnet (these are mostly poll loops with simple integration logic, not thinking work)
+- **Background workers** (Implementer / Searcher / Writer in latency-reduction or speculative-prefetch patterns) — inherit the session model.
+- **Background observers** (CI watcher, file-change monitor, deploy-status poller) — inherit the session model; these are mostly poll loops with simple integration logic.
 - **Background Reviewers** — DO NOT EXIST. Reviewers are foreground-only because they gate decisions. If you find yourself reaching for a background Reviewer, you're using the wrong pattern.
 
 ## v1 integrations (rolled out separately)

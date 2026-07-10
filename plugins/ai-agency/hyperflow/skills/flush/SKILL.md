@@ -3,9 +3,9 @@ name: flush
 description: |
   Use when the user wants to manually flush a deferred-commit queue from a prior or interrupted chain. Reads .hyperflow/commits-queue/manifest.json, fast-forwards the staging branch onto the user's branch, deletes staging, clears the queue. Recovery interface when a chain crashed before its Step 4 auto-flush ran.
   Trigger with /hyperflow:flush, "flush pending commits", "flush queue", "apply staged commits", "where are my commits".
-allowed-tools: Read, Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(rm:*)
+allowed-tools: Read, Bash(git:*), Bash(ls:*), Bash(cat:*), Bash(rm:*), Bash(bash:*), Bash(scripts/*:*)
 argument-hint: "[--dry-run]"
-version: 4.12.6
+version: 4.12.7
 license: MIT
 compatibility: Designed for Claude Code
 tags: [git, deferred-commits, recovery, lifecycle]

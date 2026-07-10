@@ -5,8 +5,8 @@
     "url": "https://github.com/Mohammed-Abdelhady"
   },
   "metadata": {
-    "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
-    "version": "4.26.2"
+    "description": "Official marketplace for Hyperflow — multi-agent orchestration with a reviewed-every-step pipeline, 22 specialist agents, and persistent per-project memory",
+    "version": "5.8.0"
   },
   "plugins": [
     {
@@ -15,8 +15,8 @@
         "source": "url",
         "url": "https://github.com/Mohammed-Abdelhady/hyperflow.git"
       },
-      "description": "Fifteen specialized slash commands turn one Claude session into a structured multi-agent engineering pipeline. Thinking models orchestrate, triage, and review; worker models execute in parallel — every step is a Worker → Reviewer pair, and every non-trivial phase fans into sub-phases with their own reviewers. Auto-routing is on by default — say 'audit the diff', 'debug this test', 'large migration', or 'run a workflow' and the orchestrator routes to the right skill without the /hyperflow:* prefix. /hyperflow:workflow uses Claude Code dynamic workflows for big tasks and a portable Codex/OpenCode adapter where native workflows are unavailable; /hyperflow:spec asks the questions a senior engineer would; /hyperflow:scope decomposes into a batched task graph; /hyperflow:dispatch fans out persona-stitched workers under tiered review; /hyperflow:amplify rewrites a rough prompt into a high-quality one before you run it. 15 composable personas, 6 adaptive flow profiles, and persistent project memory compound across sessions. Works across Codex App/CLI, Claude Code, OpenCode, and Antigravity.",
-      "version": "4.26.2",
+      "description": "Point it at a GitHub issue and get back a reviewed pull request. Hyperflow turns one AI coding session into a structured engineering pipeline: plan sharpens and decomposes the work, dispatch fans out parallel workers, and a domain specialist reviews every step — nothing ships unreviewed. 18 skills, 22 specialist reviewer and investigator agents, adaptive depth so a 5-line fix never triggers a deep run, and persistent per-project memory that lives in your repo and never leaves it. Runs on whatever model your session already uses — zero config, no API keys, no daemon. Works across Claude Code, Codex App/CLI, OpenCode, Grok, Antigravity, and Cursor.",
+      "version": "5.8.0",
       "author": {
         "name": "Mohammed Abdelhady",
         "url": "https://github.com/Mohammed-Abdelhady"

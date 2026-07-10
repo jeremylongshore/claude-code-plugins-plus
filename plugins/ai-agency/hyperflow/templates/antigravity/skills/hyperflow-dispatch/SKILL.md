@@ -5,7 +5,7 @@ description: Hyperflow execution phase. Use when a task file exists in .hyperflo
 
 # hyperflow-dispatch — execution phase (Antigravity single-agent)
 
-Execute the task file from `hyperflow-scope`. **No sub-agent dispatch and no model tiers in Antigravity** — you do each batch yourself, then self-review before committing. Follow the `hyperflow` doctrine.
+Execute the task file from `hyperflow-plan`. **No sub-agent dispatch and no model tiers in Antigravity** — you do each batch yourself, then self-review before committing. Follow the `hyperflow` doctrine.
 
 ## Per batch
 
