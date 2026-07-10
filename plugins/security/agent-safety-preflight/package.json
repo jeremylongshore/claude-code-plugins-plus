@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/agent-safety-preflight",
+  "version": "1.0.2",
+  "description": "Generate a local repo-risk receipt before Claude Code or other AI-agent edits",
+  "keywords": [
+    "security",
+    "claude-code",
+    "agent-safety",
+    "preflight",
+    "repo-risk",
+    "mcp",
+    "hooks",
+    "ai-agent",
+    "agent-skills",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/security/agent-safety-preflight"
+  },
+  "homepage": "https://tonsofskills.com/plugins/agent-safety-preflight",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "el-zachariah",
+    "url": "https://github.com/el-zachariah"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install agent-safety-preflight\\\\n  or /plugin install agent-safety-preflight@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
