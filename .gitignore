@@ -77,6 +77,11 @@
 # was explicitly NOT done). No inherent secrets risk; transparency is the point.
 **/*/000-docs/
 **/*/000-docs/**
+# EXCEPTION: the consistency-validator golden fixtures deliberately ship
+# miniature 000-docs/ trees — they ARE the test corpus for the
+# index-vs-filesystem and dead-reference checks (GH #991 Phase 1).
+!plugins/productivity/000-jeremy-content-consistency-validator/fixtures/**/000-docs/
+!plugins/productivity/000-jeremy-content-consistency-validator/fixtures/**/000-docs/**
 **/.npmrc
 # Intentionally-synced upstream .npmrc files (load-bearing CI inputs from the
 # external-sync pipeline). Scoped per-path so per-developer plugin .npmrc

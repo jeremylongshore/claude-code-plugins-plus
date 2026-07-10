@@ -1,0 +1,19 @@
+# Fixture CI pipeline — inert (GitHub only executes workflows at repo root).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm run test:unit

@@ -1,0 +1,115 @@
+{
+  "comment": "Golden ledger for fixtures/drifted/ (GH issue #991). The gate (tests/run-fixture-check.sh) passes only if the deterministic checker reports EXACTLY these findings on drifted/ (zero invented, zero missed) and ZERO findings on clean/. Identity is the tuple (check, fact_class, kind, surfaces); id, description, and severity are documentation. All findings here are deterministic — LLM-judged fact classes are advisory-only and never appear in this ledger.",
+  "fixture": "drifted",
+  "as_of": "2026-07-01",
+  "findings": [
+    {
+      "id": "DRIFT-01",
+      "fact_class": "product.version",
+      "check": "version-consistency",
+      "kind": "version-mismatch",
+      "surfaces": ["README.md", "package.json"],
+      "description": "README version badge says 2.2.0 but the owner surface package.json says 2.3.0 (skill check 3.2, Category 1 status drift).",
+      "severity": "high"
+    },
+    {
+      "id": "DRIFT-02",
+      "fact_class": "docs.freshness",
+      "check": "staleness-bound",
+      "kind": "stale-beyond-bound",
+      "surfaces": ["docs/index.md"],
+      "description": "docs/index.md 'Last updated: 2025-11-02' is 241 days before the fixed clock 2026-07-01, beyond the registry staleness bound of 180 days (date-staleness drift).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-03",
+      "fact_class": "ci.test-command",
+      "check": "readme-vs-ci",
+      "kind": "test-command-mismatch",
+      "surfaces": [".github/workflows/ci.yml", "README.md"],
+      "description": "README tells developers to run 'npm test' but no CI step runs that command — CI runs 'npm run test:unit' (skill check 3.3, Category 4 CI/validation drift).",
+      "severity": "high"
+    },
+    {
+      "id": "DRIFT-04",
+      "fact_class": "docs.crossrefs",
+      "check": "broken-refs",
+      "kind": "dead-reference",
+      "surfaces": ["README.md", "docs/usage.md"],
+      "description": "README references docs/usage.md in prose but the file does not exist (skill check 3.8, Category 7 reference drift).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-05",
+      "fact_class": "docs.index",
+      "check": "index-vs-filesystem",
+      "kind": "listed-but-missing",
+      "surfaces": ["000-docs/000-INDEX.md", "000-docs/002-DR-SPEC-widget-format.md"],
+      "description": "000-INDEX.md lists 002-DR-SPEC-widget-format.md but the file is not on disk (skill check 3.1, Category 7 index drift).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-06",
+      "fact_class": "docs.index",
+      "check": "index-vs-filesystem",
+      "kind": "present-but-unlisted",
+      "surfaces": ["000-docs/000-INDEX.md", "000-docs/003-OD-NOTE-release-checklist.md"],
+      "description": "000-docs/003-OD-NOTE-release-checklist.md exists on disk but is not listed in 000-INDEX.md (skill check 3.1, Category 7 index drift).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-07",
+      "fact_class": "docs.claude-refs",
+      "check": "claude-md-paths",
+      "kind": "dead-reference",
+      "surfaces": ["CLAUDE.md", "docs/architecture.md"],
+      "description": "CLAUDE.md's key-documents table references docs/architecture.md, which does not exist (skill check 3.4, Category 7 reference drift).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-08",
+      "fact_class": "project.phase",
+      "check": "stale-phase-language",
+      "kind": "stale-phase-claim",
+      "surfaces": ["CLAUDE.md", "src/cli.js"],
+      "description": "CLAUDE.md claims 'scaffold only — no application code yet' while source files exist under src/ (skill check 3.5, Category 1 status drift).",
+      "severity": "high"
+    },
+    {
+      "id": "DRIFT-09",
+      "fact_class": "product.license",
+      "check": "cross-doc-facts",
+      "kind": "value-mismatch",
+      "surfaces": ["README.md", "package.json"],
+      "description": "README says Apache-2.0 but the owner surface package.json says MIT (skill check 3.7, Category 6 cross-doc contradiction).",
+      "severity": "high"
+    },
+    {
+      "id": "DRIFT-10",
+      "fact_class": "product.commands",
+      "check": "command-claims-vs-code",
+      "kind": "claimed-but-absent",
+      "surfaces": ["README.md", "src/cli.js"],
+      "description": "README's Commands table claims an 'export' command that src/cli.js never registers (skill check 3.6 mechanical subset, Category 3 capability drift).",
+      "severity": "high"
+    },
+    {
+      "id": "DRIFT-11",
+      "fact_class": "roadmap.status",
+      "check": "planning-vs-code",
+      "kind": "planned-but-implemented",
+      "surfaces": ["planning/roadmap.md", "src/cli.js"],
+      "description": "planning/roadmap.md marks 'list' as Planned but src/cli.js already registers it (skill check 3.9 mechanical subset, Category 5 planning-vs-implementation confusion).",
+      "severity": "medium"
+    },
+    {
+      "id": "DRIFT-12",
+      "fact_class": "product.tagline",
+      "check": "unowned-fact-class",
+      "kind": "conflict-needs-adjudication",
+      "surfaces": ["README.md", "docs/index.md"],
+      "description": "Tagline conflicts across README.md ('The fastest widget toolkit...') and docs/index.md ('A friendly widget toolkit...') and product.tagline has NO registry row in sot-map — unowned fact-class, human adjudication needed; the checker must not guess a winner (council constraint).",
+      "severity": "needs-adjudication"
+    }
+  ]
+}

@@ -1,90 +1,124 @@
-# ADR: 000-jeremy-content-consistency-validator — single-pass read-only skill with a report-only contract
+# ADR: 000-jeremy-content-consistency-validator — per-fact-class authority registry, deterministic/judged split, fixture-gated Phase 1
 
 > Filed at `docs/ADR.md` beside the rest of the submission set, per
-> `000-docs/700-DR-GUID-skill-submission-standard.md` §2 ("the same matrix applies to
-> Intent Solutions' own skills"). The ADR template's `000-docs/` filing note is the known
-> alternative reading; the first-party `docs/` convention follows the databricks-pack
-> backfill precedent (PR #989).
+> `000-docs/700-DR-GUID-skill-submission-standard.md` §2 and the first-party `docs/`
+> convention (databricks-pack backfill precedent, PR #989). Supersedes the 2026-07-07 ADR
+> ("single-pass read-only skill with a report-only contract"), which documented the shell
+> this decision deletes.
 
 **Author:** Jeremy Longshore (Intent Solutions)
-**Date:** 2026-07-07
-**Status:** Accepted — current implementation, **superseded-in-planning** by the #991
-multi-agent rebuild (Fable's recommendation); the rebuild files its own ADR.
+**Date:** 2026-07-09
+**Status:** Accepted (Phase 1 of the issue #991 rebuild, per the 11-seat design council synthesized 2026-07-07)
 
 ## Context
 
-The product contract ([`docs/PRD.md`](PRD.md)) is a cross-surface consistency audit whose
-one non-negotiable is trust: the user must be able to run it against their live website,
-public GitHub repos, and internal docs with zero risk that anything gets modified. The
-comparison itself is not purely mechanical — the README commits to exact, fuzzy
-(90%+ similarity), semantic, and pattern-based matching — so some judgment lives in-model
-rather than in scripts. And the output has to be actionable by a non-participant: every
-finding needs a file path, a line number, a severity, and a recommendation grounded in a
-declared authority order (website > GitHub > local docs). Doing nothing means users
-hand-diff dozens of files across three surfaces after every website change.
+Two implementations of one command coexisted: the global `~/.claude` skill (the 358-line
+engine that actually runs — project-type detection, 9 deterministic drift checks,
+severity rules) and the marketplace plugin (a shadowed 682-word shell). They contradict
+each other on the truth axiom itself — the engine's reference declares "Code Is Truth"
+while the shell hard-codes "Website Is Truth" — so the same fact could be arbitrated in
+opposite directions depending on which copy resolved. Issue #991 originally dictated a
+multi-agent rebuild; an 11-seat design council (8 thinker canons + 3 engineers, 11
+independent structured reviews) returned 11/11 approval for the core fold and 0/11
+approval for the dictated scope. Doing nothing leaves the marketplace's flagship
+first-party plugin as dead weight and leaves two contradicting authority models live in
+the same estate.
 
 ## Decision
 
-Ship the validator as a **single-pass, read-only Claude Code skill** — one SKILL.md with
-an eight-step procedure (discover → extract → verify → compare → classify → prioritize →
-report → save) — plus a **legacy `commands/validate-consistency.md` slash command** for
-explicit invocation. No agents, no bundled scripts: source discovery and extraction run
-through narrowly-scoped shell text tools (`Bash(diff:*)`, `Bash(grep:*)`), remote
-surfaces are fetched with WebFetch, and the fuzzy/semantic comparison happens in-context.
-The trust hierarchy (website > GitHub > local docs) is hard-coded into the procedure, and
-the only artifact a run produces is a timestamped Markdown report under
-`consistency-reports/`.
+Five coupled decisions, all council-constrained:
+
+1. **Fold and delete.** Move the global engine into the plugin verbatim where possible;
+   delete the shell and its website-is-truth axiom outright. The plugin becomes canonical;
+   net LOC goes down versus shell + skill combined.
+2. **Authority is a registry, not a ranking.** Source of truth is declared per
+   fact-class as data — a versioned, checked-in authority registry (`sot-map.yaml`, home:
+   intent-os) with rows `fact_class → owner → mirrors[] → determinism → depth_tier →
+   staleness_bound → criticality → volatile`. Validation collapses to: read the fact from
+   its declared owner, read the mirrors, diff within the staleness bound (a fast surface
+   leading a slow one inside the bound is replication lag, Info-level, not drift). **No
+   registry row → no adjudication**: emit "unowned fact-class — human adjudication
+   needed" and stop; never guess. Auto-detection survives only as a bootstrap for
+   drafting registry rows, never as runtime authority.
+3. **Deterministic and judged are structurally separate.** The existing 9 checks are the
+   deterministic tier (T1, value equality after non-LLM normalization). Judged/semantic
+   checks (T2) are opt-in, advisory-only, and can never be Critical or blocking. T0
+   (existence/reachability) is universal and needs no registry row.
+4. **Fixture-gated development.** A golden fixture corpus — a clean copy plus N seeded
+   drifts — is the plugin's required CI check, with evals asserting findings ("exactly
+   these N, zero invented"), not procedure. Nothing else proceeds until red/green exists.
+5. **Brain posture: rules, not facts.** The registry is one data file with two consumers —
+   the validator reads it, and the brain compiles and cites it as a corpus input; no
+   second authority system (Hickey). The brain arbitrates **asserted** company/doctrine
+   claims only; **generated** facts (versions, deploy state, counts) stay with their
+   generators and never enter the append-only store; the validator never reads the brain
+   as ground truth for generated facts, and the brain ingests only findings that survived
+   verification and human adjudication. *Conservative fallback, documented:* Torvalds and
+   Beck would make the brain a pure consumer with zero arbiter role — if maximum safety
+   is preferred over provenance elegance, that is the fallback (open decision 1).
+   The record substrate — hash-chained evidence bundles vs plain dated markdown + JSONL —
+   is explicitly **deferred** (open decision 4): cheap to add in Phase 2, expensive to
+   retrofit later, and not needed to gate Phase 1.
 
 ## Alternatives considered
 
-| Alternative                                                                | Why rejected                                                                                                                                                                                           |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Multi-agent pipeline (discovery / extraction / comparison / report agents) | More machinery than the v1 contract needed; a single-pass skill ships with zero orchestration surface. This rejection is now reversed in planning — the #991 rebuild adopts exactly this architecture. |
-| Deterministic script-based comparator (bundled `scripts/`)                 | Pure scripts handle exact and regex matching but not the fuzzy/semantic matching the product claims; staying scriptless also keeps install zero-dependency across hosts.                               |
-| Write-enabled auto-fixer                                                   | Breaks the core trust contract. "You maintain complete control — the plugin only reports, you decide what to fix" is the product's first promise, not an implementation detail.                        |
-| Command-only plugin (no skill)                                             | Loses natural-language auto-activation ("check consistency before I update training materials"). The command was kept alongside the skill instead — see the legacy-format consequence below.           |
+| Alternative                                            | Why rejected                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Keep a global source-of-truth ranking (either axiom)   | The estate ran both rankings simultaneously and they contradict on the same facts. A ranking arbitrates by position; the registry names the actual producer per fact-class. Hickey, Kleppmann, Pike, and backend-architect independently converged on near-identical registry schemas. |
+| Auto-detect authority at runtime (project-type markers) | Silently picks an axiom and can pick the wrong one per fact — cut by Hickey, Huyen, Armstrong, security-auditor. Detection is kept only as a bootstrap convenience for drafting registry rows.                                                                              |
+| Multi-agent roster now (the issue's dictated scope)    | 0/11 council approval for v1: Torvalds rejected the whole roster; Pike, Cunningham, Beck, backend-architect concur; Hickey caps any roster at 3 roles. Deferred at most to the Phase-3 judged tail; the conflict with the Fable recommendation is Jeremy's open decision 5. |
+| LLM-judged findings on par with deterministic ones     | Judged findings can hallucinate; letting them block would poison the gate — cut by ai-engineer, Hickey, Huyen. Judged stays advisory-only, with re-grounding required before any human sign-off (Phase 3).                                                                  |
+| Hash-chained evidence bundles from day one             | Rigor vs ceremony not yet decided (Kleppmann favors chaining). Deferred as open decision 4 rather than resolved implicitly by this PR.                                                                                                                                       |
+
+**Dissents noted, not erased.** Torvalds rejects the depth-tier enum entirely; mitigation
+adopted: T0/T1 stay emergent-by-default (run whatever inputs exist), and registry rows are
+required only for staleness bounds and T2 promotion. Torvalds/Beck dissent on the brain
+arbiter role; their pure-consumer position is the documented conservative fallback above.
 
 ## Consequences
 
 **Positive:**
 
-- Zero write risk by construction: no `Write`, no `Edit`, no git mutation anywhere in the
-  declared tool surface — the read-only guarantee is enforceable, not aspirational.
-- Zero-dependency install: no scripts, no runtime, nothing to build; the skill works
-  wherever SKILL.md works (frontmatter declares Claude Code, Codex, OpenClaw).
-- Two invocation paths: natural-language skill activation plus an explicit
-  `/validate-consistency` command.
-- Deterministic report location and structure — timestamped file, fixed sections — so
-  successive runs are comparable.
+- One engine, one axiom: the shadowing defect is resolved by making the plugin canonical,
+  and the code-vs-website contradiction is deleted rather than papered over.
+- Authority becomes reviewable data: changing an owner is a diffed, human-reviewed edit
+  to `sot-map.yaml`, not an emergent runtime behavior.
+- The failure mode improves from "confidently wrong arbitration" to "explicit
+  adjudication ask" — an unowned fact-class cannot be silently mis-resolved.
+- The fixture corpus makes "it works" falsifiable: exactly-N / zero-invented is a
+  regression gate every future change must pass, including the eventual T2 and agent
+  work.
+- One declaration, two consumers: the registry serves the validator and the brain without
+  creating a second authority system.
 
 **Negative / accepted tradeoffs:**
 
-- **Tool-scope debt** (validation baseline, 2026-07-07): `allowed-tools` declares
-  `Grep`, `Read`, and `WebSearch`, but the SKILL.md body never references them —
-  over-permissive/stale scope, flagged as 3 of the 6 marketplace-tier warnings. To be
-  corrected in the #991 rebuild.
-- Single-pass, in-context comparison caps depth: no project-type auto-detection, no
-  deterministic drift checks — the gap that motivated the #991 multi-agent rebuild.
-- The legacy command duplicates the skill's job in the older `commands/` format; it
-  passes standard tier, but Anthropic guidance says new plugins use `skills/`. Two
-  surfaces for one behavior invite drift between them.
-- **Shadowing defect** (epic #991): skill precedence resolves `/validate-consistency` to
-  the global `~/.claude` skill of the same name, so this plugin is shadowed in its own
-  author's environment and has drifted into a thin shell (682-word SKILL.md) relative to
-  the global engine. The single-pass architecture made that thinning easy to miss.
+- Registry coverage starts small (7 rows), so early runs will emit "unowned fact-class"
+  frequently. Accepted: that noise **is** the adjudication queue — it is the honest
+  alternative to guessing.
+- Registry maintenance is a standing human cost: every new fact-class needs an
+  adjudicated row before the validator will arbitrate it.
+- Phase 1 deliberately ships less than issue #991's original ask — no agents, no new
+  surfaces. Accepted: the council's build order gates everything on the axiom fix and the
+  fixture corpus.
+- Judged checks being deferred means semantic capability-claim drift (the classic README
+  overclaim) is only shallowly covered in Phase 1. Accepted: T2 is gated on the
+  deterministic core holding precision ≥ 0.9 on the corpus (Huyen).
+- The staleness-bound model tolerates real drift for up to the bound's duration on
+  volatile fact-classes. Accepted: the alternative is flagging every replication lag as
+  drift, which trains operators to ignore the report.
 
 ## Tool-permission scope
 
-The frontmatter declares six entries and nothing mutating — no bare `Bash`, no `Write`,
-no `Edit`. Entries marked ✱ are declared but never referenced in the SKILL.md body
-(validation baseline 2026-07-07, warnings 1–3); they are retained here as recorded debt,
-not as justified scope, pending the #991 rebuild.
+Phase-1 contract for the folded skill — carried from the global engine's grant minus the
+cuts. Dropped relative to the two prior implementations: `Agent` (the roster is cut for
+v1), `WebSearch` (banned from the grant — council cut list), `WebFetch` (no web surfaces
+in Phase 1), and — as always — no `Write`, no `Edit`, no git mutation (read-only is the
+contract).
 
-| Tool           | Why it's needed                                                                                     |
-| -------------- | --------------------------------------------------------------------------------------------------- |
-| `Read` ✱       | Intended for loading local docs and build output as comparison sources; body never invokes it.      |
-| `WebFetch`     | Fetch deployed website pages and GitHub raw content when the surface is remote (per Prerequisites). |
-| `WebSearch` ✱  | No use documented in the body; stale grant to be removed or justified in the rebuild.               |
-| `Grep` ✱       | Intended for structured-data extraction across sources; the body uses `Bash(grep:*)` instead.       |
-| `Bash(diff:*)` | Pairwise comparison of extracted fields between sources (step 4 of the procedure).                  |
-| `Bash(grep:*)` | Source discovery and extraction of versions, feature claims, and contact info (steps 1–2).          |
+| Tool   | Why it's needed                                                                                                        |
+| ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `Read` | Load manifests, docs, workflow YAML, and `sot-map.yaml` for owner-vs-mirror comparison                                  |
+| `Glob` | Inventory documentation artifacts; index-vs-filesystem and dead-reference checks (3.1, 3.4, 3.8)                        |
+| `Grep` | Deterministic extraction of versions, claims, stale-phase language, and banned-coinage hits across surfaces             |
+| `Bash` | Read-only probes the checks require: `git` tag/remote reads and `diff` — scoped invocations (`Bash(git:*)`, `Bash(diff:*)`, `Bash(echo:*)`), never mutation, no network probes (`live_host` rows are adjudicated by the operator running `dig` themselves; the skill only reports the registered expectation) |

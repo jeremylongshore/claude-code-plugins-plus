@@ -525,7 +525,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `000-jeremy-content-consistency-validator` | Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across ANY HTML-based website…         |
+| `000-jeremy-content-consistency-validator` | Read-only consistency validator: 9 deterministic drift checks across docs, code, tests, and CI, adjudicated by a per-fact-class authority…  |
 | `002-jeremy-yaml-master-agent`             | Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities        |
 | `003-jeremy-vertex-ai-media-master`        | Comprehensive Google Vertex AI multimodal mastery for Jeremy - video processing (6+ hours), audio generation, image creation with Gemini…   |
 | `004-jeremy-google-cloud-agent-sdk`        | Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready…    |
