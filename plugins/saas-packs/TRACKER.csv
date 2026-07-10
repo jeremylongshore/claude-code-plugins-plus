@@ -56,7 +56,7 @@ glean,Glean,flagship,24,@intentsolutionsio/glean-skill-md-pack,reserved,ccpi-gle
 cohere,Cohere,flagship,24,@intentsolutionsio/cohere-skill-md-pack,reserved,ccpi-cohere,24,0,not_started,not_added,Extended #55
 abridge,Abridge,pro,18,@intentsolutionsio/abridge-skill-md-pack,reserved,ccpi-abridge,18,0,not_started,not_added,Extended #56
 notion,Notion,flagship+,30,@intentsolutionsio/notion-skill-md-pack,reserved,ccpi-notion,30,0,not_started,not_added,Extended #57 - top note-taking app
-figma,Figma,flagship+,30,@intentsolutionsio/figma-skill-md-pack,reserved,ccpi-figma,30,0,not_started,not_added,Extended #58
+figma,Figma,flagship+,30,@intentsolutionsio/figma-skill-md-pack,reserved,ccpi-figma,30,0,not_started,added,Extended #58 - v2 quality pass shipped via PR #954 (references for all 30 skills; pack avg 81.3->91.6; 27A/3B; 0 marketplace-tier errors); tracker synced 2026-07-10
 ramp,Ramp,flagship,24,@intentsolutionsio/ramp-skill-md-pack,reserved,ccpi-ramp,24,0,not_started,not_added,Extended #59
 navan,Navan,flagship,24,@intentsolutionsio/navan-skill-md-pack,reserved,ccpi-navan,24,0,not_started,not_added,Extended #60
 podium,Podium,pro,18,@intentsolutionsio/podium-skill-md-pack,reserved,ccpi-podium,18,0,not_started,not_added,Extended #61
