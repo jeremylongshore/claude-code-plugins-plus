@@ -968,6 +968,8 @@ sources:
       - '.claude-plugin/**'
       - 'skills/**'
       - 'hooks/**'
+      - 'agents/**'
+      - 'scripts/**'
       - 'package.json'
       - 'README.md'
       - 'LICENSE'
