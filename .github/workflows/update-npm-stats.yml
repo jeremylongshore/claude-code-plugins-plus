@@ -82,7 +82,11 @@ jobs:
 
           git push --force-with-lease origin "$BRANCH"
 
-          if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+          # `gh pr view <branch>` also matches MERGED/CLOSED PRs, so after the
+          # first PR (#786) merged this check always "succeeded" and no new PR
+          # was ever opened — main's npm-stats.json silently froze for 6 weeks
+          # (estate audit finding F5). Only an OPEN PR counts.
+          if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create \
               --title "📦 Daily npm download stats refresh" \
               --head "$BRANCH" \
