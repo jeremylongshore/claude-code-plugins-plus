@@ -264,7 +264,7 @@ test('buildLockEntry: null resolved ref is preserved as null (bootstrap has no c
 // `/` anchors a pattern to the source root; anything else is auto-prefixed
 // `**/` (recursive by design, for nested contributor layouts). The anchored
 // form was dead code before this corpus existed — these tests keep it alive.
-import { matchesPattern } from './sync-external.mjs';
+import { matchesPattern } from './sync-lockfile.mjs';
 
 test('anchored /README.md matches only the root README', () => {
   assert.equal(matchesPattern('README.md', ['/README.md']), true);
