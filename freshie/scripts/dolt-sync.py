@@ -782,8 +782,9 @@ def push(repo: Path, org: str, repo_name: str, tag: str | None) -> None:
     create_help = (
         f"create the database on DoltHub first (push never auto-creates): "
         f"https://www.dolthub.com/new — owner {org!r}, name {repo_name!r}, "
-        f"visibility public. Scripted: POST https://www.dolthub.com/api/v2/databases "
-        f"with Authorization: Bearer <api-token> and body "
+        f"visibility public. Scripted (per dolthub.com/docs/products/dolthub/api): "
+        f"POST https://www.dolthub.com/api/v1alpha1/database with header "
+        f"'authorization: token <api-token>' and body "
         f'{{"ownerName":"{org}","repoName":"{repo_name}","visibility":"public"}}. '
         f"Then re-run this sync."
     )
