@@ -430,6 +430,11 @@ jobs:
       # Audit log — write one row per pre-screen run to freshie/inventory.sqlite.
       # Best-effort: continue-on-error so a DB write failure cannot mask the
       # primary signal (the PR comment + Slack ping already fired).
+      # Since the Dolt CMDB migration the sqlite blob is untracked, so audit.py
+      # auto-creates a fresh per-run DB here (CREATE TABLE IF NOT EXISTS) and
+      # the row is ephemeral to this runner; the durable audit-log home is the
+      # Dolt system of record (DoltHub jeremylongshore/freshie-inventory),
+      # which picks rows up on the next local freshie/scripts/dolt-sync.py run.
       - name: Append audit log row
         if: always() && steps.classify.outcome == 'success'
         continue-on-error: true
