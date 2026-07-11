@@ -100,9 +100,29 @@ function main() {
   const data = {};
 
   if (!fs.existsSync(dbPath)) {
+    // The Freshie DB is a local runtime artifact (untracked since the Dolt
+    // CMDB migration — the durable record lives on DoltHub at
+    // jeremylongshore/freshie-inventory). CI checkouts never have it, so a
+    // missing DB must PRESERVE the committed jrig-data.json rather than
+    // blanking every JRig-Verified badge with an empty map.
+    if (fs.existsSync(outPath)) {
+      try {
+        const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+        if (existing && typeof existing === 'object' && Object.keys(existing).length > 0) {
+          console.log(
+            `[enrich-jrig] Freshie DB absent — keeping committed ` +
+              `${path.relative(repoRoot, outPath)} (${Object.keys(existing).length} entries).`,
+          );
+          return;
+        }
+      } catch {
+        // fall through to the empty-map path below
+      }
+    }
     warn(
-      `Freshie DB not found at ${path.relative(repoRoot, dbPath)} — every ` +
-        `JRig-Verified badge will render "pending". Writing empty map.`,
+      `Freshie DB not found at ${path.relative(repoRoot, dbPath)} and no ` +
+        `committed jrig-data.json to preserve — every JRig-Verified badge ` +
+        `will render "pending". Writing empty map.`,
     );
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;

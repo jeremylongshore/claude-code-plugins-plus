@@ -36,7 +36,10 @@ from typing import Any
 # Constants
 # ---------------------------------------------------------------------------
 
-REPO_ROOT = Path("/home/jeremy/000-projects/claude-code-plugins")
+# Derive the repo root from this file's location (freshie/scripts/…) so the
+# scanner works from any checkout, including git worktrees — a hardcoded
+# absolute path silently scanned the MAIN checkout when run from a worktree.
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DB_DEFAULT = Path(__file__).parent.parent / "inventory.sqlite"
 
 SKIP_DIRS: frozenset[str] = frozenset(

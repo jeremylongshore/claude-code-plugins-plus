@@ -182,3 +182,12 @@ website/
 workspace/
 yarn-error.log
 yarn.lock
+
+# Freshie CMDB — SQLite is the local runtime format; the versioned system of
+# record is the Dolt repo (freshie/dolt/, local) pushed to public DoltHub
+# (jeremylongshore/freshie-inventory). Neither belongs in git. The tracked
+# compact export (freshie/grades.csv + grade-histogram.json) stays committed.
+freshie/inventory.sqlite
+freshie/inventory.sqlite-shm
+freshie/inventory.sqlite-wal
+freshie/dolt/
