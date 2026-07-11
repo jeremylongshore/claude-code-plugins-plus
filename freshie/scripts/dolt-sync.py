@@ -655,9 +655,12 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 
 
 def write_grades_export(conn: sqlite3.Connection, run_id: int) -> None:
+    # No run_id column in the CSV rows on purpose: it would change on every
+    # row every sync, drowning the grade-movement diff this file exists to
+    # tell. The current run_id lives in grade-histogram.json.
     rows = conn.execute(
         """
-        SELECT s.skill_path, s.grade, s.score, s.run_id
+        SELECT s.skill_path, s.grade, s.score
         FROM skill_compliance s
         JOIN (
             SELECT skill_path, MAX(run_id) AS mr
@@ -668,11 +671,11 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int) -> None:
     ).fetchall()
     with open(GRADES_CSV, "w", newline="") as fh:
         writer = csv.writer(fh, lineterminator="\n")
-        writer.writerow(["skill_path", "grade", "score", "run_id"])
+        writer.writerow(["skill_path", "grade", "score"])
         writer.writerows(rows)
 
     histogram: dict[str, int] = {}
-    for _, grade, _, _ in rows:
+    for _, grade, _ in rows:
         key = grade if grade else "ungraded"
         histogram[key] = histogram.get(key, 0) + 1
     payload = {
