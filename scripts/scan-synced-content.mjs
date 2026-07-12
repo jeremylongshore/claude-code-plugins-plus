@@ -653,6 +653,36 @@ export function scanContent(text, relPath) {
   return findings;
 }
 
+/**
+ * Scan a source's filtered files IN MEMORY for the REFUSE grade (high-confidence
+ * malicious content in an auto-executing file). Returns the REFUSE findings,
+ * each tagged with its repo-relative path.
+ *
+ * Blocker 62ye.2: the sync engine (sync-external.mjs) calls this per-source
+ * BEFORE writing any file, so a poisoned source is quarantined — mirrors
+ * nothing, nothing malicious touches disk (no revert), and co-synced clean
+ * sources still sync — instead of the whole run walling. It lives HERE, in the
+ * dependency-free scanner module, so the sync-time gate and its unit corpus stay
+ * zero-install (sync-external.mjs pulls in js-yaml; the scanner does not). Pure
+ * over the in-memory file list (`{ path, content }[]`), so it is unit-testable.
+ */
+export function refuseFindingsForSource(files, targetPath) {
+  const out = [];
+  for (const file of files || []) {
+    const rel = targetPath ? `${targetPath}/${file.path}` : file.path;
+    let text;
+    try {
+      text = Buffer.isBuffer(file.content) ? file.content.toString('utf8') : String(file.content);
+    } catch {
+      continue; // undecodable/binary — the content scanner is text-only
+    }
+    for (const f of scanContent(text, rel)) {
+      if (f.grade === GRADE.REFUSE) out.push({ file: rel, id: f.id, label: f.label });
+    }
+  }
+  return out;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Allowlist: `path:rule  reason`. Downgrades CHALLENGE/FLAG (never REFUSE).
 // ─────────────────────────────────────────────────────────────────────────────

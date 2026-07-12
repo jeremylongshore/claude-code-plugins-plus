@@ -303,6 +303,28 @@ jobs:
           echo "::error::Drift quarantined (${{ steps.sync.outputs.quarantined_sources }}) — review upstream diffs, then approve via the relock input."
           exit 1
 
+      # A source was REFUSED by the sync-time supply-chain scanner (blocker
+      # 62ye.2): high-confidence malicious content (e.g. a pipe-to-shell or
+      # reverse shell in an auto-executing file). Unlike drift, a REFUSE
+      # quarantines ONLY the offending source — nothing of it was mirrored, and
+      # the commit/PR steps are NOT gated on `refused`, so the clean co-synced
+      # sources still shipped their PR. This step runs AFTER that PR is opened
+      # and makes the run visibly RED so the malicious upstream gets a human
+      # security review (the excluded source, not the clean PR, is the concern).
+      - name: Flag REFUSED sources (supply-chain security event)
+        if: steps.sync.outputs.refused != '0' && steps.sync.outputs.refused != ''
+        run: |
+          {
+            echo "## ⛔ Source REFUSED — malicious content quarantined (security review)"
+            echo ""
+            echo "${{ steps.sync.outputs.refused }} source(s) tripped a REFUSE grade in the sync-time payload scanner; NONE of their content was mirrored."
+            echo "Refused: ${{ steps.sync.outputs.refused_sources }}"
+            echo ""
+            echo "Clean co-synced sources shipped their PR normally. Investigate each refused upstream (a pipe-to-shell / reverse-shell / exfil pattern in an auto-executing file) before re-enabling it."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::Source REFUSED (${{ steps.sync.outputs.refused_sources }}) — malicious content excluded from the mirror; review the upstream."
+          exit 1
+
       - name: Summary
         run: |
           echo "## 🔄 External Plugin Sync Complete" >> "$GITHUB_STEP_SUMMARY"

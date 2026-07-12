@@ -49,6 +49,7 @@ import {
   matchesPattern,
   unanchoredIncludes,
 } from './sync-lockfile.mjs';
+import { refuseFindingsForSource } from './scan-synced-content.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
@@ -613,6 +614,29 @@ async function syncSource(source, config, lock) {
       );
     }
 
+    // Supply-chain REFUSE quarantine (blocker 62ye.2). Scan this source's files
+    // BEFORE writing any of them. A REFUSE quarantines ONLY this source: nothing
+    // is mirrored, nothing malicious touches disk (no revert), and co-synced
+    // clean sources still sync — instead of the whole run walling when the
+    // repo-wide post-sync scan hit a single poisoned source.
+    const refuseFindings = refuseFindingsForSource(filteredFiles, source.target_path);
+    if (refuseFindings.length) {
+      log(
+        `   ⛔ REFUSED — ${refuseFindings.length} high-confidence malicious finding(s); nothing mirrored this run`,
+        colors.red,
+      );
+      for (const f of refuseFindings.slice(0, 10)) {
+        log(`      ${f.file}: ${f.id}${f.label ? ` — ${f.label}` : ''}`, colors.red);
+      }
+      return {
+        source: source.name,
+        changes: [],
+        error: null,
+        lockStatus: 'refused',
+        refused: { findings: refuseFindings },
+      };
+    }
+
     for (const file of filteredFiles) {
       const targetPath = path.join(ROOT_DIR, source.target_path, file.path);
       const targetDir = path.dirname(targetPath);
@@ -867,6 +891,7 @@ async function main() {
   );
   const errors = results.filter((r) => r.error);
   const quarantined = results.filter((r) => r.lockStatus === 'quarantined');
+  const refused = results.filter((r) => r.lockStatus === 'refused');
   const lockUnchanged = results.filter((r) => r.lockStatus === 'unchanged').length;
   const lockNew = results.filter((r) => r.lockStatus === 'new-source').length;
   const lockRelocked = results.filter((r) => r.lockStatus === 'relocked').length;
@@ -896,6 +921,16 @@ async function main() {
     ),
   );
 
+  if (refused.length > 0) {
+    log(
+      `⛔ ${refused.length} source(s) REFUSED — malicious content quarantined; nothing of theirs was mirrored`,
+      colors.red,
+    );
+    refused.forEach((r) =>
+      log(`   - ${r.source}: ${r.refused.findings.length} REFUSE finding(s)`, colors.red),
+    );
+  }
+
   if (errors.length > 0) {
     log(`⚠️  ${errors.length} source(s) had errors`, colors.yellow);
     errors.forEach((e) => log(`   - ${e.source}: ${e.error}`, colors.red));
@@ -919,6 +954,12 @@ async function main() {
       outputFile,
       `quarantined_sources=${quarantined.map((q) => q.source).join(',')}\n`,
     );
+    // REFUSE-quarantine signal (blocker 62ye.2): a poisoned source is EXCLUDED
+    // from the mirror, not walling the run — clean sources still commit + PR
+    // (these outputs do NOT gate the commit/PR steps), and the workflow opens a
+    // security-review issue per refused source from this signal.
+    fs.appendFileSync(outputFile, `refused=${refused.length}\n`);
+    fs.appendFileSync(outputFile, `refused_sources=${refused.map((r) => r.source).join(',')}\n`);
   }
 
   log('\n');
@@ -927,7 +968,10 @@ async function main() {
   // drift-tainted sync is never committed and auto-PR'd as a clean full sync.
   const totalFailures = errors.length === sourcesToSync.length;
   process.exit(
-    totalFailures || (options.strict && (errors.length > 0 || quarantined.length > 0)) ? 1 : 0,
+    totalFailures ||
+      (options.strict && (errors.length > 0 || quarantined.length > 0 || refused.length > 0))
+      ? 1
+      : 0,
   );
 }
 
