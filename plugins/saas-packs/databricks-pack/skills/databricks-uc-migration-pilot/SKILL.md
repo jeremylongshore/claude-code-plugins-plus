@@ -263,7 +263,7 @@ gives the physical relocation procedure per cloud.
 Routes straight to `/trace-uc-permission alice@corp.com "PERMISSION_DENIED:
 SELECT on main.sales.orders"`. The tracer returns: *"alice@corp.com is in no group
 with a grant; add her to `data-analysts` AND run `GRANT SELECT ON TABLE
-main.sales.orders TO \`data-analysts\`` as metastore admin — she is not
+main.sales.orders TO data-analysts` as metastore admin — she is not
 account-admin, so the grant will not inherit."*
 
 ### Example 4: "How do I keep dev/test/prod separate under Unity Catalog?"

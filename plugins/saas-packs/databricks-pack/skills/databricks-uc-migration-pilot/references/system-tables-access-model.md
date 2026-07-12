@@ -11,6 +11,7 @@ running the migration — with a denial that looks like a bug and is not:
 ```
 [SELECT system.billing.usage] TABLE_OR_VIEW_NOT_FOUND: `system`.`billing`.`usage`
 ```
+
 *(representative — the surface can also be `PERMISSION_DENIED` or an empty schema list.)*
 
 The table is not missing and you are not under-privileged in the way you think.

@@ -1,7 +1,7 @@
 # SCIM Identity-Bridge Patterns — Entra Nested Groups and Immutable External Groups
 
 Unity Catalog resolves every permission through **account-level group membership**.
-A `GRANT SELECT ON TABLE main.sales.orders TO \`analysts\`` grants the *account
+A `GRANT SELECT ON TABLE main.sales.orders TO analysts` grants the *account
 group* `analysts`; a user only inherits that privilege if they are a member of
 that account group **inside Databricks**. Nothing in UC reads your identity
 provider directly — UC reads the account's group graph, and that graph is
@@ -66,7 +66,7 @@ UC:     GRANT SELECT ON TABLE main.sales.orders TO `analysts`;    ← grant on B
   in Entra.
 
 The tell in the permission tracer: the grant exists on the account group, the
-account group exists, and the user exists — but `SHOW GROUPS WITH USER \`alice\``
+account group exists, and the user exists — but `SHOW GROUPS WITH USER alice`
 (or the account SCIM membership) does not list the grant-holding group. Symptom
 *(representative)*:
 
