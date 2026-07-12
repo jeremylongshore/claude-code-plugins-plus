@@ -348,3 +348,70 @@ def test_843_end_to_end_validate_agent_surfaces_check3(tmp_path):
     )
     result = validator.validate_agent(agent)
     assert any("CHECK 3" in e for e in result["errors"]), result["errors"]
+
+
+# =========================================================================
+# schema 3.7.0 / 3.15.2 — disallowed-tools cross-field enforcement
+#   (claude-41c2.2): shape guard + allowed-tools ∩ disallowed-tools overlap
+#   is an ERROR at every tier, mirroring the 3.5.0 requires_*/fallback_for_*
+#   overlap rule. Both lists normalize through parse_allowed_tools().
+# =========================================================================
+
+
+def test_allowed_disallowed_tool_overlap_is_error():
+    fm = {
+        "name": "my-skill", "description": GOOD_DESC,
+        "allowed-tools": "Read, Bash(rm:*)",
+        "disallowed-tools": "Bash(rm:*)",
+    }
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
+    assert any("contradictory tool declaration" in e and "Bash(rm:*)" in e for e in errors), errors
+
+
+def test_overlap_is_error_at_marketplace_tier_too():
+    fm = {
+        "name": "my-skill", "description": GOOD_DESC,
+        "allowed-tools": ["Read", "Write"],
+        "disallowed-tools": ["Write"],
+    }
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("contradictory tool declaration" in e and "Write" in e for e in errors), errors
+
+
+def test_disjoint_allowed_disallowed_is_clean():
+    # Defense-in-depth: disallow a tool NOT in allowed-tools (the intended use).
+    fm = {
+        "name": "my-skill", "description": GOOD_DESC,
+        "allowed-tools": "Read, Write",
+        "disallowed-tools": "Bash(rm:*), Bash(curl:*)",
+    }
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
+    assert not any("contradictory tool declaration" in e for e in errors), errors
+
+
+def test_overlap_detection_uses_shared_normalization():
+    # Space-separated allowed-tools vs the same token in disallowed-tools must
+    # still overlap — both go through parse_allowed_tools().
+    fm = {
+        "name": "my-skill", "description": GOOD_DESC,
+        "allowed-tools": "Read Bash(rm:*)",
+        "disallowed-tools": ["Bash(rm:*)"],
+    }
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
+    assert any("contradictory tool declaration" in e for e in errors), errors
+
+
+def test_disallowed_tools_without_allowed_tools_is_clean():
+    # The overlap check is guarded on allowed-tools also being present.
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Bash(rm:*)"}
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
+    assert not any("contradictory tool declaration" in e for e in errors), errors
+
+
+def test_disallowed_tools_bad_shape_is_error():
+    fm = {
+        "name": "my-skill", "description": GOOD_DESC,
+        "allowed-tools": "Read", "disallowed-tools": 123,
+    }
+    errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
+    assert any("'disallowed-tools' must be" in e for e in errors), errors

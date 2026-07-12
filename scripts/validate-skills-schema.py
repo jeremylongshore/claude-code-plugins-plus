@@ -177,8 +177,20 @@ except ImportError:
 #                       frontmatter `capabilities` BAN (NON-NEGOTIABLE) are all
 #                       unchanged — only `## Capabilities` as a *heading* is credited
 #                       as an Overview synonym.
+# 3.15.2 (2026-07-12) — disallowed-tools (schema 3.7.0) cross-field enforcement
+#                       made real. The field was recognized since 3.7.0 but its
+#                       two rules were never checked: (1) shape — must be a
+#                       string or YAML list (same as allowed-tools); (2) a tool
+#                       pattern MUST NOT appear in both allowed-tools and
+#                       disallowed-tools (contradictory permit+deny), an ERROR at
+#                       every tier, mirroring the 3.5.0 requires_*/fallback_for_*
+#                       overlap rule. Reuses parse_allowed_tools() so both lists
+#                       normalize identically. Spec-compliance implementation of
+#                       already-documented behavior (repo CLAUDE.md + 000-docs/681);
+#                       not an architectural change — ALWAYS_REQUIRED, tiers, and
+#                       error-vs-warning semantics are unchanged. Closes claude-41c2.2.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.15.1"
+SCHEMA_VERSION = "3.15.2"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -2817,6 +2829,36 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                 f"simultaneously require and be the fallback for the same "
                 f"{scope[:-1] if scope.endswith('s') else scope} identifier."
             )
+
+    # ── disallowed-tools cross-field rule (schema 3.7.0) ─────────────────
+    # disallowed-tools (kebab-case denylist) removes tools from the model while
+    # the skill is active — defense-in-depth parallel to allowed-tools, not a
+    # replacement. Shape mirrors allowed-tools: a space/comma-separated string
+    # OR a YAML list. Two rules, both enforced here:
+    #   1. shape: must be a string or a list (same as allowed-tools);
+    #   2. cross-field: a tool pattern MUST NOT appear in both allowed-tools and
+    #      disallowed-tools — declaring the same tool permitted AND denied is
+    #      contradictory and almost always a mis-scoped list. Error at every tier
+    #      (the fields are optional, but if both are present they must agree).
+    # Mirrors the visibility-gating overlap rule above.
+    if "disallowed-tools" in fm:
+        dt_val = fm["disallowed-tools"]
+        if not isinstance(dt_val, (list, str)):
+            errors.append(
+                f"[frontmatter] 'disallowed-tools' must be a list of strings or a "
+                f"space/comma-separated string, got: {type(dt_val).__name__}"
+            )
+        elif "allowed-tools" in fm:
+            allowed_set = set(parse_allowed_tools(fm.get("allowed-tools")))
+            disallowed_set = set(parse_allowed_tools(dt_val))
+            tool_overlap = allowed_set & disallowed_set
+            if tool_overlap:
+                errors.append(
+                    f"[frontmatter] contradictory tool declaration: "
+                    f"{sorted(tool_overlap)} appears in both allowed-tools and "
+                    f"disallowed-tools. A tool cannot be simultaneously permitted "
+                    f"and denied — remove it from one list."
+                )
 
     # ── Self-declared config surface (schema 3.6.0) ──────────────────────
     # required_environment_variables — list of objects describing each env
