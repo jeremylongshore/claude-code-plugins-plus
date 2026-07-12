@@ -1,16 +1,24 @@
 ---
-name: "throughput-calculator"
-description: |
-  Calculate throughput calculator operations. Auto-activating skill for Performance Testing.
+name: throughput-calculator
+description: 'Calculate throughput calculator operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: throughput calculator, throughput calculator
-  Part of the Performance Testing skill category. Use when working with throughput calculator functionality. Trigger with phrases like "throughput calculator", "throughput calculator", "throughput".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with throughput
+  calculator functionality. Trigger with phrases like "throughput calculator", "throughput
+  calculator", "throughput".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Throughput Calculator
 
 ## Overview

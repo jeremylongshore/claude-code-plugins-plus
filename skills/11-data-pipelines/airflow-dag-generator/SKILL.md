@@ -1,16 +1,24 @@
 ---
-name: "airflow-dag-generator"
-description: |
-  Generate airflow dag generator operations. Auto-activating skill for Data Pipelines.
+name: airflow-dag-generator
+description: 'Generate airflow dag generator operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: airflow dag generator, airflow dag generator
-  Part of the Data Pipelines skill category. Use when working with airflow dag generator functionality. Trigger with phrases like "airflow dag generator", "airflow generator", "airflow".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with airflow dag generator
+  functionality. Trigger with phrases like "airflow dag generator", "airflow generator",
+  "airflow".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Airflow Dag Generator
 
 ## Overview

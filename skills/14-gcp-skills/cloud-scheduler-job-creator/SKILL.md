@@ -1,16 +1,24 @@
 ---
-name: "cloud-scheduler-job-creator"
-description: |
-  Create cloud scheduler job creator operations. Auto-activating skill for GCP Skills.
+name: cloud-scheduler-job-creator
+description: 'Create cloud scheduler job creator operations. Auto-activating skill
+  for GCP Skills.
+
   Triggers on: cloud scheduler job creator, cloud scheduler job creator
-  Part of the GCP Skills skill category. Use when working with cloud scheduler job creator functionality. Trigger with phrases like "cloud scheduler job creator", "cloud creator", "cloud".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with cloud scheduler job
+  creator functionality. Trigger with phrases like "cloud scheduler job creator",
+  "cloud creator", "cloud".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloud Scheduler Job Creator
 
 ## Overview

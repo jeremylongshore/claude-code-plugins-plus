@@ -1,16 +1,24 @@
 ---
-name: "lazy-loading-implementer"
-description: |
-  Execute lazy loading implementer operations. Auto-activating skill for Frontend Development.
+name: lazy-loading-implementer
+description: 'Execute lazy loading implementer operations. Auto-activating skill for
+  Frontend Development.
+
   Triggers on: lazy loading implementer, lazy loading implementer
-  Part of the Frontend Development skill category. Use when working with lazy loading implementer functionality. Trigger with phrases like "lazy loading implementer", "lazy implementer", "lazy".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with lazy loading
+  implementer functionality. Trigger with phrases like "lazy loading implementer",
+  "lazy implementer", "lazy".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Lazy Loading Implementer
 
 ## Overview

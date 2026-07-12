@@ -1,16 +1,23 @@
 ---
-name: "jest-test-generator"
-description: |
-  Generate jest test generator operations. Auto-activating skill for Test Automation.
+name: jest-test-generator
+description: 'Generate jest test generator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: jest test generator, jest test generator
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "jest test generator", "jest generator", "jest".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "jest test generator", "jest generator", "jest".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Jest Test Generator
 
 ## Overview

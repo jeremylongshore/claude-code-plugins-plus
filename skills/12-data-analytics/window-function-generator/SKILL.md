@@ -1,16 +1,24 @@
 ---
-name: "window-function-generator"
-description: |
-  Generate window function generator operations. Auto-activating skill for Data Analytics.
+name: window-function-generator
+description: 'Generate window function generator operations. Auto-activating skill
+  for Data Analytics.
+
   Triggers on: window function generator, window function generator
-  Part of the Data Analytics skill category. Use when working with window function generator functionality. Trigger with phrases like "window function generator", "window generator", "window".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with window function
+  generator functionality. Trigger with phrases like "window function generator",
+  "window generator", "window".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Window Function Generator
 
 ## Overview

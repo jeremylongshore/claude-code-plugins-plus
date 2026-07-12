@@ -1,16 +1,24 @@
 ---
-name: "release-notes-generator"
-description: |
-  Generate release notes generator operations. Auto-activating skill for Technical Documentation.
+name: release-notes-generator
+description: 'Generate release notes generator operations. Auto-activating skill for
+  Technical Documentation.
+
   Triggers on: release notes generator, release notes generator
-  Part of the Technical Documentation skill category. Use when working with release notes generator functionality. Trigger with phrases like "release notes generator", "release generator", "release".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with release
+  notes generator functionality. Trigger with phrases like "release notes generator",
+  "release generator", "release".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Release Notes Generator
 
 ## Overview

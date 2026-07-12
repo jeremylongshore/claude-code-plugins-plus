@@ -1,16 +1,24 @@
 ---
-name: "fastapi-router-creator"
-description: |
-  Create fastapi router creator operations. Auto-activating skill for Backend Development.
+name: fastapi-router-creator
+description: 'Create fastapi router creator operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: fastapi router creator, fastapi router creator
-  Part of the Backend Development skill category. Use when working with APIs or building integrations. Trigger with phrases like "fastapi router creator", "fastapi creator", "fastapi".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "fastapi router creator", "fastapi creator",
+  "fastapi".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Fastapi Router Creator
 
 ## Overview

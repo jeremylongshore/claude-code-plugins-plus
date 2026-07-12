@@ -1,16 +1,24 @@
 ---
-name: "styled-components-helper"
-description: |
-  Configure with styled components helper operations. Auto-activating skill for Frontend Development.
+name: styled-components-helper
+description: 'Configure with styled components helper operations. Auto-activating
+  skill for Frontend Development.
+
   Triggers on: styled components helper, styled components helper
-  Part of the Frontend Development skill category. Use when working with styled components helper functionality. Trigger with phrases like "styled components helper", "styled helper", "styled".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with styled components
+  helper functionality. Trigger with phrases like "styled components helper", "styled
+  helper", "styled".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Styled Components Helper
 
 ## Overview

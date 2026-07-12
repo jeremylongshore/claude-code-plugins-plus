@@ -1,16 +1,24 @@
 ---
-name: "api-reference-creator"
-description: |
-  Create api reference creator operations. Auto-activating skill for Technical Documentation.
+name: api-reference-creator
+description: 'Create api reference creator operations. Auto-activating skill for Technical
+  Documentation.
+
   Triggers on: api reference creator, api reference creator
-  Part of the Technical Documentation skill category. Use when working with APIs or building integrations. Trigger with phrases like "api reference creator", "api creator", "api".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with APIs or
+  building integrations. Trigger with phrases like "api reference creator", "api creator",
+  "api".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Api Reference Creator
 
 ## Overview

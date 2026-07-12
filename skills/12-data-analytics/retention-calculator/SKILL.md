@@ -1,16 +1,24 @@
 ---
-name: "retention-calculator"
-description: |
-  Configure and manage - Calculate retention calculator operations. Auto-activating skill for Data Analytics.
+name: retention-calculator
+description: 'Configure and manage - Calculate retention calculator operations. Auto-activating
+  skill for Data Analytics.
+
   Triggers on: retention calculator, retention calculator
-  Part of the Data Analytics skill category. Use when working with retention calculator functionality. Trigger with phrases like "retention calculator", "retention calculator", "retention".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with retention calculator
+  functionality. Trigger with phrases like "retention calculator", "retention calculator",
+  "retention".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Retention Calculator
 
 ## Overview

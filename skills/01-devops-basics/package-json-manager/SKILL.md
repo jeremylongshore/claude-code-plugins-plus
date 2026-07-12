@@ -1,16 +1,24 @@
 ---
-name: "package-json-manager"
-description: |
-  Manage package json manager operations. Auto-activating skill for DevOps Basics.
+name: package-json-manager
+description: 'Manage package json manager operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: package json manager, package json manager
-  Part of the DevOps Basics skill category. Use when working with package json manager functionality. Trigger with phrases like "package json manager", "package manager", "package".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with package json manager
+  functionality. Trigger with phrases like "package json manager", "package manager",
+  "package".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Package Json Manager
 
 ## Overview

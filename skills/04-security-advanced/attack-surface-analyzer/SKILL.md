@@ -1,16 +1,24 @@
 ---
-name: "attack-surface-analyzer"
-description: |
-  Analyze attack surface analyzer operations. Auto-activating skill for Security Advanced.
+name: attack-surface-analyzer
+description: 'Analyze attack surface analyzer operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: attack surface analyzer, attack surface analyzer
-  Part of the Security Advanced skill category. Use when analyzing or auditing attack surface analyzer. Trigger with phrases like "attack surface analyzer", "attack analyzer", "analyze attack surface r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when analyzing or auditing attack
+  surface analyzer. Trigger with phrases like "attack surface analyzer", "attack analyzer",
+  "analyze attack surface r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Attack Surface Analyzer
 
 ## Overview

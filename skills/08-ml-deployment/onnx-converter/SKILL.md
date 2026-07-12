@@ -1,16 +1,22 @@
 ---
-name: "onnx-converter"
-description: |
-  Convert onnx converter operations. Auto-activating skill for ML Deployment.
+name: onnx-converter
+description: 'Convert onnx converter operations. Auto-activating skill for ML Deployment.
+
   Triggers on: onnx converter, onnx converter
-  Part of the ML Deployment skill category. Use when working with onnx converter functionality. Trigger with phrases like "onnx converter", "onnx converter", "onnx".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with onnx converter functionality.
+  Trigger with phrases like "onnx converter", "onnx converter", "onnx".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Onnx Converter
 
 ## Overview

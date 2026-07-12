@@ -1,16 +1,24 @@
 ---
-name: "inference-latency-profiler"
-description: |
-  Profile inference latency profiler operations. Auto-activating skill for ML Deployment.
+name: inference-latency-profiler
+description: 'Profile inference latency profiler operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: inference latency profiler, inference latency profiler
-  Part of the ML Deployment skill category. Use when working with inference latency profiler functionality. Trigger with phrases like "inference latency profiler", "inference profiler", "inference".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with inference latency
+  profiler functionality. Trigger with phrases like "inference latency profiler",
+  "inference profiler", "inference".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Inference Latency Profiler
 
 ## Overview

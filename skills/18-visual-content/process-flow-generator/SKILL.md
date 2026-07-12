@@ -1,16 +1,23 @@
 ---
-name: "process-flow-generator"
-description: |
-  Process Flow Generator - Auto-activating skill for Visual Content.
+name: process-flow-generator
+description: 'Process Flow Generator - Auto-activating skill for Visual Content.
+
   Triggers on: process flow generator, process flow generator
-  Part of the Visual Content skill category. Use when working with process flow generator functionality. Trigger with phrases like "process flow generator", "process generator", "process".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with process flow generator
+  functionality. Trigger with phrases like "process flow generator", "process generator",
+  "process".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Process Flow Generator
 
 ## Overview

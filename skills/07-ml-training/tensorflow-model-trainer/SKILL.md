@@ -1,16 +1,24 @@
 ---
-name: "tensorflow-model-trainer"
-description: |
-  Build tensorflow model trainer operations. Auto-activating skill for ML Training.
+name: tensorflow-model-trainer
+description: 'Build tensorflow model trainer operations. Auto-activating skill for
+  ML Training.
+
   Triggers on: tensorflow model trainer, tensorflow model trainer
-  Part of the ML Training skill category. Use when working with tensorflow model trainer functionality. Trigger with phrases like "tensorflow model trainer", "tensorflow trainer", "tensorflow".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with tensorflow model trainer
+  functionality. Trigger with phrases like "tensorflow model trainer", "tensorflow
+  trainer", "tensorflow".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Tensorflow Model Trainer
 
 ## Overview

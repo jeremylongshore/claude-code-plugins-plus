@@ -1,16 +1,24 @@
 ---
-name: "log-analysis-security"
-description: |
-  Execute log analysis security operations. Auto-activating skill for Security Advanced.
+name: log-analysis-security
+description: 'Execute log analysis security operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: log analysis security, log analysis security
-  Part of the Security Advanced skill category. Use when working with log analysis security functionality. Trigger with phrases like "log analysis security", "log security", "log".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with log analysis
+  security functionality. Trigger with phrases like "log analysis security", "log
+  security", "log".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Log Analysis Security
 
 ## Overview

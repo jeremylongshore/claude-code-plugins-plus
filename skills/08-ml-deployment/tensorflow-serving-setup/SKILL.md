@@ -1,16 +1,24 @@
 ---
-name: "tensorflow-serving-setup"
-description: |
-  Configure tensorflow serving setup operations. Auto-activating skill for ML Deployment.
+name: tensorflow-serving-setup
+description: 'Configure tensorflow serving setup operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: tensorflow serving setup, tensorflow serving setup
-  Part of the ML Deployment skill category. Use when working with tensorflow serving setup functionality. Trigger with phrases like "tensorflow serving setup", "tensorflow setup", "tensorflow".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with tensorflow serving
+  setup functionality. Trigger with phrases like "tensorflow serving setup", "tensorflow
+  setup", "tensorflow".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Tensorflow Serving Setup
 
 ## Overview

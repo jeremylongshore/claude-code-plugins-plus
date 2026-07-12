@@ -1,16 +1,23 @@
 ---
-name: "eks-cluster-config"
-description: |
-  Configure eks cluster config operations. Auto-activating skill for AWS Skills.
+name: eks-cluster-config
+description: 'Configure eks cluster config operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: eks cluster config, eks cluster config
-  Part of the AWS Skills skill category. Use when configuring systems or services. Trigger with phrases like "eks cluster config", "eks config", "eks".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when configuring systems or services.
+  Trigger with phrases like "eks cluster config", "eks config", "eks".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Eks Cluster Config
 
 ## Overview

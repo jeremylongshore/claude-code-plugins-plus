@@ -1,16 +1,23 @@
 ---
-name: "pdf-parser"
-description: |
-  Configure and manage - Parse pdf parser operations. Auto-activating skill for Business Automation.
+name: pdf-parser
+description: 'Configure and manage - Parse pdf parser operations. Auto-activating
+  skill for Business Automation.
+
   Triggers on: pdf parser, pdf parser
-  Part of the Business Automation skill category. Use when working with pdf parser functionality. Trigger with phrases like "pdf parser", "pdf parser", "pdf".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with pdf parser
+  functionality. Trigger with phrases like "pdf parser", "pdf parser", "pdf".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Pdf Parser
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
-name: "alertmanager-rules-config"
-description: |
-  Manage alertmanager rules config operations. Auto-activating skill for DevOps Advanced.
+name: alertmanager-rules-config
+description: 'Manage alertmanager rules config operations. Auto-activating skill for
+  DevOps Advanced.
+
   Triggers on: alertmanager rules config, alertmanager rules config
-  Part of the DevOps Advanced skill category. Use when configuring systems or services. Trigger with phrases like "alertmanager rules config", "alertmanager config", "alertmanager".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when configuring systems or services.
+  Trigger with phrases like "alertmanager rules config", "alertmanager config", "alertmanager".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Alertmanager Rules Config
 
 ## Overview

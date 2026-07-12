@@ -1,16 +1,24 @@
 ---
-name: "risk-assessment-creator"
-description: |
-  Create risk assessment creator operations. Auto-activating skill for Enterprise Workflows.
+name: risk-assessment-creator
+description: 'Create risk assessment creator operations. Auto-activating skill for
+  Enterprise Workflows.
+
   Triggers on: risk assessment creator, risk assessment creator
-  Part of the Enterprise Workflows skill category. Use when working with risk assessment creator functionality. Trigger with phrases like "risk assessment creator", "risk creator", "risk".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with risk assessment
+  creator functionality. Trigger with phrases like "risk assessment creator", "risk
+  creator", "risk".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Risk Assessment Creator
 
 ## Overview

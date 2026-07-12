@@ -1,16 +1,24 @@
 ---
-name: "correlation-analyzer"
-description: |
-  Analyze correlation analyzer operations. Auto-activating skill for Data Analytics.
+name: correlation-analyzer
+description: 'Analyze correlation analyzer operations. Auto-activating skill for Data
+  Analytics.
+
   Triggers on: correlation analyzer, correlation analyzer
-  Part of the Data Analytics skill category. Use when analyzing or auditing correlation analyzer. Trigger with phrases like "correlation analyzer", "correlation analyzer", "analyze correlation r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when analyzing or auditing correlation
+  analyzer. Trigger with phrases like "correlation analyzer", "correlation analyzer",
+  "analyze correlation r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Correlation Analyzer
 
 ## Overview

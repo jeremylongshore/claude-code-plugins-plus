@@ -1,16 +1,24 @@
 ---
-name: "asana-task-creator"
-description: |
-  Create asana task creator operations. Auto-activating skill for Enterprise Workflows.
+name: asana-task-creator
+description: 'Create asana task creator operations. Auto-activating skill for Enterprise
+  Workflows.
+
   Triggers on: asana task creator, asana task creator
-  Part of the Enterprise Workflows skill category. Use when working with asana task creator functionality. Trigger with phrases like "asana task creator", "asana creator", "asana".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with asana task
+  creator functionality. Trigger with phrases like "asana task creator", "asana creator",
+  "asana".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Asana Task Creator
 
 ## Overview

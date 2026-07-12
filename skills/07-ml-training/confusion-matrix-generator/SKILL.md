@@ -1,16 +1,24 @@
 ---
-name: "confusion-matrix-generator"
-description: |
-  Generate confusion matrix generator operations. Auto-activating skill for ML Training.
+name: confusion-matrix-generator
+description: 'Generate confusion matrix generator operations. Auto-activating skill
+  for ML Training.
+
   Triggers on: confusion matrix generator, confusion matrix generator
-  Part of the ML Training skill category. Use when working with confusion matrix generator functionality. Trigger with phrases like "confusion matrix generator", "confusion generator", "confusion".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with confusion matrix generator
+  functionality. Trigger with phrases like "confusion matrix generator", "confusion
+  generator", "confusion".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Confusion Matrix Generator
 
 ## Overview

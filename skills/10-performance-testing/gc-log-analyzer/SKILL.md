@@ -1,16 +1,24 @@
 ---
-name: "gc-log-analyzer"
-description: |
-  Analyze gc log analyzer operations. Auto-activating skill for Performance Testing.
+name: gc-log-analyzer
+description: 'Analyze gc log analyzer operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: gc log analyzer, gc log analyzer
-  Part of the Performance Testing skill category. Use when analyzing or auditing gc log analyzer. Trigger with phrases like "gc log analyzer", "gc analyzer", "analyze gc log r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when analyzing or auditing gc
+  log analyzer. Trigger with phrases like "gc log analyzer", "gc analyzer", "analyze
+  gc log r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Gc Log Analyzer
 
 ## Overview

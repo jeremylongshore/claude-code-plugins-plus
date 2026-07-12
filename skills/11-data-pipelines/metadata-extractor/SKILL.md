@@ -1,16 +1,24 @@
 ---
-name: "metadata-extractor"
-description: |
-  Process metadata extractor operations. Auto-activating skill for Data Pipelines.
+name: metadata-extractor
+description: 'Process metadata extractor operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: metadata extractor, metadata extractor
-  Part of the Data Pipelines skill category. Use when working with metadata extractor functionality. Trigger with phrases like "metadata extractor", "metadata extractor", "metadata".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with metadata extractor
+  functionality. Trigger with phrases like "metadata extractor", "metadata extractor",
+  "metadata".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Metadata Extractor
 
 ## Overview

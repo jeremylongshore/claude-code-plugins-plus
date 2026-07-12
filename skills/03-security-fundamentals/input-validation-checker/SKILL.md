@@ -1,16 +1,24 @@
 ---
-name: "input-validation-checker"
-description: |
-  Validate input validation checker operations. Auto-activating skill for Security Fundamentals.
+name: input-validation-checker
+description: 'Validate input validation checker operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: input validation checker, input validation checker
-  Part of the Security Fundamentals skill category. Use when working with input validation checker functionality. Trigger with phrases like "input validation checker", "input checker", "input".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with input validation
+  checker functionality. Trigger with phrases like "input validation checker", "input
+  checker", "input".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Input Validation Checker
 
 ## Overview

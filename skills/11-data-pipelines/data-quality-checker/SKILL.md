@@ -1,16 +1,24 @@
 ---
-name: "data-quality-checker"
-description: |
-  Validate data quality checker operations. Auto-activating skill for Data Pipelines.
+name: data-quality-checker
+description: 'Validate data quality checker operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: data quality checker, data quality checker
-  Part of the Data Pipelines skill category. Use when working with data quality checker functionality. Trigger with phrases like "data quality checker", "data checker", "data".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with data quality checker
+  functionality. Trigger with phrases like "data quality checker", "data checker",
+  "data".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Data Quality Checker
 
 ## Overview

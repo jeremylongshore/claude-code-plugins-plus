@@ -1,16 +1,24 @@
 ---
-name: "sql-query-optimizer"
-description: |
-  Optimize sql query optimizer operations. Auto-activating skill for Data Analytics.
+name: sql-query-optimizer
+description: 'Optimize sql query optimizer operations. Auto-activating skill for Data
+  Analytics.
+
   Triggers on: sql query optimizer, sql query optimizer
-  Part of the Data Analytics skill category. Use when working with sql query optimizer functionality. Trigger with phrases like "sql query optimizer", "sql optimizer", "sql".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with sql query optimizer
+  functionality. Trigger with phrases like "sql query optimizer", "sql optimizer",
+  "sql".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Sql Query Optimizer
 
 ## Overview

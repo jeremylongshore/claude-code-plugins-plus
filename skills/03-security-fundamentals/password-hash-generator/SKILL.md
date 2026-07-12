@@ -1,16 +1,24 @@
 ---
-name: "password-hash-generator"
-description: |
-  Generate password hash generator operations. Auto-activating skill for Security Fundamentals.
+name: password-hash-generator
+description: 'Generate password hash generator operations. Auto-activating skill for
+  Security Fundamentals.
+
   Triggers on: password hash generator, password hash generator
-  Part of the Security Fundamentals skill category. Use when working with password hash generator functionality. Trigger with phrases like "password hash generator", "password generator", "password".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with password
+  hash generator functionality. Trigger with phrases like "password hash generator",
+  "password generator", "password".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Password Hash Generator
 
 ## Overview

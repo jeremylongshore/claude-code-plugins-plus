@@ -1,16 +1,24 @@
 ---
-name: "password-strength-analyzer"
-description: |
-  Analyze password strength analyzer operations. Auto-activating skill for Security Fundamentals.
+name: password-strength-analyzer
+description: 'Analyze password strength analyzer operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: password strength analyzer, password strength analyzer
-  Part of the Security Fundamentals skill category. Use when analyzing or auditing password strength analyzer. Trigger with phrases like "password strength analyzer", "password analyzer", "analyze password strength r".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when analyzing or auditing
+  password strength analyzer. Trigger with phrases like "password strength analyzer",
+  "password analyzer", "analyze password strength r".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Password Strength Analyzer
 
 ## Overview

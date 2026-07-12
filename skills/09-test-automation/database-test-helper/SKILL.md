@@ -1,16 +1,23 @@
 ---
-name: "database-test-helper"
-description: |
-  Assist with database test helper operations. Auto-activating skill for Test Automation.
+name: database-test-helper
+description: 'Assist with database test helper operations. Auto-activating skill for
+  Test Automation.
+
   Triggers on: database test helper, database test helper
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "database test helper", "database helper", "database".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "database test helper", "database helper", "database".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Database Test Helper
 
 ## Overview

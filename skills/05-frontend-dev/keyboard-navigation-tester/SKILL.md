@@ -1,16 +1,23 @@
 ---
-name: "keyboard-navigation-tester"
-description: |
-  Test keyboard navigation tester operations. Auto-activating skill for Frontend Development.
+name: keyboard-navigation-tester
+description: 'Test keyboard navigation tester operations. Auto-activating skill for
+  Frontend Development.
+
   Triggers on: keyboard navigation tester, keyboard navigation tester
-  Part of the Frontend Development skill category. Use when writing or running tests. Trigger with phrases like "keyboard navigation tester", "keyboard tester", "keyboard".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when writing or running tests.
+  Trigger with phrases like "keyboard navigation tester", "keyboard tester", "keyboard".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Keyboard Navigation Tester
 
 ## Overview

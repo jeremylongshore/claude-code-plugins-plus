@@ -1,16 +1,23 @@
 ---
-name: "stress-test-config"
-description: |
-  Configure stress test config operations. Auto-activating skill for Performance Testing.
+name: stress-test-config
+description: 'Configure stress test config operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: stress test config, stress test config
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "stress test config", "stress config", "stress".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "stress test config", "stress config", "stress".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Stress Test Config
 
 ## Overview

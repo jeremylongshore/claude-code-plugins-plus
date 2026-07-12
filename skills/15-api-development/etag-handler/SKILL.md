@@ -1,16 +1,22 @@
 ---
-name: "etag-handler"
-description: |
-  Manage etag handler operations. Auto-activating skill for API Development.
+name: etag-handler
+description: 'Manage etag handler operations. Auto-activating skill for API Development.
+
   Triggers on: etag handler, etag handler
-  Part of the API Development skill category. Use when working with etag handler functionality. Trigger with phrases like "etag handler", "etag handler", "etag".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with etag handler functionality.
+  Trigger with phrases like "etag handler", "etag handler", "etag".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Etag Handler
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "security-headers-generator"
-description: |
-  Generate security headers generator operations. Auto-activating skill for Security Fundamentals.
+name: security-headers-generator
+description: 'Generate security headers generator operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: security headers generator, security headers generator
-  Part of the Security Fundamentals skill category. Use when working with security headers generator functionality. Trigger with phrases like "security headers generator", "security generator", "security".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with security
+  headers generator functionality. Trigger with phrases like "security headers generator",
+  "security generator", "security".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Security Headers Generator
 
 ## Overview

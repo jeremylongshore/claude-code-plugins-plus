@@ -1,16 +1,23 @@
 ---
-name: "integration-test-setup"
-description: |
-  Configure integration test setup operations. Auto-activating skill for Test Automation.
+name: integration-test-setup
+description: 'Configure integration test setup operations. Auto-activating skill for
+  Test Automation.
+
   Triggers on: integration test setup, integration test setup
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "integration test setup", "integration setup", "integration".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "integration test setup", "integration setup", "integration".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Integration Test Setup
 
 ## Overview

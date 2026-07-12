@@ -1,16 +1,24 @@
 ---
-name: "notification-dispatcher"
-description: |
-  Manage notification dispatcher operations. Auto-activating skill for Business Automation.
+name: notification-dispatcher
+description: 'Manage notification dispatcher operations. Auto-activating skill for
+  Business Automation.
+
   Triggers on: notification dispatcher, notification dispatcher
-  Part of the Business Automation skill category. Use when working with notification dispatcher functionality. Trigger with phrases like "notification dispatcher", "notification dispatcher", "notification".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with notification
+  dispatcher functionality. Trigger with phrases like "notification dispatcher", "notification
+  dispatcher", "notification".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Notification Dispatcher
 
 ## Overview

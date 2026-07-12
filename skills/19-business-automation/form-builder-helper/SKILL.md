@@ -1,16 +1,24 @@
 ---
-name: "form-builder-helper"
-description: |
-  Build form builder helper operations. Auto-activating skill for Business Automation.
+name: form-builder-helper
+description: 'Build form builder helper operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: form builder helper, form builder helper
-  Part of the Business Automation skill category. Use when working with form builder helper functionality. Trigger with phrases like "form builder helper", "form helper", "form".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with form builder
+  helper functionality. Trigger with phrases like "form builder helper", "form helper",
+  "form".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Form Builder Helper
 
 ## Overview

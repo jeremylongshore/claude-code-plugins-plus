@@ -1,16 +1,24 @@
 ---
-name: "kubernetes-secrets-manager"
-description: |
-  Manage kubernetes secrets manager operations. Auto-activating skill for DevOps Advanced.
+name: kubernetes-secrets-manager
+description: 'Manage kubernetes secrets manager operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: kubernetes secrets manager, kubernetes secrets manager
-  Part of the DevOps Advanced skill category. Use when working with kubernetes secrets manager functionality. Trigger with phrases like "kubernetes secrets manager", "kubernetes manager", "kubernetes".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with kubernetes secrets
+  manager functionality. Trigger with phrases like "kubernetes secrets manager", "kubernetes
+  manager", "kubernetes".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Kubernetes Secrets Manager
 
 ## Overview

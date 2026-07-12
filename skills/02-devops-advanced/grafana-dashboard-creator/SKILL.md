@@ -1,16 +1,24 @@
 ---
-name: "grafana-dashboard-creator"
-description: |
-  Create grafana dashboard creator operations. Auto-activating skill for DevOps Advanced.
+name: grafana-dashboard-creator
+description: 'Create grafana dashboard creator operations. Auto-activating skill for
+  DevOps Advanced.
+
   Triggers on: grafana dashboard creator, grafana dashboard creator
-  Part of the DevOps Advanced skill category. Use when working with grafana dashboard creator functionality. Trigger with phrases like "grafana dashboard creator", "grafana creator", "grafana".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with grafana dashboard
+  creator functionality. Trigger with phrases like "grafana dashboard creator", "grafana
+  creator", "grafana".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Grafana Dashboard Creator
 
 ## Overview

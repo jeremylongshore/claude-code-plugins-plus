@@ -1,16 +1,24 @@
 ---
-name: "feature-engineering-helper"
-description: |
-  Configure with feature engineering helper operations. Auto-activating skill for ML Training.
+name: feature-engineering-helper
+description: 'Configure with feature engineering helper operations. Auto-activating
+  skill for ML Training.
+
   Triggers on: feature engineering helper, feature engineering helper
-  Part of the ML Training skill category. Use when working with feature engineering helper functionality. Trigger with phrases like "feature engineering helper", "feature helper", "feature".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with feature engineering
+  helper functionality. Trigger with phrases like "feature engineering helper", "feature
+  helper", "feature".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Feature Engineering Helper
 
 ## Overview

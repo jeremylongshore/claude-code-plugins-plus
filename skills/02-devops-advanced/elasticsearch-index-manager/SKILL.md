@@ -1,16 +1,24 @@
 ---
-name: "elasticsearch-index-manager"
-description: |
-  Manage elasticsearch index manager operations. Auto-activating skill for DevOps Advanced.
+name: elasticsearch-index-manager
+description: 'Manage elasticsearch index manager operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: elasticsearch index manager, elasticsearch index manager
-  Part of the DevOps Advanced skill category. Use when working with elasticsearch index manager functionality. Trigger with phrases like "elasticsearch index manager", "elasticsearch manager", "elasticsearch".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with elasticsearch
+  index manager functionality. Trigger with phrases like "elasticsearch index manager",
+  "elasticsearch manager", "elasticsearch".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Elasticsearch Index Manager
 
 ## Overview

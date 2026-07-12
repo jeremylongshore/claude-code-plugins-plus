@@ -1,16 +1,24 @@
 ---
-name: "cors-policy-validator"
-description: |
-  Validate cors policy validator operations. Auto-activating skill for Security Fundamentals.
+name: cors-policy-validator
+description: 'Validate cors policy validator operations. Auto-activating skill for
+  Security Fundamentals.
+
   Triggers on: cors policy validator, cors policy validator
-  Part of the Security Fundamentals skill category. Use when working with cors policy validator functionality. Trigger with phrases like "cors policy validator", "cors validator", "cors".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with cors policy
+  validator functionality. Trigger with phrases like "cors policy validator", "cors
+  validator", "cors".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Cors Policy Validator
 
 ## Overview

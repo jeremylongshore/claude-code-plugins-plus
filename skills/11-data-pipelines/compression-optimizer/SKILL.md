@@ -1,16 +1,24 @@
 ---
-name: "compression-optimizer"
-description: |
-  Optimize compression optimizer operations. Auto-activating skill for Data Pipelines.
+name: compression-optimizer
+description: 'Optimize compression optimizer operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: compression optimizer, compression optimizer
-  Part of the Data Pipelines skill category. Use when working with compression optimizer functionality. Trigger with phrases like "compression optimizer", "compression optimizer", "compression".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with compression optimizer
+  functionality. Trigger with phrases like "compression optimizer", "compression optimizer",
+  "compression".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Compression Optimizer
 
 ## Overview

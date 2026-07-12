@@ -1,16 +1,24 @@
 ---
-name: "color-contrast-checker"
-description: |
-  Validate color contrast checker operations. Auto-activating skill for Frontend Development.
+name: color-contrast-checker
+description: 'Validate color contrast checker operations. Auto-activating skill for
+  Frontend Development.
+
   Triggers on: color contrast checker, color contrast checker
-  Part of the Frontend Development skill category. Use when working with color contrast checker functionality. Trigger with phrases like "color contrast checker", "color checker", "color".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with color contrast
+  checker functionality. Trigger with phrases like "color contrast checker", "color
+  checker", "color".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Color Contrast Checker
 
 ## Overview

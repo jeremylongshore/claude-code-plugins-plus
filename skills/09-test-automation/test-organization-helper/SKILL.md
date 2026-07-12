@@ -1,16 +1,22 @@
 ---
-name: "test-organization-helper"
-description: |
-  Test Organization Helper - Auto-activating skill for Test Automation.
+name: test-organization-helper
+description: 'Test Organization Helper - Auto-activating skill for Test Automation.
+
   Triggers on: test organization helper, test organization helper
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "test organization helper", "test helper", "test".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "test organization helper", "test helper", "test".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Test Organization Helper
 
 ## Overview

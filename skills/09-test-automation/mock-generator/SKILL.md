@@ -1,16 +1,22 @@
 ---
-name: "mock-generator"
-description: |
-  Generate mock generator operations. Auto-activating skill for Test Automation.
+name: mock-generator
+description: 'Generate mock generator operations. Auto-activating skill for Test Automation.
+
   Triggers on: mock generator, mock generator
-  Part of the Test Automation skill category. Use when working with mock generator functionality. Trigger with phrases like "mock generator", "mock generator", "mock".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when working with mock generator
+  functionality. Trigger with phrases like "mock generator", "mock generator", "mock".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Mock Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "request-validator-generator"
-description: |
-  Generate request validator generator operations. Auto-activating skill for Backend Development.
+name: request-validator-generator
+description: 'Generate request validator generator operations. Auto-activating skill
+  for Backend Development.
+
   Triggers on: request validator generator, request validator generator
-  Part of the Backend Development skill category. Use when working with request validator generator functionality. Trigger with phrases like "request validator generator", "request generator", "request".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with request validator
+  generator functionality. Trigger with phrases like "request validator generator",
+  "request generator", "request".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Request Validator Generator
 
 ## Overview

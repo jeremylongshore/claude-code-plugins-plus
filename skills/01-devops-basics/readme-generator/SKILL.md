@@ -1,16 +1,24 @@
 ---
-name: "readme-generator"
-description: |
-  Generate readme generator operations. Auto-activating skill for DevOps Basics.
+name: readme-generator
+description: 'Generate readme generator operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: readme generator, readme generator
-  Part of the DevOps Basics skill category. Use when working with readme generator functionality. Trigger with phrases like "readme generator", "readme generator", "readme".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with readme generator
+  functionality. Trigger with phrases like "readme generator", "readme generator",
+  "readme".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Readme Generator
 
 ## Overview

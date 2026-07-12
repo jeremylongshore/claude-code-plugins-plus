@@ -1,16 +1,24 @@
 ---
-name: "dataset-loader-creator"
-description: |
-  Create dataset loader creator operations. Auto-activating skill for ML Training.
+name: dataset-loader-creator
+description: 'Create dataset loader creator operations. Auto-activating skill for
+  ML Training.
+
   Triggers on: dataset loader creator, dataset loader creator
-  Part of the ML Training skill category. Use when working with dataset loader creator functionality. Trigger with phrases like "dataset loader creator", "dataset creator", "dataset".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with dataset loader creator
+  functionality. Trigger with phrases like "dataset loader creator", "dataset creator",
+  "dataset".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Dataset Loader Creator
 
 ## Overview

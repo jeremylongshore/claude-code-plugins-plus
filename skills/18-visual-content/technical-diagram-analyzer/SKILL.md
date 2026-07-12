@@ -1,16 +1,24 @@
 ---
-name: "technical-diagram-analyzer"
-description: |
-  Analyze technical diagram analyzer operations. Auto-activating skill for Visual Content.
+name: technical-diagram-analyzer
+description: 'Analyze technical diagram analyzer operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: technical diagram analyzer, technical diagram analyzer
-  Part of the Visual Content skill category. Use when analyzing or auditing technical diagram analyzer. Trigger with phrases like "technical diagram analyzer", "technical analyzer", "analyze technical diagram r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when analyzing or auditing technical
+  diagram analyzer. Trigger with phrases like "technical diagram analyzer", "technical
+  analyzer", "analyze technical diagram r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Technical Diagram Analyzer
 
 ## Overview

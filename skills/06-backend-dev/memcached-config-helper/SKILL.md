@@ -1,16 +1,24 @@
 ---
-name: "memcached-config-helper"
-description: |
-  Configure with memcached config helper operations. Auto-activating skill for Backend Development.
+name: memcached-config-helper
+description: 'Configure with memcached config helper operations. Auto-activating skill
+  for Backend Development.
+
   Triggers on: memcached config helper, memcached config helper
-  Part of the Backend Development skill category. Use when configuring systems or services. Trigger with phrases like "memcached config helper", "memcached helper", "memcached".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when configuring systems or
+  services. Trigger with phrases like "memcached config helper", "memcached helper",
+  "memcached".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Memcached Config Helper
 
 ## Overview

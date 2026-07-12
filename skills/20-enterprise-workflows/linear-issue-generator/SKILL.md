@@ -1,16 +1,24 @@
 ---
-name: "linear-issue-generator"
-description: |
-  Generate linear issue generator operations. Auto-activating skill for Enterprise Workflows.
+name: linear-issue-generator
+description: 'Generate linear issue generator operations. Auto-activating skill for
+  Enterprise Workflows.
+
   Triggers on: linear issue generator, linear issue generator
-  Part of the Enterprise Workflows skill category. Use when working with linear issue generator functionality. Trigger with phrases like "linear issue generator", "linear generator", "linear".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with linear issue
+  generator functionality. Trigger with phrases like "linear issue generator", "linear
+  generator", "linear".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Linear Issue Generator
 
 ## Overview

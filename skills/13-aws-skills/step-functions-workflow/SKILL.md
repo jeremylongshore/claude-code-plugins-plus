@@ -1,16 +1,24 @@
 ---
-name: "step-functions-workflow"
-description: |
-  Manage step functions workflow operations. Auto-activating skill for AWS Skills.
+name: step-functions-workflow
+description: 'Manage step functions workflow operations. Auto-activating skill for
+  AWS Skills.
+
   Triggers on: step functions workflow, step functions workflow
-  Part of the AWS Skills skill category. Use when working with step functions workflow functionality. Trigger with phrases like "step functions workflow", "step workflow", "step".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with step functions workflow
+  functionality. Trigger with phrases like "step functions workflow", "step workflow",
+  "step".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Step Functions Workflow
 
 ## Overview

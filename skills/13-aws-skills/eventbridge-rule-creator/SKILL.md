@@ -1,16 +1,24 @@
 ---
-name: "eventbridge-rule-creator"
-description: |
-  Create eventbridge rule creator operations. Auto-activating skill for AWS Skills.
+name: eventbridge-rule-creator
+description: 'Create eventbridge rule creator operations. Auto-activating skill for
+  AWS Skills.
+
   Triggers on: eventbridge rule creator, eventbridge rule creator
-  Part of the AWS Skills skill category. Use when working with eventbridge rule creator functionality. Trigger with phrases like "eventbridge rule creator", "eventbridge creator", "eventbridge".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with eventbridge rule creator
+  functionality. Trigger with phrases like "eventbridge rule creator", "eventbridge
+  creator", "eventbridge".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Eventbridge Rule Creator
 
 ## Overview

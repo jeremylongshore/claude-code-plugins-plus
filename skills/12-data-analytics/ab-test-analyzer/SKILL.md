@@ -1,16 +1,23 @@
 ---
-name: "ab-test-analyzer"
-description: |
-  Analyze ab test analyzer operations. Auto-activating skill for Data Analytics.
+name: ab-test-analyzer
+description: 'Analyze ab test analyzer operations. Auto-activating skill for Data
+  Analytics.
+
   Triggers on: ab test analyzer, ab test analyzer
-  Part of the Data Analytics skill category. Use when writing or running tests. Trigger with phrases like "ab test analyzer", "ab analyzer", "analyze ab test r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when writing or running tests. Trigger
+  with phrases like "ab test analyzer", "ab analyzer", "analyze ab test r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Ab Test Analyzer
 
 ## Overview

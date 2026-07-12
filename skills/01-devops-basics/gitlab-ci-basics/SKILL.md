@@ -1,16 +1,23 @@
 ---
-name: "gitlab-ci-basics"
-description: |
-  Manage gitlab ci basics operations. Auto-activating skill for DevOps Basics.
+name: gitlab-ci-basics
+description: 'Manage gitlab ci basics operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: gitlab ci basics, gitlab ci basics
-  Part of the DevOps Basics skill category. Use when working with gitlab ci basics functionality. Trigger with phrases like "gitlab ci basics", "gitlab basics", "gitlab".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with gitlab ci basics
+  functionality. Trigger with phrases like "gitlab ci basics", "gitlab basics", "gitlab".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Gitlab Ci Basics
 
 ## Overview

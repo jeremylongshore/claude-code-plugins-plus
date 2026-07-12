@@ -1,16 +1,24 @@
 ---
-name: "flask-ml-api-creator"
-description: |
-  Create flask ml api creator operations. Auto-activating skill for ML Deployment.
+name: flask-ml-api-creator
+description: 'Create flask ml api creator operations. Auto-activating skill for ML
+  Deployment.
+
   Triggers on: flask ml api creator, flask ml api creator
-  Part of the ML Deployment skill category. Use when working with APIs or building integrations. Trigger with phrases like "flask ml api creator", "flask creator", "flask".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "flask ml api creator", "flask creator",
+  "flask".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Flask Ml Api Creator
 
 ## Overview

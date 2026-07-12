@@ -1,16 +1,24 @@
 ---
-name: "dashboard-layout-planner"
-description: |
-  Configure dashboard layout planner operations. Auto-activating skill for Data Analytics.
+name: dashboard-layout-planner
+description: 'Configure dashboard layout planner operations. Auto-activating skill
+  for Data Analytics.
+
   Triggers on: dashboard layout planner, dashboard layout planner
-  Part of the Data Analytics skill category. Use when working with dashboard layout planner functionality. Trigger with phrases like "dashboard layout planner", "dashboard planner", "dashboard".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with dashboard layout
+  planner functionality. Trigger with phrases like "dashboard layout planner", "dashboard
+  planner", "dashboard".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Dashboard Layout Planner
 
 ## Overview

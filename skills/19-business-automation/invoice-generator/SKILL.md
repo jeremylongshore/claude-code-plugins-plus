@@ -1,16 +1,24 @@
 ---
-name: "invoice-generator"
-description: |
-  Generate invoice generator operations. Auto-activating skill for Business Automation.
+name: invoice-generator
+description: 'Generate invoice generator operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: invoice generator, invoice generator
-  Part of the Business Automation skill category. Use when working with invoice generator functionality. Trigger with phrases like "invoice generator", "invoice generator", "invoice".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with invoice generator
+  functionality. Trigger with phrases like "invoice generator", "invoice generator",
+  "invoice".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Invoice Generator
 
 ## Overview

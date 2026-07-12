@@ -1,16 +1,24 @@
 ---
-name: "data-lineage-tracker"
-description: |
-  Track data lineage tracker operations. Auto-activating skill for Data Pipelines.
+name: data-lineage-tracker
+description: 'Track data lineage tracker operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: data lineage tracker, data lineage tracker
-  Part of the Data Pipelines skill category. Use when working with data lineage tracker functionality. Trigger with phrases like "data lineage tracker", "data tracker", "data".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with data lineage tracker
+  functionality. Trigger with phrases like "data lineage tracker", "data tracker",
+  "data".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Data Lineage Tracker
 
 ## Overview

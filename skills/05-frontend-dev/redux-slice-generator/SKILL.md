@@ -1,16 +1,24 @@
 ---
-name: "redux-slice-generator"
-description: |
-  Generate redux slice generator operations. Auto-activating skill for Frontend Development.
+name: redux-slice-generator
+description: 'Generate redux slice generator operations. Auto-activating skill for
+  Frontend Development.
+
   Triggers on: redux slice generator, redux slice generator
-  Part of the Frontend Development skill category. Use when working with redux slice generator functionality. Trigger with phrases like "redux slice generator", "redux generator", "redux".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with redux slice
+  generator functionality. Trigger with phrases like "redux slice generator", "redux
+  generator", "redux".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Redux Slice Generator
 
 ## Overview

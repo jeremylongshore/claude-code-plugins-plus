@@ -1,16 +1,24 @@
 ---
-name: "seo-meta-generator"
-description: |
-  Generate seo meta generator operations. Auto-activating skill for Frontend Development.
+name: seo-meta-generator
+description: 'Generate seo meta generator operations. Auto-activating skill for Frontend
+  Development.
+
   Triggers on: seo meta generator, seo meta generator
-  Part of the Frontend Development skill category. Use when working with seo meta generator functionality. Trigger with phrases like "seo meta generator", "seo generator", "seo".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with seo meta
+  generator functionality. Trigger with phrases like "seo meta generator", "seo generator",
+  "seo".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Seo Meta Generator
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
-name: "snapshot-test-helper"
-description: |
-  Assist with snapshot test helper operations. Auto-activating skill for Test Automation.
+name: snapshot-test-helper
+description: 'Assist with snapshot test helper operations. Auto-activating skill for
+  Test Automation.
+
   Triggers on: snapshot test helper, snapshot test helper
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "snapshot test helper", "snapshot helper", "snapshot".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "snapshot test helper", "snapshot helper", "snapshot".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Snapshot Test Helper
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "fastapi-ml-endpoint"
-description: |
-  Configure fastapi ml endpoint operations. Auto-activating skill for ML Deployment.
+name: fastapi-ml-endpoint
+description: 'Configure fastapi ml endpoint operations. Auto-activating skill for
+  ML Deployment.
+
   Triggers on: fastapi ml endpoint, fastapi ml endpoint
-  Part of the ML Deployment skill category. Use when working with APIs or building integrations. Trigger with phrases like "fastapi ml endpoint", "fastapi endpoint", "fastapi".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "fastapi ml endpoint", "fastapi endpoint",
+  "fastapi".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Fastapi Ml Endpoint
 
 ## Overview

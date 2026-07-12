@@ -1,16 +1,24 @@
 ---
-name: "terraform-module-creator"
-description: |
-  Create terraform module creator operations. Auto-activating skill for DevOps Advanced.
+name: terraform-module-creator
+description: 'Create terraform module creator operations. Auto-activating skill for
+  DevOps Advanced.
+
   Triggers on: terraform module creator, terraform module creator
-  Part of the DevOps Advanced skill category. Use when working with terraform module creator functionality. Trigger with phrases like "terraform module creator", "terraform creator", "terraform".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with terraform module
+  creator functionality. Trigger with phrases like "terraform module creator", "terraform
+  creator", "terraform".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Terraform Module Creator
 
 ## Overview

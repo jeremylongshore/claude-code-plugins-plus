@@ -1,16 +1,23 @@
 ---
-name: "integration-test-generator"
-description: |
-  Generate integration test generator operations. Auto-activating skill for API Integration.
+name: integration-test-generator
+description: 'Generate integration test generator operations. Auto-activating skill
+  for API Integration.
+
   Triggers on: integration test generator, integration test generator
-  Part of the API Integration skill category. Use when writing or running tests. Trigger with phrases like "integration test generator", "integration generator", "integration".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when writing or running tests. Trigger
+  with phrases like "integration test generator", "integration generator", "integration".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Integration Test Generator
 
 ## Overview

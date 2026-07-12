@@ -1,16 +1,24 @@
 ---
-name: "incident-postmortem-template"
-description: |
-  Manage incident postmortem template operations. Auto-activating skill for Technical Documentation.
+name: incident-postmortem-template
+description: 'Manage incident postmortem template operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: incident postmortem template, incident postmortem template
-  Part of the Technical Documentation skill category. Use when working with incident postmortem template functionality. Trigger with phrases like "incident postmortem template", "incident template", "incident".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with incident
+  postmortem template functionality. Trigger with phrases like "incident postmortem
+  template", "incident template", "incident".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Incident Postmortem Template
 
 ## Overview

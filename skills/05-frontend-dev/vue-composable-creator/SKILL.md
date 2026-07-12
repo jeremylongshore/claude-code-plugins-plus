@@ -1,16 +1,24 @@
 ---
-name: "vue-composable-creator"
-description: |
-  Create vue composable creator operations. Auto-activating skill for Frontend Development.
+name: vue-composable-creator
+description: 'Create vue composable creator operations. Auto-activating skill for
+  Frontend Development.
+
   Triggers on: vue composable creator, vue composable creator
-  Part of the Frontend Development skill category. Use when working with vue composable creator functionality. Trigger with phrases like "vue composable creator", "vue creator", "vue".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with vue composable
+  creator functionality. Trigger with phrases like "vue composable creator", "vue
+  creator", "vue".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Vue Composable Creator
 
 ## Overview

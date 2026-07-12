@@ -1,16 +1,24 @@
 ---
-name: "kubernetes-service-manager"
-description: |
-  Manage kubernetes service manager operations. Auto-activating skill for DevOps Advanced.
+name: kubernetes-service-manager
+description: 'Manage kubernetes service manager operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: kubernetes service manager, kubernetes service manager
-  Part of the DevOps Advanced skill category. Use when working with kubernetes service manager functionality. Trigger with phrases like "kubernetes service manager", "kubernetes manager", "kubernetes".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with kubernetes service
+  manager functionality. Trigger with phrases like "kubernetes service manager", "kubernetes
+  manager", "kubernetes".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Kubernetes Service Manager
 
 ## Overview

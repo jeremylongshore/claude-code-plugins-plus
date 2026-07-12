@@ -1,16 +1,24 @@
 ---
-name: "path-traversal-finder"
-description: |
-  Manage path traversal finder operations. Auto-activating skill for Security Fundamentals.
+name: path-traversal-finder
+description: 'Manage path traversal finder operations. Auto-activating skill for Security
+  Fundamentals.
+
   Triggers on: path traversal finder, path traversal finder
-  Part of the Security Fundamentals skill category. Use when working with path traversal finder functionality. Trigger with phrases like "path traversal finder", "path finder", "path".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with path traversal
+  finder functionality. Trigger with phrases like "path traversal finder", "path finder",
+  "path".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Path Traversal Finder
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "websocket-client-creator"
-description: |
-  Create websocket client creator operations. Auto-activating skill for API Integration.
+name: websocket-client-creator
+description: 'Create websocket client creator operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: websocket client creator, websocket client creator
-  Part of the API Integration skill category. Use when working with websocket client creator functionality. Trigger with phrases like "websocket client creator", "websocket creator", "websocket".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with websocket client
+  creator functionality. Trigger with phrases like "websocket client creator", "websocket
+  creator", "websocket".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Websocket Client Creator
 
 ## Overview

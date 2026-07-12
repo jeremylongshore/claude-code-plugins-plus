@@ -1,16 +1,24 @@
 ---
-name: "model-pruning-helper"
-description: |
-  Assist with model pruning helper operations. Auto-activating skill for ML Deployment.
+name: model-pruning-helper
+description: 'Assist with model pruning helper operations. Auto-activating skill for
+  ML Deployment.
+
   Triggers on: model pruning helper, model pruning helper
-  Part of the ML Deployment skill category. Use when working with model pruning helper functionality. Trigger with phrases like "model pruning helper", "model helper", "model".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with model pruning helper
+  functionality. Trigger with phrases like "model pruning helper", "model helper",
+  "model".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Model Pruning Helper
 
 ## Overview

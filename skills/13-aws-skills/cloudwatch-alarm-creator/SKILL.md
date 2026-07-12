@@ -1,16 +1,24 @@
 ---
-name: "cloudwatch-alarm-creator"
-description: |
-  Create cloudwatch alarm creator operations. Auto-activating skill for AWS Skills.
+name: cloudwatch-alarm-creator
+description: 'Create cloudwatch alarm creator operations. Auto-activating skill for
+  AWS Skills.
+
   Triggers on: cloudwatch alarm creator, cloudwatch alarm creator
-  Part of the AWS Skills skill category. Use when working with cloudwatch alarm creator functionality. Trigger with phrases like "cloudwatch alarm creator", "cloudwatch creator", "cloudwatch".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with cloudwatch alarm creator
+  functionality. Trigger with phrases like "cloudwatch alarm creator", "cloudwatch
+  creator", "cloudwatch".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloudwatch Alarm Creator
 
 ## Overview

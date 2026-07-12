@@ -1,16 +1,23 @@
 ---
-name: "waf-rule-creator"
-description: |
-  Create waf rule creator operations. Auto-activating skill for Security Advanced.
+name: waf-rule-creator
+description: 'Create waf rule creator operations. Auto-activating skill for Security
+  Advanced.
+
   Triggers on: waf rule creator, waf rule creator
-  Part of the Security Advanced skill category. Use when working with waf rule creator functionality. Trigger with phrases like "waf rule creator", "waf creator", "waf".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with waf rule creator
+  functionality. Trigger with phrases like "waf rule creator", "waf creator", "waf".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Waf Rule Creator
 
 ## Overview

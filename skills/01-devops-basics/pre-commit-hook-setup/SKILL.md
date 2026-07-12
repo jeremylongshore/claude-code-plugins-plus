@@ -1,16 +1,24 @@
 ---
-name: "pre-commit-hook-setup"
-description: |
-  Configure pre commit hook setup operations. Auto-activating skill for DevOps Basics.
+name: pre-commit-hook-setup
+description: 'Configure pre commit hook setup operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: pre commit hook setup, pre commit hook setup
-  Part of the DevOps Basics skill category. Use when working with pre commit hook setup functionality. Trigger with phrases like "pre commit hook setup", "pre setup", "pre".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with pre commit hook
+  setup functionality. Trigger with phrases like "pre commit hook setup", "pre setup",
+  "pre".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Pre Commit Hook Setup
 
 ## Overview

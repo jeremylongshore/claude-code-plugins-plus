@@ -1,16 +1,24 @@
 ---
-name: "polling-mechanism-setup"
-description: |
-  Configure polling mechanism setup operations. Auto-activating skill for API Integration.
+name: polling-mechanism-setup
+description: 'Configure polling mechanism setup operations. Auto-activating skill
+  for API Integration.
+
   Triggers on: polling mechanism setup, polling mechanism setup
-  Part of the API Integration skill category. Use when working with polling mechanism setup functionality. Trigger with phrases like "polling mechanism setup", "polling setup", "polling".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with polling mechanism
+  setup functionality. Trigger with phrases like "polling mechanism setup", "polling
+  setup", "polling".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Polling Mechanism Setup
 
 ## Overview

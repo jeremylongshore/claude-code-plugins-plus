@@ -1,15 +1,25 @@
 ---
-name: "windsurf-cicd-github-actions"
-description: |
-  Generate and maintain GitHub Actions with Cascade assistance. Activate when users mention
+name: windsurf-cicd-github-actions
+description: 'Generate and maintain GitHub Actions with Cascade assistance. Activate
+  when users mention
+
   "github actions", "ci/cd pipeline", "workflow automation", "continuous integration",
-  or "deployment pipeline". Handles CI/CD configuration with AI assistance. Use when working with windsurf cicd github actions functionality. Trigger with phrases like "windsurf cicd github actions", "windsurf actions", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*),Grep"
+
+  or "deployment pipeline". Handles CI/CD configuration with AI assistance. Use when
+  working with windsurf cicd github actions functionality. Trigger with phrases like
+  "windsurf cicd github actions", "windsurf actions", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*),Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, deployment, ci-cd]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- deployment
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Cicd Github Actions
 

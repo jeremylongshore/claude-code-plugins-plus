@@ -1,16 +1,24 @@
 ---
-name: "security-policy-generator"
-description: |
-  Generate security policy generator operations. Auto-activating skill for Security Advanced.
+name: security-policy-generator
+description: 'Generate security policy generator operations. Auto-activating skill
+  for Security Advanced.
+
   Triggers on: security policy generator, security policy generator
-  Part of the Security Advanced skill category. Use when working with security policy generator functionality. Trigger with phrases like "security policy generator", "security generator", "security".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with security policy
+  generator functionality. Trigger with phrases like "security policy generator",
+  "security generator", "security".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Security Policy Generator
 
 ## Overview

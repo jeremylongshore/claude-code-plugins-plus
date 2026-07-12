@@ -1,16 +1,24 @@
 ---
-name: "complex-join-helper"
-description: |
-  Configure with complex join helper operations. Auto-activating skill for Data Analytics.
+name: complex-join-helper
+description: 'Configure with complex join helper operations. Auto-activating skill
+  for Data Analytics.
+
   Triggers on: complex join helper, complex join helper
-  Part of the Data Analytics skill category. Use when working with complex join helper functionality. Trigger with phrases like "complex join helper", "complex helper", "complex".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with complex join helper
+  functionality. Trigger with phrases like "complex join helper", "complex helper",
+  "complex".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Complex Join Helper
 
 ## Overview

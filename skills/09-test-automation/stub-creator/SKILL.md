@@ -1,16 +1,22 @@
 ---
-name: "stub-creator"
-description: |
-  Create stub creator operations. Auto-activating skill for Test Automation.
+name: stub-creator
+description: 'Create stub creator operations. Auto-activating skill for Test Automation.
+
   Triggers on: stub creator, stub creator
-  Part of the Test Automation skill category. Use when working with stub creator functionality. Trigger with phrases like "stub creator", "stub creator", "stub".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when working with stub creator functionality.
+  Trigger with phrases like "stub creator", "stub creator", "stub".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Stub Creator
 
 ## Overview

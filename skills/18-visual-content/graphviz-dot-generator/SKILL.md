@@ -1,16 +1,24 @@
 ---
-name: "graphviz-dot-generator"
-description: |
-  Generate graphviz dot generator operations. Auto-activating skill for Visual Content.
+name: graphviz-dot-generator
+description: 'Generate graphviz dot generator operations. Auto-activating skill for
+  Visual Content.
+
   Triggers on: graphviz dot generator, graphviz dot generator
-  Part of the Visual Content skill category. Use when working with graphviz dot generator functionality. Trigger with phrases like "graphviz dot generator", "graphviz generator", "graphviz".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with graphviz dot generator
+  functionality. Trigger with phrases like "graphviz dot generator", "graphviz generator",
+  "graphviz".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Graphviz Dot Generator
 
 ## Overview

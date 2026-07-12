@@ -1,16 +1,24 @@
 ---
-name: "contributing-guide-creator"
-description: |
-  Create contributing guide creator operations. Auto-activating skill for Technical Documentation.
+name: contributing-guide-creator
+description: 'Create contributing guide creator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: contributing guide creator, contributing guide creator
-  Part of the Technical Documentation skill category. Use when working with contributing guide creator functionality. Trigger with phrases like "contributing guide creator", "contributing creator", "contributing".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with contributing
+  guide creator functionality. Trigger with phrases like "contributing guide creator",
+  "contributing creator", "contributing".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Contributing Guide Creator
 
 ## Overview

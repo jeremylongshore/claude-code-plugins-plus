@@ -1,16 +1,24 @@
 ---
-name: "coverage-report-analyzer"
-description: |
-  Analyze coverage report analyzer operations. Auto-activating skill for Test Automation.
+name: coverage-report-analyzer
+description: 'Analyze coverage report analyzer operations. Auto-activating skill for
+  Test Automation.
+
   Triggers on: coverage report analyzer, coverage report analyzer
-  Part of the Test Automation skill category. Use when analyzing or auditing coverage report analyzer. Trigger with phrases like "coverage report analyzer", "coverage analyzer", "analyze coverage report r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when analyzing or auditing coverage
+  report analyzer. Trigger with phrases like "coverage report analyzer", "coverage
+  analyzer", "analyze coverage report r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Coverage Report Analyzer
 
 ## Overview

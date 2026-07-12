@@ -1,16 +1,24 @@
 ---
-name: "long-polling-handler"
-description: |
-  Manage long polling handler operations. Auto-activating skill for API Integration.
+name: long-polling-handler
+description: 'Manage long polling handler operations. Auto-activating skill for API
+  Integration.
+
   Triggers on: long polling handler, long polling handler
-  Part of the API Integration skill category. Use when working with long polling handler functionality. Trigger with phrases like "long polling handler", "long handler", "long".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with long polling handler
+  functionality. Trigger with phrases like "long polling handler", "long handler",
+  "long".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Long Polling Handler
 
 ## Overview

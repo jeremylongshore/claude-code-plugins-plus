@@ -1,15 +1,25 @@
 ---
-name: "windsurf-cascade-agents"
-description: |
-  Create custom Cascade agent configurations for specialized tasks. Activate when users mention
-  "custom cascade agent", "specialized ai agent", "domain-specific cascade", "agent configuration",
-  or "custom ai behavior". Handles custom agent creation and configuration. Use when working with windsurf cascade agents functionality. Trigger with phrases like "windsurf cascade agents", "windsurf agents", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*),Grep,Glob"
+name: windsurf-cascade-agents
+description: 'Create custom Cascade agent configurations for specialized tasks. Activate
+  when users mention
+
+  "custom cascade agent", "specialized ai agent", "domain-specific cascade", "agent
+  configuration",
+
+  or "custom ai behavior". Handles custom agent creation and configuration. Use when
+  working with windsurf cascade agents functionality. Trigger with phrases like "windsurf
+  cascade agents", "windsurf agents", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*),Grep,Glob
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-cascade]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-cascade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Cascade Agents
 

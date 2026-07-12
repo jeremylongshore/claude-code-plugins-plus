@@ -1,16 +1,23 @@
 ---
-name: "sla-monitor-setup"
-description: |
-  Configure sla monitor setup operations. Auto-activating skill for Enterprise Workflows.
+name: sla-monitor-setup
+description: 'Configure sla monitor setup operations. Auto-activating skill for Enterprise
+  Workflows.
+
   Triggers on: sla monitor setup, sla monitor setup
-  Part of the Enterprise Workflows skill category. Use when monitoring systems or services. Trigger with phrases like "sla monitor setup", "sla setup", "sla".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when monitoring systems or
+  services. Trigger with phrases like "sla monitor setup", "sla setup", "sla".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Sla Monitor Setup
 
 ## Overview

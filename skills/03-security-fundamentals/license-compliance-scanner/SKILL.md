@@ -1,16 +1,24 @@
 ---
-name: "license-compliance-scanner"
-description: |
-  Scan license compliance scanner operations. Auto-activating skill for Security Fundamentals.
+name: license-compliance-scanner
+description: 'Scan license compliance scanner operations. Auto-activating skill for
+  Security Fundamentals.
+
   Triggers on: license compliance scanner, license compliance scanner
-  Part of the Security Fundamentals skill category. Use when working with license compliance scanner functionality. Trigger with phrases like "license compliance scanner", "license scanner", "license".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with license
+  compliance scanner functionality. Trigger with phrases like "license compliance
+  scanner", "license scanner", "license".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # License Compliance Scanner
 
 ## Overview

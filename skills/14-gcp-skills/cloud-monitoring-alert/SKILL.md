@@ -1,16 +1,23 @@
 ---
-name: "cloud-monitoring-alert"
-description: |
-  Monitor cloud monitoring alert operations. Auto-activating skill for GCP Skills.
+name: cloud-monitoring-alert
+description: 'Monitor cloud monitoring alert operations. Auto-activating skill for
+  GCP Skills.
+
   Triggers on: cloud monitoring alert, cloud monitoring alert
-  Part of the GCP Skills skill category. Use when monitoring systems or services. Trigger with phrases like "cloud monitoring alert", "cloud alert", "cloud".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when monitoring systems or services.
+  Trigger with phrases like "cloud monitoring alert", "cloud alert", "cloud".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloud Monitoring Alert
 
 ## Overview

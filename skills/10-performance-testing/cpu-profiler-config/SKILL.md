@@ -1,16 +1,23 @@
 ---
-name: "cpu-profiler-config"
-description: |
-  Configure cpu profiler config operations. Auto-activating skill for Performance Testing.
+name: cpu-profiler-config
+description: 'Configure cpu profiler config operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: cpu profiler config, cpu profiler config
-  Part of the Performance Testing skill category. Use when configuring systems or services. Trigger with phrases like "cpu profiler config", "cpu config", "cpu".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when configuring systems or
+  services. Trigger with phrases like "cpu profiler config", "cpu config", "cpu".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Cpu Profiler Config
 
 ## Overview

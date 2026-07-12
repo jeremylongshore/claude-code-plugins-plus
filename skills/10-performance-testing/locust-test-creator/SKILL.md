@@ -1,16 +1,23 @@
 ---
-name: "locust-test-creator"
-description: |
-  Create locust test creator operations. Auto-activating skill for Performance Testing.
+name: locust-test-creator
+description: 'Create locust test creator operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: locust test creator, locust test creator
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "locust test creator", "locust creator", "locust".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "locust test creator", "locust creator", "locust".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Locust Test Creator
 
 ## Overview

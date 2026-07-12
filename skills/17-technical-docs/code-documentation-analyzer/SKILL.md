@@ -1,16 +1,24 @@
 ---
-name: "code-documentation-analyzer"
-description: |
-  Analyze code documentation analyzer operations. Auto-activating skill for Technical Documentation.
+name: code-documentation-analyzer
+description: 'Analyze code documentation analyzer operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: code documentation analyzer, code documentation analyzer
-  Part of the Technical Documentation skill category. Use when analyzing or auditing code documentation analyzer. Trigger with phrases like "code documentation analyzer", "code analyzer", "analyze code documentation r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when analyzing or auditing
+  code documentation analyzer. Trigger with phrases like "code documentation analyzer",
+  "code analyzer", "analyze code documentation r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Code Documentation Analyzer
 
 ## Overview

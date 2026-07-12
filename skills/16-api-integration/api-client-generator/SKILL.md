@@ -1,16 +1,24 @@
 ---
-name: "api-client-generator"
-description: |
-  Generate api client generator operations. Auto-activating skill for API Integration.
+name: api-client-generator
+description: 'Generate api client generator operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: api client generator, api client generator
-  Part of the API Integration skill category. Use when working with APIs or building integrations. Trigger with phrases like "api client generator", "api generator", "api".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "api client generator", "api generator",
+  "api".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Api Client Generator
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
-name: "flux-gitops-setup"
-description: |
-  Configure flux gitops setup operations. Auto-activating skill for DevOps Advanced.
+name: flux-gitops-setup
+description: 'Configure flux gitops setup operations. Auto-activating skill for DevOps
+  Advanced.
+
   Triggers on: flux gitops setup, flux gitops setup
-  Part of the DevOps Advanced skill category. Use when working with flux gitops setup functionality. Trigger with phrases like "flux gitops setup", "flux setup", "flux".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with flux gitops setup
+  functionality. Trigger with phrases like "flux gitops setup", "flux setup", "flux".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Flux Gitops Setup
 
 ## Overview

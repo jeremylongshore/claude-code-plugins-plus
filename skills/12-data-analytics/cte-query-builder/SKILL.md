@@ -1,16 +1,22 @@
 ---
-name: "cte-query-builder"
-description: |
-  Build cte query builder operations. Auto-activating skill for Data Analytics.
+name: cte-query-builder
+description: 'Build cte query builder operations. Auto-activating skill for Data Analytics.
+
   Triggers on: cte query builder, cte query builder
-  Part of the Data Analytics skill category. Use when working with cte query builder functionality. Trigger with phrases like "cte query builder", "cte builder", "cte".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with cte query builder
+  functionality. Trigger with phrases like "cte query builder", "cte builder", "cte".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Cte Query Builder
 
 ## Overview

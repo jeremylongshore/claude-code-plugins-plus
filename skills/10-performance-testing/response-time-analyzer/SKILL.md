@@ -1,16 +1,24 @@
 ---
-name: "response-time-analyzer"
-description: |
-  Analyze response time analyzer operations. Auto-activating skill for Performance Testing.
+name: response-time-analyzer
+description: 'Analyze response time analyzer operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: response time analyzer, response time analyzer
-  Part of the Performance Testing skill category. Use when analyzing or auditing response time analyzer. Trigger with phrases like "response time analyzer", "response analyzer", "analyze response time r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when analyzing or auditing response
+  time analyzer. Trigger with phrases like "response time analyzer", "response analyzer",
+  "analyze response time r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Response Time Analyzer
 
 ## Overview

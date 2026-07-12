@@ -1,16 +1,23 @@
 ---
-name: "http-client-config"
-description: |
-  Configure http client config operations. Auto-activating skill for API Integration.
+name: http-client-config
+description: 'Configure http client config operations. Auto-activating skill for API
+  Integration.
+
   Triggers on: http client config, http client config
-  Part of the API Integration skill category. Use when configuring systems or services. Trigger with phrases like "http client config", "http config", "http".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when configuring systems or services.
+  Trigger with phrases like "http client config", "http config", "http".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Http Client Config
 
 ## Overview

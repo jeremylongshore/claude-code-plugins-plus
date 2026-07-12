@@ -1,16 +1,24 @@
 ---
-name: "jenkins-pipeline-intro"
-description: |
-  Manage jenkins pipeline intro operations. Auto-activating skill for DevOps Basics.
+name: jenkins-pipeline-intro
+description: 'Manage jenkins pipeline intro operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: jenkins pipeline intro, jenkins pipeline intro
-  Part of the DevOps Basics skill category. Use when working with jenkins pipeline intro functionality. Trigger with phrases like "jenkins pipeline intro", "jenkins intro", "jenkins".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with jenkins pipeline
+  intro functionality. Trigger with phrases like "jenkins pipeline intro", "jenkins
+  intro", "jenkins".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Jenkins Pipeline Intro
 
 ## Overview

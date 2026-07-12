@@ -1,16 +1,24 @@
 ---
-name: "docusaurus-config-setup"
-description: |
-  Configure docusaurus config setup operations. Auto-activating skill for Technical Documentation.
+name: docusaurus-config-setup
+description: 'Configure docusaurus config setup operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: docusaurus config setup, docusaurus config setup
-  Part of the Technical Documentation skill category. Use when configuring systems or services. Trigger with phrases like "docusaurus config setup", "docusaurus setup", "docusaurus".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when configuring systems
+  or services. Trigger with phrases like "docusaurus config setup", "docusaurus setup",
+  "docusaurus".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Docusaurus Config Setup
 
 ## Overview

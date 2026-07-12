@@ -1,15 +1,24 @@
 ---
-name: "windsurf-dockerfile-generation"
-description: |
-  Create optimized Dockerfiles with AI-driven best practices. Activate when users mention
+name: windsurf-dockerfile-generation
+description: 'Create optimized Dockerfiles with AI-driven best practices. Activate
+  when users mention
+
   "create dockerfile", "container image", "docker optimization", "containerize application",
-  or "docker best practices". Handles Docker configuration generation. Use when working with windsurf dockerfile generation functionality. Trigger with phrases like "windsurf dockerfile generation", "windsurf generation", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*)"
+
+  or "docker best practices". Handles Docker configuration generation. Use when working
+  with windsurf dockerfile generation functionality. Trigger with phrases like "windsurf
+  dockerfile generation", "windsurf generation", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, docker]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- docker
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Dockerfile Generation
 

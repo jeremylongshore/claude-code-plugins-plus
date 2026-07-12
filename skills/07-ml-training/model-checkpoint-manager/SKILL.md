@@ -1,16 +1,24 @@
 ---
-name: "model-checkpoint-manager"
-description: |
-  Manage model checkpoint manager operations. Auto-activating skill for ML Training.
+name: model-checkpoint-manager
+description: 'Manage model checkpoint manager operations. Auto-activating skill for
+  ML Training.
+
   Triggers on: model checkpoint manager, model checkpoint manager
-  Part of the ML Training skill category. Use when working with model checkpoint manager functionality. Trigger with phrases like "model checkpoint manager", "model manager", "model".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with model checkpoint manager
+  functionality. Trigger with phrases like "model checkpoint manager", "model manager",
+  "model".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Model Checkpoint Manager
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "webhook-sender-creator"
-description: |
-  Create webhook sender creator operations. Auto-activating skill for API Integration.
+name: webhook-sender-creator
+description: 'Create webhook sender creator operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: webhook sender creator, webhook sender creator
-  Part of the API Integration skill category. Use when working with webhook sender creator functionality. Trigger with phrases like "webhook sender creator", "webhook creator", "webhook".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with webhook sender
+  creator functionality. Trigger with phrases like "webhook sender creator", "webhook
+  creator", "webhook".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Webhook Sender Creator
 
 ## Overview

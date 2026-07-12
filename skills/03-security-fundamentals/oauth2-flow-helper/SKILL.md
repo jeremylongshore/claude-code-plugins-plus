@@ -1,16 +1,24 @@
 ---
-name: "oauth2-flow-helper"
-description: |
-  Configure with oauth2 flow helper operations. Auto-activating skill for Security Fundamentals.
+name: oauth2-flow-helper
+description: 'Configure with oauth2 flow helper operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: oauth2 flow helper, oauth2 flow helper
-  Part of the Security Fundamentals skill category. Use when working with oauth2 flow helper functionality. Trigger with phrases like "oauth2 flow helper", "oauth2 helper", "oauth2".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with oauth2 flow
+  helper functionality. Trigger with phrases like "oauth2 flow helper", "oauth2 helper",
+  "oauth2".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Oauth2 Flow Helper
 
 ## Overview

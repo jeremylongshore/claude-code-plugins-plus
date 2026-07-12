@@ -109,11 +109,12 @@ jobs:
       # Dolt history) and the Freshie Dolt exporter's dialect translation. Both
       # are security/data-critical, stdlib-only, and were previously runnable but
       # ungated. safety-eval.yaml cites tests/test_sql_classifier.py as this gate.
-      - name: Test Freshie + Dolt tooling suites (classifier, exporter, remediator)
+      - name: Test in-repo Python suites (validators, exporters, skill scripts)
         run: |
           python3 -m unittest tests.test_sql_classifier -v
           python3 -m unittest tests.test_dolt_sync -v
           python3 -m unittest tests.test_batch_remediate_compat -v
+          python3 -m unittest tests.test_hms_readiness_classifier -v
 
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or

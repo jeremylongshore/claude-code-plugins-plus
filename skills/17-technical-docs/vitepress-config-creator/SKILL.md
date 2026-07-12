@@ -1,16 +1,24 @@
 ---
-name: "vitepress-config-creator"
-description: |
-  Create vitepress config creator operations. Auto-activating skill for Technical Documentation.
+name: vitepress-config-creator
+description: 'Create vitepress config creator operations. Auto-activating skill for
+  Technical Documentation.
+
   Triggers on: vitepress config creator, vitepress config creator
-  Part of the Technical Documentation skill category. Use when configuring systems or services. Trigger with phrases like "vitepress config creator", "vitepress creator", "vitepress".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when configuring systems
+  or services. Trigger with phrases like "vitepress config creator", "vitepress creator",
+  "vitepress".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Vitepress Config Creator
 
 ## Overview

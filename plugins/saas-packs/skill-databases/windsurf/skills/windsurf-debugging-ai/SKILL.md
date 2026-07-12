@@ -1,15 +1,25 @@
 ---
-name: "windsurf-debugging-ai"
-description: |
-  Execute use Cascade for intelligent debugging and error analysis. Activate when users mention
+name: windsurf-debugging-ai
+description: 'Execute use Cascade for intelligent debugging and error analysis. Activate
+  when users mention
+
   "debug with ai", "error analysis", "cascade debug", "find bug",
-  or "troubleshoot code". Handles AI-assisted debugging workflows. Use when debugging issues or troubleshooting. Trigger with phrases like "windsurf debugging ai", "windsurf ai", "windsurf".
-allowed-tools: "Read,Grep,Glob,Bash(cmd:*)"
+
+  or "troubleshoot code". Handles AI-assisted debugging workflows. Use when debugging
+  issues or troubleshooting. Trigger with phrases like "windsurf debugging ai", "windsurf
+  ai", "windsurf".
+
+  '
+allowed-tools: Read,Grep,Glob,Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, debugging, workflow]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- debugging
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Debugging Ai
 

@@ -1,16 +1,24 @@
 ---
-name: "express-route-generator"
-description: |
-  Generate express route generator operations. Auto-activating skill for Backend Development.
+name: express-route-generator
+description: 'Generate express route generator operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: express route generator, express route generator
-  Part of the Backend Development skill category. Use when working with express route generator functionality. Trigger with phrases like "express route generator", "express generator", "express".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with express route
+  generator functionality. Trigger with phrases like "express route generator", "express
+  generator", "express".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Express Route Generator
 
 ## Overview

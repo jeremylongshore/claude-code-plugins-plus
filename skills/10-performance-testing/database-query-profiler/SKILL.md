@@ -1,16 +1,24 @@
 ---
-name: "database-query-profiler"
-description: |
-  Profile database query profiler operations. Auto-activating skill for Performance Testing.
+name: database-query-profiler
+description: 'Profile database query profiler operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: database query profiler, database query profiler
-  Part of the Performance Testing skill category. Use when working with database query profiler functionality. Trigger with phrases like "database query profiler", "database profiler", "database".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with database query
+  profiler functionality. Trigger with phrases like "database query profiler", "database
+  profiler", "database".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Database Query Profiler
 
 ## Overview

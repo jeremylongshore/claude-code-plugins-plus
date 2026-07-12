@@ -1,16 +1,24 @@
 ---
-name: "visualization-best-practices"
-description: |
-  Manage visualization best practices operations. Auto-activating skill for Data Analytics.
+name: visualization-best-practices
+description: 'Manage visualization best practices operations. Auto-activating skill
+  for Data Analytics.
+
   Triggers on: visualization best practices, visualization best practices
-  Part of the Data Analytics skill category. Use when working with visualization best practices functionality. Trigger with phrases like "visualization best practices", "visualization practices", "visualization".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with visualization best
+  practices functionality. Trigger with phrases like "visualization best practices",
+  "visualization practices", "visualization".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Visualization Best Practices
 
 ## Overview

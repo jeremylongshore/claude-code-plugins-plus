@@ -1,16 +1,23 @@
 ---
-name: "contract-test-creator"
-description: |
-  Create contract test creator operations. Auto-activating skill for Test Automation.
+name: contract-test-creator
+description: 'Create contract test creator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: contract test creator, contract test creator
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "contract test creator", "contract creator", "contract".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "contract test creator", "contract creator", "contract".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Contract Test Creator
 
 ## Overview

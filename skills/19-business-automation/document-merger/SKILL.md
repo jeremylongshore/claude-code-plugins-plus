@@ -1,16 +1,23 @@
 ---
-name: "document-merger"
-description: |
-  Manage document merger operations. Auto-activating skill for Business Automation.
+name: document-merger
+description: 'Manage document merger operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: document merger, document merger
-  Part of the Business Automation skill category. Use when working with document merger functionality. Trigger with phrases like "document merger", "document merger", "document".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with document merger
+  functionality. Trigger with phrases like "document merger", "document merger", "document".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Document Merger
 
 ## Overview

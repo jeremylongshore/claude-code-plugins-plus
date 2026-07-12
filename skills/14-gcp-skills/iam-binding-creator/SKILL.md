@@ -1,16 +1,23 @@
 ---
-name: "iam-binding-creator"
-description: |
-  Create iam binding creator operations. Auto-activating skill for GCP Skills.
+name: iam-binding-creator
+description: 'Create iam binding creator operations. Auto-activating skill for GCP
+  Skills.
+
   Triggers on: iam binding creator, iam binding creator
-  Part of the GCP Skills skill category. Use when working with iam binding creator functionality. Trigger with phrases like "iam binding creator", "iam creator", "iam".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with iam binding creator
+  functionality. Trigger with phrases like "iam binding creator", "iam creator", "iam".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Iam Binding Creator
 
 ## Overview
