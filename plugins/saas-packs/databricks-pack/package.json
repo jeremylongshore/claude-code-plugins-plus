@@ -10,9 +10,6 @@
     ".mcp.json",
     "skills/"
   ],
-  "dependencies": {
-    "@intentsolutions/databricks-workspace-mcp": "^0.1.0"
-  },
   "keywords": [
     "claude-code",
     "claude-code-plugin",
