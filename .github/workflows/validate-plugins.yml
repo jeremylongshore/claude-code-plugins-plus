@@ -115,6 +115,7 @@ jobs:
           python3 -m unittest tests.test_dolt_sync -v
           python3 -m unittest tests.test_batch_remediate_compat -v
           python3 -m unittest tests.test_hms_readiness_classifier -v
+          python3 -m unittest tests.test_enable_system_schemas -v
 
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or
