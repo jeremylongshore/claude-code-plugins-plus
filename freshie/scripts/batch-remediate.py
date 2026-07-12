@@ -17,7 +17,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import shutil
@@ -30,7 +29,7 @@ from typing import NamedTuple
 # Configuration
 # ---------------------------------------------------------------------------
 
-REPO_ROOT = Path("/home/jeremy/000-projects/claude-code-plugins")
+REPO_ROOT = Path(__file__).resolve().parents[2]  # worktree-safe (freshie/scripts/ -> repo root)
 DB_PATH = REPO_ROOT / "freshie" / "inventory.sqlite"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
 
@@ -356,7 +355,13 @@ def add_tags_to_file(file_path: Path, dry_run: bool) -> tuple[bool, str | None]:
 
 def add_compatible_with_to_file(file_path: Path, dry_run: bool) -> tuple[bool, str | None]:
     """
-    Add `compatible-with: claude-code` if the field is missing.
+    Add the modern `compatibility` free-text field if it is missing.
+
+    `compatibility` (free-text) is the canonical required field; `compatible-with`
+    (CSV list) is the deprecated IS-invented predecessor — see the validator's
+    DEPRECATED_FIELDS and `scripts/batch-remediate.py --migrate-compatible-with`.
+    Skip when EITHER field is already present: a file that still carries the
+    legacy `compatible-with` is left for the migrate tool, not double-stamped.
     """
     try:
         content = file_path.read_text(encoding="utf-8")
@@ -369,10 +374,10 @@ def add_compatible_with_to_file(file_path: Path, dry_run: bool) -> tuple[bool, s
 
     opening, fm_text, rest = parts
 
-    if _has_field(fm_text, "compatible-with"):
+    if _has_field(fm_text, "compatibility") or _has_field(fm_text, "compatible-with"):
         return False, None
 
-    compat_line = "compatible-with: claude-code\n"
+    compat_line = "compatibility: Designed for Claude Code\n"
     new_fm = _insert_field_line(fm_text, compat_line)
     new_content = _reconstruct(opening, new_fm, rest)
 
@@ -433,16 +438,35 @@ def _open_db() -> sqlite3.Connection | None:
         return None
 
 
+def _skill_md_from_row(path_str: str) -> Path:
+    """Resolve a `skill_compliance.skill_path` DB value to the SKILL.md file.
+
+    The DB stores the skill *directory* (repo-relative), e.g.
+    `plugins/.../skills/foo` — not the file. Left as-is, `Path(row).read_text()`
+    hits the directory and raises IsADirectoryError, which the fixers count as a
+    skip (why the DB-mode fixers silently `Added: 0`). Join `/SKILL.md` and make
+    it absolute against REPO_ROOT so it resolves regardless of the cwd."""
+    p = Path(path_str)
+    if not p.is_absolute():
+        p = REPO_ROOT / p
+    if p.is_dir():
+        p = p / "SKILL.md"
+    return p
+
+
 def get_skills_missing_tags(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
     cur.execute("SELECT skill_path FROM skill_compliance WHERE missing_fields LIKE '%tags%'")
-    return [Path(row[0]) for row in cur.fetchall()]
+    return [_skill_md_from_row(row[0]) for row in cur.fetchall()]
 
 
 def get_skills_missing_compatible_with(db: sqlite3.Connection) -> list[Path]:
+    # The canonical required field is `compatibility` (free-text); the DB records
+    # it in missing_fields under that name. The old query matched the DEPRECATED
+    # `compatible-with`, which never appears -> a silent 0-row no-op.
     cur = db.cursor()
-    cur.execute("SELECT skill_path FROM skill_compliance WHERE missing_fields LIKE '%compatible-with%'")
-    return [Path(row[0]) for row in cur.fetchall()]
+    cur.execute("SELECT skill_path FROM skill_compliance WHERE missing_fields LIKE '%compatibility%'")
+    return [_skill_md_from_row(row[0]) for row in cur.fetchall()]
 
 
 def get_agents_with_invalid_fields(db: sqlite3.Connection) -> list[Path]:
@@ -481,7 +505,13 @@ def _skills_missing_tags_from_fs() -> list[Path]:
 
 
 def _skills_missing_compat_from_fs() -> list[Path]:
-    return [p for p in _walk_skill_files() if not _file_has_field(p, "compatible-with")]
+    # Select files that have NEITHER the modern `compatibility` nor the legacy
+    # `compatible-with`; without the `compatibility` clause the walk re-selected
+    # ~2,857 already-compliant files and stamped a second, deprecated field.
+    return [
+        p for p in _walk_skill_files()
+        if not _file_has_field(p, "compatibility") and not _file_has_field(p, "compatible-with")
+    ]
 
 
 def _agents_with_invalid_fields_from_fs() -> list[Path]:
@@ -574,7 +604,7 @@ def run_fix_compatible_with(paths: list[Path], dry_run: bool, verbose: bool) -> 
             added += 1
             if verbose:
                 action = "DRY-RUN" if dry_run else "FIXED"
-                print(f"  {action} compatible-with: {p}")
+                print(f"  {action} compatibility: {p}")
         else:
             skipped += 1
     return added, skipped, errors
@@ -634,7 +664,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--fix-compatible-with",
         action="store_true",
-        help="Add missing compatible-with: claude-code to SKILL.md files.",
+        help="Add the missing `compatibility` free-text field to SKILL.md files.",
     )
     parser.add_argument(
         "--fix-agents",
@@ -721,13 +751,13 @@ def main() -> int:
 
     # --- Fix compatible-with ---
     if fix_compat:
-        print("[2/3] Fixing missing compatible-with...")
+        print("[2/3] Fixing missing compatibility...")
         if use_db and db is not None:
             compat_paths = get_skills_missing_compatible_with(db)
-            print(f"      DB reports {len(compat_paths)} skills missing compatible-with.")
+            print(f"      DB reports {len(compat_paths)} skills missing compatibility.")
         else:
             compat_paths = _skills_missing_compat_from_fs()
-            print(f"      Filesystem walk found {len(compat_paths)} skills missing compatible-with.")
+            print(f"      Filesystem walk found {len(compat_paths)} skills missing compatibility.")
 
         compat_paths = _filter_by_pack(compat_paths, args.pack)
         added, skipped, errors = run_fix_compatible_with(compat_paths, dry_run, args.verbose)
@@ -761,7 +791,7 @@ def main() -> int:
     # --- Summary ---
     print("=== BATCH REMEDIATION REPORT ===")
     print(f"Tags added:                {total_tags_added:>6,}")
-    print(f"Compatible-with added:     {total_compat_added:>6,}")
+    print(f"Compatibility added:       {total_compat_added:>6,}")
     print(f"Agent fields removed:      {total_agent_fields_removed:>6,}")
     print(f"Files modified:            {total_files_modified:>6,}")
     print(f"Files skipped (compliant): {total_skipped:>6,}")
