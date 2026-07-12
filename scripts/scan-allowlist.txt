@@ -57,3 +57,13 @@ plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound
 # from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
 plugins/saas-packs/databricks-pack/hooks/hooks.json:hook-definition  registers the streaming-guardian PreToolUse guard pack-wide; command is a fixed path to the in-repo hook script, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/streaming-guard-hook.py:hook-definition  the guard itself — precise (only real SQL surfaces classify), fail-open, reads system.streaming.query_progress via the databricks CLI only, no network/credentials/dynamic-exec — reviewed 2026-07-12
+
+# ── databricks-bundle-medic: the two deploy hooks ARE the skill's purpose. ──
+# Both act only on `databricks bundle deploy`. The PreToolUse guard validates + backs
+# up the bundle's local terraform state and is advisory (never blocks, fails open). The
+# PostToolUse hook matches the exact D6 grant-ordering stderr and only adds context
+# recommending one retry — it never masks another error class. Neither makes a network
+# fetch, embeds a credential, or runs dynamic-exec of untrusted input; no shell string
+# is built from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
+plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
+plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
