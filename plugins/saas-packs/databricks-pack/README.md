@@ -1,14 +1,11 @@
 # Databricks Skill Pack
 
-24 production-ready skills for the Databricks Lakehouse Platform — Unity Catalog, Delta Lake, MLflow, Spark SQL, Asset Bundles, and the full REST API.
+**v2.0.0** — 5 live-detection skills for the Databricks Lakehouse Platform, backed by the `databricks-workspace-mcp` server. The rebuild is live: where v1 shipped 24 documentation-style skills, v2 ships 5 skills that **run** against your own workspace — real `system.*` reads, real cluster events, real Delta/streaming/bundle diagnostics.
 
-> [!WARNING]
-> **This pack is being rebuilt — `v1.x` is deprecated.** Every v1 skill below carries a
-> deprecation banner and will be **removed in `databricks-pack@2.0.0`**, which replaces the
-> 24 documentation-style skills with **5 live-detection skills + a shared
-> `databricks-workspace-mcp` server** that runs against your own workspace. If you have any
-> `databricks-*` skill in your `CLAUDE.md`, read **[Migration: v1 → v2](#migration-v1--v2)**
-> before upgrading. The v2 rebuild ships on the `databricks-pack` slug (no rename).
+> [!NOTE]
+> **This is the v2 rebuild.** The 24 v1 documentation skills have been removed. If you had
+> any `databricks-*` v1 skill in your `CLAUDE.md`, see **[Migration: v1 → v2](#migration-v1--v2)**
+> for where each one went. Same install slug — no rename.
 
 ## Installation
 
@@ -16,52 +13,21 @@
 /plugin install databricks-pack@claude-code-plugins-plus
 ```
 
-## What It Does
+The pack ships a `.mcp.json` that auto-launches the control-plane MCP server via
+`npx -y @intentsolutions/databricks-workspace-mcp` ([npm](https://www.npmjs.com/package/@intentsolutions/databricks-workspace-mcp))
+— no separate install step. It composes with the Databricks managed SQL MCP for `system.*`
+reads; each skill degrades to **advisory mode** (works on pasted input) when an MCP is
+unavailable. Each skill's `## Prerequisites` lists exactly what it needs.
 
-This pack gives Claude Code deep operational knowledge of Databricks: real REST API endpoints (`/api/2.1/jobs/*`, `/api/2.0/clusters/*`), real Python SDK patterns (`databricks-sdk` WorkspaceClient, typed error handling), real Spark SQL (Auto Loader, MERGE INTO, OPTIMIZE, Liquid Clustering), and real deployment workflows (Declarative Automation Bundles, GitHub Actions CI/CD).
+## The 5 skills
 
-Every skill contains working code, not placeholder templates.
-
-## Skills (24)
-
-### Standard (S01-S12)
-
-| Skill | What It Covers |
-|-------|---------------|
-| `databricks-install-auth` | CLI v2, Python SDK, PAT/OAuth U2M/OAuth M2M, profiles |
-| `databricks-hello-world` | First cluster, notebook upload, runs/submit, SQL warehouse |
-| `databricks-local-dev-loop` | Databricks Connect v2, pytest fixtures, Asset Bundle sync |
-| `databricks-sdk-patterns` | Singleton client, typed errors, cluster lifecycle, job builder |
-| `databricks-core-workflow-a` | Medallion ETL: Auto Loader, MERGE upserts, DLT pipelines |
-| `databricks-core-workflow-b` | Feature Store, MLflow tracking, model registry, serving endpoints |
-| `databricks-common-errors` | OOM, concurrent writes, permissions, schema mismatch, 429 |
-| `databricks-debug-bundle` | Diagnostic tar.gz: cluster events, run output, driver logs |
-| `databricks-rate-limits` | Exponential backoff, token-bucket, idempotent submissions |
-| `databricks-security-basics` | Secret scopes, token rotation, column masking, audit queries |
-| `databricks-prod-checklist` | Pre-deploy checklist, job YAML, rollback procedure |
-| `databricks-upgrade-migration` | DBR version upgrade, Hive-to-Unity-Catalog, protocol upgrade |
-
-### Pro (P13-P18)
-
-| Skill | What It Covers |
-|-------|---------------|
-| `databricks-ci-integration` | GitHub Actions, bundle validation, unit tests, OIDC auth |
-| `databricks-deploy-integration` | Declarative Automation Bundles, targets, variables, permissions |
-| `databricks-webhooks-events` | Notification destinations, SQL alerts, system table auditing |
-| `databricks-performance-tuning` | Cluster sizing, AQE, Liquid Clustering, Z-order, query plans |
-| `databricks-cost-tuning` | Billing tables, cluster policies, spot instances, instance pools |
-| `databricks-reference-architecture` | Lakehouse layout, Unity Catalog hierarchy, maintenance jobs |
-
-### Flagship (F19-F24)
-
-| Skill | What It Covers |
-|-------|---------------|
-| `databricks-multi-env-setup` | Dev/staging/prod profiles, per-env secrets, Terraform |
-| `databricks-observability` | System tables, job health, cost-per-job, SQL alerts, Prometheus |
-| `databricks-incident-runbook` | Triage script, decision tree, evidence collection, postmortem |
-| `databricks-data-handling` | GDPR deletion, PII masking, retention enforcement, row-level security |
-| `databricks-enterprise-rbac` | SCIM groups, Unity Catalog grants, cluster policies, service principals |
-| `databricks-migration-deep-dive` | Hadoop/Snowflake/Redshift migration, schema conversion, cutover |
+| Skill | What it does (live) |
+|-------|---------------------|
+| `databricks-cost-leak-hunter` | `$X/month wasted` audit from your own `system.billing.usage` — idle clusters, All-Purpose-vs-Jobs, instance-pool waste, DLT tier, tag-based chargeback |
+| `databricks-cluster-forensics` | Cold-start / launch-failure / Photon-fallback / DBR-upgrade triage from live cluster events |
+| `databricks-uc-migration-pilot` | Hive-Metastore → Unity Catalog readiness + IAM/SCIM + access tracing (HMS delist deadline) |
+| `databricks-streaming-guardian` | Delta + Liquid Clustering + Structured Streaming + Auto Loader + DLT health, with a PreToolUse guard on destructive ops against streamed-from tables |
+| `databricks-bundle-medic` | Asset Bundles deploy diagnostics (tfstate EOF, GRANT-ordering) + CMK rotation + PrivateLink cost audit, with two deploy hooks |
 
 ## Key APIs Covered
 
@@ -80,12 +46,11 @@ Every skill contains working code, not placeholder templates.
 
 Skills trigger automatically on Databricks topics:
 
-- "Set up Databricks auth" -- `databricks-install-auth`
-- "Build a Delta Lake pipeline" -- `databricks-core-workflow-a`
-- "Deploy my Databricks job" -- `databricks-deploy-integration`
-- "Optimize my Spark queries" -- `databricks-performance-tuning`
-- "Set up Unity Catalog permissions" -- `databricks-enterprise-rbac`
-- "Migrate from Snowflake" -- `databricks-migration-deep-dive`
+- "Why is my Databricks bill so high?" -- `databricks-cost-leak-hunter`
+- "My cluster won't start / NPIP_TUNNEL_SETUP_FAILURE" -- `databricks-cluster-forensics`
+- "Migrate Hive Metastore to Unity Catalog" -- `databricks-uc-migration-pilot`
+- "ConcurrentAppendException / my stream broke after VACUUM" -- `databricks-streaming-guardian`
+- "unexpected EOF reading terraform.tfstate / rotate our CMK" -- `databricks-bundle-medic`
 
 ## Architecture
 
@@ -110,9 +75,10 @@ the 5 v2 skills **run** them — live detection against your own workspace via a
 MCP (`system.*` reads). Rationale: [`000-docs/007-AT-ADEC-databricks-v2-cto-decision.md`](000-docs/007-AT-ADEC-databricks-v2-cto-decision.md)
 and [`000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md`](000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md).
 
-**Timeline:** `1.1.0` (this release — deprecation banners) → `2.0.0` (5 skills + MCP, v1
-skills removed with tombstones) → `2.1.0` (tombstones cleaned up). Users on auto-update get a
-2–4 week window on `1.1.0` to read these banners before `2.0.0` lands.
+**Status:** `2.0.0` is **live** — the 5 skills + the `databricks-workspace-mcp` server
+([npm](https://www.npmjs.com/package/@intentsolutions/databricks-workspace-mcp)) ship now,
+and the 24 v1 skills have been removed. The map below records where each v1 skill's coverage
+landed.
 
 ### Where each v1 skill goes
 
@@ -128,15 +94,7 @@ skills removed with tombstones) → `2.1.0` (tombstones cleaned up). Users on au
 | `databricks-security-basics` | `databricks-uc-migration-pilot` + `databricks-bundle-medic` (identity/secrets) |
 | `databricks-hello-world` · `databricks-install-auth` · `databricks-sdk-patterns` · `databricks-core-workflow-a` · `databricks-core-workflow-b` · `databricks-common-errors` · `databricks-prod-checklist` · `databricks-rate-limits` · `databricks-webhooks-events` · `databricks-reference-architecture` · `databricks-data-handling` | **Cut** — no direct replacement (setup folds into the MCP `.env.sops` + each skill's `## Prerequisites`; checklists/architecture move into v2 `references/`; error catalogs ship per-skill) |
 
-### The 5 v2 skills
-
-| v2 skill | What it does (live) |
-|----------|---------------------|
-| `databricks-cost-leak-hunter` (pilot) | `$X/month wasted` audit from your own `system.billing.usage` — idle clusters, All-Purpose-vs-Jobs, instance-pool waste, DLT tier, tag-based chargeback |
-| `databricks-cluster-forensics` | Cold-start / launch-failure / Photon / DBR-upgrade triage from cluster events |
-| `databricks-streaming-guardian` | Delta + Liquid Clustering + Structured Streaming + DLT health |
-| `databricks-uc-migration-pilot` | Unity Catalog readiness + IAM/SCIM + access tracing (HMS deadline **Sept 30, 2026**) |
-| `databricks-bundle-medic` | Asset Bundles deploy diagnostics + CMK rotation + PrivateLink audit |
+(The 5 v2 skills and what each does live are listed in **[The 5 skills](#the-5-skills)** above.)
 
 ## Design Records
 

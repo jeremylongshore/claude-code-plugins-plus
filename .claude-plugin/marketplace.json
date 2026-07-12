@@ -5839,8 +5839,8 @@
     {
       "name": "databricks-pack",
       "source": "./plugins/saas-packs/databricks-pack",
-      "description": "DEPRECATED (v1) — these 24 documentation skills are removed in v2.0.0, which rebuilds the pack as 5 live-detection skills + a shared databricks-workspace-mcp server. See the README migration map before upgrading.",
-      "version": "1.5.0",
+      "description": "5 live-detection Databricks skills — cost-leak-hunter, cluster-forensics, uc-migration-pilot, streaming-guardian, bundle-medic — backed by the databricks-workspace-mcp server (npm). The v2 rebuild: real workspace detection over static docs.",
+      "version": "2.0.0",
       "category": "saas-packs",
       "keywords": [
         "databricks",
