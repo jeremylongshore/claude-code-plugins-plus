@@ -81,9 +81,9 @@ reports exactly what is missing before doing any work.
   storage-credential failure (the D2 case: a table is cloud-native but the UC
   storage credential's IAM role cannot assume the bucket). `Bash(aws:*)` is
   allowed for read-only IAM inspection; the skill never mutates cloud IAM.
-- **Databricks CLI** authenticated (`databricks auth login`, or `DATABRICKS_HOST`
-  + `DATABRICKS_TOKEN`) and `jq` for parsing. Enumeration and grant SQL run through
-  the **CLI Statement Execution API**.
+- **Databricks CLI** authenticated (`databricks auth login`, or the
+  `DATABRICKS_HOST` + `DATABRICKS_TOKEN` env pair) and `jq` for parsing.
+  Enumeration and grant SQL run through the **CLI Statement Execution API**.
 - **`DATABRICKS_WAREHOUSE_ID`** set to a running SQL warehouse — every
   statement-execution call requires it.
 

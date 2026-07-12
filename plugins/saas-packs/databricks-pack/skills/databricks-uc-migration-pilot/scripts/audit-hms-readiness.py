@@ -42,6 +42,7 @@ mode is pure classification so the logic is unit-testable with no workspace.
 Exit codes: 0 ok (even when blockers exist — blockers are data, not failure) ·
             2 bad usage/input · 3 databricks CLI missing (live mode only).
 """
+
 import argparse
 import csv
 import io
@@ -87,7 +88,11 @@ def classify(row):
     # row (deleted path, or a MANAGED table whose data was dropped) — surface it
     # for cleanup, never as a migration blocker (WATCH per bead q9d7).
     if not uri:
-        return "", ORPHAN, "Dangling HMS entry (no storage location) — verify the data exists; DROP the stale table or repoint it before migrating."
+        return (
+            "",
+            ORPHAN,
+            "Dangling HMS entry (no storage location) — verify the data exists; DROP the stale table or repoint it before migrating.",
+        )
 
     verdict = READY
     reasons = []
@@ -96,12 +101,16 @@ def classify(row):
     if scheme in AZURE_LEGACY_SCHEMES:
         verdict = BLOCKED
         reasons.append(f"{scheme}:// is a legacy Azure scheme UC cannot govern")
-        actions.append("Relocate the data to an abfss:// (ADLS Gen2) path via DEEP CLONE, then register an external location + CREATE TABLE at the new path")
+        actions.append(
+            "Relocate the data to an abfss:// (ADLS Gen2) path via DEEP CLONE, then register an external location + CREATE TABLE at the new path"
+        )
     elif scheme == "dbfs":
         verdict = BLOCKED
         # dbfs:/user/hive/warehouse is the classic managed-root case; any dbfs:/ is un-governable by UC.
         reasons.append("DBFS-root storage has no cloud-native URI UC can govern")
-        actions.append("Rewrite to a cloud path: DEEP CLONE (Delta) or CREATE TABLE AS SELECT (non-Delta) into s3://|abfss://|gs://, then migrate the copy")
+        actions.append(
+            "Rewrite to a cloud path: DEEP CLONE (Delta) or CREATE TABLE AS SELECT (non-Delta) into s3://|abfss://|gs://, then migrate the copy"
+        )
     elif scheme not in READY_SCHEMES:
         # Unknown/other scheme (e.g. file:/, hdfs:) — not something UC governs.
         verdict = BLOCKED
@@ -111,18 +120,24 @@ def classify(row):
     # A non-Delta EXTERNAL table on a ready path still migrates differently — SYNC
     # handles Delta; Parquet/ORC/CSV/JSON externals must be re-registered.
     if verdict == READY and table_type == "EXTERNAL" and table_format and table_format != "DELTA":
-        actions.append(f"Non-Delta ({table_format}) external: re-CREATE as an external table under UC at the same path (SYNC covers Delta only)")
+        actions.append(
+            f"Non-Delta ({table_format}) external: re-CREATE as an external table under UC at the same path (SYNC covers Delta only)"
+        )
 
     # LEGACY_TABLE_ACL: even a ready table's DENY-based grants cannot auto-map to
     # UC's allow-only model — flag so the planner re-authors permissions.
     if acl == "LEGACY_TABLE_ACL":
         if verdict == READY:
-            actions.append("Cluster uses LEGACY_TABLE_ACL (DENY-based) — re-author grants for UC's allow-only model; table data itself is ready")
+            actions.append(
+                "Cluster uses LEGACY_TABLE_ACL (DENY-based) — re-author grants for UC's allow-only model; table data itself is ready"
+            )
         else:
             reasons.append("also on a LEGACY_TABLE_ACL cluster — grants must be re-authored, not auto-mapped")
 
     blocker = "; ".join(reasons)
-    suggested = " | ".join(actions) if actions else "SYNC the table into a UC catalog (Delta, cloud-native path — ready as-is)"
+    suggested = (
+        " | ".join(actions) if actions else "SYNC the table into a UC catalog (Delta, cloud-native path — ready as-is)"
+    )
     return scheme, blocker, suggested
 
 
@@ -134,13 +149,15 @@ def rows_to_csv(rows, out):
         scheme, blocker, suggested = classify(row)
         verdict = ORPHAN if not (row.get("storage_uri") or "").strip() else (BLOCKED if blocker else READY)
         counts[verdict] += 1
-        w.writerow([
-            row.get("table_name", ""),
-            row.get("storage_uri", "") or "",
-            scheme,
-            blocker,
-            suggested,
-        ])
+        w.writerow(
+            [
+                row.get("table_name", ""),
+                row.get("storage_uri", "") or "",
+                scheme,
+                blocker,
+                suggested,
+            ]
+        )
     return counts
 
 
@@ -154,7 +171,8 @@ def _sql(statement):
     payload = {"warehouse_id": wh, "statement": statement, "wait_timeout": "50s"}
     proc = subprocess.run(
         ["databricks", "api", "post", "/api/2.0/sql/statements", "--json", json.dumps(payload)],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if proc.returncode != 0:
         sys.exit(f"error: databricks statement failed: {proc.stderr.strip()[:400]}")
@@ -192,6 +210,8 @@ def enumerate_live(schema):
 
 # DESCRIBE DETAIL column order is stable in Databricks; index defensively.
 _DETAIL_COLS = ["format", "id", "name", "description", "location"]
+
+
 def _col_index(col):
     return _DETAIL_COLS.index(col) if col in _DETAIL_COLS else 4
 
@@ -200,8 +220,7 @@ def main():
     ap = argparse.ArgumentParser(description="Classify HMS tables by UC migratability")
     ap.add_argument("--input", help="JSON array of table rows (default: stdin)")
     ap.add_argument("--out", help="write CSV here (default: stdout)")
-    ap.add_argument("--live", metavar="SCHEMA",
-                    help="enumerate hive_metastore.<SCHEMA> live via the Databricks CLI")
+    ap.add_argument("--live", metavar="SCHEMA", help="enumerate hive_metastore.<SCHEMA> live via the Databricks CLI")
     ap.add_argument("--summary", action="store_true", help="print a READY/BLOCKED/ORPHAN tally to stderr")
     args = ap.parse_args()
 
@@ -227,8 +246,11 @@ def main():
     else:
         sys.stdout.write(out_text)
     if args.summary:
-        print(f"readiness: {counts[READY]} READY, {counts[BLOCKED]} BLOCKED, "
-              f"{counts[ORPHAN]} ORPHAN ({sum(counts.values())} tables)", file=sys.stderr)
+        print(
+            f"readiness: {counts[READY]} READY, {counts[BLOCKED]} BLOCKED, "
+            f"{counts[ORPHAN]} ORPHAN ({sum(counts.values())} tables)",
+            file=sys.stderr,
+        )
     return 0
 
 

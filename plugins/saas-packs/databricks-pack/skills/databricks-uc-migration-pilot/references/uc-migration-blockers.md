@@ -83,7 +83,7 @@ SYNC TABLE main.sales.orders FROM hive_metastore.sales.orders;
 external location can reference — the DBFS root is an opaque, workspace-owned
 storage layer, and UC refuses to govern it. `SYNC` also rejects them because they
 are managed, not external. This is the single most common blocker in a mature
-workspace: every table created with `CREATE TABLE ... ` and no `LOCATION` landed
+workspace: every table created with `CREATE TABLE …` and no `LOCATION` landed
 here.
 
 **Assessment message** *(representative)*:
