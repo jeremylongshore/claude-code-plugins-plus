@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "databricks-workspace-mcp": "./dist/index.js"
+    "databricks-workspace-mcp": "dist/index.js"
   },
   "files": [
     "dist/",

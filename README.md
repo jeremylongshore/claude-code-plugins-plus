@@ -591,7 +591,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `coreweave-pack`    | Claude Code skill pack for CoreWeave (23 skills)                                                                                            |
 | `cursor-pack`       | Complete Cursor integration skill pack with 30 skills covering AI code editing, composer workflows, codebase indexing, and productivity…    |
 | `customerio-pack`   | Complete Customer.io integration skill pack with 24 skills covering marketing automation, email campaigns, SMS, push notifications, and…    |
-| `databricks-pack`   | DEPRECATED (v1) — these 24 documentation skills are removed in v2.0.0, which rebuilds the pack as 5 live-detection skills + a shared…       |
+| `databricks-pack`   | 5 live-detection Databricks skills — cost-leak-hunter, cluster-forensics, uc-migration-pilot, streaming-guardian, bundle-medic — backed by… |
 | `deepgram-pack`     | Complete Deepgram integration skill pack with 24 skills covering speech-to-text, real-time transcription, voice intelligence, and audio…    |
 | `documenso-pack`    | Complete Documenso integration skill pack with 24 skills covering document signing, templates, workflows, and e-signature automation.…      |
 | `elevenlabs-pack`   | Claude Code skill pack for ElevenLabs (18 skills)                                                                                           |

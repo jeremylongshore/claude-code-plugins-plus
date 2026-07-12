@@ -1,7 +1,7 @@
 {
   "name": "databricks-pack",
-  "version": "1.5.0",
-  "description": "Claude Code skill pack for Databricks (24 skills)",
+  "version": "2.0.0",
+  "description": "5 live-detection Databricks skills — cost-leak-hunter, cluster-forensics, uc-migration-pilot, streaming-guardian, bundle-medic — backed by the databricks-workspace-mcp server.",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
