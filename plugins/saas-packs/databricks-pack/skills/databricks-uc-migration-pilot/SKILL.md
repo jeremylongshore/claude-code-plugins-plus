@@ -121,10 +121,24 @@ it and STOP — do not start an audit you cannot finish.
 
 ### Step 2: Enable & Confirm the System Schemas
 
-The readiness audit reads `system.information_schema`. If the account admin has
-not enabled system schemas, enable/confirm them, then confirm a UC metastore is
-attached to this workspace (`databricks metastores current`). Without an attached
-metastore there is nowhere to migrate *to* — surface that before Step 3.
+The readiness audit reads `system.information_schema`; permission tracing reads
+`system.access`. Those schemas are **individually gated** — enabling one does not
+enable the others — behind an account-level flag AND a metastore-admin grant
+chain. If they are not enabled, run the bundled idempotent enabler (account-admin
+auth; a workspace PAT is rejected up front) to enable each schema and grant a
+group `USE CATALOG system` + `USE SCHEMA` + `SELECT` in one pass:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/scripts/enable-system-schemas.py" \
+  --account-id "$DATABRICKS_ACCOUNT_ID" --metastore-id "$METASTORE_ID" \
+  --grant-to data-governance --dry-run   # drop --dry-run to apply
+```
+
+Then confirm a UC metastore is attached to this workspace
+(`databricks metastores current`) — without one there is nowhere to migrate *to*.
+The full two-layer access model (account-admin enables, metastore-admin grants,
+neither inherits `SELECT`) is in
+[`${CLAUDE_SKILL_DIR}/references/system-tables-access-model.md`](references/system-tables-access-model.md).
 
 ### Step 3: Detect — Run the Readiness Audit
 
@@ -185,6 +199,12 @@ the external-location/storage-credential grant for a cloud `AccessDenied` — an
 returns a single actionable line: *"user X needs group Y membership AND `GRANT
 SELECT ON <obj>` run by metastore admin W."*
 
+When the fix is "add the user to group Y" but the grant still does not apply, the
+cause is usually the Entra→Databricks SCIM bridge silently dropping nested-group
+membership — see
+[`${CLAUDE_SKILL_DIR}/references/scim-bridge-patterns.md`](references/scim-bridge-patterns.md)
+for the connector's direct-members-only limitation and the three workarounds.
+
 ### Step 7: Isolate — Pick an Environment Pattern
 
 For a fresh UC layout, run `/uc-env-pattern-picker`. It asks compliance, cost, and
@@ -243,7 +263,7 @@ gives the physical relocation procedure per cloud.
 Routes straight to `/trace-uc-permission alice@corp.com "PERMISSION_DENIED:
 SELECT on main.sales.orders"`. The tracer returns: *"alice@corp.com is in no group
 with a grant; add her to `data-analysts` AND run `GRANT SELECT ON TABLE
-main.sales.orders TO \`data-analysts\`` as metastore admin — she is not
+main.sales.orders TO data-analysts` as metastore admin — she is not
 account-admin, so the grant will not inherit."*
 
 ### Example 4: "How do I keep dev/test/prod separate under Unity Catalog?"
@@ -258,7 +278,10 @@ the multi-account alternative for hard isolation.
 
 - [`${CLAUDE_SKILL_DIR}/references/uc-migration-blockers.md`](references/uc-migration-blockers.md) — the taxonomy of un-migratable HMS conditions: canonical error, physical relocation procedure, per-cloud variant, and the CLONE-drops-history gotcha.
 - [`${CLAUDE_SKILL_DIR}/references/uc-environment-isolation-patterns.md`](references/uc-environment-isolation-patterns.md) — the four dev/test/prod isolation patterns under one-metastore-per-region, with cost models and a DAB target stub.
+- [`${CLAUDE_SKILL_DIR}/references/system-tables-access-model.md`](references/system-tables-access-model.md) — the two-layer access model (account-admin enables, metastore-admin grants), per-schema enablement, and the manual permission traversal.
+- [`${CLAUDE_SKILL_DIR}/references/scim-bridge-patterns.md`](references/scim-bridge-patterns.md) — the Entra→Databricks SCIM nested-group limitation and the three workarounds.
 - [`${CLAUDE_SKILL_DIR}/scripts/audit-hms-readiness.py`](scripts/audit-hms-readiness.py) — deterministic HMS-table readiness classifier (READY/BLOCKED/ORPHAN → CSV).
+- [`${CLAUDE_SKILL_DIR}/scripts/enable-system-schemas.py`](scripts/enable-system-schemas.py) — idempotent system-schema enabler + group grant chain (account-admin auth precheck).
 - [`${CLAUDE_SKILL_DIR}/agents/migration-planner.md`](agents/migration-planner.md) — turns the readiness CSV into a dependency-ordered plan.
 - [`${CLAUDE_SKILL_DIR}/agents/uc-permission-tracer.md`](agents/uc-permission-tracer.md) — traces UC's two-level access model for a user + error.
 - [Databricks: Upgrade to Unity Catalog](https://docs.databricks.com/aws/en/data-governance/unity-catalog/migrate) · [`SYNC` command](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-aux-sync) · [UCX (Databricks Labs)](https://github.com/databrickslabs/ucx)
