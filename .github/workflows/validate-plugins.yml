@@ -104,6 +104,16 @@ jobs:
       - name: Test Unicode hygiene validator (fixture regression)
         run: python3 -m unittest tests.test_validate_unicode_hygiene -v
 
+      # Deterministic coverage for the dolt-mcp-vcs mutation chokepoint (the
+      # verb-class SQL classifier that decides whether an agent's SQL may rewrite
+      # Dolt history) and the Freshie Dolt exporter's dialect translation. Both
+      # are security/data-critical, stdlib-only, and were previously runnable but
+      # ungated. safety-eval.yaml cites tests/test_sql_classifier.py as this gate.
+      - name: Test Dolt safety suites (SQL classifier + Freshie exporter)
+        run: |
+          python3 -m unittest tests.test_sql_classifier -v
+          python3 -m unittest tests.test_dolt_sync -v
+
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or
       # IDE format-on-save passes from rewriting the whole catalog and wrecking
