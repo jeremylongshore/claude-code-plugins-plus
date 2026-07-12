@@ -191,3 +191,6 @@ freshie/inventory.sqlite
 freshie/inventory.sqlite-shm
 freshie/inventory.sqlite-wal
 freshie/dolt/
+
+# Backup files created by freshie/scripts/batch-remediate.py during --execute
+*.bak

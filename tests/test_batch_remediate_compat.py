@@ -173,3 +173,62 @@ class BatchRemediateCompatTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class DgplTagInferenceTests(unittest.TestCase):
+    """claude-dgpl: batch-remediate could not tag the 500 top-level numbered
+    skills (skills/NN-topic/...) because _category_from_path only understood the
+    plugins/ tree. It now handles the legacy skills/ tree, and TAG_MAP carries
+    the 20 numbered categories."""
+
+    def test_category_from_numbered_skills_tree(self):
+        p = br.REPO_ROOT / "skills" / "01-devops-basics" / "x" / "SKILL.md"
+        self.assertEqual(br._category_from_path(p), "01-devops-basics")
+
+    def test_category_from_plugins_tree_still_works(self):
+        p = br.PLUGINS_ROOT / "security" / "pentest" / "skills" / "q" / "SKILL.md"
+        self.assertEqual(br._category_from_path(p), "security")
+
+    def test_infer_tags_for_numbered_skill(self):
+        p = br.REPO_ROOT / "skills" / "07-ml-training" / "x" / "SKILL.md"
+        self.assertEqual(br.infer_tags(p), ["ai", "machine-learning"])
+
+    def test_all_twenty_numbered_dirs_are_mapped(self):
+        for n, name in enumerate(
+            [
+                "devops-basics", "devops-advanced", "security-fundamentals",
+                "security-advanced", "frontend-dev", "backend-dev", "ml-training",
+                "ml-deployment", "test-automation", "performance-testing",
+                "data-pipelines", "data-analytics", "aws-skills", "gcp-skills",
+                "api-development", "api-integration", "technical-docs",
+                "visual-content", "business-automation", "enterprise-workflows",
+            ],
+            start=1,
+        ):
+            cat = f"{n:02d}-{name}"
+            self.assertIn(cat, br.TAG_MAP, cat)
+            self.assertTrue(br.TAG_MAP[cat], f"{cat} has empty tags")
+
+    def test_unmapped_path_still_returns_none(self):
+        self.assertIsNone(br._category_from_path(br.REPO_ROOT / "README.md"))
+
+
+class FilterByScopeTests(unittest.TestCase):
+    def test_scope_prefix_filters(self):
+        paths = [
+            br.REPO_ROOT / "skills" / "01-x" / "a" / "SKILL.md",
+            br.PLUGINS_ROOT / "security" / "p" / "SKILL.md",
+        ]
+        out = br._filter_by_scope(paths, ["skills/"])
+        self.assertEqual(out, [paths[0]])
+
+    def test_scope_dedups_even_without_prefixes(self):
+        p = br.REPO_ROOT / "skills" / "01-x" / "a" / "SKILL.md"
+        self.assertEqual(br._filter_by_scope([p, p, p], None), [p])
+
+    def test_multiple_prefixes(self):
+        a = br.REPO_ROOT / "skills" / "01-x" / "a" / "SKILL.md"
+        b = br.PLUGINS_ROOT / "saas-packs" / "skill-databases" / "w" / "s" / "SKILL.md"
+        c = br.PLUGINS_ROOT / "security" / "p" / "SKILL.md"
+        out = br._filter_by_scope([a, b, c], ["skills/", "plugins/saas-packs/skill-databases/"])
+        self.assertEqual(set(out), {a, b})
