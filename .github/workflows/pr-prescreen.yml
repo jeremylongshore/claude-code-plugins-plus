@@ -158,9 +158,15 @@ jobs:
           # safety). The validator is pure read — no exec, no install.
           install -m 0644 ../base/scripts/validate-skills-schema.py \
             ./scripts/.prescreen-validator.py
+          # A non-zero exit is NORMAL (marketplace-tier errors make it exit
+          # non-zero), so we must not abort here — but capture the code instead
+          # of blindly `|| true`-swallowing it, so a genuine crash is visible in
+          # the log and the empty-results guard below can fail closed.
+          VALIDATOR_EXIT=0
           python3 scripts/.prescreen-validator.py --marketplace --json \
-            > /tmp/validator-results.json 2>/tmp/validator.log || true
+            > /tmp/validator-results.json 2>/tmp/validator.log || VALIDATOR_EXIT=$?
           rm -f ./scripts/.prescreen-validator.py
+          echo "Validator exit: $VALIDATOR_EXIT" >&2
           echo "Validator stderr/info:" >&2
           tail -50 /tmp/validator.log >&2 || true
           # Filter to only changed plugin paths (if any). Otherwise we pass
@@ -168,9 +174,25 @@ jobs:
           # PRs that don't touch plugin dirs.
           python3 - <<'PY'
           import json, pathlib
-          all_results = json.loads(pathlib.Path('/tmp/validator-results.json').read_text() or '[]')
+          raw = pathlib.Path('/tmp/validator-results.json').read_text()
+          try:
+              all_results = json.loads(raw or '[]')
+          except json.JSONDecodeError:
+              all_results = []
           changed_lines = pathlib.Path('/tmp/changed-plugins.txt').read_text().splitlines()
           changed = [c.strip() for c in changed_lines if c.strip()]
+          # Fail-closed guard (blocker 62ye.4). The validator sweeps the WHOLE
+          # corpus, so an empty/unparseable result set means it crashed (or the
+          # output was truncated) — NOT a clean PR. Without this, a plugin-touching
+          # PR whose validator run died would filter to [] and the classifier would
+          # emit a silent PASS ("no plugin paths matched"). Append an internal-error
+          # signal (the Classify step concatenates /tmp/diff-step-signals.txt) so the
+          # verdict surfaces the failure instead of a false PASS.
+          if not all_results:
+              with pathlib.Path('/tmp/diff-step-signals.txt').open('a') as fh:
+                  fh.write('prescreen-internal-error: validator sweep produced 0 results '
+                           '(crash or truncated output; see /tmp/validator.log)\n')
+              print('::error::pr-prescreen internal: validator produced no results — failing closed')
           # If the PR doesn't touch any plugins/ dir, we have nothing to
           # pre-screen. Emit an empty list — the classifier reports PASS
           # with "no plugin paths matched", which is the correct signal.

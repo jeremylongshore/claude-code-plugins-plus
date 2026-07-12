@@ -1,0 +1,46 @@
+name: Auto-bump idempotency (unit corpus)
+
+# Unit corpus for the auto-bump decision engine (scripts/auto-bump-changed-plugins.mjs).
+# Before blocker 62ye.5, the workflow re-derived a plugin's patch bump from the
+# CURRENT local version on every PR `synchronize` and only checked "did a source
+# file change vs base" (true for the whole PR), so it walked the version forward
+# endlessly — each bump pushing a checkless GITHUB_TOKEN head that left the PR
+# BLOCKED on unreported required contexts. bumpDecision() keys the bump on the
+# version at the PR base, so a second run is a no-op. This corpus pins that
+# contract (including the new-plugin case, where the base version is null).
+#
+# Path-filtered + advisory, matching the sibling script-unit workflows
+# (sync-lockfile-test.yml, jrig-proofs-test.yml). Refs claude-62ye.5.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/auto-bump-changed-plugins.mjs'
+      - 'scripts/auto-bump-changed-plugins.test.mjs'
+      - '.github/workflows/auto-bump-test.yml'
+
+# Read-only — pure unit tests, no writes.
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-bump-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  auto-bump-test:
+    name: auto-bump idempotency unit corpus
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      # Zero-install: the module and its tests use only node built-ins
+      # (node:test, node:assert) by design.
+      - name: Auto-bump decision unit corpus
+        run: node --test scripts/auto-bump-changed-plugins.test.mjs
