@@ -42,11 +42,12 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const SCOPE = '@intentsolutionsio/';
 
-function parseVersion(v) {
+export function parseVersion(v) {
   if (!v || typeof v !== 'string') return null;
   const m = /^(\d+)\.(\d+)\.(\d+)$/.exec(v.trim());
   if (!m) return null;
@@ -59,6 +60,50 @@ function fmtVersion(p) {
 
 function bumpPatch(v) {
   return { major: v.major, minor: v.minor, patch: v.patch + 1 };
+}
+
+// Compare two parsed versions. >0 if a>b, 0 if equal, <0 if a<b.
+export function compareVersion(a, b) {
+  return a.major - b.major || a.minor - b.minor || a.patch - b.patch;
+}
+
+// Idempotency decision (blocker 62ye.5). Given a plugin's declared (local)
+// version and its version on the PR base (null when the plugin is absent on
+// base), decide whether to bump. Returns { bump: true } or { skip: reason }.
+// Pure — no git, no fs — so the loop-prevention logic is unit-testable.
+export function bumpDecision(declared, base) {
+  if (!base) {
+    // New plugin (absent on base): initial version is author-set and
+    // publish-changed-packages handles the first release. Bumping it would also
+    // loop forever — base stays null on every re-run.
+    return { skip: 'new plugin (absent on base) — initial version left as authored' };
+  }
+  if (compareVersion(declared, base) > 0) {
+    // Already ahead of base → a prior auto-bump run on this PR bumped it (or the
+    // author set a deliberate minor/major bump, which we must not walk further).
+    return {
+      skip: `already bumped in this PR (base ${fmtVersion(base)} → local ${fmtVersion(declared)})`,
+    };
+  }
+  return { bump: true };
+}
+
+// The plugin's version on the PR base ref, or null when the package.json is
+// absent there (a brand-new plugin) or unparseable. Argv-form git (shell:false);
+// baseRef is already validated by SAFE_REF_RE in detectBaseRef and dir comes
+// from pluginDirFor (repo-relative), so nothing untrusted reaches a shell.
+function baseVersion(baseRef, dir) {
+  const res = spawnSync('git', ['show', `${baseRef}:${dir}/package.json`], {
+    cwd: ROOT,
+    encoding: 'utf-8',
+    shell: false,
+  });
+  if (res.status !== 0) return null;
+  try {
+    return parseVersion(JSON.parse(res.stdout).version);
+  } catch {
+    return null;
+  }
 }
 
 // Map a changed file to its plugin/package directory, or null if it's not
@@ -204,6 +249,17 @@ function main() {
       });
       continue;
     }
+    // Idempotency across re-runs (blocker 62ye.5). Every `synchronize` event
+    // re-runs this workflow, and the triggering source file is still in the
+    // PR's diff, so without a base-version check the plugin gets re-bumped each
+    // time — 0.2.1 → 0.2.2 → 0.2.3 … — and each bump pushes a GITHUB_TOKEN head
+    // that fires no checks, leaving the PR BLOCKED on unreported required
+    // contexts. Decision is keyed on the plugin's version at the PR base.
+    const decision = bumpDecision(declared, baseVersion(baseRef, dir));
+    if (decision.skip) {
+      skips.push({ dir, reason: decision.skip });
+      continue;
+    }
     const next = bumpPatch(declared);
     bumps.push({
       dir,
@@ -247,9 +303,13 @@ function main() {
   console.log(`no-op:  ${skips.length}`);
 }
 
-try {
-  main();
-} catch (err) {
-  console.error(err.message || err);
-  process.exit(1);
+// Run only when invoked directly (`node scripts/auto-bump-changed-plugins.mjs`),
+// not when imported by the test suite — importing must have no side effects.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    main();
+  } catch (err) {
+    console.error(err.message || err);
+    process.exit(1);
+  }
 }
