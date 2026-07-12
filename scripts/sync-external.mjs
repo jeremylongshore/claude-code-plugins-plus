@@ -49,7 +49,7 @@ import {
   matchesPattern,
   unanchoredIncludes,
 } from './sync-lockfile.mjs';
-import { scanContent, GRADE } from './scan-synced-content.mjs';
+import { refuseFindingsForSource } from './scan-synced-content.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
@@ -449,35 +449,6 @@ function ensureCatalogEntry(source) {
   fs.writeFileSync(CATALOG_FILE, updated);
   log(`   📋 Added catalog entry: ${source.name}`, colors.green);
   return true;
-}
-
-/**
- * Scan a source's filtered files IN MEMORY for the supply-chain scanner's
- * REFUSE grade (high-confidence malicious content in an auto-executing file).
- * Returns the REFUSE findings, each tagged with its repo-relative path.
- *
- * Blocker 62ye.2: a REFUSE must quarantine ONLY its own source, not wall the
- * whole sync run. Scanning per-source BEFORE any write means a poisoned source
- * mirrors nothing, nothing malicious ever touches disk (no revert needed), and
- * co-synced clean sources still sync. This is the sync-time counterpart to the
- * PR-time `scan-synced-content` gate, using the same scanner. Pure over the
- * in-memory file list (`{ path, content }[]`), so it is unit-testable.
- */
-export function refuseFindingsForSource(files, targetPath) {
-  const out = [];
-  for (const file of files || []) {
-    const rel = targetPath ? `${targetPath}/${file.path}` : file.path;
-    let text;
-    try {
-      text = Buffer.isBuffer(file.content) ? file.content.toString('utf8') : String(file.content);
-    } catch {
-      continue; // undecodable/binary — the content scanner is text-only
-    }
-    for (const f of scanContent(text, rel)) {
-      if (f.grade === GRADE.REFUSE) out.push({ file: rel, id: f.id, label: f.label });
-    }
-  }
-  return out;
 }
 
 /**
