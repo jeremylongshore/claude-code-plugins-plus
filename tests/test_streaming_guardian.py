@@ -183,6 +183,16 @@ class RecoveryDecisionTests(unittest.TestCase):
             self.assertIn("tier", r)
             self.assertIn("rationale", r)
 
+    def test_canonical_error_codes_mapped(self):
+        # The skill's SRE value is naming the exact searchable code, not a paraphrase.
+        self.assertEqual(rec.FAILURE_CODES["file-not-found"], "DELTA_FILE_NOT_FOUND_DETAILED")
+        self.assertEqual(
+            rec.FAILURE_CODES["uuid-changed"], "DIFFERENT_DELTA_TABLE_READ_BY_STREAMING_SOURCE"
+        )
+        # every failure class has an entry
+        for f in rec.FAILURES:
+            self.assertIn(f, rec.FAILURE_CODES)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

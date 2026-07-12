@@ -42,6 +42,15 @@ import json
 import sys
 
 FAILURES = ("file-not-found", "uuid-changed", "checkpoint-reset", "transient")
+
+# The canonical Databricks error string each failure class corresponds to — always
+# surface this exact, searchable code, never only the short class name.
+FAILURE_CODES = {
+    "file-not-found": "DELTA_FILE_NOT_FOUND_DETAILED",
+    "uuid-changed": "DIFFERENT_DELTA_TABLE_READ_BY_STREAMING_SOURCE",
+    "checkpoint-reset": "(silent batchId regression / checkpoint corruption — no single code)",
+    "transient": "(no specific code — a restartable blip)",
+}
 SAFE_RESTART = "SAFE_RESTART"
 REPROCESS = "REPROCESS_FROM_OFFSET"
 TIME_TRAVEL = "RESTORE_FROM_TIME_TRAVEL"
@@ -206,12 +215,13 @@ def main():
         args.failure, _yn(args.source_replayable), _yn(args.sink_idempotent), _yn(args.time_travel)
     )
     result["failure"] = args.failure
+    result["error_code"] = FAILURE_CODES.get(args.failure, "")
     result["assumed_pessimistic"] = unknowns
 
     if args.json:
         print(json.dumps(result, indent=2))
     else:
-        print(f"Failure: {args.failure}")
+        print(f"Failure: {args.failure}  (Databricks error: {result['error_code']})")
         print(f"Recommended recovery: {result['tier']}")
         print(f"Data-loss risk: {result['data_loss_risk']}")
         print(f"\n{result['rationale']}\n\nSteps:")

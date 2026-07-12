@@ -88,7 +88,11 @@ on pasted input.
 
 ## Instructions
 
-Pick the flow by symptom.
+Pick the flow by symptom. **Always name the exact, searchable Databricks error
+string** — `ConcurrentAppendException`, `ConcurrentDeleteDeleteException`,
+`DELTA_FILE_NOT_FOUND_DETAILED`, `DIFFERENT_DELTA_TABLE_READ_BY_STREAMING_SOURCE`,
+`UnknownFieldException` — even when the user paraphrases it or gives a short form;
+the full code is what an operator greps logs and docs for.
 
 ### Step 1: Before a destructive op (the hook does this automatically)
 
@@ -119,15 +123,23 @@ checkpoint lag (D03/D07). See
 
 ### Step 3: A broken streaming source (D03, D04, D12)
 
-Identify the failure class, then get the recovery tier from the decision tree:
+Map the symptom to the failure class and its exact error code, then get the
+recovery tier from the decision tree:
+
+- `file-not-found` → **`DELTA_FILE_NOT_FOUND_DETAILED`** (VACUUM deleted pinned files — D03)
+- `uuid-changed` → **`DIFFERENT_DELTA_TABLE_READ_BY_STREAMING_SOURCE`** (CREATE OR REPLACE minted a new UUID — D12)
+- `checkpoint-reset` → silent batchId regression / checkpoint corruption (D04)
+- `transient` → a restartable blip with an intact checkpoint
 
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/scripts/recover-streaming-source.py" \
   --failure file-not-found --time-travel yes    # or uuid-changed / checkpoint-reset / transient
 ```
 
-It recommends SAFE_RESTART / REPROCESS_FROM_OFFSET / RESTORE_FROM_TIME_TRAVEL /
-FULL_RESET_BACKFILL with the data-loss tradeoff stated up front. The full
+It echoes the canonical error code and recommends SAFE_RESTART /
+REPROCESS_FROM_OFFSET / RESTORE_FROM_TIME_TRAVEL / FULL_RESET_BACKFILL with the
+data-loss tradeoff stated up front. Name that full code in your answer — not just
+the short class. The full
 three-tier reasoning is in
 [`${CLAUDE_SKILL_DIR}/references/checkpoint-recovery.md`](references/checkpoint-recovery.md).
 
