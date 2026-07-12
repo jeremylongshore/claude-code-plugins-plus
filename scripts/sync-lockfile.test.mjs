@@ -264,7 +264,7 @@ test('buildLockEntry: null resolved ref is preserved as null (bootstrap has no c
 // `/` anchors a pattern to the source root; anything else is auto-prefixed
 // `**/` (recursive by design, for nested contributor layouts). The anchored
 // form was dead code before this corpus existed — these tests keep it alive.
-import { matchesPattern } from './sync-lockfile.mjs';
+import { matchesPattern, unanchoredIncludes } from './sync-lockfile.mjs';
 
 test('anchored /README.md matches only the root README', () => {
   assert.equal(matchesPattern('README.md', ['/README.md']), true);
@@ -296,4 +296,37 @@ test('single-star stays single-segment; ? stays single-char', () => {
   assert.equal(matchesPattern('docs/a.md', ['/docs/*.md']), true);
   assert.equal(matchesPattern('docs/sub/a.md', ['/docs/*.md']), false);
   assert.equal(matchesPattern('a.md', ['?.md']), true);
+});
+
+// ── unanchoredIncludes — the anchoring lint (blocker 62ye.6) ──
+// Flags includes that matchesPattern will silently auto-prefix `**/` so the
+// vetter is warned they admit files at ANY depth, not just the root.
+test('unanchoredIncludes flags bare (auto-prefixed) includes', () => {
+  assert.deepEqual(unanchoredIncludes(['README.md', 'references/**']), [
+    'README.md',
+    'references/**',
+  ]);
+});
+
+test('unanchoredIncludes does not flag anchored or explicitly-recursive includes', () => {
+  assert.deepEqual(unanchoredIncludes(['/README.md', '**/SKILL.md', '/skills/**']), []);
+});
+
+test('unanchoredIncludes on mixed list returns only the offenders', () => {
+  assert.deepEqual(unanchoredIncludes(['/README.md', 'SKILL.md', '**/x.md', 'docs/**']), [
+    'SKILL.md',
+    'docs/**',
+  ]);
+});
+
+test('unanchoredIncludes tolerates empty / missing input', () => {
+  assert.deepEqual(unanchoredIncludes([]), []);
+  assert.deepEqual(unanchoredIncludes(undefined), []);
+  assert.deepEqual(unanchoredIncludes(null), []);
+});
+
+// The lint pairs with the real hazard: a bare include IS recursive today.
+test('a bare README.md include silently matches a deep README (the hazard being linted)', () => {
+  assert.equal(matchesPattern('examples/x/README.md', ['README.md']), true);
+  assert.ok(unanchoredIncludes(['README.md']).length === 1);
 });

@@ -20,6 +20,7 @@ import {
   decideExit,
   parseAllowlist,
   isWaived,
+  honoredWaivers,
   concatCollapse,
   normalizeLines,
   fileClass,
@@ -387,6 +388,46 @@ test('allowlist: REFUSE is NEVER waivable', () => {
   for (const x of f)
     x.waivedReason = isWaived(waivers, 'plugins/community/evil/x.sh', x.id, x.grade);
   assert.equal(decideExit(f), 2, 'REFUSE must still block despite a waiver line');
+});
+
+// ── honoredWaivers — sources-change-unscanned is ONE-SHOT (blocker 62ye.3) ──
+test('one-shot: a sources-change-unscanned waiver is dropped when its line was NOT added in the PR', () => {
+  const waivers = parseAllowlist('sources.yaml:sources-change-unscanned  reviewed the new source');
+  const added = new Set(); // empty = this line is standing on main, not diff-added
+  const fresh = honoredWaivers(waivers, added);
+  assert.equal(fresh.length, 0, 'a standing (not-added) one-shot waiver must not survive');
+  // …so the CHALLENGE is NOT waived and the gate re-fires.
+  assert.equal(isWaived(fresh, 'sources.yaml', 'sources-change-unscanned', GRADE.CHALLENGE), null);
+});
+
+test('one-shot: the waiver IS honored in the PR whose diff adds its line', () => {
+  const line = 'sources.yaml:sources-change-unscanned  reviewed the new source';
+  const waivers = parseAllowlist(line);
+  const added = new Set([line]); // the reviewer added exactly this line in the PR
+  const fresh = honoredWaivers(waivers, added);
+  assert.equal(fresh.length, 1);
+  assert.equal(
+    isWaived(fresh, 'sources.yaml', 'sources-change-unscanned', GRADE.CHALLENGE),
+    'reviewed the new source',
+  );
+});
+
+test('one-shot filter leaves OTHER (persistent) rules untouched', () => {
+  const waivers = parseAllowlist(
+    'plugins/**/README.md:pipe-to-shell  installer docs\n' +
+      'sources.yaml:sources-change-unscanned  one-shot line',
+  );
+  const fresh = honoredWaivers(waivers, new Set()); // nothing added this PR
+  // pipe-to-shell (persistent) survives; sources-change-unscanned (one-shot) is dropped.
+  assert.deepEqual(
+    fresh.map((w) => w.rule),
+    ['pipe-to-shell'],
+  );
+});
+
+test('one-shot fail-closed: an empty added-set (uncomputable diff) drops the waiver', () => {
+  const waivers = parseAllowlist('sources.lock.json:sources-change-unscanned  relock reviewed');
+  assert.equal(honoredWaivers(waivers, new Set()).length, 0);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

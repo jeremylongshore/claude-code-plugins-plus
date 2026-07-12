@@ -270,3 +270,20 @@ export function matchesPattern(filePath, patterns) {
     return regex.test(filePath);
   });
 }
+
+/**
+ * Include patterns that matchesPattern will silently auto-prefix with `**\/`
+ * — i.e. those that start with neither `/` (root-anchored) nor `**` (explicitly
+ * recursive). Blocker 62ye.6: a vetter reading `README.md` per the source-
+ * vetting playbook believes it mirrors the ROOT README, but the auto-prefix
+ * makes it `**\/README.md`, admitting every README at any depth (unvetted
+ * examples/, vendored dirs, …). Returning the offenders lets the sync flow warn
+ * the vetter so intent is explicit — anchor with `/README.md` or write the
+ * recursion out as `**\/README.md`. Pure (no side effects) so it is unit-testable;
+ * NON-breaking — matchesPattern's behavior is unchanged, this only surfaces it.
+ */
+export function unanchoredIncludes(patterns) {
+  return (patterns || []).filter(
+    (p) => typeof p === 'string' && !p.startsWith('/') && !p.startsWith('**'),
+  );
+}
