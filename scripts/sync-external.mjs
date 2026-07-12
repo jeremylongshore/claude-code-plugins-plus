@@ -47,6 +47,7 @@ import {
   buildLockEntry,
   diffSource,
   matchesPattern,
+  unanchoredIncludes,
 } from './sync-lockfile.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -519,6 +520,19 @@ async function syncSource(source, config, lock) {
           colors.red,
         );
       }
+    }
+
+    // Anchoring lint (blocker 62ye.6): an include that starts with neither `/`
+    // nor `**` is silently auto-prefixed `**/` and matches at ANY depth, not the
+    // root the vetter likely intended. Warn so intent is explicit — the fix is a
+    // one-char edit in sources.yaml (`/README.md` root-only, or `**/README.md`
+    // to keep it recursive on purpose). Advisory only; the matcher is unchanged.
+    for (const pat of unanchoredIncludes(source.include)) {
+      log(
+        `   ⚠️  Unanchored include "${pat}" is auto-prefixed **/ (matches at any depth) — ` +
+          `anchor as "/${pat}" for root-only, or write "**/${pat}" to make the recursion explicit`,
+        colors.yellow,
+      );
     }
     const filteredFiles = files.filter((file) => {
       const included = matchesPattern(file.path, source.include);

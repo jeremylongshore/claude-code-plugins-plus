@@ -667,7 +667,9 @@ export function parseAllowlist(text) {
     if (!m) continue; // malformed (e.g. missing reason) → ignored, not honored
     const [, pathGlob, rule, reason] = m;
     if (!reason.trim()) continue;
-    out.push({ pathGlob, rule, reason: reason.trim() });
+    // `raw` (the trimmed source line) lets the one-shot waiver check (blocker
+    // 62ye.3) compare a waiver against the lines a PR actually added.
+    out.push({ pathGlob, rule, reason: reason.trim(), raw: line });
   }
   return out;
 }
@@ -690,6 +692,24 @@ export function isWaived(waivers, filePath, ruleId, grade) {
     if (w.pathGlob === filePath || globMatch(w.pathGlob, filePath)) return w.reason;
   }
   return null;
+}
+
+// Rules whose waiver is ONE-SHOT: honored only in the PR that introduces the
+// allowlist line, never persistently after it lands on main. A standing
+// `sources-change-unscanned` line would silently waive EVERY future sources.yaml
+// change and kill the gate (blocker 62ye.3).
+const ONE_SHOT_RULES = new Set(['sources-change-unscanned']);
+
+/**
+ * Drop one-shot waivers that were NOT added in the current PR's diff of the
+ * allowlist. `addedLines` is the set of trimmed lines added to
+ * scripts/scan-allowlist.txt vs the base. All other rules pass through unchanged
+ * — their persistent-allowlist model is intentional. Pure, so it is unit-testable.
+ * Fail-closed by construction: an empty `addedLines` set (diff uncomputable)
+ * removes every one-shot waiver, so the gate re-fires rather than silently waiving.
+ */
+export function honoredWaivers(waivers, addedLines) {
+  return waivers.filter((w) => !ONE_SHOT_RULES.has(w.rule) || (w.raw && addedLines.has(w.raw)));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -750,6 +770,29 @@ function changedFiles(base) {
     ...run(['ls-files', '--others', '--exclude-standard']),
   ]);
   return [...set];
+}
+
+/** Trimmed lines ADDED to scripts/scan-allowlist.txt vs `base` (blocker 62ye.3).
+ * Feeds honoredWaivers so a one-shot waiver counts only in the PR that adds it.
+ * Fail-closed: returns an empty set when the diff can't be computed (e.g. a
+ * missing base ref), so a one-shot waiver is not honored and the gate re-fires. */
+function addedAllowlistLines(base) {
+  try {
+    const out = execFileSync(
+      'git',
+      ['-C', ROOT_DIR, 'diff', '--unified=0', base, '--', 'scripts/scan-allowlist.txt'],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
+    );
+    return new Set(
+      out
+        .split('\n')
+        .filter((l) => l.startsWith('+') && !l.startsWith('+++'))
+        .map((l) => l.slice(1).trim())
+        .filter(Boolean),
+    );
+  } catch {
+    return new Set();
+  }
 }
 
 /** Resolve the list of repo-relative files to scan from CLI options. */
@@ -891,7 +934,11 @@ function main() {
         snippet: trustFiles.join(', ').slice(0, 100),
         file: trustFiles[0],
       };
-      f.waivedReason = isWaived(waivers, f.file, f.id, f.grade);
+      // One-shot (blocker 62ye.3): honor a sources-change-unscanned waiver only
+      // if its allowlist line was added in THIS PR — a standing line on main
+      // would waive every future sources.yaml change and silently kill the gate.
+      const fresh = honoredWaivers(waivers, addedAllowlistLines(opts.base || 'origin/main'));
+      f.waivedReason = isWaived(fresh, f.file, f.id, f.grade);
       perFile.push({ rel: f.file, findings: [f] });
       all = all.concat(f);
     }
