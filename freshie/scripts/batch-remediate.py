@@ -32,6 +32,7 @@ from typing import NamedTuple
 REPO_ROOT = Path(__file__).resolve().parents[2]  # worktree-safe (freshie/scripts/ -> repo root)
 DB_PATH = REPO_ROOT / "freshie" / "inventory.sqlite"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
+SKILLS_ROOT = REPO_ROOT / "skills"  # legacy top-level numbered skill tree (dgpl)
 
 # Fields that are no longer valid in agent frontmatter
 DEPRECATED_AGENT_FIELDS = frozenset(
@@ -68,6 +69,30 @@ TAG_MAP: dict[str, list[str]] = {
     "security": ["security", "compliance"],
     "skill-enhancers": ["meta", "skills"],
     "testing": ["testing", "quality"],
+    # Legacy top-level skills/<NN-topic>/ tree (blocker dgpl) — the 20 numbered
+    # dirs live OUTSIDE plugins/, so _category_from_path returned None and every
+    # numbered skill was skipped by --fix-tags. Tags mirror the plugins/ style
+    # (2-3 lowercase topic words) and derive from each dir's own name.
+    "01-devops-basics": ["devops", "ci-cd"],
+    "02-devops-advanced": ["devops", "infrastructure"],
+    "03-security-fundamentals": ["security", "compliance"],
+    "04-security-advanced": ["security", "compliance"],
+    "05-frontend-dev": ["frontend", "development"],
+    "06-backend-dev": ["backend", "development"],
+    "07-ml-training": ["ai", "machine-learning"],
+    "08-ml-deployment": ["ai", "mlops"],
+    "09-test-automation": ["testing", "automation"],
+    "10-performance-testing": ["performance", "testing"],
+    "11-data-pipelines": ["data", "data-engineering"],
+    "12-data-analytics": ["data", "analytics"],
+    "13-aws-skills": ["aws", "cloud"],
+    "14-gcp-skills": ["gcp", "cloud"],
+    "15-api-development": ["api", "development"],
+    "16-api-integration": ["api", "integration"],
+    "17-technical-docs": ["documentation", "writing"],
+    "18-visual-content": ["design", "content"],
+    "19-business-automation": ["business", "automation"],
+    "20-enterprise-workflows": ["enterprise", "workflow"],
 }
 
 # Service-name hints keyed on pack-name prefix (saas-packs only)
@@ -179,12 +204,18 @@ class Stats(NamedTuple):
 
 
 def _category_from_path(file_path: Path) -> str | None:
-    """Return the category directory name (e.g. 'ai-ml') for a plugin file."""
-    try:
-        rel = file_path.relative_to(PLUGINS_ROOT)
-        return rel.parts[0]
-    except (ValueError, IndexError):
-        return None
+    """Return the category directory name for a skill/agent file.
+
+    Handles BOTH the plugins/<category>/... tree (e.g. 'ai-ml') and the legacy
+    top-level skills/<NN-topic>/... tree (e.g. '01-devops-basics') — the latter
+    lives outside plugins/, so the old PLUGINS_ROOT-only lookup returned None and
+    every numbered skill was skipped by --fix-tags (blocker dgpl)."""
+    for root in (PLUGINS_ROOT, SKILLS_ROOT):
+        try:
+            return file_path.relative_to(root).parts[0]
+        except (ValueError, IndexError):
+            continue
+    return None
 
 
 def _pack_name_from_path(file_path: Path) -> str | None:
@@ -557,6 +588,32 @@ def _filter_by_pack(paths: list[Path], pack: str | None) -> list[Path]:
     return [p for p in paths if pack in str(p)]
 
 
+def _filter_by_scope(paths: list[Path], prefixes: list[str] | None) -> list[Path]:
+    """Deduplicate the path list and, if `prefixes` is given, restrict to files
+    whose repo-relative path starts with one of them.
+
+    Dedup is unconditional: the DB missing-fields query is NOT run-scoped, so the
+    same SKILL.md appears once per historical run that flagged it — without dedup
+    the same file is processed several times (harmless re-skips, but noisy and
+    inflates the reported totals). Scoping bounds a remediation to a cohort so a
+    targeted PR does not sweep the whole catalog."""
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for p in paths:
+        if p in seen:
+            continue
+        seen.add(p)
+        if prefixes:
+            try:
+                rel = p.relative_to(REPO_ROOT).as_posix()
+            except ValueError:
+                rel = p.as_posix()
+            if not any(rel.startswith(pre) for pre in prefixes):
+                continue
+        out.append(p)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Remediation runners
 # ---------------------------------------------------------------------------
@@ -683,6 +740,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Restrict changes to paths containing this pack/category name.",
     )
     parser.add_argument(
+        "--scope",
+        metavar="PREFIX",
+        action="append",
+        default=None,
+        help="Restrict changes to files whose repo-relative path starts with "
+        "PREFIX (repeatable). Use to scope a remediation to a specific cohort, "
+        "e.g. --scope skills/ --scope plugins/saas-packs/skill-databases/.",
+    )
+    parser.add_argument(
         "--verbose",
         "-v",
         action="store_true",
@@ -741,7 +807,7 @@ def main() -> int:
             skill_paths = _skills_missing_tags_from_fs()
             print(f"      Filesystem walk found {len(skill_paths)} skills missing tags.")
 
-        skill_paths = _filter_by_pack(skill_paths, args.pack)
+        skill_paths = _filter_by_scope(_filter_by_pack(skill_paths, args.pack), args.scope)
         added, skipped, errors = run_fix_tags(skill_paths, dry_run, args.verbose)
         total_tags_added += added
         total_skipped += skipped
@@ -759,7 +825,7 @@ def main() -> int:
             compat_paths = _skills_missing_compat_from_fs()
             print(f"      Filesystem walk found {len(compat_paths)} skills missing compatibility.")
 
-        compat_paths = _filter_by_pack(compat_paths, args.pack)
+        compat_paths = _filter_by_scope(_filter_by_pack(compat_paths, args.pack), args.scope)
         added, skipped, errors = run_fix_compatible_with(compat_paths, dry_run, args.verbose)
         total_compat_added += added
         total_skipped += skipped
@@ -777,7 +843,7 @@ def main() -> int:
             agent_paths = _agents_with_invalid_fields_from_fs()
             print(f"      Filesystem walk found {len(agent_paths)} agents with invalid fields.")
 
-        agent_paths = _filter_by_pack(agent_paths, args.pack)
+        agent_paths = _filter_by_scope(_filter_by_pack(agent_paths, args.pack), args.scope)
         removed, skipped, errors = run_fix_agents(agent_paths, dry_run, args.verbose)
         total_agent_fields_removed += removed
         total_skipped += skipped

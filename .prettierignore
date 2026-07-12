@@ -53,6 +53,10 @@ marketplace/
 plugins/
 freshie/
 functions/
+# Legacy top-level skill content (same class as plugins/ above — authored SKILL.md
+# frontmatter/body, not prettier-managed source). Keeps compliance remediation
+# (tags/compatibility) from triggering a whole-body reformat sweep.
+skills/
 packages/analytics-daemon/
 packages/analytics-dashboard/
 packages/plugin-validator/
