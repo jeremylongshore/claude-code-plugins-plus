@@ -47,3 +47,13 @@ plugins/productivity/j-rig/**:hook-definition  the sinker/line/hook 3-layer arch
 
 # ── Reviewed defensive scanner signatures. ──
 plugins/security/agent-safety-preflight/scripts/agent_preflight_lite.py:outbound-network  defensive scanner regex detects curl/wget install chains; it does not perform network calls
+
+# ── databricks-streaming-guardian: the PreToolUse guard IS the skill's purpose. ──
+# The pack's only blocking hook. It intercepts Bash and BLOCKS a DROP/CREATE-OR-
+# REPLACE/VACUUM only when it positively confirms an active streaming consumer of
+# the target table; it fails OPEN (allows) on any unverifiable check and reads only
+# system.streaming.query_progress via the Databricks CLI — no embedded credentials,
+# no network fetch, no dynamic-exec of untrusted input, no shell string is built
+# from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
+plugins/saas-packs/databricks-pack/hooks/hooks.json:hook-definition  registers the streaming-guardian PreToolUse guard pack-wide; command is a fixed path to the in-repo hook script, no network/credentials/dynamic-exec — reviewed 2026-07-12
+plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/streaming-guard-hook.py:hook-definition  the guard itself — precise (only real SQL surfaces classify), fail-open, reads system.streaming.query_progress via the databricks CLI only, no network/credentials/dynamic-exec — reviewed 2026-07-12
