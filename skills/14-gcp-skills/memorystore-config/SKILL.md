@@ -1,16 +1,23 @@
 ---
-name: "memorystore-config"
-description: |
-  Configure memorystore config operations. Auto-activating skill for GCP Skills.
+name: memorystore-config
+description: 'Configure memorystore config operations. Auto-activating skill for GCP
+  Skills.
+
   Triggers on: memorystore config, memorystore config
-  Part of the GCP Skills skill category. Use when configuring systems or services. Trigger with phrases like "memorystore config", "memorystore config", "memorystore".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when configuring systems or services.
+  Trigger with phrases like "memorystore config", "memorystore config", "memorystore".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Memorystore Config
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "rest-endpoint-designer"
-description: |
-  Build rest endpoint designer operations. Auto-activating skill for API Development.
+name: rest-endpoint-designer
+description: 'Build rest endpoint designer operations. Auto-activating skill for API
+  Development.
+
   Triggers on: rest endpoint designer, rest endpoint designer
-  Part of the API Development skill category. Use when working with rest endpoint designer functionality. Trigger with phrases like "rest endpoint designer", "rest designer", "rest".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with rest endpoint
+  designer functionality. Trigger with phrases like "rest endpoint designer", "rest
+  designer", "rest".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Rest Endpoint Designer
 
 ## Overview

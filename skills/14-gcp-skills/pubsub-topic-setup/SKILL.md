@@ -1,16 +1,23 @@
 ---
-name: "pubsub-topic-setup"
-description: |
-  Configure pubsub topic setup operations. Auto-activating skill for GCP Skills.
+name: pubsub-topic-setup
+description: 'Configure pubsub topic setup operations. Auto-activating skill for GCP
+  Skills.
+
   Triggers on: pubsub topic setup, pubsub topic setup
-  Part of the GCP Skills skill category. Use when working with pubsub topic setup functionality. Trigger with phrases like "pubsub topic setup", "pubsub setup", "pubsub".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with pubsub topic setup
+  functionality. Trigger with phrases like "pubsub topic setup", "pubsub setup", "pubsub".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Pubsub Topic Setup
 
 ## Overview

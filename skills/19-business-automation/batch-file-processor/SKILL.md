@@ -1,16 +1,24 @@
 ---
-name: "batch-file-processor"
-description: |
-  Process batch file processor operations. Auto-activating skill for Business Automation.
+name: batch-file-processor
+description: 'Process batch file processor operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: batch file processor, batch file processor
-  Part of the Business Automation skill category. Use when working with batch file processor functionality. Trigger with phrases like "batch file processor", "batch processor", "batch".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with batch file
+  processor functionality. Trigger with phrases like "batch file processor", "batch
+  processor", "batch".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Batch File Processor
 
 ## Overview

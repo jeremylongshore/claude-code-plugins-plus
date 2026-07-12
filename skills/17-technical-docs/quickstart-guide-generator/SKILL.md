@@ -1,16 +1,24 @@
 ---
-name: "quickstart-guide-generator"
-description: |
-  Generate quickstart guide generator operations. Auto-activating skill for Technical Documentation.
+name: quickstart-guide-generator
+description: 'Generate quickstart guide generator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: quickstart guide generator, quickstart guide generator
-  Part of the Technical Documentation skill category. Use when working with quickstart guide generator functionality. Trigger with phrases like "quickstart guide generator", "quickstart generator", "quickstart".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with quickstart
+  guide generator functionality. Trigger with phrases like "quickstart guide generator",
+  "quickstart generator", "quickstart".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Quickstart Guide Generator
 
 ## Overview

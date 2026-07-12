@@ -1,16 +1,24 @@
 ---
-name: "sagemaker-endpoint-deployer"
-description: |
-  Deploy sagemaker endpoint deployer operations. Auto-activating skill for ML Deployment.
+name: sagemaker-endpoint-deployer
+description: 'Deploy sagemaker endpoint deployer operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: sagemaker endpoint deployer, sagemaker endpoint deployer
-  Part of the ML Deployment skill category. Use when deploying applications or services. Trigger with phrases like "sagemaker endpoint deployer", "sagemaker deployer", "deploy sagemaker endpoint er".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when deploying applications or services.
+  Trigger with phrases like "sagemaker endpoint deployer", "sagemaker deployer", "deploy
+  sagemaker endpoint er".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Sagemaker Endpoint Deployer
 
 ## Overview

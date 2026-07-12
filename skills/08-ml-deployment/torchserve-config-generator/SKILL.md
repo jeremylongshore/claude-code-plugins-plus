@@ -1,16 +1,24 @@
 ---
-name: "torchserve-config-generator"
-description: |
-  Generate torchserve config generator operations. Auto-activating skill for ML Deployment.
+name: torchserve-config-generator
+description: 'Generate torchserve config generator operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: torchserve config generator, torchserve config generator
-  Part of the ML Deployment skill category. Use when configuring systems or services. Trigger with phrases like "torchserve config generator", "torchserve generator", "torchserve".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when configuring systems or services.
+  Trigger with phrases like "torchserve config generator", "torchserve generator",
+  "torchserve".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Torchserve Config Generator
 
 ## Overview

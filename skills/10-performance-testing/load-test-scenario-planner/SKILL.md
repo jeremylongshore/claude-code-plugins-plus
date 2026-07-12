@@ -1,16 +1,23 @@
 ---
-name: "load-test-scenario-planner"
-description: |
-  Plan load test scenario planner operations. Auto-activating skill for Performance Testing.
+name: load-test-scenario-planner
+description: 'Plan load test scenario planner operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: load test scenario planner, load test scenario planner
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "load test scenario planner", "load planner", "load".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "load test scenario planner", "load planner", "load".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Load Test Scenario Planner
 
 ## Overview

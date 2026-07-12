@@ -1,16 +1,24 @@
 ---
-name: "excel-macro-creator"
-description: |
-  Create excel macro creator operations. Auto-activating skill for Business Automation.
+name: excel-macro-creator
+description: 'Create excel macro creator operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: excel macro creator, excel macro creator
-  Part of the Business Automation skill category. Use when working with excel macro creator functionality. Trigger with phrases like "excel macro creator", "excel creator", "excel".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with excel macro
+  creator functionality. Trigger with phrases like "excel macro creator", "excel creator",
+  "excel".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Excel Macro Creator
 
 ## Overview

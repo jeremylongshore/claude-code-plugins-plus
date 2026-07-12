@@ -1,16 +1,23 @@
 ---
-name: "istio-service-mesh-config"
-description: |
-  Configure istio service mesh config operations. Auto-activating skill for DevOps Advanced.
+name: istio-service-mesh-config
+description: 'Configure istio service mesh config operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: istio service mesh config, istio service mesh config
-  Part of the DevOps Advanced skill category. Use when configuring systems or services. Trigger with phrases like "istio service mesh config", "istio config", "istio".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when configuring systems or services.
+  Trigger with phrases like "istio service mesh config", "istio config", "istio".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Istio Service Mesh Config
 
 ## Overview

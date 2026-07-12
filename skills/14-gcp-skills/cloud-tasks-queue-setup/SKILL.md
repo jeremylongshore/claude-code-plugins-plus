@@ -1,16 +1,24 @@
 ---
-name: "cloud-tasks-queue-setup"
-description: |
-  Configure cloud tasks queue setup operations. Auto-activating skill for GCP Skills.
+name: cloud-tasks-queue-setup
+description: 'Configure cloud tasks queue setup operations. Auto-activating skill
+  for GCP Skills.
+
   Triggers on: cloud tasks queue setup, cloud tasks queue setup
-  Part of the GCP Skills skill category. Use when working with cloud tasks queue setup functionality. Trigger with phrases like "cloud tasks queue setup", "cloud setup", "cloud".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with cloud tasks queue setup
+  functionality. Trigger with phrases like "cloud tasks queue setup", "cloud setup",
+  "cloud".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloud Tasks Queue Setup
 
 ## Overview

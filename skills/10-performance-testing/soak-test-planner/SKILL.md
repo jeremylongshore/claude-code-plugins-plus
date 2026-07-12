@@ -1,16 +1,23 @@
 ---
-name: "soak-test-planner"
-description: |
-  Plan soak test planner operations. Auto-activating skill for Performance Testing.
+name: soak-test-planner
+description: 'Plan soak test planner operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: soak test planner, soak test planner
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "soak test planner", "soak planner", "soak".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "soak test planner", "soak planner", "soak".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Soak Test Planner
 
 ## Overview

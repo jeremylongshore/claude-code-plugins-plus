@@ -1,16 +1,24 @@
 ---
-name: "gitlab-epic-creator"
-description: |
-  Create gitlab epic creator operations. Auto-activating skill for Enterprise Workflows.
+name: gitlab-epic-creator
+description: 'Create gitlab epic creator operations. Auto-activating skill for Enterprise
+  Workflows.
+
   Triggers on: gitlab epic creator, gitlab epic creator
-  Part of the Enterprise Workflows skill category. Use when working with gitlab epic creator functionality. Trigger with phrases like "gitlab epic creator", "gitlab creator", "gitlab".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with gitlab epic
+  creator functionality. Trigger with phrases like "gitlab epic creator", "gitlab
+  creator", "gitlab".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Gitlab Epic Creator
 
 ## Overview

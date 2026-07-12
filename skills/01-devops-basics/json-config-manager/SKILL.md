@@ -1,16 +1,23 @@
 ---
-name: "json-config-manager"
-description: |
-  Manage json config manager operations. Auto-activating skill for DevOps Basics.
+name: json-config-manager
+description: 'Manage json config manager operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: json config manager, json config manager
-  Part of the DevOps Basics skill category. Use when configuring systems or services. Trigger with phrases like "json config manager", "json manager", "json".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when configuring systems or services.
+  Trigger with phrases like "json config manager", "json manager", "json".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Json Config Manager
 
 ## Overview

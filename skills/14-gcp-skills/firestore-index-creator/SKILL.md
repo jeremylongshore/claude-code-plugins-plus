@@ -1,16 +1,24 @@
 ---
-name: "firestore-index-creator"
-description: |
-  Create firestore index creator operations. Auto-activating skill for GCP Skills.
+name: firestore-index-creator
+description: 'Create firestore index creator operations. Auto-activating skill for
+  GCP Skills.
+
   Triggers on: firestore index creator, firestore index creator
-  Part of the GCP Skills skill category. Use when working with firestore index creator functionality. Trigger with phrases like "firestore index creator", "firestore creator", "firestore".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with firestore index creator
+  functionality. Trigger with phrases like "firestore index creator", "firestore creator",
+  "firestore".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Firestore Index Creator
 
 ## Overview

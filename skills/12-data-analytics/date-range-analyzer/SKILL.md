@@ -1,16 +1,24 @@
 ---
-name: "date-range-analyzer"
-description: |
-  Analyze date range analyzer operations. Auto-activating skill for Data Analytics.
+name: date-range-analyzer
+description: 'Analyze date range analyzer operations. Auto-activating skill for Data
+  Analytics.
+
   Triggers on: date range analyzer, date range analyzer
-  Part of the Data Analytics skill category. Use when analyzing or auditing date range analyzer. Trigger with phrases like "date range analyzer", "date analyzer", "analyze date range r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when analyzing or auditing date range
+  analyzer. Trigger with phrases like "date range analyzer", "date analyzer", "analyze
+  date range r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Date Range Analyzer
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "kubernetes-configmap-handler"
-description: |
-  Configure kubernetes configmap handler operations. Auto-activating skill for DevOps Advanced.
+name: kubernetes-configmap-handler
+description: 'Configure kubernetes configmap handler operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: kubernetes configmap handler, kubernetes configmap handler
-  Part of the DevOps Advanced skill category. Use when configuring systems or services. Trigger with phrases like "kubernetes configmap handler", "kubernetes handler", "kubernetes".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when configuring systems or services.
+  Trigger with phrases like "kubernetes configmap handler", "kubernetes handler",
+  "kubernetes".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Kubernetes Configmap Handler
 
 ## Overview

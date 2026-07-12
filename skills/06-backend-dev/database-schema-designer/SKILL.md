@@ -1,16 +1,24 @@
 ---
-name: "database-schema-designer"
-description: |
-  Build database schema designer operations. Auto-activating skill for Backend Development.
+name: database-schema-designer
+description: 'Build database schema designer operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: database schema designer, database schema designer
-  Part of the Backend Development skill category. Use when working with database schema designer functionality. Trigger with phrases like "database schema designer", "database designer", "database".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with database schema
+  designer functionality. Trigger with phrases like "database schema designer", "database
+  designer", "database".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Database Schema Designer
 
 ## Overview

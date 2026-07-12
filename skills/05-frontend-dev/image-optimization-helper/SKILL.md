@@ -1,16 +1,24 @@
 ---
-name: "image-optimization-helper"
-description: |
-  Configure with image optimization helper operations. Auto-activating skill for Frontend Development.
+name: image-optimization-helper
+description: 'Configure with image optimization helper operations. Auto-activating
+  skill for Frontend Development.
+
   Triggers on: image optimization helper, image optimization helper
-  Part of the Frontend Development skill category. Use when working with image optimization helper functionality. Trigger with phrases like "image optimization helper", "image helper", "image".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with image optimization
+  helper functionality. Trigger with phrases like "image optimization helper", "image
+  helper", "image".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Image Optimization Helper
 
 ## Overview

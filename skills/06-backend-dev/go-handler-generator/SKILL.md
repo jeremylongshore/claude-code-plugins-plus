@@ -1,16 +1,24 @@
 ---
-name: "go-handler-generator"
-description: |
-  Generate go handler generator operations. Auto-activating skill for Backend Development.
+name: go-handler-generator
+description: 'Generate go handler generator operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: go handler generator, go handler generator
-  Part of the Backend Development skill category. Use when working with go handler generator functionality. Trigger with phrases like "go handler generator", "go generator", "go".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with go handler
+  generator functionality. Trigger with phrases like "go handler generator", "go generator",
+  "go".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Go Handler Generator
 
 ## Overview

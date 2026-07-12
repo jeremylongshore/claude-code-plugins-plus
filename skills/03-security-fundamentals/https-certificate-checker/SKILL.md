@@ -1,16 +1,24 @@
 ---
-name: "https-certificate-checker"
-description: |
-  Validate https certificate checker operations. Auto-activating skill for Security Fundamentals.
+name: https-certificate-checker
+description: 'Validate https certificate checker operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: https certificate checker, https certificate checker
-  Part of the Security Fundamentals skill category. Use when working with https certificate checker functionality. Trigger with phrases like "https certificate checker", "https checker", "https".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with https certificate
+  checker functionality. Trigger with phrases like "https certificate checker", "https
+  checker", "https".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Https Certificate Checker
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "github-actions-starter"
-description: |
-  Manage github actions starter operations. Auto-activating skill for DevOps Basics.
+name: github-actions-starter
+description: 'Manage github actions starter operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: github actions starter, github actions starter
-  Part of the DevOps Basics skill category. Use when working with github actions starter functionality. Trigger with phrases like "github actions starter", "github starter", "github".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with github actions starter
+  functionality. Trigger with phrases like "github actions starter", "github starter",
+  "github".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Github Actions Starter
 
 ## Overview

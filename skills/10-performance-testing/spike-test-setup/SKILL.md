@@ -1,16 +1,23 @@
 ---
-name: "spike-test-setup"
-description: |
-  Configure spike test setup operations. Auto-activating skill for Performance Testing.
+name: spike-test-setup
+description: 'Configure spike test setup operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: spike test setup, spike test setup
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "spike test setup", "spike setup", "spike".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "spike test setup", "spike setup", "spike".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Spike Test Setup
 
 ## Overview

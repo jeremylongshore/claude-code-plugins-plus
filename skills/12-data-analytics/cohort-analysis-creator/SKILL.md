@@ -1,16 +1,24 @@
 ---
-name: "cohort-analysis-creator"
-description: |
-  Create cohort analysis creator operations. Auto-activating skill for Data Analytics.
+name: cohort-analysis-creator
+description: 'Create cohort analysis creator operations. Auto-activating skill for
+  Data Analytics.
+
   Triggers on: cohort analysis creator, cohort analysis creator
-  Part of the Data Analytics skill category. Use when working with cohort analysis creator functionality. Trigger with phrases like "cohort analysis creator", "cohort creator", "cohort".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with cohort analysis
+  creator functionality. Trigger with phrases like "cohort analysis creator", "cohort
+  creator", "cohort".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Cohort Analysis Creator
 
 ## Overview

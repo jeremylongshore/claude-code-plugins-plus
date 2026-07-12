@@ -1,16 +1,23 @@
 ---
-name: "retry-logic-helper"
-description: |
-  Assist with retry logic helper operations. Auto-activating skill for API Integration.
+name: retry-logic-helper
+description: 'Assist with retry logic helper operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: retry logic helper, retry logic helper
-  Part of the API Integration skill category. Use when working with retry logic helper functionality. Trigger with phrases like "retry logic helper", "retry helper", "retry".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with retry logic helper
+  functionality. Trigger with phrases like "retry logic helper", "retry helper", "retry".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Retry Logic Helper
 
 ## Overview

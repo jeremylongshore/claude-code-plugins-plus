@@ -1,16 +1,24 @@
 ---
-name: "status-report-generator"
-description: |
-  Generate status report generator operations. Auto-activating skill for Enterprise Workflows.
+name: status-report-generator
+description: 'Generate status report generator operations. Auto-activating skill for
+  Enterprise Workflows.
+
   Triggers on: status report generator, status report generator
-  Part of the Enterprise Workflows skill category. Use when working with status report generator functionality. Trigger with phrases like "status report generator", "status generator", "status".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with status report
+  generator functionality. Trigger with phrases like "status report generator", "status
+  generator", "status".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Status Report Generator
 
 ## Overview

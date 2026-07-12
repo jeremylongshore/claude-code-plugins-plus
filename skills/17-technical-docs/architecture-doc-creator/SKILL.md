@@ -1,16 +1,24 @@
 ---
-name: "architecture-doc-creator"
-description: |
-  Create architecture doc creator operations. Auto-activating skill for Technical Documentation.
+name: architecture-doc-creator
+description: 'Create architecture doc creator operations. Auto-activating skill for
+  Technical Documentation.
+
   Triggers on: architecture doc creator, architecture doc creator
-  Part of the Technical Documentation skill category. Use when working with architecture doc creator functionality. Trigger with phrases like "architecture doc creator", "architecture creator", "architecture".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with architecture
+  doc creator functionality. Trigger with phrases like "architecture doc creator",
+  "architecture creator", "architecture".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Architecture Doc Creator
 
 ## Overview

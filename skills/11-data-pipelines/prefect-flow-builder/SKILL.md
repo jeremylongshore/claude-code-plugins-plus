@@ -1,16 +1,24 @@
 ---
-name: "prefect-flow-builder"
-description: |
-  Build prefect flow builder operations. Auto-activating skill for Data Pipelines.
+name: prefect-flow-builder
+description: 'Build prefect flow builder operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: prefect flow builder, prefect flow builder
-  Part of the Data Pipelines skill category. Use when working with prefect flow builder functionality. Trigger with phrases like "prefect flow builder", "prefect builder", "prefect".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with prefect flow builder
+  functionality. Trigger with phrases like "prefect flow builder", "prefect builder",
+  "prefect".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Prefect Flow Builder
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "conditional-request-helper"
-description: |
-  Configure with conditional request helper operations. Auto-activating skill for API Development.
+name: conditional-request-helper
+description: 'Configure with conditional request helper operations. Auto-activating
+  skill for API Development.
+
   Triggers on: conditional request helper, conditional request helper
-  Part of the API Development skill category. Use when working with conditional request helper functionality. Trigger with phrases like "conditional request helper", "conditional helper", "conditional".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with conditional request
+  helper functionality. Trigger with phrases like "conditional request helper", "conditional
+  helper", "conditional".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Conditional Request Helper
 
 ## Overview

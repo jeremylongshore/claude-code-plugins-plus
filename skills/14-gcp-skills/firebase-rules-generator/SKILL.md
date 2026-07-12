@@ -1,16 +1,24 @@
 ---
-name: "firebase-rules-generator"
-description: |
-  Generate firebase rules generator operations. Auto-activating skill for GCP Skills.
+name: firebase-rules-generator
+description: 'Generate firebase rules generator operations. Auto-activating skill
+  for GCP Skills.
+
   Triggers on: firebase rules generator, firebase rules generator
-  Part of the GCP Skills skill category. Use when working with firebase rules generator functionality. Trigger with phrases like "firebase rules generator", "firebase generator", "firebase".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with firebase rules generator
+  functionality. Trigger with phrases like "firebase rules generator", "firebase generator",
+  "firebase".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Firebase Rules Generator
 
 ## Overview

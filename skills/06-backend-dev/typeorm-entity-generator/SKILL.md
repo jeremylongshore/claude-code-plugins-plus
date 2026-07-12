@@ -1,16 +1,24 @@
 ---
-name: "typeorm-entity-generator"
-description: |
-  Generate typeorm entity generator operations. Auto-activating skill for Backend Development.
+name: typeorm-entity-generator
+description: 'Generate typeorm entity generator operations. Auto-activating skill
+  for Backend Development.
+
   Triggers on: typeorm entity generator, typeorm entity generator
-  Part of the Backend Development skill category. Use when working with typeorm entity generator functionality. Trigger with phrases like "typeorm entity generator", "typeorm generator", "typeorm".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with typeorm entity
+  generator functionality. Trigger with phrases like "typeorm entity generator", "typeorm
+  generator", "typeorm".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Typeorm Entity Generator
 
 ## Overview

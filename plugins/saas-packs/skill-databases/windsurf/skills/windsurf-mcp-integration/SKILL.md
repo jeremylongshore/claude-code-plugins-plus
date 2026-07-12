@@ -1,15 +1,24 @@
 ---
-name: "windsurf-mcp-integration"
-description: |
-  Manage integrate MCP servers with Windsurf for extended capabilities. Activate when users mention
+name: windsurf-mcp-integration
+description: 'Manage integrate MCP servers with Windsurf for extended capabilities.
+  Activate when users mention
+
   "mcp integration", "model context protocol", "external tools", "mcp server",
-  or "cascade tools". Handles MCP server configuration and integration. Use when working with windsurf mcp integration functionality. Trigger with phrases like "windsurf mcp integration", "windsurf integration", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*)"
+
+  or "cascade tools". Handles MCP server configuration and integration. Use when working
+  with windsurf mcp integration functionality. Trigger with phrases like "windsurf
+  mcp integration", "windsurf integration", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-mcp]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-mcp
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Mcp Integration
 

@@ -1,16 +1,24 @@
 ---
-name: "mermaid-class-diagram-generator"
-description: |
-  Generate mermaid class diagram generator operations. Auto-activating skill for Visual Content.
+name: mermaid-class-diagram-generator
+description: 'Generate mermaid class diagram generator operations. Auto-activating
+  skill for Visual Content.
+
   Triggers on: mermaid class diagram generator, mermaid class diagram generator
-  Part of the Visual Content skill category. Use when working with mermaid class diagram generator functionality. Trigger with phrases like "mermaid class diagram generator", "mermaid generator", "mermaid".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with mermaid class diagram
+  generator functionality. Trigger with phrases like "mermaid class diagram generator",
+  "mermaid generator", "mermaid".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Mermaid Class Diagram Generator
 
 ## Overview

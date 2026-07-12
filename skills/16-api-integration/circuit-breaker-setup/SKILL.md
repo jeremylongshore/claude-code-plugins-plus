@@ -1,16 +1,24 @@
 ---
-name: "circuit-breaker-setup"
-description: |
-  Configure circuit breaker setup operations. Auto-activating skill for API Integration.
+name: circuit-breaker-setup
+description: 'Configure circuit breaker setup operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: circuit breaker setup, circuit breaker setup
-  Part of the API Integration skill category. Use when working with circuit breaker setup functionality. Trigger with phrases like "circuit breaker setup", "circuit setup", "circuit".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with circuit breaker
+  setup functionality. Trigger with phrases like "circuit breaker setup", "circuit
+  setup", "circuit".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Circuit Breaker Setup
 
 ## Overview

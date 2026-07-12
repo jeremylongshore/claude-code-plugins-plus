@@ -1,16 +1,24 @@
 ---
-name: "npm-scripts-optimizer"
-description: |
-  Optimize npm scripts optimizer operations. Auto-activating skill for DevOps Basics.
+name: npm-scripts-optimizer
+description: 'Optimize npm scripts optimizer operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: npm scripts optimizer, npm scripts optimizer
-  Part of the DevOps Basics skill category. Use when working with npm scripts optimizer functionality. Trigger with phrases like "npm scripts optimizer", "npm optimizer", "npm".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with npm scripts optimizer
+  functionality. Trigger with phrases like "npm scripts optimizer", "npm optimizer",
+  "npm".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Npm Scripts Optimizer
 
 ## Overview

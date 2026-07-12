@@ -1,16 +1,24 @@
 ---
-name: "sql-injection-detector"
-description: |
-  Detect sql injection detector operations. Auto-activating skill for Security Fundamentals.
+name: sql-injection-detector
+description: 'Detect sql injection detector operations. Auto-activating skill for
+  Security Fundamentals.
+
   Triggers on: sql injection detector, sql injection detector
-  Part of the Security Fundamentals skill category. Use when working with sql injection detector functionality. Trigger with phrases like "sql injection detector", "sql detector", "sql".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with sql injection
+  detector functionality. Trigger with phrases like "sql injection detector", "sql
+  detector", "sql".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Sql Injection Detector
 
 ## Overview

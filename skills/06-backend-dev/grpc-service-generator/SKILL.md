@@ -1,16 +1,24 @@
 ---
-name: "grpc-service-generator"
-description: |
-  Generate grpc service generator operations. Auto-activating skill for Backend Development.
+name: grpc-service-generator
+description: 'Generate grpc service generator operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: grpc service generator, grpc service generator
-  Part of the Backend Development skill category. Use when working with grpc service generator functionality. Trigger with phrases like "grpc service generator", "grpc generator", "grpc".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with grpc service
+  generator functionality. Trigger with phrases like "grpc service generator", "grpc
+  generator", "grpc".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Grpc Service Generator
 
 ## Overview

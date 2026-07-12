@@ -1,16 +1,24 @@
 ---
-name: "csrf-protection-validator"
-description: |
-  Validate csrf protection validator operations. Auto-activating skill for Security Fundamentals.
+name: csrf-protection-validator
+description: 'Validate csrf protection validator operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: csrf protection validator, csrf protection validator
-  Part of the Security Fundamentals skill category. Use when working with csrf protection validator functionality. Trigger with phrases like "csrf protection validator", "csrf validator", "csrf".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with csrf protection
+  validator functionality. Trigger with phrases like "csrf protection validator",
+  "csrf validator", "csrf".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Csrf Protection Validator
 
 ## Overview

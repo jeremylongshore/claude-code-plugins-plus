@@ -1,16 +1,24 @@
 ---
-name: "database-schema-visualizer"
-description: |
-  Generate database schema visualizer operations. Auto-activating skill for Visual Content.
+name: database-schema-visualizer
+description: 'Generate database schema visualizer operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: database schema visualizer, database schema visualizer
-  Part of the Visual Content skill category. Use when working with database schema visualizer functionality. Trigger with phrases like "database schema visualizer", "database visualizer", "database".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with database schema
+  visualizer functionality. Trigger with phrases like "database schema visualizer",
+  "database visualizer", "database".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Database Schema Visualizer
 
 ## Overview

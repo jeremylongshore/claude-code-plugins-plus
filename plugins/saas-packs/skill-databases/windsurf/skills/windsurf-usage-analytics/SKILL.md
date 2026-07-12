@@ -1,15 +1,24 @@
 ---
-name: "windsurf-usage-analytics"
-description: |
-  Analyze team AI usage patterns and productivity metrics. Activate when users mention
+name: windsurf-usage-analytics
+description: 'Analyze team AI usage patterns and productivity metrics. Activate when
+  users mention
+
   "usage analytics", "ai metrics", "productivity tracking", "usage reports",
-  or "roi analysis". Handles analytics and reporting configuration. Use when working with windsurf usage analytics functionality. Trigger with phrases like "windsurf usage analytics", "windsurf analytics", "windsurf".
+
+  or "roi analysis". Handles analytics and reporting configuration. Use when working
+  with windsurf usage analytics functionality. Trigger with phrases like "windsurf
+  usage analytics", "windsurf analytics", "windsurf".
+
+  '
 allowed-tools: Read,Grep,Glob
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, analytics]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- analytics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Usage Analytics
 

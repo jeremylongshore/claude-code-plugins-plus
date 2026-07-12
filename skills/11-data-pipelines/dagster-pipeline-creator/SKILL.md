@@ -1,16 +1,24 @@
 ---
-name: "dagster-pipeline-creator"
-description: |
-  Create dagster pipeline creator operations. Auto-activating skill for Data Pipelines.
+name: dagster-pipeline-creator
+description: 'Create dagster pipeline creator operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: dagster pipeline creator, dagster pipeline creator
-  Part of the Data Pipelines skill category. Use when working with dagster pipeline creator functionality. Trigger with phrases like "dagster pipeline creator", "dagster creator", "dagster".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with dagster pipeline
+  creator functionality. Trigger with phrases like "dagster pipeline creator", "dagster
+  creator", "dagster".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Dagster Pipeline Creator
 
 ## Overview

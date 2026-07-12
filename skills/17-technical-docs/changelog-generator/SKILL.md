@@ -1,16 +1,24 @@
 ---
-name: "changelog-generator"
-description: |
-  Generate changelog generator operations. Auto-activating skill for Technical Documentation.
+name: changelog-generator
+description: 'Generate changelog generator operations. Auto-activating skill for Technical
+  Documentation.
+
   Triggers on: changelog generator, changelog generator
-  Part of the Technical Documentation skill category. Use when working with changelog generator functionality. Trigger with phrases like "changelog generator", "changelog generator", "changelog".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with changelog
+  generator functionality. Trigger with phrases like "changelog generator", "changelog
+  generator", "changelog".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Changelog Generator
 
 ## Overview

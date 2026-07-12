@@ -1,16 +1,24 @@
 ---
-name: "schema-validator"
-description: |
-  Validate schema validator operations. Auto-activating skill for Data Pipelines.
+name: schema-validator
+description: 'Validate schema validator operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: schema validator, schema validator
-  Part of the Data Pipelines skill category. Use when working with schema validator functionality. Trigger with phrases like "schema validator", "schema validator", "schema".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with schema validator
+  functionality. Trigger with phrases like "schema validator", "schema validator",
+  "schema".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Schema Validator
 
 ## Overview

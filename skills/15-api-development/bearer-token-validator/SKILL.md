@@ -1,16 +1,24 @@
 ---
-name: "bearer-token-validator"
-description: |
-  Validate bearer token validator operations. Auto-activating skill for API Development.
+name: bearer-token-validator
+description: 'Validate bearer token validator operations. Auto-activating skill for
+  API Development.
+
   Triggers on: bearer token validator, bearer token validator
-  Part of the API Development skill category. Use when working with bearer token validator functionality. Trigger with phrases like "bearer token validator", "bearer validator", "bearer".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with bearer token validator
+  functionality. Trigger with phrases like "bearer token validator", "bearer validator",
+  "bearer".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Bearer Token Validator
 
 ## Overview

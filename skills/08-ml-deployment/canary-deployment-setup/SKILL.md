@@ -1,16 +1,24 @@
 ---
-name: "canary-deployment-setup"
-description: |
-  Configure canary deployment setup operations. Auto-activating skill for ML Deployment.
+name: canary-deployment-setup
+description: 'Configure canary deployment setup operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: canary deployment setup, canary deployment setup
-  Part of the ML Deployment skill category. Use when deploying applications or services. Trigger with phrases like "canary deployment setup", "canary setup", "deploy canary ment setup".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when deploying applications or services.
+  Trigger with phrases like "canary deployment setup", "canary setup", "deploy canary
+  ment setup".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Canary Deployment Setup
 
 ## Overview

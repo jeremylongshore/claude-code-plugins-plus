@@ -1,16 +1,24 @@
 ---
-name: "code-splitting-helper"
-description: |
-  Configure with code splitting helper operations. Auto-activating skill for Frontend Development.
+name: code-splitting-helper
+description: 'Configure with code splitting helper operations. Auto-activating skill
+  for Frontend Development.
+
   Triggers on: code splitting helper, code splitting helper
-  Part of the Frontend Development skill category. Use when working with code splitting helper functionality. Trigger with phrases like "code splitting helper", "code helper", "code".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with code splitting
+  helper functionality. Trigger with phrases like "code splitting helper", "code helper",
+  "code".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Code Splitting Helper
 
 ## Overview

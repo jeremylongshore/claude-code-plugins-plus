@@ -1,16 +1,24 @@
 ---
-name: "insecure-deserialization-checker"
-description: |
-  Validate insecure deserialization checker operations. Auto-activating skill for Security Fundamentals.
+name: insecure-deserialization-checker
+description: 'Validate insecure deserialization checker operations. Auto-activating
+  skill for Security Fundamentals.
+
   Triggers on: insecure deserialization checker, insecure deserialization checker
-  Part of the Security Fundamentals skill category. Use when working with insecure deserialization checker functionality. Trigger with phrases like "insecure deserialization checker", "insecure checker", "insecure".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with insecure
+  deserialization checker functionality. Trigger with phrases like "insecure deserialization
+  checker", "insecure checker", "insecure".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Insecure Deserialization Checker
 
 ## Overview

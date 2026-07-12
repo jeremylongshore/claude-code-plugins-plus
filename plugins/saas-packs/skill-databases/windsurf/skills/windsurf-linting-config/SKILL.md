@@ -1,15 +1,24 @@
 ---
-name: "windsurf-linting-config"
-description: |
-  Configure and enforce code quality with AI-assisted linting. Activate when users mention
+name: windsurf-linting-config
+description: 'Configure and enforce code quality with AI-assisted linting. Activate
+  when users mention
+
   "configure linting", "eslint setup", "code quality rules", "linting configuration",
-  or "code standards". Handles linting tool configuration. Use when configuring systems or services. Trigger with phrases like "windsurf linting config", "windsurf config", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*)"
+
+  or "code standards". Handles linting tool configuration. Use when configuring systems
+  or services. Trigger with phrases like "windsurf linting config", "windsurf config",
+  "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-linting]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-linting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Linting Config
 

@@ -1,16 +1,24 @@
 ---
-name: "beam-pipeline-builder"
-description: |
-  Build beam pipeline builder operations. Auto-activating skill for Data Pipelines.
+name: beam-pipeline-builder
+description: 'Build beam pipeline builder operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: beam pipeline builder, beam pipeline builder
-  Part of the Data Pipelines skill category. Use when working with beam pipeline builder functionality. Trigger with phrases like "beam pipeline builder", "beam builder", "beam".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with beam pipeline builder
+  functionality. Trigger with phrases like "beam pipeline builder", "beam builder",
+  "beam".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Beam Pipeline Builder
 
 ## Overview

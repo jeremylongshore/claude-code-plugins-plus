@@ -1,16 +1,24 @@
 ---
-name: "k6-script-generator"
-description: |
-  Generate k6 script generator operations. Auto-activating skill for Performance Testing.
+name: k6-script-generator
+description: 'Generate k6 script generator operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: k6 script generator, k6 script generator
-  Part of the Performance Testing skill category. Use when working with k6 script generator functionality. Trigger with phrases like "k6 script generator", "k6 generator", "k6".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with k6 script
+  generator functionality. Trigger with phrases like "k6 script generator", "k6 generator",
+  "k6".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # K6 Script Generator
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
-name: "unittest-test-creator"
-description: |
-  Create unittest test creator operations. Auto-activating skill for Test Automation.
+name: unittest-test-creator
+description: 'Create unittest test creator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: unittest test creator, unittest test creator
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "unittest test creator", "unittest creator", "unittest".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "unittest test creator", "unittest creator", "unittest".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Unittest Test Creator
 
 ## Overview

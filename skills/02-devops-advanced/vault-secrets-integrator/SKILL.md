@@ -1,16 +1,24 @@
 ---
-name: "vault-secrets-integrator"
-description: |
-  Configure vault secrets integrator operations. Auto-activating skill for DevOps Advanced.
+name: vault-secrets-integrator
+description: 'Configure vault secrets integrator operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: vault secrets integrator, vault secrets integrator
-  Part of the DevOps Advanced skill category. Use when working with vault secrets integrator functionality. Trigger with phrases like "vault secrets integrator", "vault integrator", "vault".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with vault secrets
+  integrator functionality. Trigger with phrases like "vault secrets integrator",
+  "vault integrator", "vault".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Vault Secrets Integrator
 
 ## Overview

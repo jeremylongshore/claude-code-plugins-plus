@@ -1,16 +1,24 @@
 ---
-name: "cloud-function-generator"
-description: |
-  Generate cloud function generator operations. Auto-activating skill for GCP Skills.
+name: cloud-function-generator
+description: 'Generate cloud function generator operations. Auto-activating skill
+  for GCP Skills.
+
   Triggers on: cloud function generator, cloud function generator
-  Part of the GCP Skills skill category. Use when working with cloud function generator functionality. Trigger with phrases like "cloud function generator", "cloud generator", "cloud".
-allowed-tools: "Read, Write, Edit, Bash(gcloud:*)"
+
+  Part of the GCP Skills skill category. Use when working with cloud function generator
+  functionality. Trigger with phrases like "cloud function generator", "cloud generator",
+  "cloud".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- gcp
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloud Function Generator
 
 ## Overview

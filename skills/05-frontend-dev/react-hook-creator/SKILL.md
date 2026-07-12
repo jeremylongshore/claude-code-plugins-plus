@@ -1,16 +1,24 @@
 ---
-name: "react-hook-creator"
-description: |
-  Create react hook creator operations. Auto-activating skill for Frontend Development.
+name: react-hook-creator
+description: 'Create react hook creator operations. Auto-activating skill for Frontend
+  Development.
+
   Triggers on: react hook creator, react hook creator
-  Part of the Frontend Development skill category. Use when working with react hook creator functionality. Trigger with phrases like "react hook creator", "react creator", "react".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with react hook
+  creator functionality. Trigger with phrases like "react hook creator", "react creator",
+  "react".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # React Hook Creator
 
 ## Overview

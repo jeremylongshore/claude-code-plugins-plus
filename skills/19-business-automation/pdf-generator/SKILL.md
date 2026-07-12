@@ -1,16 +1,23 @@
 ---
-name: "pdf-generator"
-description: |
-  Generate pdf generator operations. Auto-activating skill for Business Automation.
+name: pdf-generator
+description: 'Generate pdf generator operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: pdf generator, pdf generator
-  Part of the Business Automation skill category. Use when working with pdf generator functionality. Trigger with phrases like "pdf generator", "pdf generator", "pdf".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with pdf generator
+  functionality. Trigger with phrases like "pdf generator", "pdf generator", "pdf".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Pdf Generator
 
 ## Overview

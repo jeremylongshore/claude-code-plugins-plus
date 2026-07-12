@@ -1,16 +1,24 @@
 ---
-name: "apdex-score-calculator"
-description: |
-  Calculate apdex score calculator operations. Auto-activating skill for Performance Testing.
+name: apdex-score-calculator
+description: 'Calculate apdex score calculator operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: apdex score calculator, apdex score calculator
-  Part of the Performance Testing skill category. Use when working with apdex score calculator functionality. Trigger with phrases like "apdex score calculator", "apdex calculator", "apdex".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with apdex score
+  calculator functionality. Trigger with phrases like "apdex score calculator", "apdex
+  calculator", "apdex".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Apdex Score Calculator
 
 ## Overview

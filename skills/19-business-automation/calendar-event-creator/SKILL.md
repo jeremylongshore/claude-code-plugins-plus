@@ -1,16 +1,24 @@
 ---
-name: "calendar-event-creator"
-description: |
-  Create calendar event creator operations. Auto-activating skill for Business Automation.
+name: calendar-event-creator
+description: 'Create calendar event creator operations. Auto-activating skill for
+  Business Automation.
+
   Triggers on: calendar event creator, calendar event creator
-  Part of the Business Automation skill category. Use when working with calendar event creator functionality. Trigger with phrases like "calendar event creator", "calendar creator", "calendar".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with calendar event
+  creator functionality. Trigger with phrases like "calendar event creator", "calendar
+  creator", "calendar".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Calendar Event Creator
 
 ## Overview

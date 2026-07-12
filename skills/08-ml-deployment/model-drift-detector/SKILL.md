@@ -1,16 +1,24 @@
 ---
-name: "model-drift-detector"
-description: |
-  Detect model drift detector operations. Auto-activating skill for ML Deployment.
+name: model-drift-detector
+description: 'Detect model drift detector operations. Auto-activating skill for ML
+  Deployment.
+
   Triggers on: model drift detector, model drift detector
-  Part of the ML Deployment skill category. Use when working with model drift detector functionality. Trigger with phrases like "model drift detector", "model detector", "model".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with model drift detector
+  functionality. Trigger with phrases like "model drift detector", "model detector",
+  "model".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Model Drift Detector
 
 ## Overview

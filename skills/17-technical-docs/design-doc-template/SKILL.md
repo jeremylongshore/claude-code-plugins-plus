@@ -1,16 +1,23 @@
 ---
-name: "design-doc-template"
-description: |
-  Build Doc Template - Auto-activating skill for Technical Documentation.
+name: design-doc-template
+description: 'Build Doc Template - Auto-activating skill for Technical Documentation.
+
   Triggers on: design doc template, design doc template
-  Part of the Technical Documentation skill category. Use when working with design doc template functionality. Trigger with phrases like "design doc template", "design template", "design".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with design
+  doc template functionality. Trigger with phrases like "design doc template", "design
+  template", "design".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Design Doc Template
 
 ## Overview

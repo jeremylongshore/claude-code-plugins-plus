@@ -1,16 +1,23 @@
 ---
-name: "faq-generator"
-description: |
-  Generate faq generator operations. Auto-activating skill for Technical Documentation.
+name: faq-generator
+description: 'Generate faq generator operations. Auto-activating skill for Technical
+  Documentation.
+
   Triggers on: faq generator, faq generator
-  Part of the Technical Documentation skill category. Use when working with faq generator functionality. Trigger with phrases like "faq generator", "faq generator", "faq".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with faq generator
+  functionality. Trigger with phrases like "faq generator", "faq generator", "faq".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Faq Generator
 
 ## Overview

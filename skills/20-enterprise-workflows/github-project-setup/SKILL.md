@@ -1,16 +1,24 @@
 ---
-name: "github-project-setup"
-description: |
-  Configure github project setup operations. Auto-activating skill for Enterprise Workflows.
+name: github-project-setup
+description: 'Configure github project setup operations. Auto-activating skill for
+  Enterprise Workflows.
+
   Triggers on: github project setup, github project setup
-  Part of the Enterprise Workflows skill category. Use when working with github project setup functionality. Trigger with phrases like "github project setup", "github setup", "github".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with github project
+  setup functionality. Trigger with phrases like "github project setup", "github setup",
+  "github".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Github Project Setup
 
 ## Overview

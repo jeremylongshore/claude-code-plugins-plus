@@ -1,16 +1,24 @@
 ---
-name: "environment-variables-handler"
-description: |
-  Manage environment variables handler operations. Auto-activating skill for DevOps Basics.
+name: environment-variables-handler
+description: 'Manage environment variables handler operations. Auto-activating skill
+  for DevOps Basics.
+
   Triggers on: environment variables handler, environment variables handler
-  Part of the DevOps Basics skill category. Use when working with environment variables handler functionality. Trigger with phrases like "environment variables handler", "environment handler", "environment".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with environment variables
+  handler functionality. Trigger with phrases like "environment variables handler",
+  "environment handler", "environment".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Environment Variables Handler
 
 ## Overview

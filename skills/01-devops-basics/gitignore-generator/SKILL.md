@@ -1,16 +1,24 @@
 ---
-name: "gitignore-generator"
-description: |
-  Generate gitignore generator operations. Auto-activating skill for DevOps Basics.
+name: gitignore-generator
+description: 'Generate gitignore generator operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: gitignore generator, gitignore generator
-  Part of the DevOps Basics skill category. Use when working with gitignore generator functionality. Trigger with phrases like "gitignore generator", "gitignore generator", "gitignore".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with gitignore generator
+  functionality. Trigger with phrases like "gitignore generator", "gitignore generator",
+  "gitignore".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Gitignore Generator
 
 ## Overview

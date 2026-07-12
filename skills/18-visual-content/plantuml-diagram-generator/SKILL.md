@@ -1,16 +1,24 @@
 ---
-name: "plantuml-diagram-generator"
-description: |
-  Generate plantuml diagram generator operations. Auto-activating skill for Visual Content.
+name: plantuml-diagram-generator
+description: 'Generate plantuml diagram generator operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: plantuml diagram generator, plantuml diagram generator
-  Part of the Visual Content skill category. Use when working with plantuml diagram generator functionality. Trigger with phrases like "plantuml diagram generator", "plantuml generator", "plantuml".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with plantuml diagram
+  generator functionality. Trigger with phrases like "plantuml diagram generator",
+  "plantuml generator", "plantuml".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Plantuml Diagram Generator
 
 ## Overview

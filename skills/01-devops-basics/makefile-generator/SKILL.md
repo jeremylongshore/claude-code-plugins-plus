@@ -1,16 +1,24 @@
 ---
-name: "makefile-generator"
-description: |
-  Generate makefile generator operations. Auto-activating skill for DevOps Basics.
+name: makefile-generator
+description: 'Generate makefile generator operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: makefile generator, makefile generator
-  Part of the DevOps Basics skill category. Use when working with makefile generator functionality. Trigger with phrases like "makefile generator", "makefile generator", "makefile".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with makefile generator
+  functionality. Trigger with phrases like "makefile generator", "makefile generator",
+  "makefile".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Makefile Generator
 
 ## Overview

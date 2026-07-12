@@ -1,16 +1,22 @@
 ---
-name: "timeout-handler"
-description: |
-  Manage timeout handler operations. Auto-activating skill for API Integration.
+name: timeout-handler
+description: 'Manage timeout handler operations. Auto-activating skill for API Integration.
+
   Triggers on: timeout handler, timeout handler
-  Part of the API Integration skill category. Use when working with timeout handler functionality. Trigger with phrases like "timeout handler", "timeout handler", "timeout".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with timeout handler
+  functionality. Trigger with phrases like "timeout handler", "timeout handler", "timeout".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Timeout Handler
 
 ## Overview

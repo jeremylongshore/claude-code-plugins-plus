@@ -1,16 +1,24 @@
 ---
-name: "performance-lighthouse-runner"
-description: |
-  Manage performance lighthouse runner operations. Auto-activating skill for Frontend Development.
+name: performance-lighthouse-runner
+description: 'Manage performance lighthouse runner operations. Auto-activating skill
+  for Frontend Development.
+
   Triggers on: performance lighthouse runner, performance lighthouse runner
-  Part of the Frontend Development skill category. Use when working with performance lighthouse runner functionality. Trigger with phrases like "performance lighthouse runner", "performance runner", "performance".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with performance
+  lighthouse runner functionality. Trigger with phrases like "performance lighthouse
+  runner", "performance runner", "performance".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Performance Lighthouse Runner
 
 ## Overview

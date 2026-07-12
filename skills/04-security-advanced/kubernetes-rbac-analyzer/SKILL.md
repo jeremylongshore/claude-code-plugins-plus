@@ -1,16 +1,24 @@
 ---
-name: "kubernetes-rbac-analyzer"
-description: |
-  Analyze kubernetes rbac analyzer operations. Auto-activating skill for Security Advanced.
+name: kubernetes-rbac-analyzer
+description: 'Analyze kubernetes rbac analyzer operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: kubernetes rbac analyzer, kubernetes rbac analyzer
-  Part of the Security Advanced skill category. Use when analyzing or auditing kubernetes rbac analyzer. Trigger with phrases like "kubernetes rbac analyzer", "kubernetes analyzer", "analyze kubernetes rbac r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when analyzing or auditing kubernetes
+  rbac analyzer. Trigger with phrases like "kubernetes rbac analyzer", "kubernetes
+  analyzer", "analyze kubernetes rbac r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Kubernetes Rbac Analyzer
 
 ## Overview

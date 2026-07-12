@@ -1,16 +1,24 @@
 ---
-name: "fixture-generator"
-description: |
-  Generate fixture generator operations. Auto-activating skill for Test Automation.
+name: fixture-generator
+description: 'Generate fixture generator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: fixture generator, fixture generator
-  Part of the Test Automation skill category. Use when working with fixture generator functionality. Trigger with phrases like "fixture generator", "fixture generator", "fixture".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when working with fixture generator
+  functionality. Trigger with phrases like "fixture generator", "fixture generator",
+  "fixture".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Fixture Generator
 
 ## Overview

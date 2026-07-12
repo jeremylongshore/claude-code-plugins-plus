@@ -1,16 +1,24 @@
 ---
-name: "percentile-analyzer"
-description: |
-  Analyze percentile analyzer operations. Auto-activating skill for Performance Testing.
+name: percentile-analyzer
+description: 'Analyze percentile analyzer operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: percentile analyzer, percentile analyzer
-  Part of the Performance Testing skill category. Use when analyzing or auditing percentile analyzer. Trigger with phrases like "percentile analyzer", "percentile analyzer", "analyze percentile r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when analyzing or auditing percentile
+  analyzer. Trigger with phrases like "percentile analyzer", "percentile analyzer",
+  "analyze percentile r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Percentile Analyzer
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "mindmap-generator"
-description: |
-  Generate mindmap generator operations. Auto-activating skill for Visual Content.
+name: mindmap-generator
+description: 'Generate mindmap generator operations. Auto-activating skill for Visual
+  Content.
+
   Triggers on: mindmap generator, mindmap generator
-  Part of the Visual Content skill category. Use when working with mindmap generator functionality. Trigger with phrases like "mindmap generator", "mindmap generator", "mindmap".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with mindmap generator
+  functionality. Trigger with phrases like "mindmap generator", "mindmap generator",
+  "mindmap".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Mindmap Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "sam-template-builder"
-description: |
-  Build sam template builder operations. Auto-activating skill for AWS Skills.
+name: sam-template-builder
+description: 'Build sam template builder operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: sam template builder, sam template builder
-  Part of the AWS Skills skill category. Use when working with sam template builder functionality. Trigger with phrases like "sam template builder", "sam builder", "sam".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with sam template builder
+  functionality. Trigger with phrases like "sam template builder", "sam builder",
+  "sam".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Sam Template Builder
 
 ## Overview

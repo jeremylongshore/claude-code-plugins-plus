@@ -1,16 +1,24 @@
 ---
-name: "hypermedia-link-generator"
-description: |
-  Generate hypermedia link generator operations. Auto-activating skill for API Development.
+name: hypermedia-link-generator
+description: 'Generate hypermedia link generator operations. Auto-activating skill
+  for API Development.
+
   Triggers on: hypermedia link generator, hypermedia link generator
-  Part of the API Development skill category. Use when working with hypermedia link generator functionality. Trigger with phrases like "hypermedia link generator", "hypermedia generator", "hypermedia".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with hypermedia link
+  generator functionality. Trigger with phrases like "hypermedia link generator",
+  "hypermedia generator", "hypermedia".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Hypermedia Link Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "tensorflow-savedmodel-creator"
-description: |
-  Create tensorflow savedmodel creator operations. Auto-activating skill for ML Deployment.
+name: tensorflow-savedmodel-creator
+description: 'Create tensorflow savedmodel creator operations. Auto-activating skill
+  for ML Deployment.
+
   Triggers on: tensorflow savedmodel creator, tensorflow savedmodel creator
-  Part of the ML Deployment skill category. Use when working with tensorflow savedmodel creator functionality. Trigger with phrases like "tensorflow savedmodel creator", "tensorflow creator", "tensorflow".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with tensorflow savedmodel
+  creator functionality. Trigger with phrases like "tensorflow savedmodel creator",
+  "tensorflow creator", "tensorflow".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Tensorflow Savedmodel Creator
 
 ## Overview

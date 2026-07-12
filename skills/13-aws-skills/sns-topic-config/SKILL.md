@@ -1,16 +1,23 @@
 ---
-name: "sns-topic-config"
-description: |
-  Configure sns topic config operations. Auto-activating skill for AWS Skills.
+name: sns-topic-config
+description: 'Configure sns topic config operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: sns topic config, sns topic config
-  Part of the AWS Skills skill category. Use when configuring systems or services. Trigger with phrases like "sns topic config", "sns config", "sns".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when configuring systems or services.
+  Trigger with phrases like "sns topic config", "sns config", "sns".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Sns Topic Config
 
 ## Overview

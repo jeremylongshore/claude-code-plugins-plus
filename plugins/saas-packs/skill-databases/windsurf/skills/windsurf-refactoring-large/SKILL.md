@@ -1,15 +1,25 @@
 ---
-name: "windsurf-refactoring-large"
-description: |
-  Manage large-scale refactoring with Cascade coordination. Activate when users mention
+name: windsurf-refactoring-large
+description: 'Manage large-scale refactoring with Cascade coordination. Activate when
+  users mention
+
   "large refactoring", "codebase migration", "architecture refactor", "major refactoring",
-  or "system-wide changes". Handles complex refactoring operations. Use when working with windsurf refactoring large functionality. Trigger with phrases like "windsurf refactoring large", "windsurf large", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*),Grep,Glob"
+
+  or "system-wide changes". Handles complex refactoring operations. Use when working
+  with windsurf refactoring large functionality. Trigger with phrases like "windsurf
+  refactoring large", "windsurf large", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*),Grep,Glob
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, migration, scaling]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- migration
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Refactoring Large
 

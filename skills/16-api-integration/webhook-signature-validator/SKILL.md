@@ -1,16 +1,24 @@
 ---
-name: "webhook-signature-validator"
-description: |
-  Validate webhook signature validator operations. Auto-activating skill for API Integration.
+name: webhook-signature-validator
+description: 'Validate webhook signature validator operations. Auto-activating skill
+  for API Integration.
+
   Triggers on: webhook signature validator, webhook signature validator
-  Part of the API Integration skill category. Use when working with webhook signature validator functionality. Trigger with phrases like "webhook signature validator", "webhook validator", "webhook".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with webhook signature
+  validator functionality. Trigger with phrases like "webhook signature validator",
+  "webhook validator", "webhook".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Webhook Signature Validator
 
 ## Overview

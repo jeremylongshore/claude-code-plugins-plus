@@ -1,15 +1,23 @@
 ---
-name: "windsurf-license-management"
-description: |
-  Manage Windsurf licenses and seat allocation. Activate when users mention
+name: windsurf-license-management
+description: 'Manage Windsurf licenses and seat allocation. Activate when users mention
+
   "license management", "seat allocation", "billing optimization", "user licenses",
-  or "subscription management". Handles license administration. Use when working with windsurf license management functionality. Trigger with phrases like "windsurf license management", "windsurf management", "windsurf".
+
+  or "subscription management". Handles license administration. Use when working with
+  windsurf license management functionality. Trigger with phrases like "windsurf license
+  management", "windsurf management", "windsurf".
+
+  '
 allowed-tools: Read,Write,Edit
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-license]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-license
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf License Management
 

@@ -1,16 +1,24 @@
 ---
-name: "network-diagram-generator"
-description: |
-  Generate network diagram generator operations. Auto-activating skill for Visual Content.
+name: network-diagram-generator
+description: 'Generate network diagram generator operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: network diagram generator, network diagram generator
-  Part of the Visual Content skill category. Use when working with network diagram generator functionality. Trigger with phrases like "network diagram generator", "network generator", "network".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with network diagram
+  generator functionality. Trigger with phrases like "network diagram generator",
+  "network generator", "network".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Network Diagram Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "security-group-generator"
-description: |
-  Generate security group generator operations. Auto-activating skill for AWS Skills.
+name: security-group-generator
+description: 'Generate security group generator operations. Auto-activating skill
+  for AWS Skills.
+
   Triggers on: security group generator, security group generator
-  Part of the AWS Skills skill category. Use when working with security group generator functionality. Trigger with phrases like "security group generator", "security generator", "security".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with security group generator
+  functionality. Trigger with phrases like "security group generator", "security generator",
+  "security".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Security Group Generator
 
 ## Overview

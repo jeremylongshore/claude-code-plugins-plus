@@ -1,16 +1,24 @@
 ---
-name: "connection-pool-analyzer"
-description: |
-  Analyze connection pool analyzer operations. Auto-activating skill for Performance Testing.
+name: connection-pool-analyzer
+description: 'Analyze connection pool analyzer operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: connection pool analyzer, connection pool analyzer
-  Part of the Performance Testing skill category. Use when analyzing or auditing connection pool analyzer. Trigger with phrases like "connection pool analyzer", "connection analyzer", "analyze connection pool r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when analyzing or auditing connection
+  pool analyzer. Trigger with phrases like "connection pool analyzer", "connection
+  analyzer", "analyze connection pool r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Connection Pool Analyzer
 
 ## Overview

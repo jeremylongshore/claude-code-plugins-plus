@@ -1,16 +1,24 @@
 ---
-name: "mermaid-state-diagram-creator"
-description: |
-  Create mermaid state diagram creator operations. Auto-activating skill for Visual Content.
+name: mermaid-state-diagram-creator
+description: 'Create mermaid state diagram creator operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: mermaid state diagram creator, mermaid state diagram creator
-  Part of the Visual Content skill category. Use when working with mermaid state diagram creator functionality. Trigger with phrases like "mermaid state diagram creator", "mermaid creator", "mermaid".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with mermaid state diagram
+  creator functionality. Trigger with phrases like "mermaid state diagram creator",
+  "mermaid creator", "mermaid".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Mermaid State Diagram Creator
 
 ## Overview

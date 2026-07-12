@@ -1,16 +1,24 @@
 ---
-name: "report-generator"
-description: |
-  Generate report generator operations. Auto-activating skill for Business Automation.
+name: report-generator
+description: 'Generate report generator operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: report generator, report generator
-  Part of the Business Automation skill category. Use when working with report generator functionality. Trigger with phrases like "report generator", "report generator", "report".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with report generator
+  functionality. Trigger with phrases like "report generator", "report generator",
+  "report".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Report Generator
 
 ## Overview

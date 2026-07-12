@@ -1,16 +1,24 @@
 ---
-name: "n8n-workflow-generator"
-description: |
-  Generate n8n workflow generator operations. Auto-activating skill for Business Automation.
+name: n8n-workflow-generator
+description: 'Generate n8n workflow generator operations. Auto-activating skill for
+  Business Automation.
+
   Triggers on: n8n workflow generator, n8n workflow generator
-  Part of the Business Automation skill category. Use when working with n8n workflow generator functionality. Trigger with phrases like "n8n workflow generator", "n8n generator", "n8n".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with n8n workflow
+  generator functionality. Trigger with phrases like "n8n workflow generator", "n8n
+  generator", "n8n".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # N8N Workflow Generator
 
 ## Overview

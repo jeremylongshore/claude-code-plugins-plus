@@ -1,16 +1,24 @@
 ---
-name: "helm-values-manager"
-description: |
-  Manage helm values manager operations. Auto-activating skill for DevOps Advanced.
+name: helm-values-manager
+description: 'Manage helm values manager operations. Auto-activating skill for DevOps
+  Advanced.
+
   Triggers on: helm values manager, helm values manager
-  Part of the DevOps Advanced skill category. Use when working with helm values manager functionality. Trigger with phrases like "helm values manager", "helm manager", "helm".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with helm values manager
+  functionality. Trigger with phrases like "helm values manager", "helm manager",
+  "helm".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Helm Values Manager
 
 ## Overview

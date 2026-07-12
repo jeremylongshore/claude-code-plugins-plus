@@ -1,16 +1,24 @@
 ---
-name: "data-augmentation-pipeline"
-description: |
-  Process data augmentation pipeline operations. Auto-activating skill for ML Training.
+name: data-augmentation-pipeline
+description: 'Process data augmentation pipeline operations. Auto-activating skill
+  for ML Training.
+
   Triggers on: data augmentation pipeline, data augmentation pipeline
-  Part of the ML Training skill category. Use when working with data augmentation pipeline functionality. Trigger with phrases like "data augmentation pipeline", "data pipeline", "data".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with data augmentation
+  pipeline functionality. Trigger with phrases like "data augmentation pipeline",
+  "data pipeline", "data".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Data Augmentation Pipeline
 
 ## Overview

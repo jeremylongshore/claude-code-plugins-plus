@@ -1,16 +1,24 @@
 ---
-name: "error-mapping-helper"
-description: |
-  Configure with error mapping helper operations. Auto-activating skill for API Integration.
+name: error-mapping-helper
+description: 'Configure with error mapping helper operations. Auto-activating skill
+  for API Integration.
+
   Triggers on: error mapping helper, error mapping helper
-  Part of the API Integration skill category. Use when working with error mapping helper functionality. Trigger with phrases like "error mapping helper", "error helper", "error".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with error mapping
+  helper functionality. Trigger with phrases like "error mapping helper", "error helper",
+  "error".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Error Mapping Helper
 
 ## Overview

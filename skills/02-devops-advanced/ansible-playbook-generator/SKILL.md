@@ -1,16 +1,24 @@
 ---
-name: "ansible-playbook-generator"
-description: |
-  Generate ansible playbook generator operations. Auto-activating skill for DevOps Advanced.
+name: ansible-playbook-generator
+description: 'Generate ansible playbook generator operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: ansible playbook generator, ansible playbook generator
-  Part of the DevOps Advanced skill category. Use when working with ansible playbook generator functionality. Trigger with phrases like "ansible playbook generator", "ansible generator", "ansible".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with ansible playbook
+  generator functionality. Trigger with phrases like "ansible playbook generator",
+  "ansible generator", "ansible".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Ansible Playbook Generator
 
 ## Overview

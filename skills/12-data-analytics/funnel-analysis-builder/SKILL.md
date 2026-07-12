@@ -1,16 +1,24 @@
 ---
-name: "funnel-analysis-builder"
-description: |
-  Build funnel analysis builder operations. Auto-activating skill for Data Analytics.
+name: funnel-analysis-builder
+description: 'Build funnel analysis builder operations. Auto-activating skill for
+  Data Analytics.
+
   Triggers on: funnel analysis builder, funnel analysis builder
-  Part of the Data Analytics skill category. Use when working with funnel analysis builder functionality. Trigger with phrases like "funnel analysis builder", "funnel builder", "funnel".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with funnel analysis
+  builder functionality. Trigger with phrases like "funnel analysis builder", "funnel
+  builder", "funnel".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Funnel Analysis Builder
 
 ## Overview

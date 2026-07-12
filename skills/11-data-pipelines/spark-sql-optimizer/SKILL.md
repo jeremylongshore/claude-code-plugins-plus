@@ -1,16 +1,24 @@
 ---
-name: "spark-sql-optimizer"
-description: |
-  Optimize spark sql optimizer operations. Auto-activating skill for Data Pipelines.
+name: spark-sql-optimizer
+description: 'Optimize spark sql optimizer operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: spark sql optimizer, spark sql optimizer
-  Part of the Data Pipelines skill category. Use when working with spark sql optimizer functionality. Trigger with phrases like "spark sql optimizer", "spark optimizer", "spark".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with spark sql optimizer
+  functionality. Trigger with phrases like "spark sql optimizer", "spark optimizer",
+  "spark".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Spark Sql Optimizer
 
 ## Overview
