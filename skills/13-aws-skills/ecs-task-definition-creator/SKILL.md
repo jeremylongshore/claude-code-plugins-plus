@@ -1,16 +1,24 @@
 ---
-name: "ecs-task-definition-creator"
-description: |
-  Create ecs task definition creator operations. Auto-activating skill for AWS Skills.
+name: ecs-task-definition-creator
+description: 'Create ecs task definition creator operations. Auto-activating skill
+  for AWS Skills.
+
   Triggers on: ecs task definition creator, ecs task definition creator
-  Part of the AWS Skills skill category. Use when working with ecs task definition creator functionality. Trigger with phrases like "ecs task definition creator", "ecs creator", "ecs".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with ecs task definition
+  creator functionality. Trigger with phrases like "ecs task definition creator",
+  "ecs creator", "ecs".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Ecs Task Definition Creator
 
 ## Overview

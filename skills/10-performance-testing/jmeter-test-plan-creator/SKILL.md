@@ -1,16 +1,23 @@
 ---
-name: "jmeter-test-plan-creator"
-description: |
-  Create jmeter test plan creator operations. Auto-activating skill for Performance Testing.
+name: jmeter-test-plan-creator
+description: 'Create jmeter test plan creator operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: jmeter test plan creator, jmeter test plan creator
-  Part of the Performance Testing skill category. Use when writing or running tests. Trigger with phrases like "jmeter test plan creator", "jmeter creator", "jmeter".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when writing or running tests.
+  Trigger with phrases like "jmeter test plan creator", "jmeter creator", "jmeter".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Jmeter Test Plan Creator
 
 ## Overview

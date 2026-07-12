@@ -1,16 +1,24 @@
 ---
-name: "feature-store-connector"
-description: |
-  Execute feature store connector operations. Auto-activating skill for ML Deployment.
+name: feature-store-connector
+description: 'Execute feature store connector operations. Auto-activating skill for
+  ML Deployment.
+
   Triggers on: feature store connector, feature store connector
-  Part of the ML Deployment skill category. Use when working with feature store connector functionality. Trigger with phrases like "feature store connector", "feature connector", "feature".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with feature store connector
+  functionality. Trigger with phrases like "feature store connector", "feature connector",
+  "feature".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Feature Store Connector
 
 ## Overview

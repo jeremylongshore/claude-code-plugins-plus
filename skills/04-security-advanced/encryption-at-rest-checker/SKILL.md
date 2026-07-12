@@ -1,16 +1,24 @@
 ---
-name: "encryption-at-rest-checker"
-description: |
-  Validate encryption at rest checker operations. Auto-activating skill for Security Advanced.
+name: encryption-at-rest-checker
+description: 'Validate encryption at rest checker operations. Auto-activating skill
+  for Security Advanced.
+
   Triggers on: encryption at rest checker, encryption at rest checker
-  Part of the Security Advanced skill category. Use when working with encryption at rest checker functionality. Trigger with phrases like "encryption at rest checker", "encryption checker", "encryption".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with encryption at
+  rest checker functionality. Trigger with phrases like "encryption at rest checker",
+  "encryption checker", "encryption".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Encryption At Rest Checker
 
 ## Overview

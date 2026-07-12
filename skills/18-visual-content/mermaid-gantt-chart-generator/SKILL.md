@@ -1,16 +1,24 @@
 ---
-name: "mermaid-gantt-chart-generator"
-description: |
-  Generate mermaid gantt chart generator operations. Auto-activating skill for Visual Content.
+name: mermaid-gantt-chart-generator
+description: 'Generate mermaid gantt chart generator operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: mermaid gantt chart generator, mermaid gantt chart generator
-  Part of the Visual Content skill category. Use when working with mermaid gantt chart generator functionality. Trigger with phrases like "mermaid gantt chart generator", "mermaid generator", "mermaid".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with mermaid gantt chart
+  generator functionality. Trigger with phrases like "mermaid gantt chart generator",
+  "mermaid generator", "mermaid".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Mermaid Gantt Chart Generator
 
 ## Overview

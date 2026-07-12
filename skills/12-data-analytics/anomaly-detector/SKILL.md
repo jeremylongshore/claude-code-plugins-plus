@@ -1,16 +1,23 @@
 ---
-name: "anomaly-detector"
-description: |
-  Detect anomaly detector operations. Auto-activating skill for Data Analytics.
+name: anomaly-detector
+description: 'Detect anomaly detector operations. Auto-activating skill for Data Analytics.
+
   Triggers on: anomaly detector, anomaly detector
-  Part of the Data Analytics skill category. Use when working with anomaly detector functionality. Trigger with phrases like "anomaly detector", "anomaly detector", "anomaly".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with anomaly detector
+  functionality. Trigger with phrases like "anomaly detector", "anomaly detector",
+  "anomaly".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Anomaly Detector
 
 ## Overview

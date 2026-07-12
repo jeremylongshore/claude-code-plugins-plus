@@ -1,16 +1,23 @@
 ---
-name: "fluentd-config-generator"
-description: |
-  Generate fluentd config generator operations. Auto-activating skill for DevOps Advanced.
+name: fluentd-config-generator
+description: 'Generate fluentd config generator operations. Auto-activating skill
+  for DevOps Advanced.
+
   Triggers on: fluentd config generator, fluentd config generator
-  Part of the DevOps Advanced skill category. Use when configuring systems or services. Trigger with phrases like "fluentd config generator", "fluentd generator", "fluentd".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when configuring systems or services.
+  Trigger with phrases like "fluentd config generator", "fluentd generator", "fluentd".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Fluentd Config Generator
 
 ## Overview

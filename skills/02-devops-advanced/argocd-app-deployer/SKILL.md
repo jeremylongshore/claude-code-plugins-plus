@@ -1,16 +1,24 @@
 ---
-name: "argocd-app-deployer"
-description: |
-  Deploy argocd app deployer operations. Auto-activating skill for DevOps Advanced.
+name: argocd-app-deployer
+description: 'Deploy argocd app deployer operations. Auto-activating skill for DevOps
+  Advanced.
+
   Triggers on: argocd app deployer, argocd app deployer
-  Part of the DevOps Advanced skill category. Use when deploying applications or services. Trigger with phrases like "argocd app deployer", "argocd deployer", "deploy argocd app er".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when deploying applications or services.
+  Trigger with phrases like "argocd app deployer", "argocd deployer", "deploy argocd
+  app er".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Argocd App Deployer
 
 ## Overview

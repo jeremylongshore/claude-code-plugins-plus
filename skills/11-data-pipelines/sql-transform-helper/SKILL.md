@@ -1,16 +1,23 @@
 ---
-name: "sql-transform-helper"
-description: |
-  Assist with sql transform helper operations. Auto-activating skill for Data Pipelines.
+name: sql-transform-helper
+description: 'Assist with sql transform helper operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: sql transform helper, sql transform helper
-  Part of the Data Pipelines skill category. Use when working with sql transform helper functionality. Trigger with phrases like "sql transform helper", "sql helper", "sql".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with sql transform helper
+  functionality. Trigger with phrases like "sql transform helper", "sql helper", "sql".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Sql Transform Helper
 
 ## Overview

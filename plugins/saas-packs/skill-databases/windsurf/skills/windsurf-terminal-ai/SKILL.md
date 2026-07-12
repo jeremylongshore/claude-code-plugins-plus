@@ -1,15 +1,24 @@
 ---
-name: "windsurf-terminal-ai"
-description: |
-  Execute leverage AI-assisted terminal commands and debugging. Activate when users mention
+name: windsurf-terminal-ai
+description: 'Execute leverage AI-assisted terminal commands and debugging. Activate
+  when users mention
+
   "terminal help", "command suggestion", "debug terminal", "shell assistance",
-  or "cli help". Handles AI-enhanced terminal operations. Use when working with windsurf terminal ai functionality. Trigger with phrases like "windsurf terminal ai", "windsurf ai", "windsurf".
-allowed-tools: "Read,Bash(cmd:*),Grep"
+
+  or "cli help". Handles AI-enhanced terminal operations. Use when working with windsurf
+  terminal ai functionality. Trigger with phrases like "windsurf terminal ai", "windsurf
+  ai", "windsurf".
+
+  '
+allowed-tools: Read,Bash(cmd:*),Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, debugging]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Terminal Ai
 

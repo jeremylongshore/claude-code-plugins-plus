@@ -1,16 +1,24 @@
 ---
-name: "migration-guide-creator"
-description: |
-  Create migration guide creator operations. Auto-activating skill for Technical Documentation.
+name: migration-guide-creator
+description: 'Create migration guide creator operations. Auto-activating skill for
+  Technical Documentation.
+
   Triggers on: migration guide creator, migration guide creator
-  Part of the Technical Documentation skill category. Use when working with migration guide creator functionality. Trigger with phrases like "migration guide creator", "migration creator", "migration".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with migration
+  guide creator functionality. Trigger with phrases like "migration guide creator",
+  "migration creator", "migration".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Migration Guide Creator
 
 ## Overview

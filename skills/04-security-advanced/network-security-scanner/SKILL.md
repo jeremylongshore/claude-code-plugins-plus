@@ -1,16 +1,24 @@
 ---
-name: "network-security-scanner"
-description: |
-  Scan network security scanner operations. Auto-activating skill for Security Advanced.
+name: network-security-scanner
+description: 'Scan network security scanner operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: network security scanner, network security scanner
-  Part of the Security Advanced skill category. Use when working with network security scanner functionality. Trigger with phrases like "network security scanner", "network scanner", "network".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with network security
+  scanner functionality. Trigger with phrases like "network security scanner", "network
+  scanner", "network".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Network Security Scanner
 
 ## Overview

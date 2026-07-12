@@ -1,16 +1,24 @@
 ---
-name: "metric-calculator"
-description: |
-  Configure and manage - Calculate metric calculator operations. Auto-activating skill for Data Analytics.
+name: metric-calculator
+description: 'Configure and manage - Calculate metric calculator operations. Auto-activating
+  skill for Data Analytics.
+
   Triggers on: metric calculator, metric calculator
-  Part of the Data Analytics skill category. Use when working with metric calculator functionality. Trigger with phrases like "metric calculator", "metric calculator", "metric".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with metric calculator
+  functionality. Trigger with phrases like "metric calculator", "metric calculator",
+  "metric".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Metric Calculator
 
 ## Overview

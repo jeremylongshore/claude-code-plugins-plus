@@ -1,16 +1,24 @@
 ---
-name: "sdk-documentation-generator"
-description: |
-  Generate sdk documentation generator operations. Auto-activating skill for Technical Documentation.
+name: sdk-documentation-generator
+description: 'Generate sdk documentation generator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: sdk documentation generator, sdk documentation generator
-  Part of the Technical Documentation skill category. Use when working with sdk documentation generator functionality. Trigger with phrases like "sdk documentation generator", "sdk generator", "sdk".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with sdk documentation
+  generator functionality. Trigger with phrases like "sdk documentation generator",
+  "sdk generator", "sdk".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Sdk Documentation Generator
 
 ## Overview

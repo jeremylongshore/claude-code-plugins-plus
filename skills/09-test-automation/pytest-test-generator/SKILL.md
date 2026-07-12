@@ -1,16 +1,23 @@
 ---
-name: "pytest-test-generator"
-description: |
-  Generate pytest test generator operations. Auto-activating skill for Test Automation.
+name: pytest-test-generator
+description: 'Generate pytest test generator operations. Auto-activating skill for
+  Test Automation.
+
   Triggers on: pytest test generator, pytest test generator
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "pytest test generator", "pytest generator", "pytest".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "pytest test generator", "pytest generator", "pytest".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Pytest Test Generator
 
 ## Overview

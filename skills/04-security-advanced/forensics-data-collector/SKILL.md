@@ -1,16 +1,24 @@
 ---
-name: "forensics-data-collector"
-description: |
-  Process forensics data collector operations. Auto-activating skill for Security Advanced.
+name: forensics-data-collector
+description: 'Process forensics data collector operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: forensics data collector, forensics data collector
-  Part of the Security Advanced skill category. Use when working with forensics data collector functionality. Trigger with phrases like "forensics data collector", "forensics collector", "forensics".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with forensics data
+  collector functionality. Trigger with phrases like "forensics data collector", "forensics
+  collector", "forensics".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Forensics Data Collector
 
 ## Overview

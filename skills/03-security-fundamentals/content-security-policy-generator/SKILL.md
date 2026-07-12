@@ -1,16 +1,24 @@
 ---
-name: "content-security-policy-generator"
-description: |
-  Generate content security policy generator operations. Auto-activating skill for Security Fundamentals.
+name: content-security-policy-generator
+description: 'Generate content security policy generator operations. Auto-activating
+  skill for Security Fundamentals.
+
   Triggers on: content security policy generator, content security policy generator
-  Part of the Security Fundamentals skill category. Use when working with content security policy generator functionality. Trigger with phrases like "content security policy generator", "content generator", "content".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with content
+  security policy generator functionality. Trigger with phrases like "content security
+  policy generator", "content generator", "content".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Content Security Policy Generator
 
 ## Overview

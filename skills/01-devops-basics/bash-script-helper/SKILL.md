@@ -1,16 +1,23 @@
 ---
-name: "bash-script-helper"
-description: |
-  Configure with bash script helper operations. Auto-activating skill for DevOps Basics.
+name: bash-script-helper
+description: 'Configure with bash script helper operations. Auto-activating skill
+  for DevOps Basics.
+
   Triggers on: bash script helper, bash script helper
-  Part of the DevOps Basics skill category. Use when working with bash script helper functionality. Trigger with phrases like "bash script helper", "bash helper", "bash".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with bash script helper
+  functionality. Trigger with phrases like "bash script helper", "bash helper", "bash".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Bash Script Helper
 
 ## Overview

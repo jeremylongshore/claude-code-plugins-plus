@@ -1,16 +1,24 @@
 ---
-name: "soc2-compliance-checker"
-description: |
-  Validate soc2 compliance checker operations. Auto-activating skill for Security Advanced.
+name: soc2-compliance-checker
+description: 'Validate soc2 compliance checker operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: soc2 compliance checker, soc2 compliance checker
-  Part of the Security Advanced skill category. Use when working with soc2 compliance checker functionality. Trigger with phrases like "soc2 compliance checker", "soc2 checker", "soc2".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with soc2 compliance
+  checker functionality. Trigger with phrases like "soc2 compliance checker", "soc2
+  checker", "soc2".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Soc2 Compliance Checker
 
 ## Overview

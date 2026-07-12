@@ -1,16 +1,24 @@
 ---
-name: "vpc-network-designer"
-description: |
-  Build vpc network designer operations. Auto-activating skill for AWS Skills.
+name: vpc-network-designer
+description: 'Build vpc network designer operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: vpc network designer, vpc network designer
-  Part of the AWS Skills skill category. Use when working with vpc network designer functionality. Trigger with phrases like "vpc network designer", "vpc designer", "vpc".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with vpc network designer
+  functionality. Trigger with phrases like "vpc network designer", "vpc designer",
+  "vpc".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Vpc Network Designer
 
 ## Overview

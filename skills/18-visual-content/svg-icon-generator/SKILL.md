@@ -1,16 +1,24 @@
 ---
-name: "svg-icon-generator"
-description: |
-  Generate svg icon generator operations. Auto-activating skill for Visual Content.
+name: svg-icon-generator
+description: 'Generate svg icon generator operations. Auto-activating skill for Visual
+  Content.
+
   Triggers on: svg icon generator, svg icon generator
-  Part of the Visual Content skill category. Use when working with svg icon generator functionality. Trigger with phrases like "svg icon generator", "svg generator", "svg".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with svg icon generator
+  functionality. Trigger with phrases like "svg icon generator", "svg generator",
+  "svg".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Svg Icon Generator
 
 ## Overview

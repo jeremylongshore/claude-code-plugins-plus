@@ -1,16 +1,22 @@
 ---
-name: "secret-scanner"
-description: |
-  Scan secret scanner operations. Auto-activating skill for Security Fundamentals.
+name: secret-scanner
+description: 'Scan secret scanner operations. Auto-activating skill for Security Fundamentals.
+
   Triggers on: secret scanner, secret scanner
-  Part of the Security Fundamentals skill category. Use when working with secret scanner functionality. Trigger with phrases like "secret scanner", "secret scanner", "secret".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with secret scanner
+  functionality. Trigger with phrases like "secret scanner", "secret scanner", "secret".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Secret Scanner
 
 ## Overview

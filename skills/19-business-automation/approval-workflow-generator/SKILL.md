@@ -1,16 +1,24 @@
 ---
-name: "approval-workflow-generator"
-description: |
-  Generate approval workflow generator operations. Auto-activating skill for Business Automation.
+name: approval-workflow-generator
+description: 'Generate approval workflow generator operations. Auto-activating skill
+  for Business Automation.
+
   Triggers on: approval workflow generator, approval workflow generator
-  Part of the Business Automation skill category. Use when working with approval workflow generator functionality. Trigger with phrases like "approval workflow generator", "approval generator", "approval".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with approval workflow
+  generator functionality. Trigger with phrases like "approval workflow generator",
+  "approval generator", "approval".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Approval Workflow Generator
 
 ## Overview

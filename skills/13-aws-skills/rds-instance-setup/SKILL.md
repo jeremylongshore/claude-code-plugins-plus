@@ -1,16 +1,23 @@
 ---
-name: "rds-instance-setup"
-description: |
-  Configure rds instance setup operations. Auto-activating skill for AWS Skills.
+name: rds-instance-setup
+description: 'Configure rds instance setup operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: rds instance setup, rds instance setup
-  Part of the AWS Skills skill category. Use when working with rds instance setup functionality. Trigger with phrases like "rds instance setup", "rds setup", "rds".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with rds instance setup
+  functionality. Trigger with phrases like "rds instance setup", "rds setup", "rds".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Rds Instance Setup
 
 ## Overview

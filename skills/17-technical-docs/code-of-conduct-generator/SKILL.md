@@ -1,16 +1,24 @@
 ---
-name: "code-of-conduct-generator"
-description: |
-  Generate code of conduct generator operations. Auto-activating skill for Technical Documentation.
+name: code-of-conduct-generator
+description: 'Generate code of conduct generator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: code of conduct generator, code of conduct generator
-  Part of the Technical Documentation skill category. Use when working with code of conduct generator functionality. Trigger with phrases like "code of conduct generator", "code generator", "code".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with code of
+  conduct generator functionality. Trigger with phrases like "code of conduct generator",
+  "code generator", "code".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Code Of Conduct Generator
 
 ## Overview

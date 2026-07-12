@@ -1,16 +1,24 @@
 ---
-name: "ansible-role-creator"
-description: |
-  Create ansible role creator operations. Auto-activating skill for DevOps Advanced.
+name: ansible-role-creator
+description: 'Create ansible role creator operations. Auto-activating skill for DevOps
+  Advanced.
+
   Triggers on: ansible role creator, ansible role creator
-  Part of the DevOps Advanced skill category. Use when working with ansible role creator functionality. Trigger with phrases like "ansible role creator", "ansible creator", "ansible".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Advanced skill category. Use when working with ansible role creator
+  functionality. Trigger with phrases like "ansible role creator", "ansible creator",
+  "ansible".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- infrastructure
+compatibility: Designed for Claude Code
 ---
-
 # Ansible Role Creator
 
 ## Overview

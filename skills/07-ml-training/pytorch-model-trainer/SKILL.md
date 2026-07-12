@@ -1,16 +1,24 @@
 ---
-name: "pytorch-model-trainer"
-description: |
-  Build pytorch model trainer operations. Auto-activating skill for ML Training.
+name: pytorch-model-trainer
+description: 'Build pytorch model trainer operations. Auto-activating skill for ML
+  Training.
+
   Triggers on: pytorch model trainer, pytorch model trainer
-  Part of the ML Training skill category. Use when working with pytorch model trainer functionality. Trigger with phrases like "pytorch model trainer", "pytorch trainer", "pytorch".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with pytorch model trainer
+  functionality. Trigger with phrases like "pytorch model trainer", "pytorch trainer",
+  "pytorch".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Pytorch Model Trainer
 
 ## Overview

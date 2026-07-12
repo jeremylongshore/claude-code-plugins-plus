@@ -1,16 +1,23 @@
 ---
-name: "connection-pooling-config"
-description: |
-  Configure connection pooling config operations. Auto-activating skill for API Integration.
+name: connection-pooling-config
+description: 'Configure connection pooling config operations. Auto-activating skill
+  for API Integration.
+
   Triggers on: connection pooling config, connection pooling config
-  Part of the API Integration skill category. Use when configuring systems or services. Trigger with phrases like "connection pooling config", "connection config", "connection".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when configuring systems or services.
+  Trigger with phrases like "connection pooling config", "connection config", "connection".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Connection Pooling Config
 
 ## Overview

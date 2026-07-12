@@ -1,16 +1,24 @@
 ---
-name: "tutorial-outline-creator"
-description: |
-  Create tutorial outline creator operations. Auto-activating skill for Technical Documentation.
+name: tutorial-outline-creator
+description: 'Create tutorial outline creator operations. Auto-activating skill for
+  Technical Documentation.
+
   Triggers on: tutorial outline creator, tutorial outline creator
-  Part of the Technical Documentation skill category. Use when working with tutorial outline creator functionality. Trigger with phrases like "tutorial outline creator", "tutorial creator", "tutorial".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with tutorial
+  outline creator functionality. Trigger with phrases like "tutorial outline creator",
+  "tutorial creator", "tutorial".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Tutorial Outline Creator
 
 ## Overview

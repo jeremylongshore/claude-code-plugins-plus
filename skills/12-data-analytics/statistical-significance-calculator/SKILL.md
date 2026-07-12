@@ -1,16 +1,24 @@
 ---
-name: "statistical-significance-calculator"
-description: |
-  Configure and manage - Calculate statistical significance calculator operations. Auto-activating skill for Data Analytics.
+name: statistical-significance-calculator
+description: 'Configure and manage - Calculate statistical significance calculator
+  operations. Auto-activating skill for Data Analytics.
+
   Triggers on: statistical significance calculator, statistical significance calculator
-  Part of the Data Analytics skill category. Use when working with statistical significance calculator functionality. Trigger with phrases like "statistical significance calculator", "statistical calculator", "statistical".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with statistical significance
+  calculator functionality. Trigger with phrases like "statistical significance calculator",
+  "statistical calculator", "statistical".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Statistical Significance Calculator
 
 ## Overview

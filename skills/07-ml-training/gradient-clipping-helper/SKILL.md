@@ -1,16 +1,24 @@
 ---
-name: "gradient-clipping-helper"
-description: |
-  Configure with gradient clipping helper operations. Auto-activating skill for ML Training.
+name: gradient-clipping-helper
+description: 'Configure with gradient clipping helper operations. Auto-activating
+  skill for ML Training.
+
   Triggers on: gradient clipping helper, gradient clipping helper
-  Part of the ML Training skill category. Use when working with gradient clipping helper functionality. Trigger with phrases like "gradient clipping helper", "gradient helper", "gradient".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with gradient clipping
+  helper functionality. Trigger with phrases like "gradient clipping helper", "gradient
+  helper", "gradient".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Gradient Clipping Helper
 
 ## Overview

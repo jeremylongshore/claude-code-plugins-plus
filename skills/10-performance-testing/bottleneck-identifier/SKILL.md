@@ -1,16 +1,24 @@
 ---
-name: "bottleneck-identifier"
-description: |
-  Execute bottleneck identifier operations. Auto-activating skill for Performance Testing.
+name: bottleneck-identifier
+description: 'Execute bottleneck identifier operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: bottleneck identifier, bottleneck identifier
-  Part of the Performance Testing skill category. Use when working with bottleneck identifier functionality. Trigger with phrases like "bottleneck identifier", "bottleneck identifier", "bottleneck".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with bottleneck
+  identifier functionality. Trigger with phrases like "bottleneck identifier", "bottleneck
+  identifier", "bottleneck".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Bottleneck Identifier
 
 ## Overview

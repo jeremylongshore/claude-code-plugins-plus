@@ -1,16 +1,24 @@
 ---
-name: "deprecation-notice-generator"
-description: |
-  Generate deprecation notice generator operations. Auto-activating skill for Technical Documentation.
+name: deprecation-notice-generator
+description: 'Generate deprecation notice generator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: deprecation notice generator, deprecation notice generator
-  Part of the Technical Documentation skill category. Use when working with deprecation notice generator functionality. Trigger with phrases like "deprecation notice generator", "deprecation generator", "deprecation".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with deprecation
+  notice generator functionality. Trigger with phrases like "deprecation notice generator",
+  "deprecation generator", "deprecation".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Deprecation Notice Generator
 
 ## Overview

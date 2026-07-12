@@ -1,16 +1,24 @@
 ---
-name: "lambda-layer-creator"
-description: |
-  Create lambda layer creator operations. Auto-activating skill for AWS Skills.
+name: lambda-layer-creator
+description: 'Create lambda layer creator operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: lambda layer creator, lambda layer creator
-  Part of the AWS Skills skill category. Use when working with lambda layer creator functionality. Trigger with phrases like "lambda layer creator", "lambda creator", "lambda".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with lambda layer creator
+  functionality. Trigger with phrases like "lambda layer creator", "lambda creator",
+  "lambda".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Lambda Layer Creator
 
 ## Overview

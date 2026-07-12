@@ -1,16 +1,24 @@
 ---
-name: "incremental-load-setup"
-description: |
-  Configure incremental load setup operations. Auto-activating skill for Data Pipelines.
+name: incremental-load-setup
+description: 'Configure incremental load setup operations. Auto-activating skill for
+  Data Pipelines.
+
   Triggers on: incremental load setup, incremental load setup
-  Part of the Data Pipelines skill category. Use when working with incremental load setup functionality. Trigger with phrases like "incremental load setup", "incremental setup", "incremental".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with incremental load
+  setup functionality. Trigger with phrases like "incremental load setup", "incremental
+  setup", "incremental".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Incremental Load Setup
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "oauth-callback-handler"
-description: |
-  Manage oauth callback handler operations. Auto-activating skill for API Integration.
+name: oauth-callback-handler
+description: 'Manage oauth callback handler operations. Auto-activating skill for
+  API Integration.
+
   Triggers on: oauth callback handler, oauth callback handler
-  Part of the API Integration skill category. Use when working with oauth callback handler functionality. Trigger with phrases like "oauth callback handler", "oauth handler", "oauth".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with oauth callback
+  handler functionality. Trigger with phrases like "oauth callback handler", "oauth
+  handler", "oauth".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Oauth Callback Handler
 
 ## Overview

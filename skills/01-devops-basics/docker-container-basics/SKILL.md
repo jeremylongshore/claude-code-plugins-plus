@@ -1,16 +1,24 @@
 ---
-name: "docker-container-basics"
-description: |
-  Manage docker container basics operations. Auto-activating skill for DevOps Basics.
+name: docker-container-basics
+description: 'Manage docker container basics operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: docker container basics, docker container basics
-  Part of the DevOps Basics skill category. Use when working with docker container basics functionality. Trigger with phrases like "docker container basics", "docker basics", "docker".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with docker container
+  basics functionality. Trigger with phrases like "docker container basics", "docker
+  basics", "docker".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Docker Container Basics
 
 ## Overview

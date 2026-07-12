@@ -1,16 +1,24 @@
 ---
-name: "cloudformation-template-creator"
-description: |
-  Create cloudformation template creator operations. Auto-activating skill for AWS Skills.
+name: cloudformation-template-creator
+description: 'Create cloudformation template creator operations. Auto-activating skill
+  for AWS Skills.
+
   Triggers on: cloudformation template creator, cloudformation template creator
-  Part of the AWS Skills skill category. Use when working with cloudformation template creator functionality. Trigger with phrases like "cloudformation template creator", "cloudformation creator", "cloudformation".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with cloudformation template
+  creator functionality. Trigger with phrases like "cloudformation template creator",
+  "cloudformation creator", "cloudformation".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Cloudformation Template Creator
 
 ## Overview

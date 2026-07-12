@@ -1,16 +1,24 @@
 ---
-name: "flame-graph-generator"
-description: |
-  Generate flame graph generator operations. Auto-activating skill for Performance Testing.
+name: flame-graph-generator
+description: 'Generate flame graph generator operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: flame graph generator, flame graph generator
-  Part of the Performance Testing skill category. Use when working with flame graph generator functionality. Trigger with phrases like "flame graph generator", "flame generator", "flame".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with flame graph
+  generator functionality. Trigger with phrases like "flame graph generator", "flame
+  generator", "flame".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Flame Graph Generator
 
 ## Overview

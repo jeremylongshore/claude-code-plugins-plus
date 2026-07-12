@@ -1,16 +1,23 @@
 ---
-name: "yaml-config-validator"
-description: |
-  Validate yaml config validator operations. Auto-activating skill for DevOps Basics.
+name: yaml-config-validator
+description: 'Validate yaml config validator operations. Auto-activating skill for
+  DevOps Basics.
+
   Triggers on: yaml config validator, yaml config validator
-  Part of the DevOps Basics skill category. Use when configuring systems or services. Trigger with phrases like "yaml config validator", "yaml validator", "yaml".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when configuring systems or services.
+  Trigger with phrases like "yaml config validator", "yaml validator", "yaml".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Yaml Config Validator
 
 ## Overview

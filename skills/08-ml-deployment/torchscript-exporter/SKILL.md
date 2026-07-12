@@ -1,16 +1,24 @@
 ---
-name: "torchscript-exporter"
-description: |
-  Export torchscript exporter operations. Auto-activating skill for ML Deployment.
+name: torchscript-exporter
+description: 'Export torchscript exporter operations. Auto-activating skill for ML
+  Deployment.
+
   Triggers on: torchscript exporter, torchscript exporter
-  Part of the ML Deployment skill category. Use when working with torchscript exporter functionality. Trigger with phrases like "torchscript exporter", "torchscript exporter", "torchscript".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with torchscript exporter
+  functionality. Trigger with phrases like "torchscript exporter", "torchscript exporter",
+  "torchscript".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Torchscript Exporter
 
 ## Overview

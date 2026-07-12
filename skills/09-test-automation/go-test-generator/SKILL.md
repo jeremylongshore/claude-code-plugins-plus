@@ -1,16 +1,23 @@
 ---
-name: "go-test-generator"
-description: |
-  Generate go test generator operations. Auto-activating skill for Test Automation.
+name: go-test-generator
+description: 'Generate go test generator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: go test generator, go test generator
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "go test generator", "go generator", "go".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "go test generator", "go generator", "go".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Go Test Generator
 
 ## Overview

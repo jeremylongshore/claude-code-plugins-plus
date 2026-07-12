@@ -1,16 +1,24 @@
 ---
-name: "architecture-diagram-creator"
-description: |
-  Create architecture diagram creator operations. Auto-activating skill for Visual Content.
+name: architecture-diagram-creator
+description: 'Create architecture diagram creator operations. Auto-activating skill
+  for Visual Content.
+
   Triggers on: architecture diagram creator, architecture diagram creator
-  Part of the Visual Content skill category. Use when working with architecture diagram creator functionality. Trigger with phrases like "architecture diagram creator", "architecture creator", "architecture".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with architecture diagram
+  creator functionality. Trigger with phrases like "architecture diagram creator",
+  "architecture creator", "architecture".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Architecture Diagram Creator
 
 ## Overview

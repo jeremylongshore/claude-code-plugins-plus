@@ -1,16 +1,24 @@
 ---
-name: "security-benchmark-runner"
-description: |
-  Manage security benchmark runner operations. Auto-activating skill for Security Advanced.
+name: security-benchmark-runner
+description: 'Manage security benchmark runner operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: security benchmark runner, security benchmark runner
-  Part of the Security Advanced skill category. Use when working with security benchmark runner functionality. Trigger with phrases like "security benchmark runner", "security runner", "security".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with security benchmark
+  runner functionality. Trigger with phrases like "security benchmark runner", "security
+  runner", "security".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Security Benchmark Runner
 
 ## Overview

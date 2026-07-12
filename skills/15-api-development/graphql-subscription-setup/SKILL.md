@@ -1,16 +1,24 @@
 ---
-name: "graphql-subscription-setup"
-description: |
-  Configure graphql subscription setup operations. Auto-activating skill for API Development.
+name: graphql-subscription-setup
+description: 'Configure graphql subscription setup operations. Auto-activating skill
+  for API Development.
+
   Triggers on: graphql subscription setup, graphql subscription setup
-  Part of the API Development skill category. Use when working with graphql subscription setup functionality. Trigger with phrases like "graphql subscription setup", "graphql setup", "graphql".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with graphql subscription
+  setup functionality. Trigger with phrases like "graphql subscription setup", "graphql
+  setup", "graphql".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Graphql Subscription Setup
 
 ## Overview

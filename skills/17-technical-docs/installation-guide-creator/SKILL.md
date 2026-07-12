@@ -1,16 +1,24 @@
 ---
-name: "installation-guide-creator"
-description: |
-  Create installation guide creator operations. Auto-activating skill for Technical Documentation.
+name: installation-guide-creator
+description: 'Create installation guide creator operations. Auto-activating skill
+  for Technical Documentation.
+
   Triggers on: installation guide creator, installation guide creator
-  Part of the Technical Documentation skill category. Use when working with installation guide creator functionality. Trigger with phrases like "installation guide creator", "installation creator", "installation".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Technical Documentation skill category. Use when working with installation
+  guide creator functionality. Trigger with phrases like "installation guide creator",
+  "installation creator", "installation".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- documentation
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Installation Guide Creator
 
 ## Overview

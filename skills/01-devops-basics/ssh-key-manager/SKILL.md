@@ -1,16 +1,23 @@
 ---
-name: "ssh-key-manager"
-description: |
-  Manage ssh key manager operations. Auto-activating skill for DevOps Basics.
+name: ssh-key-manager
+description: 'Manage ssh key manager operations. Auto-activating skill for DevOps
+  Basics.
+
   Triggers on: ssh key manager, ssh key manager
-  Part of the DevOps Basics skill category. Use when working with ssh key manager functionality. Trigger with phrases like "ssh key manager", "ssh manager", "ssh".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with ssh key manager
+  functionality. Trigger with phrases like "ssh key manager", "ssh manager", "ssh".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Ssh Key Manager
 
 ## Overview

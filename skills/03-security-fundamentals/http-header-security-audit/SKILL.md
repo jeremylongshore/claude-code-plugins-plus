@@ -1,16 +1,24 @@
 ---
-name: "http-header-security-audit"
-description: |
-  Execute http header security audit operations. Auto-activating skill for Security Fundamentals.
+name: http-header-security-audit
+description: 'Execute http header security audit operations. Auto-activating skill
+  for Security Fundamentals.
+
   Triggers on: http header security audit, http header security audit
-  Part of the Security Fundamentals skill category. Use when analyzing or auditing http header security audit. Trigger with phrases like "http header security audit", "http audit", "http".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when analyzing or auditing
+  http header security audit. Trigger with phrases like "http header security audit",
+  "http audit", "http".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Http Header Security Audit
 
 ## Overview

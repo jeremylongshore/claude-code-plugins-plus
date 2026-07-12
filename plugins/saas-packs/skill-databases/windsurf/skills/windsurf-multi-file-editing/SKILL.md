@@ -1,15 +1,25 @@
 ---
-name: "windsurf-multi-file-editing"
-description: |
-  Manage multi-file edits with Cascade coordination. Activate when users mention
-  "multi-file edit", "edit multiple files", "cross-file changes", "refactor across files",
-  or "batch modifications". Handles coordinated multi-file operations. Use when working with windsurf multi file editing functionality. Trigger with phrases like "windsurf multi file editing", "windsurf editing", "windsurf".
+name: windsurf-multi-file-editing
+description: 'Manage multi-file edits with Cascade coordination. Activate when users
+  mention
+
+  "multi-file edit", "edit multiple files", "cross-file changes", "refactor across
+  files",
+
+  or "batch modifications". Handles coordinated multi-file operations. Use when working
+  with windsurf multi file editing functionality. Trigger with phrases like "windsurf
+  multi file editing", "windsurf editing", "windsurf".
+
+  '
 allowed-tools: Read,Write,Edit,Grep,Glob
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-multi]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Multi File Editing
 

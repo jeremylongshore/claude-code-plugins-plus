@@ -1,16 +1,24 @@
 ---
-name: "api-key-manager"
-description: |
-  Manage api key manager operations. Auto-activating skill for Security Fundamentals.
+name: api-key-manager
+description: 'Manage api key manager operations. Auto-activating skill for Security
+  Fundamentals.
+
   Triggers on: api key manager, api key manager
-  Part of the Security Fundamentals skill category. Use when working with APIs or building integrations. Trigger with phrases like "api key manager", "api manager", "api".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with APIs or
+  building integrations. Trigger with phrases like "api key manager", "api manager",
+  "api".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Api Key Manager
 
 ## Overview

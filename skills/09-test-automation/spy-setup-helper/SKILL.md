@@ -1,16 +1,23 @@
 ---
-name: "spy-setup-helper"
-description: |
-  Assist with spy setup helper operations. Auto-activating skill for Test Automation.
+name: spy-setup-helper
+description: 'Assist with spy setup helper operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: spy setup helper, spy setup helper
-  Part of the Test Automation skill category. Use when working with spy setup helper functionality. Trigger with phrases like "spy setup helper", "spy helper", "spy".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when working with spy setup helper
+  functionality. Trigger with phrases like "spy setup helper", "spy helper", "spy".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Spy Setup Helper
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "sklearn-pipeline-builder"
-description: |
-  Build sklearn pipeline builder operations. Auto-activating skill for ML Training.
+name: sklearn-pipeline-builder
+description: 'Build sklearn pipeline builder operations. Auto-activating skill for
+  ML Training.
+
   Triggers on: sklearn pipeline builder, sklearn pipeline builder
-  Part of the ML Training skill category. Use when working with sklearn pipeline builder functionality. Trigger with phrases like "sklearn pipeline builder", "sklearn builder", "sklearn".
-allowed-tools: "Read, Write, Edit, Bash(python:*), Bash(pip:*)"
+
+  Part of the ML Training skill category. Use when working with sklearn pipeline builder
+  functionality. Trigger with phrases like "sklearn pipeline builder", "sklearn builder",
+  "sklearn".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- machine-learning
+compatibility: Designed for Claude Code
 ---
-
 # Sklearn Pipeline Builder
 
 ## Overview

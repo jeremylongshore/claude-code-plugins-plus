@@ -1,16 +1,24 @@
 ---
-name: "jwt-token-validator"
-description: |
-  Validate jwt token validator operations. Auto-activating skill for Security Fundamentals.
+name: jwt-token-validator
+description: 'Validate jwt token validator operations. Auto-activating skill for Security
+  Fundamentals.
+
   Triggers on: jwt token validator, jwt token validator
-  Part of the Security Fundamentals skill category. Use when working with jwt token validator functionality. Trigger with phrases like "jwt token validator", "jwt validator", "jwt".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with jwt token
+  validator functionality. Trigger with phrases like "jwt token validator", "jwt validator",
+  "jwt".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Jwt Token Validator
 
 ## Overview

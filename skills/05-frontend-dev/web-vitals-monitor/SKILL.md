@@ -1,16 +1,23 @@
 ---
-name: "web-vitals-monitor"
-description: |
-  Monitor web vitals monitor operations. Auto-activating skill for Frontend Development.
+name: web-vitals-monitor
+description: 'Monitor web vitals monitor operations. Auto-activating skill for Frontend
+  Development.
+
   Triggers on: web vitals monitor, web vitals monitor
-  Part of the Frontend Development skill category. Use when monitoring systems or services. Trigger with phrases like "web vitals monitor", "web monitor", "web".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when monitoring systems or
+  services. Trigger with phrases like "web vitals monitor", "web monitor", "web".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Web Vitals Monitor
 
 ## Overview

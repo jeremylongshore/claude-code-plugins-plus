@@ -1,16 +1,24 @@
 ---
-name: "artillery-config-generator"
-description: |
-  Generate artillery config generator operations. Auto-activating skill for Performance Testing.
+name: artillery-config-generator
+description: 'Generate artillery config generator operations. Auto-activating skill
+  for Performance Testing.
+
   Triggers on: artillery config generator, artillery config generator
-  Part of the Performance Testing skill category. Use when configuring systems or services. Trigger with phrases like "artillery config generator", "artillery generator", "artillery".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when configuring systems or
+  services. Trigger with phrases like "artillery config generator", "artillery generator",
+  "artillery".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Artillery Config Generator
 
 ## Overview

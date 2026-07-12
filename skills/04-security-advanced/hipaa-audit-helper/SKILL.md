@@ -1,16 +1,23 @@
 ---
-name: "hipaa-audit-helper"
-description: |
-  Assist with hipaa audit helper operations. Auto-activating skill for Security Advanced.
+name: hipaa-audit-helper
+description: 'Assist with hipaa audit helper operations. Auto-activating skill for
+  Security Advanced.
+
   Triggers on: hipaa audit helper, hipaa audit helper
-  Part of the Security Advanced skill category. Use when analyzing or auditing hipaa audit helper. Trigger with phrases like "hipaa audit helper", "hipaa helper", "hipaa".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when analyzing or auditing hipaa
+  audit helper. Trigger with phrases like "hipaa audit helper", "hipaa helper", "hipaa".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Hipaa Audit Helper
 
 ## Overview

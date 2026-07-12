@@ -1,16 +1,23 @@
 ---
-name: "prediction-monitor"
-description: |
-  Monitor prediction monitor operations. Auto-activating skill for ML Deployment.
+name: prediction-monitor
+description: 'Monitor prediction monitor operations. Auto-activating skill for ML
+  Deployment.
+
   Triggers on: prediction monitor, prediction monitor
-  Part of the ML Deployment skill category. Use when monitoring systems or services. Trigger with phrases like "prediction monitor", "prediction monitor", "prediction".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when monitoring systems or services.
+  Trigger with phrases like "prediction monitor", "prediction monitor", "prediction".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Prediction Monitor
 
 ## Overview

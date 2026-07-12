@@ -1,16 +1,24 @@
 ---
-name: "code-injection-detector"
-description: |
-  Detect code injection detector operations. Auto-activating skill for Security Fundamentals.
+name: code-injection-detector
+description: 'Detect code injection detector operations. Auto-activating skill for
+  Security Fundamentals.
+
   Triggers on: code injection detector, code injection detector
-  Part of the Security Fundamentals skill category. Use when working with code injection detector functionality. Trigger with phrases like "code injection detector", "code detector", "code".
-allowed-tools: "Read, Write, Grep, Bash(npm:*)"
+
+  Part of the Security Fundamentals skill category. Use when working with code injection
+  detector functionality. Trigger with phrases like "code injection detector", "code
+  detector", "code".
+
+  '
+allowed-tools: Read, Write, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Code Injection Detector
 
 ## Overview

@@ -1,15 +1,24 @@
 ---
-name: "windsurf-release-automation"
-description: |
-  Execute automate release processes with semantic versioning. Activate when users mention
+name: windsurf-release-automation
+description: 'Execute automate release processes with semantic versioning. Activate
+  when users mention
+
   "release automation", "version bump", "changelog generation", "semantic release",
-  or "publish release". Handles release engineering automation. Use when working with windsurf release automation functionality. Trigger with phrases like "windsurf release automation", "windsurf automation", "windsurf".
-allowed-tools: "Read,Write,Edit,Bash(cmd:*)"
+
+  or "publish release". Handles release engineering automation. Use when working with
+  windsurf release automation functionality. Trigger with phrases like "windsurf release
+  automation", "windsurf automation", "windsurf".
+
+  '
+allowed-tools: Read,Write,Edit,Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-release]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-release
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Release Automation
 

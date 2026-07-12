@@ -1,15 +1,24 @@
 ---
-name: "windsurf-theme-customization"
-description: |
-  Configure Windsurf themes and visual settings for accessibility. Activate when users mention
+name: windsurf-theme-customization
+description: 'Configure Windsurf themes and visual settings for accessibility. Activate
+  when users mention
+
   "change theme", "customize colors", "accessibility settings", "visual preferences",
-  or "dark mode". Handles theme configuration and accessibility compliance. Use when working with windsurf theme customization functionality. Trigger with phrases like "windsurf theme customization", "windsurf customization", "windsurf".
+
+  or "dark mode". Handles theme configuration and accessibility compliance. Use when
+  working with windsurf theme customization functionality. Trigger with phrases like
+  "windsurf theme customization", "windsurf customization", "windsurf".
+
+  '
 allowed-tools: Read,Write,Edit
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, compliance]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Theme Customization
 

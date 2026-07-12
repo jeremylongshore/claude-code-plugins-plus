@@ -1,16 +1,24 @@
 ---
-name: "siem-rule-generator"
-description: |
-  Generate siem rule generator operations. Auto-activating skill for Security Advanced.
+name: siem-rule-generator
+description: 'Generate siem rule generator operations. Auto-activating skill for Security
+  Advanced.
+
   Triggers on: siem rule generator, siem rule generator
-  Part of the Security Advanced skill category. Use when working with siem rule generator functionality. Trigger with phrases like "siem rule generator", "siem generator", "siem".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with siem rule generator
+  functionality. Trigger with phrases like "siem rule generator", "siem generator",
+  "siem".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Siem Rule Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "api-flow-diagram-creator"
-description: |
-  Create api flow diagram creator operations. Auto-activating skill for Visual Content.
+name: api-flow-diagram-creator
+description: 'Create api flow diagram creator operations. Auto-activating skill for
+  Visual Content.
+
   Triggers on: api flow diagram creator, api flow diagram creator
-  Part of the Visual Content skill category. Use when working with APIs or building integrations. Trigger with phrases like "api flow diagram creator", "api creator", "api".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Visual Content skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "api flow diagram creator", "api creator",
+  "api".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- design
+- content
+compatibility: Designed for Claude Code
 ---
-
 # Api Flow Diagram Creator
 
 ## Overview

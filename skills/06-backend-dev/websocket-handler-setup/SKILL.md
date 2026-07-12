@@ -1,16 +1,24 @@
 ---
-name: "websocket-handler-setup"
-description: |
-  Configure websocket handler setup operations. Auto-activating skill for Backend Development.
+name: websocket-handler-setup
+description: 'Configure websocket handler setup operations. Auto-activating skill
+  for Backend Development.
+
   Triggers on: websocket handler setup, websocket handler setup
-  Part of the Backend Development skill category. Use when working with websocket handler setup functionality. Trigger with phrases like "websocket handler setup", "websocket setup", "websocket".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with websocket
+  handler setup functionality. Trigger with phrases like "websocket handler setup",
+  "websocket setup", "websocket".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Websocket Handler Setup
 
 ## Overview

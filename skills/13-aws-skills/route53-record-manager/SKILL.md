@@ -1,16 +1,24 @@
 ---
-name: "route53-record-manager"
-description: |
-  Manage route53 record manager operations. Auto-activating skill for AWS Skills.
+name: route53-record-manager
+description: 'Manage route53 record manager operations. Auto-activating skill for
+  AWS Skills.
+
   Triggers on: route53 record manager, route53 record manager
-  Part of the AWS Skills skill category. Use when working with route53 record manager functionality. Trigger with phrases like "route53 record manager", "route53 manager", "route53".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with route53 record manager
+  functionality. Trigger with phrases like "route53 record manager", "route53 manager",
+  "route53".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Route53 Record Manager
 
 ## Overview

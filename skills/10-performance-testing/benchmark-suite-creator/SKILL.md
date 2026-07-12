@@ -1,16 +1,24 @@
 ---
-name: "benchmark-suite-creator"
-description: |
-  Create benchmark suite creator operations. Auto-activating skill for Performance Testing.
+name: benchmark-suite-creator
+description: 'Create benchmark suite creator operations. Auto-activating skill for
+  Performance Testing.
+
   Triggers on: benchmark suite creator, benchmark suite creator
-  Part of the Performance Testing skill category. Use when working with benchmark suite creator functionality. Trigger with phrases like "benchmark suite creator", "benchmark creator", "benchmark".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when working with benchmark
+  suite creator functionality. Trigger with phrases like "benchmark suite creator",
+  "benchmark creator", "benchmark".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Benchmark Suite Creator
 
 ## Overview

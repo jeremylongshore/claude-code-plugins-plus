@@ -1,16 +1,24 @@
 ---
-name: "model-export-helper"
-description: |
-  Assist with model export helper operations. Auto-activating skill for ML Deployment.
+name: model-export-helper
+description: 'Assist with model export helper operations. Auto-activating skill for
+  ML Deployment.
+
   Triggers on: model export helper, model export helper
-  Part of the ML Deployment skill category. Use when working with model export helper functionality. Trigger with phrases like "model export helper", "model helper", "model".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when working with model export helper
+  functionality. Trigger with phrases like "model export helper", "model helper",
+  "model".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Model Export Helper
 
 ## Overview

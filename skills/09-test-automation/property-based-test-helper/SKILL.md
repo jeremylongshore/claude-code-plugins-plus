@@ -1,16 +1,23 @@
 ---
-name: "property-based-test-helper"
-description: |
-  Assist with property based test helper operations. Auto-activating skill for Test Automation.
+name: property-based-test-helper
+description: 'Assist with property based test helper operations. Auto-activating skill
+  for Test Automation.
+
   Triggers on: property based test helper, property based test helper
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "property based test helper", "property helper", "property".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "property based test helper", "property helper", "property".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Property Based Test Helper
 
 ## Overview

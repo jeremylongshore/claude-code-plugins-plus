@@ -1,16 +1,24 @@
 ---
-name: "jira-ticket-generator"
-description: |
-  Generate jira ticket generator operations. Auto-activating skill for Enterprise Workflows.
+name: jira-ticket-generator
+description: 'Generate jira ticket generator operations. Auto-activating skill for
+  Enterprise Workflows.
+
   Triggers on: jira ticket generator, jira ticket generator
-  Part of the Enterprise Workflows skill category. Use when working with jira ticket generator functionality. Trigger with phrases like "jira ticket generator", "jira generator", "jira".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with jira ticket
+  generator functionality. Trigger with phrases like "jira ticket generator", "jira
+  generator", "jira".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Jira Ticket Generator
 
 ## Overview

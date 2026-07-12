@@ -1,16 +1,22 @@
 ---
-name: "api-health-checker"
-description: |
-  Check api health checker operations. Auto-activating skill for API Integration.
+name: api-health-checker
+description: 'Check api health checker operations. Auto-activating skill for API Integration.
+
   Triggers on: api health checker, api health checker
-  Part of the API Integration skill category. Use when working with APIs or building integrations. Trigger with phrases like "api health checker", "api checker", "api".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "api health checker", "api checker", "api".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Api Health Checker
 
 ## Overview

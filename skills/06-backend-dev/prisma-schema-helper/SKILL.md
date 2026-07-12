@@ -1,16 +1,24 @@
 ---
-name: "prisma-schema-helper"
-description: |
-  Configure with prisma schema helper operations. Auto-activating skill for Backend Development.
+name: prisma-schema-helper
+description: 'Configure with prisma schema helper operations. Auto-activating skill
+  for Backend Development.
+
   Triggers on: prisma schema helper, prisma schema helper
-  Part of the Backend Development skill category. Use when working with prisma schema helper functionality. Trigger with phrases like "prisma schema helper", "prisma helper", "prisma".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with prisma schema
+  helper functionality. Trigger with phrases like "prisma schema helper", "prisma
+  helper", "prisma".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Prisma Schema Helper
 
 ## Overview

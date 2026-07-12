@@ -1,16 +1,23 @@
 ---
-name: "azure-ml-deployer"
-description: |
-  Deploy azure ml deployer operations. Auto-activating skill for ML Deployment.
+name: azure-ml-deployer
+description: 'Deploy azure ml deployer operations. Auto-activating skill for ML Deployment.
+
   Triggers on: azure ml deployer, azure ml deployer
-  Part of the ML Deployment skill category. Use when deploying applications or services. Trigger with phrases like "azure ml deployer", "azure deployer", "deploy azure ml er".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the ML Deployment skill category. Use when deploying applications or services.
+  Trigger with phrases like "azure ml deployer", "azure deployer", "deploy azure ml
+  er".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- ai
+- mlops
+compatibility: Designed for Claude Code
 ---
-
 # Azure Ml Deployer
 
 ## Overview

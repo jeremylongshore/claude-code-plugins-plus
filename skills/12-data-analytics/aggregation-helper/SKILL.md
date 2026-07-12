@@ -1,16 +1,24 @@
 ---
-name: "aggregation-helper"
-description: |
-  Configure with aggregation helper operations. Auto-activating skill for Data Analytics.
+name: aggregation-helper
+description: 'Configure with aggregation helper operations. Auto-activating skill
+  for Data Analytics.
+
   Triggers on: aggregation helper, aggregation helper
-  Part of the Data Analytics skill category. Use when working with aggregation helper functionality. Trigger with phrases like "aggregation helper", "aggregation helper", "aggregation".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Analytics skill category. Use when working with aggregation helper
+  functionality. Trigger with phrases like "aggregation helper", "aggregation helper",
+  "aggregation".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Aggregation Helper
 
 ## Overview

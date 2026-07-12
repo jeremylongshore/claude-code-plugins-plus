@@ -1,16 +1,23 @@
 ---
-name: "http-method-helper"
-description: |
-  Configure with http method helper operations. Auto-activating skill for API Development.
+name: http-method-helper
+description: 'Configure with http method helper operations. Auto-activating skill
+  for API Development.
+
   Triggers on: http method helper, http method helper
-  Part of the API Development skill category. Use when working with http method helper functionality. Trigger with phrases like "http method helper", "http helper", "http".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with http method helper
+  functionality. Trigger with phrases like "http method helper", "http helper", "http".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Http Method Helper
 
 ## Overview

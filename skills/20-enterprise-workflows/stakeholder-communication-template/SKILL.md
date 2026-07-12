@@ -1,16 +1,24 @@
 ---
-name: "stakeholder-communication-template"
-description: |
-  Manage stakeholder communication template operations. Auto-activating skill for Enterprise Workflows.
+name: stakeholder-communication-template
+description: 'Manage stakeholder communication template operations. Auto-activating
+  skill for Enterprise Workflows.
+
   Triggers on: stakeholder communication template, stakeholder communication template
-  Part of the Enterprise Workflows skill category. Use when working with stakeholder communication template functionality. Trigger with phrases like "stakeholder communication template", "stakeholder template", "stakeholder".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with stakeholder
+  communication template functionality. Trigger with phrases like "stakeholder communication
+  template", "stakeholder template", "stakeholder".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Stakeholder Communication Template
 
 ## Overview

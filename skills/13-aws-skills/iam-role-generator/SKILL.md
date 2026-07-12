@@ -1,16 +1,24 @@
 ---
-name: "iam-role-generator"
-description: |
-  Generate iam role generator operations. Auto-activating skill for AWS Skills.
+name: iam-role-generator
+description: 'Generate iam role generator operations. Auto-activating skill for AWS
+  Skills.
+
   Triggers on: iam role generator, iam role generator
-  Part of the AWS Skills skill category. Use when working with iam role generator functionality. Trigger with phrases like "iam role generator", "iam generator", "iam".
-allowed-tools: "Read, Write, Edit, Bash(aws:*)"
+
+  Part of the AWS Skills skill category. Use when working with iam role generator
+  functionality. Trigger with phrases like "iam role generator", "iam generator",
+  "iam".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(aws:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- aws
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Iam Role Generator
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "incident-response-planner"
-description: |
-  Configure incident response planner operations. Auto-activating skill for Security Advanced.
+name: incident-response-planner
+description: 'Configure incident response planner operations. Auto-activating skill
+  for Security Advanced.
+
   Triggers on: incident response planner, incident response planner
-  Part of the Security Advanced skill category. Use when working with incident response planner functionality. Trigger with phrases like "incident response planner", "incident planner", "incident".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Security Advanced skill category. Use when working with incident response
+  planner functionality. Trigger with phrases like "incident response planner", "incident
+  planner", "incident".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Incident Response Planner
 
 ## Overview

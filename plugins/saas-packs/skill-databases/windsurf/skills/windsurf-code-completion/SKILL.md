@@ -1,15 +1,24 @@
 ---
-name: "windsurf-code-completion"
-description: |
-  Configure and optimize Supercomplete code suggestions. Activate when users mention
+name: windsurf-code-completion
+description: 'Configure and optimize Supercomplete code suggestions. Activate when
+  users mention
+
   "code completion", "autocomplete", "supercomplete", "inline suggestions",
-  or "ai completions". Handles completion configuration and optimization. Use when working with windsurf code completion functionality. Trigger with phrases like "windsurf code completion", "windsurf completion", "windsurf".
+
+  or "ai completions". Handles completion configuration and optimization. Use when
+  working with windsurf code completion functionality. Trigger with phrases like "windsurf
+  code completion", "windsurf completion", "windsurf".
+
+  '
 allowed-tools: Read,Write,Edit
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-code]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-code
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Code Completion
 

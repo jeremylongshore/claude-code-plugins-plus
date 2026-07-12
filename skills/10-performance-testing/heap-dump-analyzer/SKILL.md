@@ -1,16 +1,24 @@
 ---
-name: "heap-dump-analyzer"
-description: |
-  Analyze heap dump analyzer operations. Auto-activating skill for Performance Testing.
+name: heap-dump-analyzer
+description: 'Analyze heap dump analyzer operations. Auto-activating skill for Performance
+  Testing.
+
   Triggers on: heap dump analyzer, heap dump analyzer
-  Part of the Performance Testing skill category. Use when analyzing or auditing heap dump analyzer. Trigger with phrases like "heap dump analyzer", "heap analyzer", "analyze heap dump r".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Performance Testing skill category. Use when analyzing or auditing heap
+  dump analyzer. Trigger with phrases like "heap dump analyzer", "heap analyzer",
+  "analyze heap dump r".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- performance
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Heap Dump Analyzer
 
 ## Overview

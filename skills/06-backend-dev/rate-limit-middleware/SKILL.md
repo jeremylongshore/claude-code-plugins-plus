@@ -1,16 +1,24 @@
 ---
-name: "rate-limit-middleware"
-description: |
-  Manage rate limit middleware operations. Auto-activating skill for Backend Development.
+name: rate-limit-middleware
+description: 'Manage rate limit middleware operations. Auto-activating skill for Backend
+  Development.
+
   Triggers on: rate limit middleware, rate limit middleware
-  Part of the Backend Development skill category. Use when working with rate limit middleware functionality. Trigger with phrases like "rate limit middleware", "rate middleware", "rate".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with rate limit
+  middleware functionality. Trigger with phrases like "rate limit middleware", "rate
+  middleware", "rate".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Rate Limit Middleware
 
 ## Overview

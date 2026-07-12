@@ -1,16 +1,24 @@
 ---
-name: "teams-webhook-sender"
-description: |
-  Manage teams webhook sender operations. Auto-activating skill for Business Automation.
+name: teams-webhook-sender
+description: 'Manage teams webhook sender operations. Auto-activating skill for Business
+  Automation.
+
   Triggers on: teams webhook sender, teams webhook sender
-  Part of the Business Automation skill category. Use when working with teams webhook sender functionality. Trigger with phrases like "teams webhook sender", "teams sender", "teams".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with teams webhook
+  sender functionality. Trigger with phrases like "teams webhook sender", "teams sender",
+  "teams".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Teams Webhook Sender
 
 ## Overview

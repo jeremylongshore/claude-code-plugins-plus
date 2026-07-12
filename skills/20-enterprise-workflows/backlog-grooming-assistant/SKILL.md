@@ -1,16 +1,24 @@
 ---
-name: "backlog-grooming-assistant"
-description: |
-  Execute backlog grooming assistant operations. Auto-activating skill for Enterprise Workflows.
+name: backlog-grooming-assistant
+description: 'Execute backlog grooming assistant operations. Auto-activating skill
+  for Enterprise Workflows.
+
   Triggers on: backlog grooming assistant, backlog grooming assistant
-  Part of the Enterprise Workflows skill category. Use when working with backlog grooming assistant functionality. Trigger with phrases like "backlog grooming assistant", "backlog assistant", "backlog".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Enterprise Workflows skill category. Use when working with backlog grooming
+  assistant functionality. Trigger with phrases like "backlog grooming assistant",
+  "backlog assistant", "backlog".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- enterprise
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Backlog Grooming Assistant
 
 ## Overview

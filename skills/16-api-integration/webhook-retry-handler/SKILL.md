@@ -1,16 +1,24 @@
 ---
-name: "webhook-retry-handler"
-description: |
-  Manage webhook retry handler operations. Auto-activating skill for API Integration.
+name: webhook-retry-handler
+description: 'Manage webhook retry handler operations. Auto-activating skill for API
+  Integration.
+
   Triggers on: webhook retry handler, webhook retry handler
-  Part of the API Integration skill category. Use when working with webhook retry handler functionality. Trigger with phrases like "webhook retry handler", "webhook handler", "webhook".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the API Integration skill category. Use when working with webhook retry
+  handler functionality. Trigger with phrases like "webhook retry handler", "webhook
+  handler", "webhook".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- integration
+compatibility: Designed for Claude Code
 ---
-
 # Webhook Retry Handler
 
 ## Overview

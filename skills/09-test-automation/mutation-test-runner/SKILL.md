@@ -1,16 +1,23 @@
 ---
-name: "mutation-test-runner"
-description: |
-  Run mutation test runner operations. Auto-activating skill for Test Automation.
+name: mutation-test-runner
+description: 'Run mutation test runner operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: mutation test runner, mutation test runner
-  Part of the Test Automation skill category. Use when writing or running tests. Trigger with phrases like "mutation test runner", "mutation runner", "mutation".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when writing or running tests. Trigger
+  with phrases like "mutation test runner", "mutation runner", "mutation".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Mutation Test Runner
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
-name: "api-test-generator"
-description: |
-  Generate api test generator operations. Auto-activating skill for Test Automation.
+name: api-test-generator
+description: 'Generate api test generator operations. Auto-activating skill for Test
+  Automation.
+
   Triggers on: api test generator, api test generator
-  Part of the Test Automation skill category. Use when working with APIs or building integrations. Trigger with phrases like "api test generator", "api generator", "api".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Test Automation skill category. Use when working with APIs or building
+  integrations. Trigger with phrases like "api test generator", "api generator", "api".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- testing
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Api Test Generator
 
 ## Overview

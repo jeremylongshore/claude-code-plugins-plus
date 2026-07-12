@@ -1,16 +1,24 @@
 ---
-name: "discord-bot-generator"
-description: |
-  Generate discord bot generator operations. Auto-activating skill for Business Automation.
+name: discord-bot-generator
+description: 'Generate discord bot generator operations. Auto-activating skill for
+  Business Automation.
+
   Triggers on: discord bot generator, discord bot generator
-  Part of the Business Automation skill category. Use when working with discord bot generator functionality. Trigger with phrases like "discord bot generator", "discord generator", "discord".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with discord bot
+  generator functionality. Trigger with phrases like "discord bot generator", "discord
+  generator", "discord".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Discord Bot Generator
 
 ## Overview

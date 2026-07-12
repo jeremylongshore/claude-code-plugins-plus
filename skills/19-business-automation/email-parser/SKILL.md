@@ -1,16 +1,23 @@
 ---
-name: "email-parser"
-description: |
-  Configure and manage - Parse email parser operations. Auto-activating skill for Business Automation.
+name: email-parser
+description: 'Configure and manage - Parse email parser operations. Auto-activating
+  skill for Business Automation.
+
   Triggers on: email parser, email parser
-  Part of the Business Automation skill category. Use when working with email parser functionality. Trigger with phrases like "email parser", "email parser", "email".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with email parser
+  functionality. Trigger with phrases like "email parser", "email parser", "email".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Email Parser
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
-name: "graphql-resolver-creator"
-description: |
-  Create graphql resolver creator operations. Auto-activating skill for API Development.
+name: graphql-resolver-creator
+description: 'Create graphql resolver creator operations. Auto-activating skill for
+  API Development.
+
   Triggers on: graphql resolver creator, graphql resolver creator
-  Part of the API Development skill category. Use when working with graphql resolver creator functionality. Trigger with phrases like "graphql resolver creator", "graphql creator", "graphql".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with graphql resolver
+  creator functionality. Trigger with phrases like "graphql resolver creator", "graphql
+  creator", "graphql".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Graphql Resolver Creator
 
 ## Overview

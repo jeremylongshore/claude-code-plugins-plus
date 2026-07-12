@@ -1,16 +1,24 @@
 ---
-name: "sequelize-model-creator"
-description: |
-  Create sequelize model creator operations. Auto-activating skill for Backend Development.
+name: sequelize-model-creator
+description: 'Create sequelize model creator operations. Auto-activating skill for
+  Backend Development.
+
   Triggers on: sequelize model creator, sequelize model creator
-  Part of the Backend Development skill category. Use when working with sequelize model creator functionality. Trigger with phrases like "sequelize model creator", "sequelize creator", "sequelize".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Backend Development skill category. Use when working with sequelize
+  model creator functionality. Trigger with phrases like "sequelize model creator",
+  "sequelize creator", "sequelize".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- backend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Sequelize Model Creator
 
 ## Overview

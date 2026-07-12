@@ -1,16 +1,22 @@
 ---
-name: "dotenv-manager"
-description: |
-  Manage dotenv manager operations. Auto-activating skill for DevOps Basics.
+name: dotenv-manager
+description: 'Manage dotenv manager operations. Auto-activating skill for DevOps Basics.
+
   Triggers on: dotenv manager, dotenv manager
-  Part of the DevOps Basics skill category. Use when working with dotenv manager functionality. Trigger with phrases like "dotenv manager", "dotenv manager", "dotenv".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the DevOps Basics skill category. Use when working with dotenv manager functionality.
+  Trigger with phrases like "dotenv manager", "dotenv manager", "dotenv".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- devops
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Dotenv Manager
 
 ## Overview

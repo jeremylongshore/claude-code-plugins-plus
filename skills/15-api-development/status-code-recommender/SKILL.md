@@ -1,16 +1,24 @@
 ---
-name: "status-code-recommender"
-description: |
-  Manage status code recommender operations. Auto-activating skill for API Development.
+name: status-code-recommender
+description: 'Manage status code recommender operations. Auto-activating skill for
+  API Development.
+
   Triggers on: status code recommender, status code recommender
-  Part of the API Development skill category. Use when working with status code recommender functionality. Trigger with phrases like "status code recommender", "status recommender", "status".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Grep"
+
+  Part of the API Development skill category. Use when working with status code recommender
+  functionality. Trigger with phrases like "status code recommender", "status recommender",
+  "status".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- api
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Status Code Recommender
 
 ## Overview

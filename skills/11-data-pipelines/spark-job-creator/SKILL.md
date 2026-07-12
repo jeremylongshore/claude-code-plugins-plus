@@ -1,16 +1,23 @@
 ---
-name: "spark-job-creator"
-description: |
-  Create spark job creator operations. Auto-activating skill for Data Pipelines.
+name: spark-job-creator
+description: 'Create spark job creator operations. Auto-activating skill for Data
+  Pipelines.
+
   Triggers on: spark job creator, spark job creator
-  Part of the Data Pipelines skill category. Use when working with spark job creator functionality. Trigger with phrases like "spark job creator", "spark creator", "spark".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Data Pipelines skill category. Use when working with spark job creator
+  functionality. Trigger with phrases like "spark job creator", "spark creator", "spark".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- data
+- data-engineering
+compatibility: Designed for Claude Code
 ---
-
 # Spark Job Creator
 
 ## Overview

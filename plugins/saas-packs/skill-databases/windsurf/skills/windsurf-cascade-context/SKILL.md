@@ -1,15 +1,24 @@
 ---
-name: "windsurf-cascade-context"
-description: |
-  Manage Cascade context window and memory for complex projects. Activate when users mention
+name: windsurf-cascade-context
+description: 'Manage Cascade context window and memory for complex projects. Activate
+  when users mention
+
   "cascade context", "ai memory", "context management", "large codebase navigation",
-  or "multi-session development". Handles context optimization and persistence. Use when working with windsurf cascade context functionality. Trigger with phrases like "windsurf cascade context", "windsurf context", "windsurf".
+
+  or "multi-session development". Handles context optimization and persistence. Use
+  when working with windsurf cascade context functionality. Trigger with phrases like
+  "windsurf cascade context", "windsurf context", "windsurf".
+
+  '
 allowed-tools: Read,Write,Edit,Grep,Glob
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, skill-databases, windsurf-cascade]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- skill-databases
+- windsurf-cascade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Cascade Context
 

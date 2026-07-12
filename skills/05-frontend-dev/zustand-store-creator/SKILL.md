@@ -1,16 +1,24 @@
 ---
-name: "zustand-store-creator"
-description: |
-  Create zustand store creator operations. Auto-activating skill for Frontend Development.
+name: zustand-store-creator
+description: 'Create zustand store creator operations. Auto-activating skill for Frontend
+  Development.
+
   Triggers on: zustand store creator, zustand store creator
-  Part of the Frontend Development skill category. Use when working with zustand store creator functionality. Trigger with phrases like "zustand store creator", "zustand creator", "zustand".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*), Grep"
+
+  Part of the Frontend Development skill category. Use when working with zustand store
+  creator functionality. Trigger with phrases like "zustand store creator", "zustand
+  creator", "zustand".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- frontend
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Zustand Store Creator
 
 ## Overview

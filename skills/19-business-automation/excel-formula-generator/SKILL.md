@@ -1,16 +1,24 @@
 ---
-name: "excel-formula-generator"
-description: |
-  Generate excel formula generator operations. Auto-activating skill for Business Automation.
+name: excel-formula-generator
+description: 'Generate excel formula generator operations. Auto-activating skill for
+  Business Automation.
+
   Triggers on: excel formula generator, excel formula generator
-  Part of the Business Automation skill category. Use when working with excel formula generator functionality. Trigger with phrases like "excel formula generator", "excel generator", "excel".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  Part of the Business Automation skill category. Use when working with excel formula
+  generator functionality. Trigger with phrases like "excel formula generator", "excel
+  generator", "excel".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- business
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Excel Formula Generator
 
 ## Overview
