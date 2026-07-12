@@ -146,6 +146,55 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.15.2] — 2026-07-12 — `disallowed-tools` cross-field enforcement made real (spec-compliance, additive; closes claude-41c2.2)
+
+**Additive spec-compliance implementation — no change to `ALWAYS_REQUIRED`, the
+tier model, or error-vs-warning semantics.** Autonomous-OK class per
+NON-NEGOTIABLE #6 (implements already-documented behavior; not architectural).
+`disallowed-tools` has been *recognized* since 3.7.0, but its two documented
+rules (repo CLAUDE.md § Optional frontmatter 3.7.0, `000-docs/681`) were never
+actually checked — the field parsed clean regardless of content.
+
+### Added
+
+- **Shape guard:** `disallowed-tools` must be a string or a YAML list (same
+  shapes as `allowed-tools`). A non-string/non-list value (e.g. an int) is now
+  an ERROR: *"'disallowed-tools' must be a list of strings or a space/comma-
+  separated string"*.
+- **Cross-field overlap rule:** a tool pattern MUST NOT appear in both
+  `allowed-tools` and `disallowed-tools` — declaring a tool simultaneously
+  permitted and denied is contradictory and almost always a mis-scoped list.
+  Now an ERROR at **every tier**: *"contradictory tool declaration: […] appears
+  in both allowed-tools and disallowed-tools"*. This mirrors the existing 3.5.0
+  `requires_*` / `fallback_for_*` visibility-overlap rule; both lists normalize
+  through the shared `parse_allowed_tools()` so `Bash(rm:*)` matches whether it
+  was written CSV, space-separated, or as a YAML list.
+
+### Why this is not architectural
+
+The `disallowed-tools` field itself stays **optional** (ALWAYS_REQUIRED is
+untouched); the new errors only fire when the field is present and either
+malformed or self-contradictory. Error-vs-warning semantics for the required
+set are unchanged. This is the "make an already-recognized optional field's
+documented constraints real" class, parallel to how 3.8.0 made `allowed-tools`
+entry validation real.
+
+### Corpus safety
+
+All 26 in-corpus SKILL.md files that declare `disallowed-tools` (the
+penetration-tester pack, defense-in-depth denials of tools NOT in their
+`allowed-tools`) were re-validated: **zero** newly fail on the overlap or shape
+checks.
+
+### Tests
+
+Six regression tests added to `tests/test_validate_skills_schema_frontmatter.py`:
+overlap-is-error (standard + marketplace tiers), disjoint-is-clean, shared-
+normalization overlap (space form vs list form), disallowed-without-allowed is
+clean (guarded), and bad-shape is error.
+
+---
+
 ## [3.15.1] — 2026-07-02 — Body-vs-allowlist regex recognizes kebab/snake MCP server names (spec-compliance bug fix, issue #843)
 
 **Bug fix — no change to `ALWAYS_REQUIRED`, the tier model, or error-vs-warning
