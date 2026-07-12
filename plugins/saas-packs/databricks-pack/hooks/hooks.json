@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "description": "streaming-guardian: block a DROP/CREATE-OR-REPLACE/VACUUM on a Delta table that active streaming consumers still read. Precise (only real SQL-execution surfaces classify) and fail-open (allows when it cannot verify consumers) — silent except on a confirmed-unsafe op.",
+        "matcher": "Bash",
+        "enabled": true,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/databricks-streaming-guardian/hooks/streaming-guard-hook.py\"",
+            "timeout": 35000,
+            "continueOnError": true
+          }
+        ]
+      }
+    ]
+  }
+}

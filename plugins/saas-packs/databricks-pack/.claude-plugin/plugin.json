@@ -1,6 +1,6 @@
 {
   "name": "databricks-pack",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "description": "Claude Code skill pack for Databricks (24 skills)",
   "author": {
     "name": "Jeremy Longshore",
