@@ -33,6 +33,7 @@ Total: 16 official fields.
 - Subagents receive ONLY the system prompt + basic environment details, NOT the full Claude Code system prompt
 - `tools` is an **allowlist** (like skills' `allowed-tools`)
 - `disallowedTools` is a **denylist** — if both set, disallowed applied first, then tools resolved
+- Naming parallel (marketplace note): agents use camelCase `disallowedTools`; skills use kebab-case `disallowed-tools` (schema 3.7.0+). The validator rejects either mismatch — never copy-paste between agent and skill frontmatter without renaming
 - Subagents **cannot spawn other subagents** (no nesting)
 - Subagents **don't inherit skills** from parent conversation — must list explicitly via `skills` field
 

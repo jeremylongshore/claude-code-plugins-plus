@@ -5,7 +5,7 @@ description: "{{AGENT_SPECIALTY_20_200_CHARS}}"
 # model: sonnet                          # sonnet|haiku|opus|inherit
 # effort: medium                         # low|medium|high
 # maxTurns: 15                           # Max agentic loop iterations
-# disallowedTools: "Write,Edit"          # Denylist (opposite of skills' allowed-tools)
+# disallowedTools: "Write,Edit"          # Denylist — camelCase on agents (skills spell it kebab-case: disallowed-tools)
 # skills: [{{SKILL_1}}, {{SKILL_2}}]    # Skills to preload
 # memory: project                        # user|project|local
 # background: false                      # Run in background

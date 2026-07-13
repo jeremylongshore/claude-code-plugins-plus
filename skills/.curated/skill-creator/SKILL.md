@@ -86,6 +86,18 @@ Ask the user with AskUserQuestion:
 - Bash must be scoped: `Bash(git:*)`, `Bash(npm:*)`, etc.
 - MCP tools: `ServerName:tool_name`
 
+**Optional: declare `disallowed-tools` (schema 3.7.0+):**
+
+- Defense-in-depth — an explicit denylist layered on top of the `allowed-tools` allowlist
+- Useful when the skill needs broad Bash but should never reach for high-risk operations
+  like `rm`, `curl` to arbitrary hosts, `.env` file edits, or system-config writes
+- Example: `disallowed-tools: [Bash(rm:*), Bash(curl:*), Bash(wget:*), Bash(sudo:*), Edit(.env), Write(.env)]`
+- A pattern must never appear in BOTH `allowed-tools` and `disallowed-tools` — the
+  marketplace validator reports the overlap as an ERROR
+- Default: omit the field (don't clutter frontmatter with a denylist the allowlist already covers)
+- Naming parallel: skills use kebab-case `disallowed-tools`; agents use camelCase
+  `disallowedTools` — never copy-paste between the two without renaming
+
 **Complexity:**
 
 - Simple (SKILL.md only)
@@ -152,6 +164,7 @@ Key rules:
 
 - `version`, `author`, `license`, `tags`, `compatible-with` are TOP-LEVEL fields (not nested under `metadata:`)
 - Scope Bash: `Bash(git:*)` not bare `Bash`
+- Optional `disallowed-tools` denylist (schema 3.7.0+) must never overlap `allowed-tools` (validator ERROR)
 - Keep under 500 lines; offload to `references/` if longer
 - Include "Use when" and "Trigger with" in description for enterprise scoring
 - No XML tags in name or description (Anthropic spec prohibition)

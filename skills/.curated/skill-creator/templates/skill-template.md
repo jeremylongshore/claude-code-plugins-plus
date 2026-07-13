@@ -8,6 +8,8 @@ description: |
 
 # Tools (recommended)
 allowed-tools: "{{TOOLS_CSV}}"
+# Optional defense-in-depth denylist (schema 3.7.0+) — must never overlap allowed-tools
+# disallowed-tools: "Bash(rm:*),Bash(curl:*),Bash(wget:*),Bash(sudo:*)"
 
 # Identity (top-level, NOT inside metadata)
 version: 1.0.0

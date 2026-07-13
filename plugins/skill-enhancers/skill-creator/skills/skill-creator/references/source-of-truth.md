@@ -136,7 +136,7 @@ Agents live in `agents/*.md` and use a different frontmatter schema than skills.
 
 ### Key Differences from Skills
 
-- Agents use `disallowedTools` (denylist) while skills use `allowed-tools` (allowlist)
+- Agents use camelCase `disallowedTools` (denylist); skills use `allowed-tools` (allowlist) plus optional kebab-case `disallowed-tools` (schema 3.7.0+) — the validator rejects either casing mismatch
 - `effort` and `maxTurns` control autonomous iteration behavior (agent-only semantics)
 - Agents support `mcpServers`, `memory`, `background`, `isolation`, and `permissionMode`
 

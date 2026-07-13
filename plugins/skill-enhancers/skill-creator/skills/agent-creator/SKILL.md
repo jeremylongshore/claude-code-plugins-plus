@@ -42,10 +42,15 @@ common mistakes (using `allowed-tools` instead of `disallowedTools`, adding inva
 actually guides Claude's behavior.
 
 Key difference from skill-creator: **agents support both `tools` (allowlist) AND `disallowedTools`
-(denylist)**, while skills only use `allowed-tools` (allowlist). Agents also support `effort`,
-`maxTurns`, `skills`, `memory`, `isolation`, `permissionMode`, `background`, `color`, and
+(denylist)**. Skills use `allowed-tools` (allowlist) and, since schema 3.7.0, an optional
+kebab-case `disallowed-tools` denylist — a parallel field, not a unification. Agents also support
+`effort`, `maxTurns`, `skills`, `memory`, `isolation`, `permissionMode`, `background`, `color`, and
 `initialPrompt` — fields that don't exist for skills. The agent body becomes the **system prompt**
 that drives the subagent — it does NOT receive the full Claude Code system prompt.
+
+**Field-naming warning:** Agents use camelCase `disallowedTools:` (canonical sub-agents spec);
+skills use kebab-case `disallowed-tools:` (schema 3.7.0+). The validator rejects either mismatch —
+never copy-paste between agent and skill frontmatter without renaming.
 
 ## Prerequisites
 
@@ -164,6 +169,9 @@ mcpServers: {}             # Standalone only, NOT plugin agents
 - `disallowedTools` = denylist (remove specific tools)
 - If both set: disallowed applied first, then tools resolved
 - If neither set: inherits all tools from parent conversation
+- Naming: always emit camelCase `disallowedTools` on agents. Skills spell their denylist
+  kebab-case (`disallowed-tools`, schema 3.7.0+) — the validator rejects camelCase on skills
+  and kebab-case on agents, so never copy-paste between the two without renaming
 
 **Invalid fields (ERROR — never use these):**
 
@@ -172,6 +180,7 @@ mcpServers: {}             # Standalone only, NOT plugin agents
 - `activation_priority` — invented, not in Anthropic spec
 - `activation_triggers`, `type`, `category` — not in spec
 - `allowed-tools` — that's the skill-only syntax; agents use `tools` or `disallowedTools`
+- `disallowed-tools` (kebab-case) — skill-only spelling (schema 3.7.0+); agents use camelCase `disallowedTools`
 
 **Body Content Guidelines:**
 
@@ -206,7 +215,7 @@ Run validation against the Anthropic 16-field schema:
 | `name` present | 1-64 chars, kebab-case |
 | `description` present | 20-200 chars |
 | No invalid fields | None of: capabilities, expertise_level, activation_priority, type, category |
-| No skill-only fields | No `allowed-tools` (use `disallowedTools` instead) |
+| No skill-only fields | No `allowed-tools`, no kebab-case `disallowed-tools` (agents use `tools` / camelCase `disallowedTools`) |
 | Plugin restrictions | No hooks/mcpServers/permissionMode if plugin agent |
 | Body has Role section | Clear domain + boundaries |
 | Body has Process section | Numbered steps |
@@ -252,7 +261,7 @@ When the user wants to validate an existing agent:
    - `name` present and valid (1-64 chars, kebab-case)?
    - `description` present and valid (20-200 chars)?
    - Any invalid fields? (capabilities, expertise_level, activation_priority, etc.)
-   - Any skill-only fields? (allowed-tools)
+   - Any skill-only fields? (`allowed-tools`, kebab-case `disallowed-tools`)
    - Plugin restrictions respected?
 4. Check body content:
    - Has `## Role` section?
@@ -312,7 +321,8 @@ actionable).
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| `allowed-tools` in agent | Used skill-only field | Replace with `disallowedTools` (denylist) or remove |
+| `allowed-tools` in agent | Used skill-only field | Replace with `tools` (allowlist) or `disallowedTools` (denylist), or remove |
+| `disallowed-tools` (kebab-case) in agent | Copy-pasted from skill frontmatter | Rename to camelCase `disallowedTools` — the validator rejects the kebab-case spelling on agents |
 | `capabilities` field | Common mistake — looks valid but isn't in Anthropic spec | Remove field entirely |
 | `expertise_level` field | Invented field from community templates | Remove — express expertise in body content |
 | Description > 200 chars | Exceeds Anthropic limit | Shorten to 20-200 char range |
