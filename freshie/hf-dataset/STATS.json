@@ -1,0 +1,13 @@
+{
+  "skills": 3008,
+  "graded": 2996,
+  "ungraded": 12,
+  "inventory_run_id": 9,
+  "grade_histogram": {
+    "A": 795,
+    "B": 1033,
+    "C": 993,
+    "D": 168,
+    "F": 7
+  }
+}
