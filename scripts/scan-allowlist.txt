@@ -68,6 +68,8 @@ plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/st
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
 
+sources.yaml:sources-change-unscanned  walkie-talkie vetted per the 699 playbook @ walkie-talkie-skill/walkie-talkie 0b74f4d36 (2026-07-13): all 4 admitted files read in full (pure markdown mailbox protocol, zero scripts/hooks/MCP/network/tool grants); scanner 0 REFUSE / 0 CHALLENGE / 0 FLAG; MIT verified; verified stays false — org is 11 days old, pseudonymous, 2-commit same-day history (content-clean, provenance thin); two disclosed-by-design instruction-surface notes acknowledged in the vet record (bootstrap-file shim + peer-writable mailbox instructions)
+
 # ── localplugins brand-forge + content-multiplier — vetted 2026-07-13 @ upstream fe2f4fa2a (PR #1030 intake). ──
 # hooks-mcp tier: each plugin's entire auto-execute surface is ONE SessionStart
 # hook, justified per entry in the vet. brand-forge's dispatcher loops read-only

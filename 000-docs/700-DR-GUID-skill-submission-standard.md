@@ -43,6 +43,12 @@ Solutions' own skills.
 | **Standard plugin** | skills plus scripts/commands | `PRD.md` + `ADR.md` |
 | **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
 
+Enforced in CI: the `check-submission-docs` gate (`scripts/check-submission-docs.mjs`,
+blocking via `ci-required`) fails a PR that adds a new plugin directory without its
+tier's documents; external mirrors (`.source.json`) are exempt — their docs live
+upstream. `CFO-ONE-PAGER.md` stays review-enforced (the gate cannot judge "money is
+the pitch" deterministically).
+
 ## 3. Eligibility: listing vs featuring
 
 - **Listing** (in the catalog): a valid plugin, an honestly declared tier with the
