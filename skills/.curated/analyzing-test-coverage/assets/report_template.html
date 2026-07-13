@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Coverage Report</title>
+    <style>
+        /* Inline CSS for styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .coverage-summary {
+            margin-top: 20px;
+        }
+
+        .coverage-metric {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .coverage-metric strong {
+            color: #007bff;
+        }
+
+        .untested-code {
+            margin-top: 20px;
+        }
+
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #eee;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            table {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Coverage Report</h1>
+
+        <div class="coverage-summary">
+            <h2>Overall Coverage</h2>
+            <div class="coverage-metric">
+                Lines Covered: <strong>{{lines_covered}}%</strong>
+            </div>
+            <div class="coverage-metric">
+                Branches Covered: <strong>{{branches_covered}}%</strong>
+            </div>
+            <div class="coverage-metric">
+                Functions Covered: <strong>{{functions_covered}}%</strong>
+            </div>
+            <div class="coverage-metric">
+                Statements Covered: <strong>{{statements_covered}}%</strong>
+            </div>
+        </div>
+
+        <h2>File Coverage Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Lines</th>
+                    <th>Branches</th>
+                    <th>Functions</th>
+                    <th>Statements</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{file_coverage_rows}}
+            </tbody>
+        </table>
+
+        <div class="untested-code">
+            <h2>Untested Code Snippets</h2>
+            {{untested_code_snippets}}
+        </div>
+
+        <h2>Coverage Trends</h2>
+        <img src="{{coverage_trend_chart_url}}" alt="Coverage Trend Chart">
+    </div>
+</body>
+</html>

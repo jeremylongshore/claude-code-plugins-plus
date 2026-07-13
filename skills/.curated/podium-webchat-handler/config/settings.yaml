@@ -1,0 +1,112 @@
+# podium-webchat-handler — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+phone:
+  # Default ISO-3166 country code passed to phonenumbers.parse() when a number
+  # is supplied without a leading "+". Set per-location, never globally for
+  # a multi-region deployment. Examples: AU, US, GB, NZ, CA.
+  default_country: AU
+  # If true and the supplied raw phone cannot be parsed for default_country,
+  # the widget refuses the submission. Set to false ONLY for diagnostic environments.
+  fail_closed_on_unparseable: true
+  # Log the carrier metadata returned by phonenumbers.carrier — useful for SMS-vs-landline triage.
+  log_carrier_metadata: true
+
+contact_upsert:
+  # The unique index column in the local contact mirror. Must be a normalized E.164 string.
+  natural_key_column: phone_e164
+  # Bounded retries when a 409 refetch returns no record (rare race where the
+  # racing creator hasn't committed yet). Each retry waits retry_backoff_ms * 2^attempt.
+  conflict_refetch_max_attempts: 3
+  retry_backoff_ms: 100
+
+session:
+  # Idle thresholds in seconds. Both MUST be strictly less than Podium's documented
+  # server-side expiry (~30 min idle as of skill authoring). The 28-min close threshold
+  # leaves ~2 min margin so we close cleanly before Podium expires the session unilaterally.
+  idle_warn_seconds:  1200    # 20 min — send keepalive prompt
+  idle_close_seconds: 1680    # 28 min — close with partial_state persisted
+  # How often the background scanner sweeps active sessions. Lower = more responsive
+  # close events, higher = less CPU. 60s is the right tradeoff for most deployments.
+  scan_interval_seconds: 60
+  # Where to persist partial_state when a session closes. The next message from the
+  # same (phone_e164, location_uid) pair hydrates this state.
+  partial_state_backend: file
+  partial_state_path: "${WEBCHAT_PARTIAL_STATE_DIR}"
+
+attachment:
+  # Podium's documented limit. Update only if Podium publishes a change.
+  max_bytes: 26214400          # 25 MiB
+  # MIME-type allowlist applied at the widget edge. Anything outside this list is rejected
+  # client-side before the upload starts.
+  allowed_mime_types:
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "image/webp"
+    - "application/pdf"
+    - "video/mp4"
+    - "audio/mpeg"
+    - "audio/wav"
+
+locations:
+  # Path or secret-store key for the optional explicit allowlist of location_uids the
+  # integration is allowed to accept. Empty = accept anything Podium /v4/locations returns.
+  explicit_allowlist: ""
+  # Periodic refresh of /v4/locations to catch newly-added stores. Cheap call; refresh often.
+  refresh_interval_seconds: 300
+  # On missing location_uid in an inbound message, this skill ALWAYS rejects.
+  # There is no default fallback — see PRD US-5 + the production failure #5 in SKILL.md Overview.
+  allow_default_fallback: false
+
+optout:
+  # STOP keywords that, when received as inbound text on either channel, trigger an opt-out write.
+  # Compared case-insensitively against the trimmed body.
+  keywords:
+    - STOP
+    - UNSUBSCRIBE
+    - QUIT
+    - END
+    - CANCEL
+    - OPTOUT
+  # Single store consulted by BOTH the SMS handler and the webchat handler. Backends:
+  # "postgres", "redis", "dynamodb". Must support a sub-millisecond read on (phone_e164).
+  store_backend: postgres
+  store_dsn: "${OPTOUT_STORE_DSN}"
+  # Cache TTL for the opt-out lookup. Long enough to avoid hammering the store on bursts,
+  # short enough that propagation lag is bounded. NEVER exceed 60s.
+  cache_ttl_seconds: 60
+  # If the opt-out store is unreachable, fail-CLOSED (block outbound) rather than fail-OPEN.
+  # The compliance risk of sending to an opted-out contact dominates the availability risk.
+  fail_mode: closed
+
+logging:
+  format: json
+  level: info
+  # Redact PII at log time. Phones appear as last-4 only ("****1234"). Full phone is recoverable
+  # from the audit trail only via the conversation_uid lookup, which is access-controlled.
+  fields_to_redact:
+    - phone
+    - phone_e164
+    - from
+    - to
+    - message_body
+    - attachment_url
+  pii_format: last4
+
+alerts:
+  # Routing for cross-location-routing rejections and session-close events. Wire to your alert system.
+  routing_rejection_channel: "ops-warnings"
+  optout_violation_channel:  "compliance-page"
+  # If we ever attempt an outbound to an opted-out phone (a bug we want loud, not silent), page.
+  fail_loud_on_optout_attempt: true
+
+dependencies:
+  # Other skills in the podium-pack this skill consumes.
+  uses:
+    - podium-auth
+    - podium-webhook-reliability
+    - podium-rate-limit-survival
+  # Skill referenced for deeper dedup mechanics; not a hard dependency.
+  references:
+    - podium-contact-dedup

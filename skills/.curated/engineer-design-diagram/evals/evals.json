@@ -1,0 +1,75 @@
+{
+  "skill_name": "engineer-design-diagram",
+  "evals": [
+    {
+      "id": 1,
+      "name": "generate_from_tiny_monorepo",
+      "prompt": "/design:generate",
+      "files": ["evals/fixtures/tiny-repo/"],
+      "expected_output": "Architecture HTML for a 3-service monorepo (web/api/db) with semantic role colors",
+      "assertions": [
+        "Output HTML file is created under $CWD/.arch/generate-*.html",
+        "Output contains CSS custom property references to --role-frontend-stroke, --role-backend-stroke, and --role-db-stroke",
+        "Every node <rect> has an accompanying <title> child for accessibility",
+        "A @media (prefers-reduced-motion: reduce) rule is present in the embedded <style>",
+        "Fingerprint file at ${CLAUDE_PLUGIN_DATA}/arch-state.json (or fallback path) is written with 3 nodes and at least 2 edges",
+        "No external script src other than Google Fonts"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "diff_highlights_added_redis",
+      "prompt": "/design:diff",
+      "files": ["evals/fixtures/pr-diff/"],
+      "expected_output": "Delta diagram highlighting a new Redis cache node and a removed SQS edge",
+      "assertions": [
+        "Output HTML contains a node labeled 'redis' or similar with --role-db-stroke applied",
+        "At least one element in the output carries class 'delta-added' or 'delta-removed'",
+        "A Mermaid text block is echoed to chat for copy-paste",
+        "Fingerprint on disk reflects the POST-diff state, not the pre-diff baseline",
+        "One-line summary in chat mentions both 'added' and 'removed' counts"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "trace_sentry_event_to_sequence",
+      "prompt": "/design:trace evals/fixtures/trace-input/sentry-event.json",
+      "files": ["evals/fixtures/trace-input/sentry-event.json"],
+      "expected_output": "Sequence diagram of the failure path with 4+ lifelines and an error-marked arrow",
+      "assertions": [
+        "Output is a sequence diagram using templates/sequence.html or a Mermaid sequenceDiagram block",
+        "At least 4 lifelines are rendered",
+        "The final message arrow carries the error class or label from the input trace",
+        "No fingerprint write occurs in trace mode"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "watch_detects_drift",
+      "prompt": "/design:watch",
+      "files": [
+        "evals/fixtures/tiny-repo/",
+        "evals/fixtures/prior-fingerprint/arch-state.json"
+      ],
+      "expected_output": "Markdown drift report listing one added node and one removed edge",
+      "assertions": [
+        "Output is markdown, not HTML",
+        "Report contains the sections 'Added', 'Removed', and 'Changed'",
+        "Each delta line cites a source file that justifies the change",
+        "Final line of the report includes the new graph_fingerprint sha256 value"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "negative_skill_does_not_trigger_on_unrelated_prompt",
+      "prompt": "What's the weather tomorrow in Portland?",
+      "files": [],
+      "expected_output": "Skill does NOT activate; Claude answers the weather question without invoking engineer-design-diagram",
+      "assertions": [
+        "engineer-design-diagram skill is not loaded for this prompt",
+        "No HTML file is created",
+        "No fingerprint write occurs"
+      ]
+    }
+  ]
+}

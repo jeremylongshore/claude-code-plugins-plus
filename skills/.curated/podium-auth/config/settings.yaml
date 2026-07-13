@@ -1,0 +1,99 @@
+# podium-auth — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+oauth:
+  # Podium OAuth endpoints. Override only if Podium publishes a regional account host.
+  authorize_url: "https://accounts.podium.com/oauth/authorize"
+  token_url:     "https://accounts.podium.com/oauth/token"
+  revoke_url:    "https://accounts.podium.com/oauth/revoke"
+  me_url:        "https://api.podium.com/v4/me"
+
+  # HTTP client tuning. The 10s timeout is conservative — Podium's token endpoint
+  # is typically < 500ms; the timeout exists to bound failure latency on a flaky network.
+  timeout_seconds: 10
+  http2: true
+  pool_max_per_host: 4
+
+cache:
+  # Refresh at this fraction of TTL elapsed. 0.80 = refresh when 80% of TTL has passed,
+  # i.e. with 20% of TTL remaining as headroom for the refresh call itself + retries.
+  refresh_at_ttl_fraction: 0.80
+
+  # Minimum headroom in seconds. Whichever of (TTL * fraction) and (TTL - this) is sooner wins.
+  # Protects against very short TTLs where 20% headroom is itself < 60s.
+  min_refresh_headroom_seconds: 600
+
+retry:
+  # Exponential backoff with full jitter for transient (5xx, network) errors.
+  max_attempts: 4
+  base_delay_ms: 500
+  cap_ms: 30000
+  retryable_statuses: [429, 500, 502, 503, 504]
+
+decay:
+  # Refresh-token decay clock. Podium expires unused refresh tokens at 90 days.
+  # Thresholds below are days since last_used_at.
+  warn_after_days: 60
+  page_after_days: 75
+  hard_fail_after_days: 85
+  hard_ceiling_days:  90    # Podium's documented expiry — do not exceed
+  monitor_interval_seconds: 3600   # decay scan cadence
+
+scopes:
+  # Required scopes for the integration. Edit per-deployment to match the OAuth app's
+  # scope grant. Any missing scope on refresh raises PodiumScopeError.
+  required:
+    - conversations.read
+    - conversations.write
+    - contacts.read
+    - contacts.write
+    - reviews.read
+    - reviews.write
+  # Optional scopes — log a warning if absent, do not fail.
+  optional:
+    - locations.read
+    - webhooks.write
+
+secret_store:
+  # One of: "env", "aws-secrets-manager", "gcp-secret-manager", "sops", "file"
+  # "file" expects a local path readable by mode 0600 owner-only.
+  backend: env
+
+  # When backend = file, the path to the JSON blob holding refresh_token + last_used_at.
+  # When backend = aws-secrets-manager, the secret ID (e.g. "podium/refresh-token").
+  # When backend = gcp-secret-manager, the secret name (e.g. "podium-refresh-token").
+  # When backend = sops, the SOPS-encrypted YAML file path.
+  path_or_id: "${PODIUM_REFRESH_TOKEN_FILE}"
+
+  # Atomic write semantics — temp file in same directory, then os.replace().
+  atomic_write: true
+
+multi_tenant:
+  # When operating an agency router with N orgs, this controls per-org cache isolation.
+  enabled: false
+  # Path or secret-store key holding a map of org_slug -> {client_id, client_secret, refresh_token_file}.
+  credentials_map: "${PODIUM_ORG_CREDENTIALS_MAP}"
+  # Reject unknown org slugs immediately instead of falling back to a default.
+  strict_routing: true
+
+logging:
+  # Structured JSON; one event per refresh. Tokens are NEVER logged — only metadata.
+  format: json
+  level: info
+  fields_to_redact:
+    - access_token
+    - refresh_token
+    - client_secret
+    - authorization
+
+alerts:
+  # Routing for decay warnings and page-on-call events. Wire to your existing alert system.
+  warn_channel:  "ops-warnings"        # e.g. Slack channel, log target
+  page_channel:  "oncall-page"         # e.g. PagerDuty service key, opsgenie team
+  hard_fail_behavior: raise            # one of: raise | log_and_continue
+
+rotation:
+  # Used by scripts/rotate_secret.py. Controls the dual-credential overlap window.
+  overlap_window_seconds: 900           # 15 min for in-flight requests to drain
+  require_health_check_pass: true       # do not revoke old credential without /v4/me success
+  pre_revoke_smoke_test_calls: 3        # verify N successive successful calls before revoke

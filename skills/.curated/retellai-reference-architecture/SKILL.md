@@ -1,0 +1,60 @@
+---
+name: retellai-reference-architecture
+description: "Retell AI reference architecture \u2014 AI voice agent and phone call\
+  \ automation.\nUse when working with Retell AI for voice agents, phone calls, or\
+  \ telephony.\nTrigger with phrases like \"retell reference architecture\", \"retellai-reference-architecture\"\
+  , \"voice agent\".\n"
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- retellai
+- voice
+- telephony
+- ai-agents
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+---
+# Retell AI Reference Architecture
+
+## Overview
+
+Implementation patterns for Retell AI reference architecture — voice agent and telephony platform.
+
+## Prerequisites
+
+- Completed `retellai-install-auth` setup
+
+## Instructions
+
+### Step 1: SDK Pattern
+
+```typescript
+import Retell from 'retell-sdk';
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+
+const agents = await retell.agent.list();
+console.log(`Agents: ${agents.length}`);
+```
+
+## Output
+
+- Retell AI integration for reference architecture
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 400 Bad Request | Invalid parameters | Check API documentation |
+
+## Resources
+
+- [Retell AI Documentation](https://docs.retellai.com)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+
+## Next Steps
+
+See related Retell AI skills for more workflows.

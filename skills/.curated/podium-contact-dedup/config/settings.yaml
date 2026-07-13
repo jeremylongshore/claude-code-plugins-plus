@@ -1,0 +1,117 @@
+# podium-contact-dedup — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+normalization:
+  # Default region for parsing national-format phone numbers. ISO 3166-1 alpha-2.
+  # AU for Australian tenants; US for US; etc. Numbers already in E.164 (+...)
+  # ignore this and use their own country code.
+  default_region: AU
+
+  # Phonenumbers library validation level.
+  # "valid"     — phonenumbers.is_valid_number must return true (recommended)
+  # "possible"  — phonenumbers.is_possible_number is enough (looser, more false positives)
+  validation_level: valid
+
+  # Drop invalid numbers from the index entirely. When false, invalid numbers
+  # are indexed with natural_key=NULL and surfaced in a separate "uncategorized" queue.
+  drop_invalid: true
+
+index:
+  # SQLite database file for the natural-key index and merge_state.
+  db_path: "./podium-dedup.sqlite"
+  # File mode for the SQLite file. 0600 = owner-only (PII asset).
+  db_file_mode: "0600"
+  # Vacuum the database after each full run to reclaim space from soft-deleted rows.
+  vacuum_after_run: true
+
+clustering:
+  # Confidence scoring weights. Total max = 1.0.
+  # The 0.60 floor (same E.164) is non-configurable and enforced in code.
+  weight_same_phone:    0.60   # required floor — same natural_key by construction
+  weight_same_name:     0.20
+  weight_same_email:    0.15
+  weight_overlapping_tags: 0.05
+
+  # Auto-merge threshold. Clusters with all pairwise scores >= this auto-merge.
+  # Below this floor (but above 0.60) → human review queue.
+  auto_merge_threshold: 0.80
+
+  # Maximum cluster size that can auto-merge. Larger clusters are suspicious
+  # and surface for review even if confidence is high.
+  max_auto_merge_cluster_size: 5
+
+merge:
+  # Deterministic primary selection: most fields → most recent → lowest uid.
+  # primary_strategy is informational only; the code path is fixed.
+  primary_strategy: "max_field_count_then_most_recent_then_lowest_uid"
+
+  # Concurrency for the merge orchestrator. Bounded by Podium's per-tenant
+  # merge rate limit — keep this conservative.
+  concurrency: 4
+
+  # Always apply the unioned opt-out flags via PATCH after every merge.
+  # Setting this to false is a compliance violation in TCPA / GDPR / ACMA jurisdictions.
+  apply_opt_out_patch: true
+
+  # If the post-merge PATCH fails, the cluster enters compliance_failed state
+  # and pages the compliance channel. Do not silence this without a written
+  # compliance sign-off.
+  page_on_compliance_failure: true
+
+opt_outs:
+  # The opt-out flag names as they appear in Podium's contact schema.
+  # If Podium renames these, update here — the union logic is field-name agnostic.
+  flags:
+    - marketing_opt_out
+    - sms_opt_out
+    - email_opt_out
+
+  # Union policy: any record with the flag = true → merged record has the flag = true.
+  # The "any" policy is the only compliance-safe choice. Do not change this.
+  union_policy: any
+
+cross_location:
+  # Cross-location dedup runs after per-location scans complete.
+  enabled: true
+
+  # Default behavior on cross-location duplicate clusters:
+  #   "review"     — emit to human-review queue, never auto-merge (default; safe)
+  #   "auto_merge" — auto-merge if confidence >= auto_merge_threshold (only when
+  #                  the operator has confirmed locations represent the same entity)
+  policy: review
+
+  # Path for the human-review queue when policy=review.
+  review_queue_path: "./cross-location-review.json"
+
+soft_delete:
+  # Hard-delete is reserved for a separate compliance-erasure workflow.
+  # This skill never calls hard-delete endpoints regardless of any operator request.
+  # Setting allow_hard_delete=true is intentionally not honored.
+  allow_hard_delete: false
+
+retry:
+  # Exponential backoff with full jitter for transient errors.
+  max_attempts: 4
+  base_delay_ms: 500
+  cap_ms: 30000
+  retryable_statuses: [429, 500, 502, 503, 504]
+
+resume:
+  # On every run start, scan merge_state for non-terminal rows and reconcile
+  # against live Podium state before issuing new merges.
+  enabled: true
+  # Maximum age of a pending row before it is treated as orphaned and re-evaluated.
+  pending_stale_seconds: 1800
+
+audit:
+  # Append-only audit log path. JSON Lines. One entry per merge / conflict / failure.
+  # Rotated weekly; restrict access to the compliance team.
+  log_path: "./audit-log.jsonl"
+  # Include the pre-merge per-record opt-out state in every audit entry.
+  # This is the compliance evidence trail; do not disable.
+  include_pre_merge_opt_outs: true
+
+alerts:
+  # Routing for compliance failures and operational pages.
+  compliance_channel: "compliance-page"   # opt-out PATCH failure → here
+  ops_channel:        "ops-warnings"      # transient retries → here

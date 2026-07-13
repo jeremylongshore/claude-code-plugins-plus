@@ -1,0 +1,117 @@
+# podium-webhook-reliability — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+signature:
+  # Header name carrying the timestamp + HMAC signature pair.
+  # Verify against current Podium docs at integration time — header names evolve.
+  header_name: "X-Podium-Signature"
+
+  # Expected header format: comma-separated key=value pairs.
+  # Example: "t=<unix_timestamp>,v1=<hex_hmac_sha256>"
+  format: "t,v1"
+
+  # HMAC algorithm. Podium signs with SHA-256.
+  algorithm: "sha256"
+
+  # Constant-time compare is non-negotiable.
+  # If your language stdlib has no constant-time primitive, find a different language.
+  constant_time_compare: true
+
+replay:
+  # Reject any event whose signed timestamp is outside ±this window.
+  # 300 = 5 minutes. Tune down to 60s if you have NTP-tight infrastructure;
+  # tune up to 600s if you operate global edge receivers with measured skew.
+  window_seconds: 300
+
+dedup:
+  # Backend for the idempotency cache.
+  # "redis"     — production default; atomic SET NX EX
+  # "memory"    — dev fallback; non-shared across processes; lost on restart
+  # "sqlite"    — single-node prod with no Redis; atomic via UNIQUE constraint
+  backend: redis
+
+  # Redis connection URL when backend=redis. Honors $REDIS_URL env var if unset.
+  redis_url: "${REDIS_URL}"
+
+  # Key namespace + TTL.
+  # 86400s = 24h, matched to Podium's webhook retry ceiling.
+  # If Podium changes the retry policy, this MUST move with it or duplicates leak.
+  key_prefix: "podium:evt:"
+  ttl_seconds: 86400
+
+  # When backend=sqlite, where the dedup database lives.
+  sqlite_path: "/var/lib/podium-dedup.sqlite"
+
+  # Behavior when the dedup backend is unreachable.
+  # "fail_closed" → return 503; Podium retries (recommended for prod)
+  # "log_and_continue" → process without dedup (NEVER use in prod)
+  on_backend_unavailable: fail_closed
+
+dlq:
+  # Backend for persisting failed events for later replay.
+  # "redis_list" — production default; LPUSH/LRANGE; archive to S3/GCS hourly
+  # "sqlite"     — single-node deployments, dev
+  # "jsonl"      — append-only file fallback
+  backend: redis_list
+
+  # When backend=redis_list, the list key.
+  redis_list_key: "podium:dlq"
+
+  # When backend=sqlite or jsonl, the path.
+  sqlite_path: "/var/lib/podium-dlq.sqlite"
+  jsonl_path: "/var/log/podium-dlq.jsonl"
+
+  # Refuse to process new events if the DLQ has more than this many entries.
+  # Hard-cap prevents an upstream-bad outage from filling unbounded storage.
+  max_backlog: 100000
+
+batch:
+  # Sort events within a batched delivery by this key tuple.
+  # (occurred_at ascending, event_id ascending for stable order).
+  sort_keys: ["occurred_at", "id"]
+
+  # When a causally-dependent event arrives before its precondition,
+  # defer to DLQ with this reason and let replay handle it.
+  defer_on_missing_precondition: true
+
+  # Maximum events per inbound delivery. Beyond this is suspicious — log + alert.
+  max_events_per_delivery: 100
+
+http:
+  # FastAPI / uvicorn tuning for the receiver.
+  bind_host: "0.0.0.0"
+  bind_port: 8080
+  workers: 2
+  timeout_keep_alive: 15
+
+  # Inbound body size cap. Podium events are small; this guards against malicious-large POSTs.
+  max_body_bytes: 524288   # 512 KiB
+
+secret_store:
+  # Where the PODIUM_WEBHOOK_SECRET is loaded from at receiver startup.
+  # One of: "env", "aws-secrets-manager", "gcp-secret-manager", "sops", "file"
+  backend: env
+  env_var: "PODIUM_WEBHOOK_SECRET"
+
+  # When backend != env, the path or secret ID.
+  path_or_id: ""
+
+logging:
+  # Structured JSON; one event per inbound request.
+  # CRITICAL: do NOT log the request body on signature failure (attacker probing).
+  format: json
+  level: info
+  log_body_on_signature_failure: false
+  log_body_on_dispatch_failure: true     # safe — signature already verified
+  fields_to_redact:
+    - signature
+    - x_podium_signature
+    - podium_webhook_secret
+
+alerts:
+  # Routing for backend-unavailable and DLQ-overflow events.
+  warn_channel:  "ops-warnings"
+  page_channel:  "oncall-page"
+
+  # Page on-call when DLQ backlog exceeds this many entries.
+  dlq_backlog_page_threshold: 1000

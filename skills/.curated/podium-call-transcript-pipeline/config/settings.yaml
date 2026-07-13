@@ -1,0 +1,128 @@
+# podium-call-transcript-pipeline — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+webhook:
+  # Path the FastAPI handler binds to. The verifier (consumed from podium-webhook-reliability)
+  # expects the raw body and the Podium-Signature header.
+  path: "/podium/transcripts"
+  # p95 latency budget for the handler. If breached for >5 minutes, page on-call —
+  # Podium will start retrying webhooks beyond its own timeout (~30s) and the inbox
+  # will accumulate duplicate-delivery work (idempotent, but wasteful).
+  p95_latency_budget_ms: 250
+
+inbox:
+  # SQLite is the default durable store. Postgres and DynamoDB are drop-in replacements
+  # via the same insert/upsert/select shape — see references/implementation.md.
+  backend: sqlite
+  path: "${PODIUM_TRANSCRIPT_INBOX_PATH:-./podium_transcripts.db}"
+  # WAL mode is required for concurrent writer + readers.
+  journal_mode: wal
+  # File permissions on the SQLite file. 0600 = owner-only read/write.
+  file_mode: 0600
+  # Days to retain processed rows before vacuuming. Unprocessed rows are retained
+  # indefinitely until they succeed or are dead-lettered.
+  retention_days: 7
+
+reconciler:
+  # How long to wait after call.ended before invoking the fallback poller for a missing
+  # transcript event. Conservative — Podium transcripts can take hours.
+  missing_transcript_threshold_hours: 4
+  # If no transcript event has arrived by this age, mark the call's transcript as
+  # permanently missing (status=failed) and emit a metric.
+  abandon_transcript_threshold_hours: 24
+
+language_detection:
+  # langdetect is the default; fasttext is faster + more accurate but heavier.
+  # Options: "langdetect" | "fasttext"
+  detector: langdetect
+  # Random seed for deterministic detection across runs. 0 is fine; any int works.
+  random_seed: 0
+  # Confidence floors for routing decisions.
+  english_confidence_threshold: 0.85
+  review_confidence_threshold: 0.50
+  # Below this character count, mark transcript as "und" (undetermined) and route to review.
+  min_chars_for_detection: 20
+
+redaction:
+  # Order of detectors. The regex layer is the floor; presidio adds NER-based detections
+  # (PERSON, ADDRESS, DATE) on top. If presidio is unavailable, regex-only mode runs
+  # with a per-transcript warning.
+  detectors:
+    - regex
+    - presidio    # optional; degrades to regex-only on import failure
+  # Categories the regex layer covers. Custom recognizers (AU TFN, NZ IRD, etc.) can
+  # be added via references/implementation.md § custom recognizers.
+  regex_categories:
+    - CREDIT_CARD     # Luhn-validated
+    - PHONE
+    - EMAIL
+    - SSN_US
+  # Replacement format. The category is preserved in the substitution token so downstream
+  # consumers can reason about what was redacted without reading the audit log.
+  # The pattern below uses Python str.format style (CATEGORY substituted at runtime).
+  replacement_format: "[REDACTED:CATEGORY]"
+  # Audit log is JSONL — one redaction event per line.
+  audit_log_path: "${PODIUM_REDACTION_AUDIT_LOG:-./redactions.jsonl}"
+  # Sign each audit line with HMAC-SHA256 (key from env). Required for regulated industries.
+  hmac_sign_audit_log: false
+  hmac_key_env: "PODIUM_AUDIT_HMAC_KEY"
+
+chunking:
+  # Target tokens per chunk. 1500 fits comfortably inside a 4k context with room for
+  # RAG-retrieved companion chunks + prompt scaffolding.
+  target_tokens: 1500
+  # Overlap re-includes trailing segments of the prior chunk to preserve cross-chunk context.
+  overlap_tokens: 200
+  # Token estimator — heuristic by default; replace with tiktoken or the target model's
+  # tokenizer if the model is known at deploy time.
+  estimator: "char_div_4"
+  # If a single segment exceeds target_tokens, emit a one-segment oversize chunk rather
+  # than splitting mid-utterance. Logged as ERR_TXP_006.
+  allow_oversize_single_segment_chunks: true
+
+queue:
+  # Outbound queue backend. The pipeline writes a chunked, redacted record per transcript.
+  # Options: "redis_streams" | "sqs" | "sqlite"
+  backend: redis_streams
+  # Routing keys by detected language. The English queue is the primary RAG consumer;
+  # other-language queues feed translation+routing logic upstream of RAG.
+  stream_prefix: "podium:transcripts"
+  # Per-language stream names. "review" is the human-review queue for low-confidence detections.
+  language_streams:
+    en: "podium:transcripts:en"
+    review: "podium:transcripts:review"
+    # All other detected languages route to "podium:transcripts:LANG" automatically
+    # (LANG substituted by the ISO 639-1 code at enqueue time).
+
+retry:
+  # Exponential backoff for failed queue writes. Cap at 1h so a 12-attempt budget
+  # spans ~4 days of retry purgatory before dead-letter.
+  base_delay_seconds: 1
+  cap_seconds: 3600
+  max_attempts: 12
+
+dead_letter:
+  # When attempt_count exceeds max_attempts, move the row here. A separate alert
+  # fires when count > 0 for > 1h.
+  table_name: "inbox_deadletter"
+  alert_channel: "oncall-page"
+  alert_threshold_count: 1
+  alert_threshold_minutes: 60
+
+poller:
+  # Fallback poller cadence and lookback window. Runs as a separate cron / scheduled task.
+  interval_seconds: 3600
+  lookback_hours: 12
+  # When the poller finds a call.ended without a subsequent transcript event in the inbox,
+  # it fetches the transcript directly and synthesizes a call.transcript.completed inbox row
+  # tagged source=poller.
+  synthesize_completed_event: true
+
+logging:
+  # Structured JSON; one event per processor action. Never log un-redacted transcripts.
+  format: json
+  level: info
+  fields_to_redact:
+    - raw_payload
+    - transcript_text
+    - access_token

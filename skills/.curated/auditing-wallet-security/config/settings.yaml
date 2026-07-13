@@ -1,0 +1,174 @@
+# Wallet Security Auditor Configuration
+# ======================================
+
+# Chain configurations
+chains:
+  ethereum:
+    chain_id: 1
+    rpc_url: "https://eth.llamarpc.com"
+    explorer_api: "https://api.etherscan.io/api"
+    explorer_url: "https://etherscan.io"
+    native_symbol: "ETH"
+
+  bsc:
+    chain_id: 56
+    rpc_url: "https://bsc-dataseed1.binance.org"
+    explorer_api: "https://api.bscscan.com/api"
+    explorer_url: "https://bscscan.com"
+    native_symbol: "BNB"
+
+  polygon:
+    chain_id: 137
+    rpc_url: "https://polygon-rpc.com"
+    explorer_api: "https://api.polygonscan.com/api"
+    explorer_url: "https://polygonscan.com"
+    native_symbol: "MATIC"
+
+  arbitrum:
+    chain_id: 42161
+    rpc_url: "https://arb1.arbitrum.io/rpc"
+    explorer_api: "https://api.arbiscan.io/api"
+    explorer_url: "https://arbiscan.io"
+    native_symbol: "ETH"
+
+  optimism:
+    chain_id: 10
+    rpc_url: "https://mainnet.optimism.io"
+    explorer_api: "https://api-optimistic.etherscan.io/api"
+    explorer_url: "https://optimistic.etherscan.io"
+    native_symbol: "ETH"
+
+  base:
+    chain_id: 8453
+    rpc_url: "https://mainnet.base.org"
+    explorer_api: "https://api.basescan.org/api"
+    explorer_url: "https://basescan.org"
+    native_symbol: "ETH"
+
+# Risk scoring configuration
+risk_scoring:
+  # Score weights by category (must sum to 1.0)
+  weights:
+    approvals: 0.40
+    interactions: 0.30
+    patterns: 0.20
+    age: 0.10
+
+  # Risk level thresholds
+  thresholds:
+    safe: 90       # score >= 90
+    low: 70        # score >= 70
+    medium: 50     # score >= 50
+    high: 30       # score >= 30
+    critical: 0    # score >= 0
+
+  # Risk factor impacts (negative = deduction from score)
+  factors:
+    unlimited_unknown: -30     # Unlimited approval to unknown contract
+    approval_flagged: -25      # Approval to flagged/scam contract
+    interaction_scam: -20      # Interaction with known scam
+    many_unlimited: -15        # More than 5 unlimited approvals
+    stale_approval: -10        # Approval older than 6 months
+    unknown_contract: -5       # Interaction with unverified contract
+    high_value_approval: -10   # Approval for high-value token
+
+# Approval scanning configuration
+approvals:
+  # ERC20 Approval event topic
+  approval_topic: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+
+  # Unlimited approval threshold (2^200)
+  unlimited_threshold: "0x0000000000000000ffffffffffffffffffffffffffffffffffffffffffffffff"
+
+  # Maximum approvals to display in table
+  max_display: 20
+
+  # Cache TTL for token info (seconds)
+  token_cache_ttl: 3600
+
+# Transaction analysis configuration
+transactions:
+  # Default analysis period (days)
+  default_days: 30
+
+  # Maximum transactions to fetch
+  max_fetch: 1000
+
+  # Suspicious pattern detection thresholds
+  patterns:
+    rapid_approvals:
+      count: 5           # More than N approvals
+      window_hours: 1    # in this time window
+      severity: high
+
+    interaction_burst:
+      count: 20          # More than N unique contracts
+      window_hours: 24   # in this time window
+      severity: medium
+
+    dust_attack:
+      min_value: 0.0001  # ETH
+      max_value: 0.001   # ETH
+      min_count: 5       # Multiple tiny incoming
+      severity: low
+
+    high_failure_rate:
+      count: 10          # More than N failed txs
+      severity: low
+
+# Known risky addresses (populated from security APIs at runtime)
+known_risky:
+  # Example entries:
+  # "0x1234...": "Known phishing contract"
+  # "0xabcd...": "Confirmed rug pull"
+
+# Security data APIs (optional integrations)
+security_apis:
+  goplus:
+    enabled: false
+    base_url: "https://api.gopluslabs.io/api/v1"
+    timeout: 10
+
+  token_sniffer:
+    enabled: false
+    base_url: "https://tokensniffer.com/api/v2"
+    timeout: 10
+
+# Output formatting
+formatting:
+  # Address display length
+  address_truncate: 10
+
+  # Score bar width
+  score_bar_width: 20
+
+  # Maximum risk factors to display
+  max_risk_factors: 10
+
+  # Maximum recommendations to display
+  max_recommendations: 5
+
+# API rate limiting
+rate_limits:
+  # Requests per second to explorer API
+  explorer_rps: 5
+
+  # Requests per second to RPC
+  rpc_rps: 10
+
+  # Delay between requests (milliseconds)
+  request_delay_ms: 200
+
+# Environment variables (expected)
+environment:
+  # Block explorer API key (for higher rate limits)
+  explorer_api_key: "ETHERSCAN_API_KEY"
+
+  # Custom RPC URLs (optional, per-chain)
+  rpc_url_override: "{CHAIN}_RPC_URL"  # e.g., ETHEREUM_RPC_URL
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  file: null  # Set to path to enable file logging

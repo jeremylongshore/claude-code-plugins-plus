@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} — Sequence Diagram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas-bg: #020617;
+      --panel-bg: #0f172a;
+      --grid-stroke: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --lifeline: #64748b;
+      --activation: rgba(34, 211, 238, 0.25);
+      --activation-stroke: #22d3ee;
+      --msg-normal: #34d399;
+      --msg-error: #fb7185;
+      --msg-return: #a78bfa;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--canvas-bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .header-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--msg-normal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .header-dot { animation: none; }
+    }
+    h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    .subtitle { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+    .diagram-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--grid-stroke);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    text { font-family: var(--font-mono); fill: var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-dot" aria-hidden="true"></div>
+    <div>
+      <h1>{{TITLE}}</h1>
+      <div class="subtitle">{{SUBTITLE}}</div>
+    </div>
+  </header>
+
+  <div class="diagram-card">
+    <svg
+      role="img"
+      aria-labelledby="seq-title seq-desc"
+      viewBox="0 0 {{VIEWBOX_W}} {{VIEWBOX_H}}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title id="seq-title">{{TITLE}}</title>
+      <desc id="seq-desc">{{DESCRIPTION}}</desc>
+
+      <defs>
+        <marker id="arrow-normal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--msg-normal)"/>
+        </marker>
+        <marker id="arrow-error" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--msg-error)"/>
+        </marker>
+        <marker id="arrow-return" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--msg-return)"/>
+        </marker>
+      </defs>
+
+      <!-- Lifelines: vertical dashed lines labeled with participant names -->
+      {{LIFELINES}}
+
+      <!-- Activation boxes: shaded rectangles along lifelines -->
+      {{ACTIVATIONS}}
+
+      <!-- Messages: arrows between lifelines with labels -->
+      {{MESSAGES}}
+    </svg>
+  </div>
+</body>
+</html>

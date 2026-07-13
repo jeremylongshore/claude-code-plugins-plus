@@ -1,0 +1,98 @@
+# Example GraphQL schema file for testing GraphQL APIs.
+# This schema defines a simple book catalog with authors.
+
+# Types
+type Book {
+  id: ID!
+  title: String!
+  author: Author!
+  publicationYear: Int
+  genre: String
+}
+
+type Author {
+  id: ID!
+  name: String!
+  books: [Book!]!
+}
+
+# Queries
+type Query {
+  # Get a book by its ID
+  book(id: ID!): Book
+
+  # Get all books
+  books: [Book!]!
+
+  # Get an author by their ID
+  author(id: ID!): Author
+
+  # Get all authors
+  authors: [Author!]!
+
+  # Search for books by title or author name
+  search(query: String!): [Book!]!
+}
+
+# Mutations
+type Mutation {
+  # Create a new book
+  createBook(
+    title: String!
+    authorId: ID!
+    publicationYear: Int
+    genre: String
+  ): Book
+
+  # Update an existing book
+  updateBook(
+    id: ID!
+    title: String
+    authorId: ID
+    publicationYear: Int
+    genre: String
+  ): Book
+
+  # Delete a book by its ID
+  deleteBook(id: ID!): ID
+
+  # Create a new author
+  createAuthor(name: String!): Author
+}
+
+# Input types (optional, for more complex mutations)
+# input CreateBookInput {
+#   title: String!
+#   authorId: ID!
+#   publicationYear: Int
+#   genre: String
+# }
+
+# Placeholder for subscriptions (if needed)
+# type Subscription {
+#   newBook: Book
+# }
+
+# Further instructions:
+# 1.  This is a basic example.  Extend it with more complex types, fields, and relationships as needed.
+# 2.  Consider adding input types for mutations to improve clarity and validation.
+# 3.  Implement resolvers for each query and mutation to connect to your data source.
+# 4.  Use directives for authorization, caching, and other features.
+# 5.  Use scalars for custom data types (e.g., Date, URL).
+# 6.  Example query to get a specific book:
+#    query {
+#      book(id: "123") {
+#        id
+#        title
+#        author {
+#          name
+#        }
+#      }
+#    }
+# 7.  Example mutation to create a book:
+#    mutation {
+#      createBook(title: "New Book", authorId: "456", publicationYear: 2023, genre: "Fiction") {
+#        id
+#        title
+#      }
+#    }

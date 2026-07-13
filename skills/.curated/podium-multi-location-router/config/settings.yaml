@@ -1,0 +1,109 @@
+# podium-multi-location-router — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+verification:
+  # Pre-flight `GET /v4/locations` cache TTL. Verified location_uids are trusted
+  # for this many seconds before the router re-confirms ownership.
+  ttl_seconds: 3600
+
+  # Endpoint for ownership verification. Override only if Podium publishes a regional host.
+  locations_url: "https://api.podium.com/v4/locations"
+
+  # HTTP client tuning. The 10s timeout bounds failure latency on a flaky network.
+  timeout_seconds: 10
+  pool_max_per_host: 4
+
+  # Single-flight per location_uid — concurrent callers serialize on one verify call.
+  single_flight: true
+
+audit_log:
+  # Append-only JSONL. One line per API call. NEVER contains tokens, bodies, or PII —
+  # routing fingerprint only.
+  path: "./audit-log/podium-router.jsonl"
+
+  # Fixed schema; the library enforces these fields at write time.
+  fields:
+    - ts
+    - location_uid
+    - org_slug
+    - endpoint
+    - method
+    - status
+    - request_id
+    - latency_ms
+
+  # Retention is operator-controlled via logrotate. The library never deletes lines.
+  # Default policy: 6 months minimum for compliance audit trails.
+  retention_days_minimum: 180
+
+  # On any write failure (disk full, permissions), the library fails the API call —
+  # an unaudited call is not an acceptable degradation mode.
+  fail_call_on_audit_failure: true
+
+credentials_map:
+  # Path or secret-store key for the location credential map. Each entry:
+  #   location_uid:
+  #     org_slug: <string>
+  #     client_id: <string>
+  #     client_secret: <string>
+  #     refresh_token_file: <path>
+  path: "${PODIUM_LOCATION_CREDENTIALS}"
+
+  # When backend = "file", the on-disk JSON path. When "sops", a SOPS-encrypted YAML.
+  # When "aws-secrets-manager" or "gcp-secret-manager", the secret ID / name.
+  backend: file
+
+  # Reject unknown location_uids immediately instead of falling back to a default.
+  # Setting this to false is a security regression — only do so in a controlled dev env.
+  strict_routing: true
+
+rate_limit:
+  # Per-location token bucket defaults. Sized for a typical SMB Podium plan.
+  # Tune per-location in the credentials map if a specific store has higher traffic.
+  default_capacity: 30           # max burst (tokens in full bucket)
+  default_refill_per_second: 5   # steady-state rate (tokens added per second)
+  default_acquire_timeout_seconds: 30
+
+  # If a location's bucket cannot acquire within timeout, raise LocationRateLimitExceeded.
+  surface_429_as_exception: true
+
+onboarding:
+  # Bulk onboarding orchestrator config. Conservative defaults — concurrency is OFF
+  # because the per-location atomic invariant is easier to reason about serially.
+  concurrent_locations: 1
+  retry_per_location: 1
+  rollback_on_verification_failure: true
+
+  # Onboarding artifact: one summary JSON per run, listing onboarded / skipped / failed.
+  summary_path: "./audit-log/onboarding-runs/"
+
+  # When backend writes a new credential entry, persist atomically (temp file + rename).
+  atomic_credential_write: true
+
+logging:
+  # Library-level structured logging (separate from the API-call audit log above).
+  # Logs setup, onboarding events, verification cache hits/misses. NO tokens.
+  format: json
+  level: info
+  fields_to_redact:
+    - access_token
+    - refresh_token
+    - client_secret
+    - authorization
+
+alerts:
+  # Routing for routing-layer alerts. Wire to your existing alert system.
+  unknown_location_channel: "ops-warnings"             # caller asked for unknown uid
+  not_in_scope_channel:     "ops-warnings"             # pre-flight failed
+  audit_write_failure_channel: "oncall-page"           # audit log unwritable — critical
+
+stacking:
+  # Names of the upstream skills this router depends on. Documented here for
+  # discoverability; not enforced at runtime.
+  depends_on:
+    - podium-auth                # PodiumAuth, PodiumOrgRouter, refresh-token persistence
+    - podium-rate-limit-survival # TokenBucket, per-bucket budget management
+  consumed_by:
+    - podium-webchat-handler
+    - podium-review-request-automation
+    - podium-call-transcript-pipeline

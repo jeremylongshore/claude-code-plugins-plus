@@ -1,0 +1,204 @@
+{
+  "_comment": "Kibana Dashboard Configuration for ELK Stack",
+  "title": "System Performance and Log Analysis",
+  "description": "Dashboard providing insights into system performance and log data.",
+  "panels": [
+    {
+      "id": "cpu_usage",
+      "type": "visualization",
+      "title": "CPU Usage",
+      "description": "Displays CPU usage over time.",
+      "visState": {
+        "type": "timeseries",
+        "params": {
+          "indexPattern": "system-metrics-*",
+          "timeField": "@timestamp",
+          "interval": "auto",
+          "metrics": [
+            {
+              "field": "system.cpu.usage",
+              "type": "avg",
+              "alias": "Average CPU Usage"
+            }
+          ],
+          "xAxisMode": "timeseries",
+          "yAxisMode": "normal"
+        }
+      },
+      "gridData": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 6
+      }
+    },
+    {
+      "id": "memory_usage",
+      "type": "visualization",
+      "title": "Memory Usage",
+      "description": "Displays memory usage over time.",
+      "visState": {
+        "type": "timeseries",
+        "params": {
+          "indexPattern": "system-metrics-*",
+          "timeField": "@timestamp",
+          "interval": "auto",
+          "metrics": [
+            {
+              "field": "system.memory.actual.used.pct",
+              "type": "avg",
+              "alias": "Average Memory Usage"
+            }
+          ],
+          "xAxisMode": "timeseries",
+          "yAxisMode": "normal"
+        }
+      },
+      "gridData": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 6
+      }
+    },
+    {
+      "id": "disk_usage",
+      "type": "visualization",
+      "title": "Disk Usage",
+      "description": "Displays disk usage over time.",
+      "visState": {
+        "type": "timeseries",
+        "params": {
+          "indexPattern": "system-metrics-*",
+          "timeField": "@timestamp",
+          "interval": "auto",
+          "metrics": [
+            {
+              "field": "system.disk.used.pct",
+              "type": "avg",
+              "alias": "Average Disk Usage"
+            }
+          ],
+          "xAxisMode": "timeseries",
+          "yAxisMode": "normal"
+        }
+      },
+      "gridData": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 6
+      }
+    },
+    {
+      "id": "log_level_distribution",
+      "type": "visualization",
+      "title": "Log Level Distribution",
+      "description": "Displays the distribution of log levels.",
+      "visState": {
+        "type": "pie",
+        "params": {
+          "indexPattern": "application-logs-*",
+          "timeField": "@timestamp",
+          "interval": "auto",
+          "metrics": [
+            {
+              "field": "log.level",
+              "type": "count",
+              "alias": "Count"
+            }
+          ],
+          "xAxisMode": "categorical",
+          "yAxisMode": "normal",
+          "terms": {
+            "field": "log.level",
+            "size": 5
+          }
+        }
+      },
+      "gridData": {
+        "x": 12,
+        "y": 6,
+        "w": 6,
+        "h": 6
+      }
+    },
+    {
+      "id": "error_rate",
+      "type": "visualization",
+      "title": "Error Rate",
+      "description": "Displays the rate of error logs over time.",
+      "visState": {
+        "type": "timeseries",
+        "params": {
+          "indexPattern": "application-logs-*",
+          "timeField": "@timestamp",
+          "interval": "auto",
+          "metrics": [
+            {
+              "field": "log.level",
+              "type": "count",
+              "alias": "Error Count",
+              "filters": [
+                {
+                  "field": "log.level",
+                  "operator": "is",
+                  "value": "error"
+                }
+              ]
+            }
+          ],
+          "xAxisMode": "timeseries",
+          "yAxisMode": "normal"
+        }
+      },
+      "gridData": {
+        "x": 18,
+        "y": 6,
+        "w": 6,
+        "h": 6
+      }
+    },
+    {
+      "id": "log_table",
+      "type": "visualization",
+      "title": "Recent Logs",
+      "description": "Displays a table of recent log entries.",
+      "visState": {
+        "type": "table",
+        "params": {
+          "indexPattern": "application-logs-*",
+          "timeField": "@timestamp",
+          "columns": [
+            "@timestamp",
+            "log.level",
+            "message",
+            "service.name"
+          ],
+          "sort": {
+            "field": "@timestamp",
+            "direction": "desc"
+          },
+          "pageSize": 10
+        }
+      },
+      "gridData": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 6
+      }
+    }
+  ],
+  "timeRestore": true,
+  "timeTo": "now",
+  "timeFrom": "now-15m",
+  "refreshInterval": {
+    "pause": false,
+    "value": 15000
+  },
+    "indexPatternRefName": "kibana_index_pattern_ref",
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"filter\": []}"
+    }
+}

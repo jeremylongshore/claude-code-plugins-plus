@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Explanation</title>
+    <style>
+        /* Basic Reset */
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        /* General Styling */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #5b6c7f;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Explanation Specific Styling */
+        .explanation-section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        .explanation-section:last-child {
+            border-bottom: none;
+        }
+
+        .feature-importance {
+            margin-top: 10px;
+        }
+
+        .feature-importance table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .feature-importance th, .feature-importance td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .feature-importance th {
+            background-color: #f2f2f2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            .feature-importance table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Model Explanation</h1>
+
+        <div class="explanation-section">
+            <h2>Model Summary</h2>
+            <p><strong>Model Type:</strong> {{model_type}}</p>
+            <p><strong>Model Description:</strong> {{model_description}}</p>
+        </div>
+
+        <div class="explanation-section">
+            <h2>Feature Importance</h2>
+            <div class="feature-importance">
+                <p>The table below shows the importance of each feature in the model:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Importance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{feature_importance_table}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="explanation-section">
+            <h2>Example Prediction Explanation</h2>
+            <h3>Input Data:</h3>
+            <p>{{example_input_data}}</p>
+            <h3>Prediction:</h3>
+            <p>{{example_prediction}}</p>
+            <h3>Explanation:</h3>
+            <p>{{example_explanation}}</p>
+        </div>
+
+        <div class="explanation-section">
+            <h2>Overall Insights</h2>
+            <p>{{overall_insights}}</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "_comment": "Template for a cloud cost optimization recommendation",
+  "recommendationId": "OPT-AWS-EC2-001",
+  "resourceId": "i-0abcdef1234567890",
+  "resourceType": "EC2 Instance",
+  "region": "us-east-1",
+  "accountId": "123456789012",
+  "description": "This EC2 instance is underutilized and can be resized to a smaller instance type.",
+  "currentConfiguration": {
+    "instanceType": "m5.large",
+    "cpuUtilization": "10%",
+    "memoryUtilization": "5%",
+    "networkUtilization": "2%"
+  },
+  "recommendedAction": "Resize instance to t3.medium",
+  "estimatedSavings": {
+    "monthlyCost": 25.00,
+    "currency": "USD",
+    "_comment": "Estimated monthly savings in USD"
+  },
+  "reasoning": "Based on historical CPU and memory utilization, the instance is consistently underutilized. Resizing to a t3.medium instance will provide sufficient resources while reducing costs.",
+  "riskAssessment": {
+    "impact": "Low",
+    "likelihood": "High",
+    "mitigation": "Monitor the instance after resizing to ensure performance is not negatively impacted. Consider setting up CloudWatch alarms to track CPU and memory utilization.",
+    "_comment": "Assessment of risks associated with the recommendation"
+  },
+  "implementationSteps": [
+    "1. Stop the EC2 instance.",
+    "2. Change the instance type to t3.medium in the AWS console or using the AWS CLI.",
+    "3. Start the EC2 instance.",
+    "4. Monitor performance for 24-48 hours to ensure stability."
+  ],
+  "status": "Open",
+  "createdTimestamp": "2024-01-01T00:00:00Z",
+  "lastUpdatedTimestamp": "2024-01-01T00:00:00Z",
+  "tags": [
+    "cost",
+    "optimization",
+    "ec2",
+    "aws"
+  ],
+  "additionalInformation": {
+    "links": [
+      {
+        "title": "AWS EC2 Instance Types",
+        "url": "https://aws.amazon.com/ec2/instance-types/"
+      },
+      {
+        "title": "AWS CloudWatch",
+        "url": "https://aws.amazon.com/cloudwatch/"
+      }
+    ],
+    "_comment": "Links to relevant documentation or resources"
+  },
+  "affectedServices": [
+    "EC2"
+  ],
+  "confidenceLevel": "High",
+  "costImpactDetails": {
+    "currentMonthlyCost": 50.00,
+    "recommendedMonthlyCost": 25.00,
+    "costDifference": -25.00,
+    "currency": "USD"
+  }
+}

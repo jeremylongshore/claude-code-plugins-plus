@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--
+  Widescreen docs-layout template for engineer-design-diagram.
+  Fill placeholders [IN BRACKETS] per references/docs-layout.md.
+  Target: min-width 1024px. No mobile breakpoints. Widescreen-first.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[PROJECT NAME] Architecture · [VERSION]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #0f1117;
+      --bg-surface: #161b22;
+      --bg-raised: #1c2128;
+      --bg-raised-hover: #22272e;
+      --border-subtle: #30363d;
+      --border-accent: #58a6ff;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --accent-blue: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-orange: #f78166;
+      --accent-purple: #bc8cff;
+      --accent-teal: #39c5cf;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { min-width: 1024px; }
+    /* No animations in docs-layout; rule present for validator + future-proofing. */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'ss01', 'cv11';
+      padding: 40px 48px;
+      line-height: 1.5;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar { position: sticky; top: 40px; display: flex; flex-direction: column; gap: 32px; }
+    .version-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 10px; border: 1px solid var(--accent-blue); border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      color: var(--accent-blue); background: rgba(88, 166, 255, 0.06); align-self: flex-start;
+    }
+    .version-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-green); box-shadow: 0 0 0 2px rgba(63, 185, 80, 0.18);
+    }
+    .tagline { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-top: 4px; }
+    .sidebar section { display: flex; flex-direction: column; gap: 12px; }
+    .label {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .nav-list a {
+      display: block; padding: 6px 10px; font-size: 13px;
+      color: var(--text-secondary); text-decoration: none; border-radius: 6px;
+      border-left: 2px solid transparent; margin-left: -12px; padding-left: 12px;
+      transition: color .15s, border-color .15s;
+    }
+    .nav-list a:hover { color: var(--text-primary); border-left-color: var(--accent-blue); }
+    .invariants { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .invariants li {
+      font-size: 14px; color: var(--text-secondary);
+      padding-left: 12px; border-left: 3px solid var(--accent-green); line-height: 1.45;
+    }
+    .invariants li strong { color: var(--text-primary); font-weight: 600; }
+    .legend { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .legend li { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-secondary); }
+    .chip { width: 14px; height: 10px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+    .chip.cli     { border-color: var(--accent-blue);   background: rgba(88, 166, 255, 0.15); }
+    .chip.service { border-color: var(--accent-green);  background: rgba(63, 185, 80, 0.15); }
+    .chip.store   { border-color: var(--accent-purple); background: rgba(188, 140, 255, 0.15); }
+    .chip.api     { border-color: var(--accent-orange); background: rgba(247, 129, 102, 0.15); }
+    .chip.shared  { border-color: var(--text-muted);    background: rgba(110, 118, 129, 0.15); }
+
+    /* ===== Main ===== */
+    .main { display: flex; flex-direction: column; gap: 48px; min-width: 0; }
+    .main-header { display: flex; flex-direction: column; gap: 8px; }
+    .main-header h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.015em; }
+    .main-header .lede { color: var(--text-secondary); font-size: 15px; max-width: 780px; }
+
+    /* ===== Diagram card ===== */
+    .diagram-card {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 32px;
+    }
+    .diagram-card header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 24px; gap: 16px;
+    }
+    .diagram-card h2 { font-size: 20px; font-weight: 600; }
+    .diagram-card .hint {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-muted); letter-spacing: 0.02em;
+    }
+    .diagram-scroll { overflow-x: auto; overflow-y: hidden; margin: 0 -32px; padding: 0 32px; }
+    .diagram-stage {
+      position: relative;
+      /* TODO: set to match your stage geometry. Defaults for two-plane diagrams. */
+      width: 1060px; height: 700px; min-width: 1060px;
+    }
+    .arrows-overlay {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: visible;
+    }
+
+    /* ===== Nodes ===== */
+    .node {
+      position: absolute; background: var(--bg-raised);
+      border: 1px solid; border-radius: 8px; padding: 14px 16px;
+      transition: background .15s, border-color .15s;
+    }
+    .node:hover { background: var(--bg-raised-hover); }
+    .node-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+    .node-sub { margin-top: 2px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
+    .node-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .node-list li { font-size: 12px; color: var(--text-secondary); padding-left: 10px; position: relative; }
+    .node-list li::before { content: '—'; position: absolute; left: 0; color: var(--text-muted); }
+    .node-group-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+      margin-top: 12px; margin-bottom: 4px;
+    }
+    .node-group-label:first-of-type { margin-top: 8px; }
+
+    .n-cli     { border-color: rgba(88, 166, 255, 0.4); }
+    .n-cli:hover { border-color: var(--accent-blue); }
+    .n-cli .node-title { color: var(--accent-blue); }
+
+    .n-service { border-color: rgba(63, 185, 80, 0.4); }
+    .n-service:hover { border-color: var(--accent-green); }
+    .n-service .node-title { color: var(--accent-green); }
+
+    .n-store   { border-color: rgba(188, 140, 255, 0.4); }
+    .n-store:hover { border-color: var(--accent-purple); }
+    .n-store .node-title { color: var(--accent-purple); }
+
+    .n-api     { border-color: rgba(247, 129, 102, 0.4); }
+    .n-api:hover { border-color: var(--accent-orange); }
+    .n-api .node-title { color: var(--accent-orange); }
+
+    .n-shared  {
+      border-color: rgba(110, 118, 129, 0.5);
+      border-left-width: 3px; border-left-color: var(--accent-purple);
+    }
+    .n-shared:hover { border-color: var(--text-secondary); border-left-color: var(--accent-purple); }
+    .n-shared .node-title { color: var(--text-primary); }
+
+    /* ===== Plane boundaries ===== */
+    .plane { position: absolute; border: 1px dashed; border-radius: 10px; }
+    .plane::before {
+      content: attr(data-label); position: absolute; top: -9px; left: 16px;
+      padding: 0 8px; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+      background: var(--bg-surface);
+    }
+    .plane-a { border-color: rgba(247, 129, 102, 0.6); }
+    .plane-a::before { color: var(--accent-orange); }
+    .plane-b { border-color: rgba(63, 185, 80, 0.6); }
+    .plane-b::before { color: var(--accent-green); }
+
+    /* ===== Compiler-style sub-grid (optional) ===== */
+    .sub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .subblock {
+      background: rgba(22, 27, 34, 0.6); border: 1px solid var(--border-subtle);
+      border-radius: 6px; padding: 8px 10px;
+    }
+    .subblock-head {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent-green); margin-bottom: 6px;
+    }
+    .subblock-list { list-style: none; font-size: 11px; color: var(--text-secondary); line-height: 1.45; }
+    .subblock-list li { padding-left: 8px; position: relative; }
+    .subblock-list li::before { content: '·'; position: absolute; left: 0; color: var(--text-muted); }
+
+    /* ===== Detail grid ===== */
+    .details h2 { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .detail-card {
+      background: var(--bg-surface); border: 1px solid var(--border-subtle);
+      border-radius: 10px; padding: 24px;
+    }
+    .detail-card h3 {
+      font-size: 14px; font-weight: 600; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .detail-card h3::before { content: ''; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .detail-card.c-blue   h3::before { background: var(--accent-blue); }
+    .detail-card.c-green  h3::before { background: var(--accent-green); }
+    .detail-card.c-purple h3::before { background: var(--accent-purple); }
+    .detail-card.c-orange h3::before { background: var(--accent-orange); }
+    .detail-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .detail-card li { font-size: 13px; color: var(--text-secondary); padding-left: 16px; position: relative; line-height: 1.45; }
+    .detail-card li::before { content: '—'; position: absolute; left: 0; color: var(--text-muted); }
+    .detail-card code {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-blue);
+      background: rgba(88, 166, 255, 0.08); padding: 1px 4px; border-radius: 3px;
+    }
+
+    .footer {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);
+      padding-top: 24px; border-top: 1px solid var(--border-subtle); letter-spacing: 0.02em;
+    }
+    .footer a { color: var(--accent-blue); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div>
+        <span class="version-badge">[VERSION]</span>
+        <p class="tagline">[ONE-LINE TAGLINE ~60 CHARS]</p>
+      </div>
+
+      <section>
+        <h2 class="label">On this page</h2>
+        <ul class="nav-list">
+          <li><a href="#diagram">Architecture diagram</a></li>
+          <li><a href="#details">Component details</a></li>
+          <li><a href="#invariants">Invariants</a></li>
+        </ul>
+      </section>
+
+      <section id="invariants">
+        <h2 class="label">Architectural invariants</h2>
+        <ul class="invariants">
+          <li><strong>[INVARIANT 1 HEADLINE.]</strong></li>
+          <li><strong>[INVARIANT 2 HEADLINE.]</strong></li>
+          <li><strong>[INVARIANT 3 HEADLINE.]</strong></li>
+          <li><strong>[INVARIANT 4 HEADLINE.]</strong></li>
+          <li><strong>[INVARIANT 5]</strong> [optional qualifier].</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="label">Legend</h2>
+        <ul class="legend">
+          <li><span class="chip cli"></span>CLI / entry</li>
+          <li><span class="chip service"></span>Service package</li>
+          <li><span class="chip store"></span>Persistence</li>
+          <li><span class="chip api"></span>External API</li>
+          <li><span class="chip shared"></span>Shared library</li>
+        </ul>
+      </section>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <section class="main">
+      <header class="main-header">
+        <h1>[PROJECT NAME] Architecture</h1>
+        <p class="lede">[ONE-PARAGRAPH LEDE — what is this system, in 2–3 sentences.]</p>
+      </header>
+
+      <section class="diagram-card" id="diagram">
+        <header>
+          <h2>System topology</h2>
+          <span class="hint">grounded in [GROUNDING SOURCES — e.g. package.json · docker-compose.yml · src/]</span>
+        </header>
+
+        <div class="diagram-scroll">
+          <div class="diagram-stage">
+
+            <!--
+              STAGE GEOMETRY: width=1060 height=700.
+              Positioning model: every .node uses style="left: Xpx; top: Ypx; width: Wpx;"
+              with pixel-literal coords. Heights auto. Verify with the math check in
+              references/docs-layout.md#verification before screenshotting.
+            -->
+
+            <!-- ===== Plane boundaries (drawn first) ===== -->
+            <div class="plane plane-a"
+                 data-label="[PLANE A LABEL]"
+                 style="left: 200px; top: 20px; width: 420px; height: 640px;"></div>
+            <div class="plane plane-b"
+                 data-label="[PLANE B LABEL]"
+                 style="left: 660px; top: 20px; width: 380px; height: 560px;"></div>
+
+            <!-- ===== CLI / entry node ===== -->
+            <div class="node n-cli" style="left: 0; top: 280px; width: 180px;">
+              <div class="node-title">[@pkg/cli]</div>
+              <div class="node-sub">[framework · binary]</div>
+              <ul class="node-list">
+                <li>[command group 1]</li>
+                <li>[command group 2]</li>
+              </ul>
+            </div>
+
+            <!-- ===== Service node (plane A) ===== -->
+            <div class="node n-service" style="left: 220px; top: 60px; width: 190px;">
+              <div class="node-title">[@pkg/service-a]</div>
+              <div class="node-sub">[role line]</div>
+              <ul class="node-list">
+                <li>[responsibility 1]</li>
+                <li>[responsibility 2]</li>
+              </ul>
+            </div>
+
+            <!-- ===== Persistence nodes (plane A) ===== -->
+            <div class="node n-store" style="left: 440px; top: 60px; width: 160px;">
+              <div class="node-title">[store-1]</div>
+              <div class="node-sub">[driver · migrations]</div>
+            </div>
+            <div class="node n-store" style="left: 440px; top: 170px; width: 160px;">
+              <div class="node-title">[store-2]</div>
+              <div class="node-sub">[role line]</div>
+            </div>
+
+            <!-- ===== Service node (plane B) with sub-grid ===== -->
+            <div class="node n-service" style="left: 680px; top: 60px; width: 340px;">
+              <div class="node-title">[@pkg/service-b]</div>
+              <div class="node-sub">[role line]</div>
+              <div class="sub-grid">
+                <div class="subblock">
+                  <div class="subblock-head">[Group 1]</div>
+                  <ul class="subblock-list"><li>[item]</li><li>[item]</li></ul>
+                </div>
+                <div class="subblock">
+                  <div class="subblock-head">[Group 2]</div>
+                  <ul class="subblock-list"><li>[item]</li><li>[item]</li></ul>
+                </div>
+                <div class="subblock">
+                  <div class="subblock-head">[Group 3]</div>
+                  <ul class="subblock-list"><li>[item]</li><li>[item]</li></ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== External API (outside planes) ===== -->
+            <div class="node n-api" style="left: 840px; top: 610px; width: 200px;">
+              <div class="node-title">[External API]</div>
+              <div class="node-sub">[sdk · models]</div>
+            </div>
+
+            <!-- ===== Shared library bar (spans under both planes) ===== -->
+            <div class="node n-shared" style="left: 200px; top: 670px; width: 840px;">
+              <div class="node-title">[@pkg/types]</div>
+              <div class="node-sub">[schemas · shared types · consumers]</div>
+            </div>
+
+            <!-- ===== ARROW OVERLAY ===== -->
+            <svg class="arrows-overlay" viewBox="0 0 1060 700" preserveAspectRatio="none"
+                 role="img" aria-labelledby="arrows-title arrows-desc">
+              <title id="arrows-title">[PROJECT NAME] component connection overlay</title>
+              <desc id="arrows-desc">Directional edges between the architecture nodes: entry invocation (blue), persistence access (muted), cross-plane reads (green dashed), external API calls (orange), shared-library references (purple dotted).</desc>
+              <defs>
+                <marker id="a-blue"   markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#58a6ff"/></marker>
+                <marker id="a-green"  markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3fb950"/></marker>
+                <marker id="a-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f78166"/></marker>
+                <marker id="a-muted"  markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6e7681"/></marker>
+              </defs>
+
+              <!-- Replace with your edges. Every arrow is horizontal or vertical;
+                   no diagonals across node rows. Labels 6–8px above midpoint. -->
+
+              <!-- cli → service-a -->
+              <line x1="180" y1="315" x2="218" y2="315" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#a-blue)"/>
+              <text x="199" y="309" fill="#58a6ff" font-family="JetBrains Mono" font-size="10" text-anchor="middle">cli</text>
+
+              <!-- service-a ↔ store-1 (bidirectional) -->
+              <line x1="412" y1="92"  x2="438" y2="92"  stroke="#6e7681" stroke-width="1.2" marker-end="url(#a-muted)"/>
+              <line x1="438" y1="100" x2="412" y2="100" stroke="#6e7681" stroke-width="1.2" marker-end="url(#a-muted)"/>
+
+              <!-- service-a → store-2 -->
+              <line x1="412" y1="230" x2="438" y2="230" stroke="#6e7681" stroke-width="1.2" marker-end="url(#a-muted)"/>
+
+              <!-- service-b ← store-2 (cross-plane read, dashed) -->
+              <line x1="602" y1="320" x2="678" y2="320" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a-green)"/>
+              <text x="640" y="313" fill="#3fb950" font-family="JetBrains Mono" font-size="10" text-anchor="middle">[edge label]</text>
+
+              <!-- service-b → external api -->
+              <line x1="940" y1="580" x2="940" y2="608" stroke="#f78166" stroke-width="1.5" marker-end="url(#a-orange)"/>
+              <text x="948" y="598" fill="#f78166" font-family="JetBrains Mono" font-size="10" text-anchor="start">[sdk name]</text>
+
+              <!-- shared types implicit references (dotted) -->
+              <line x1="410" y1="660" x2="410" y2="580" stroke="#bc8cff" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+              <line x1="850" y1="660" x2="850" y2="580" stroke="#bc8cff" stroke-width="1" stroke-dasharray="3 4" opacity="0.55"/>
+            </svg>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Detail grid ===== -->
+      <section class="details" id="details">
+        <h2>Component details</h2>
+        <div class="detail-grid">
+          <div class="detail-card c-green">
+            <h3>[Plane A story]</h3>
+            <ul>
+              <li>[claim]</li>
+              <li>[constraint or invariant]</li>
+              <li>[mechanism with <code>code</code>]</li>
+              <li>[operational property]</li>
+            </ul>
+          </div>
+          <div class="detail-card c-green">
+            <h3>[Plane B story]</h3>
+            <ul>
+              <li>[claim]</li>
+              <li>[mechanism]</li>
+              <li>[budget / limit]</li>
+              <li>[hand-off rule]</li>
+            </ul>
+          </div>
+          <div class="detail-card c-blue">
+            <h3>[CLI / entry story]</h3>
+            <ul>
+              <li>[claim]</li>
+              <li>[claim]</li>
+              <li>[claim]</li>
+            </ul>
+          </div>
+          <div class="detail-card c-purple">
+            <h3>[Shared library story]</h3>
+            <ul>
+              <li>[claim]</li>
+              <li>[claim]</li>
+              <li>[claim]</li>
+            </ul>
+          </div>
+          <div class="detail-card c-orange">
+            <h3>[External surface story]</h3>
+            <ul>
+              <li>[claim]</li>
+              <li>[claim]</li>
+            </ul>
+          </div>
+          <div class="detail-card c-blue">
+            <h3>Tooling</h3>
+            <ul>
+              <li>[build + test stack]</li>
+              <li>[CI gates]</li>
+              <li>[release process]</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <p class="footer">
+        [PROJECT NAME] · <a href="[REPO URL]">[REPO URL]</a> · generated [DATE]
+      </p>
+    </section>
+  </main>
+</body>
+</html>

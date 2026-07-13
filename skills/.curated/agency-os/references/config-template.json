@@ -1,0 +1,11 @@
+{
+  "initialized_at": "2026-01-01T00:00:00Z",
+  "harness": "claude-code",
+  "harness_note": "claude-code | cursor | cline | continue | generic-mcp",
+  "models": {
+    "haiku": "claude-haiku-4-5-20251001",
+    "sonnet": "claude-sonnet-4-6",
+    "opus": "claude-opus-4-7"
+  },
+  "notes": "These models are used for task complexity: haiku for mechanical/template work, sonnet for substantive content/drafting, opus for strategic design. Claude Code ignores this; non-Claude harnesses use it for `/agency-os run` execution."
+}

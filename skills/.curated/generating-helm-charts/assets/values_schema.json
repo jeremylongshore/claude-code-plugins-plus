@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Helm Chart Values",
+  "description": "Schema for the values.yaml file used to configure the Helm chart.",
+  "type": "object",
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "description": "Number of replicas to deploy.",
+      "default": 1,
+      "_comment": "Adjust the number of replicas based on your application's needs."
+    },
+    "image": {
+      "type": "object",
+      "description": "Container image settings.",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Image repository.",
+          "default": "nginx",
+          "_comment": "Specify the Docker image repository."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "description": "Image pull policy.",
+          "enum": ["IfNotPresent", "Always", "Never"],
+          "default": "IfNotPresent",
+          "_comment": "Define when to pull the image (IfNotPresent, Always, Never)."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Image tag.",
+          "default": "latest",
+          "_comment": "Specify the Docker image tag.  Consider using a specific version tag in production."
+        }
+      },
+      "required": ["repository", "pullPolicy", "tag"]
+    },
+    "service": {
+      "type": "object",
+      "description": "Service configuration.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Service type.",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"],
+          "default": "ClusterIP",
+          "_comment": "Choose the service type (ClusterIP, NodePort, LoadBalancer)."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Service port.",
+          "default": 80,
+          "_comment": "The port the service listens on."
+        }
+      },
+      "required": ["type", "port"]
+    },
+    "ingress": {
+      "type": "object",
+      "description": "Ingress configuration (optional).",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable Ingress.",
+          "default": false,
+          "_comment": "Set to true to enable Ingress for the application."
+        },
+        "className": {
+          "type": "string",
+          "description": "Ingress class name.",
+          "default": "nginx",
+          "_comment": "Specify the Ingress class name."
+        },
+        "hostname": {
+          "type": "string",
+          "description": "Hostname for Ingress.",
+          "default": "chart-example.local",
+          "_comment": "The hostname to access the application through Ingress."
+        },
+        "annotations": {
+          "type": "object",
+          "description": "Annotations for the Ingress resource.",
+          "default": {},
+          "additionalProperties": {
+            "type": "string"
+          },
+          "_comment": "Add any necessary annotations for your Ingress controller."
+        },
+        "tls": {
+          "type": "array",
+          "description": "TLS configuration for Ingress.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "secretName": {
+                "type": "string",
+                "description": "Name of the TLS secret."
+              },
+              "hosts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["secretName", "hosts"]
+          }
+        }
+      },
+      "required": ["enabled"]
+    },
+    "resources": {
+      "type": "object",
+      "description": "Resource requests and limits.",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "description": "CPU request.",
+              "default": "100m",
+              "_comment": "Minimum CPU required by the container."
+            },
+            "memory": {
+              "type": "string",
+              "description": "Memory request.",
+              "default": "128Mi",
+              "_comment": "Minimum memory required by the container."
+            }
+          },
+          "required": ["cpu", "memory"]
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string",
+              "description": "CPU limit.",
+              "default": "250m",
+              "_comment": "Maximum CPU the container can use."
+            },
+            "memory": {
+              "type": "string",
+              "description": "Memory limit.",
+              "default": "256Mi",
+              "_comment": "Maximum memory the container can use."
+            }
+          },
+          "required": ["cpu", "memory"]
+        }
+      },
+      "required": ["requests", "limits"]
+    },
+    "nodeSelector": {
+      "type": "object",
+      "description": "Node selector constraints for pod assignment.",
+      "default": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "_comment": "Specify node labels to constrain pod placement."
+    },
+    "tolerations": {
+      "type": "array",
+      "description": "Tolerations for pod scheduling.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Taint key."
+          },
+          "operator": {
+            "type": "string",
+            "description": "Taint operator.",
+            "enum": ["Exists", "Equal"]
+          },
+          "value": {
+            "type": "string",
+            "description": "Taint value."
+          },
+          "effect": {
+            "type": "string",
+            "description": "Taint effect.",
+            "enum": ["NoSchedule", "PreferNoSchedule", "NoExecute"]
+          }
+        },
+        "required": ["key", "operator", "effect"]
+      },
+      "_comment": "Define tolerations to allow pods to be scheduled on tainted nodes."
+    },
+    "affinity": {
+      "type": "object",
+      "description": "Affinity settings for pod scheduling.",
+      "_comment": "Configure affinity rules to influence pod placement.",
+      "properties": {
+        "nodeAffinity": {
+          "type": "object",
+          "description": "Node affinity configuration.",
+          "properties": {
+            "requiredDuringSchedulingIgnoredDuringExecution": {
+              "type": "object",
+              "description": "Required node affinity rules.",
+              "properties": {
+                "nodeSelectorTerms": {
+                  "type": "array",
+                  "description": "Node selector terms.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "matchExpressions": {
+                        "type": "array",
+                        "description": "Match expressions.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string",
+                              "description": "Label key."
+                            },
+                            "operator": {
+                              "type": "string",
+                              "description": "Operator.",
+                              "enum": ["In", "NotIn", "Exists", "DoesNotExist", "Gt", "Lt"]
+                            },
+                            "values": {
+                              "type": "array",
+                              "description": "Label values.",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["key", "operator", "values"]
+                        }
+                      }
+                    },
+                    "required": ["matchExpressions"]
+                  }
+                }
+              },
+              "required": ["nodeSelectorTerms"]
+            }
+          }
+        },
+        "podAffinity": {
+          "type": "object",
+          "description": "Pod affinity configuration."
+        },
+        "podAntiAffinity": {
+          "type": "object",
+          "description": "Pod anti-affinity configuration."
+        }
+      }
+    }
+  },
+  "required": ["replicaCount", "image", "service", "resources"]
+}
