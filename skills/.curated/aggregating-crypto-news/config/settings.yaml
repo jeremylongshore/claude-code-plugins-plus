@@ -1,0 +1,146 @@
+# Aggregating Crypto News - Configuration
+# Version: 2.0.0
+# Author: Jeremy Longshore <jeremy@intentsolutions.io>
+
+# =============================================================================
+# Default Settings
+# =============================================================================
+defaults:
+  # Default time period for news scan
+  period: 24h
+
+  # Number of articles to return
+  top: 20
+
+  # Sort order (relevance or recency)
+  sort_by: relevance
+
+  # Output format (table, json, csv)
+  format: table
+
+# =============================================================================
+# Fetch Settings
+# =============================================================================
+fetch:
+  # Request timeout in seconds
+  timeout: 10
+
+  # Maximum parallel requests
+  max_workers: 10
+
+  # User agent string
+  user_agent: "CryptoNewsAggregator/2.0 (RSS Feed Reader)"
+
+# =============================================================================
+# Cache Settings
+# =============================================================================
+cache:
+  # Enable response caching
+  enabled: true
+
+  # Cache time-to-live in seconds (5 minutes)
+  ttl: 300
+
+  # Cache directory (relative to skill root)
+  directory: ./data/cache
+
+# =============================================================================
+# Scoring Weights
+# =============================================================================
+scoring:
+  # Source quality weight (0-30 points)
+  source_quality_multiplier: 3
+
+  # Maximum keyword score
+  max_keyword_score: 50
+
+  # Recency bonuses by age
+  recency_bonus:
+    1h: 20
+    4h: 15
+    12h: 10
+    24h: 5
+    3d: 2
+
+# =============================================================================
+# Categories
+# =============================================================================
+categories:
+  market:
+    description: "General market news and price movements"
+    keywords: []
+
+  defi:
+    description: "DeFi protocols, yield farming, DEXes"
+    keywords:
+      - defi
+      - yield farming
+      - liquidity pool
+      - dex
+      - lending protocol
+
+  nft:
+    description: "NFT projects, marketplaces, collections"
+    keywords:
+      - nft
+      - opensea
+      - blur
+      - collection
+      - mint
+
+  regulatory:
+    description: "Government, SEC, legal developments"
+    keywords:
+      - sec
+      - cftc
+      - regulation
+      - congress
+      - compliance
+
+  layer1:
+    description: "L1 blockchain news"
+    keywords:
+      - ethereum
+      - solana
+      - bitcoin
+      - cardano
+      - avalanche
+
+  layer2:
+    description: "L2 scaling solutions"
+    keywords:
+      - arbitrum
+      - optimism
+      - polygon
+      - zksync
+      - base
+      - rollup
+
+  exchange:
+    description: "Exchange news, listings, delistings"
+    keywords:
+      - binance
+      - coinbase
+      - kraken
+      - listing
+      - delist
+
+  security:
+    description: "Hacks, exploits, vulnerabilities"
+    keywords:
+      - hack
+      - exploit
+      - vulnerability
+      - audit
+      - breach
+      - stolen
+
+# =============================================================================
+# Deduplication
+# =============================================================================
+deduplication:
+  # Enable title-based deduplication
+  enabled: true
+
+  # Similarity threshold (0-1)
+  threshold: 0.8

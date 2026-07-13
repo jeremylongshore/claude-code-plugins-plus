@@ -1,0 +1,121 @@
+# podium-conversation-history-export — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+api:
+  # Podium API base. Override only if Podium publishes a regional API host.
+  base_url: "https://api.podium.com"
+
+  # HTTP client tuning. 30s timeout is conservative for list endpoints that
+  # may take longer than auth endpoints under load.
+  timeout_seconds: 30
+  http2: true
+  pool_max_per_host: 8
+
+pagination:
+  # Podium documents 100 as the cursor page-size cap. Do not exceed.
+  page_size: 100
+  # Persist the cursor checkpoint file after every successful page so a crash
+  # mid-walk resumes at the last good cursor.
+  persist_after_every_page: true
+  # Cap the seen-id dedup set to bound memory. Sized for ~50 pages of churn —
+  # raise if your org has heavy mid-export update activity.
+  seen_ids_cap: 50000
+
+cdc:
+  # Database holding per-resource watermarks. SQLite is the default — switch to
+  # Postgres / Redis for multi-host deployments via a custom backend.
+  watermark_db_path: "${PODIUM_WATERMARK_DB:-./watermarks.sqlite}"
+  # Overlap margin in seconds. Closes the boundary-second gap where a write at
+  # exactly the watermark would otherwise be missed. Loader dedups on (id, updated_at).
+  overlap_margin_seconds: 60
+  # Advance the watermark only after a full pass completes successfully.
+  # A partial pass re-pulls from the previous watermark on the next run.
+  advance_only_on_full_pass: true
+
+retry:
+  # Exponential backoff with full jitter for transient (5xx, network) errors.
+  max_attempts: 4
+  base_delay_ms: 500
+  cap_ms: 30000
+  retryable_statuses: [429, 500, 502, 503, 504]
+
+attachments:
+  # Concurrent attachment downloads. Conservative against Podium's CDN.
+  concurrency: 8
+  # On 403 (pre-signed URL expired), fetch a fresh signed URL via /v4/attachments/:attachment_id
+  # and retry exactly once. Repeat 403 raises (no infinite loop).
+  refresh_on_403: true
+  refresh_max_retries: 1
+  # Local directory for downloaded attachments. Operator may point this at a
+  # mounted S3/GCS bucket via a FUSE mount or set up a sync sidecar.
+  download_dir: "${PODIUM_ATTACHMENTS_DIR:-./exports/attachments}"
+  # Per-attachment download timeout.
+  download_timeout_seconds: 60
+
+chunking:
+  # Target chunk size in tokens (approx). The chunker uses len(text)//4 as a
+  # cheap proxy; swap to tiktoken in the consumer pipeline for accuracy.
+  target_tokens: 1500
+  # Overlap window between consecutive chunks — last N tokens of chunk K
+  # are carried into chunk K+1 for cross-window retrieval.
+  overlap_tokens: 200
+  # Force-break threshold in seconds. A gap larger than this between consecutive
+  # messages starts a new chunk regardless of token count. 86400 = 24h.
+  idle_gap_break_seconds: 86400
+  # Emit deterministic chunk IDs: "SOURCE_ID:START_MSG_ID:END_MSG_ID".
+  # Re-chunking produces identical IDs for identical inputs — idempotent.
+  deterministic_chunk_ids: true
+
+pii_redaction:
+  # Apply at chunk-emit time. NEVER bypass — embeddings are eternal.
+  enabled: true
+  # Pattern set imported from podium-call-transcript-pipeline (single source of
+  # truth). The patterns module path is resolved at import time.
+  patterns_module: "podium_pii.patterns"
+  # Audit field stamped on every emitted chunk.
+  emit_redaction_field: true
+  # Fail the chunk-pass if a pattern raises (do not silently emit a chunk that
+  # bypassed one of the regexes).
+  fail_on_pattern_error: true
+
+output:
+  # Streaming JSONL with gzip compression. Records are written one-per-line
+  # with no in-memory aggregation.
+  format: jsonl_gzip
+  # Save ~5% on disk by stripping JSON whitespace.
+  compact_json: true
+  # Flush every N records — bounds data loss on crash.
+  flush_every: 1000
+
+resources:
+  # Resources this exporter knows how to crawl. Each entry maps to a script.
+  conversations:
+    list_endpoint: "/v4/conversations"
+    messages_endpoint: "/v4/conversations/:conversation_id/messages"
+    sort_full_crawl: "created_at:asc"
+    sort_incremental: "updated_at:asc"
+  reviews:
+    list_endpoint: "/v4/reviews"
+    sort_full_crawl: "created_at:asc"
+    sort_incremental: "updated_at:asc"
+  contacts:
+    list_endpoint: "/v4/contacts"
+    sort_full_crawl: "created_at:asc"
+    sort_incremental: "updated_at:asc"
+
+logging:
+  # Structured JSON; one event per page + one summary event per resource.
+  format: json
+  level: info
+  # NEVER log token-bearing headers. The export pipeline only logs counts +
+  # cursors + watermark advances.
+  fields_to_redact:
+    - authorization
+    - access_token
+    - refresh_token
+
+alerts:
+  # Routing for export failures. Wire to your existing alert system.
+  watermark_drift_channel: "data-ops"
+  cursor_invalid_channel:  "data-ops"
+  pii_audit_channel:       "compliance-audit"

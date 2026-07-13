@@ -1,0 +1,43 @@
+# example_data.csv
+# This file provides example time series data for the time-series-forecaster plugin.
+# It includes a date/time column and a value column.
+# Use this data to test the /forecast-ts command.
+#
+# To use this data with the plugin, save it to your workspace and then run:
+# /forecast-ts --data example_data.csv --target value --periods <number_of_periods>
+#
+# Replace <number_of_periods> with the number of time periods you want to forecast.
+#
+
+timestamp,value
+2023-01-01,10
+2023-01-02,12
+2023-01-03,15
+2023-01-04,13
+2023-01-05,16
+2023-01-06,18
+2023-01-07,20
+2023-01-08,22
+2023-01-09,25
+2023-01-10,23
+2023-01-11,26
+2023-01-12,28
+2023-01-13,30
+2023-01-14,32
+2023-01-15,35
+2023-01-16,33
+2023-01-17,36
+2023-01-18,38
+2023-01-19,40
+2023-01-20,42
+2023-01-21,45
+2023-01-22,43
+2023-01-23,46
+2023-01-24,48
+2023-01-25,50
+2023-01-26,52
+2023-01-27,55
+2023-01-28,53
+2023-01-29,56
+2023-01-30,58
+2023-01-31,60

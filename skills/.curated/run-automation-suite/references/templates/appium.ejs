@@ -1,0 +1,40 @@
+{
+  "kobiton:sessionName": "<%= sessionName %>",
+  "kobiton:sessionDescription": "<%= sessionDescription %>",
+<% if (aiToolName) { %>
+  "kobiton:aiToolName": "<%= aiToolName %>",
+<% } %>
+<% if (orientation) { %>
+  "kobiton:deviceOrientation": "<%= orientation %>",
+<% } %>
+  "kobiton:captureScreenshots": <%= captureScreenshots %>,
+<% if (showCleanUpDeviceOnExit) { %>
+  "appium:noReset": <%= !cleanUpDeviceOnExit %>,
+  "appium:fullReset": <%= cleanUpDeviceOnExit %>,
+<% } %>
+<% if (automationName) { %>
+  "appium:automationName": "<%= automationName %>",
+<% } %>
+<% if (newCommandTimeout) { %>
+  "appium:newCommandTimeout": <%= newCommandTimeout %>,
+<% } %>
+<% if (scriptlessCapture) { %>
+  "kobiton:scriptlessCapture": true,
+<% } %>
+<% if (testingType === 'web') { %>
+  "browserName": "<%= browser %>",
+<% } else { %>
+  "appium:app": "<%= app %>",
+<% } %>
+<% if (useSpecificDevice) { %>
+  "appium:udid": "<%= udid %>",
+  "appium:deviceName": "<%= deviceName %>",
+<% } else { %>
+  "appium:deviceName": "<%= deviceName %>",
+<% } %>
+<% if (showDeviceGroup) { %>
+  "kobiton:deviceGroup": "<%= deviceGroup %>",
+<% } %>
+  "platformName": "<%= platformName %>",
+  "platformVersion": "<%= platformVersion %>"
+}

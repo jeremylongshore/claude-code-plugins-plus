@@ -1,0 +1,118 @@
+# DEX Aggregator Router Configuration
+
+# API Keys (optional - increases rate limits)
+# Set via environment variables for security:
+#   export ONEINCH_API_KEY=your-key
+#   export ZEROX_API_KEY=your-key
+api_keys:
+  oneinch: ${ONEINCH_API_KEY}
+  zerox: ${ZEROX_API_KEY}
+  paraswap: null  # No auth required
+
+# Default chain for routing
+default_chain: ethereum
+
+# Supported chains
+chains:
+  ethereum:
+    chain_id: 1
+    native_token: ETH
+    rpc_url: https://eth-mainnet.g.alchemy.com/v2/demo
+    gas_oracle: https://api.etherscan.io/api?module=gastracker&action=gasoracle
+  arbitrum:
+    chain_id: 42161
+    native_token: ETH
+    rpc_url: https://arb-mainnet.g.alchemy.com/v2/demo
+  polygon:
+    chain_id: 137
+    native_token: MATIC
+    rpc_url: https://polygon-mainnet.g.alchemy.com/v2/demo
+  optimism:
+    chain_id: 10
+    native_token: ETH
+    rpc_url: https://opt-mainnet.g.alchemy.com/v2/demo
+
+# Aggregator configuration
+aggregators:
+  1inch:
+    enabled: true
+    base_url: https://api.1inch.dev/swap/v6.0
+    rate_limit_per_second: 1.0  # 5.0 with API key
+    timeout_seconds: 10
+    priority: 1
+  paraswap:
+    enabled: true
+    base_url: https://apiv5.paraswap.io
+    rate_limit_per_second: 10.0
+    timeout_seconds: 10
+    priority: 2
+  zerox:
+    enabled: true
+    base_url: https://api.0x.org/swap/v1
+    rate_limit_per_second: 3.0  # 10.0 with API key
+    timeout_seconds: 10
+    priority: 3
+
+# Trade size thresholds (USD)
+trade_thresholds:
+  small_trade_max: 1000
+  medium_trade_max: 10000
+  large_trade_max: 100000
+  # Above large_trade_max = whale trade
+
+# Split order settings
+split_orders:
+  min_trade_size_usd: 5000  # Don't split below this
+  max_venues: 4  # Maximum DEXs to split across
+  min_allocation_pct: 10  # Minimum % per venue
+
+# MEV risk settings
+mev_risk:
+  weights:
+    trade_size: 0.35
+    price_impact: 0.25
+    route_complexity: 0.15
+    token_volatility: 0.15
+    liquidity_depth: 0.10
+  thresholds:
+    low: 25
+    medium: 50
+    high: 75
+
+# Gas settings
+gas:
+  default_price_gwei: 30
+  max_gas_pct_of_trade: 2.0  # Warn if gas > 2% of trade value
+
+# Price defaults
+prices:
+  default_eth_usd: 2500
+  default_btc_usd: 45000
+  default_matic_usd: 0.80
+
+# Quote settings
+quotes:
+  validity_seconds: 30
+  cache_ttl_seconds: 15
+
+# Output settings
+output:
+  default_format: table  # table, json, csv
+  use_color: true
+  decimal_places: 2
+
+# Logging
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR
+  file: null  # Set to path for file logging
+
+# Token address mappings (commonly used)
+# Full list in quote_fetcher.py
+tokens:
+  ethereum:
+    ETH: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    WETH: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+    USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    USDT: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+    DAI: "0x6B175474E89094C44Da98b954EescdDEAC495271"
+    WBTC: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"

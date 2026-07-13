@@ -1,0 +1,99 @@
+# Signal Generator Configuration
+# Copy to settings.yaml and customize
+
+# Data source settings
+data:
+  provider: yfinance
+  cache_dir: ./data
+  default_interval: 1d
+  default_period: 6m
+
+# Indicator parameters
+indicators:
+  rsi:
+    period: 14
+    overbought: 70
+    oversold: 30
+
+  macd:
+    fast: 12
+    slow: 26
+    signal: 9
+
+  bollinger:
+    period: 20
+    std_dev: 2.0
+
+  stochastic:
+    k_period: 14
+    d_period: 3
+    overbought: 80
+    oversold: 20
+
+  atr:
+    period: 14
+    multiplier: 2.0
+
+  adx:
+    period: 14
+    trend_threshold: 25
+
+# Signal generation
+signals:
+  # Component weights (adjust to emphasize certain indicators)
+  weights:
+    rsi: 1.0
+    macd: 1.0
+    bollinger: 1.0
+    trend: 1.0
+    volume: 0.5
+    stochastic: 0.5
+    adx: 0.5
+
+  # Risk management
+  risk:
+    atr_multiplier: 2.0
+    risk_reward_target: 2.0
+
+  # Confidence thresholds
+  thresholds:
+    high_confidence: 70
+    medium_confidence: 50
+    low_confidence: 30
+
+# Predefined watchlists
+watchlists:
+  crypto_top10:
+    - BTC-USD
+    - ETH-USD
+    - BNB-USD
+    - SOL-USD
+    - XRP-USD
+    - ADA-USD
+    - AVAX-USD
+    - DOGE-USD
+    - DOT-USD
+    - MATIC-USD
+
+  crypto_defi:
+    - UNI-USD
+    - AAVE-USD
+    - MKR-USD
+    - CRV-USD
+    - SNX-USD
+    - COMP-USD
+    - SUSHI-USD
+
+  crypto_layer2:
+    - MATIC-USD
+    - OP-USD
+    - ARB-USD
+    - IMX-USD
+
+# Alert settings
+alerts:
+  min_confidence: 60
+  signal_types:
+    - STRONG_BUY
+    - STRONG_SELL
+  notify_neutral: false

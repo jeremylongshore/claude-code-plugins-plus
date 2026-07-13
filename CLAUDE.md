@@ -294,9 +294,24 @@ The full cycle:
 python3 freshie/scripts/rebuild-inventory.py                         # 1. New discovery run
 python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite  # 2. Compliance
 python3 freshie/scripts/dolt-sync.py                                 # 3. Dolt commit + tag + DoltHub push
+python3 freshie/scripts/promote-to-curated.py                        # 4. Refresh skills/.curated/ (skills.sh mirror)
 sqlite3 freshie/inventory.sqlite "SELECT grade, COUNT(*) FROM skill_compliance GROUP BY grade;"  # runtime queries
 python3 freshie/scripts/batch-remediate.py --dry-run && python3 freshie/scripts/batch-remediate.py --all --execute
 ```
+
+**skills.sh curated mirror** (`freshie/scripts/promote-to-curated.py`): rebuilds
+`skills/.curated/` as a generated mirror of the repo's best **A+B** plugin skills (our own;
+external `.source.json` mirrors excluded → ~1,881) so skills.sh can index them — it only
+crawls root `skills/` / `.curated/`, never `plugins/**/skills/`. The plugin skill stays the
+source of truth; the mirror is wipe-and-rebuilt from the tracked `grades.csv` (not the
+git-ignored `inventory.sqlite`, so the CI drift gate is reproducible), copies only
+git-tracked files, and re-grades each candidate in-process (promote iff fresh grade still
+A/B). Audit trail: `skills/.curated/MANIFEST.json`. It is excluded from the README count
+(`generate-readme-toc.mjs`) and the inventory scan (`validate-skills-schema.py`
+`find_skill_files`) so a mirror copy is never double-counted. Self-maintaining:
+`promote-curated.yml` refreshes it weekly (PR on change, Slack-on-fail); the
+`promote-curated-check` gate in `ci-required` fails a PR that edits a promoted source
+without regenerating. Repo-page branding: root `skills.sh.json`.
 
 History queries go to Dolt (`cd freshie/dolt/freshie`): `WHERE run_id = N`,
 `AS OF 'run-N'`, `dolt diff run-7 run-8 --stat` — the run_id model is

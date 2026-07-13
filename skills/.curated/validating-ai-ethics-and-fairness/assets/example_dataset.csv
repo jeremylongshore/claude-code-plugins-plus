@@ -1,0 +1,46 @@
+# example_dataset.csv
+# This is an example dataset for testing the ai-ethics-validator plugin.
+# It contains sample data with features that might be relevant to fairness and ethical considerations.
+#
+# Columns:
+# - ID: Unique identifier for each record.
+# - Age: Age of the individual.
+# - Gender: Gender of the individual (Male, Female, Other).
+# - Income: Annual income of the individual.
+# - Education: Highest level of education attained (e.g., High School, Bachelor's, Master's, PhD).
+# - Location: Geographic location (e.g., Urban, Rural, Suburban).
+# - Decision: The decision made by the AI system (e.g., Approved, Denied).  This is the target variable.
+# - Race: Race of the individual (e.g., White, Black, Asian, Hispanic, Other).  Important for fairness analysis.
+#
+# Note: This is synthetic data and does not represent any real individuals.
+# Replace this with your actual dataset for real-world validation.
+#
+# To use this dataset with the plugin, ensure it is accessible to the plugin's environment.
+
+ID,Age,Gender,Income,Education,Location,Decision,Race
+1,25,Male,50000,Bachelor's,Urban,Approved,White
+2,32,Female,60000,Master's,Suburban,Approved,Black
+3,48,Male,75000,PhD,Urban,Approved,Asian
+4,28,Female,45000,High School,Rural,Denied,Hispanic
+5,35,Male,55000,Bachelor's,Suburban,Approved,White
+6,41,Female,70000,Master's,Urban,Approved,Black
+7,22,Male,30000,High School,Rural,Denied,White
+8,50,Female,80000,PhD,Suburban,Approved,Asian
+9,29,Male,52000,Bachelor's,Urban,Approved,Hispanic
+10,38,Female,65000,Master's,Rural,Denied,Black
+11,26,Male,48000,High School,Suburban,Denied,White
+12,45,Female,72000,PhD,Urban,Approved,Asian
+13,31,Male,58000,Bachelor's,Rural,Approved,Hispanic
+14,23,Female,35000,High School,Urban,Denied,Black
+15,55,Male,90000,Master's,Suburban,Approved,White
+16,40,Female,68000,PhD,Rural,Approved,Asian
+17,27,Male,51000,Bachelor's,Urban,Approved,Hispanic
+18,34,Female,62000,Master's,Suburban,Approved,Black
+19,49,Male,78000,PhD,Rural,Approved,White
+20,30,Female,46000,High School,Urban,Denied,Asian
+21,24,Male,32000,High School,Rural,Denied,Hispanic
+22,52,Female,85000,PhD,Suburban,Approved,Black
+23,37,Male,60000,Bachelor's,Urban,Approved,White
+24,43,Female,74000,Master's,Rural,Approved,Asian
+25,21,Male,28000,High School,Suburban,Denied,Hispanic
+# Add more rows as needed.  Ensure sufficient diversity in the data.

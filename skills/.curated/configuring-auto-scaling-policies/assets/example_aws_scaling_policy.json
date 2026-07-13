@@ -1,0 +1,70 @@
+{
+  "_comment": "Example AWS Auto Scaling Policy Configuration",
+  "PolicyName": "WebAppCPUPolicy",
+  "PolicyType": "TargetTrackingScaling",
+  "TargetTrackingConfiguration": {
+    "_comment": "Target utilization for CPU",
+    "TargetValue": 70.0,
+    "_comment": "Metric to track",
+    "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ASGAverageCPUUtilization"
+    },
+    "_comment": "Cooldown periods",
+    "ScaleOutCooldown": 300,
+    "ScaleInCooldown": 600
+  },
+  "_comment": "Resource ID - Auto Scaling Group ARN",
+  "ResourceId": "autoScalingGroupName/my-web-app-asg",
+  "ScalableDimension": "autoscaling:autoScalingGroup:DesiredCapacity",
+  "ServiceNamespace": "autoscaling",
+  "_comment": "Optional - Adjustments for more control",
+  "StepScalingPolicyConfiguration": {
+    "_comment": "Adjustment type (ChangeInCapacity, PercentChangeInCapacity, ExactCapacity)",
+    "AdjustmentType": "ChangeInCapacity",
+    "_comment": "Minimum number of instances to add/remove",
+    "MinAdjustmentMagnitude": 1,
+    "_comment": "Cooldown period",
+    "Cooldown": 300,
+    "_comment": "Scaling adjustments based on metric value",
+    "StepAdjustments": [
+      {
+        "MetricIntervalLowerBound": 0.0,
+        "MetricIntervalUpperBound": 10.0,
+        "ScalingAdjustment": -1
+      },
+      {
+        "MetricIntervalLowerBound": 70.0,
+        "ScalingAdjustment": 1
+      }
+    ]
+  },
+  "_comment": "Optional - Metric Alarms",
+  "Alarms": [
+    {
+      "AlarmName": "CPUHigh",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": 60,
+      "EvaluationPeriods": 5,
+      "Threshold": 80.0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:HighCPUAlarm"
+      ]
+    },
+    {
+      "AlarmName": "CPULow",
+      "MetricName": "CPUUtilization",
+      "Namespace": "AWS/EC2",
+      "Statistic": "Average",
+      "Period": 60,
+      "EvaluationPeriods": 5,
+      "Threshold": 20.0,
+      "ComparisonOperator": "LessThanThreshold",
+      "AlarmActions": [
+        "arn:aws:sns:us-east-1:123456789012:LowCPUAlarm"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+# PodDisruptionBudget Template
+# Limits voluntary disruptions during node maintenance, upgrades, etc.
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-app-pdb
+  namespace: default
+  labels:
+    app: my-app
+spec:
+  # Select pods this PDB applies to
+  selector:
+    matchLabels:
+      app: my-app
+
+  # Option 1: Minimum pods that must be available
+  # Use when you know the minimum replicas needed for service
+  minAvailable: 2
+
+  # Option 2: Maximum pods that can be unavailable
+  # Use when you know how many can be down at once
+  # maxUnavailable: 1
+
+  # Optional: Conditions for unhealthy pod eviction
+  # Requires K8s 1.26+ with PDBUnhealthyPodEvictionPolicy feature gate
+  # unhealthyPodEvictionPolicy: IfHealthyBudget  # or AlwaysAllow
+
+---
+# Example: PDB with percentage
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-app-pdb-percent
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  # Keep at least 50% of pods available
+  minAvailable: "50%"
+
+---
+# Example: PDB for stateful applications
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: database-pdb
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: database
+  # Never allow more than 1 pod down (for 3-node cluster, maintains quorum)
+  maxUnavailable: 1
+
+# Usage Guidelines:
+#
+# For Web APIs (3+ replicas):
+#   minAvailable: 2 or maxUnavailable: 1
+#
+# For Databases (3-node cluster):
+#   maxUnavailable: 1 (maintains quorum)
+#
+# For Workers:
+#   maxUnavailable: "25%" (can tolerate some downtime)
+#
+# For Critical Services:
+#   minAvailable: "80%" (high availability)
+#
+# Note: PDBs only affect VOLUNTARY disruptions:
+# - kubectl drain
+# - Node upgrades
+# - Cluster autoscaler scale-down
+#
+# PDBs do NOT protect against:
+# - Node failures
+# - Pod crashes
+# - Out of memory kills

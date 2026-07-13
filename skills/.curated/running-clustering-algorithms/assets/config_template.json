@@ -1,0 +1,63 @@
+{
+  "_comment": "Configuration template for clustering algorithms",
+  "dataset_name": "example_dataset.csv",
+  "_comment": "Path to the dataset file (CSV format)",
+  "algorithm": "KMeans",
+  "_comment": "Clustering algorithm to use (e.g., KMeans, DBSCAN, AgglomerativeClustering)",
+  "algorithm_params": {
+    "_comment": "Parameters specific to the chosen algorithm",
+    "KMeans": {
+      "n_clusters": 3,
+      "_comment": "Number of clusters for KMeans",
+      "init": "k-means++",
+      "_comment": "Initialization method for KMeans",
+      "max_iter": 300,
+      "_comment": "Maximum number of iterations for KMeans"
+    },
+    "DBSCAN": {
+      "eps": 0.5,
+      "_comment": "Maximum distance between two samples for DBSCAN to be considered as in the same neighborhood",
+      "min_samples": 5,
+      "_comment": "The number of samples in a neighborhood for a point to be considered as a core point for DBSCAN"
+    },
+    "AgglomerativeClustering": {
+      "n_clusters": 3,
+      "_comment": "The number of clusters to find for AgglomerativeClustering",
+      "linkage": "ward",
+      "_comment": "Which linkage criterion to use for AgglomerativeClustering. The linkage criterion determines which distance to use between sets of observation. The algorithm will merge the pairs of cluster that minimize this criterion.",
+      "affinity": "euclidean",
+      "_comment": "Metric used to compute the linkage. Can be 'euclidean', 'l1', 'l2', 'manhattan', 'cosine', or 'precomputed'. If linkage is 'ward', only 'euclidean' is accepted."
+    }
+  },
+  "preprocessing": {
+    "_comment": "Preprocessing steps to apply to the dataset",
+    "scale_data": true,
+    "_comment": "Whether to scale the data using StandardScaler",
+    "handle_missing_values": "impute",
+    "_comment": "How to handle missing values ('drop', 'impute', or null for none)",
+    "imputation_strategy": "mean",
+    "_comment": "Strategy to use for imputation (e.g., 'mean', 'median', 'most_frequent')"
+  },
+  "output": {
+    "_comment": "Output configuration",
+    "output_file": "clustering_results.csv",
+    "_comment": "Name of the output CSV file to store the cluster assignments",
+    "include_original_data": true,
+    "_comment": "Whether to include the original data in the output file along with cluster assignments"
+  },
+  "evaluation_metrics": {
+    "_comment": "Metrics to evaluate clustering quality",
+    "metrics": [
+      "silhouette_score",
+      "davies_bouldin_score",
+      "calinski_harabasz_score"
+    ]
+  },
+  "advanced_options": {
+    "_comment": "Advanced options for controlling the execution",
+    "random_state": 42,
+    "_comment": "Random seed for reproducibility",
+    "n_jobs": -1,
+    "_comment": "Number of CPU cores to use (-1 for all cores)"
+  }
+}

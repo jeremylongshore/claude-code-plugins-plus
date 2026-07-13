@@ -1,0 +1,142 @@
+# podium-rag-context-bridge — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+retrieval:
+  # Two-stage retrieval: ANN pool, then cross-encoder rerank.
+  # pool_k > final_k by ~4x for the rerank to actually do work.
+  pool_k: 20
+  final_k: 5
+
+  # Hard wall-clock deadline for the entire build_context call.
+  # If exceeded, return whatever surfaces completed with meta.partial=true.
+  # Default 800ms is chosen so the bridge fits inside one transcript-chunk window.
+  timeout_ms: 800
+
+  # Per-surface soft budgets (informational; the hard deadline above wins).
+  embed_budget_ms:    100
+  vector_budget_ms:   200
+  rerank_budget_ms:   300
+  live_lookup_budget_ms: 400
+
+  # When contact_uid is provided, push it down to the vector store as a WHERE filter.
+  # Set false to allow cross-contact retrieval (rare; only when contact identity is unknown).
+  per_contact_filter_when_known: true
+
+embedder:
+  # One of: bge-large-en-v1.5, openai-text-embedding-3-small, openai-text-embedding-3-large
+  backend: "bge-large-en-v1.5"
+
+  # Local (sentence-transformers) backends ignore this.
+  # Hosted (openai) backends load the key from the secret store at this env var name.
+  api_key_env: "OPENAI_API_KEY"
+
+  # Embedding dimension MUST match the column type in the vector store schema.
+  # bge-large-en-v1.5 = 1024; openai-text-embedding-3-small = 1536.
+  dimension: 1024
+
+reranker:
+  # One of: bge-reranker-base, bge-reranker-large, llm-reranker, none
+  # "none" passes raw cosine score through as rerank_score (degraded relevance, faster).
+  backend: "bge-reranker-base"
+
+  # If backend = llm-reranker, the model + endpoint to call.
+  llm_model: "claude-haiku"
+  llm_endpoint: "https://api.anthropic.com/v1/messages"
+
+vector_store:
+  # One of: pgvector, pinecone, weaviate
+  backend: "pgvector"
+
+  # Loaded from the secret store at this env var name. Never hardcode the DSN.
+  dsn_env: "PODIUM_PGVECTOR_DSN"
+
+  # Table holding embedded conversation chunks. Schema in references/implementation.md.
+  table: "podium_conversations"
+
+  # Index type. HNSW is the production default; IVFFlat is cheaper to build but slower at query time.
+  index_type: "hnsw"
+  hnsw_m: 16
+  hnsw_ef_construction: 64
+  hnsw_ef_search: 40
+
+redaction:
+  # Defense-in-depth retrieval-time filter. Ingest is the primary redactor; this catches misses.
+  enabled: true
+
+  # Patterns applied to the `content` field of every historical_excerpt before emission.
+  # Each entry: name, regex, replacement token.
+  patterns:
+    - name: credit_card
+      regex: '\b\d{13,19}\b'
+      replacement: "[REDACTED:CC]"
+    - name: ssn
+      regex: '\b\d{3}-?\d{2}-?\d{4}\b'
+      replacement: "[REDACTED:SSN]"
+    - name: email
+      regex: '\b[\w.+-]+@[\w-]+\.[\w.-]+\b'
+      replacement: "[REDACTED:EMAIL]"
+    - name: phone
+      regex: '\+?\d[\d\s\-().]{8,}\d'
+      replacement: "[REDACTED:PHONE]"
+    - name: dob
+      regex: '\b(0?[1-9]|1[0-2])[/-](0?[1-9]|[12]\d|3[01])[/-](19|20)\d{2}\b'
+      replacement: "[REDACTED:DOB]"
+    - name: street_address
+      regex: '\b\d{1,5}\s+\w+\s+(St|Ave|Rd|Blvd|Lane|Ln|Dr|Drive|Court|Ct)\b'
+      replacement: "[REDACTED:ADDR]"
+
+  # When any pattern matches, emit a structured log event so the ingest pipeline can be improved.
+  log_matches: true
+
+budget:
+  # Token cap on the historical_excerpts surface only.
+  # The calling agent loop owns the total prompt budget; this is the bridge's slice.
+  max_tokens_historical: 1500
+
+  # When dropping excerpts, drop lowest rerank_score first.
+  drop_strategy: "rerank_priority"
+
+  # Approximation: chars / this number = tokens. Replace with model-specific tokenizer in prod.
+  chars_per_token: 4
+
+coalescer:
+  # Sliding window across transcript chunk boundaries to avoid keyhole-surgery embed queries.
+  enabled: true
+  tail_window_ms: 200
+  head_window_ms: 200
+
+  # If the calling agent has already pre-processed chunks, skip the coalescer.
+  passthrough_when_preprocessed: true
+
+live_lookup:
+  # GET /v4/contacts/{uid} via podium-auth. Fields that ALWAYS win over vector hits.
+  live_fields:
+    - phone
+    - email
+    - opt_out_sms
+    - opt_out_email
+    - location_uid
+    - last_seen_at
+
+  # Hard timeout for the live call. Shorter than the bridge timeout so retries fit.
+  timeout_ms: 400
+
+degraded:
+  # Sustained meta.partial=true rate over this rolling window triggers a page.
+  partial_alert_threshold: 0.05
+  rolling_window_seconds: 3600
+
+logging:
+  # Structured JSON. NEVER log bundle content — only meta fields.
+  format: json
+  level: info
+  fields_to_log:
+    - meta.elapsed_ms
+    - meta.timeout_ms
+    - meta.partial
+    - meta.had_vector_hits
+    - meta.had_live_lookup
+    - meta.dropped_excerpts_count
+  fields_to_redact:
+    - bundle.contact
+    - bundle.historical_excerpts

@@ -2166,6 +2166,14 @@ def find_skill_files(root: Path) -> List[Path]:
         "010-archive",
         "000-docs",
         "002-workspaces",
+        # skills/.curated/ is a GENERATED mirror of the best plugin skills for
+        # skills.sh discovery (freshie/scripts/promote-to-curated.py). Its copies
+        # are byte-identical to their plugins/** sources, which are already graded
+        # here — so scanning them would double-count every promoted skill in
+        # skill_compliance and bloat the tracked grades.csv / grade-histogram.json
+        # exports with mirror rows. Exclude them; the source of truth stays the
+        # plugin skill.
+        ".curated",
     }
     results = []
 

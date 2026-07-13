@@ -1,0 +1,94 @@
+---
+name: memory-kit
+description: 'Persistent context management for Claude Code sessions. Save, load,
+  update,
+
+  share, and audit session memory via MEMORY.md. Prevents context loss on
+
+  compaction or session restart. Use when starting a session, before compaction,
+
+  syncing context across teammates, or pruning stale memory entries.
+
+  Trigger with "save memory", "load memory", "memory audit", "memory share".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(git:*)
+version: 1.1.0
+author: builtbyzac
+license: MIT
+tags:
+- productivity
+- audit
+- memory-kit
+compatibility: Designed for Claude Code
+---
+# Memory Kit
+
+## Current State
+
+!`[ -f MEMORY.md ] && echo "MEMORY.md: $(wc -l < MEMORY.md) lines, last modified $(date -r MEMORY.md '+%Y-%m-%d %H:%M')" || echo "No MEMORY.md found"`
+!`[ -f tasks/current-task.md ] && echo "Active task file found" || echo "No task file"`
+
+## Overview
+
+Claude Code sessions lose context on compaction and restart. Memory Kit persists
+session state (goals, decisions, patterns, open questions) to a `MEMORY.md` file
+that survives across sessions.
+
+Five commands cover the full lifecycle:
+
+- `/memory-save` — snapshot before compaction
+- `/memory-load` — restore at session start
+- `/memory-update` — log a decision mid-session
+- `/memory-share` — push to git for teammates
+- `/memory-audit` — prune stale entries
+
+## Prerequisites
+
+- A git repository (for `/memory-share`)
+- Write access to the project root (MEMORY.md lives there)
+
+## Instructions
+
+1. **On session start** — check for existing `MEMORY.md` in project root. If found, read and summarize the saved state. Ask the user whether to resume previous context or start fresh.
+2. **On save** (`/memory-save`) — scan the current conversation for goals, decisions, patterns, and open questions. Write a structured snapshot to `MEMORY.md` with timestamped sections.
+3. **On update** (`/memory-update`) — append the user's decision or note to the appropriate section in `MEMORY.md` without overwriting existing content.
+4. **On share** (`/memory-share`) — commit `MEMORY.md` and push to the remote branch so teammates can load the same context.
+5. **On audit** (`/memory-audit`) — review all entries in `MEMORY.md`, flag stale items (older than 7 days or referencing completed work), and prompt the user to confirm removal.
+
+## Output
+
+The skill produces and maintains a `MEMORY.md` file containing:
+
+- **Session metadata**: Timestamp, branch, and project name
+- **Goals**: Current objectives carried across sessions
+- **Decisions**: Key choices made with rationale
+- **Patterns**: Recurring approaches or conventions discovered
+- **Open questions**: Unresolved items requiring future attention
+
+## Output Format
+
+For the MEMORY.md template structure, see [output-format.md](references/output-format.md).
+
+## Error Handling
+
+For error scenarios and recovery behavior, see [error-handling.md](references/error-handling.md).
+
+## Examples
+
+**Save before compaction:**
+> "Save my memory" → reads current context, writes snapshot to MEMORY.md
+
+**Load at session start:**
+> "Load memory" → reads MEMORY.md, summarizes state, asks to resume or start new
+
+**Quick mid-session log:**
+> "Log decision: using Postgres over SQLite for concurrent writes" → appends to Decisions section
+
+**Team sync:**
+> "Share memory" → runs `scripts/memory-share.sh`, confirms push
+
+## Resources
+
+- [output-format.md](references/output-format.md) — MEMORY.md template structure and section schema
+- [error-handling.md](references/error-handling.md) — error scenarios, recovery behavior, and edge cases

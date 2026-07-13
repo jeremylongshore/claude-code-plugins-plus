@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Coverage Report</title>
+    <style>
+        /* Inline CSS for styling */
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners work correctly */
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .coverage-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden; /* Hide overflowing gradient */
+        }
+
+        .coverage-bar-inner {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A); /* Green gradient */
+            width: {{coverage_percentage}}%; /* Placeholder for coverage percentage */
+        }
+
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            table {
+                overflow-x: auto; /* Enable horizontal scrolling on small screens */
+                display: block; /* Required for overflow-x to work */
+            }
+
+            th, td {
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Main heading -->
+    <h1>Code Coverage Report</h1>
+
+    <!-- Coverage Summary -->
+    <div class="summary">
+        <p><strong>Total Coverage:</strong> {{total_coverage}}%</p>
+        <p><strong>Covered Lines:</strong> {{covered_lines}}</p>
+        <p><strong>Uncovered Lines:</strong> {{uncovered_lines}}</p>
+        <p><strong>Timestamp:</strong> {{timestamp}}</p>
+    </div>
+
+    <!-- Coverage Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Coverage</th>
+                <th>Lines Covered</th>
+                <th>Lines Uncovered</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{table_rows}} <!-- Placeholder for table rows -->
+        </tbody>
+    </table>
+
+    <!-- Example Table Row (to be replaced by actual data) -->
+    <!-- Example:
+    <tr>
+        <td>example.py</td>
+        <td>
+            <div class="coverage-bar">
+                <div class="coverage-bar-inner" style="width: 85%;"></div>
+            </div>
+            85%
+        </td>
+        <td>170</td>
+        <td>30</td>
+    </tr>
+    -->
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; {{year}} Test Coverage Analyzer Plugin</p>
+    </footer>
+
+</body>
+</html>

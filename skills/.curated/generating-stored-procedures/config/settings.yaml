@@ -1,0 +1,73 @@
+# Stored Procedure Generator Settings
+# Connection templates for different database types
+
+databases:
+  postgresql:
+    default_port: 5432
+    client: psql
+    connection_string: "postgresql://db_admin:$DB_PASSWORD@localhost:5432/app_database"
+    test_query: "SELECT version();"
+    permissions_query: |
+      SELECT privilege_type
+      FROM information_schema.role_table_grants
+      WHERE grantee = current_user;
+
+  mysql:
+    default_port: 3306
+    client: mysql
+    connection_string: "mysql://db_admin:$DB_PASSWORD@localhost:3306/app_database"
+    test_query: "SELECT VERSION();"
+    permissions_query: "SHOW GRANTS;"
+
+  sqlserver:
+    default_port: 1433
+    client: sqlcmd
+    connection_string: "Server=localhost,1433;Database=app_database;User Id=db_admin;Password=$DB_PASSWORD;"
+    test_query: "SELECT @@VERSION;"
+    permissions_query: "SELECT permission_name FROM fn_my_permissions(NULL, 'DATABASE');"
+
+validation:
+  # Patterns to detect in stored procedure code
+  warnings:
+    - pattern: "SELECT *"
+      message: "Avoid SELECT * - specify columns explicitly"
+    - pattern: "EXECUTE '"
+      message: "Dynamic SQL detected - ensure parameterization"
+    - pattern: "sp_executesql @sql"
+      message: "Verify parameters are properly bound"
+
+  required:
+    postgresql:
+      - "LANGUAGE"
+      - "$$"
+    mysql:
+      - "DELIMITER"
+      - "BEGIN"
+      - "END"
+    sqlserver:
+      - "AS"
+      - "BEGIN"
+      - "END"
+
+deployment:
+  # Deployment options
+  dry_run: false
+  generate_rollback: true
+  timeout_seconds: 60
+  transaction_wrap: true
+
+templates:
+  # Common procedure templates
+  crud:
+    - create
+    - read
+    - update
+    - delete
+
+  audit:
+    - audit_trigger
+    - audit_table
+
+  security:
+    - permission_check
+    - rate_limit

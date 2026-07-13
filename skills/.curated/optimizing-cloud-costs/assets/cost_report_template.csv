@@ -1,0 +1,23 @@
+# Cloud Cost Report Template
+# This CSV file provides a template for generating cost reports.
+# Each row represents a cost item.
+#
+# Columns:
+#   - Date: The date of the cost (YYYY-MM-DD).
+#   - Account: The account or project associated with the cost.
+#   - Service: The cloud service used (e.g., EC2, S3, RDS).
+#   - Region: The AWS region (e.g., us-east-1, eu-west-1). Use 'Global' if applicable.
+#   - Item: A descriptive name for the cost item.
+#   - Cost: The cost in USD.
+#   - Unit: The unit of measurement for the item (e.g., hours, GB, requests).  Leave blank if not applicable.
+#   - Quantity: The quantity consumed.  Leave blank if not applicable.
+#   - Notes: Any additional notes or descriptions.
+#
+# Example usage:
+# 2023-10-26,ProjectA,EC2,us-east-1,Instance m5.large,1.20,hours,10,Compute costs for web server
+# 2023-10-26,ProjectB,S3,us-west-2,Storage,0.50,GB,100,Storage costs for backups
+# 2023-10-26,ProjectA,RDS,us-east-1,Database instance,2.50,hours,5,Database costs
+# 2023-10-26,ProjectC,Lambda,Global,Function invocations,0.10,requests,10000,Lambda function costs
+
+Date,Account,Service,Region,Item,Cost,Unit,Quantity,Notes
+#YYYY-MM-DD,AccountName,ServiceName,RegionName,ItemDescription,CostInUSD,UnitOfMeasure,QuantityConsumed,AdditionalNotes

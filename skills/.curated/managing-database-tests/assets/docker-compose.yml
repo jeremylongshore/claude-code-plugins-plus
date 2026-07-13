@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:14 # Use PostgreSQL version 14
+    container_name: test-db-postgres
+    environment:
+      POSTGRES_USER: test_user # Database username
+      POSTGRES_PASSWORD: test_password # Database password
+      POSTGRES_DB: test_database # Default database name
+    ports:
+      - "5432:5432" # Expose port 5432 for external access
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist data in a volume
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d test_database"] # Check if the database is ready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped # Restart policy
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0 # Use MySQL version 8.0
+    container_name: test-db-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password # Root password for MySQL
+      MYSQL_USER: test_user # Database username
+      MYSQL_PASSWORD: test_password # Database password
+      MYSQL_DATABASE: test_database # Default database name
+    ports:
+      - "3306:3306" # Expose port 3306 for external access
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist data in a volume
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -proot_password"] # Check if the database is ready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped # Restart policy
+
+  # MongoDB Database Service
+  mongo:
+    image: mongo:latest # Use the latest MongoDB image
+    container_name: test-db-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root # Root username
+      MONGO_INITDB_ROOT_PASSWORD: root_password # Root password
+    ports:
+      - "27017:27017" # Expose port 27017 for external access
+    volumes:
+      - mongo_data:/data/db # Persist data in a volume
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"] # Check if the database is ready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped # Restart policy
+
+  # Redis Service (Example for caching or other use cases)
+  redis:
+    image: redis:latest # Use the latest Redis image
+    container_name: test-redis
+    ports:
+      - "6379:6379" # Expose port 6379 for external access
+    volumes:
+      - redis_data:/data # Persist data in a volume
+    restart: unless-stopped # Restart policy
+
+volumes:
+  postgres_data: # Volume for PostgreSQL data
+  mysql_data: # Volume for MySQL data
+  mongo_data: # Volume for MongoDB data
+  redis_data: # Volume for Redis data

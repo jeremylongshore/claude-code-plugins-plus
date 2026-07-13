@@ -1,0 +1,135 @@
+# Cross-Chain Bridge Monitor Configuration
+# Author: Jeremy Longshore <jeremy@intentsolutions.io>
+# Version: 1.0.0
+
+# Default settings
+defaults:
+  format: text
+  limit: 20
+
+# API Endpoints
+apis:
+  defillama:
+    base_url: https://bridges.llama.fi
+    endpoints:
+      bridges: /bridges
+      bridge: /bridge/<bridge-id>
+      volume: /bridgevolume/<chain-name>
+      stats: /bridgedaystats/<unix-timestamp>/<chain-name>
+
+  wormhole:
+    base_url: https://api.wormholescan.io/api/v1
+    endpoints:
+      vaa: /vaas/<tx-hash>
+
+  layerzero:
+    base_url: https://scan.layerzero.network/api
+    endpoints:
+      message: /message/tx/<tx-hash>
+
+  across:
+    base_url: https://across.to/api
+    endpoints:
+      status: /deposit/status
+
+# Supported Bridges
+bridges:
+  wormhole:
+    name: Wormhole
+    type: messaging
+    avg_time_minutes: 15
+    fee_percent: 0.1
+
+  layerzero:
+    name: LayerZero
+    type: messaging
+    avg_time_minutes: 3
+    fee_percent: 0.06
+
+  stargate:
+    name: Stargate
+    type: liquidity
+    avg_time_minutes: 2
+    fee_percent: 0.06
+
+  across:
+    name: Across
+    type: liquidity
+    avg_time_minutes: 1
+    fee_percent: 0.04
+
+  hop:
+    name: Hop
+    type: liquidity
+    avg_time_minutes: 5
+    fee_percent: 0.04
+
+  celer:
+    name: Celer cBridge
+    type: liquidity
+    avg_time_minutes: 10
+    fee_percent: 0.04
+
+  synapse:
+    name: Synapse
+    type: liquidity
+    avg_time_minutes: 10
+    fee_percent: 0.05
+
+# Chain RPC Endpoints
+chains:
+  ethereum:
+    rpc_url: https://eth.llamarpc.com
+    chain_id: 1
+    finality_minutes: 15
+
+  bsc:
+    rpc_url: https://bsc-dataseed1.binance.org
+    chain_id: 56
+    finality_minutes: 3
+
+  polygon:
+    rpc_url: https://polygon-rpc.com
+    chain_id: 137
+    finality_minutes: 5
+
+  arbitrum:
+    rpc_url: https://arb1.arbitrum.io/rpc
+    chain_id: 42161
+    finality_minutes: 1
+
+  optimism:
+    rpc_url: https://mainnet.optimism.io
+    chain_id: 10
+    finality_minutes: 1
+
+  base:
+    rpc_url: https://mainnet.base.org
+    chain_id: 8453
+    finality_minutes: 1
+
+  avalanche:
+    rpc_url: https://api.avax.network/ext/bc/C/rpc
+    chain_id: 43114
+    finality_minutes: 2
+
+# Cache settings
+cache:
+  enabled: true
+  bridge_list_ttl: 3600    # 1 hour
+  tvl_data_ttl: 300        # 5 minutes
+  tx_status_ttl: 30        # 30 seconds
+
+# Rate limiting
+rate_limits:
+  defillama_per_second: 5
+  protocol_api_per_second: 2
+  rpc_per_second: 10
+  backoff_multiplier: 2
+  max_retries: 3
+
+# Alert thresholds
+alerts:
+  tvl_drop_percent: 10       # Alert if TVL drops >10%
+  volume_spike_percent: 200  # Alert if volume spikes >200%
+  tx_timeout_minutes: 60     # Alert if tx pending >60 min
