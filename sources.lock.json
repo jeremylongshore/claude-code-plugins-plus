@@ -1,5 +1,5 @@
 {
-  "$comment": "Content-pinning lockfile for the sources.yaml mirrors (scripts/sync-external.mjs). Each entry pins one upstream source: the resolved upstream commit and a sha256 per mirrored file. The diff of this file is the security review surface — a drifted source is quarantined by the sync and only re-baselined via an explicit --relock=<source> / --relock-all after human review. Managed by scripts/sync-lockfile.mjs; do not hand-edit digests.",
+  "$comment": "Content-pinning lockfile for the sources.yaml mirrors (scripts/sync-external.mjs). Each entry pins one upstream source: the resolved upstream commit and a sha256 per mirrored file. The diff of this file is the security review surface \u2014 a drifted source is quarantined by the sync and only re-baselined via an explicit --relock=<source> / --relock-all after human review. Managed by scripts/sync-lockfile.mjs; do not hand-edit digests.",
   "version": 1,
   "sources": {
     "Claudebase": {
@@ -309,8 +309,6 @@
         ".mcp.json": "sha256:b5dbf969a86e74af228fa6feb2c14da97f72f2156481f1c77625e7491ef3eb7b",
         "LICENSE": "sha256:393f9b0a3ffff1e35d5243049719ec982d0663713542fd417b64a7df4c04a361",
         "README.md": "sha256:9f3f811640aa2cab3f9f1a98e8b904a7a8ff6562897f5fcede250232f321ca3a",
-        "hooks/README.md": "sha256:5fa964c5751ae42deb4cdcb28f6c38bea1a3a48950dec95d945535a93fe19a76",
-        "onboarding/README.md": "sha256:9012424468e294535f3394b44ae1f49c3c54f7a1ba5ee28c9112eef2f2569149",
         "plugin-runtime/governed-brain.cjs": "sha256:2fac90532ecda9bc0d669bb85b4918a10acc0efccd80777b28aca32e9ec0e1a8",
         "plugin-runtime/package-lock.json": "sha256:807be9daedf14036e1bbacf42028108318d859037ffb11a4c72e6359b0672534",
         "plugin-runtime/package.json": "sha256:e20ddace610f417fdf8419651eecfcbaa3d0d1dbff24f2b05ce8f3ae2c505827",
