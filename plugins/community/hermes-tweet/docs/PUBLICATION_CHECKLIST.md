@@ -63,7 +63,7 @@ actionlint .github/workflows/*.yml
 Before changing plugin registration, manifests, install docs, or release
 metadata, verify the current official Hermes Agent plugin docs and source:
 
-- [Build a Hermes Plugin](https://hermes-agent.nousresearch.com/docs/guides/build-a-hermes-plugin/)
+- [Build a Hermes Plugin](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins)
 - [Plugins feature guide](https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins/)
 - [`hermes_cli/plugins.py`](https://github.com/NousResearch/hermes-agent/blob/main/hermes_cli/plugins.py)
 - [`tools/registry.py`](https://github.com/NousResearch/hermes-agent/blob/main/tools/registry.py)
@@ -79,10 +79,10 @@ uv run --python 3.12 --extra dev python scripts/check_hermes_agent_compat.py
 If a locked Hermes Agent source SHA changes, review the official diff first,
 then update Hermes Tweet runtime, docs, tests, and the checker lock together.
 
-Latest reviewed locks from June 29, 2026: `hermes_cli/plugins.py`
-`d343b077a7a3fdbd91b3cc62dc221992e7cba537`, `tools/registry.py`
-`09f8632e29ece8860b1371dc5ea95babf7d4ce0f`, and
-`hermes_cli/plugins_cmd.py` `0a5aa8c0fd03d6f4e34951e5242a469a2d07f331`.
+Latest reviewed locks from July 10, 2026: `hermes_cli/plugins.py`
+`ea0b8ea2ffe1b6b5c3616f4bc005081a09141337`, `tools/registry.py`
+`9b6611fb407dd17da5aa4ae2ba6a39498af830da`, and
+`hermes_cli/plugins_cmd.py` `6a7c39f3e4e014f98201766e980d19c696e1c545`.
 
 Keep the runtime contract aligned with those sources:
 

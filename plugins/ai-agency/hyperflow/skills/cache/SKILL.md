@@ -55,7 +55,7 @@ Append to the matching file using:
 **Why it matters:** ...
 **Evidence:** ...
 ```
-Update `index.md` with the new row.
+That is the whole write. `index.md` is derived — `scripts/memory-index.py` rebuilds it at the next session start. Never append index rows by hand; to refresh it now, run `python3 scripts/memory-index.py .hyperflow`.
 
 ### `edit <entry-id>`
 Locate by date+title slug. Show current value, prompt for new value, update in place.
@@ -69,7 +69,7 @@ Print summary of removed/archived counts.
 
 ### `archive`
 Compress hot entries older than 30 days → `.hyperflow/memory/archive/YYYY-MM.md`.
-Leave one-line summary in original file. Update `index.md` tier column.
+Leave one-line summary in original file. The stub keeps its date, so the derived index re-tiers it to `cold` on its own.
 
 ### `clear`
 Confirm via AskUserQuestion: "This wipes all memory for this project. Are you sure?"

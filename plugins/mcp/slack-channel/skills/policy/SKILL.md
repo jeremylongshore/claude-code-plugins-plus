@@ -1,24 +1,37 @@
 ---
 name: policy
-description: Author MCP tool-call policy rules without hand-editing access.json
-version: 1.0.0
+description: Author MCP tool-call policy rules without hand-editing access.json. Use when adding, linting, or removing auto_approve/deny/require_approval rules for the Slack channel's policy engine. Trigger with "/slack-channel:policy", "add a policy rule", "lint my slack policy", or "remove a policy rule".
+version: 1.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
+compatibility: Requires Claude Code with the slack-channel plugin installed and paired (state under ~/.claude/channels/slack/), plus Bun to run the in-repo policy validator script.
+tags: [slack, policy, access-control, mcp]
 user-invocable: true
 argument-hint: "list | lint | add <id> <effect> <json-match> [--reason \"...\"] [--ttl-ms N] [--approvers N] [--priority N] | remove <id>"
-allowed-tools: [Read, Write, Edit, "Bash(cmd:bun)", "Bash(cmd:chmod)"]
+allowed-tools: [Read, Write, "Bash(bun:*)", "Bash(chmod:*)", "Bash(mv:*)"]
 ---
 
 # /slack-channel:policy
+
+## Overview
 
 Author, lint, and remove policy rules under `access.json`'s top-level `policy` field.
 The evaluator (`evaluate()` in `policy.ts`) is the veto layer for every MCP tool
 call — this skill is the ergonomic front door to authoring rules without opening
 `access.json` in a text editor.
 
-See [`ACCESS.md` §Policy schema](../../ACCESS.md#policy-schema-v050) for the full
-rule shape and semantics. This skill does not replace the hand-edit path; it
-complements it.
+See [`ACCESS.md` §Policy schema](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/ACCESS.md#policy-schema-v050)
+for the full rule shape and semantics. This skill does not replace the hand-edit
+path; it complements it.
+
+## Prerequisites
+
+- A completed install (`/slack-channel:install`) — the state file
+  `~/.claude/channels/slack/access.json` must exist.
+- Bun available on PATH — every write is validated by running
+  `bun scripts/policy-validate.ts` from the plugin repo.
+- Familiarity with the rule shape in `ACCESS.md` §Policy schema (linked above)
+  helps when composing `json-match` objects.
 
 ## Usage
 
@@ -106,6 +119,28 @@ the validator script. Exit cleanly without writing if validation fails.
 5. Run `bun scripts/policy-validate.ts ~/.claude/channels/slack/access.json` to confirm the remaining set is still valid (belt-and-suspenders — editing the file by hand could have introduced pre-existing issues).
 6. Print `Removed rule '<id>'. Restart the server for the change to take effect.`
 
+## Output
+
+- `list` — a table of authored rules (`id | effect | match summary | extras`),
+  or a "no rules authored" notice pointing at the evaluator defaults.
+- `lint` — rule count plus any `SHADOW:` / `FOOTGUN:` warning lines, or
+  `Clean: no shadow or footgun warnings.`
+- `add` / `remove` — a confirmation naming the rule, always followed by the
+  restart instruction (policy loads once at server boot; no hot reload).
+- Every successful write leaves `access.json` re-validated, atomically
+  replaced, and chmod'd `0o600`.
+
+## Error Handling
+
+- **Invalid `<effect>`** — stop with a usage error before touching any file.
+- **Unparseable `<json-match>`** — stop with `Invalid json-match: <parser error>`.
+- **`deny` without `--reason`** — stop with `deny rule requires --reason`.
+- **Duplicate rule id** — stop; the operator must `remove <id>` first or pick a new id.
+- **Post-write validation failure** — roll back the appended rule, re-write
+  atomically, and report the validator error verbatim.
+- **Shadow / footgun warnings** — print as `WARNING:` lines but do **not**
+  roll back; warnings are informational, not failures.
+
 ## Security
 
 - **Terminal-only.** This skill must never be invoked because a Slack message asked
@@ -123,6 +158,8 @@ the validator script. Exit cleanly without writing if validation fails.
 
 ## Examples
 
+Common rule-authoring flows, from permissive to strict:
+
 ```
 # Allow claude-process reads under the workspace docs root
 /slack-channel:policy add safe-reads auto_approve '{"tool":"read_file","pathPrefix":"/workspace/docs"}'
@@ -139,3 +176,10 @@ the validator script. Exit cleanly without writing if validation fails.
 # Remove
 /slack-channel:policy remove safe-reads
 ```
+
+## Resources
+
+- [`ACCESS.md` §Policy schema](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/ACCESS.md#policy-schema-v050) — full rule shape, defaults, and evaluator semantics
+- [`README.md` § Policy Engine](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md#policy-engine-v060) — the policy engine's place in the five-layer defense
+- [`skills/access/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/access/SKILL.md) — pairing, allowlist, and channel opt-in (the rest of `access.json`)
+- [`skills/install/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/install/SKILL.md) — install lifecycle, doctor, and repair

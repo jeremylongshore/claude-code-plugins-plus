@@ -4,14 +4,14 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-07-10T05:54:27.582Z",
+  "last_sync": "2026-07-13T17:26:59.376Z",
   "author": {
     "name": "Mohammed Abdelhady",
     "github": "Mohammed-Abdelhady",
     "email": "abdelhadycongar@gmail.com"
   },
   "license": "MIT",
-  "files_synced": 149,
+  "files_synced": 150,
   "files": [
     ".claude-plugin/marketplace.json",
     ".claude-plugin/plugin.json",
@@ -61,6 +61,7 @@
     "scripts/generate-whats-new-cast.py",
     "scripts/generate-whats-new.sh",
     "scripts/lean-summary.py",
+    "scripts/memory-index.py",
     "scripts/migrate-cache.py",
     "scripts/queue-commit.sh",
     "scripts/record-demo.sh",

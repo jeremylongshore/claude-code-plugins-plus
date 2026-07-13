@@ -6,7 +6,8 @@ Advanced project-scoped memory replacing the global `~/.claude/hyperflow-memory.
 
 ```
 .hyperflow/memory/
-├── index.md              # Quick-scan index: all entry titles, tags, dates, tier
+├── index.md              # DERIVED — quick-scan index: all entry titles, tags, dates, tier
+├── .checksums            # DERIVED — per-file sha256 + lineCount (compaction advisory)
 ├── learnings.md          # Discovered patterns and gotchas
 ├── decisions.md          # Architectural decisions + reasoning
 ├── pitfalls.md           # Failed approaches + why they failed
@@ -19,6 +20,18 @@ Advanced project-scoped memory replacing the global `~/.claude/hyperflow-memory.
 ```
 
 `.hyperflow/` is gitignored. Memory is local to each developer's machine.
+
+## Derived State — index.md and .checksums
+
+`index.md` and `.checksums` are **generated, never hand-authored**. `scripts/memory-index.py` runs from the session-start hook, parses every entry heading in the category files, tiers each entry by age, and rewrites both.
+
+No chain step maintains them. This is deliberate: when the index was LLM-maintained, every skill's write protocol *said* to append an index row and none of them did — the index sat at its scaffold stub while the category files grew to tens of thousands of lines, and because session start reads memory *through* the index, every stored learning was invisible. Deriving the index from the files it indexes makes that drift impossible.
+
+Consequences for writers:
+
+- **Append entries to the category file only.** Do not write index rows. Do not update `.checksums`.
+- The next session start picks the entry up automatically — no registration step, nothing to forget.
+- Hand-edits to `index.md` are overwritten on the next run. Edit the category files instead.
 
 ## Registered Memory Files
 
@@ -88,6 +101,10 @@ Rules:
 **Evidence:** file:line reference or commit SHA where this was discovered.
 ```
 
+Write new entries in this form — it is the only one that carries tags, and without tags an entry can never be warm-tier injected on a tag match.
+
+The index parser also accepts the untagged `## Short title (YYYY-MM-DD, source-slug)` heading that earlier runs emitted, so existing entries stay indexed and tiered. They just never match a tag.
+
 ### Examples
 
 ```markdown
@@ -129,12 +146,17 @@ Rules:
 
 ## Read Protocol (Session Start)
 
-1. Read `index.md` — always. It is small by design.
-2. Load all **hot** entries in full (≤ 7 days).
-3. Load `anti-patterns.md` in full — always, regardless of age or tags. It is permanently hot-tier (see Registered Memory Files above).
-4. Infer tags from the current task description. Load **warm** entries whose tags overlap.
-5. Skip **cold** entries unless user explicitly requests them (`hyperflow: memory show <tag>`).
-6. Inject loaded entries into the first worker prompt under `## Learnings from prior sessions`. Inject `anti-patterns.md` under a separate `## Known anti-patterns` header.
+Steps 1–3 are automatic — `scripts/memory-index.py` runs from the session-start hook and injects their output. The orchestrator does not perform them.
+
+1. Rebuild `index.md` + `.checksums` from the category files; the index arrives in context under `## Project Memory Index`.
+2. Inject all **hot** entries in full (≤ 7 days) under `## Project memory — hot entries`.
+3. Inject `anti-patterns.md` in full — always, regardless of age or tags. It is permanently hot-tier (see Registered Memory Files above).
+
+The orchestrator performs the rest:
+
+4. Infer tags from the current task description. Read **warm** entries whose tags overlap — the index names the file each entry lives in.
+5. Skip **cold** entries unless the user explicitly requests them (`hyperflow: memory show <tag>`).
+6. Inject the loaded entries into worker prompts under `## Learnings from prior sessions`. Inject `anti-patterns.md` under a separate `## Known anti-patterns` header.
 
 Workers receive only the subset matching their task's inferred tags — never the full dump.
 
@@ -145,7 +167,8 @@ Workers receive only the subset matching their task's inferred tags — never th
 3. Discard ephemeral learnings (task-specific facts that won't recur).
 4. Deduplicate against existing entries: if the same fact already exists (semantic match, not exact string), skip or update rather than append.
 5. Append to the appropriate file using the entry format above.
-6. Update `index.md` with the new row (tier = `hot`).
+
+There is no index step — `index.md` and `.checksums` are derived at the next session start (see Derived State above). Appending to the category file is the whole write.
 
 Write only from the orchestrator — never delegate memory writes to workers.
 
@@ -159,7 +182,8 @@ Triggered at session start for any entry whose date crossed the 30-day threshold
    > Tailwind v4 uses CSS variable tokens, not tailwind.config. See archive/2026-04.md.
    ```
 2. Append the original full entry to `archive/YYYY-MM.md` (month of the original entry date).
-3. Update `index.md` tier to `cold` and point file column to `archive/YYYY-MM.md`.
+
+The index re-derives itself from the rewritten source file on the next session start — the stub keeps its date, so it re-tiers as `cold` on its own.
 
 ## Pruning Protocol
 
@@ -189,7 +213,7 @@ On first session start in a project that has no `.hyperflow/memory/` but has `~/
 
 1. Parse the legacy file for entries belonging to the current project path.
 2. Map each bullet point to a `learnings.md` entry, tagging as `pattern` + best-guess domain.
-3. Write migrated entries to `learnings.md` and update `index.md`.
+3. Write migrated entries to `learnings.md`.
 4. Print: `Hyperflow — migrated N entries from ~/.claude/hyperflow-memory.md`
 5. Do not delete the legacy file — the user may have other projects in it.
 
@@ -204,10 +228,10 @@ On first session start in a project that has no `.hyperflow/memory/` but has `~/
 
 ## Constraints
 
-- `index.md` must stay under 200 lines. If it grows beyond that, prune cold entries aggressively.
+- The session-start hook injects only the first 200 lines of `index.md`. The index is one row per entry, so once a project carries ~190 live entries, archive or compact the cold ones — that shrinks the derived index at its source.
 - No code snippets in memory entries — patterns and facts only.
 - Memory writes never block task execution. If a write fails, log and continue.
-- Users may edit any memory file directly — it is plain markdown.
+- Users may edit any category file directly — it is plain markdown. `index.md` and `.checksums` are derived and get overwritten.
 
 ## Compaction Protocol
 

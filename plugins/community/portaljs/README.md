@@ -190,11 +190,13 @@ npm create portaljs@latest my-portal
 | [`/portaljs-add-resource`](.claude/commands/portaljs-add-resource.md) | Attach another file (data dictionary, methodology, extra data) to an existing dataset — it becomes multi-resource and the showcase renders a section per file. |
 | [`/portaljs-add-chart`](.claude/commands/portaljs-add-chart.md) | Add a line, bar, area, pie, or scatter chart to a dataset's showcase. |
 | [`/portaljs-add-map`](.claude/commands/portaljs-add-map.md) | Render a GeoJSON dataset on an interactive map and register it on the home page. |
+| [`/portaljs-add-geo`](.claude/commands/portaljs-add-geo.md) | Auto-ingest a geospatial file (GeoJSON, Shapefile, GeoPackage, KML/KMZ, FlatGeobuf, CSV-with-geometry) on your own machine — no server: normalizes CRS to EPSG:4326, derives a PMTiles render tier and a GeoParquet query tier, pushes both plus the original to R2, and registers one dual-tier dataset the showcase maps and queries in place. |
 | [`/portaljs-define-schema`](.claude/commands/portaljs-define-schema.md) | Infer a Frictionless Table Schema from a dataset's data, add license/source/keyword metadata, and surface a typed field table on its showcase. |
 | [`/portaljs-add-dcat`](.claude/commands/portaljs-add-dcat.md) | Make the portal harvestable — emit standards-compliant DCAT feeds (DCAT 2/3, DCAT-AP, DCAT-US, national profiles) in JSON-LD, Turtle, and RDF/XML so national/EU/US open-data portals can harvest its datasets. |
 | [`/portaljs-connect-ckan`](.claude/commands/portaljs-connect-ckan.md) | Wire the portal to a CKAN backend over its API instead of static files. |
 | [`/portaljs-check-data-quality`](.claude/commands/portaljs-check-data-quality.md) | Validate a dataset against its schema and flag quality issues (type mismatches, missing values, constraint violations). |
 | [`/portaljs-migrate`](.claude/commands/portaljs-migrate.md) | Harvest or migrate a whole catalog into the portal from CKAN, Socrata, OpenDataSoft, ArcGIS, or DCAT-US, over a canonical Frictionless/DCAT model. |
+| [`/arcgis-to-portaljs`](.claude/commands/arcgis-to-portaljs.md) | Migrate a whole ArcGIS Hub site into the portal end-to-end — harvest its `/data.json`, export every FeatureService layer via the ArcGIS REST API, convert to the serverless dual tier (PMTiles + GeoParquet), push to R2, and write a source-vs-derived parity report. |
 | [`/portaljs-deploy`](.claude/commands/portaljs-deploy.md) | Build a static export and publish it to PortalJS Arc — Datopian-managed hosting on Cloudflare — with a live `<slug>.arc.portaljs.com` URL. |
 
 <!-- END:skills-table -->

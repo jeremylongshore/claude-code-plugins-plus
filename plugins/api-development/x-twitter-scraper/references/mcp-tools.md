@@ -155,16 +155,15 @@ Use `POST /api/v1/extractions` ONLY for bulk data that simpler endpoints cannot 
 | Using `explore` for API calls | `explore` is read-only spec search. Use `xquik` for actual API calls |
 | Looking up follow/DM by username | Follow and DM endpoints need numeric user ID. Look up via `GET /x/users/{id}` first; that route accepts usernames and IDs |
 
-## Unsupported Operations
+## REST-only operations
 
-These are NOT available via the MCP server:
+MCP v2.5.0 exposes 118 of 123 REST operations. These 5 sensitive operations remain outside MCP:
 
-- API key management (create, list, delete)
-- File export (CSV, XLSX, Markdown)
-- Account locale update
-- Scheduled tweets
-
-- Direct X search (use extraction `tweet_search_extractor` for bulk search)
+- API key creation
+- API key listing
+- API key revocation
+- Saved-payment top-ups
+- Dashboard checkout redirects
 
 ## Usage Reference
 

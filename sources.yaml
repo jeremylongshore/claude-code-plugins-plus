@@ -774,12 +774,15 @@ sources:
     category: productivity
     verified: true
     include:
-      - '.claude-plugin/**'
-      - '.mcp.json'
-      - 'skills/**'
-      - 'plugin-runtime/**'
-      - 'README.md'
-      - 'LICENSE'
+      - '/.claude-plugin/**'
+      - '/.mcp.json'
+      - '/skills/**'
+      - '/plugin-runtime/**'
+      # Root-anchored: the unanchored form auto-prefixes '**/' and admitted
+      # onboarding/README.md (internal team doc carrying a tailnet IP) into
+      # the public mirror — caught by the official-links gate on PR #1048.
+      - '/README.md'
+      - '/LICENSE'
     exclude:
       - 'node_modules/**'
       - '.git/**'

@@ -1,0 +1,32 @@
+{
+  "name": "@intentsolutionsio/walkie-talkie",
+  "version": "0.1.0",
+  "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
+  "keywords": [
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/walkie-talkie"
+  },
+  "homepage": "https://tonsofskills.com/plugins/walkie-talkie",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Walkie-Talkie Maintainers",
+    "url": "https://github.com/walkie-talkie-skill"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install walkie-talkie\\\\n  or /plugin install walkie-talkie@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

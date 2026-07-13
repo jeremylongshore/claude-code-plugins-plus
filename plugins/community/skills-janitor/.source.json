@@ -1,0 +1,40 @@
+{
+  "synced_from": {
+    "repo": "khendzel/skills-janitor",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-13T17:27:23.088Z",
+  "author": {
+    "name": "Krzysztof Hendzel",
+    "github": "khendzel",
+    "email": "krzysztoff.hendzel@gmail.com"
+  },
+  "license": "MIT",
+  "files_synced": 23,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "scripts/compare.sh",
+    "scripts/detect_dupes.sh",
+    "scripts/discover.sh",
+    "scripts/fix.sh",
+    "scripts/lint.sh",
+    "scripts/paths.sh",
+    "scripts/precheck.sh",
+    "scripts/scan.sh",
+    "scripts/search.sh",
+    "scripts/swipe-build-deck.sh",
+    "scripts/swipe.sh",
+    "scripts/tokencost.sh",
+    "scripts/usage.sh",
+    "scripts/value.sh",
+    "skills/janitor-discover/SKILL.md",
+    "skills/janitor-fix/SKILL.md",
+    "skills/janitor-report/SKILL.md",
+    "skills/janitor-swipe/SKILL.md",
+    "skills/janitor-value/SKILL.md"
+  ]
+}

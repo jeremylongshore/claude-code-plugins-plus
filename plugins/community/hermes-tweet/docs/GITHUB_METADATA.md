@@ -13,7 +13,8 @@ Before reusing it for public submissions, validate the target with
 
 ## Description
 
-Native Hermes Agent plugin for X/Twitter automation through Xquik
+Native Hermes Agent plugin for X/Twitter automation through Xquik. Not
+affiliated with X Corp.
 
 ## Topics
 

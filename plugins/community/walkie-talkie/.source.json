@@ -1,0 +1,20 @@
+{
+  "synced_from": {
+    "repo": "walkie-talkie-skill/walkie-talkie",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-13T17:27:23.724Z",
+  "author": {
+    "name": "Walkie-Talkie Maintainers",
+    "github": "walkie-talkie-skill"
+  },
+  "license": "MIT",
+  "files_synced": 4,
+  "files": [
+    "LICENSE",
+    "PROTOCOL_TEMPLATE.md",
+    "README.md",
+    "SKILL.md"
+  ]
+}

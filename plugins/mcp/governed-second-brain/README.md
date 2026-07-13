@@ -1,8 +1,9 @@
-<h1 align="center">Governed Second Brain — the plugin</h1>
+<h1 align="center">Bob's Big Brain — the plugin</h1>
 
 <p align="center">
-  A local-first Claude Code + Cowork plugin: turn <em>your own</em> files into a governed,
-  <code>qmd://</code>-cited second brain with a tamper-evident, SHA-256 hash-chained audit trail.<br>
+  The governed team brain — cited recall, hash-chained receipts. A local-first Claude Code + Cowork
+  plugin: turn <em>your own</em> files into a governed, <code>qmd://</code>-cited brain with a
+  tamper-evident, SHA-256 hash-chained audit trail.<br>
   <strong>Compile, then govern.</strong> One plugin, two modes: <strong>local</strong> (default — in-process, no daemon, no network, no API key for retrieval) or <strong>team</strong> (proxy to a shared governed brain over your network).
 </p>
 

@@ -6,17 +6,76 @@ Advanced project-scoped memory replacing the global `~/.claude/hyperflow-memory.
 
 ```
 .hyperflow/memory/
-├── index.md          # Quick-scan index: all entry titles, tags, dates, tier
-├── learnings.md      # Discovered patterns and gotchas
-├── decisions.md      # Architectural decisions + reasoning
-├── pitfalls.md       # Failed approaches + why they failed
-├── patterns.md       # Reusable code and architecture patterns
-├── conventions.md    # Project-specific conventions learned mid-session
+├── index.md              # DERIVED — quick-scan index: all entry titles, tags, dates, tier
+├── .checksums            # DERIVED — per-file sha256 + lineCount (compaction advisory)
+├── learnings.md          # Discovered patterns and gotchas
+├── decisions.md          # Architectural decisions + reasoning
+├── pitfalls.md           # Failed approaches + why they failed
+├── patterns.md           # Reusable code and architecture patterns
+├── conventions.md        # Project-specific conventions learned mid-session
+├── anti-patterns.md      # Recurring problem patterns curated from audit findings (hot-tier)
+├── project-decisions.md  # Structural project-level answers memoized across spec runs (spec-tier)
 └── archive/
-    └── YYYY-MM.md    # Compressed cold entries, one file per month
+    └── YYYY-MM.md        # Compressed cold entries, one file per month
 ```
 
 `.hyperflow/` is gitignored. Memory is local to each developer's machine.
+
+## Derived State — index.md and .checksums
+
+`index.md` and `.checksums` are **generated, never hand-authored**. `scripts/memory-index.py` runs from the session-start hook, parses every entry heading in the category files, tiers each entry by age, and rewrites both.
+
+No chain step maintains them. This is deliberate: when the index was LLM-maintained, every skill's write protocol *said* to append an index row and none of them did — the index sat at its scaffold stub while the category files grew to tens of thousands of lines, and because session start reads memory *through* the index, every stored learning was invisible. Deriving the index from the files it indexes makes that drift impossible.
+
+Consequences for writers:
+
+- **Append entries to the category file only.** Do not write index rows. Do not update `.checksums`.
+- The next session start picks the entry up automatically — no registration step, nothing to forget.
+- Hand-edits to `index.md` are overwritten on the next run. Edit the category files instead.
+
+## Registered Memory Files
+
+Files in `.hyperflow/memory/` that have a defined producer, consumer, and injection tier. All others follow the standard hot/warm/cold tiering based on entry age.
+
+| File | Tier | Producer | Consumer | Notes |
+|------|------|----------|----------|-------|
+| `learnings.md` | hot/warm/cold (age-based) | orchestrator (after each batch) | all workers (tag-matched) | General patterns and gotchas |
+| `decisions.md` | hot/warm/cold (age-based) | orchestrator (after each batch) | all workers (tag-matched) | Architectural decisions |
+| `pitfalls.md` | hot/warm/cold (age-based) | orchestrator (after each batch) | all workers (tag-matched) | Failed approaches |
+| `patterns.md` | hot/warm/cold (age-based) | orchestrator (after each batch) | all workers (tag-matched) | Reusable code patterns |
+| `conventions.md` | hot/warm/cold (age-based) | orchestrator (after each batch) | all workers (tag-matched) | Project-specific conventions |
+| `anti-patterns.md` | **hot — always injected** | audit Step 4d (anti-pattern curation Writer) | all workers, all sessions | See below |
+| `project-decisions.md` | **spec-tier — spec pre-flight only** | spec Step 4 (post-collection append) | spec Step 4 (pre-flight read) | See below |
+
+### anti-patterns.md (hot-tier)
+
+Always loaded at session start alongside other hot-tier entries. Every worker prompt receives it regardless of task tags.
+
+- **Producer:** audit Step 4d dispatches a Writer that reads the existing file, extracts up to 3 new entries from `[Critical]` and `[Important]` findings, and appends or increments frequency counters. The Step 4d Reviewer validates dedup and frequency accuracy before the write lands.
+- **Consumer:** injected into every worker prompt under `## Known anti-patterns` at session start. Workers use it to avoid repeating mistakes that prior audits flagged.
+- **Format:**
+  ```markdown
+  ## <Pattern category> (e.g. Error handling, Naming, Dead code)
+  - <description> — first observed in audit <YYYY-MM-DD>, frequency: <count>, last seen: <YYYY-MM-DD>
+    Recommendation: <what workers should do to avoid this>
+  ```
+- **Compaction:** subject to the standard compaction protocol (default 300-line threshold, configurable via `memory.compactionThreshold`). Run `/hyperflow:cache compact` when the session-start advisory fires. See the Compaction Protocol section below.
+- **Dedup rule:** before appending, the Writer checks for a semantic match in the existing file. On match: increment `frequency` and update `last seen`. Never create a duplicate entry.
+- **New-entry cap:** max 3 new entries per audit run. When more than 3 eligible findings exist, prioritize multi-file findings over single-file findings.
+
+### project-decisions.md (spec-tier)
+
+Not hot-tier. Only spec Step 4 reads and writes it. Injecting it into every worker prompt would be waste — workers don't make structural project decisions; they implement them.
+
+- **Producer:** spec Step 4 post-collection append — after the user answers the Smart Questions, the orchestrator scans answers for structural decisions (database choice, auth strategy, test framework, framework patterns, project-level defaults) and appends each one inline (no Agent dispatch; trivial per DOCTRINE §12.1).
+- **Consumer:** spec Step 4 pre-flight memoization check — before generating the question list, spec reads this file and skips any question whose answer is already recorded. If a cached answer conflicts with the current task's requirements, the question fires anyway, framed as "project-decisions.md says X — does this task change that?"
+- **Format:**
+  ```markdown
+  ## <Category>
+  - <decision> (recorded <YYYY-MM-DD>, source chain: <task-slug>)
+  ```
+- **Compaction:** same threshold policy as other memory files. Entries are structural and rarely go stale, so compaction is infrequent in practice.
+- **Scope:** only structural, project-wide decisions belong here. Task-specific answers (e.g., "use a modal for this feature") are excluded.
 
 ## Tag Taxonomy
 
@@ -41,6 +100,10 @@ Rules:
 **Why it matters:** Context explaining when this applies.
 **Evidence:** file:line reference or commit SHA where this was discovered.
 ```
+
+Write new entries in this form — it is the only one that carries tags, and without tags an entry can never be warm-tier injected on a tag match.
+
+The index parser also accepts the untagged `## Short title (YYYY-MM-DD, source-slug)` heading that earlier runs emitted, so existing entries stay indexed and tiered. They just never match a tag.
 
 ### Examples
 
@@ -83,11 +146,17 @@ Rules:
 
 ## Read Protocol (Session Start)
 
-1. Read `index.md` — always. It is small by design.
-2. Load all **hot** entries in full (≤ 7 days).
-3. Infer tags from the current task description. Load **warm** entries whose tags overlap.
-4. Skip **cold** entries unless user explicitly requests them (`hyperflow: memory show <tag>`).
-5. Inject loaded entries into the first worker prompt under `## Learnings from prior sessions`.
+Steps 1–3 are automatic — `scripts/memory-index.py` runs from the session-start hook and injects their output. The orchestrator does not perform them.
+
+1. Rebuild `index.md` + `.checksums` from the category files; the index arrives in context under `## Project Memory Index`.
+2. Inject all **hot** entries in full (≤ 7 days) under `## Project memory — hot entries`.
+3. Inject `anti-patterns.md` in full — always, regardless of age or tags. It is permanently hot-tier (see Registered Memory Files above).
+
+The orchestrator performs the rest:
+
+4. Infer tags from the current task description. Read **warm** entries whose tags overlap — the index names the file each entry lives in.
+5. Skip **cold** entries unless the user explicitly requests them (`hyperflow: memory show <tag>`).
+6. Inject the loaded entries into worker prompts under `## Learnings from prior sessions`. Inject `anti-patterns.md` under a separate `## Known anti-patterns` header.
 
 Workers receive only the subset matching their task's inferred tags — never the full dump.
 
@@ -98,7 +167,8 @@ Workers receive only the subset matching their task's inferred tags — never th
 3. Discard ephemeral learnings (task-specific facts that won't recur).
 4. Deduplicate against existing entries: if the same fact already exists (semantic match, not exact string), skip or update rather than append.
 5. Append to the appropriate file using the entry format above.
-6. Update `index.md` with the new row (tier = `hot`).
+
+There is no index step — `index.md` and `.checksums` are derived at the next session start (see Derived State above). Appending to the category file is the whole write.
 
 Write only from the orchestrator — never delegate memory writes to workers.
 
@@ -112,7 +182,8 @@ Triggered at session start for any entry whose date crossed the 30-day threshold
    > Tailwind v4 uses CSS variable tokens, not tailwind.config. See archive/2026-04.md.
    ```
 2. Append the original full entry to `archive/YYYY-MM.md` (month of the original entry date).
-3. Update `index.md` tier to `cold` and point file column to `archive/YYYY-MM.md`.
+
+The index re-derives itself from the rewritten source file on the next session start — the stub keeps its date, so it re-tiers as `cold` on its own.
 
 ## Pruning Protocol
 
@@ -142,7 +213,7 @@ On first session start in a project that has no `.hyperflow/memory/` but has `~/
 
 1. Parse the legacy file for entries belonging to the current project path.
 2. Map each bullet point to a `learnings.md` entry, tagging as `pattern` + best-guess domain.
-3. Write migrated entries to `learnings.md` and update `index.md`.
+3. Write migrated entries to `learnings.md`.
 4. Print: `Hyperflow — migrated N entries from ~/.claude/hyperflow-memory.md`
 5. Do not delete the legacy file — the user may have other projects in it.
 
@@ -157,10 +228,10 @@ On first session start in a project that has no `.hyperflow/memory/` but has `~/
 
 ## Constraints
 
-- `index.md` must stay under 200 lines. If it grows beyond that, prune cold entries aggressively.
+- The session-start hook injects only the first 200 lines of `index.md`. The index is one row per entry, so once a project carries ~190 live entries, archive or compact the cold ones — that shrinks the derived index at its source.
 - No code snippets in memory entries — patterns and facts only.
 - Memory writes never block task execution. If a write fails, log and continue.
-- Users may edit any memory file directly — it is plain markdown.
+- Users may edit any category file directly — it is plain markdown. `index.md` and `.checksums` are derived and get overwritten.
 
 ## Compaction Protocol
 

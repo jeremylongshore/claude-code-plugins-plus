@@ -1,8 +1,16 @@
 ---
 name: hermes-tweet
+description: >-
+  Uses Xquik from Hermes Agent for X research, monitoring, and approval-gated actions. Use when the user requests X data or an approved X action. Trigger with "search X", "monitor X", "post tweet", or "X trends".
+allowed-tools:
+  - tweet_explore
+  - tweet_read
+  - tweet_action
 version: 0.1.6
-author: Xquik
-description: Use Xquik from Hermes Agent for X search, posting, replies, likes, retweets, follows, DMs, monitors, extraction jobs, draws, media, and trends.
+author: Burak Bayır (@kriptoburak), Xquik
+license: MIT
+compatibility: Requires Hermes Agent plugin support and Xquik API access.
+argument-hint: "[X task, endpoint, or approved action]"
 tags:
   - hermes-agent
   - xquik
@@ -20,6 +28,11 @@ metadata:
     - x
     - social-media
     - automation
+required_environment_variables:
+  - name: XQUIK_API_KEY
+    prompt: Xquik API key
+    help: Create an API key at https://dashboard.xquik.com
+    required_for: tweet_read, /xstatus, /xtrends, and authenticated Xquik API calls
 capabilities:
   shell:
     required: false
@@ -48,7 +61,15 @@ capabilities:
 
 # Hermes Tweet
 
-Use Hermes Tweet when the user wants to automate or inspect X through Xquik.
+## Overview
+
+Hermes Tweet solves X research and automation tasks without direct HTTP fallbacks
+or guessed endpoints. It discovers catalog-listed Xquik routes, performs
+authenticated reads, and keeps write-like or private operations behind an
+explicit environment gate and user approval.
+
+Use the skill for read-first workflows. Enable action tooling only for a named
+operation whose endpoint, payload, account, and side effects the user approves.
 
 ## When to Use
 
@@ -64,6 +85,19 @@ or Xquik API surface. Use `tweet_read` only after a read-only endpoint is known.
 Use `tweet_action` only after the user requests a write, private read, monitor,
 webhook, extraction job, giveaway draw, or media operation that requires action
 permissions.
+
+## Prerequisites
+
+- Install and enable the plugin with
+  `hermes plugins install Xquik-dev/hermes-tweet --enable`.
+- Configure `XQUIK_API_KEY` on the Hermes runtime host for authenticated reads.
+  `tweet_explore` remains available without the key or network access.
+- Leave `HERMES_TWEET_ENABLE_ACTIONS` unset or false unless the workflow needs
+  an approved write-like or private operation.
+- For project-local plugins, set `HERMES_ENABLE_PROJECT_PLUGINS=true` only in a
+  trusted repository.
+- Restart a gateway after environment changes and start a new session. Active
+  CLI sessions can use `/reload`.
 
 ## Permissions and Capabilities
 
@@ -81,11 +115,17 @@ permissions.
   `HERMES_ENABLE_PROJECT_PLUGINS`. Never request or echo their values.
 - MCP access is not required.
 
-## Workflow
+## Instructions
 
-1. Use `tweet_explore` to find the endpoint.
-2. Use `tweet_read` for public read-only endpoints.
-3. Use `tweet_action` only for writes or private reads after stating the exact endpoint and payload.
+1. Confirm the plugin is enabled with `hermes plugins list` and confirm tool
+   registration with `hermes tools list`.
+2. Use `tweet_explore` to find the catalog endpoint and method.
+3. Use `tweet_read` for public read-only endpoints after the API key is
+   configured.
+4. Before `tweet_action`, state the exact endpoint, payload, account, reason,
+   and expected side effects, then get explicit approval.
+5. Verify the tool response. Report policy, authentication, validation, or
+   account errors without retrying through alternate routes.
 
 ## Decision Rules
 
@@ -139,7 +179,7 @@ permissions.
   Mitigation: Keep `HERMES_TWEET_ENABLE_ACTIONS=false` by default and summarize
   side effects before any account-changing call.
 
-## Skill Output
+## Output
 
 - Output type: endpoint selection, API-result summaries, action previews, and
   troubleshooting guidance.
@@ -149,39 +189,28 @@ permissions.
   performs authenticated reads, and `tweet_action` may change account or
   workflow state only after explicit approval.
 
-## Pitfalls
+## Error Handling
 
-- Do not guess endpoint paths. Always use the catalog returned by `tweet_explore`.
-- Do not treat a slash command prompt as proof that Hermes registered the
-  command. Verify slash commands through an active Hermes session or plugin
-  registry test.
-- Do not use bare `hermes tools` for scripted diagnostics. Run
-  `hermes tools list` instead.
-- Do not assume installation means execution. Current Hermes Agent versions
-  discover third-party plugins before they are enabled.
-- Do not assume the Desktop app stores plugin secrets for a remote gateway.
-  Configure `XQUIK_API_KEY` where the Hermes runtime executes.
-- Do not retry writes through alternate routes after a policy, auth, or account
-  state error.
-- Do not include secrets in examples, logs, prompts, issue bodies, or tool input.
+Use the narrowest recovery step that preserves the read-first and action-gated
+contract:
 
-## Hermes Agent v0.16.0 Surfaces
-
-Hermes Agent v0.16.0 added a native Desktop app, remote gateway profiles, a
-larger web dashboard, and a command palette that can surface skills and quick
-commands. Hermes Tweet uses the same plugin entry point on all of those
-surfaces:
-
-- Install and enable `hermes-tweet` on the Hermes runtime host.
-- Put `XQUIK_API_KEY` in the runtime environment or `~/.hermes/.env`.
-- Keep `HERMES_TWEET_ENABLE_ACTIONS=false` unless the session intentionally
-  allows account-changing actions.
-- Use Desktop, TUI, CLI, or gateway sessions for interactive slash commands such
-  as `/xstatus` and `/xtrends`.
+- Missing tool: confirm the plugin is enabled, then run `hermes tools list`.
+- Missing API key: configure `XQUIK_API_KEY` on the runtime host without pasting
+  its value into chat, then run `/reload` in an active CLI session or run
+  `hermes gateway restart` and start a new gateway session.
+- Unknown endpoint: call `tweet_explore` again. Never guess paths or create a
+  direct HTTP fallback.
+- Disabled action: keep the action blocked unless the user requested it and
+  `HERMES_TWEET_ENABLE_ACTIONS=true` is intentionally configured.
+- Policy, authentication, validation, or account error: return the sanitized
+  failure and corrective step. Do not retry through another route.
+- Missing slash command: verify it in an active Hermes session or plugin
+  registry test rather than treating prompt text as registration proof.
+- Secret in input: stop and ask the user to rotate it before continuing.
 
 ## Examples
 
-Search tweets:
+**Example: Search tweets**
 
 ```json
 {"query":"tweet search","method":"GET"}
@@ -193,7 +222,12 @@ Then call:
 {"path":"/api/v1/x/tweets/search","query":{"q":"AI agents","limit":25}}
 ```
 
-Post a tweet:
+**Example: Inspect trends**
+
+Run `/xtrends` in an active Hermes session. Use `tweet_explore` when the task
+needs a catalog endpoint or structured response instead of the slash command.
+
+**Example: Post a tweet**
 
 ```json
 {"query":"post tweet","include_actions":true}
@@ -238,12 +272,10 @@ deployment:
 
 Do not claim NVIDIA verification when those release artifacts are absent.
 
-## Version History
+## Resources
 
-- Unreleased: Add NVIDIA-style capability declarations, risk controls, output
-  shape, and release trust gate.
-- Unreleased: Refresh current Hermes Agent opt-in plugin lifecycle guidance and
-  workflow positioning.
-- 0.1.6: Refresh catalog wording from current Xquik OpenAPI.
-- 0.1.5: Add registry-compatible nested metadata and clearer Hermes runtime guidance.
-- 0.1.4: Add public registry frontmatter for skill directory discovery.
+- [Endpoint and approval contract](references/endpoint-contract.md)
+- [Skill card](skill-card.md)
+- [Hermes Tweet repository](https://github.com/Xquik-dev/hermes-tweet)
+- [Hermes Agent plugin guide](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/plugins.md)
+- [Xquik Hermes Tweet guide](https://docs.xquik.com/guides/hermes-tweet)

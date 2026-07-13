@@ -4,14 +4,14 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-464-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-3661-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-470-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-3677-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-464 plugins, 3,661 skills, 343 agents, 30 community contributors — validated and ready to install.
+470 plugins, 3,677 skills, 347 agents, 30 community contributors — validated and ready to install.
 
 ## Why this repo
 
@@ -125,16 +125,16 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
 | 🔌  | [API Development](#api-development)                |      26 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      22 |
+| 👥  | [Community](#community)                            |      25 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
-| 🎨  | [Design](#design)                                  |       7 |
+| 🎨  | [Design](#design)                                  |       8 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      31 |
+| ✅  | [Productivity](#productivity)                      |      33 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      27 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -272,7 +272,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **22 plugins** · category slug: `community`
+👥 **25 plugins** · category slug: `community`
 
 | Plugin                   | Description                                                                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -296,7 +296,10 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `llm-box`                | Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English with 20+ nodes and 15+ LLM providers.     |
 | `mnemos`                 | Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook…   |
 | `portaljs`               | Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata |
+| `quit-sponsor`           | Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a…        |
+| `skills-janitor`         | Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate…           |
 | `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
+| `walkie-talkie`          | Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs                    |
 | `zai-cli`                | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
@@ -374,10 +377,11 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Design
 
-🎨 **7 plugins** · category slug: `design`
+🎨 **8 plugins** · category slug: `design`
 
 | Plugin                            | Description                                                                                                                                 |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `brand-forge`                     | Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is…    |
 | `wondelai-design-everyday-things` | Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered…  |
 | `wondelai-hooked-ux`              | Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize…  |
 | `wondelai-ios-hig-design`         | Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and…      |
@@ -522,7 +526,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **31 plugins** · category slug: `productivity`
+✅ **33 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -537,7 +541,9 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
+| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
+| `content-multiplier`                       | Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.                                |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
 | `j-rig`                                    | Skill Refiner — the eval-guided SKILL.md improvement loop. Thin wrapper over the published @intentsolutions/refiner CLI…                    |
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
@@ -1069,7 +1075,7 @@ The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-sk
 
 ## FAQ
 
-**What is this?** A Claude Code plugin marketplace: 464 plugins, 3,661 skills, 343 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+**What is this?** A Claude Code plugin marketplace: 470 plugins, 3,677 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
 
 **How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
 

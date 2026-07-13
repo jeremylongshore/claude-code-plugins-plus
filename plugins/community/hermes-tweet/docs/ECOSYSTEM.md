@@ -10,7 +10,7 @@ pending submissions, duplicate checks, manual review routes, and maintainer
 follow-up belong outside the public repository. Use
 `docs/SUBMISSION_READINESS.md` before proposing or adding a new public surface.
 
-## Official Surfaces
+## Public Surfaces
 
 | Surface | Link |
 | --- | --- |
@@ -56,7 +56,7 @@ follow-up belong outside the public repository. Use
 | Mercury Agent Skills X/Twitter automation skill | <https://github.com/cosmicstack-labs/mercury-agent-skills/blob/main/categories/automation/x-twitter-automation/SKILL.md> |
 | OpenDirectory Twitter GTM Find skill | <https://github.com/Varnan-Tech/opendirectory/tree/main/skills/twitter-GTM-find-skill> |
 | Awesome Omni Skills Xquik Twitter scraper skill | <https://github.com/diegosouzapw/awesome-omni-skills/blob/main/skills/x-twitter-scraper-v2/SKILL.md> |
-| Awesome Skill Forge Hermes Tweet mirror | <https://github.com/Lord1Egypt/awesome-skill-forge/blob/master/community/clawhub/h/hermes-tweet/SKILL.md> |
+| Awesome Skill Forge Hermes Tweet mirror | <https://raw.githubusercontent.com/Lord1Egypt/awesome-skill-forge/master/community/clawhub/h/hermes-tweet/SKILL.md> |
 | RA-Skills Hermes Tweet mirror | <https://github.com/Lord1Egypt/RA-Skills/blob/master/skills/community/clawhub/h/hermes-tweet/SKILL.md> |
 | TweetClaw cross-link | <https://github.com/Xquik-dev/tweetclaw#readme> |
 

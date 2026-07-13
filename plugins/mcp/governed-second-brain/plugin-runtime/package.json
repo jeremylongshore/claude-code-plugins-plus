@@ -1,0 +1,10 @@
+{
+  "name": "governed-second-brain-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-contained native deps for the bundled governed-brain.cjs MCP runtime. build.mjs externalizes better-sqlite3/bindings/fs-ext (native addons, unbundleable); they are installed here so a copied/marketplace plugin-runtime/ works in LOCAL mode without relying on a parent node_modules. TEAM mode never loads sqlite.",
+  "dependencies": {
+    "better-sqlite3": "12.11.1",
+    "fs-ext": "^2.1.1"
+  }
+}

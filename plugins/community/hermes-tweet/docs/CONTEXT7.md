@@ -113,4 +113,4 @@ If you edit `~/.hermes/.env` during an active Hermes CLI session, run
 - DeepWiki: <https://deepwiki.com/Xquik-dev/hermes-tweet>
 - Context7: <https://context7.com/xquik-dev/hermes-tweet>
 - Hermes Agent plugins guide: <https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins/>
-- Build a Hermes Plugin: <https://hermes-agent.nousresearch.com/docs/guides/build-a-hermes-plugin/>
+- Build a Hermes Plugin: <https://hermes-agent.nousresearch.com/docs/developer-guide/plugins>
