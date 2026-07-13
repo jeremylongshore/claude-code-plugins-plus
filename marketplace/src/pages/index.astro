@@ -1644,7 +1644,14 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             });
         });
 
+        // Navigate-once guard: a click on the input fires focus THEN click
+        // (the container handler), so both handlers used to call
+        // location.assign back-to-back — WebKit cancels the second navigation
+        // ("Navigation canceled by policy check") and the redirect dies.
+        let redirected = false;
         const redirectToExplore = () => {
+            if (redirected) return;
+            redirected = true;
             const url = new URL('/explore', window.location.origin);
             if (activeType && activeType !== 'all') url.searchParams.set('type', activeType);
             window.location.assign(url.toString());
