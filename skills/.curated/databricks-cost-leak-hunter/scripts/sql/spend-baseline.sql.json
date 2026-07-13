@@ -1,0 +1,4 @@
+{
+  "wait_timeout": "50s",
+  "statement": "WITH priced AS (SELECT u.usage_date, u.sku_name, u.usage_quantity, u.usage_unit, u.billing_origin_product, u.usage_metadata, u.usage_quantity * lp.pricing.default AS usd FROM system.billing.usage u JOIN system.billing.list_prices lp ON u.sku_name = lp.sku_name AND u.usage_unit = lp.usage_unit AND u.usage_end_time >= lp.price_start_time AND u.usage_end_time < COALESCE(lp.price_end_time, TIMESTAMP '9999-12-31') WHERE u.usage_date >= current_date() - INTERVAL 30 DAYS AND lp.currency_code = 'USD') SELECT billing_origin_product, ROUND(SUM(usd), 2) AS spend_30d_usd, ROUND(SUM(usage_quantity), 2) AS dbus_30d FROM priced GROUP BY billing_origin_product ORDER BY spend_30d_usd DESC"
+}

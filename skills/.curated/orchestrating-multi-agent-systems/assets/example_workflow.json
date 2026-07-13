@@ -1,0 +1,143 @@
+{
+  "_comment": "Example workflow definition for a multi-agent system powered by AI SDK v5.",
+  "workflow_name": "Customer Service and Issue Resolution",
+  "description": "A workflow that handles customer inquiries, escalates issues to specialists, and provides final resolutions.",
+  "agents": [
+    {
+      "agent_id": "customer_service_agent",
+      "name": "Customer Service Agent",
+      "description": "First point of contact for all customer inquiries. Triages requests and routes them to appropriate specialists.",
+      "model_provider": "anthropic",
+      "model_name": "claude-3-opus-20240229",
+      "prompt": "You are a friendly and helpful customer service agent.  Your primary task is to understand the customer's issue and route it to the correct specialist.  If you can resolve the issue directly, do so. Otherwise, summarize the problem clearly and pass it on. Be polite and professional at all times.  If the customer is angry, use calming language.",
+      "initial_state": true,
+      "routing_rules": [
+        {
+          "condition": "The customer's issue is related to billing or payment.",
+          "next_agent": "billing_specialist",
+          "action": "Summarize the billing issue and forward it to the Billing Specialist."
+        },
+        {
+          "condition": "The customer's issue is technical and requires expert assistance.",
+          "next_agent": "technical_support_agent",
+          "action": "Summarize the technical issue and forward it to the Technical Support Agent."
+        },
+        {
+          "condition": "The customer is requesting information about products or services.",
+          "next_agent": "sales_agent",
+          "action": "Forward the inquiry to the Sales Agent."
+        },
+        {
+          "condition": "The customer's issue can be resolved with readily available information.",
+          "next_agent": null,
+          "action": "Answer the customer's question directly and end the interaction."
+        }
+      ]
+    },
+    {
+      "agent_id": "billing_specialist",
+      "name": "Billing Specialist",
+      "description": "Handles all billing and payment-related inquiries. Resolves billing disputes and provides payment options.",
+      "model_provider": "openai",
+      "model_name": "gpt-4-turbo-preview",
+      "prompt": "You are a billing specialist.  Your primary task is to resolve billing issues for customers.  Clearly explain billing policies and provide payment options. If you cannot resolve the issue, escalate to a billing manager.",
+      "routing_rules": [
+        {
+          "condition": "The billing issue is complex and requires managerial approval.",
+          "next_agent": "billing_manager",
+          "action": "Summarize the issue and forward it to the Billing Manager."
+        },
+        {
+          "condition": "The billing issue can be resolved.",
+          "next_agent": null,
+          "action": "Resolve the billing issue and notify the customer."
+        }
+      ]
+    },
+    {
+      "agent_id": "technical_support_agent",
+      "name": "Technical Support Agent",
+      "description": "Provides technical assistance to customers. Diagnoses and resolves technical issues.",
+      "model_provider": "google",
+      "model_name": "gemini-1.5-pro",
+      "prompt": "You are a technical support agent. Your primary task is to diagnose and resolve technical issues reported by customers. Provide clear and concise instructions. If the issue requires a software update, guide the customer through the process.",
+      "routing_rules": [
+        {
+          "condition": "The technical issue requires a software update.",
+          "next_agent": null,
+          "action": "Guide the customer through the software update process and verify the resolution."
+        },
+        {
+          "condition": "The technical issue is beyond your expertise.",
+          "next_agent": "escalation_team",
+          "action": "Escalate the issue to the escalation team with a detailed description."
+        },
+        {
+          "condition": "The technical issue is resolved.",
+          "next_agent": null,
+          "action": "Confirm the resolution with the customer and close the ticket."
+        }
+      ]
+    },
+    {
+      "agent_id": "sales_agent",
+      "name": "Sales Agent",
+      "description": "Provides information about products and services and assists with sales inquiries.",
+      "model_provider": "anthropic",
+      "model_name": "claude-3-opus-20240229",
+      "prompt": "You are a sales agent. Your primary task is to answer questions about our products and services and assist customers with their sales inquiries.  Highlight key features and benefits.  Offer promotions where available.",
+      "routing_rules": [
+        {
+          "condition": "The customer is ready to make a purchase.",
+          "next_agent": null,
+          "action": "Guide the customer through the purchase process."
+        },
+        {
+          "condition": "The customer has specific product questions.",
+          "next_agent": null,
+          "action": "Answer the customer's questions and provide relevant information."
+        }
+      ]
+    },
+    {
+      "agent_id": "billing_manager",
+      "name": "Billing Manager",
+      "description": "Handles escalated billing issues that require managerial approval.",
+      "model_provider": "openai",
+      "model_name": "gpt-4-turbo-preview",
+      "prompt": "You are a billing manager. Your primary task is to review and resolve escalated billing issues.  Make decisions on exceptions and adjustments.  Ensure compliance with billing policies.",
+      "routing_rules": [
+        {
+          "condition": "The issue requires further investigation.",
+          "next_agent": null,
+          "action": "Investigate the issue and make a final decision."
+        },
+        {
+          "condition": "The issue can be resolved with an exception.",
+          "next_agent": null,
+          "action": "Approve the exception and resolve the billing issue."
+        }
+      ]
+    },
+    {
+      "agent_id": "escalation_team",
+      "name": "Escalation Team",
+      "description": "Handles complex technical issues that require specialized expertise.",
+      "model_provider": "google",
+      "model_name": "gemini-1.5-pro",
+      "prompt": "You are part of the escalation team. Your primary task is to resolve complex technical issues that have been escalated. Collaborate with other experts and conduct thorough investigations.",
+      "routing_rules": [
+        {
+          "condition": "The issue requires a code fix.",
+          "next_agent": null,
+          "action": "Develop and deploy a code fix to resolve the issue."
+        },
+        {
+          "condition": "The issue requires hardware replacement.",
+          "next_agent": null,
+          "action": "Coordinate hardware replacement with the customer and resolve the issue."
+        }
+      ]
+    }
+  ]
+}

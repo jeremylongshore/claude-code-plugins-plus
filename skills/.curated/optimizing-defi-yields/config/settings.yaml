@@ -1,0 +1,178 @@
+# DeFi Yield Optimizer Configuration
+# Version: 2.0.0
+
+# API Configuration
+api:
+  # DeFiLlama (primary yield data source)
+  defillama:
+    yields_url: "https://yields.llama.fi/pools"
+    protocols_url: "https://api.llama.fi/protocols"
+    protocol_url: "https://api.llama.fi/protocol/<protocol-slug>"
+    timeout: 30  # seconds
+    rate_limit: null  # DeFiLlama has generous limits
+
+  # CoinGecko (token prices, optional)
+  coingecko:
+    base_url: "https://api.coingecko.com/api/v3"
+    price_endpoint: "/simple/price"
+    timeout: 15  # seconds
+    rate_limit: 30  # requests per minute (free tier)
+
+# Cache Configuration
+cache:
+  enabled: true
+  file: "~/.defi_yield_cache.json"
+  ttl:
+    yields: 300       # 5 minutes
+    protocols: 3600   # 1 hour
+    prices: 60        # 1 minute
+  stale_fallback: true  # Use stale cache on API failure
+
+# Default Filters
+defaults:
+  top: 10
+  min_tvl: 0
+  min_apy: 0
+  max_apy: null
+  risk_level: "all"  # all, low, medium, high
+  audited_only: false
+  sort_by: "apy"  # apy, tvl, risk, name
+
+# Risk Scoring Configuration
+risk:
+  # Weight factors (must sum to 1.0)
+  weights:
+    audit_status: 0.30
+    tvl: 0.20
+    protocol_age: 0.20
+    tvl_trend: 0.15
+    concentration: 0.15
+
+  # Score thresholds for risk levels
+  thresholds:
+    low: 8.0      # 8-10 = Low risk
+    medium: 5.0   # 5-7.9 = Medium risk
+    high: 3.0     # 3-4.9 = High risk
+    # 0-2.9 = Very High risk
+
+  # TVL scoring brackets (USD)
+  tvl_brackets:
+    - threshold: 1000000000  # $1B+
+      score: 10
+    - threshold: 500000000   # $500M+
+      score: 9
+    - threshold: 100000000   # $100M+
+      score: 8
+    - threshold: 50000000    # $50M+
+      score: 7
+    - threshold: 10000000    # $10M+
+      score: 6
+    - threshold: 1000000     # $1M+
+      score: 4
+    - threshold: 100000      # $100K+
+      score: 2
+    - threshold: 0           # <$100K
+      score: 1
+
+  # APY warning thresholds
+  apy_warnings:
+    high: 20      # APY >= 20% gets warning
+    very_high: 50  # APY >= 50% gets stronger warning
+
+# Supported Chains
+chains:
+  - ethereum
+  - arbitrum
+  - polygon
+  - optimism
+  - bsc
+  - avalanche
+  - fantom
+  - base
+  - gnosis
+  - celo
+  - moonbeam
+  - zkSync Era
+  - Linea
+  - Scroll
+
+# Protocol Aliases (for user convenience)
+protocol_aliases:
+  aave: "aave-v3"
+  compound: "compound-v3"
+  curve: "curve-dex"
+  convex: "convex-finance"
+  yearn: "yearn-finance"
+
+# Output Configuration
+output:
+  formats:
+    - table
+    - json
+    - csv
+  default_format: "table"
+
+  # Table formatting
+  table:
+    width: 78
+    columns:
+      - name: "Protocol"
+        width: 15
+      - name: "Pool"
+        width: 12
+      - name: "Chain"
+        width: 12
+      - name: "TVL"
+        width: 10
+      - name: "APY"
+        width: 8
+      - name: "Risk"
+        width: 8
+      - name: "Score"
+        width: 6
+
+# Impermanent Loss Risk Estimation
+il_estimation:
+  # Assets with no IL risk (single-sided staking)
+  no_il_protocols:
+    - lido
+    - rocket-pool
+    - frax-ether
+    - yearn
+    - compound
+    - aave
+
+  # Stablecoin symbols (low IL risk)
+  stablecoins:
+    - USDC
+    - USDT
+    - DAI
+    - FRAX
+    - LUSD
+    - BUSD
+    - CRVUSD
+    - 3POOL
+
+  # Correlated pairs (low IL risk)
+  correlated_pairs:
+    - ["ETH", "STETH"]
+    - ["ETH", "RETH"]
+    - ["ETH", "CBETH"]
+    - ["BTC", "WBTC"]
+    - ["BTC", "RENBTC"]
+
+  # Volatile assets (increase IL risk)
+  volatile_assets:
+    - ETH
+    - BTC
+    - SOL
+    - AVAX
+    - MATIC
+    - ARB
+    - OP
+
+# Logging
+logging:
+  verbose: false
+  log_file: null  # Set to path to enable file logging
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR

@@ -28,6 +28,13 @@ export default [
       'packages/analytics-daemon/**',
       'packages/analytics-dashboard/**',
       'plugins/**',
+      // skills/.curated/ is a GENERATED mirror of the best plugin skills for
+      // skills.sh (freshie/scripts/promote-to-curated.py). Its .js/.cjs assets
+      // are verbatim copies of plugins/** skill assets — already ignored above —
+      // and are illustrative, never part of a linted package. Ignore them here
+      // too so `eslint .` doesn't grade copied source (they'd fail no-undef on
+      // Node globals). The plugin skill stays the source of truth.
+      'skills/.curated/**',
       'freshie/**',
       'functions/**',
       'workspace/**',

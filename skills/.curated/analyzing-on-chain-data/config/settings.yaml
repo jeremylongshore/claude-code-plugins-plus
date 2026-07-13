@@ -1,0 +1,61 @@
+# On-Chain Analytics Configuration
+
+# API endpoints
+apis:
+  defillama:
+    base_url: https://api.llama.fi
+    yields_url: https://yields.llama.fi
+    rate_limit: null  # No rate limit
+
+  coingecko:
+    base_url: https://api.coingecko.com/api/v3
+    api_key_env: COINGECKO_API_KEY
+    rate_limit: 30  # requests per minute
+
+# Caching
+cache:
+  enabled: true
+  protocols_ttl: 300      # 5 minutes
+  chains_ttl: 300         # 5 minutes
+  fees_ttl: 900           # 15 minutes
+  yields_ttl: 300         # 5 minutes
+  history_ttl: 3600       # 1 hour
+  stablecoins_ttl: 600    # 10 minutes
+
+# Default query limits
+defaults:
+  protocol_limit: 50
+  yield_limit: 20
+  fee_limit: 30
+  min_tvl: 0
+  trend_threshold: 10.0   # % for trending
+
+# Output settings
+output:
+  default_format: table
+  show_percentages: true
+  number_format: abbreviated  # 1.5B vs 1500000000
+
+# Categories to track
+categories:
+  - Liquid Staking
+  - Lending
+  - DEX
+  - CDP
+  - Bridge
+  - Yield
+  - Derivatives
+  - Insurance
+  - Yield Aggregator
+  - RWA
+
+# Chains to prioritize
+priority_chains:
+  - Ethereum
+  - Arbitrum
+  - Polygon
+  - Optimism
+  - BSC
+  - Avalanche
+  - Base
+  - Solana

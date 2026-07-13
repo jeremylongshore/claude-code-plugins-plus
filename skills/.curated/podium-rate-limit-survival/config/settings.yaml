@@ -1,0 +1,110 @@
+# podium-rate-limit-survival — configuration defaults
+# Override per-environment via env vars or a deployment-specific config layer.
+
+bucket:
+  # Documented Podium ceiling is 60 requests per minute per OAuth app.
+  # If Podium publishes a different number for your tier, override here.
+  rate_per_minute: 60
+
+  # Maximum tokens the bucket holds. Defines the largest instantaneous burst the
+  # client may emit before pacing kicks in. Conservative default — bump only after
+  # observing the residual 429 rate at the current capacity.
+  capacity: 10
+
+  # When the daily-quota throttle fires (>= 95% consumption), multiply the bucket
+  # rate by this fraction for the remainder of the UTC day.
+  throttle_rate_multiplier: 0.50
+
+per_endpoint:
+  # Per-family rate allocation. Sum must equal bucket.rate_per_minute.
+  # If you allocate more, the global ceiling fires across all families simultaneously
+  # and the isolation guarantee is forfeit.
+  conversations: { rate_per_minute: 20, capacity: 5 }
+  contacts:      { rate_per_minute: 15, capacity: 5 }
+  reviews:       { rate_per_minute: 15, capacity: 10 }   # bursty — larger headroom
+  locations:     { rate_per_minute: 5,  capacity: 2 }
+  webhooks:      { rate_per_minute: 5,  capacity: 2 }
+  # Fallback for unknown families. Operators should never rely on this in steady state.
+  default:       { rate_per_minute: 5,  capacity: 2 }
+
+retry:
+  # Retry policy for residual 429s after the bucket allows the request through.
+  # The bucket should make most 429s impossible; this handles the edge cases.
+  max_attempts: 4
+  retryable_statuses: [429, 502, 503, 504]
+
+  # Hard cap on the wait suggested by Retry-After. Prevents a misconfigured server
+  # from returning Retry-After: 86400 and stalling the integration for a day.
+  retry_after_cap_seconds: 120
+
+  # Fallback wait if Retry-After is malformed or absent on a 429.
+  retry_after_default_seconds: 60
+
+daily_quota:
+  # Conservative default. Tune against observed traffic; Podium may grant your
+  # OAuth app more or less than this. There is no documented endpoint to query
+  # the exact 24h envelope — operators discover the actual value empirically.
+  total_per_day: 50000
+
+  # Severity tiers as fractions of total_per_day.
+  warn_threshold:     0.70
+  page_threshold:     0.85
+  throttle_threshold: 0.95
+
+  # Counter store. "redis" is preferred; "sqlite" is acceptable for single-process
+  # deployments. "memory" is acceptable only for development.
+  store:
+    backend: redis
+    redis_url: "${PODIUM_RATE_LIMIT_REDIS_URL}"
+    sqlite_path: "${PODIUM_RATE_LIMIT_SQLITE:-./.podium-quota.db}"
+
+  # TTL grace beyond UTC midnight, in seconds. 1 hour buffer covers clock skew.
+  ttl_grace_seconds: 3600
+
+burst_smoother:
+  # Default target window for burst smoothing, in seconds. KombiLife's 5pm AEST
+  # burst (80 review requests in 30s) is smoothed to 120s by default.
+  default_target_window_seconds: 120
+
+  # Cap on individual batch size. Batches larger than this should spill to a
+  # durable queue rather than be submitted in one call.
+  max_batch_size: 200
+
+amplification:
+  # Inbound event types and their projected outbound Podium call cost.
+  # Tune against observed traffic — operators should measure rather than guess.
+  factors:
+    shopify.order.created:     5    # contact upsert + 1 review request + 3 attribute writes
+    shopify.order.fulfilled:   2    # review request + status mirror
+    podium.conversation.new:   2    # ack + tag write
+    podium.review.received:    3    # contact update + sentiment write + slack mirror
+    podium.webchat.message:    1    # ack only
+    scheduled.review_burst:    1    # per-request cost; burst-smoother handles pacing
+
+admission:
+  # Reject inbound events when projected outbound cost > this fraction of remaining
+  # daily budget. 0.05 = a single inbound event may never claim more than 5% of
+  # what's left in the daily envelope.
+  cost_ceiling_fraction_of_remaining: 0.05
+
+  # When admission denies, what to return to the caller. The default is non-2xx
+  # for Podium webhooks (Podium retries automatically). For Shopify webhooks where
+  # retries are not safe, callers should override to "queue_to_durable_store".
+  on_deny_action: "non_2xx"
+
+alerts:
+  # Routing for quota threshold events. Wire to your existing alert system.
+  warn_channel:     "ops-warnings"      # e.g. Slack channel, log target
+  page_channel:     "oncall-page"       # e.g. PagerDuty service key, opsgenie team
+  throttle_channel: "oncall-page"       # throttle is a page-worthy event
+
+logging:
+  # Structured JSON; one event per bucket acquire, per 429, per threshold crossing.
+  # Tokens are NEVER logged — only metadata. Path may contain identifiers; redact
+  # at the structured-log layer if those are sensitive in your environment.
+  format: json
+  level: info
+  fields_to_redact:
+    - authorization
+    - access_token
+    - refresh_token

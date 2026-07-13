@@ -1,0 +1,59 @@
+{
+  "_comment": "Model configuration template for the classification model builder plugin.",
+  "model_name": "ExampleClassifier",
+  "_comment": "A descriptive name for your model.",
+  "model_type": "RandomForestClassifier",
+  "_comment": "The type of classification model to use (e.g., RandomForestClassifier, LogisticRegression, SVM).",
+  "data_path": "data/training_data.csv",
+  "_comment": "Path to the CSV file containing the training data.",
+  "target_column": "target",
+  "_comment": "The name of the column containing the target variable.",
+  "features": [
+    "feature1",
+    "feature2",
+    "feature3",
+    "feature4"
+  ],
+  "_comment": "List of column names to use as features. If empty, all columns except the target_column will be used.",
+  "hyperparameters": {
+    "_comment": "Hyperparameters specific to the chosen model type.",
+    "n_estimators": 100,
+    "_comment": "Number of trees in the random forest (example for RandomForestClassifier).",
+    "max_depth": 10,
+    "_comment": "Maximum depth of the trees (example for RandomForestClassifier).",
+    "learning_rate": 0.1,
+    "_comment": "Learning rate for gradient boosting models (example for GradientBoostingClassifier)."
+  },
+  "training_parameters": {
+    "_comment": "Parameters related to the training process.",
+    "test_size": 0.2,
+    "_comment": "The proportion of the data to use for testing.",
+    "random_state": 42,
+    "_comment": "A random seed for reproducibility.",
+    "stratify": true,
+    "_comment": "Whether to stratify the target variable during train/test split."
+  },
+  "evaluation_metrics": [
+    "accuracy",
+    "precision",
+    "recall",
+    "f1-score",
+    "roc_auc"
+  ],
+  "_comment": "List of evaluation metrics to compute on the test set.",
+  "model_save_path": "models/example_classifier.pkl",
+  "_comment": "Path to save the trained model.",
+  "feature_importance": true,
+  "_comment": "Boolean value to toggle feature importance calculation.",
+  "preprocessing": {
+    "_comment": "Configuration for data preprocessing steps.",
+    "handle_missing_values": "impute",
+    "_comment": "How to handle missing values (e.g., 'impute', 'remove', 'none').",
+    "missing_value_strategy": "mean",
+    "_comment": "Strategy for imputation (e.g., 'mean', 'median', 'most_frequent').",
+    "scale_features": true,
+    "_comment": "Whether to scale numerical features using StandardScaler or similar.",
+    "feature_scaling_method": "standard",
+    "_comment": "Method to use for feature scaling ('standard' or 'minmax')."
+  }
+}

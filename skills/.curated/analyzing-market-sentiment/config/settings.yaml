@@ -1,0 +1,221 @@
+# Market Sentiment Analyzer Configuration
+# Version: 2.0.0
+
+# =============================================================================
+# Component Weights
+# =============================================================================
+# Default weights for composite score calculation
+# Must sum to 1.0 (will be normalized if not)
+
+weights:
+  fear_greed: 0.40      # Alternative.me Fear & Greed Index
+  news: 0.40            # News sentiment from RSS/aggregator
+  momentum: 0.20        # Market price/volume momentum
+
+# =============================================================================
+# API Configuration
+# =============================================================================
+
+apis:
+  # Alternative.me Fear & Greed Index
+  fear_greed:
+    url: "https://api.alternative.me/fng/"
+    timeout: 10           # Request timeout in seconds
+    rate_limit: 10        # Max requests per minute
+
+  # CoinGecko for market data
+  coingecko:
+    url: "https://api.coingecko.com/api/v3"
+    timeout: 10
+    rate_limit: 30        # Free tier limit
+
+# =============================================================================
+# Caching
+# =============================================================================
+
+cache:
+  # Time-to-live in seconds
+  fear_greed_ttl: 300     # 5 minutes
+  news_ttl: 120           # 2 minutes
+  momentum_ttl: 60        # 1 minute
+
+  # Cache file locations (relative to scripts/)
+  fear_greed_file: ".fng_cache.json"
+  news_file: ".news_cache.json"
+  momentum_file: ".momentum_cache.json"
+
+# =============================================================================
+# News Sources
+# =============================================================================
+
+news_sources:
+  - url: "https://cointelegraph.com/rss"
+    name: "CoinTelegraph"
+    reliability: 0.9
+  - url: "https://www.coindesk.com/arc/outboundfeeds/rss/"
+    name: "CoinDesk"
+    reliability: 0.9
+  - url: "https://decrypt.co/feed"
+    name: "Decrypt"
+    reliability: 0.85
+
+# =============================================================================
+# Sentiment Classification
+# =============================================================================
+
+classification:
+  thresholds:
+    extreme_fear: 20      # 0-20
+    fear: 40              # 21-40
+    neutral: 60           # 41-60
+    greed: 80             # 61-80
+    # 81-100 = extreme_greed
+
+# =============================================================================
+# Keyword Scoring
+# =============================================================================
+
+keywords:
+  # Strong positive (weight: 0.3)
+  strong_positive:
+    - bullish
+    - surge
+    - soar
+    - rally
+    - breakout
+    - "record high"
+    - "all-time high"
+    - ath
+    - moon
+
+  # Medium positive (weight: 0.2)
+  medium_positive:
+    - adoption
+    - partnership
+    - approval
+    - milestone
+    - upgrade
+    - launch
+    - integration
+    - institutional
+    - etf
+    - accumulation
+    - inflow
+    - buy
+
+  # Mild positive (weight: 0.1)
+  mild_positive:
+    - gain
+    - rise
+    - up
+    - growth
+    - positive
+    - optimistic
+    - recovery
+    - support
+
+  # Strong negative (weight: -0.3)
+  strong_negative:
+    - bearish
+    - crash
+    - dump
+    - collapse
+    - hack
+    - exploit
+    - scam
+    - fraud
+    - bankruptcy
+    - insolvent
+    - "rug pull"
+    - rugpull
+
+  # Medium negative (weight: -0.2)
+  medium_negative:
+    - ban
+    - lawsuit
+    - investigation
+    - sec
+    - regulation
+    - crackdown
+    - sell-off
+    - selloff
+    - outflow
+    - withdrawal
+    - liquidation
+
+  # Mild negative (weight: -0.1)
+  mild_negative:
+    - decline
+    - drop
+    - fall
+    - down
+    - loss
+    - concern
+    - risk
+    - uncertain
+    - volatility
+    - correction
+    - dip
+    - fear
+    - weak
+
+# =============================================================================
+# Coin Mappings
+# =============================================================================
+
+coin_mappings:
+  BTC:
+    coingecko_id: bitcoin
+    aliases: [bitcoin, btc, satoshi]
+  ETH:
+    coingecko_id: ethereum
+    aliases: [ethereum, eth, ether]
+  SOL:
+    coingecko_id: solana
+    aliases: [solana, sol]
+  XRP:
+    coingecko_id: ripple
+    aliases: [ripple, xrp]
+  ADA:
+    coingecko_id: cardano
+    aliases: [cardano, ada]
+  DOGE:
+    coingecko_id: dogecoin
+    aliases: [dogecoin, doge]
+  DOT:
+    coingecko_id: polkadot
+    aliases: [polkadot, dot]
+  LINK:
+    coingecko_id: chainlink
+    aliases: [chainlink, link]
+  AVAX:
+    coingecko_id: avalanche-2
+    aliases: [avalanche, avax]
+  MATIC:
+    coingecko_id: matic-network
+    aliases: [polygon, matic]
+  BNB:
+    coingecko_id: binancecoin
+    aliases: [binance, bnb]
+  LTC:
+    coingecko_id: litecoin
+    aliases: [litecoin, ltc]
+
+# =============================================================================
+# Output Formatting
+# =============================================================================
+
+output:
+  default_format: table   # table, json, csv
+  table_width: 78
+  show_colors: true       # ANSI colors in terminal output
+  decimal_places: 1       # For scores
+
+# =============================================================================
+# Performance
+# =============================================================================
+
+performance:
+  max_articles: 50        # Maximum articles to analyze
+  article_truncate: 500   # Max characters per article summary
+  parallel_fetches: true  # Fetch APIs concurrently

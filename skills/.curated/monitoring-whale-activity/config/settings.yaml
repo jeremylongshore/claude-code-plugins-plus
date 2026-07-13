@@ -1,0 +1,58 @@
+# Whale Alert Monitor Configuration
+# Copy to ~/.whale_monitor.yaml and customize
+
+# API Configuration
+api:
+  whale_alert_key: ""  # Get from https://whale-alert.io
+  etherscan_key: ""    # Get from https://etherscan.io
+
+# Default Filters
+defaults:
+  min_value: 500000      # Minimum USD value to track
+  limit: 20              # Default transaction limit
+  chain: null            # null = all chains
+
+# Supported Blockchains
+chains:
+  - ethereum
+  - bitcoin
+  - tron
+  - ripple
+  - neo
+  - eos
+  - stellar
+  - binancechain
+  - solana
+  - polygon
+
+# Cache Settings
+cache:
+  ttl: 60               # Cache time-to-live in seconds
+  price_ttl: 60         # Price cache TTL
+  labels_ttl: 3600      # Label cache TTL (1 hour)
+
+# Alert Thresholds (for notification filtering)
+thresholds:
+  critical: 100000000   # $100M+ = critical alert
+  high: 50000000        # $50M+ = high priority
+  medium: 10000000      # $10M+ = medium priority
+  low: 1000000          # $1M+ = low priority
+
+# Exchange Flow Analysis
+flow_analysis:
+  enabled: true
+  exchange_types:
+    - exchange
+    - custodian
+
+# Watchlist Settings
+watchlist:
+  file: "~/.whale_watchlist.json"
+  max_entries: 100
+
+# Output Preferences
+output:
+  format: "table"        # table, json, alert
+  show_addresses: false  # Show full addresses vs labels
+  colorize: true         # Enable colors in terminal
+  timestamp_format: "%Y-%m-%d %H:%M:%S"

@@ -1,0 +1,121 @@
+[
+  {
+    "_comment": "Example configuration for a basic load test with gradual ramp-up",
+    "test_name": "Basic Load Test - Ramp Up",
+    "test_type": "load",
+    "description": "Simulates a gradual increase in users to test system responsiveness under increasing load.",
+    "target_url": "https://example.com/api/users",
+    "http_method": "GET",
+    "num_users": 100,
+    "ramp_up_time": 60,
+    "duration": 300,
+    "request_body": null,
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "assertions": [
+      {
+        "type": "status_code",
+        "value": 200
+      },
+      {
+        "type": "response_time",
+        "max_ms": 500
+      }
+    ],
+    "metrics": [
+      "response_time",
+      "requests_per_second",
+      "error_rate"
+    ]
+  },
+  {
+    "_comment": "Example configuration for a stress test to find the breaking point",
+    "test_name": "Stress Test - Breaking Point",
+    "test_type": "stress",
+    "description": "Gradually increases load until the system reaches its breaking point.",
+    "target_url": "https://example.com/api/products",
+    "http_method": "POST",
+    "num_users": 500,
+    "ramp_up_time": 120,
+    "duration": 600,
+    "request_body": {
+      "product_name": "Test Product",
+      "price": 99.99
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "assertions": [
+      {
+        "type": "status_code",
+        "value": 201
+      }
+    ],
+    "metrics": [
+      "cpu_usage",
+      "memory_usage",
+      "database_connections",
+      "error_rate"
+    ]
+  },
+  {
+    "_comment": "Example configuration for a spike test simulating a flash sale",
+    "test_name": "Spike Test - Flash Sale",
+    "test_type": "spike",
+    "description": "Simulates a sudden surge in traffic to test system resilience.",
+    "target_url": "https://example.com/api/orders",
+    "http_method": "POST",
+    "num_users": 2000,
+    "ramp_up_time": 10,
+    "duration": 60,
+    "request_body": {
+      "user_id": 123,
+      "product_id": 456,
+      "quantity": 1
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "assertions": [
+      {
+        "type": "status_code",
+        "value": 201
+      }
+    ],
+    "metrics": [
+      "response_time",
+      "requests_per_second",
+      "error_rate",
+       "database_queue_length"
+    ]
+  },
+  {
+    "_comment": "Example configuration for an endurance test to check for memory leaks",
+    "test_name": "Endurance Test - Memory Leak Check",
+    "test_type": "endurance",
+    "description": "Runs a sustained load for an extended period to detect memory leaks and performance degradation.",
+    "target_url": "https://example.com/api/data",
+    "http_method": "GET",
+    "num_users": 50,
+    "ramp_up_time": 30,
+    "duration": 3600,
+    "request_body": null,
+    "headers": {
+      "Authorization": "Bearer <your_api_key>"
+    },
+    "assertions": [
+      {
+        "type": "status_code",
+        "value": 200
+      }
+    ],
+    "metrics": [
+      "memory_usage",
+      "cpu_usage",
+      "response_time",
+      "garbage_collection_count"
+    ]
+  }
+]

@@ -18,6 +18,13 @@ extend-exclude = [
   "build",
   ".venv",
   "marketplace/backup-*",
+  # skills/.curated/ is a GENERATED mirror of the best plugin skills for skills.sh
+  # (freshie/scripts/promote-to-curated.py). Its *.py are verbatim copies of
+  # plugins/** skill scripts, which ARE ruff-linted at their source; re-linting the
+  # copy is redundant and would break the weekly refresh if a promoted script
+  # relied on a plugins/-scoped per-file-ignore. The plugin skill is the source of
+  # truth — grade it there, not in the mirror.
+  "skills/.curated",
   # >>> synced-plugin paths (mirror of .markdownlint-cli2.jsonc ignores).
   # External upstream code is not held to this repo's ruff style.
   # Keep in lockstep with sources.yaml / .source.json — CI gate:

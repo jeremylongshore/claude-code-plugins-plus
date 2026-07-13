@@ -1,0 +1,35 @@
+# example_data.csv
+# This CSV file provides sample data to demonstrate the functionality of the data_preprocessing_pipeline plugin.
+#
+# Column Descriptions:
+#   - ID: Unique identifier for each record.
+#   - Feature1: Numerical feature with some missing values.
+#   - Feature2: Categorical feature with multiple categories and potential typos.
+#   - Feature3: Date feature in string format.
+#   - Target: Binary target variable (0 or 1).
+#
+# Placeholders:
+#   - [MISSING_VALUE]: Represents a missing value to be handled by the pipeline.
+#   - [TYPO_CATEGORY]: Represents a typo in a categorical value.
+#
+# Instructions:
+#   - Feel free to modify this data to test different preprocessing scenarios.
+#   - Ensure the data adheres to the expected format for each column.
+#   - Use the `/preprocess` command to trigger the preprocessing pipeline on this data.
+
+ID,Feature1,Feature2,Feature3,Target
+1,10.5,CategoryA,2023-01-15,1
+2,12.0,CategoryB,2023-02-20,0
+3,[MISSING_VALUE],CategoryC,2023-03-25,1
+4,15.2,CategoryA,2023-04-01,0
+5,9.8,CateogryB,[MISSING_VALUE],1
+6,11.3,CategoryC,2023-05-10,0
+7,13.7,CategoryA,2023-06-15,1
+8,[MISSING_VALUE],CategoryB,2023-07-20,0
+9,16.1,CategoryC,2023-08-25,1
+10,10.0,CategoryA,2023-09-01,0
+11,12.5,[TYPO_CATEGORY],2023-10-10,1
+12,14.9,CategoryB,2023-11-15,0
+13,11.8,CategoryC,2023-12-20,1
+14,13.2,CategoryA,2024-01-25,0
+15,9.5,CategoryB,2024-02-01,1

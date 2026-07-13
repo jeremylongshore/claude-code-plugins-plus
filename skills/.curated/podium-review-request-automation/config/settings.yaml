@@ -1,0 +1,129 @@
+# podium-review-request-automation — configuration defaults
+# Override per-merchant via env vars or a deployment-specific config layer.
+
+cooldown:
+  # Days a contact is suppressed from review requests after any prior Podium contact.
+  # 30 days is the conservative default — merchants with monthly-recurring campaigns
+  # (hotels, restaurants) may shorten; merchants with seasonal patterns (campervan rental)
+  # may lengthen. Going below 14 days risks Podium spam-pattern suspension.
+  default_days: 30
+  min_days: 7                   # hard floor — refuse to operate below this
+  max_days: 180
+
+  # Backend for cooldown state. "redis" for multi-process; "sqlite" for single-node ops.
+  backend: redis
+  redis_url: "${REDIS_URL}"
+  sqlite_path: "${PODIUM_COOLDOWN_SQLITE_PATH}"
+
+  # Phone normalization. Every key write must be E.164.
+  require_e164: true
+  reject_unparseable_phones: true
+
+refund_buffer:
+  # Days between Shopify `orders/fulfilled` and the actual review-request send.
+  # Bounds the refund-race window: a customer who refunds inside this window never
+  # gets a request. Tune to the merchant's typical refund latency.
+  days: 5
+  min_days: 1
+  max_days: 30
+
+  # At fire-time, re-fetch the order and check these statuses. Any match = skip.
+  skip_financial_statuses:
+    - refunded
+    - partially_refunded
+    - voided
+  skip_if_cancelled: true       # order.cancelled_at != null
+  skip_if_returned: true        # order.fulfillments[*].return_status set
+
+  # Durable queue backend.
+  queue_backend: redis_streams  # one of: redis_streams | sqs | pgmq
+  queue_name: "podium-review-deferred"
+  visibility_timeout_seconds: 300
+
+outbox:
+  # Track every send → terminal state transition. Records older than the SLA in
+  # `sent` status are flagged for manual review.
+  delivery_sla_seconds: 86400   # 24h
+  record_ttl_seconds: 604800    # 7d
+  sweep_interval_seconds: 3600  # background sweep cadence
+
+  # On `review_invitation.failed`, roll back the contact's cooldown.
+  # This is non-obvious and important — a failed send should not punish the customer.
+  rollback_cooldown_on_failed: true
+
+  # Webhook failure reasons that propagate to a contact-level opt-out flag.
+  # When Podium reports a STOP-reply-driven failure, propagate to the merged contact.
+  failure_reasons_set_keyword_optout:
+    - recipient_optout
+    - stop_keyword
+
+opt_out:
+  # Flags the unified predicate consults. Each must exist on the merged contact record.
+  # The predicate is OR semantics — ANY flag = suppress.
+  flags:
+    - marketing_sms_opt_out
+    - review_request_opt_out
+    - global_unsubscribe
+    - podium_keyword_optout
+
+  # Run the predicate at BOTH schedule-time and fire-time. Required for compliance.
+  enforce_at_schedule_time: true
+  enforce_at_fire_time: true
+
+  # Source-of-truth for the merged contact record. See podium-contact-dedup.
+  contacts_backend: "merged_contacts_service"
+
+platform_routing:
+  # Order of preference when selecting the review destination for a contact.
+  # 1. explicit customer preference (if set on contact)
+  # 2. campaign default
+  # 3. conservative fallback
+  fallback_platform: google     # always renders publicly; no customer account required
+
+  # When the campaign default targets a platform requiring a customer account,
+  # verify the customer has that account; fall back if not.
+  require_customer_account_for:
+    - facebook
+    - instagram
+
+webhook:
+  # Inbound signature verification for both Shopify and Podium webhooks.
+  shopify_hmac_header: "X-Shopify-Hmac-Sha256"
+  podium_signature_header: "X-Podium-Signature"
+  podium_signature_algorithm: sha256
+
+  # Idempotency for review.received — claim event ID before any side effect.
+  idempotency_ttl_seconds: 86400
+
+  # Sentiment classification thresholds. Adjust if Podium changes the rating scale.
+  rating_negative_upper: 2      # rating <= this → escalate
+  rating_neutral_upper: 3       # rating == this → log-only
+  rating_positive_lower: 4      # rating >= this → thank
+
+  # Escalation channel for negative reviews. Replace with Slack webhook / PagerDuty / etc.
+  negative_review_channel: "${PODIUM_NEGATIVE_REVIEW_CHANNEL}"
+
+logging:
+  # Structured JSON. Phone numbers and review text are redacted; order IDs are not.
+  format: json
+  level: info
+  redact_fields:
+    - phone
+    - email
+    - customer_name
+    - review_body
+  emit_audit_events:
+    - review_send_succeeded
+    - review_send_skipped_cooldown
+    - review_send_skipped_optout
+    - review_send_skipped_refund
+    - review_send_skipped_cancelled
+    - review_invitation_failed
+    - review_received
+
+retry:
+  # Send-side retry policy for transient errors against Podium.
+  max_attempts: 4
+  base_delay_ms: 500
+  cap_ms: 30000
+  retryable_statuses: [429, 500, 502, 503, 504]

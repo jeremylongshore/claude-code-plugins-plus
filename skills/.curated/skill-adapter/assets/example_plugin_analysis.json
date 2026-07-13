@@ -1,0 +1,82 @@
+{
+  "_comment": "Example JSON output for plugin analysis by PI Pathfinder",
+  "query": "Summarize the key findings from the latest IPCC report on climate change and suggest potential mitigation strategies.",
+  "selected_plugin": {
+    "name": "Research Assistant",
+    "description": "A powerful research tool for accessing and summarizing information from various online sources.",
+    "capabilities": [
+      "Web scraping",
+      "Document summarization",
+      "Academic paper retrieval",
+      "Fact checking",
+      "Trend analysis"
+    ],
+    "reasoning": "This plugin is best suited for the task because it can access the IPCC report online, summarize its findings, and identify relevant mitigation strategies from reputable sources.",
+    "confidence_score": 0.95
+  },
+  "extracted_skills": [
+    {
+      "skill_name": "Document Summarization",
+      "skill_description": "Condenses large documents into concise summaries highlighting key information.",
+      "parameters": {
+        "document_url": "URL of the IPCC report",
+        "summary_length": "medium",
+        "focus_areas": ["key findings", "mitigation strategies"]
+      },
+      "implementation_details": "Utilizes advanced NLP techniques to identify and extract the most important information, including sentence scoring and topic modeling.",
+      "success_probability": 0.9
+    },
+    {
+      "skill_name": "Web Scraping",
+      "skill_description": "Extracts data from web pages, including text, tables, and images.",
+      "parameters": {
+        "url": "URL of the IPCC report website",
+        "elements_to_extract": ["text", "tables"]
+      },
+      "implementation_details": "Uses a robust web scraping library to handle various website structures and anti-scraping measures.",
+      "success_probability": 0.98
+    }
+  ],
+  "execution_plan": [
+    {
+      "step": 1,
+      "action": "Use Web Scraping to extract the text content from the IPCC report webpage.",
+      "plugin_skill": "Web Scraping",
+      "expected_outcome": "Successful extraction of the IPCC report text."
+    },
+    {
+      "step": 2,
+      "action": "Use Document Summarization to generate a summary of the extracted text, focusing on key findings and mitigation strategies.",
+      "plugin_skill": "Document Summarization",
+      "expected_outcome": "A concise summary of the IPCC report's key findings and mitigation strategies."
+    },
+     {
+      "step": 3,
+      "action": "Return the generated summary to the user.",
+      "plugin_skill": null,
+      "expected_outcome": "User receives a helpful summary of the IPCC report."
+    }
+  ],
+  "alternative_plugins": [
+    {
+      "name": "Web Search",
+      "description": "Performs web searches and retrieves relevant snippets.",
+      "suitability_score": 0.7,
+      "reason": "Useful for finding general information, but less effective for in-depth document analysis."
+    },
+    {
+      "name": "Document Reader",
+      "description": "Reads and analyzes local documents.",
+      "suitability_score": 0.3,
+      "reason": "Not applicable as the IPCC report is likely online."
+    }
+  ],
+  "overall_assessment": {
+    "success_likelihood": 0.9,
+    "potential_issues": [
+      "Website may have anti-scraping measures.",
+      "Summarization may miss subtle nuances in the report."
+    ],
+    "recommendations": "Review the generated summary for accuracy and consult the original report for a complete understanding."
+  }
+}

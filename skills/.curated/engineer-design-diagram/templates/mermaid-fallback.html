@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} — Mermaid Fallback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #020617;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    .subtitle { color: #94a3b8; font-size: 12px; margin-top: 4px; }
+    .note {
+      padding: 12px 16px;
+      background: rgba(251, 191, 36, 0.1);
+      border-left: 3px solid #fbbf24;
+      color: #fbbf24;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .mermaid-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .mermaid { text-align: center; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{TITLE}}</h1>
+    <div class="subtitle">{{SUBTITLE}}</div>
+  </header>
+
+  <div class="note">
+    Rendered via Mermaid fallback — node count exceeded the 50-node SVG layout budget,
+    or a layout collision was detected. See references/troubleshooting.md for details.
+  </div>
+
+  <div class="mermaid-card" role="img" aria-label="{{TITLE}} diagram">
+    <pre class="mermaid">
+{{MERMAID_SOURCE}}
+    </pre>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    // Minimal Mermaid config — respects reduced-motion via the base CSS above.
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        background: '#020617',
+        primaryColor: 'rgba(6, 78, 59, 0.4)',
+        primaryBorderColor: '#34d399',
+        primaryTextColor: '#f8fafc',
+        lineColor: '#64748b',
+        fontFamily: 'JetBrains Mono, monospace'
+      }
+    });
+  </script>
+</body>
+</html>

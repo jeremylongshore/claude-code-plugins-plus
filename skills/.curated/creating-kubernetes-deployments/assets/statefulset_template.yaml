@@ -1,0 +1,160 @@
+# StatefulSet Template
+# For stateful applications requiring stable identity and persistent storage
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-stateful-app-headless
+  namespace: default
+  labels:
+    app: my-stateful-app
+spec:
+  # Headless service (no cluster IP) for stable DNS
+  clusterIP: None
+  selector:
+    app: my-stateful-app
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-stateful-app
+  namespace: default
+  labels:
+    app: my-stateful-app
+spec:
+  # Must match headless service name
+  serviceName: my-stateful-app-headless
+
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: my-stateful-app
+
+  # Update strategy
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Start updating from pod N-1 down to 0
+      # Set to N to only update pods >= N (canary)
+      partition: 0
+
+  # Pod management policy
+  # OrderedReady: Pods created/deleted one at a time, in order
+  # Parallel: All pods created/deleted simultaneously
+  podManagementPolicy: OrderedReady
+
+  # Minimum seconds pod should be ready before considered available
+  minReadySeconds: 10
+
+  # Revision history limit
+  revisionHistoryLimit: 10
+
+  template:
+    metadata:
+      labels:
+        app: my-stateful-app
+    spec:
+      # Graceful termination for stateful apps
+      terminationGracePeriodSeconds: 60
+
+      containers:
+      - name: app
+        image: my-registry.io/my-stateful-app:v1.0.0
+        ports:
+        - containerPort: 8080
+          name: http
+
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+
+        # Volume mount for persistent data
+        volumeMounts:
+        - name: data
+          mountPath: /data
+
+        # Environment with pod identity
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+      # Anti-affinity to spread across nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: my-stateful-app
+              topologyKey: kubernetes.io/hostname
+
+  # Persistent volume claim template
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: my-stateful-app
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: standard  # Replace with your storage class
+      resources:
+        requests:
+          storage: 100Gi
+
+# StatefulSet Features:
+#
+# Stable Network Identity:
+#   - Pods get predictable names: my-stateful-app-0, my-stateful-app-1, etc.
+#   - DNS: my-stateful-app-0.my-stateful-app-headless.default.svc.cluster.local
+#
+# Stable Storage:
+#   - Each pod gets its own PVC that persists across restarts
+#   - PVCs named: data-my-stateful-app-0, data-my-stateful-app-1, etc.
+#
+# Ordered Deployment:
+#   - Pods created in order: 0, 1, 2...
+#   - Pods deleted in reverse: 2, 1, 0
+#   - Each pod waits for previous to be Ready
+#
+# Use Cases:
+#   - Databases (PostgreSQL, MySQL, MongoDB)
+#   - Message queues (Kafka, RabbitMQ)
+#   - Distributed systems (ZooKeeper, etcd)
+#   - Search engines (Elasticsearch)

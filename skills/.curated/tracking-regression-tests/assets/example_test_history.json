@@ -1,0 +1,158 @@
+{
+  "_comment": "Example test history data for the Regression Test Tracker plugin",
+  "test_suite_name": "Production Deployment Tests",
+  "test_history": [
+    {
+      "run_id": "run-2024-10-26-001",
+      "_comment": "Unique identifier for this test run",
+      "timestamp": "2024-10-26T10:00:00Z",
+      "_comment": "ISO 8601 timestamp of the test run",
+      "environment": "Production",
+      "_comment": "Environment where the tests were executed",
+      "commit_hash": "a1b2c3d4e5f678901234567890abcdef01234567",
+      "_comment": "Git commit hash of the code being tested",
+      "tests": [
+        {
+          "test_name": "Verify user login",
+          "result": "passed",
+          "duration_ms": 1200,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Check product listing page",
+          "result": "passed",
+          "duration_ms": 850,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Add item to cart",
+          "result": "failed",
+          "duration_ms": 2100,
+          "error_message": "Cart service unavailable",
+          "is_flaky": false
+        },
+        {
+          "test_name": "Process checkout",
+          "result": "passed",
+          "duration_ms": 5500,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Verify email sending",
+          "result": "failed",
+          "duration_ms": 300,
+          "error_message": "Timeout waiting for SMTP response",
+          "is_flaky": true,
+          "_comment": "Example of a flaky test"
+        }
+      ],
+      "summary": {
+        "total_tests": 5,
+        "passed": 3,
+        "failed": 2,
+        "flaky": 1
+      }
+    },
+    {
+      "run_id": "run-2024-10-25-002",
+      "timestamp": "2024-10-25T18:30:00Z",
+      "environment": "Staging",
+      "commit_hash": "f0e1d2c3b4a59876543210fedcba09876543210f",
+      "tests": [
+        {
+          "test_name": "Verify user login",
+          "result": "passed",
+          "duration_ms": 1100,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Check product listing page",
+          "result": "passed",
+          "duration_ms": 900,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Add item to cart",
+          "result": "passed",
+          "duration_ms": 1800,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Process checkout",
+          "result": "passed",
+          "duration_ms": 5200,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Verify email sending",
+          "result": "passed",
+          "duration_ms": 250,
+          "error_message": null,
+          "is_flaky": true
+        }
+      ],
+      "summary": {
+        "total_tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "flaky": 1
+      }
+    },
+    {
+      "run_id": "run-2024-10-25-001",
+      "timestamp": "2024-10-25T10:00:00Z",
+      "environment": "Production",
+      "commit_hash": "f0e1d2c3b4a59876543210fedcba09876543210f",
+      "tests": [
+        {
+          "test_name": "Verify user login",
+          "result": "passed",
+          "duration_ms": 1150,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Check product listing page",
+          "result": "passed",
+          "duration_ms": 875,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Add item to cart",
+          "result": "passed",
+          "duration_ms": 1950,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Process checkout",
+          "result": "passed",
+          "duration_ms": 5350,
+          "error_message": null,
+          "is_flaky": false
+        },
+        {
+          "test_name": "Verify email sending",
+          "result": "failed",
+          "duration_ms": 310,
+          "error_message": "Timeout waiting for SMTP response",
+          "is_flaky": true
+        }
+      ],
+      "summary": {
+        "total_tests": 5,
+        "passed": 4,
+        "failed": 1,
+        "flaky": 1
+      }
+    }
+  ]
+}

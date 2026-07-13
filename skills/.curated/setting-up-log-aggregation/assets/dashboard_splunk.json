@@ -1,0 +1,141 @@
+{
+  "_comment": "Splunk Dashboard Configuration - Example",
+  "dashboard": {
+    "label": "Application Performance Overview",
+    "description": "A dashboard providing insights into application performance and health.",
+    "version": "1.0",
+    "layout": {
+      "type": "absolute",
+      "options": {
+        "width": "100%",
+        "height": "100%"
+      }
+    },
+    "panels": [
+      {
+        "id": "panel1",
+        "title": "Requests per Minute",
+        "description": "Shows the rate of incoming requests.",
+        "type": "timeseries",
+        "options": {
+          "xAxisTitle": "Time",
+          "yAxisTitle": "Requests/Minute"
+        },
+        "search": {
+          "query": "index=main sourcetype=access_combined | timechart count by _time span=1m",
+          "earliest": "-15m",
+          "latest": "now"
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "width": 6,
+          "height": 4
+        }
+      },
+      {
+        "id": "panel2",
+        "title": "Error Rate",
+        "description": "Displays the percentage of error responses.",
+        "type": "singlevalue",
+        "options": {
+          "unit": "%",
+          "underLabel": "Error Rate (Last 15 minutes)"
+        },
+        "search": {
+          "query": "index=main sourcetype=access_combined status>=500 | stats count as errors | eval total = [search index=main sourcetype=access_combined | stats count] | eval error_rate=round((errors/total)*100,2)",
+          "earliest": "-15m",
+          "latest": "now"
+        },
+        "position": {
+          "x": 6,
+          "y": 0,
+          "width": 3,
+          "height": 4
+        }
+      },
+      {
+        "id": "panel3",
+        "title": "Average Response Time",
+        "description": "Measures the average time taken to process requests.",
+        "type": "singlevalue",
+        "options": {
+          "unit": "ms",
+          "underLabel": "Average Response Time (Last 15 minutes)"
+        },
+        "search": {
+          "query": "index=main sourcetype=access_combined | stats avg(response_time) as avg_rt | eval avg_rt=round(avg_rt,2)",
+          "earliest": "-15m",
+          "latest": "now"
+        },
+        "position": {
+          "x": 9,
+          "y": 0,
+          "width": 3,
+          "height": 4
+        }
+      },
+      {
+        "id": "panel4",
+        "title": "Top 10 Slowest Endpoints",
+        "description": "Lists the endpoints with the highest average response times.",
+        "type": "table",
+        "options": {
+          "drilldown": "none"
+        },
+        "search": {
+          "query": "index=main sourcetype=access_combined | stats avg(response_time) as avg_rt by uri | sort -avg_rt | head 10",
+          "earliest": "-1h",
+          "latest": "now"
+        },
+        "position": {
+          "x": 0,
+          "y": 4,
+          "width": 6,
+          "height": 4
+        }
+      },
+      {
+        "id": "panel5",
+        "title": "Server CPU Utilization",
+        "description": "Displays the CPU utilization across all servers.",
+        "type": "timeseries",
+        "options": {
+          "xAxisTitle": "Time",
+          "yAxisTitle": "% CPU Utilization"
+        },
+        "search": {
+          "query": "index=os sourcetype=cpu | timechart avg(percentIdle) as idle by host span=1m | eval cpu_utilization=100-idle",
+          "earliest": "-15m",
+          "latest": "now"
+        },
+        "position": {
+          "x": 6,
+          "y": 4,
+          "width": 6,
+          "height": 4
+        }
+      },
+      {
+        "id": "panel6",
+        "title": "Recent Error Logs",
+        "description": "Shows the most recent error logs.",
+        "type": "event",
+        "options": {
+          "count": 5
+        },
+        "search": {
+          "query": "index=main sourcetype=application log_level=ERROR",
+          "earliest": "-1h",
+          "latest": "now"
+        },
+        "position": {
+          "x": 0,
+          "y": 8,
+          "width": 12,
+          "height": 4
+        }
+      }
+    ]
+  }
+}
