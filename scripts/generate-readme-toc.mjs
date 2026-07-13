@@ -20,12 +20,57 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import prettier from 'prettier';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const README = join(ROOT, 'README.md');
+
+// ── Live stat counts ─────────────────────────────────────────────────────────
+// The header badges + tagline counts (plugins / skills / agents) used to be
+// hand-maintained and drifted stale. We recompute them here so they refresh on
+// every `sync-marketplace`. Counts come from `git ls-files` — the COMMITTED tree —
+// NOT the working directory, so a local-only/untracked SKILL.md can't skew the
+// number and the result is byte-identical between a dev machine and CI's clean
+// checkout (which is what `--check` compares against):
+//   - plugins: catalog length (marketplace.extended.json)
+//   - skills:  every tracked SKILL.md under plugins/ or skills/
+//   - agents:  every tracked *.md inside an agents/ dir under plugins/
+function trackedFiles() {
+  const out = execFileSync('git', ['ls-files'], {
+    cwd: ROOT,
+    encoding: 'utf-8',
+    maxBuffer: 128 * 1024 * 1024,
+  });
+  return out.split('\n').filter(Boolean);
+}
+
+function computeStats(catalog) {
+  const plugins = (catalog.plugins || []).length;
+  const files = trackedFiles();
+  const skills = files.filter(
+    (f) => (f.startsWith('plugins/') || f.startsWith('skills/')) && f.endsWith('/SKILL.md'),
+  ).length;
+  const agents = files.filter(
+    (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),
+  ).length;
+  return { plugins, skills, agents };
+}
+
+// Rewrite the hardcoded count occurrences (header badges + the two prose taglines)
+// to the freshly computed values. Badges use plain integers; prose uses grouped.
+function applyStats(readme, { plugins, skills, agents }) {
+  const grouped = (n) => n.toLocaleString('en-US');
+  return readme
+    .replace(/badge\/plugins-[\d,%C]+-blue/g, `badge/plugins-${plugins}-blue`)
+    .replace(/badge\/skills-[\d,%C]+-green/g, `badge/skills-${skills}-green`)
+    .replace(
+      /\d[\d,]* plugins, \d[\d,]* skills, \d[\d,]* agents/g,
+      `${grouped(plugins)} plugins, ${grouped(skills)} skills, ${grouped(agents)} agents`,
+    );
+}
 
 const TOC_START =
   '<!-- AUTO-TOC:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->';
@@ -190,7 +235,7 @@ async function main() {
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
   const current = readFileSync(README, 'utf-8');
-  const spliced = replaceBlock(current, block);
+  const spliced = applyStats(replaceBlock(current, block), computeStats(catalog));
   const updated = await formatReadme(spliced);
 
   if (checkMode) {
