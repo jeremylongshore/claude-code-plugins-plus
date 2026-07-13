@@ -478,6 +478,15 @@ const currentPath = Astro.url.pathname;
             text-decoration: underline;
         }
 
+        .footer-badges {
+            margin: 0.5rem 0 0;
+        }
+
+        .footer-badges img {
+            height: 20px;
+            vertical-align: middle;
+        }
+
         .footer-copyright {
             font-size: 0.75rem;
             color: var(--text-3);
@@ -665,6 +674,7 @@ const currentPath = Astro.url.pathname;
 
             <div class="footer-bottom">
                 <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect.</p>
+                <p class="footer-badges"><a href="https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills" target="_blank" rel="noopener" aria-label="Install count on skills.sh"><img src="https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills" alt="skills.sh install count" height="20" loading="lazy" decoding="async" /></a></p>
                 <p class="footer-copyright">&copy; {new Date().getFullYear()} Tons of Skills | <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a></p>
             </div>
         </div>
