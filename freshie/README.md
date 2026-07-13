@@ -39,7 +39,8 @@ freshie/
 │   └── freshie/              # dir name == Dolt SQL database name
 ├── scripts/
 │   ├── rebuild-inventory.py  # Full repo scan → new discovery run
-│   └── dolt-sync.py          # SQLite → Dolt → DoltHub exporter (one-way)
+│   ├── dolt-sync.py          # SQLite → Dolt → DoltHub exporter (one-way)
+│   └── promote-to-curated.py # Best A/B plugin skills → skills/.curated/ (skills.sh mirror)
 ├── archives/                 # Read-only sqlite snapshots at major milestones
 ├── exports/                  # CSV/JSON exports per run
 ├── reports/                  # Data dictionary, methodology, baselines
@@ -58,8 +59,48 @@ python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/in
 # 3. Sync to the system of record: Dolt commit, run-N tag, DoltHub push
 python3 freshie/scripts/dolt-sync.py
 
-# 4. Commit the refreshed grades.csv / grade-histogram.json with your PR.
+# 4. Refresh the skills.sh discovery mirror from the new grades (optional; also
+#    runs weekly via .github/workflows/promote-curated.yml).
+python3 freshie/scripts/promote-to-curated.py
+
+# 5. Commit the refreshed grades.csv / grade-histogram.json (and skills/.curated/)
+#    with your PR.
 ```
+
+## The skills.sh curated mirror (`promote-to-curated.py`)
+
+skills.sh only crawls a repo's root `skills/` (+ `.curated/`, `.experimental/`, agent
+dirs) — it does **not** descend into `plugins/**/skills/`, where ~3,100 of our skills
+live. `promote-to-curated.py` bridges that: it rebuilds `skills/.curated/` as a generated
+**mirror** of our best plugin skills so skills.sh can index them.
+
+- **Selection:** grade **A + B**, plugin skills only, our own (a plugin root carrying a
+  `.source.json` external marker is excluded), source dir present → ~1,881 skills. Read
+  from the **tracked** `grades.csv` (not the git-ignored `inventory.sqlite`) so the CI
+  drift gate is reproducible in a clean checkout.
+- **Source of truth stays the plugin skill.** The copies under `skills/.curated/` are
+  rebuilt every run (wipe-and-rebuild) and never hand-edited; only git-tracked source
+  files are copied, so a local build == a CI build.
+- **Defense:** each candidate is re-graded in-process by the canonical validator; it is
+  promoted only if its fresh grade is still A/B (drops a source that regressed since the
+  last run). Gated on the grade, not the non-blocking marketplace error list.
+- **Audit trail:** `skills/.curated/MANIFEST.json` records every promoted skill (source
+  path, recorded + fresh grade, run_id).
+- **Honest counts:** `skills/.curated/` is excluded from the README skill count
+  (`generate-readme-toc.mjs`) and from the Freshie inventory scan
+  (`validate-skills-schema.py` `find_skill_files`), so a mirror copy is never
+  double-counted.
+
+```bash
+python3 freshie/scripts/promote-to-curated.py            # rebuild skills/.curated/
+python3 freshie/scripts/promote-to-curated.py --check    # CI drift gate (exit 1 if stale)
+python3 freshie/scripts/promote-to-curated.py --no-validate   # skip the in-process re-grade
+```
+
+**Self-maintenance:** `.github/workflows/promote-curated.yml` rebuilds the mirror weekly
+and opens a PR on change (never a blind push); the `promote-curated-check` job in
+`validate-plugins.yml` fails any PR that edits a promoted source without regenerating the
+mirror. Repo-page branding for skills.sh lives in root `skills.sh.json`.
 
 Both scripts derive the repo root from their own location — they are safe to
 run from a git worktree (proven: run 9 was executed entirely from one).

@@ -51,7 +51,14 @@ function computeStats(catalog) {
   const plugins = (catalog.plugins || []).length;
   const files = trackedFiles();
   const skills = files.filter(
-    (f) => (f.startsWith('plugins/') || f.startsWith('skills/')) && f.endsWith('/SKILL.md'),
+    (f) =>
+      (f.startsWith('plugins/') || f.startsWith('skills/')) &&
+      // skills/.curated/ is a GENERATED mirror of the best plugin skills (for
+      // skills.sh discovery — see freshie/scripts/promote-to-curated.py), not
+      // new skills. Exclude it so the headline count stays honest (a mirror
+      // copy is already counted via its plugins/** source).
+      !f.startsWith('skills/.curated/') &&
+      f.endsWith('/SKILL.md'),
   ).length;
   const agents = files.filter(
     (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),

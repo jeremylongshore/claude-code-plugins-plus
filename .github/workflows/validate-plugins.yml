@@ -1145,6 +1145,28 @@ jobs:
           esac
           node scripts/scan-synced-content.mjs --changed-only --base "origin/$BASE_REF" $WARN
 
+  # skills/.curated/ is a GENERATED mirror of the repo's best (A/B) plugin skills,
+  # rebuilt from freshie/grades.csv by freshie/scripts/promote-to-curated.py so
+  # skills.sh can index them (its crawler only reads root skills/ / .curated/, not
+  # plugins/**/skills/). This gate fails a PR that edits a promoted source skill
+  # without regenerating the mirror — exactly like the README AUTO-TOC --check.
+  # It is git-only + Python-stdlib (no validator, no sqlite, no node_modules), so
+  # it is deterministic and cannot false-drift on a missing kernel schema. Full
+  # selection refresh (newly-A skills, sources dropped below B) is the weekly
+  # promote-curated.yml workflow's job, not this per-PR check.
+  promote-curated-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify skills/.curated/ mirror is in sync with its plugin sources
+        run: python3 freshie/scripts/promote-to-curated.py --check
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1178,6 +1200,7 @@ jobs:
       - ruff-format-check
       - markdownlint
       - scan-synced-content
+      - promote-curated-check
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:

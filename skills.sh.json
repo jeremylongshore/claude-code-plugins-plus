@@ -1,0 +1,118 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Featured",
+      "description": "Flagship, A-graded skills from the Tons of Skills marketplace (tonsofskills.com).",
+      "skills": [
+        "skill-creator",
+        "agent-creator",
+        "validate-plugin",
+        "plugin-creator",
+        "plugin-auditor",
+        "overnight-development",
+        "generating-smart-commits",
+        "optimizing-prompts"
+      ]
+    },
+    {
+      "title": "Security",
+      "description": "Auth, secrets, dependency and access-control review.",
+      "skills": [
+        "validating-authentication-implementations",
+        "auditing-access-control",
+        "scanning-for-secrets",
+        "scanning-input-validation-practices",
+        "validating-csrf-protection",
+        "validating-cors-policies",
+        "analyzing-dependencies"
+      ]
+    },
+    {
+      "title": "DevOps & Infrastructure",
+      "description": "Containers, IaC drift, disaster recovery and cloud cost.",
+      "skills": [
+        "scanning-container-security",
+        "detecting-infrastructure-drift",
+        "planning-disaster-recovery",
+        "generating-docker-compose-files",
+        "checking-infrastructure-compliance",
+        "optimizing-cloud-costs"
+      ]
+    },
+    {
+      "title": "AI & Machine Learning",
+      "description": "Multi-agent orchestration, feature engineering and prompt work.",
+      "skills": [
+        "orchestrating-multi-agent-systems",
+        "engineering-features-for-machine-learning",
+        "detecting-data-anomalies",
+        "adapting-transfer-learning-models"
+      ]
+    },
+    {
+      "title": "Testing & QA",
+      "description": "E2E, integration, mutation and visual-regression testing.",
+      "skills": [
+        "running-e2e-tests",
+        "running-integration-tests",
+        "running-mutation-tests",
+        "testing-visual-regression",
+        "testing-browser-compatibility",
+        "managing-test-environments",
+        "tracking-regression-tests"
+      ]
+    },
+    {
+      "title": "Databases",
+      "description": "Recovery, integrity, security and ORM code generation.",
+      "skills": [
+        "optimizing-database-connection-pooling",
+        "managing-database-recovery",
+        "validating-database-integrity",
+        "scanning-database-security",
+        "generating-orm-code",
+        "monitoring-database-transactions"
+      ]
+    },
+    {
+      "title": "APIs & Integration",
+      "description": "Schema/response validation, security, rate limiting and mocking.",
+      "skills": [
+        "validating-api-schemas",
+        "validating-api-responses",
+        "scanning-api-security",
+        "rate-limiting-apis",
+        "mocking-apis",
+        "migrating-apis",
+        "logging-api-requests"
+      ]
+    },
+    {
+      "title": "Performance & Reliability",
+      "description": "Load testing, memory leaks, error rates and alerting.",
+      "skills": [
+        "running-load-tests",
+        "detecting-memory-leaks",
+        "monitoring-error-rates",
+        "creating-alerting-rules",
+        "tracking-service-reliability",
+        "validating-performance-budgets",
+        "setting-up-synthetic-monitoring"
+      ]
+    },
+    {
+      "title": "Crypto & Web3",
+      "description": "On-chain data, gas, mempool and flash-loan analysis.",
+      "skills": [
+        "analyzing-on-chain-data",
+        "optimizing-gas-fees",
+        "monitoring-whale-activity",
+        "exploring-blockchain-data",
+        "simulating-flash-loans",
+        "tracking-crypto-prices"
+      ]
+    }
+  ]
+}
