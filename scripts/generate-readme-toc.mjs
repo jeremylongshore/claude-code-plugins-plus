@@ -19,7 +19,8 @@
  *   node scripts/generate-readme-toc.mjs --check   # CI: exit 1 if out of sync
  */
 
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import prettier from 'prettier';
 
@@ -29,41 +30,32 @@ const README = join(ROOT, 'README.md');
 
 // ── Live stat counts ─────────────────────────────────────────────────────────
 // The header badges + tagline counts (plugins / skills / agents) used to be
-// hand-maintained and drifted stale. We now recompute them here so they refresh
-// on every `sync-marketplace`. Sources are deterministic from the committed tree
-// (CI --check checks out the same tree), so this never introduces flakiness:
-//   - plugins: the catalog length (marketplace.extended.json)
-//   - skills:  every SKILL.md regular file under plugins/ and skills/
-//   - agents:  every *.md regular file inside an agents/ directory under plugins/
-// isFile() excludes symlinks, so mirrored/symlinked skills are never double-counted.
-const SKIP_DIRS = new Set(['node_modules', 'dist', '.git', '.beads', '.forge']);
-
-function countFiles(dir, matchFn) {
-  let entries;
-  try {
-    entries = readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return 0;
-  }
-  let n = 0;
-  for (const e of entries) {
-    if (SKIP_DIRS.has(e.name)) continue;
-    const full = join(dir, e.name);
-    if (e.isDirectory()) n += countFiles(full, matchFn);
-    else if (e.isFile() && matchFn(full, e.name)) n += 1;
-  }
-  return n;
+// hand-maintained and drifted stale. We recompute them here so they refresh on
+// every `sync-marketplace`. Counts come from `git ls-files` — the COMMITTED tree —
+// NOT the working directory, so a local-only/untracked SKILL.md can't skew the
+// number and the result is byte-identical between a dev machine and CI's clean
+// checkout (which is what `--check` compares against):
+//   - plugins: catalog length (marketplace.extended.json)
+//   - skills:  every tracked SKILL.md under plugins/ or skills/
+//   - agents:  every tracked *.md inside an agents/ dir under plugins/
+function trackedFiles() {
+  const out = execFileSync('git', ['ls-files'], {
+    cwd: ROOT,
+    encoding: 'utf-8',
+    maxBuffer: 128 * 1024 * 1024,
+  });
+  return out.split('\n').filter(Boolean);
 }
 
 function computeStats(catalog) {
   const plugins = (catalog.plugins || []).length;
-  const skills =
-    countFiles(join(ROOT, 'plugins'), (_f, name) => name === 'SKILL.md') +
-    countFiles(join(ROOT, 'skills'), (_f, name) => name === 'SKILL.md');
-  const agents = countFiles(
-    join(ROOT, 'plugins'),
-    (full, name) => name.endsWith('.md') && full.includes('/agents/'),
-  );
+  const files = trackedFiles();
+  const skills = files.filter(
+    (f) => (f.startsWith('plugins/') || f.startsWith('skills/')) && f.endsWith('/SKILL.md'),
+  ).length;
+  const agents = files.filter(
+    (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),
+  ).length;
   return { plugins, skills, agents };
 }
 
