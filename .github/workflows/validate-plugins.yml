@@ -1167,6 +1167,40 @@ jobs:
       - name: Verify skills/.curated/ mirror is in sync with its plugin sources
         run: python3 freshie/scripts/promote-to-curated.py --check
 
+  # Submission-documents intake gate (000-docs/700-DR-GUID-skill-submission-standard.md).
+  # A PR that adds a NEW plugin directory (its .claude-plugin/plugin.json is an
+  # ADDED file in the diff) must carry the tiered docs the matrix in
+  # templates/skill-docs/README.md requires: micro → docs/PRD.md; standard →
+  # + docs/ADR.md; pack (2+ skills) → + docs/ONE-PAGER.md. External mirror
+  # plugins (dir contains .source.json) are exempt — their docs live upstream.
+  # Runs on every PR (no path filter); a PR adding no new plugin is a designed
+  # clean pass INSIDE the script (exit 0 + log line), so this job always reports
+  # and the ci-required aggregate never sees an undesigned skip.
+  check-submission-docs:
+    runs-on: ubuntu-latest
+    name: check-submission-docs (intake gate)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Run gate test corpus
+        run: node --test scripts/check-submission-docs.test.mjs
+
+      - name: Check new plugins carry their tier's submission documents
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          node scripts/check-submission-docs.mjs --changed-only --base "origin/$BASE_REF"
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1201,6 +1235,7 @@ jobs:
       - markdownlint
       - scan-synced-content
       - promote-curated-check
+      - check-submission-docs
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:

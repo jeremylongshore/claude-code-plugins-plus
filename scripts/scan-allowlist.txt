@@ -27,6 +27,22 @@ plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI in
 plugins/mcp/servicegraph/.mcp.json:mcp-remote  the plugin IS an agent-skills front-end to the remote ServiceGraph MCP server (https://mcp.servicegraph.co, plain HTTP transport, no embedded credentials) — reviewed 2026-07-07, curated mirror pinned at fork SHA df4648a4
 plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint documented as the setup step in the upstream README — reviewed 2026-07-07 with the .mcp.json above
 
+# ── skills-janitor (khendzel) — vetted 2026-07-13 @ upstream c63c3478e (PR #1020). ──
+# The three GitHub-discovery scripts call out ONLY to api.github.com /
+# raw.githubusercontent.com (plus precheck's user-supplied SKILL.md URL, which is
+# fetched to a mktemp file and parsed for frontmatter — never executed or sourced).
+# GITHUB_TOKEN is sent solely as an Authorization header to api.github.com — the
+# credential's own service; precheck's AUTH_ARGS array never accompanies the
+# raw/arbitrary-URL fetches. Full-read vet per 699 playbook: 23 admitted files,
+# scan 0 REFUSE, all 5 skills j-rig 12/12.
+plugins/community/skills-janitor/scripts/search.sh:outbound-network  GitHub skill-search queries api.github.com only (the documented discovery feature) — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/precheck.sh:outbound-network  fetches SKILL.md from raw.githubusercontent.com / api.github.com / a user-supplied URL, read-and-parse only, never executed — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/compare.sh:outbound-network  keyword market comparison against api.github.com only — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/search.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
+plugins/community/skills-janitor/scripts/precheck.sh:secret-exfil-cooccur  GITHUB_TOKEN attached only to the api.github.com request (AUTH_ARGS array), never to the raw or arbitrary-URL fetches
+plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
+sources.yaml:sources-change-unscanned  skills-janitor vetted per the 699 playbook @ khendzel/skills-janitor c63c3478e (2026-07-13): all 23 admitted files read (13 scripts line-by-line), scanner 0 REFUSE / 30 CHALLENGE (all GitHub-API discovery, waived per-file above) / 5 FLAG (acknowledged); 5 skills grade A, j-rig check 12/12 each; MIT license verified; author account 5 yrs old, repo 108 stars with 4-month organic history
+
 # ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
 # PR whose diff adds it, so it can never persistently waive future source-list
@@ -67,6 +83,28 @@ plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/st
 # is built from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
+
+sources.yaml:sources-change-unscanned  walkie-talkie vetted per the 699 playbook @ walkie-talkie-skill/walkie-talkie 0b74f4d36 (2026-07-13): all 4 admitted files read in full (pure markdown mailbox protocol, zero scripts/hooks/MCP/network/tool grants); scanner 0 REFUSE / 0 CHALLENGE / 0 FLAG; MIT verified; verified stays false — org is 11 days old, pseudonymous, 2-commit same-day history (content-clean, provenance thin); two disclosed-by-design instruction-surface notes acknowledged in the vet record (bootstrap-file shim + peer-writable mailbox instructions)
+
+# ── localplugins brand-forge + content-multiplier — vetted 2026-07-13 @ upstream fe2f4fa2a (PR #1030 intake). ──
+# hooks-mcp tier: each plugin's entire auto-execute surface is ONE SessionStart
+# hook, justified per entry in the vet. brand-forge's dispatcher loops read-only
+# local context emitters (brand/*.json reads + a summary echo; no network, no
+# writes; the GEMINI_API_KEY preflight only tests -z, never prints). content-
+# multiplier's is a 5-line existence-check + hint echo. The only networked module
+# (brand-forge lib/genimage.mjs) POSTs to official Gemini/OpenAI endpoints,
+# opt-in behind BRAND_FORGE_RASTER=1 + a provider key, header-borne, never
+# written to disk.
+plugins/design/brand-forge/hooks/hooks.json:hook-definition  single SessionStart hook (startup|resume) running the plugin-root session-start.sh dispatcher — justified per entry, vetted 2026-07-13 @ fe2f4fa2a
+plugins/design/brand-forge/hooks/session-start.sh:hook-definition  read-only context-emitter dispatcher (brand/*.json reads, no network/writes/env exfil) — read line-by-line 2026-07-13
+plugins/design/brand-forge/.claude-plugin/plugin.json:hook-definition  hooks pointer to the vetted hooks/hooks.json only
+plugins/productivity/content-multiplier/hooks/hooks.json:hook-definition  single SessionStart hook (startup|resume) running the 5-line hint script — justified per entry, vetted 2026-07-13 @ fe2f4fa2a
+plugins/productivity/content-multiplier/hooks/session-start.sh:hook-definition  5-line existence-check + echo hint; set -euo pipefail; no network/env/writes — read line-by-line 2026-07-13
+plugins/productivity/content-multiplier/.claude-plugin/plugin.json:hook-definition  hooks pointer to the vetted hooks/hooks.json only
+plugins/productivity/content-multiplier/docs/ADR.md:allowed-tools-network  false positive — the ADR's table documents WebFetch/WebSearch are NOT declared ("offline by design"); scanner's 20-line window caught the names in prose
+sources.yaml:sources-change-unscanned  brand-forge + content-multiplier vetted per the 699 playbook @ localplugins/plugins fe2f4fa2a (2026-07-13): 40 + 33 admitted files ALL read (hooks command-by-command, scripts line-by-line); scanner 0 REFUSE both (brand-forge 3 CHALLENGE = its hook surface, 4 FLAG = Bash(node:*) scoped grants; content-multiplier 4 CHALLENGE = hook surface + 1 ADR false positive); all skills j-rig 12/12, full IS 8-field frontmatter; MIT verified; org is 6 days old (raised-bar vet: full read at pinned SHA); hooks-mcp tier — drift quarantine carries per-entry re-approval weight
+
+sources.yaml:sources-change-unscanned  quit-sponsor vetted per the 699 playbook @ metrox-eth/quit-sponsor 8d998db11 (2026-07-13): all 5 admitted files read in full (pure-prose cessation protocol, zero scripts/hooks/MCP/network); scanner 0 REFUSE / 0 CHALLENGE / 0 FLAG; unicode-hygiene --strict clean; j-rig check 12/12; MIT verified; author account ~7 yrs, real identity, organic history
 
 # ── skill-creator / agent-creator: creator-skill documentation shows hooks syntax. ──
 # These are fenced frontmatter-reference examples inside the creators' own docs

@@ -1470,6 +1470,45 @@ sources:
       - 'contrib/**'
 
   # ============================================================
+  # skills-janitor (khendzel)
+  # https://github.com/khendzel/skills-janitor
+  # ============================================================
+
+  - name: skills-janitor
+    description: Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)
+    repo: khendzel/skills-janitor
+    source_path: .
+    target_path: plugins/community/skills-janitor
+    author:
+      name: Krzysztof Hendzel
+      github: khendzel
+      email: krzysztoff.hendzel@gmail.com
+    license: MIT
+    category: community
+    verified: true
+    keywords:
+      - skills
+      - cleanup
+      - context-window
+      - token-budget
+      - maintenance
+      - tui
+    include:
+      - '/.claude-plugin/marketplace.json'
+      - '/skills/**'
+      - '/scripts/**'
+      - '/README.md'
+      - '/CHANGELOG.md'
+      - '/LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'demo-deck.json'
+      - '*.png'
+      - '*.gif'
+
+  # ============================================================
   # ServiceGraph (Artur Briugeman / nostrband)
   # https://github.com/nostrband/ServiceGraph
   # Agent-skills front-end to servicegraph.co's metrics-enriched
@@ -1550,6 +1589,117 @@ sources:
       - 'skills/schedule-after-usage-reset/SKILL.md'
       - 'README.md'
       - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
+  # walkie-talkie (cross-platform agent comms + handoff grill)
+  # https://github.com/walkie-talkie-skill/walkie-talkie
+  # ============================================================
+
+  - name: walkie-talkie
+    description: Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs
+    repo: walkie-talkie-skill/walkie-talkie
+    source_path: .
+    target_path: plugins/community/walkie-talkie
+    author:
+      name: Walkie-Talkie Maintainers
+      github: walkie-talkie-skill
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/SKILL.md'
+      - '/README.md'
+      - '/PROTOCOL_TEMPLATE.md'
+      - '/LICENSE'
+    exclude:
+      - '.git/**'
+      - '.github/**'
+
+  - name: brand-forge
+    description: Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.
+    repo: localplugins/plugins
+    source_path: brand-forge
+    target_path: plugins/design/brand-forge
+    author:
+      name: localplugins
+      github: Local-Plugins
+      email: localplugins@proton.me
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/lib/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '**/.DS_Store'
+      # Reference-only PNGs: session-start.sh + brand-status.md glob lib/context/*
+      # and pass every entry to bash — exclude non-script assets from that
+      # auto-execute directory (least-privilege; vet 2026-07-13 @ fe2f4fa2a).
+      - 'lib/context/*.png'
+  - name: content-multiplier
+    description: Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.
+    repo: localplugins/plugins
+    source_path: content-multiplier
+    target_path: plugins/productivity/content-multiplier
+    author:
+      name: localplugins
+      github: Local-Plugins
+      email: localplugins@proton.me
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '**/.DS_Store'
+
+  # ============================================================
+  # quit-sponsor (metr0x)
+  # https://github.com/metrox-eth/quit-sponsor
+  # ============================================================
+
+  - name: quit-sponsor
+    description: Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree
+    repo: metrox-eth/quit-sponsor
+    source_path: .
+    target_path: plugins/community/quit-sponsor
+    author:
+      name: metr0x
+      github: metrox-eth
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/SKILL.md'
+      - '/README.md'
+      - '/SAFETY.md'
+      - '/references.md'
+      - '/LICENSE'
     exclude:
       - 'node_modules/**'
       - '.git/**'
