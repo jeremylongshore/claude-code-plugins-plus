@@ -6,7 +6,7 @@ Complete reference for SKILL.md and agent frontmatter fields.
 
 ---
 
-## Skill Frontmatter — Anthropic Standard (11 fields)
+## Skill Frontmatter — Anthropic Standard (12 fields)
 
 ### name
 
@@ -104,6 +104,23 @@ Bash(chmod:*)     # Permission changes
 Bash(curl:*)      # HTTP requests
 Bash(npx:*)       # npx execution
 Bash(pnpm:*)      # pnpm commands
+```
+
+### disallowed-tools
+
+- **Type**: string (comma-delimited) or YAML list of tool patterns
+- **Schema**: 3.7.0+ — optional, omit by default
+- **Purpose**: Defense-in-depth denylist. Removes the listed tools from the model while the skill is active, layered on top of the `allowed-tools` allowlist (parallel to it, not a replacement)
+- **When to use**: The skill legitimately needs broad `allowed-tools` but should never reach for specific high-risk operations — `rm`, `curl` to arbitrary hosts, `.env` file edits, system-config writes
+- **Cross-field rule**: A pattern appearing in BOTH `allowed-tools` AND `disallowed-tools` is a validator ERROR
+- **Naming**: Skills use kebab-case `disallowed-tools`; agents use camelCase `disallowedTools`. The validator rejects either mismatch — never copy-paste between agent and skill frontmatter without renaming
+
+```yaml
+# String form
+disallowed-tools: "Bash(rm:*),Bash(curl:*),Bash(wget:*),Bash(sudo:*)"
+
+# YAML list form
+disallowed-tools: [Bash(rm:*), Bash(curl:*), Edit(.env), Edit(.env.*), Write(.env), Write(.env.*)]
 ```
 
 ### model
@@ -270,13 +287,13 @@ tags: [devops, ci, automation]
 tags: [security, python, code-review]
 ```
 
-**Total skill frontmatter**: 16 fields (11 Anthropic + 5 enterprise)
+**Total skill frontmatter**: 17 fields (12 Anthropic + 5 enterprise)
 
 ---
 
 ## Agent Frontmatter — Anthropic Standard (14 fields)
 
-Agent files live in `agents/*.md`. Key difference from skills: agents use `disallowedTools` (denylist) while skills use `allowed-tools` (allowlist).
+Agent files live in `agents/*.md`. Field-naming warning: agents use camelCase `disallowedTools` (canonical sub-agents spec); skills use `allowed-tools` (allowlist) plus optional kebab-case `disallowed-tools` (schema 3.7.0+). The validator rejects either mismatch — never copy-paste between agent and skill frontmatter without renaming.
 
 ### name
 

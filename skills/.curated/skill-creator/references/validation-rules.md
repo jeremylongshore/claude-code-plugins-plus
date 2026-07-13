@@ -105,6 +105,7 @@ compatible-with: claude-code, cursor
 tags: [devops, ci]
 
 # Optional (Anthropic spec)
+disallowed-tools: "Bash(rm:*)"   # Schema 3.7.0+ denylist (kebab-case on skills) — overlap with allowed-tools = ERROR
 model: sonnet                     # sonnet | haiku | opus | inherit
 effort: low                      # low | medium | high | max (max requires Opus 4.6)
 context: fork                    # Must be "fork" if present
@@ -311,7 +312,7 @@ Anthropic defines 14 valid fields for agents. `name` and `description` are REQUI
 | `model` | No | `sonnet`, `haiku`, `opus`, or valid model ID |
 | `effort` | No | `low`, `medium`, `high` |
 | `maxTurns` | No | Positive integer, controls autonomous iteration |
-| `disallowedTools` | No | Array of tool names (denylist — opposite of skills' `allowed-tools`) |
+| `disallowedTools` | No | Array of tool names (denylist — camelCase on agents; skills use kebab-case `disallowed-tools`) |
 | `permissionMode` | No | `default` — standalone agents only, NOT plugin agents |
 
 ### Context-Aware Rules

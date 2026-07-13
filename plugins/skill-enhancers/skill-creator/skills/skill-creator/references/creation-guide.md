@@ -41,6 +41,26 @@ allowed-tools: "{scoped tools}"
 model: inherit
 ```
 
+**Optional: `disallowed-tools` (schema 3.7.0+):**
+
+Defense-in-depth denylist layered on top of the `allowed-tools` allowlist. Declare it when the
+skill legitimately needs broad Bash but should never reach for high-risk operations (`rm`,
+`curl` to arbitrary hosts, `.env` file edits, system-config writes):
+
+```yaml
+disallowed-tools: [Bash(rm:*), Bash(curl:*), Bash(wget:*), Bash(sudo:*), Edit(.env), Edit(.env.*), Write(.env), Write(.env.*)]
+```
+
+Rules:
+
+- A pattern must never appear in BOTH `allowed-tools` and `disallowed-tools` — the marketplace
+  validator reports the overlap as an ERROR.
+- Default is to omit the field — only declare it when the allowlist is broad enough to warrant
+  a denylist.
+- Naming parallel: skills use kebab-case `disallowed-tools`; agents use camelCase
+  `disallowedTools`. The validator rejects either mismatch — never copy-paste between agent
+  and skill frontmatter without renaming.
+
 Optional Claude Code extensions:
 
 ```yaml
