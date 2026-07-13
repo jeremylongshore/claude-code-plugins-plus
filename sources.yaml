@@ -1580,6 +1580,65 @@ sources:
       - '.git/**'
       - '.github/**'
 
+  - name: brand-forge
+    description: Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.
+    repo: localplugins/plugins
+    source_path: brand-forge
+    target_path: plugins/design/brand-forge
+    author:
+      name: localplugins
+      github: Local-Plugins
+      email: localplugins@proton.me
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/lib/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '**/.DS_Store'
+      # Reference-only PNGs: session-start.sh + brand-status.md glob lib/context/*
+      # and pass every entry to bash — exclude non-script assets from that
+      # auto-execute directory (least-privilege; vet 2026-07-13 @ fe2f4fa2a).
+      - 'lib/context/*.png'
+  - name: content-multiplier
+    description: Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.
+    repo: localplugins/plugins
+    source_path: content-multiplier
+    target_path: plugins/productivity/content-multiplier
+    author:
+      name: localplugins
+      github: Local-Plugins
+      email: localplugins@proton.me
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '**/.DS_Store'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
