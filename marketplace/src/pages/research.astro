@@ -71,7 +71,6 @@ const domains = [
   },
 ];
 
-const totalDocs = domains.reduce((sum, d) => sum + d.docs.length, 0);
 const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.ready).length, 0);
 ---
 
@@ -97,8 +96,8 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-              <div class="stat-number">{totalDocs}</div>
-              <div class="stat-label">Documents</div>
+              <div class="stat-number">{readyDocs}</div>
+              <div class="stat-label">Published</div>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">

@@ -29,10 +29,6 @@ const installCommand = `/plugin install ${skill.parentPlugin.name}@claude-code-p
 const compatibleWith: string[] = (skill as any).compatibleWith || [];
 
 // Stats bar items
-const statsItems: Array<{ label: string; value: string }> = [];
-if (skill.allowedTools?.length) statsItems.push({ label: 'Tools', value: String(skill.allowedTools.length) });
-statsItems.push({ label: 'Plugin', value: skill.parentPlugin.name });
-statsItems.push({ label: 'Category', value: skill.parentPlugin.category.replace(/-/g, ' ') });
 
 // Related skills — 6 from same category, with tool pills
 const relatedSkills = (skillsCatalog as any).skills
@@ -114,48 +110,6 @@ const cleanTools = (tools: string[]) =>
       border-radius: var(--radius-sm);
       color: var(--text-2, var(--brand-mid-gray));
       border: 1px solid var(--rule, var(--border));
-    }
-
-    /* Stats Bar */
-    .stats-bar {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      padding: 1rem 1.5rem;
-      background: var(--surface-2, var(--card));
-      border: 1px solid var(--border, var(--brand-light-gray));
-      border-radius: var(--radius-lg);
-      margin-bottom: 1.5rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-    }
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-      white-space: nowrap;
-    }
-
-    .stat-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text, var(--brand-dark));
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--text-3, var(--brand-mid-gray));
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .stats-divider {
-      width: 1px;
-      height: 2rem;
-      background: var(--border, var(--brand-light-gray));
-      flex-shrink: 0;
     }
 
     .section-box {
@@ -507,11 +461,6 @@ const cleanTools = (tools: string[]) =>
       .plugin-info {
         flex-direction: column;
       }
-
-      .stats-bar {
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-      }
     }
   </style>
 
@@ -567,21 +516,6 @@ const cleanTools = (tools: string[]) =>
         </div>
       )}
     </header>
-
-    <!-- 3. Stats Bar -->
-    {statsItems.length > 0 && (
-      <div class="stats-bar">
-        {statsItems.map((stat, i) => (
-          <>
-            {i > 0 && <span class="stats-divider" aria-hidden="true" />}
-            <div class="stat-item">
-              <span class="stat-value">{stat.value}</span>
-              <span class="stat-label">{stat.label}</span>
-            </div>
-          </>
-        ))}
-      </div>
-    )}
 
     <!-- 4. Allowed Tools -->
     <section class="section-box">

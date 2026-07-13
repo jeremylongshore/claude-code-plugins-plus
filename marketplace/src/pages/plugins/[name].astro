@@ -26,14 +26,6 @@ const installCommand = `/plugin install ${plugin.name}@${MARKETPLACE_SLUG}`;
 
 const readme = (readmeSections as any)[plugin.name] || null;
 
-const formatPricing = (pricing: any) => {
-  if (!pricing) return 'Free';
-  if (pricing.model === 'one-time') {
-    return `$${pricing.price} ${pricing.currency} (one-time)`;
-  }
-  return `$${pricing.price} ${pricing.currency}/${pricing.model}`;
-};
-
 const formatComponents = (components: any) => {
   if (!components) return [];
   const items = [];
@@ -73,7 +65,6 @@ if (plugin.components?.commands) statsItems.push({ label: 'Commands', value: Str
 if (plugin.components?.agents) statsItems.push({ label: 'Agents', value: String(plugin.components.agents) });
 if (plugin.mcpTools) statsItems.push({ label: 'MCP Tools', value: String(plugin.mcpTools) });
 statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
-statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
 ---
 
 <BaseLayout title={`${plugin.name} | Claude Code Plugins`} description={plugin.description}>

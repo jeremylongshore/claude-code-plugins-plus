@@ -66,61 +66,33 @@ const collectionSchema = {
         "@type": "SoftwareApplication",
         "position": 2,
         "name": "search-to-slack",
-        "description": "Automated research digests sent to Slack channels (Pro Tier)",
+        "description": "Automated research digests sent to Slack channels (roadmap)",
         "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Cross-platform",
-        "offers": {
-          "@type": "Offer",
-          "price": "19.00",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "eligibleCustomerType": "Pro Sponsors"
-        }
+        "operatingSystem": "Cross-platform"
       },
       {
         "@type": "SoftwareApplication",
         "position": 3,
         "name": "file-to-code",
-        "description": "Requirements to production code automation (Pro Tier)",
+        "description": "Requirements to production code automation (roadmap)",
         "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Cross-platform",
-        "offers": {
-          "@type": "Offer",
-          "price": "19.00",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "eligibleCustomerType": "Pro Sponsors"
-        }
+        "operatingSystem": "Cross-platform"
       },
       {
         "@type": "SoftwareApplication",
         "position": 4,
         "name": "calendar-to-workflow",
-        "description": "Meeting preparation automation from calendar events (Pro Tier)",
+        "description": "Meeting preparation automation from calendar events (roadmap)",
         "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Cross-platform",
-        "offers": {
-          "@type": "Offer",
-          "price": "19.00",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "eligibleCustomerType": "Pro Sponsors"
-        }
+        "operatingSystem": "Cross-platform"
       },
       {
         "@type": "SoftwareApplication",
         "position": 5,
         "name": "research-to-deploy",
-        "description": "Infrastructure automation from research to deployment (Enterprise Tier)",
+        "description": "Infrastructure automation from research to deployment (roadmap)",
         "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Cross-platform",
-        "offers": {
-          "@type": "Offer",
-          "price": "199.00",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "eligibleCustomerType": "Enterprise Sponsors"
-        }
+        "operatingSystem": "Cross-platform"
       }
     ]
   },
@@ -192,16 +164,8 @@ const collectionSchema = {
 
       <div class="hero-stats">
         <div class="stat">
-          <div class="stat-value">95%</div>
-          <div class="stat-label">Time Saved</div>
-        </div>
-        <div class="stat">
           <div class="stat-value">5</div>
           <div class="stat-label">Plugins</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">3</div>
-          <div class="stat-label">Tiers</div>
         </div>
       </div>
     </div>
@@ -291,10 +255,6 @@ const collectionSchema = {
   <!-- Featured Free Plugin -->
   <section class="section-featured" id="free-plugin">
     <div class="container">
-      <div class="featured-badge">
-        <span class="badge-tier-free">Community tier — free</span>
-      </div>
-
       <h2 class="section-title">Featured: Web to GitHub Issue</h2>
 
       <div class="featured-grid">
@@ -354,7 +314,7 @@ const collectionSchema = {
           <div class="demo-card demo-card-after">
             <div class="demo-header">
               <span class="demo-label">After</span>
-              <span class="demo-time demo-time-saved">30 seconds (95% saved)</span>
+              <span class="demo-time demo-time-saved">30 seconds</span>
             </div>
             <ol class="demo-steps">
               <li>"Research PostgreSQL indexing and create ticket"</li>
@@ -369,16 +329,10 @@ const collectionSchema = {
   <section class="section-premium">
     <div class="container">
       <h2 class="section-title">Premium Skill Enhancers (Roadmap)</h2>
-      <p class="section-intro">
-        Support development as a design partner to help shape these advanced automation plugins for Pro and Enterprise workflows. All items below are on the roadmap and will be built with sponsor input.
-      </p>
 
       <div class="premium-grid">
-        <!-- Pro Tier Plugin 1 -->
+        <!-- Roadmap plugin 1 -->
         <div class="premium-card">
-          <div class="premium-tier">
-            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
-          </div>
           <h3 class="premium-title">search-to-slack</h3>
           <p class="premium-description">
             Automated research digests sent to Slack channels. Schedule daily industry updates,
@@ -392,11 +346,8 @@ const collectionSchema = {
           </ul>
         </div>
 
-        <!-- Pro Tier Plugin 2 -->
+        <!-- Roadmap plugin 2 -->
         <div class="premium-card">
-          <div class="premium-tier">
-            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
-          </div>
           <h3 class="premium-title">file-to-code</h3>
           <p class="premium-description">
             Convert requirements documents into production-ready code with tests, types, and documentation.
@@ -410,11 +361,8 @@ const collectionSchema = {
           </ul>
         </div>
 
-        <!-- Pro Tier Plugin 3 -->
+        <!-- Roadmap plugin 3 -->
         <div class="premium-card">
-          <div class="premium-tier">
-            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
-          </div>
           <h3 class="premium-title">calendar-to-workflow</h3>
           <p class="premium-description">
             Automatically prepare for meetings by creating agendas, gathering relevant documents,
@@ -428,11 +376,8 @@ const collectionSchema = {
           </ul>
         </div>
 
-        <!-- Enterprise Tier Plugin -->
+        <!-- Roadmap plugin 4 -->
         <div class="premium-card premium-card-enterprise">
-          <div class="premium-tier">
-            <span class="tier-badge tier-enterprise">ENTERPRISE TIER - $199/mo</span>
-          </div>
           <h3 class="premium-title">research-to-deploy</h3>
           <p class="premium-description">
             Full-stack automation from research to infrastructure deployment. Evaluates technologies,
@@ -487,7 +432,7 @@ const collectionSchema = {
                 <li>"Research PostgreSQL indexing and create ticket"</li>
                 <li>Plugin creates formatted issue with sources</li>
               </ul>
-              <div class="comparison-time comparison-time-saved">Time: 30 seconds (95% saved)</div>
+              <div class="comparison-time comparison-time-saved">Time: 30 seconds</div>
             </div>
           </div>
         </div>
@@ -509,12 +454,12 @@ const collectionSchema = {
               <div class="comparison-time">Time: 30 minutes/day</div>
             </div>
             <div class="comparison-item comparison-item-better">
-              <div class="comparison-label">With search-to-slack (Pro)</div>
+              <div class="comparison-label">With search-to-slack</div>
               <ul class="comparison-steps">
                 <li>Schedule: "research AI news daily, post to #engineering"</li>
                 <li>Automated digests every morning</li>
               </ul>
-              <div class="comparison-time comparison-time-saved">Time: 0 minutes (100% automated)</div>
+              <div class="comparison-time comparison-time-saved">Time: 0 minutes</div>
             </div>
           </div>
         </div>
@@ -537,21 +482,17 @@ const collectionSchema = {
               <div class="comparison-time">Time: 2-4 hours</div>
             </div>
             <div class="comparison-item comparison-item-better">
-              <div class="comparison-label">With file-to-code (Pro)</div>
+              <div class="comparison-label">With file-to-code</div>
               <ul class="comparison-steps">
                 <li>"Convert requirements.md to production React component"</li>
                 <li>Generates component with tests, types, and docs</li>
               </ul>
-              <div class="comparison-time comparison-time-saved">Time: 5 minutes (90%+ saved)</div>
+              <div class="comparison-time comparison-time-saved">Time: 5 minutes</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="time-saved-summary">
-        <h3 class="summary-title">Average Time Saved Across All Workflows</h3>
-        <div class="summary-stat">93.8%</div>
-      </div>
     </div>
   </section>
 
@@ -851,21 +792,6 @@ export GITHUB_DEFAULT_REPO=owner/repo</code></pre>
     background: var(--panel);
   }
 
-  .featured-badge {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .badge-tier-free {
-    padding: 2px 8px;
-    border: 1px solid var(--rule, var(--brand-light-gray));
-    color: var(--ink-2, var(--brand-mid-gray));
-    border-radius: 0.25rem;
-    font-size: 11px;
-    font-weight: 500;
-    font-family: var(--font-mono);
-  }
-
   .featured-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -1019,29 +945,6 @@ export GITHUB_DEFAULT_REPO=owner/repo</code></pre>
   .premium-card-enterprise:hover {
     border-color: var(--primary);
     
-  }
-
-  .premium-tier {
-    margin-bottom: 1rem;
-  }
-
-  .tier-badge {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .tier-pro {
-    background: var(--primary); color: #0a0a0c;
-    color: #0a0a0c;
-  }
-
-  .tier-enterprise {
-    background: var(--primary); color: #0a0a0c;
-    color: #0a0a0c;
   }
 
   .premium-title {
@@ -1203,33 +1106,6 @@ export GITHUB_DEFAULT_REPO=owner/repo</code></pre>
   .comparison-time-saved {
     color: var(--primary);
     font-weight: 600;
-  }
-
-  .time-saved-summary {
-    text-align: center;
-    margin-top: 3rem;
-    padding: 2rem;
-    background: var(--brand-light);
-    border: 1px solid var(--primary-dark);
-    border-radius: 0.75rem;
-    
-  }
-
-  .summary-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--brand-dark);
-  }
-
-  .summary-stat {
-    font-size: 4rem;
-    font-weight: 800;
-    background: var(--primary); color: #0a0a0c;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-family: var(--font-mono);
   }
 
   /* Installation Steps */

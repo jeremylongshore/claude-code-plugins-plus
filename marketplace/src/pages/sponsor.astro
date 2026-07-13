@@ -1,5 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+// Live catalog counts — same build-time source the homepage and explore use.
+const totalPlugins = searchIndex.stats.totalPlugins;
+const totalSkills = searchIndex.stats.totalSkills;
 
 const seo = {
   title: "Sponsor Claude Code Plugins - Custom AI Skills & Plugin Development",
@@ -600,36 +605,6 @@ const seo = {
         margin-top: 1rem;
       }
 
-      /* Final CTA */
-      .final-cta {
-        background: var(--primary);
-        padding: 4rem 1rem;
-        text-align: center;
-        color: #0a0a0c;
-      }
-
-      .final-cta h2 {
-        font-size: clamp(2rem, 4vw, 2.5rem);
-        font-weight: 800;
-        margin-bottom: 1rem;
-        color: #0a0a0c;
-      }
-
-      .final-cta p {
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
-        opacity: 0.95;
-      }
-
-      .final-cta .cta-primary {
-        background: var(--brand-light);
-        color: var(--brand-orange);
-      }
-
-      .final-cta .cta-primary:hover {
-        background: rgba(250, 249, 245, 0.9);
-      }
-
       /* Responsive */
       @media (max-width: 768px) {
         .sponsor-hero {
@@ -679,11 +654,11 @@ const seo = {
 
         <div class="sponsor-hero-stats">
           <div class="stat-item">
-            <div class="stat-number">313</div>
+            <div class="stat-number">{totalPlugins}</div>
             <div class="stat-label">Community Plugins</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">1,500+</div>
+            <div class="stat-number">{totalSkills.toLocaleString('en-US')}</div>
             <div class="stat-label">AI Skills</div>
           </div>
           <div class="stat-item">
@@ -767,7 +742,7 @@ const seo = {
           <div class="success-card">
             <div class="success-industry">Automotive SaaS</div>
             <h3 class="success-title">DiagnosticPro</h3>
-            <p class="success-result">Automated diagnostic service ($4.99/diagnostic)</p>
+            <p class="success-result">Automated diagnostic service</p>
             <p class="success-tech"><strong>Tech:</strong> Firebase + Vertex AI Gemini + Claude Code plugins</p>
             <p class="success-quote">
               "Claude Code plugins saved 40+ hours in development time"
@@ -783,20 +758,6 @@ const seo = {
               "From idea to production using Claude Code automation"
             </p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="final-cta">
-      <div class="container">
-        <h2>Interested in Sponsoring?</h2>
-        <p>Let's talk about what makes sense for your team.</p>
-        <a href="mailto:jeremy@intentsolutions.io?subject=Sponsorship%20Inquiry" class="cta-primary">
-          Email Me for Details
-        </a>
-        <div style="margin-top: 1.5rem; opacity: 0.9;">
-          jeremy@intentsolutions.io
         </div>
       </div>
     </section>

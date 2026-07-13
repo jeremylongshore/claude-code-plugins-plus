@@ -164,8 +164,6 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
                 <p class="card-description">{playbook.description}</p>
                 <div class="card-meta">
                   <span class="meta-item">~{Math.round(playbook.wordCount / 200)} min read</span>
-                  <span class="meta-divider">•</span>
-                  <span class="meta-item">{playbook.wordCount.toLocaleString()} words</span>
                 </div>
               </a>
             ))}
@@ -188,8 +186,6 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
               <p class="card-description">{playbook.description}</p>
               <div class="card-meta">
                 <span class="meta-item">~{Math.round(playbook.wordCount / 200)} min read</span>
-                <span class="meta-divider">•</span>
-                <span class="meta-item">{playbook.wordCount.toLocaleString()} words</span>
               </div>
             </a>
           ))}
@@ -428,10 +424,6 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       color: var(--brand-mid-gray);
       padding-top: 1rem;
       border-top: 1px solid var(--brand-light-gray);
-    }
-
-    .meta-divider {
-      color: var(--brand-light-gray);
     }
 
     /* Footer Section */

@@ -55,8 +55,6 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
           <p class="playbook-description">{description}</p>
           <div class="playbook-meta">
             <span class="meta-item">~{Math.round(wordCount / 200)} min read</span>
-            <span class="meta-divider">•</span>
-            <span class="meta-item">{wordCount.toLocaleString()} words</span>
           </div>
         </div>
       </div>
@@ -174,7 +172,6 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       color: var(--text-3, var(--brand-mid-gray));
     }
 
-    .meta-divider { color: var(--border, var(--brand-light-gray)); }
 
     /* Main layout */
     .playbook-main { flex: 1; padding: 3rem 0; }
