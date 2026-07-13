@@ -1639,6 +1639,33 @@ sources:
       - '.git/**'
       - '**/.DS_Store'
 
+  # ============================================================
+  # quit-sponsor (metr0x)
+  # https://github.com/metrox-eth/quit-sponsor
+  # ============================================================
+
+  - name: quit-sponsor
+    description: Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree
+    repo: metrox-eth/quit-sponsor
+    source_path: .
+    target_path: plugins/community/quit-sponsor
+    author:
+      name: metr0x
+      github: metrox-eth
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - '/SKILL.md'
+      - '/README.md'
+      - '/SAFETY.md'
+      - '/references.md'
+      - '/LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
