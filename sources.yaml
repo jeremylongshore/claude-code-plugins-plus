@@ -1566,23 +1566,27 @@ sources:
       email: localplugins@proton.me
     license: MIT
     category: design
-    verified: false
+    verified: true
     include:
-      - '.claude-plugin/**'
-      - 'skills/**'
-      - 'commands/**'
-      - 'agents/**'
-      - 'hooks/**'
-      - 'lib/**'
-      - 'templates/**'
-      - 'docs/**'
-      - 'assets/**'
-      - 'README.md'
-      - 'LICENSE'
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/lib/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
+      - '/LICENSE'
     exclude:
       - 'node_modules/**'
       - '.git/**'
       - '**/.DS_Store'
+      # Reference-only PNGs: session-start.sh + brand-status.md glob lib/context/*
+      # and pass every entry to bash — exclude non-script assets from that
+      # auto-execute directory (least-privilege; vet 2026-07-13 @ fe2f4fa2a).
+      - 'lib/context/*.png'
   - name: content-multiplier
     description: Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.
     repo: localplugins/plugins
@@ -1594,18 +1598,17 @@ sources:
       email: localplugins@proton.me
     license: MIT
     category: productivity
-    verified: false
+    verified: true
     include:
-      - '.claude-plugin/**'
-      - 'skills/**'
-      - 'commands/**'
-      - 'agents/**'
-      - 'hooks/**'
-      - 'templates/**'
-      - 'docs/**'
-      - 'assets/**'
-      - 'README.md'
-      - 'LICENSE'
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/commands/**'
+      - '/agents/**'
+      - '/hooks/**'
+      - '/templates/**'
+      - '/docs/**'
+      - '/assets/**'
+      - '/README.md'
     exclude:
       - 'node_modules/**'
       - '.git/**'

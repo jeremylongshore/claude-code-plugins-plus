@@ -67,3 +67,21 @@ plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/st
 # is built from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
+
+# ── localplugins brand-forge + content-multiplier — vetted 2026-07-13 @ upstream fe2f4fa2a (PR #1030 intake). ──
+# hooks-mcp tier: each plugin's entire auto-execute surface is ONE SessionStart
+# hook, justified per entry in the vet. brand-forge's dispatcher loops read-only
+# local context emitters (brand/*.json reads + a summary echo; no network, no
+# writes; the GEMINI_API_KEY preflight only tests -z, never prints). content-
+# multiplier's is a 5-line existence-check + hint echo. The only networked module
+# (brand-forge lib/genimage.mjs) POSTs to official Gemini/OpenAI endpoints,
+# opt-in behind BRAND_FORGE_RASTER=1 + a provider key, header-borne, never
+# written to disk.
+plugins/design/brand-forge/hooks/hooks.json:hook-definition  single SessionStart hook (startup|resume) running the plugin-root session-start.sh dispatcher — justified per entry, vetted 2026-07-13 @ fe2f4fa2a
+plugins/design/brand-forge/hooks/session-start.sh:hook-definition  read-only context-emitter dispatcher (brand/*.json reads, no network/writes/env exfil) — read line-by-line 2026-07-13
+plugins/design/brand-forge/.claude-plugin/plugin.json:hook-definition  hooks pointer to the vetted hooks/hooks.json only
+plugins/productivity/content-multiplier/hooks/hooks.json:hook-definition  single SessionStart hook (startup|resume) running the 5-line hint script — justified per entry, vetted 2026-07-13 @ fe2f4fa2a
+plugins/productivity/content-multiplier/hooks/session-start.sh:hook-definition  5-line existence-check + echo hint; set -euo pipefail; no network/env/writes — read line-by-line 2026-07-13
+plugins/productivity/content-multiplier/.claude-plugin/plugin.json:hook-definition  hooks pointer to the vetted hooks/hooks.json only
+plugins/productivity/content-multiplier/docs/ADR.md:allowed-tools-network  false positive — the ADR's table documents WebFetch/WebSearch are NOT declared ("offline by design"); scanner's 20-line window caught the names in prose
+sources.yaml:sources-change-unscanned  brand-forge + content-multiplier vetted per the 699 playbook @ localplugins/plugins fe2f4fa2a (2026-07-13): 40 + 33 admitted files ALL read (hooks command-by-command, scripts line-by-line); scanner 0 REFUSE both (brand-forge 3 CHALLENGE = its hook surface, 4 FLAG = Bash(node:*) scoped grants; content-multiplier 4 CHALLENGE = hook surface + 1 ADR false positive); all skills j-rig 12/12, full IS 8-field frontmatter; MIT verified; org is 6 days old (raised-bar vet: full read at pinned SHA); hooks-mcp tier — drift quarantine carries per-entry re-approval weight
