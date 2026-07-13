@@ -67,3 +67,12 @@ plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/st
 # is built from tool output. Authored in-repo (not a synced mirror). Reviewed 2026-07-12.
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
+
+# ── skill-creator / agent-creator: creator-skill documentation shows hooks syntax. ──
+# These are fenced frontmatter-reference examples inside the creators' own docs
+# (what a hooks: block looks like), not hook definitions the plugin executes.
+# Surfaced 2026-07-13 when PR #1043 edited the files (changed-file scan covers
+# the whole file, so pre-existing example blocks graded too).
+plugins/skill-enhancers/skill-creator/skills/agent-creator/SKILL.md:hook-definition  fenced example of standalone-agent frontmatter fields (hooks: {} placeholder) in creator documentation
+plugins/skill-enhancers/skill-creator/skills/skill-creator/references/frontmatter-spec.md:hook-definition  fenced example of the skill hooks: field shape in the frontmatter reference
+plugins/skill-enhancers/skill-creator/skills/skill-creator/references/validation-rules.md:hook-definition  fenced example of a valid hooks: object in the validation-rules reference
