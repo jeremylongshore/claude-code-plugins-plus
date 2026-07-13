@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=82.0.1", "wheel"]
+requires = ["setuptools>=83.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "hermes-tweet"
 version = "0.1.6"
-description = "Native Hermes Agent plugin for X/Twitter automation through Xquik"
+description = "Native Hermes Agent plugin for X/Twitter automation through Xquik. Not affiliated with X Corp."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -82,6 +82,7 @@ hermes_tweet = [
   "plugin.yaml",
   "catalog_data.json",
   "skills/hermes-tweet/SKILL.md",
+  "skills/hermes-tweet/references/*.md",
 ]
 
 [tool.ruff]

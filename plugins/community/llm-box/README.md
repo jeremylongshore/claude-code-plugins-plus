@@ -19,17 +19,7 @@
     </a>
   </p>
 
-<p>
-  <strong>English</strong> |
-  <a href="README.zh-CN.md">中文</a> |
-  <a href="README.ru.md">Русский</a> |
-  <a href="README.fr.md">Français</a> |
-  <a href="README.ja.md">日本語</a> |
-  <a href="README.ko.md">한국어</a> |
-  <a href="README.es.md">Español</a> |
-  <a href="README.ar.md">العربية</a> |
-  <a href="README.hi.md">हिन्दी</a>
-</p>
+
 </div>
 
 ---
@@ -89,11 +79,19 @@ Most workflow tools force developers to choose between:
 - **Plain English Workflows** - Define what you want, not how to do it
 - **Single Binary** - Zero dependencies, install and run
 - **Workflow Reusability** - Save, version, and share your workflows
-- **Multi-LLM Support** - Ollama (local), DeepSeek API (cloud), and more
+- **Multi-LLM Support** - Ollama (local), DeepSeek API (cloud), and 15+ providers
 - **Extensible Node System** - Build custom nodes in any language
 - **MIT Licensed** - Open source, use freely
 - **Cross Platform** - Linux, macOS, Windows supported
 - **Beautiful TUI** - Real-time progress feedback
+- **Distributed Execution** - Scale workflows across multiple nodes with Coordinator/Worker architecture
+- **Web UI Editor** - Visual workflow editor with Mermaid/JSON/DOT/ASCII preview
+- **Automatic Updates** - Self-upgrade to latest version with one command
+- **MCP (Model Context Protocol)** - Connect external tools and services
+- **Workflow Visualizer** - Generate diagrams from workflow YAML
+- **Plugin System** - Extend functionality with community plugins
+- **Secrets Management** - Securely store API keys and credentials
+- **Audit Logging** - Track all command executions for compliance
 
 ---
 
@@ -126,49 +124,55 @@ Most workflow tools force developers to choose between:
 ## 🔧 Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        User (Terminal)                      │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                        User Interfaces                             │
+│  ┌──────────────────────┐  ┌────────────────────────────────────┐  │
+│  │      Terminal CLI    │  │            Web UI Editor           │  │
+│  │   llm-box create/run │  │  Visual workflow builder & preview │  │
+│  └──────────────────────┘  └────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+                             │                    │
+                             ▼                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                  Natural Language Parser + Task Planner            │
+│            "Fetch HN stories and summarize" → Executable Steps    │
+└─────────────────────────────────────────────────────────────────────┘
+                             │
+          ┌──────────────────┼──────────────────┐
+          ▼                  ▼                  ▼
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│   Coordinator   │  │   Coordinator   │  │   Coordinator   │
+│  (Node Manager) │  │  (Task Router)  │  │  (Heartbeat)    │
+└─────────────────┘  └─────────────────┘  └─────────────────┘
+          │                  │                  │
+          └──────────────────┼──────────────────┘
+                             ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     Distributed Worker Nodes                       │
+│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐ ┌────────┐ │
+│  │fetch_url │ │transform  │ │execute_cmd │ │file_write │ │  LLM   │ │
+│  └──────────┘ └───────────┘ └────────────┘ └───────────┘ └────────┘ │
+│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐ ┌────────┐ │
+│  │http_req  │ │json_parse │ │template    │ │secrets    │ │plugins │ │
+│  └──────────┘ └───────────┘ └────────────┘ └───────────┘ └────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
                              │
                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Natural Language Parser                   │
-│            "Fetch HN stories and summarize"               │
-└─────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Task Planner                           │
-│         Convert intent into executable steps              │
-└─────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Execution Engine                          │
-│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐ │
-│  │fetch_url │ │transform  │ │execute_cmd │ │file_write│ │
-│  └──────────┘ └───────────┘ └────────────┘ └───────────┘ │
-│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐ │
-│  │ollama    │ │deepseek   │ │notify     │ │combine     │ │
-│  └──────────┘ └───────────┘ └────────────┘ └───────────┘ │
-│  ┌──────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐ │
-│  │transform │ │execute    │ │file_write  │ │custom node│ │
-│  └──────────┘ └───────────┘ └────────────┘ └───────────┘ │
-└─────────────────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                       Output                              │
-│                 (Terminal / File / Notification)         │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                       Output + Visualization                        │
+│            (Terminal / File / Notification / Mermaid Diagram)      │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 **Components:**
 1. **Parser** - Interprets plain English commands
-2. **Planner** - Breaks down into steps
-3. **Engine** - Executes with dependency management
-4. **Nodes** - Built-in and extensible actions
-5. **Output** - Formatted results
+2. **Planner** - Breaks down into executable steps
+3. **Coordinator** - Manages distributed nodes, assigns tasks, monitors heartbeats
+4. **Workers** - Execute workflow steps across multiple machines
+5. **Nodes** - Built-in and extensible actions (20+ utility nodes)
+6. **Web UI** - Visual workflow editor with real-time preview
+7. **Visualizer** - Generates Mermaid/JSON/DOT/ASCII diagrams
+8. **Output** - Formatted results to terminal, file, or notifications
 
 ---
 
@@ -1065,7 +1069,7 @@ export OPENAI_API_BASE="https://openrouter.ai/api/v1"
 - [x] Built-in nodes (fetch_url, file_write, ollama)
 - [x] Terminal UI
 
-### v0.2 - Multi-LLM & Plugin System
+### v0.2 - Multi-LLM & Plugin System ✓
 - [x] DeepSeek API node support
 - [x] Coze API node support
 - [x] Zhipu GLM API node support
@@ -1082,19 +1086,30 @@ export OPENAI_API_BASE="https://openrouter.ai/api/v1"
 - [x] Universal OpenAI-compatible node (any provider)
 - [x] More utility nodes: file_read, json_parse, template_render, http_request
 - [x] FastGPT knowledge base platform integration
-- [ ] Plugin system for custom nodes
-- [ ] Workflow template library
-- [ ] Workflow sharing via URL
+- [x] Plugin system for custom nodes
+- [x] Workflow template library
+- [x] Workflow sharing via URL
 
-### v0.3 - Team Features
+### v0.3 - Distributed & Web UI ✓
+- [x] Distributed execution (Coordinator/Worker architecture)
+- [x] Web UI workflow editor
+- [x] Workflow visualizer (Mermaid/JSON/DOT/ASCII)
+- [x] Automatic updates engine
+- [x] MCP (Model Context Protocol) support
+- [x] Secrets management
+- [x] Audit logging
+- [x] Scheduled workflows
+- [x] Tenant isolation
+
+### v0.4 - Team Features
 - [ ] Team workflow repository
 - [ ] Workflow versioning
 - [ ] Cloud sync (optional)
 
-### v0.4 - Enterprise
+### v0.5 - Enterprise
 - [ ] Access control
-- [ ] Audit logging
-- [ ] Scheduled workflows
+- [ ] Advanced audit logging
+- [ ] High availability mode
 
 ### v1.0 - Stable
 - [ ] Production readiness

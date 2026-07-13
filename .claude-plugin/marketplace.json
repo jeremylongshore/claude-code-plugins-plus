@@ -9058,6 +9058,121 @@
       "homepage": "https://github.com/el-zachariah/ai-agent-safety-starter-pack#readme",
       "repository": "https://github.com/el-zachariah/ai-agent-safety-starter-pack",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "skills-janitor",
+      "source": "./plugins/community/skills-janitor",
+      "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
+      "version": "0.1.0",
+      "category": "community",
+      "keywords": [
+        "skills",
+        "cleanup",
+        "context-window",
+        "token-budget",
+        "maintenance",
+        "tui"
+      ],
+      "author": {
+        "name": "Krzysztof Hendzel",
+        "url": "https://github.com/khendzel",
+        "email": "krzysztoff.hendzel@gmail.com"
+      },
+      "repository": "https://github.com/khendzel/skills-janitor",
+      "license": "MIT"
+    },
+    {
+      "name": "walkie-talkie",
+      "source": "./plugins/community/walkie-talkie",
+      "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
+      "version": "0.1.0",
+      "category": "community",
+      "author": {
+        "name": "Walkie-Talkie Maintainers",
+        "url": "https://github.com/walkie-talkie-skill"
+      },
+      "repository": "https://github.com/walkie-talkie-skill/walkie-talkie",
+      "license": "MIT"
+    },
+    {
+      "name": "brand-forge",
+      "source": "./plugins/design/brand-forge",
+      "description": "Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.",
+      "version": "0.5.1",
+      "category": "design",
+      "keywords": [
+        "branding",
+        "logo",
+        "brand-identity",
+        "design",
+        "svg",
+        "templates",
+        "image-generation"
+      ],
+      "author": {
+        "name": "localplugins",
+        "email": "localplugins@proton.me"
+      },
+      "homepage": "https://github.com/localplugins/plugins/tree/main/brand-forge",
+      "repository": "https://github.com/localplugins/plugins",
+      "license": "MIT"
+    },
+    {
+      "name": "content-multiplier",
+      "source": "./plugins/productivity/content-multiplier",
+      "description": "Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.",
+      "version": "0.2.1",
+      "category": "productivity",
+      "keywords": [
+        "marketing",
+        "content",
+        "repurposing",
+        "brand-voice",
+        "localization",
+        "social-media"
+      ],
+      "author": {
+        "name": "localplugins",
+        "email": "localplugins@proton.me"
+      },
+      "homepage": "https://github.com/localplugins/plugins/tree/main/content-multiplier",
+      "repository": "https://github.com/localplugins/plugins",
+      "license": "MIT"
+    },
+    {
+      "name": "quit-sponsor",
+      "source": "./plugins/community/quit-sponsor",
+      "description": "Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree",
+      "version": "0.1.0",
+      "category": "community",
+      "author": {
+        "name": "metr0x",
+        "url": "https://github.com/metrox-eth"
+      },
+      "repository": "https://github.com/metrox-eth/quit-sponsor",
+      "license": "MIT"
     }
   ]
 }

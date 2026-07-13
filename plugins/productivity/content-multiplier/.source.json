@@ -1,0 +1,51 @@
+{
+  "synced_from": {
+    "repo": "localplugins/plugins",
+    "path": "content-multiplier",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-13T17:27:25.085Z",
+  "author": {
+    "name": "localplugins",
+    "github": "Local-Plugins",
+    "email": "localplugins@proton.me"
+  },
+  "license": "MIT",
+  "files_synced": 34,
+  "files": [
+    ".claude-plugin/plugin.json",
+    "README.md",
+    "agents/brand-guardian.md",
+    "agents/strategist.md",
+    "assets/how-it-works.svg",
+    "commands/brand-setup.md",
+    "commands/campaign.md",
+    "commands/localize.md",
+    "commands/multiply.md",
+    "commands/review.md",
+    "docs/ADR.md",
+    "docs/PRD.md",
+    "hooks/hooks.json",
+    "hooks/session-start.sh",
+    "skills/brand-voice/SKILL.md",
+    "skills/brand-voice/references/applying-the-profile.md",
+    "skills/brand-voice/references/edge-cases.md",
+    "skills/channel-formats/SKILL.md",
+    "skills/channel-formats/channels/blog.md",
+    "skills/channel-formats/channels/instagram.md",
+    "skills/channel-formats/channels/linkedin.md",
+    "skills/channel-formats/channels/newsletter.md",
+    "skills/channel-formats/channels/short-video.md",
+    "skills/channel-formats/channels/x-thread.md",
+    "skills/channel-formats/channels/youtube.md",
+    "skills/channel-formats/references/adaptation-rules.md",
+    "skills/channel-formats/references/worked-examples.md",
+    "skills/transcreation/SKILL.md",
+    "skills/transcreation/references/locale-checklist.md",
+    "skills/transcreation/references/transcreation-guide.md",
+    "templates/brand/brand-voice.md",
+    "templates/brand/compliance.md",
+    "templates/brand/messaging.md",
+    "templates/brand/style-guide.md"
+  ]
+}

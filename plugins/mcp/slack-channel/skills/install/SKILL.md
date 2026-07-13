@@ -1,15 +1,19 @@
 ---
 name: install
-description: CCSC lifecycle command center — fresh install walkthrough, health doctor, verify round-trip, auto-repair, Slack app manifest export, reset, tour, and uninstall. One skill for the full install lifecycle.
-version: 1.0.0
+description: CCSC lifecycle command center — fresh install walkthrough, health doctor, verify round-trip, auto-repair, Slack app manifest export, reset, tour, and uninstall. Use when installing the Slack channel for the first time, diagnosing or repairing an existing install, exporting a Slack app manifest, or tearing an install down. Trigger with "/slack-channel:install", "install the slack channel", "slack channel doctor", or "uninstall the slack channel".
+version: 1.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
+compatibility: Requires Claude Code >= v2.1.80 with a claude.ai login (Channels research preview rejects API-key-only auth), Bun >= 1.0 (Node.js fallback supported), and a Slack workspace where you can create apps. Doctor mode additionally shells out to curl and jq.
+tags: [slack, mcp, install, doctor, lifecycle]
 user-invocable: true
 argument-hint: "[install | doctor | verify | repair | manifest | reset | tour | uninstall]"
-allowed-tools: [Read, Write, Edit, Bash, WebFetch]
+allowed-tools: [Read, Write, Bash(bun:*), Bash(claude:*), Bash(curl:*), Bash(jq:*), Bash(chmod:*), Bash(mkdir:*), Bash(mv:*), Bash(command:*), Bash(date:*)]
 ---
 
 # /slack-channel:install
+
+## Overview
 
 CCSC lifecycle command center. One skill, eight modes — fresh install through
 teardown. No subcommand defaults to the full install walkthrough.
@@ -32,11 +36,28 @@ This skill **orchestrates**. It delegates token configuration to
 `/slack-channel:configure` and pairing to `/slack-channel:access pair` —
 do not re-implement those.
 
-## Mode dispatch
+## Prerequisites
 
-Parse the first word of `$ARGUMENTS`. If empty or `install`, run **install**.
-Otherwise dispatch to the matching mode. Unknown modes show the help block
-above and exit.
+Three prerequisites gate a fresh install; `install` mode checks them as Step 0
+and `doctor` re-checks them on demand. See
+[`references/prerequisites.md`](references/prerequisites.md) for the exact
+commands and recovery paths.
+
+1. **Bun ≥ 1.0** — `bun --version`. Node.js fallback is fine (see the prerequisites doc).
+2. **Claude Code ≥ v2.1.80** — `claude --version`. Older versions cannot load Channels.
+3. **`claude.ai` login (NOT API-key-only)** — Channels is Research Preview and rejects pure API-key auth.
+
+Doctor mode additionally shells out to `curl` and `jq` (see "Doctor
+dependencies" below), and every mode past Step 1 assumes a Slack workspace
+where you can create an app.
+
+## Instructions
+
+1. Parse the first word of `$ARGUMENTS`.
+2. If empty or `install`, run the **install** mode.
+3. Otherwise dispatch to the matching mode described in the sections below —
+   each `Mode:` section is the complete procedure for that mode.
+4. Unknown modes: show the help block above and exit.
 
 ---
 
@@ -118,7 +139,9 @@ bun install                                                # if not already
 claude --channels plugin:slack-channel@claude-code-plugins
 ```
 
-Node.js or Docker alternatives: see [`README.md` § Quick Start](../../README.md#quick-start) Options B/C.
+Node.js or Docker alternatives: see
+[`README.md` § Quick Start](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md#quick-start)
+Options B/C.
 
 ### Step 5: Pair account
 
@@ -142,8 +165,8 @@ Ask the user if they want any of these:
 | Want | Run |
 |---|---|
 | Author a custom policy rule | `/slack-channel:policy` |
-| Enable signed audit log (Ed25519) | `bun scripts/audit-key.ts init` — see [`000-docs/key-management.md`](../../000-docs/key-management.md) |
-| Wire in a second bot (multi-agent) | See [`000-docs/multi-agent-channels.md`](../../000-docs/multi-agent-channels.md) |
+| Enable signed audit log (Ed25519) | `bun scripts/audit-key.ts init` — see [`000-docs/key-management.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/key-management.md) |
+| Wire in a second bot (multi-agent) | See [`000-docs/multi-agent-channels.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/multi-agent-channels.md) |
 | Tighten access (allowlist mode) | `/slack-channel:access policy allowlist`, then `add <user-id>` per user |
 | Run a health check anytime | `/slack-channel:install doctor` |
 
@@ -200,7 +223,7 @@ Report format:
 ✅ App token             active — connections:write
 ✅ Access file           access.json (0600, valid JSON)
 ⚠️  Paired users          0 (run pairing flow — Step 5)
-✅ Audit chain           verified — 1247 events, no breaks
+✅ Audit chain           verified — 1247 events, no breaks   # event count is an example
 ✅ Claude Code           v2.4.1, claude.ai session active
 ❌ Bot in channel        C_OPS opted-in but bot is NOT a member  ← silent killer
                          Fix: open #ops → Integrations → Add an App
@@ -349,11 +372,11 @@ NEVER touch `.env` — Slack tokens are reusable.
 For someone evaluating CCSC without installing. No mutations, no
 prerequisites required. Walk through:
 
-1. **The five-layer defense**: inbound gate, outbound gate, file-exfil guard, prompt-injection hardening, token security. Reference [`README.md` § Security](../../README.md#security).
-2. **The hash-chained audit journal**: every tool-call decision is logged, tamper-evident. Reference [`000-docs/audit-journal-architecture.md`](../../000-docs/audit-journal-architecture.md).
-3. **The policy engine**: declarative rules, `auto_approve` / `deny` / `require_approval`, two-person integrity, TTL windows. Reference [`README.md` § Policy Engine](../../README.md#policy-engine-v060).
-4. **Multi-agent coordination**: cross-bot delivery via `allowBotIds`, `!mute` / `!unmute`. Reference [`000-docs/multi-agent-channels.md`](../../000-docs/multi-agent-channels.md).
-5. **The four-principal model**: see [`ARCHITECTURE.md`](../../ARCHITECTURE.md).
+1. **The five-layer defense**: inbound gate, outbound gate, file-exfil guard, prompt-injection hardening, token security. Reference [`README.md` § Security](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md#security).
+2. **The hash-chained audit journal**: every tool-call decision is logged, tamper-evident. Reference [`000-docs/audit-journal-architecture.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/audit-journal-architecture.md).
+3. **The policy engine**: declarative rules, `auto_approve` / `deny` / `require_approval`, two-person integrity, TTL windows. Reference [`README.md` § Policy Engine](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md#policy-engine-v060).
+4. **Multi-agent coordination**: cross-bot delivery via `allowBotIds`, `!mute` / `!unmute`. Reference [`000-docs/multi-agent-channels.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/multi-agent-channels.md).
+5. **The four-principal model**: see [`ARCHITECTURE.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/ARCHITECTURE.md).
 
 End with: "Ready to install? Run `/slack-channel:install`."
 
@@ -385,6 +408,58 @@ Clean teardown.
    ```
 
 ---
+
+## Output
+
+What each mode leaves behind, and what it prints:
+
+| Mode | Output |
+|---|---|
+| `install` | `.env` (0600) + `access.json` (0600) under `~/.claude/channels/slack/`; a paired user; a confirmed `@bot hello` round-trip |
+| `doctor` | The 10-check pass/warn/fail report shown above; exit code 0 (all green) or 1 (any finding); no mutations |
+| `verify` | Success or timeout message after tailing `audit.log` for `gate.allowed` + `reply.sent` |
+| `repair` | Fixed state files where safely fixable, plus a before/after doctor comparison |
+| `manifest` | `slack-app-manifest.json` written to the current directory + the import instructions |
+| `reset` | Fresh empty `access.json`; prior state archived as `*.reset.<timestamp>`; `.env` and `audit.log` untouched |
+| `tour` | Conversation only — no filesystem changes |
+| `uninstall` | State dir archived to `slack.uninstalled.<timestamp>` + Slack-app revocation instructions |
+
+## Error Handling
+
+- **Prerequisite failures (Step 0)** — print the recovery command, wait for the
+  user to fix, re-check. Never proceed on a broken prerequisite.
+- **Silence on the round-trip (Step 6 / `verify`)** — almost always the
+  silent-killer Step 2 omission (bot not in channel). Run `doctor`; check 10
+  catches it and prints the exact Slack click-path.
+- **Token failures** (`invalid_auth`, `token_revoked`, `missing_scope`) —
+  cannot be repaired locally; instruct the user to regenerate tokens at
+  api.slack.com/apps, then re-run `/slack-channel:configure`.
+- **Corrupt `access.json`** — `repair` archives it as
+  `access.json.broken.<timestamp>` and writes a fresh empty file; pairing must
+  be redone.
+- **Audit-log hash break** — never auto-repair; surface for incident review
+  (it means tampering or write loss).
+- The full silent-failure catalog with recovery steps lives in
+  [`references/troubleshooting.md`](references/troubleshooting.md).
+
+## Examples
+
+```
+/slack-channel:install                # full fresh-clone walkthrough
+/slack-channel:install manifest      # write slack-app-manifest.json, then import at api.slack.com/apps
+/slack-channel:install doctor        # 10-point health check, no mutations
+/slack-channel:install repair        # fix what doctor found, show before/after
+/slack-channel:install tour          # evaluate CCSC without touching the filesystem
+/slack-channel:install uninstall     # archive state, print Slack-app revocation steps
+```
+
+Typical recovery sequence after a silent channel:
+
+```
+/slack-channel:install doctor        # → "❌ Bot in channel — C_OPS opted-in but bot is NOT a member"
+# add the bot via Slack UI (channel → Integrations → Add an App)
+/slack-channel:install verify        # → round-trip confirmed
+```
 
 ## Success criteria (across modes)
 
@@ -418,11 +493,11 @@ Clean teardown.
 - [`references/prerequisites.md`](references/prerequisites.md) — Bun, Claude Code, claude.ai login check details
 - [`references/slack-app-setup.md`](references/slack-app-setup.md) — Manual Slack app creation step-by-step
 - [`references/troubleshooting.md`](references/troubleshooting.md) — Top silent-failure modes + recovery
-- [`../configure/SKILL.md`](../configure/SKILL.md) — Token configuration (delegated to)
-- [`../access/SKILL.md`](../access/SKILL.md) — Pairing + allowlist (delegated to)
-- [`../policy/SKILL.md`](../policy/SKILL.md) — Policy authoring (optional next step)
-- [`../../README.md`](../../README.md) — Human-readable quick start
-- [`../../AGENTS.md`](../../AGENTS.md) — Cross-tool agent reference
-- [`../../ACCESS.md`](../../ACCESS.md) — Full access-control schema
-- [`../../000-docs/key-management.md`](../../000-docs/key-management.md) — Audit-signing key lifecycle
-- [`../../000-docs/multi-agent-channels.md`](../../000-docs/multi-agent-channels.md) — Multi-agent recipe
+- [`skills/configure/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/configure/SKILL.md) — Token configuration (delegated to)
+- [`skills/access/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/access/SKILL.md) — Pairing + allowlist (delegated to)
+- [`skills/policy/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/policy/SKILL.md) — Policy authoring (optional next step)
+- [`README.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md) — Human-readable quick start
+- [`AGENTS.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/AGENTS.md) — Cross-tool agent reference
+- [`ACCESS.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/ACCESS.md) — Full access-control schema
+- [`000-docs/key-management.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/key-management.md) — Audit-signing key lifecycle
+- [`000-docs/multi-agent-channels.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/000-docs/multi-agent-channels.md) — Multi-agent recipe

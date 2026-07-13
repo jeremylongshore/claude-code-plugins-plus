@@ -26,7 +26,7 @@ verifiable after the fact.
 
 ## Overview
 
-This is the read surface of the Governed Second Brain: your files are **compiled** into
+This is the read surface of Bob's Big Brain: your files are **compiled** into
 governed memories, **governed** by deterministic code, and **retrieved** with citations
 by qmd. The `brain_search` MCP tool fronts that retrieval. The job here is to turn a
 natural-language question into a cited answer — and to refuse to answer beyond what the
@@ -121,6 +121,6 @@ Sources:
 
 ## Resources
 
-- [Governed Second Brain](https://github.com/intent-solutions-io/governed-second-brain) — the stack this brain belongs to.
+- [Bob's Big Brain](https://github.com/intent-solutions-io/governed-second-brain) — the stack this brain belongs to.
 - [intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) — the compiler (ICO).
 - The write counterpart: the `/brain-save` skill (governed capture).

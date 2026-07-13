@@ -943,32 +943,6 @@
     "action": true,
     "category": "x-accounts",
     "free": true,
-    "method": "POST",
-    "mpp": null,
-    "parameters": [
-      {
-        "name": "id",
-        "in": "path",
-        "required": true,
-        "type": "string",
-        "description": "Resource ID returned by the matching create or list endpoint."
-      },
-      {
-        "name": "body",
-        "in": "body",
-        "required": true,
-        "type": "object",
-        "description": "Email verification code requested during account connect."
-      }
-    ],
-    "path": "/api/v1/x/account-connection-challenges/{id}/submit",
-    "responseShape": "X account connected",
-    "summary": "Submit X account email verification code"
-  },
-  {
-    "action": true,
-    "category": "x-accounts",
-    "free": true,
     "method": "GET",
     "mpp": null,
     "parameters": [],

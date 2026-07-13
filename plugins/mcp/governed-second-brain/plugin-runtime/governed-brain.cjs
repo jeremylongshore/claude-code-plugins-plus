@@ -517,18 +517,18 @@ var require_parseUtil = __commonJS({
         if (this.value !== "aborted")
           this.value = "aborted";
       }
-      static mergeArray(status, results) {
+      static mergeArray(status2, results) {
         const arrayValue = [];
         for (const s of results) {
           if (s.status === "aborted")
             return exports2.INVALID;
           if (s.status === "dirty")
-            status.dirty();
+            status2.dirty();
           arrayValue.push(s.value);
         }
-        return { status: status.value, value: arrayValue };
+        return { status: status2.value, value: arrayValue };
       }
-      static async mergeObjectAsync(status, pairs) {
+      static async mergeObjectAsync(status2, pairs) {
         const syncPairs = [];
         for (const pair of pairs) {
           const key = await pair.key;
@@ -538,9 +538,9 @@ var require_parseUtil = __commonJS({
             value
           });
         }
-        return _ParseStatus.mergeObjectSync(status, syncPairs);
+        return _ParseStatus.mergeObjectSync(status2, syncPairs);
       }
-      static mergeObjectSync(status, pairs) {
+      static mergeObjectSync(status2, pairs) {
         const finalObject = {};
         for (const pair of pairs) {
           const { key, value } = pair;
@@ -549,14 +549,14 @@ var require_parseUtil = __commonJS({
           if (value.status === "aborted")
             return exports2.INVALID;
           if (key.status === "dirty")
-            status.dirty();
+            status2.dirty();
           if (value.status === "dirty")
-            status.dirty();
+            status2.dirty();
           if (key.value !== "__proto__" && (typeof value.value !== "undefined" || pair.alwaysSet)) {
             finalObject[key.value] = value.value;
           }
         }
-        return { status: status.value, value: finalObject };
+        return { status: status2.value, value: finalObject };
       }
     };
     exports2.ParseStatus = ParseStatus;
@@ -1056,7 +1056,7 @@ var require_types = __commonJS({
           });
           return parseUtil_js_1.INVALID;
         }
-        const status = new parseUtil_js_1.ParseStatus();
+        const status2 = new parseUtil_js_1.ParseStatus();
         let ctx = void 0;
         for (const check of this._def.checks) {
           if (check.kind === "min") {
@@ -1070,7 +1070,7 @@ var require_types = __commonJS({
                 exact: false,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "max") {
             if (input.data.length > check.value) {
@@ -1083,7 +1083,7 @@ var require_types = __commonJS({
                 exact: false,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "length") {
             const tooBig = input.data.length > check.value;
@@ -1109,7 +1109,7 @@ var require_types = __commonJS({
                   message: check.message
                 });
               }
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "email") {
             if (!emailRegex.test(input.data)) {
@@ -1119,7 +1119,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "emoji") {
             if (!emojiRegex2) {
@@ -1132,7 +1132,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "uuid") {
             if (!uuidRegex.test(input.data)) {
@@ -1142,7 +1142,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "nanoid") {
             if (!nanoidRegex.test(input.data)) {
@@ -1152,7 +1152,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "cuid") {
             if (!cuidRegex.test(input.data)) {
@@ -1162,7 +1162,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "cuid2") {
             if (!cuid2Regex.test(input.data)) {
@@ -1172,7 +1172,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "ulid") {
             if (!ulidRegex.test(input.data)) {
@@ -1182,7 +1182,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "url") {
             try {
@@ -1194,7 +1194,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "regex") {
             check.regex.lastIndex = 0;
@@ -1206,7 +1206,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "trim") {
             input.data = input.data.trim();
@@ -1218,7 +1218,7 @@ var require_types = __commonJS({
                 validation: { includes: check.value, position: check.position },
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "toLowerCase") {
             input.data = input.data.toLowerCase();
@@ -1232,7 +1232,7 @@ var require_types = __commonJS({
                 validation: { startsWith: check.value },
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "endsWith") {
             if (!input.data.endsWith(check.value)) {
@@ -1242,7 +1242,7 @@ var require_types = __commonJS({
                 validation: { endsWith: check.value },
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "datetime") {
             const regex = datetimeRegex(check);
@@ -1253,7 +1253,7 @@ var require_types = __commonJS({
                 validation: "datetime",
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "date") {
             const regex = dateRegex;
@@ -1264,7 +1264,7 @@ var require_types = __commonJS({
                 validation: "date",
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "time") {
             const regex = timeRegex(check);
@@ -1275,7 +1275,7 @@ var require_types = __commonJS({
                 validation: "time",
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "duration") {
             if (!durationRegex.test(input.data)) {
@@ -1285,7 +1285,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "ip") {
             if (!isValidIP(input.data, check.version)) {
@@ -1295,7 +1295,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "jwt") {
             if (!isValidJWT(input.data, check.alg)) {
@@ -1305,7 +1305,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "cidr") {
             if (!isValidCidr(input.data, check.version)) {
@@ -1315,7 +1315,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "base64") {
             if (!base64Regex.test(input.data)) {
@@ -1325,7 +1325,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "base64url") {
             if (!base64urlRegex.test(input.data)) {
@@ -1335,13 +1335,13 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.invalid_string,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else {
             util_js_1.util.assertNever(check);
           }
         }
-        return { status: status.value, value: input.data };
+        return { status: status2.value, value: input.data };
       }
       _regex(regex, validation, message) {
         return this.refinement((data) => regex.test(data), {
@@ -1618,7 +1618,7 @@ var require_types = __commonJS({
           return parseUtil_js_1.INVALID;
         }
         let ctx = void 0;
-        const status = new parseUtil_js_1.ParseStatus();
+        const status2 = new parseUtil_js_1.ParseStatus();
         for (const check of this._def.checks) {
           if (check.kind === "int") {
             if (!util_js_1.util.isInteger(input.data)) {
@@ -1629,7 +1629,7 @@ var require_types = __commonJS({
                 received: "float",
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "min") {
             const tooSmall = check.inclusive ? input.data < check.value : input.data <= check.value;
@@ -1643,7 +1643,7 @@ var require_types = __commonJS({
                 exact: false,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "max") {
             const tooBig = check.inclusive ? input.data > check.value : input.data >= check.value;
@@ -1657,7 +1657,7 @@ var require_types = __commonJS({
                 exact: false,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "multipleOf") {
             if (floatSafeRemainder(input.data, check.value) !== 0) {
@@ -1667,7 +1667,7 @@ var require_types = __commonJS({
                 multipleOf: check.value,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "finite") {
             if (!Number.isFinite(input.data)) {
@@ -1676,13 +1676,13 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.not_finite,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else {
             util_js_1.util.assertNever(check);
           }
         }
-        return { status: status.value, value: input.data };
+        return { status: status2.value, value: input.data };
       }
       gte(value, message) {
         return this.setLimit("min", value, true, errorUtil_js_1.errorUtil.toString(message));
@@ -1848,7 +1848,7 @@ var require_types = __commonJS({
           return this._getInvalidInput(input);
         }
         let ctx = void 0;
-        const status = new parseUtil_js_1.ParseStatus();
+        const status2 = new parseUtil_js_1.ParseStatus();
         for (const check of this._def.checks) {
           if (check.kind === "min") {
             const tooSmall = check.inclusive ? input.data < check.value : input.data <= check.value;
@@ -1861,7 +1861,7 @@ var require_types = __commonJS({
                 inclusive: check.inclusive,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "max") {
             const tooBig = check.inclusive ? input.data > check.value : input.data >= check.value;
@@ -1874,7 +1874,7 @@ var require_types = __commonJS({
                 inclusive: check.inclusive,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "multipleOf") {
             if (input.data % check.value !== BigInt(0)) {
@@ -1884,13 +1884,13 @@ var require_types = __commonJS({
                 multipleOf: check.value,
                 message: check.message
               });
-              status.dirty();
+              status2.dirty();
             }
           } else {
             util_js_1.util.assertNever(check);
           }
         }
-        return { status: status.value, value: input.data };
+        return { status: status2.value, value: input.data };
       }
       _getInvalidInput(input) {
         const ctx = this._getOrReturnCtx(input);
@@ -2050,7 +2050,7 @@ var require_types = __commonJS({
           });
           return parseUtil_js_1.INVALID;
         }
-        const status = new parseUtil_js_1.ParseStatus();
+        const status2 = new parseUtil_js_1.ParseStatus();
         let ctx = void 0;
         for (const check of this._def.checks) {
           if (check.kind === "min") {
@@ -2064,7 +2064,7 @@ var require_types = __commonJS({
                 minimum: check.value,
                 type: "date"
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (check.kind === "max") {
             if (input.data.getTime() > check.value) {
@@ -2077,14 +2077,14 @@ var require_types = __commonJS({
                 maximum: check.value,
                 type: "date"
               });
-              status.dirty();
+              status2.dirty();
             }
           } else {
             util_js_1.util.assertNever(check);
           }
         }
         return {
-          status: status.value,
+          status: status2.value,
           value: new Date(input.data.getTime())
         };
       }
@@ -2278,7 +2278,7 @@ var require_types = __commonJS({
     };
     var ZodArray = class _ZodArray extends ZodType {
       _parse(input) {
-        const { ctx, status } = this._processInputParams(input);
+        const { ctx, status: status2 } = this._processInputParams(input);
         const def = this._def;
         if (ctx.parsedType !== util_js_1.ZodParsedType.array) {
           (0, parseUtil_js_1.addIssueToContext)(ctx, {
@@ -2301,7 +2301,7 @@ var require_types = __commonJS({
               exact: true,
               message: def.exactLength.message
             });
-            status.dirty();
+            status2.dirty();
           }
         }
         if (def.minLength !== null) {
@@ -2314,7 +2314,7 @@ var require_types = __commonJS({
               exact: false,
               message: def.minLength.message
             });
-            status.dirty();
+            status2.dirty();
           }
         }
         if (def.maxLength !== null) {
@@ -2327,20 +2327,20 @@ var require_types = __commonJS({
               exact: false,
               message: def.maxLength.message
             });
-            status.dirty();
+            status2.dirty();
           }
         }
         if (ctx.common.async) {
           return Promise.all([...ctx.data].map((item, i) => {
             return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
           })).then((result2) => {
-            return parseUtil_js_1.ParseStatus.mergeArray(status, result2);
+            return parseUtil_js_1.ParseStatus.mergeArray(status2, result2);
           });
         }
         const result = [...ctx.data].map((item, i) => {
           return def.type._parseSync(new ParseInputLazyPath(ctx, item, ctx.path, i));
         });
-        return parseUtil_js_1.ParseStatus.mergeArray(status, result);
+        return parseUtil_js_1.ParseStatus.mergeArray(status2, result);
       }
       get element() {
         return this._def.type;
@@ -2430,7 +2430,7 @@ var require_types = __commonJS({
           });
           return parseUtil_js_1.INVALID;
         }
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         const { shape, keys: shapeKeys } = this._getCached();
         const extraKeys = [];
         if (!(this._def.catchall instanceof ZodNever && this._def.unknownKeys === "strip")) {
@@ -2465,7 +2465,7 @@ var require_types = __commonJS({
                 code: ZodError_js_1.ZodIssueCode.unrecognized_keys,
                 keys: extraKeys
               });
-              status.dirty();
+              status2.dirty();
             }
           } else if (unknownKeys === "strip") {
           } else {
@@ -2499,10 +2499,10 @@ var require_types = __commonJS({
             }
             return syncPairs;
           }).then((syncPairs) => {
-            return parseUtil_js_1.ParseStatus.mergeObjectSync(status, syncPairs);
+            return parseUtil_js_1.ParseStatus.mergeObjectSync(status2, syncPairs);
           });
         } else {
-          return parseUtil_js_1.ParseStatus.mergeObjectSync(status, pairs);
+          return parseUtil_js_1.ParseStatus.mergeObjectSync(status2, pairs);
         }
       }
       get shape() {
@@ -2983,7 +2983,7 @@ var require_types = __commonJS({
     }
     var ZodIntersection = class extends ZodType {
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         const handleParsed = (parsedLeft, parsedRight) => {
           if ((0, parseUtil_js_1.isAborted)(parsedLeft) || (0, parseUtil_js_1.isAborted)(parsedRight)) {
             return parseUtil_js_1.INVALID;
@@ -2996,9 +2996,9 @@ var require_types = __commonJS({
             return parseUtil_js_1.INVALID;
           }
           if ((0, parseUtil_js_1.isDirty)(parsedLeft) || (0, parseUtil_js_1.isDirty)(parsedRight)) {
-            status.dirty();
+            status2.dirty();
           }
-          return { status: status.value, value: merged.data };
+          return { status: status2.value, value: merged.data };
         };
         if (ctx.common.async) {
           return Promise.all([
@@ -3037,7 +3037,7 @@ var require_types = __commonJS({
     };
     var ZodTuple = class _ZodTuple extends ZodType {
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         if (ctx.parsedType !== util_js_1.ZodParsedType.array) {
           (0, parseUtil_js_1.addIssueToContext)(ctx, {
             code: ZodError_js_1.ZodIssueCode.invalid_type,
@@ -3065,7 +3065,7 @@ var require_types = __commonJS({
             exact: false,
             type: "array"
           });
-          status.dirty();
+          status2.dirty();
         }
         const items = [...ctx.data].map((item, itemIndex) => {
           const schema = this._def.items[itemIndex] || this._def.rest;
@@ -3075,10 +3075,10 @@ var require_types = __commonJS({
         }).filter((x) => !!x);
         if (ctx.common.async) {
           return Promise.all(items).then((results) => {
-            return parseUtil_js_1.ParseStatus.mergeArray(status, results);
+            return parseUtil_js_1.ParseStatus.mergeArray(status2, results);
           });
         } else {
-          return parseUtil_js_1.ParseStatus.mergeArray(status, items);
+          return parseUtil_js_1.ParseStatus.mergeArray(status2, items);
         }
       }
       get items() {
@@ -3111,7 +3111,7 @@ var require_types = __commonJS({
         return this._def.valueType;
       }
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         if (ctx.parsedType !== util_js_1.ZodParsedType.object) {
           (0, parseUtil_js_1.addIssueToContext)(ctx, {
             code: ZodError_js_1.ZodIssueCode.invalid_type,
@@ -3131,9 +3131,9 @@ var require_types = __commonJS({
           });
         }
         if (ctx.common.async) {
-          return parseUtil_js_1.ParseStatus.mergeObjectAsync(status, pairs);
+          return parseUtil_js_1.ParseStatus.mergeObjectAsync(status2, pairs);
         } else {
-          return parseUtil_js_1.ParseStatus.mergeObjectSync(status, pairs);
+          return parseUtil_js_1.ParseStatus.mergeObjectSync(status2, pairs);
         }
       }
       get element() {
@@ -3165,7 +3165,7 @@ var require_types = __commonJS({
         return this._def.valueType;
       }
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         if (ctx.parsedType !== util_js_1.ZodParsedType.map) {
           (0, parseUtil_js_1.addIssueToContext)(ctx, {
             code: ZodError_js_1.ZodIssueCode.invalid_type,
@@ -3192,11 +3192,11 @@ var require_types = __commonJS({
                 return parseUtil_js_1.INVALID;
               }
               if (key.status === "dirty" || value.status === "dirty") {
-                status.dirty();
+                status2.dirty();
               }
               finalMap.set(key.value, value.value);
             }
-            return { status: status.value, value: finalMap };
+            return { status: status2.value, value: finalMap };
           });
         } else {
           const finalMap = /* @__PURE__ */ new Map();
@@ -3207,11 +3207,11 @@ var require_types = __commonJS({
               return parseUtil_js_1.INVALID;
             }
             if (key.status === "dirty" || value.status === "dirty") {
-              status.dirty();
+              status2.dirty();
             }
             finalMap.set(key.value, value.value);
           }
-          return { status: status.value, value: finalMap };
+          return { status: status2.value, value: finalMap };
         }
       }
     };
@@ -3226,7 +3226,7 @@ var require_types = __commonJS({
     };
     var ZodSet = class _ZodSet extends ZodType {
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         if (ctx.parsedType !== util_js_1.ZodParsedType.set) {
           (0, parseUtil_js_1.addIssueToContext)(ctx, {
             code: ZodError_js_1.ZodIssueCode.invalid_type,
@@ -3246,7 +3246,7 @@ var require_types = __commonJS({
               exact: false,
               message: def.minSize.message
             });
-            status.dirty();
+            status2.dirty();
           }
         }
         if (def.maxSize !== null) {
@@ -3259,7 +3259,7 @@ var require_types = __commonJS({
               exact: false,
               message: def.maxSize.message
             });
-            status.dirty();
+            status2.dirty();
           }
         }
         const valueType = this._def.valueType;
@@ -3269,10 +3269,10 @@ var require_types = __commonJS({
             if (element.status === "aborted")
               return parseUtil_js_1.INVALID;
             if (element.status === "dirty")
-              status.dirty();
+              status2.dirty();
             parsedSet.add(element.value);
           }
-          return { status: status.value, value: parsedSet };
+          return { status: status2.value, value: parsedSet };
         }
         const elements = [...ctx.data.values()].map((item, i) => valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i)));
         if (ctx.common.async) {
@@ -3610,15 +3610,15 @@ var require_types = __commonJS({
         return this._def.schema._def.typeName === ZodFirstPartyTypeKind4.ZodEffects ? this._def.schema.sourceType() : this._def.schema;
       }
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         const effect = this._def.effect || null;
         const checkCtx = {
           addIssue: (arg) => {
             (0, parseUtil_js_1.addIssueToContext)(ctx, arg);
             if (arg.fatal) {
-              status.abort();
+              status2.abort();
             } else {
-              status.dirty();
+              status2.dirty();
             }
           },
           get path() {
@@ -3630,7 +3630,7 @@ var require_types = __commonJS({
           const processed = effect.transform(ctx.data, checkCtx);
           if (ctx.common.async) {
             return Promise.resolve(processed).then(async (processed2) => {
-              if (status.value === "aborted")
+              if (status2.value === "aborted")
                 return parseUtil_js_1.INVALID;
               const result = await this._def.schema._parseAsync({
                 data: processed2,
@@ -3641,12 +3641,12 @@ var require_types = __commonJS({
                 return parseUtil_js_1.INVALID;
               if (result.status === "dirty")
                 return (0, parseUtil_js_1.DIRTY)(result.value);
-              if (status.value === "dirty")
+              if (status2.value === "dirty")
                 return (0, parseUtil_js_1.DIRTY)(result.value);
               return result;
             });
           } else {
-            if (status.value === "aborted")
+            if (status2.value === "aborted")
               return parseUtil_js_1.INVALID;
             const result = this._def.schema._parseSync({
               data: processed,
@@ -3657,7 +3657,7 @@ var require_types = __commonJS({
               return parseUtil_js_1.INVALID;
             if (result.status === "dirty")
               return (0, parseUtil_js_1.DIRTY)(result.value);
-            if (status.value === "dirty")
+            if (status2.value === "dirty")
               return (0, parseUtil_js_1.DIRTY)(result.value);
             return result;
           }
@@ -3682,17 +3682,17 @@ var require_types = __commonJS({
             if (inner.status === "aborted")
               return parseUtil_js_1.INVALID;
             if (inner.status === "dirty")
-              status.dirty();
+              status2.dirty();
             executeRefinement(inner.value);
-            return { status: status.value, value: inner.value };
+            return { status: status2.value, value: inner.value };
           } else {
             return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((inner) => {
               if (inner.status === "aborted")
                 return parseUtil_js_1.INVALID;
               if (inner.status === "dirty")
-                status.dirty();
+                status2.dirty();
               return executeRefinement(inner.value).then(() => {
-                return { status: status.value, value: inner.value };
+                return { status: status2.value, value: inner.value };
               });
             });
           }
@@ -3710,13 +3710,13 @@ var require_types = __commonJS({
             if (result instanceof Promise) {
               throw new Error(`Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`);
             }
-            return { status: status.value, value: result };
+            return { status: status2.value, value: result };
           } else {
             return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((base) => {
               if (!(0, parseUtil_js_1.isValid)(base))
                 return parseUtil_js_1.INVALID;
               return Promise.resolve(effect.transform(base.value, checkCtx)).then((result) => ({
-                status: status.value,
+                status: status2.value,
                 value: result
               }));
             });
@@ -3903,7 +3903,7 @@ var require_types = __commonJS({
     exports2.ZodBranded = ZodBranded;
     var ZodPipeline = class _ZodPipeline extends ZodType {
       _parse(input) {
-        const { status, ctx } = this._processInputParams(input);
+        const { status: status2, ctx } = this._processInputParams(input);
         if (ctx.common.async) {
           const handleAsync = async () => {
             const inResult = await this._def.in._parseAsync({
@@ -3914,7 +3914,7 @@ var require_types = __commonJS({
             if (inResult.status === "aborted")
               return parseUtil_js_1.INVALID;
             if (inResult.status === "dirty") {
-              status.dirty();
+              status2.dirty();
               return (0, parseUtil_js_1.DIRTY)(inResult.value);
             } else {
               return this._def.out._parseAsync({
@@ -3934,7 +3934,7 @@ var require_types = __commonJS({
           if (inResult.status === "aborted")
             return parseUtil_js_1.INVALID;
           if (inResult.status === "dirty") {
-            status.dirty();
+            status2.dirty();
             return {
               status: "dirty",
               value: inResult.value
@@ -24278,8 +24278,8 @@ var init_types = __esm({
 });
 
 // node_modules/.pnpm/@modelcontextprotocol+sdk@1.29.0_zod@4.4.3/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js
-function isTerminal(status) {
-  return status === "completed" || status === "failed" || status === "cancelled";
+function isTerminal(status2) {
+  return status2 === "completed" || status2 === "failed" || status2 === "cancelled";
 }
 var init_interfaces = __esm({
   "node_modules/.pnpm/@modelcontextprotocol+sdk@1.29.0_zod@4.4.3/node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js"() {
@@ -26827,8 +26827,8 @@ var init_protocol = __esm({
             }
             return task;
           },
-          storeTaskResult: async (taskId, status, result) => {
-            await taskStore.storeTaskResult(taskId, status, result, sessionId);
+          storeTaskResult: async (taskId, status2, result) => {
+            await taskStore.storeTaskResult(taskId, status2, result, sessionId);
             const task = await taskStore.getTask(taskId, sessionId);
             if (task) {
               const notification = TaskStatusNotificationSchema.parse({
@@ -26844,15 +26844,15 @@ var init_protocol = __esm({
           getTaskResult: (taskId) => {
             return taskStore.getTaskResult(taskId, sessionId);
           },
-          updateTaskStatus: async (taskId, status, statusMessage) => {
+          updateTaskStatus: async (taskId, status2, statusMessage) => {
             const task = await taskStore.getTask(taskId, sessionId);
             if (!task) {
               throw new McpError(ErrorCode.InvalidParams, `Task "${taskId}" not found - it may have been cleaned up`);
             }
             if (isTerminal(task.status)) {
-              throw new McpError(ErrorCode.InvalidParams, `Cannot update task "${taskId}" from terminal status "${task.status}" to "${status}". Terminal states (completed, failed, cancelled) cannot transition to other states.`);
+              throw new McpError(ErrorCode.InvalidParams, `Cannot update task "${taskId}" from terminal status "${task.status}" to "${status2}". Terminal states (completed, failed, cancelled) cannot transition to other states.`);
             }
-            await taskStore.updateTaskStatus(taskId, status, statusMessage, sessionId);
+            await taskStore.updateTaskStatus(taskId, status2, statusMessage, sessionId);
             const updatedTask = await taskStore.getTask(taskId, sessionId);
             if (updatedTask) {
               const notification = TaskStatusNotificationSchema.parse({
@@ -35513,7 +35513,18 @@ var init_stdio2 = __esm({
 // src/remote-server.ts
 var remote_server_exports = {};
 __export(remote_server_exports, {
-  startRemoteServer: () => startRemoteServer
+  approveCandidate: () => approveCandidate,
+  authHeaders: () => authHeaders,
+  capture: () => capture,
+  deriveCandidateId: () => deriveCandidateId,
+  drainOutbox: () => drainOutbox,
+  errorResult: () => errorResult,
+  listInbox: () => listInbox,
+  outboxDir: () => outboxDir,
+  rejectCandidate: () => rejectCandidate,
+  search: () => search,
+  startRemoteServer: () => startRemoteServer,
+  status: () => status
 });
 function jsonResult(obj) {
   return { content: [{ type: "text", text: JSON.stringify(obj, null, 2) }] };
@@ -35541,31 +35552,303 @@ async function errorResult(res) {
   const msg = res.status === 401 ? "team token rejected \u2014 check TEAMKB_API_TOKEN" : res.status === 403 ? "this action needs an ADMIN token; your member token can propose but not promote/transition \u2014 nothing was applied" : res.status === 422 ? `the brain declined it: ${detail}` : `request failed (${res.status})${detail ? ": " + detail : ""}`;
   return jsonResult({ ok: false, status: res.status, error: msg });
 }
+function uuidv5(name, namespace) {
+  const ns = Buffer.from(namespace.replace(/-/g, ""), "hex");
+  const h = (0, import_node_crypto.createHash)("sha1").update(ns).update(name, "utf8").digest().subarray(0, 16);
+  h[6] = h[6] & 15 | 80;
+  h[8] = h[8] & 63 | 128;
+  const x = h.toString("hex");
+  return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20, 32)}`;
+}
+function deriveCandidateId(tenant, title, content) {
+  return uuidv5(`${tenant}
+${title}
+${content}`, CANDIDATE_ID_NAMESPACE);
+}
+function outboxDir() {
+  const o = process.env["TEAMKB_OUTBOX_DIR"]?.trim();
+  return o !== void 0 && o !== "" ? o : (0, import_node_path2.join)((0, import_node_os2.homedir)(), ".teamkb-outbox");
+}
+async function enqueueOutbox(candidate) {
+  const dir = outboxDir();
+  try {
+    await (0, import_promises.mkdir)(dir, { recursive: true, mode: 448 });
+    await (0, import_promises.writeFile)((0, import_node_path2.join)(dir, `${candidate.id}.json`), JSON.stringify(candidate), { mode: 384 });
+    return true;
+  } catch (e) {
+    process.stderr.write(
+      `[governed-brain:team] outbox enqueue failed: ${e instanceof Error ? e.message : String(e)}
+`
+    );
+    return false;
+  }
+}
+async function drainOutbox() {
+  if (API_URL === void 0 || API_URL === "") return 0;
+  if (draining) return 0;
+  draining = true;
+  try {
+    const dir = outboxDir();
+    let files;
+    try {
+      files = (await (0, import_promises.readdir)(dir)).filter((f) => f.endsWith(".json"));
+    } catch {
+      return 0;
+    }
+    let cleared = 0;
+    for (const f of files) {
+      const path = (0, import_node_path2.join)(dir, f);
+      let body;
+      try {
+        body = await (0, import_promises.readFile)(path, "utf8");
+        JSON.parse(body);
+      } catch {
+        await (0, import_promises.unlink)(path).catch(() => {
+        });
+        continue;
+      }
+      let res;
+      try {
+        res = await fetch(`${API_URL.replace(/\/+$/, "")}/api/candidates`, {
+          method: "POST",
+          headers: authHeaders(),
+          body
+        });
+      } catch {
+        break;
+      }
+      const transient = res.status === 429 || res.status === 408;
+      if (res.ok || res.status >= 400 && res.status < 500 && !transient) {
+        if (!res.ok) {
+          process.stderr.write(`[governed-brain:team] outbox: dropping ${f} on ${res.status} (permanent)
+`);
+        }
+        await (0, import_promises.unlink)(path).then(() => {
+          cleared++;
+        }).catch(() => {
+        });
+      } else {
+        break;
+      }
+    }
+    return cleared;
+  } finally {
+    draining = false;
+  }
+}
 async function search(query, scope, limit) {
-  const empty = { source: "brain-api", query, scope, count: 0, results: [] };
   if (API_URL === void 0 || API_URL === "") {
-    return { ...empty, source: "unconfigured" };
+    return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
   }
   const url = `${API_URL.replace(/\/+$/, "")}/api/search`;
+  let res;
   try {
-    const res = await fetch(url, {
+    res = await fetch(url, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({ query, scope, pagination: { page: 1, pageSize: limit } })
     });
-    if (!res.ok) return empty;
-    const body = await res.json();
-    const results = (body.hits ?? []).filter((h) => typeof h.citation === "string" && h.citation.length > 0).map((h) => ({
-      citation: h.citation,
-      snippet: typeof h.snippet === "string" ? h.snippet : "",
-      score: typeof h.score === "number" ? h.score : 0,
-      title: h.title,
-      collection: h.collection
-    }));
-    return { source: "brain-api", query, scope, count: results.length, results };
-  } catch {
-    return empty;
+  } catch (e) {
+    return jsonResult({
+      ok: false,
+      error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}`
+    });
   }
+  if (!res.ok) return errorResult(res);
+  const body = await res.json();
+  const results = (body.hits ?? []).filter((h) => typeof h.citation === "string" && h.citation.length > 0).map((h) => ({
+    citation: h.citation,
+    snippet: typeof h.snippet === "string" ? h.snippet : "",
+    score: typeof h.score === "number" ? h.score : 0,
+    title: h.title,
+    collection: h.collection
+  }));
+  return jsonResult({ source: "brain-api", query, scope, count: results.length, results });
+}
+async function status() {
+  const tokenSet = API_TOKEN !== void 0 && API_TOKEN !== "";
+  if (API_URL === void 0 || API_URL === "") {
+    return jsonResult({
+      mode: "team",
+      apiUrl: null,
+      tokenSet,
+      healthy: false,
+      version: null,
+      error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain"
+    });
+  }
+  const apiUrl = API_URL.replace(/\/+$/, "");
+  let res;
+  try {
+    res = await fetch(`${apiUrl}/api/health`, { method: "GET" });
+  } catch (e) {
+    return jsonResult({
+      mode: "team",
+      apiUrl,
+      tokenSet,
+      healthy: false,
+      version: null,
+      error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}`
+    });
+  }
+  let version = null;
+  try {
+    const b = await res.json();
+    if (typeof b.version === "string") version = b.version;
+  } catch {
+    version = null;
+  }
+  return jsonResult({ mode: "team", apiUrl, tokenSet, healthy: res.ok, version });
+}
+async function capture(title, content, category, filePaths) {
+  if (API_URL === void 0 || API_URL === "") {
+    return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
+  }
+  const candidate = {
+    id: deriveCandidateId(TENANT_ID, title, content),
+    status: "inbox",
+    source: "mcp",
+    content,
+    title,
+    category: category ?? "reference",
+    trustLevel: "medium",
+    author: { type: "ai", id: "governed-brain" },
+    tenantId: TENANT_ID,
+    metadata: { filePaths: filePaths ?? [], tags: [] },
+    prePolicyFlags: { potentialSecret: false, lowConfidence: false, duplicateSuspect: false },
+    capturedAt: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  let res;
+  try {
+    res = await fetch(`${API_URL.replace(/\/+$/, "")}/api/candidates`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(candidate)
+    });
+  } catch (e) {
+    const queued = await enqueueOutbox(candidate);
+    return jsonResult({
+      ok: queued,
+      queued,
+      candidateId: candidate.id,
+      tenantId: TENANT_ID,
+      message: queued ? `Could not reach the brain (${e instanceof Error ? e.message : String(e)}). Queued to the durable outbox \u2014 it will be sent on the next successful capture. Nothing was lost.` : `Could not reach the brain (${e instanceof Error ? e.message : String(e)}) AND could not write the durable outbox \u2014 this capture was NOT saved. Please retry.`
+    });
+  }
+  if (!res.ok) {
+    if (res.status >= 500) {
+      const queued = await enqueueOutbox(candidate);
+      return jsonResult({
+        ok: queued,
+        queued,
+        candidateId: candidate.id,
+        tenantId: TENANT_ID,
+        message: queued ? `The brain returned ${res.status}. Queued to the durable outbox \u2014 it will be retried on the next successful capture. Nothing was lost.` : `The brain returned ${res.status} AND the durable outbox write failed \u2014 this capture was NOT saved. Please retry.`
+      });
+    }
+    return errorResult(res);
+  }
+  const drained = await drainOutbox();
+  return jsonResult({
+    ok: true,
+    candidateId: candidate.id,
+    tenantId: TENANT_ID,
+    ...drained > 0 ? { outboxDrained: drained } : {},
+    message: "Proposed to the team brain inbox. This is a PROPOSAL \u2014 the deterministic govern pipeline decides if/when it is promoted (an admin governs, or auto-govern once enabled). It is not durable memory yet."
+  });
+}
+function resolveTenant(tenantId) {
+  const t = tenantId?.trim();
+  return t !== void 0 && t !== "" ? t : TENANT_ID;
+}
+async function listInbox(tenantId, limit) {
+  if (API_URL === void 0 || API_URL === "") {
+    return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
+  }
+  const tenant = resolveTenant(tenantId);
+  const url = `${API_URL.replace(/\/+$/, "")}/api/candidates?status=quarantined&tenantId=${encodeURIComponent(tenant)}`;
+  let res;
+  try {
+    res = await fetch(url, { method: "GET", headers: authHeaders() });
+  } catch (e) {
+    return jsonResult({ ok: false, error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}` });
+  }
+  if (!res.ok) return errorResult(res);
+  let rows;
+  try {
+    rows = await res.json();
+  } catch {
+    return jsonResult({ ok: false, error: "the brain returned an unreadable (non-JSON) inbox response" });
+  }
+  const candidates = (Array.isArray(rows) ? rows : []).filter((r) => typeof r.id === "string" && r.id.length > 0).slice(0, limit).map((r) => ({
+    id: r.id,
+    title: typeof r.title === "string" ? r.title : "",
+    category: typeof r.category === "string" ? r.category : "",
+    author: typeof r.author === "object" && r.author !== null ? r.author.id ?? "" : r.author ?? "",
+    capturedAt: typeof r.capturedAt === "string" ? r.capturedAt : ""
+  }));
+  return jsonResult({ ok: true, tenantId: tenant, count: candidates.length, candidates });
+}
+async function approveCandidate(candidateId, tenantId, reason) {
+  if (API_URL === void 0 || API_URL === "") {
+    return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
+  }
+  const tenant = resolveTenant(tenantId);
+  let res;
+  try {
+    res = await fetch(
+      `${API_URL.replace(/\/+$/, "")}/api/candidates/${encodeURIComponent(candidateId)}/promote?tenantId=${encodeURIComponent(tenant)}`,
+      {
+        method: "POST",
+        headers: authHeaders(),
+        // actorType:'ai' — this is the review AGENT proxying; the SERVER derives
+        // the actor id from the authenticated token, so it can't be spoofed here.
+        body: JSON.stringify({ reason, actorType: "ai" })
+      }
+    );
+  } catch (e) {
+    return jsonResult({ ok: false, error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}` });
+  }
+  if (!res.ok) return errorResult(res);
+  let memory = null;
+  try {
+    memory = await res.json();
+  } catch {
+    memory = null;
+  }
+  return jsonResult({
+    ok: true,
+    candidateId,
+    memoryId: memory?.id,
+    tenantId: tenant,
+    message: "Promoted to durable team memory \u2014 it passed the deterministic govern rules and a hash-chained receipt names you as the approving actor."
+  });
+}
+async function rejectCandidate(candidateId, tenantId, reason) {
+  if (API_URL === void 0 || API_URL === "") {
+    return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
+  }
+  const tenant = resolveTenant(tenantId);
+  let res;
+  try {
+    res = await fetch(
+      `${API_URL.replace(/\/+$/, "")}/api/candidates/${encodeURIComponent(candidateId)}/reject?tenantId=${encodeURIComponent(tenant)}`,
+      {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ reason, actorType: "ai" })
+      }
+    );
+  } catch (e) {
+    return jsonResult({ ok: false, error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}` });
+  }
+  if (!res.ok) return errorResult(res);
+  return jsonResult({
+    ok: true,
+    candidateId,
+    tenantId: tenant,
+    message: "Retired as rejected (row preserved); a hash-chained receipt names you + your reason."
+  });
 }
 async function startRemoteServer() {
   const transport = new StdioServerTransport();
@@ -35583,15 +35866,18 @@ async function startRemoteServer() {
 `
   );
 }
-var import_node_crypto, import_zod2, VERSION, API_URL, API_TOKEN, TENANT_ID, CATEGORIES, server;
+var import_node_crypto, import_promises, import_node_os2, import_node_path2, import_zod2, VERSION, API_URL, API_TOKEN, TENANT_ID, CATEGORIES, CANDIDATE_ID_NAMESPACE, draining, server;
 var init_remote_server = __esm({
   "src/remote-server.ts"() {
     "use strict";
     import_node_crypto = require("node:crypto");
+    import_promises = require("node:fs/promises");
+    import_node_os2 = require("node:os");
+    import_node_path2 = require("node:path");
     init_mcp();
     init_stdio2();
     import_zod2 = __toESM(require_zod(), 1);
-    VERSION = "1.0.0";
+    VERSION = "1.1.0";
     API_URL = process.env["TEAMKB_API_URL"];
     API_TOKEN = process.env["TEAMKB_API_TOKEN"];
     TENANT_ID = process.env["TEAMKB_TENANT_ID"]?.trim() || "intent-solutions";
@@ -35604,6 +35890,8 @@ var init_remote_server = __esm({
       "onboarding",
       "reference"
     ];
+    CANDIDATE_ID_NAMESPACE = "6ba7b8f0-9dad-11d1-80b4-00c04fd430c8";
+    draining = false;
     server = new McpServer({ name: "governed-brain", version: VERSION });
     server.tool(
       "brain_search",
@@ -35613,10 +35901,13 @@ var init_remote_server = __esm({
         scope: import_zod2.z.enum(["curated", "all", "inbox", "archived"]).optional().describe("Search scope: curated (default), all, inbox, or archived"),
         limit: import_zod2.z.number().int().min(1).max(50).optional().describe("Maximum number of cited hits to return (default 10)")
       },
-      async (params) => {
-        const result = await search(params.query, params.scope ?? "curated", params.limit ?? 10);
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-      }
+      async (params) => search(params.query, params.scope ?? "curated", params.limit ?? 10)
+    );
+    server.tool(
+      "brain_status",
+      "Check your connection to the team brain: are you in team mode, is TEAMKB_API_URL reachable, and is a per-user token set? Calls the brain's health probe (no auth) and reports { mode, apiUrl, tokenSet, healthy, version }. Read-only \u2014 no query, touches no data.",
+      {},
+      async () => status()
     );
     server.tool(
       "brain_capture",
@@ -35627,42 +35918,7 @@ var init_remote_server = __esm({
         category: import_zod2.z.enum(CATEGORIES).optional().describe("Memory category (default: reference)"),
         filePaths: import_zod2.z.array(import_zod2.z.string()).optional().describe("Related file paths, if any")
       },
-      async (params) => {
-        if (API_URL === void 0 || API_URL === "") {
-          return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
-        }
-        const candidate = {
-          id: (0, import_node_crypto.randomUUID)(),
-          status: "inbox",
-          source: "mcp",
-          content: params.content,
-          title: params.title,
-          category: params.category ?? "reference",
-          trustLevel: "medium",
-          author: { type: "ai", id: "governed-brain" },
-          tenantId: TENANT_ID,
-          metadata: { filePaths: params.filePaths ?? [], tags: [] },
-          prePolicyFlags: { potentialSecret: false, lowConfidence: false, duplicateSuspect: false },
-          capturedAt: (/* @__PURE__ */ new Date()).toISOString()
-        };
-        let res;
-        try {
-          res = await fetch(`${API_URL.replace(/\/+$/, "")}/api/candidates`, {
-            method: "POST",
-            headers: authHeaders(),
-            body: JSON.stringify(candidate)
-          });
-        } catch (e) {
-          return jsonResult({ ok: false, error: `could not reach the brain API: ${e instanceof Error ? e.message : String(e)}` });
-        }
-        if (!res.ok) return errorResult(res);
-        return jsonResult({
-          ok: true,
-          candidateId: candidate.id,
-          tenantId: TENANT_ID,
-          message: "Proposed to the team brain inbox. This is a PROPOSAL \u2014 the deterministic govern pipeline decides if/when it is promoted (an admin governs, or auto-govern once enabled). It is not durable memory yet."
-        });
-      }
+      async (params) => capture(params.title, params.content, params.category, params.filePaths)
     );
     server.tool(
       "brain_transition",
@@ -35702,6 +35958,35 @@ var init_remote_server = __esm({
           message: "Transition applied; hash-chained audit event written server-side."
         });
       }
+    );
+    server.tool(
+      "brain_inbox",
+      "List your team brain's quarantined capture queue \u2014 member proposals held for review, awaiting an admin's promote/reject. ADMIN-ONLY in team mode (a member token gets a clear 403). Read-only; returns { id, title, category, author, capturedAt } per candidate so you can review then brain_approve / brain_reject by id. Proxies to the governed brain over the tailnet.",
+      {
+        tenantId: import_zod2.z.string().optional().describe("Tenant to inspect (default: the team tenant)"),
+        limit: import_zod2.z.number().int().min(1).max(200).optional().describe("Max candidates to return (default 50)")
+      },
+      async (params) => listInbox(params.tenantId, params.limit ?? 50)
+    );
+    server.tool(
+      "brain_approve",
+      "Promote a quarantined candidate to durable team memory \u2014 the agent-review 'this is worth keeping' verdict. ADMIN-ONLY (member token \u2192 403, nothing applied). The server re-runs the deterministic govern rules (dedupe / policy / secret-scan) as a hard floor you CANNOT override, then writes a hash-chained receipt naming you (the acting token) + your reason. A secret or duplicate is refused server-side (422) \u2014 it cannot be laundered through an approval.",
+      {
+        candidateId: import_zod2.z.string().uuid().describe("UUID of the quarantined candidate (from brain_inbox)"),
+        tenantId: import_zod2.z.string().optional().describe("Tenant the candidate belongs to (default: the team tenant)"),
+        reason: import_zod2.z.string().min(1).describe("Why it should become durable memory (lands in the receipt)")
+      },
+      async (params) => approveCandidate(params.candidateId, params.tenantId, params.reason)
+    );
+    server.tool(
+      "brain_reject",
+      "Retire a quarantined candidate as noise WITHOUT promoting it \u2014 the agent-review 'don't keep proposing this' verdict. ADMIN-ONLY (member token \u2192 403). Non-destructive: the candidate row survives (never deleted), stamped `rejected`, and a hash-chained receipt names you + your reason. Proxies to the governed brain over the tailnet.",
+      {
+        candidateId: import_zod2.z.string().uuid().describe("UUID of the quarantined candidate (from brain_inbox)"),
+        tenantId: import_zod2.z.string().optional().describe("Tenant the candidate belongs to (default: the team tenant)"),
+        reason: import_zod2.z.string().min(1).describe("Why it is being retired (lands in the receipt)")
+      },
+      async (params) => rejectCandidate(params.candidateId, params.tenantId, params.reason)
     );
   }
 });
@@ -35986,6 +36271,22 @@ ALTER TABLE audit_events ADD COLUMN seq INTEGER;
 UPDATE audit_events SET seq = rowid WHERE seq IS NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_audit_seq ON audit_events(seq);
     `.trim()
+      },
+      {
+        // Index the auto-govern inbox sweep's hot lookup (B1, bead
+        // compile-then-govern-jfv.2.1). The nightly sweep calls
+        // `CandidateRepository.findByStatus('inbox', tenantId)` — a filter on
+        // (status, tenant_id) — to drain the remote-capture inbox. Purely additive:
+        // no column change (the `candidates.status` column is already TEXT with a
+        // DEFAULT of 'inbox'; the B1 enum widening is enforced in Zod, not by a DB
+        // CHECK), just a compound index so the sweep does not table-scan `candidates`
+        // as the inbox grows. `IF NOT EXISTS` keeps it replay-safe on fresh and
+        // pre-existing databases alike.
+        version: 8,
+        name: "add_candidates_status_tenant_index",
+        sql: `
+CREATE INDEX IF NOT EXISTS idx_candidates_status_tenant ON candidates(status, tenant_id);
+    `.trim()
       }
     ];
   }
@@ -35995,14 +36296,14 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_audit_seq ON audit_events(seq);
 function ensureSecureDirectory(dbPath) {
   if (dbPath === ":memory:")
     return;
-  const dir = (0, import_node_path.dirname)(dbPath);
-  (0, import_node_fs.mkdirSync)(dir, { recursive: true, mode: 448 });
+  const dir = (0, import_node_path3.dirname)(dbPath);
+  (0, import_node_fs2.mkdirSync)(dir, { recursive: true, mode: 448 });
 }
 function secureDbFile(dbPath) {
   if (dbPath === ":memory:")
     return;
   try {
-    (0, import_node_fs.chmodSync)(dbPath, 384);
+    (0, import_node_fs2.chmodSync)(dbPath, 384);
   } catch {
   }
 }
@@ -36039,19 +36340,19 @@ function runMigrations(db) {
   });
   applyAll();
 }
-var import_node_fs, import_node_path, import_better_sqlite3;
+var import_node_fs2, import_node_path3, import_better_sqlite3;
 var init_database = __esm({
   "../qmd-team-intent-kb/packages/store/dist/database.js"() {
     "use strict";
-    import_node_fs = require("node:fs");
-    import_node_path = require("node:path");
+    import_node_fs2 = require("node:fs");
+    import_node_path3 = require("node:path");
     import_better_sqlite3 = __toESM(require("better-sqlite3"), 1);
     init_schema();
   }
 });
 
 // ../qmd-team-intent-kb/packages/schema/dist/enums.js
-var import_zod3, MemorySource, TrustLevel, MemoryCategory, MemoryLifecycleState, CandidateStatus, SearchScope, PolicyRuleType, PolicyRuleAction, AuditAction, Confidence, Sensitivity, AuthorType, LinkType, LinkSource, ImportBatchStatus;
+var import_zod3, MemorySource, TrustLevel, MemoryCategory, MemoryLifecycleState, CandidateStatus, SearchScope, PolicyRuleType, PolicyRuleAction, AuditAction, ProposerRole, Confidence, Sensitivity, AuthorType, LinkType, LinkSource, ImportBatchStatus;
 var init_enums = __esm({
   "../qmd-team-intent-kb/packages/schema/dist/enums.js"() {
     "use strict";
@@ -36068,7 +36369,14 @@ var init_enums = __esm({
       "reference"
     ]);
     MemoryLifecycleState = import_zod3.z.enum(["active", "deprecated", "superseded", "archived"]);
-    CandidateStatus = import_zod3.z.literal("inbox");
+    CandidateStatus = import_zod3.z.enum([
+      "inbox",
+      "promoted",
+      "rejected",
+      "flagged",
+      "duplicate",
+      "quarantined"
+    ]);
     SearchScope = import_zod3.z.enum(["curated", "all", "inbox", "archived"]).default("curated");
     PolicyRuleType = import_zod3.z.enum([
       "secret_detection",
@@ -36091,8 +36399,22 @@ var init_enums = __esm({
       "exported",
       // Evidence Bundle emission on a curation/promotion cycle (IEP unification
       // thesis, DR-010 Q3). Added for the eval-surface emit path (bead tr08.15/.17/.19).
-      "eval-result"
+      "eval-result",
+      // Candidate-intake receipt — a proposal enters the pre-governance inbox (R8,
+      // bead compile-then-govern-jfv.6.7). Written at intake so every candidate has a
+      // provenance receipt (actor + contentHash + tenant) from byte one, before any
+      // promotion. `memoryId` on this row is the candidate's UUID.
+      "proposed",
+      // Batch-level receipt for one auto-govern inbox SWEEP (B1, bead
+      // compile-then-govern-jfv.2.1). ONE event per sweep that changed durable state,
+      // recording the per-candidate outcomes (candidate ids + outcome, NEVER content)
+      // so the drain of the remote-capture inbox is on the append-only chain. Replaces
+      // the per-candidate reject receipts the sweep would otherwise emit (which would
+      // re-fire every night for a candidate left in the inbox → unbounded chain bloat).
+      // `memoryId` is a fixed sweep sentinel UUID (the sweep is not tied to one memory).
+      "governed"
     ]);
+    ProposerRole = import_zod3.z.enum(["admin", "member"]);
     Confidence = import_zod3.z.enum(["high", "medium", "low"]);
     Sensitivity = import_zod3.z.enum(["public", "internal", "confidential", "restricted"]);
     AuthorType = import_zod3.z.enum(["human", "ai", "system"]);
@@ -36136,7 +36458,19 @@ var init_common = __esm({
       branch: import_zod4.z.string().optional(),
       confidence: Confidence.optional(),
       sensitivity: Sensitivity.optional(),
-      tags: import_zod4.z.array(Tag).default([])
+      tags: import_zod4.z.array(Tag).default([]),
+      /**
+       * The role of the token that proposed this candidate, stamped server-side at
+       * intake (R8, bead compile-then-govern-jfv.6.7). Never client-supplied — the
+       * intake path overwrites it from the bearer-token identity so a member cannot
+       * masquerade as an admin-authored proposal. A closed enum (`admin` | `member`),
+       * so the disclosure scanner and the enum-membership backstop treat it as
+       * closed-vocabulary. Optional/absent on legacy records and non-token (dev)
+       * intake; present on every token-authenticated proposal. Flows through
+       * promotion onto the curated memory so a later auto-govern step (B1) can
+       * quarantine member-authored content behind admin review.
+       */
+      proposedByRole: ProposerRole.optional()
     });
   }
 });
@@ -36473,15 +36807,15 @@ function getTeamKbBasePath() {
   return DEFAULT_TEAMKB_BASE;
 }
 function resolveTeamKbPath(subdir) {
-  return (0, import_node_path2.join)(getTeamKbBasePath(), subdir);
+  return (0, import_node_path4.join)(getTeamKbBasePath(), subdir);
 }
-var import_node_path2, import_node_os, DEFAULT_TEAMKB_BASE;
+var import_node_path4, import_node_os3, DEFAULT_TEAMKB_BASE;
 var init_paths = __esm({
   "../qmd-team-intent-kb/packages/common/dist/paths.js"() {
     "use strict";
-    import_node_path2 = require("node:path");
-    import_node_os = require("node:os");
-    DEFAULT_TEAMKB_BASE = (0, import_node_path2.join)((0, import_node_os.homedir)(), ".teamkb");
+    import_node_path4 = require("node:path");
+    import_node_os3 = require("node:os");
+    DEFAULT_TEAMKB_BASE = (0, import_node_path4.join)((0, import_node_os3.homedir)(), ".teamkb");
   }
 });
 
@@ -36865,6 +37199,16 @@ function rowToCandidate(row) {
   }
   return domainResult.data;
 }
+function rowToCandidateSafe(row) {
+  try {
+    return rowToCandidate(row);
+  } catch (e) {
+    const id = row !== null && typeof row === "object" && "id" in row ? String(row.id) : "<unknown>";
+    process.stderr.write(`[candidate-repository] skipping unparseable candidate row id=${id}: ${e instanceof Error ? e.message : String(e)}
+`);
+    return null;
+  }
+}
 var import_zod11, CandidateRowSchema, CandidateRepository;
 var init_candidate_repository = __esm({
   "../qmd-team-intent-kb/packages/store/dist/repositories/candidate-repository.js"() {
@@ -36893,10 +37237,13 @@ var init_candidate_repository = __esm({
       stmtInsert;
       stmtFindById;
       stmtFindByTenant;
+      stmtFindByStatus;
       stmtFindByHash;
+      stmtFindByHashAndTenant;
       stmtCount;
       stmtCountByTenant;
       stmtDeleteByBatch;
+      stmtUpdateStatus;
       constructor(db) {
         this.stmtInsert = db.prepare(`
       INSERT INTO candidates (
@@ -36917,8 +37264,17 @@ var init_candidate_repository = __esm({
         this.stmtFindByTenant = db.prepare(`
       SELECT * FROM candidates WHERE tenant_id = ?
     `);
+        this.stmtFindByStatus = db.prepare(`
+      SELECT * FROM candidates WHERE status = ? AND tenant_id = ?
+    `);
         this.stmtFindByHash = db.prepare(`
       SELECT * FROM candidates WHERE content_hash = ? LIMIT 1
+    `);
+        this.stmtFindByHashAndTenant = db.prepare(`
+      SELECT * FROM candidates WHERE content_hash = ? AND tenant_id = ? LIMIT 1
+    `);
+        this.stmtUpdateStatus = db.prepare(`
+      UPDATE candidates SET status = @status WHERE id = @id AND tenant_id = @tenantId
     `);
         this.stmtCount = db.prepare(`
       SELECT COUNT(*) as cnt FROM candidates
@@ -36993,11 +37349,61 @@ var init_candidate_repository = __esm({
         return rows.map(rowToCandidate);
       }
       /**
+       * Return every candidate in the given `status`, scoped to `tenantId` (B1, bead
+       * compile-then-govern-jfv.2.1). The auto-govern sweep calls
+       * `findByStatus('inbox', config.tenantId)` to drain the pre-governance inbox.
+       *
+       * TOLERANT read: a row that fails validation is skipped and reported to stderr
+       * (via {@link rowToCandidateSafe}) rather than thrown, so a single malformed
+       * candidate can never abort the whole sweep — the inbox always drains. Tenant
+       * scoping is mandatory (not optional) so a sweep can never read across the
+       * tenant boundary.
+       */
+      findByStatus(status2, tenantId) {
+        const rows = this.stmtFindByStatus.all(status2, tenantId);
+        const out = [];
+        for (const row of rows) {
+          const c = rowToCandidateSafe(row);
+          if (c !== null)
+            out.push(c);
+        }
+        return out;
+      }
+      /**
+       * Stamp a candidate's terminal status IN PLACE (B1) — the non-destructive
+       * retirement primitive the sweep uses instead of DELETE. `candidates` is
+       * insert-only Tier-A source of truth, so a governed candidate LEAVES the inbox
+       * by changing its status marker, never by deletion (which would destroy the only
+       * copy of a remote teammate's proposal + the human review queue).
+       *
+       * Validates `status` against the closed {@link CandidateStatus} vocabulary before
+       * writing (a raw UPDATE otherwise bypasses the enum-membership backstop that
+       * `insert()` enforces). Scoped to `tenantId` so the primitive cannot flip a row
+       * outside the caller's tenant. Returns the number of rows changed (0 if no row
+       * matches `id` AND `tenantId`).
+       *
+       * @throws {z.ZodError} if `status` is not a valid CandidateStatus value.
+       */
+      updateStatus(id, status2, tenantId) {
+        const validated = CandidateStatus.parse(status2);
+        return this.stmtUpdateStatus.run({ id, status: validated, tenantId }).changes;
+      }
+      /**
        * Return the first candidate with the given content hash, or null.
        * Useful for duplicate detection before insertion.
        */
       findByContentHash(hash) {
         const row = this.stmtFindByHash.get(hash);
+        return row !== void 0 ? rowToCandidate(row) : null;
+      }
+      /**
+       * Return the first candidate with the given content hash FOR A TENANT, or null —
+       * the tenant-scoped dedup the idempotent intake path uses (jfv.9). Prefer this
+       * over {@link findByContentHash} on any per-tenant write path: the unscoped
+       * variant can return another tenant's row.
+       */
+      findByContentHashAndTenant(hash, tenantId) {
+        const row = this.stmtFindByHashAndTenant.get(hash, tenantId);
         return row !== void 0 ? rowToCandidate(row) : null;
       }
       /** Return the total number of candidates in the store. */
@@ -37136,6 +37542,8 @@ var init_memory_repository = __esm({
       stmtFindById;
       stmtFindByTenant;
       stmtFindByHash;
+      stmtFindByHashAndTenant;
+      stmtTenantHashes;
       stmtFindByLifecycle;
       stmtUpdateLifecycle;
       stmtUpdate;
@@ -37177,6 +37585,12 @@ var init_memory_repository = __esm({
     `);
         this.stmtFindByHash = db.prepare(`
       SELECT * FROM curated_memories WHERE content_hash = ? LIMIT 1
+    `);
+        this.stmtFindByHashAndTenant = db.prepare(`
+      SELECT * FROM curated_memories WHERE content_hash = ? AND tenant_id = ? LIMIT 1
+    `);
+        this.stmtTenantHashes = db.prepare(`
+      SELECT content_hash FROM curated_memories WHERE tenant_id = ?
     `);
         this.stmtFindByLifecycle = db.prepare(`
       SELECT * FROM curated_memories WHERE lifecycle = ?
@@ -37227,6 +37641,21 @@ var init_memory_repository = __esm({
         this.stmtFindByTenantAndLifecycle = db.prepare(`
       SELECT * FROM curated_memories WHERE tenant_id = ? AND lifecycle = ?
     `);
+      }
+      /**
+       * The underlying better-sqlite3 connection this repository was built on.
+       *
+       * Exposed read-only so a caller that writes across SEVERAL repositories on the
+       * SAME connection — the curator's `promote()`, which touches curated_memories,
+       * audit_events, and memory_links — can wrap all of those writes in ONE
+       * transaction (all-or-nothing). Every repository constructed from a single
+       * `createDatabase()` (as govern.ts / the daemon / the plugin do) shares this
+       * exact handle, so a transaction opened here serializes every repo's writes on
+       * the connection. Do not use it to bypass a repository's prepared statements —
+       * it exists only to own a multi-repository transaction.
+       */
+      get connection() {
+        return this.db;
       }
       /** Insert a new curated memory. */
       insert(memory) {
@@ -37320,6 +37749,24 @@ var init_memory_repository = __esm({
       getAllContentHashes() {
         const rows = this.stmtAllHashes.all();
         return rows.map((r) => r.content_hash);
+      }
+      /**
+       * Return the content hashes of the given tenant's memories only (B1). The
+       * tenant-scoped counterpart to {@link getAllContentHashes}, used by the curator's
+       * dedup so a batch/sweep never treats another tenant's memory as a duplicate.
+       */
+      getContentHashesByTenant(tenantId) {
+        const rows = this.stmtTenantHashes.all(tenantId);
+        return rows.map((r) => r.content_hash);
+      }
+      /**
+       * Return the first memory in the given tenant with the given content hash, or
+       * null (B1). The tenant-scoped counterpart to {@link findByContentHash}, so
+       * exact-hash dedup never crosses the tenant boundary.
+       */
+      findByContentHashAndTenant(hash, tenantId) {
+        const row = this.stmtFindByHashAndTenant.get(hash, tenantId);
+        return row !== void 0 ? rowToMemory(row) : null;
       }
       /** Count memories grouped by lifecycle state */
       countByLifecycle() {
@@ -37919,15 +38366,19 @@ function chainedRowsOf(repo) {
   return repo.findAllChronological().filter((r) => r.entry_hash !== null);
 }
 function readAnchors(anchorPath) {
-  if (!(0, import_node_fs2.existsSync)(anchorPath))
+  if (!(0, import_node_fs3.existsSync)(anchorPath))
     return [];
-  return (0, import_node_fs2.readFileSync)(anchorPath, "utf8").split("\n").filter((l) => l.trim().length > 0).map((l) => JSON.parse(l));
+  return (0, import_node_fs3.readFileSync)(anchorPath, "utf8").split("\n").filter((l) => l.trim().length > 0).map((l) => JSON.parse(l));
 }
 function appendAnchor(repo, anchorPath, opts) {
   const now = opts.nowFn ?? (() => (/* @__PURE__ */ new Date()).toISOString());
   const rows = chainedRowsOf(repo);
   const head = rows.length > 0 ? rows[rows.length - 1].entry_hash ?? "" : "";
   const existing = readAnchors(anchorPath);
+  const lastAnchor = existing.length > 0 ? existing[existing.length - 1] : null;
+  if (lastAnchor !== null && lastAnchor.chainHead === head && lastAnchor.chainedRows === rows.length) {
+    return lastAnchor;
+  }
   const prevAnchorHash = existing.length > 0 ? existing[existing.length - 1].anchorHash : null;
   const body = {
     schemaVersion: 1,
@@ -37938,7 +38389,7 @@ function appendAnchor(repo, anchorPath, opts) {
     prevAnchorHash
   };
   const record2 = { ...body, anchorHash: computeAnchorHash(body) };
-  (0, import_node_fs2.appendFileSync)(anchorPath, JSON.stringify(record2) + "\n", { mode: 384 });
+  (0, import_node_fs3.appendFileSync)(anchorPath, JSON.stringify(record2) + "\n", { mode: 384 });
   return record2;
 }
 function verifyAnchors(repo, anchorPath) {
@@ -38000,12 +38451,12 @@ function verifyAnchors(repo, anchorPath) {
     ok: chain.breaks.length === 0 && anchorBreaks.length === 0
   };
 }
-var import_node_crypto5, import_node_fs2;
+var import_node_crypto5, import_node_fs3;
 var init_audit_anchor = __esm({
   "../qmd-team-intent-kb/packages/store/dist/audit-anchor.js"() {
     "use strict";
     import_node_crypto5 = require("node:crypto");
-    import_node_fs2 = require("node:fs");
+    import_node_fs3 = require("node:fs");
     init_audit_verify();
   }
 });
@@ -38040,7 +38491,7 @@ function computeManifestHash(body) {
 function readManifest(path) {
   let raw;
   try {
-    raw = (0, import_node_fs3.readFileSync)(path, "utf8");
+    raw = (0, import_node_fs4.readFileSync)(path, "utf8");
   } catch (e) {
     throw new ExceptionManifestError(`cannot read manifest at ${path}: ${String(e)}`);
   }
@@ -38109,12 +38560,12 @@ function classifyChainBreaks(breaks, manifest, rowsById) {
     chainForks
   };
 }
-var import_node_crypto6, import_node_fs3, import_zod15, TAMPER_REASONS, TAMPER_REASON_SET, ExceptionManifestEntrySchema, ExceptionManifestSchema, ExceptionManifestError;
+var import_node_crypto6, import_node_fs4, import_zod15, TAMPER_REASONS, TAMPER_REASON_SET, ExceptionManifestEntrySchema, ExceptionManifestSchema, ExceptionManifestError;
 var init_exception_manifest = __esm({
   "../qmd-team-intent-kb/packages/store/dist/exception-manifest.js"() {
     "use strict";
     import_node_crypto6 = require("node:crypto");
-    import_node_fs3 = require("node:fs");
+    import_node_fs4 = require("node:fs");
     import_zod15 = __toESM(require_zod(), 1);
     TAMPER_REASONS = [
       "ENTRY_HASH_MISMATCH",
@@ -38282,15 +38733,15 @@ function getQmdTenantIndexPath(tenantId) {
 function getQmdTenantEnv(tenantId) {
   const base = getQmdTenantIndexPath(tenantId);
   return {
-    XDG_CONFIG_HOME: (0, import_node_path3.join)(base, "config"),
-    XDG_CACHE_HOME: (0, import_node_path3.join)(base, "cache")
+    XDG_CONFIG_HOME: (0, import_node_path5.join)(base, "config"),
+    XDG_CACHE_HOME: (0, import_node_path5.join)(base, "cache")
   };
 }
-var import_node_path3, QMD_INDEX_DIR, DEFAULT_QMD_BINARY, DEFAULT_TIMEOUT;
+var import_node_path5, QMD_INDEX_DIR, DEFAULT_QMD_BINARY, DEFAULT_TIMEOUT;
 var init_config = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/config.js"() {
     "use strict";
-    import_node_path3 = require("node:path");
+    import_node_path5 = require("node:path");
     init_dist2();
     QMD_INDEX_DIR = "qmd-index";
     DEFAULT_QMD_BINARY = "qmd";
@@ -38412,11 +38863,11 @@ var init_collection_registry = __esm({
 });
 
 // ../qmd-team-intent-kb/packages/qmd-adapter/dist/collections/collection-manager.js
-var import_node_path4, CollectionManager;
+var import_node_path6, CollectionManager;
 var init_collection_manager = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/collections/collection-manager.js"() {
     "use strict";
-    import_node_path4 = require("node:path");
+    import_node_path6 = require("node:path");
     init_collection_registry();
     CollectionManager = class {
       executor;
@@ -38488,7 +38939,7 @@ var init_collection_manager = __esm({
         const created = [];
         for (const def of getExportableCollections()) {
           if (!existing.some((e) => e.includes(def.name))) {
-            const path = (0, import_node_path4.join)(exportBaseDir, def.sourceSubdir);
+            const path = (0, import_node_path6.join)(exportBaseDir, def.sourceSubdir);
             const addResult = await this.addCollection(def.name, path);
             if (!addResult.ok)
               return { ok: false, error: addResult.error };
@@ -38717,12 +39168,12 @@ var init_health_check = __esm({
 });
 
 // ../qmd-team-intent-kb/packages/qmd-adapter/dist/adapter.js
-var import_node_fs4, import_node_path5, QmdAdapter;
+var import_node_fs5, import_node_path7, QmdAdapter;
 var init_adapter = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/adapter.js"() {
     "use strict";
-    import_node_fs4 = require("node:fs");
-    import_node_path5 = require("node:path");
+    import_node_fs5 = require("node:fs");
+    import_node_path7 = require("node:path");
     init_real_executor();
     init_collection_manager();
     init_collection_registry();
@@ -38792,7 +39243,7 @@ var init_adapter = __esm({
        */
       async ensureCollections() {
         for (const def of getExportableCollections()) {
-          (0, import_node_fs4.mkdirSync)((0, import_node_path5.join)(this.exportDir, def.sourceSubdir), { recursive: true });
+          (0, import_node_fs5.mkdirSync)((0, import_node_path7.join)(this.exportDir, def.sourceSubdir), { recursive: true });
         }
         return this.collections.ensureCollections(this.exportDir);
       }
@@ -38846,6 +39297,28 @@ var init_seed_queries = __esm({
   }
 });
 
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/stratified-report.js
+var init_stratified_report = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/stratified-report.js"() {
+    "use strict";
+    init_metrics();
+  }
+});
+
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/qmd-retrieval.js
+var init_qmd_retrieval = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/qmd-retrieval.js"() {
+    "use strict";
+  }
+});
+
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/datasets/governed-brain-v1.js
+var init_governed_brain_v1 = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/datasets/governed-brain-v1.js"() {
+    "use strict";
+  }
+});
+
 // ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/index.js
 var init_eval = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/index.js"() {
@@ -38853,6 +39326,9 @@ var init_eval = __esm({
     init_metrics();
     init_run_eval();
     init_seed_queries();
+    init_stratified_report();
+    init_qmd_retrieval();
+    init_governed_brain_v1();
   }
 });
 
@@ -38870,6 +39346,21 @@ var init_native = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/native/index.js"() {
     "use strict";
     init_fts5_backend();
+  }
+});
+
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/reindex/reindex.js
+var init_reindex = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/reindex/reindex.js"() {
+    "use strict";
+  }
+});
+
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/canary/search-canary.js
+var init_search_canary = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/canary/search-canary.js"() {
+    "use strict";
+    init_reindex();
   }
 });
 
@@ -38891,6 +39382,8 @@ var init_dist4 = __esm({
     init_weights();
     init_eval();
     init_native();
+    init_reindex();
+    init_search_canary();
   }
 });
 
@@ -38994,7 +39487,23 @@ var init_patterns = __esm({
         id: "heroku-api-key",
         name: "Heroku API Key",
         regex: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-        description: "Heroku API key (UUID format)"
+        description: "Heroku API key (UUID format), only in key-context",
+        // A Heroku API key is UUID-shaped, but so is a request id, a trace id, or a
+        // bead id in ordinary prose. Firing on any bare UUID over-blocks benign
+        // memories (the e06.3 eval's `neg-uuid-in-prose-01` false positive dragged
+        // secret-scanner + content-classifier precision below 1.0). Gate the rule
+        // behind key-context: only flag a UUID as a credential when a `heroku` /
+        // `api` / `key` / `token` keyword, or an assignment/secret env var, is
+        // present in the same scan window. A REAL Heroku key still fires (it is set
+        // via `HEROKU_API_KEY=` or referenced with those words); a naked UUID in
+        // prose does not. Precision up, recall held (bead compile-then-govern-e06.15).
+        //
+        // Keyword boundaries are separator-based `(?:^|[^a-z0-9])…(?:[^a-z0-9]|$)`
+        // rather than `\b`, so an underscored env-var token (`HEROKU_API_KEY`, where
+        // `\bkey\b` would fail because `_` is a word char) still satisfies the gate.
+        // The final alternative matches an env-var-style assignment (`FOO=` / `FOO:`).
+        // Linear-time (no nested quantifiers) — ReDoS-safe.
+        requiresContext: /(?:^|[^a-z0-9])(?:heroku|api[-_ ]?key|api|key|token|secret|credential|bearer)(?:[^a-z0-9]|$)|[A-Za-z][A-Za-z0-9_]*\s*[:=]/i
       },
       {
         id: "mysql-connection-string",
@@ -39027,19 +39536,194 @@ var init_patterns = __esm({
         name: "SSN-like Pattern",
         regex: /\b[0-9]{3}-[0-9]{2}-[0-9]{4}\b/,
         description: "Social Security Number pattern (XXX-XX-XXXX)"
+      },
+      // The three patterns below converge this classifier's PII vocabulary UP to the
+      // repository-boundary disclosure filter's PII_PATTERN
+      // (@qmd-team-intent-kb/common). The boundary filter caught SSN keyword, DOB,
+      // and background-check terms; classifyContent did not, so a DOB-only leak
+      // passed the policy pipeline (which gates on classifyContent) and was caught
+      // only at the write boundary — the two vocabularies had drifted, and the
+      // classifier was the weaker one (the e06.3 eval's `pii-inline-dob-01`
+      // documented gap). Adding these TIGHTENS detection (the safe direction) so the
+      // policy pipeline rejects DOB / background-check / SSN-keyword PII pre-boundary
+      // too. Bounded character classes only — linear time, no ReDoS surface.
+      {
+        id: "ssn-keyword",
+        name: "SSN Keyword",
+        regex: /\bSSN\b|social security (?:number|no)/i,
+        description: "Social Security Number referenced by keyword (SSN / social security number)"
+      },
+      {
+        id: "date-of-birth",
+        name: "Date of Birth",
+        regex: /date of birth|\bDOB\b\s*[:=]/i,
+        description: "Date-of-birth disclosure (date of birth / DOB: / DOB=)"
+      },
+      {
+        id: "background-check",
+        name: "Background Check Data",
+        regex: /background[- ]check (?:result|report|passed|failed)/i,
+        description: "Background-check result/report disclosure"
       }
     ];
   }
 });
 
 // ../qmd-team-intent-kb/packages/claude-runtime/dist/secrets/secret-scanner.js
+function execWithContext(pattern, text, contextText) {
+  if (pattern.regex.global || pattern.regex.sticky) {
+    pattern.regex.lastIndex = 0;
+  }
+  const match = pattern.regex.exec(text);
+  if (!match)
+    return null;
+  if (pattern.requiresContext) {
+    if (pattern.requiresContext.global || pattern.requiresContext.sticky) {
+      pattern.requiresContext.lastIndex = 0;
+    }
+    const window = contextText ?? text;
+    if (!pattern.requiresContext.test(window))
+      return null;
+  }
+  return match;
+}
+function scanFlat(text, patterns, matches, locate, patternIdOverride, contextText) {
+  for (const pattern of patterns) {
+    const match = execWithContext(pattern, text, contextText);
+    if (match) {
+      const { line, column } = locate(match.index, match[0].length);
+      matches.push({
+        patternId: patternIdOverride ? patternIdOverride(pattern.id) : pattern.id,
+        patternName: pattern.name,
+        line,
+        column,
+        matchLength: match[0].length
+      });
+    }
+  }
+}
+function scanNewlineCollapsed(content, patterns, alreadyFired, matches) {
+  if (content.length > LIMITS.collapsedScanMaxChars)
+    return;
+  const singleSpace = content.replace(/\s+/g, " ");
+  const noWhitespace = content.replace(/\s+/g, "");
+  const remaining = patterns.filter((p) => !alreadyFired.has(p.id));
+  if (remaining.length === 0)
+    return;
+  const locate = () => ({ line: 1, column: 1 });
+  const before = matches.length;
+  scanFlat(singleSpace, remaining, matches, locate);
+  const stillUnmatched = remaining.filter((p) => !matches.slice(before).some((m) => m.patternId === p.id));
+  if (stillUnmatched.length > 0)
+    scanFlat(noWhitespace, stillUnmatched, matches, locate);
+}
+function scanEncodedWrapped(content, patterns, matches) {
+  let decodedCandidates = 0;
+  let decodedBytes = 0;
+  const seenWrapped = /* @__PURE__ */ new Set();
+  const tryDecode = (raw, index, decode, prefix) => {
+    if (decodedCandidates >= LIMITS.maxEncodedCandidates)
+      return;
+    if (raw.length < LIMITS.minEncodedCandidateLen)
+      return;
+    if (raw.length > LIMITS.maxEncodedCandidateLen)
+      return;
+    if (decodedBytes >= LIMITS.maxTotalDecodedBytes)
+      return;
+    const decoded = decode(raw);
+    if (decoded === null || decoded.length === 0)
+      return;
+    decodedCandidates += 1;
+    decodedBytes += decoded.length;
+    const line = index >= 0 ? content.slice(0, index).split("\n").length : 1;
+    const column = index >= 0 ? index - content.lastIndexOf("\n", index) : 1;
+    scanFlat(
+      decoded,
+      patterns,
+      matches,
+      () => ({ line, column: Math.max(1, column) }),
+      (patternId) => {
+        const wrappedId = `${prefix}:${patternId}`;
+        return wrappedId;
+      },
+      // The decoded blob is just the raw value; a context-gated pattern must be
+      // evaluated against the ORIGINAL content (where `heroku` / `api key`
+      // keywords live), else a real wrapped Heroku key is silently missed
+      // (Gemini finding, e06.15). Value regex still runs on `decoded`.
+      content
+    );
+    seenWrapped.add(raw);
+  };
+  for (const m of content.matchAll(BASE64_CANDIDATE_RE)) {
+    if (decodedCandidates >= LIMITS.maxEncodedCandidates)
+      break;
+    if (decodedBytes >= LIMITS.maxTotalDecodedBytes)
+      break;
+    const raw = m[0];
+    if (seenWrapped.has(raw))
+      continue;
+    tryDecode(raw, m.index ?? -1, decodeBase64, "base64-wrapped");
+  }
+  for (const m of content.matchAll(HEX_CANDIDATE_RE)) {
+    if (decodedCandidates >= LIMITS.maxEncodedCandidates)
+      break;
+    if (decodedBytes >= LIMITS.maxTotalDecodedBytes)
+      break;
+    const raw = m[0];
+    if (seenWrapped.has(raw) || raw.length % 2 !== 0)
+      continue;
+    tryDecode(raw, m.index ?? -1, decodeHex, "hex-wrapped");
+  }
+}
+function decodeBase64(candidate) {
+  const normalized = candidate.replace(/-/g, "+").replace(/_/g, "/").replace(/=+$/, "");
+  if (normalized.length % 4 === 1)
+    return null;
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+  try {
+    const buf = Buffer.from(padded, "base64");
+    if (buf.length === 0)
+      return null;
+    const text = buf.toString("utf8");
+    if (!isMostlyPrintable(text))
+      return null;
+    return text;
+  } catch {
+    return null;
+  }
+}
+function decodeHex(candidate) {
+  try {
+    const buf = Buffer.from(candidate, "hex");
+    if (buf.length === 0 || buf.length * 2 !== candidate.length)
+      return null;
+    const text = buf.toString("utf8");
+    if (!isMostlyPrintable(text))
+      return null;
+    return text;
+  } catch {
+    return null;
+  }
+}
+function isMostlyPrintable(text) {
+  if (text.length === 0)
+    return false;
+  let printable = 0;
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code >= 32 && code <= 126 || code === 9 || code === 10 || code === 13) {
+      printable += 1;
+    }
+  }
+  return printable / text.length >= 0.9;
+}
 function scanForSecrets(content, patterns = SECRET_PATTERNS2) {
   const matches = [];
   const lines = content.split("\n");
   for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
     const line = lines[lineIdx];
     for (const pattern of patterns) {
-      const match = pattern.regex.exec(line);
+      const match = execWithContext(pattern, line);
       if (match) {
         matches.push({
           patternId: pattern.id,
@@ -39051,12 +39735,32 @@ function scanForSecrets(content, patterns = SECRET_PATTERNS2) {
       }
     }
   }
+  if (content.includes("\n")) {
+    const firedOnLineScan = new Set(matches.map((m) => m.patternId));
+    scanNewlineCollapsed(content, patterns, firedOnLineScan, matches);
+  }
+  scanEncodedWrapped(content, patterns, matches);
   return matches;
 }
+var LIMITS, BASE64_CANDIDATE_RE, HEX_CANDIDATE_RE;
 var init_secret_scanner = __esm({
   "../qmd-team-intent-kb/packages/claude-runtime/dist/secrets/secret-scanner.js"() {
     "use strict";
     init_patterns();
+    LIMITS = {
+      /** Max content length (chars) the newline-collapsed pre-pass will process. */
+      collapsedScanMaxChars: 512 * 1024,
+      /** Min length of a base64/hex candidate substring worth decoding (avoids noise). */
+      minEncodedCandidateLen: 24,
+      /** Max length of a single encoded candidate we will decode (bounds one decode). */
+      maxEncodedCandidateLen: 8 * 1024,
+      /** Max number of encoded candidates decoded per scan (bounds candidate count). */
+      maxEncodedCandidates: 64,
+      /** Max total decoded bytes across all candidates (bounds aggregate decode work). */
+      maxTotalDecodedBytes: 256 * 1024
+    };
+    BASE64_CANDIDATE_RE = /[A-Za-z0-9+/_-]{24,}={0,2}/g;
+    HEX_CANDIDATE_RE = /[A-Fa-f0-9]{24,}/g;
   }
 });
 
@@ -39300,8 +40004,8 @@ var init_context_provider = __esm({
 async function writeToSpool(candidate, spoolDir, agentId) {
   const dir = spoolDir ?? getSpoolPath();
   const filename = agentId ? `spool-${agentId}.jsonl` : getSpoolFilename();
-  const filepath = (0, import_node_path6.resolve)(dir, filename);
-  const resolvedDir = (0, import_node_path6.resolve)(dir);
+  const filepath = (0, import_node_path8.resolve)(dir, filename);
+  const resolvedDir = (0, import_node_path8.resolve)(dir);
   if (!filepath.startsWith(resolvedDir + "/") && filepath !== resolvedDir) {
     return { ok: false, error: `Path traversal rejected: ${filename}` };
   }
@@ -39310,11 +40014,11 @@ async function writeToSpool(candidate, spoolDir, agentId) {
     return { ok: false, error: `Unsafe spool filename: ${safety.reason}` };
   }
   try {
-    await (0, import_promises.mkdir)(dir, { recursive: true, mode: 448 });
+    await (0, import_promises2.mkdir)(dir, { recursive: true, mode: 448 });
     const line = JSON.stringify(candidate) + "\n";
-    await (0, import_promises.appendFile)(filepath, line, "utf8");
+    await (0, import_promises2.appendFile)(filepath, line, "utf8");
     try {
-      await (0, import_promises.chmod)(filepath, 384);
+      await (0, import_promises2.chmod)(filepath, 384);
     } catch {
     }
     return { ok: true, value: filepath };
@@ -39323,12 +40027,12 @@ async function writeToSpool(candidate, spoolDir, agentId) {
     return { ok: false, error: `Failed to write to spool: ${msg}` };
   }
 }
-var import_promises, import_node_path6;
+var import_promises2, import_node_path8;
 var init_spool_writer = __esm({
   "../qmd-team-intent-kb/packages/claude-runtime/dist/spool/spool-writer.js"() {
     "use strict";
-    import_promises = require("node:fs/promises");
-    import_node_path6 = require("node:path");
+    import_promises2 = require("node:fs/promises");
+    import_node_path8 = require("node:path");
     init_dist2();
     init_config2();
   }
@@ -39339,7 +40043,7 @@ async function verifySpoolManifest(spoolFilePath) {
   const manifestPath2 = `${spoolFilePath}.manifest.json`;
   let manifestRaw;
   try {
-    manifestRaw = await (0, import_promises2.readFile)(manifestPath2, "utf8");
+    manifestRaw = await (0, import_promises3.readFile)(manifestPath2, "utf8");
   } catch {
     return { ok: true, value: { status: "no_manifest" } };
   }
@@ -39359,7 +40063,7 @@ async function verifySpoolManifest(spoolFilePath) {
   }
   let content;
   try {
-    content = await (0, import_promises2.readFile)(spoolFilePath, "utf8");
+    content = await (0, import_promises3.readFile)(spoolFilePath, "utf8");
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return { ok: false, error: `Failed to read spool file for verification: ${msg}` };
@@ -39372,7 +40076,7 @@ async function verifySpoolManifest(spoolFilePath) {
 }
 async function readSpoolFile(filepath) {
   try {
-    const content = await (0, import_promises2.readFile)(filepath, "utf8");
+    const content = await (0, import_promises3.readFile)(filepath, "utf8");
     const lines = content.trim().split("\n").filter(Boolean);
     const candidates = [];
     for (const line of lines) {
@@ -39390,21 +40094,21 @@ async function readSpoolFile(filepath) {
 async function listSpoolFiles(spoolDir) {
   const dir = spoolDir ?? getSpoolPath();
   try {
-    const files = await (0, import_promises2.readdir)(dir);
-    const spoolFiles = files.filter((f) => f.startsWith("spool-") && f.endsWith(".jsonl")).sort().map((f) => (0, import_node_path7.join)(dir, f));
+    const files = await (0, import_promises3.readdir)(dir);
+    const spoolFiles = files.filter((f) => f.startsWith("spool-") && f.endsWith(".jsonl")).sort().map((f) => (0, import_node_path9.join)(dir, f));
     return { ok: true, value: spoolFiles };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return { ok: false, error: `Failed to list spool files: ${msg}` };
   }
 }
-var import_node_crypto7, import_promises2, import_node_path7;
+var import_node_crypto7, import_promises3, import_node_path9;
 var init_spool_reader = __esm({
   "../qmd-team-intent-kb/packages/claude-runtime/dist/spool/spool-reader.js"() {
     "use strict";
     import_node_crypto7 = require("node:crypto");
-    import_promises2 = require("node:fs/promises");
-    import_node_path7 = require("node:path");
+    import_promises3 = require("node:fs/promises");
+    import_node_path9 = require("node:path");
     init_dist();
     init_config2();
   }
@@ -39477,17 +40181,17 @@ function resolveConfig() {
   return {
     tenantId,
     basePath,
-    spoolPath: (0, import_node_path8.join)(basePath, "spool"),
-    dbPath: (0, import_node_path8.join)(basePath, "teamkb.db"),
-    feedbackPath: (0, import_node_path8.join)(basePath, "feedback"),
-    exportDir: envExport && envExport.length > 0 ? envExport : (0, import_node_path8.join)(basePath, "kb-export")
+    spoolPath: (0, import_node_path10.join)(basePath, "spool"),
+    dbPath: (0, import_node_path10.join)(basePath, "teamkb.db"),
+    feedbackPath: (0, import_node_path10.join)(basePath, "feedback"),
+    exportDir: envExport && envExport.length > 0 ? envExport : (0, import_node_path10.join)(basePath, "kb-export")
   };
 }
-var import_node_path8;
+var import_node_path10;
 var init_config3 = __esm({
   "src/config.ts"() {
     "use strict";
-    import_node_path8 = require("node:path");
+    import_node_path10 = require("node:path");
     init_dist2();
   }
 });
@@ -39930,9 +40634,9 @@ var init_dist7 = __esm({
 });
 
 // ../qmd-team-intent-kb/apps/curator/dist/dedup/dedup-checker.js
-function checkDuplicate(candidate, memoryRepo) {
+function checkDuplicate(candidate, memoryRepo, tenantId) {
   const contentHash = computeContentHash(candidate.content);
-  const existing = memoryRepo.findByContentHash(contentHash);
+  const existing = tenantId !== void 0 ? memoryRepo.findByContentHashAndTenant(contentHash, tenantId) : memoryRepo.findByContentHash(contentHash);
   if (existing !== null) {
     return {
       isDuplicate: true,
@@ -40073,134 +40777,138 @@ function promote(input, memoryRepo, auditRepo, dryRun = false, linksRepo, evalCa
     contentHash: input.contentHash,
     policyEvaluations,
     promotedAt: now,
-    promotedBy: { type: "system", id: "curator" },
+    promotedBy: input.promotedBy ?? CURATOR_ACTOR,
     updatedAt: now,
     version: 1
   });
   if (!dryRun) {
-    if (input.supersession !== void 0) {
-      const oldMemory = memoryRepo.findById(input.supersession.supersededMemoryId);
-      if (oldMemory !== null) {
-        const updatedOld = CuratedMemory.parse({
-          ...oldMemory,
-          lifecycle: "superseded",
-          supersession: {
-            supersededBy: memoryId,
-            reason: `Title similarity: ${input.supersession.similarity.toFixed(2)}`,
-            linkedAt: now
+    memoryRepo.connection.transaction(() => {
+      if (input.supersession !== void 0) {
+        const oldMemory = memoryRepo.findById(input.supersession.supersededMemoryId);
+        if (oldMemory !== null) {
+          const updatedOld = CuratedMemory.parse({
+            ...oldMemory,
+            lifecycle: "superseded",
+            supersession: {
+              supersededBy: memoryId,
+              reason: `Title similarity: ${input.supersession.similarity.toFixed(2)}`,
+              linkedAt: now
+            },
+            updatedAt: now
+          });
+          memoryRepo.update(updatedOld);
+        }
+        auditRepo.insert(AuditEvent.parse({
+          // Content-derived (bead 8da.5): identity is the superseded memory +
+          // the 'superseded' action + the superseding memory id as discriminator,
+          // so two clones supersede-by-the-same-memory mint the same audit id and
+          // hence the same v2 entry_hash at the same chain position.
+          id: deriveAuditEventId(input.supersession.supersededMemoryId, "superseded", memoryId),
+          action: "superseded",
+          memoryId: input.supersession.supersededMemoryId,
+          tenantId: input.candidate.tenantId,
+          actor: { type: "system", id: "curator" },
+          reason: `Superseded by ${memoryId}`,
+          details: {
+            newMemoryId: memoryId,
+            similarity: input.supersession.similarity
           },
-          updatedAt: now
-        });
-        memoryRepo.update(updatedOld);
+          timestamp: now
+        }));
       }
-      auditRepo.insert(AuditEvent.parse({
-        // Content-derived (bead 8da.5): identity is the superseded memory +
-        // the 'superseded' action + the superseding memory id as discriminator,
-        // so two clones supersede-by-the-same-memory mint the same audit id and
-        // hence the same v2 entry_hash at the same chain position.
-        id: deriveAuditEventId(input.supersession.supersededMemoryId, "superseded", memoryId),
-        action: "superseded",
-        memoryId: input.supersession.supersededMemoryId,
-        tenantId: input.candidate.tenantId,
-        actor: { type: "system", id: "curator" },
-        reason: `Superseded by ${memoryId}`,
-        details: {
-          newMemoryId: memoryId,
-          similarity: input.supersession.similarity
-        },
-        timestamp: now
-      }));
-    }
-    memoryRepo.insert(memory);
-    if (input.supersession !== void 0 && linksRepo) {
-      linksRepo.insert({
-        // Content-derived (bead 8da.5): a graph edge's identity is its
-        // (source, target, type) triple, stable across clones for the same
-        // logical promotion. Not part of the audit chain, but kept deterministic
-        // so the whole promotion is byte-reproducible across clones.
-        id: deriveLinkId(memoryId, input.supersession.supersededMemoryId, "supersedes"),
-        sourceMemoryId: memoryId,
-        targetMemoryId: input.supersession.supersededMemoryId,
-        linkType: "supersedes",
-        weight: input.supersession.similarity,
-        createdBy: "curator",
-        source: "curator",
-        importBatchId: null,
-        createdAt: now
-      });
-    }
-    if (linksRepo) {
-      const wikiLinks = extractWikiLinks(input.candidate.content);
-      for (const wl of wikiLinks) {
-        const targets = memoryRepo.searchByText(wl.slug);
-        const match = targets.find((m) => m.title.toLowerCase() === wl.slug.toLowerCase() && m.id !== memoryId);
-        if (match) {
-          try {
-            linksRepo.insert({
-              // Content-derived (bead 8da.5): (source, target, type) edge identity,
-              // stable across clones. See the supersedes edge above.
-              id: deriveLinkId(memoryId, match.id, "relates_to"),
-              sourceMemoryId: memoryId,
-              targetMemoryId: match.id,
-              linkType: "relates_to",
-              weight: 1,
-              createdBy: "curator",
-              source: "curator",
-              importBatchId: null,
-              createdAt: now
-            });
-          } catch {
+      memoryRepo.insert(memory);
+      if (input.supersession !== void 0 && linksRepo) {
+        linksRepo.insert({
+          // Content-derived (bead 8da.5): a graph edge's identity is its
+          // (source, target, type) triple, stable across clones for the same
+          // logical promotion. Not part of the audit chain, but kept deterministic
+          // so the whole promotion is byte-reproducible across clones.
+          id: deriveLinkId(memoryId, input.supersession.supersededMemoryId, "supersedes"),
+          sourceMemoryId: memoryId,
+          targetMemoryId: input.supersession.supersededMemoryId,
+          linkType: "supersedes",
+          weight: input.supersession.similarity,
+          createdBy: "curator",
+          source: "curator",
+          importBatchId: null,
+          createdAt: now
+        });
+      }
+      if (linksRepo) {
+        const wikiLinks = extractWikiLinks(input.candidate.content);
+        for (const wl of wikiLinks) {
+          const targets = memoryRepo.searchByText(wl.slug);
+          const match = targets.find((m) => m.title.toLowerCase() === wl.slug.toLowerCase() && m.id !== memoryId);
+          if (match) {
+            try {
+              linksRepo.insert({
+                // Content-derived (bead 8da.5): (source, target, type) edge identity,
+                // stable across clones. See the supersedes edge above.
+                id: deriveLinkId(memoryId, match.id, "relates_to"),
+                sourceMemoryId: memoryId,
+                targetMemoryId: match.id,
+                linkType: "relates_to",
+                weight: 1,
+                createdBy: "curator",
+                source: "curator",
+                importBatchId: null,
+                createdAt: now
+              });
+            } catch {
+            }
           }
         }
       }
-    }
-    auditRepo.insert(AuditEvent.parse({
-      // Content-derived (bead 8da.5): one 'promoted' event per memory, so the
-      // (memoryId, action) pair is already unique, so no discriminator needed.
-      id: deriveAuditEventId(memoryId, "promoted"),
-      action: "promoted",
-      memoryId,
-      tenantId: input.candidate.tenantId,
-      actor: { type: "system", id: "curator" },
-      reason: "Passed all governance rules",
-      details: { candidateId: input.candidate.id },
-      timestamp: now
-    }));
-    if (evalCallback !== void 0) {
-      try {
-        for (const verdict of evalCallback(memory, input.pipelineResult)) {
-          auditRepo.insert(AuditEvent.parse({
-            // Content-derived (bead 8da.5): several eval-result rows can be
-            // emitted per promotion, so the evaluator name discriminates them.
-            // Identical evaluator verdicts on two clones mint the same id.
-            id: deriveAuditEventId(memoryId, "eval-result", verdict.name),
-            action: "eval-result",
-            memoryId,
-            tenantId: input.candidate.tenantId,
-            actor: { type: "system", id: "curator" },
-            reason: `eval ${verdict.name}: ${verdict.passed ? "pass" : "fail"}`,
-            details: {
-              evaluator: verdict.name,
-              passed: verdict.passed,
-              score: verdict.score,
-              threshold: verdict.threshold,
-              ...verdict.details
-            },
-            timestamp: now
-          }));
+      auditRepo.insert(AuditEvent.parse({
+        // Content-derived (bead 8da.5): one 'promoted' event per memory, so the
+        // (memoryId, action) pair is already unique, so no discriminator needed.
+        id: deriveAuditEventId(memoryId, "promoted"),
+        action: "promoted",
+        memoryId,
+        tenantId: input.candidate.tenantId,
+        actor: input.promotedBy ?? CURATOR_ACTOR,
+        reason: input.promotionReason !== void 0 && input.promotionReason.trim().length > 0 ? `${input.promotionReason} (passed all governance rules)` : "Passed all governance rules",
+        details: { candidateId: input.candidate.id },
+        timestamp: now
+      }));
+      if (evalCallback !== void 0) {
+        try {
+          for (const verdict of evalCallback(memory, input.pipelineResult)) {
+            auditRepo.insert(AuditEvent.parse({
+              // Content-derived (bead 8da.5): several eval-result rows can be
+              // emitted per promotion, so the evaluator name discriminates them.
+              // Identical evaluator verdicts on two clones mint the same id.
+              id: deriveAuditEventId(memoryId, "eval-result", verdict.name),
+              action: "eval-result",
+              memoryId,
+              tenantId: input.candidate.tenantId,
+              actor: { type: "system", id: "curator" },
+              reason: `eval ${verdict.name}: ${verdict.passed ? "pass" : "fail"}`,
+              details: {
+                evaluator: verdict.name,
+                passed: verdict.passed,
+                score: verdict.score,
+                threshold: verdict.threshold,
+                ...verdict.details
+              },
+              timestamp: now
+            }));
+          }
+        } catch {
         }
-      } catch {
       }
-    }
+    }).immediate();
   }
   return memory;
 }
+var CURATOR_ACTOR;
 var init_promoter = __esm({
   "../qmd-team-intent-kb/apps/curator/dist/promotion/promoter.js"() {
     "use strict";
     init_dist2();
     init_dist();
     init_wikilink_parser();
+    CURATOR_ACTOR = { type: "system", id: "curator" };
   }
 });
 
@@ -40261,7 +40969,7 @@ var init_curator = __esm({
        */
       processSingle(candidate, existingHashes) {
         const contentHash = computeContentHash(candidate.content);
-        const dedup = checkDuplicate(candidate, this.deps.memoryRepo);
+        const dedup = checkDuplicate(candidate, this.deps.memoryRepo, this.config.tenantId);
         if (dedup.isDuplicate) {
           return {
             candidateId: candidate.id,
@@ -40286,13 +40994,14 @@ var init_curator = __esm({
           });
         }
         const pipeline = new PolicyPipeline(policy);
-        const hashSet = existingHashes ?? new Set(this.deps.memoryRepo.getAllContentHashes());
+        const hashSet = existingHashes ?? new Set(this.deps.memoryRepo.getContentHashesByTenant(this.config.tenantId));
         const pipelineResult = pipeline.evaluate(candidate, {
           existingHashes: hashSet,
           tenantId: this.config.tenantId
         });
+        const suppressReject = this.config.dryRun === true || this.config.suppressRejectionReceipts === true;
         if (pipelineResult.outcome === "rejected") {
-          const reason = reject(candidate, pipelineResult, this.deps.auditRepo, this.config.dryRun);
+          const reason = reject(candidate, pipelineResult, this.deps.auditRepo, suppressReject);
           return {
             candidateId: candidate.id,
             outcome: "rejected",
@@ -40301,7 +41010,7 @@ var init_curator = __esm({
           };
         }
         if (pipelineResult.outcome === "flagged") {
-          const reason = reject(candidate, pipelineResult, this.deps.auditRepo, this.config.dryRun);
+          const reason = reject(candidate, pipelineResult, this.deps.auditRepo, suppressReject);
           return {
             candidateId: candidate.id,
             outcome: "flagged",
@@ -40324,7 +41033,7 @@ var init_curator = __esm({
         let rejected = 0;
         let flagged = 0;
         let duplicates = 0;
-        const existingHashes = new Set(this.deps.memoryRepo.getAllContentHashes());
+        const existingHashes = new Set(this.deps.memoryRepo.getContentHashesByTenant(this.config.tenantId));
         for (const candidate of candidates) {
           const result = this.processSingle(candidate, existingHashes);
           results.push(result);
@@ -40424,15 +41133,32 @@ async function ingestFromSpoolDetailed(candidateRepo, spoolDir, opts) {
         throw e;
       }
     }
+    if (opts?.archiveIngestedDir !== void 0) {
+      await archiveIngestedFile(filepath, opts.archiveIngestedDir);
+    }
   }
   return { ok: true, value: { ingested, tampered, rejected } };
 }
+async function archiveIngestedFile(spoolFilePath, archiveDir) {
+  try {
+    await (0, import_promises4.mkdir)(archiveDir, { recursive: true });
+    const dest = (0, import_node_path11.join)(archiveDir, (0, import_node_path11.basename)(spoolFilePath));
+    await (0, import_promises4.rename)(spoolFilePath, dest);
+    try {
+      await (0, import_promises4.rename)(`${spoolFilePath}.manifest.json`, `${dest}.manifest.json`);
+    } catch {
+    }
+  } catch (e) {
+    process.stderr.write(`[spool-intake] archive skipped for ${(0, import_node_path11.basename)(spoolFilePath)}: ${e instanceof Error ? e.message : String(e)}
+`);
+  }
+}
 async function quarantineTamperedFile(spoolFilePath, spoolDir, quarantineDirOverride, expected, actual) {
   try {
-    const baseDir = quarantineDirOverride ?? (0, import_node_path9.join)(spoolDir ?? ".", "quarantine");
-    await (0, import_promises3.mkdir)(baseDir, { recursive: true });
-    const name = (0, import_node_path9.basename)(spoolFilePath);
-    const dest = (0, import_node_path9.join)(baseDir, name);
+    const baseDir = quarantineDirOverride ?? (0, import_node_path11.join)(spoolDir ?? ".", "quarantine");
+    await (0, import_promises4.mkdir)(baseDir, { recursive: true });
+    const name = (0, import_node_path11.basename)(spoolFilePath);
+    const dest = (0, import_node_path11.join)(baseDir, name);
     const evidence = {
       spoolFile: name,
       detectedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -40440,10 +41166,10 @@ async function quarantineTamperedFile(spoolFilePath, spoolDir, quarantineDirOver
       actualSha256: actual ?? null,
       reason: "SPOOL_TAMPERED: manifest SHA-256 mismatch on ingest"
     };
-    await (0, import_promises3.writeFile)(`${dest}.tamper.json`, JSON.stringify(evidence, null, 2) + "\n", "utf8");
-    await (0, import_promises3.rename)(spoolFilePath, dest);
+    await (0, import_promises4.writeFile)(`${dest}.tamper.json`, JSON.stringify(evidence, null, 2) + "\n", "utf8");
+    await (0, import_promises4.rename)(spoolFilePath, dest);
     try {
-      await (0, import_promises3.rename)(`${spoolFilePath}.manifest.json`, `${dest}.manifest.json`);
+      await (0, import_promises4.rename)(`${spoolFilePath}.manifest.json`, `${dest}.manifest.json`);
     } catch {
     }
     return dest;
@@ -40451,12 +41177,12 @@ async function quarantineTamperedFile(spoolFilePath, spoolDir, quarantineDirOver
     return null;
   }
 }
-var import_promises3, import_node_path9;
+var import_promises4, import_node_path11;
 var init_spool_intake = __esm({
   "../qmd-team-intent-kb/apps/curator/dist/intake/spool-intake.js"() {
     "use strict";
-    import_promises3 = require("node:fs/promises");
-    import_node_path9 = require("node:path");
+    import_promises4 = require("node:fs/promises");
+    import_node_path11 = require("node:path");
     init_dist6();
     init_dist2();
   }
@@ -40663,22 +41389,22 @@ function detectChanges(memoryRepo, exportStateRepo, config2) {
   for (const memory of memories) {
     if (memory.lifecycle === "archived" || memory.lifecycle === "superseded") {
       const categoryDir = getCategoryDirectory(memory.category);
-      const fromPath = (0, import_node_path10.join)(config2.outputDir, categoryDir, `${memory.id}.md`);
-      const toPath = (0, import_node_path10.join)(config2.outputDir, getRelativePath2(memory));
+      const fromPath = (0, import_node_path12.join)(config2.outputDir, categoryDir, `${memory.id}.md`);
+      const toPath = (0, import_node_path12.join)(config2.outputDir, getRelativePath2(memory));
       toArchive.push({ memory, fromPath, toPath });
     } else {
-      const filePath = (0, import_node_path10.join)(config2.outputDir, getRelativePath2(memory));
+      const filePath = (0, import_node_path12.join)(config2.outputDir, getRelativePath2(memory));
       toWrite.push({ memory, filePath });
     }
   }
   return { toWrite, toArchive, toRemove: [] };
 }
-var import_node_path10;
+var import_node_path12;
 var init_change_detector = __esm({
   "../qmd-team-intent-kb/apps/git-exporter/dist/diff/change-detector.js"() {
     "use strict";
     init_directory_mapper();
-    import_node_path10 = require("node:path");
+    import_node_path12 = require("node:path");
   }
 });
 
@@ -40692,45 +41418,45 @@ function assertPathSafe(filePath, allowedRoot) {
     throw new Error("Unsafe file path: Path contains directory traversal (..)");
   }
   if (allowedRoot !== void 0) {
-    const resolved = (0, import_node_path11.resolve)(filePath);
-    const resolvedRoot = (0, import_node_path11.resolve)(allowedRoot);
+    const resolved = (0, import_node_path13.resolve)(filePath);
+    const resolvedRoot = (0, import_node_path13.resolve)(allowedRoot);
     if (!resolved.startsWith(resolvedRoot + "/") && resolved !== resolvedRoot) {
       throw new Error(`Path traversal rejected: ${filePath} is outside ${allowedRoot}`);
     }
   }
 }
-function writeFile2(filePath, content, exportRoot) {
+function writeFile3(filePath, content, exportRoot) {
   assertPathSafe(filePath, exportRoot);
-  (0, import_node_fs5.mkdirSync)((0, import_node_path11.dirname)(filePath), { recursive: true });
-  (0, import_node_fs5.writeFileSync)(filePath, content, "utf8");
+  (0, import_node_fs6.mkdirSync)((0, import_node_path13.dirname)(filePath), { recursive: true });
+  (0, import_node_fs6.writeFileSync)(filePath, content, "utf8");
 }
 function archiveFile(fromPath, toPath, content, exportRoot) {
   assertPathSafe(toPath, exportRoot);
   if (exportRoot !== void 0) {
     assertPathSafe(fromPath, exportRoot);
   }
-  (0, import_node_fs5.mkdirSync)((0, import_node_path11.dirname)(toPath), { recursive: true });
-  if ((0, import_node_fs5.existsSync)(fromPath)) {
-    (0, import_node_fs5.unlinkSync)(fromPath);
+  (0, import_node_fs6.mkdirSync)((0, import_node_path13.dirname)(toPath), { recursive: true });
+  if ((0, import_node_fs6.existsSync)(fromPath)) {
+    (0, import_node_fs6.unlinkSync)(fromPath);
   }
-  (0, import_node_fs5.writeFileSync)(toPath, content, "utf8");
+  (0, import_node_fs6.writeFileSync)(toPath, content, "utf8");
 }
 function removeFile(filePath, exportRoot) {
   if (exportRoot !== void 0) {
     assertPathSafe(filePath, exportRoot);
   }
-  if ((0, import_node_fs5.existsSync)(filePath)) {
-    (0, import_node_fs5.unlinkSync)(filePath);
+  if ((0, import_node_fs6.existsSync)(filePath)) {
+    (0, import_node_fs6.unlinkSync)(filePath);
     return true;
   }
   return false;
 }
-var import_node_fs5, import_node_path11;
+var import_node_fs6, import_node_path13;
 var init_file_writer = __esm({
   "../qmd-team-intent-kb/apps/git-exporter/dist/writer/file-writer.js"() {
     "use strict";
-    import_node_fs5 = require("node:fs");
-    import_node_path11 = require("node:path");
+    import_node_fs6 = require("node:fs");
+    import_node_path13 = require("node:path");
   }
 });
 
@@ -40752,14 +41478,14 @@ function runExport(memoryRepo, exportStateRepo, config2, nowFn = () => (/* @__PU
       continue;
     }
     const content = formatMemoryAsMarkdown(item.memory);
-    if ((0, import_node_fs6.existsSync)(item.filePath)) {
-      const existing = (0, import_node_fs6.readFileSync)(item.filePath, "utf8");
+    if ((0, import_node_fs7.existsSync)(item.filePath)) {
+      const existing = (0, import_node_fs7.readFileSync)(item.filePath, "utf8");
       if (existing === content) {
         unchanged++;
         continue;
       }
     }
-    writeFile2(item.filePath, content);
+    writeFile3(item.filePath, content);
     written.push(item.filePath);
   }
   for (const item of changeset.toArchive) {
@@ -40786,7 +41512,7 @@ function runExport(memoryRepo, exportStateRepo, config2, nowFn = () => (/* @__PU
     totalProcessed: changeset.toWrite.length + changeset.toArchive.length + changeset.toRemove.length
   };
 }
-var import_node_fs6, CONFIDENTIAL_INDEX;
+var import_node_fs7, CONFIDENTIAL_INDEX;
 var init_exporter = __esm({
   "../qmd-team-intent-kb/apps/git-exporter/dist/exporter.js"() {
     "use strict";
@@ -40794,7 +41520,7 @@ var init_exporter = __esm({
     init_change_detector();
     init_markdown_formatter();
     init_file_writer();
-    import_node_fs6 = require("node:fs");
+    import_node_fs7 = require("node:fs");
     CONFIDENTIAL_INDEX = Sensitivity.options.indexOf("confidential");
   }
 });
@@ -40881,7 +41607,7 @@ function commitAnchor(auditDir) {
   };
   const git = (args) => (0, import_node_child_process3.execFileSync)("git", args, { cwd: auditDir, stdio: "ignore", env });
   try {
-    if (!(0, import_node_fs7.existsSync)((0, import_node_path12.join)(auditDir, ".git"))) git(["init", "-q"]);
+    if (!(0, import_node_fs8.existsSync)((0, import_node_path14.join)(auditDir, ".git"))) git(["init", "-q"]);
     git(["add", "anchors.jsonl"]);
     git(["commit", "-q", "-m", `anchor ${(/* @__PURE__ */ new Date()).toISOString()}`]);
     try {
@@ -40897,9 +41623,9 @@ function commitAnchor(auditDir) {
 }
 function anchorChainHead(auditRepo, basePath, tenantId) {
   try {
-    const auditDir = (0, import_node_path12.join)(basePath, "audit");
-    (0, import_node_fs7.mkdirSync)(auditDir, { recursive: true });
-    const rec = appendAnchor(auditRepo, (0, import_node_path12.join)(auditDir, "anchors.jsonl"), { tenantId });
+    const auditDir = (0, import_node_path14.join)(basePath, "audit");
+    (0, import_node_fs8.mkdirSync)(auditDir, { recursive: true });
+    const rec = appendAnchor(auditRepo, (0, import_node_path14.join)(auditDir, "anchors.jsonl"), { tenantId });
     return {
       chainHead: rec.chainHead,
       chainedRows: rec.chainedRows,
@@ -40909,19 +41635,99 @@ function anchorChainHead(auditRepo, basePath, tenantId) {
     return void 0;
   }
 }
-var import_node_child_process3, import_node_fs7, import_node_path12;
+var import_node_child_process3, import_node_fs8, import_node_path14;
 var init_anchor = __esm({
   "src/anchor.ts"() {
     "use strict";
     init_dist3();
     import_node_child_process3 = require("node:child_process");
-    import_node_fs7 = require("node:fs");
-    import_node_path12 = require("node:path");
+    import_node_fs8 = require("node:fs");
+    import_node_path14 = require("node:path");
+  }
+});
+
+// src/write-lock.ts
+function tryFlockExclusive(fd) {
+  return new Promise((resolve3) => {
+    try {
+      (0, import_fs_ext.flock)(fd, "exnb", (err2) => resolve3(err2 ?? null));
+    } catch (e) {
+      resolve3(e);
+    }
+  });
+}
+function isContention(err2) {
+  return err2.code === "EAGAIN" || err2.code === "EWOULDBLOCK";
+}
+async function acquireWriteLock(basePath, timeoutMs = DEFAULT_TIMEOUT_MS) {
+  (0, import_node_fs9.mkdirSync)(basePath, { recursive: true });
+  const lockPath = (0, import_node_path15.join)(basePath, LOCK_FILENAME);
+  const fd = (0, import_node_fs9.openSync)(lockPath, "a");
+  const deadline = Date.now() + Math.max(0, timeoutMs);
+  for (; ; ) {
+    const err2 = await tryFlockExclusive(fd);
+    if (!err2) {
+      return {
+        release() {
+          try {
+            (0, import_fs_ext.flockSync)(fd, "un");
+          } catch {
+          } finally {
+            try {
+              (0, import_node_fs9.closeSync)(fd);
+            } catch {
+            }
+          }
+        }
+      };
+    }
+    if (!isContention(err2)) {
+      try {
+        (0, import_node_fs9.closeSync)(fd);
+      } catch {
+      }
+      throw err2;
+    }
+    if (Date.now() >= deadline) {
+      try {
+        (0, import_node_fs9.closeSync)(fd);
+      } catch {
+      }
+      throw new WriteLockBusyError();
+    }
+    await sleep(RETRY_INTERVAL_MS);
+  }
+}
+var import_node_fs9, import_node_path15, import_fs_ext, LOCK_FILENAME, DEFAULT_TIMEOUT_MS, RETRY_INTERVAL_MS, WriteLockBusyError, sleep;
+var init_write_lock = __esm({
+  "src/write-lock.ts"() {
+    "use strict";
+    import_node_fs9 = require("node:fs");
+    import_node_path15 = require("node:path");
+    import_fs_ext = require("fs-ext");
+    LOCK_FILENAME = ".write.lock";
+    DEFAULT_TIMEOUT_MS = 8e3;
+    RETRY_INTERVAL_MS = 100;
+    WriteLockBusyError = class extends Error {
+      constructor(message = "brain busy \u2014 another write in progress, retry") {
+        super(message);
+        this.name = "WriteLockBusyError";
+      }
+    };
+    sleep = (ms) => new Promise((resolve3) => setTimeout(resolve3, ms));
   }
 });
 
 // src/govern.ts
 async function runGovern(config2) {
+  const lock = await acquireWriteLock(config2.basePath);
+  try {
+    return await runGovernLocked(config2);
+  } finally {
+    lock.release();
+  }
+}
+async function runGovernLocked(config2) {
   const db = createDatabase({ path: config2.dbPath });
   try {
     const candidateRepo = new CandidateRepository(db);
@@ -40937,21 +41743,11 @@ async function runGovern(config2) {
 `
       );
     }
-    const ingestResult = await ingestFromSpool(candidateRepo, config2.spoolPath);
-    const candidates = ingestResult.ok ? ingestResult.value : [];
-    const curation = { processed: 0, promoted: 0, rejected: 0, flagged: 0, duplicates: 0 };
-    if (candidates.length > 0) {
-      const curator = new Curator(
-        { candidateRepo, memoryRepo, policyRepo, auditRepo },
-        { tenantId: config2.tenantId }
-      );
-      const r = curator.processBatch(candidates);
-      curation.processed = r.processed;
-      curation.promoted = r.promoted;
-      curation.rejected = r.rejected;
-      curation.flagged = r.flagged;
-      curation.duplicates = r.duplicates;
-    }
+    const ingestResult = await ingestFromSpool(candidateRepo, config2.spoolPath, {
+      archiveIngestedDir: (0, import_node_path16.join)(config2.spoolPath, "ingested")
+    });
+    const ingested = ingestResult.ok ? ingestResult.value.length : 0;
+    const curation = sweepInbox(config2, { candidateRepo, memoryRepo, policyRepo, auditRepo });
     let exported = 0;
     try {
       const ex = await runExport(
@@ -40982,12 +41778,14 @@ async function runGovern(config2) {
       process.stderr.write("[govern] anchor failed (best-effort; govern pass unaffected)\n");
     }
     return {
-      ingested: candidates.length,
+      ingested,
       processed: curation.processed,
       promoted: curation.promoted,
       rejected: curation.rejected,
       flagged: curation.flagged,
       duplicates: curation.duplicates,
+      quarantined: curation.quarantined,
+      skipped: curation.skipped,
       exported,
       indexUpdated,
       indexError,
@@ -40997,15 +41795,115 @@ async function runGovern(config2) {
     db.close();
   }
 }
+function sweepInbox(config2, deps) {
+  const { candidateRepo, memoryRepo, policyRepo, auditRepo } = deps;
+  const inbox = candidateRepo.findByStatus("inbox", config2.tenantId);
+  const res = {
+    processed: inbox.length,
+    promoted: 0,
+    rejected: 0,
+    flagged: 0,
+    duplicates: 0,
+    quarantined: 0,
+    skipped: 0
+  };
+  if (inbox.length === 0) return res;
+  const curator = new Curator(
+    { candidateRepo, memoryRepo, policyRepo, auditRepo },
+    { tenantId: config2.tenantId, suppressRejectionReceipts: true }
+  );
+  const existingHashes = new Set(memoryRepo.getContentHashesByTenant(config2.tenantId));
+  const outcomes = [];
+  const pendingFlips = [];
+  for (const candidate of inbox) {
+    try {
+      if (isMemberAuthored(candidate)) {
+        pendingFlips.push({ id: candidate.id, status: "quarantined" });
+        res.quarantined++;
+        outcomes.push({ candidateId: candidate.id, outcome: "quarantined" });
+        continue;
+      }
+      const result = curator.processSingle(candidate, existingHashes);
+      switch (result.outcome) {
+        case "promoted":
+          candidateRepo.updateStatus(candidate.id, "promoted", config2.tenantId);
+          existingHashes.add(computeContentHash(candidate.content));
+          res.promoted++;
+          outcomes.push({ candidateId: candidate.id, outcome: "promoted" });
+          break;
+        case "duplicate":
+          pendingFlips.push({ id: candidate.id, status: "duplicate" });
+          res.duplicates++;
+          outcomes.push({ candidateId: candidate.id, outcome: "duplicate" });
+          break;
+        case "flagged":
+          res.flagged++;
+          outcomes.push({ candidateId: candidate.id, outcome: "flagged" });
+          break;
+        case "rejected":
+          res.rejected++;
+          outcomes.push({ candidateId: candidate.id, outcome: "rejected" });
+          break;
+      }
+    } catch (e) {
+      res.skipped++;
+      outcomes.push({ candidateId: candidate.id, outcome: "skipped" });
+      process.stderr.write(
+        `[govern:sweep] skipped candidate ${candidate.id}: ${e instanceof Error ? e.message : String(e)}
+`
+      );
+    }
+  }
+  const leftInbox = res.promoted + res.duplicates + res.quarantined;
+  if (leftInbox > 0) {
+    memoryRepo.connection.transaction(() => {
+      for (const flip of pendingFlips) {
+        candidateRepo.updateStatus(flip.id, flip.status, config2.tenantId);
+      }
+      auditRepo.insert(
+        AuditEvent.parse({
+          id: (0, import_node_crypto10.randomUUID)(),
+          action: "governed",
+          memoryId: SWEEP_RECEIPT_MEMORY_ID,
+          tenantId: config2.tenantId,
+          actor: { type: "system", id: "auto-govern" },
+          reason: `Auto-govern sweep: ${res.promoted} promoted, ${res.duplicates} duplicate, ${res.quarantined} quarantined, ${res.flagged} flagged, ${res.rejected} rejected, ${res.skipped} skipped`,
+          details: {
+            promoted: res.promoted,
+            duplicates: res.duplicates,
+            quarantined: res.quarantined,
+            flagged: res.flagged,
+            rejected: res.rejected,
+            skipped: res.skipped,
+            processed: res.processed,
+            outcomes
+          },
+          timestamp: (/* @__PURE__ */ new Date()).toISOString()
+        })
+      );
+    })();
+  }
+  return res;
+}
+function isMemberAuthored(candidate) {
+  return candidate.metadata?.proposedByRole === "member";
+}
+var import_node_crypto10, import_node_path16, SWEEP_RECEIPT_MEMORY_ID;
 var init_govern = __esm({
   "src/govern.ts"() {
     "use strict";
+    import_node_crypto10 = require("node:crypto");
+    import_node_path16 = require("node:path");
     init_dist8();
     init_dist9();
+    init_dist2();
+    init_dist();
     init_dist3();
     init_dist4();
     init_seed_policy();
     init_anchor();
+    init_write_lock();
+    SWEEP_RECEIPT_MEMORY_ID = "00000000-0000-4000-8000-000000000b10";
   }
 });
 
@@ -41024,11 +41922,11 @@ function isMissingNativeDep(e) {
   );
 }
 function manifestPath(basePath) {
-  return (0, import_node_path13.join)(basePath, "audit", "exceptions.manifest.json");
+  return (0, import_node_path17.join)(basePath, "audit", "exceptions.manifest.json");
 }
 function loadExceptionManifest(basePath) {
   const p = manifestPath(basePath);
-  if (!(0, import_node_fs8.existsSync)(p)) return null;
+  if (!(0, import_node_fs10.existsSync)(p)) return null;
   try {
     return readManifest(p);
   } catch (e) {
@@ -41078,16 +41976,16 @@ async function startLocalServer() {
 `
   );
 }
-var import_node_crypto10, import_node_fs8, import_zod18, import_node_path13, VERSION2, config, CATEGORIES2, NATIVE_DEP_HINT, server2;
+var import_node_crypto11, import_node_fs10, import_zod18, import_node_path17, VERSION2, config, CATEGORIES2, NATIVE_DEP_HINT, server2;
 var init_local_server = __esm({
   "src/local-server.ts"() {
     "use strict";
-    import_node_crypto10 = require("node:crypto");
-    import_node_fs8 = require("node:fs");
+    import_node_crypto11 = require("node:crypto");
+    import_node_fs10 = require("node:fs");
     init_mcp();
     init_stdio2();
     import_zod18 = __toESM(require_zod(), 1);
-    import_node_path13 = require("node:path");
+    import_node_path17 = require("node:path");
     init_dist3();
     init_dist4();
     init_dist6();
@@ -41095,7 +41993,8 @@ var init_local_server = __esm({
     init_config3();
     init_govern();
     init_anchor();
-    VERSION2 = "1.0.0";
+    init_write_lock();
+    VERSION2 = "1.1.0";
     config = resolveConfig();
     CATEGORIES2 = [
       "decision",
@@ -41187,7 +42086,7 @@ var init_local_server = __esm({
         }
         try {
           const auditRepo = new AuditRepository(db);
-          const result = verifyAnchors(auditRepo, (0, import_node_path13.join)(config.basePath, "audit", "anchors.jsonl"));
+          const result = verifyAnchors(auditRepo, (0, import_node_path17.join)(config.basePath, "audit", "anchors.jsonl"));
           const manifest = loadExceptionManifest(config.basePath);
           const rowsById = buildRowsById(auditRepo);
           const classified = classifyChainBreaks(result.chain.breaks, manifest, rowsById);
@@ -41234,7 +42133,7 @@ var init_local_server = __esm({
       },
       async (params) => {
         const candidate = {
-          id: (0, import_node_crypto10.randomUUID)(),
+          id: (0, import_node_crypto11.randomUUID)(),
           status: "inbox",
           source: "mcp",
           content: params.content,
@@ -41266,16 +42165,19 @@ var init_local_server = __esm({
         try {
           s = await runGovern(config);
         } catch (e) {
+          if (e instanceof WriteLockBusyError) return jsonResult2({ ok: false, error: e.message });
           if (isMissingNativeDep(e)) return jsonResult2({ ok: false, error: "native-store-unavailable", message: NATIVE_DEP_HINT });
           throw e;
         }
         const parts = [
           `${s.promoted} promoted`,
+          `${s.quarantined} quarantined`,
           `${s.rejected} rejected`,
           `${s.duplicates} duplicate`,
           `${s.flagged} flagged`
         ];
-        let message = `Governed ${s.ingested} candidate(s): ${parts.join(", ")}.`;
+        if (s.skipped > 0) parts.push(`${s.skipped} skipped`);
+        let message = `Governed ${s.processed} inbox candidate(s) (${s.ingested} newly ingested): ${parts.join(", ")}.`;
         if (!s.indexUpdated) {
           message += " Search index not refreshed \u2014 install qmd 2.x on PATH and re-run brain_govern to make new memories searchable.";
         }
@@ -41293,66 +42195,204 @@ var init_local_server = __esm({
         supersededBy: import_zod18.z.string().uuid().optional().describe('Required UUID when transitioning to "superseded"')
       },
       async (params) => {
-        let db;
+        let lock;
         try {
-          db = createDatabase({ path: config.dbPath });
+          lock = await acquireWriteLock(config.basePath);
         } catch (e) {
-          if (isMissingNativeDep(e)) return jsonResult2({ ok: false, error: "native-store-unavailable", message: NATIVE_DEP_HINT });
+          if (e instanceof WriteLockBusyError) return jsonResult2({ ok: false, error: e.message });
           throw e;
         }
         try {
-          const memoryRepo = new MemoryRepository(db);
-          const auditRepo = new AuditRepository(db);
-          const memory = memoryRepo.findById(params.memoryId);
-          if (!memory) {
-            return jsonResult2({ ok: false, error: `No memory found with id ${params.memoryId}` });
+          let db;
+          try {
+            db = createDatabase({ path: config.dbPath });
+          } catch (e) {
+            if (isMissingNativeDep(e)) return jsonResult2({ ok: false, error: "native-store-unavailable", message: NATIVE_DEP_HINT });
+            throw e;
           }
-          const actor = { type: "human", id: params.actor ?? "owner" };
-          const validation = validateTransition(memory.lifecycle, params.to, {
-            reason: params.reason,
-            actor,
-            supersededBy: params.supersededBy
-          });
-          if (!validation.valid) {
-            return jsonResult2({ ok: false, error: validation.error });
-          }
-          const now = (/* @__PURE__ */ new Date()).toISOString();
-          const action = params.to === "archived" ? "archived" : params.to === "superseded" ? "superseded" : "demoted";
-          db.transaction(() => {
-            memoryRepo.updateLifecycle(params.memoryId, params.to, now);
-            auditRepo.insert({
-              id: (0, import_node_crypto10.randomUUID)(),
-              action,
-              memoryId: params.memoryId,
-              tenantId: memory.tenantId,
-              actor,
+          try {
+            const memoryRepo = new MemoryRepository(db);
+            const auditRepo = new AuditRepository(db);
+            const memory = memoryRepo.findById(params.memoryId);
+            if (!memory) {
+              return jsonResult2({ ok: false, error: `No memory found with id ${params.memoryId}` });
+            }
+            const actor = { type: "human", id: params.actor ?? "owner" };
+            const validation = validateTransition(memory.lifecycle, params.to, {
               reason: params.reason,
-              details: { from: memory.lifecycle, to: params.to },
-              timestamp: now
+              actor,
+              supersededBy: params.supersededBy
             });
-          })();
-          const anchored = anchorChainHead(auditRepo, config.basePath, config.tenantId);
-          return jsonResult2({
-            ok: true,
-            memoryId: params.memoryId,
-            from: memory.lifecycle,
-            to: params.to,
-            anchored,
-            message: anchored ? "Transition applied; hash-chained audit event written and chain head re-anchored." : "Transition applied; hash-chained audit event written. (External anchor skipped \u2014 best-effort; the durable write is unaffected.)"
-          });
+            if (!validation.valid) {
+              return jsonResult2({ ok: false, error: validation.error });
+            }
+            const now = (/* @__PURE__ */ new Date()).toISOString();
+            const action = params.to === "archived" ? "archived" : params.to === "superseded" ? "superseded" : "demoted";
+            db.transaction(() => {
+              memoryRepo.updateLifecycle(params.memoryId, params.to, now);
+              auditRepo.insert({
+                id: (0, import_node_crypto11.randomUUID)(),
+                action,
+                memoryId: params.memoryId,
+                tenantId: memory.tenantId,
+                actor,
+                reason: params.reason,
+                details: { from: memory.lifecycle, to: params.to },
+                timestamp: now
+              });
+            })();
+            const anchored = anchorChainHead(auditRepo, config.basePath, config.tenantId);
+            return jsonResult2({
+              ok: true,
+              memoryId: params.memoryId,
+              from: memory.lifecycle,
+              to: params.to,
+              anchored,
+              message: anchored ? "Transition applied; hash-chained audit event written and chain head re-anchored." : "Transition applied; hash-chained audit event written. (External anchor skipped \u2014 best-effort; the durable write is unaffected.)"
+            });
+          } finally {
+            db.close();
+          }
         } finally {
-          db.close();
+          lock.release();
         }
       }
     );
   }
 });
 
+// src/mode.ts
+function isConfigured(rawValue) {
+  const v = rawValue?.trim();
+  return v !== void 0 && v !== "" && !v.startsWith("${");
+}
+function resolveMode(rawTeamkbApiUrl) {
+  return isConfigured(rawTeamkbApiUrl) ? { mode: "team", apiUrl: rawTeamkbApiUrl.trim() } : { mode: "local" };
+}
+
+// src/team-config.ts
+var import_node_fs = require("node:fs");
+var import_node_os = require("node:os");
+var import_node_path = require("node:path");
+var KEY_TO_ENV = {
+  apiUrl: "TEAMKB_API_URL",
+  apiToken: "TEAMKB_API_TOKEN",
+  tenantId: "TEAMKB_TENANT_ID"
+};
+var TeamConfigError = class extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "TeamConfigError";
+  }
+};
+function teamKbBasePath(env) {
+  const base = env["TEAMKB_BASE_PATH"]?.trim();
+  if (base) return base;
+  const home = env["TEAMKB_HOME"]?.trim();
+  if (home) return home;
+  return (0, import_node_path.join)((0, import_node_os.homedir)(), ".teamkb");
+}
+function teamConfigPath(env = process.env) {
+  return (0, import_node_path.join)(teamKbBasePath(env), "team.json");
+}
+function loadTeamConfig(env = process.env) {
+  const path = teamConfigPath(env);
+  let mode;
+  try {
+    mode = (0, import_node_fs.statSync)(path).mode;
+  } catch (e) {
+    if (e.code === "ENOENT") return { present: false, path };
+    throw new TeamConfigError(`cannot stat ${path}: ${e.message}`);
+  }
+  if ((mode & 63) !== 0) {
+    const octal = (mode & 511).toString(8).padStart(3, "0");
+    throw new TeamConfigError(
+      `${path} is group/world-readable (mode ${octal}) \u2014 it holds a bearer token and must be 0600. Run: chmod 600 ${path}`
+    );
+  }
+  let text;
+  try {
+    text = (0, import_node_fs.readFileSync)(path, "utf8");
+  } catch (e) {
+    throw new TeamConfigError(`cannot read ${path}: ${e.message}`);
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new TeamConfigError(
+      `${path} is not valid JSON \u2014 could not parse it. Check for a trailing comma or an unquoted value.`
+    );
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    throw new TeamConfigError(
+      `${path} must be a JSON object like { "apiUrl": "...", "apiToken": "..." }`
+    );
+  }
+  const obj = parsed;
+  const config2 = {};
+  for (const key of Object.keys(KEY_TO_ENV)) {
+    if (!(key in obj)) continue;
+    const v = obj[key];
+    if (typeof v !== "string" || v.trim() === "") {
+      throw new TeamConfigError(
+        `${path}: "${key}" must be a non-empty string. Fix the value, or remove the key.`
+      );
+    }
+    config2[key] = v.trim();
+  }
+  if (config2.apiUrl === void 0) {
+    const found = Object.keys(obj);
+    throw new TeamConfigError(
+      `${path} has no usable "apiUrl" \u2014 a team config must set at least { "apiUrl": "http://..." } (camelCase). Found keys: ${found.length ? found.join(", ") : "(none)"}. Fix the spelling, or remove the file to run the local brain.`
+    );
+  }
+  return { present: true, config: config2, path };
+}
+function applyTeamConfig(env, result) {
+  if (!result.present || result.config === void 0) return [];
+  const filled = [];
+  for (const key of Object.keys(KEY_TO_ENV)) {
+    const envName = KEY_TO_ENV[key];
+    const fileVal = result.config[key];
+    if (fileVal !== void 0 && !isConfigured(env[envName])) {
+      env[envName] = fileVal;
+      filled.push(envName);
+    }
+  }
+  return filled;
+}
+
 // src/index.ts
 async function main() {
-  const raw = process.env["TEAMKB_API_URL"]?.trim();
-  const apiUrl = raw !== void 0 && raw !== "" && !raw.startsWith("${") ? raw : void 0;
-  if (apiUrl !== void 0) {
+  let filled = [];
+  try {
+    filled = applyTeamConfig(process.env, loadTeamConfig(process.env));
+  } catch (e) {
+    const msg = e instanceof TeamConfigError || e instanceof Error ? e.message : String(e);
+    process.stderr.write(
+      `[governed-brain] REFUSING TO START \u2014 ${teamConfigPath(process.env)} is present but unusable:
+  ${msg}
+  Fix the file (or remove it to run the local brain). Refusing to silently run the wrong brain.
+`
+    );
+    process.exit(1);
+  }
+  if (filled.length > 0) {
+    process.stderr.write(
+      `[governed-brain] team.json supplied: ${filled.join(", ")} (real env took precedence for the rest)
+`
+    );
+  }
+  const { mode } = resolveMode(process.env["TEAMKB_API_URL"]);
+  if (mode === "team" && !isConfigured(process.env["TEAMKB_API_TOKEN"])) {
+    process.stderr.write(
+      `[governed-brain] REFUSING TO START \u2014 team mode is configured (TEAMKB_API_URL is set) but no TEAMKB_API_TOKEN is available. Set your per-user token in ${teamConfigPath(process.env)} (the "apiToken" field) or the environment. Refusing to run team mode without a token.
+`
+    );
+    process.exit(1);
+  }
+  if (mode === "team") {
     const { startRemoteServer: startRemoteServer2 } = await Promise.resolve().then(() => (init_remote_server(), remote_server_exports));
     await startRemoteServer2();
   } else {

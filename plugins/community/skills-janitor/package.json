@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/skills-janitor",
+  "version": "0.1.0",
+  "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
+  "keywords": [
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/skills-janitor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/skills-janitor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Krzysztof Hendzel",
+    "url": "https://github.com/khendzel",
+    "email": "krzysztoff.hendzel@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install skills-janitor\\\\n  or /plugin install skills-janitor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

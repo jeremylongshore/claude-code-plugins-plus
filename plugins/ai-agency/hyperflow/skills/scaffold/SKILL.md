@@ -72,7 +72,9 @@ Scaffold creates the empty `.hyperflow/memory/` directory; it does NOT write `se
 - If absent — create as an empty stub with a single heading `# Learnings` and the line `<!-- populated by /hyperflow:dispatch wrap-up -->`.
 - If it already exists with content — do NOT overwrite. Accumulated learnings from prior runs must be preserved across refreshes.
 
-**Other stubs** — if any of `index.md`, `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` are absent, create them as an empty stub: one H1 matching the filename (title-cased) and the line `<!-- to be populated by future runs -->`.
+**Other stubs** — if any of `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` are absent, create them as an empty stub: one H1 matching the filename (title-cased) and the line `<!-- to be populated by future runs -->`.
+
+**Do not stub `index.md`.** It is derived — `scripts/memory-index.py` writes it from the category files at every session start. A hand-written stub is overwritten on the next run.
 
 **Lean prompt note:** scaffold has now populated the memory skeleton. Run `/hyperflow:dispatch` and workers will use `skills/hyperflow/worker-prompt-lean.md` by default; pass `--thorough` to fall back to the full inlined template.
 
@@ -131,7 +133,7 @@ Numbered steps are in [Step 1 — Analysis Cache](#step-1--analysis-cache) throu
 
 1. Check for `.hyperflow/` at project root; if absent, dispatch 6 parallel searchers (single message) to produce profile.md, architecture.md, conventions.md, dependencies.md, testing.md, git-workflow.md.
 2. If present, recompute SHA256 checksums and refresh only stale files.
-3. Create `.hyperflow/memory/` skeleton: copy `skills/hyperflow/DOCTRINE.md` → `doctrine.md` (idempotent — re-copy only if source is newer); create `learnings.md` empty stub (skip if content exists); create `index.md`, `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` stubs if absent.
+3. Create `.hyperflow/memory/` skeleton: copy `skills/hyperflow/DOCTRINE.md` → `doctrine.md` (idempotent — re-copy only if source is newer); create `learnings.md` empty stub (skip if content exists); create `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` stubs if absent. `index.md` and `.checksums` are derived — leave them to `scripts/memory-index.py`.
 4. Migrate matching entries from legacy `~/.claude/hyperflow-memory.md` if found.
 5. Offer `scripts/setup-detection.sh --tools all` to write CLAUDE.md, AGENTS.md, and Grok/Antigravity shims when those tools are selected.
 6. Print summary of created / skipped / migrated artifacts.
@@ -146,7 +148,8 @@ Step 2 generates the following files under `.hyperflow/memory/`:
 |---|---|---|
 | `doctrine.md` | Copied from `skills/hyperflow/DOCTRINE.md` | Re-copied if source is newer; skipped if checksum matches |
 | `learnings.md` | Empty stub (`# Learnings` heading) | Never overwritten if content exists — preserves accumulated learnings |
-| `index.md`, `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` | Empty stubs | Created if absent; skipped if present |
+| `decisions.md`, `pitfalls.md`, `patterns.md`, `conventions.md` | Empty stubs | Created if absent; skipped if present |
+| `index.md`, `.checksums` | Derived by `scripts/memory-index.py` (NOT scaffold) | Scaffold does not create these; the session-start hook rebuilds them from the category files on every run. |
 | `session-context.md` | Populated by `hooks/session-start` (NOT scaffold) | Scaffold does not create this file; the session-start hook generates it at session open by concatenating `profile.md`, `architecture.md`, and `conventions.md`. Lean workers reference this bundle (Pattern L3). |
 
 ## Error Handling

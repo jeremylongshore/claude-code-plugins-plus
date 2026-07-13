@@ -65,6 +65,15 @@ confirms the current state. If that direct read reports `DIRTY` or
 discovery. If the head branch is not controlled, record the owner, the conflict
 state, and the target-side evidence instead of attempting a repair.
 
+## Install Enablement Reviews
+
+When a submission adds Hermes Tweet install instructions, verify every changed
+snippet uses `hermes plugins install Xquik-dev/hermes-tweet --enable` or includes
+an immediate `hermes plugins enable hermes-tweet` follow-up. Treat review
+threads about missing enablement as controllable on verified `kriptoburak`
+branches, because an installed but disabled plugin leaves the advertised
+`hermes-tweet` tools unavailable.
+
 ## Outreach Gate
 
 Open a fresh external PR only after every in-scope open PR is either clean,

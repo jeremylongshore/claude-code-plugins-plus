@@ -143,5 +143,5 @@ you need to prove the record wasn't altered.
 
 ## Resources
 
-- [Governed Second Brain](https://github.com/intent-solutions-io/governed-second-brain) — the stack and its governance thesis.
+- [Bob's Big Brain](https://github.com/intent-solutions-io/governed-second-brain) — the stack and its governance thesis.
 - The read counterpart: the `/brain` skill (cited queries).

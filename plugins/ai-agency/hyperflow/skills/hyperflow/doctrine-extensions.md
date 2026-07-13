@@ -131,7 +131,9 @@ Persist reusable learnings in `.hyperflow/memory/` so future sessions in the sam
 
 **Write:** After each batch, orchestrator extracts reusable patterns/gotchas/decisions, tags them, deduplicates against existing entries, and appends to the appropriate file. Apply the test: "Would a worker on this project benefit from knowing this in 2 weeks?"
 
-**Read:** At session start, orchestrator reads `.hyperflow/memory/index.md` (always). Hot entries (≤7 days) are eagerly loaded. Warm entries (8–30 days) are queried by current task's inferred tags. Cold entries (30+ days) are auto-compressed and archived. Worker prompts receive ONLY the subset matching their task's tags.
+**Read:** At session start the hook runs `scripts/memory-index.py`, which derives `.hyperflow/memory/index.md` + `.checksums` from the category files and injects the index, the hot entries (≤7 days), and `anti-patterns.md` into context. The orchestrator then queries warm entries (8–30 days) by the current task's inferred tags. Cold entries (30+ days) are compressed and archived. Worker prompts receive ONLY the subset matching their task's tags.
+
+**The index is derived, never hand-written.** No chain step appends index rows — writers append to the category file and the next session start indexes it.
 
 **Prune:** Entries contradicted by newer ones marked `[SUPERSEDED]` and removed after 7 days. Entries referencing deleted files are removed immediately. Entries unreferenced for 90 days are archived to `.hyperflow/memory/archive/YYYY-MM.md`.
 

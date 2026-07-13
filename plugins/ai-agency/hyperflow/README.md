@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v5.8.0-blueviolet?style=flat-square" alt="version v5.8.0" />
+  <img src="https://img.shields.io/badge/version-v5.9.0-blueviolet?style=flat-square" alt="version v5.9.0" />
   &nbsp;
   <img src="https://img.shields.io/github/actions/workflow/status/Mohammed-Abdelhady/hyperflow/plugin-validation.yml?style=flat-square&label=validation" alt="plugin validation status" />
   &nbsp;
@@ -162,6 +162,8 @@ Learnings live at `.hyperflow/memory/` — plain markdown, committed with your r
 - **Lazy injection** — only tag-matched entries load for a given task, so injection cost stays bounded.
 - **Auto-written by the chain** — `audit` records recurring findings to `anti-patterns.md`; `plan` records structural
   answers to `project-decisions.md`, so the same questions aren't asked twice.
+- **Derived index** — `index.md` is rebuilt from the memory files at every session start, so a stored learning is
+  never left unindexed and invisible. Writers append to the category file; nothing to register.
 
 ## Guardrails
 

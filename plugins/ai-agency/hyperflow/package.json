@@ -1,6 +1,6 @@
 {
   "name": "hyperflow",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "description": "Point it at a GitHub issue, get back a reviewed pull request. Multi-agent orchestration for Claude Code, Codex, OpenCode, Grok, Antigravity & Cursor — every step reviewed, memory that stays in your repo.",
   "type": "module",
   "license": "MIT",

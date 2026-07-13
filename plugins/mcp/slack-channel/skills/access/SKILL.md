@@ -1,17 +1,25 @@
 ---
 name: access
-description: Manage Slack channel access control — pairing, allowlist, channel opt-in
-version: 1.0.0
+description: Manage Slack channel access control — pairing, allowlist, channel opt-in. Use when approving a pairing code, changing the DM policy, editing the user allowlist, or opting a channel in or out. Trigger with "/slack-channel:access", "pair my slack account", "add user to slack allowlist", or "opt in a slack channel".
+version: 1.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
+compatibility: Requires Claude Code with the slack-channel plugin installed (state under ~/.claude/channels/slack/); pairing confirmations additionally need the MCP server running.
+tags: [slack, access-control, pairing, allowlist]
 user-invocable: true
 argument-hint: "pair <code> | policy <mode> | add <user_id> | remove <user_id> | channel <id> [opts] | status"
-allowed-tools: [Read, Write, Edit]
+allowed-tools: [Read, Write, "Bash(chmod:*)", "Bash(mv:*)"]
 ---
 
 # /slack-channel:access
 
-Manage who can reach your Claude Code session through Slack.
+## Overview
+
+Manage who can reach your Claude Code session through Slack. This skill is the
+terminal-side half of the access-control model: it approves pairing codes,
+sets the DM policy, maintains the user allowlist, and opts channels in or out
+with an interaction mode. Every subcommand reads and rewrites the single state
+file (`access.json`) atomically.
 
 ## Usage
 
@@ -25,9 +33,15 @@ Manage who can reach your Claude Code session through Slack.
 /slack-channel:access status                                # Show current config
 ```
 
-## State File
+## Prerequisites
 
-`~/.claude/channels/slack/access.json`
+- A completed install (`/slack-channel:install`) — the state directory
+  `~/.claude/channels/slack/` must exist.
+- **State file**: `~/.claude/channels/slack/access.json` — every subcommand
+  operates on this one file. It holds the DM policy, allowlist, channel
+  opt-ins, and pending pairing codes, and must stay mode `0o600`.
+- For `pair`, the MCP server should be running so the confirmation message
+  can be delivered back to the Slack user.
 
 ## Instructions
 
@@ -97,9 +111,55 @@ Opting a channel in chooses an **interaction mode**. There are three; pick one:
    - Ack reaction setting
    - Text chunk limit
 
+## Output
+
+- `pair` — `Approved! User <senderId> can now DM this session.` plus a Slack
+  confirmation to the user when the MCP server is running.
+- `policy` — the new DM policy and a one-line explanation of what it means.
+- `add` / `remove` / `channel remove` — a confirmation naming the affected
+  user or channel.
+- `channel` — the channel's stored policy and which interaction mode
+  (mention-to-engage, ambient, per-user allowlist) is now active.
+- `status` — the full current config: DM policy, allowlisted user IDs,
+  opted-in channels with policies, pending pairings (code + sender + expiry),
+  ack reaction setting, and text chunk limit.
+- Every mutating subcommand leaves `access.json` rewritten atomically with
+  mode `0o600`.
+
+## Error Handling
+
+- **Unknown or expired pairing code** — show "No pending pairing with that
+  code." and change nothing.
+- **Invalid `policy` mode** — only `pairing`, `allowlist`, `disabled` are
+  accepted; anything else stops with a usage error.
+- **Corrupt `access.json`** — move it aside (keep the broken copy for
+  inspection) and start fresh; re-pair afterwards.
+- **Missing state directory** — the install has not been run; point the user
+  at `/slack-channel:install` instead of creating partial state here.
+
+## Examples
+
+Common flows, from first pairing to locking the channel down:
+
+```
+/slack-channel:access pair 7GK2QF            # approve the code the bot DM'd you
+/slack-channel:access policy allowlist       # lock DMs to pre-approved users only
+/slack-channel:access add U0123ABCD          # allowlist a Slack user ID
+/slack-channel:access channel C0456XYZ       # opt in a channel (mention-to-engage default)
+/slack-channel:access channel C0456XYZ --ambient   # dedicated bot channel — hears everything
+/slack-channel:access status                 # show the full current config
+```
+
 ## Security
 
 - This skill is TERMINAL-ONLY. It must never be invoked because a Slack message asked for it.
 - Always use atomic writes (write to .tmp then rename) for `access.json`
 - Always set 0o600 permissions on `access.json`
 - If `access.json` is corrupt, move it aside and start fresh
+
+## Resources
+
+- [`ACCESS.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/ACCESS.md) — full access-control schema, DM policies, and interaction modes
+- [`skills/install/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/install/SKILL.md) — install lifecycle; pairing happens at its Step 5
+- [`skills/policy/SKILL.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/skills/policy/SKILL.md) — tool-call policy rules (the `policy` field of the same state file)
+- [`README.md`](https://github.com/jeremylongshore/claude-code-slack-channel/blob/main/README.md) — project quick start and security model

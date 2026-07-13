@@ -4,18 +4,17 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-07-08T01:12:04.166Z",
+  "last_sync": "2026-07-13T17:27:22.280Z",
   "author": {
     "name": "alib8b8",
     "github": "alib8b8"
   },
   "license": "MIT",
-  "files_synced": 9,
+  "files_synced": 8,
   "files": [
     ".claude-plugin/plugin.json",
     ".mcp.json",
     "README.md",
-    "README.zh-CN.md",
     "commands/create-workflow.md",
     "commands/list-nodes.md",
     "commands/run-workflow.md",

@@ -172,11 +172,26 @@ $(head -20 "$HF_DIR/$f")
 ## Project Snapshot
 $snap"
 
+  # Project memory — derive index.md + .checksums from the memory files, then
+  # inject the index plus the hot-tier entries. The index is derived state: no
+  # chain step hand-maintains it, so it can never silently drift out of sync
+  # with the files it indexes (and the compaction advisory below gets its
+  # lineCounts from the same pass).
+  hot_mem=""
+  if [ -d "$HF_DIR/memory" ] && [ -f "$PLUGIN_ROOT/scripts/memory-index.py" ]; then
+    hot_mem="$(python3 "$PLUGIN_ROOT/scripts/memory-index.py" "$HF_DIR" 2>>"$HF_DIR/.session-start.log" || true)"
+  fi
+
   # Memory Index
   [ -f "$HF_DIR/memory/index.md" ] && CONTENT="$CONTENT
 
 ## Project Memory Index
 $(head -200 "$HF_DIR/memory/index.md")"
+
+  # Hot-tier entries + anti-patterns, in full (Read Protocol steps 2–3)
+  [ -n "$hot_mem" ] && CONTENT="$CONTENT
+
+$hot_mem"
 
   # Memory Compaction Advisory (non-blocking, no LLM)
   if [ -f "$HF_DIR/memory/.checksums" ]; then
