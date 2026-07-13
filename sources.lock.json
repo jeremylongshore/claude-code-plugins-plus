@@ -1,5 +1,4 @@
 {
-  "$comment": "Content-pinning lockfile for the sources.yaml mirrors (scripts/sync-external.mjs). Each entry pins one upstream source: the resolved upstream commit and a sha256 per mirrored file. The diff of this file is the security review surface \u2014 a drifted source is quarantined by the sync and only re-baselined via an explicit --relock=<source> / --relock-all after human review. Managed by scripts/sync-lockfile.mjs; do not hand-edit digests.",
   "version": 1,
   "sources": {
     "Claudebase": {
