@@ -48,17 +48,6 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       margin-bottom: 1.5rem;
     }
 
-    .vendor-logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 16px;
-      background: #8b5cf615;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-    }
-
     .pack-title {
       font-size: clamp(2rem, 4vw, 2.5rem);
       font-weight: 700;
@@ -73,13 +62,13 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
 
     .tier-badge {
       display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      background: var(--signal); color: #0a0a0c;
-      color: var(--brand-dark);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
       margin-top: 0.5rem;
     }
 
@@ -143,11 +132,12 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
     }
 
     .category-badge {
-      background: var(--brand-light-gray);
+      border: 1px solid var(--rule);
       color: var(--brand-mid-gray);
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
     }
 
     .skills-grid {
@@ -238,9 +228,6 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       </div>
 
       <div class="pack-header">
-        <div class="vendor-logo">
-          ⌨️
-        </div>
         <div>
           <h1 class="pack-title">{vendor.name} Pack</h1>
           <p class="pack-subtitle">{vendor.description}</p>

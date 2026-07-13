@@ -44,11 +44,6 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       margin: 2rem 0;
     }
 
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-    }
-
     .empty-title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -146,21 +141,13 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
 
     .plugin-type-badge {
       display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .plugin-type-badge.plugin {
-      background: rgba(106, 155, 204, 0.15);
-      color: var(--brand-blue);
-    }
-
-    .plugin-type-badge.skill {
-      background: rgba(217, 119, 87, 0.15);
-      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule);
+      color: var(--ink-2, var(--brand-mid-gray));
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     }
 
     .plugin-name {
@@ -193,10 +180,12 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
     /* Cell content styles */
     .cell-category {
       display: inline-block;
-      padding: 0.3rem 0.75rem;
-      background: var(--brand-light);
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 2px 8px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      color: var(--ink-2, var(--brand-mid-gray));
       text-transform: capitalize;
     }
 
@@ -214,11 +203,12 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
     }
 
     .tool-tag {
-      background: var(--brand-light);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-family: 'Monaco', 'Menlo', monospace;
+      border: 1px solid var(--rule);
+      color: var(--ink-2, var(--brand-mid-gray));
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', 'Monaco', 'Menlo', monospace;
     }
 
     .cell-install {
@@ -369,7 +359,6 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
     </header>
 
     <div id="empty-state" class="empty-state">
-      <div class="empty-icon">⚖️</div>
       <h2 class="empty-title">No plugins selected</h2>
       <p class="empty-text">Browse the explore page and add plugins to compare them side-by-side.</p>
       <a href="/explore/" class="empty-cta">
@@ -445,10 +434,10 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
 
     <div id="compare-actions" class="compare-actions" style="display: none;">
       <button id="share-comparison" class="action-btn secondary">
-        <span>📋</span> Copy Share Link
+        Copy Share Link
       </button>
       <button id="clear-all" class="action-btn secondary">
-        <span>🗑️</span> Clear All
+        Clear All
       </button>
       <a href="/explore/" class="action-btn primary">
         <span>+</span> Add More
@@ -547,7 +536,6 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       // Header
       headerEl.innerHTML = `
         <div class="plugin-header">
-          <span class="plugin-type-badge ${item.type}">${item.type}</span>
           <a href="${detailUrl}" class="plugin-name">${displayName}</a>
           <button class="remove-btn" onclick="removeItem('${id}')">Remove</button>
         </div>
@@ -591,7 +579,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
         <div class="cell-install">
           <code class="install-code">${installCmd}</code>
           <button class="copy-btn" onclick="copyToClipboard('${installCmd}')">
-            <span>📋</span> Copy
+            Copy
           </button>
         </div>
       `;

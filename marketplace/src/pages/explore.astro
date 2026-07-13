@@ -99,7 +99,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     /* Filters Section */
     .filters-bar {
       background: var(--surface-1);
-      border-bottom: 2px solid var(--border);
+      border-bottom: 1px solid var(--border);
       padding: 1.5rem 4rem;
       position: sticky;
       top: 80px;
@@ -144,7 +144,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
 
     .filter-select {
       padding: 0.6rem 1rem;
-      border: 2px solid var(--brand-light-gray);
+      border: 1px solid var(--brand-light-gray);
       border-radius: 8px;
       font-size: 0.9rem;
       font-family: 'Inter', system-ui, sans-serif;
@@ -384,7 +384,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         <button class="type-btn" data-type="plugin">Plugins</button>
         <button class="type-btn" data-type="skill">Skills</button>
         <button class="type-btn" data-type="docs">Docs</button>
-        <button class="type-btn" data-type="favorites" id="favorites-btn">♡ Favorites</button>
+        <button class="type-btn" data-type="favorites" id="favorites-btn">Favorites</button>
       </div>
 
       <div class="type-toggle author-toggle">
@@ -925,7 +925,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         const favBtn = document.getElementById('favorites-btn');
         if (favBtn) {
           const count = this.favorites.size;
-          favBtn.textContent = count > 0 ? `♥ Favorites (${count})` : '♡ Favorites';
+          favBtn.textContent = count > 0 ? `Favorites (${count})` : 'Favorites';
         }
       },
 
