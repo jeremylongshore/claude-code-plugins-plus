@@ -27,6 +27,22 @@ plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI in
 plugins/mcp/servicegraph/.mcp.json:mcp-remote  the plugin IS an agent-skills front-end to the remote ServiceGraph MCP server (https://mcp.servicegraph.co, plain HTTP transport, no embedded credentials) — reviewed 2026-07-07, curated mirror pinned at fork SHA df4648a4
 plugins/mcp/servicegraph/README.md:mcp-remote  same remote MCP endpoint documented as the setup step in the upstream README — reviewed 2026-07-07 with the .mcp.json above
 
+# ── skills-janitor (khendzel) — vetted 2026-07-13 @ upstream c63c3478e (PR #1020). ──
+# The three GitHub-discovery scripts call out ONLY to api.github.com /
+# raw.githubusercontent.com (plus precheck's user-supplied SKILL.md URL, which is
+# fetched to a mktemp file and parsed for frontmatter — never executed or sourced).
+# GITHUB_TOKEN is sent solely as an Authorization header to api.github.com — the
+# credential's own service; precheck's AUTH_ARGS array never accompanies the
+# raw/arbitrary-URL fetches. Full-read vet per 699 playbook: 23 admitted files,
+# scan 0 REFUSE, all 5 skills j-rig 12/12.
+plugins/community/skills-janitor/scripts/search.sh:outbound-network  GitHub skill-search queries api.github.com only (the documented discovery feature) — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/precheck.sh:outbound-network  fetches SKILL.md from raw.githubusercontent.com / api.github.com / a user-supplied URL, read-and-parse only, never executed — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/compare.sh:outbound-network  keyword market comparison against api.github.com only — vetted 2026-07-13 @ c63c3478e
+plugins/community/skills-janitor/scripts/search.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
+plugins/community/skills-janitor/scripts/precheck.sh:secret-exfil-cooccur  GITHUB_TOKEN attached only to the api.github.com request (AUTH_ARGS array), never to the raw or arbitrary-URL fetches
+plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
+sources.yaml:sources-change-unscanned  skills-janitor vetted per the 699 playbook @ khendzel/skills-janitor c63c3478e (2026-07-13): all 23 admitted files read (13 scripts line-by-line), scanner 0 REFUSE / 30 CHALLENGE (all GitHub-API discovery, waived per-file above) / 5 FLAG (acknowledged); 5 skills grade A, j-rig check 12/12 each; MIT license verified; author account 5 yrs old, repo 108 stars with 4-month organic history
+
 # ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
 # PR whose diff adds it, so it can never persistently waive future source-list
