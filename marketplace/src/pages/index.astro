@@ -1041,8 +1041,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     }
     </script>
 
-    <script type="application/ld+json" slot="head">
-    {
+    <script type="application/ld+json" slot="head" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Claude Code Plugins",
@@ -1053,14 +1052,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "295 plugins for Claude Code with 1,537 agent skills, interactive tutorials, and production workflows. Supports 2026 schema.",
-      "softwareVersion": "4.14.0",
+      "description": `${totalPlugins} plugins for Claude Code with ${fmtNum(totalSkills)} agent skills, interactive tutorials, and production workflows.`,
       "url": "https://tonsofskills.com",
       "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins",
       "applicationSuite": "Claude Code",
       "featureList": [
-        "295 plugins across 24 categories",
-        "1,537 Agent Skills (1,298 standalone + 239 embedded)",
+        `${totalPlugins} plugins across ${totalCategories} categories`,
+        `${fmtNum(totalSkills)} Agent Skills`,
         "Interactive Stack Builder",
         "Shareable plugin collections",
         "Cross-platform CLI tool",
@@ -1068,8 +1066,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         "Fuzzy search",
         "LocalStorage persistence"
       ]
-    }
-    </script>
+    })} />
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1197,14 +1194,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             <p style="color: var(--text-2); margin-bottom: 0.5rem; max-width: 500px;">We scour GitHub for the most impressive agent skills and spotlight one each week.</p>
             <a href="/community" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 1.5rem;">Meet the contributors <span style="transition: transform 0.2s; display: inline-block;">&rarr;</span></a>
             <KillerSkills />
-            <div class="killer-signup" style="margin-top: 2rem; padding: 1.25rem 1.5rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                <p style="margin: 0; color: var(--text); font-weight: 600; font-size: 0.95rem;">Get the Killer Skill of the Week in your inbox</p>
-                <form data-signup-form="killer-skills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <input type="email" name="email" placeholder="you@example.com" required style="padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.85rem; min-width: 200px;" />
-                    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
-                    <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: #0a0a0c; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
-                </form>
-            </div>
 
             <div style="margin-top: 1rem; padding: 1.25rem 1.5rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;">
                 <p style="margin: 0 0 0.25rem; color: var(--text); font-weight: 700; font-size: 1.05rem;">Got a killer skill?</p>
@@ -1505,7 +1494,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
     <!-- Features Section -->
     <section class="features" id="features">
-        <h2 class="section-title">Community-driven, production-ready plugins</h2>
+        <h2 class="section-title">Community-driven plugins</h2>
 
         <ol class="features-list reveal-stagger">
             <li class="feature-row">
