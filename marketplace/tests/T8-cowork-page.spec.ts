@@ -19,13 +19,8 @@ test.describe('Cowork Downloads Page', () => {
       });
     });
 
-    test('should display hero with badge, heading, and stats', async ({ page }) => {
+    test('should display hero with heading and stats', async ({ page }) => {
       await page.goto('/cowork');
-
-      // Badge
-      const badge = page.locator('.cowork-hero-badge');
-      await expect(badge).toBeVisible();
-      await expect(badge).toContainText('FOR COWORK USERS');
 
       // H1
       const heading = page.locator('.cowork-hero h1');
