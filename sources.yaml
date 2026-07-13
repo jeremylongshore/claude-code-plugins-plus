@@ -1470,6 +1470,45 @@ sources:
       - 'contrib/**'
 
   # ============================================================
+  # skills-janitor (khendzel)
+  # https://github.com/khendzel/skills-janitor
+  # ============================================================
+
+  - name: skills-janitor
+    description: Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)
+    repo: khendzel/skills-janitor
+    source_path: .
+    target_path: plugins/community/skills-janitor
+    author:
+      name: Krzysztof Hendzel
+      github: khendzel
+      email: krzysztoff.hendzel@gmail.com
+    license: MIT
+    category: community
+    verified: true
+    keywords:
+      - skills
+      - cleanup
+      - context-window
+      - token-budget
+      - maintenance
+      - tui
+    include:
+      - '/.claude-plugin/marketplace.json'
+      - '/skills/**'
+      - '/scripts/**'
+      - '/README.md'
+      - '/CHANGELOG.md'
+      - '/LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'demo-deck.json'
+      - '*.png'
+      - '*.gif'
+
+  # ============================================================
   # ServiceGraph (Artur Briugeman / nostrband)
   # https://github.com/nostrband/ServiceGraph
   # Agent-skills front-end to servicegraph.co's metrics-enriched
