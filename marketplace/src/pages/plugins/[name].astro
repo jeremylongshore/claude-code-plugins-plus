@@ -103,7 +103,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
         {plugin.tagline && <p class="tagline">{plugin.tagline}</p>}
         <div class="meta">
           {plugin.featured && <span class="badge featured">Featured</span>}
-          <span class="badge category">{plugin.category}</span>
           <span class="meta-item">v{plugin.version}</span>
           {plugin.author?.name && <span class="meta-item">by {plugin.author.name}</span>}
         </div>
@@ -174,11 +173,7 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
                       <path d="M4 2 L10 6 L4 10 Z" fill="currentColor"/>
                     </svg>
                   </button>
-                  <svg class="file-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/>
-                  </svg>
                   <span class="gist-filename">{cleanName(skill.name)}</span>
-                  <span class="gist-filetype">SKILL.md</span>
                   <a href={`/skills/${skill.slug}/`} class="gist-view-link">View full skill &rarr;</a>
                 </div>
                 <div class="gist-body">
@@ -433,14 +428,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
     color: #0a0a0c;
   }
 
-  .badge.category {
-    background: var(--brand-green);
-    border-color: var(--brand-green);
-    color: white;
-    text-transform: capitalize;
-  }
-
-
   /* NOI tagline — outcome-speak subtitle (6–10 words) under plugin name */
   .tagline {
     font-size: 1.05rem;
@@ -489,8 +476,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
   .stat-label {
     font-size: 0.7rem;
     color: var(--text-3, var(--brand-mid-gray));
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
   .stats-divider {
@@ -707,13 +692,13 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
   }
 
   .component-badge {
-    background: var(--primary);
-    color: #0a0a0c;
-    padding: 0.4rem 1rem;
+    border: 1px solid var(--rule, var(--border));
+    color: var(--ink-2, var(--text-2));
+    padding: 2px 8px;
     border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    font-size: 11px;
     font-weight: 500;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
   }
 
   /* Skill Gist Explorer */
@@ -801,11 +786,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
     transition: transform var(--duration-fast) var(--ease-out);
   }
 
-  .file-icon {
-    color: var(--text-3, var(--brand-mid-gray));
-    flex-shrink: 0;
-  }
-
   .gist-filename {
     font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     font-size: 0.85rem;
@@ -814,16 +794,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .gist-filetype {
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-    font-size: 0.7rem;
-    color: var(--text-3, var(--brand-mid-gray));
-    background: var(--surface-2, var(--brand-light-gray));
-    padding: 0.1rem 0.4rem;
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
   }
 
   .gist-view-link {
@@ -865,12 +835,11 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
 
   .tool-pill {
     font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-    font-size: 0.7rem;
-    padding: 0.15rem 0.45rem;
+    font-size: 11px;
+    padding: 2px 8px;
     border-radius: var(--radius-sm);
-    background: rgba(234, 170, 0, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(234, 170, 0, 0.2);
+    color: var(--ink-2, var(--text-2));
+    border: 1px solid var(--rule, var(--border));
   }
 
   .gist-content {
@@ -928,8 +897,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-3, var(--brand-mid-gray));
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     font-family: 'Inter', system-ui, sans-serif;
   }
 
@@ -940,10 +907,10 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
   }
 
   .tag {
-    background: var(--surface-3, var(--brand-light-gray));
-    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--rule, var(--border));
+    padding: 2px 8px;
     border-radius: var(--radius-sm);
-    font-size: 0.72rem;
+    font-size: 11px;
     color: var(--text-2, var(--brand-mid-gray));
     font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
   }

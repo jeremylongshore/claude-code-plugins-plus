@@ -392,22 +392,22 @@ const currentPath = Astro.url.pathname;
 
         .footer-signup-form button {
             padding: 0.6rem 1rem;
-            background: var(--signal);
-            color: #0a0a0c;
-            border: none;
-            border-radius: 6px;
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--rule);
+            border-radius: var(--radius-md);
             font-weight: 600;
             font-size: 0.85rem;
             min-height: 44px;
             cursor: pointer;
             font-family: 'Inter', system-ui, sans-serif;
-            transition: all var(--duration-fast);
+            transition: border-color var(--duration-fast);
             white-space: nowrap;
         }
 
         .footer-signup-form button:hover {
-            background: #ffffa1;
-            color: #0a0a0c;
+            border-color: var(--rule-bright);
+            color: var(--ink);
         }
 
         .footer-form-note {

@@ -42,8 +42,6 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
             <span class="meta-item">~{readTime} min read</span>
             <span class="meta-divider">&bull;</span>
             <span class="meta-item">{wordCount.toLocaleString()} words</span>
-            <span class="meta-divider">&bull;</span>
-            <span class="meta-item">Data-Driven</span>
           </div>
         </div>
       </div>
@@ -145,17 +143,14 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
 
     .domain-badge {
       display: inline-block;
-      background: rgba(120, 140, 93, 0.1);
-      color: var(--brand-green);
-      padding: 0.375rem 0.75rem;
-      border-radius: 0.375rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border: 1px solid rgba(120, 140, 93, 0.2);
+      color: var(--ink-2, var(--brand-mid-gray));
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--rule);
       margin-bottom: 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     }
 
     .research-title {
@@ -213,8 +208,6 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .toc-title {
       font-size: 0.875rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--brand-mid-gray);
       margin-bottom: 1rem;
       font-family: 'Inter', system-ui, sans-serif;
@@ -390,8 +383,6 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .cite-title {
       font-size: 0.875rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--brand-mid-gray);
       margin-bottom: 0.75rem;
       font-family: 'Inter', system-ui, sans-serif;

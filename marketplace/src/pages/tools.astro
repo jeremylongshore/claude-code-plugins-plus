@@ -138,28 +138,6 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         margin-bottom: 1.5rem;
       }
 
-      .tool-icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 1.5rem;
-      }
-
-      .tool-icon.doctor {
-        background: var(--primary);
-      }
-
-      .tool-icon.analytics {
-        background: var(--ink-link);
-      }
-
-      .tool-icon.chats {
-        background: var(--alert);
-      }
-
       .tool-title {
         flex: 1;
       }
@@ -171,22 +149,13 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       }
 
       .tool-status {
-        font-size: 0.85rem;
-        padding: 0.25rem 0.75rem;
-        border-radius: 999px;
-        font-weight: 600;
-      }
-
-      .status-available {
-        background: rgba(16, 185, 129, 0.2);
-        color: var(--accent);
-        border: 1px solid var(--accent);
-      }
-
-      .status-soon {
-        background: rgba(251, 146, 60, 0.2);
-        color: var(--orange);
-        border: 1px solid var(--orange);
+        font-size: 11px;
+        font-family: 'JetBrains Mono', monospace;
+        padding: 2px 8px;
+        border-radius: 2px;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        font-weight: 500;
       }
 
       .tool-description {
@@ -207,13 +176,6 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         margin-bottom: 0.75rem;
         color: var(--text);
         font-size: 0.95rem;
-      }
-
-      .feature-list li::before {
-        content: '✓';
-        color: var(--accent);
-        font-weight: 700;
-        flex-shrink: 0;
       }
 
       .install-box {
@@ -400,10 +362,9 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         <!-- Doctor -->
         <div class="tool-card">
           <div class="tool-header">
-            <div class="tool-icon doctor">🩺</div>
             <div class="tool-title">
               <h2>CCPI Doctor</h2>
-              <span class="tool-status status-available">Available Now</span>
+              <span class="tool-status status-available">Available now</span>
             </div>
           </div>
 
@@ -429,10 +390,9 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         <!-- Analytics -->
         <div class="tool-card">
           <div class="tool-header">
-            <div class="tool-icon analytics">📊</div>
             <div class="tool-title">
               <h2>CCPI Analytics</h2>
-              <span class="tool-status status-soon">Coming Soon</span>
+              <span class="tool-status status-soon">Coming soon</span>
             </div>
           </div>
 
@@ -458,10 +418,9 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         <!-- Chats -->
         <div class="tool-card">
           <div class="tool-header">
-            <div class="tool-icon chats">💬</div>
             <div class="tool-title">
               <h2>CCPI Chats</h2>
-              <span class="tool-status status-soon">Coming Soon</span>
+              <span class="tool-status status-soon">Coming soon</span>
             </div>
           </div>
 

@@ -28,18 +28,6 @@ const allPlugins = manifest?.plugins || [];
       text-align: center;
     }
 
-    .cowork-hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.5px;
-    }
-
     .cowork-hero h1 {
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 800;
@@ -117,12 +105,13 @@ const allPlugins = manifest?.plugins || [];
     }
 
     .mega-stat {
-      background: var(--brand-light, #faf9f5);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--brand-blue, #6a9bcc);
+      border: 1px solid var(--rule, var(--brand-light-gray));
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      color: var(--ink-2, var(--brand-mid-gray));
     }
 
     .mega-download-btn {
@@ -171,8 +160,8 @@ const allPlugins = manifest?.plugins || [];
 
     /* Security section */
     .security-banner {
-      background: var(--surface-2);
-      border: 2px solid #86efac;
+      background: var(--panel, var(--surface-2));
+      border: 1px solid var(--rule, var(--brand-light-gray));
       border-radius: 12px;
       padding: 1.5rem 2rem;
       margin: 2rem auto;
@@ -180,7 +169,7 @@ const allPlugins = manifest?.plugins || [];
     }
 
     .security-banner h3 {
-      color: #166534;
+      color: var(--ink, var(--brand-dark));
       font-size: 1.1rem;
       margin: 0 0 0.75rem;
       font-family: 'Inter', system-ui, sans-serif;
@@ -196,17 +185,8 @@ const allPlugins = manifest?.plugins || [];
     }
 
     .security-list li {
-      color: #15803d;
+      color: var(--ink-2, var(--brand-mid-gray));
       font-size: 0.9rem;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-
-    .security-list li::before {
-      content: '\2713';
-      position: absolute;
-      left: 0;
-      font-weight: 700;
     }
 
     /* Setup guide */
@@ -233,18 +213,11 @@ const allPlugins = manifest?.plugins || [];
     }
 
     .step-number {
-      width: 40px;
-      height: 40px;
-      background: var(--brand-blue, #6a9bcc);
-      color: white;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
+      color: var(--ink-2, var(--brand-mid-gray));
+      font-weight: 500;
       font-size: 1.1rem;
       margin-bottom: 0.75rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     }
 
     .setup-step h4 {
@@ -435,11 +408,11 @@ const allPlugins = manifest?.plugins || [];
 
     /* Prereq banner — above the hero, full-bleed, amber */
     .cowork-prereq {
-      background: #fef3c7;
-      border-top: 4px solid #f59e0b;
-      border-bottom: 1px solid #f59e0b;
+      background: var(--panel, var(--surface-2));
+      border-top: 1px solid var(--rule, var(--brand-light-gray));
+      border-bottom: 1px solid var(--rule, var(--brand-light-gray));
       padding: 0.9rem 1.5rem;
-      color: #78350f;
+      color: var(--ink-2, var(--brand-mid-gray));
       font-size: 0.95rem;
       line-height: 1.5;
     }
@@ -450,18 +423,18 @@ const allPlugins = manifest?.plugins || [];
     }
 
     .cowork-prereq strong {
-      color: #78350f;
+      color: var(--ink, var(--brand-dark));
     }
 
     .cowork-prereq a {
-      color: #78350f;
+      color: var(--ink, var(--brand-dark));
       font-weight: 700;
       text-decoration: underline;
       white-space: nowrap;
     }
 
     .cowork-prereq a:hover {
-      color: #92400e;
+      color: var(--ink-2, var(--brand-mid-gray));
     }
 
     /* Official Cowork resources block */
@@ -527,7 +500,6 @@ const allPlugins = manifest?.plugins || [];
 
   <!-- Hero -->
   <section class="cowork-hero">
-    <span class="cowork-hero-badge">FOR COWORK USERS</span>
     <h1>Download Plugin Packs</h1>
     <p>One-click downloads for Claude Cowork. No terminal needed. Just download, unzip, and drag into your project.</p>
 
@@ -554,8 +526,6 @@ const allPlugins = manifest?.plugins || [];
         <h2>Download Everything</h2>
         <p>All {totalPlugins} plugins and {totalSkills} skills in one zip</p>
         <div class="mega-stats">
-          <span class="mega-stat">{totalPlugins} plugins</span>
-          <span class="mega-stat">{totalSkills} skills</span>
           {megaZip && <span class="mega-stat">{megaZip.sizeFormatted}</span>}
         </div>
       </div>
@@ -564,7 +534,6 @@ const allPlugins = manifest?.plugins || [];
         download
         class="mega-download-btn"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download All
       </a>
     </div>
@@ -637,22 +606,22 @@ const allPlugins = manifest?.plugins || [];
 
       <div class="setup-steps">
         <div class="setup-step">
-          <div class="step-number">1</div>
+          <div class="step-number">01</div>
           <h4>Download</h4>
           <p>Click any download button above. Your browser will save a .zip file to your Downloads folder.</p>
         </div>
         <div class="setup-step">
-          <div class="step-number">2</div>
+          <div class="step-number">02</div>
           <h4>Unzip</h4>
           <p>Double-click the .zip file to extract it. Keep the unzipped folder somewhere you can find it.</p>
         </div>
         <div class="setup-step">
-          <div class="step-number">3</div>
+          <div class="step-number">03</div>
           <h4>Open Cowork &rarr; Customize</h4>
           <p>In the Claude desktop app, switch to the <strong>Cowork</strong> tab, then click <strong>Customize</strong> in the left sidebar and choose <strong>Browse plugins</strong>. Use the upload-a-custom-plugin option to add your unzipped folder. See <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork" target="_blank" rel="noopener">Use plugins in Claude Cowork</a> for the canonical walkthrough.</p>
         </div>
         <div class="setup-step">
-          <div class="step-number">4</div>
+          <div class="step-number">04</div>
           <h4>Restart if prompted</h4>
           <p>The plugin's skills, agents, and commands appear in your Cowork workspace once installed.</p>
         </div>
@@ -697,19 +666,15 @@ const allPlugins = manifest?.plugins || [];
       <p>Start with our learning resources to get the most out of your plugins.</p>
       <div class="learning-links">
         <a href="/getting-started" class="learning-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
           Getting Started Guide
         </a>
         <a href="/learning" class="learning-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 8 3 12 0v-5"/></svg>
           Learning Hub
         </a>
         <a href="/skills" class="learning-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Browse Skills
         </a>
         <a href="/explore" class="learning-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           Explore Plugins
         </a>
       </div>

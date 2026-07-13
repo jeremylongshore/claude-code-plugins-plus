@@ -20,17 +20,14 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
         <h2>What Are Plugins &amp; Skills?</h2>
         <div class="gs-cards">
           <div class="gs-card">
-            <div class="gs-card-icon">&#x1F4E6;</div>
             <h3>Plugins</h3>
             <p>Packages you install that contain skills, commands, and agents. Think of them like extensions for VS Code &mdash; each one adds new capabilities to Claude.</p>
           </div>
           <div class="gs-card">
-            <div class="gs-card-icon">&#x26A1;</div>
             <h3>Skills</h3>
             <p>Instructions that activate automatically based on context. When you ask Claude to do something a skill covers, it kicks in without you doing anything extra.</p>
           </div>
           <div class="gs-card">
-            <div class="gs-card-icon">&#x2F;</div>
             <h3>Commands</h3>
             <p>Slash commands you type explicitly, like <code>/audit</code> or <code>/deploy</code>. These give you direct control over specific plugin capabilities.</p>
           </div>
@@ -63,23 +60,21 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
         <h2>How Skills Work</h2>
         <div class="gs-steps">
           <div class="gs-step">
-            <div class="gs-step-number">1</div>
+            <div class="gs-step-number">01</div>
             <div class="gs-step-content">
               <h3>Install a plugin</h3>
               <p>Pick a plugin from the marketplace and install it. The plugin's skills are now available to Claude.</p>
             </div>
           </div>
-          <div class="gs-step-arrow">&rarr;</div>
           <div class="gs-step">
-            <div class="gs-step-number">2</div>
+            <div class="gs-step-number">02</div>
             <div class="gs-step-content">
               <h3>Ask Claude anything</h3>
               <p>Just work normally. Ask Claude to review code, write tests, audit security &mdash; whatever you need.</p>
             </div>
           </div>
-          <div class="gs-step-arrow">&rarr;</div>
           <div class="gs-step">
-            <div class="gs-step-number">3</div>
+            <div class="gs-step-number">03</div>
             <div class="gs-step-content">
               <h3>Skills activate automatically</h3>
               <p>Claude detects the right skill for the job and uses it. Better results with zero extra effort from you.</p>
@@ -140,7 +135,6 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
 /* Cards */
 .gs-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
 .gs-card{background:var(--brand-light-gray);border:1px solid var(--brand-light-gray);border-radius:.5rem;padding:2rem;text-align:center}
-.gs-card-icon{font-size:2rem;margin-bottom:.75rem}
 .gs-card h3{font-size:1.1rem;color:var(--brand-dark);margin-bottom:.5rem}
 .gs-card p{font-size:.9rem;color:var(--brand-mid-gray);line-height:1.6}
 .gs-card code{background:rgba(217,119,87,.1);padding:.15rem .4rem;border-radius:4px;font-size:.85em;color:var(--primary-dark)}
@@ -148,7 +142,7 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
 /* Install paths */
 .gs-install-paths{display:grid;gap:1.5rem}
 .gs-install-path{background:var(--brand-dark);border-radius:.75rem;padding:1.5rem 2rem}
-.gs-path-label{font-family:'Inter', system-ui, sans-serif;font-size:.8rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.gs-path-label{font-family:'JetBrains Mono','SF Mono',monospace;font-size:11px;font-weight:500;color:var(--primary);margin-bottom:.75rem}
 .gs-code-block{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
 .gs-code-block code{font-family:'SF Mono','Fira Code',monospace;font-size:.95rem;color:var(--brand-light)}
 .gs-note{font-size:.8rem;color:var(--brand-mid-gray);margin:0}
@@ -157,10 +151,9 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
 /* Steps */
 .gs-steps{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;justify-content:center}
 .gs-step{flex:1;min-width:200px;background:var(--brand-light-gray);border-radius:.5rem;padding:1.5rem;text-align:center}
-.gs-step-number{width:40px;height:40px;background:var(--primary);color:#0a0a0c;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'Inter', system-ui, sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:.75rem}
+.gs-step-number{color:var(--brand-mid-gray);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono','SF Mono',monospace;font-weight:500;font-size:1.1rem;margin-bottom:.75rem}
 .gs-step-content h3{font-size:1rem;color:var(--brand-dark);margin-bottom:.5rem}
 .gs-step-content p{font-size:.85rem;color:var(--brand-mid-gray);line-height:1.6}
-.gs-step-arrow{font-size:1.5rem;color:var(--primary);display:flex;align-items:center;padding-top:1rem}
 
 /* Explore grid */
 .gs-explore-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
@@ -177,7 +170,6 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
 
 @media(max-width:768px){
   .gs-steps{flex-direction:column}
-  .gs-step-arrow{transform:rotate(90deg);justify-content:center;width:100%}
   .gs-cards{grid-template-columns:1fr}
 }
 </style>

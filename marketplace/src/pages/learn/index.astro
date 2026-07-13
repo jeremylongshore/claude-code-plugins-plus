@@ -68,31 +68,13 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
     }
 
     .tier-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .tier-badge.flagship-plus {
-      background: var(--signal); color: #0a0a0c;
-      color: var(--brand-dark);
-    }
-
-    .tier-badge.flagship {
-      background: var(--panel-2); border: 1px solid var(--rule); color: var(--ink);
-      color: var(--brand-dark);
-    }
-
-    .tier-badge.pro {
-      background: var(--panel); border: 1px solid var(--rule); color: var(--ink-2);
-      color: white;
-    }
-
-    .tier-badge.standard {
-      background: var(--ink-link); color: #0a0a0c;
-      color: white;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     }
 
     .tier-description {
@@ -127,16 +109,6 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
       align-items: center;
       gap: 1rem;
       margin-bottom: 1rem;
-    }
-
-    .vendor-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
     }
 
     .vendor-name {
@@ -234,14 +206,6 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
             {tierVendors.map(vendor => (
               <a href={`/learn/${vendor.id}/`} class="vendor-card">
                 <div class="vendor-header">
-                  <div class="vendor-icon" style={`background: ${vendor.color}15; color: ${vendor.color};`}>
-                    {vendor.icon === 'database' ? '🗄️' :
-                     vendor.icon === 'cloud' ? '☁️' :
-                     vendor.icon === 'alert-triangle' ? '⚠️' :
-                     vendor.icon === 'code' ? '💻' :
-                     vendor.icon === 'layers' ? '🔗' :
-                     vendor.icon === 'video' ? '🎬' : '📦'}
-                  </div>
                   <h3 class="vendor-name">{vendor.name}</h3>
                 </div>
                 <p class="vendor-description">{vendor.description}</p>

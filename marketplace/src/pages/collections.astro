@@ -25,21 +25,6 @@ const totalPluginsInCollections = collections.collections.reduce(
       margin-bottom: 3rem;
     }
 
-    .page-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--brand-light);
-      border: 1px solid rgba(217, 119, 87, 0.25);
-      padding: 0.5rem 1rem;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--primary-dark);
-      margin-bottom: 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-
     .page-title {
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 700;
@@ -97,15 +82,6 @@ const totalPluginsInCollections = collections.collections.reduce(
       font-family: 'Inter', system-ui, sans-serif;
     }
 
-    .section-badge {
-      background: var(--primary);
-      color: #0a0a0c;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
     .install-guide {
       background: var(--brand-light);
       border-radius: 12px;
@@ -137,16 +113,10 @@ const totalPluginsInCollections = collections.collections.reduce(
     }
 
     .step-number {
-      width: 28px;
-      height: 28px;
-      background: var(--primary);
-      color: #0a0a0c;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-weight: 500;
       font-size: 0.9rem;
+      color: var(--ink-2, var(--brand-mid-gray));
       flex-shrink: 0;
     }
 
@@ -187,7 +157,6 @@ const totalPluginsInCollections = collections.collections.reduce(
 
   <div class="collections-page">
     <header class="page-header">
-      <span class="page-badge">Quick Start</span>
       <h1 class="page-title">Plugin Collections</h1>
       <p class="page-description">
         Pre-built plugin bundles for common workflows. Each collection is curated
@@ -204,16 +173,11 @@ const totalPluginsInCollections = collections.collections.reduce(
         <div class="stat-value">{totalPluginsInCollections}</div>
         <div class="stat-label">Total Plugins</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-value">1-Click</div>
-        <div class="stat-label">Install</div>
-      </div>
     </div>
 
     <section class="collections-section">
       <div class="section-header">
         <h2 class="section-title">Featured Collections</h2>
-        <span class="section-badge">Most Popular</span>
       </div>
       <CollectionsGrid featured={true} />
     </section>
@@ -233,21 +197,21 @@ const totalPluginsInCollections = collections.collections.reduce(
       </p>
       <div class="install-steps">
         <div class="install-step">
-          <span class="step-number">1</span>
+          <span class="step-number">01</span>
           <div class="step-content">
             <strong>Click "Copy Install" on any collection</strong>
             This copies the install commands for all plugins in the bundle.
           </div>
         </div>
         <div class="install-step">
-          <span class="step-number">2</span>
+          <span class="step-number">02</span>
           <div class="step-content">
             <strong>Open Claude Code</strong>
             Launch your Claude Code terminal session.
           </div>
         </div>
         <div class="install-step">
-          <span class="step-number">3</span>
+          <span class="step-number">03</span>
           <div class="step-content">
             <strong>Paste and run the commands</strong>
             Each plugin will be installed from the marketplace.

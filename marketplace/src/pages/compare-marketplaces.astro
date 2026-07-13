@@ -22,13 +22,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
         "name": "Tons of Skills (Claude Code Plugins)",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Cross-platform",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "340",
-          "bestRating": "5"
-        }
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
       }
     })} />
   </Fragment>
@@ -173,32 +167,26 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
       <h2>Why Developers Choose Tons of Skills</h2>
       <div class="diff-grid">
         <div class="diff-card">
-          <div class="diff-icon">&#128269;</div>
           <h3>Instant Discovery</h3>
           <p>Fuzzy search across {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills. Filter by category, keyword, or tool type. No README scrolling.</p>
         </div>
         <div class="diff-card">
-          <div class="diff-icon">&#128187;</div>
           <h3>CLI-First Install</h3>
           <p>Install any plugin with <code>/plugin install name@claude-code-plugins-plus</code> or use the <code>ccpi</code> CLI. Copy the command right from the explore page.</p>
         </div>
         <div class="diff-card">
-          <div class="diff-icon">&#9989;</div>
           <h3>Quality Validated</h3>
           <p>Every plugin passes CI validation: JSON schema checks, frontmatter validation, secret scanning, and dangerous pattern detection before merge.</p>
         </div>
         <div class="diff-card">
-          <div class="diff-icon">&#128230;</div>
           <h3>Bulk Downloads</h3>
           <p>Download individual plugins, full category bundles, or the entire {stats.totalPlugins}-plugin mega-zip from the Cowork downloads page. Checksums included.</p>
         </div>
         <div class="diff-card">
-          <div class="diff-icon">&#129302;</div>
           <h3>{stats.totalAgents} Custom Agents</h3>
           <p>Pre-built agent definitions for specialized workflows: code review, security auditing, deployment, testing, and more. Ready to drop into your project.</p>
         </div>
         <div class="diff-card">
-          <div class="diff-icon">&#128218;</div>
           <h3>Rich Plugin Pages</h3>
           <p>Every plugin gets a dedicated page with description, skills list, install commands, metadata, and related plugins. Not just a link in a list.</p>
         </div>
@@ -277,8 +265,6 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem;
     color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
     margin-bottom: 1rem;
   }
   .hero h1 {
@@ -414,10 +400,6 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
     border-color: var(--primary);
     transform: translateY(-2px);
   }
-  .diff-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-  }
   .diff-card h3 {
     font-size: 1.15rem;
     font-weight: 600;
@@ -440,21 +422,20 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
   }
   .cat-chip {
     display: inline-block;
-    padding: 0.4rem 1rem;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 999px;
+    padding: 2px 8px;
+    border: 1px solid var(--rule, var(--border));
+    border-radius: var(--radius-sm);
     color: var(--text-2);
-    font-size: 0.8rem;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
     text-decoration: none;
     text-transform: capitalize;
     transition: all 0.2s;
-    font-family: 'Inter', system-ui, sans-serif;
   }
   .cat-chip:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: rgba(234, 170, 0, 0.08);
+    border-color: var(--signal-edge);
+    background: var(--signal-tint);
+    color: var(--ink);
   }
 
   /* FAQ */

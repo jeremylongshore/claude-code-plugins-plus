@@ -101,22 +101,18 @@ const notebooks = {
         <h2 class="section-title">What You'll Learn</h2>
         <div class="learn-grid">
           <div class="learn-card">
-            <div class="learn-icon">📋</div>
             <h3>Test Harness Pattern</h3>
             <p>Understand the mental model behind evidence-based LLM workflows</p>
           </div>
           <div class="learn-card">
-            <div class="learn-icon">🔄</div>
             <h3>Multi-Phase Orchestration</h3>
             <p>Build workflows with strict validation gates between phases</p>
           </div>
           <div class="learn-card">
-            <div class="learn-icon">✅</div>
             <h3>Empirical Verification</h3>
             <p>Use scripts to validate LLM outputs instead of trusting them</p>
           </div>
           <div class="learn-card">
-            <div class="learn-icon">🏗️</div>
             <h3>Production Deployment</h3>
             <p>Take your workflows from learning lab to production systems</p>
           </div>
@@ -167,9 +163,6 @@ const notebooks = {
             {notebooks.skills.map(notebook => (
               <div class="notebook-card">
                 <div class="notebook-header">
-                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
                   <h4>{notebook.title}</h4>
                 </div>
                 <div class="notebook-actions">
@@ -179,9 +172,6 @@ const notebooks = {
                     rel="noopener noreferrer"
                     class="colab-button"
                   >
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
-                    </svg>
                     Open in Colab
                   </a>
                   <a
@@ -205,9 +195,6 @@ const notebooks = {
             {notebooks.plugins.map(notebook => (
               <div class="notebook-card">
                 <div class="notebook-header">
-                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
                   <h4>{notebook.title}</h4>
                 </div>
                 <div class="notebook-actions">
@@ -217,9 +204,6 @@ const notebooks = {
                     rel="noopener noreferrer"
                     class="colab-button"
                   >
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
-                    </svg>
                     Open in Colab
                   </a>
                   <a
@@ -243,9 +227,6 @@ const notebooks = {
             {notebooks.orchestration.map(notebook => (
               <div class="notebook-card">
                 <div class="notebook-header">
-                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
                   <h4>{notebook.title}</h4>
                 </div>
                 <div class="notebook-actions">
@@ -255,9 +236,6 @@ const notebooks = {
                     rel="noopener noreferrer"
                     class="colab-button"
                   >
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
-                    </svg>
                     Open in Colab
                   </a>
                   <a
@@ -282,28 +260,28 @@ const notebooks = {
         <h2 class="section-title">Getting Started</h2>
         <div class="checklist">
           <div class="checklist-item">
-            <span class="checklist-number">1</span>
+            <span class="checklist-number">01</span>
             <div class="checklist-content">
               <h3>Read the Introduction</h3>
               <p>Start with <a href="/learning/start-here">GUIDE 00: Start Here</a> to understand the mental model (5 min)</p>
             </div>
           </div>
           <div class="checklist-item">
-            <span class="checklist-number">2</span>
+            <span class="checklist-number">02</span>
             <div class="checklist-content">
               <h3>Choose Your Path</h3>
               <p>Pick Beginner, Advanced, or Reference based on your experience level</p>
             </div>
           </div>
           <div class="checklist-item">
-            <span class="checklist-number">3</span>
+            <span class="checklist-number">03</span>
             <div class="checklist-content">
               <h3>Try Jupyter Notebooks</h3>
               <p>Launch interactive tutorials in Google Colab - no setup required</p>
             </div>
           </div>
           <div class="checklist-item">
-            <span class="checklist-number">4</span>
+            <span class="checklist-number">04</span>
             <div class="checklist-content">
               <h3>Build Your Own</h3>
               <p>Adapt the reference implementation for your production use case</p>
@@ -385,8 +363,6 @@ const notebooks = {
   .stat-label {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.8);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   /* Sections */
@@ -435,11 +411,6 @@ const notebooks = {
     
   }
 
-  .learn-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
   .learn-card h3 {
     font-size: 1.25rem;
     color: var(--brand-dark);
@@ -482,12 +453,12 @@ const notebooks = {
   }
 
   .path-duration {
-    background: var(--brand-light-gray);
+    border: 1px solid var(--rule);
     color: var(--brand-mid-gray);
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
   }
 
   .path-description {
@@ -573,13 +544,6 @@ const notebooks = {
     margin-bottom: 1rem;
   }
 
-  .notebook-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: var(--brand-blue);
-    flex-shrink: 0;
-  }
-
   .notebook-header h4 {
     font-size: 1rem;
     color: var(--brand-dark);
@@ -608,17 +572,13 @@ const notebooks = {
   }
 
   .colab-button {
-    background: #F9AB00;
+    background: transparent;
+    border: 1px solid var(--rule);
     color: var(--ink);
   }
 
   .colab-button:hover {
-    background: #e09900;
-  }
-
-  .colab-button svg {
-    width: 1.25rem;
-    height: 1.25rem;
+    border-color: var(--rule-bright);
   }
 
   .github-button {
@@ -648,15 +608,9 @@ const notebooks = {
   }
 
   .checklist-number {
-    width: 2.5rem;
-    height: 2.5rem;
-    background: var(--primary);
-    color: #0a0a0c;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
+    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    color: var(--ink-2, var(--brand-mid-gray));
+    font-weight: 500;
     font-size: 1.25rem;
     flex-shrink: 0;
   }
@@ -713,8 +667,6 @@ const notebooks = {
     }
 
     .checklist-number {
-      width: 2rem;
-      height: 2rem;
       font-size: 1rem;
     }
   }

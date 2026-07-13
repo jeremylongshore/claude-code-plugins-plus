@@ -16,37 +16,6 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
                        vendor.tier === 'flagship' ? 'tier-badge flagship' :
                        vendor.tier === 'pro' ? 'tier-badge pro' : 'tier-badge standard';
 
-const iconMap: Record<string, string> = {
-  'database': '\u{1F5C4}\uFE0F',
-  'cloud': '\u2601\uFE0F',
-  'alert-triangle': '\u26A0\uFE0F',
-  'code': '\u{1F4BB}',
-  'layers': '\u{1F517}',
-  'video': '\u{1F3AC}',
-  'phone': '\u{1F4DE}',
-  'search': '\u{1F50D}',
-  'zap': '\u26A1',
-  'flame': '\u{1F525}',
-  'users': '\u{1F465}',
-  'terminal': '\u{1F4BB}',
-  'cpu': '\u{1F9E0}',
-  'mail': '\u{1F4E7}',
-  'mic': '\u{1F3A4}',
-  'rabbit': '\u{1F430}',
-  'chart': '\u{1F4CA}',
-  'image': '\u{1F5BC}\uFE0F',
-  'target': '\u{1F3AF}',
-  'link': '\u{1F517}',
-  'bot': '\u{1F916}',
-  'file-text': '\u{1F4C4}',
-  'presentation': '\u{1F4CA}',
-  'shield': '\u{1F6E1}\uFE0F',
-  'layout': '\u{1F4CB}',
-  'git-pull-request': '\u{1F500}',
-  'bar-chart': '\u{1F4CA}',
-  'wind': '\u{1F32C}\uFE0F'
-};
-const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -84,16 +53,6 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
       margin-bottom: 1.5rem;
     }
 
-    .vendor-logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-    }
-
     .pack-title {
       font-size: clamp(2rem, 4vw, 2.5rem);
       font-weight: 700;
@@ -108,32 +67,14 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
 
     .tier-badge {
       display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--rule);
+      color: var(--ink-2);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
       margin-top: 0.5rem;
-    }
-
-    .tier-badge.flagship-plus {
-      background: var(--signal); color: #0a0a0c;
-      color: var(--brand-dark);
-    }
-
-    .tier-badge.flagship {
-      background: var(--panel-2); border: 1px solid var(--rule); color: var(--ink);
-      color: var(--brand-dark);
-    }
-
-    .tier-badge.pro {
-      background: var(--panel); border: 1px solid var(--rule); color: var(--ink-2);
-      color: var(--ink);
-    }
-
-    .tier-badge.standard {
-      background: var(--ink-link); color: #0a0a0c;
-      color: var(--ink);
     }
 
     .install-section {
@@ -196,11 +137,12 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
     }
 
     .category-badge {
-      background: var(--brand-light-gray);
+      border: 1px solid var(--rule);
       color: var(--brand-mid-gray);
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
     }
 
     .skills-grid {
@@ -290,9 +232,6 @@ const vendorIcon = iconMap[vendor.icon] || '\u{1F4E6}';
       </div>
 
       <div class="pack-header">
-        <div class="vendor-logo" style={`background: ${vendor.color}15; color: ${vendor.color};`}>
-          {vendorIcon}
-        </div>
         <div>
           <h1 class="pack-title">{vendor.name} Pack</h1>
           <p class="pack-subtitle">{vendor.description}</p>

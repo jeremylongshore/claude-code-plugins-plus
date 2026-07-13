@@ -213,10 +213,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             letter-spacing: 0.12em;
             margin-bottom: 0.55rem;
         }
+        /* Static row per DESIGN.md §4 Partner bar: "Static row, no marquee …
+           never loop on infinite scroll." */
         .hero-sponsor-track {
             display: flex;
-            gap: 3rem;
-            animation: sponsorScroll 11s linear infinite;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
         }
         .hero-sponsor-link {
             flex-shrink: 0;
@@ -235,20 +237,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         :global([data-theme="light"]) .hero-sponsor-link:hover {
             color: var(--ink);
         }
-        /* Stats marquee (second row, under partners). Visually separated from
-           the partner marquee with a subtle divider + breathing room — they
-           used to stack at margin-top: 0.35rem (~5.6px) which read as one
-           jammed element. Speed bumped from 28s → 16s per design feedback;
-           still slower than partners (11s) because the text strings are longer
-           and need to stay readable. */
+        /* Stats row (second row, under the hero byline). Static per the
+           no-marquee rule; separated with a subtle divider + breathing room. */
         .hero-stats-marquee {
             margin-top: 1.25rem;
             padding-top: 1rem;
             border-top: 1px solid var(--border);
             max-width: 520px;
-        }
-        .hero-stats-marquee .hero-sponsor-track {
-            animation-duration: 16s;
         }
         .hero-stats-link .hero-sponsor-text {
             font-family: 'JetBrains Mono', monospace;
@@ -261,11 +256,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-size: 0.95rem;
             letter-spacing: 0.02em;
         }
-        @keyframes sponsorScroll {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-
         /* Spotlight eyebrow pill */
         /* Subtitle */
         .hero-subtitle {
@@ -312,8 +302,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .search-container {
             position: relative;
             background: var(--surface-2);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             transition: border-color 0.2s ease;
             cursor: pointer;
         }
@@ -404,92 +394,14 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             color: var(--ink);
         }
 
-        .search-results {
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            left: 0;
-            right: 0;
-            background: var(--surface-2);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .search-results.hidden {
-            display: none;
-        }
-
-        .search-result-item {
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.15s ease;
-            text-decoration: none;
-            display: block;
-            color: inherit;
-        }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-result-item:hover {
-            background: var(--surface-3);
-        }
-
-        .result-type-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.05em;
-        }
-
-        .result-type-badge.plugin {
-            background: rgba(68, 147, 248, 0.15);
-            color: var(--brand-blue);
-        }
-
-        .result-type-badge.skill {
-            background: rgba(234, 170, 0, 0.15);
-            color: var(--primary);
-        }
-
-        .result-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text);
-            margin: 0.25rem 0;
-        }
-
-        .result-description {
-            font-size: 0.875rem;
-            color: var(--text-2);
-            margin: 0.25rem 0;
-            line-height: 1.4;
-        }
-
-        .result-plugin-info {
-            font-size: 0.8125rem;
-            color: var(--brand-blue);
-            margin-top: 0.5rem;
-        }
-
         /* Install box */
         .install-box {
             width: 100%;
             max-width: 650px;
             padding: 1.5rem;
             background: var(--surface-2);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
             opacity: 0;
         }
@@ -626,7 +538,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .saas-card {
             background: var(--surface-1);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: var(--radius-xl);
             padding: 1.5rem;
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -643,16 +555,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             margin-bottom: 1rem;
         }
 
-        .saas-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
         .saas-card h3 {
             color: var(--text);
             margin: 0;
@@ -660,9 +562,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .saas-tier {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--primary);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--ink-2);
             font-family: 'JetBrains Mono', monospace;
         }
 
@@ -697,13 +599,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .saas-cmd.primary {
-            background: rgba(234, 170, 0, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(234, 170, 0, 0.2);
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--rule);
         }
 
         .saas-cmd.primary:hover {
-            background: rgba(234, 170, 0, 0.18);
+            border-color: var(--rule-bright);
         }
 
         .saas-card.coming-soon {
@@ -714,11 +616,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             justify-content: center;
             align-items: center;
             text-align: center;
-        }
-
-        .coming-soon-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
         }
 
         .saas-card.coming-soon h3 {
@@ -741,20 +638,20 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: white;
-            color: #8B0A2D;
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--rule);
             padding: 0.875rem 1.75rem;
-            border-radius: 8px;
-            font-weight: 700;
+            border-radius: var(--radius-md);
+            font-weight: 600;
             text-decoration: none;
             font-size: 1rem;
             font-family: 'Inter', system-ui, sans-serif;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
         }
 
         .saas-button:hover {
-            transform: translateY(-2px);
-            
+            border-color: var(--rule-bright);
         }
 
         @media (max-width: 768px) {
@@ -804,21 +701,21 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            background: var(--accent);
-            color: var(--surface);
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--rule);
             padding: 1rem 2.5rem;
-            border-radius: 10px;
-            font-weight: 700;
+            border-radius: var(--radius-md);
+            font-weight: 600;
             text-decoration: none;
             font-size: 1.1rem;
             font-family: 'Inter', system-ui, sans-serif;
-            transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+            transition: border-color var(--duration-fast) var(--ease-out);
         }
 
         .cowork-home-button:hover {
-            transform: translateY(-2px);
-            
-            color: var(--surface);
+            border-color: var(--rule-bright);
+            color: var(--ink);
         }
 
         @media (max-width: 768px) {
@@ -970,8 +867,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .level-up-field input,
         .level-up-field textarea {
             background: var(--panel, var(--surface-2));
-            border: 1.5px solid var(--rule, var(--border));
-            border-radius: 8px;
+            border: 1px solid var(--rule, var(--border));
+            border-radius: var(--radius-md);
             padding: 0.75rem 0.9rem;
             font-family: inherit;
             font-size: 1rem;
@@ -1001,20 +898,20 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .level-up-submit {
-            background: var(--signal, var(--accent));
-            color: var(--bg, #0a0a0c);
-            border: none;
-            border-radius: 8px;
+            background: transparent;
+            color: var(--ink, var(--text));
+            border: 1px solid var(--rule, var(--border));
+            border-radius: var(--radius-md);
             padding: 0.75rem 1.5rem;
             font-family: inherit;
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.15s ease;
+            transition: border-color 0.15s ease;
         }
 
         .level-up-submit:hover {
-            opacity: 0.88;
+            border-color: var(--rule-bright, var(--border));
         }
 
         .level-up-submit:disabled {
@@ -1037,240 +934,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         @media (max-width: 768px) {
             .level-up-section {
                 padding: 3rem 1.5rem;
-            }
-        }
-
-        /* ========================================
-           EMAIL SIGNUP SECTION
-           ======================================== */
-        .signup-section {
-            padding: 3rem 2rem;
-            background: var(--surface);
-        }
-
-        .signup-inner {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .signup-title {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .signup-desc {
-            color: var(--text-2);
-            margin-bottom: 2rem;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .signup-form {
-            display: flex;
-            gap: 0.75rem;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        .signup-form input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-size: 0.95rem;
-            font-family: 'Inter', system-ui, sans-serif;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .signup-form input:focus {
-            border-color: var(--primary);
-        }
-
-        .signup-form button {
-            padding: 0.75rem 1.5rem;
-            background: var(--primary);
-            color: #0a0a0c;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .signup-form button:hover {
-            transform: translateY(-1px);
-            
-        }
-
-        .signup-note {
-            margin-top: 1rem;
-            font-size: 0.75rem;
-            color: var(--text-3);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* ========================================
-           PRODUCTS & SERVICES SECTION
-           ======================================== */
-        .products-section {
-            padding: 3rem 2rem;
-            background: var(--surface);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            max-width: 1100px;
-            margin: 3rem auto 0;
-        }
-
-        .product-card {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--signal);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .product-card.service-card::before {
-            background: var(--positive);
-        }
-
-        .product-card:hover {
-            border-color: rgba(249, 115, 22, 0.3);
-            transform: translateY(-4px);
-            
-        }
-
-        .product-card.service-card:hover {
-            border-color: rgba(63, 185, 80, 0.3);
-            
-        }
-
-        .product-card:hover::before {
-            opacity: 1;
-        }
-
-        .product-card h3 {
-            color: var(--text);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-price {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .product-price .amount {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #f97316;
-        }
-
-        .service-card .product-price .amount {
-            color: var(--positive);
-        }
-
-        .product-price .label {
-            font-size: 0.75rem;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: rgba(249, 115, 22, 0.15);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .service-card .product-price .label {
-            background: rgba(63, 185, 80, 0.15);
-        }
-
-        .product-features {
-            list-style: none;
-            padding: 0;
-            margin: 1.25rem 0;
-        }
-
-        .product-features li {
-            color: var(--text-2);
-            font-size: 0.9rem;
-            padding: 0.4rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .product-features li::before {
-            content: '\2713';
-            position: absolute;
-            left: 0;
-            color: #f97316;
-            font-weight: 700;
-        }
-
-        .service-card .product-features li::before {
-            color: var(--positive);
-        }
-
-        .product-cta {
-            display: block;
-            width: 100%;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            background: var(--signal);
-            color: #0a0a0c;
-        }
-
-        .product-cta:hover {
-            transform: translateY(-1px);
-            
-        }
-
-        .product-cta.service-cta {
-            background: var(--positive);
-            color: #0a0a0c;
-        }
-
-        .product-cta.service-cta:hover {
-            
-        }
-
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -1390,12 +1053,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         "price": "0",
         "priceCurrency": "USD"
       },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "258",
-        "bestRating": "5"
-      },
       "description": "295 plugins for Claude Code with 1,537 agent skills, interactive tutorials, and production workflows. Supports 2026 schema.",
       "softwareVersion": "4.14.0",
       "url": "https://tonsofskills.com",
@@ -1426,18 +1083,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         {fmtNum(npmMonth)} total downloads · {fmtNum(npmPublished)} packages on npm
                     </span>
                     <div class="hero-sponsor-track">
-                        {npmTop.map((p) => (
-                            <a
-                                href={`https://www.npmjs.com/package/${p.name}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="hero-sponsor-link hero-stats-link"
-                            >
-                                <span class="hero-sponsor-text">
-                                    {p.name.replace(/^@intentsolutionsio\//, '')} · {fmtNum(p.lastMonth)}
-                                </span>
-                            </a>
-                        ))}
                         {npmTop.map((p) => (
                             <a
                                 href={`https://www.npmjs.com/package/${p.name}`}
@@ -1648,12 +1293,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- Supabase Pack -->
                 <div class="saas-card" data-accent="#3ECF8E">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #3ECF8E;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                        </div>
                         <div>
                             <h3>Supabase</h3>
-                            <span class="saas-tier" style="color: #3ECF8E;">30 Skills</span>
+                            <span class="saas-tier">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1668,9 +1310,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- Vercel Pack -->
                 <div class="saas-card" data-accent="#000">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #333; border: 1px solid var(--border);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 19.5h20L12 2z"/></svg>
-                        </div>
                         <div>
                             <h3>Vercel</h3>
                             <span class="saas-tier">30 Skills</span>
@@ -1688,19 +1327,16 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- Sentry Pack -->
                 <div class="saas-card" data-accent="#362D59">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #362D59;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        </div>
                         <div>
                             <h3>Sentry</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">30 Skills</span>
+                            <span class="saas-tier">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         Error tracking, performance monitoring, release management, and production operations.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #8b5cf6;" onclick="navigator.clipboard.writeText('/plugin install sentry-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install sentry-pack', 2000);">/plugin install sentry-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install sentry-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install sentry-pack', 2000);">/plugin install sentry-pack</code>
                         <code class="saas-cmd" onclick="navigator.clipboard.writeText('npm i @intentsolutionsio/sentry-pack'); this.textContent='Copied!'; setTimeout(() => this.textContent='npm i @intentsolutionsio/sentry-pack', 2000);">npm i @intentsolutionsio/sentry-pack</code>
                     </div>
                 </div>
@@ -1708,19 +1344,16 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- Cursor Pack -->
                 <div class="saas-card" data-accent="#8b5cf6">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #333; border: 1px solid var(--border);">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                        </div>
                         <div>
                             <h3>Cursor</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">30 Skills</span>
+                            <span class="saas-tier">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         AI code editor with completions, chat, composer, rules config, and IDE optimization.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #8b5cf6;" onclick="navigator.clipboard.writeText('/plugin install cursor-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install cursor-pack', 2000);">/plugin install cursor-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install cursor-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install cursor-pack', 2000);">/plugin install cursor-pack</code>
                         <code class="saas-cmd" onclick="navigator.clipboard.writeText('npm i @intentsolutionsio/cursor-skill-md-pack'); this.textContent='Copied!'; setTimeout(() => this.textContent='npm i @intentsolutionsio/cursor-skill-md-pack', 2000);">npm i @intentsolutionsio/cursor-skill-md-pack</code>
                     </div>
                 </div>
@@ -1728,19 +1361,16 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- OpenRouter Pack -->
                 <div class="saas-card" data-accent="#6366f1">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #6366f1;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-                        </div>
                         <div>
                             <h3>OpenRouter</h3>
-                            <span class="saas-tier" style="color: #6366f1;">30 Skills</span>
+                            <span class="saas-tier">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         Multi-model LLM gateway with 100+ models, fallbacks, routing, and OpenAI compatibility.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #6366f1;" onclick="navigator.clipboard.writeText('/plugin install openrouter-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install openrouter-pack', 2000);">/plugin install openrouter-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install openrouter-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install openrouter-pack', 2000);">/plugin install openrouter-pack</code>
                         <code class="saas-cmd" onclick="navigator.clipboard.writeText('npm i @intentsolutionsio/openrouter-skill-md-pack'); this.textContent='Copied!'; setTimeout(() => this.textContent='npm i @intentsolutionsio/openrouter-skill-md-pack', 2000);">npm i @intentsolutionsio/openrouter-skill-md-pack</code>
                     </div>
                 </div>
@@ -1748,31 +1378,25 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- Groq Pack -->
                 <div class="saas-card" data-accent="#f55036">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #f55036;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                        </div>
                         <div>
                             <h3>Groq</h3>
-                            <span class="saas-tier" style="color: #f55036;">24 Skills</span>
+                            <span class="saas-tier">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         Ultra-fast LPU inference, Groq Cloud deployment, and low-latency AI workflows.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #f55036;" onclick="navigator.clipboard.writeText('/plugin install groq-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install groq-pack', 2000);">/plugin install groq-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install groq-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install groq-pack', 2000);">/plugin install groq-pack</code>
                     </div>
                 </div>
 
                 <!-- LangChain Pack -->
                 <div class="saas-card" data-accent="#1c3c3c">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #1c5c3c;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                        </div>
                         <div>
                             <h3>LangChain</h3>
-                            <span class="saas-tier" style="color: #3ECF8E;">24 Skills</span>
+                            <span class="saas-tier">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1786,25 +1410,21 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <!-- PostHog Pack -->
                 <div class="saas-card" data-accent="#1d4aff">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #1d4aff;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-                        </div>
                         <div>
                             <h3>PostHog</h3>
-                            <span class="saas-tier" style="color: #1d4aff;">24 Skills</span>
+                            <span class="saas-tier">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         Product analytics, feature flags, session replay, and A/B testing.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #1d4aff;" onclick="navigator.clipboard.writeText('/plugin install posthog-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install posthog-pack', 2000);">/plugin install posthog-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install posthog-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install posthog-pack', 2000);">/plugin install posthog-pack</code>
                     </div>
                 </div>
 
                 <!-- View All Packs -->
                 <div class="saas-card coming-soon" style="cursor: pointer;" onclick="window.location.href='/explore?q=pack'">
-                    <div class="coming-soon-icon">🎯</div>
                     <h3>+34 More Packs</h3>
                     <p>
                         Mistral, Perplexity, Clerk, Linear, Obsidian, Firecrawl, and more
@@ -1877,7 +1497,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         </div>
 
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--primary); color: #0a0a0c; text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'Inter', system-ui, sans-serif;">
+            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: transparent; color: var(--ink); border: 1px solid var(--rule); text-decoration: none; border-radius: var(--radius-md); font-weight: 600; font-family: 'Inter', system-ui, sans-serif;">
                 View All Collections &rarr;
             </a>
         </div>
@@ -1971,7 +1591,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 const text = this.dataset.copy || this.textContent;
                 navigator.clipboard.writeText(text).then(() => {
                     const original = this.textContent;
-                    this.textContent = '✓ Copied to clipboard!';
+                    this.textContent = 'Copied to clipboard!';
                     this.style.color = 'var(--positive)';
                     if (window.trackEvent) {
                         window.trackEvent('install_copied', { plugin_name: text, source: 'homepage_install' });

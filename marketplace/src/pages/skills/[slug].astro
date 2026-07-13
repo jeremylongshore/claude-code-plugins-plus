@@ -100,12 +100,6 @@ const cleanTools = (tools: string[]) =>
       gap: 0.5rem;
     }
 
-    .metadata-item svg {
-      width: 18px;
-      height: 18px;
-      color: var(--text-2, var(--brand-mid-gray));
-    }
-
     /* Compatible platforms */
     .platform-pills {
       display: flex;
@@ -115,12 +109,11 @@ const cleanTools = (tools: string[]) =>
 
     .platform-pill {
       font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-      font-size: 0.75rem;
+      font-size: 11px;
       padding: 0.25rem 0.6rem;
       border-radius: var(--radius-sm);
-      background: var(--surface-3, var(--brand-light-gray));
       color: var(--text-2, var(--brand-mid-gray));
-      border: 1px solid var(--border, var(--brand-light-gray));
+      border: 1px solid var(--rule, var(--border));
     }
 
     /* Stats Bar */
@@ -174,11 +167,6 @@ const cleanTools = (tools: string[]) =>
       
     }
 
-    .section-box.highlight {
-      background: rgba(217, 119, 87, 0.05);
-      border-color: rgba(217, 119, 87, 0.2);
-    }
-
     .section-box.dark {
       background: var(--brand-dark);
       border-color: var(--brand-dark);
@@ -203,13 +191,13 @@ const cleanTools = (tools: string[]) =>
     }
 
     .tool-badge {
-      padding: 0.4rem 0.85rem;
-      background: var(--primary);
-      color: #0a0a0c;
+      padding: 2px 8px;
+      border: 1px solid var(--rule, var(--border));
+      color: var(--ink-2, var(--text-2));
       border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
     }
 
     .plugin-info {
@@ -446,23 +434,6 @@ const cleanTools = (tools: string[]) =>
       opacity: 0.6;
     }
 
-    .skill-footer {
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border, var(--brand-light-gray));
-      font-size: 0.8rem;
-      color: var(--text-2, var(--brand-mid-gray));
-    }
-
-    .skill-footer a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .skill-footer a:hover {
-      text-decoration: underline;
-    }
-
     .related-skills-section {
       margin-top: 2rem;
     }
@@ -517,12 +488,11 @@ const cleanTools = (tools: string[]) =>
 
     .related-tool-pill {
       font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-      font-size: 0.65rem;
+      font-size: 11px;
       padding: 0.1rem 0.35rem;
       border-radius: 3px;
-      background: rgba(234, 170, 0, 0.1);
-      color: var(--primary);
-      border: 1px solid rgba(234, 170, 0, 0.15);
+      color: var(--ink-2, var(--text-2));
+      border: 1px solid var(--rule, var(--border));
     }
 
     @media (max-width: 768px) {
@@ -579,21 +549,12 @@ const cleanTools = (tools: string[]) =>
 
       <div class="skill-metadata">
         <div class="metadata-item">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-          </svg>
           <span>v{skill.version}</span>
         </div>
         <div class="metadata-item">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
           <span>{authorName}</span>
         </div>
         <div class="metadata-item">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-          </svg>
           <span>{skill.license}</span>
         </div>
       </div>
@@ -623,7 +584,7 @@ const cleanTools = (tools: string[]) =>
     )}
 
     <!-- 4. Allowed Tools -->
-    <section class="section-box highlight">
+    <section class="section-box">
       <h2 class="section-title">Allowed Tools</h2>
       <div class="tools-grid">
         {skill.allowedTools.map(tool => (
@@ -694,10 +655,6 @@ const cleanTools = (tools: string[]) =>
       </section>
     )}
 
-    <!-- 10. Footer -->
-    <footer class="skill-footer">
-      <p>Part of <a href={`/plugins/${skill.parentPlugin.name}/`}>{skill.parentPlugin.name}</a></p>
-    </footer>
   </div>
 
   <!-- Copy functionality -->
