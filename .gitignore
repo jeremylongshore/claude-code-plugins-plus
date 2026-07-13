@@ -194,3 +194,6 @@ freshie/dolt/
 
 # Backup files created by freshie/scripts/batch-remediate.py during --execute
 *.bak
+
+# HF dataset build artifact (regenerate via freshie/scripts/build-hf-dataset.py)
+freshie/hf-dataset/skills.jsonl
