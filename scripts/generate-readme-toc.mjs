@@ -19,13 +19,66 @@
  *   node scripts/generate-readme-toc.mjs --check   # CI: exit 1 if out of sync
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import prettier from 'prettier';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const README = join(ROOT, 'README.md');
+
+// ── Live stat counts ─────────────────────────────────────────────────────────
+// The header badges + tagline counts (plugins / skills / agents) used to be
+// hand-maintained and drifted stale. We now recompute them here so they refresh
+// on every `sync-marketplace`. Sources are deterministic from the committed tree
+// (CI --check checks out the same tree), so this never introduces flakiness:
+//   - plugins: the catalog length (marketplace.extended.json)
+//   - skills:  every SKILL.md regular file under plugins/ and skills/
+//   - agents:  every *.md regular file inside an agents/ directory under plugins/
+// isFile() excludes symlinks, so mirrored/symlinked skills are never double-counted.
+const SKIP_DIRS = new Set(['node_modules', 'dist', '.git', '.beads', '.forge']);
+
+function countFiles(dir, matchFn) {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return 0;
+  }
+  let n = 0;
+  for (const e of entries) {
+    if (SKIP_DIRS.has(e.name)) continue;
+    const full = join(dir, e.name);
+    if (e.isDirectory()) n += countFiles(full, matchFn);
+    else if (e.isFile() && matchFn(full, e.name)) n += 1;
+  }
+  return n;
+}
+
+function computeStats(catalog) {
+  const plugins = (catalog.plugins || []).length;
+  const skills =
+    countFiles(join(ROOT, 'plugins'), (_f, name) => name === 'SKILL.md') +
+    countFiles(join(ROOT, 'skills'), (_f, name) => name === 'SKILL.md');
+  const agents = countFiles(
+    join(ROOT, 'plugins'),
+    (full, name) => name.endsWith('.md') && full.includes('/agents/'),
+  );
+  return { plugins, skills, agents };
+}
+
+// Rewrite the hardcoded count occurrences (header badges + the two prose taglines)
+// to the freshly computed values. Badges use plain integers; prose uses grouped.
+function applyStats(readme, { plugins, skills, agents }) {
+  const grouped = (n) => n.toLocaleString('en-US');
+  return readme
+    .replace(/badge\/plugins-[\d,%C]+-blue/g, `badge/plugins-${plugins}-blue`)
+    .replace(/badge\/skills-[\d,%C]+-green/g, `badge/skills-${skills}-green`)
+    .replace(
+      /\d[\d,]* plugins, \d[\d,]* skills, \d[\d,]* agents/g,
+      `${grouped(plugins)} plugins, ${grouped(skills)} skills, ${grouped(agents)} agents`,
+    );
+}
 
 const TOC_START =
   '<!-- AUTO-TOC:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->';
@@ -190,7 +243,7 @@ async function main() {
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
   const current = readFileSync(README, 'utf-8');
-  const spliced = replaceBlock(current, block);
+  const spliced = applyStats(replaceBlock(current, block), computeStats(catalog));
   const updated = await formatReadme(spliced);
 
   if (checkMode) {
