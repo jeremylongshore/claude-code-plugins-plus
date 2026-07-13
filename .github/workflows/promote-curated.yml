@@ -51,6 +51,13 @@ jobs:
         with:
           python-version: '3.12'
 
+      # promote-to-curated.py hard-exits without pyyaml (it feeds the in-process
+      # re-grade via the canonical validator, which imports yaml). The runner's
+      # bare setup-python has no pyyaml — first dispatch (run 29263338462) failed
+      # exactly here.
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
