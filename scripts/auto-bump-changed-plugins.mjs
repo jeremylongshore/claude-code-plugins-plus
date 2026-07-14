@@ -252,9 +252,11 @@ function main() {
     // Idempotency across re-runs (blocker 62ye.5). Every `synchronize` event
     // re-runs this workflow, and the triggering source file is still in the
     // PR's diff, so without a base-version check the plugin gets re-bumped each
-    // time — 0.2.1 → 0.2.2 → 0.2.3 … — and each bump pushes a GITHUB_TOKEN head
-    // that fires no checks, leaving the PR BLOCKED on unreported required
-    // contexts. Decision is keyed on the plugin's version at the PR base.
+    // time — 0.2.1 → 0.2.2 → 0.2.3 … With the default GITHUB_TOKEN each bump
+    // pushes a head that fires no checks (PR blocked on unreported required
+    // contexts); with BOT_PR_TOKEN (see auto-bump-on-pr.yml) each bump would
+    // re-trigger this workflow — this guard is what terminates that chain
+    // after one bump. Decision is keyed on the plugin's version at the PR base.
     const decision = bumpDecision(declared, baseVersion(baseRef, dir));
     if (decision.skip) {
       skips.push({ dir, reason: decision.skip });

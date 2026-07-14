@@ -72,7 +72,22 @@ jobs:
           # Need full history so the merge-base diff against origin/<base>
           # resolves cleanly.
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (optional fine-grained PAT: contents:write +
+          # pull-requests:write on this repo). The bump commit is pushed with
+          # this token (checkout persists it in the local git config, which is
+          # what `git push origin HEAD:"$HEAD_REF"` authenticates with). With
+          # the default GITHUB_TOKEN, GitHub suppresses the resulting
+          # pull_request:synchronize event (anti-recursion), so the bump SHA —
+          # the PR's new head — carries ZERO required checks and the PR stalls
+          # on "Expected" contexts until an owner no-op commit (#881/#1009/
+          # #1043). With BOT_PR_TOKEN the synchronize event fires and
+          # ci-required + gitleaks re-run on the bump SHA. No re-trigger loop:
+          # auto-bump re-runs on the bump commit, but the base-version
+          # idempotency guard in auto-bump-changed-plugins.mjs computes zero
+          # new bumps, so nothing is pushed and the chain terminates. Falls
+          # back to GITHUB_TOKEN (current behavior) until
+          # `gh secret set BOT_PR_TOKEN` is run.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v6
         with:

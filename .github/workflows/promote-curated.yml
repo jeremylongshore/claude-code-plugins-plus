@@ -45,6 +45,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          # BOT_PR_TOKEN (optional fine-grained PAT: contents:write +
+          # pull-requests:write on this repo). GitHub suppresses workflow
+          # triggers on refs/PRs authored by the default GITHUB_TOKEN, so a
+          # promote PR pushed/opened with it gets NO pull_request events —
+          # ci-required + gitleaks never run and the PR is unmergeable without
+          # a manual owner no-op commit. The checkout token authenticates the
+          # `git push origin "$BRANCH"` in the Create-PR step (checkout
+          # persists it in the local git config). Falls back to GITHUB_TOKEN
+          # (current behavior) until `gh secret set BOT_PR_TOKEN` is run.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -119,7 +129,11 @@ jobs:
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Prefer BOT_PR_TOKEN so `gh pr create` fires a real
+          # pull_request:opened event and the required checks run on the bot
+          # PR (GITHUB_TOKEN-authored PRs get no events — anti-recursion).
+          # Falls back to GITHUB_TOKEN until the secret exists.
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           BRANCH="automation/promote-curated-${{ github.run_id }}"
