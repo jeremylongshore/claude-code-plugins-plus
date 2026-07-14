@@ -11,6 +11,13 @@ on:
   push:
     branches: [main]
 
+# Supersede stale PR runs (this aggregate re-runs on every push with no path
+# filter), but NEVER cancel a main run — a cancelled required job reads as a
+# gate failure. Per the 2026-07-14 ops review (bead claude-k0h2).
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
