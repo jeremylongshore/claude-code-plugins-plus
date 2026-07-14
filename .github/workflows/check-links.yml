@@ -1,14 +1,18 @@
 name: Check Markdown Links
 
-# Runs lychee against every .md file in the repo. Catches broken intra-repo
-# relative links AND broken external links. Required on PRs touching .md;
-# also runs weekly on a schedule so external-host rot gets surfaced.
+# Runs lychee against every .md file in the repo. Surfaces broken intra-repo
+# relative links AND broken external links. ADVISORY, not blocking: every
+# lychee step runs with `fail: false` (external hosts are flaky — link results
+# must never red-X a PR) and this workflow is NOT in the required-status set
+# (that is `ci-required` + `gitleaks` only). Findings surface in the job log
+# and the uploaded report artifact. Runs on PRs touching .md and weekly on a
+# schedule so external-host rot gets surfaced.
 #
-# Gap this closes: prior to 2026-05-30 the repo had no broken-link checker.
+# Gap this narrows: prior to 2026-05-30 the repo had no broken-link checker.
 # A link in issue #789 (and later in PR #805's pre-merge body) pointed at a
 # gitignored file path; no CI gate caught it because no link checker existed.
-# This workflow + .lychee.toml at the repo root close the repo-side half of
-# that gap. The live-issue-body half is closed by check-issue-body-links.yml.
+# This workflow + .lychee.toml at the repo root report on the repo-side half of
+# that gap. The live-issue-body half is covered by check-issue-body-links.yml.
 
 on:
   pull_request:

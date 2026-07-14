@@ -12,7 +12,7 @@ We will acknowledge receipt within 24 hours and provide a remediation timeline w
 
 This policy covers:
 
-- All plugins and skills in the `plugins/` directory (427 plugins, 2747 skills)
+- All plugins and skills in the `plugins/` directory (current plugin/skill counts are auto-generated in the [README](../README.md))
 - The `ccpi` CLI tool (`@intentsolutionsio/ccpi` on npm)
 - Cowork zip distribution packages
 - CI/CD pipelines and GitHub Actions workflows
@@ -56,11 +56,11 @@ Plugin zip packages (cowork downloads) are built with:
 
 ## Plugin Trust Levels
 
-| Level         | Requirements                                               | Recommendation                |
-| ------------- | ---------------------------------------------------------- | ----------------------------- |
-| **Community** | Automated CI passed                                        | Inspect before production use |
-| **Verified**  | Full review + 2 maintainer approvals + 7-day public review | Safe for production           |
-| **Featured**  | Verified + active maintenance + community adoption         | Recommended                   |
+| Level         | Requirements                                                                                                                                                                                                                                                                                                | Recommendation                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **Community** | Automated CI passed                                                                                                                                                                                                                                                                                          | Inspect before production use |
+| **Verified**  | A maintainer completed the [vetting playbook's](../000-docs/699-DR-GUID-external-source-vetting-playbook.md) listing checklist (author identity, license, full content read, security-scan sign-off) and vouches for the source at listing time. A trust record, not a runtime control — the playbook governs | Safe for production           |
+| **Featured**  | Verified or curated hardened copy + editorial pick (see the featuring doctrine in `000-docs/700`)                                                                                                                                                                                                            | Recommended                   |
 
 ## External Plugin Sync — Supply-Chain Security
 
@@ -72,9 +72,9 @@ scan, surface tiers by blast radius (`markdown-only` / `scripted` / `hooks-mcp`)
 curated freeze, and a mandatory human review gate on every sync PR.
 
 - **Threat model** (assets, trust boundary, attack vectors, mitigations, residual risk):
-  [000-docs/698-TQ-SECU-external-sync-threat-model.md](000-docs/698-TQ-SECU-external-sync-threat-model.md)
+  [000-docs/698-TQ-SECU-external-sync-threat-model.md](../000-docs/698-TQ-SECU-external-sync-threat-model.md)
 - **Vetting playbook** (listing checklist, drift review, scan sign-off, tier policy):
-  [000-docs/699-DR-GUID-external-source-vetting-playbook.md](000-docs/699-DR-GUID-external-source-vetting-playbook.md)
+  [000-docs/699-DR-GUID-external-source-vetting-playbook.md](../000-docs/699-DR-GUID-external-source-vetting-playbook.md)
 
 Suspected compromise of a synced upstream is a vulnerability — report it privately per
 "Reporting a Vulnerability" above.
@@ -84,7 +84,7 @@ Suspected compromise of a synced upstream is a vulnerability — report it priva
 - Never hardcode secrets — use environment variables
 - Pin exact dependency versions in `package.json`
 - Document all network calls and permissions in your README
-- Run `./scripts/validate-all.sh` before submitting
+- Run `./scripts/quick-test.sh` and `python3 scripts/validate-skills-schema.py --marketplace --verbose <plugin-dir>` before submitting
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for the full submission checklist
 
 ## Supported Versions
@@ -96,4 +96,4 @@ Suspected compromise of a synced upstream is a vulnerability — report it priva
 
 ---
 
-**Last Updated:** March 2026
+**Last Updated:** July 2026

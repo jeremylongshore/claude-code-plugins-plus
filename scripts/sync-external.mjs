@@ -464,9 +464,10 @@ async function syncSource(source, config, lock) {
 
   // Curated freeze — mirror-by-default · never clobber (see 000-docs AT-DECR,
   // "mirror-by-default external-plugin sync model"). A source we have locally
-  // hardened past its upstream (e.g. tonone / hyperflow, whose agents we A-graded
-  // to marketplace frontmatter) must NEVER be force-reverted to upstream stubs
-  // behind our back. When `curated: true` in sources.yaml we freeze the mirror
+  // hardened past its upstream (today: tonone / servicegraph /
+  // schedule-after-usage-reset; hyperflow completed the off-ramp — hardening
+  // merged upstream, flag dropped in #1008) must NEVER be force-reverted to
+  // upstream stubs behind our back. When `curated: true` in sources.yaml we freeze the mirror
   // write entirely — no clone, no overwrite, no orphan prune — and only keep the
   // catalog entry current. The standing model is to push our improvement UPSTREAM
   // (a friendly issue → a PR the contributor owns and merges); once it lands at

@@ -1,5 +1,16 @@
 # Global Master Standard – Claude Skills Specification
 
+> **Scope note (2026-07-14):** This document is authoritative for the **8-field
+> marketplace rubric**, the required body sections, and the 100-point grading model —
+> that contract has not changed. Its version header is frozen at 3.6.0 (last full
+> revision 2026-05-14), while the enforced validator schema has moved past it
+> (3.7.0 `disallowed-tools` + overlap ERROR, 3.10/3.11 agent gates, 3.12/3.13
+> `plugin.json` field rules, 3.15.x body-section fairness). For current schema
+> semantics and the **single source of version truth**, read
+> [`SCHEMA_CHANGELOG.md`](SCHEMA_CHANGELOG.md) alongside this spec. Revising this
+> document's rule content is approval-gated per the SCHEMA_CHANGELOG NON-NEGOTIABLES —
+> do not rewrite it ad hoc.
+
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
 **Version**: 3.6.0
 **Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; self-improving-skills series complete 2026-05-14: progressive disclosure + conditional visibility + self-declared config)

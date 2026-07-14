@@ -1,5 +1,12 @@
 # Contributing to Claude Code Plugins
 
+> **DEPRECATED (2026-07-14) — do not follow this guide.** This legacy copy has
+> diverged from the current process: its category list is obsolete, and it predates
+> the submission-issue requirement, the tiered docs standard, and the 8-field
+> marketplace frontmatter. The canonical contributing guide is
+> [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md). This file is retained for
+> history only.
+
 Thank you for your interest in contributing! This marketplace thrives on community contributions. Whether you're submitting a plugin, improving documentation, or reporting bugs, your help makes this resource better for everyone.
 
 ##  Ways to Contribute

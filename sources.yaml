@@ -21,13 +21,15 @@
 #   curated:  true   We locally hardened this plugin past its upstream (e.g. A-graded its
 #                    agents). curated:true FREEZES the mirror — the sync skips clone + write
 #                    entirely (no orphan-prune) and only keeps the catalog entry current, so
-#                    even a --force sync never reverts our edits. Held by tonone + hyperflow
-#                    today. The standing model is to upstream the improvement via a friendly
-#                    issue-then-PR the contributor owns, then drop curated: once merged upstream.
+#                    even a --force sync never reverts our edits. Held by tonone +
+#                    servicegraph + schedule-after-usage-reset today. The standing model is
+#                    to upstream the improvement via a friendly issue-then-PR the contributor
+#                    owns, then drop curated: once merged upstream — hyperflow completed
+#                    exactly that off-ramp (hardening merged upstream, flag dropped in #1008).
 #
 #   Orthogonal by design: curated:true + verified:false is a valid, honest state (we hardened
 #   the plugin locally but haven't yet vetted the upstream source), which is exactly why the
-#   two flags are separate — see tonone + hyperflow.
+#   two flags are separate — see tonone + servicegraph + schedule-after-usage-reset.
 
 sources:
   # ============================================================

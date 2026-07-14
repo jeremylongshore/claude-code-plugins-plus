@@ -3,6 +3,13 @@
 # Quick Test Runner
 # Fast validation for development workflow
 # Faster alternative to full test suite
+#
+# Covers: dependency install, package build, lint, and a marketplace-tier
+# validator sweep. It does NOT run the full CI gate — catalog-sync drift,
+# the security scanner, unicode hygiene, markdownlint/eslint/ruff/format,
+# the unit-test suites, and the submission-docs gate only run in CI
+# (validate-plugins.yml → ci-required). A clean run here is a strong
+# signal, not a merge guarantee.
 
 set -e
 
@@ -54,12 +61,16 @@ else
 fi
 echo ""
 
-# Test 5: Validation
-echo -e "${BLUE}Validating plugins...${NC}"
-if python3 scripts/validate-skills-schema.py > /tmp/quick-test-validate.log 2>&1; then
+# Test 5: Validation (marketplace tier — the same bar submissions are graded against)
+# Non-fatal by design: the whole-corpus sweep carries pre-existing findings in
+# plugins you didn't touch. Check the log for findings in YOUR files — the PR
+# pre-screen grades your changed plugins against this same marketplace tier.
+echo -e "${BLUE}Validating plugins (marketplace tier)...${NC}"
+if python3 scripts/validate-skills-schema.py --marketplace > /tmp/quick-test-validate.log 2>&1; then
     echo -e "${GREEN}✓ Validation passed${NC}"
 else
-    echo -e "${YELLOW}⚠ Validation warnings${NC}"
+    echo -e "${YELLOW}⚠ Validation findings (whole-corpus sweep; non-fatal here)${NC}"
+    echo -e "${YELLOW}  Review /tmp/quick-test-validate.log for findings in files YOU changed.${NC}"
     tail -5 /tmp/quick-test-validate.log
 fi
 echo ""

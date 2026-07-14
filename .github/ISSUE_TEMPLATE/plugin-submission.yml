@@ -9,7 +9,8 @@ body:
         ## 📋 Read the spec before you submit
 
         Every plugin and skill in this marketplace is graded against the
-        **[Global Master Standard for Claude Skills (v3.6.0)](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)**.
+        **[Global Master Standard for Claude Skills](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)**
+        (the current schema version lives in [SCHEMA_CHANGELOG.md](../blob/main/000-docs/SCHEMA_CHANGELOG.md)).
 
         Marketplace-tier requirements at a glance:
         - **8 frontmatter fields** per SKILL.md: `name`, `description`, `allowed-tools`, `version`, `author`, `license`, `compatibility`, `tags`
@@ -17,7 +18,7 @@ body:
         - **100-point rubric**: the validator scores against it; submissions below the threshold are flagged before review
         - **No `--thorough` shortcuts**: validator is deterministic; LLM judging lives at the workflow layer
 
-        Also worth reading: [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this) and the [PR Pre-screen runbook](../blob/main/000-docs/265-DR-GUID-pr-prescreen-system.md).
+        Also worth reading: [CONTRIBUTING.md § Before You Submit](../blob/main/.github/CONTRIBUTING.md#before-you-submit--read-this) and the [PR Pre-screen runbook](../blob/main/000-docs/265-DR-GUID-pr-prescreen-system.md).
 
         ### This issue comes first
 
