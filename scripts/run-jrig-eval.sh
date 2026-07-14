@@ -20,8 +20,14 @@
 #     [--run-id <int>] [--models <csv>] [--provider <name>] [--spec <path>] \
 #     [--scratch-db <path-under-/dev/shm>] [--stub]
 #
-# Defaults: --provider deepseek, --models deepseek-v4-flash,
-#           --run-id $(date +%s), scratch DB under /dev/shm.
+# Defaults: --provider deepseek, --models deepseek-v4-flash, scratch DB under
+# /dev/shm. --run-id defaults to the latest inventory discovery run
+# (MAX(discovery_runs.id) read from --inventory-db), so the recorded proof is
+# joinable to the run that graded the corpus and re-runs upsert in place
+# (record-jrig-proofs.mjs keys on plugin+type+run_id). If the runs table is
+# unreadable it falls back to epoch seconds — deliberately a DISJOINT id
+# namespace (epoch ~1.7e9 vs small discovery ids), so a fallback row can
+# never collide with or masquerade as a discovery-run proof.
 #
 # --stub runs the j-rig stub provider (J_RIG_ALLOW_STUB=1, no API key, no
 # spend) and passes --allow-stub to the recorder. Stub results are NOT ground
@@ -43,7 +49,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 skill_dir=""
 plugin=""
 inventory_db=""
-run_id="$(date +%s)"
+run_id=""
 models="deepseek-v4-flash"
 provider="deepseek"
 spec=""
@@ -70,6 +76,25 @@ done
 [ -n "$inventory_db" ] || die "--inventory-db is required"
 [ -d "$skill_dir" ] || die "--skill-dir does not exist: $skill_dir"
 [ -f "$inventory_db" ] || die "--inventory-db does not exist: $inventory_db"
+
+# Default --run-id from the inventory's discovery-run registry so the proof
+# shares the run-id namespace of every other freshie table (the recorder's
+# upsert idempotency assumes stable ids; an epoch default minted a new row
+# per invocation). Epoch fallback only when the table is unreadable — see
+# the header note on the disjoint namespace.
+if [ -z "$run_id" ]; then
+  latest_run="$(sqlite3 "$inventory_db" 'SELECT MAX(id) FROM discovery_runs;' 2>/dev/null || true)"
+  case "$latest_run" in
+    ''|*[!0-9]*)
+      run_id="$(date +%s)"
+      echo "[run-jrig-eval] discovery_runs unreadable in $inventory_db — falling back to epoch run_id=$run_id (disjoint id namespace)" >&2
+      ;;
+    *)
+      run_id="$latest_run"
+      echo "[run-jrig-eval] run_id defaulted to latest discovery run: $run_id" >&2
+      ;;
+  esac
+fi
 case "$run_id" in
   ''|*[!0-9]*) die "--run-id must be a non-negative integer (got: $run_id)" ;;
 esac

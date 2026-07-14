@@ -66,16 +66,21 @@ cd packages/cli && pnpm test -- --grep "pattern"
 pnpm exec j-rig --version         # → 0.1.2 (the real 7-layer CLI)
 pnpm exec j-rig check <skill-dir> # Tier 3A: deterministic (~seconds, free, no API key, no DB)
 
-# Real behavioral eval (opt-in, ~$2-5/skill) — needs a provider API key + the
-# native better-sqlite3 build (run `pnpm rebuild better-sqlite3` once; the build
-# script is not auto-run on install).
-DEEPSEEK_API_KEY=...  pnpm exec j-rig eval <skill-dir> \
-  --provider deepseek --models deepseek-v4-flash --db freshie/inventory.sqlite
-# DEEPSEEK_API_KEY is provisioned via SOPS (intent-eval-lab/.env.sops; see the
-# IEP umbrella CLAUDE.md credential table). `deepseek-v4-flash` is a real
-# behavioral provider — this is ground truth, replacing the prior dev/stub
-# resolution where the global `j-rig` symlink pointed at a local unbuilt CLI.
-# Other providers (haiku/sonnet/opus via Anthropic, etc.) remain available.
+# Real behavioral eval (opt-in, ~$2-5/skill) — needs the native better-sqlite3
+# build (run `pnpm rebuild better-sqlite3` once; the build script is not
+# auto-run on install). ALWAYS route through the wrapper — it runs j-rig
+# against a /dev/shm scratch DB and records the verdict into forge_proofs via
+# scripts/record-jrig-proofs.mjs. NEVER pass freshie/inventory.sqlite to
+# `j-rig eval --db` directly: j-rig writes its own run tables into whatever
+# --db it is given, which contaminates the tracked CMDB (and, pre-allowlist,
+# leaked those tables to the public DoltHub record).
+scripts/run-jrig-eval.sh --skill-dir <skill-dir> --plugin <catalog-name> \
+  --inventory-db freshie/inventory.sqlite
+# DEEPSEEK_API_KEY is SOPS-decrypted in-process by the wrapper
+# (intent-eval-lab/.env.sops; see the IEP umbrella CLAUDE.md credential
+# table). Defaults: --provider deepseek --models deepseek-v4-flash — a real
+# behavioral provider, this is ground truth; other providers (haiku/sonnet/
+# opus via Anthropic, etc.) remain available via --provider/--models.
 ```
 
 ## Two Catalog System — Critical
