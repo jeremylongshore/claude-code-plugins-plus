@@ -3,9 +3,11 @@
  * Enrich plugin metadata with JRig behavioral-eval results.
  *
  * Reads `forge_proofs` from `freshie/inventory.sqlite`, picks the
- * latest passing JRig verification per plugin, and writes the
- * results to `marketplace/src/data/jrig-data.json` as a flat map
- * keyed by plugin name. The detail-page Astro template
+ * LATEST real (non-stub) JRig verification per plugin — and includes
+ * it only if that latest eval passed, so a newer failing eval
+ * un-verifies — and writes the results to
+ * `marketplace/src/data/jrig-data.json` as a flat map keyed by
+ * plugin name. The detail-page Astro template
  * (`src/pages/plugins/[name].astro`) overlays this onto the
  * `plugin` prop at render time so the JRig-Verified badge lights
  * up on plugins with passing eval results — without polluting
@@ -138,10 +140,20 @@ function main() {
     return;
   }
 
-  // Pick the latest passing JRig verification per plugin. If a plugin has
-  // multiple verification_type rows (tier1, tier2, tier3-jrig), we surface
-  // the JRig behavioral row specifically — the badge represents JRig
-  // verification, not the lighter-weight static tiers.
+  // Pick the LATEST tier3-jrig row per plugin FIRST, then read its passed
+  // flag. The old query filtered `passed = 1` BEFORE picking latest, so a
+  // newer FAILING eval could never extinguish a stale verified entry — a
+  // regression caught by a re-eval left the badge lit forever. Ordering is
+  // deterministic: verified_at DESC, then run_id DESC (the live DB has three
+  // databricks-pack rows sharing one verified_at second), then id DESC.
+  //
+  // Stub rows are excluded outright: `--stub` runs (evidence JSON
+  // {"stub": true}, ground_truth: false) are pipeline plumbing, never
+  // ground truth — a stub row must not light OR extinguish a badge.
+  //
+  // If a plugin has multiple verification_type rows (tier1, tier2,
+  // tier3-jrig), we surface the JRig behavioral row specifically — the badge
+  // represents JRig verification, not the lighter-weight static tiers.
   const rows = querySqlite(
     dbPath,
     `SELECT plugin_name,
@@ -150,11 +162,27 @@ function main() {
             total_layers,
             baseline_delta,
             verified_at
-     FROM forge_proofs
-     WHERE verification_type = 'tier3-jrig'
-       AND passed = 1
-     GROUP BY plugin_name
-     HAVING MAX(verified_at)
+     FROM (
+       SELECT plugin_name,
+              passed,
+              layers_passed,
+              total_layers,
+              baseline_delta,
+              verified_at,
+              ROW_NUMBER() OVER (
+                PARTITION BY plugin_name
+                ORDER BY verified_at DESC, run_id DESC, id DESC
+              ) AS rn
+       FROM forge_proofs
+       WHERE verification_type = 'tier3-jrig'
+         AND CASE
+               WHEN evidence IS NULL THEN 1
+               WHEN json_valid(evidence)
+                 THEN COALESCE(json_extract(evidence, '$.stub'), 0) = 0
+               ELSE 1
+             END
+     )
+     WHERE rn = 1
      ORDER BY plugin_name`,
   );
 
@@ -164,15 +192,29 @@ function main() {
     return;
   }
 
+  let unverified = 0;
   for (const row of rows) {
     if (!row.plugin_name) continue;
+    if (row.passed !== 1) {
+      // The plugin's LATEST real eval failed/blocked — it gets no entry, so
+      // any previously-committed verified data for it is extinguished on
+      // this rebuild.
+      unverified += 1;
+      continue;
+    }
     data[row.plugin_name] = {
-      verified: row.passed === 1,
+      verified: true,
       layers_passed: row.layers_passed ?? null,
       total_layers: row.total_layers ?? 7,
       baseline_delta: row.baseline_delta ?? null,
       verified_at: row.verified_at ?? null,
     };
+  }
+  if (unverified > 0) {
+    warn(
+      `${unverified} plugin(s) have a FAILING latest tier3-jrig eval — ` +
+        'omitted from jrig-data.json (a newer failing eval un-verifies).',
+    );
   }
 
   fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');

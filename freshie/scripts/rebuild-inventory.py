@@ -25,7 +25,6 @@ import os
 import re
 import sqlite3
 import subprocess
-import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -319,6 +318,219 @@ def open_db(db_path: Path) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     return conn
+
+
+# Authoritative discovery-table schema, captured from the live inventory.sqlite
+# (2026-07-14). Lets a fresh environment (e.g. the promote-curated.yml
+# `rebuild_inventory: true` dispatch, where the untracked sqlite blob is always
+# absent) bootstrap a working DB instead of exiting 1. Idempotent — every
+# statement is CREATE TABLE IF NOT EXISTS, so running it against an existing DB
+# is a no-op. The validator's --populate-db creates its own compliance tables;
+# the NPM tables belong to a separate scan tool.
+SCHEMA_DDL: tuple[str, ...] = (
+    """CREATE TABLE IF NOT EXISTS discovery_runs (
+        id INTEGER PRIMARY KEY, run_date TEXT, commit_hash TEXT,
+        total_packs INTEGER, total_plugins INTEGER, total_skills INTEGER,
+        total_files INTEGER, total_root_files INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS packs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, path TEXT,
+        plugin_count INTEGER, skill_count INTEGER, file_count INTEGER,
+        has_readme INTEGER, has_changelog INTEGER, has_package_json INTEGER,
+        category_indicator TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, path TEXT,
+        pack_name TEXT, has_readme INTEGER, has_package_json INTEGER,
+        plugin_json_shape TEXT, file_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS skills (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, path TEXT,
+        pack_name TEXT, plugin_name TEXT, structure_shape TEXT,
+        file_count INTEGER, has_references INTEGER, has_scripts INTEGER,
+        has_assets INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugin_companions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, plugin_path TEXT,
+        plugin_json_path TEXT, pack_name TEXT,
+        has_readme INTEGER, has_package_json INTEGER, has_mcp_json INTEGER,
+        has_src_dir INTEGER, has_commands_dir INTEGER,
+        has_agents_dir INTEGER, has_skills_dir INTEGER, file_count INTEGER,
+        run_id INTEGER, has_hooks_dir INTEGER, has_lsp_json INTEGER,
+        has_settings_json INTEGER, has_license INTEGER, has_changelog INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS pack_metadata (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, pack_name TEXT,
+        files_present TEXT, category_indicators TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS frontmatter_fields (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, field_name TEXT, data_types TEXT,
+        count INTEGER, percentage REAL, unique_value_count INTEGER,
+        value_pattern TEXT, sample_values_json TEXT, blank_count INTEGER,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS frontmatter_values (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, skill_path TEXT,
+        field_name TEXT, raw_value TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS frontmatter_shapes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, keys TEXT,
+        count INTEGER, key_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugin_fields (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, field_name TEXT, data_types TEXT,
+        count INTEGER, percentage REAL, unique_value_count INTEGER,
+        sample_values_json TEXT, blank_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugin_values (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, plugin_path TEXT,
+        field_name TEXT, raw_value TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugin_shapes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, keys TEXT,
+        count INTEGER, key_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS skill_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, filename TEXT,
+        extension TEXT, size_bytes INTEGER, parent_skill TEXT,
+        relative_path TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS skill_structure_shapes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, shape_description TEXT,
+        skill_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS unique_filenames (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT, count INTEGER,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS unique_subdirs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, subdir_name TEXT, count INTEGER,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS unique_extensions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, extension TEXT, count INTEGER,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS content_signals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, skill_path TEXT, pack_name TEXT,
+        plugin_name TEXT, line_count INTEGER, word_count INTEGER,
+        code_block_count INTEGER, comment_only_code_block_count INTEGER,
+        import_code_block_count INTEGER, url_code_block_count INTEGER,
+        real_url_count INTEGER, real_import_count INTEGER,
+        placeholder_step INTEGER, placeholder_todo INTEGER,
+        placeholder_implementation INTEGER, placeholder_add INTEGER,
+        placeholder_your INTEGER, placeholder_api_key INTEGER,
+        placeholder_token INTEGER, placeholder_api_example INTEGER,
+        placeholder_example INTEGER, placeholder_table_error INTEGER,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS pack_aggregates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, pack_name TEXT,
+        skill_count INTEGER, total_lines INTEGER, total_words INTEGER,
+        total_code_blocks INTEGER, total_comment_only INTEGER,
+        total_placeholders INTEGER, total_real_urls INTEGER,
+        total_real_imports INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS command_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT, plugin_path TEXT, pack_name TEXT, plugin_name TEXT,
+        filename TEXT, fm_name TEXT, fm_description TEXT, fm_shortcut TEXT,
+        fm_category TEXT, fm_difficulty TEXT, fm_all_keys TEXT,
+        line_count INTEGER, word_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS agent_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT, plugin_path TEXT, pack_name TEXT, plugin_name TEXT,
+        filename TEXT, fm_name TEXT, fm_description TEXT,
+        fm_capabilities TEXT, fm_expertise_level TEXT, fm_activation_priority TEXT,
+        fm_effort TEXT, fm_max_turns INTEGER, fm_disallowed_tools TEXT,
+        fm_all_keys TEXT, line_count INTEGER, word_count INTEGER,
+        run_id INTEGER, fm_tools TEXT, fm_skills TEXT, fm_memory TEXT,
+        fm_background INTEGER, fm_isolation TEXT, fm_permission_mode TEXT)""",
+    """CREATE TABLE IF NOT EXISTS duplicate_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, sha256 TEXT,
+        file_count INTEGER, file_paths_json TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS cross_references (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, source_path TEXT,
+        target_path_or_entity TEXT, linkage_type TEXT,
+        direct_or_inferred TEXT, confidence TEXT, evidence TEXT,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS anomalies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, anomaly_type TEXT,
+        path TEXT, count INTEGER, evidence TEXT, notes TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS restructure_observations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, observation_type TEXT,
+        paths_json TEXT, evidence TEXT, category TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS field_registry (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, field_name TEXT,
+        source TEXT, data_type TEXT, found_in_count INTEGER,
+        found_in_total INTEGER, value_patterns TEXT, example TEXT,
+        validated_by TEXT, notes TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS root_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, extension TEXT,
+        line_count INTEGER, size_bytes INTEGER, inferred_purpose TEXT,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS scripts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, language TEXT,
+        purpose TEXT, script_type TEXT, arguments TEXT, inputs TEXT,
+        outputs TEXT, dependencies TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS validators (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, entity_type TEXT,
+        checks_json TEXT, fields_read TEXT, scoring_behavior TEXT,
+        cli_flags TEXT, output_format TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS validator_checks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, validator_path TEXT,
+        field_checked TEXT, rule_description TEXT, scoring_behavior TEXT,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS docs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, doc_type TEXT,
+        apparent_subject TEXT, subject_type TEXT, line_count INTEGER,
+        word_count INTEGER, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS ci_workflows (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT, name TEXT,
+        triggers TEXT, jobs_json TEXT, scripts_called TEXT, env_vars TEXT,
+        run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS marketplace_catalog (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT, source TEXT, description TEXT, version TEXT,
+        category TEXT, keywords TEXT, author TEXT,
+        components TEXT, verification TEXT,
+        featured INTEGER, mcp_tools TEXT, plugin_count INTEGER,
+        pricing TEXT, zcf_metadata TEXT, external_sync TEXT,
+        all_keys TEXT, raw_json TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS planned_skills (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT, filename TEXT, extension TEXT,
+        line_count INTEGER, word_count INTEGER, size_bytes INTEGER,
+        apparent_skill_name TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS root_skills_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT, filename TEXT, extension TEXT,
+        line_count INTEGER, word_count INTEGER, size_bytes INTEGER,
+        parent_dir TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS skill_database_vendors (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vendor_name TEXT, path TEXT, file_count INTEGER,
+        total_size_bytes INTEGER, file_extensions TEXT,
+        sample_fields TEXT, run_id INTEGER)""",
+    """CREATE TABLE IF NOT EXISTS plugin_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        path TEXT, filename TEXT, extension TEXT,
+        line_count INTEGER, size_bytes INTEGER, template_type TEXT,
+        run_id INTEGER)""",
+)
+
+
+def bootstrap_schema(conn: sqlite3.Connection) -> None:
+    """Create every discovery table that does not exist yet (idempotent)."""
+    cursor = conn.cursor()
+    for ddl in SCHEMA_DDL:
+        cursor.execute(ddl)
+    conn.commit()
+
+
+def purge_incomplete_latest_run(conn: sqlite3.Connection) -> None:
+    """Purge the newest discovery run if it never completed (crash recovery).
+
+    The discovery_runs row is inserted BEFORE scanning and its totals are only
+    filled by the final UPDATE, so NULL totals on the newest run = a crashed
+    half-run. Left in place, the default rerun would compute MAX(id)+1 and the
+    phantom partial run would be exported permanently into the append-only Dolt
+    system of record (and --populate-db would stamp compliance rows onto it).
+    Only the NEWEST run is eligible: an older incomplete run has already been
+    exported, and deleting it locally would rewrite published Dolt history.
+    """
+    row = conn.execute(
+        "SELECT id, total_skills, total_files FROM discovery_runs ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+    if row is None:
+        return
+    if row["total_skills"] is None and row["total_files"] is None:
+        print(
+            f"  WARNING: newest run_id={row['id']} has NULL totals — a crashed "
+            f"half-run. Purging it before starting (its id will be reused)."
+        )
+        purge_run(conn, row["id"])
 
 
 def migrate_add_run_id(conn: sqlite3.Connection) -> None:
@@ -2183,9 +2395,14 @@ def run_scan(args: argparse.Namespace) -> None:
     db_path = Path(args.db)
     dry_run: bool = args.dry_run
 
-    if not db_path.exists():
-        print(f"ERROR: Database not found at {db_path}")
-        sys.exit(1)
+    fresh_db = not db_path.exists()
+    if fresh_db:
+        # Bootstrap instead of exiting 1: inventory.sqlite is untracked, so any
+        # fresh environment (CI runner, new checkout) starts without it — the
+        # promote-curated.yml `rebuild_inventory: true` dispatch was structurally
+        # impossible until this. bootstrap_schema is idempotent (IF NOT EXISTS).
+        print(f"Database not found at {db_path} — bootstrapping a fresh schema.")
+        db_path.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"Database: {db_path}")
     print(f"Repo:     {REPO_ROOT}")
@@ -2194,11 +2411,20 @@ def run_scan(args: argparse.Namespace) -> None:
 
     conn = open_db(db_path)
 
+    # Step 0: Ensure the discovery schema exists (no-op on an established DB).
+    bootstrap_schema(conn)
+
     # Step 1: Migrate schema — add run_id to all target tables
     print("[Step 1] Migrating schema (adding run_id columns)...")
     if not dry_run:
         migrate_add_run_id(conn)
     print("  Done.")
+
+    # Step 1.5: Crash recovery — purge a crashed half-run (newest run with NULL
+    # totals) so it is neither exported into append-only Dolt as a permanent
+    # phantom nor left occupying MAX(id) for --populate-db to stamp onto.
+    if not dry_run and not args.run_id:
+        purge_incomplete_latest_run(conn)
 
     # Step 2: Determine run_id
     if args.run_id:

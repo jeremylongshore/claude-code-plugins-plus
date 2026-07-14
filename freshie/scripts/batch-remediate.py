@@ -17,6 +17,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import os
 import re
 import shutil
@@ -33,19 +34,67 @@ REPO_ROOT = Path(__file__).resolve().parents[2]  # worktree-safe (freshie/script
 DB_PATH = REPO_ROOT / "freshie" / "inventory.sqlite"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
 SKILLS_ROOT = REPO_ROOT / "skills"  # legacy top-level numbered skill tree (dgpl)
+VALIDATOR_PATH = REPO_ROOT / "scripts" / "validate-skills-schema.py"
 
-# Fields that are no longer valid in agent frontmatter
-DEPRECATED_AGENT_FIELDS = frozenset(
+# Kernel-floor 8 REQUIRED agent fields (schema 3.10.0 — mirrors the validator's
+# AGENT_ALWAYS_REQUIRED). These are NEVER removable by any fixer, no matter what
+# the loaded field sets say. Hard guard for the 2026-07-14 ops-review P1: a stale
+# local copy of the removable set contained `color` (a required field), so
+# --fix-agents would have stripped it from every A-grade agent in the corpus.
+AGENT_REQUIRED_FIELDS = frozenset(
+    ["name", "description", "tools", "model", "color", "version", "author", "tags"]
+)
+
+# Fallback mirror of the validator's INVALID_AGENT_FIELDS keys, used only when
+# the validator itself cannot be imported (e.g. pyyaml missing). Keep in sync
+# with scripts/validate-skills-schema.py::INVALID_AGENT_FIELDS.
+_FALLBACK_REMOVABLE_AGENT_FIELDS = frozenset(
     [
         "capabilities",
         "expertise_level",
         "activation_priority",
         "activation_triggers",
-        "color",
         "type",
         "category",
+        "compatible-with",
+        "when_to_use",
     ]
 )
+
+
+def _load_removable_agent_fields() -> frozenset[str]:
+    """Derive the removable agent-field set from the canonical validator.
+
+    Imports scripts/validate-skills-schema.py and takes
+    INVALID_AGENT_FIELDS ∪ DEPRECATED_AGENT_FIELDS minus the required floor, so
+    this script can never again diverge from the validator (the P1 `color`-strip
+    regression). Falls back to an inline mirror when the validator cannot be
+    imported — including its `sys.exit(1)` on missing pyyaml, which raises
+    SystemExit (a BaseException that a bare `except Exception` would miss).
+    The required floor is subtracted UNCONDITIONALLY as defense in depth.
+    """
+    removable = set(_FALLBACK_REMOVABLE_AGENT_FIELDS)
+    required = set(AGENT_REQUIRED_FIELDS)
+    try:
+        spec = importlib.util.spec_from_file_location("vss_batch_remediate", VALIDATOR_PATH)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        removable = set(mod.INVALID_AGENT_FIELDS) | set(mod.DEPRECATED_AGENT_FIELDS)
+        required |= set(getattr(mod, "AGENT_ALWAYS_REQUIRED", ()))
+    except KeyboardInterrupt:
+        raise
+    except BaseException as exc:  # noqa: BLE001 — incl. SystemExit from the validator's import guard
+        print(
+            f"WARNING: could not import canonical validator ({exc!r}); "
+            "using the inline fallback removable-field set.",
+            file=sys.stderr,
+        )
+    return frozenset((removable - required) - AGENT_REQUIRED_FIELDS)
+
+
+# Fields the agent fixer may remove: sourced from the validator at import time,
+# never containing a kernel-floor required field.
+REMOVABLE_AGENT_FIELDS = _load_removable_agent_fields()
 
 # Category directory → tags
 TAG_MAP: dict[str, list[str]] = {
@@ -420,7 +469,10 @@ def add_compatible_with_to_file(file_path: Path, dry_run: bool) -> tuple[bool, s
 
 def remove_deprecated_agent_fields(file_path: Path, dry_run: bool) -> tuple[bool, list[str], str | None]:
     """
-    Remove deprecated fields from an agent frontmatter.
+    Remove invalid/deprecated fields from an agent frontmatter.
+
+    Only fields in REMOVABLE_AGENT_FIELDS (validator-derived, never a
+    kernel-floor required field such as `color`) are touched.
 
     Returns (changed, removed_field_names, error | None).
     """
@@ -435,7 +487,7 @@ def remove_deprecated_agent_fields(file_path: Path, dry_run: bool) -> tuple[bool
 
     opening, fm_text, rest = parts
 
-    new_fm, removed = _remove_field_lines(fm_text, DEPRECATED_AGENT_FIELDS)
+    new_fm, removed = _remove_field_lines(fm_text, set(REMOVABLE_AGENT_FIELDS))
 
     if not removed:
         return False, [], None
@@ -500,10 +552,23 @@ def get_skills_missing_compatible_with(db: sqlite3.Connection) -> list[Path]:
     return [_skill_md_from_row(row[0]) for row in cur.fetchall()]
 
 
+def _agent_md_from_row(path_str: str) -> Path:
+    """Resolve an `agent_compliance.agent_path` DB value to an absolute file.
+
+    The DB stores repo-relative paths; left unresolved, `Path(row).exists()`
+    checks against the CWD, so DB-mode --fix-agents silently no-oped ("SKIP
+    (not found)" for every row) from any directory except the repo root — the
+    same bug class _skill_md_from_row already fixes for skills."""
+    p = Path(path_str)
+    if not p.is_absolute():
+        p = REPO_ROOT / p
+    return p
+
+
 def get_agents_with_invalid_fields(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
     cur.execute("SELECT agent_path FROM agent_compliance WHERE has_invalid_fields = 1")
-    return [Path(row[0]) for row in cur.fetchall()]
+    return [_agent_md_from_row(row[0]) for row in cur.fetchall()]
 
 
 # ---------------------------------------------------------------------------
@@ -546,7 +611,7 @@ def _skills_missing_compat_from_fs() -> list[Path]:
 
 
 def _agents_with_invalid_fields_from_fs() -> list[Path]:
-    """Return agent files that have at least one deprecated field."""
+    """Return agent files that have at least one removable (invalid) field."""
     results = []
     for p in _walk_agent_files():
         try:
@@ -557,7 +622,7 @@ def _agents_with_invalid_fields_from_fs() -> list[Path]:
         if parts is None:
             continue
         _, fm_text, _ = parts
-        for field in DEPRECATED_AGENT_FIELDS:
+        for field in REMOVABLE_AGENT_FIELDS:
             if _has_field(fm_text, field):
                 results.append(p)
                 break
@@ -759,12 +824,26 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip DB lookup and use filesystem walk only.",
     )
+    parser.add_argument(
+        "--allow-fs-fallback",
+        action="store_true",
+        help="Allow --fix-agents to fall back to a filesystem walk when the "
+        "inventory DB is absent. Without this (or --no-db), the agents fixer "
+        "refuses to run from the FS walk — a full-corpus destructive rewrite "
+        "from the wrong data source must be an explicit choice, not a silent "
+        "fallback (2026-07-14 ops review).",
+    )
     return parser
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+
+    # --dry-run and --execute contradict each other; refuse rather than let
+    # --execute silently win under a flag that promises a preview.
+    if args.dry_run and args.execute:
+        parser.error("--dry-run and --execute are mutually exclusive")
 
     # Resolve dry_run: write only when --execute is passed
     dry_run = not args.execute
@@ -839,17 +918,33 @@ def main() -> int:
         if use_db and db is not None:
             agent_paths = get_agents_with_invalid_fields(db)
             print(f"      DB reports {len(agent_paths)} agents with invalid fields.")
-        else:
+        elif args.no_db or args.allow_fs_fallback:
             agent_paths = _agents_with_invalid_fields_from_fs()
             print(f"      Filesystem walk found {len(agent_paths)} agents with invalid fields.")
+        else:
+            # The agents fixer REMOVES fields — a destructive rewrite. On a fresh
+            # checkout (inventory.sqlite is untracked, so absent) the old silent
+            # FS fallback would sweep the whole agent corpus from the wrong data
+            # source. Refuse unless the operator explicitly opted in.
+            print(
+                "      ERROR: --fix-agents needs the inventory DB "
+                f"({DB_PATH}), which is absent. Refusing the destructive "
+                "filesystem-walk fallback without an explicit --allow-fs-fallback "
+                "(or --no-db). Run the Freshie cycle to build the DB, or re-run "
+                "with --allow-fs-fallback if a full-corpus FS sweep is intended.\n",
+                file=sys.stderr,
+            )
+            total_errors += 1
+            agent_paths = None
 
-        agent_paths = _filter_by_scope(_filter_by_pack(agent_paths, args.pack), args.scope)
-        removed, skipped, errors = run_fix_agents(agent_paths, dry_run, args.verbose)
-        total_agent_fields_removed += removed
-        total_skipped += skipped
-        total_errors += errors
-        total_files_modified += removed
-        print(f"      Fixed: {removed}  Skipped: {skipped}  Errors: {errors}\n")
+        if agent_paths is not None:
+            agent_paths = _filter_by_scope(_filter_by_pack(agent_paths, args.pack), args.scope)
+            removed, skipped, errors = run_fix_agents(agent_paths, dry_run, args.verbose)
+            total_agent_fields_removed += removed
+            total_skipped += skipped
+            total_errors += errors
+            total_files_modified += removed
+            print(f"      Fixed: {removed}  Skipped: {skipped}  Errors: {errors}\n")
 
     if db is not None:
         db.close()

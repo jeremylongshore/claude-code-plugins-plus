@@ -15,10 +15,13 @@ on:
 
   workflow_dispatch:
     inputs:
-      force:
-        description: 'Force sync even if no changes detected'
-        type: boolean
-        default: false
+      # NOTE: there is deliberately no `force` input. Every run passes --force
+      # unconditionally (see the Run-sync-script step) — the mirror-by-default
+      # model re-syncs full upstream each run, and sync-external.mjs documents
+      # that --force does NOT bypass the sources.lock drift quarantine or the
+      # curated: freeze. A previous `force` toggle here was dead UI: the
+      # unconditional --force below overrode it either way (ops-review bead
+      # claude-k0h2, P3 dead-input finding).
       source:
         description: 'Sync only this source (leave empty for all)'
         type: string
@@ -58,6 +61,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          # This persisted credential authenticates the `git push origin "$BRANCH"`
+          # in the Create-PR step below. Falls back to GITHUB_TOKEN (today's
+          # behavior) until the BOT_PR_TOKEN secret exists.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -94,9 +102,6 @@ jobs:
           SYNC_RELOCK: ${{ inputs.relock }}
         run: |
           ARGS=()
-          if [ "${{ inputs.force }}" = "true" ]; then
-            ARGS+=(--force)
-          fi
           # Source arrives via the SYNC_SOURCE env var (declared above) so the
           # payload is data, never script text; appended as one argv entry so
           # metacharacters / spaces stay a single argument.
@@ -119,6 +124,13 @@ jobs:
               fi
             done
           fi
+          # --force is ALWAYS on by design: every run is a full re-sync of
+          # current upstream (the pileup auto-close + unique-per-run-branch
+          # model depends on that), and sync-external.mjs itself documents
+          # "the weekly workflow always passes --force" — it does NOT bypass
+          # the drift quarantine or the curated: freeze (sync-external.mjs
+          # --force docs + drift-gate NOTE). The old workflow_dispatch `force`
+          # toggle was dead UI on top of this line and has been removed.
           ARGS+=(--force --verbose)
 
           node scripts/sync-external.mjs "${ARGS[@]}"
@@ -213,7 +225,8 @@ jobs:
         # `git commit --no-verify` does, with no extra moving parts. Six bash lines
         # are easier to debug than a third-party action's internal commit pipeline.
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           # Unique per-run branch. Fixes three bugs at once:
@@ -232,7 +245,10 @@ jobs:
           git switch -c "$BRANCH"
 
           # Stage everything the sync wrote, then commit WITHOUT running pre-commit
-          # hooks (--no-verify). The auto-PR runs through normal CI on the PR side.
+          # hooks (--no-verify). The auto-PR runs through normal CI on the PR side
+          # ONLY when BOT_PR_TOKEN is set — a GITHUB_TOKEN-authored push fires no
+          # pull_request events, so ci-required/gitleaks sit "Expected" and the PR
+          # needs a manual owner empty-commit to wake the checks.
           git add -A
           git commit --no-verify -m "chore(sync): update external plugins from upstream
 

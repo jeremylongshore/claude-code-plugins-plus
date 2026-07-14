@@ -5,12 +5,21 @@ name: E2E Tests
 #
 #   1. Path-filtered PRs — only fire when the diff actually touches UI surface
 #      that could break visually. Catalog-only PRs, doc PRs, plugin-content
-#      PRs, and CI config PRs don't run these.
+#      PRs, and CI config PRs don't run these. (playwright-tests job only.)
 #   2. Push to main — always run after merge so we catch any regression that
-#      slipped through the path filter.
+#      slipped through the path filter. (playwright-tests job only.)
 #   3. workflow_dispatch — manual opt-in for PRs that fell outside the path
 #      filter but need a sanity check (e.g., catalog PR that touches a featured
 #      plugin's spotlight). Run via: gh workflow run e2e-tests.yml --ref <branch>.
+#   4. workflow_run on "Deploy tonsofskills.com to VPS" completion —
+#      production-e2e ONLY. It used to also run on push:main, which raced the
+#      VPS deploy (same trigger, different concurrency groups): the suite hit
+#      live tonsofskills.com while rsync was mid-flight or not yet started, so
+#      it asserted against the PRE-deploy site — false red on content about to
+#      ship, or false green masking a regression the new deploy introduced.
+#      Gating on the deploy workflow's successful completion guarantees prod
+#      E2E only ever tests the site the deploy actually landed.
+#      (Ops-review bead claude-k0h2, deploy-test-race finding.)
 #
 # Required-check policy: NOT in the required-checks set. validate +
 # marketplace-validation cover the spec gates. E2E catches visual/runtime
@@ -18,6 +27,12 @@ name: E2E Tests
 
 on:
   workflow_dispatch:
+  # Fires production-e2e after the VPS deploy finishes (tier 4 above). The
+  # deploy lives in a separate workflow (deploy-vps.yml → SHA-pinned reusable
+  # vps-deploy), so `needs:` can't express the ordering — workflow_run can.
+  workflow_run:
+    workflows: ['Deploy tonsofskills.com to VPS']
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -54,9 +69,12 @@ on:
       - 'marketplace/tests/**'
       - '.github/workflows/e2e-tests.yml'
 
-# Cancel in-flight runs when a new push lands on the same PR/branch.
+# Cancel in-flight runs when a new push lands on the same PR/branch. The
+# event name is part of the group so a deploy-completion (workflow_run,
+# ref=main) run can never cancel an in-flight push:main playwright-tests run —
+# they are different lanes; only same-lane runs supersede each other.
 concurrency:
-  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  group: e2e-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -64,6 +82,9 @@ jobs:
   # UI-touching PRs — catches breakage before it reaches production.
   playwright-tests:
     runs-on: ubuntu-latest
+    # Deploy-completion events are production-e2e's lane (tier 4); this job
+    # keeps its existing PR / push:main / dispatch triggers only.
+    if: github.event_name != 'workflow_run'
     steps:
       - uses: actions/checkout@v6
 
@@ -141,6 +162,15 @@ jobs:
   # issues that local builds can't catch.
   production-e2e:
     runs-on: ubuntu-latest
+    # Runs ONLY after a SUCCESSFUL deploy (workflow_run tier 4 above) or on
+    # manual dispatch — never on push:main/PR events, which raced the deploy
+    # and tested the pre-deploy site. A failed/cancelled deploy runs nothing:
+    # the deploy's own healthz + smoke checks already flagged it, and testing
+    # a site the deploy never touched is noise.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success')
     steps:
       - uses: actions/checkout@v6
 

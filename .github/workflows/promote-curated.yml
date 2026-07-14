@@ -45,6 +45,11 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          # This persisted credential authenticates the `git push origin "$BRANCH"`
+          # in the Create-PR step below. Falls back to GITHUB_TOKEN (today's
+          # behavior) until the BOT_PR_TOKEN secret exists.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -119,7 +124,8 @@ jobs:
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           BRANCH="automation/promote-curated-${{ github.run_id }}"

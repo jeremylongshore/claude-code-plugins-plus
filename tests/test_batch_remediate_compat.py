@@ -18,8 +18,11 @@ monkeypatches the module's REPO_ROOT / PLUGINS_ROOT / DB_PATH at that tree, and
 never touches the real repo or freshie/inventory.sqlite.
 """
 
+import contextlib
 import importlib.util
+import io
 import sqlite3
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -211,6 +214,182 @@ class DgplTagInferenceTests(unittest.TestCase):
 
     def test_unmapped_path_still_returns_none(self):
         self.assertIsNone(br._category_from_path(br.REPO_ROOT / "README.md"))
+
+
+AGENT_WITH_COLOR_AND_INVALID = """\
+---
+name: test-agent
+description: An A-grade agent used to pin the color-survival contract.
+tools: Read, Grep
+model: sonnet
+color: blue
+version: 1.0.0
+author: Test <test@example.com>
+tags: [test]
+capabilities: [analysis]
+expertise_level: expert
+---
+# Body
+"""
+
+AGENT_REQUIRED_ONLY = """\
+---
+name: clean-agent
+description: A fully compliant agent carrying only the kernel-floor 8 fields.
+tools: Read
+model: sonnet
+color: green
+version: 1.0.0
+author: Test <test@example.com>
+tags: [test]
+---
+# Body
+"""
+
+
+class ColorSurvivalTests(unittest.TestCase):
+    """2026-07-14 ops review P1: DEPRECATED_AGENT_FIELDS wrongly contained
+    `color` — a kernel-floor-8 REQUIRED agent field — so --fix-agents would
+    have stripped it from every A-grade agent in the corpus (255+ files).
+    These tests pin: (a) the removable set can never contain a required field,
+    (b) `color` survives remediation, (c) a compliant agent is never selected,
+    (d) the removable set stays derived from the canonical validator."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        root = Path(self._tmp.name)
+        self.root = root
+        plugins = root / "plugins"
+        self.agents_dir = plugins / "cat" / "p" / "agents"
+        self.agents_dir.mkdir(parents=True)
+        self.flagged = self.agents_dir / "test-agent.md"
+        self.flagged.write_text(AGENT_WITH_COLOR_AND_INVALID, encoding="utf-8")
+        self.clean = self.agents_dir / "clean-agent.md"
+        self.clean.write_text(AGENT_REQUIRED_ONLY, encoding="utf-8")
+
+        self._orig = {k: getattr(br, k) for k in ("REPO_ROOT", "PLUGINS_ROOT", "DB_PATH")}
+        br.REPO_ROOT = root
+        br.PLUGINS_ROOT = plugins
+        br.DB_PATH = root / "absent.sqlite"  # DB deliberately absent
+
+    def tearDown(self):
+        for k, v in self._orig.items():
+            setattr(br, k, v)
+        self._tmp.cleanup()
+
+    def test_removable_set_never_contains_a_required_field(self):
+        for field in br.AGENT_REQUIRED_FIELDS:
+            self.assertNotIn(field, br.REMOVABLE_AGENT_FIELDS, field)
+        self.assertIn("color", br.AGENT_REQUIRED_FIELDS)
+        self.assertNotIn("color", br.REMOVABLE_AGENT_FIELDS)
+
+    def test_color_survives_remediation_execute(self):
+        changed, removed, err = br.remove_deprecated_agent_fields(self.flagged, dry_run=False)
+        self.assertTrue(changed)
+        self.assertIsNone(err)
+        self.assertIn("capabilities", removed)
+        self.assertIn("expertise_level", removed)
+        self.assertNotIn("color", removed)
+        text = self.flagged.read_text(encoding="utf-8")
+        self.assertIn("color: blue", text)  # REQUIRED field survives
+        self.assertNotIn("capabilities:", text)
+        self.assertNotIn("expertise_level:", text)
+        # every other kernel-floor field survives too
+        for line in ("name: test-agent", "tools: Read, Grep", "model: sonnet",
+                     "version: 1.0.0", "tags: [test]"):
+            self.assertIn(line, text)
+
+    def test_compliant_agent_is_not_selected_by_fs_walk(self):
+        found = br._agents_with_invalid_fields_from_fs()
+        self.assertIn(self.flagged, found)   # carries genuinely invalid fields
+        self.assertNotIn(self.clean, found)  # color alone must NOT flag it
+
+    def test_compliant_agent_untouched_by_fixer(self):
+        before = self.clean.read_text(encoding="utf-8")
+        changed, removed, err = br.remove_deprecated_agent_fields(self.clean, dry_run=False)
+        self.assertFalse(changed)
+        self.assertEqual(removed, [])
+        self.assertIsNone(err)
+        self.assertEqual(self.clean.read_text(encoding="utf-8"), before)
+
+    def test_removable_set_matches_canonical_validator(self):
+        """Pin non-divergence: removable = validator (invalid ∪ deprecated) − required."""
+        validator = Path(__file__).resolve().parents[1] / "scripts" / "validate-skills-schema.py"
+        spec = importlib.util.spec_from_file_location("vss_for_test", validator)
+        vss = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(vss)
+        expected = (
+            set(vss.INVALID_AGENT_FIELDS) | set(vss.DEPRECATED_AGENT_FIELDS)
+        ) - set(vss.AGENT_ALWAYS_REQUIRED) - set(br.AGENT_REQUIRED_FIELDS)
+        self.assertEqual(set(br.REMOVABLE_AGENT_FIELDS), expected)
+
+    def test_agent_db_rows_resolve_against_repo_root(self):
+        """P3: DB stores repo-relative agent paths; unresolved they no-op from
+        any cwd except the repo root."""
+        db_path = self.root / "inv.sqlite"
+        conn = sqlite3.connect(db_path)
+        conn.execute("CREATE TABLE agent_compliance (agent_path TEXT, has_invalid_fields INTEGER)")
+        conn.execute(
+            "INSERT INTO agent_compliance VALUES (?, 1)",
+            (str(self.flagged.relative_to(self.root)),),
+        )
+        conn.commit()
+        paths = br.get_agents_with_invalid_fields(conn)
+        conn.close()
+        self.assertEqual(paths, [self.flagged])
+        self.assertTrue(paths[0].is_absolute())
+        self.assertTrue(paths[0].is_file())
+
+
+class CliGuardrailTests(unittest.TestCase):
+    """--fix-agents FS fallback needs explicit consent; --dry-run beats --execute."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        root = Path(self._tmp.name)
+        plugins = root / "plugins"
+        self.agents_dir = plugins / "cat" / "p" / "agents"
+        self.agents_dir.mkdir(parents=True)
+        self.flagged = self.agents_dir / "test-agent.md"
+        self.flagged.write_text(AGENT_WITH_COLOR_AND_INVALID, encoding="utf-8")
+
+        self._orig = {k: getattr(br, k) for k in ("REPO_ROOT", "PLUGINS_ROOT", "DB_PATH")}
+        self._argv = sys.argv
+        br.REPO_ROOT = root
+        br.PLUGINS_ROOT = plugins
+        br.DB_PATH = root / "absent.sqlite"  # DB deliberately absent
+
+    def tearDown(self):
+        sys.argv = self._argv
+        for k, v in self._orig.items():
+            setattr(br, k, v)
+        self._tmp.cleanup()
+
+    def _run_main(self, *argv: str) -> int:
+        sys.argv = ["batch-remediate.py", *argv]
+        buf_out, buf_err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(buf_out), contextlib.redirect_stderr(buf_err):
+            return br.main()
+
+    def test_fix_agents_refuses_silent_fs_fallback_when_db_absent(self):
+        before = self.flagged.read_text(encoding="utf-8")
+        rc = self._run_main("--fix-agents", "--execute")
+        self.assertEqual(rc, 1)  # counted as an error -> non-zero exit
+        self.assertEqual(self.flagged.read_text(encoding="utf-8"), before)  # untouched
+
+    def test_fix_agents_runs_with_explicit_allow_fs_fallback(self):
+        rc = self._run_main("--fix-agents", "--allow-fs-fallback", "--execute")
+        self.assertEqual(rc, 0)
+        text = self.flagged.read_text(encoding="utf-8")
+        self.assertNotIn("capabilities:", text)
+        self.assertIn("color: blue", text)  # required field still survives
+
+    def test_dry_run_and_execute_are_mutually_exclusive(self):
+        with self.assertRaises(SystemExit) as ctx:
+            self._run_main("--fix-agents", "--dry-run", "--execute")
+        self.assertEqual(ctx.exception.code, 2)
+        # and nothing was written
+        self.assertIn("capabilities:", self.flagged.read_text(encoding="utf-8"))
 
 
 class FilterByScopeTests(unittest.TestCase):

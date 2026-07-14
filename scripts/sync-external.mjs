@@ -67,9 +67,16 @@ const options = {
   force: args.includes('--force'),
   dryRun: args.includes('--dry-run'),
   verbose: args.includes('--verbose'),
-  // --strict: exit non-zero if ANY source errored, so a partial sync is never
-  // committed + auto-PR'd as if it were a clean full sync (the workflow runs
-  // with --strict and routes a failing run to a human).
+  // --strict: exit non-zero if ANY source errored / was quarantined / was
+  // refused. NOTE: sync-external.yml does NOT pass --strict — the workflow's
+  // human-routing lives in its "Flag partial sync" / "Flag quarantined drift" /
+  // "Flag REFUSED sources" steps, which read the errors/quarantined/refused
+  // counts from GITHUB_OUTPUT and exit 1 themselves (so the run goes visibly
+  // red without walling the commit/PR of clean co-synced sources). Do NOT
+  // remove those Flag steps on the assumption --strict covers them; without
+  // --strict this process exits 0 on a partial/quarantined run. --strict is
+  // for local/manual runs; promoting it into the workflow is a deliberate
+  // soak decision, not a cleanup.
   strict: args.includes('--strict'),
   source: args.find((a) => a.startsWith('--source='))?.split('=')[1] || null,
   // --relock=NAME / --relock-all: the ONLY way to advance sources.lock.json
@@ -235,6 +242,30 @@ function categoryFromTargetPath(targetPath, fallback) {
 }
 
 /**
+ * Validate an upstream-supplied URL before it enters the catalog. The synced
+ * plugin.json is UPSTREAM-CONTROLLED content, and homepage / repository /
+ * author.url from it are rendered as the plugin's official links on
+ * tonsofskills.com — so a rogue upstream must not be able to plant a
+ * `javascript:` / `data:` / arbitrary-scheme link via its manifest. Accepts a
+ * parseable http(s) URL only; anything else returns null (caller drops the
+ * field and logs). Also unwraps the `{ type, url }` object form npm allows for
+ * `repository`, normalizing it to the plain string the catalog uses.
+ * Exported for direct unit verification.
+ */
+export function safeHttpUrl(value) {
+  if (value && typeof value === 'object' && typeof value.url === 'string') {
+    value = value.url;
+  }
+  if (typeof value !== 'string') return null;
+  try {
+    const u = new URL(value);
+    return u.protocol === 'http:' || u.protocol === 'https:' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Ensure a minimal .claude-plugin/plugin.json exists for the synced
  * plugin. Some sources.yaml entries only sync SKILL.md + references/
  * because their upstream repo has no plugin.json (skill-only repos like
@@ -396,11 +427,20 @@ function ensureCatalogEntry(source) {
     entry.keywords = source.keywords;
   }
 
-  // Author: prefer plugin.json author shape (object), fall back to sources.yaml
+  // Author: prefer plugin.json author shape (object), fall back to sources.yaml.
+  // author.url comes from UPSTREAM-controlled content → scheme-validated
+  // (http/https only) before it can render as an official link.
   if (pluginJson.author && typeof pluginJson.author === 'object') {
+    const authorUrl = safeHttpUrl(pluginJson.author.url);
+    if (pluginJson.author.url && !authorUrl) {
+      log(
+        `   ⚠️  Dropped invalid upstream author.url: ${String(pluginJson.author.url).slice(0, 80)}`,
+        colors.yellow,
+      );
+    }
     entry.author = {
       name: pluginJson.author.name || source.author?.name || 'External Contributor',
-      ...(pluginJson.author.url ? { url: pluginJson.author.url } : {}),
+      ...(authorUrl ? { url: authorUrl } : {}),
       ...(pluginJson.author.email ? { email: pluginJson.author.email } : {}),
     };
   } else if (source.author) {
@@ -411,8 +451,26 @@ function ensureCatalogEntry(source) {
     };
   }
 
-  if (pluginJson.homepage) entry.homepage = pluginJson.homepage;
-  if (pluginJson.repository) entry.repository = pluginJson.repository;
+  // homepage / repository are likewise upstream-controlled: accept only a
+  // parseable http(s) URL (repository's npm `{ type, url }` object form is
+  // unwrapped to its string). A javascript:/data:/garbage value is dropped
+  // loudly rather than published on the plugin's detail page.
+  const homepage = safeHttpUrl(pluginJson.homepage);
+  if (homepage) entry.homepage = homepage;
+  else if (pluginJson.homepage) {
+    log(
+      `   ⚠️  Dropped invalid upstream homepage: ${String(pluginJson.homepage).slice(0, 80)}`,
+      colors.yellow,
+    );
+  }
+  const repository = safeHttpUrl(pluginJson.repository);
+  if (repository) entry.repository = repository;
+  else if (pluginJson.repository) {
+    log(
+      `   ⚠️  Dropped invalid upstream repository: ${JSON.stringify(pluginJson.repository).slice(0, 80)}`,
+      colors.yellow,
+    );
+  }
   if (pluginJson.license || source.license) {
     entry.license = pluginJson.license || source.license;
   }
@@ -580,9 +638,13 @@ async function syncSource(source, config, lock) {
         `      +${lockDiff.added.length} added  ~${lockDiff.changed.length} changed  -${lockDiff.removed.length} removed (upstream @ ${resolvedRef ? resolvedRef.slice(0, 12) : 'unknown'})`,
         colors.red,
       );
-      for (const p of lockDiff.added) logVerbose(`drift added:   ${p}`);
-      for (const p of lockDiff.changed) logVerbose(`drift changed: ${p}`);
-      for (const p of lockDiff.removed) logVerbose(`drift removed: ${p}`);
+      // Full changed-file list prints UNCONDITIONALLY (not logVerbose): this
+      // list is the drift-review surface — an operator deciding --relock from
+      // the run log must see exactly which upstream paths moved, or a bulk
+      // approve rubber-stamps content nobody enumerated.
+      for (const p of lockDiff.added) log(`      drift added:   ${p}`, colors.red);
+      for (const p of lockDiff.changed) log(`      drift changed: ${p}`, colors.red);
+      for (const p of lockDiff.removed) log(`      drift removed: ${p}`, colors.red);
       log(
         `      Review the upstream diff, then approve with: node scripts/sync-external.mjs --source=${source.name} --relock=${source.name}`,
         colors.yellow,
@@ -612,6 +674,13 @@ async function syncSource(source, config, lock) {
         `   🔏 Re-baselining via --relock: +${lockDiff.added.length} added  ~${lockDiff.changed.length} changed  -${lockDiff.removed.length} removed`,
         colors.yellow,
       );
+      // The exact per-file approval surface, printed UNCONDITIONALLY: this is
+      // what the --relock (or relock-all workflow input) is signing off on. A
+      // reviewer reading the run log must be able to enumerate every path the
+      // re-baseline admits — counts alone let a bulk approve hide a payload.
+      for (const p of lockDiff.added) log(`      relock admits (added):   ${p}`, colors.yellow);
+      for (const p of lockDiff.changed) log(`      relock admits (changed): ${p}`, colors.yellow);
+      for (const p of lockDiff.removed) log(`      relock drops (removed):  ${p}`, colors.yellow);
     }
 
     // Supply-chain REFUSE quarantine (blocker 62ye.2). Scan this source's files
@@ -704,9 +773,22 @@ async function syncSource(source, config, lock) {
         const prior = JSON.parse(fs.readFileSync(sourceJsonPath, 'utf8'));
         if (Array.isArray(prior.files)) {
           const ownedSet = new Set(ownedFiles);
+          // Containment root for the prune. prior.files comes from the
+          // COMMITTED .source.json — engine-written manifests hold clean
+          // readdir-relative names, but the file on disk is hand-editable, so
+          // treat every entry as untrusted: a `../../scripts/x.py` entry must
+          // never resolve (and delete) outside this source's target_path.
+          const pruneRoot = path.resolve(ROOT_DIR, source.target_path);
           for (const rel of prior.files) {
-            if (ownedSet.has(rel)) continue;
-            const orphan = path.join(ROOT_DIR, source.target_path, rel);
+            if (typeof rel !== 'string' || ownedSet.has(rel)) continue;
+            const orphan = path.resolve(pruneRoot, rel);
+            if (orphan !== pruneRoot && !orphan.startsWith(pruneRoot + path.sep)) {
+              log(
+                `   ⚠️  Manifest path escapes ${source.target_path} — refusing to prune: ${rel}`,
+                colors.red,
+              );
+              continue;
+            }
             if (fs.existsSync(orphan)) {
               fs.rmSync(orphan);
               log(`   🗑️  Deleted (upstream removed): ${rel}`, colors.yellow);

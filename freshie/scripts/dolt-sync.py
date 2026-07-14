@@ -19,7 +19,11 @@ What one sync does:
      `dolt reset --hard` + `dolt clean` (reset alone leaves never-committed
      tables behind).
   2. Snapshots the SQLite DB (VACUUM INTO a tmpfs copy) so every table export
-     reads one consistent point in time.
+     reads one consistent point in time. Gates table MEMBERSHIP against
+     EXPORT_ALLOWLIST (also in --dry-run): any table not deliberately
+     allowlisted is a hard failure — everything exported becomes permanent
+     public DoltHub history, so an unknown table (e.g. j-rig runtime tables
+     from pointing j-rig at the inventory DB) must never publish silently.
   3. Translates the schema (see translate rules below) and creates any table
      missing from the Dolt repo. Existing Dolt schemas are left alone — a
      schema-mismatch abort from `dolt table import -r` is a free parity gate;
@@ -42,9 +46,11 @@ What one sync does:
      history queries against Dolt are `WHERE run_id = N` / `AS OF 'run-N'`.
   7. Commits (`--skip-empty`), tags run-<N> (N = MAX(discovery_runs.id))
      only when the tag would sit on a commit that actually carries run N,
-     then pushes main AND the tag (tags do not ride along on a branch push).
-     Push failure with valid creds exits non-zero and loud — a silently
-     unpushed Dolt repo is single-copy history on an OOM-prone box.
+     then pushes main AND the tag (tags do not ride along on a branch push)
+     — plus any older local tag a prior failed push stranded (reconciled
+     against the DoltHub API's dolt_tags, best-effort). Push failure with
+     valid creds exits non-zero and loud — a silently unpushed Dolt repo is
+     single-copy history on an OOM-prone box.
   8. Runs `dolt gc` under the same flock every GC_EVERY_N_SYNCS syncs or
      when the repo directory doubles since the last gc (no auto-GC runs on
      the import path in this Dolt build).
@@ -72,9 +78,12 @@ Restore path (DoltHub → local SQLite):
     sqlite3 new.sqlite ".import --csv skill_compliance.csv skill_compliance"
 
 Vocabulary: the DoltHub push is what makes the data durable and visible;
-it is not "backup" (borg on the VPS is backup). CI runners need a commit
-identity: `dolt config --global --add user.name ...` / user.email, or use
-`dolt push --user <name>` with DOLT_REMOTE_PASSWORD=<api token>.
+it is not "backup" (borg on the VPS is backup). Pushing requires DoltHub
+creds from `dolt login` (a creds keypair on the operator box) — this script
+implements NO env-var/CI credential path (no --user/DOLT_REMOTE_PASSWORD),
+by design: local is the sole writer and CI never pushes. Any environment
+that creates commits still needs a commit identity:
+`dolt config --global --add user.name ...` / user.email.
 
 Usage:
     python3 freshie/scripts/dolt-sync.py [--db PATH] [--no-push] [--dry-run]
@@ -119,6 +128,89 @@ DEFAULT_REPO = "freshie-inventory"
 CREDS_ENDPOINT = "doltremoteapi.dolthub.com:443"
 
 SKIP_TABLES = frozenset({"sqlite_sequence"})
+
+# ---------------------------------------------------------------------------
+# PUBLIC-EXPORT ALLOWLIST — every table this sync publishes to the PUBLIC
+# DoltHub database must be named here DELIBERATELY. This is a membership gate
+# in the same spirit as the BLOB hard-fail: an unknown table in
+# inventory.sqlite is a hard failure, never a silent publish. It exists
+# because j-rig's runtime tables leaked into the public run-9.1 push (51 rows
+# of LLM eval output) purely because nothing gated table membership.
+#
+# The set below is the intended CMDB system-of-record: the exact 51 tables of
+# run-8, the first Dolt sync (verified via `SHOW TABLES AS OF 'run-8'`) —
+# freshie/README.md § "Database design" describes the same 51-table model.
+#
+# Adding a table? Add it here in the same PR that introduces it, with a
+# reviewer confirming it is fit for PERMANENT PUBLIC history (Dolt history is
+# never rewritten). Tool-runtime tables (j-rig etc.) do NOT belong here —
+# route those tools through a /dev/shm scratch DB (scripts/run-jrig-eval.sh).
+EXPORT_ALLOWLIST = frozenset({
+    "agent_compliance",
+    "agent_files",
+    "anomalies",
+    "ci_workflows",
+    "command_files",
+    "content_signals",
+    "cross_references",
+    "discovery_runs",
+    "docs",
+    "duplicate_files",
+    "field_registry",
+    "forge_proofs",
+    "frontmatter_fields",
+    "frontmatter_shapes",
+    "frontmatter_values",
+    "marketplace_catalog",
+    "npm_discovery_runs",
+    "npm_dist_tags",
+    "npm_download_stats",
+    "npm_fetch_log",
+    "npm_package_dependencies",
+    "npm_packages",
+    "npm_publish_history_summary",
+    "npm_version_comparisons",
+    "npm_versions",
+    "pack_aggregates",
+    "pack_metadata",
+    "packs",
+    "planned_skills",
+    "plugin_companions",
+    "plugin_compliance",
+    "plugin_fields",
+    "plugin_shapes",
+    "plugin_templates",
+    "plugin_values",
+    "plugins",
+    "repo_package_sources",
+    "restructure_observations",
+    "root_files",
+    "root_skills_files",
+    "scripts",
+    "skill_compliance",
+    "skill_database_vendors",
+    "skill_files",
+    "skill_structure_shapes",
+    "skills",
+    "unique_extensions",
+    "unique_filenames",
+    "unique_subdirs",
+    "validator_checks",
+    "validators",
+})
+
+# j-rig's own runtime schema (created by `j-rig eval --db <path>`). These are
+# recognized specifically so the hard-fail message can say exactly how the
+# contamination happened and how to clean it up.
+JRIG_RUNTIME_TABLES = frozenset({
+    "artifacts",
+    "criterion_results",
+    "run_summaries",
+    "runs",
+    "skill_human_reviews",
+    "skill_usage_events",
+    "skill_versions",
+})
 
 TYPE_MAP = {
     "INTEGER": "BIGINT",
@@ -573,6 +665,43 @@ def pump_table_inserts(conn: sqlite3.Connection, repo: Path, table: str,
 # ---------------------------------------------------------------------------
 
 
+def gate_export_allowlist(tables) -> None:
+    """Hard-fail if the source DB carries any table not on EXPORT_ALLOWLIST.
+
+    Everything this sync exports becomes PERMANENT PUBLIC DoltHub history, so
+    table membership is a gate, not a discovery. Pure function over the table
+    names — unit-tested.
+    """
+    unexpected = sorted(set(tables) - EXPORT_ALLOWLIST)
+    if not unexpected:
+        log(f"gate: export allowlist OK ({len(set(tables))} tables, all allowlisted)")
+        return
+    jrig = [t for t in unexpected if t in JRIG_RUNTIME_TABLES]
+    other = [t for t in unexpected if t not in JRIG_RUNTIME_TABLES]
+    parts = [
+        f"{len(unexpected)} table(s) in the source DB are NOT on the public-export "
+        f"allowlist — refusing to publish them to public DoltHub history "
+        f"(which is never rewritten)."
+    ]
+    if jrig:
+        parts.append(
+            f"j-rig runtime tables: {jrig}. These mean j-rig was pointed at the "
+            f"inventory DB directly. Route evals through scripts/run-jrig-eval.sh "
+            f"(j-rig writes to a /dev/shm scratch DB; only the forge_proofs verdict "
+            f"row reaches the inventory), then drop the stray tables: "
+            + " ".join(
+                f"sqlite3 <db> 'DROP TABLE \"{t}\";'" for t in jrig
+            )
+        )
+    if other:
+        parts.append(
+            f"unrecognized tables: {other}. Either add each to EXPORT_ALLOWLIST "
+            f"deliberately (reviewer confirms it is fit for permanent public "
+            f"history) or drop it from the source DB."
+        )
+    raise SyncError(" ".join(parts))
+
+
 def gate_row_counts(conn: sqlite3.Connection, repo: Path, tables: list[str]) -> None:
     for t in tables:
         want = conn.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
@@ -608,8 +737,11 @@ def gate_real_checksums(conn: sqlite3.Connection, repo: Path,
 
 def gate_json_checksums(conn: sqlite3.Connection, repo: Path,
                         schema: dict[str, dict]) -> None:
+    checked: list[str] = []
+    skipped: list[str] = []
     for table, col in JSON_CHECKSUM_COLUMNS:
         if table not in schema:
+            skipped.append(f"{table}.{col}")
             continue
         pk_cols = [
             c[0] for c in sorted(
@@ -634,7 +766,16 @@ def gate_json_checksums(conn: sqlite3.Connection, repo: Path,
                 f"JSON byte checksum failed on {table}.{col}: "
                 f"{len(diff)} mismatched rows (sample PKs: {sample})"
             )
-    log(f"gate: per-row MD5 byte checksums OK on {len(JSON_CHECKSUM_COLUMNS)} JSON columns")
+        checked.append(f"{table}.{col}")
+    # Only claim OK for columns actually verified — a listed table missing
+    # from this database means byte verification did NOT run for it, and the
+    # log line is evidence an operator relies on.
+    for miss in skipped:
+        log(f"WARNING: JSON checksum column {miss} not present in this "
+            f"database — SKIPPED (no byte verification ran for it; update "
+            f"JSON_CHECKSUM_COLUMNS if the table was renamed)")
+    log(f"gate: per-row MD5 byte checksums OK on {len(checked)} JSON "
+        f"columns ({', '.join(checked) if checked else 'none checked'})")
 
 
 def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]) -> None:
@@ -654,22 +795,37 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 # ---------------------------------------------------------------------------
 
 
-def write_grades_export(conn: sqlite3.Connection, run_id: int) -> None:
+def write_grades_export(conn: sqlite3.Connection, run_id: int,
+                        csv_path: Path = GRADES_CSV,
+                        histogram_path: Path = GRADE_HISTOGRAM) -> None:
     # No run_id column in the CSV rows on purpose: it would change on every
     # row every sync, drowning the grade-movement diff this file exists to
     # tell. The current run_id lives in grade-histogram.json.
+    #
+    # Scoped to the CURRENT run only. The old latest-per-skill_path-across-
+    # all-runs query kept skills deleted from the repo alive forever as ghost
+    # rows (102 of them by run 9 — e.g. hyperflow's skills/amplify, gone from
+    # disk since run 7, still counted in the public histogram). grades.csv
+    # claims to be "current corpus grades"; only the current run's rows are.
     rows = conn.execute(
         """
-        SELECT s.skill_path, s.grade, s.score
-        FROM skill_compliance s
-        JOIN (
-            SELECT skill_path, MAX(run_id) AS mr
-            FROM skill_compliance GROUP BY skill_path
-        ) latest ON s.skill_path = latest.skill_path AND s.run_id = latest.mr
-        ORDER BY s.skill_path
-        """
+        SELECT skill_path, grade, score
+        FROM skill_compliance
+        WHERE run_id = ?
+        ORDER BY skill_path
+        """,
+        (run_id,),
     ).fetchall()
-    with open(GRADES_CSV, "w", newline="") as fh:
+    if not rows:
+        total = conn.execute("SELECT COUNT(*) FROM skill_compliance").fetchone()[0]
+        if total:
+            raise SyncError(
+                f"skill_compliance has no rows for run {run_id} but {total} rows "
+                f"overall — refusing to overwrite {csv_path.name} with an empty "
+                f"export. Run the validator --populate-db step for run {run_id} "
+                f"before syncing."
+            )
+    with open(csv_path, "w", newline="") as fh:
         writer = csv.writer(fh, lineterminator="\n")
         writer.writerow(["skill_path", "grade", "score"])
         writer.writerows(rows)
@@ -683,8 +839,8 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int) -> None:
         "total": len(rows),
         "grades": {k: histogram[k] for k in sorted(histogram)},
     }
-    GRADE_HISTOGRAM.write_text(json.dumps(payload, indent=2) + "\n")
-    log(f"wrote {GRADES_CSV.name} ({len(rows)} skills) + {GRADE_HISTOGRAM.name}")
+    histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
+    log(f"wrote {csv_path.name} ({len(rows)} skills) + {histogram_path.name}")
 
 
 # ---------------------------------------------------------------------------
@@ -720,7 +876,14 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
             suffix += 1
             tag = f"{tag_base}.{suffix}"
         if suffix:
-            log(f"tag {tag_base} exists on an older commit — tagging {tag} instead")
+            log(f"WARNING: tag {tag_base} already exists on an older commit — "
+                f"tagging {tag} instead. This usually means one of: (a) a prior "
+                f"sync committed+tagged but its PUSH FAILED and was never "
+                f"retried — verify {tag_base} actually reached DoltHub "
+                f"(SELECT tag_name FROM dolt_tags via the DoltHub API) before "
+                f"trusting the public record; or (b) compliance was "
+                f"re-populated without a new discovery run. Do not treat this "
+                f"suffix as routine.")
         dolt(["tag", tag, "-m", msg], repo)
         return committed, tag
 
@@ -756,9 +919,10 @@ def check_creds() -> None:
     proc = run(["dolt", "creds", "check", "--endpoint", CREDS_ENDPOINT], check=False)
     if "Success" not in proc.stdout:
         raise PushError(
-            "dolt creds check failed — no valid DoltHub key. "
-            "Run `dolt creds ls` / `dolt login`, or in CI use "
-            "`dolt push --user <name>` with DOLT_REMOTE_PASSWORD=<api token>.\n"
+            "dolt creds check failed — no valid DoltHub key on this machine. "
+            "Run `dolt login` (inspect with `dolt creds ls`). Pushing is "
+            "operator-box-only: this script has no env-var/CI credential path, "
+            "by design — local is the sole writer and CI never pushes.\n"
             + proc.stdout + proc.stderr
         )
 
@@ -772,6 +936,28 @@ def check_repo_exists(org: str, repo_name: str) -> bool | None:
     if proc.returncode != 0 or not code.isdigit():
         return None
     return code == "200"
+
+
+def remote_tags(org: str, repo_name: str) -> set[str] | None:
+    """Best-effort DoltHub tag listing via the public SQL API.
+
+    Returns the set of tag names on the remote, or None when inconclusive
+    (network failure, unexpected payload). Used to reconcile local tags that a
+    prior failed push stranded — see push().
+    """
+    url = (f"https://www.dolthub.com/api/v1alpha1/{org}/{repo_name}/main"
+           f"?q=SELECT+tag_name+FROM+dolt_tags")
+    proc = run(["curl", "-s", "--max-time", "10", url], check=False)
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return None
+    try:
+        payload = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        return None
+    rows = payload.get("rows")
+    if not isinstance(rows, list):
+        return None
+    return {r["tag_name"] for r in rows if isinstance(r, dict) and r.get("tag_name")}
 
 
 def push(repo: Path, org: str, repo_name: str, tag: str | None) -> None:
@@ -793,12 +979,32 @@ def push(repo: Path, org: str, repo_name: str, tag: str | None) -> None:
     if exists is None:
         log("DoltHub existence probe inconclusive (network) — attempting push anyway")
 
+    tags_to_push: list[str] = [tag] if tag else []
+
+    # Retry-safety: a prior sync may have committed+tagged locally and then
+    # failed its push (exit 3). If the next inventory cycle runs before a
+    # manual retry, that run's tag would otherwise be stranded forever — the
+    # old code only ever pushed the CURRENT run's tag. Reconcile: push every
+    # local tag the remote is missing, not just this run's.
+    remote = remote_tags(org, repo_name)
+    if remote is None:
+        log("DoltHub tag listing inconclusive (network) — pushing only the "
+            "current run's tag; a previously-stranded tag (if any) stays "
+            "local until a sync with network access to the DoltHub API")
+    else:
+        local = {r[0] for r in dolt_csv_query(repo, "SELECT tag_name FROM dolt_tags")}
+        stranded = sorted(local - remote - set(tags_to_push))
+        if stranded:
+            log(f"WARNING: {len(stranded)} local tag(s) never reached DoltHub "
+                f"(a prior sync's push failed and was not retried): {stranded} "
+                f"— pushing them now")
+            tags_to_push.extend(stranded)
+
     refs = ["main"]
-    if tag:
-        # Tags do NOT ride along on a branch push; use the explicit refspec
-        # form so the tag lands as a tag (a bare name can label the transfer
-        # as a branch).
-        refs.append(f"refs/tags/{tag}:refs/tags/{tag}")
+    # Tags do NOT ride along on a branch push; use the explicit refspec
+    # form so the tag lands as a tag (a bare name can label the transfer
+    # as a branch).
+    refs.extend(f"refs/tags/{t}:refs/tags/{t}" for t in tags_to_push)
     for ref in refs:
         proc = dolt(["push", "origin", ref], repo, check=False)
         out = proc.stdout + proc.stderr
@@ -843,9 +1049,29 @@ def maybe_gc(repo: Path, state_path: Path, force: bool) -> None:
         or size_now > GC_SIZE_FACTOR * baseline
     )
     if due:
+        # The sql-server exclusion check ran at lock-acquisition time, but a
+        # `dolt sql-server` can have been started against this repo during the
+        # multi-minute sync — gc under a live server corrupts the working set.
+        # Re-check RIGHT BEFORE gc, and never fail the sync over gc: by this
+        # point commit+push already succeeded, so a gc problem is loud-skip,
+        # not exit-1 (which would misreport a successful, pushed sync).
+        try:
+            refuse_if_server_running(repo)
+        except SyncError as exc:
+            log(f"WARNING: skipping dolt gc — {exc} (the sync itself already "
+                f"succeeded; gc will be retried next sync)")
+            state_path.write_text(json.dumps(state) + "\n")
+            return
         log(f"running dolt gc (syncs_since_gc={state['syncs_since_gc']}, "
             f"size={size_now / 1e6:.0f}MB, baseline={baseline / 1e6:.0f}MB)")
-        dolt(["gc"], repo)
+        try:
+            dolt(["gc"], repo)
+        except subprocess.CalledProcessError as exc:
+            log(f"WARNING: dolt gc failed ({(exc.stderr or exc.stdout or '').strip()}) "
+                f"— the sync itself already succeeded and was pushed; gc will "
+                f"be retried next sync")
+            state_path.write_text(json.dumps(state) + "\n")
+            return
         state["syncs_since_gc"] = 0
         state["size_after_gc_bytes"] = dir_size_bytes(repo)
     state_path.write_text(json.dumps(state) + "\n")
@@ -903,6 +1129,9 @@ def main() -> int:
 
         schema = introspect_schema(conn)
         tables = sorted(schema)
+        # Membership gate FIRST (also in --dry-run): an unknown table must
+        # hard-fail before any DDL/plan output normalizes its presence.
+        gate_export_allowlist(tables)
         violations = scan_type_violations(conn, schema)
         widen = frozenset(violations)
         for (t, c), n in sorted(violations.items()):
