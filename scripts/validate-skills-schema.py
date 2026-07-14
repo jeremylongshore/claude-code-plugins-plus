@@ -4564,6 +4564,11 @@ def populate_compliance_db(
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
+    # j-rig (better-sqlite3) writes the same file; Python's default busy
+    # timeout is 5s, which a concurrent write transaction can exceed —
+    # surfacing as 'database is locked'. Wait longer instead of failing.
+    c.execute("PRAGMA busy_timeout = 60000")
+
     # Resolve the current discovery run. Rows from older runs keep their
     # original run_id; fresh writes stamp the latest run so consumers can
     # filter WHERE run_id = (SELECT MAX(id) FROM discovery_runs).
@@ -4907,14 +4912,46 @@ def populate_compliance_db(
         gold_components = sum([1, has_prd, has_ard, has_refs, has_errors_md, has_examples_md, has_impl_md, has_config])
         gold_pct = int(100 * gold_components / 8)
 
+        # UPSERT, not INSERT OR REPLACE: REPLACE under UNIQUE(skill_path, run_id)
+        # is delete-then-insert, so any column absent from the list fell back to
+        # its default — silently NULLing the j-rig-owned jrig_* columns (paid
+        # behavioral-eval results) on every re-validation of the same run
+        # (2026-07-14 ops review). The DO UPDATE below rewrites only the
+        # validator-owned columns; jrig_passed / jrig_tier_blocked /
+        # jrig_baseline_delta are deliberately omitted so they survive.
         c.execute(
-            """INSERT OR REPLACE INTO skill_compliance
+            """INSERT INTO skill_compliance
             (skill_path, total_fields, anthropic_fields, enterprise_fields, missing_fields,
              has_references_dir, has_examples, has_scripts_dir, is_stub, stub_reasons,
              score, grade, error_count, warning_count, validated_at, source_modified_at, validator_version,
              has_prd, has_ard, has_errors_md, has_examples_md, has_implementation_md,
              reference_file_count, has_config_dir, gold_standard_pct, run_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(skill_path, run_id) DO UPDATE SET
+                total_fields=excluded.total_fields,
+                anthropic_fields=excluded.anthropic_fields,
+                enterprise_fields=excluded.enterprise_fields,
+                missing_fields=excluded.missing_fields,
+                has_references_dir=excluded.has_references_dir,
+                has_examples=excluded.has_examples,
+                has_scripts_dir=excluded.has_scripts_dir,
+                is_stub=excluded.is_stub,
+                stub_reasons=excluded.stub_reasons,
+                score=excluded.score,
+                grade=excluded.grade,
+                error_count=excluded.error_count,
+                warning_count=excluded.warning_count,
+                validated_at=excluded.validated_at,
+                source_modified_at=excluded.source_modified_at,
+                validator_version=excluded.validator_version,
+                has_prd=excluded.has_prd,
+                has_ard=excluded.has_ard,
+                has_errors_md=excluded.has_errors_md,
+                has_examples_md=excluded.has_examples_md,
+                has_implementation_md=excluded.has_implementation_md,
+                reference_file_count=excluded.reference_file_count,
+                has_config_dir=excluded.has_config_dir,
+                gold_standard_pct=excluded.gold_standard_pct""",
             (
                 skill_path,
                 total_fields,
@@ -5709,6 +5746,7 @@ def main() -> int:
                 print(f"✅ {rel} (plugin.json) - OK")
 
     # Populate compliance database if requested (after all validations complete)
+    populate_db_failed = False
     if args.populate_db:
         try:
             populate_compliance_db(
@@ -5722,6 +5760,12 @@ def main() -> int:
             import traceback
 
             traceback.print_exc()
+            # Do not swallow this: a failed populate used to leave the exit code
+            # untouched, so the freshie cycle continued to dolt-sync with zero
+            # fresh compliance rows and grades.csv silently regressed to the
+            # previous run (2026-07-14 ops review). The flag flips the exit code
+            # AFTER the full report below — validation semantics are unchanged.
+            populate_db_failed = True
 
     # === DEEP EVALUATION ENGINE ===
     if args.deep and skills:
@@ -5874,6 +5918,17 @@ def main() -> int:
     print(f"Needs Work (D+F): {d_f_count} ({d_f_pct:.1f}%)")
 
     print(f"{'=' * 70}")
+
+    # A requested --populate-db write that failed must fail the run. Placed after
+    # the full report so nothing above is hidden; only the exit code changes.
+    if populate_db_failed:
+        print(
+            "\n❌ --populate-db was requested but the compliance-DB write FAILED "
+            "(see traceback above) — exiting nonzero so the freshie cycle stops "
+            "instead of exporting stale grades.",
+            file=sys.stderr,
+        )
+        return 1
 
     if args.check_description_budget and total_description_chars >= TOTAL_DESCRIPTION_BUDGET_WARN:
         msg = (
