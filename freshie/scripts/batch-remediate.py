@@ -34,18 +34,78 @@ DB_PATH = REPO_ROOT / "freshie" / "inventory.sqlite"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
 SKILLS_ROOT = REPO_ROOT / "skills"  # legacy top-level numbered skill tree (dgpl)
 
-# Fields that are no longer valid in agent frontmatter
-DEPRECATED_AGENT_FIELDS = frozenset(
+# Path to the canonical validator — the single source of truth for which agent
+# frontmatter fields are banned vs required (kernel-floor 8 + INVALID_AGENT_FIELDS).
+VALIDATOR_PATH = REPO_ROOT / "scripts" / "validate-skills-schema.py"
+
+# Inline fallback used ONLY when the canonical validator cannot be imported
+# (e.g. pyyaml missing — the validator hard-exits at import without it).
+# Mirrors the validator's INVALID_AGENT_FIELDS as of schema 3.15.0.
+# NOTE: `color` is deliberately NOT here — it is one of the kernel-floor 8
+# REQUIRED agent fields (name, description, tools, model, color, version,
+# author, tags). A stale hand-rolled copy of this set used to carry it, and
+# --fix-agents stripped the required field from the entire A-grade agent
+# corpus (P1, 2026-07-14 ops review).
+_FALLBACK_REMOVABLE_AGENT_FIELDS = frozenset(
     [
         "capabilities",
         "expertise_level",
         "activation_priority",
         "activation_triggers",
-        "color",
         "type",
         "category",
+        "compatible-with",
+        "when_to_use",
     ]
 )
+
+
+def _load_removable_agent_fields() -> frozenset[str]:
+    """Derive the fields --fix-agents may remove FROM THE VALIDATOR, not a copy.
+
+    Removal set = the validator's INVALID_AGENT_FIELDS (hard errors at every
+    tier) union its DEPRECATED_AGENT_FIELDS (warn-level; empty today). The set
+    is cross-checked against the validator's AGENT_ALWAYS_REQUIRED (the
+    kernel-floor 8): if any "removable" field is also required, abort loudly
+    instead of mass-stripping a required field — the exact P1 this replaces
+    (a stale copy of this set carried `color` and --fix-agents removed it
+    from every agent it touched).
+
+    Falls back to the inline mirror above when the validator cannot be
+    imported. SystemExit is caught explicitly: the validator sys.exit(1)s at
+    import when pyyaml is missing, and SystemExit does not inherit Exception
+    (the 2026-07-13 promote-to-curated pyyaml incident class).
+    """
+    try:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("vss_for_batch_remediate", VALIDATOR_PATH)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+    except (Exception, SystemExit) as exc:
+        print(
+            f"WARNING: could not import the canonical validator ({exc!r}); "
+            "using the inline fallback agent-field set.",
+            file=sys.stderr,
+        )
+        return _FALLBACK_REMOVABLE_AGENT_FIELDS
+    removable = frozenset(mod.INVALID_AGENT_FIELDS) | frozenset(mod.DEPRECATED_AGENT_FIELDS)
+    required = frozenset(mod.AGENT_ALWAYS_REQUIRED)
+    overlap = removable & required
+    if overlap:
+        sys.exit(
+            "FATAL: the validator marks required agent field(s) "
+            f"{sorted(overlap)} as removable — refusing to run against an "
+            "inconsistent spec (a stale field set once stripped the required "
+            "`color` field from the whole corpus; see 2026-07-14 ops review)."
+        )
+    return removable
+
+
+# Fields --fix-agents removes from agent frontmatter. Kept under the historical
+# name (tests and docs reference it); the VALUE now derives from the canonical
+# validator so the two can never silently diverge again.
+DEPRECATED_AGENT_FIELDS = _load_removable_agent_fields()
 
 # Category directory → tags
 TAG_MAP: dict[str, list[str]] = {
@@ -500,10 +560,24 @@ def get_skills_missing_compatible_with(db: sqlite3.Connection) -> list[Path]:
     return [_skill_md_from_row(row[0]) for row in cur.fetchall()]
 
 
+def _agent_md_from_row(path_str: str) -> Path:
+    """Resolve an `agent_compliance.agent_path` DB value to an absolute file.
+
+    The DB stores repo-relative FILE paths (the validator normalizes them at
+    populate time). Left as-is, `Path(row).exists()` checks against the cwd, so
+    running --fix-agents from anywhere but the repo root counted every row as
+    'SKIP (not found)' and silently fixed nothing — the same bug class already
+    fixed for skills in _skill_md_from_row above."""
+    p = Path(path_str)
+    if not p.is_absolute():
+        p = REPO_ROOT / p
+    return p
+
+
 def get_agents_with_invalid_fields(db: sqlite3.Connection) -> list[Path]:
     cur = db.cursor()
     cur.execute("SELECT agent_path FROM agent_compliance WHERE has_invalid_fields = 1")
-    return [Path(row[0]) for row in cur.fetchall()]
+    return [_agent_md_from_row(row[0]) for row in cur.fetchall()]
 
 
 # ---------------------------------------------------------------------------
@@ -759,6 +833,15 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip DB lookup and use filesystem walk only.",
     )
+    parser.add_argument(
+        "--fs-fallback",
+        action="store_true",
+        help="Allow --fix-agents to fall back to a filesystem walk when the DB "
+        "is absent. Without the DB, the walk selects agents by pattern-matching "
+        "frontmatter text across the whole corpus, so the fallback is opt-in for "
+        "the destructive agent fixer (2026-07-14 ops review). --no-db counts as "
+        "the same explicit opt-in.",
+    )
     return parser
 
 
@@ -766,8 +849,14 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    # Resolve dry_run: write only when --execute is passed
-    dry_run = not args.execute
+    # --dry-run and --execute together are ambiguous — refuse rather than guess.
+    # (--dry-run used to be parsed but never read, so `--dry-run --execute`
+    # silently wrote files under a flag that says dry-run; 2026-07-14 ops review.)
+    if args.dry_run and args.execute:
+        parser.error("--dry-run and --execute are mutually exclusive")
+
+    # Resolve dry_run: write only when --execute is passed (and --dry-run is not).
+    dry_run = args.dry_run or not args.execute
 
     # Resolve which fixers to run
     fix_tags = args.fix_tags or args.all
@@ -786,6 +875,19 @@ def main() -> int:
     if use_db:
         db = _open_db()
         if db is None:
+            # The agent fixer is destructive at corpus scale: the filesystem walk
+            # selects agents by pattern-matching frontmatter text, and a fresh
+            # checkout never has the (untracked) DB — so require an explicit
+            # opt-in instead of silently degrading (2026-07-14 ops review P1).
+            if fix_agents and not args.fs_fallback:
+                parser.error(
+                    f"DB not found at {DB_PATH} and --fix-agents was requested. "
+                    "The filesystem-walk fallback selects agents by pattern-matching "
+                    "frontmatter across the whole corpus; pass --fs-fallback (or --no-db) "
+                    "to allow it explicitly, or build the DB first "
+                    "(freshie/scripts/rebuild-inventory.py, then "
+                    "validate-skills-schema.py --marketplace --populate-db)."
+                )
             print(f"WARNING: DB not found at {DB_PATH} — falling back to filesystem walk.\n")
             use_db = False
 

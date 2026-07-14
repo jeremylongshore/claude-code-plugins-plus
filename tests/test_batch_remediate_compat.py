@@ -20,6 +20,7 @@ never touches the real repo or freshie/inventory.sqlite.
 
 import importlib.util
 import sqlite3
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -211,6 +212,164 @@ class DgplTagInferenceTests(unittest.TestCase):
 
     def test_unmapped_path_still_returns_none(self):
         self.assertIsNone(br._category_from_path(br.REPO_ROOT / "README.md"))
+
+
+AGENT_WITH_COLOR = """\
+---
+name: pinned-agent
+description: Pins that required agent fields survive remediation. Trigger with "pin".
+tools: Read
+model: sonnet
+color: blue
+version: 1.0.0
+author: Test <t@example.com>
+tags: [test]
+capabilities: [x, y]
+type: agent
+---
+# Body
+"""
+
+
+def _load_canonical_validator():
+    vpath = Path(__file__).resolve().parents[1] / "scripts" / "validate-skills-schema.py"
+    vspec = importlib.util.spec_from_file_location("vss_for_batch_remediate_tests", vpath)
+    mod = importlib.util.module_from_spec(vspec)
+    vspec.loader.exec_module(mod)
+    return mod
+
+
+class AgentRequiredFieldSurvivalTests(unittest.TestCase):
+    """P1 (2026-07-14 ops review): a stale hand-rolled DEPRECATED_AGENT_FIELDS
+    copy carried the REQUIRED `color` field (one of the kernel-floor 8), so
+    --fix-agents stripped it from every agent it touched. The set now derives
+    from the canonical validator and is cross-checked against
+    AGENT_ALWAYS_REQUIRED at load time."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.vss = _load_canonical_validator()
+
+    def test_color_is_not_removable(self):
+        self.assertNotIn("color", br.DEPRECATED_AGENT_FIELDS)
+
+    def test_no_removable_field_is_required_by_the_validator(self):
+        required = set(self.vss.AGENT_ALWAYS_REQUIRED)
+        self.assertEqual(set(br.DEPRECATED_AGENT_FIELDS) & required, set())
+        # The offline fallback set (used when the validator cannot be imported)
+        # must honor the same invariant.
+        self.assertEqual(set(br._FALLBACK_REMOVABLE_AGENT_FIELDS) & required, set())
+
+    def test_removal_set_matches_validator_banned_sets(self):
+        expected = set(self.vss.INVALID_AGENT_FIELDS) | set(self.vss.DEPRECATED_AGENT_FIELDS)
+        self.assertEqual(set(br.DEPRECATED_AGENT_FIELDS), expected)
+
+    def test_color_survives_remediation_and_banned_fields_are_removed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            agent = Path(tmp) / "agents" / "pinned-agent.md"
+            agent.parent.mkdir(parents=True)
+            agent.write_text(AGENT_WITH_COLOR, encoding="utf-8")
+            changed, removed, err = br.remove_deprecated_agent_fields(agent, dry_run=False)
+            self.assertTrue(changed)
+            self.assertIsNone(err)
+            self.assertIn("capabilities", removed)
+            self.assertIn("type", removed)
+            self.assertNotIn("color", removed)
+            text = agent.read_text(encoding="utf-8")
+            self.assertIn("color: blue", text)  # REQUIRED field survives
+            self.assertNotIn("capabilities:", text)
+            self.assertNotIn("type: agent", text)
+
+
+class AgentDbPathResolutionTests(unittest.TestCase):
+    """P3 (2026-07-14 ops review): agent_compliance stores repo-relative FILE
+    paths, so without a REPO_ROOT join DB-mode --fix-agents silently no-ops
+    ('SKIP (not found)' for every row) from any cwd but the repo root — the
+    same bug class defect #4 fixed for skills."""
+
+    def test_agent_rows_resolve_against_repo_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent = root / "plugins" / "cat" / "p" / "agents" / "a.md"
+            agent.parent.mkdir(parents=True)
+            agent.write_text(AGENT_WITH_COLOR, encoding="utf-8")
+            conn = sqlite3.connect(":memory:")
+            conn.execute("CREATE TABLE agent_compliance (agent_path TEXT, has_invalid_fields INTEGER)")
+            conn.execute(
+                "INSERT INTO agent_compliance VALUES (?, 1)",
+                (str(agent.relative_to(root)),),
+            )
+            conn.commit()
+            orig_root = br.REPO_ROOT
+            br.REPO_ROOT = root
+            try:
+                paths = br.get_agents_with_invalid_fields(conn)
+            finally:
+                br.REPO_ROOT = orig_root
+                conn.close()
+            self.assertEqual(paths, [agent])
+            self.assertTrue(paths[0].is_file())
+
+
+class CliGuardrailTests(unittest.TestCase):
+    """2026-07-14 ops review: the --fix-agents filesystem-walk fallback must be
+    an explicit opt-in when the DB is absent; --dry-run/--execute together must
+    error; --dry-run must actually gate writes."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        root = Path(self._tmp.name)
+        plugins = root / "plugins"
+        self.agent = plugins / "cat" / "p" / "agents" / "a.md"
+        self.agent.parent.mkdir(parents=True)
+        self.agent.write_text(AGENT_WITH_COLOR, encoding="utf-8")
+        self._orig = {k: getattr(br, k) for k in ("REPO_ROOT", "PLUGINS_ROOT", "DB_PATH")}
+        br.REPO_ROOT = root
+        br.PLUGINS_ROOT = plugins
+        br.DB_PATH = root / "absent.sqlite"  # deliberately never created
+
+    def tearDown(self):
+        for k, v in self._orig.items():
+            setattr(br, k, v)
+        self._tmp.cleanup()
+
+    def _main(self, argv):
+        old_argv = sys.argv
+        sys.argv = ["batch-remediate.py"] + argv
+        try:
+            return br.main()
+        finally:
+            sys.argv = old_argv
+
+    def test_fix_agents_without_db_requires_explicit_fallback(self):
+        with self.assertRaises(SystemExit) as cm:
+            self._main(["--fix-agents"])
+        self.assertEqual(cm.exception.code, 2)  # argparse error
+        self.assertEqual(self.agent.read_text(encoding="utf-8"), AGENT_WITH_COLOR)
+
+    def test_fs_fallback_flag_allows_the_walk_dry_run_default(self):
+        rc = self._main(["--fix-agents", "--fs-fallback"])
+        self.assertEqual(rc, 0)
+        # dry-run is the default: file untouched
+        self.assertEqual(self.agent.read_text(encoding="utf-8"), AGENT_WITH_COLOR)
+
+    def test_dry_run_and_execute_are_mutually_exclusive(self):
+        with self.assertRaises(SystemExit) as cm:
+            self._main(["--all", "--dry-run", "--execute"])
+        self.assertEqual(cm.exception.code, 2)
+        self.assertEqual(self.agent.read_text(encoding="utf-8"), AGENT_WITH_COLOR)
+
+    def test_explicit_dry_run_gates_writes(self):
+        rc = self._main(["--fix-agents", "--fs-fallback", "--dry-run"])
+        self.assertEqual(rc, 0)
+        self.assertEqual(self.agent.read_text(encoding="utf-8"), AGENT_WITH_COLOR)
+
+    def test_execute_with_fs_fallback_writes_but_keeps_color(self):
+        rc = self._main(["--fix-agents", "--fs-fallback", "--execute"])
+        self.assertEqual(rc, 0)
+        text = self.agent.read_text(encoding="utf-8")
+        self.assertIn("color: blue", text)
+        self.assertNotIn("capabilities:", text)
 
 
 class FilterByScopeTests(unittest.TestCase):
