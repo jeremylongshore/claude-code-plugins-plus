@@ -7,7 +7,7 @@ Thank you for your interest in contributing to the Claude Code Plugins marketpla
 > Every plugin and skill in this marketplace is graded against a single
 > authoritative specification:
 >
-> **→ [`000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the **Global Master Standard for Claude Skills** (v3.6.0, schema 3.6.0).
+> **→ [`000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`](../000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the **Global Master Standard for Claude Skills** (v3.6.0 baseline; the validator currently enforces schema **3.15.2** — see [`000-docs/SCHEMA_CHANGELOG.md`](../000-docs/SCHEMA_CHANGELOG.md) for every change since that baseline).
 >
 > It documents:
 >
@@ -37,13 +37,13 @@ At Intent Solutions we ship the full-fledged capability. We don't publish half-i
 - Your `SKILL.md` needs the full frontmatter schema (not just `name` + `description`). See [Adding Skills](#adding-skills) below.
 - Your plugin needs a `README.md`, a `LICENSE`, a valid `plugin.json` (allowed fields only), and an entry in `.claude-plugin/marketplace.extended.json`.
 - Your code and config can't trip the security scanner — no `rm -rf`, no `eval`, no base64 obfuscation, no hardcoded secrets, no URL shorteners, HTTPS only.
-- Your skill needs to score at or above the marketplace threshold on our 100-point rubric (full rubric in the [spec doc](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)). Run the same validator CI runs:
+- Your skill needs to score at or above the marketplace threshold on our 100-point rubric (full rubric in the [spec doc](../000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)). Run the same validator CI runs:
 
   ```bash
   python3 scripts/validate-skills-schema.py --marketplace --verbose plugins/<category>/<name>/
   ```
 
-- If any of this fails in CI, the **PR Pre-screen workflow** ([runbook](000-docs/265-DR-GUID-pr-prescreen-system.md)) will post a structured review on your PR with the exact validator findings + a short Groq-generated summary. A human maintainer follows up after that.
+- If any of this fails, the **PR Pre-screen workflow** ([runbook](../000-docs/265-DR-GUID-pr-prescreen-system.md)) posts a structured review comment on your PR with the exact validator findings + a short summary — but only when changes are needed (`CHANGES_REQUESTED` / `HARD_BLOCK`). A passing pre-screen sets an advisory `prescreen-grade` commit status and stays silent. A human maintainer follows up either way.
 
 ### "But I just want to submit a small skill"
 
@@ -51,13 +51,13 @@ The bar isn't _size_, it's _completeness of what you do ship_. Start from `templ
 
 ### Now what
 
-Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you push. That script runs the same validators CI runs — passing it locally means your PR will pass the hard gates.
+Read the rest of this doc, then pre-flight your plugin before you push. The true pre-flight is the marketplace-tier validator command above — that is the tier the PR pre-screen grades at and the bar maintainers hold at review. `./scripts/quick-test.sh` is a fast build/lint/validation sanity check, not a full CI mirror — passing it does not guarantee the CI gates pass.
 
 ## What a submission must include
 
 Two things, and both help you more than they cost you:
 
-**1. The submission issue comes first.** Every plugin/source submission starts as a GitHub issue using the [plugin-submission template](.github/ISSUE_TEMPLATE/plugin-submission.yml) — it captures the PRD essentials (problem, users, success criteria, top requirements) before anyone reads code. Your PR then links that issue (`Closes #N` / `Refs #N`). A PR that arrives without one isn't rejected — you'll just be asked to file the issue before review continues.
+**1. The submission issue comes first.** Every plugin/source submission starts as a GitHub issue using the [plugin-submission template](ISSUE_TEMPLATE/plugin-submission.yml) — it captures the PRD essentials (problem, users, success criteria, top requirements) before anyone reads code. Your PR then links that issue (`Closes #N` / `Refs #N`). A PR that arrives without one isn't rejected — you'll just be asked to file the issue before review continues.
 
 **2. The docs that match your tier.** The bar scales with the claim, not the size:
 
@@ -67,11 +67,13 @@ Two things, and both help you more than they cost you:
 | **Standard plugin**                        | skills plus scripts/commands                     | `PRD.md` + `ADR.md`                                                                  |
 | **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
 
-Fill-in-the-blank templates live in [`templates/skill-docs/`](templates/skill-docs/README.md) — copy the ones your tier needs into your plugin directory as `docs/PRD.md`, `docs/ADR.md`, etc. Your issue answers ARE most of the PRD, so this is minutes, not hours. The same matrix applies to Intent Solutions' own skills — this isn't a hoop for outsiders, it's the house standard. Full process: [`000-docs/700-DR-GUID-skill-submission-standard.md`](000-docs/700-DR-GUID-skill-submission-standard.md).
+Fill-in-the-blank templates live in [`templates/skill-docs/`](../templates/skill-docs/README.md) — copy the ones your tier needs into your plugin directory as `docs/PRD.md`, `docs/ADR.md`, etc. Your issue answers ARE most of the PRD, so this is minutes, not hours. The same matrix applies to Intent Solutions' own skills — this isn't a hoop for outsiders, it's the house standard. Full process: [`000-docs/700-DR-GUID-skill-submission-standard.md`](../000-docs/700-DR-GUID-skill-submission-standard.md).
+
+CI enforces this matrix: the `check-submission-docs` gate (`scripts/check-submission-docs.mjs`, blocking via the `ci-required` aggregate) fails any PR that adds a new plugin directory without the docs its tier requires. External mirror plugins (directories containing `.source.json`) are exempt — their docs live upstream. Copy the templates before you open the PR and this gate never bites.
 
 ## Getting featured
 
-Nominate any skill — yours or one you love — via the [killer-skill nomination template](.github/ISSUE_TEMPLATE/killer-skill-nomination.yml). Eligibility for featuring is A-grade at marketplace tier (the 8-field frontmatter per [STANDARDS.md](STANDARDS.md)) plus the pack/flagship doc set, plus an editorial pick. We help you get there — either a PR you own, or a credited hardened mirror (`curated: true`) on our side; a stalled upstream never blocks featuring.
+Nominate any skill — yours or one you love — via the [killer-skill nomination template](ISSUE_TEMPLATE/killer-skill-nomination.yml). Eligibility for featuring is A-grade at marketplace tier (the 8-field frontmatter per [STANDARDS.md](../STANDARDS.md)) plus the pack/flagship doc set, plus an editorial pick. We help you get there — either a PR you own, or a credited hardened mirror (`curated: true`) on our side; a stalled upstream never blocks featuring.
 
 ---
 
@@ -80,7 +82,7 @@ Nominate any skill — yours or one you love — via the [killer-skill nominatio
 1. Fork and clone the repository
 2. Copy a template from `templates/` (`minimal-plugin`, `command-plugin`, `agent-plugin`, or `full-plugin`)
 3. Develop your plugin
-4. Run validation: `./scripts/quick-test.sh`
+4. Run validation: `python3 scripts/validate-skills-schema.py --marketplace --verbose plugins/<category>/<your-plugin>/` (plus `./scripts/quick-test.sh` for a fast build/lint sanity check)
 5. Open a PR
 
 ## Ways to Contribute
@@ -112,7 +114,7 @@ Best when you want a one-time submission and don't expect frequent updates.
 5. Add `commands/`, `agents/`, or `skills/` directories as needed.
 6. Add an entry to `.claude-plugin/marketplace.extended.json`.
 7. Run `pnpm run sync-marketplace` to regenerate the CLI-compatible catalog.
-8. Run `./scripts/quick-test.sh` -- this must pass before opening a PR.
+8. Pre-flight before opening the PR: `python3 scripts/validate-skills-schema.py --marketplace --verbose plugins/[category]/my-plugin/` (the submission bar), plus `./scripts/quick-test.sh` for a fast build/lint sanity check.
 
 `plugin.json` recognizes Anthropic's GA manifest fields — `name` (the only strictly required one), `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`, plus newer GA fields like `displayName`, `dependencies`, `userConfig`, `channels`, and `$schema`, and the component-declaration keys (`commands`, `agents`, `skills`, `hooks`, `mcpServers`, …). Unrecognized fields **warn** by default — matching Anthropic's own `claude plugin validate` — and are promoted to errors only under the validator's `--strict` flag; a field with the wrong type, or a missing `name`, always fails. See `000-docs/SCHEMA_CHANGELOG.md` (schema 3.12.0 / 3.13.0).
 
@@ -128,7 +130,7 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
 **Steps:**
 
 1. Make sure your plugin in your own repo has at minimum a `SKILL.md` and a `README.md` at a known path.
-2. Open a PR against this repo that adds a single entry to [`sources.yaml`](sources.yaml) with the metadata. Example:
+2. Open a PR against this repo that adds a single entry to [`sources.yaml`](../sources.yaml) with the metadata. Example:
 
    ```yaml
    - name: my-plugin
@@ -142,7 +144,7 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
        email: you@example.com
      license: MIT
      category: community
-     verified: true
+     verified: false # a maintainer sets this true after vetting — see the 699 playbook
      include:
        - 'SKILL.md'
        - 'README.md'
@@ -156,7 +158,7 @@ Best when you maintain the plugin in your own repo and want updates to flow to t
 4. For an immediate first sync (instead of waiting for Monday), a maintainer can trigger the workflow manually via `gh workflow run sync-external.yml`.
 5. Every subsequent push you make to your own repo gets picked up by the next weekly sync — no further action on your end.
 
-Every listed source is vetted per the [external-source vetting playbook](000-docs/699-DR-GUID-external-source-vetting-playbook.md) and pinned via `sources.lock.json`, and synced content is gated by the payload scanner (`scripts/scan-synced-content.mjs`) before the sync PR lands.
+Every listed source is vetted per the [external-source vetting playbook](../000-docs/699-DR-GUID-external-source-vetting-playbook.md) and pinned via `sources.lock.json`, and synced content is gated by the payload scanner (`scripts/scan-synced-content.mjs`) before the sync PR lands.
 
 **What `verified:` and `curated:` mean for you as an author.** These two flags are separate and independent:
 
@@ -169,7 +171,7 @@ They're orthogonal on purpose — a plugin can be `curated: true` (we locally ha
 
 ## Adding Skills
 
-Create a `skills/[skill-name]/SKILL.md` file inside any plugin directory. Use the 2026 Schema frontmatter:
+Create a `skills/[skill-name]/SKILL.md` file inside any plugin directory. Use the 2026 Schema frontmatter — all 8 fields are required at marketplace tier:
 
 ```yaml
 ---
@@ -179,18 +181,21 @@ description: |
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob
 version: 1.0.0
 author: Your Name <you@example.com>
+license: MIT
+compatibility: Designed for Claude Code
+tags: [devops, ci]
 ---
 ```
 
 Validate your skills with:
 
 ```bash
-python3 scripts/validate-skills-schema.py --skills-only
+python3 scripts/validate-skills-schema.py --marketplace --skills-only
 ```
 
 ### Modifying the validator itself
 
-If your PR changes `scripts/validate-skills-schema.py`, the master spec at `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`, or the SKILL.md frontmatter rules in this doc, **read [`000-docs/SCHEMA_CHANGELOG.md`](000-docs/SCHEMA_CHANGELOG.md) first** — the NON-NEGOTIABLES section at the top documents which directions of change are out of bounds without explicit pre-approval (see issue #612 for the postmortem). Bug fixes that bring the validator into spec compliance are fine to apply directly; architectural changes (required-field set, tier model, error vs. warning semantics) need approval before the change lands.
+If your PR changes `scripts/validate-skills-schema.py`, the master spec at `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`, or the SKILL.md frontmatter rules in this doc, **read [`000-docs/SCHEMA_CHANGELOG.md`](../000-docs/SCHEMA_CHANGELOG.md) first** — the NON-NEGOTIABLES section at the top documents which directions of change are out of bounds without explicit pre-approval (see issue #612 for the postmortem). Bug fixes that bring the validator into spec compliance are fine to apply directly; architectural changes (required-field set, tier model, error vs. warning semantics) need approval before the change lands.
 
 ## Validation Requirements
 
@@ -201,13 +206,15 @@ CI runs the following checks on every PR:
 - **Security scan** -- No hardcoded secrets, API keys, or dangerous patterns.
 - **Marketplace build and route validation** -- The Astro site must build successfully with all plugin routes resolving.
 - **Frontmatter validation** -- Commands, agents, and skills must have valid YAML frontmatter.
-- **E2E tests** -- Playwright tests run on chromium, webkit, and mobile viewports.
+- **Submission docs** -- A PR adding a new plugin must include the docs for its tier (`check-submission-docs`; see "What a submission must include" above).
 
-Run `./scripts/quick-test.sh` locally to catch most issues before pushing.
+Marketplace-UI PRs additionally run Playwright E2E tests (chromium, webkit, mobile viewports) — but those are path-filtered to the `marketplace/` UI surface and advisory (they also run on every push to `main`), so don't expect them on a plugin or docs PR.
+
+Run the marketplace-tier validator on your plugin plus `./scripts/quick-test.sh` locally to catch the most common issues before pushing. quick-test is a fast sanity check, not the full CI suite — catalog-sync drift, unicode hygiene, markdownlint, the synced-content scanner, and the submission-docs gate only run in CI.
 
 ### What happens when you open the PR
 
-1. GitHub runs all 15+ validators (`validate-plugins.yml`). **These required checks are the gate** — your PR is mergeable once they're green.
+1. GitHub runs the CI gate: 17 jobs aggregated into the **`ci-required`** check (`validate-plugins.yml`), plus the `gitleaks` secret scan. **Those two required checks are the gate** — your PR is mergeable once they're green.
 2. **Greptile** (the repo's AI reviewer) posts inline comments. Treat its findings like any review: address them, or reply if you think it got something wrong and a human will weigh in. If you've installed your own Codex connector on your fork it may also comment — that's contributor-side, not repo-controlled, so maintainers don't act on it.
 3. A maintainer gets a Slack ping and follows up.
 4. Push fixes; the required checks re-run on each push.
@@ -215,9 +222,19 @@ Run `./scripts/quick-test.sh` locally to catch most issues before pushing.
 
 The deterministic CI checks — not the AI reviewer — are the authoritative gate; the AI review is advisory.
 
+### If your PR's checks don't start
+
+Fork PRs stall in a few known ways — none of them mean your PR is being ignored:
+
+- **First contribution?** Workflows from first-time contributors sit in GitHub's "Approve and run" queue until a maintainer approves them. That's a GitHub safety default, not a problem with your PR.
+- **Bot pushes may not retrigger checks.** When automation (e.g. the auto version-bump) pushes to your branch with the built-in workflow token, GitHub does not start a fresh check run on that commit. If checks look stuck after a bot commit, a maintainer will re-run them — or push any new commit yourself to retrigger.
+- **Keep your branch conflict-free.** A merge-conflicted PR runs no `pull_request` workflows at all, so the required checks sit at "Expected" forever. Rebase or merge `main` to unblock.
+- **Fork with full history.** Fork via GitHub's Fork button (or clone without `--depth`). A fork pushed from a shallow clone has grafted history that GitHub cannot merge, no matter how green the checks are.
+- **Leave "Allow edits by maintainers" enabled** (and prefer a personal fork — org-owned forks can't grant it). We often push small fixes straight to your branch instead of round-tripping: the `pnpm run sync-marketplace` regen, a version bump, a link correction. Without that box checked, a one-command fix becomes a multi-day comment exchange.
+
 ## PR Process
 
-- The PR template at [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) pre-fills when you open a pull request. Fill it out completely.
+- The PR template at [`.github/PULL_REQUEST_TEMPLATE.md`](PULL_REQUEST_TEMPLATE.md) pre-fills when you open a pull request. Fill it out completely.
 - Include test evidence (validation output, screenshots, or logs as appropriate).
 - Reviews are typically completed within 48 hours.
 - Address review comments, re-run validation, and push before requesting re-review.
@@ -226,7 +243,7 @@ The deterministic CI checks — not the AI reviewer — are the authoritative ga
 
 If you maintain a plugin in your own repository and want it included in the marketplace, see **Path B** under [Adding a Plugin](#adding-a-plugin) above. Quick summary:
 
-- Open a PR adding your plugin's metadata to [`sources.yaml`](sources.yaml).
+- Open a PR adding your plugin's metadata to [`sources.yaml`](../sources.yaml).
 - The weekly sync (Mondays 06:00 UTC, `.github/workflows/sync-external.yml`) pulls your latest content into `plugins/<category>/<name>/` and opens an automated PR that a human reviews before it lands.
 - For an immediate sync after your `sources.yaml` PR merges, a maintainer can trigger the workflow on demand with `gh workflow run sync-external.yml`.
 
@@ -248,7 +265,7 @@ Outstanding contributions are highlighted in the Contributor Spotlight section. 
 
 ## Code of Conduct
 
-This project follows a code of conduct to ensure a welcoming environment for all participants. See [Code of Conduct](000-docs/006-BL-POLI-code-of-conduct.md) for details.
+This project follows a code of conduct to ensure a welcoming environment for all participants. See [Code of Conduct](../000-docs/006-BL-POLI-code-of-conduct.md) for details.
 
 ## Security
 
