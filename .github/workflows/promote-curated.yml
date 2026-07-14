@@ -21,12 +21,15 @@ name: Promote curated skills (skills.sh mirror)
 on:
   schedule:
     - cron: '0 6 * * 1' # Mondays 06:00 UTC
-  workflow_dispatch:
-    inputs:
-      rebuild_inventory:
-        description: 'Rebuild the Freshie inventory + grades.csv before promoting (slower, freshest grades). Off = promote from the committed grades.csv.'
-        type: boolean
-        default: false
+  # No inputs — a `rebuild_inventory` dispatch input used to live here and was
+  # structurally guaranteed to fail: freshie/inventory.sqlite is untracked
+  # (absent on every clean runner), rebuild-inventory.py by design scans into
+  # an EXISTING CMDB schema (it exits 1 when the DB is absent and creates no
+  # tables), and the runner has no dolt binary for dolt-sync (2026-07-14 ops
+  # review). Freshest grades come from running the freshie cycle on the dev
+  # box (CLAUDE.md § Freshie Inventory), which commits grades.csv — the
+  # committed CSV is what this workflow promotes from.
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -74,17 +77,8 @@ jobs:
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
 
-      # Optional: refresh grades from a full inventory run. Off by default — the
-      # committed grades.csv is the latest run's compact export and is enough to
-      # re-derive the mirror. (rebuild-inventory.py is heavier and writes the
-      # git-ignored inventory.sqlite + regenerates grades.csv via dolt-sync.)
-      - name: Rebuild inventory + grades (optional)
-        if: inputs.rebuild_inventory == true
-        run: |
-          python3 freshie/scripts/rebuild-inventory.py
-          python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite || true
-          python3 freshie/scripts/dolt-sync.py || true
-
+      # The mirror is re-derived from the COMMITTED freshie/grades.csv — see the
+      # `on:` comment for why CI cannot rebuild the inventory itself.
       - name: Rebuild skills/.curated/ mirror
         run: python3 freshie/scripts/promote-to-curated.py
 

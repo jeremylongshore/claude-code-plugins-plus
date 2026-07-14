@@ -45,7 +45,10 @@ Modes
                      Writes `skills/.curated/MANIFEST.json` (the audit trail of what was
                      promoted and why). Needs the validator importable (local dev / the
                      weekly workflow after `pnpm install`); degrades to the recorded grade
-                     with a loud warning if it is not.
+                     with a loud warning if it is not. A wipe-floor guard refuses to touch
+                     the mirror when the fresh selection collapses (below 50% of the
+                     committed MANIFEST count or under 500 skills) — pass --force-floor
+                     for a deliberate mass-delisting.
   --check            CI drift gate. Reads the committed MANIFEST and verifies every promoted
                      copy is byte-identical to the current git-tracked source, with no orphan
                      or missing dirs. Deterministic, git-only — no validator, no sqlite, no
@@ -78,6 +81,21 @@ MANIFEST = CURATED_DIR / "MANIFEST.json"
 VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
 
 PROMOTE_GRADES = {"A", "B"}
+
+# ── wipe-floor guards (build mode) ───────────────────────────────────────────
+# Every selection failure mode (empty/truncated grades.csv, validator API drift
+# making fresh_grade return None for everything) used to converge on wiping all
+# ~1,881 curated dirs and exiting 0 (2026-07-14 ops review). Before any rmtree,
+# the fresh selection must clear BOTH floors relative to the committed
+# MANIFEST count, or the build refuses and leaves the mirror untouched:
+#   - MIN_PROMOTED_ABSOLUTE: the corpus has sat at ~1,881 A/B skills since the
+#     mirror shipped; anything under 500 is not a plausible organic selection,
+#     it is an upstream failure.
+#   - MIN_PROMOTED_RATIO: a >50% single-run shrink is never routine grade
+#     movement — historical week-over-week drift is single-digit percent.
+# A deliberate mass-delisting passes --force-floor.
+MIN_PROMOTED_ABSOLUTE = 500
+MIN_PROMOTED_RATIO = 0.5
 
 
 # ── selection ────────────────────────────────────────────────────────────────
@@ -133,6 +151,19 @@ def load_validator():
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         return mod
+    except SystemExit as e:
+        # The validator hard-exits (sys.exit(1)) at import when a hard dep such
+        # as pyyaml is missing. SystemExit inherits BaseException, NOT Exception,
+        # so the generic handler below never saw it and the whole promoter died
+        # despite the documented degrade contract — the 2026-07-13 first-dispatch
+        # failure was patched in the workflow (`pip install pyyaml`), fixed here
+        # so the contract holds in every environment.
+        print(
+            f"⚠️  validator import hard-exited (exit={e.code}) — likely a missing "
+            "dependency such as pyyaml; falling back to recorded grades.",
+            file=sys.stderr,
+        )
+        return None
     except Exception as e:  # noqa: BLE001 — any failure ⇒ fall back to recorded grade
         print(f"⚠️  could not import validator ({e}); falling back to recorded grades.", file=sys.stderr)
         return None
@@ -194,7 +225,17 @@ def tracked_files(skill_dir: Path) -> List[str]:
 
 
 # ── build ────────────────────────────────────────────────────────────────────
-def build(validate: bool = True, quiet: bool = False) -> int:
+def _committed_manifest_count() -> Optional[int]:
+    """The promoted-skill count recorded by the last successful build, or None."""
+    if not MANIFEST.exists():
+        return None
+    try:
+        return int(json.loads(MANIFEST.read_text()).get("count"))
+    except (ValueError, TypeError, OSError, json.JSONDecodeError):
+        return None
+
+
+def build(validate: bool = True, quiet: bool = False, force_floor: bool = False) -> int:
     candidates = load_candidates(GRADES_CSV)
     if not quiet:
         print(f"selection: {len(candidates)} A/B plugin skills (own, source present)")
@@ -206,12 +247,9 @@ def build(validate: bool = True, quiet: bool = False) -> int:
     run_id = _run_id()
     assign_curated_names(candidates)
 
-    # Wipe and rebuild — deletions/downgrades propagate, like build-cowork-zips.mjs.
-    if CURATED_DIR.exists():
-        shutil.rmtree(CURATED_DIR)
-    CURATED_DIR.mkdir(parents=True)
-
-    promoted: List[Dict] = []
+    # Phase 1 — selection (no filesystem mutation): grade + enumerate BEFORE any
+    # wipe so a selection collapse is caught while the mirror is still intact.
+    keep: List[tuple] = []  # (candidate, fresh_grade, tracked_files)
     dropped_grade = 0
     dropped_empty = 0
     for c in candidates:
@@ -229,6 +267,47 @@ def build(validate: bool = True, quiet: bool = False) -> int:
             dropped_empty += 1
             continue  # nothing tracked to mirror
 
+        keep.append((c, fg, files))
+
+    # Phase 2 — wipe-floor gate: refuse to touch the mirror when the fresh
+    # selection is implausibly small (see MIN_PROMOTED_* rationale above).
+    if not force_floor:
+        problems: List[str] = []
+        if not candidates:
+            problems.append("grades.csv yielded ZERO candidates (empty/truncated export?)")
+        elif validate and not keep and dropped_grade == len(candidates):
+            problems.append(
+                "the in-process re-grade dropped 100% of candidates "
+                "(validator API drift or a broken kernel install?)"
+            )
+        prior = _committed_manifest_count()
+        if prior:
+            floor = max(MIN_PROMOTED_ABSOLUTE, int(prior * MIN_PROMOTED_RATIO))
+            if len(keep) < floor:
+                problems.append(
+                    f"fresh selection is {len(keep)} skills, below the floor of "
+                    f"{floor} (committed MANIFEST count {prior}; absolute floor "
+                    f"{MIN_PROMOTED_ABSOLUTE}, ratio {MIN_PROMOTED_RATIO})"
+                )
+        if problems:
+            for p in problems:
+                print(f"::error::refusing to rebuild skills/.curated/: {p}", file=sys.stderr)
+            print(
+                "skills/.curated/ left untouched. If this shrink is deliberate, "
+                "re-run with --force-floor.",
+                file=sys.stderr,
+            )
+            return 1
+
+    # Phase 3 — wipe and rebuild — deletions/downgrades propagate, like
+    # build-cowork-zips.mjs.
+    if CURATED_DIR.exists():
+        shutil.rmtree(CURATED_DIR)
+    CURATED_DIR.mkdir(parents=True)
+
+    promoted: List[Dict] = []
+    for c, fg, files in keep:
+        src_dir = ROOT / c["skill_path"]
         dest_dir = CURATED_DIR / c["curated_name"]
         for rel in files:
             dst = dest_dir / rel
@@ -367,11 +446,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Promote A/B plugin skills into skills/.curated/ for skills.sh.")
     ap.add_argument("--check", action="store_true", help="CI drift gate: exit 1 if the mirror is stale vs source.")
     ap.add_argument("--no-validate", action="store_true", help="Skip the in-process re-grade defense (build mode).")
+    ap.add_argument(
+        "--force-floor",
+        action="store_true",
+        help="Override the wipe-floor guard for a deliberate mass-delisting "
+        "(build mode; normally a selection below the floor refuses to wipe).",
+    )
     ap.add_argument("--quiet", action="store_true", help="Only print on error.")
     args = ap.parse_args()
     if args.check:
         return check(quiet=args.quiet)
-    return build(validate=not args.no_validate, quiet=args.quiet)
+    return build(validate=not args.no_validate, quiet=args.quiet, force_floor=args.force_floor)
 
 
 if __name__ == "__main__":
