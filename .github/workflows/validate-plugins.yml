@@ -11,6 +11,16 @@ on:
   push:
     branches: [main]
 
+# Cancel superseded runs on rapid PR pushes (this workflow fans out ~17 jobs
+# per run, so stacking three full runs per force-push burns real minutes).
+# cancel-in-progress is GUARDED off for main: push-to-main runs must each
+# complete (the aggregate's post-merge signal), never cancel one another —
+# they queue in the shared group instead. PR refs (refs/pull/N/merge) are
+# unique per PR, so cancellation only ever hits the same PR's older run.
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -89,6 +99,20 @@ jobs:
 
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
+
+      # sources.yaml include-anchoring gate (blocker 62ye.6 promoted to
+      # blocking after the 2026-07-13 governed-second-brain incident): an
+      # include starting with neither "/" nor "**" is silently auto-prefixed
+      # "**/" by the sync engine and matches at ANY depth — the vetter reviewed
+      # the root path, the mirror admitted every match. The sync-run warning is
+      # advisory-only; this step is the deterministic PR gate. Legacy pre-gate
+      # entries are grandfathered (exactly enumerated, ratchet-only) in
+      # scripts/sources-anchoring-allowlist.txt so existing state stays green
+      # and only NEW/edited sources.yaml includes must anchor. Reuses
+      # unanchoredIncludes() from scripts/sync-lockfile.mjs — the same
+      # predicate the engine warns with, so gate and engine cannot disagree.
+      - name: Check sources.yaml include anchoring
+        run: node scripts/check-sources-anchoring.mjs
 
       # Unicode-hygiene gate. Detects the supply-chain attack class
       # schema validation cannot see: invisible tag characters
