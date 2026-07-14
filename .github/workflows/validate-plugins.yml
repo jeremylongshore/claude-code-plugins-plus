@@ -37,6 +37,25 @@ jobs:
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
 
+      # Supply-chain intake gate: sources.yaml include-anchoring ratchet.
+      # An include starting with neither '/' nor '**' is silently auto-prefixed
+      # '**/' by the sync engine's matcher and matches at ANY depth — the
+      # over-collection class behind the 2026-07-13 tailnet-IP leak (an
+      # unanchored 'README.md' admitted upstream's onboarding/README.md into
+      # the public mirror). The engine's sync-time warning is advisory only;
+      # THIS is the hard gate: any source ADDED (or whose include list is
+      # EDITED) in this PR must be fully anchored. Untouched legacy entries are
+      # grandfathered until touched (54 predate the rule — the ratchet scope is
+      # what keeps the gate green today without weakening it for new intake).
+      # Diff-scoped, so pull_request only — a DESIGNED skip on push (no base).
+      # Blocks through the ci-required aggregate via this `validate` job.
+      - name: Lint sources.yaml include anchoring (intake ratchet)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          node scripts/sync-lint-ignores.mjs --check-source-anchoring --base="origin/${{ github.base_ref }}"
+
       # @intentsolutions/audit-harness verify — exit 0 when policy hashes
       # match `.harness-hash`, exit 2 when a hash-pinned policy file (e.g.
       # tests/TESTING.md, .dependency-cruiser.cjs, *.feature) was changed
@@ -178,8 +197,17 @@ jobs:
               exit 1
             fi
 
-            # Check scripts are executable
-            if [ -d "$plugin/scripts" ]; then
+            # Check scripts are executable — SKIPPED for external mirror
+            # plugins (dir carries a .source.json marker). The sync engine
+            # preserves upstream file modes (mirror fidelity), and a sourced
+            # .sh library is CORRECTLY non-executable upstream (2026-07-13:
+            # skills-janitor scripts/paths.sh at 0644 red-failed this gate and
+            # forced a local chmod that diverged the mirror from its source of
+            # truth). Mirror fidelity wins for mirrors; in-repo plugins keep
+            # the strict exec-bit requirement unchanged.
+            if [ -f "$plugin/.source.json" ]; then
+              echo "  ↳ external mirror (.source.json) — upstream file modes are authoritative; skipping exec-bit check"
+            elif [ -d "$plugin/scripts" ]; then
               find "$plugin/scripts" -type f -name "*.sh" | while read -r script; do
                 if [ ! -x "$script" ]; then
                   echo "Script not executable: $script"

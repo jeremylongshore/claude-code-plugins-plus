@@ -45,6 +45,22 @@ export const LOCK_COMMENT =
 
 /**
  * Digest a file's exact bytes. Returns "sha256:<hex>".
+ *
+ * KNOWN LIMITATION (deliberate, 2026-07 ops review): the digest is CONTENT-ONLY
+ * — the file mode (executable bit) is not folded in, so a mode-only upstream
+ * change classifies as 'unchanged' and is NOT quarantined, yet the engine
+ * self-heals the exec bit on write (sync-external.mjs reason='mode'). This
+ * weakens the "lock unchanged ⇒ working tree unchanged" invariant for exactly
+ * one low-impact class: an already-vetted, byte-identical script flipping ±x.
+ * We accept it because (a) folding mode into the digest string would mismatch
+ * every existing lock entry → mass drift-quarantine → a forced --relock-all,
+ * the exact bulk rubber-stamp this lockfile exists to prevent; (b) a
+ * backward-compatible `{sha256, mode}` entry shape adds branching to
+ * buildLockEntry/diffSource/serializeLock for a gap whose payload (content) is
+ * still pinned; and (c) the compensating control already exists — git records
+ * the mode flip as an `old mode/new mode` hunk in the sync PR's diff, so the
+ * reviewer sees it there even though sources.lock.json stays quiet. Revisit if
+ * the lock format ever takes a version bump for another reason.
  */
 export function computeFileDigest(buffer) {
   if (!Buffer.isBuffer(buffer)) {
