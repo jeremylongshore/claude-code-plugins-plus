@@ -30,16 +30,19 @@ jeremy-firebase/
 cd plugins/community/jeremy-firebase/
 
 # Validate plugin structure
-../../scripts/validate-all-plugins.sh .
+python3 ../../../scripts/validate-skills-schema.py \
+  skills/firebase-vertex-ai/SKILL.md --marketplace
 
 # Add plugin to marketplace catalog
 # Edit .claude-plugin/marketplace.extended.json at repository root
 
 # Sync marketplace catalogs
-cd ../.. && pnpm run sync-marketplace
+cd ../../.. && pnpm run sync-marketplace
 
 # Validate changes
-./scripts/validate-all-plugins.sh plugins/community/jeremy-firebase/
+python3 scripts/validate-skills-schema.py \
+  plugins/community/jeremy-firebase/skills/firebase-vertex-ai/SKILL.md \
+  --marketplace
 ```
 
 ### Testing the Plugin
@@ -387,7 +390,8 @@ All examples should:
 
 ```bash
 # 1. Validate plugin structure
-../../scripts/validate-all-plugins.sh .
+python3 ../../../scripts/validate-skills-schema.py \
+  skills/firebase-vertex-ai/SKILL.md --marketplace
 
 # 2. Check for hardcoded secrets
 grep -r "AIza" . --exclude-dir=node_modules
