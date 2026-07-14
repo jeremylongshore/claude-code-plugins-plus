@@ -72,7 +72,15 @@ jobs:
           # Need full history so the merge-base diff against origin/<base>
           # resolves cleanly.
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          # This persisted credential authenticates the `git push origin
+          # HEAD:"$HEAD_REF"` below — with GITHUB_TOKEN the bump commit becomes
+          # the head SHA but fires no pull_request:synchronize, so required
+          # checks never re-run and the PR stalls in "Expected". Falls back to
+          # GITHUB_TOKEN (today's behavior) until the secret exists. Same-repo
+          # PRs only (forks are skipped by the job `if:`), so the token is
+          # never exposed to fork code.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v6
         with:

@@ -14,8 +14,8 @@ name: Update npm download stats (daily)
 
 on:
   schedule:
-    - cron: '15 0 * * *'  # 00:15 UTC daily
-  workflow_dispatch:       # manual refresh
+    - cron: '15 0 * * *' # 00:15 UTC daily
+  workflow_dispatch: # manual refresh
 
 permissions:
   contents: write
@@ -32,7 +32,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          # This persisted credential authenticates the branch push below.
+          # Falls back to GITHUB_TOKEN (today's behavior) until the secret exists.
+          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v6
         with:
@@ -60,7 +63,8 @@ jobs:
         # `--no-verify` skips local git hooks (husky / lint-staged) so the
         # automated commit doesn't OOM on prettier across the staged set.
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           BRANCH="automation/npm-stats"
