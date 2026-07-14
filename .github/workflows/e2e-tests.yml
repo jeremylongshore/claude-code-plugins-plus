@@ -6,9 +6,20 @@ name: E2E Tests
 #   1. Path-filtered PRs — only fire when the diff actually touches UI surface
 #      that could break visually. Catalog-only PRs, doc PRs, plugin-content
 #      PRs, and CI config PRs don't run these.
-#   2. Push to main — always run after merge so we catch any regression that
-#      slipped through the path filter.
-#   3. workflow_dispatch — manual opt-in for PRs that fell outside the path
+#   2. Push to main — runs the LOCAL playwright-tests build suite after merge
+#      so we catch any regression that slipped through the path filter.
+#      production-e2e does NOT run on push (see 3).
+#   3. workflow_run on the VPS deploy — production-e2e drives the LIVE site, so
+#      on main it must run AFTER "Deploy tonsofskills.com to VPS" finishes.
+#      Both workflows used to trigger on push:main with no ordering, so the
+#      prod suite raced the rsync and asserted against the pre-deploy site
+#      (false red on content about to ship, or false green masking a deploy
+#      regression). The workflow_run trigger, guarded on
+#      `conclusion == 'success'`, guarantees deploy-then-test ordering. The
+#      deploy's paths (marketplace/**) are a superset of this workflow's UI
+#      paths, so every UI-touching main push still gets a prod run — via the
+#      deploy, in order.
+#   4. workflow_dispatch — manual opt-in for PRs that fell outside the path
 #      filter but need a sanity check (e.g., catalog PR that touches a featured
 #      plugin's spotlight). Run via: gh workflow run e2e-tests.yml --ref <branch>.
 #
@@ -18,6 +29,11 @@ name: E2E Tests
 
 on:
   workflow_dispatch:
+  # Post-deploy trigger for production-e2e (see header note 3). Only fires
+  # from main (workflow_run always uses the default branch's workflow file).
+  workflow_run:
+    workflows: ['Deploy tonsofskills.com to VPS']
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -54,9 +70,15 @@ on:
       - 'marketplace/tests/**'
       - '.github/workflows/e2e-tests.yml'
 
-# Cancel in-flight runs when a new push lands on the same PR/branch.
+# Cancel in-flight runs when a new push lands on the same PR/branch. The event
+# name is part of the group ON PURPOSE: workflow_run events carry the default
+# branch ref, so without it a post-deploy production-e2e run (starting minutes
+# after the push) would share a group with — and cancel — the push's still-
+# running local playwright-tests. Successive events of the SAME kind still
+# supersede each other (newer PR push cancels the older run; a newer deploy's
+# prod suite cancels an older in-flight one).
 concurrency:
-  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  group: e2e-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -64,6 +86,9 @@ jobs:
   # UI-touching PRs — catches breakage before it reaches production.
   playwright-tests:
     runs-on: ubuntu-latest
+    # Deploy-completion events are production-e2e's trigger only; the local
+    # build suite already ran on the push/PR that produced the deploy.
+    if: github.event_name != 'workflow_run'
     steps:
       - uses: actions/checkout@v6
 
@@ -139,8 +164,18 @@ jobs:
   # Production E2E against live tonsofskills.com. No build needed — drives a
   # real browser against the deployed site. Useful for detecting deploy/CDN
   # issues that local builds can't catch.
+  #
+  # On main this job runs ONLY via workflow_run after the VPS deploy succeeded
+  # (never on the raw push — see header note 3), so it always tests the newly-
+  # deployed site instead of racing the rsync. A failed/cancelled deploy runs
+  # nothing: there is no new deployment to verify, and the deploy workflow's
+  # own healthz/smoke steps already flagged the failure.
   production-e2e:
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - uses: actions/checkout@v6
 
