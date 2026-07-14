@@ -81,7 +81,7 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **447 published packages** in the
+Across **452 published packages** in the
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window        | All packages | Established (>30d) |
@@ -107,7 +107,7 @@ Across **447 published packages** in the
 | 9   | [`@intentsolutionsio/obsidian-project-documentation`](https://www.npmjs.com/package/@intentsolutionsio/obsidian-project-documentation)                     |      425 |
 | 10  | [`@intentsolutionsio/governed-second-brain`](https://www.npmjs.com/package/@intentsolutionsio/governed-second-brain)                                       |      422 |
 
-<sub>Last refreshed 2026-07-13T01:30:53.297Z.</sub>
+<sub>Last refreshed 2026-07-14T01:24:23.996Z.</sub>
 
 <!-- NPM-STATS:END -->
 
