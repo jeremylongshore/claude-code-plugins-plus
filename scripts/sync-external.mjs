@@ -74,9 +74,9 @@ const options = {
   source: args.find((a) => a.startsWith('--source='))?.split('=')[1] || null,
   // --relock=NAME / --relock-all: the ONLY way to advance sources.lock.json
   // for a source whose upstream content drifted from the locked baseline.
-  // Deliberately separate from --force (which the weekly workflow always
-  // passes): forcing file writes must never double as approving new upstream
-  // content sight-unseen.
+  // Deliberately separate from --force (dispatch-opt-in in the weekly
+  // workflow since 2026-07-14): forcing file writes must never double as
+  // approving new upstream content sight-unseen.
   relockAll: args.includes('--relock-all'),
   relock: args
     .filter((a) => a.startsWith('--relock='))
@@ -549,8 +549,9 @@ async function syncSource(source, config, lock) {
     //   unchanged  → mirror as today (no-op diffs).
     //   drifted    → QUARANTINE: skip this source entirely this run; a human
     //                reviews the upstream diff and approves via --relock.
-    // NOTE: --force does NOT bypass this gate (the weekly workflow always
-    // passes --force); only an explicit --relock advances a drifted lock.
+    // NOTE: --force does NOT bypass this gate (whether opt-in via the
+    // workflow's force input or passed by hand); only an explicit --relock
+    // advances a drifted lock.
     let resolvedRef = null;
     try {
       resolvedRef = execFileSync('git', ['-C', tmpdir, 'rev-parse', 'HEAD'], {
@@ -612,6 +613,13 @@ async function syncSource(source, config, lock) {
         `   🔏 Re-baselining via --relock: +${lockDiff.added.length} added  ~${lockDiff.changed.length} changed  -${lockDiff.removed.length} removed`,
         colors.yellow,
       );
+      // Approval record: a relock re-baselines UNREVIEWED-by-the-lock upstream
+      // content, so the exact per-file list must land in the run log at normal
+      // verbosity (NOT logVerbose — the workflow's Actions log is the audit
+      // surface a bulk `relock=all` approval gets judged against).
+      for (const p of lockDiff.added) log(`      relock added:   ${p}`, colors.yellow);
+      for (const p of lockDiff.changed) log(`      relock changed: ${p}`, colors.yellow);
+      for (const p of lockDiff.removed) log(`      relock removed: ${p}`, colors.yellow);
     }
 
     // Supply-chain REFUSE quarantine (blocker 62ye.2). Scan this source's files
