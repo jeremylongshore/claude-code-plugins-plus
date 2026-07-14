@@ -16,11 +16,23 @@
 
 # ── Known upstream one-line installers (documented install steps in READMEs). ──
 # These are legitimate `curl … | sh` install instructions, not executable payloads
-# (they live in markdown docs, hence graded CHALLENGE not REFUSE). Pre-signed so
-# routine doc edits don't wall a human PR; a NEW install target still surfaces.
-plugins/**/README.md:pipe-to-shell  documented upstream one-line installer (ollama/bun/gcloud/etc.) in a README
+# (they live in markdown docs, hence graded CHALLENGE not REFUSE). Waivers are
+# PER-PLUGIN and name the specific installer: the former corpus-wide
+# `plugins/**/README.md:pipe-to-shell` line pre-cleared ANY future curl|sh in ANY
+# README forever (2026-07-14 ops review) — a new install target in a README not
+# listed here now correctly CHALLENGEs and needs its own reviewed, path-scoped line.
+plugins/ai-agency/make-scenario-builder/README.md:pipe-to-shell  documented official Ollama installer (https://ollama.com/install.sh) as the local-model setup step
+plugins/ai-ml/ai-sdk-agents/README.md:pipe-to-shell  documented official Ollama installer (https://ollama.com/install.sh) as the manual local-model fallback
+plugins/community/geepers-agents/README.md:pipe-to-shell  documented official Ollama installer (https://ollama.com/install.sh) as the local-model setup step
+plugins/ai-ml/jeremy-vertex-engine/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
+plugins/ai-ml/jeremy-vertex-validator/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
+plugins/devops/jeremy-adk-terraform/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
+plugins/devops/jeremy-vertex-terraform/README.md:pipe-to-shell  documented official Google Cloud SDK installer (https://sdk.cloud.google.com) as the gcloud setup step
+plugins/business-tools/promptbook/README.md:pipe-to-shell  upstream's own documented setup script (promptbook.gg/setup.sh) in the mirrored README
+plugins/community/mnemos/README.md:pipe-to-shell  upstream's own install.sh (raw.githubusercontent.com/polyxmedia/mnemos) documented as the install step
+plugins/community/portaljs/README.md:pipe-to-shell  upstream's own install script (raw.githubusercontent.com/datopian/portaljs) documented as the install step
 plugins/ai-ml/ollama-local-ai/**:pipe-to-shell  official Ollama installer is the documented setup path for this skill
-plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs
+plugins/mcp/slack-channel/**:pipe-to-shell  documented Bun/Claude install steps in slack-channel setup docs (covers README.md + .audit-harness/README.md intent-audit-harness installer)
 plugins/saas-packs/**/skills/**/SKILL.md:pipe-to-shell  documented vendor-CLI install step inside a SaaS-pack skill
 
 # ── Remote MCP servers that ARE the plugin's engine (reviewed, no credentials embedded). ──
@@ -41,7 +53,6 @@ plugins/community/skills-janitor/scripts/compare.sh:outbound-network  keyword ma
 plugins/community/skills-janitor/scripts/search.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
 plugins/community/skills-janitor/scripts/precheck.sh:secret-exfil-cooccur  GITHUB_TOKEN attached only to the api.github.com request (AUTH_ARGS array), never to the raw or arbitrary-URL fetches
 plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
-sources.yaml:sources-change-unscanned  skills-janitor vetted per the 699 playbook @ khendzel/skills-janitor c63c3478e (2026-07-13): all 23 admitted files read (13 scripts line-by-line), scanner 0 REFUSE / 30 CHALLENGE (all GitHub-API discovery, waived per-file above) / 5 FLAG (acknowledged); 5 skills grade A, j-rig check 12/12 each; MIT license verified; author account 5 yrs old, repo 108 stars with 4-month organic history
 
 # ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
@@ -49,6 +60,9 @@ sources.yaml:sources-change-unscanned  skills-janitor vetted per the 699 playboo
 # changes. Do NOT leave a standing line here — after its PR merges it is inert
 # (the diff-added check ignores it) and only misleads. Each sources PR that needs
 # the sign-off adds its own `sources.yaml:sources-change-unscanned  <reason>`.
+# (The spent one-shot lines for skills-janitor / walkie-talkie / localplugins /
+# quit-sponsor were removed 2026-07-14 per this rule — their vet evidence lives
+# in git history and the intake PRs #1020/#1030 that added them.)
 
 # ── hyperflow orchestrator skill: upstream web-research feature. ──
 plugins/ai-agency/hyperflow/skills/hyperflow/SKILL.md:allowed-tools-network  upstream v5.8.x added WebFetch/WebSearch to the orchestrator skill for its web-research feature (skills/hyperflow/web-research.md); mirror content hand-reviewed 2026-07-10 (evidence gate on #1008 + the be6ae2d3->eae6e34c5 delta review) — external mirror, upstream's design, no credential surface
@@ -84,8 +98,6 @@ plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/hooks/st
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-deploy-guard.py:hook-definition  advisory PreToolUse state guard — validates/back-ups terraform.tfstate before a bundle deploy, never blocks, fails open, no network/credentials/dynamic-exec — reviewed 2026-07-12
 plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/hooks/bundle-grant-retry.py:hook-definition  PostToolUse D6 detector — matches only the exact grant-ordering stderr and adds one-retry context, never masks other errors, no network/credentials/dynamic-exec — reviewed 2026-07-12
 
-sources.yaml:sources-change-unscanned  walkie-talkie vetted per the 699 playbook @ walkie-talkie-skill/walkie-talkie 0b74f4d36 (2026-07-13): all 4 admitted files read in full (pure markdown mailbox protocol, zero scripts/hooks/MCP/network/tool grants); scanner 0 REFUSE / 0 CHALLENGE / 0 FLAG; MIT verified; verified stays false — org is 11 days old, pseudonymous, 2-commit same-day history (content-clean, provenance thin); two disclosed-by-design instruction-surface notes acknowledged in the vet record (bootstrap-file shim + peer-writable mailbox instructions)
-
 # ── localplugins brand-forge + content-multiplier — vetted 2026-07-13 @ upstream fe2f4fa2a (PR #1030 intake). ──
 # hooks-mcp tier: each plugin's entire auto-execute surface is ONE SessionStart
 # hook, justified per entry in the vet. brand-forge's dispatcher loops read-only
@@ -102,9 +114,6 @@ plugins/productivity/content-multiplier/hooks/hooks.json:hook-definition  single
 plugins/productivity/content-multiplier/hooks/session-start.sh:hook-definition  5-line existence-check + echo hint; set -euo pipefail; no network/env/writes — read line-by-line 2026-07-13
 plugins/productivity/content-multiplier/.claude-plugin/plugin.json:hook-definition  hooks pointer to the vetted hooks/hooks.json only
 plugins/productivity/content-multiplier/docs/ADR.md:allowed-tools-network  false positive — the ADR's table documents WebFetch/WebSearch are NOT declared ("offline by design"); scanner's 20-line window caught the names in prose
-sources.yaml:sources-change-unscanned  brand-forge + content-multiplier vetted per the 699 playbook @ localplugins/plugins fe2f4fa2a (2026-07-13): 40 + 33 admitted files ALL read (hooks command-by-command, scripts line-by-line); scanner 0 REFUSE both (brand-forge 3 CHALLENGE = its hook surface, 4 FLAG = Bash(node:*) scoped grants; content-multiplier 4 CHALLENGE = hook surface + 1 ADR false positive); all skills j-rig 12/12, full IS 8-field frontmatter; MIT verified; org is 6 days old (raised-bar vet: full read at pinned SHA); hooks-mcp tier — drift quarantine carries per-entry re-approval weight
-
-sources.yaml:sources-change-unscanned  quit-sponsor vetted per the 699 playbook @ metrox-eth/quit-sponsor 8d998db11 (2026-07-13): all 5 admitted files read in full (pure-prose cessation protocol, zero scripts/hooks/MCP/network); scanner 0 REFUSE / 0 CHALLENGE / 0 FLAG; unicode-hygiene --strict clean; j-rig check 12/12; MIT verified; author account ~7 yrs, real identity, organic history
 
 # ── skill-creator / agent-creator: creator-skill documentation shows hooks syntax. ──
 # These are fenced frontmatter-reference examples inside the creators' own docs

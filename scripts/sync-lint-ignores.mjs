@@ -37,15 +37,107 @@
  *   node scripts/sync-lint-ignores.mjs --check    # CI drift gate — exit 1 if
  *                                                 # either file WOULD change,
  *                                                 # printing the fix command
+ *
+ * ── Second gate housed here: sources.yaml include-anchoring ratchet ───────
+ *   node scripts/sync-lint-ignores.mjs --check-source-anchoring [--base=REF]
+ *
+ * An include pattern that starts with neither `/` (root-anchored) nor `**`
+ * (explicitly recursive) is silently auto-prefixed `**\/` by the sync engine's
+ * matcher (sync-lockfile.mjs matchesPattern) and matches at ANY depth — the
+ * over-collection class behind the 2026-07-13 incident, where an unanchored
+ * `README.md` admitted upstream's onboarding/README.md (carrying a private
+ * tailnet IP) into the public mirror. The engine's own sync-time warning is
+ * advisory; THIS is the blocking CI gate (wired into validate-plugins.yml's
+ * `validate` job, which gates through ci-required).
+ *
+ *   --base=REF   ratchet mode (what CI runs): only sources ADDED, or whose
+ *                include list CHANGED, vs `git show REF:sources.yaml` must be
+ *                fully anchored. 54 legacy entries predate the rule and are
+ *                grandfathered UNTIL TOUCHED — editing an entry's includes
+ *                forces anchoring it. Fail-closed: an unreadable/unparseable
+ *                base puts EVERY source in scope.
+ *   (no --base)  full-scan mode: every source's includes must be anchored.
+ *                Flip CI to this once the legacy sources.yaml entries are
+ *                anchored (mechanical + behavior-preserving: bare `X` ≡ `**\/X`
+ *                under the auto-prefix, so `**\/X` is always a safe rewrite).
+ *
+ * This mode lazily imports js-yaml (a root devDependency); the plain --check
+ * mode stays dependency-free so the markdownlint CI job can run it without a
+ * pnpm install.
  */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
+import { unanchoredIncludes } from './sync-lockfile.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
+const CHECK_ANCHORING = process.argv.includes('--check-source-anchoring');
+const BASE_REF = process.argv.find((a) => a.startsWith('--base='))?.slice('--base='.length) || null;
 const FIX_CMD = 'node scripts/sync-lint-ignores.mjs';
+
+// ── sources.yaml include-anchoring ratchet ─────────────────────────────────
+if (CHECK_ANCHORING) {
+  // Lazy import: js-yaml is only needed for this mode (see header).
+  const { default: yaml } = await import('js-yaml');
+  const sourcesAbs = path.join(ROOT, 'sources.yaml');
+  const headSources = yaml.load(fs.readFileSync(sourcesAbs, 'utf8'))?.sources || [];
+
+  let scope = headSources;
+  let scopeLabel = `all ${headSources.length} sources (full scan)`;
+  if (BASE_REF) {
+    let baseSources = null;
+    try {
+      const baseText = execFileSync('git', ['show', `${BASE_REF}:sources.yaml`], {
+        cwd: ROOT,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      baseSources = yaml.load(baseText)?.sources || [];
+    } catch {
+      // Fail closed toward checking MORE: if the base can't be read/parsed,
+      // every source is in scope rather than silently passing the gate.
+      baseSources = null;
+    }
+    if (baseSources) {
+      const baseIncludes = new Map(
+        baseSources.map((s) => [s.name, JSON.stringify(s.include ?? null)]),
+      );
+      scope = headSources.filter(
+        (s) => baseIncludes.get(s.name) !== JSON.stringify(s.include ?? null),
+      );
+      scopeLabel = `${scope.length} source(s) added/include-edited vs ${BASE_REF}`;
+    } else {
+      scopeLabel = `all ${headSources.length} sources (base ${BASE_REF} unreadable — fail-closed full scan)`;
+    }
+  }
+
+  const offenders = [];
+  for (const s of scope) {
+    for (const pat of unanchoredIncludes(s.include)) {
+      offenders.push({ name: s.name, pat });
+    }
+  }
+
+  if (offenders.length === 0) {
+    console.log(`✓ sources.yaml include anchoring OK — checked ${scopeLabel}`);
+    process.exit(0);
+  }
+
+  console.error(`✗ unanchored sources.yaml include pattern(s) in ${scopeLabel}:\n`);
+  for (const { name, pat } of offenders) {
+    console.error(`    ${name}: "${pat}"`);
+  }
+  console.error(`
+An include starting with neither '/' nor '**' is silently auto-prefixed '**/'
+and matches at ANY depth — over-collecting upstream files the vetter never
+reviewed (the 2026-07-13 tailnet-IP leak class). Make the intent explicit:
+    "/${offenders[0].pat}"   → root of source_path only
+    "**/${offenders[0].pat}" → any depth, deliberately recursive (same behavior
+                               the auto-prefix gave you, now stated)`);
+  process.exit(1);
+}
 
 // ── Discovery — identical to the superseded check ─────────────────────────
 const syncedDirs = [
