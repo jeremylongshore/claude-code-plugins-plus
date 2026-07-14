@@ -1,5 +1,13 @@
 # Global Master Standard – Claude Skills Specification
 
+> ⚠️ **CURRENT SCHEMA: 3.15.2** (`scripts/validate-skills-schema.py` `SCHEMA_VERSION`). This document is the
+> **v3.6.0 baseline** of the standard — the 8-field required set, tier model, and 100-point rubric below are
+> still authoritative and unchanged, but nine schema versions of additional enforced rules postdate it
+> (3.7.0 `disallowed-tools` + overlap ERROR, 3.10.0/3.11.0 kernel-strict agent gates, 3.12.0/3.13.0
+> `plugin.json` field rules, 3.15.x body-section fairness, among others). **Read
+> [`SCHEMA_CHANGELOG.md`](SCHEMA_CHANGELOG.md) for every change since this doc's 3.6.0 baseline** — the
+> changelog, not this file, is where post-3.6.0 rules are specified.
+
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
 **Version**: 3.6.0
 **Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; self-improving-skills series complete 2026-05-14: progressive disclosure + conditional visibility + self-declared config)

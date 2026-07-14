@@ -2,11 +2,12 @@
 
 > 📘 **First time contributing?** Read both:
 >
-> 1. CONTRIBUTING.md § Before You Submit — the contract and the workflow
-> 2. **Plugin & Skill Spec (v3.6.0)** — the authoritative spec the validator scores against (8-field frontmatter, 7 body sections, 100-point rubric, all source-cited)
+> 1. [CONTRIBUTING.md](CONTRIBUTING.md) § Before You Submit — the contract and the workflow
+> 2. **Plugin & Skill Spec** (v3.6.0 baseline; enforced schema 3.15.2 — see `000-docs/SCHEMA_CHANGELOG.md`) — the authoritative spec the validator scores against (8-field frontmatter, 7 body sections, 100-point rubric, all source-cited)
 >
-> The PR Pre-screen workflow will post a structured review with the exact
-> validator findings on every PR — reading both up front saves a round-trip.
+> The PR Pre-screen workflow sets an advisory `prescreen-grade` status on every
+> run and posts a structured comment with the exact validator findings only when
+> changes are needed (silent on PASS) — reading both up front saves a round-trip.
 
 ## Type of Change
 
@@ -84,7 +85,8 @@
 
 ### For All PRs
 
-- [ ] I have read the [CONTRIBUTING.md](../000-docs/007-DR-GUID-contributing.md) guidelines
+- [ ] I have read the [CONTRIBUTING.md](CONTRIBUTING.md) guidelines
+- [ ] "Allow edits by maintainers" is enabled (fork PRs) — we push small regen/bump fixes to your branch instead of round-tripping
 - [ ] My code follows the project's style and conventions
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code where necessary

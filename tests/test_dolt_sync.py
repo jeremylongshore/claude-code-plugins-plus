@@ -1,11 +1,17 @@
 """Unit tests for freshie/scripts/dolt-sync.py (schema translation, the
-(NULL,'') fallback SQL generation, and the VARCHAR length guard).
+(NULL,'') fallback SQL generation, the VARCHAR length guard, the
+public-export table allowlist, and the current-run grades export).
 
 Run: python3 -m unittest tests.test_dolt_sync -v
 
-Pure-function tests only — no dolt binary, no network, no repo state.
-The live round-trip (CSV canary, parity gates, push) is exercised by the
-sync itself on every run.
+Coverage honesty: these are pure-function tests only — no dolt binary, no
+network, no repo state. The commit/tag/push/gc state machine
+(commit_and_tag's crash-retry, tag-suffix, and head-message branches;
+push's stranded-tag reconciliation; maybe_gc) is NOT covered here, and the
+"the sync itself exercises it" framing only holds for the happy path — the
+rare branches (e.g. the run-9.1 tag-suffix event of 2026-07-13) run in
+production first. Treat any change to that state machine as untested until
+a dolt-backed round-trip test exists.
 """
 
 import importlib.util
@@ -226,6 +232,110 @@ class TypeViolationTests(unittest.TestCase):
         schema = dolt_sync.introspect_schema(conn)
         with self.assertRaises(dolt_sync.SyncError):
             dolt_sync.scan_type_violations(conn, schema)
+        conn.close()
+
+
+class ExportAllowlistTests(unittest.TestCase):
+    """Everything the sync exports becomes permanent PUBLIC DoltHub history —
+    table membership is a hard gate (j-rig's runtime tables leaked into the
+    public run-9.1 push because no such gate existed)."""
+
+    def test_allowlisted_tables_pass(self):
+        dolt_sync.gate_export_allowlist(["skill_compliance", "forge_proofs", "skills"])
+
+    def test_full_allowlist_passes(self):
+        dolt_sync.gate_export_allowlist(sorted(dolt_sync.EXPORT_ALLOWLIST))
+
+    def test_bogus_table_hard_fails_and_is_named(self):
+        with self.assertRaises(dolt_sync.SyncError) as ctx:
+            dolt_sync.gate_export_allowlist(["skill_compliance", "totally_bogus"])
+        self.assertIn("totally_bogus", str(ctx.exception))
+        self.assertIn("EXPORT_ALLOWLIST", str(ctx.exception))
+
+    def test_jrig_runtime_table_fails_with_scratch_db_guidance(self):
+        with self.assertRaises(dolt_sync.SyncError) as ctx:
+            dolt_sync.gate_export_allowlist(["skills", "criterion_results", "runs"])
+        msg = str(ctx.exception)
+        self.assertIn("criterion_results", msg)
+        self.assertIn("runs", msg)
+        self.assertIn("run-jrig-eval.sh", msg)
+        self.assertIn("DROP TABLE", msg)
+
+    def test_jrig_tables_are_never_allowlisted(self):
+        # The two sets must stay disjoint — allowlisting a j-rig runtime
+        # table would re-open the exact leak this gate exists to prevent.
+        self.assertEqual(
+            dolt_sync.JRIG_RUNTIME_TABLES & dolt_sync.EXPORT_ALLOWLIST, frozenset()
+        )
+
+    def test_empty_table_list_passes(self):
+        dolt_sync.gate_export_allowlist([])
+
+
+class GradesExportTests(unittest.TestCase):
+    """grades.csv must reflect the CURRENT run only — latest-per-skill across
+    all runs kept deleted skills alive as ghost rows (102 of them by run 9)."""
+
+    DDL = (
+        "CREATE TABLE skill_compliance ("
+        "  id INTEGER PRIMARY KEY, skill_path TEXT, grade TEXT,"
+        "  score REAL, run_id INTEGER);"
+    )
+
+    def export(self, conn, run_id, tmpdir):
+        import pathlib
+
+        csv_path = pathlib.Path(tmpdir) / "grades.csv"
+        hist_path = pathlib.Path(tmpdir) / "grade-histogram.json"
+        dolt_sync.write_grades_export(conn, run_id, csv_path, hist_path)
+        return csv_path.read_text(), hist_path.read_text()
+
+    def test_deleted_skill_is_not_a_ghost_row(self):
+        import json
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        # run 1 graded two skills; 'plugins/gone' was deleted before run 2.
+        conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            [
+                ("plugins/alive", "B", 80.0, 1),
+                ("plugins/gone", "B", 75.0, 1),
+                ("plugins/alive", "A", 92.0, 2),
+            ],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            csv_text, hist_text = self.export(conn, 2, tmpdir)
+        self.assertIn("plugins/alive,A,92.0", csv_text)
+        self.assertNotIn("plugins/gone", csv_text)
+        payload = json.loads(hist_text)
+        self.assertEqual(payload["run_id"], 2)
+        self.assertEqual(payload["total"], 1)
+        self.assertEqual(payload["grades"], {"A": 1})
+        conn.close()
+
+    def test_empty_current_run_refuses_to_wipe_export(self):
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        conn.execute(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) "
+            "VALUES ('plugins/alive', 'B', 80.0, 1)"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with self.assertRaises(dolt_sync.SyncError):
+                self.export(conn, 2, tmpdir)
+        conn.close()
+
+    def test_fully_empty_table_writes_empty_export(self):
+        import json
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            csv_text, hist_text = self.export(conn, 1, tmpdir)
+        self.assertEqual(csv_text.strip(), "skill_path,grade,score")
+        self.assertEqual(json.loads(hist_text)["total"], 0)
         conn.close()
 
 
