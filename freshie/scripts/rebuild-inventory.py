@@ -363,6 +363,22 @@ def next_run_id(conn: sqlite3.Connection) -> int:
     return (row[0] or 0) + 1
 
 
+def find_phantom_runs(conn: sqlite3.Connection) -> list[int]:
+    """IDs of discovery runs whose totals were never written, oldest first.
+
+    The totals UPDATE is the LAST step of a successful scan (Step 15 in
+    run_scan), so a discovery_runs row with NULL total_skills means the process
+    died mid-scan and left a phantom half-run: partial rows in every table it
+    had reached, committed step by step. Left alone, the default rerun computes
+    MAX(id)+1, stacks a new run on top, and the phantom is exported permanently
+    into the append-only Dolt history (2026-07-14 ops review)."""
+    try:
+        rows = conn.execute("SELECT id FROM discovery_runs WHERE total_skills IS NULL ORDER BY id").fetchall()
+    except sqlite3.OperationalError:
+        return []  # exotic/legacy schema without totals columns — nothing to judge
+    return [row[0] for row in rows]
+
+
 # ---------------------------------------------------------------------------
 # Scanner — Group 1: Packs, Plugins, Skills
 # ---------------------------------------------------------------------------
@@ -2200,10 +2216,33 @@ def run_scan(args: argparse.Namespace) -> None:
         migrate_add_run_id(conn)
     print("  Done.")
 
-    # Step 2: Determine run_id
+    # Step 2: Determine run_id.
+    # Default rerun self-heals a crashed prior scan first: when the NEWEST run
+    # is a phantom (crashed before its totals were written — see
+    # find_phantom_runs), purge it and reuse its id, so a plain rerun cleans up
+    # after a crash instead of stacking a new run on top of half-populated
+    # tables (dolt-sync also refuses to export an incomplete newest run).
+    # Mid-history phantoms are reported but left alone — they are already
+    # frozen into Dolt history; purge one explicitly with --run-id N.
     if args.run_id:
         run_id = args.run_id
     else:
+        phantoms = find_phantom_runs(conn)
+        max_id_row = conn.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
+        max_id = max_id_row[0] if max_id_row else None
+        for pid in phantoms:
+            if pid == max_id:
+                print(f"  WARNING: newest run_id={pid} is incomplete (crashed before totals were written).")
+                if dry_run:
+                    print(f"  (dry-run) would purge phantom run_id={pid} and reuse its id.")
+                else:
+                    purge_run(conn, pid)
+                    print(f"  Purged phantom run_id={pid}; its id will be reused.")
+            else:
+                print(
+                    f"  NOTE: run_id={pid} is an incomplete historical phantom — "
+                    f"leaving it in place; pass --run-id {pid} to purge and redo it explicitly."
+                )
         run_id = next_run_id(conn)
     print(f"\n[Step 2] Target run_id: {run_id}")
 
