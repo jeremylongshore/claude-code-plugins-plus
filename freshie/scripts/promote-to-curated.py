@@ -46,6 +46,14 @@ Modes
                      promoted and why). Needs the validator importable (local dev / the
                      weekly workflow after `pnpm install`); degrades to the recorded grade
                      with a loud warning if it is not.
+                     Shrink floor (2026-07-14 ops review): the selection is computed
+                     BEFORE anything is deleted, and the build ABORTS non-zero — mirror
+                     untouched — when the new selection is empty or falls below
+                     SHRINK_FLOOR_RATIO of the committed MANIFEST count. Every upstream
+                     failure mode (truncated/header-only grades.csv, a validator API
+                     drift making every fresh grade None) used to converge on silently
+                     wiping ~1,881 skills and exiting 0. A legitimate large drop is an
+                     explicit choice: pass --allow-shrink.
   --check            CI drift gate. Reads the committed MANIFEST and verifies every promoted
                      copy is byte-identical to the current git-tracked source, with no orphan
                      or missing dirs. Deterministic, git-only — no validator, no sqlite, no
@@ -79,6 +87,11 @@ VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
 
 PROMOTE_GRADES = {"A", "B"}
 
+# Build-mode shrink floor: abort (before wiping) when the new selection is
+# smaller than this fraction of the committed MANIFEST count. Overridable with
+# --allow-shrink for a legitimate large drop (e.g. a deliberate threshold change).
+SHRINK_FLOOR_RATIO = 0.5
+
 
 # ── selection ────────────────────────────────────────────────────────────────
 def _plugin_root(skill_path: str) -> str:
@@ -97,27 +110,34 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
             f"(rebuild-inventory.py → validate --populate-db → dolt-sync.py)."
         )
     out: List[Dict[str, str]] = []
-    with grades_csv.open(newline="") as fh:
-        for row in csv.DictReader(fh):
-            sp, grade = row.get("skill_path", ""), row.get("grade", "")
-            if not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
-                continue
-            root = _plugin_root(sp)
-            if (ROOT / root / ".source.json").exists():
-                continue  # external mirror — never republish under our name
-            if not (ROOT / sp).is_dir():
-                continue  # source removed / downgraded since the graded run
-            parts = sp.split("/")  # plugins/<category>/<plugin>/skills/<name>  (or shorter)
-            out.append(
-                {
-                    "skill_path": sp,
-                    "grade": grade,
-                    "score": row.get("score", ""),
-                    "category": parts[1] if len(parts) > 1 else "uncategorized",
-                    "plugin": root.split("/")[-1],
-                    "name": parts[-1],
-                }
-            )
+    try:
+        with grades_csv.open(newline="") as fh:
+            for row in csv.DictReader(fh):
+                sp, grade = row.get("skill_path", ""), row.get("grade", "")
+                if not sp or not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
+                    continue
+                root = _plugin_root(sp)
+                if (ROOT / root / ".source.json").exists():
+                    continue  # external mirror — never republish under our name
+                if not (ROOT / sp).is_dir():
+                    continue  # source removed / downgraded since the graded run
+                parts = sp.split("/")  # plugins/<category>/<plugin>/skills/<name>  (or shorter)
+                out.append(
+                    {
+                        "skill_path": sp,
+                        "grade": grade,
+                        "score": row.get("score", ""),
+                        "category": parts[1] if len(parts) > 1 else "uncategorized",
+                        "plugin": root.split("/")[-1],
+                        "name": parts[-1],
+                    }
+                )
+    except (csv.Error, UnicodeDecodeError) as e:
+        # A truncated/binary-corrupted grades.csv must not crash with a raw
+        # traceback; an empty selection lets build()'s shrink floor abort with
+        # the mirror untouched and an actionable message.
+        print(f"warning: {grades_csv} is unreadable as CSV ({e}); selection is empty.", file=sys.stderr)
+        return []
     out.sort(key=lambda c: c["skill_path"])
     return out
 
@@ -133,8 +153,15 @@ def load_validator():
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         return mod
-    except Exception as e:  # noqa: BLE001 — any failure ⇒ fall back to recorded grade
-        print(f"⚠️  could not import validator ({e}); falling back to recorded grades.", file=sys.stderr)
+    except (Exception, SystemExit) as e:  # noqa: BLE001 — any failure ⇒ fall back to recorded grade
+        # SystemExit is caught explicitly: the validator's module-level guard
+        # calls sys.exit(1) when pyyaml is missing, and SystemExit inherits
+        # BaseException — a bare `except Exception` let it propagate, so the
+        # documented "degrades to recorded grades" contract silently never
+        # applied on a pyyaml-less machine and the whole promote hard-failed
+        # (the 2026-07 CI failure was patched in the workflow, not here).
+        detail = f"exit code {e.code}, likely a missing dependency such as pyyaml" if isinstance(e, SystemExit) else e
+        print(f"⚠️  could not import validator ({detail}); falling back to recorded grades.", file=sys.stderr)
         return None
 
 
@@ -194,7 +221,17 @@ def tracked_files(skill_dir: Path) -> List[str]:
 
 
 # ── build ────────────────────────────────────────────────────────────────────
-def build(validate: bool = True, quiet: bool = False) -> int:
+def _prior_manifest_count() -> Optional[int]:
+    """Promoted-skill count in the committed MANIFEST, or None when unavailable."""
+    if not MANIFEST.exists():
+        return None
+    try:
+        return len(json.loads(MANIFEST.read_text()).get("skills", []))
+    except Exception:  # noqa: BLE001 — unreadable manifest ⇒ no baseline
+        return None
+
+
+def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False) -> int:
     candidates = load_candidates(GRADES_CSV)
     if not quiet:
         print(f"selection: {len(candidates)} A/B plugin skills (own, source present)")
@@ -206,11 +243,8 @@ def build(validate: bool = True, quiet: bool = False) -> int:
     run_id = _run_id()
     assign_curated_names(candidates)
 
-    # Wipe and rebuild — deletions/downgrades propagate, like build-cowork-zips.mjs.
-    if CURATED_DIR.exists():
-        shutil.rmtree(CURATED_DIR)
-    CURATED_DIR.mkdir(parents=True)
-
+    # Phase 1 — compute the full selection WITHOUT touching the mirror, so the
+    # shrink floor below can abort with skills/.curated/ intact.
     promoted: List[Dict] = []
     dropped_grade = 0
     dropped_empty = 0
@@ -229,12 +263,6 @@ def build(validate: bool = True, quiet: bool = False) -> int:
             dropped_empty += 1
             continue  # nothing tracked to mirror
 
-        dest_dir = CURATED_DIR / c["curated_name"]
-        for rel in files:
-            dst = dest_dir / rel
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(src_dir / rel, dst)
-
         promoted.append(
             {
                 "curated_name": c["curated_name"],
@@ -247,6 +275,43 @@ def build(validate: bool = True, quiet: bool = False) -> int:
                 "files": files,
             }
         )
+
+    # Shrink floor — every upstream failure mode (empty/corrupt grades.csv, a
+    # validator API drift nulling every fresh grade) converges on a tiny/empty
+    # selection. Refuse to wipe ~1,881 published skills over one of those.
+    prior_count = _prior_manifest_count()
+    if not allow_shrink:
+        floor = int(prior_count * SHRINK_FLOOR_RATIO) if prior_count else 0
+        if len(promoted) == 0 or (prior_count and len(promoted) < floor):
+            baseline = (
+                f"{prior_count} in the committed MANIFEST"
+                if prior_count is not None
+                else "no committed MANIFEST baseline"
+            )
+            print(
+                f"error: refusing to rebuild skills/.curated/ — new selection is "
+                f"{len(promoted)} skills vs {baseline} "
+                f"(floor: {floor}, ratio {SHRINK_FLOOR_RATIO}). "
+                f"[candidates: {len(candidates)}, dropped_grade: {dropped_grade}, "
+                f"dropped_empty: {dropped_empty}] The mirror was NOT touched. If this "
+                f"large drop is intentional, re-run with --allow-shrink.",
+                file=sys.stderr,
+            )
+            return 2
+
+    # Phase 2 — wipe and rebuild. Deletions/downgrades propagate, like
+    # build-cowork-zips.mjs.
+    if CURATED_DIR.exists():
+        shutil.rmtree(CURATED_DIR)
+    CURATED_DIR.mkdir(parents=True)
+
+    for entry in promoted:
+        src_dir = ROOT / entry["source_path"]
+        dest_dir = CURATED_DIR / entry["curated_name"]
+        for rel in entry["files"]:
+            dst = dest_dir / rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src_dir / rel, dst)
 
     promoted.sort(key=lambda p: p["curated_name"])
     manifest = {
@@ -367,11 +432,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Promote A/B plugin skills into skills/.curated/ for skills.sh.")
     ap.add_argument("--check", action="store_true", help="CI drift gate: exit 1 if the mirror is stale vs source.")
     ap.add_argument("--no-validate", action="store_true", help="Skip the in-process re-grade defense (build mode).")
+    ap.add_argument(
+        "--allow-shrink",
+        action="store_true",
+        help="Override the shrink floor: rebuild even when the new selection is "
+        "empty or far below the committed MANIFEST count (build mode).",
+    )
     ap.add_argument("--quiet", action="store_true", help="Only print on error.")
     args = ap.parse_args()
     if args.check:
         return check(quiet=args.quiet)
-    return build(validate=not args.no_validate, quiet=args.quiet)
+    return build(validate=not args.no_validate, quiet=args.quiet, allow_shrink=args.allow_shrink)
 
 
 if __name__ == "__main__":

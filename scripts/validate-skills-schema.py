@@ -4561,7 +4561,11 @@ def populate_compliance_db(
     import sqlite3
     from datetime import datetime, timezone
 
-    conn = sqlite3.connect(db_path)
+    # 60s busy timeout (default is 5s): the populate holds SQLite's single
+    # writer slot for the whole loop, and a concurrent writer on the same file
+    # (e.g. `j-rig eval --db freshie/inventory.sqlite`) previously turned into
+    # a "database is locked" failure that was silently swallowed downstream.
+    conn = sqlite3.connect(db_path, timeout=60.0)
     c = conn.cursor()
 
     # Resolve the current discovery run. Rows from older runs keep their
@@ -4574,6 +4578,28 @@ def populate_compliance_db(
             current_run_id = int(row[0])
     except sqlite3.Error:
         pass  # discovery_runs may not exist on a fresh DB
+
+    # A discovery run's totals are NULL until rebuild-inventory.py's final
+    # UPDATE — NULL totals on the newest run mean a crashed half-run. Stamping
+    # compliance rows onto a phantom run poisons the append-only Dolt export,
+    # so warn loudly (rebuild-inventory.py purges it on its next default run).
+    if current_run_id is not None:
+        try:
+            trow = c.execute(
+                "SELECT total_skills, total_files FROM discovery_runs WHERE id = ?",
+                (current_run_id,),
+            ).fetchone()
+            if trow is not None and trow[0] is None and trow[1] is None:
+                print(
+                    f"[populate-db] WARN: discovery run_id={current_run_id} has NULL "
+                    f"totals — it looks like a crashed/incomplete rebuild-inventory "
+                    f"run. Compliance rows will be stamped onto it anyway; re-run "
+                    f"freshie/scripts/rebuild-inventory.py first if that is not "
+                    f"intended.",
+                    file=sys.stderr,
+                )
+        except sqlite3.Error:
+            pass
 
     repo_root_for_paths = Path(__file__).resolve().parents[1]
 
@@ -4907,14 +4933,45 @@ def populate_compliance_db(
         gold_components = sum([1, has_prd, has_ard, has_refs, has_errors_md, has_examples_md, has_impl_md, has_config])
         gold_pct = int(100 * gold_components / 8)
 
+        # Upsert instead of INSERT OR REPLACE: REPLACE is delete-then-insert, so
+        # re-validating the same discovery run silently reset every column NOT in
+        # this statement's list to its default — including the j-rig-owned
+        # jrig_passed / jrig_tier_blocked / jrig_baseline_delta columns, NULLing
+        # paid behavioral-eval results (2026-07-14 ops review). DO UPDATE only
+        # touches the validator-owned columns; j-rig columns survive.
         c.execute(
-            """INSERT OR REPLACE INTO skill_compliance
+            """INSERT INTO skill_compliance
             (skill_path, total_fields, anthropic_fields, enterprise_fields, missing_fields,
              has_references_dir, has_examples, has_scripts_dir, is_stub, stub_reasons,
              score, grade, error_count, warning_count, validated_at, source_modified_at, validator_version,
              has_prd, has_ard, has_errors_md, has_examples_md, has_implementation_md,
              reference_file_count, has_config_dir, gold_standard_pct, run_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(skill_path, run_id) DO UPDATE SET
+             total_fields=excluded.total_fields,
+             anthropic_fields=excluded.anthropic_fields,
+             enterprise_fields=excluded.enterprise_fields,
+             missing_fields=excluded.missing_fields,
+             has_references_dir=excluded.has_references_dir,
+             has_examples=excluded.has_examples,
+             has_scripts_dir=excluded.has_scripts_dir,
+             is_stub=excluded.is_stub,
+             stub_reasons=excluded.stub_reasons,
+             score=excluded.score,
+             grade=excluded.grade,
+             error_count=excluded.error_count,
+             warning_count=excluded.warning_count,
+             validated_at=excluded.validated_at,
+             source_modified_at=excluded.source_modified_at,
+             validator_version=excluded.validator_version,
+             has_prd=excluded.has_prd,
+             has_ard=excluded.has_ard,
+             has_errors_md=excluded.has_errors_md,
+             has_examples_md=excluded.has_examples_md,
+             has_implementation_md=excluded.has_implementation_md,
+             reference_file_count=excluded.reference_file_count,
+             has_config_dir=excluded.has_config_dir,
+             gold_standard_pct=excluded.gold_standard_pct""",
             (
                 skill_path,
                 total_fields,
@@ -5000,12 +5057,25 @@ def populate_compliance_db(
             except Exception:
                 pass
 
+            # Same upsert posture as skill_compliance: never delete-then-insert a
+            # row another tool may later own columns on; update in place.
             c.execute(
-                """INSERT OR REPLACE INTO agent_compliance
+                """INSERT INTO agent_compliance
                 (agent_path, total_fields, anthropic_fields, missing_fields,
                  has_invalid_fields, invalid_fields, is_plugin_agent,
                  error_count, warning_count, validated_at, validator_version, run_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(agent_path, run_id) DO UPDATE SET
+                 total_fields=excluded.total_fields,
+                 anthropic_fields=excluded.anthropic_fields,
+                 missing_fields=excluded.missing_fields,
+                 has_invalid_fields=excluded.has_invalid_fields,
+                 invalid_fields=excluded.invalid_fields,
+                 is_plugin_agent=excluded.is_plugin_agent,
+                 error_count=excluded.error_count,
+                 warning_count=excluded.warning_count,
+                 validated_at=excluded.validated_at,
+                 validator_version=excluded.validator_version""",
                 (
                     agent_path,
                     a_total,
@@ -5078,13 +5148,29 @@ def populate_compliance_db(
             total_errors = sum(s.get("errors", 0) for s in skills_list)
             total_warnings = sum(s.get("warnings", 0) for s in skills_list)
 
+            # Same upsert posture as skill_compliance (see comment there).
             c.execute(
-                """INSERT OR REPLACE INTO plugin_compliance
+                """INSERT INTO plugin_compliance
                 (plugin_path, plugin_json_valid, plugin_json_fields, skill_count,
                  skill_avg_score, agent_count, has_hooks_json, has_mcp_json,
                  has_license, has_changelog, overall_score,
                  error_count, warning_count, validated_at, validator_version, run_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(plugin_path, run_id) DO UPDATE SET
+                 plugin_json_valid=excluded.plugin_json_valid,
+                 plugin_json_fields=excluded.plugin_json_fields,
+                 skill_count=excluded.skill_count,
+                 skill_avg_score=excluded.skill_avg_score,
+                 agent_count=excluded.agent_count,
+                 has_hooks_json=excluded.has_hooks_json,
+                 has_mcp_json=excluded.has_mcp_json,
+                 has_license=excluded.has_license,
+                 has_changelog=excluded.has_changelog,
+                 overall_score=excluded.overall_score,
+                 error_count=excluded.error_count,
+                 warning_count=excluded.warning_count,
+                 validated_at=excluded.validated_at,
+                 validator_version=excluded.validator_version""",
                 (
                     plugin_path,
                     pj_valid,
@@ -5708,7 +5794,13 @@ def main() -> int:
             if verbose:
                 print(f"✅ {rel} (plugin.json) - OK")
 
-    # Populate compliance database if requested (after all validations complete)
+    # Populate compliance database if requested (after all validations complete).
+    # A failure here must NOT be swallowed: the freshie cycle's next step
+    # (dolt-sync) would tag a run with zero fresh compliance rows and grades.csv
+    # would silently regress to previous-run grades. The flag below forces a
+    # distinct non-zero exit (see the end of main) so the operator/CI can tell
+    # "DB write failed" apart from ordinary corpus compliance errors.
+    populate_db_failed = False
     if args.populate_db:
         try:
             populate_compliance_db(
@@ -5718,7 +5810,8 @@ def main() -> int:
             print(f"   skill_compliance: {len(json_skill_results)} rows", flush=True)
             print(f"   agent_compliance: {len(json_agent_results)} rows", flush=True)
         except Exception as e:
-            print(f"\n❌ Failed to write compliance DB: {e}", flush=True)
+            populate_db_failed = True
+            print(f"\n❌ Failed to write compliance DB: {e}", file=sys.stderr, flush=True)
             import traceback
 
             traceback.print_exc()
@@ -5801,7 +5894,8 @@ def main() -> int:
                         print(f"\n📊 Deep eval data written to {args.populate_db} (run_id={run_id})")
                         print(f"   deep_eval_results: {len(deep_results)} rows")
                     except Exception as e:
-                        print(f"\n❌ Failed to write deep eval DB: {e}")
+                        populate_db_failed = True
+                        print(f"\n❌ Failed to write deep eval DB: {e}", file=sys.stderr)
 
         except ImportError as e:
             print(f"\n❌ Deep eval engine not available: {e}")
@@ -5882,6 +5976,20 @@ def main() -> int:
         )
         print(msg)
         total_warnings += 1
+
+    # A requested --populate-db that failed overrides every other exit path:
+    # exit 2 (distinct from the compliance-error exit 1) so callers — and the
+    # operator running the freshie cycle — cannot mistake "DB not written" for
+    # the routine corpus-errors failure that CI already tolerates with `|| true`.
+    if args.populate_db and populate_db_failed:
+        print(
+            f"\n❌ --populate-db was requested but the write to {args.populate_db} FAILED "
+            f"(see traceback above). Compliance rows for this run were NOT written — "
+            f"do NOT run dolt-sync until this is fixed, or grades.csv will silently "
+            f"regress to the previous run's grades.",
+            file=sys.stderr,
+        )
+        return 2
 
     # Check min-grade violations
     if args.min_grade and below_min_grade:
