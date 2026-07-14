@@ -1,5 +1,7 @@
 """Unit tests for freshie/scripts/dolt-sync.py (schema translation, the
-(NULL,'') fallback SQL generation, and the VARCHAR length guard).
+(NULL,'') fallback SQL generation, the VARCHAR length guard, the export
+allowlist, the grades-export run scoping, the push credential env path,
+stranded-tag reconciliation, and the JSON-checksum target split).
 
 Run: python3 -m unittest tests.test_dolt_sync -v
 
@@ -227,6 +229,185 @@ class TypeViolationTests(unittest.TestCase):
         with self.assertRaises(dolt_sync.SyncError):
             dolt_sync.scan_type_violations(conn, schema)
         conn.close()
+
+
+class ExportAllowlistTests(unittest.TestCase):
+    """Only the intended CMDB tables may reach the public DoltHub record.
+    Known j-rig runtime tables are excluded quietly; anything else is a
+    hard failure naming the table."""
+
+    def test_allowed_tables_pass_through_in_order(self):
+        allowed, excluded = dolt_sync.filter_export_tables(
+            ["plugins", "skill_compliance", "skills"]
+        )
+        self.assertEqual(allowed, ["plugins", "skill_compliance", "skills"])
+        self.assertEqual(excluded, [])
+
+    def test_jrig_contaminants_are_excluded_not_fatal(self):
+        allowed, excluded = dolt_sync.filter_export_tables(
+            ["criterion_results", "runs", "skills"]
+        )
+        self.assertEqual(allowed, ["skills"])
+        self.assertEqual(excluded, ["criterion_results", "runs"])
+
+    def test_every_known_jrig_table_is_excluded(self):
+        # The full recorder schema of @intentsolutions/jrig-cli — including
+        # run_summaries, which the original leak report under-counted.
+        jrig = sorted(dolt_sync.JRIG_RUNTIME_TABLES)
+        self.assertEqual(
+            jrig,
+            ["artifacts", "criterion_results", "run_summaries", "runs",
+             "skill_human_reviews", "skill_usage_events", "skill_versions"],
+        )
+        allowed, excluded = dolt_sync.filter_export_tables(jrig)
+        self.assertEqual(allowed, [])
+        self.assertEqual(excluded, jrig)
+
+    def test_unknown_table_hard_fails_naming_it(self):
+        with self.assertRaises(dolt_sync.SyncError) as ctx:
+            dolt_sync.filter_export_tables(["skills", "totally_new_table"])
+        self.assertIn("totally_new_table", str(ctx.exception))
+        self.assertIn("EXPORT_ALLOWLIST", str(ctx.exception))
+
+    def test_allowlist_and_contaminants_are_disjoint(self):
+        self.assertEqual(
+            dolt_sync.EXPORT_ALLOWLIST & dolt_sync.JRIG_RUNTIME_TABLES,
+            frozenset(),
+        )
+
+    def test_allowlist_matches_readme_table_count(self):
+        # freshie/README.md documents the 51-table CMDB inventory.
+        self.assertEqual(len(dolt_sync.EXPORT_ALLOWLIST), 51)
+
+
+class GradesExportScopingTests(unittest.TestCase):
+    """grades.csv is scoped to the latest graded run — a skill deleted from
+    the repo must drop out of the export instead of ghosting forever on its
+    last recorded grade."""
+
+    def setUp(self):
+        self.conn = fixture_conn(
+            "CREATE TABLE skill_compliance ("
+            "  id INTEGER PRIMARY KEY,"
+            "  skill_path TEXT,"
+            "  run_id INTEGER,"
+            "  grade TEXT,"
+            "  score REAL,"
+            "  UNIQUE(skill_path, run_id)"
+            ");"
+        )
+        self.conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, run_id, grade, score) "
+            "VALUES (?, ?, ?, ?)",
+            [
+                ("plugins/x/skills/ghost", 8, "B", 80.0),   # deleted after run 8
+                ("plugins/x/skills/alive", 8, "B", 82.0),
+                ("plugins/x/skills/alive", 9, "A", 91.0),   # improved in run 9
+                ("plugins/x/skills/newer", 9, "B", 85.0),
+            ],
+        )
+
+    def tearDown(self):
+        self.conn.close()
+
+    def test_latest_graded_run_id(self):
+        self.assertEqual(dolt_sync.latest_graded_run_id(self.conn), 9)
+
+    def test_ghost_row_excluded_from_scoped_export(self):
+        rows = dolt_sync.grades_export_rows(self.conn, 9)
+        paths = [r[0] for r in rows]
+        self.assertNotIn("plugins/x/skills/ghost", paths)
+        self.assertEqual(
+            paths, ["plugins/x/skills/alive", "plugins/x/skills/newer"]
+        )
+
+    def test_scoped_export_uses_the_scoped_runs_grade(self):
+        rows = {r[0]: r[1] for r in dolt_sync.grades_export_rows(self.conn, 9)}
+        self.assertEqual(rows["plugins/x/skills/alive"], "A")  # not run 8's B
+
+    def test_empty_compliance_table_reports_run_zero(self):
+        conn = fixture_conn(
+            "CREATE TABLE skill_compliance (skill_path TEXT, run_id INTEGER,"
+            " grade TEXT, score REAL);"
+        )
+        self.assertEqual(dolt_sync.latest_graded_run_id(conn), 0)
+        self.assertEqual(dolt_sync.grades_export_rows(conn, 0), [])
+        conn.close()
+
+
+class PushAuthArgsTests(unittest.TestCase):
+    """CI env-var credential path: --user only when BOTH vars are present."""
+
+    def test_both_vars_enable_the_user_flag(self):
+        self.assertEqual(
+            dolt_sync.push_auth_args(
+                {"DOLT_REMOTE_USER": "ci-bot", "DOLT_REMOTE_PASSWORD": "tok"}
+            ),
+            ["--user", "ci-bot"],
+        )
+
+    def test_password_alone_is_not_enough(self):
+        self.assertEqual(
+            dolt_sync.push_auth_args({"DOLT_REMOTE_PASSWORD": "tok"}), []
+        )
+
+    def test_user_alone_is_not_enough(self):
+        self.assertEqual(
+            dolt_sync.push_auth_args({"DOLT_REMOTE_USER": "ci-bot"}), []
+        )
+
+    def test_empty_env_falls_back_to_creds_path(self):
+        self.assertEqual(dolt_sync.push_auth_args({}), [])
+
+
+class StrandedTagsTests(unittest.TestCase):
+    """A run-* tag left local-only by a failed push must be pushed by the
+    next successful sync — not just the current run's tag."""
+
+    def test_missing_run_tag_detected(self):
+        self.assertEqual(
+            dolt_sync.stranded_tags(
+                {"run-8", "run-9", "run-9.1"}, {"run-8"}, "run-9.1"
+            ),
+            ["run-9"],
+        )
+
+    def test_current_tag_is_not_duplicated(self):
+        self.assertEqual(
+            dolt_sync.stranded_tags({"run-10"}, set(), "run-10"), []
+        )
+
+    def test_non_run_tags_are_ignored(self):
+        self.assertEqual(
+            dolt_sync.stranded_tags({"experiment", "run-7"}, set(), None),
+            ["run-7"],
+        )
+
+    def test_nothing_stranded_when_remote_has_all(self):
+        self.assertEqual(
+            dolt_sync.stranded_tags(
+                {"run-8", "run-9"}, {"run-8", "run-9"}, None
+            ),
+            [],
+        )
+
+
+class ChecksumTargetSplitTests(unittest.TestCase):
+    """The JSON checksum gate must know (and report) which targets it
+    actually verified; a listed-but-absent table is surfaced, not skipped."""
+
+    def test_present_and_missing_split(self):
+        present, missing = dolt_sync.split_checksum_targets(
+            {"a": {}}, [("a", "j"), ("b", "k")]
+        )
+        self.assertEqual(present, [("a", "j")])
+        self.assertEqual(missing, [("b", "k")])
+
+    def test_default_targets_all_present(self):
+        schema = {t: {} for t, _ in dolt_sync.JSON_CHECKSUM_COLUMNS}
+        present, missing = dolt_sync.split_checksum_targets(schema)
+        self.assertEqual(present, dolt_sync.JSON_CHECKSUM_COLUMNS)
+        self.assertEqual(missing, [])
 
 
 class VarcharGuardTests(unittest.TestCase):
