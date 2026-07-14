@@ -117,6 +117,9 @@ jobs:
           python3 -m unittest tests.test_hms_readiness_classifier -v
           python3 -m unittest tests.test_enable_system_schemas -v
           python3 -m unittest tests.test_cluster_forensics -v
+          python3 -m unittest tests.test_populate_db_upsert -v
+          python3 -m unittest tests.test_promote_curated_floor -v
+          python3 -m unittest tests.test_rebuild_inventory_phantom -v
 
       # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
       # the line budget implied by added/modified entries. Prevents prettier or
