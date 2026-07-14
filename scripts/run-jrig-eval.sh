@@ -20,12 +20,22 @@
 #     [--run-id <int>] [--models <csv>] [--provider <name>] [--spec <path>] \
 #     [--scratch-db <path-under-/dev/shm>] [--stub]
 #
-# Defaults: --provider deepseek, --models deepseek-v4-flash,
-#           --run-id $(date +%s), scratch DB under /dev/shm.
+# Defaults: --provider deepseek, --models deepseek-v4-flash, scratch DB
+# under /dev/shm. --run-id defaults to the CURRENT discovery run
+# (MAX(id) FROM discovery_runs in --inventory-db): forge_proofs.run_id is
+# part of the recorder's UNIQUE(plugin_name, verification_type, run_id)
+# upsert key AND should be joinable to the discovery run the proof grades,
+# so the default must be stable across re-runs (the old $(date +%s) default
+# minted a new row per invocation, defeating the recorder's idempotency).
+# Pass --run-id explicitly to pin a different run.
 #
 # --stub runs the j-rig stub provider (J_RIG_ALLOW_STUB=1, no API key, no
-# spend) and passes --allow-stub to the recorder. Stub results are NOT ground
-# truth — only use against a scratch copy of the inventory DB.
+# spend) and passes --allow-stub to the recorder. Stub results are NOT
+# ground truth — so in stub mode --inventory-db is ENFORCED to be a scratch
+# copy under /dev/shm (symlinks resolved). A stub row in the real inventory
+# DB could surface as JRig-Verified badge data and gets published to public
+# DoltHub by dolt-sync. Copy first:
+#   cp freshie/inventory.sqlite /dev/shm/inventory-scratch.sqlite
 #
 # Env overrides:
 #   JRIG_BIN       — j-rig binary to use instead of `pnpm exec j-rig`
@@ -43,7 +53,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 skill_dir=""
 plugin=""
 inventory_db=""
-run_id="$(date +%s)"
+run_id=""  # resolved after the guards: defaults to the current discovery run
 models="deepseek-v4-flash"
 provider="deepseek"
 spec=""
@@ -70,9 +80,11 @@ done
 [ -n "$inventory_db" ] || die "--inventory-db is required"
 [ -d "$skill_dir" ] || die "--skill-dir does not exist: $skill_dir"
 [ -f "$inventory_db" ] || die "--inventory-db does not exist: $inventory_db"
-case "$run_id" in
-  ''|*[!0-9]*) die "--run-id must be a non-negative integer (got: $run_id)" ;;
-esac
+if [ -n "$run_id" ]; then
+  case "$run_id" in
+    *[!0-9]*) die "--run-id must be a non-negative integer (got: $run_id)" ;;
+  esac
+fi
 
 # Scratch workspace: everything transient lives under /dev/shm (tmpfs — no
 # plaintext or eval artifacts ever touch persistent disk) and dies with the
@@ -101,7 +113,33 @@ esac
 if [ "$scratch_db" = "$inventory_db" ]; then
   die "scratch DB and inventory DB must be different files"
 fi
+# --- STUB GUARD: stub verdicts must never reach the real inventory DB ------
+# --stub results carry ground_truth:false. The recorder marks them
+# (evidence.stub) but still writes a row — and forge_proofs in the real
+# inventory DB drives JRig-Verified badge data AND is published to public
+# DoltHub by dolt-sync. So in stub mode the --inventory-db itself must be a
+# scratch copy under /dev/shm (symlinks resolved to defeat aliasing).
+if [ "$stub" -eq 1 ]; then
+  inv_resolved="$(readlink -f "$inventory_db")"
+  case "$inv_resolved" in
+    /dev/shm/*) : ;;
+    *) die "--stub writes non-ground-truth rows; --inventory-db must be a scratch copy under /dev/shm (got: $inventory_db -> $inv_resolved). Copy it first: cp freshie/inventory.sqlite /dev/shm/inventory-scratch.sqlite — or drop --stub for a real eval." ;;
+  esac
+fi
 # ----------------------------------------------------------------------------
+
+# Resolve the default --run-id AFTER the guards: the current discovery run,
+# read from the inventory DB. Stable across re-runs → the recorder's upsert
+# is actually idempotent, and the proof row is joinable to the discovery run
+# it grades. (An epoch-seconds default minted a new forge_proofs row per
+# invocation and matched no discovery run.)
+if [ -z "$run_id" ]; then
+  run_id="$(sqlite3 "$inventory_db" 'SELECT COALESCE(MAX(id), 0) FROM discovery_runs;' 2>/dev/null || true)"
+  case "$run_id" in
+    ''|0|*[!0-9]*) die "could not resolve a default --run-id from $inventory_db (discovery_runs missing or empty) — pass --run-id <int> explicitly" ;;
+  esac
+  echo "[run-jrig-eval] --run-id defaulted to current discovery run: $run_id" >&2
+fi
 
 result_json="$scratch_dir/result.json"
 jrig_bin="${JRIG_BIN:-}"
