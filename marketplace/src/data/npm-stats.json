@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-13T01:30:53.297Z",
-  "publishedCount": 447,
+  "generatedAt": "2026-07-14T01:24:23.996Z",
+  "publishedCount": 452,
   "establishedCount": 428,
-  "candidateCount": 479,
+  "candidateCount": 484,
   "totalDay": 758,
   "totalWeek": 7959,
   "totalMonth": 54227,
@@ -431,7 +431,7 @@
       "lastWeek": 19,
       "lastMonth": 258,
       "createdAt": 1776742235624,
-      "latestVersion": "5.0.6"
+      "latestVersion": "5.0.7"
     },
     {
       "name": "@intentsolutionsio/test-data-generator",
@@ -4032,12 +4032,57 @@
       "lastMonth": 0,
       "createdAt": 1783898090703,
       "latestVersion": "0.1.0"
+    },
+    {
+      "name": "@intentsolutionsio/brand-forge",
+      "status": "published",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 0,
+      "createdAt": 1783965445366,
+      "latestVersion": "0.5.1"
+    },
+    {
+      "name": "@intentsolutionsio/content-multiplier",
+      "status": "published",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 0,
+      "createdAt": 1783965456553,
+      "latestVersion": "0.2.1"
+    },
+    {
+      "name": "@intentsolutionsio/quit-sponsor",
+      "status": "published",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 0,
+      "createdAt": 1783965417197,
+      "latestVersion": "0.1.0"
+    },
+    {
+      "name": "@intentsolutionsio/skills-janitor",
+      "status": "published",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 0,
+      "createdAt": 1783965428654,
+      "latestVersion": "0.1.0"
+    },
+    {
+      "name": "@intentsolutionsio/walkie-talkie",
+      "status": "published",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 0,
+      "createdAt": 1783965436989,
+      "latestVersion": "0.1.0"
     }
   ],
   "telemetry": {
-    "candidates": 479,
-    "probed": 479,
-    "published": 447,
+    "candidates": 484,
+    "probed": 484,
+    "published": 452,
     "unpublished": 29,
     "foreign": 3,
     "rateLimited": 0,
