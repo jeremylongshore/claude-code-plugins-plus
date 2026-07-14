@@ -138,10 +138,14 @@ function main() {
     return;
   }
 
-  // Pick the latest passing JRig verification per plugin. If a plugin has
-  // multiple verification_type rows (tier1, tier2, tier3-jrig), we surface
-  // the JRig behavioral row specifically — the badge represents JRig
-  // verification, not the lighter-weight static tiers.
+  // Pick the LATEST tier3-jrig row per plugin FIRST (by verified_at, with id
+  // as a deterministic tie-break for same-second rows), THEN keep it only if
+  // it passed. Order matters: filtering `passed = 1` before picking latest
+  // meant a newer FAILING eval could never extinguish an older pass — a
+  // regression caught by a re-eval would keep the plugin verified forever.
+  // If a plugin has multiple verification_type rows (tier1, tier2,
+  // tier3-jrig), we surface the JRig behavioral row specifically — the badge
+  // data represents JRig verification, not the lighter-weight static tiers.
   const rows = querySqlite(
     dbPath,
     `SELECT plugin_name,
@@ -150,11 +154,17 @@ function main() {
             total_layers,
             baseline_delta,
             verified_at
-     FROM forge_proofs
-     WHERE verification_type = 'tier3-jrig'
-       AND passed = 1
-     GROUP BY plugin_name
-     HAVING MAX(verified_at)
+     FROM forge_proofs AS fp
+     WHERE fp.verification_type = 'tier3-jrig'
+       AND fp.id = (
+         SELECT fp2.id
+         FROM forge_proofs AS fp2
+         WHERE fp2.plugin_name = fp.plugin_name
+           AND fp2.verification_type = 'tier3-jrig'
+         ORDER BY fp2.verified_at DESC, fp2.id DESC
+         LIMIT 1
+       )
+       AND fp.passed = 1
      ORDER BY plugin_name`,
   );
 
