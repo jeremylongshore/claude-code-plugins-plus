@@ -778,6 +778,32 @@ def gate_json_checksums(conn: sqlite3.Connection, repo: Path,
         f"columns ({', '.join(checked) if checked else 'none checked'})")
 
 
+def gate_run_completeness(conn: sqlite3.Connection, run_id: int) -> None:
+    """Refuse to export a phantom half-run into the append-only Dolt history.
+
+    rebuild-inventory writes the discovery_runs totals only as the LAST step of
+    a successful scan, so NULL totals on the newest run mean a crashed scan
+    left partial rows across the run-tagged tables. Exporting would freeze the
+    phantom into public Dolt history forever (2026-07-14 ops review); the
+    rebuild script now purges the phantom on its next default rerun.
+    """
+    if not run_id:
+        return  # empty DB — nothing to judge (main already tags run-0 honestly)
+    try:
+        row = conn.execute(
+            "SELECT total_skills FROM discovery_runs WHERE id=?", (run_id,)
+        ).fetchone()
+    except sqlite3.OperationalError:
+        return  # legacy schema without totals columns — cannot judge, do not block
+    if row is not None and row[0] is None:
+        raise SyncError(
+            f"discovery run {run_id} is incomplete (totals were never written — "
+            f"a crashed scan left a phantom half-run). Re-run "
+            f"freshie/scripts/rebuild-inventory.py (it purges the newest phantom "
+            f"and rescans) before syncing to Dolt."
+        )
+
+
 def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]) -> None:
     for table, col in guards:
         max_len = conn.execute(
@@ -1160,6 +1186,7 @@ def main() -> int:
                 f"JSON checks on {[f'{t}.{c}' for t, c in JSON_CHECKSUM_COLUMNS]}")
             return 0
 
+        gate_run_completeness(conn, run_id)
         gate_varchar_lengths(conn, guards)
         ensure_repo(repo)
 
