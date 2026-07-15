@@ -1,189 +1,33 @@
-<!-- markdownlint-disable MD024 -->
+# Repository Guidelines
 
-# Agent Instructions
+## Project Structure
 
-<!-- bd-doctor-divergence: ok -->
-<!-- AGENTS.md and CLAUDE.md are intentionally distinct in this repo.
-     CLAUDE.md = repository-specific guidance (build commands, conventions, marketplace layout).
-     AGENTS.md = generic agent / beads session protocol.
-     CLAUDE.md explicitly delegates session protocol here ("Session protocol lives in AGENTS.md"). -->
+This is the Tons of Skills Claude Code plugin marketplace. Author plugins under `plugins/<category>/<plugin-name>/`; a plugin commonly contains `skills/`, `commands/`, `.claude-plugin/plugin.json`, and a README. The editable catalog is `.claude-plugin/marketplace.extended.json`; its `marketplace.json`, generated plugin `package.json` files, and the README table of contents are derived. Shared tooling lives in `scripts/`, workspace packages in `packages/`, Python regression tests in `tests/`, and the Astro site in `marketplace/`.
 
-This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
+## Build, Test, and Development
 
----
-
-## 🚨 MANDATORY: Session Continuation Protocol
-
-**CRITICAL**: When this session continues after context compaction/summarization:
-
-**YOU MUST IMMEDIATELY RUN**:
+Use Node 20+ and pnpm 9.15.9+ at the repository root; `marketplace/` deliberately uses npm.
 
 ```bash
-bd ready
+pnpm install
+./scripts/quick-test.sh                 # fast repository sanity check
+pnpm test && pnpm typecheck && pnpm lint
+pnpm run verify                         # CI-equivalent verification pipeline
+pnpm run sync-marketplace               # regenerate catalog-derived files
+cd marketplace && npm run dev           # local Astro site, port 4321
+cd marketplace && npx playwright test   # website end-to-end tests
 ```
 
-**WHY**: After context loss, beads is your ONLY source of truth for:
+Do not hand-edit generated catalog artifacts. Run `pnpm run sync-marketplace` before committing catalog or plugin changes. Validate skill metadata with `python3 scripts/validate-skills-schema.py --marketplace --verbose`; use `python3 scripts/validate-unicode-hygiene.py` for changed skill content.
 
-- What tasks are in progress
-- What was being worked on before context compaction
-- What's blocked/ready to work on
-- Project status and next steps
+## Style and Naming
 
-**THIS IS NON-NEGOTIABLE**: Do NOT proceed with ANY work until you've run `bd ready`.
+Follow the existing file’s style; use Prettier for JavaScript, TypeScript, JSON, YAML, and Markdown (`pnpm run format:check`) and ESLint (`pnpm lint`) for code. Use two-space indentation in JS/TS and JSON. Name plugin folders lowercase kebab-case (for example, `plugins/mcp/example-plugin`) and skills as `skills/<skill-name>/SKILL.md`. Keep frontmatter compliant with the schema validator rather than inventing local variants.
 
-**Failure to read beads after context compaction = working blind = wasted effort**
+## Tests
 
----
+Add or update focused tests beside the affected package or in `tests/`; Python tests use `test_*.py` and TypeScript tests commonly use `*.test.ts`. Run the narrowest relevant test first, then the commands above. Changes to validators, schemas, or catalog generation require their targeted regression suite plus the marketplace schema validation.
 
-## Cross-session coordination
+## Commits and Pull Requests
 
-This repo is often worked in **two Claude sessions at once** — one here, and one in the `intent-eval-platform` umbrella (that platform's CCPI validator, `jrig-cli`, and kernel reach into this repo). The two sessions are separate processes that share only the filesystem, so stay in sync on the shared surfaces:
-
-- **Shared journal — read on start, append on any cross-repo work.** `~/000-projects/CROSS-SESSION-LOG.md` (untracked, newest-first). One pipe line per action: `YYYY-MM-DD HH:MM UTC | repo/session | what | branch or PR# | status`. Append a line _before AND after_ touching anything the other session may also be in.
-- **Beads split rule — this is how cross-cutting work stays visible.** Marketplace-only work → **this repo's own beads** (`bd ready`, prefix `claude-code-plugins-*`). **Platform-touching / cross-cutting work → the UMBRELLA beads**, so the `intent-eval-platform` session sees it: `bd -C ~/000-projects ready` and `bd -C ~/000-projects create … --label cross-session` (view with `bd -C ~/000-projects list --label cross-session`) — **plus** a journal line. The two beads workspaces are separate dolt DBs; a cross-cutting task filed only in this repo's local beads is **invisible** to the umbrella session.
-- **Working-tree hazard — commit early or use a worktree.** This repo has ONE working tree; a concurrent session's `git checkout`/`reset` can wipe your **uncommitted** work (happened 2026-07-01). Commit early, or do multi-step file work in a `git worktree`.
-
-Full protocol (loaded by every session on this box): `/home/jeremy/CLAUDE.md` § "Cross-session coordination".
-
----
-
-## Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --status in_progress  # Claim work
-bd close <id>         # Complete work
-bd sync               # Sync with git
-```
-
-## Landing the Plane (Session Completion)
-
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
-
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-
-   ```bash
-   git pull --rebase
-   bd sync
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
-
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
-
----
-
-## Before You Touch Validators, Schemas, or the Kernel Pin
-
-This repo is mid-migration toward a single source of truth for "what is a valid agent-native artifact." An agent working here must know the following before changing anything under `scripts/validate-*`, `package.json`'s kernel pin, or the schema docs.
-
-**The authoritative gate is `scripts/validate-skills-schema.py`.** It is the one in the branch-protection required-status set. At marketplace tier, a missing required field is an **ERROR, not a warning**. The IS 8-field `ALWAYS_REQUIRED` set is hand-authored and stays **AUTHORITATIVE**. The IS rubric sits on top of Anthropic's permissive spec — do not reduce the 8-field set, do not demote marketplace errors to warnings, do not "realign" to Anthropic's floor. Read `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES first; any change to required-fields / tier model / error-vs-warning semantics is approval-gated there.
-
-**The kernel `@intentsolutions/core` (`schemas/authoring/v1` byte-frozen + `authoring/v2` strict fork) is the SSoT.** The validator is migrating to consume the kernel folds instead of its hand-rolled rule sets — that work is in progress and the advisory→authoritative flip has **not** happened.
-
-**Pin tracks the latest published kernel — exactly `0.9.0` (no `^`/`~`).** The `authoring/v1` family is byte-frozen across kernel versions, so the pin bump is a governance/coupling update, not an authority change. Keep it EXACT (no `^`/`~`); bump it deliberately when the kernel publishes a new latest, in a dedicated coupling PR. The advisory→authoritative flip is a SEPARATE, gated step — bumping the pin must never flip it.
-
-**Two advisory CI lanes — they never block:**
-
-- `kernel-shadow-validation.yml` (DR-049 shadow soak) runs the kernel-pinned schema over the SKILL.md corpus and logs AGREE/DISAGREE to `scripts/.kernel-shadow/report.json`.
-- `kernel-vendor-hash.yml` enforces the V ≤ C ≤ K version-coupling invariant + a ≤7-day staleness bound.
-
-Both are `continue-on-error: true`, are not required checks, and mutate nothing. Do not treat their output as a merge blocker, and do not "fix" them by bumping the pin.
-
-**Do NOT flip the shadow lane to blocking** until ALL hold: ≥99.5% corpus agreement (deterministic folds = 100%; the 0.5% band is non-deterministic surfaces only), ≥30 days of advisory soak, zero open P0 blockers, the Rekor superseding-event rollback protocol implemented and tested, CTO + CISO + VP-DevRel governance sign-off, and a ≥14-day public deprecation-window notice to affected authors. The soak has not met this bar yet — the open disagreements are real tool-safety / shell-substitution security cases the current validator correctly blocks. Promotion to blocking is a separate, later, condition-gated step, never a side effect of an unrelated change.
-
-**`[skip auto-bump]` for non-release PRs.** `auto-bump-on-pr.yml` auto-bumps changed plugins' patch versions (only on `plugins/**` / `packages/**` changes). For a docs-only or non-release PR, put `[skip auto-bump]` in the PR title or body so the auto-bumper steps aside.
-
----
-
-## External Plugin Sync — mirror, don't curate
-
-63 of the ~470 plugins here are externally synced (57 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`); the other ~87% are in-repo Intent Solutions work. External contributors are a curated **minority augment**, not the core — the sync is a side-channel. The adopted model is **mirror by default · upstream improvements · never clobber**. An agent working under `plugins/` on a synced source, in `sources.yaml`, or on `scripts/sync-external.mjs` / `.github/workflows/sync-external.yml` must know the following.
-
-**A sync PR is mirror OUTPUT of a contributor's repo — do NOT hand-curate mirrored files.** For a normal (non-curated) source the contributor's own repo is the source of truth. `scripts/sync-external.mjs` mirrors its files into `plugins/` and `sync-external.yml` opens an automated PR for a human to review (historically ~1 of 10 sync PRs merges). If a mirrored plugin should meet our A-grade bar, **upstream the improvement** — open a friendly issue, then a PR, on the CONTRIBUTOR'S OWN repo. Once merged upstream, the mirror becomes A-grade naturally and the sync never reverts anything. Do NOT hold a divergent, clobber-prone local copy by editing the mirrored files in place.
-
-**NEVER remove a `curated: true` flag or edit a curated plugin's files to "improve" them.** A source marked `curated: true` in `sources.yaml` is **frozen**: the sync skips it entirely (no clone, no overwrite, no orphan-prune) and only keeps its catalog entry current, so even a `--force` sync cannot revert our edits. `tonone`, `servicegraph`, and `schedule-after-usage-reset` carry `curated: true` today; `hyperflow` does NOT — its frontmatter hardening merged upstream and the flag was deliberately dropped in #1008 (the completed off-ramp, not an accidental removal — do not "restore" it). Removing a live flag or hand-editing a curated plugin's files reintroduces the exact clobber this guard exists to stop — a prior `--force` run reverted ~100 A-graded agents to 3-field upstream stubs (the ~18.9k-line deletion that started this). Note `curated:` and `verified:` are **orthogonal**: `verified:` means a maintainer vetted the source's trust/quality; `curated:` means we locally hardened the plugin past upstream and the sync must not overwrite it. All three curated sources are `curated: true` but `verified: false` — an honest, intended state.
-
-**The sync keeps at most ONE open sync PR by design — do not reopen closed sync PRs.** `sync-external.yml` runs a "Close superseded sync PRs" step before Create-PR that closes older open `automation/sync-external-*` PRs (with `--delete-branch`). This prunes the pileup; it preserves the safe unique-per-run-branch model. A closed sync PR was superseded on purpose — the next scheduled or dispatched run reproduces the current mirror. Do not reopen one to "recover" it.
-
-**Any issue / PR / comment on a CONTRIBUTOR'S repo is drafted and shown to Jeremy for wording sign-off BEFORE posting.** Curated and long-time contributors are handled respectfully — a friendly ISSUE first ("we featured your plugin and hardened its frontmatter to our A-grade bar — would you be open to a PR upstreaming it?"), THEN a PR they own and merge. No surprise PRs; credit preserved; they decide. Keep the tone peer/contribute-back, never extractive or entitled.
-
-The decision record for this model is `000-docs/694-AT-DECR`; the earlier shared-branch clobber fix (the safe unique-per-run-branch model this step builds on) is `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
-
----
-
-## Note to automated PR reviewers
-
-If you are an AI PR reviewer (Codex, Greptile, or similar), review against **this repo's specs**, not general priors or a web search:
-
-- **The deterministic gate is `scripts/validate-skills-schema.py`** plus the required CI checks. Ground any skill / plugin / agent frontmatter finding in the validator and `000-docs/SCHEMA_CHANGELOG.md` (the 8-field `ALWAYS_REQUIRED` set; at marketplace tier a missing required field is an ERROR, not a warning). If the validator would accept it, do not invent a frontmatter objection.
-- **A `sources.yaml` entry is a pointer**, validated at weekly-sync time by `sync-external.mjs --strict` plus the validator, not at PR time. Do **not** assert whether an upstream repo exists, is reachable, or has valid frontmatter from a web search; repo existence is time-sensitive and non-deterministic at review time. Phrase any upstream risk as "the sync will verify at clone time," never "the repo does not exist."
-- **Defer style** (naming, formatting, import order) to eslint / prettier / ruff / markdownlint / shellcheck. Prioritize correctness, security, and gate integrity.
-- **Never suggest weakening a gate** (a threshold, test, assertion, security check, or required field) unless the same PR replaces it with a stronger equivalent. See `CLAUDE.md` and `.greptile/rules.md`.
-
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
-
-## Beads Issue Tracker
-
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
-
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
-```
-
-### Rules
-
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
-- Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
-
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
-
-## Session Completion
-
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
-
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-
-   ```bash
-   git pull --rebase
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
-
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
-<!-- END BEADS INTEGRATION -->
+Use Conventional Commit-style subjects visible in history, such as `fix(ci): harden validation` or `docs(contributing): clarify workflow`. Keep each commit scoped. PRs should explain the user-facing change, link the beads issue, include screenshots for visual site changes, and include regenerated derived files when applicable. Use `bd` for task tracking: run `bd ready`, claim the issue, and close it when complete. Before finishing, commit, pull/rebase, run `bd sync`, push, and confirm `git status` is up to date.
