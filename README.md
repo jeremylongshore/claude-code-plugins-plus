@@ -10,6 +10,7 @@
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
+![tokens](https://img.shields.io/endpoint?url=https://gittokens.rsamf.com/badge/jeremylongshore/claude-code-plugins-plus-skills)
 
 470 plugins, 3,677 skills, 347 agents, 30 community contributors — validated and ready to install.
 
