@@ -464,7 +464,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `design-to-code`              | Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility                                            |
 | `dolt-mcp-vcs`                | Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt…     |
 | `domain-memory-agent`         | Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required                                       |
-| `governed-second-brain`       | Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident,…         |
+| `governed-second-brain`       | Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.              |
 | `lumera-agent-memory`         | Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across…  |
 | `pr-to-spec`                  | The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection    |
 | `project-health-auditor`      | Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots                      |

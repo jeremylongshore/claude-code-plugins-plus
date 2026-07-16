@@ -10255,8 +10255,8 @@
     },    {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
-      "description": "Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident, hash-chained audit trail. Install via `npx governed-second-brain init <folder>`.",
-      "version": "0.1.6",
+      "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
+      "version": "1.1.2",
       "category": "mcp",
       "keywords": [
         "memory",
@@ -10272,8 +10272,8 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       },
-      "homepage": "https://github.com/jeremylongshore/governed-second-brain-plugin",
-      "repository": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+      "homepage": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
+      "repository": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "license": "Apache-2.0"
     },    {
       "name": "claudebase",
