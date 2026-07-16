@@ -86,4 +86,3 @@ Tomorrow's 04:00 run can try Claude, fall back to Grok, and still land. That is 
 - [Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes](/posts/exit-0-is-not-success/)
 - [Liveness Without Health Is Theater](/posts/liveness-without-health-is-theater/)
 - [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/posts/empty-is-not-clean/)
-
