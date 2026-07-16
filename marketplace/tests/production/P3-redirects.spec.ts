@@ -30,7 +30,7 @@ test.describe('P3: Domain Redirects', () => {
     // Caddy preserves URI: claudecoworkskills.io/<path> -> tonsofskills.com/<path>.
     // Bare-domain hits land on the homepage, not /cowork — that's product behavior,
     // not a bug. If we ever want vanity-domain → /cowork landing, it goes in the
-    // Caddyfile redir rule (intentsolutions-vps-runbook), not in this test.
+    // Caddyfile redirect rule (intent-os/ops/ingress), not in this test.
     const response = await request.get('https://claudecoworkskills.io', {
       maxRedirects: 0,
       failOnStatusCode: false,

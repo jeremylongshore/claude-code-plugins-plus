@@ -4,7 +4,7 @@ name: Deploy tonsofskills.com to VPS
 # rsync marketplace/dist → /srv/tonsofskills/dist → smoke check passes.
 #
 # Replaces deploy-firebase.yml (disabled). See VPS-as-the-home Priority 7 Stage B
-# and intentsolutions-vps-runbook/docs/onboard-new-repo-deploy.md.
+# and intent-solutions-io/intent-os/ops/deploy (D90).
 
 on:
   push:

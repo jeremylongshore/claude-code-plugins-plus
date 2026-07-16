@@ -114,7 +114,7 @@ Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s
 2. `cowork:validate` (`scripts/validate-cowork-manifest.mjs`) — drift gate. Fails the build if catalog ↔ manifest ↔ disk fall out of alignment (orphan zips, missing entries, or stale manifest rows). Runs again in CI as a discrete step in `.github/workflows/validate-plugins.yml` so the failure signal is clearly named.
 3. `astro build` — copies `marketplace/public/` → `marketplace/dist/`. The `/cowork/` page reads `cowork-manifest.json` at build time and renders the download grid.
 
-**Deploy propagates the wipe.** The VPS force-command script `/usr/local/sbin/deploy-tonsofskills` ends with `rsync -a --delete /srv/tonsofskills/build/marketplace/dist/ /srv/tonsofskills/dist/`, so orphan files removed by the cowork build are also pruned from the served `dist/`. Documented in `intentsolutions-vps-runbook/docs/onboard-new-repo-deploy.md` § "Atomic deploy convention".
+**Deploy propagates the wipe.** The VPS force-command script `/usr/local/sbin/deploy-tonsofskills` ends with `rsync -a --delete /srv/tonsofskills/build/marketplace/dist/ /srv/tonsofskills/dist/`, so orphan files removed by the cowork build are also pruned from the served `dist/`. Current deployment authority is `intent-os/ops/deploy/`.
 
 **Don't commit downloads/.** `marketplace/public/downloads/` is gitignored (see `.gitignore:146`). CI checks out fresh and rebuilds from scratch — local state cannot leak to prod. Never commit or hand-edit anything under that directory.
 
