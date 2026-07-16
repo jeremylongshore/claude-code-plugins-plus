@@ -43,6 +43,25 @@ function checkForbiddenLockfiles() {
       const marketplacePkg = join(ROOT, 'marketplace', 'package.json');
       return existsSync(marketplacePkg);
     }
+    if (
+      filename === 'package-lock.json' &&
+      relPath ===
+        join('plugins', 'mcp', 'governed-second-brain', 'plugin-runtime', 'package-lock.json')
+    ) {
+      // This is a copied, self-contained Node runtime rather than a pnpm
+      // workspace package. Its first-start bootstrap invokes npm ci against
+      // this exact lockfile so native addons are reproducible after a
+      // marketplace file-copy install.
+      const runtimePkg = join(
+        ROOT,
+        'plugins',
+        'mcp',
+        'governed-second-brain',
+        'plugin-runtime',
+        'package.json',
+      );
+      return existsSync(runtimePkg);
+    }
     return false;
   }
 

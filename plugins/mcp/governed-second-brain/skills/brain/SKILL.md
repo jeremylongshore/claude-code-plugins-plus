@@ -9,10 +9,10 @@ description: |
   "what's my deploy runbook"). Trigger with "/brain", "ask the brain",
   "what do I know about", or "check my knowledge base".
 allowed-tools: 'mcp__governed-brain__brain_search'
-version: 1.0.0
+version: 1.2.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
-compatibility: 'Designed for Claude Code; ships with the governed-second-brain plugin, which auto-wires the governed-brain MCP server. Works in both modes: local (in-process, needs qmd on PATH) and team (proxies to your team brain when TEAMKB_API_URL is set). Same brain_search either way.'
+compatibility: 'Designed for Claude Code; ships with the bobs-big-brain (governed-brain) plugin, which auto-wires the governed-brain MCP server. Works in both modes: local (in-process, needs qmd on PATH) and team (proxies to your team brain when TEAMKB_API_URL is set). Same brain_search either way.'
 tags: [brain, knowledge, search, citations, governance, local-first, team]
 argument-hint: '[question]'
 ---
@@ -28,35 +28,54 @@ verifiable after the fact.
 
 This is the read surface of Bob's Big Brain: your files are **compiled** into
 governed memories, **governed** by deterministic code, and **retrieved** with citations
-by qmd. The `brain_search` MCP tool fronts that retrieval. The job here is to turn a
-natural-language question into a cited answer — and to refuse to answer beyond what the
-citations support.
+by **Tobi's qmd** (OSS). The `brain_search` MCP tool fronts that retrieval. Your product
+surround is INTKB govern + ICO compile + this plugin — not a fork of qmd.
+
+The job here is to turn a natural-language question into a cited answer — and to refuse
+to answer beyond what the citations support.
 
 ## Prerequisites
 
-- The `governed-second-brain` plugin is installed, which auto-wires the
-  `governed-brain` MCP server.
+- The **bobs-big-brain** / governed-brain plugin is installed (MCP `governed-brain`).
 - **Mode is automatic.** In **local mode** (default) search runs **in-process**
-  against your local `~/.teamkb` index — no network, no API key, no token; `qmd`
-  must be on your `PATH`. In **team mode** (when `TEAMKB_API_URL` is set) the same
-  `brain_search` proxies to your team's governed brain over the tailnet with your
-  per-user token; nothing extra is needed on your machine. Either way every hit is
-  a `qmd://` citation.
+  against your local `~/.teamkb` index — no network, no API key; a compatible **qmd**
+  binary must be available (prefer monorepo pin `@tobilu/qmd` via INTKB / installer).
+  Operators can use `scripts/bbb-qmd` from qmd-team-intent-kb so XDG points at the team
+  index, not personal `~/.cache/qmd`. In **team mode** (`TEAMKB_API_URL` set) search
+  proxies to the team brain. Every hit is a `qmd://` citation.
 
 ## Instructions
 
 ### Step 1: Search the governed corpus
 
-Call **`brain_search`** with the user's question as `query`. Keep `scope` at its
-default (`curated`) unless the user explicitly asks for inbox/archived material —
-curated is the governed, promoted knowledge.
+Retrieval is **Tobi's qmd** (BM25 keyword via the MCP). Prefer **short keyword queries**
+over full sentences.
+
+1. Derive **1–4 distinctive nouns/verbs** from the user question (drop what/why/how, articles,
+   auxiliaries, prepositions).
+2. Call **`brain_search`** with those keywords and `scope: "curated"` (default promoted knowledge).
 
 ```
-brain_search({ query: "the user's question, lightly cleaned up", scope: "curated" })
+brain_search({ query: "SOPS age secrets", scope: "curated" })
 ```
 
 The tool returns `{ source, results: [{ citation, snippet, score, collection }] }`.
 Each `citation` is a `qmd://COLLECTION/FILENAME` URI — the receipt for that hit.
+
+**Empty-result ladder (do not stop after one miss):**
+
+1. **Keyword retry (curated):** only if the first call was still a long natural-language sentence
+   (you skipped deriving 1–4 keywords). Re-run with 1–4 keywords only. **Skip this step** when the
+   first query was already keyword-style — do not re-call with the same tokens.
+2. **Scope retry (`all`):** if curated is still empty, re-run the **same keywords** with
+   `scope: "all"`. Do **not** use `inbox`/`archived` unless the user asks.
+3. Only after curated+keywords and all+keywords are empty → Step 3 (honest refuse).
+
+```
+brain_search({ query: "shipped week", scope: "curated" })
+// if empty (keywords already used):
+brain_search({ query: "shipped week", scope: "all" })
+```
 
 ### Step 2: Answer ONLY from the cited results
 
@@ -70,9 +89,9 @@ Each `citation` is a `qmd://COLLECTION/FILENAME` URI — the receipt for that hi
 
 ### Step 3: Handle an empty result honestly
 
-If `results` is empty, say so plainly: the brain has nothing governed on that topic.
-Do **not** fall back to general knowledge and present it as the brain's answer.
-Optionally note that the topic may need to be captured (run `/brain-save`).
+If `results` is **still** empty after the empty-result ladder in Step 1, say so plainly: the brain
+has nothing governed on that topic. Do **not** fall back to general knowledge and present it as the
+brain's answer. Optionally note that the topic may need to be captured (run `/brain-save`).
 
 ## Output
 
@@ -107,9 +126,9 @@ Sources:
 
 | Situation                                | Response                                                                                  |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `brain_search` returns empty `results`   | State the brain has nothing governed; do not fabricate.                                    |
-| `qmd` is not on `PATH`                    | Retrieval is degraded (the server returns empty rather than crashing). Tell the user to install qmd 2.x on PATH. |
-| MCP tool unavailable                     | The plugin/MCP server is not enabled; tell the user to install/enable `governed-second-brain`. |
+| `brain_search` returns empty `results`   | Run the empty-result ladder (keywords → scope all); only then refuse. Do not fabricate. |
+| `qmd` missing / index empty              | Retrieval degrades to empty. Tell operator: install `@tobilu/qmd`, run INTKB `pnpm search-canary -- --heal` or `bbb-qmd status`. |
+| MCP tool unavailable                     | Plugin not enabled; install/enable bobs-big-brain / governed-brain. |
 | User asks to write/capture               | Out of scope here — direct them to `/brain-save`.                                          |
 
 ## Guardrails
@@ -118,9 +137,13 @@ Sources:
   `/brain-save`.
 - Never invent a qmd:// URI. Cite only URIs returned by `brain_search`.
 - Prefer fewer, well-cited claims over a broad answer that cannot be anchored.
+- Do not conflate this product with IRSB / Moat / Scout (separate stack).
 
 ## Resources
 
-- [Bob's Big Brain](https://github.com/intent-solutions-io/governed-second-brain) — the stack this brain belongs to.
-- [intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) — the compiler (ICO).
+- [Bob's Big Brain umbrella](https://github.com/intent-solutions-io/bobs-big-brain-umbrella) — stack map.
+- [bobs-big-brain-plugin](https://github.com/jeremylongshore/bobs-big-brain-plugin) — this plugin.
+- [qmd-team-intent-kb](https://github.com/jeremylongshore/qmd-team-intent-kb) — govern layer + `bbb-qmd`.
+- [tobi/qmd](https://github.com/tobi/qmd) (npm `@tobilu/qmd`) — retrieve engine (OSS; we pin, we do not fork).
+- [intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) — compile layer (ICO).
 - The write counterpart: the `/brain-save` skill (governed capture).
