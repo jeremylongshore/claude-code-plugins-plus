@@ -54,6 +54,16 @@ plugins/community/skills-janitor/scripts/search.sh:secret-exfil-cooccur  GITHUB_
 plugins/community/skills-janitor/scripts/precheck.sh:secret-exfil-cooccur  GITHUB_TOKEN attached only to the api.github.com request (AUTH_ARGS array), never to the raw or arbitrary-URL fetches
 plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB_TOKEN sent only as an Authorization header to api.github.com, its own service
 
+# ── governed-second-brain committed runtime bundle — reviewed 2026-07-16 @ upstream 967fb70f. ──
+# The team-mode client sends TEAMKB_API_TOKEN only to the owner-configured
+# TEAMKB_API_URL; local mode is in-process and performs no runtime network after
+# its one-time pinned native dependency install. The dynamic constructor is
+# AJV's bundled schema compiler operating on the plugin's fixed schemas, not
+# user-provided source text. The upstream clean-install and full-chain smokes
+# exercise both modes, fail-closed dispatch, governance, and audit verification.
+plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:secret-exfil-cooccur  team-mode TEAMKB_API_TOKEN is sent only to its configured TEAMKB_API_URL service; reviewed upstream bundle 967fb70f
+plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec  AJV schema compiler in the generated bundle compiles fixed plugin schemas, not user-provided source text; reviewed upstream bundle 967fb70f
+
 # ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
 # PR whose diff adds it, so it can never persistently waive future source-list
