@@ -457,6 +457,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 | Plugin                        | Description                                                                                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bde-score` | Multi-factor quantitative stock analysis MCP server for US, HK, CN A-share markets. Transparent 0-100 scoring from 40+ indicators. EU AI Act Art.50 compliant. |
 | `ai-experiment-logger`        | Track and analyze AI experiments with a web dashboard and MCP tools                                                                         |
 | `beads-dolt`                  | ⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead.… |
 | `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                  |
