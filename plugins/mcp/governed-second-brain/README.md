@@ -4,7 +4,7 @@
   The governed team brain — cited recall, hash-chained receipts. A local-first Claude Code + Cowork
   plugin: turn <em>your own</em> files into a governed, <code>qmd://</code>-cited brain with a
   tamper-evident, SHA-256 hash-chained audit trail.<br>
-  <strong>Compile, then govern.</strong> One plugin, two modes: <strong>local</strong> (default — in-process, no daemon, no network, no API key for retrieval) or <strong>team</strong> (proxy to a shared governed brain over your network).
+  <strong>Compile, then govern.</strong> One plugin, two modes: <strong>local</strong> (default — in-process, no daemon, no runtime network after first-start provisioning, no API key for retrieval) or <strong>team</strong> (proxy to a shared governed brain over your network).
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
 | | Repo | What it is |
 |---|---|---|
 | **Landing / thesis** | **[intent-solutions-io/governed-second-brain](https://github.com/intent-solutions-io/governed-second-brain)** | The umbrella — *why* this exists, the competitive teardown, the "Compile, Then Govern" thesis, the receipts argument. Start here for the **story**. |
-| **The plugin** (you are here) | **[jeremylongshore/governed-second-brain-plugin](https://github.com/jeremylongshore/governed-second-brain-plugin)** | The installable code — the local stdio MCP server + skills. Start here to **run it**. |
+| **The plugin** (you are here) | **[jeremylongshore/bobs-big-brain-plugin](https://github.com/jeremylongshore/bobs-big-brain-plugin)** | The installable code — the local stdio MCP server + skills. Start here to **run it**. |
 
 It stacks on three engines:
 
@@ -28,10 +28,12 @@ It stacks on three engines:
 |---|---|---|
 | **ICO** | [jeremylongshore/intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) | **Compile** — derive knowledge from a corpus (optional; the only part that egresses) |
 | **INTKB** | [jeremylongshore/qmd-team-intent-kb](https://github.com/jeremylongshore/qmd-team-intent-kb) | **Govern** — deterministic dedupe → policy → promote + the hash-chained audit |
-| **qmd** | [tobi/qmd](https://github.com/tobi/qmd) | **Retrieve** — on-device search; every hit is a `qmd://` citation |
+| **qmd** | [tobi/qmd](https://github.com/tobi/qmd) (`@tobilu/qmd`) | **Retrieve** — on-device search; every hit is a `qmd://` citation |
 
 This plugin **bundles** the compiled INTKB packages, so it runs the govern + retrieve loop fully
 in-process — the engines stay independent repos; nothing here forks or privatizes them.
+
+**Powered by [tobi/qmd](https://github.com/tobi/qmd).** We pin `@tobilu/qmd` and ride upstream via Dependabot — we do **not** fork the search engine. For the **team** index (not personal `~/.cache/qmd`), operators on an INTKB checkout use `./scripts/bbb-qmd` and `pnpm search-canary` (see [qmd-team-intent-kb ops runbook](https://github.com/jeremylongshore/qmd-team-intent-kb/blob/main/000-docs/042-OD-OPSM-bbb-qmd-operator-runbook.md)).
 
 ## What it does
 
@@ -101,6 +103,11 @@ history-rewrite failure. Run the verifier's own tests with `npm run verify-ancho
 
 ## Install
 
+Local-mode marketplace installs provision two lockfile-pinned native modules (`better-sqlite3` and
+`fs-ext`) inside the plugin on first start. That one-time step uses npm; after it completes, local
+capture, governance, audit, and retrieval run in-process without a service daemon. Team mode does not
+load or install those local-store modules.
+
 One command, two modes:
 
 ```bash
@@ -132,10 +139,41 @@ You need network reachability to that API — typically a private network / VPN 
 (the brain is meant to stay off the public internet). The dispatcher auto-detects mode from
 `TEAMKB_API_URL`: set → team, unset → local. Same `/brain` + `/brain-save` skills either way.
 
-In team mode the tool surface is **`brain_search`** (read) + **`brain_capture`** (propose) +
-**`brain_transition`** (admin-only) — govern runs server-side, so there's no client `brain_govern`:
-**the model proposes, the server disposes**, and each promotion gets a hash-chained receipt. A member
-token can read + propose; admin actions (transition) return a clear 403 otherwise.
+#### Install it as a team member
+
+The plugin runs in **Claude Code** or **Cowork** — the same install in both. It **cannot** run in
+claude.ai in a web browser or the phone apps (a browser tab can't reach a local plugin or a private
+network); **Claude Desktop** can, via a manual `mcpServers` config (see below). On macOS **or** Windows:
+
+1. **Join the team network** (Tailscale) so your machine can reach the brain's API.
+2. **Add the plugin** — in Claude Code or Cowork. It's a public repo, so no org membership or `gh`
+   login is needed:
+   ```
+   /plugin marketplace add jeremylongshore/bobs-big-brain-plugin
+   /plugin install governed-second-brain@governed-second-brain
+   ```
+3. **Save your connection** to `~/.teamkb/team.json` (Windows: `%USERPROFILE%\.teamkb\team.json`) at
+   mode `600`. This file is read **before** shell env vars, so a Dock/GUI-launched Claude still reaches
+   team mode:
+   ```json
+   {
+     "apiUrl": "http://your-team-brain:3847",
+     "apiToken": "<your per-user token>",
+     "tenantId": "<your tenant, e.g. intent-solutions>"
+   }
+   ```
+4. **Restart the app**, then ask with **keywords** (retrieval is keyword-based, so strong words beat a
+   full sentence): `/brain shipped this week`. A cited `qmd://` answer means you're connected.
+
+macOS + Claude Code has a one-click installer that does steps 2–3 for you, and there's a full
+per-platform walkthrough (incl. the **Claude Desktop** `mcpServers` config) in
+[`onboarding/`](onboarding/README.md).
+
+In team mode the tool surface is **`brain_search`** + **`brain_status`** (read),
+**`brain_capture`** (propose), and **`brain_inbox`** / **`brain_approve`** / **`brain_reject`** /
+**`brain_transition`** (admin review and lifecycle). Govern runs server-side, so there's no client
+`brain_govern`: **the model proposes, the server disposes**, and each promotion gets a hash-chained
+receipt. A member token can read + propose; admin actions return a clear 403 otherwise.
 
 > Team mode is **dependency-free** — it uses only `fetch` + the MCP SDK, never the native store — so it
 > runs straight from a marketplace clone with zero build.

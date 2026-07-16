@@ -35560,7 +35560,15 @@ function uuidv5(name, namespace) {
   const x = h.toString("hex");
   return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20, 32)}`;
 }
-function deriveCandidateId(tenant, title, content) {
+function deriveCandidateId(tenant, title, content, sessionId, learningIndex) {
+  const sid = sessionId?.trim();
+  if (sid !== void 0 && sid !== "") {
+    const idx = typeof learningIndex === "number" && Number.isInteger(learningIndex) && learningIndex >= 0 ? learningIndex : 0;
+    return uuidv5(`${tenant}
+${sid}
+session-end
+${idx}`, CANDIDATE_ID_NAMESPACE);
+  }
   return uuidv5(`${tenant}
 ${title}
 ${content}`, CANDIDATE_ID_NAMESPACE);
@@ -35573,7 +35581,8 @@ async function enqueueOutbox(candidate) {
   const dir = outboxDir();
   try {
     await (0, import_promises.mkdir)(dir, { recursive: true, mode: 448 });
-    await (0, import_promises.writeFile)((0, import_node_path2.join)(dir, `${candidate.id}.json`), JSON.stringify(candidate), { mode: 384 });
+    const body = JSON.stringify(candidate);
+    await (0, import_promises.writeFile)((0, import_node_path2.join)(dir, `${candidate.id}.json`), body, { mode: 384 });
     return true;
   } catch (e) {
     process.stderr.write(
@@ -35646,7 +35655,11 @@ async function search(query, scope, limit) {
     res = await fetch(url, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify({ query, scope, pagination: { page: 1, pageSize: limit } })
+      // Send the tenant — the API's /api/search scopes qmd by tenantId and returns
+      // ZERO hits without it (unlike capture, which carried tenantId in the candidate).
+      // TENANT_ID defaults to the shared 'intent-solutions' tenant; a scoped teammate
+      // token still has its tenantId validated server-side by the tenancy guard.
+      body: JSON.stringify({ query, scope, tenantId: TENANT_ID, pagination: { page: 1, pageSize: limit } })
     });
   } catch (e) {
     return jsonResult({
@@ -35700,12 +35713,12 @@ async function status() {
   }
   return jsonResult({ mode: "team", apiUrl, tokenSet, healthy: res.ok, version });
 }
-async function capture(title, content, category, filePaths) {
+async function capture(title, content, category, filePaths, sessionId, learningIndex) {
   if (API_URL === void 0 || API_URL === "") {
     return jsonResult({ ok: false, error: "unconfigured \u2014 set TEAMKB_API_URL to your team brain" });
   }
   const candidate = {
-    id: deriveCandidateId(TENANT_ID, title, content),
+    id: deriveCandidateId(TENANT_ID, title, content, sessionId, learningIndex),
     status: "inbox",
     source: "mcp",
     content,
@@ -35714,16 +35727,22 @@ async function capture(title, content, category, filePaths) {
     trustLevel: "medium",
     author: { type: "ai", id: "governed-brain" },
     tenantId: TENANT_ID,
-    metadata: { filePaths: filePaths ?? [], tags: [] },
+    metadata: {
+      filePaths: filePaths ?? [],
+      tags: [],
+      ...sessionId?.trim() ? { sessionId: sessionId.trim() } : {},
+      ...typeof learningIndex === "number" && Number.isInteger(learningIndex) ? { learningIndex } : {}
+    },
     prePolicyFlags: { potentialSecret: false, lowConfidence: false, duplicateSuspect: false },
     capturedAt: (/* @__PURE__ */ new Date()).toISOString()
   };
+  const body = JSON.stringify(candidate);
   let res;
   try {
     res = await fetch(`${API_URL.replace(/\/+$/, "")}/api/candidates`, {
       method: "POST",
       headers: authHeaders(),
-      body: JSON.stringify(candidate)
+      body
     });
   } catch (e) {
     const queued = await enqueueOutbox(candidate);
@@ -35748,13 +35767,28 @@ async function capture(title, content, category, filePaths) {
     }
     return errorResult(res);
   }
+  let intake;
+  try {
+    const text = await res.text();
+    try {
+      const parsed = JSON.parse(text);
+      if (typeof parsed.intake === "string") intake = parsed.intake;
+    } catch {
+    }
+  } catch {
+    intake = void 0;
+  }
   const drained = await drainOutbox();
+  const known = intake === "created" || intake === "already_exists" ? intake : res.status === 201 ? "created" : "unknown";
+  const already = known === "already_exists";
   return jsonResult({
     ok: true,
     candidateId: candidate.id,
     tenantId: TENANT_ID,
+    intake: known,
+    alreadyExists: already,
     ...drained > 0 ? { outboxDrained: drained } : {},
-    message: "Proposed to the team brain inbox. This is a PROPOSAL \u2014 the deterministic govern pipeline decides if/when it is promoted (an admin governs, or auto-govern once enabled). It is not durable memory yet."
+    message: already ? "Idempotent: this proposal already exists in the team brain inbox (same session slot or same content). Safe to retry; not a new capture." : known === "unknown" ? "Proposed to the team brain inbox (server did not report created vs already_exists). This is a PROPOSAL \u2014 not durable memory until promoted." : "Proposed to the team brain inbox. This is a PROPOSAL \u2014 the deterministic govern pipeline decides if/when it is promoted (an admin governs, or auto-govern once enabled). It is not durable memory yet."
   });
 }
 function resolveTenant(tenantId) {
@@ -35911,14 +35945,27 @@ var init_remote_server = __esm({
     );
     server.tool(
       "brain_capture",
-      "Propose a fact, decision, pattern, or convention to your team's governed brain \u2014 a PROPOSAL, not a promotion. Member-allowed: the server queues it as a candidate and the deterministic govern pipeline disposes; it is not durable memory until promoted. Proxies to the brain over the tailnet (team mode).",
+      "Propose a fact, decision, pattern, or convention to your team's governed brain \u2014 a PROPOSAL, not a promotion. Member-allowed: the server queues it as a candidate and the deterministic govern pipeline disposes; it is not durable memory until promoted. Proxies to the brain over the tailnet (team mode). For SessionEnd: pass sessionId + learningIndex (0..4) so each learning is its own slot and re-distill of that slot collapses.",
       {
         title: import_zod2.z.string().min(1).describe("Short, specific title for the memory"),
         content: import_zod2.z.string().min(1).describe("The fact to remember, in full"),
         category: import_zod2.z.enum(CATEGORIES).optional().describe("Memory category (default: reference)"),
-        filePaths: import_zod2.z.array(import_zod2.z.string()).optional().describe("Related file paths, if any")
+        filePaths: import_zod2.z.array(import_zod2.z.string()).optional().describe("Related file paths, if any"),
+        sessionId: import_zod2.z.string().optional().describe(
+          "Stable session id (Claude Code session). With learningIndex, forms a per-learning slot so re-distill does not duplicate and multi-learning sessions keep separate rows."
+        ),
+        learningIndex: import_zod2.z.number().int().min(0).max(4).optional().describe(
+          "0-based index of this learning within the session (SessionEnd: 0..4 for up to 5 learnings). Defaults to 0 when sessionId is set."
+        )
       },
-      async (params) => capture(params.title, params.content, params.category, params.filePaths)
+      async (params) => capture(
+        params.title,
+        params.content,
+        params.category,
+        params.filePaths,
+        params.sessionId,
+        params.learningIndex
+      )
     );
     server.tool(
       "brain_transition",
@@ -39319,6 +39366,20 @@ var init_governed_brain_v1 = __esm({
   }
 });
 
+// ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/datasets/synthetic-v1.js
+var SYNTHETIC_V1_BASELINE;
+var init_synthetic_v1 = __esm({
+  "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/datasets/synthetic-v1.js"() {
+    "use strict";
+    SYNTHETIC_V1_BASELINE = {
+      /** 8/8 lexical queries hit. */
+      lexicalRecallAtK: 1,
+      /** 7/12 semantic queries hit. */
+      semanticRecallAtK: 7 / 12
+    };
+  }
+});
+
 // ../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/index.js
 var init_eval = __esm({
   "../qmd-team-intent-kb/packages/qmd-adapter/dist/eval/index.js"() {
@@ -39329,6 +39390,7 @@ var init_eval = __esm({
     init_stratified_report();
     init_qmd_retrieval();
     init_governed_brain_v1();
+    init_synthetic_v1();
   }
 });
 
