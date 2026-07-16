@@ -92,7 +92,7 @@ Nominate any skill — yours or one you love — via the [killer-skill nominatio
 - **Bug fixes** -- Fix issues in existing plugins, the marketplace site, or the CLI
 - **Documentation** -- Improve READMEs, guides, or inline documentation
 - **Security reports** -- Responsibly disclose vulnerabilities (see Security below)
-- **Plugin reviews** -- Test and review open PRs from other contributors
+- **Plugin reviews** -- Test and review open PRs from other contributors (this is how you earn a **Reviewer** rung on the [maintainer ladder](../GOVERNANCE.md))
 
 ## Adding a Plugin
 
@@ -207,6 +207,8 @@ CI runs the following checks on every PR:
 - **Marketplace build and route validation** -- The Astro site must build successfully with all plugin routes resolving.
 - **Frontmatter validation** -- Commands, agents, and skills must have valid YAML frontmatter.
 - **Submission docs** -- A PR adding a new plugin must include the docs for its tier (`check-submission-docs`; see "What a submission must include" above).
+- **PR title convention** -- Because we squash-merge, your PR title becomes the commit that lands on `main`, so `commit-scope-check` lints it as a Conventional Commit: `type(scope): subject`. Allowed types and scopes live in [`.github/.commit-rules.json`](.commit-rules.json) (the scopes are the maintainer areas from [GOVERNANCE.md](../GOVERNANCE.md)). Scope is optional — `docs: fix a typo` is fine — but a scope you do use must be a registered area (or you add it to that file in the same PR).
+- **CODEOWNERS drift** -- If you set a plugin's optional `maintainer` field in `marketplace.extended.json`, run `node scripts/generate-codeowners.mjs` so the per-plugin owner block stays in sync (`codeowners-drift`).
 
 Marketplace-UI PRs additionally run Playwright E2E tests (chromium, webkit, mobile viewports) — but those are path-filtered to the `marketplace/` UI surface and advisory (they also run on every push to `main`), so don't expect them on a plugin or docs PR.
 
@@ -261,7 +263,27 @@ Contribution types:
 - **CODE CONTRIBUTOR** -- Improved infrastructure, CI, CLI, or the marketplace site
 - **DOCS CONTRIBUTOR** -- Improved documentation or guides
 
-Outstanding contributions are highlighted in the Contributor Spotlight section. Active contributors may be invited to join as project maintainers.
+Outstanding contributions are highlighted in the Contributor Spotlight section.
+
+### The maintainer ladder
+
+Everyone starts as a **Contributor**. Sustained, quality work in an area earns
+you a rung on the earned-trust ladder — **Contributor → Reviewer → Approver →
+Maintainer** — each scoped to an area you have proven yourself in (never repo-wide):
+
+- **Reviewer** — your first-pass review is the authoritative "does this meet the
+  bar" read (the `/lgtm` signal), and you own first response on new PRs in your
+  area within the [72-hour SLA](SUPPORT.md).
+- **Approver** — your review satisfies the code-owner merge gate for your area, so
+  you can merge PRs there.
+- **Maintainer** — you set the bar and direction for your area and can sponsor
+  others up the ladder.
+
+Today the Lead invites people up directly; as the bench grows we move to a
+two-sponsor, word-of-mouth model (CloudWeGo/Kubernetes-style). The full rules —
+tiers, areas, vetting, and delegation — are in
+[GOVERNANCE.md](../GOVERNANCE.md); the live roster is
+[MAINTAINERS.md](../MAINTAINERS.md).
 
 ## Code of Conduct
 
