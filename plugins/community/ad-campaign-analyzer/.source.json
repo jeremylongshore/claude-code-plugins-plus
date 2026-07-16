@@ -1,0 +1,18 @@
+{
+  "synced_from": {
+    "repo": "gooseworks-ai/goose-skills",
+    "path": "skills/ads/composites/ad-campaign-analyzer",
+    "branch": "main"
+  },
+  "last_sync": "2026-07-16T05:50:00.000Z",
+  "author": {
+    "name": "GooseWorks",
+    "github": "gooseworks-ai",
+    "email": "himanshu@athina.ai"
+  },
+  "license": "MIT",
+  "files_synced": 1,
+  "files": [
+    "SKILL.md"
+  ]
+}

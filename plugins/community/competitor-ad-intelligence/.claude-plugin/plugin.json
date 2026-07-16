@@ -1,0 +1,12 @@
+{
+  "name": "competitor-ad-intelligence",
+  "version": "1.0.0",
+  "description": "Competitor paid-ads teardown: scrapes Meta Ad Library and Google Ads Transparency Center (no API keys), analyzes creative patterns and funnels, outputs strategic gaps and counter-plays.",
+  "author": {
+    "name": "GooseWorks",
+    "url": "https://github.com/gooseworks-ai",
+    "email": "himanshu@athina.ai"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/gooseworks-ai/goose-skills"
+}

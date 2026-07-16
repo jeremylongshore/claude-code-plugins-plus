@@ -1,0 +1,12 @@
+{
+  "name": "ad-campaign-analyzer",
+  "version": "1.0.0",
+  "description": "Ad spend diagnostics: statistical-significance checks, budget-waste analysis, winners to scale, and multi-channel budget reallocation from campaign exports. Pure reasoning, no tools.",
+  "author": {
+    "name": "GooseWorks",
+    "url": "https://github.com/gooseworks-ai",
+    "email": "himanshu@athina.ai"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/gooseworks-ai/goose-skills"
+}
