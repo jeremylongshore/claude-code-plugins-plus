@@ -159,4 +159,3 @@ If you ship a plugin with native dependencies to any marketplace that installs b
 Two hygiene fixes rode along in the same release, both small, both the difference between an install that reads clean to a new user and one that does not. The MCP manifest's `description` had command-shaped text in it, so it got rewritten as plain prose. A description is metadata a human reads, not a script, and shell syntax in a schema field is just noise that trips linters and confuses readers. And a team-onboarding README example pointed at an invalid API URL, corrected to a valid local example, so the first thing a new team user copies actually works.
 
 This shipped as v1.1.2. The one-line version: copying files is not installing, and a plugin that assumes otherwise works only on the machine where the files were already installed.
-

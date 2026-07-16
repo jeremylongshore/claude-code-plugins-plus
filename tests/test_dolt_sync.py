@@ -1,6 +1,7 @@
 """Unit tests for freshie/scripts/dolt-sync.py (schema translation, the
 (NULL,'') fallback SQL generation, the VARCHAR length guard, the
-public-export table allowlist, and the current-run grades export).
+public-export table allowlist, the run-completeness gate, and the
+current-run grades export).
 
 Run: python3 -m unittest tests.test_dolt_sync -v
 
@@ -351,6 +352,46 @@ class VarcharGuardTests(unittest.TestCase):
         conn = fixture_conn("CREATE TABLE b (package_name TEXT PRIMARY KEY);")
         conn.execute("INSERT INTO b VALUES (?)", ("x" * 214,))
         dolt_sync.gate_varchar_lengths(conn, [("b", "package_name")])
+        conn.close()
+
+
+class RunCompletenessGateTests(unittest.TestCase):
+    """gate_run_completeness refuses to export a phantom half-run — a
+    discovery_runs row whose totals were never written means the scan crashed
+    mid-run, and exporting would freeze the phantom into the append-only Dolt
+    history (2026-07-14 ops review).
+    """
+
+    DDL = (
+        "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY, run_date TEXT, "
+        "commit_hash TEXT, total_packs INTEGER, total_plugins INTEGER, "
+        "total_skills INTEGER, total_files INTEGER, total_root_files INTEGER);"
+    )
+
+    def test_incomplete_newest_run_raises(self):
+        conn = fixture_conn(self.DDL + "INSERT INTO discovery_runs (id) VALUES (1);")
+        with self.assertRaises(dolt_sync.SyncError):
+            dolt_sync.gate_run_completeness(conn, 1)
+        conn.close()
+
+    def test_complete_run_passes(self):
+        conn = fixture_conn(
+            self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (1, 42);"
+        )
+        dolt_sync.gate_run_completeness(conn, 1)  # must not raise
+        conn.close()
+
+    def test_run_zero_passes(self):
+        conn = fixture_conn(self.DDL)
+        dolt_sync.gate_run_completeness(conn, 0)  # empty DB — nothing to judge
+        conn.close()
+
+    def test_legacy_schema_without_totals_does_not_block(self):
+        conn = fixture_conn(
+            "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);"
+            "INSERT INTO discovery_runs (id) VALUES (1);"
+        )
+        dolt_sync.gate_run_completeness(conn, 1)  # cannot judge — do not block
         conn.close()
 
 
