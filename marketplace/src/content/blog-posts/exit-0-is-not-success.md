@@ -98,4 +98,3 @@ Exit 0 means the process finished. Outcome verification means the work finished.
 - [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/posts/empty-is-not-clean/)
 - [Liveness Without Health Is Theater](/posts/liveness-without-health-is-theater/)
 - [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
-
