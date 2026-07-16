@@ -2,7 +2,7 @@
   "mcpServers": {
     "governed-brain": {
       "name": "governed-brain",
-      "description": "Bob's Big Brain \u2014 ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb). Team (set TEAMKB_API_URL + TEAMKB_API_TOKEN + TEAMKB_TENANT_ID): a remote proxy to your team's single governed brain over the tailnet. This root .mcp.json is the PROJECT-scope config (relative path); marketplace installs use .claude-plugin/plugin.json (which resolves ${CLAUDE_PLUGIN_ROOT}).",
+      "description": "Bob's Big Brain \u2014 ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb). Team (set TEAMKB_API_URL + TEAMKB_API_TOKEN + TEAMKB_TENANT_ID): a remote proxy to your team's single governed brain over the tailnet. This root .mcp.json is the project-scope config with a relative path; marketplace installs resolve the plugin root from their manifest.",
       "version": "1.1.2",
       "enabled": true,
       "transport": "stdio",
