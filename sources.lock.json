@@ -301,14 +301,14 @@
     },
     "governed-second-brain": {
       "repo": "jeremylongshore/bobs-big-brain-plugin",
-      "resolved_ref": "967fb70f8a010508c427869148d96ecb6079dbaf",
-      "locked_at": "2026-07-16T06:30:06.388Z",
+      "resolved_ref": "021b746e4794d73b175e4fc5e3d7dcb5f4ff9f54",
+      "locked_at": "2026-07-16T06:44:55.551Z",
       "files": {
         ".claude-plugin/marketplace.json": "sha256:c260d0aaab5c1cd8687abdd19403d5f6c7964bab4d780455c85d206ba351cda8",
         ".claude-plugin/plugin.json": "sha256:efae12f80b1a46c2f5bb26eb6b98aa3e4be4b03c8dfdbb68f54a36b32b4864d2",
         ".mcp.json": "sha256:0a14e10aa5b76c52c3453057195f7dea3386a9f430e2f3cc936e52e68fb8d3a3",
         "LICENSE": "sha256:393f9b0a3ffff1e35d5243049719ec982d0663713542fd417b64a7df4c04a361",
-        "README.md": "sha256:d0b12754b24bd0f5f54a0878e2697ae329c1a669ef9850b9f4d34ca60bfa1d57",
+        "README.md": "sha256:4b904fbdb641e2c060f893bd36fbab7fdb0d2e8197823eedbf23f267e264f731",
         "plugin-runtime/bootstrap.cjs": "sha256:80c8e9021685ce717aa063e180ba671050f8ee49d5ff5e550963154b9bdd700b",
         "plugin-runtime/governed-brain.cjs": "sha256:ee4b0eb333fca56b8f8651b18f86b3cf7bc5811053abfa27eee142e1c4dd0b8e",
         "plugin-runtime/package-lock.json": "sha256:f692d0e4060eae895cf8fd23f2d766060f390a45185b14dfb2f7796fad9ef7d2",

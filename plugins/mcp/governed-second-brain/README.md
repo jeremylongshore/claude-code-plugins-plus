@@ -157,7 +157,7 @@ network); **Claude Desktop** can, via a manual `mcpServers` config (see below). 
    team mode:
    ```json
    {
-     "apiUrl": "http://your-team-brain:3847",
+    "apiUrl": "http://localhost:3847",
      "apiToken": "<your per-user token>",
      "tenantId": "<your tenant, e.g. intent-solutions>"
    }
