@@ -10,6 +10,10 @@ name: 'MiniMax Code Review'
 #   2. "MiniMax Adversarial Review" — claims lane: tries to REFUTE what the PR
 #      says about itself (grade / count / sync-integrity / "verified" claims are
 #      this catalog's credibility, so status honesty is a top failure class).
+#   3. "MiniMax A-Grade Coach"      — validator-grounded: checks out the PR and
+#      runs this repo's own validate-skills-schema.py on the changed SKILL.md
+#      files, then hands that REAL output to MiniMax to translate into concrete,
+#      per-file fixes to reach grade A. Only fires when a SKILL.md changed.
 #
 # ADVISORY ONLY — never a required check, never in `ci-required`'s needs, never
 # blocks a merge. The deterministic gate is always `ci-required` + `gitleaks`,
@@ -35,8 +39,9 @@ name: 'MiniMax Code Review'
 #   2. Repo variable ENABLE_MINIMAX_REVIEW  = true        (kill switch, both lanes)
 #   3. Repo variable MINIMAX_MODEL          = MiniMax-M3   (exact id the token serves)
 #   Optional: ENABLE_MINIMAX_ADVERSARIAL=false (drop the claims lane only),
+#      ENABLE_MINIMAX_GRADER=false (drop the validator-grounded coach lane only),
 #      MINIMAX_MAX_DIFF_CHARS (default 100000), MINIMAX_SYSTEM_PROMPT /
-#      MINIMAX_ADVERSARIAL_PROMPT (override either lane's prompt).
+#      MINIMAX_ADVERSARIAL_PROMPT (override either diff lane's prompt).
 
 on:
   pull_request:
@@ -188,3 +193,84 @@ jobs:
             style entirely and do not duplicate the defect lane or CI. If every
             claim is supported by the diff, reply lgtm. Never reproduce a suspected
             secret. You are advisory only and never block a merge.' }}
+
+  grade:
+    name: A-grade coach
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Validator-grounded lane: runs THIS repo's own validator on the changed
+    # SKILL.md files and hands its real output to MiniMax to translate into
+    # concrete A-grade fixes. Same guards as the other lanes, plus its own
+    # opt-out (ENABLE_MINIMAX_GRADER=false). Only same-repo PRs (fork PRs have
+    # no secret). Unlike the diff lanes this one checks out the PR head to run
+    # the validator — safe because it is our own validator reading frontmatter,
+    # not executing PR code, and only on our own branches.
+    if: >-
+      ${{ vars.ENABLE_MINIMAX_REVIEW == 'true' &&
+          vars.ENABLE_MINIMAX_GRADER != 'false' &&
+          github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - name: Check out the PR head
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Run the validator on changed skills
+        id: grade
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          # Changed SKILL.md files via the API (no base-fetch gymnastics).
+          CHANGED=$(gh api "repos/$REPO/pulls/$PR/files" --paginate \
+            --jq '.[] | select(.status != "removed") | .filename' \
+            | grep -E '/SKILL\.md$' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No changed SKILL.md files to grade."
+            exit 0
+          fi
+          python3 -c "import yaml" 2>/dev/null || pip install --quiet pyyaml
+          REPORT="$(mktemp)"
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            [ -f "$f" ] || continue
+            echo "### $f" >> "$REPORT"
+            # Grade + only the actionable ERROR/WARN/Missing lines for this file.
+            python3 scripts/validate-skills-schema.py --marketplace "$f" 2>&1 \
+              | grep -E 'GRADE:|ERROR:|WARN:|FAIL:|Missing (required|conditional)' \
+              >> "$REPORT" || true
+            echo "" >> "$REPORT"
+          done <<< "$CHANGED"
+          # Bound the prompt payload.
+          head -c 16000 "$REPORT" > "$REPORT.cap"
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "report<<__MINIMAX_EOF__"
+            cat "$REPORT.cap"
+            echo "__MINIMAX_EOF__"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: MiniMax A-grade coach (validator-grounded)
+        if: steps.grade.outputs.has_changes == 'true'
+        uses: jeremylongshore/minimax-code-review@d1314b96c1b261d5bf026d0a669823a7e5ce6b46
+        with:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          MINIMAX_MODEL: ${{ vars.MINIMAX_MODEL || 'MiniMax-M3' }}
+          MINIMAX_REVIEWER_NAME: 'MiniMax A-Grade Coach'
+          MAX_DIFF_CHARS: ${{ vars.MINIMAX_MAX_DIFF_CHARS || '100000' }}
+          EXCLUDE_PATTERNS: ${{ env.EXCLUDES }}
+          # The system prompt carries this repo's OWN validator output as ground
+          # truth; MiniMax turns each finding into the concrete fix to reach A.
+          MINIMAX_SYSTEM_PROMPT: |
+            You are the A-grade contributor coach for Tons of Skills, a Claude Code plugins and skills marketplace. Below is this repository's OWN validator output (validate-skills-schema.py, marketplace tier — the authoritative grader) for the SKILL.md files this pull request changes. Treat it as ground truth. For EACH file, translate its errors and warnings into the specific, concrete edit the contributor must make to reach grade A: all 8 required fields (name, description, allowed-tools, version, author, license, compatibility, tags); least-privilege allowed-tools (remove tools the body never uses); a description that says when to use it plus a Trigger phrase; real topical tags; and the required body sections. Quote the validator line you are addressing, then give the fix. Do not invent rules beyond this validator output and those standards. If a file is already grade A with no errors, say so in one line. Be concise and encouraging. You are advisory only and never block a merge.
+
+            VALIDATOR OUTPUT (authoritative, per changed SKILL.md):
+            ${{ steps.grade.outputs.report }}
