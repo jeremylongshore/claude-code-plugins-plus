@@ -20,6 +20,7 @@ quality signal but does not yet satisfy that gate.
 | Handle                                                           | Tier                                                                                                                                 | Area(s)                        | Backup           | Notes                                                                                                                     |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | [@jeremylongshore](https://github.com/jeremylongshore)           | **Lead**                                                                                                                             | all                            | —                | Owns the repo, releases, and all high-trust paths (validators, schema, CI, deps, root policy).                            |
+| [@blueandyellow44](https://github.com/blueandyellow44)           | **Maintainer**                                                                                                                       | all                            | @jeremylongshore | Co-maintainer at the top tier — code-owner on every area (paired with the Lead), sets direction, can sponsor others up.   |
 | [@opeyemiariyo-netizen](https://github.com/opeyemiariyo-netizen) | **Reviewer** → Approver on `ci-infra` + `marketplace-site` once the [pipeline quiz](000-docs/705-DR-GUID-pipeline-quiz.md) is passed | `ci-infra`, `marketplace-site` | @jeremylongshore | Promotion to Approver is gated on the pipeline quiz — see [GOVERNANCE § Vetting](GOVERNANCE.md#vetting--how-you-move-up). |
 
 ### Invitation pending
@@ -49,6 +50,7 @@ Editorial pick, rotated so it is not always the Lead. The picker for the week ru
 | Rotation slot      | Picker           |
 | ------------------ | ---------------- |
 | Default / fallback | @jeremylongshore |
+| Rotation           | @blueandyellow44 |
 
 _(Rotation expands as Reviewers/Approvers are added — add a row per picker.)_
 
