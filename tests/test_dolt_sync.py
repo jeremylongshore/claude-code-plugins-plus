@@ -340,6 +340,39 @@ class GradesExportTests(unittest.TestCase):
         conn.close()
 
 
+class StampDoltCommitTests(unittest.TestCase):
+    """The post-commit hash stamp must add dolt_commit without disturbing
+    the histogram write_grades_export produced (artifact traceability —
+    every export points at an immutable Dolt revision)."""
+
+    def test_stamp_adds_hash_and_preserves_payload(self):
+        import json
+        import pathlib
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            hist = pathlib.Path(tmpdir) / "grade-histogram.json"
+            original = {"run_id": 9, "total": 2, "grades": {"A": 1, "B": 1}}
+            hist.write_text(json.dumps(original, indent=2) + "\n")
+            dolt_sync.stamp_dolt_commit(hist, "abc123def456")
+            payload = json.loads(hist.read_text())
+        self.assertEqual(payload["dolt_commit"], "abc123def456")
+        for key, val in original.items():
+            self.assertEqual(payload[key], val)
+
+    def test_restamp_overwrites_previous_hash(self):
+        import json
+        import pathlib
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            hist = pathlib.Path(tmpdir) / "grade-histogram.json"
+            hist.write_text(json.dumps({"run_id": 9, "dolt_commit": "old"}) + "\n")
+            dolt_sync.stamp_dolt_commit(hist, "new")
+            payload = json.loads(hist.read_text())
+        self.assertEqual(payload["dolt_commit"], "new")
+
+
 class VarcharGuardTests(unittest.TestCase):
     def test_over_length_pk_fails(self):
         conn = fixture_conn("CREATE TABLE b (package_name TEXT PRIMARY KEY);")
