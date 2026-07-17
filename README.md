@@ -81,33 +81,33 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **452 published packages** in the
+Across **452 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
-| Window        | All packages | Established (>30d) |
-| ------------- | -----------: | -----------------: |
-| Last 24 hours |          758 |                727 |
-| Last 7 days   |        7,959 |              6,641 |
-| Last 30 days  |       54,227 |             51,031 |
+| Window | All packages | Established (>30d) |
+|--------|-------------:|-------------------:|
+| Last 24 hours | 732 | 694 |
+| Last 7 days | 8,142 | 6,817 |
+| Last 30 days | 53,879 | 49,784 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
 **Top 10 by last 30 days:**
 
-| #   | Package                                                                                                                                                    | Last 30d |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------: |
-| 1   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                                                   |    1,082 |
-| 2   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                                                   |      992 |
-| 3   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor)                                   |      914 |
-| 4   | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology)                       |      683 |
-| 5   | [`@intentsolutionsio/tonone`](https://www.npmjs.com/package/@intentsolutionsio/tonone)                                                                     |      576 |
-| 6   | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation)                               |      576 |
-| 7   | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) |      441 |
-| 8   | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar)                                                                       |      430 |
-| 9   | [`@intentsolutionsio/obsidian-project-documentation`](https://www.npmjs.com/package/@intentsolutionsio/obsidian-project-documentation)                     |      425 |
-| 10  | [`@intentsolutionsio/governed-second-brain`](https://www.npmjs.com/package/@intentsolutionsio/governed-second-brain)                                       |      422 |
+| # | Package | Last 30d |
+|---|---------|---------:|
+| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,074 |
+| 2 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 1,057 |
+| 3 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 732 |
+| 4 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 685 |
+| 5 | [`@intentsolutionsio/tonone`](https://www.npmjs.com/package/@intentsolutionsio/tonone) | 581 |
+| 6 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 572 |
+| 7 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 441 |
+| 8 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 440 |
+| 9 | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar) | 431 |
+| 10 | [`@intentsolutionsio/governed-second-brain`](https://www.npmjs.com/package/@intentsolutionsio/governed-second-brain) | 425 |
 
-<sub>Last refreshed 2026-07-14T01:24:23.996Z.</sub>
+<sub>Last refreshed 2026-07-17T01:28:14.211Z.</sub>
 
 <!-- NPM-STATS:END -->
 
