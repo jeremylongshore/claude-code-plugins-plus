@@ -422,7 +422,12 @@ jobs:
         if: matrix.test-type == 'mcp-plugins'
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          # Pinned (was `latest`). Resolving `latest` makes setup-bun fetch
+          # api.github.com/repos/oven-sh/bun/git/refs/tags unauthenticated, which
+          # 503-rate-limits from Actions runner IPs and flaked this required job
+          # (the mcp-plugins Bun-503 flake on PR #1076). A pinned version is
+          # fetched directly with no tags call. Bump deliberately as Bun releases.
+          bun-version: 1.3.14
 
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
@@ -1236,6 +1241,113 @@ jobs:
           git fetch --no-tags --depth=1 origin "$BASE_REF"
           node scripts/check-submission-docs.mjs --changed-only --base "origin/$BASE_REF"
 
+  # Conventional-commit gate. This repo squash-merges, so the PR TITLE is the
+  # commit subject that lands on main. The husky commit-msg hook enforces the
+  # convention locally per commit, but a web-UI commit or `git commit
+  # --no-verify` bypasses it — this job closes that gap by validating the merge
+  # artifact (the title) against .github/.commit-rules.json (allowedTypes +
+  # allowedScopes = the maintainer AREAS in GOVERNANCE.md). Modeled on
+  # CloudWeGo/eino's github-script title validator. On non-PR events (push to
+  # main) there is no title to lint, so the script logs and passes — the job
+  # still REPORTS success, so the ci-required aggregate never sees a skip.
+  commit-scope-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate PR title (conventional-commit + area scope)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const rules = JSON.parse(
+              fs.readFileSync('.github/.commit-rules.json', 'utf8'),
+            );
+
+            if (context.eventName !== 'pull_request') {
+              core.info('Not a pull_request event — no PR title to lint. Passing.');
+              return;
+            }
+
+            const title = (context.payload.pull_request?.title ?? '').trim();
+            core.info(`PR title: ${title}`);
+
+            // type(scope)!: subject   — scope and ! optional. A literal ": "
+            // (colon-space, per Conventional Commits 1.0.0) and a no-newline
+            // subject so a malformed multi-line title can't sneak a payload past
+            // the check via `\s` matching a newline.
+            const m = title.match(
+              /^(?<type>[a-z]+)(?:\((?<scope>[^)]+)\))?(?:!)?: (?<subject>[^\r\n]+)$/,
+            );
+            if (!m) {
+              core.setFailed(
+                `PR title is not a Conventional Commit.\n` +
+                  `Expected: type(scope): subject   e.g. "feat(marketplace-site): add cowork grid"\n` +
+                  `Allowed types: ${rules.allowedTypes.join(', ')}\n` +
+                  `Scope is optional; see ${rules.docsUrl}`,
+              );
+              return;
+            }
+
+            const { type, scope, subject } = m.groups;
+
+            if (!rules.allowedTypes.includes(type)) {
+              core.setFailed(
+                `Commit type "${type}" is not allowed.\n` +
+                  `Allowed: ${rules.allowedTypes.join(', ')}`,
+              );
+              return;
+            }
+
+            if (scope) {
+              const patterns = (rules.allowedScopePatterns ?? []).map(
+                (p) => new RegExp(p),
+              );
+              const ok =
+                rules.allowedScopes.includes(scope) ||
+                patterns.some((re) => re.test(scope));
+              if (!ok) {
+                core.setFailed(
+                  `Commit scope "${scope}" is not a known area.\n` +
+                    `Use a registered scope, drop the scope, or add it to ` +
+                    `.github/.commit-rules.json in this PR (it is the self-` +
+                    `documenting area registry — see GOVERNANCE.md § Areas).\n` +
+                    `Registered scopes: ${rules.allowedScopes.join(', ')}`,
+                );
+                return;
+              }
+            } else if (rules.scopeOptional === false) {
+              core.setFailed('A commit scope is required by .commit-rules.json.');
+              return;
+            }
+
+            const min = rules.subjectMinLength ?? 1;
+            if (subject.trim().length < min) {
+              core.setFailed(
+                `PR title subject is too short (min ${min} chars): "${subject}"`,
+              );
+              return;
+            }
+
+            core.info('✅ PR title passes the conventional-commit + area-scope gate.');
+
+  # Drift gate for the auto-generated per-plugin owner block in
+  # .github/CODEOWNERS. Same regenerate-and-diff pattern as sync-marketplace:
+  # if a plugin's `maintainer` field changed but CODEOWNERS was not regenerated,
+  # this fails and names the fix. Always reports (no path filter).
+  codeowners-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Verify CODEOWNERS per-plugin block is in sync
+        run: node scripts/generate-codeowners.mjs --check
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1271,6 +1383,8 @@ jobs:
       - scan-synced-content
       - promote-curated-check
       - check-submission-docs
+      - commit-scope-check
+      - codeowners-drift
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:

@@ -1,54 +1,109 @@
 # CODEOWNERS for claude-code-plugins-plus-skills
 #
-# GitHub assigns review requests to the owners listed here whenever a
-# matching path changes. The *last* matching rule wins — more specific
-# paths near the bottom override the catch-all at the top.
+# GitHub auto-requests the owners listed here whenever a matching path changes,
+# and — with branch protection "Require review from Code Owners" — an owner's
+# approval is the structural merge gate. The *last* matching rule wins; more
+# specific paths near the bottom override the catch-all at the top.
 #
-# Paired with branch protection "Require review from Code Owners":
-# no PR merges until Jeremy has approved. That's the hard structural
-# gate on external contributions, not just policy.
+# This file is the ownership half of the maintainer ladder. The tiers, areas, and
+# who-owns-what policy live in GOVERNANCE.md; the roster is MAINTAINERS.md; the
+# area names are mirrored as commit scopes in .github/.commit-rules.json. The
+# three move together — adding an area is one PR touching all three.
+#
+# NOTE (personal-repo constraint): on a personal repo, CODEOWNERS can only name
+# individual usernames who are collaborators with write access — no team handles,
+# no org rulesets. Every line below is written to convert cleanly to a team handle
+# (e.g. @intent-solutions-io/ci-infra) after the org transfer — see
+# 000-docs/707-AT-DECR-org-migration-to-intent-solutions-io.md.
 #
 # Docs: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-security/customizing-your-repository/about-code-owners
 
-# Default: Jeremy owns everything. External contributions require his
-# explicit approval before merge, full stop.
-* @jeremylongshore
+# ---------------------------------------------------------------------------
+# Default: the Lead owns everything not explicitly delegated below.
+# ---------------------------------------------------------------------------
+*                                   @jeremylongshore
 
-# CI + release automation. Workflow edits can bypass the whole validator
-# gate, so they get the same ownership as code but with extra emphasis —
-# any PR touching these MUST be read line-by-line before approval.
-/.github/                       @jeremylongshore
-/.github/workflows/             @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: ci-infra  — HIGH TRUST. A workflow edit can bypass every validator gate.
+# Lead-owned until an Approver has passed the pipeline quiz (GOVERNANCE § Vetting).
+# ---------------------------------------------------------------------------
+/.github/                           @jeremylongshore
+/.github/workflows/                 @jeremylongshore
+# After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
+# satisfy the code-owner gate on CI/deploy — the Reviewer → Approver promotion:
+# /.github/workflows/               @jeremylongshore @opeyemiariyo-netizen
+# /.github/workflows/deploy-vps.yml @jeremylongshore @opeyemiariyo-netizen
 
-# Validators + the validator config. The 100-point rubric and the
-# schema enforcement live here — changes to the bar itself require
-# intentional sign-off, not rubber-stamp.
+# ---------------------------------------------------------------------------
+# area: validator-schema  — HIGH TRUST. The quality bar itself. Changes are
+# approval-gated per 000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES. Lead-owned.
+# ---------------------------------------------------------------------------
 /scripts/validate-skills-schema.py  @jeremylongshore
+/scripts/validate-unicode-hygiene.py  @jeremylongshore
 /scripts/run-verification-pipeline.mjs  @jeremylongshore
 /scripts/check-package-manager.mjs  @jeremylongshore
+/scripts/kernel-shadow-validation.mjs  @jeremylongshore
+/scripts/kernel-vendor-hash.mjs     @jeremylongshore
+/000-docs/SCHEMA_CHANGELOG.md       @jeremylongshore
 
-# Gemini PR-review prompt. Affects what every community PR sees.
-/.gemini/                       @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: deps  — HIGH TRUST. A single bad upgrade is a supply-chain incident.
+# ---------------------------------------------------------------------------
+/package.json                       @jeremylongshore
+/pnpm-lock.yaml                     @jeremylongshore
+/pnpm-workspace.yaml                @jeremylongshore
 
-# Source-of-truth catalog files. Direct edits to marketplace.json are
-# forbidden (must go through sync-marketplace); the .extended.json is
-# where real edits land. Both are owner-scoped.
-/.claude-plugin/                @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: external-sync  — supply-chain-sensitive mirror pipeline.
+# ---------------------------------------------------------------------------
+/sources.yaml                       @jeremylongshore
+/sources.lock.json                  @jeremylongshore
+/scripts/sync-external.mjs          @jeremylongshore
+/scripts/scan-synced-content.mjs    @jeremylongshore
+/scripts/scan-allowlist.txt         @jeremylongshore
 
-# Contributor-facing docs. The philosophy and the bar described here
-# set expectations for every inbound PR.
-/CONTRIBUTING.md                @jeremylongshore
-/SECURITY.md                    @jeremylongshore
-/CODE_OF_CONDUCT.md             @jeremylongshore
-/000-docs/                      @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: marketplace-site  — the Astro site, design system, build pipeline.
+# ---------------------------------------------------------------------------
+/marketplace/                       @jeremylongshore
+# After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
+# satisfy the code-owner gate on the site — the Reviewer → Approver promotion:
+# /marketplace/                     @jeremylongshore @opeyemiariyo-netizen
 
-# Root policy files.
-/CLAUDE.md                      @jeremylongshore
-/AGENTS.md                      @jeremylongshore
-/LICENSE                        @jeremylongshore
-/LICENSE-TEMPLATE-PROPRIETARY.txt  @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: freshie  — the inventory CMDB, Dolt sync, grading.
+# ---------------------------------------------------------------------------
+/freshie/                           @jeremylongshore
 
-# Dependency manifests — a single bad upgrade is a supply-chain incident.
-/package.json                   @jeremylongshore
-/pnpm-lock.yaml                 @jeremylongshore
-/pnpm-workspace.yaml            @jeremylongshore
+# ---------------------------------------------------------------------------
+# area: docs-governance  — contributor-facing standards and the ladder itself.
+# ---------------------------------------------------------------------------
+/000-docs/                          @jeremylongshore
+/GOVERNANCE.md                      @jeremylongshore
+/MAINTAINERS.md                     @jeremylongshore
+/CONTRIBUTING.md                    @jeremylongshore
+/.github/CONTRIBUTING.md            @jeremylongshore
+/SECURITY.md                        @jeremylongshore
+/CODE_OF_CONDUCT.md                 @jeremylongshore
+
+# ---------------------------------------------------------------------------
+# area: catalog + root policy  — source-of-truth catalog and repo policy.
+# ---------------------------------------------------------------------------
+/.claude-plugin/                    @jeremylongshore
+/.gemini/                           @jeremylongshore
+/.greptile/                         @jeremylongshore
+/CLAUDE.md                          @jeremylongshore
+/AGENTS.md                          @jeremylongshore
+/LICENSE                            @jeremylongshore
+/LICENSE-TEMPLATE-PROPRIETARY.txt   @jeremylongshore
+
+# ---------------------------------------------------------------------------
+# Per-plugin owners (Home-Assistant style). AUTO-GENERATED — do not hand-edit
+# between the markers. Regenerate with `node scripts/generate-codeowners.mjs`
+# from the optional `maintainer` field on plugin entries in
+# .claude-plugin/marketplace.extended.json. CI (`codeowners-drift`) fails if this
+# block is stale. A contributor who stewards a plugin auto-owns its reviews.
+# ---------------------------------------------------------------------------
+# BEGIN generated per-plugin owners
+/plugins/productivity/000-jeremy-content-consistency-validator/  @jeremylongshore
+# END generated per-plugin owners
