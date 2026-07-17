@@ -1,17 +1,17 @@
 {
   "synced_from": {
-    "repo": "jeremylongshore/dolt-mcp-vcs",
+    "repo": "jeremylongshore/dolt-mcp-vcs-plugin",
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:26:53.551Z",
+  "last_sync": "2026-07-17T22:28:58.193Z",
   "author": {
     "name": "Jeremy Longshore",
     "github": "jeremylongshore",
     "email": "jeremy@intentsolutions.io"
   },
   "license": "Apache-2.0",
-  "files_synced": 29,
+  "files_synced": 30,
   "files": [
     ".claude-plugin/marketplace.json",
     ".claude-plugin/plugin.json",
@@ -29,6 +29,7 @@
     "scripts/check-agent-safety.sh",
     "scripts/dep-graph.sh",
     "scripts/descriptor-to-mcp-args.py",
+    "scripts/dolt-detect.py",
     "scripts/dolt-idle-reaper.sh",
     "scripts/dolt-mcp-client.py",
     "scripts/dolt-push-dolthub.sh",
