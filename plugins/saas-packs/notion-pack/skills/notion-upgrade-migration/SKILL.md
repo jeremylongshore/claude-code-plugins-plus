@@ -63,7 +63,7 @@ Record the current SDK version and API version before proceeding. If no `notionV
 **SDK version history — key milestones:**
 
 | SDK Version | Notable Additions |
-|-------------|-------------------|
+| ------------- | ------------------- |
 | `2.2.0` | Comments API support (`notion.comments.create`, `notion.comments.list`) |
 | `2.2.3` | Status property type in database schemas |
 | `2.2.4` | Unique ID property, verification property |
@@ -121,7 +121,7 @@ The full five-test verification suite plus the merge commands are in [verificati
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `TypeError: Cannot read properties of undefined` | New property type returned by API that code does not handle | Add a default case to property type switch — see Step 2 |
 | `APIResponseError: Could not find ...` | Stale page/database ID after workspace migration | Re-share pages with the integration at notion.so/my-integrations |
 | `notionVersion is not a valid API version` | Typo or unsupported version string | Use `2022-06-28` — confirm at developers.notion.com/reference/versioning |

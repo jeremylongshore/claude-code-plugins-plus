@@ -134,7 +134,7 @@ After completing these steps you will have:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `NOTION_TOKEN undefined` | Missing `.env.development` or not loaded | Run `cp .env.example .env.development` and fill in dev token |
 | `401 Unauthorized` | Token invalid or integration not connected to page | Re-share the dev page with the dev integration |
 | `404 Not found` (database/page) | Test DB not shared with dev integration | Open DB in Notion > `...` > Connections > add your dev integration |

@@ -112,7 +112,7 @@ Full export, deletion, and retention functions: [compliance-patterns.md](referen
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | PII in application logs | Missing redaction layer | Use `redactPageProperties` for all logging |
 | Deletion fails on pages (403) | Integration lacks Update capability | Edit integration at notion.so/my-integrations |
 | Export missing pages | Pagination not handled | Use `start_cursor` loop until `has_more` is false |

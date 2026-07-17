@@ -41,7 +41,7 @@ Set up the official Notion SDK and configure authentication for internal integra
 
 ### Step 1: Create Integration and Install SDK
 
-Create an internal integration at https://www.notion.so/my-integrations:
+Create an internal integration at <https://www.notion.so/my-integrations>:
 
 1. Click **New integration**
 2. Name it, select the workspace, and choose capabilities (Read content, Update content, Insert content)
@@ -95,7 +95,7 @@ If the bot user is returned, authentication is working.
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `unauthorized` | Invalid or expired token | Regenerate at notion.so/my-integrations |
 | `object_not_found` | Page not shared with integration | Open page > `...` > Connections > add integration |
 | `restricted_resource` | Missing capabilities | Edit integration capabilities in dashboard |

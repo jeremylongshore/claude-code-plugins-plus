@@ -105,7 +105,7 @@ Match each filter to its property type; property names are case-sensitive; batch
 ## Error Handling
 
 | Pitfall | Error You See | Real Cause |
-|---------|--------------|------------|
+| --------- | -------------- | ------------ |
 | #1 Not shared | `object_not_found` (404) | Page not shared with integration |
 | #2 ID format | `validation_error` (400) | Wrong ID extracted from URL |
 | #3 Empty rich_text | `TypeError: Cannot read property` | Array is empty, not checked |

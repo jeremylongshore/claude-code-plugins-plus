@@ -43,7 +43,7 @@ This SKILL.md carries the full pitfall table plus one representative fix per cat
 Work the pitfalls top-down by severity. Fix every **Critical** finding before moving on — a single security miss can expose the whole database.
 
 | # | Pitfall | Severity | Fix |
-|---|---------|----------|-----|
+| --- | --------- | ---------- | ----- |
 | 1 | service_role key in client bundle | Critical | anon key on client; service_role server-only, no `NEXT_PUBLIC_` |
 | 2 | Table without RLS | Critical | `ALTER TABLE … ENABLE ROW LEVEL SECURITY` right after `CREATE TABLE` |
 | 3 | Overly permissive RLS policy | Critical | scope `USING (…)` to `auth.uid()`, never `USING (true)` for writes |
@@ -110,7 +110,7 @@ The full singleton pattern, the FK-index detection query, and the `supabase gen 
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `PGRST116: JSON object requested, multiple (or no) rows returned` | Used `.single()` when 0 or 2+ rows match | Use `.maybeSingle()` for optional lookups |
 | `data` is `null` after insert | Missing `.select()` chain | Add `.select('column1, column2')` after `.insert()` |
 | `TypeError: Cannot read property of null` | Destructured only `data`, ignoring `error` | Always destructure `{ data, error }` and check error first |

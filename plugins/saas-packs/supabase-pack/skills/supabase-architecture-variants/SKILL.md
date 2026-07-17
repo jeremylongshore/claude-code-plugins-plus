@@ -43,7 +43,7 @@ Every Supabase `createClient` configuration turns on two questions: **where the 
 Pick the architecture that matches the target stack, then follow the linked walkthrough for the full, copy-ready client setup.
 
 | Architecture | Client(s) | Key | Session storage |
-|--------------|-----------|-----|-----------------|
+| -------------- | ----------- | ----- | ----------------- |
 | Next.js SSR | Server (cookies) + browser + admin | `anon` in-request, `service_role` server-only | HTTP cookies |
 | SPA (React/Vue) | Single browser client | `anon` only | `localStorage` |
 | Mobile (React Native) | Single native client | `anon` only | `AsyncStorage` |
@@ -107,7 +107,7 @@ Full walkthrough — Edge Function per-request clients, admin escalation, RLS mu
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `AuthSessionMissingError` in Server Component | Cookies not passed to Supabase client | Use `createServerClient` from `@supabase/ssr` with cookie handlers |
 | OAuth redirect fails in React Native | Missing deep link scheme | Add `scheme` to app.json and configure Supabase redirect URL |
 | `service_role` key in client bundle | Wrong env var prefix (`NEXT_PUBLIC_`) | Remove `NEXT_PUBLIC_` prefix; only server code should access it |

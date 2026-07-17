@@ -5,10 +5,10 @@ this file holds every code block and per-platform detail.
 
 ## Step 1: Create Per-Environment Integrations and Env-Aware Client
 
-Create separate integrations at https://www.notion.so/my-integrations with scoped capabilities:
+Create separate integrations at <https://www.notion.so/my-integrations> with scoped capabilities:
 
 | Environment | Integration Name | Capabilities | Timeout | Log Level |
-|-------------|-----------------|--------------|---------|-----------|
+| ------------- | ----------------- | -------------- | --------- | ----------- |
 | Development | `my-app-dev` | All (read+update+insert+delete) | 60s | DEBUG |
 | Staging | `my-app-staging` | Read + Update + Insert | 30s | WARN |
 | Production | `my-app-prod` | Minimum required only | 30s | ERROR |

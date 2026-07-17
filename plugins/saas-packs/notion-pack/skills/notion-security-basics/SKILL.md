@@ -98,7 +98,7 @@ After applying this skill:
 ## Error Handling
 
 | Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
+| ---------------- | ----------- | ------------ |
 | Token committed to git | CI secret scan, `git log -p -S 'ntn_'` | Rotate immediately, rewrite git history with `git filter-repo` |
 | Over-privileged integration | Capability audit at dashboard | Create new integration with minimal capabilities, migrate |
 | Stale access to removed pages | Access audit script returns unexpected pages | Revoke page sharing, re-audit |

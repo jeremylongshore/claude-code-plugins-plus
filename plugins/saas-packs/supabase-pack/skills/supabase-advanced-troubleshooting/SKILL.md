@@ -126,7 +126,7 @@ This skill produces the following diagnostic artifacts:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `pg_stat_statements` not available | Extension not enabled | Run `CREATE EXTENSION pg_stat_statements;` |
 | Seq Scan on large table | Missing index on filter column | Create index with `CREATE INDEX CONCURRENTLY` |
 | `deadlock detected` | Circular lock dependency | Ensure consistent lock ordering across transactions |

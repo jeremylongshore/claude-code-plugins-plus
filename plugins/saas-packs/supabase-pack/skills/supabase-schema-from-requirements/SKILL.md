@@ -48,7 +48,7 @@ Read the requirements document and extract entities, attributes, relationships, 
 **Entity extraction example** (project management app):
 
 | Entity | Key Columns | Relationships |
-|--------|------------|---------------|
+| -------- | ------------ | --------------- |
 | Organization | name, slug, plan | has many Projects, has many Members |
 | Project | name, description, status | belongs to Organization, has many Tasks |
 | Task | title, priority, status, due_date | belongs to Project, assigned to User |
@@ -67,7 +67,7 @@ Full worked migration (project-management app — tables, FKs, indexes, `moddate
 **Data type selection guide:**
 
 | Use case | Type | Notes |
-|----------|------|-------|
+| ---------- | ------ | ------- |
 | Primary keys | `uuid` | Always with `uuid_generate_v4()` default |
 | Names, titles | `text` | Prefer over `varchar` in Postgres |
 | Counts, ranks | `integer` | Use `bigint` for sequences |
@@ -126,7 +126,7 @@ joins, and an RLS-enforcement check — is in
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `42P07: relation already exists` | Table name collision in migration | Use `create table if not exists` or rename the table |
 | `23503: foreign key violation` | Insert references a nonexistent parent row | Insert parent rows first, or check the UUID |
 | `42501: insufficient privilege` | RLS helper function permissions | Add `security definer` to the function definition |

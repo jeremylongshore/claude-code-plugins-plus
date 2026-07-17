@@ -101,7 +101,7 @@ scan), and the Python port: [references/implementation.md](references/implementa
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Audit shows too many pages | Integration shared at workspace level | Narrow sharing to specific pages/databases |
 | Schema validation fails | Property renamed in Notion UI | Update schema config to match |
 | Token scan false positive | Test fixtures contain example tokens | Add `--exclude` for test directories |

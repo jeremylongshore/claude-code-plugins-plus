@@ -42,7 +42,7 @@ Work the three steps below in order — audit first to find where the money goes
 ## Pricing Reference
 
 | Resource | Free Tier | Pro ($25/mo) | Team ($599/mo) |
-|----------|-----------|--------------|----------------|
+| ---------- | ----------- | -------------- | ---------------- |
 | Database | 500 MB | 8 GB included, $0.125/GB extra | 8 GB included |
 | Storage | 1 GB | 100 GB included, $0.021/GB extra | 100 GB included |
 | Bandwidth | 5 GB | 250 GB included, $0.09/GB extra | 250 GB included |
@@ -53,7 +53,7 @@ Work the three steps below in order — audit first to find where the money goes
 **Compute add-ons** (Pro and above):
 
 | Instance | vCPUs | RAM | Price |
-|----------|-------|-----|-------|
+| ---------- | ------- | ----- | ------- |
 | Micro | 2 | 1 GB | Included with Pro |
 | Small | 2 | 2 GB | $25/mo |
 | Medium | 2 | 4 GB | $50/mo |
@@ -112,7 +112,7 @@ After completing all three steps, the project has:
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Database approaching 500 MB (Free) or 8 GB (Pro) | Data growth without archival | Archive old records, VACUUM, drop unused indexes |
 | Storage costs climbing monthly | Orphaned uploads accumulating | Schedule cleanup job for files not linked to records |
 | Unexpected bandwidth spike | `select('*')` on large tables | Use specific column lists; add `.range()` pagination |

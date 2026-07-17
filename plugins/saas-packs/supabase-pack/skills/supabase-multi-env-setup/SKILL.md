@@ -123,7 +123,7 @@ Completing this skill produces:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `Cannot find project ref` | CLI not linked to a project | Run `npx supabase link --project-ref <ref>` before `db push` |
 | `Migration has already been applied` | Re-running an existing migration | Check `supabase_migrations.schema_migrations` table; migrations are idempotent by ref |
 | `Permission denied for schema public` | Wrong database password | Verify `SUPABASE_DB_PASSWORD` matches the project's database password in dashboard |

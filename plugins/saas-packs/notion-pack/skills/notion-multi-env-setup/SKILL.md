@@ -36,10 +36,10 @@ The build has three steps. The lean skeleton below is enough to follow the workf
 
 ### Step 1: Per-environment integrations and an env-aware client
 
-Create one integration per environment at https://www.notion.so/my-integrations, each with capabilities scoped to the tier — dev gets full access, prod gets the minimum required:
+Create one integration per environment at <https://www.notion.so/my-integrations>, each with capabilities scoped to the tier — dev gets full access, prod gets the minimum required:
 
 | Environment | Integration | Capabilities | Timeout | Log Level |
-|-------------|-------------|--------------|---------|-----------|
+| ------------- | ------------- | -------------- | --------- | ----------- |
 | Development | `my-app-dev` | All (read+update+insert+delete) | 60s | DEBUG |
 | Staging | `my-app-staging` | Read + Update + Insert | 30s | WARN |
 | Production | `my-app-prod` | Minimum required only | 30s | ERROR |
@@ -97,7 +97,7 @@ Full guard set, startup validation, and the per-environment GitHub Actions deplo
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `NOTION_TOKEN not set` | Missing env var | Check the per-environment `.env` file or secret manager config |
 | Wrong database in prod | Env var misconfigured | Add startup validation to compare token prefix with env |
 | Token for wrong environment | Secret manager mapping error | Validate token prefix at startup |

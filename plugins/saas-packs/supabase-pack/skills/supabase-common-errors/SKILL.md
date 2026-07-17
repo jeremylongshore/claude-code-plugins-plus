@@ -96,7 +96,7 @@ The two most-cited layers are inline below. Auth, Storage, and Realtime tables a
 ### PostgREST API Errors (PGRST*)
 
 | Code | HTTP | Meaning | Root Cause | Fix |
-|------|------|---------|------------|-----|
+| ------ | ------ | --------- | ------------ | ----- |
 | `PGRST301` | 401 | JWT expired or invalid | `SUPABASE_ANON_KEY` is wrong, or the user session expired | Verify `SUPABASE_ANON_KEY` matches the project; call `supabase.auth.refreshSession()` |
 | `PGRST302` | 401 | Missing Authorization header | Client created without a key, or middleware stripped the header | Pass `SUPABASE_ANON_KEY` to `createClient()`; check proxy/CDN config |
 | `PGRST116` | 406 | No rows returned for `.single()` | Query matched 0 rows but `.single()` expects exactly 1 | Use `.maybeSingle()` for optional lookups, or check filters |
@@ -107,7 +107,7 @@ The two most-cited layers are inline below. Auth, Storage, and Realtime tables a
 ### PostgreSQL Database Errors (5-digit codes)
 
 | Code | Meaning | Root Cause | Fix |
-|------|---------|------------|-----|
+| ------ | --------- | ------------ | ----- |
 | `42501` | RLS policy violation | Row-level security is blocking the operation for this user | Add or fix the RLS policy; test with service role to confirm |
 | `23505` | Unique constraint violation | INSERT/UPDATE conflicts with an existing row | Use `.upsert({ onConflict: 'column' })` or check existence first |
 | `23503` | Foreign key violation | Referenced row doesn't exist in the parent table | Insert the parent row first, or check the foreign key value |

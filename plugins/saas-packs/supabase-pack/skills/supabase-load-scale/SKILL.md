@@ -106,7 +106,7 @@ patterns with partition-key filters, and partition drop for data retention.
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `too many connections for role` | Exceeded Supavisor pool limit | Use transaction mode (port 6543), reduce idle connections, upgrade compute |
 | Read replica returns stale data | Replication lag (typically <100ms) | Do not read-after-write on replica; use primary for consistency-critical reads |
 | `no partition of relation "events" found for row` | Insert date outside any partition range | Create a DEFAULT partition or pre-create future partitions |

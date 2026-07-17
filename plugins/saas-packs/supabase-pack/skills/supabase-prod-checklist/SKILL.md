@@ -142,7 +142,7 @@ Supabase enforces rate limits that vary by plan. Hitting these in production
 causes 429 errors.
 
 | Resource | Free | Pro | Team |
-|----------|------|-----|------|
+| ---------- | ------ | ----- | ------ |
 | API requests | 500/min | 1,000/min | 5,000/min |
 | Auth emails | 4/hour | 30/hour | 100/hour |
 | Realtime connections | 200 concurrent | 500 concurrent | 2,000 concurrent |
@@ -248,7 +248,7 @@ alert thresholds, and a Supabase error-code `switch` handler) in
 [references/errors.md](references/errors.md).
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `403 Forbidden` on all API calls | RLS enabled but no policies created | Add SELECT/INSERT/UPDATE/DELETE policies for each role |
 | `429 Too Many Requests` | Plan rate limit exceeded | Upgrade plan or implement client-side backoff with retry |
 | Connection timeout under load | Using direct connection in serverless | Switch to pooled connection string (port 6543) |

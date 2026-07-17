@@ -36,7 +36,7 @@ processing, and testing strategies.
 
 - Node.js 18+ with TypeScript strict mode enabled
 - `@notionhq/client` v2.x installed (`npm install @notionhq/client`)
-- A Notion internal integration created at https://www.notion.so/my-integrations
+- A Notion internal integration created at <https://www.notion.so/my-integrations>
 - `NOTION_TOKEN` environment variable set with the integration token
 - Target databases/pages shared with the integration via "Add connections"
 
@@ -105,12 +105,12 @@ Applying this architecture produces:
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Invalid or expired integration token | Verify `NOTION_TOKEN` at https://www.notion.so/my-integrations; tokens do not expire but can be regenerated |
+| ------- | ------- | ---------- |
+| `401 Unauthorized` | Invalid or expired integration token | Verify `NOTION_TOKEN` at <https://www.notion.so/my-integrations>; tokens do not expire but can be regenerated |
 | `404 object_not_found` | Page/database not shared with integration | In Notion, click "..." on the page, select "Add connections", and add the integration |
 | `400 validation_error: property not found` | Property name mismatch (case-sensitive) | Call `databases.retrieve()` first to get exact property names; use schema validation before bulk ops |
 | `429 rate_limited` | Exceeded 3 req/s per integration | The `withRetry` wrapper handles this automatically; for sustained throughput, use separate reader/writer integrations to double capacity |
-| `502/503 server errors` | Notion service degradation | Check https://status.notion.so; the retry wrapper auto-recovers with backoff |
+| `502/503 server errors` | Notion service degradation | Check <https://status.notion.so>; the retry wrapper auto-recovers with backoff |
 | Stale cache data | Cache TTL too long for write-heavy workloads | Invalidate on writes (shown in `NotionService.createTask`); reduce TTL for volatile databases |
 | Polling misses changes | Poll interval too wide or clock skew | Use 10s intervals; store `last_edited_time` from the most recent page, not the system clock |
 

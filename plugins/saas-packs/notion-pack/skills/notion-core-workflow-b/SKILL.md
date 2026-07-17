@@ -64,7 +64,7 @@ Each step's complete, copy-paste code is in [references/implementation.md](refer
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `validation_error` on append | Invalid block type structure | Check block type object shape |
 | `object_not_found` | Block deleted or page not shared | Verify block ID and permissions |
 | `rate_limited` (429) | Rapid block operations | Add delays between batch operations |

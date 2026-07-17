@@ -137,7 +137,7 @@ and the Python schema validator:
 ## Error Handling
 
 | Symptom | Root Cause | Debug Approach |
-|---------|-----------|----------------|
+| --------- | ----------- | ---------------- |
 | `object_not_found` on valid page | Page not shared with integration | Run `tracePermissionChain()` |
 | `validation_error` on create/update | Property type mismatch | Run `detectPropertyMismatches()` |
 | Missing data from query | Not paginating (max 100/request) | Use `safeFullPagination()` |

@@ -30,7 +30,7 @@ grep -rn "databases.query\|blocks.children.list" --include="*.ts" src/ | \
 ### Reading the output
 
 | Line | Meaning | Fix |
-|------|---------|-----|
+| ------ | --------- | ----- |
 | `FAIL: Wrong import` | Code imports a non-existent package | See Pitfall #10 in [implementation.md](implementation.md) |
 | `WARN: Unsafe array access` | `rich_text[0]` without a length check | See Pitfall #3 |
 | `WARN: Possible hardcoded UUID` | A database/page ID is baked into source | See Pitfall #12 |

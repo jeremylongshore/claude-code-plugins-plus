@@ -103,7 +103,7 @@ Full realtime walkthrough — UPDATE/DELETE filters, RLS-scoped subscriptions, b
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `AuthApiError: User already registered` | Duplicate email signup | Use `signInWithPassword` or check existence first |
 | `AuthApiError: Invalid login credentials` | Wrong email or password | Verify credentials; check email confirmation status |
 | `AuthApiError: Email not confirmed` | User has not clicked confirmation link | Resend with `resend({ type: 'signup', email })` |

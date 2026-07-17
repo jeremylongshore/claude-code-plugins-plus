@@ -87,7 +87,7 @@ This skill produces:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `migration has already been applied` | Re-running existing migration | Use `supabase migration list` to check status; never modify applied migrations |
 | `cannot run inside a transaction block` | `CREATE INDEX CONCURRENTLY` in transaction | Add `-- supabase:disable-transaction` comment at top of migration file |
 | `column does not exist` after migration | Migration not applied or types stale | Run `supabase db push` then `supabase gen types typescript` |

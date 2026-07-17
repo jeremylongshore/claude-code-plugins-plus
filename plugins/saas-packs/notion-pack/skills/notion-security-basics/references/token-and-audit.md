@@ -78,7 +78,7 @@ Configure integration capabilities at the [integration dashboard](https://www.no
 Each integration should request only the capabilities it actually uses.
 
 | Capability | Grant when... | Do NOT grant for... |
-|------------|---------------|---------------------|
+| ------------ | --------------- | --------------------- |
 | Read content | Reading pages, databases, blocks | Write-only bots (form submissions) |
 | Update content | Modifying existing page properties/blocks | Read-only dashboards |
 | Insert content | Creating new pages, appending blocks | Analytics/reporting tools |

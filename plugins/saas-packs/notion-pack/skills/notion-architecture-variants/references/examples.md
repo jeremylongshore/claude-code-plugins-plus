@@ -26,7 +26,7 @@ function recommendArchitecture(requirements: {
 ## Choosing between variants at a glance
 
 | Workload signal | Recommended variant | Why |
-|-----------------|--------------------|-----|
+| ----------------- | -------------------- | ----- |
 | Non-technical authors, daily publishing | Headless CMS | Notion is the editor; site reads published rows |
 | Real-time status changes, assignees | Task Tracker | Board grouping + `pages.update` on status |
 | Searchable internal docs | Knowledge Base | Workspace `search` filtered to the wiki DB |

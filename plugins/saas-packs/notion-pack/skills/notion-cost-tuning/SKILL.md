@@ -27,7 +27,7 @@ The Notion API is **free with every workspace plan** — there is no per-call pr
 **Notion workspace pricing (for context — API access is included at every tier):**
 
 | Plan | Price | API Access | Rate Limit |
-|------|-------|------------|------------|
+| ------ | ------- | ------------ | ------------ |
 | Free | $0 | Full API | 3 req/sec |
 | Plus | $12/user/mo | Full API | 3 req/sec |
 | Business | $28/user/mo | Full API | 3 req/sec |
@@ -112,7 +112,7 @@ After applying these optimizations:
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | 429 Too Many Requests despite optimization | Shared token across multiple services | Use separate integration tokens per service; each gets its own 3 req/sec budget |
 | Stale cached data causing bugs | Cache TTL too long for the use case | Shorten TTL to 30-60s for volatile data, or use webhook-based cache invalidation |
 | Webhook not triggering | Integration not connected to the page/database | Share via **Connections** menu in Notion; verify webhook URL is publicly accessible |

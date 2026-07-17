@@ -106,7 +106,7 @@ Full paginated list, rich-text update, to-do toggle, delete, and retrieve helper
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `validation_error` (400) | Wrong property type or name | Retrieve database schema with `databases.retrieve()` to confirm property names and types |
 | `object_not_found` (404) | Page/block not shared with integration | Open the page in Notion, click `...` > Connections > add the integration |
 | `unauthorized` (401) | Invalid or expired token | Regenerate at `notion.so/my-integrations` and update `NOTION_TOKEN` |

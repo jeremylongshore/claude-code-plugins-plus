@@ -26,7 +26,7 @@ Five validated architecture patterns for using Notion as a backend via the API, 
 The five variants:
 
 | Variant | Use case | Core operation |
-|---------|----------|----------------|
+| --------- | ---------- | ---------------- |
 | Headless CMS | Blog / content site | Query `Status = Published`, render blocks to HTML |
 | Task Tracker | Project management | Group by status for a board, `pages.update` on move |
 | Knowledge Base | Wiki / internal docs | Workspace `search` filtered to the wiki database |
@@ -99,7 +99,7 @@ implementation of all five variants (TypeScript + Python).
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Empty `rich_text` array | Property has no content | Always check `?.[0]?.plain_text ?? ''` |
 | `object_not_found` on query | Database not shared with integration | Share database in Notion UI |
 | Image URLs expire | Notion-hosted files have temporary URLs | Cache or proxy images |

@@ -115,7 +115,7 @@ See [the full walkthrough](references/implementation.md) for copy-paste code:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `validation_error` | Property name mismatch or wrong type | Use `databases.retrieve` to check schema |
 | `object_not_found` | Database not shared with integration | Add integration via Connections |
 | `rate_limited` (429) | >3 requests/second average | Respect `Retry-After` header |

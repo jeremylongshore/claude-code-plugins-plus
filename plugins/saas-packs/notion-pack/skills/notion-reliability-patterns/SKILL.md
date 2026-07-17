@@ -94,7 +94,7 @@ Full code — `queryWithFallback`, `notionHealthCheck`, `getFallbackContent`, `r
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Circuit stays open | Threshold too low for occasional errors | Increase `failureThreshold` to 10 |
 | Stale cached data | Long TTL during extended outage | Add freshness indicator in UI, reduce TTL |
 | `CircuitOpenError` in logs | API is down, circuit protecting | Expected behavior, check status.notion.com |

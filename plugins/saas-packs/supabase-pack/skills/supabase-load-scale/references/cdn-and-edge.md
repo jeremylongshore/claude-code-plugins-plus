@@ -3,7 +3,7 @@
 ## Compute Size Selection Guide
 
 | Tier | vCPU | RAM | Max Connections | Best For |
-|------|------|-----|----------------|----------|
+| ------ | ------ | ----- | ---------------- | ---------- |
 | Micro (Free) | 2 shared | 1 GB | 60 | Development, prototypes |
 | Small (Pro) | 2 dedicated | 2 GB | 90 | Low-traffic production |
 | Medium | 2 dedicated | 4 GB | 120 | Growing apps, moderate traffic |

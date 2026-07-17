@@ -95,7 +95,7 @@ postmortem once resolved. Copy-paste templates for all three are in
 ## Error Handling
 
 | Scenario | Triage Signal | Immediate Action |
-|----------|--------------|------------------|
+| ---------- | -------------- | ------------------ |
 | Notion platform outage | status.notion.so incident | Enable fallback mode, notify users |
 | Token expired/revoked | All requests return 401 | Rotate token in secret manager, restart |
 | Rate limited | 429 errors spiking | Reduce concurrency to 1, check for loops |

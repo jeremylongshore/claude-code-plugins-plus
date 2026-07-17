@@ -5,7 +5,7 @@ Match the HTTP status and `code` field from the JSON error body to the section b
 
 ---
 
-### 401 — `unauthorized`
+## 401 — `unauthorized`
 
 ```json
 {"object": "error", "status": 401, "code": "unauthorized", "message": "API token is invalid."}
@@ -29,7 +29,7 @@ If the response shows your integration bot user, the token is valid. Otherwise r
 
 ---
 
-### 403 — `restricted_resource`
+## 403 — `restricted_resource`
 
 ```json
 {"object": "error", "status": 403, "code": "restricted_resource", "message": "Insufficient permissions for this resource."}
@@ -41,7 +41,7 @@ If the response shows your integration bot user, the token is valid. Otherwise r
 
 ---
 
-### 404 — `object_not_found`
+## 404 — `object_not_found`
 
 ```json
 {"object": "error", "status": 404, "code": "object_not_found", "message": "Could not find page with ID: abc123..."}
@@ -71,7 +71,7 @@ try {
 
 ---
 
-### 400 — `validation_error`
+## 400 — `validation_error`
 
 ```json
 {"object": "error", "status": 400, "code": "validation_error", "message": "..."}
@@ -80,7 +80,7 @@ try {
 **Message varies.** This is the broadest error category. Common sub-cases:
 
 | Message Pattern | Cause | Fix |
-|----------------|-------|-----|
+| ---------------- | ------- | ----- |
 | `Title is not a property that exists` | Wrong property name | Use exact name from database schema (case-sensitive) |
 | `... should be an array` | Rich text passed as string | Wrap in `[{ text: { content: "value" } }]` |
 | `body.parent.database_id should be defined` | Missing parent in page create | Include `parent: { database_id: "..." }` |
@@ -111,7 +111,7 @@ console.log(Object.entries(db.properties).map(([name, prop]) => `${name}: ${prop
 
 ---
 
-### 429 — `rate_limited`
+## 429 — `rate_limited`
 
 ```json
 {"object": "error", "status": 429, "code": "rate_limited", "message": "Rate limited"}
@@ -146,7 +146,7 @@ The `@notionhq/client` SDK has built-in retry with exponential backoff. If you h
 
 ---
 
-### 409 — `conflict_error`
+## 409 — `conflict_error`
 
 ```json
 {"object": "error", "status": 409, "code": "conflict_error", "message": "Transaction has an existing lock on the object."}
@@ -158,7 +158,7 @@ The `@notionhq/client` SDK has built-in retry with exponential backoff. If you h
 
 ---
 
-### 500 — `internal_server_error`
+## 500 — `internal_server_error`
 
 ```json
 {"object": "error", "status": 500, "code": "internal_server_error", "message": "Internal Server Error"}
@@ -170,7 +170,7 @@ The `@notionhq/client` SDK has built-in retry with exponential backoff. If you h
 
 ---
 
-### 502/503 — `service_unavailable`
+## 502/503 — `service_unavailable`
 
 ```json
 {"object": "error", "status": 503, "code": "service_unavailable", "message": "Notion is unavailable. Try again later."}

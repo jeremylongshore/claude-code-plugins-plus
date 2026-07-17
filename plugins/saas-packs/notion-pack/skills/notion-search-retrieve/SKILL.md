@@ -145,7 +145,7 @@ deep as the content nests, since each level multiplies API calls.
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Could not find database | Database not shared with integration | Open database in Notion, click Share, add the integration |
 | Could not find page | Page not shared or deleted | Verify page is shared; check `archived` status |
 | Empty search results | Integration not connected | Share parent page/database with integration; wait for indexing |

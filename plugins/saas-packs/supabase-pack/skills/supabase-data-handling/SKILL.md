@@ -92,7 +92,7 @@ Completing this skill produces:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `auth.admin.deleteUser()` returns 404 | User already deleted or wrong ID | Check `auth.users` table; may have been deleted by another process |
 | `violates foreign key constraint` during deletion | Child rows reference user | Delete in cascade order (comments → orders → profiles) or use `ON DELETE CASCADE` |
 | `permission denied for function cron.schedule` | `pg_cron` not enabled or wrong plan | Enable `pg_cron` extension; requires Supabase Pro plan |

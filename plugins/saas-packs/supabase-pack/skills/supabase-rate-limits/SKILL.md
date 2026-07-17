@@ -50,7 +50,7 @@ Auth, Storage, Realtime, Edge Functions, and Database connections each carry the
 Supavisor is Supabase's built-in connection pooler (replaced PgBouncer). Pick the mode by workload:
 
 | Use case | Mode | Port |
-|----------|------|------|
+| ---------- | ------ | ------ |
 | Serverless / Edge Functions | Transaction | 6543 |
 | Next.js API routes | Transaction | 6543 |
 | Long-running workers | Session | 5432 |
@@ -88,7 +88,7 @@ After applying this skill you will have:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `429 Too Many Requests` | Exceeded RPM or RPD limit | Apply `withRetry` backoff; reduce concurrency; upgrade tier |
 | `PGRST000: could not connect` | Connection pool exhausted | Switch to Supavisor transaction mode (port 6543); reduce concurrent queries |
 | Auth `over_request_rate_limit` | Too many signups/logins from one IP | Add CAPTCHA; configure custom auth rate limits in Dashboard |

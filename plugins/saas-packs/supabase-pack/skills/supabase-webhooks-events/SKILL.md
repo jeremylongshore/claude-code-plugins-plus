@@ -127,7 +127,7 @@ These patterns produce:
 ## Error Handling
 
 | Error | Cause | Fix |
-|-------|-------|-----|
+| ------- | ------- | ----- |
 | `pg_net` returns 404 | Edge Function not deployed or wrong URL | Run `supabase functions deploy <name>` and verify the URL matches |
 | Webhook not firing | Trigger not attached or table not in publication | Check `SELECT * FROM pg_trigger WHERE tgrelid = 'orders'::regclass;` |
 | Duplicate events processed | No idempotency layer | Add `processed_events` table with unique `event_id` constraint |

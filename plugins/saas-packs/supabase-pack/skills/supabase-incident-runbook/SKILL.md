@@ -117,7 +117,7 @@ After running this incident runbook, you will have:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `FetchError: request failed` | Supabase API unreachable | Check status.supabase.com; verify network/DNS |
 | `connection refused` on port 5432 | Direct DB access blocked or wrong credentials | Use pooler URL (port 6543) or check dashboard connection strings |
 | `too many clients already` | Connection pool exhausted | Kill idle-in-transaction connections; enable Supavisor pooling |

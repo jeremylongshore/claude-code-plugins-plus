@@ -5,7 +5,7 @@ marking items pass or fail. A single fail in sections 1-6 is a deployment blocke
 
 ---
 
-### Section 1: Token Stored in Environment Variables (Never Hardcoded)
+## Section 1: Token Stored in Environment Variables (Never Hardcoded)
 
 Production tokens must never appear in source code, config files committed to git, or client-side bundles.
 
@@ -27,17 +27,17 @@ const notion = new Client({ auth: 'ntn_R8dkf92jfKLsd9f2...' });
 
 ---
 
-### Section 2: Integration Has Minimum Required Capabilities
+## Section 2: Integration Has Minimum Required Capabilities
 
 Notion integrations request capability scopes at creation time. Production integrations must follow least-privilege.
 
-- [ ] Integration capabilities reviewed at https://www.notion.so/my-integrations
+- [ ] Integration capabilities reviewed at <https://www.notion.so/my-integrations>
 - [ ] Only required capabilities enabled (no "Read user information" unless explicitly needed)
 - [ ] "Insert content" vs "Update content" scoped appropriately
 - [ ] No "Internal Integration Token" used for public-facing apps (use OAuth instead)
 
 | Capability | Enable if |
-|---|---|
+| --- | --- |
 | Read content | Reading pages or databases |
 | Update content | Modifying existing pages/blocks |
 | Insert content | Creating new pages or appending blocks |
@@ -49,7 +49,7 @@ Notion integrations request capability scopes at creation time. Production integ
 
 ---
 
-### Section 3: All Target Pages/Databases Shared with Integration
+## Section 3: All Target Pages/Databases Shared with Integration
 
 The most common production issue: the integration works in dev but fails in prod because pages are not shared.
 
@@ -64,7 +64,7 @@ The most common production issue: the integration works in dev but fails in prod
 
 ---
 
-### Section 4: Rate Limit Handling (3 req/sec, Exponential Backoff)
+## Section 4: Rate Limit Handling (3 req/sec, Exponential Backoff)
 
 Notion enforces a hard limit of 3 requests per second per integration. Exceeding this returns HTTP 429.
 
@@ -82,7 +82,7 @@ See [rate-limited queue setup](code-examples.md) for `p-queue` implementation pa
 
 ---
 
-### Section 5: Pagination for All List Endpoints
+## Section 5: Pagination for All List Endpoints
 
 All Notion list endpoints return paginated results (max 100 items per page). Failing to paginate silently drops data.
 
@@ -101,7 +101,7 @@ See [generic paginator](code-examples.md) for a reusable pagination helper.
 
 ---
 
-### Section 6: Error Handling with `isNotionClientError`
+## Section 6: Error Handling with `isNotionClientError`
 
 The Notion SDK provides `isNotionClientError` for typed error discrimination. Using generic catch blocks loses error context.
 
@@ -119,7 +119,7 @@ See [typed error handler](code-examples.md) for discriminated error handling wit
 
 ---
 
-### Section 7: Notion-Version Header Set (2022-06-28)
+## Section 7: Notion-Version Header Set (2022-06-28)
 
 Notion API responses change between versions. Pinning the version prevents unexpected breaking changes.
 
@@ -142,7 +142,7 @@ const notion = new Client({
 
 ---
 
-### Section 8: Retry Logic for 429/500/503 Responses
+## Section 8: Retry Logic for 429/500/503 Responses
 
 The `@notionhq/client` SDK retries automatically, but custom HTTP clients and edge cases need explicit retry logic.
 
@@ -160,7 +160,7 @@ See [retry with exponential backoff](code-examples.md) for implementation patter
 
 ---
 
-### Section 9: Monitoring for API Failures
+## Section 9: Monitoring for API Failures
 
 Production Notion integrations must have observability. Silent failures erode data integrity.
 
@@ -173,7 +173,7 @@ Production Notion integrations must have observability. Silent failures erode da
 - [ ] On-call runbook references `notion-incident-runbook` skill for triage steps
 
 | Alert | Condition | Severity |
-|---|---|---|
+| --- | --- | --- |
 | Auth failure | Any 401/403 response | P1 — token may be revoked |
 | High error rate | >5% of requests failing in 5min window | P2 |
 | Sustained rate limiting | >10 429s in 5min | P2 — review request patterns |
@@ -184,9 +184,9 @@ Production Notion integrations must have observability. Silent failures erode da
 
 ---
 
-### Section 10: Graceful Degradation When Notion Is Down
+## Section 10: Graceful Degradation When Notion Is Down
 
-Notion experiences outages (check https://status.notion.com). The application must not crash when the API is unavailable.
+Notion experiences outages (check <https://status.notion.com>). The application must not crash when the API is unavailable.
 
 - [ ] Read-heavy endpoints have a cache layer (Redis, in-memory, file-based)
 - [ ] Cache TTL set appropriately (e.g., 5-15 minutes for dashboard data)
@@ -202,7 +202,7 @@ See [cache with fallback](code-examples.md) for LRU cache implementation with so
 
 ---
 
-### Section 11: Data Validation for Property Types
+## Section 11: Data Validation for Property Types
 
 Notion rejects malformed property values with 400 validation errors. Validate before sending.
 
@@ -223,7 +223,7 @@ See [property validator](code-examples.md) for a validation function that catche
 
 ---
 
-### Section 12: OAuth Token Refresh (For Public Integrations)
+## Section 12: OAuth Token Refresh (For Public Integrations)
 
 Public integrations using OAuth must handle token lifecycle. Internal integrations can skip this section.
 

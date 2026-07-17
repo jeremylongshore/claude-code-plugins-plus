@@ -52,7 +52,7 @@ Work through the checklist in order, marking each item pass or fail. **A single 
 ### The 12 sections at a glance
 
 | # | Section | Blocking? | Fails if |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | Token in env vars (never hardcoded) | Yes | Token found in source, git history, or client bundle |
 | 2 | Minimum required capabilities | Yes | Integration has scopes it does not use |
 | 3 | Target pages/DBs shared with integration | Yes | Any target returns 404 `object_not_found` |
@@ -101,7 +101,7 @@ VERDICT: [READY TO DEPLOY / BLOCKED — fix N items]
 ## Error Handling
 
 | Scenario | Detection | Response |
-|---|---|---|
+| --- | --- | --- |
 | Token not in env vars | `process.env.NOTION_TOKEN` is undefined | Abort deploy, log setup instructions |
 | Page not shared | 404 `object_not_found` on retrieve | List unshared targets, block deploy |
 | Rate limit exceeded | 429 response despite queueing | Reduce concurrency, check for competing integrations |

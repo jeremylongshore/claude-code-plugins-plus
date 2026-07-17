@@ -383,5 +383,6 @@ const { data } = await supabase.from('todos').select('id, title, is_complete')
 // Automate type generation in CI:
 // Add to package.json scripts: "types:supabase": "supabase gen types typescript --linked > lib/database.types.ts"
 ```
+
 </content>
 </invoke>

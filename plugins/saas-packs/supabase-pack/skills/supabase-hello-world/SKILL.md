@@ -104,7 +104,7 @@ error-handled version of each step.
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `relation "public.todos" does not exist` | Table not created | Run the Step 1 SQL in the dashboard SQL Editor |
 | `new row violates row-level security policy` | RLS blocks the insert | Add the permissive insert policy from Step 1 |
 | `Invalid API key` | Wrong anon key in `.env` | Copy from Settings > API in the dashboard |

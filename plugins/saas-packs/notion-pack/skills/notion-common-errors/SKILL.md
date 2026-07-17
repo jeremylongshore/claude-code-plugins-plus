@@ -79,7 +79,7 @@ Re-run the failing call, or use the three-probe curl diagnostic in **[references
 ## Error Handling
 
 | Code | HTTP | Error Name | Retryable | Recommended Action |
-|------|------|------------|-----------|-------------------|
+| ------ | ------ | ------------ | ----------- | ------------------- |
 | `unauthorized` | 401 | Authentication failure | No | Regenerate token at notion.so/my-integrations |
 | `restricted_resource` | 403 | Missing capability | No | Enable capability in integration settings |
 | `object_not_found` | 404 | Not shared / not found | No | Share page with integration via Connections menu |

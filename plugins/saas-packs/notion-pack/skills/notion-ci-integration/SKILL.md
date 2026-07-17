@@ -133,7 +133,7 @@ GitHub Actions steps that load and consume the flags.
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `401 Unauthorized` | Invalid or expired `NOTION_TOKEN` | Regenerate token at notion.so/my-integrations, update `gh secret set NOTION_TOKEN` |
 | `404 Object not found` | Database/page not shared with integration | Open page in Notion > "..." > "Connections" > add integration |
 | `429 Rate limited` | Exceeded 3 requests/second | Add `time.sleep(0.34)` between sequential calls; use `retry-after` header |

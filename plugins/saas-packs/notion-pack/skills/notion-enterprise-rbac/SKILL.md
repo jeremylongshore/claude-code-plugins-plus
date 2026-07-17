@@ -30,7 +30,7 @@ Implement enterprise-grade access control for Notion integrations. This covers t
 
 ## Prerequisites
 
-- Notion public integration created at https://www.notion.so/my-integrations (for OAuth)
+- Notion public integration created at <https://www.notion.so/my-integrations> (for OAuth)
 - `@notionhq/client` v2+ installed (`npm install @notionhq/client`)
 - Python alternative: `notion-client` (`pip install notion-client`)
 - Database for storing per-workspace tokens (PostgreSQL, DynamoDB, etc.)
@@ -111,7 +111,7 @@ in the
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | OAuth callback fails | Redirect URI mismatch | Must match exactly in integration settings (including trailing slash) |
 | `invalid_grant` on token exchange | Code expired or already used | Authorization codes are single-use; restart OAuth flow |
 | `ObjectNotFound` on page access | Page not shared with integration | User must share via "..." menu > Connections |

@@ -105,7 +105,7 @@ validation with integrity checks.
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `validation_error` on import | Property name mismatch | Retrieve database schema first with `databases.retrieve` |
 | Rate limited during bulk import | Exceeding 3 req/s | Use PQueue with `intervalCap: 3, interval: 1000` |
 | Empty title error | Missing required title field | Default to `'Untitled'` for empty names |

@@ -35,7 +35,7 @@ Optimize Notion API performance by minimizing API calls, caching responses with 
 - `@notionhq/client` installed (`npm install @notionhq/client`)
 - `p-queue` for rate-limited parallelism (`npm install p-queue`)
 - `lru-cache` for TTL-based caching (`npm install lru-cache`)
-- Authentication: a Notion integration token in `NOTION_TOKEN` (internal integration secret from https://www.notion.so/my-integrations), passed as `new Client({ auth: process.env.NOTION_TOKEN })`
+- Authentication: a Notion integration token in `NOTION_TOKEN` (internal integration secret from <https://www.notion.so/my-integrations>), passed as `new Client({ auth: process.env.NOTION_TOKEN })`
 - Understanding of your access patterns (read-heavy vs write-heavy)
 - Optional: Redis or `ioredis` for distributed caching across instances
 
@@ -90,7 +90,7 @@ See [parallel requests and latency monitoring](references/parallel-requests-and-
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Stale cache data | TTL too long for volatile data | Use shorter TTL (30s for search, 60s for queries) |
 | Rate limit despite queue | Other code paths making unqueued calls | Use a single shared `p-queue` instance across your app |
 | Memory pressure from cache | Too many entries or large payloads | Set `max` on LRU cache; use `filter_properties` to shrink payloads |

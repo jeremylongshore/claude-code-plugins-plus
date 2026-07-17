@@ -126,7 +126,7 @@ See the full `collectNotionDiagnostics()` function in
 ## Error Handling
 
 | Error | HTTP | Cause | Fix |
-|-------|------|-------|-----|
+| ------- | ------ | ------- | ----- |
 | `unauthorized` | 401 | Invalid or missing token | Verify `NOTION_TOKEN` starts with `ntn_`, regenerate in integration settings |
 | `object_not_found` | 404 | Page/DB not shared with integration | Open page in Notion, click Share, invite the integration |
 | `rate_limited` | 429 | Exceeded 3 req/sec | Add exponential backoff; batch requests where possible |

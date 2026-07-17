@@ -132,7 +132,7 @@ Applying these patterns produces:
 ## Error Handling
 
 | Error Code | Cause | Resolution |
-|---|---|---|
+| --- | --- | --- |
 | `ObjectNotFound` | Page/database not shared with integration | Open in Notion > Share > Invite integration |
 | `Unauthorized` | Invalid or expired token | Regenerate at notion.so/my-integrations |
 | `RateLimited` | >3 requests/second sustained | Respect `retry-after` header; add exponential backoff |

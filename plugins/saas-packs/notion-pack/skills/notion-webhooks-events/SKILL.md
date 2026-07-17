@@ -32,7 +32,7 @@ compatibility: Designed for Claude Code
 Notion offers three approaches to change detection, each with different trade-offs:
 
 | Approach | Latency | Complexity | Reliability |
-|----------|---------|------------|-------------|
+| ---------- | --------- | ------------ | ------------- |
 | **Polling with `search` / `databases.query`** | 30s-5min (your poll interval) | Low | High — you control timing |
 | **Native webhooks** (API 2025-02+) | Near real-time | Medium | Good — requires HTTPS endpoint, retry handling |
 | **Third-party connectors** (Zapier, Make) | 1-15 min | Low (no-code) | Vendor-dependent |
@@ -42,7 +42,7 @@ Notion offers three approaches to change detection, each with different trade-of
 ## Prerequisites
 
 - `@notionhq/client` v2.3+ installed (`npm install @notionhq/client`)
-- Notion integration created at https://www.notion.so/my-integrations
+- Notion integration created at <https://www.notion.so/my-integrations>
 - Integration shared with target pages/databases (Connections menu in Notion)
 - `NOTION_TOKEN` environment variable set to the integration's Internal Integration Secret
 - For native webhooks: HTTPS endpoint accessible from the internet
@@ -123,7 +123,7 @@ See [scheduled polling and examples](references/scheduled-polling-and-examples.m
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `search` returns stale results | Notion indexing delay (up to 30s) | Accept eventual consistency; do not poll faster than 30s |
 | Rate limited during polling | Too many API calls per second | Add 350ms delay between paginated requests; use `databases.query` over `search` when possible |
 | Webhook verification fails | Endpoint not returning `{ challenge }` | Respond with `res.json({ challenge: req.body.challenge })` for `url_verification` type |

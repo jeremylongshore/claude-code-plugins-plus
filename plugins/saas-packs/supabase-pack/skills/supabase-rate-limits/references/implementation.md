@@ -37,7 +37,7 @@ const supabase = createClient(
 **When to use which mode:**
 
 | Use case | Mode | Port |
-|----------|------|------|
+| ---------- | ------ | ------ |
 | Serverless / Edge Functions | Transaction | 6543 |
 | Next.js API routes | Transaction | 6543 |
 | Long-running workers | Session | 5432 |

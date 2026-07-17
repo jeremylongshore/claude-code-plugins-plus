@@ -103,7 +103,7 @@ This workflow produces:
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `NOTION_TOKEN is not set` at runtime | Secret not configured for environment | Re-add secret: `vercel env add` / `railway variables set` / `fly secrets set` |
 | Cold start timeout (> 10s) | Large dependency tree or slow Notion handshake | Set `min_machines_running: 1` (Fly.io) or use Railway always-on |
 | 429 Rate Limited in logs | Exceeding 3 req/sec sustained | Increase cache TTL, batch queries, add request queuing |

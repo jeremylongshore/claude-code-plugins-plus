@@ -30,7 +30,7 @@ Three minimal examples covering the Notion API core surfaces: searching for page
 ## Prerequisites
 
 - Completed `notion-install-auth` setup
-- `NOTION_TOKEN` environment variable set (internal integration token from https://www.notion.so/my-integrations)
+- `NOTION_TOKEN` environment variable set (internal integration token from <https://www.notion.so/my-integrations>)
 - At least one database shared with your integration via the Connections menu
 - Node.js 18+ with `@notionhq/client` or Python 3.8+ with `notion-client`
 
@@ -91,7 +91,7 @@ code is in the [implementation walkthrough](references/implementation.md).
 ## Error Handling
 
 | Error | HTTP Code | Cause | Solution |
-|-------|-----------|-------|----------|
+| ------- | ----------- | ------- | ---------- |
 | `unauthorized` | 401 | Invalid or expired token | Verify `NOTION_TOKEN` value at notion.so/my-integrations |
 | `object_not_found` | 404 | Page/database not shared with integration | Add your integration via the page's Connections menu (... > Connect to) |
 | `validation_error` | 400 | Property name/type mismatch | Retrieve the database schema with `databases.retrieve` first |

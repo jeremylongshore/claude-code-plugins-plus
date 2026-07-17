@@ -76,7 +76,7 @@ if (error) throw error
 ## Complete filter reference
 
 | Filter | SQL Equivalent | Example |
-|--------|---------------|---------|
+| -------- | --------------- | --------- |
 | `.eq(col, val)` | `= val` | `.eq('status', 'active')` |
 | `.neq(col, val)` | `!= val` | `.neq('role', 'guest')` |
 | `.gt(col, val)` | `> val` | `.gt('age', 18)` |

@@ -125,7 +125,7 @@ Python generator + multi-token scaling helper are in Step 3 of
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Sustained 429 errors | Exceeding 3 req/s | Reduce `intervalCap` or increase `interval` |
 | Memory growing during bulk read | Loading all results into array | Use async generator streaming |
 | Stale incremental sync | Clock skew between systems | Use server-returned timestamps |

@@ -142,7 +142,7 @@ if (error) {
 ```
 
 | Error Code | Meaning | What to Do |
-|------------|---------|------------|
+| ------------ | --------- | ------------ |
 | `PGRST116` | No rows found (`.single()`) | Return null or 404, don't throw |
 | `23505` | Unique-constraint violation (Postgres duplicate key) | Use `.upsert()` or show conflict error |
 | `42501` | RLS policy violation (Postgres insufficient privilege) | Check auth state and RLS policies |

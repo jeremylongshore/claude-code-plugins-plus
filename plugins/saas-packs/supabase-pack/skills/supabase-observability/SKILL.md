@@ -101,7 +101,7 @@ Schedule it every 15 minutes via `[functions.collect-metrics]` in `config.toml`.
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `pg_stat_statements` returns no rows | Extension not enabled | Enable via Dashboard > Database > Extensions |
 | `supabase inspect db` fails | CLI not linked to project | Run `supabase link --project-ref <ref>` |
 | Log drain not receiving events | API key invalid or region mismatch | Verify credentials; check `supabase log-drains list` |

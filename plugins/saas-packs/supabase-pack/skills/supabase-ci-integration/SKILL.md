@@ -113,7 +113,7 @@ After implementing these workflows:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `supabase start` fails in CI | Docker not available | Use `ubuntu-latest` runner (includes Docker by default) |
 | `supabase db push` returns "permission denied" | Invalid or expired access token | Regenerate token at supabase.com/dashboard/account/tokens |
 | `supabase link` fails | Wrong project ref | Check project ref in Settings > General, must match `SUPABASE_PROJECT_REF` secret |

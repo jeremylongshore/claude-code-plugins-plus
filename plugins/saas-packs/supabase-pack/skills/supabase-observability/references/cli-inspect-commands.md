@@ -38,7 +38,7 @@ npx supabase inspect db replication-slots --linked
 The Supabase Dashboard provides built-in reports under **Dashboard > Reports**:
 
 | Report | What It Shows |
-|--------|---------------|
+| -------- | --------------- |
 | API Requests | Total requests, response times, error rates by endpoint |
 | Database | Active connections, query counts, replication lag |
 | Auth Usage | Signups, logins, provider breakdown, failed attempts |

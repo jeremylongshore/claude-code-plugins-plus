@@ -86,7 +86,7 @@ Add a `/health/notion` endpoint that probes `users.me` and returns 200/503 with 
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | High cardinality metrics | Too many unique label values | Use fixed operation names (`databases.query`, `pages.create`) |
 | Alert storms on Notion outage | All alerts fire simultaneously | Add `group_wait: 30s` in alertmanager config |
 | Missing metrics for some calls | Not all API calls use wrapper | Enforce wrapper at architecture level |

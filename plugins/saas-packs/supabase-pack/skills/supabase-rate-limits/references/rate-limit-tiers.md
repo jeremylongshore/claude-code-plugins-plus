@@ -12,7 +12,7 @@ Every Supabase project has per-surface limits that differ by plan. Know these nu
 **Auth Rate Limits**
 
 | Endpoint | Free | Pro |
-|----------|------|-----|
+| ---------- | ------ | ----- |
 | Signup | 30/hour per IP | Higher (configurable) |
 | Sign-in (password) | 30/hour per IP | Higher (configurable) |
 | Magic link / OTP | 4/hour per user | Configurable |
@@ -23,7 +23,7 @@ Auth limits are per-IP and per-user. Configure custom limits in Dashboard > Auth
 **Storage Bandwidth**
 
 | Metric | Free | Pro |
-|--------|------|-----|
+| -------- | ------ | ----- |
 | Storage size | 1 GB | 100 GB |
 | Bandwidth | 2 GB/month | 250 GB/month |
 | Max file size | 50 MB | 5 GB |
@@ -32,7 +32,7 @@ Auth limits are per-IP and per-user. Configure custom limits in Dashboard > Auth
 **Realtime Connections**
 
 | Metric | Free | Pro |
-|--------|------|-----|
+| -------- | ------ | ----- |
 | Concurrent connections | 200 | 500 |
 | Messages per second | 100 | 500 |
 | Channel joins | Shared with connection limit | Shared |
@@ -40,7 +40,7 @@ Auth limits are per-IP and per-user. Configure custom limits in Dashboard > Auth
 **Edge Functions**
 
 | Metric | Free | Pro |
-|--------|------|-----|
+| -------- | ------ | ----- |
 | Invocations/month | 500,000 | 2,000,000 |
 | Execution time | 150s wall / 50ms CPU | 150s wall / 2s CPU |
 | Memory | 256 MB | 256 MB |
