@@ -33,6 +33,10 @@ FLAVOR_CONNECT = {"dolt": "--dolt", "doltgres": "--doltgres"}
 # decision 6) — they validate but cannot be transformed into a live connection.
 FLAVOR_STUB = {"doltlite", "dumbo"}
 MATURITIES = {"ga", "beta", "alpha", "experimental"}
+# Additive `mode` field (dolt-detect.py taxonomy). Only `server` transforms into
+# a wire connection; repo/embedded/file are CLI-verb postures. Absent mode is
+# treated as `server` (pre-mode descriptors keep working unchanged).
+MODES = {"server", "repo", "embedded", "file"}
 KNOWN_CREDS_SCHEMES = ("env:", "sops:", "pass:")
 
 
@@ -52,6 +56,9 @@ def validate(d):
     maturity = (d.get("maturity") or "").lower()
     if maturity and maturity not in MATURITIES:
         errs.append(f"unknown maturity '{maturity}' (known: {', '.join(sorted(MATURITIES))})")
+    mode = (d.get("mode") or "").lower()
+    if mode and mode not in MODES:
+        errs.append(f"unknown mode '{mode}' (known: {', '.join(sorted(MODES))})")
     cref = d.get("creds-ref")
     if cref and not str(cref).startswith(KNOWN_CREDS_SCHEMES):
         errs.append(f"creds-ref '{cref}' has no known scheme prefix "
@@ -71,6 +78,15 @@ def transform(d):
         raise ValueError(f"flavor '{flavor}' is a descriptor-stub (pre-beta) — no live "
                          "connection flag is wired yet (decision 6). It validates but "
                          "cannot be transformed until dolt-watch reports it has reached beta.")
+    mode = (d.get("mode") or "server").lower()
+    if mode != "server":
+        raise ValueError(f"mode '{mode}' is not a wire connection — this store is worked "
+                         "with dolt CLI verbs (log/diff/branch/AS OF), read-only for "
+                         "embedded stores (the .lock is owned by the embedding tool). "
+                         "Only mode 'server' transforms into dolt-mcp-server args.")
+    if str(d["endpoint"]).startswith("file:"):
+        raise ValueError("endpoint is a file: path, not HOST:PORT — a wire transform "
+                         "needs a live server (run dolt-detect.py to find one).")
     host, port = split_endpoint(d["endpoint"])
     user = os.environ.get("DOLT_USER", "root")
     args = ["--stdio", FLAVOR_CONNECT[flavor],
