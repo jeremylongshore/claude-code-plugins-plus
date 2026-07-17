@@ -21,6 +21,7 @@
       "description": "Read-only consistency validator: 9 deterministic drift checks across docs, code, tests, and CI, adjudicated by a per-fact-class authority registry (sot-map.yaml) — no global source-of-truth ranking, LLM-judged findings advisory-only, golden-fixture gated. Invoked by /release Phase 1.6.",
       "version": "3.0.0",
       "category": "productivity",
+      "maintainer": "@jeremylongshore",
       "keywords": [
         "documentation",
         "consistency",
@@ -8691,8 +8692,8 @@
     {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
-      "description": "Local-first governed second brain — turn your files into cited (qmd://) memory with deterministic governance and a tamper-evident, hash-chained audit trail. Install via `npx governed-second-brain init <folder>`.",
-      "version": "0.1.6",
+      "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
+      "version": "1.1.2",
       "category": "mcp",
       "keywords": [
         "memory",
@@ -8708,8 +8709,8 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       },
-      "homepage": "https://github.com/jeremylongshore/governed-second-brain-plugin",
-      "repository": "https://github.com/jeremylongshore/governed-second-brain-plugin",
+      "homepage": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
+      "repository": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "license": "Apache-2.0"
     },
     {
@@ -9173,6 +9174,36 @@
       },
       "repository": "https://github.com/metrox-eth/quit-sponsor",
       "license": "MIT"
+    },
+    {
+      "name": "bde-score",
+      "source": "./plugins/mcp/bde-score",
+      "description": "Blockchain Deployer Evaluation Score — MCP server for on-chain security scoring, x402 micropayment integration, EU AI Act Art.50 compliance, and real-time deployer reputation analysis. Supports .well-known discovery protocol and decentralized agent identity.",
+      "version": "1.0.3",
+      "category": "crypto",
+      "keywords": [
+        "mcp",
+        "blockchain",
+        "security-scoring",
+        "x402",
+        "micropayments",
+        "eu-ai-act",
+        "compliance",
+        "deployer-evaluation",
+        "agent-identity",
+        "well-known"
+      ],
+      "author": {
+        "name": "BDE Score Team",
+        "email": "bde@score.sh",
+        "url": "https://github.com/hbhqq9/bde-score"
+      },
+      "tags": [
+        "mcp",
+        "crypto",
+        "security",
+        "compliance"
+      ]
     }
   ]
 }
