@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Marketplace version reconstruction** (`scripts/reconstruct-versions.mjs`) —
+  deterministic, idempotent tool that rebuilds every in-repo plugin's DISPLAY
+  version from full first-parent git history (`minor` = lifetime update count,
+  bulk sweeps counted once, `final = semver-max(existing, derived)`, never a
+  downgrade) and writes the three browse-visible surfaces (`plugin.json`, the
+  `marketplace.extended.json`/`marketplace.json` entries, and SKILL.md
+  frontmatter) — leaving `package.json` and the external mirrors untouched. Fixed
+  381/470 catalog entries + 2,463 SKILL.md files frozen at `1.0.0` while only the
+  never-displayed `package.json` surface ever moved. Audit trail:
+  `000-docs/708-AT-AUDT-version-reconstruction-report.json`
+  ([#1086](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1086)).
+- **Freshie inventory grading — notion-pack + supabase-pack raised to A-grade.**
+  All 32 notion-pack skills (avg **80.8 → 94.6**, min 90) and all 30 supabase-pack
+  skills (avg **88.7 → 93.6**, min 90) remediated to the 90+ marketplace bar via
+  genuine progressive-disclosure extraction — deep code moved verbatim into 115
+  new per-skill `references/` files, lean SKILL.md bodies (~140-160 lines), plus
+  `Use when …` discoverability clauses and Authentication sections. snowflake-pack
+  (75.6) is separately **waived** with a filed raise-later task — recorded, not
+  delisted — settling issue #941 item 13 / closing #938
+  ([#1092](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1092)).
 - **`databricks-workspace-mcp` plugin** (mcp) — a TypeScript MCP server giving
   Claude Code typed, live access to the Databricks **control plane**: 8 read-only
   tools across clusters (list/get/events), instance pools, DLT pipelines
@@ -43,6 +63,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CI/CD — auto-bump now moves all four version surfaces (recurrence fix).**
+  `scripts/auto-bump-changed-plugins.mjs` previously edited only `package.json`
+  (the npm-publish surface nothing browsable reads), so every display surface
+  re-froze after each PR. It now also minor-bumps `plugin.json`, both catalog
+  entries, and the PR's changed SKILL.md frontmatter on every bump — riding the
+  same `bumpDecision` idempotency guard — so the version freeze cannot regrow.
+  Unit tests extended 6 → 14
+  ([#1086](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1086)).
 - **Kernel coupling — declared `@intentsolutions/core` pin `0.4.1` → `0.9.0`.**
   Bumped the exact (no `^`/`~`) `C` (CCPI-declared kernel) in `package.json` to the
   latest published kernel, re-vendored `V` (the installed snapshot in
@@ -83,6 +111,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **CI/CD — supply-chain scanner skips version-only diffs.**
+  `scripts/scan-synced-content.mjs` (`--changed-only`) now excludes any changed
+  `plugins/**` file whose entire diff vs base is the version string
+  (`isVersionOnlyChange` + 7 regression tests). A mass version reconstruction /
+  auto-bump edits the version line in thousands of first-party SKILL.md +
+  plugin.json files, which previously pulled every one into a full re-scan and
+  surfaced pre-existing documented dual-use examples (the `secret-exfil-cooccur`
+  own-service-API false positive) as fresh CHALLENGEs — 820 on the reconstruction
+  PR. The skip is precise, not a bypass: any other changed line keeps the file in
+  full scope, so a payload cannot hide behind a co-changed version bump; REFUSE
+  grading and fail-closed behavior are untouched
+  ([#1086](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1086)).
 - **External-plugin sync pipeline hardening** — a multi-agent audit found 16 bugs;
   all fixed across two passes
   ([#896](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/896),
