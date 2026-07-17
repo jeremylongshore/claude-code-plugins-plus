@@ -6,7 +6,6 @@ triggers for `updated_at`, and RLS enabled per table.
 
 ## Project-management app — full migration
 
-
 ```sql
 -- supabase/migrations/<timestamp>_create_tables.sql
 
