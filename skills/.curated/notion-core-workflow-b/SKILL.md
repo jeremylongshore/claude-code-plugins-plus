@@ -10,7 +10,7 @@ description: |
   Trigger with phrases like "notion blocks", "notion page content",
   "notion rich text", "notion comments", "notion append blocks".
 allowed-tools: Read, Write, Bash(npm:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

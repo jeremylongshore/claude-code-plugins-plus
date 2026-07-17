@@ -8,7 +8,7 @@ description: |
   Trigger with phrases like "notion cms", "notion headless blog",
   "notion task tracker", "notion wiki", "notion form handler", "notion data pipeline".
 allowed-tools: Read, Write, Edit, Bash(node:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

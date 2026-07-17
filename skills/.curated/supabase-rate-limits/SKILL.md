@@ -8,7 +8,7 @@ description: |
   Trigger with "supabase rate limit", "supabase 429", "supabase throttle",
   "supabase quota", "supabase connection pool", "supabase too many requests".
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(node:*), Bash(npx:*), Grep
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

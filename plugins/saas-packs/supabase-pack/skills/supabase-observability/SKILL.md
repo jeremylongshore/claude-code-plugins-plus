@@ -9,7 +9,7 @@ description: |
   "supabase observability", "supabase logs", "supabase alerts",
   "supabase inspect", "supabase log drain".
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Grep
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

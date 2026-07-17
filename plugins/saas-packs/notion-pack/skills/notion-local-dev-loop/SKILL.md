@@ -8,7 +8,7 @@ description: |
   Trigger with "notion dev setup", "notion local development", "mock notion",
   "notion test environment".
 allowed-tools: Read, Write, Bash(npm:*), Bash(pnpm:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

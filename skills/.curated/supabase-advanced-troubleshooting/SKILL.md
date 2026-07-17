@@ -11,7 +11,7 @@ description: |
   contention", "supabase connection leak", "supabase RLS conflict", "supabase
   cold start".
 allowed-tools: Read, Grep, Bash(npx supabase:*), Bash(supabase:*), Bash(curl:*), Bash(psql:*)
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

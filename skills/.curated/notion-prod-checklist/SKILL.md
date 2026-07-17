@@ -7,7 +7,7 @@ description: |
   Trigger with "notion production checklist", "deploy notion integration",
   "notion go-live", "notion launch readiness", "notion prod audit".
 allowed-tools: Read, Write, Bash(grep:*), Bash(curl:*), Bash(jq:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

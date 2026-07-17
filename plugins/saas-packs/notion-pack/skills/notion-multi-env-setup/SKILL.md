@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "notion environments", "notion staging",
   "notion dev prod", "notion environment setup", "notion config by env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

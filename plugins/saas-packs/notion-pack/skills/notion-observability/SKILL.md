@@ -13,7 +13,7 @@ description: 'Set up observability for Notion integrations with metrics, traces,
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

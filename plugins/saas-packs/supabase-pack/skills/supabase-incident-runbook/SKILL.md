@@ -9,7 +9,7 @@ description: >-
   outage", "supabase down", "supabase on-call", "supabase emergency", "supabase
   broken", or "supabase connection issues".
 allowed-tools: Read, Grep, Bash(npx supabase:*), Bash(supabase:*), Bash(curl:*), Bash(psql:*)
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

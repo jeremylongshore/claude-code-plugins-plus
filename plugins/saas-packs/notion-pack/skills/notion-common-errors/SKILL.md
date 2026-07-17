@@ -12,7 +12,7 @@ description: 'Diagnose and fix Notion API errors by HTTP status code and error c
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -9,7 +9,7 @@ description: |
   Trigger with phrases like "notion scale", "notion bulk operations",
   "notion high volume", "notion worker queue", "notion incremental sync".
 allowed-tools: Read, Write, Bash(node:*), Bash(npx:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

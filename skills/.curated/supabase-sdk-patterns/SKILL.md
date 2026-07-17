@@ -8,7 +8,7 @@ description: |
   "supabase typescript", "supabase python", "supabase client setup",
   "supabase realtime", "supabase auth", "supabase storage".
 allowed-tools: Read, Write, Edit, Grep
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "notion deep debug", "notion permission trace",
   "notion property mismatch", "notion pagination bug", "notion nesting limit".
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

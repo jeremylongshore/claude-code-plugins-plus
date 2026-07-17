@@ -8,7 +8,7 @@ description: |
   "notion PII", "notion GDPR", "notion data retention", "notion privacy",
   "notion CCPA".
 allowed-tools: Read, Write, Edit
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: |
   which pages. Trigger with phrases like "notion governance", "notion policy",
   "notion naming convention", "notion access audit", "notion schema standard".
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(node:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

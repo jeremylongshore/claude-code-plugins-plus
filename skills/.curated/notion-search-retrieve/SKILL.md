@@ -14,7 +14,7 @@ description: 'Search Notion workspaces and retrieve pages, databases, and block 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

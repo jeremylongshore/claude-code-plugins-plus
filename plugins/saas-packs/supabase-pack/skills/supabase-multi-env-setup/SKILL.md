@@ -8,7 +8,7 @@ description: |
   Trigger with "supabase environments", "supabase staging", "supabase dev prod",
   "supabase multi-project", "supabase env config", "database branching".
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(vercel:*)
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

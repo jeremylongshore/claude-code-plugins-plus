@@ -8,7 +8,7 @@ description: |
   Trigger with "notion SDK patterns", "notion best practices", "notion code patterns",
   "idiomatic notion", "notion typescript", "notion python SDK".
 allowed-tools: Read, Write, Edit, Grep
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
