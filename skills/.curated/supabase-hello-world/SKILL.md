@@ -30,12 +30,19 @@ Execute your first real Supabase query: create a `todos` table in the dashboard,
 
 ## Instructions
 
+The workflow is three steps: create the table (dashboard SQL), insert a row
+with the JS client, and read it back to prove the round-trip. The skeleton
+below is enough to follow along; the fully annotated code for every step —
+including the error-branch comments and expected console output — lives in
+[the full implementation walkthrough](references/implementation.md).
+
 ### Step 1: Create the `todos` Table
 
-Open your Supabase dashboard SQL Editor and run:
+In the Supabase dashboard **SQL Editor**, create the table, enable Row Level
+Security (required for anon-key access), and add permissive read + insert
+policies for the hello-world exercise:
 
 ```sql
--- Create a simple todos table
 create table public.todos (
   id bigint generated always as identity primary key,
   task text not null,
@@ -43,11 +50,8 @@ create table public.todos (
   inserted_at timestamptz default now()
 );
 
--- Enable Row Level Security (required for anon key access)
 alter table public.todos enable row level security;
 
--- Allow anyone with the anon key to read and insert
--- (permissive for hello-world; lock down before production)
 create policy "Allow public read" on public.todos
   for select using (true);
 
@@ -55,9 +59,13 @@ create policy "Allow public insert" on public.todos
   for insert with check (true);
 ```
 
-Verify the table appears under **Table Editor** in the dashboard before continuing.
+Lock these policies down before production. Verify the table appears under
+**Table Editor** before continuing.
 
 ### Step 2: Insert a Row
+
+Create the client from your env vars, then insert. Chain `.select()` to get
+the inserted row back — `.insert()` alone returns `{ data: null }`:
 
 ```typescript
 import { createClient } from '@supabase/supabase-js'
@@ -67,49 +75,24 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 )
 
-// Insert a row and return it with .select()
 const { data, error } = await supabase
   .from('todos')
   .insert({ task: 'Hello from Supabase!' })
   .select()
-
-if (error) {
-  console.error('Insert failed:', error.message)
-  // e.g. "new row violates row-level security policy"
-  process.exit(1)
-}
-
-console.log('Inserted:', data)
-// [{ id: 1, task: "Hello from Supabase!", is_complete: false, inserted_at: "2026-03-22T..." }]
 ```
-
-Key detail: `.insert()` alone returns `{ data: null }`. You must chain `.select()` to get the inserted row back.
 
 ### Step 3: Read It Back
 
+Select all rows and confirm the row you inserted is present:
+
 ```typescript
-// Select all rows from todos
-const { data: todos, error: selectError } = await supabase
-  .from('todos')
-  .select('*')
-
-if (selectError) {
-  console.error('Select failed:', selectError.message)
-  process.exit(1)
-}
-
-console.log('Todos:', todos)
-// [{ id: 1, task: "Hello from Supabase!", is_complete: false, inserted_at: "2026-03-22T..." }]
-
-// Verify the round-trip
-if (todos && todos.length > 0) {
-  console.log('Round-trip verified — row exists in database')
-} else {
-  console.error('No rows returned. Check RLS policies.')
-}
+const { data: todos } = await supabase.from('todos').select('*')
+// [{ id: 1, task: "Hello from Supabase!", is_complete: false, ... }]
 ```
 
-Open the **Table Editor** in the Supabase dashboard to visually confirm the row is there.
+Open the **Table Editor** in the dashboard to visually confirm the row is
+there. See [implementation.md](references/implementation.md) for the fully
+error-handled version of each step.
 
 ## Output
 
@@ -121,7 +104,7 @@ Open the **Table Editor** in the Supabase dashboard to visually confirm the row 
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `relation "public.todos" does not exist` | Table not created | Run the Step 1 SQL in the dashboard SQL Editor |
 | `new row violates row-level security policy` | RLS blocks the insert | Add the permissive insert policy from Step 1 |
 | `Invalid API key` | Wrong anon key in `.env` | Copy from Settings > API in the dashboard |
@@ -131,63 +114,21 @@ Open the **Table Editor** in the Supabase dashboard to visually confirm the row 
 
 ## Examples
 
-### TypeScript (Complete Script)
+Complete, runnable end-to-end scripts live in
+[references/examples.md](references/examples.md) — a full TypeScript script
+(insert with `.single()`, then an ordered/limited read-back) and the Python
+equivalent. Minimal TypeScript shape:
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-)
-
-async function helloSupabase() {
-  // Insert
-  const { data: inserted, error: insertErr } = await supabase
-    .from('todos')
-    .insert({ task: 'Hello from TypeScript!' })
-    .select()
-    .single()
-
-  if (insertErr) throw new Error(`Insert: ${insertErr.message}`)
-  console.log('Inserted:', inserted)
-
-  // Read back
-  const { data: rows, error: selectErr } = await supabase
-    .from('todos')
-    .select('*')
-    .order('inserted_at', { ascending: false })
-    .limit(5)
-
-  if (selectErr) throw new Error(`Select: ${selectErr.message}`)
-  console.log('Recent todos:', rows)
-}
-
-helloSupabase().catch(console.error)
+const { data } = await supabase
+  .from('todos')
+  .insert({ task: 'Hello!' })
+  .select()
+  .single()
 ```
 
-### Python
-
-```python
-from supabase import create_client
-import os
-
-supabase = create_client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_ANON_KEY"]
-)
-
-# Insert a row
-result = supabase.table("todos").insert({"task": "Hello from Python!"}).execute()
-print("Inserted:", result.data)
-# [{"id": 2, "task": "Hello from Python!", "is_complete": False, ...}]
-
-# Read it back
-result = supabase.table("todos").select("*").execute()
-print("All todos:", result.data)
-```
-
-Install the Python client with: `pip install supabase`
+- **TypeScript** — [full script](references/examples.md)
+- **Python** — [full script](references/examples.md) (`pip install supabase`)
 
 ## Resources
 
@@ -199,4 +140,9 @@ Install the Python client with: `pip install supabase`
 
 ## Next Steps
 
-Proceed to `supabase-local-dev-loop` for local development workflow with the Supabase CLI.
+Once the round-trip works, proceed to `supabase-local-dev-loop` for the local
+development workflow with the Supabase CLI — running Postgres locally, applying
+migrations, and syncing schema to your hosted project. Before shipping,
+replace the permissive `using (true)` / `with check (true)` policies from
+Step 1 with real per-user Row Level Security rules, since the hello-world
+policies expose the table to anyone holding the anon key.

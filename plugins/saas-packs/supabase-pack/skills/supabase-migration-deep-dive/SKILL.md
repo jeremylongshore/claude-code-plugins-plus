@@ -50,7 +50,7 @@ npx supabase migration new add_profiles_table   # create timestamped SQL file
 npx supabase migration list                      # show applied/pending status
 npx supabase db reset                            # apply + seed locally (destructive)
 npx supabase gen types typescript --local > lib/database.types.ts
-npx supabase link --project-ref <ref> && npx supabase db push   # promote to remote
+npx supabase link --project-ref "<ref>" && npx supabase db push   # promote to remote
 ```
 
 Write DDL that enables RLS, adds policies, indexes, and triggers in the same file so the schema is complete when applied. For the full worked migration (a `profiles` table with RLS policies, an email index, a signup trigger, and an `updated_at` trigger) plus the local-test and staging/production promotion commands, see [creating migrations](references/creating-migrations.md).

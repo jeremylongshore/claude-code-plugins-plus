@@ -15309,12 +15309,15 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/changelog-sync.md",
-        "references/incident-workflow.md"
+        "references/ci-scripts.md",
+        "references/config-reads.md",
+        "references/incident-workflow.md",
+        "references/workflow-setup.md"
       ]
     },
     {
@@ -15323,11 +15326,14 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
-        "references/block-type-catalog.md"
+        "references/block-editing.md",
+        "references/block-type-catalog.md",
+        "references/examples.md",
+        "references/page-lifecycle.md"
       ]
     },
     {
@@ -15336,10 +15342,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15348,10 +15356,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15360,10 +15370,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15372,10 +15384,13 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md",
+        "references/platform-deployment.md",
         "references/production-error-monitoring.md"
       ]
     },
@@ -15385,10 +15400,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15397,10 +15414,11 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md"
       ]
     },
     {
@@ -15409,11 +15427,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
-        "references/cross-platform-migration.md"
+        "references/cross-platform-migration.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15422,10 +15441,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md",
         "references/parallel-requests-and-monitoring.md"
       ]
     },
@@ -15435,10 +15456,11 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/checklist-sections.md",
         "references/code-examples.md"
       ]
     },
@@ -15462,11 +15484,12 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
-        "references/event-driven-and-testing.md"
+        "references/event-driven-and-testing.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15475,12 +15498,13 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/examples.md",
-        "references/filter-operators.md"
+        "references/filter-operators.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -15489,11 +15513,13 @@
       "category": "saas-packs",
       "plugin": "notion-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
-        "references/scheduled-polling-and-examples.md"
+        "references/polling.md",
+        "references/scheduled-polling-and-examples.md",
+        "references/webhooks.md"
       ]
     },
     {
@@ -23084,14 +23110,16 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/errors.md",
         "references/evidence-collection-framework.md",
         "references/examples.md",
+        "references/lock-connection-diagnostics.md",
         "references/rls-edge-functions-realtime.md",
+        "references/slow-query-analysis.md",
         "references/systematic-isolation.md",
         "references/timing-analysis.md"
       ]
@@ -23102,13 +23130,15 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/errors.md",
         "references/examples.md",
+        "references/nextjs-ssr.md",
         "references/serverless-and-multi-tenant.md",
+        "references/spa-and-mobile.md",
         "references/variant-a-monolith-(simple).md",
         "references/variant-b-service-layer-(moderate).md",
         "references/variant-c-microservice-(complex).md"
@@ -23120,13 +23150,15 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/ci-workflows.md",
         "references/errors.md",
         "references/examples.md",
-        "references/implementation.md"
+        "references/implementation.md",
+        "references/testing-patterns.md"
       ]
     },
     {
@@ -23135,12 +23167,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/error-reference.md",
         "references/errors.md",
-        "references/examples.md"
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -23149,14 +23183,16 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/audit-queries.md",
         "references/cost-estimation.md",
         "references/cost-reduction-strategies.md",
         "references/errors.md",
-        "references/examples.md"
+        "references/examples.md",
+        "references/optimization.md"
       ]
     },
     {
@@ -23165,14 +23201,16 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/deletion-and-export.md",
         "references/errors.md",
         "references/examples.md",
         "references/implementation.md",
-        "references/retention-and-backup.md"
+        "references/retention-and-backup.md",
+        "references/rls-and-pii.md"
       ]
     },
     {
@@ -23212,13 +23250,15 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/api-scoping-and-enforcement.md",
         "references/errors.md",
         "references/examples.md",
+        "references/rls-policies.md",
+        "references/role-assignment.md",
         "references/role-implementation.md",
         "references/sso-integration.md"
       ]
@@ -23229,10 +23269,12 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -23241,10 +23283,11 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/diagnostics.md",
         "references/errors.md",
         "references/examples.md",
         "references/immediate-actions-by-error-type.md"
@@ -23269,13 +23312,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "eval-spec.yaml",
         "references/errors.md",
-        "references/examples.md"
+        "references/examples.md",
+        "references/pitfalls.md"
       ]
     },
     {
@@ -23284,11 +23328,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/advanced-examples.md",
         "references/capacity-planning.md",
+        "references/cdn-and-edge.md",
+        "references/connection-pooling.md",
         "references/errors.md",
         "references/examples.md",
         "references/load-testing-with-k6.md",
@@ -23317,15 +23364,17 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/backfill-versioning-rollback.md",
+        "references/creating-migrations.md",
         "references/errors.md",
         "references/examples.md",
         "references/implementation-plan.md",
-        "references/pre-migration-assessment.md"
+        "references/pre-migration-assessment.md",
+        "references/zero-downtime-patterns.md"
       ]
     },
     {
@@ -23334,13 +23383,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/configuration-structure.md",
         "references/errors.md",
-        "references/examples.md"
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -23349,14 +23399,18 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/alert-configuration.md",
+        "references/cli-inspect-commands.md",
+        "references/custom-metrics-and-health-checks.md",
+        "references/diagnostic-scripts.md",
         "references/errors.md",
         "references/examples.md",
-        "references/metrics-collection.md"
+        "references/metrics-collection.md",
+        "references/query-analytics-and-log-drains.md"
       ]
     },
     {
@@ -23396,13 +23450,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/errors.md",
         "references/examples.md",
-        "references/implementation.md"
+        "references/implementation.md",
+        "references/step-commands.md"
       ]
     },
     {
@@ -23411,13 +23466,14 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/errors.md",
         "references/examples.md",
-        "references/implementation.md"
+        "references/implementation.md",
+        "references/rate-limit-tiers.md"
       ]
     },
     {
@@ -23460,13 +23516,16 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/auth-realtime-storage.md",
         "references/errors.md",
         "references/examples.md",
-        "references/implementation.md"
+        "references/implementation.md",
+        "references/queries-and-filters.md",
+        "references/service-patterns.md"
       ]
     },
     {
@@ -23505,13 +23564,16 @@
       "category": "saas-packs",
       "plugin": "supabase-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "references/database-webhooks.md",
+        "references/edge-function-receivers.md",
         "references/errors.md",
         "references/event-handler-pattern.md",
         "references/examples.md",
+        "references/listen-notify-realtime.md",
         "references/signature-verification.md"
       ]
     },

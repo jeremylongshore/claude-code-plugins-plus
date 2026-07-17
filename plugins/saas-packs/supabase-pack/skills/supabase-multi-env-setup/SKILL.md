@@ -142,8 +142,8 @@ path — a full three-env bootstrap from `supabase init` to a production `db pus
 npx supabase init && npx supabase start        # local, copy keys to .env.local
 npx supabase migration new create_users        # author schema, then:
 npx supabase db reset                           # verify locally
-npx supabase link --project-ref <staging-ref> && npx supabase db push
-npx supabase link --project-ref <prod-ref>    && npx supabase db push
+npx supabase link --project-ref "<staging-ref>" && npx supabase db push
+npx supabase link --project-ref "<prod-ref>"    && npx supabase db push
 ```
 
 Examples 2 and 3 ([full file](references/examples.md)) show a Next.js middleware that
