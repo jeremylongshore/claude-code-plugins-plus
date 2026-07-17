@@ -204,7 +204,7 @@ export function trackRateLimit(response: Response) {
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `429 Too Many Requests` | Rate limit exceeded | Implement retry with backoff, add caching |
-| `quota_exceeded` | Monthly MAU quota hit | Upgrade plan or reduce active users |
+| `quota_exceeded` | Monthly MRU quota hit | Upgrade plan or reduce retained users |
 | Concurrent limit hit | Too many parallel requests | Queue requests, reduce `batchSize` |
 | Stale cache data | Cache not invalidated | Invalidate on `user.updated` webhook |
 

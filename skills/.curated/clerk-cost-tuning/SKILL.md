@@ -25,32 +25,34 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Understand Clerk pricing and optimize costs. Clerk charges by Monthly Active Users (MAU). Covers pricing tiers, MAU reduction strategies, caching to reduce API calls, and usage monitoring.
+Understand Clerk pricing and optimize costs. Clerk charges by Monthly Retained Users (MRU) — a user is counted as retained only when they return 24+ hours after signing up. Covers pricing tiers, MRU reduction strategies, caching to reduce API calls, and usage monitoring.
 
 ## Prerequisites
 
 - Clerk account active
-- Understanding of MAU (Monthly Active Users)
+- Understanding of MRU (Monthly Retained Users)
 - Application usage patterns known
 
 ## Instructions
 
 ### Step 1: Understand Clerk Pricing Model
 
-| Plan | Price | MAU Included | Extra MAU |
+| Plan | Price | MRU Included | Extra MRU |
 |------|-------|-------------|-----------|
-| Free | $0/mo | 10,000 MAU | N/A |
-| Pro | $25/mo | 10,000 MAU | $0.02/MAU |
+| Free (Hobby) | $0/mo | 50,000 MRU | N/A |
+| Pro | $25/mo ($20/mo billed annually) | 50,000 MRU | $0.02/MRU |
+| Business | $300/mo ($250/mo billed annually) | 50,000 MRU | $0.02/MRU |
 | Enterprise | Custom | Custom | Custom |
 
 Key pricing concepts:
 
-- **MAU** = unique user who authenticates at least once per month
+- **MRU** = unique user who returns to your app 24+ hours after signing up ("first day free" — sign-up-day activity never counts)
+- Users who sign up and never return are not billed
 - Users who only visit public pages are not counted
 - Bot/crawler sessions are not counted
 - Test/development instances are free and unlimited
 
-### Step 2: Reduce MAU Count
+### Step 2: Reduce MRU Count
 
 ```typescript
 // Strategy 1: Defer authentication — don't force sign-in until necessary
@@ -134,8 +136,8 @@ export async function GET() {
 
   return Response.json({
     totalUsers: users.totalCount,
-    // Estimate MAU based on recent sign-ins
-    estimatedMAU: 'Check Clerk Dashboard > Billing for actual MAU',
+    // Estimate MRU based on recent sign-ins
+    estimatedMRU: 'Check Clerk Dashboard > Billing for actual MRU',
     dashboardUrl: 'last-active?after=30d',
   })
 }
@@ -168,8 +170,8 @@ findInactiveUsers()
 
 ## Output
 
-- Pricing model understood with MAU thresholds
-- Route-level auth to minimize unnecessary MAU counts
+- Pricing model understood with MRU thresholds
+- Route-level auth to minimize unnecessary MRU counts
 - Request-level and cross-request caching reducing API calls
 - Usage monitoring endpoint for admins
 - Inactive user identification script
@@ -178,25 +180,25 @@ findInactiveUsers()
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected bill increase | MAU spike from bot traffic | Add bot detection, restrict auth to needed routes |
-| Feature limitations | Free tier limits (no SSO, etc.) | Upgrade to Pro ($25/mo) |
+| Unexpected bill increase | MRU spike from bot traffic | Add bot detection, restrict auth to needed routes |
+| Feature limitations | Free tier limits (no SSO, etc.) | Upgrade to Pro ($25/mo, or $20/mo billed annually) |
 | High API call volume | No caching | Add React `cache()` + `unstable_cache()` |
-| MAU count mismatch | Counting test users | Use separate dev instance (free, unlimited) |
+| MRU count mismatch | Counting test users | Use separate dev instance (free, unlimited) |
 
 ## Examples
 
 ### Cost Estimation Script
 
 ```typescript
-function estimateMonthlyCost(mau: number): string {
-  if (mau <= 10_000) return 'Free tier ($0/mo)'
-  const overage = mau - 10_000
+function estimateMonthlyCost(mru: number): string {
+  if (mru <= 50_000) return 'Free tier ($0/mo)'
+  const overage = mru - 50_000
   const cost = 25 + overage * 0.02
-  return `Pro tier: $${cost.toFixed(2)}/mo (${overage.toLocaleString()} extra MAU at $0.02 each)`
+  return `Pro tier: $${cost.toFixed(2)}/mo (${overage.toLocaleString()} extra MRU at $0.02 each)`
 }
 
-console.log(estimateMonthlyCost(15_000))  // "Pro tier: $125.00/mo (5,000 extra MAU at $0.02 each)"
-console.log(estimateMonthlyCost(50_000))  // "Pro tier: $825.00/mo (40,000 extra MAU at $0.02 each)"
+console.log(estimateMonthlyCost(15_000))  // "Free tier ($0/mo)"
+console.log(estimateMonthlyCost(60_000))  // "Pro tier: $225.00/mo (10,000 extra MRU at $0.02 each)"
 ```
 
 ## Resources
