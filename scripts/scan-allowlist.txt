@@ -137,3 +137,6 @@ plugins/skill-enhancers/skill-creator/skills/skill-creator/references/validation
 # ── ops-review docs-truth pass (claude-k0h2, 2026-07-14): sources.yaml HEADER COMMENTS only. ──
 sources.yaml:sources-change-unscanned  comment-only header fix (stale curated-set list + daily→weekly cadence wording); zero source entries added, removed, or repointed — no data line in the sources: list changed, nothing new to vet or pin
 plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/SKILL.md:secret-exfil-cooccur  documented backfill example reads HUBSPOT_ACCESS_TOKEN from env and sends it only to api.hubapi.com (the credential's own service); BigQuery sink uses GCP client creds, not the HubSpot token — reviewed 2026-07-16
+
+# ── dolt-mcp-vcs repo rename (2026-07-17): repoint only, same vetted source. ──
+sources.yaml:sources-change-unscanned  repoint of the dolt-mcp-vcs source from jeremylongshore/dolt-mcp-vcs to jeremylongshore/dolt-mcp-vcs-plugin (GitHub repo rename by the owner) — same already-vetted first-party repo, REFUSE-scanned at sync time and pinned in sources.lock.json via the relock re-sync; catalog name/target_path unchanged, no new or foreign source added
