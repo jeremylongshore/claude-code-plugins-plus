@@ -107,108 +107,32 @@ const highPriorityActive = await notion.databases.query({
 
 ### Step 3: Paginate, Retrieve Pages, and Extract Content
 
-Notion uses cursor-based pagination. All list endpoints return `has_more` and `next_cursor`. Call `notion.pages.retrieve()` for a single page, then `notion.blocks.children.list()` to read its content recursively.
+Notion uses cursor-based pagination — every list endpoint returns `has_more` and `next_cursor`, so loop until the cursor is exhausted. Call `notion.pages.retrieve()` for a single page, then `notion.blocks.children.list()` to read its content recursively.
 
 ```typescript
-import type {
-  PageObjectResponse,
-  BlockObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints';
-
-// Paginate through all database results
-async function queryAllPages(databaseId: string): Promise<PageObjectResponse[]> {
-  const pages: PageObjectResponse[] = [];
-  let cursor: string | undefined = undefined;
-
-  do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      start_cursor: cursor,
-      page_size: 100,
-    });
-
-    for (const page of response.results) {
-      if ('properties' in page) {
-        pages.push(page as PageObjectResponse);
-      }
-    }
-    cursor = response.has_more ? response.next_cursor! : undefined;
-  } while (cursor);
-
-  return pages;
-}
-
-// Retrieve a single page and extract typed property values
-async function getPage(pageId: string) {
-  const page = await notion.pages.retrieve({ page_id: pageId });
-  if (!('properties' in page)) throw new Error('Partial page object');
-  return page as PageObjectResponse;
-}
-
-function extractProperties(page: PageObjectResponse) {
-  const result: Record<string, any> = {};
-  for (const [name, prop] of Object.entries(page.properties)) {
-    switch (prop.type) {
-      case 'title':
-        result[name] = prop.title.map(t => t.plain_text).join(''); break;
-      case 'rich_text':
-        result[name] = prop.rich_text.map(t => t.plain_text).join(''); break;
-      case 'number':    result[name] = prop.number; break;
-      case 'select':    result[name] = prop.select?.name ?? null; break;
-      case 'multi_select':
-        result[name] = prop.multi_select.map(s => s.name); break;
-      case 'date':
-        result[name] = prop.date ? { start: prop.date.start, end: prop.date.end } : null; break;
-      case 'people':
-        result[name] = prop.people.map(p => ('name' in p ? p.name : p.id)); break;
-      case 'checkbox':  result[name] = prop.checkbox; break;
-      case 'url':       result[name] = prop.url; break;
-      case 'email':     result[name] = prop.email; break;
-      case 'phone_number': result[name] = prop.phone_number; break;
-      case 'status':    result[name] = prop.status?.name ?? null; break;
-      case 'relation':  result[name] = prop.relation.map(r => r.id); break;
-      case 'formula':   result[name] = prop.formula; break;
-      case 'rollup':    result[name] = prop.rollup; break;
-      default:          result[name] = `[${prop.type}]`;
-    }
-  }
-  return result;
-}
-
-// Recursively fetch all blocks (page content)
-async function getPageContent(
-  blockId: string, depth = 0, maxDepth = 3
-): Promise<BlockObjectResponse[]> {
-  const blocks: BlockObjectResponse[] = [];
-  let cursor: string | undefined = undefined;
-
-  do {
-    const response = await notion.blocks.children.list({
-      block_id: blockId,
-      start_cursor: cursor,
-      page_size: 100,
-    });
-
-    for (const block of response.results) {
-      if (!('type' in block)) continue;
-      const b = block as BlockObjectResponse;
-      blocks.push(b);
-      if (b.has_children && depth < maxDepth) {
-        blocks.push(...await getPageContent(b.id, depth + 1, maxDepth));
-      }
-    }
-    cursor = response.has_more ? response.next_cursor! : undefined;
-  } while (cursor);
-
-  return blocks;
-}
-
-function blockToText(block: BlockObjectResponse): string {
-  const content = (block as any)[block.type];
-  if (!content?.rich_text) return '';
-  return content.rich_text.map((t: any) => t.plain_text).join('');
-}
+// Pagination skeleton — loop until has_more is false
+let cursor: string | undefined = undefined;
+do {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    start_cursor: cursor,
+    page_size: 100,          // 100 is the max — use it for bulk pulls
+  });
+  // ...collect response.results...
+  cursor = response.has_more ? response.next_cursor! : undefined;
+} while (cursor);
 ```
+
+The reference file provides three drop-in helpers: `queryAllPages()` (collects
+every row), `extractProperties()` (a `switch` covering all 15 property types), and
+`getPageContent()` (depth-guarded recursive block traversal). See
+[full walkthrough](references/implementation.md) for the complete code and tuning
+notes on `page_size` and recursion `maxDepth`.
+
+**Choosing a retrieval depth.** For a flat list of records, `queryAllPages()`
+alone suffices — skip block traversal. To read the actual page *body* (paragraphs,
+toggles, nested lists), call `getPageContent()` and raise its `maxDepth` only as
+deep as the content nests, since each level multiplies API calls.
 
 ## Output
 

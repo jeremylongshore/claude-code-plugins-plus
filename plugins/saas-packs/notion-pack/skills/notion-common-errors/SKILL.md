@@ -36,7 +36,12 @@ Quick reference for all Notion API error codes with exact HTTP statuses, error b
 }
 ```
 
-All requests require `Authorization: Bearer <token>` and `Notion-Version: 2022-06-28` headers.
+All requests require `Authorization: Bearer $NOTION_TOKEN` and `Notion-Version: 2022-06-28` headers (`2022-06-28` is the current stable API version — the header is required on every call).
+
+This SKILL.md gives you the triage table and workflow. Two references carry the depth:
+
+- **[references/error-codes.md](references/error-codes.md)** — the full per-status playbook (401, 403, 404, 400, 429, 409, 500, 502/503) with error bodies, causes, and code fixes.
+- **[references/examples.md](references/examples.md)** — the full SDK error handler, the curl diagnostic script, and the non-HTTP client-side gotchas (rich text arrays, pagination, timeouts).
 
 ## Prerequisites
 
@@ -48,219 +53,22 @@ All requests require `Authorization: Bearer <token>` and `Notion-Version: 2022-0
 
 ### Step 1: Identify the Error
 
-Run the diagnostic script below or check your application logs. Match the HTTP status and `code` field to the sections that follow.
+1. Read the JSON error body returned by the failed request.
+2. Note its HTTP `status` and machine-readable `code` fields — those two values route you to the exact fix.
+3. If you only have logs, `Grep` your application logs for the `code` field to recover the values.
 
 ### Step 2: Match Error Code and Apply Fix
 
----
+Use the Error Handling table below to see whether the error is retryable and the recommended action. For the exact error body, root cause, and copy-paste fix, open the matching section in **[references/error-codes.md](references/error-codes.md)**. The four you will hit most:
 
-### 401 — `unauthorized`
+- **404 `object_not_found`** — the most common error. The page/database exists but is not shared with your integration. Fix via the `...` → **Connections** menu; parent pages must be shared too.
+- **401 `unauthorized`** — token missing, malformed, expired, or revoked. Verify with `curl .../v1/users/me`; regenerate at [notion.so/my-integrations](https://www.notion.so/my-integrations).
+- **400 `validation_error`** — the broadest category, usually a wrong property name/type or a filter-type mismatch (e.g. `status:` filter used as `text:`). Retrieve the database schema first.
+- **429 `rate_limited`** — over 3 requests/sec/integration. Back off exponentially; the SDK retries automatically.
 
-```json
-{"object": "error", "status": 401, "code": "unauthorized", "message": "API token is invalid."}
-```
+### Step 3: Verify the Fix
 
-**Cause:** Token is missing, malformed, expired, or revoked.
-
-**Fix:**
-
-```bash
-# Verify token is set
-echo ${NOTION_TOKEN:+SET}
-
-# Test directly
-curl -s https://api.notion.com/v1/users/me \
-  -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28" | jq .
-```
-
-If the response shows your integration bot user, the token is valid. Otherwise regenerate at [notion.so/my-integrations](https://www.notion.so/my-integrations). Tokens starting with `secret_` are legacy format — new integrations use `ntn_` prefix.
-
----
-
-### 403 — `restricted_resource`
-
-```json
-{"object": "error", "status": 403, "code": "restricted_resource", "message": "Insufficient permissions for this resource."}
-```
-
-**Cause:** The integration exists and the page is shared, but the integration lacks the required capability (read content, update content, insert content, read comments).
-
-**Fix:** Go to [notion.so/my-integrations](https://www.notion.so/my-integrations), select your integration, and enable the needed capabilities under "Capabilities." Common missing capability: "Read comments" when querying comments, or "Insert content" when creating pages.
-
----
-
-### 404 — `object_not_found`
-
-```json
-{"object": "error", "status": 404, "code": "object_not_found", "message": "Could not find page with ID: abc123..."}
-```
-
-**Cause:** The page, database, or block either does not exist or has not been shared with your integration. This is the single most common Notion API error.
-
-**Fix:**
-
-1. Open the target page in Notion
-2. Click the `...` menu at top right
-3. Select **Connections** and add your integration
-4. Parent pages must also be shared — sharing only a child page is not enough
-
-```typescript
-// Defensive retrieval pattern
-try {
-  const page = await notion.pages.retrieve({ page_id: pageId });
-} catch (error) {
-  if (isNotionClientError(error) && error.code === APIErrorCode.ObjectNotFound) {
-    console.error('Page not shared with integration. Add via Connections menu.');
-  }
-}
-```
-
-**Page ID gotcha:** Notion URLs use 32-character hex IDs without dashes (`https://notion.so/Page-abc123def456...`). The API accepts both dashed (`abc123de-f456-...`) and undashed formats. If you're extracting IDs from URLs, strip the page title prefix and use the last 32 characters.
-
----
-
-### 400 — `validation_error`
-
-```json
-{"object": "error", "status": 400, "code": "validation_error", "message": "..."}
-```
-
-**Message varies.** This is the broadest error category. Common sub-cases:
-
-| Message Pattern | Cause | Fix |
-|----------------|-------|-----|
-| `Title is not a property that exists` | Wrong property name | Use exact name from database schema (case-sensitive) |
-| `... should be an array` | Rich text passed as string | Wrap in `[{ text: { content: "value" } }]` |
-| `body.parent.database_id should be defined` | Missing parent in page create | Include `parent: { database_id: "..." }` |
-| `... should be a string, instead was ...` | Wrong property type for filter | Match filter type to property type (see below) |
-| `Could not find property with name or id` | Property renamed in Notion UI | Retrieve schema with `databases.retrieve()` to get current names |
-
-**Filter type mismatches** — the most common validation error:
-
-```typescript
-// WRONG: Status is a status property, not text
-{ property: 'Status', text: { equals: 'Done' } }
-// RIGHT: Use the matching filter type
-{ property: 'Status', status: { equals: 'Done' } }
-
-// WRONG: Passing plain string for title
-{ Name: { title: 'My Page' } }
-// RIGHT: Title requires rich text array
-{ Name: { title: [{ text: { content: 'My Page' } }] } }
-```
-
-**Debug tip:** Always retrieve the database schema first to avoid property name/type errors:
-
-```typescript
-const db = await notion.databases.retrieve({ database_id: dbId });
-console.log(Object.entries(db.properties).map(([name, prop]) => `${name}: ${prop.type}`));
-// Output: "Name: title", "Status: status", "Tags: multi_select", ...
-```
-
----
-
-### 429 — `rate_limited`
-
-```json
-{"object": "error", "status": 429, "code": "rate_limited", "message": "Rate limited"}
-```
-
-**Cause:** Exceeded Notion's average rate limit of 3 requests per second per integration.
-
-**Fix:**
-
-```typescript
-import { Client, isNotionClientError, APIErrorCode } from '@notionhq/client';
-
-async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (isNotionClientError(error) && error.code === APIErrorCode.RateLimited) {
-        const wait = Math.pow(2, attempt) * 1000; // exponential backoff
-        console.log(`Rate limited. Waiting ${wait}ms (attempt ${attempt + 1}/${maxRetries})...`);
-        await new Promise(r => setTimeout(r, wait));
-        continue;
-      }
-      throw error;
-    }
-  }
-  throw new Error('Max retries exceeded');
-}
-```
-
-The `@notionhq/client` SDK has built-in retry with exponential backoff. If you hit rate limits frequently, batch operations and add delays between sequential calls. For bulk operations, see `notion-rate-limits`.
-
----
-
-### 409 — `conflict_error`
-
-```json
-{"object": "error", "status": 409, "code": "conflict_error", "message": "Transaction has an existing lock on the object."}
-```
-
-**Cause:** Concurrent modifications to the same page, block, or database. Common in parallel scripts or multi-user workflows.
-
-**Fix:** Retry the operation. The SDK handles this automatically. If writing your own retry logic, a simple retry after 1-2 seconds resolves most conflicts. Avoid parallelizing writes to the same page.
-
----
-
-### 500 — `internal_server_error`
-
-```json
-{"object": "error", "status": 500, "code": "internal_server_error", "message": "Internal Server Error"}
-```
-
-**Cause:** Bug or transient failure on Notion's servers.
-
-**Fix:** Retry with exponential backoff. If persistent (>5 minutes), check [status.notion.so](https://status.notion.so) for ongoing incidents. Consider filing a bug report at [developers.notion.com](https://developers.notion.com) with the request ID from the response headers (`x-request-id`).
-
----
-
-### 502/503 — `service_unavailable`
-
-```json
-{"object": "error", "status": 503, "code": "service_unavailable", "message": "Notion is unavailable. Try again later."}
-```
-
-**Cause:** Notion's servers are down or under maintenance.
-
-**Fix:**
-
-```bash
-# Check Notion status
-curl -s https://status.notion.so/api/v2/status.json | jq '.status.description'
-```
-
-Wait and retry. Monitor [status.notion.so](https://status.notion.so) for incident updates.
-
----
-
-### Step 3: Common Non-HTTP Gotchas
-
-```typescript
-// "body failed validation: body.children should be an array"
-// → Block children must always be an array, even for a single child.
-
-// Rich text structure — the #1 source of frustration
-// WRONG: "Hello"
-// RIGHT: [{ type: "text", text: { content: "Hello" } }]
-// Rich text is ALWAYS an array of rich text objects.
-
-// Block type mismatch when appending children
-// → Each block type has its own structure. A paragraph block needs:
-//   { type: "paragraph", paragraph: { rich_text: [{ text: { content: "..." } }] } }
-
-// Timeout errors (default 60s)
-// → Increase via Client constructor:
-//   new Client({ auth: token, timeoutMs: 120_000 })
-
-// Pagination: missing results
-// → Always check has_more and pass start_cursor for next page.
-//   Notion returns max 100 items per request.
-```
+Re-run the failing call, or use the three-probe curl diagnostic in **[references/examples.md](references/examples.md)** to confirm status, token, and resource access independently.
 
 ## Output
 
@@ -282,63 +90,23 @@ Wait and retry. Monitor [status.notion.so](https://status.notion.so) for inciden
 | `service_unavailable` | 502/503 | Notion down | Yes | Wait and retry, check status.notion.so |
 | `gateway_timeout` | 504 | Request timeout | Yes | Retry, reduce query complexity or page size |
 
+Each row maps to a full walkthrough in [references/error-codes.md](references/error-codes.md).
+
 ## Examples
 
-### Full SDK Error Handler
-
-```typescript
-import { Client, isNotionClientError, APIErrorCode, ClientErrorCode } from '@notionhq/client';
-
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
-
-try {
-  const page = await notion.pages.retrieve({ page_id: pageId });
-} catch (error) {
-  if (isNotionClientError(error)) {
-    switch (error.code) {
-      case APIErrorCode.ObjectNotFound:
-        console.error('Page not found or not shared with integration');
-        break;
-      case APIErrorCode.Unauthorized:
-        console.error('Invalid API token');
-        break;
-      case APIErrorCode.RestrictedResource:
-        console.error('Integration lacks required capability');
-        break;
-      case APIErrorCode.RateLimited:
-        console.error('Rate limited — retry with backoff');
-        break;
-      case APIErrorCode.ValidationError:
-        console.error(`Validation error: ${error.message}`);
-        break;
-      case ClientErrorCode.RequestTimeout:
-        console.error('Request timed out');
-        break;
-      default:
-        console.error(`Notion error: ${error.code} — ${error.message}`);
-    }
-  } else {
-    throw error; // Non-Notion error
-  }
-}
-```
-
-### Quick Diagnostic Script
+Start with the fastest diagnostic — a single curl to confirm your token is valid and the integration is reachable:
 
 ```bash
-# 1. Check Notion status
-curl -s https://status.notion.so/api/v2/status.json | jq '.status.description'
-
-# 2. Verify token
 curl -s https://api.notion.com/v1/users/me \
   -H "Authorization: Bearer ${NOTION_TOKEN}" \
   -H "Notion-Version: 2022-06-28" | jq '{id, type, name}'
-
-# 3. Test database access (replace DB_ID)
-curl -s "https://api.notion.com/v1/databases/${DB_ID}" \
-  -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28" | jq '{id, title: .title[0].plain_text}'
 ```
+
+A valid token returns your integration bot user. From there:
+
+- Full three-probe diagnostic (status → token → database access): [references/examples.md](references/examples.md)
+- A single SDK `catch` block branching on every error code: [references/examples.md](references/examples.md)
+- Client-side shape gotchas that masquerade as `validation_error` (rich text arrays, block children, pagination, timeouts): [references/examples.md](references/examples.md)
 
 ## Resources
 

@@ -27,120 +27,36 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Complete guide to creating, updating, archiving, and composing Notion pages and block content using the `@notionhq/client` SDK. Covers page lifecycle, all common block types, rich text formatting, and bulk content operations.
+Complete guide to creating, updating, archiving, and composing Notion pages and block content using the `@notionhq/client` SDK. Covers page lifecycle, all common block types, rich text formatting, and bulk content operations. The core workflow lives here at a high level; deep code walkthroughs are extracted into `references/` so this file stays scannable.
 
 ## Prerequisites
 
 - Completed `notion-install-auth` setup
 - `NOTION_TOKEN` environment variable set
-- Target database or page shared with your integration (via Connections menu)
+- Target database or page shared with the integration (via Connections menu)
 - `@notionhq/client` v2+ installed (TypeScript) or `notion-client` (Python)
 
 ## Instructions
 
 ### Step 1: Create, Update, and Archive Pages
 
-Create a page in a database with typed properties and initial block content:
+Create a page in a database with typed properties (`title`, `select`, `multi_select`, `date`, `people`, `number`, `checkbox`, `url`), an optional `icon`/`cover`, and initial `children` block content. Update properties with `pages.update` (set a property to `null` to clear it). Archive is a soft-delete via `archived: true`, and restore flips it back to `false`.
+
+Minimal skeleton:
 
 ```typescript
 import { Client } from '@notionhq/client';
-
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-// Create a page with properties and inline content
-async function createPage(databaseId: string) {
-  const page = await notion.pages.create({
-    parent: { database_id: databaseId },
-    icon: { emoji: '📄' },
-    cover: {
-      external: { url: 'https://images.unsplash.com/photo-cover-id' },
-    },
-    properties: {
-      // Title property (required for database pages)
-      Name: {
-        title: [{ text: { content: 'Q1 Sprint Retrospective' } }],
-      },
-      Status: {
-        select: { name: 'In Progress' },
-      },
-      Priority: {
-        select: { name: 'High' },
-      },
-      Tags: {
-        multi_select: [{ name: 'Engineering' }, { name: 'Sprint' }],
-      },
-      'Due Date': {
-        date: { start: '2026-04-01', end: '2026-04-05' },
-      },
-      Assignee: {
-        people: [{ id: 'user-uuid-here' }],
-      },
-      Effort: {
-        number: 8,
-      },
-      Done: {
-        checkbox: false,
-      },
-      URL: {
-        url: 'https://example.com/sprint-board',
-      },
-    },
-    // Initial page body (block children)
-    children: [
-      {
-        heading_2: {
-          rich_text: [{ text: { content: 'Summary' } }],
-        },
-      },
-      {
-        paragraph: {
-          rich_text: [{ text: { content: 'This page tracks the Q1 sprint retrospective.' } }],
-        },
-      },
-    ],
-  });
-
-  console.log('Created page:', page.id);
-  return page;
-}
+const page = await notion.pages.create({
+  parent: { database_id: databaseId },
+  properties: { Name: { title: [{ text: { content: 'Q1 Retro' } }] } },
+});
+await notion.pages.update({ page_id: page.id, properties: { Status: { select: { name: 'Done' } } } });
+await notion.pages.update({ page_id: page.id, archived: true });  // archive
 ```
 
-Update page properties after creation:
-
-```typescript
-async function updatePageProperties(pageId: string) {
-  const updated = await notion.pages.update({
-    page_id: pageId,
-    properties: {
-      Status: { select: { name: 'Done' } },
-      Done: { checkbox: true },
-      // Clear a property by setting to null
-      'Due Date': { date: null },
-    },
-    // Update icon/cover
-    icon: { emoji: '✅' },
-  });
-
-  console.log('Updated page:', updated.id);
-  return updated;
-}
-```
-
-Archive and restore pages:
-
-```typescript
-// Archive (soft-delete)
-async function archivePage(pageId: string) {
-  await notion.pages.update({ page_id: pageId, archived: true });
-  console.log('Archived page:', pageId);
-}
-
-// Restore from archive
-async function restorePage(pageId: string) {
-  await notion.pages.update({ page_id: pageId, archived: false });
-  console.log('Restored page:', pageId);
-}
-```
+Full typed-property create, update-with-clear, and archive/restore functions: [page lifecycle walkthrough](references/page-lifecycle.md).
 
 ### Step 2: Compose Content with Block Types
 
@@ -168,64 +84,16 @@ await notion.blocks.children.append({
 
 ### Step 3: Update and Delete Individual Blocks
 
-Retrieve, modify, and remove specific blocks:
+Retrieve, modify, and remove specific blocks: `blocks.children.list` (paginate with `start_cursor`), `blocks.update` to change content or toggle a to-do's `checked` state, `blocks.delete` to trash a block (recoverable for 30 days), and `blocks.retrieve` to fetch one block.
+
+Minimal skeleton:
 
 ```typescript
-// List all child blocks of a page
-async function listBlocks(pageId: string) {
-  const blocks: any[] = [];
-  let cursor: string | undefined;
-
-  do {
-    const response = await notion.blocks.children.list({
-      block_id: pageId,
-      start_cursor: cursor,
-      page_size: 100,
-    });
-    blocks.push(...response.results);
-    cursor = response.has_more ? response.next_cursor! : undefined;
-  } while (cursor);
-
-  return blocks;
-}
-
-// Update a specific block's content
-async function updateBlock(blockId: string) {
-  await notion.blocks.update({
-    block_id: blockId,
-    paragraph: {
-      rich_text: [
-        { text: { content: 'Updated paragraph content with ' } },
-        { text: { content: 'new formatting' }, annotations: { bold: true, color: 'red' } },
-      ],
-    },
-  });
-  console.log('Block updated:', blockId);
-}
-
-// Update a to-do block's checked state
-async function toggleTodo(blockId: string, checked: boolean) {
-  await notion.blocks.update({
-    block_id: blockId,
-    to_do: {
-      checked,
-    },
-  });
-}
-
-// Delete a block (moves to trash, recoverable for 30 days)
-async function deleteBlock(blockId: string) {
-  await notion.blocks.delete({ block_id: blockId });
-  console.log('Deleted block:', blockId);
-}
-
-// Retrieve a single block by ID
-async function getBlock(blockId: string) {
-  const block = await notion.blocks.retrieve({ block_id: blockId });
-  console.log('Block type:', block.type, 'Has children:', block.has_children);
-  return block;
-}
+await notion.blocks.update({ block_id: blockId, to_do: { checked: true } });
+await notion.blocks.delete({ block_id: blockId });
 ```
+
+Full paginated list, rich-text update, to-do toggle, delete, and retrieve helpers: [block editing walkthrough](references/block-editing.md).
 
 ## Output
 
@@ -240,7 +108,7 @@ async function getBlock(blockId: string) {
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `validation_error` (400) | Wrong property type or name | Retrieve database schema with `databases.retrieve()` to confirm property names and types |
-| `object_not_found` (404) | Page/block not shared with integration | Open the page in Notion, click `...` > Connections > add your integration |
+| `object_not_found` (404) | Page/block not shared with integration | Open the page in Notion, click `...` > Connections > add the integration |
 | `unauthorized` (401) | Invalid or expired token | Regenerate at `notion.so/my-integrations` and update `NOTION_TOKEN` |
 | `rate_limited` (429) | Over 3 requests/second | Implement exponential backoff; read `Retry-After` header |
 | `conflict_error` (409) | Concurrent edit to same block | Retry with fresh block data from `blocks.retrieve()` |
@@ -248,132 +116,23 @@ async function getBlock(blockId: string) {
 
 ## Examples
 
-### Complete Page Builder
+A page builder composes a create call plus a structured `blocks.children.append` in sequence — for example, a standup note with `heading_2` sections, `bulleted_list_item` history, `to_do` tasks, and a `callout` for blockers:
 
 ```typescript
-import { Client } from '@notionhq/client';
-
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
-
-async function buildMeetingNotes(databaseId: string) {
-  // 1. Create the page
-  const page = await notion.pages.create({
-    parent: { database_id: databaseId },
-    icon: { emoji: '📝' },
-    properties: {
-      Name: { title: [{ text: { content: `Standup ${new Date().toISOString().slice(0, 10)}` } }] },
-      Status: { select: { name: 'In Progress' } },
-      Tags: { multi_select: [{ name: 'Standup' }, { name: 'Daily' }] },
-    },
-  });
-
-  // 2. Append structured content
-  await notion.blocks.children.append({
-    block_id: page.id,
-    children: [
-      { heading_2: { rich_text: [{ text: { content: 'Yesterday' } }] } },
-      { bulleted_list_item: { rich_text: [{ text: { content: 'Completed auth integration' } }] } },
-      { bulleted_list_item: { rich_text: [{ text: { content: 'Fixed rate-limit retry logic' } }] } },
-      { heading_2: { rich_text: [{ text: { content: 'Today' } }] } },
-      { to_do: { rich_text: [{ text: { content: 'Build content management module' } }], checked: false } },
-      { to_do: { rich_text: [{ text: { content: 'Write integration tests' } }], checked: false } },
-      { heading_2: { rich_text: [{ text: { content: 'Blockers' } }] } },
-      {
-        callout: {
-          rich_text: [{ text: { content: 'Waiting on API key for staging environment.' } }],
-          icon: { emoji: '🚧' },
-          color: 'red_background',
-        },
-      },
-    ],
-  });
-
-  console.log('Meeting notes page:', `https://notion.so/${page.id.replace(/-/g, '')}`);
-  return page;
-}
+const page = await notion.pages.create({
+  parent: { database_id: databaseId },
+  properties: { Name: { title: [{ text: { content: `Standup ${new Date().toISOString().slice(0, 10)}` } }] } },
+});
+await notion.blocks.children.append({
+  block_id: page.id,
+  children: [
+    { heading_2: { rich_text: [{ text: { content: 'Today' } }] } },
+    { to_do: { rich_text: [{ text: { content: 'Build content module' } }], checked: false } },
+  ],
+});
 ```
 
-### Python Example
-
-```python
-import os
-from notion_client import Client
-
-notion = Client(auth=os.environ["NOTION_TOKEN"])
-
-# Create a page
-page = notion.pages.create(
-    parent={"database_id": "your-database-id"},
-    properties={
-        "Name": {"title": [{"text": {"content": "Python Page"}}]},
-        "Status": {"select": {"name": "Draft"}},
-        "Tags": {"multi_select": [{"name": "API"}, {"name": "Python"}]},
-    },
-)
-print(f"Created: {page['id']}")
-
-# Update properties
-notion.pages.update(
-    page_id=page["id"],
-    properties={
-        "Status": {"select": {"name": "Done"}},
-    },
-)
-
-# Append blocks
-notion.blocks.children.append(
-    block_id=page["id"],
-    children=[
-        {"heading_2": {"rich_text": [{"text": {"content": "Notes"}}]}},
-        {
-            "paragraph": {
-                "rich_text": [
-                    {"text": {"content": "Created via "}},
-                    {"text": {"content": "Python SDK"}, "annotations": {"bold": True}},
-                ]
-            }
-        },
-        {
-            "code": {
-                "rich_text": [{"text": {"content": "print('hello notion')"}}],
-                "language": "python",
-            }
-        },
-        {"divider": {}},
-        {
-            "to_do": {
-                "rich_text": [{"text": {"content": "Review and publish"}}],
-                "checked": False,
-            }
-        },
-    ],
-)
-
-# Archive the page
-notion.pages.update(page_id=page["id"], archived=True)
-```
-
-### Batch Block Append (Chunked for >100 Blocks)
-
-```typescript
-async function appendBlocksChunked(
-  pageId: string,
-  blocks: any[],
-  chunkSize = 100,
-) {
-  for (let i = 0; i < blocks.length; i += chunkSize) {
-    const chunk = blocks.slice(i, i + chunkSize);
-    await notion.blocks.children.append({
-      block_id: pageId,
-      children: chunk,
-    });
-    // Respect rate limits between chunks
-    if (i + chunkSize < blocks.length) {
-      await new Promise((r) => setTimeout(r, 350));
-    }
-  }
-}
-```
+Full worked examples — the complete page builder, a Python (`notion-client`) equivalent, and a chunked batch-append helper for payloads over 100 blocks — are in [the worked examples reference](references/examples.md).
 
 ## Resources
 
@@ -386,6 +145,4 @@ async function appendBlocksChunked(
 - [@notionhq/client npm](https://www.npmjs.com/package/@notionhq/client)
 - [notion-sdk-py GitHub](https://github.com/ramnes/notion-sdk-py)
 
-## Next Steps
-
-Proceed to `notion-data-handling` for database queries, filtering, sorting, and pagination patterns.
+Next, proceed to `notion-data-handling` for database queries, filtering, sorting, and pagination patterns.

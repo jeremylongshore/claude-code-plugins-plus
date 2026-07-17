@@ -34,108 +34,53 @@ Three minimal examples covering the Notion API core surfaces: searching for page
 - At least one database shared with your integration via the Connections menu
 - Node.js 18+ with `@notionhq/client` or Python 3.8+ with `notion-client`
 
+## Authentication
+
+Every request authenticates with your internal integration token via the
+`NOTION_TOKEN` environment variable — the client reads it as
+`new Client({ auth: process.env.NOTION_TOKEN })` (or Python's
+`Client(auth=os.environ["NOTION_TOKEN"])`). Generate the token at
+[notion.so/my-integrations](https://www.notion.so/my-integrations), then share each
+target database with the integration through its Connections menu. Never hardcode
+the token — keep it in the environment. See `notion-install-auth` for the full setup.
+
 ## Instructions
 
-### Step 1: Search for Pages in Your Workspace
+The workflow is three steps against the Notion API core surfaces. Instantiate the
+client once, then search, create, and verify. Step 1's skeleton is below; the full
+create + verify code (with block content, title extraction, and metadata) is in
+[the implementation walkthrough](references/implementation.md).
+
+### Step 1: Search for pages
+
+The `search` endpoint queries across everything your integration can access;
+`filter` narrows to pages (use `value: 'database'` for databases).
 
 ```typescript
 import { Client } from '@notionhq/client';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-async function searchPages(query: string) {
-  const { results } = await notion.search({
-    query,
-    filter: { property: 'object', value: 'page' },
-    sort: { direction: 'descending', timestamp: 'last_edited_time' },
-    page_size: 5,
-  });
-
-  for (const page of results) {
-    if (page.object === 'page' && 'properties' in page) {
-      // Title lives under a property with type "title"
-      const titleProp = Object.values(page.properties).find(
-        (p) => p.type === 'title'
-      );
-      const title = titleProp?.type === 'title'
-        ? titleProp.title.map((t) => t.plain_text).join('')
-        : '(untitled)';
-      console.log(`Page: ${title} (${page.id})`);
-    }
-  }
-
-  return results;
-}
-
-// Usage: searchPages('meeting notes');
+const { results } = await notion.search({
+  query: 'meeting notes',
+  filter: { property: 'object', value: 'page' },
+  page_size: 5,
+});
 ```
 
-**What this does:** The `search` endpoint queries across all pages and databases your integration can access. The `filter` narrows results to pages only (use `value: 'database'` for databases). Results come back as partial page objects with properties included.
+### Step 2: Create a test page
 
-### Step 2: Create a Test Page in a Database
+`pages.create` adds a row to a target database. The `properties` object must match
+the database schema — `Name` with type `title` is the only universally required
+property. An optional `children` array appends block content (headings, paragraphs,
+to-dos) at creation time. Full code is in the
+[implementation walkthrough](references/implementation.md).
 
-```typescript
-async function createTestPage(databaseId: string) {
-  const page = await notion.pages.create({
-    parent: { database_id: databaseId },
-    properties: {
-      Name: {
-        title: [{ text: { content: 'Hello from the API!' } }],
-      },
-    },
-    // Optional: add inline content blocks
-    children: [
-      {
-        heading_2: {
-          rich_text: [{ text: { content: 'Getting Started' } }],
-        },
-      },
-      {
-        paragraph: {
-          rich_text: [
-            { text: { content: 'This page was created via the ' } },
-            { text: { content: 'Notion API' }, annotations: { bold: true } },
-            { text: { content: ' at ' + new Date().toISOString() + '.' } },
-          ],
-        },
-      },
-    ],
-  });
+### Step 3: Verify by retrieving the page
 
-  console.log(`Created page: ${page.id}`);
-  console.log(`URL: ${page.url}`);
-  return page;
-}
-```
-
-**What this does:** `pages.create` adds a new row to the target database. The `properties` object must match the database schema — `Name` with type `title` is the only universally required property. The optional `children` array appends block content (headings, paragraphs, to-dos, etc.) directly at creation time instead of requiring a separate `blocks.children.append` call.
-
-### Step 3: Verify by Retrieving the Created Page
-
-```typescript
-async function verifyPage(pageId: string) {
-  const page = await notion.pages.retrieve({ page_id: pageId });
-
-  // Extract title
-  if ('properties' in page) {
-    const titleProp = Object.values(page.properties).find(
-      (p) => p.type === 'title'
-    );
-    const title = titleProp?.type === 'title'
-      ? titleProp.title.map((t) => t.plain_text).join('')
-      : '(untitled)';
-
-    console.log(`Verified: "${title}"`);
-    console.log(`Created: ${page.created_time}`);
-    console.log(`Last edited: ${page.last_edited_time}`);
-    console.log(`URL: ${page.url}`);
-  }
-
-  return page;
-}
-```
-
-**What this does:** `pages.retrieve` fetches the full page object including all properties. This confirms the page was created correctly and lets you inspect its metadata. The response includes `created_time`, `last_edited_time`, `url`, and the full `properties` object matching the parent database schema.
+`pages.retrieve` fetches the full page object, confirming creation and exposing
+`created_time`, `last_edited_time`, `url`, and the complete `properties` map. Full
+code is in the [implementation walkthrough](references/implementation.md).
 
 ## Output
 
@@ -155,90 +100,20 @@ async function verifyPage(pageId: string) {
 
 ## Examples
 
-### Complete TypeScript Script
+Two complete, runnable scripts chain all three operations end to end — connect,
+search, find a database, create a page, and verify it. Here is the shape of the
+TypeScript version:
 
 ```typescript
-import { Client } from '@notionhq/client';
-
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
-
-async function main() {
-  // 1. List users to verify connectivity
-  const { results: users } = await notion.users.list({});
-  console.log(`Connected! ${users.length} user(s) in workspace.\n`);
-
-  // 2. Search for a database to use as the target
-  const { results } = await notion.search({
-    query: 'test',
-    filter: { property: 'object', value: 'page' },
-  });
-  console.log(`Found ${results.length} page(s) matching "test".\n`);
-
-  // 3. Find a database for page creation
-  const dbSearch = await notion.search({
-    filter: { property: 'object', value: 'database' },
-  });
-  const db = dbSearch.results[0];
-  if (!db) {
-    console.log('No databases found. Share a database with your integration first.');
-    return;
-  }
-  console.log(`Using database: ${db.id}\n`);
-
-  // 4. Create a test page
-  const page = await notion.pages.create({
-    parent: { database_id: db.id },
-    properties: {
-      Name: { title: [{ text: { content: 'Hello World!' } }] },
-    },
-  });
-  console.log(`Created page: ${page.id}`);
-  console.log(`URL: ${page.url}\n`);
-
-  // 5. Verify it exists
-  const verified = await notion.pages.retrieve({ page_id: page.id });
-  console.log(`Verified: created at ${verified.created_time}`);
-}
-
-main().catch(console.error);
+await notion.users.list({});                 // 1. verify connectivity
+await notion.search({ query: 'test' });      // 2. search
+const page = await notion.pages.create({ /* ... */ });  // 3. create
+await notion.pages.retrieve({ page_id: page.id });      // 4. verify
 ```
 
-### Python Example
-
-```python
-import os
-from notion_client import Client
-
-notion = Client(auth=os.environ["NOTION_TOKEN"])
-
-# 1. Search for pages
-results = notion.search(
-    query="test",
-    filter={"property": "object", "value": "page"},
-)
-print(f"Found {len(results['results'])} page(s)")
-
-# 2. Find a database
-db_results = notion.search(
-    filter={"property": "object", "value": "database"},
-)
-db_id = db_results["results"][0]["id"]
-print(f"Using database: {db_id}")
-
-# 3. Create a test page
-page = notion.pages.create(
-    parent={"database_id": db_id},
-    properties={
-        "Name": {"title": [{"text": {"content": "Hello from Python!"}}]},
-    },
-)
-print(f"Created page: {page['id']}")
-print(f"URL: {page['url']}")
-
-# 4. Verify
-verified = notion.pages.retrieve(page_id=page["id"])
-print(f"Verified: created at {verified['created_time']}")
-```
+Full copy-paste scripts for both languages — the complete TypeScript `main()` and
+the equivalent Python program — live in [runnable examples](references/examples.md).
 
 ## Resources
 
@@ -250,4 +125,7 @@ print(f"Verified: created at {verified['created_time']}")
 
 ## Next Steps
 
-Proceed to `notion-local-dev-loop` for development workflow setup.
+Once these three calls succeed, proceed to `notion-local-dev-loop` to set up a
+development workflow with live reload and environment management. From there,
+`notion-database-query` covers filtering and sorting rows, and `notion-block-content`
+covers appending richer block structures to pages you create.

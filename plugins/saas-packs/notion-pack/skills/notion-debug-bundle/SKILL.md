@@ -11,8 +11,7 @@ description: 'Collect Notion API diagnostic info for troubleshooting and support
   bundle", "collect notion logs", "notion troubleshoot".
 
   '
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Bash(node:*),
-  Grep
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Bash(node:*)
 version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -57,6 +56,7 @@ if [ -n "$NOTION_TOKEN" ] && [ "$TOKEN_PREFIX" != "ntn_" ]; then
 fi
 
 # 3. API connectivity — /v1/users/me as health check
+# Notion-Version 2022-06-28 is the current stable REST API version.
 echo -e "\n--- API Connectivity ---"
 RESPONSE=$(curl -s -w "\n%{http_code}\n%{time_total}" \
   https://api.notion.com/v1/users/me \
@@ -92,129 +92,25 @@ echo "Average request rate limits are not exposed in response headers"
 
 ### Step 2: Full Debug Bundle Script
 
-```bash
-#!/bin/bash
-# notion-debug-bundle.sh — collects all diagnostic artifacts into a tarball
-BUNDLE="notion-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"
+When the quick check is not enough, run the full collector. It writes an
+environment snapshot, the redacted auth/database/platform JSON, redacted
+application logs, the npm dependency tree, and a redacted `.env` copy into a
+timestamped directory, then tars it up as `notion-debug-YYYYMMDD-HHMMSS.tar.gz`.
+It is safe to attach to a support ticket — tokens, secrets, and avatars are
+stripped before packaging.
 
-# --- Environment snapshot ---
-cat > "$BUNDLE/environment.txt" << EOF
-Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)
-Node: $(node --version 2>/dev/null || echo "not found")
-npm: $(npm --version 2>/dev/null || echo "not found")
-SDK: $(npm ls @notionhq/client 2>/dev/null | grep notionhq || echo "not found")
-NOTION_TOKEN: ${NOTION_TOKEN:+SET (prefix: ${NOTION_TOKEN:0:4})}
-OS: $(uname -a)
-EOF
-
-# --- API auth response (avatar redacted) ---
-curl -s https://api.notion.com/v1/users/me \
-  -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28" \
-  | jq 'del(.avatar_url)' > "$BUNDLE/api-auth.json" 2>/dev/null
-
-# --- Database access test (if DATABASE_ID is set) ---
-if [ -n "$NOTION_DATABASE_ID" ]; then
-  curl -s "https://api.notion.com/v1/databases/${NOTION_DATABASE_ID}" \
-    -H "Authorization: Bearer ${NOTION_TOKEN}" \
-    -H "Notion-Version: 2022-06-28" \
-    | jq '{id, title: .title[0].plain_text, is_inline, created_time, last_edited_time}' \
-    > "$BUNDLE/database-access.json" 2>/dev/null
-else
-  echo "NOTION_DATABASE_ID not set — skipping database access test" > "$BUNDLE/database-access.json"
-fi
-
-# --- Platform status with active incidents ---
-curl -s https://status.notion.so/api/v2/summary.json \
-  | jq '{status: .status, incidents: [.incidents[] | {name, status, updated_at}]}' \
-  > "$BUNDLE/platform-status.json" 2>/dev/null
-
-# --- Application logs (redacted) ---
-for LOG_FILE in app.log server.log output.log; do
-  if [ -f "$LOG_FILE" ]; then
-    grep -i "notion\|notionhq\|api\.notion" "$LOG_FILE" | tail -100 \
-      | sed 's/ntn_[a-zA-Z0-9_]*/ntn_[REDACTED]/g' \
-      | sed 's/secret_[a-zA-Z0-9_]*/secret_[REDACTED]/g' \
-      > "$BUNDLE/logs-${LOG_FILE%.log}-redacted.txt"
-  fi
-done
-
-# --- Dependency tree for notion packages ---
-npm ls @notionhq/client --all 2>/dev/null > "$BUNDLE/dependency-tree.txt"
-
-# --- .env redacted copy ---
-if [ -f ".env" ]; then
-  sed 's/=.*/=[REDACTED]/' .env > "$BUNDLE/env-redacted.txt"
-fi
-
-# --- Package and clean up ---
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-rm -rf "$BUNDLE"
-echo "Bundle created: $BUNDLE.tar.gz"
-```
+See the complete collector script (`notion-debug-bundle.sh`) in
+[full implementation](references/implementation.md).
 
 ### Step 3: Programmatic Diagnostics
 
-```typescript
-import { Client, isNotionClientError, APIErrorCode } from '@notionhq/client';
+For structured diagnostics inside a Node/TypeScript app, use the SDK directly to
+test auth (`/v1/users/me`), database retrieval, and workspace-level search. It
+returns a plain object for logging or serialization and maps
+`APIErrorCode.ObjectNotFound` to the actionable "integration not invited" hint.
 
-async function collectNotionDiagnostics(databaseId?: string) {
-  const notion = new Client({ auth: process.env.NOTION_TOKEN });
-  const debug: Record<string, unknown> = {
-    timestamp: new Date().toISOString(),
-    sdk: '@notionhq/client',
-    nodeVersion: process.version,
-    tokenSet: !!process.env.NOTION_TOKEN,
-    tokenPrefix: process.env.NOTION_TOKEN?.substring(0, 4) ?? 'unset',
-  };
-
-  // Test authentication — /v1/users/me
-  try {
-    const me = await notion.users.me({});
-    debug.auth = { status: 'ok', botName: me.name, type: me.type };
-  } catch (error) {
-    if (isNotionClientError(error)) {
-      debug.auth = { status: 'error', code: error.code, message: error.message };
-    }
-  }
-
-  // Test database access (if ID provided)
-  if (databaseId) {
-    try {
-      const db = await notion.databases.retrieve({ database_id: databaseId });
-      debug.database = {
-        status: 'ok',
-        title: (db as any).title?.[0]?.plain_text ?? 'untitled',
-        isInline: (db as any).is_inline,
-      };
-    } catch (error) {
-      if (isNotionClientError(error)) {
-        debug.database = { status: 'error', code: error.code, message: error.message };
-        if (error.code === APIErrorCode.ObjectNotFound) {
-          debug.database.hint = 'Integration may not be invited to this database — share it via the page menu';
-        }
-      }
-    }
-  }
-
-  // Test search (verifies workspace-level access)
-  try {
-    const search = await notion.search({ page_size: 1 });
-    debug.search = {
-      status: 'ok',
-      accessiblePages: search.results.length > 0,
-      resultType: search.results[0]?.object ?? 'none',
-    };
-  } catch (error) {
-    if (isNotionClientError(error)) {
-      debug.search = { status: 'error', code: error.code };
-    }
-  }
-
-  return debug;
-}
-```
+See the full `collectNotionDiagnostics()` function in
+[the programmatic diagnostics reference](references/implementation.md).
 
 ## Output
 
@@ -240,31 +136,16 @@ async function collectNotionDiagnostics(databaseId?: string) {
 
 ## Examples
 
-### Token Format Validation
+Quick reference for the recurring gotchas — validate a token prefix:
 
 ```bash
-# Valid formats (all start with ntn_):
-# ntn_abc123...  (internal integration token)
-# Old format (secret_xyz...) is deprecated — regenerate in notion.so/my-integrations
+# Valid tokens start with ntn_; the old secret_* format is deprecated.
 echo "Token prefix: ${NOTION_TOKEN:0:4}"
 ```
 
-### Page ID Normalization
-
-```typescript
-// Notion accepts both formats — but URLs use dashless form
-const withDashes    = '12345678-1234-1234-1234-123456789abc';
-const withoutDashes = '123456781234123412341234567890abc';
-
-// The SDK handles both, but for consistency:
-const normalized = rawId.replace(/-/g, '');
-```
-
-### Redaction Rules
-
-**ALWAYS REDACT:** Integration tokens (`ntn_*`), OAuth client secrets, user emails, page content
-
-**SAFE TO INCLUDE:** Error codes/messages, HTTP status codes, latencies, SDK versions, platform status, page/database IDs (non-sensitive metadata)
+For page ID normalization (dashed vs dashless UUIDs) and the full redaction
+rules (what to ALWAYS REDACT vs what is SAFE TO INCLUDE in a bundle), see
+[examples and redaction rules](references/examples.md).
 
 ## Resources
 

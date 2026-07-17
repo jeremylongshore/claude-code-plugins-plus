@@ -1,17 +1,11 @@
 ---
 name: notion-advanced-troubleshooting
-description: 'Deep debugging for Notion API: response inspection, permission chain
-  tracing,
-
+description: |
+  Use when standard Notion troubleshooting fails or you are chasing intermittent
+  API errors — deep debugging for response inspection, permission chain tracing,
   property type mismatches, pagination edge cases, and block nesting limits.
-
-  Use when standard troubleshooting fails or investigating intermittent errors.
-
   Trigger with phrases like "notion deep debug", "notion permission trace",
-
   "notion property mismatch", "notion pagination bug", "notion nesting limit".
-
-  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.37.0
 license: MIT
@@ -26,7 +20,11 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Deep debugging techniques for Notion API issues that resist standard fixes. Covers API response inspection with request IDs, permission chain tracing through page hierarchies, property type mismatch detection against database schemas, pagination edge cases with cursor validation, and block nesting limit violations (max depth of 3 levels via API). Uses `Client` from `@notionhq/client` and raw `curl` for comparison testing.
+Deep debugging techniques for Notion API issues that resist standard fixes —
+API response inspection with request IDs, permission chain tracing, property
+type mismatch detection, pagination edge cases, and block nesting limit
+violations (max depth of 3 levels via API). Full runnable TypeScript and Python
+for every step lives in [references/implementation.md](references/implementation.md).
 
 ## Prerequisites
 
@@ -36,294 +34,97 @@ Deep debugging techniques for Notion API issues that resist standard fixes. Cove
 - `NOTION_TOKEN` environment variable set (internal integration token starting with `ntn_`)
 - Pages/databases shared with your integration via Notion UI
 
+## Authentication
+
+All calls authenticate with a single internal integration token in the
+`NOTION_TOKEN` environment variable — the SDK reads it via `auth:
+process.env.NOTION_TOKEN`, and raw `curl` sends it as
+`Authorization: Bearer $NOTION_TOKEN` plus the `Notion-Version: 2022-06-28`
+header. Never hardcode the token; keep it in the environment. Confirm the token
+is a bot token with `notion.users.me()` — if the returned `type` is not `bot`,
+the token is wrong. A `401 unauthorized` means a bad/expired token; a `404
+object_not_found` on a valid page means the token is fine but the resource
+was never shared with the integration (see Step 2).
+
 ## Instructions
+
+Work the steps in order — each narrows where the failure lives. Read the
+[full walkthrough](references/implementation.md) for the complete function
+bodies; the skeletons below show the entry point of each.
 
 ### Step 1: API Response Inspection with Request ID Tracking
 
-Every Notion API response includes an `x-request-id` header. Capture it for debugging and support tickets.
+Every Notion API response carries an `x-request-id` header. Enable
+`LogLevel.DEBUG` and wrap calls so every request logs its ID and timing —
+capture that ID for support tickets. Use `Grep` over the debug log to find a
+specific request's ID after the fact.
 
 ```typescript
-import { Client, LogLevel, isNotionClientError, APIErrorCode } from '@notionhq/client';
+const notion = new Client({ auth: process.env.NOTION_TOKEN, logLevel: LogLevel.DEBUG });
 
-const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-  logLevel: LogLevel.DEBUG, // Logs full request/response to stderr
-});
-
-// Wrapper that captures request ID and timing for every call
-async function tracedCall<T>(
-  label: string,
-  fn: () => Promise<T>
-): Promise<{ result: T; durationMs: number }> {
+async function tracedCall<T>(label: string, fn: () => Promise<T>) {
   const start = Date.now();
   try {
     const result = await fn();
-    const durationMs = Date.now() - start;
-    console.log(`[${label}] OK ${durationMs}ms`);
-    return { result, durationMs };
+    console.log(`[${label}] OK ${Date.now() - start}ms`);
+    return result;
   } catch (error) {
-    const durationMs = Date.now() - start;
-    if (isNotionClientError(error)) {
-      console.error(`[${label}] FAILED ${durationMs}ms`, {
-        code: error.code,
-        status: error.status,
-        message: error.message,
-        body: error.body,
-      });
-    }
+    if (isNotionClientError(error)) console.error(`[${label}] FAILED`, error.code, error.body);
     throw error;
   }
 }
-
-// Compare SDK vs raw curl to isolate SDK issues
-// Run in bash alongside:
-// curl -v https://api.notion.com/v1/pages/PAGE_ID \
-//   -H "Authorization: Bearer $NOTION_TOKEN" \
-//   -H "Notion-Version: 2022-06-28" 2>&1 | grep x-request-id
 ```
 
-```python
-from notion_client import Client
-import logging
-
-# Enable debug logging for full request/response visibility
-logging.basicConfig(level=logging.DEBUG)
-notion = Client(auth=os.environ["NOTION_TOKEN"], log_level=logging.DEBUG)
-
-# Traced wrapper for Python
-import time
-
-def traced_call(label: str, fn):
-    start = time.time()
-    try:
-        result = fn()
-        duration = (time.time() - start) * 1000
-        print(f"[{label}] OK {duration:.0f}ms")
-        return result
-    except Exception as e:
-        duration = (time.time() - start) * 1000
-        print(f"[{label}] FAILED {duration:.0f}ms: {e}")
-        raise
-```
+To isolate SDK-vs-transport bugs, replay the same call with raw `curl` and
+compare — full curl recipe and the Python `traced_call` equivalent are in
+[references/implementation.md](references/implementation.md) under Step 1.
 
 ### Step 2: Permission Chain Tracing
 
-When you get `object_not_found` (404), the page exists but your integration lacks access. Trace the permission chain up the page hierarchy.
+An `object_not_found` (404) on a page that clearly exists means your
+integration lacks access somewhere up the hierarchy. Walk from the target page
+toward the workspace root, reporting the first inaccessible ancestor.
 
 ```typescript
-async function tracePermissionChain(pageId: string): Promise<void> {
-  console.log(`\n=== Permission Chain Trace for ${pageId} ===`);
-  let currentId = pageId;
-  let depth = 0;
-
+async function tracePermissionChain(pageId: string) {
+  let currentId = pageId, depth = 0;
   while (currentId && depth < 10) {
     try {
       const page = await notion.pages.retrieve({ page_id: currentId });
       const parent = (page as any).parent;
-      console.log(`  ${'  '.repeat(depth)}[${depth}] Page ${currentId} - ACCESSIBLE`);
-      console.log(`  ${'  '.repeat(depth)}    Parent type: ${parent.type}`);
-
-      if (parent.type === 'database_id') {
-        // Check database access too
-        try {
-          await notion.databases.retrieve({ database_id: parent.database_id });
-          console.log(`  ${'  '.repeat(depth)}    Database ${parent.database_id} - ACCESSIBLE`);
-        } catch {
-          console.log(`  ${'  '.repeat(depth)}    Database ${parent.database_id} - NO ACCESS`);
-        }
-        break;
-      } else if (parent.type === 'page_id') {
-        currentId = parent.page_id;
-      } else if (parent.type === 'workspace') {
-        console.log(`  ${'  '.repeat(depth)}    Root: workspace`);
-        break;
-      } else {
-        break;
-      }
-      depth++;
+      // ...ascend via parent.page_id / parent.database_id until workspace root
     } catch (error) {
-      if (isNotionClientError(error) && error.code === APIErrorCode.ObjectNotFound) {
-        console.log(`  ${'  '.repeat(depth)}[${depth}] Page ${currentId} - NO ACCESS (object_not_found)`);
-        console.log(`  ${'  '.repeat(depth)}    Fix: Open this page in Notion → ··· → Connections → Add your integration`);
-      } else {
-        console.log(`  ${'  '.repeat(depth)}[${depth}] Page ${currentId} - ERROR: ${(error as Error).message}`);
-      }
+      // object_not_found here = the ancestor to share with your integration
       break;
     }
   }
 }
-
-// Also verify bot identity and capabilities
-const me = await notion.users.me({});
-console.log('Bot user:', me.name, '| Type:', me.type);
-// If me.type !== 'bot', your token is wrong
 ```
 
-```python
-def trace_permission_chain(page_id: str):
-    """Walk up the page hierarchy to find where access breaks."""
-    current_id = page_id
-    depth = 0
-
-    while current_id and depth < 10:
-        try:
-            page = notion.pages.retrieve(page_id=current_id)
-            parent = page["parent"]
-            print(f"  [depth={depth}] {current_id} - ACCESSIBLE (parent: {parent['type']})")
-
-            if parent["type"] == "database_id":
-                try:
-                    notion.databases.retrieve(database_id=parent["database_id"])
-                    print(f"  [depth={depth}] Database {parent['database_id']} - ACCESSIBLE")
-                except Exception:
-                    print(f"  [depth={depth}] Database {parent['database_id']} - NO ACCESS")
-                break
-            elif parent["type"] == "page_id":
-                current_id = parent["page_id"]
-            else:
-                break
-            depth += 1
-        except Exception as e:
-            print(f"  [depth={depth}] {current_id} - NO ACCESS: {e}")
-            print(f"  Fix: Share this page with your integration in Notion UI")
-            break
-```
+Full ascent logic, database-access check, and the Python port:
+[references/implementation.md](references/implementation.md) under Step 2.
 
 ### Step 3: Property Type Mismatch Detection and Pagination Edge Cases
 
-The most common `validation_error` comes from sending the wrong property type. Validate against the live schema before creating/updating.
+Most `validation_error`s come from sending the wrong property type. Retrieve
+the live database schema and compare each property you send against it before
+the write. The same step covers safe full pagination (null-cursor handling,
+rate-limit delay, a page-count safety valve) and block-nesting checks against
+the API's 3-level limit.
 
 ```typescript
-// Detect property type mismatches against live database schema
-async function detectPropertyMismatches(
-  databaseId: string,
-  properties: Record<string, unknown>
-): Promise<string[]> {
+async function detectPropertyMismatches(databaseId: string, properties: Record<string, unknown>) {
   const db = await notion.databases.retrieve({ database_id: databaseId });
-  const schema = db.properties;
-  const issues: string[] = [];
-
-  // Check each property you're trying to set
-  for (const [name, value] of Object.entries(properties)) {
-    if (!schema[name]) {
-      issues.push(
-        `Property "${name}" not found. Available: ${Object.keys(schema).join(', ')}`
-      );
-      continue;
-    }
-
-    const expectedType = schema[name].type;
-    const sentType = Object.keys(value as object).find(k =>
-      ['title', 'rich_text', 'number', 'select', 'multi_select',
-       'date', 'checkbox', 'url', 'email', 'phone_number',
-       'people', 'relation', 'files', 'status'].includes(k)
-    );
-
-    if (sentType && sentType !== expectedType) {
-      issues.push(
-        `"${name}": schema type is "${expectedType}" but you sent "${sentType}"`
-      );
-    }
-  }
-
-  // Check for missing title property (required for page creation)
-  const titleProp = Object.entries(schema).find(([, v]) => v.type === 'title');
-  if (titleProp && !properties[titleProp[0]]) {
-    issues.push(`Missing required title property "${titleProp[0]}"`);
-  }
-
-  return issues;
-}
-
-// Pagination edge cases: cursor validation and empty page handling
-async function safeFullPagination(databaseId: string, filter?: any) {
-  const allResults: any[] = [];
-  let cursor: string | undefined;
-  let pageCount = 0;
-  const MAX_PAGES = 1000; // Safety valve: 100K records max
-
-  do {
-    if (pageCount >= MAX_PAGES) {
-      console.warn(`Pagination safety limit reached (${MAX_PAGES} pages, ${allResults.length} results)`);
-      break;
-    }
-
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      filter,
-      page_size: 100,
-      start_cursor: cursor,
-    });
-
-    allResults.push(...response.results);
-    pageCount++;
-
-    // Edge case: has_more is true but next_cursor is null (API bug, rare)
-    if (response.has_more && !response.next_cursor) {
-      console.warn('Pagination anomaly: has_more=true but next_cursor is null');
-      break;
-    }
-
-    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
-
-    // Rate limit compliance: ~3 req/s
-    await new Promise(r => setTimeout(r, 350));
-  } while (cursor);
-
-  console.log(`Paginated ${pageCount} pages, ${allResults.length} total results`);
-  return allResults;
-}
-
-// Block nesting limit detection
-// Notion API allows max 3 levels of nested blocks (API limitation)
-// UI supports deeper nesting, but API cannot create/read beyond depth 3
-async function checkBlockNesting(blockId: string, depth = 0): Promise<number> {
-  if (depth >= 3) {
-    console.warn(`Block nesting limit reached at depth ${depth} (API max is 3)`);
-    return depth;
-  }
-
-  const children = await notion.blocks.children.list({ block_id: blockId });
-  let maxDepth = depth;
-
-  for (const block of children.results) {
-    if ((block as any).has_children) {
-      const childDepth = await checkBlockNesting((block as any).id, depth + 1);
-      maxDepth = Math.max(maxDepth, childDepth);
-    }
-  }
-
-  return maxDepth;
+  const schema = db.properties;                       // live truth
+  // for each sent property: flag unknown names + type != schema[name].type
+  // flag a missing required title property
+  return issues; // string[]
 }
 ```
 
-```python
-def detect_property_mismatches(database_id: str, properties: dict) -> list[str]:
-    """Validate properties against live database schema."""
-    db = notion.databases.retrieve(database_id=database_id)
-    schema = db["properties"]
-    issues = []
-
-    for name, value in properties.items():
-        if name not in schema:
-            available = ", ".join(schema.keys())
-            issues.append(f'Property "{name}" not found. Available: {available}')
-            continue
-
-        expected_type = schema[name]["type"]
-        sent_types = [k for k in value.keys() if k in
-            ("title", "rich_text", "number", "select", "multi_select",
-             "date", "checkbox", "url", "email", "status")]
-        if sent_types and sent_types[0] != expected_type:
-            issues.append(f'"{name}": expected "{expected_type}", got "{sent_types[0]}"')
-
-    # Check for missing title
-    title_props = [k for k, v in schema.items() if v["type"] == "title"]
-    if title_props and title_props[0] not in properties:
-        issues.append(f'Missing required title property "{title_props[0]}"')
-
-    return issues
-```
+Complete `detectPropertyMismatches`, `safeFullPagination`, `checkBlockNesting`,
+and the Python schema validator:
+[references/implementation.md](references/implementation.md) under Step 3.
 
 ## Output
 
@@ -348,49 +149,20 @@ def detect_property_mismatches(database_id: str, properties: dict) -> list[str]:
 
 ## Examples
 
-### Minimal Reproduction Script
+Two ready-to-run starting points live in
+[references/examples.md](references/examples.md):
+
+- **Minimal reproduction script** — walks auth → search → resource retrieve →
+  the failing call, isolating which layer breaks.
+- **Support escalation template** — the exact ticket format (with `x-request-id`)
+  Notion support can trace fastest.
 
 ```typescript
-// Strip to bare minimum to isolate the issue
-async function minimalRepro() {
-  const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-    logLevel: LogLevel.DEBUG,
-  });
-
-  // 1. Auth check
-  const me = await notion.users.me({});
-  console.log('Auth OK:', me.name);
-
-  // 2. Search check (proves token works)
-  const search = await notion.search({ page_size: 1 });
-  console.log('Search OK:', search.results.length, 'results');
-
-  // 3. Specific resource check
-  const db = await notion.databases.retrieve({
-    database_id: process.env.NOTION_DB_ID!,
-  });
-  console.log('DB OK:', Object.keys(db.properties).join(', '));
-
-  // 4. The failing operation — insert exact failing call here
-}
-
-minimalRepro().catch(console.error);
-```
-
-### Support Escalation Template
-
-```
-Subject: [Request ID: abc123] validation_error on pages.create
-Environment: Node.js 20, @notionhq/client 2.2.15, API 2022-06-28
-Integration ID: [from notion.so/profile/integrations]
-Request ID: [from x-request-id header or error body]
-Timestamp: 2026-03-22T14:30:00Z
-
-Steps: POST /v1/pages with body: { ... }
-Expected: 200 with page object
-Actual: 400 validation_error "..."
-Frequency: Every time / Intermittent since [date]
+// Minimal repro skeleton — full version in references/examples.md
+const me = await notion.users.me({});          // 1. auth
+const search = await notion.search({ page_size: 1 }); // 2. token works
+const db = await notion.databases.retrieve({ database_id: process.env.NOTION_DB_ID! }); // 3. resource
+// 4. insert the exact failing call here
 ```
 
 ## Resources

@@ -4,15 +4,13 @@ description: 'Migrate data to/from Notion or between Notion workspaces with data
   and validation.
 
   Use when migrating data into Notion databases, exporting from Notion, syncing between
-
   workspaces, or building ETL pipelines with Notion as source or destination.
 
   Trigger with phrases like "migrate notion", "notion migration", "import to notion",
-
   "export from notion", "notion data migration", "notion ETL".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+allowed-tools: Read, Bash(npm:*), Bash(node:*)
 version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -26,7 +24,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Comprehensive migration patterns for moving data to, from, and between Notion workspaces. This covers rate-limited bulk import from CSV/JSON with property mapping, full database export with pagination and block content extraction, cross-database sync with duplicate detection, data transformation patterns for Confluence and Google Docs content, and post-migration validation with integrity checks. All patterns respect Notion's 3 requests/second rate limit.
+Production migration patterns for moving data to, from, and between Notion workspaces — rate-limited bulk import, paginated export, cross-platform conversion, and post-migration validation. Every bulk-write path respects Notion's 3 requests/second average rate limit.
 
 ## Prerequisites
 
@@ -36,291 +34,63 @@ Comprehensive migration patterns for moving data to, from, and between Notion wo
 - Source data access (CSV files, Confluence API, Google Docs API, etc.)
 - Target Notion database(s) created with matching property schema
 
+**Authentication:** create a Notion internal integration at
+[notion.so/my-integrations](https://www.notion.so/my-integrations), share the
+target database(s) with it, and export the secret as `NOTION_TOKEN`. Every code
+sample reads `process.env.NOTION_TOKEN` — the client never takes an inline
+credential.
+
 ## Instructions
 
-### Step 1: Import CSV/JSON into Notion Database
+The workflow has three directions. Each step below gives the essential shape;
+the full runnable code lives in the reference files so this page stays scannable.
 
-Map source data fields to Notion property types, create pages with rate limiting:
+### Step 1: Import CSV/JSON into a Notion database
+
+Map each source field to a Notion property value object, strip properties the
+target schema does not have, and create pages through a rate-limited queue:
 
 ```typescript
-import { Client } from '@notionhq/client';
-import { readFileSync } from 'fs';
-import { parse } from 'csv-parse/sync';
-import PQueue from 'p-queue';
+const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 3 }); // ≤3 req/s
 
-const notion = new Client({ auth: process.env.NOTION_TOKEN! });
-
-// Rate-limited queue: 3 requests/second (Notion's documented limit)
-const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 3 });
-
-interface SourceRecord {
-  name: string;
-  status: string;
-  priority: string;
-  dueDate: string;
-  tags: string;       // Comma-separated
-  assigneeEmail: string;
-  description: string;
-}
-
-// Map source fields to Notion property value objects
-function mapToNotionProperties(record: SourceRecord) {
-  const properties: Record<string, any> = {
-    // Title property (required — every database has exactly one)
+await notion.pages.create({
+  parent: { database_id: databaseId },
+  properties: {
     Name: { title: [{ text: { content: record.name || 'Untitled' } }] },
-
-    // Select — auto-creates options if they don't exist
     Status: { select: { name: record.status || 'Not Started' } },
-    Priority: { select: { name: record.priority || 'Medium' } },
-
-    // Multi-select from comma-separated values
-    Tags: {
-      multi_select: record.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean)
-        .map(name => ({ name })),
-    },
-
-    // Rich text (max 2000 characters per text block)
-    Description: {
-      rich_text: [{ text: { content: (record.description || '').slice(0, 2000) } }],
-    },
-
-    // Email
-    'Assignee Email': record.assigneeEmail
-      ? { email: record.assigneeEmail }
-      : { email: null },
-  };
-
-  // Date (only add if valid)
-  if (record.dueDate && !isNaN(Date.parse(record.dueDate))) {
-    properties['Due Date'] = { date: { start: record.dueDate } };
-  }
-
-  return properties;
-}
-
-async function importFromCSV(csvPath: string, databaseId: string) {
-  const csv = readFileSync(csvPath, 'utf-8');
-  const records = parse(csv, { columns: true, skip_empty_lines: true }) as SourceRecord[];
-
-  console.log(`Importing ${records.length} records into database ${databaseId}...`);
-  const results = { created: 0, failed: 0, errors: [] as string[] };
-
-  // Validate database schema before importing
-  const db = await notion.databases.retrieve({ database_id: databaseId });
-  const dbProps = Object.keys(db.properties);
-  console.log(`Database properties: ${dbProps.join(', ')}`);
-
-  await Promise.all(records.map((record, index) =>
-    queue.add(async () => {
-      try {
-        const properties = mapToNotionProperties(record);
-
-        // Remove properties not in database schema
-        for (const key of Object.keys(properties)) {
-          if (!dbProps.includes(key)) delete properties[key];
-        }
-
-        await notion.pages.create({
-          parent: { database_id: databaseId },
-          properties,
-        });
-
-        results.created++;
-        if (results.created % 50 === 0) {
-          console.log(`Progress: ${results.created}/${records.length}`);
-        }
-      } catch (error: any) {
-        results.failed++;
-        results.errors.push(`Row ${index + 1} ("${record.name}"): ${error.message}`);
-      }
-    })
-  ));
-
-  console.log(`\nImport complete: ${results.created} created, ${results.failed} failed`);
-  if (results.errors.length > 0) {
-    console.log('First 10 errors:');
-    results.errors.slice(0, 10).forEach(e => console.log(`  ${e}`));
-  }
-
-  return results;
-}
+  },
+});
 ```
 
-**Python — CSV import:**
-
-```python
-import csv
-import time
-from notion_client import Client
-
-client = Client(auth=os.environ["NOTION_TOKEN"])
-
-def import_csv(csv_path: str, database_id: str):
-    with open(csv_path) as f:
-        reader = csv.DictReader(f)
-        rows = list(reader)
-
-    created, failed = 0, 0
-    for i, row in enumerate(rows):
-        try:
-            client.pages.create(
-                parent={"database_id": database_id},
-                properties={
-                    "Name": {"title": [{"text": {"content": row.get("name", "Untitled")}}]},
-                    "Status": {"select": {"name": row.get("status", "Not Started")}},
-                    "Tags": {"multi_select": [
-                        {"name": t.strip()} for t in row.get("tags", "").split(",") if t.strip()
-                    ]},
-                },
-            )
-            created += 1
-        except Exception as e:
-            failed += 1
-            print(f"Row {i+1}: {e}")
-
-        # Rate limit: 3 requests/second
-        if (created + failed) % 3 == 0:
-            time.sleep(1.1)
-
-    print(f"Done: {created} created, {failed} failed")
-```
+Validate the database schema with `databases.retrieve` **before** the loop so
+mismatched columns are dropped instead of failing every row. Full TypeScript +
+Python importers (property mapping, schema filtering, error collection):
+[full walkthrough](references/implementation.md).
 
 ### Step 2: Export from Notion to JSON/CSV
 
-Full database export with pagination, property extraction, and optional block content:
+Page through `databases.query` (100 rows per page) and flatten each page's
+properties by type. Optionally pull block content for rich-content migrations:
 
 ```typescript
-import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-
-// Extract a flat record from a Notion page's properties
-function extractProperties(page: PageObjectResponse): Record<string, any> {
-  const row: Record<string, any> = {
-    id: page.id,
-    url: page.url,
-    created_time: page.created_time,
-    last_edited_time: page.last_edited_time,
-  };
-
-  for (const [name, prop] of Object.entries(page.properties)) {
-    switch (prop.type) {
-      case 'title':
-        row[name] = prop.title.map(t => t.plain_text).join('');
-        break;
-      case 'rich_text':
-        row[name] = prop.rich_text.map(t => t.plain_text).join('');
-        break;
-      case 'number':
-        row[name] = prop.number;
-        break;
-      case 'select':
-        row[name] = prop.select?.name ?? null;
-        break;
-      case 'multi_select':
-        row[name] = prop.multi_select.map(s => s.name).join(', ');
-        break;
-      case 'date':
-        row[name] = prop.date?.start ?? null;
-        break;
-      case 'checkbox':
-        row[name] = prop.checkbox;
-        break;
-      case 'url':
-        row[name] = prop.url;
-        break;
-      case 'email':
-        row[name] = prop.email;
-        break;
-      case 'phone_number':
-        row[name] = prop.phone_number;
-        break;
-      case 'people':
-        row[name] = prop.people.map(p => ('name' in p ? p.name : p.id)).join(', ');
-        break;
-      case 'relation':
-        row[name] = prop.relation.map(r => r.id).join(', ');
-        break;
-      default:
-        row[name] = `[${prop.type}]`;
-    }
-  }
-
-  return row;
-}
-
-// Export entire database with automatic pagination
-async function exportDatabase(databaseId: string): Promise<Record<string, any>[]> {
-  const allRows: Record<string, any>[] = [];
-  let cursor: string | undefined;
-  let pageCount = 0;
-
-  do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      page_size: 100,
-      start_cursor: cursor,
-    });
-
-    for (const page of response.results) {
-      if ('properties' in page) {
-        allRows.push(extractProperties(page as PageObjectResponse));
-      }
-    }
-
-    pageCount++;
-    console.log(`Fetched page ${pageCount} (${allRows.length} total records)`);
-    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
-  } while (cursor);
-
-  return allRows;
-}
-
-// Export page with its block content (for rich content migration)
-async function exportPageWithContent(pageId: string) {
-  const page = await notion.pages.retrieve({ page_id: pageId });
-  const blocks = await getAllBlocks(pageId);
-
-  return {
-    page,
-    content: blocks.map(block => ({
-      type: (block as any).type,
-      text: getBlockPlainText(block as any),
-      hasChildren: (block as any).has_children,
-    })),
-  };
-}
-
-async function getAllBlocks(blockId: string) {
-  const blocks: any[] = [];
-  let cursor: string | undefined;
-
-  do {
-    const response = await notion.blocks.children.list({
-      block_id: blockId,
-      page_size: 100,
-      start_cursor: cursor,
-    });
-    blocks.push(...response.results);
-    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
-  } while (cursor);
-
-  return blocks;
-}
-
-function getBlockPlainText(block: any): string {
-  const content = block[block.type];
-  if (content?.rich_text) {
-    return content.rich_text.map((t: any) => t.plain_text).join('');
-  }
-  return '';
-}
+do {
+  const response = await notion.databases.query({
+    database_id: databaseId, page_size: 100, start_cursor: cursor,
+  });
+  // extractProperties() maps title/select/multi_select/date/relation/... to flat values
+  cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+} while (cursor);
 ```
 
-### Step 3: Cross-Platform Migration and Validation
+Full exporter with the per-property-type extractor and block-content reader:
+[full walkthrough](references/implementation.md).
 
-See [cross-platform migration patterns](references/cross-platform-migration.md) for HTML/Markdown to Notion block conversion, batch content appending, and post-migration validation with integrity checks.
+### Step 3: Cross-platform migration and validation
+
+See [cross-platform migration patterns](references/cross-platform-migration.md)
+for HTML/Markdown to Notion block conversion, batch content appending (100-block
+batches), cross-database sync with duplicate detection, and post-migration
+validation with integrity checks.
 
 ## Output
 
@@ -362,7 +132,7 @@ const rows = parse(fs.readFileSync('data.csv', 'utf-8'), { columns: true });
       parent: { database_id: process.env.NOTION_DB_ID },
       properties: { Name: { title: [{ text: { content: row.name } }] } }
     });
-    await new Promise(r => setTimeout(r, 350));
+    await new Promise(r => setTimeout(r, 350)); // ~3 req/s throttle
   }
   console.log('Done:', rows.length, 'imported');
 })();
@@ -377,6 +147,9 @@ writeFileSync('export.json', JSON.stringify(data, null, 2));
 console.log(`Exported ${data.length} records to export.json`);
 ```
 
+The `exportDatabase` and `importFromCSV` helpers referenced here are defined in
+full in [references/implementation.md](references/implementation.md).
+
 ## Resources
 
 - [Create a Page](https://developers.notion.com/reference/post-page) — import endpoint
@@ -385,7 +158,4 @@ console.log(`Exported ${data.length} records to export.json`);
 - [Property Value Object](https://developers.notion.com/reference/property-value-object) — all property types
 - [Request Limits](https://developers.notion.com/reference/request-limits) — 3 req/s average
 - [Block Types](https://developers.notion.com/reference/block) — paragraph, heading, list, code, etc.
-
-## Next Steps
-
-For advanced debugging of migration issues, see `notion-advanced-troubleshooting`.
+- **Related skill:** for advanced debugging of migration issues, see `notion-advanced-troubleshooting`.

@@ -1,18 +1,12 @@
 ---
 name: notion-incident-runbook
-description: 'Execute Notion incident response procedures with triage, mitigation,
-  and postmortem.
-
-  Use when responding to Notion API outages, investigating errors,
-
-  or running post-incident reviews for Notion integration failures.
-
-  Trigger with phrases like "notion incident", "notion outage",
-
-  "notion down", "notion on-call", "notion emergency", "notion broken".
-
-  '
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+description: |
+  Execute Notion incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Notion API outages, investigating errors, or running
+  post-incident reviews for Notion integration failures. Trigger with phrases like
+  "notion incident", "notion outage", "notion down", "notion on-call",
+  "notion emergency", "notion broken".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*)
 version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -26,7 +20,12 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Rapid incident response procedures for Notion API failures. This runbook covers a structured triage flow (under 5 minutes), automated health checks against both status.notion.so and your own integration, a decision tree for classifying failures (Notion-side vs. integration-side), per-error-type mitigation with real `Client` code, cached fallback patterns, communication templates, and postmortem structure.
+Rapid incident response for Notion API failures. This runbook drives a sub-5-minute
+triage that classifies the failure as Notion-side vs. integration-side, then routes to
+per-error-type mitigation, cached fallback, and a structured postmortem.
+
+Deep material — full triage scripts, remediation code, and templates — lives in
+`references/`; this file is the high-level flow you follow live.
 
 ## Prerequisites
 
@@ -40,319 +39,48 @@ Rapid incident response procedures for Notion API failures. This runbook covers 
 
 ### Step 1: Quick Triage (Under 5 Minutes)
 
-Run this diagnostic script to determine if the issue is Notion-side or integration-side:
+At first alert, decide whether the fault is Notion's or yours. Check the platform
+status page, then test your own auth. This one call is enough to start:
 
 ```bash
-#!/bin/bash
-# notion-triage.sh — run at first alert
-set -euo pipefail
-echo "=== Notion Incident Triage ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
-# 1. Check Notion's public status page
-echo -e "\n--- Notion Platform Status ---"
-STATUS=$(curl -sf https://status.notion.so/api/v2/status.json \
-  | jq -r '.status.description' 2>/dev/null || echo "UNREACHABLE")
-echo "Notion Status: $STATUS"
-
-INCIDENTS=$(curl -sf https://status.notion.so/api/v2/incidents/unresolved.json \
-  | jq '.incidents | length' 2>/dev/null || echo "UNKNOWN")
-echo "Active Incidents: $INCIDENTS"
-
-if [ "$INCIDENTS" != "0" ] && [ "$INCIDENTS" != "UNKNOWN" ]; then
-  echo "INCIDENT DETAILS:"
-  curl -sf https://status.notion.so/api/v2/incidents/unresolved.json \
-    | jq -r '.incidents[] | "  - \(.name) (\(.status)): \(.incident_updates[0].body)"'
-fi
-
-# 2. Test our integration authentication
-echo -e "\n--- Integration Auth Check ---"
-AUTH_HTTP=$(curl -sf -o /dev/null -w "%{http_code}" \
+curl -sf -o /dev/null -w "%{http_code}" \
   https://api.notion.com/v1/users/me \
   -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28" 2>/dev/null || echo "000")
-echo "Auth HTTP Status: $AUTH_HTTP"
-
-if [ "$AUTH_HTTP" = "200" ]; then
-  BOT_NAME=$(curl -sf https://api.notion.com/v1/users/me \
-    -H "Authorization: Bearer ${NOTION_TOKEN}" \
-    -H "Notion-Version: 2022-06-28" | jq -r '.name')
-  echo "Bot Name: $BOT_NAME"
-fi
-
-# 3. Test database query (if test DB configured)
-echo -e "\n--- API Responsiveness ---"
-if [ -n "${NOTION_TEST_DATABASE_ID:-}" ]; then
-  QUERY_RESULT=$(curl -sf -o /dev/null -w "%{http_code} %{time_total}s" \
-    -X POST "https://api.notion.com/v1/databases/${NOTION_TEST_DATABASE_ID}/query" \
-    -H "Authorization: Bearer ${NOTION_TOKEN}" \
-    -H "Notion-Version: 2022-06-28" \
-    -H "Content-Type: application/json" \
-    -d '{"page_size": 1}' 2>/dev/null || echo "000 0.000s")
-  echo "Database Query: $QUERY_RESULT"
-else
-  echo "NOTION_TEST_DATABASE_ID not set — skipping query test"
-fi
-
-# 4. Classification
-echo -e "\n--- Triage Result ---"
-if [ "$STATUS" != "All Systems Operational" ] && [ "$STATUS" != "UNREACHABLE" ]; then
-  echo "CLASSIFICATION: Notion-side issue. Enable fallback mode."
-elif [ "$AUTH_HTTP" = "401" ]; then
-  echo "CLASSIFICATION: Token expired or revoked. Rotate immediately."
-elif [ "$AUTH_HTTP" = "429" ]; then
-  echo "CLASSIFICATION: Rate limited. Reduce concurrency."
-elif [ "$AUTH_HTTP" = "000" ]; then
-  echo "CLASSIFICATION: Network/DNS issue. Check firewall and DNS."
-else
-  echo "CLASSIFICATION: Integration-side issue. Check application logs."
-fi
+  -H "Notion-Version: 2022-06-28"   # 2022-06-28 = pinned Notion API version
 ```
 
-**TypeScript — programmatic triage:**
+Map the result: `200` → integration-side, `401` → token expired/revoked, `429` →
+rate limited, `000` → network/DNS. If `status.notion.so` shows an active incident, it
+is Notion-side regardless of your auth code.
 
-```typescript
-import { Client, isNotionClientError, APIErrorCode } from '@notionhq/client';
-
-async function triageNotionHealth(token: string): Promise<{
-  classification: string;
-  notionStatus: string;
-  authStatus: string;
-  latencyMs: number;
-}> {
-  // Check Notion status page
-  let notionStatus = 'unknown';
-  try {
-    const res = await fetch('https://status.notion.so/api/v2/status.json');
-    const data = await res.json();
-    notionStatus = data.status.description;
-  } catch { notionStatus = 'unreachable'; }
-
-  // Test our authentication
-  const client = new Client({ auth: token, timeoutMs: 10_000 });
-  const start = Date.now();
-  let authStatus = 'unknown';
-  let classification = 'unknown';
-
-  try {
-    await client.users.me({});
-    authStatus = 'authenticated';
-    classification = 'integration-side';
-  } catch (error) {
-    if (isNotionClientError(error)) {
-      authStatus = `${error.code} (HTTP ${error.status})`;
-      switch (error.code) {
-        case APIErrorCode.Unauthorized:
-          classification = 'token-expired';
-          break;
-        case APIErrorCode.RateLimited:
-          classification = 'rate-limited';
-          break;
-        case APIErrorCode.ServiceUnavailable:
-          classification = 'notion-down';
-          break;
-        default:
-          classification = 'api-error';
-      }
-    } else {
-      authStatus = 'network-error';
-      classification = 'network-issue';
-    }
-  }
-
-  if (notionStatus !== 'All Systems Operational') {
-    classification = 'notion-side';
-  }
-
-  return {
-    classification,
-    notionStatus,
-    authStatus,
-    latencyMs: Date.now() - start,
-  };
-}
-```
+Read [references/triage.md](references/triage.md) for the full `notion-triage.sh`
+diagnostic (status page + auth + DB-query latency + auto-classification) and a
+TypeScript `triageNotionHealth()` equivalent for in-app health checks.
 
 ### Step 2: Decision Tree and Mitigation
 
-```
-Is status.notion.so showing an incident?
-|
-+-- YES --> Notion-side outage
-|   +-- Enable cached/fallback mode
-|   +-- Notify users of degraded service
-|   +-- Monitor status page for resolution
-|   +-- DO NOT restart or rotate tokens
-|
-+-- NO --> Our integration issue
-    |
-    +-- Auth returning 401?
-    |   +-- YES --> Token expired or revoked
-    |   |   +-- Regenerate at notion.so/my-integrations
-    |   |   +-- Update secret manager (see below)
-    |   |   +-- Restart application
-    |   +-- NO --> Continue
-    |
-    +-- Getting 429 rate limits?
-    |   +-- YES --> Exceeding 3 req/s average
-    |   |   +-- Check for runaway loops or webhook storms
-    |   |   +-- Reduce concurrency to 1
-    |   |   +-- Add exponential backoff
-    |   +-- NO --> Continue
-    |
-    +-- Getting 404 on specific resources?
-    |   +-- YES --> Pages unshared or deleted
-    |   |   +-- Re-share pages with integration via Connections menu
-    |   |   +-- Check if pages were moved to trash
-    |   +-- NO --> Continue
-    |
-    +-- Getting 400 validation errors?
-    |   +-- YES --> Database schema changed in Notion UI
-    |   |   +-- Re-fetch schema (databases.retrieve)
-    |   |   +-- Compare with expected properties
-    |   |   +-- Update property mappings in code
-    |   +-- NO --> Investigate application logs
-```
+Route the classification to a remediation path:
 
-**Token rotation:**
+- **Notion-side outage** — enable cached/fallback mode, notify users, monitor the
+  status page. Do NOT restart or rotate tokens.
+- **401 token expired/revoked** — regenerate at `notion.so/my-integrations`, update the
+  secret manager, restart the app.
+- **429 rate limited** — you are exceeding the 3 req/s average; find runaway loops or
+  webhook storms, drop concurrency to 1, add exponential backoff.
+- **404 on known resources** — pages unshared or trashed; re-share via the Connections menu.
+- **400 validation errors** — the database schema changed in the UI; re-fetch with
+  `databases.retrieve` and update property mappings.
 
-```bash
-# AWS Secrets Manager
-aws secretsmanager update-secret \
-  --secret-id notion/production \
-  --secret-string '{"token":"ntn_NEW_TOKEN_HERE"}'
-
-# GCP Secret Manager
-echo -n "ntn_NEW_TOKEN_HERE" | \
-  gcloud secrets versions add notion-token-prod --data-file=-
-
-# Restart to pick up new token
-kubectl rollout restart deployment/my-app  # Kubernetes
-# or: gcloud run services update my-service --no-traffic  # Cloud Run
-```
-
-**Cached fallback for Notion outages:**
-
-```typescript
-import { Client, isNotionClientError } from '@notionhq/client';
-
-const notion = new Client({ auth: process.env.NOTION_TOKEN! });
-const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-
-async function queryWithFallback(dbId: string, filter?: any) {
-  const cacheKey = `query:${dbId}:${JSON.stringify(filter)}`;
-
-  try {
-    const result = await notion.databases.query({
-      database_id: dbId,
-      filter,
-      page_size: 100,
-    });
-
-    // Update cache on success
-    cache.set(cacheKey, { data: result, timestamp: Date.now() });
-    return { data: result, source: 'live' as const };
-  } catch (error) {
-    // Fall back to cache on any API error
-    const cached = cache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
-      console.warn(`Notion unavailable, serving cached data (age: ${
-        Math.round((Date.now() - cached.timestamp) / 1000)
-      }s)`);
-      return { data: cached.data, source: 'cache' as const };
-    }
-
-    // No cache available — re-throw
-    throw error;
-  }
-}
-
-// Schema change detection
-async function detectSchemaChanges(dbId: string, expectedProps: string[]) {
-  const db = await notion.databases.retrieve({ database_id: dbId });
-  const actualProps = Object.keys(db.properties);
-
-  const missing = expectedProps.filter(p => !actualProps.includes(p));
-  const unexpected = actualProps.filter(p => !expectedProps.includes(p));
-
-  if (missing.length > 0 || unexpected.length > 0) {
-    console.error(JSON.stringify({
-      event: 'schema_change_detected',
-      database_id: dbId,
-      missing_properties: missing,
-      new_properties: unexpected,
-    }));
-  }
-
-  return { missing, unexpected, current: actualProps };
-}
-```
+Read [references/mitigation.md](references/mitigation.md) for the full decision tree,
+token-rotation commands (AWS/GCP Secret Manager + `kubectl` restart), the
+`queryWithFallback()` cached-fallback pattern, and `detectSchemaChanges()`.
 
 ### Step 3: Communication and Postmortem
 
-**Internal Slack notification template:**
-
-```
-:rotating_light: P[1-4] INCIDENT: Notion Integration
-Status: [INVESTIGATING | MITIGATING | RESOLVED]
-Impact: [specific user-facing impact]
-Root Cause: [Notion outage | Token expired | Rate limited | Schema change]
-Action: [current remediation step]
-ETA: [estimated resolution or "monitoring"]
-Dashboard: [link to monitoring dashboard]
-Thread: [link to incident channel thread]
-```
-
-**External status page update:**
-
-```
-Notion Integration Service Disruption
-
-We are experiencing [brief description of impact]. [Specific feature]
-may be unavailable or show stale data.
-
-Workaround: [if available, e.g., "Cached data is being served"]
-Next update: [time, e.g., "in 30 minutes or sooner if resolved"]
-
-[ISO 8601 timestamp]
-```
-
-**Postmortem template:**
-
-```markdown
-## Incident: Notion [Error Type] — [Date]
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-**Detection:** [Alert name] / [User report]
-
-### Summary
-[1-2 sentence description of what happened and the user impact]
-
-### Timeline (all times UTC)
-- HH:MM — First alert fired ([alert name])
-- HH:MM — On-call acknowledged, began triage
-- HH:MM — Root cause identified: [description]
-- HH:MM — Mitigation applied: [action taken]
-- HH:MM — Service fully restored
-
-### Root Cause
-[Technical explanation — e.g., "Integration token was rotated in Notion
-dashboard by a team member without updating the secret manager, causing
-all API calls to return 401 Unauthorized."]
-
-### Impact
-- Users affected: N
-- Duration of degraded service: X minutes
-- Data loss: [none | description]
-
-### Action Items
-| Priority | Action | Owner | Due |
-|----------|--------|-------|-----|
-| P1 | [Preventive measure] | @name | YYYY-MM-DD |
-| P2 | [Detection improvement] | @name | YYYY-MM-DD |
-| P3 | [Process improvement] | @name | YYYY-MM-DD |
-```
+Post an internal Slack update on every state change (INVESTIGATING → MITIGATING →
+RESOLVED), an external status-page notice if users are impacted, and file a structured
+postmortem once resolved. Copy-paste templates for all three are in
+[references/communication-and-postmortem.md](references/communication-and-postmortem.md).
 
 ## Output
 
@@ -406,13 +134,13 @@ def quick_triage():
 quick_triage()
 ```
 
+For the full `notion-triage.sh` diagnostic and the TypeScript in-app variant, see
+[references/triage.md](references/triage.md).
+
 ## Resources
 
 - [Notion Status Page](https://status.notion.so) — real-time platform status
 - [Notion API Error Codes](https://developers.notion.com/reference/errors) — full error reference
 - [Notion Request Limits](https://developers.notion.com/reference/request-limits) — 3 req/s average
 - [Statuspage API](https://www.atlassianstatuspage.io/api) — programmatic status checks
-
-## Next Steps
-
-For data handling and privacy compliance, see `notion-data-handling`.
+- For data handling and privacy compliance, see the `notion-data-handling` skill.

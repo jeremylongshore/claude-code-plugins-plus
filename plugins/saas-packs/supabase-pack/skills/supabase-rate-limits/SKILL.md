@@ -1,18 +1,12 @@
 ---
 name: supabase-rate-limits
-description: 'Manage Supabase rate limits and quotas across all plan tiers.
-
-  Use when hitting 429 errors, configuring connection pooling,
-
-  optimizing API throughput, or understanding tier-specific quotas
-
-  for Auth, Storage, Realtime, and Edge Functions.
-
-  Trigger: "supabase rate limit", "supabase 429", "supabase throttle",
-
+description: |
+  Manage Supabase rate limits and quotas across all plan tiers.
+  Use when hitting 429 errors, configuring connection pooling, optimizing
+  API throughput, or understanding tier-specific quotas for Auth, Storage,
+  Realtime, and Edge Functions.
+  Trigger with "supabase rate limit", "supabase 429", "supabase throttle",
   "supabase quota", "supabase connection pool", "supabase too many requests".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(node:*), Bash(npx:*), Grep
 version: 1.52.0
 license: MIT
@@ -29,7 +23,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Supabase enforces rate limits and quotas across every API surface — PostgREST, Auth, Storage, Realtime, and Edge Functions. Limits scale by plan tier. This skill covers the exact numbers per tier, connection pooling via Supavisor, retry/backoff patterns, pagination to reduce payload, and dashboard monitoring so you can stay within quotas and handle 429 errors gracefully.
+Supabase enforces rate limits and quotas across every API surface — PostgREST, Auth, Storage, Realtime, and Edge Functions — and the numbers scale by plan tier. This skill gives you the exact per-tier limits, connection pooling via Supavisor, retry/backoff and pagination patterns, and dashboard monitoring so you stay within quota and handle 429 errors gracefully.
 
 ## Prerequisites
 
@@ -40,95 +34,20 @@ Supabase enforces rate limits and quotas across every API surface — PostgREST,
 
 ## Instructions
 
-### Step 1 — Understand Rate Limits by Tier and Surface
+### Step 1 — Know your tier limits
 
-Every Supabase project has per-surface limits that differ by plan. Know these numbers before you architect:
-
-**API Request Limits**
+Rate limits differ per surface and per plan. The headline API limits:
 
 | Metric | Free | Pro | Enterprise |
 |--------|------|-----|------------|
 | Requests per minute (RPM) | 500 | 5,000 | Unlimited (custom) |
 | Requests per day (RPD) | 50,000 | 1,000,000 | Unlimited (custom) |
 
-**Auth Rate Limits**
+Auth, Storage, Realtime, Edge Functions, and Database connections each carry their own quotas. See the full per-surface breakdown in [rate-limit-tiers.md](references/rate-limit-tiers.md) before you architect.
 
-| Endpoint | Free | Pro |
-|----------|------|-----|
-| Signup | 30/hour per IP | Higher (configurable) |
-| Sign-in (password) | 30/hour per IP | Higher (configurable) |
-| Magic link / OTP | 4/hour per user | Configurable |
-| Token refresh | 360/hour | 360/hour |
+### Step 2 — Pool connections with Supavisor
 
-Auth limits are per-IP and per-user. Configure custom limits in Dashboard > Authentication > Rate Limits.
-
-**Storage Bandwidth**
-
-| Metric | Free | Pro |
-|--------|------|-----|
-| Storage size | 1 GB | 100 GB |
-| Bandwidth | 2 GB/month | 250 GB/month |
-| Max file size | 50 MB | 5 GB |
-| Upload rate | Shared with API RPM | Shared with API RPM |
-
-**Realtime Connections**
-
-| Metric | Free | Pro |
-|--------|------|-----|
-| Concurrent connections | 200 | 500 |
-| Messages per second | 100 | 500 |
-| Channel joins | Shared with connection limit | Shared |
-
-**Edge Functions**
-
-| Metric | Free | Pro |
-|--------|------|-----|
-| Invocations/month | 500,000 | 2,000,000 |
-| Execution time | 150s wall / 50ms CPU | 150s wall / 2s CPU |
-| Memory | 256 MB | 256 MB |
-
-**Database Connections**
-
-| Mode | Free | Pro |
-|------|------|-----|
-| Direct connections | 60 | 100+ |
-| Pooled connections (Supavisor) | 200 | 1,500+ |
-
-### Step 2 — Configure Connection Pooling with Supavisor
-
-Supavisor is Supabase's built-in connection pooler (replaced PgBouncer). It supports two modes:
-
-**Transaction mode (port 6543)** — recommended for serverless:
-
-```typescript
-import { createClient } from '@supabase/supabase-js'
-
-// Transaction mode: connections returned to pool after each transaction
-// Best for: serverless functions, Edge Functions, high-concurrency apps
-const supabase = createClient(
-  'https://your-project.supabase.co',
-  process.env.SUPABASE_ANON_KEY!,
-  {
-    db: {
-      // Use the pooler connection string with port 6543
-      // Format: postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
-    }
-  }
-)
-
-// For direct Postgres connections (e.g., Prisma, Drizzle), add pgbouncer=true
-// Connection string: postgresql://...@pooler.supabase.com:6543/postgres?pgbouncer=true
-```
-
-**Session mode (port 5432)** — for LISTEN/NOTIFY and prepared statements:
-
-```typescript
-// Session mode: dedicated connection per client session
-// Best for: long-lived connections, LISTEN/NOTIFY, prepared statements
-// Connection string: postgresql://...@pooler.supabase.com:5432/postgres
-```
-
-**When to use which mode:**
+Supavisor is Supabase's built-in connection pooler (replaced PgBouncer). Pick the mode by workload:
 
 | Use case | Mode | Port |
 |----------|------|------|
@@ -138,144 +57,22 @@ const supabase = createClient(
 | Realtime subscriptions | Direct (no pooler) | 5432 |
 | Prisma / Drizzle ORM | Transaction + `?pgbouncer=true` | 6543 |
 
-### Step 3 — Implement Retry, Pagination, and Monitoring
+Transaction mode (port 6543) returns a connection to the pool after each transaction — the right default for serverless. Session mode (port 5432) holds a dedicated connection for LISTEN/NOTIFY and prepared statements. Full client setup and connection-string formats are in [implementation.md](references/implementation.md).
 
-**Retry with exponential backoff for 429 errors:**
+### Step 3 — Retry, paginate, and batch
+
+Wrap queries in an exponential-backoff retry that recognizes 429s and pool exhaustion:
 
 ```typescript
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-)
-
-interface RetryConfig {
-  maxRetries: number
-  baseDelayMs: number
-  maxDelayMs: number
-}
-
-async function withRetry<T>(
-  operation: () => Promise<{ data: T | null; error: any }>,
-  config: RetryConfig = { maxRetries: 3, baseDelayMs: 500, maxDelayMs: 10_000 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    const { data, error } = await operation()
-
-    if (!error) return data as T
-
-    const isRetryable =
-      error.message?.includes('rate limit') ||
-      error.message?.includes('too many requests') ||
-      error.code === '429' ||
-      error.code === 'PGRST000'  // connection pool exhausted
-
-    if (!isRetryable || attempt === config.maxRetries) {
-      throw new Error(`Supabase error after ${attempt + 1} attempts: ${error.message}`)
-    }
-
-    // Check Retry-After header if available
-    const retryAfter = error.details?.retryAfter
-    const delay = retryAfter
-      ? retryAfter * 1000
-      : Math.min(
-          config.baseDelayMs * Math.pow(2, attempt) + Math.random() * 200,
-          config.maxDelayMs
-        )
-
-    console.warn(`[supabase-retry] Attempt ${attempt + 1}/${config.maxRetries}, waiting ${delay}ms`)
-    await new Promise((resolve) => setTimeout(resolve, delay))
-  }
-
-  throw new Error('Unreachable')
-}
-
-// Usage — wraps any Supabase query
+// Retryable when the error is a rate limit, "too many requests",
+// code 429, or PGRST000 (connection pool exhausted). Delay doubles
+// per attempt with jitter, capped at maxDelayMs, honoring Retry-After.
 const users = await withRetry(() =>
   supabase.from('users').select('id, email, created_at').eq('active', true)
 )
 ```
 
-**Pagination to reduce payload and stay within limits:**
-
-```typescript
-// Use .range() to paginate — reduces response size and avoids timeouts
-async function fetchPaginated<T>(
-  table: string,
-  pageSize = 100,
-  filters?: (query: any) => any
-): Promise<T[]> {
-  const allRows: T[] = []
-  let from = 0
-
-  while (true) {
-    let query = supabase.from(table).select('*', { count: 'exact' })
-    if (filters) query = filters(query)
-
-    const { data, error, count } = await query.range(from, from + pageSize - 1)
-
-    if (error) throw error
-    if (!data || data.length === 0) break
-
-    allRows.push(...(data as T[]))
-    from += pageSize
-
-    // Stop if we've fetched everything
-    if (count !== null && from >= count) break
-  }
-
-  return allRows
-}
-
-// Usage
-const allProducts = await fetchPaginated('products', 100, (q) =>
-  q.eq('status', 'active').order('created_at', { ascending: false })
-)
-
-// Simple single-page fetch with .range()
-const { data } = await supabase
-  .from('orders')
-  .select('id, total, status')
-  .range(0, 99)  // First 100 rows (0-indexed)
-  .order('created_at', { ascending: false })
-```
-
-**Monitor usage via the Dashboard:**
-
-1. Navigate to Dashboard > Reports > API Usage
-2. Check the "API Requests" chart for RPM/RPD trends
-3. Review "Database" section for connection count and pool utilization
-4. Set up alerts in Dashboard > Settings > Notifications for:
-   - API request threshold (e.g., 80% of RPM limit)
-   - Database connection saturation
-   - Storage bandwidth approaching limit
-
-**Batch operations to reduce request count:**
-
-```typescript
-// BAD: N individual inserts = N requests against your RPM
-// for (const item of items) await supabase.from('items').insert(item)
-
-// GOOD: single batch insert (max ~1000 rows per request)
-const { data, error } = await supabase
-  .from('items')
-  .upsert(batchOfItems, { onConflict: 'external_id' })
-  .select()
-
-// For larger batches, chunk into groups
-function chunk<T>(arr: T[], size: number): T[][] {
-  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  )
-}
-
-for (const batch of chunk(largeDataset, 500)) {
-  await withRetry(() =>
-    supabase.from('items').upsert(batch, { onConflict: 'external_id' }).select()
-  )
-}
-```
+Then cut request volume two ways: paginate large reads with `.range(from, to)` so responses stay small and avoid timeouts, and collapse N writes into one batch `upsert` (max ~1000 rows/request, chunk larger sets). The full `withRetry`, `fetchPaginated`, and batch/`chunk` helpers — plus dashboard monitoring steps — are in [implementation.md](references/implementation.md).
 
 ## Output
 
@@ -300,59 +97,18 @@ After applying this skill you will have:
 | Edge Function `BOOT_ERROR` | Cold start timeout or memory exceeded | Reduce bundle size; avoid large imports at top level |
 | `pgbouncer=true` errors with Prisma | Missing connection string parameter | Append `?pgbouncer=true` to pooler connection string on port 6543 |
 
+Rate-limit response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, `Retry-After`) and how to act on each are in [errors.md](references/errors.md).
+
 ## Examples
 
-**Example 1 — Serverless Edge Function with rate-limit-safe client:**
-
-```typescript
-// supabase/functions/process-webhook/index.ts
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-serve(async (req) => {
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-  )
-
-  const payload = await req.json()
-
-  // Batch insert webhook events (single request vs N)
-  const { error } = await supabase
-    .from('webhook_events')
-    .insert(payload.events.map((e: any) => ({
-      type: e.type,
-      data: e.data,
-      received_at: new Date().toISOString(),
-    })))
-
-  if (error) {
-    console.error('Insert failed:', error.message)
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 })
-  }
-
-  return new Response(JSON.stringify({ processed: payload.events.length }), { status: 200 })
-})
-```
-
-**Example 2 — Connection string selection for different runtimes:**
-
-```bash
-# Serverless (Vercel, Netlify, Edge Functions) — transaction mode
-DATABASE_URL="postgresql://postgres.abc123:password@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-
-# Long-running server (Express, Fastify) — session mode
-DATABASE_URL="postgresql://postgres.abc123:password@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
-
-# Direct connection (migrations, schema changes only)
-DATABASE_URL="postgresql://postgres:password@db.abc123.supabase.co:5432/postgres"
-```
+- **Serverless Edge Function with a batch-inserting, rate-limit-safe client** — see [examples.md](references/examples.md)
+- **Connection-string selection per runtime** (serverless vs long-running vs direct) — see [examples.md](references/examples.md)
+- **Queue-based throttling and client-side header monitoring** — see [examples.md](references/examples.md)
 
 ## Resources
 
 - [Supabase Platform Limits & Quotas](https://supabase.com/docs/guides/platform/going-into-prod#rate-limiting)
 - [Supavisor Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
-- Auth Rate Limits Configuration
 - [Edge Functions Limits](https://supabase.com/docs/guides/functions/limits)
 - [Storage Limits](https://supabase.com/docs/guides/storage#limits)
 - [@supabase/supabase-js Reference](https://supabase.com/docs/reference/javascript/introduction)
