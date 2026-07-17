@@ -1,6 +1,6 @@
 {
   "name": "local-tts",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
   "author": {
     "name": "Bubble Invest",

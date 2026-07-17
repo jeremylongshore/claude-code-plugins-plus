@@ -5,7 +5,7 @@ description: "Use when collecting diagnostic data from a Navan API integration \
   \ logging.\nTrigger with \"navan debug bundle\" or \"debug navan api\".\n"
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(tar:*), Bash(mkdir:*), Bash(date:*),
   Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

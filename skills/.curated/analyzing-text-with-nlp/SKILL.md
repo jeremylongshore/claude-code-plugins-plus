@@ -8,7 +8,7 @@ description: 'Execute this skill enables AI assistant to perform natural languag
 
   '
 allowed-tools: Read, Bash(cmd:*), Grep, Glob
-version: 1.0.0
+version: 1.22.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -10,7 +10,7 @@ description: 'Execute end-to-end tests covering full user workflows across front
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:e2e-*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

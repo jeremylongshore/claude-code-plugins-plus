@@ -12,7 +12,7 @@ description: 'Data synchronization, backup, and consistency patterns for Linear.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

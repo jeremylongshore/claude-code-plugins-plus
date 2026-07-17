@@ -9,7 +9,7 @@ description: 'Production-ready QuickNode SDK and ethers.js patterns for blockcha
 
   '
 allowed-tools: Read, Write, Edit
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

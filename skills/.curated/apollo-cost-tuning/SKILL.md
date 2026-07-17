@@ -12,7 +12,7 @@ description: 'Optimize Apollo.io costs and credit usage.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "error-rate-monitor",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Monitor and analyze application error rates",
   "author": {
     "name": "Claude Code Plugins",

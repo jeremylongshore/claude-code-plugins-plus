@@ -1,6 +1,6 @@
 {
   "name": "test-data-generator",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing",
   "author": {
     "name": "Claude Code Plugins",

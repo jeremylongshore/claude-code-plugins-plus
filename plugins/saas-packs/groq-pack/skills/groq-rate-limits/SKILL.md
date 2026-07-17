@@ -13,7 +13,7 @@ description: 'Implement Groq rate limit handling with backoff, queuing, and head
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

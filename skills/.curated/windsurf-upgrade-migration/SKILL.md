@@ -13,7 +13,7 @@ description: 'Upgrade Windsurf IDE, migrate settings from VS Code or Cursor, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

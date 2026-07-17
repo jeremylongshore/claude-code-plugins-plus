@@ -1,6 +1,6 @@
 {
   "name": "n8n-workflow-designer",
-  "version": "1.0.0",
+  "version": "1.13.0",
   "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
   "author": {
     "name": "Claude Code Plugin Hub",

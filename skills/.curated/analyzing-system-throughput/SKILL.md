@@ -4,7 +4,7 @@ description: Analyze and optimize system throughput including request handling, 
   processing, and resource utilization. Use when identifying capacity limits or evaluating
   scaling strategies. Trigger with phrases like "analyze throughput", "optimize capacity",
   or "identify bottlenecks".
-version: 1.0.0
+version: 1.24.0
 allowed-tools: Read, Write, Bash(performance:*), Bash(monitoring:*), Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

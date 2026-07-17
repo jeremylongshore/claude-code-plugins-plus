@@ -21,7 +21,7 @@ description: 'Validate production readiness of Vertex AI Agent Engine deployment
 
   '
 allowed-tools: Read,Grep,Glob,Bash(gcloud:*),Bash(python:*),Bash(pylint:*),Bash(flake8:*),Bash(mypy:*),Bash(bandit:*),Bash(pytest:*)
-version: 2.1.0
+version: 2.22.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

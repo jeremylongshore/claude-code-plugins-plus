@@ -12,7 +12,7 @@ description: 'Diagnose and fix Palantir Foundry common errors and API exceptions
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

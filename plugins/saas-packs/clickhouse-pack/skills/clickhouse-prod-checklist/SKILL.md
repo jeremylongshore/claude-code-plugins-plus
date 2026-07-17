@@ -6,7 +6,7 @@ description: "Production readiness checklist for ClickHouse \u2014 server tuning
   \ \"clickhouse production\", \"clickhouse go-live\", \"clickhouse launch checklist\"\
   ,\n\"production clickhouse\", \"clickhouse prod ready\".\n"
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

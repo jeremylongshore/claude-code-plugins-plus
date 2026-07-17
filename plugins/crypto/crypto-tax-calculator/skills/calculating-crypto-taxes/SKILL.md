@@ -11,7 +11,7 @@ description: 'Calculate cryptocurrency tax obligations with cost basis tracking,
 
   '
 allowed-tools: Read, Write, Bash(crypto:tax-*)
-version: 2.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

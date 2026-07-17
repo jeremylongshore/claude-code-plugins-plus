@@ -13,7 +13,7 @@ description: 'Advanced debugging for hard-to-diagnose Vercel issues including co
 
   '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*), Bash(jq:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Deepgram errors and issues.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

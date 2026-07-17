@@ -5,7 +5,7 @@ description: Guided workflow for establishing team identity, boundaries, and str
   identity, or when you need to define "what we own" vs "what we don't". Triggers
   include "strategic clarity", "team identity", "new role", "inherited ambiguity",
   "what does my team own", or "define our boundaries".
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

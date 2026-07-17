@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Apify Actor and API errors.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(apify:*), Bash(npm:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

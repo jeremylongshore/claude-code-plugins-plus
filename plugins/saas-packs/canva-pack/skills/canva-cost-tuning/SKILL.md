@@ -13,7 +13,7 @@ description: 'Optimize Canva Connect API usage costs through efficient API patte
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

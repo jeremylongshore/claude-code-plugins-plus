@@ -10,7 +10,7 @@ description: |
   "hubspot credential isolation", "per-portal audit log", "hubspot compliance report",
   "bulk portal onboarding", "token rotation cascade", "hubspot client portals".
 allowed-tools: Read, Write, Bash(curl:*), Bash(jq:*), Bash(python3:*)
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

@@ -1,6 +1,6 @@
 {
   "name": "database-partition-manager",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "description": "Database plugin for database-partition-manager",
   "author": {
     "name": "Claude Code Plugins",

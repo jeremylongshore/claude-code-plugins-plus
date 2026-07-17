@@ -13,7 +13,7 @@ description: 'Optimize Exa costs through search type selection, caching, and usa
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

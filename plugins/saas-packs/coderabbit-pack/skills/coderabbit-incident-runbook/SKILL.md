@@ -14,7 +14,7 @@ description: 'Execute CodeRabbit incident response procedures when reviews stop 
 
   '
 allowed-tools: Read, Grep, Bash(gh:*), Bash(curl:*), Bash(git:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Standard 3-tier OCI reference architecture with VCN, subnets, gate
   '
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*),
   Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

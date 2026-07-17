@@ -14,7 +14,7 @@ description: 'Implement team-wide Windsurf usage policies, code quality gates, a
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: |
   list", "hubspot lead scoring conflict", "lifecycle regression", "list membership
   webhook", "cross-portal list sync".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Grep
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

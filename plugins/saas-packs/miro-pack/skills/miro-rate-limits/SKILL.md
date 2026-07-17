@@ -10,7 +10,7 @@ description: 'Implement Miro REST API v2 rate limiting with the credit-based sys
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

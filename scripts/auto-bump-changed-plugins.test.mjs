@@ -15,7 +15,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseVersion, compareVersion, bumpDecision } from './auto-bump-changed-plugins.mjs';
+import {
+  parseVersion,
+  compareVersion,
+  bumpDecision,
+  bumpMinor,
+} from './auto-bump-changed-plugins.mjs';
+import {
+  setCatalogEntryVersion,
+  editCatalogVersions,
+  editSkillFrontmatter,
+} from './reconstruct-versions.mjs';
 
 const v = (s) => parseVersion(s);
 
@@ -65,4 +75,88 @@ test('a full two-run sequence converges (bump once, then no-op)', () => {
   // Run 2: local is now ahead of the unchanged base → skip. No endless walk.
   const run2 = bumpDecision(afterBump, base);
   assert.ok(run2.skip);
+});
+
+// ---------------------------------------------------------------------------
+// Display-surface helpers (2026-07-16 version-staleness fix)
+// ---------------------------------------------------------------------------
+
+test('bumpMinor bumps minor and resets patch', () => {
+  assert.deepEqual(bumpMinor(v('1.4.7')), { major: 1, minor: 5, patch: 0 });
+  assert.deepEqual(bumpMinor(v('2.0.0')), { major: 2, minor: 1, patch: 0 });
+});
+
+const CATALOG_FIXTURE = `{
+  "plugins": [
+    {
+      "name": "alpha",
+      "source": "./plugins/cat/alpha",
+      "description": "has \\"version\\": \\"9.9.9\\" in prose",
+      "version": "1.2.0"
+    },
+    {
+      "name": "beta",
+      "source": "./plugins/cat/beta",
+      "version": "0.3.0"
+    },
+    {
+      "name": "beta-dup",
+      "source": "./plugins/cat/beta",
+      "version": "0.3.0"
+    }
+  ]
+}
+`;
+
+test('setCatalogEntryVersion edits only the anchored entry', () => {
+  const res = setCatalogEntryVersion(CATALOG_FIXTURE, './plugins/cat/alpha', '1.3.0');
+  assert.equal(res.old, '1.2.0');
+  assert.ok(res.out.includes('"version": "1.3.0"'));
+  // beta entries untouched
+  assert.equal(res.out.match(/"version": "0\.3\.0"/g).length, 2);
+  // valid JSON after edit
+  assert.equal(JSON.parse(res.out).plugins[0].version, '1.3.0');
+});
+
+test('setCatalogEntryVersion patches every duplicate-source occurrence', () => {
+  const res = setCatalogEntryVersion(CATALOG_FIXTURE, './plugins/cat/beta', '0.4.0');
+  assert.equal(res.out.match(/"version": "0\.4\.0"/g).length, 2);
+  assert.equal(JSON.parse(res.out).plugins[1].version, '0.4.0');
+  assert.equal(JSON.parse(res.out).plugins[2].version, '0.4.0');
+});
+
+test('setCatalogEntryVersion returns null for an unknown source', () => {
+  assert.equal(setCatalogEntryVersion(CATALOG_FIXTURE, './packages/cli', '1.0.0'), null);
+});
+
+test('editCatalogVersions batch-edits with old-value verification and dedupes duplicates', () => {
+  const { out } = editCatalogVersions(CATALOG_FIXTURE, [
+    { source: './plugins/cat/alpha', oldVersion: '1.2.0', newVersion: '1.9.0' },
+    { source: './plugins/cat/beta', oldVersion: '0.3.0', newVersion: '0.5.0' },
+    { source: './plugins/cat/beta', oldVersion: '0.3.0', newVersion: '0.5.0' },
+  ]);
+  const parsed = JSON.parse(out);
+  assert.equal(parsed.plugins[0].version, '1.9.0');
+  assert.equal(parsed.plugins[1].version, '0.5.0');
+  assert.equal(parsed.plugins[2].version, '0.5.0');
+});
+
+test('editSkillFrontmatter replaces a top-level version', () => {
+  const raw = '---\nname: x\nversion: 1.0.0\ntags: [a]\n---\n\n# Body version: 1.0.0 stays\n';
+  const res = editSkillFrontmatter(raw, '1.7.0');
+  assert.equal(res.old, '1.0.0');
+  assert.ok(res.out.includes('\nversion: 1.7.0\n'));
+  assert.ok(res.out.includes('# Body version: 1.0.0 stays'));
+});
+
+test('editSkillFrontmatter replaces a nested metadata.version and preserves quoting', () => {
+  const raw = '---\nname: x\nmetadata:\n  author: y\n  version: "2.1.0"\n---\nbody\n';
+  const res = editSkillFrontmatter(raw, '2.2.0');
+  assert.equal(res.old, '2.1.0');
+  assert.ok(res.out.includes('  version: "2.2.0"'));
+});
+
+test('editSkillFrontmatter skips files without a version field or frontmatter', () => {
+  assert.ok(editSkillFrontmatter('# no frontmatter\n', '1.0.0').skipped);
+  assert.ok(editSkillFrontmatter('---\nname: x\n---\nbody\n', '1.0.0').skipped);
 });

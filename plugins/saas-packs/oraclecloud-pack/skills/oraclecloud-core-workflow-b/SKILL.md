@@ -5,7 +5,7 @@ description: "Build OCI networking from scratch \u2014 VCN, subnets, gateways, a
   \ setting up security lists and NSGs.\nTrigger with \"oci networking\", \"vcn setup\"\
   , \"security list\", \"nsg rules\", \"oci subnet\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

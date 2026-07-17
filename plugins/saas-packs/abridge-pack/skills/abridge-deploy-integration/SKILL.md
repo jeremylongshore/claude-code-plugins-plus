@@ -12,7 +12,7 @@ description: 'Deploy Abridge clinical AI integration to HIPAA-compliant cloud in
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(docker:*), Bash(aws:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

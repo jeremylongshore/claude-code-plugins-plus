@@ -13,7 +13,7 @@ description: 'Implement Canva Connect API lint rules, policy enforcement, and au
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

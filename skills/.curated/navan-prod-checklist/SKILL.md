@@ -5,7 +5,7 @@ description: "Use when validating production readiness for a Navan API integrati
   \ trails.\nTrigger with \"navan prod checklist\" or \"navan production readiness\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

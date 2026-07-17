@@ -10,7 +10,7 @@ description: |
   limit", "hubspot quota", "hubspot 429", "hubspot batch API", "hubspot token bucket",
   "hubspot throttle", "hubspot daily limit exhausted", "hubspot Ops Hub rate limit".
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(python3:*)
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

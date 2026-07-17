@@ -15,7 +15,7 @@ description: 'Implement Supabase Auth (signUp, signIn, OAuth, session management
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(supabase:*), Grep
-version: 1.0.1
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

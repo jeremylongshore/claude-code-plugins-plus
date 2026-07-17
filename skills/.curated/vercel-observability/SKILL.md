@@ -13,7 +13,7 @@ description: 'Set up Vercel observability with runtime logs, analytics, log drai
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

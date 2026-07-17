@@ -13,7 +13,7 @@ description: 'Apply Mistral AI security best practices for secrets, prompt injec
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

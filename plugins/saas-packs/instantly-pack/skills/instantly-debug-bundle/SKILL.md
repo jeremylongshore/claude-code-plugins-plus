@@ -12,7 +12,7 @@ description: 'Collect Instantly.ai debug evidence for support tickets and troubl
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

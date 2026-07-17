@@ -12,7 +12,7 @@ description: 'Different Notion integration architectures: CMS (headless blog), t
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*)
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

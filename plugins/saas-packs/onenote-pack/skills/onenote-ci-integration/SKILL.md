@@ -11,7 +11,7 @@ description: 'Set up CI/CD pipelines for OneNote integrations with Graph API tes
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

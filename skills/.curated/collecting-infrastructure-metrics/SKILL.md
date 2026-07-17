@@ -5,7 +5,7 @@ description: Collect comprehensive infrastructure performance metrics across com
   system performance or troubleshooting infrastructure issues. Trigger with phrases
   like "collect infrastructure metrics", "monitor server performance", or "track system
   resources".
-version: 1.0.0
+version: 1.20.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(metrics:*), Bash(monitoring:*),
   Bash(system:*)
 license: MIT

@@ -12,7 +12,7 @@ description: 'Configure Bright Data CI/CD integration with GitHub Actions and te
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

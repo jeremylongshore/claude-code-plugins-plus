@@ -9,7 +9,7 @@ description: 'Execute fast smoke tests validating critical functionality after d
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:smoke-*)
-version: 1.0.0
+version: 1.20.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

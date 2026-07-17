@@ -14,7 +14,7 @@ description: 'Implement reliable Cascade workflows with checkpoints, rollback, a
 
   '
 allowed-tools: Read, Write, Edit, Bash(git:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

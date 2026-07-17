@@ -13,7 +13,7 @@ description: 'Deploy Fireflies.ai webhook receivers and GraphQL clients to Verce
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

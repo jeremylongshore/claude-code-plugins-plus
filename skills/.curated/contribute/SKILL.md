@@ -38,7 +38,7 @@ allowed-tools:
   - Bash(bash:*)
   - Bash(jq:*)
   - Bash(base64:*)
-version: "4.0.0"
+version: "0.8.0"
 author: "Jeremy Longshore <jeremy@intentsolutions.io>"
 license: "MIT"
 compatibility: "Designed for Claude Code; requires gh CLI and jq on PATH"

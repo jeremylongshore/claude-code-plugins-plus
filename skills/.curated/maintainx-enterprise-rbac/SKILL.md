@@ -12,7 +12,7 @@ description: 'Configure enterprise role-based access control for MaintainX integ
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

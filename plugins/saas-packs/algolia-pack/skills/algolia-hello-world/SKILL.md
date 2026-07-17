@@ -5,7 +5,7 @@ description: "Create a minimal working Algolia example \u2014 index records and 
   \ the saveObjects/searchSingleIndex pattern.\nTrigger: \"algolia hello world\",\
   \ \"algolia example\", \"algolia quick start\", \"first algolia search\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

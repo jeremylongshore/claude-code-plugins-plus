@@ -4,7 +4,7 @@ description: Detect potential memory leaks and analyze memory usage patterns in 
   Use when troubleshooting performance issues related to memory growth or identifying
   leak sources. Trigger with phrases like "detect memory leaks", "analyze memory usage",
   or "find memory issues".
-version: 1.0.0
+version: 1.24.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(memory:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

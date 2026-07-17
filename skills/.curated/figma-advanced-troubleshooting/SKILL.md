@@ -13,7 +13,7 @@ description: 'Deep debugging for Figma API issues: network analysis, response in
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

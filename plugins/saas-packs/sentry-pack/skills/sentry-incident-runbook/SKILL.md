@@ -12,7 +12,7 @@ description: 'Execute incident response procedures using Sentry error monitoring
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*), Bash(npx:*), Bash(python3:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

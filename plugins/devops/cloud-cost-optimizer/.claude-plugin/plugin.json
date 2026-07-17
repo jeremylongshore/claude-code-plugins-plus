@@ -1,6 +1,6 @@
 {
   "name": "cloud-cost-optimizer",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Optimize cloud costs and generate cost reports",
   "author": {
     "name": "Claude Code Plugins",

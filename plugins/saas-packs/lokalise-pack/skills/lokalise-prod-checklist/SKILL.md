@@ -12,7 +12,7 @@ description: 'Execute Lokalise production deployment checklist and rollback proc
 
   '
 allowed-tools: Read, Bash(lokalise2:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

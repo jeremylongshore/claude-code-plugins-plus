@@ -4,7 +4,7 @@ description: Collaborative thinking partner for exploring ideas, challenges, and
   Use when the user says "think through", "explore", "brainstorm", "help me figure
   out", asks open-ended questions about strategy or priorities, or needs to work through
   a problem without a clear solution yet.
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

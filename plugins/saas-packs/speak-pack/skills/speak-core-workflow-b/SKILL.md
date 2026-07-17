@@ -13,7 +13,7 @@ description: 'Execute Speak secondary workflow: Pronunciation Training with phon
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

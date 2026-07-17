@@ -1,6 +1,6 @@
 {
   "name": "lumera-agent-memory",
-  "version": "1.0.0",
+  "version": "1.7.0",
   "description": "Durable agent memory with Cascade object storage, client-side encryption, and local FTS index",
   "author": {
     "name": "Intent Solutions IO",

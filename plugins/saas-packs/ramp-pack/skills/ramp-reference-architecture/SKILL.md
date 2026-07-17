@@ -5,7 +5,7 @@ description: "Ramp reference architecture \u2014 corporate card and expense mana
   \ accounting sync.\nTrigger with phrases like \"ramp reference architecture\", \"\
   ramp-reference-architecture\", \"corporate card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

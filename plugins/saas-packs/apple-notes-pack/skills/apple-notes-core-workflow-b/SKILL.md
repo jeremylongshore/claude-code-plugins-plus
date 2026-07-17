@@ -12,7 +12,7 @@ description: 'Export and convert Apple Notes to Markdown, JSON, HTML, and SQLite
 
   '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

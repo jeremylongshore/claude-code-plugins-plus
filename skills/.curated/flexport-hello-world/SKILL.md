@@ -5,7 +5,7 @@ description: "Create a minimal working Flexport example \u2014 list shipments an
   \ setup,\nor learning the Flexport REST API v2 patterns.\nTrigger: \"flexport hello\
   \ world\", \"flexport example\", \"flexport quick start\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

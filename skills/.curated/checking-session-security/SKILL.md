@@ -11,7 +11,7 @@ description: 'Analyze session management implementations to identify security vu
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-check:*)
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

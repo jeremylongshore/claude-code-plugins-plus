@@ -12,7 +12,7 @@ description: 'Optimize Sentry costs, reduce event volume, and manage quota spend
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(curl:*), Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

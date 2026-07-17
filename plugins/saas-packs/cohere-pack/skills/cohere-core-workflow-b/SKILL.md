@@ -12,7 +12,7 @@ description: 'Build tool-use agents and function calling with Cohere API v2.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

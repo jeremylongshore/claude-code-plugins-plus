@@ -24,7 +24,7 @@ description: 'Implement Supabase across different app architectures: Next.js SSR
 
   '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

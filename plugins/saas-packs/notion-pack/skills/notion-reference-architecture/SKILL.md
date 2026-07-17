@@ -18,7 +18,7 @@ description: 'Design and implement a production-ready Notion integration archite
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

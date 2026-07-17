@@ -12,7 +12,7 @@ description: 'Execute Ideogram production deployment checklist and rollback proc
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

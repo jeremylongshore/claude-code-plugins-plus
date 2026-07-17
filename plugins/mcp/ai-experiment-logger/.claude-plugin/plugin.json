@@ -1,6 +1,6 @@
 {
   "name": "ai-experiment-logger",
-  "version": "1.0.0",
+  "version": "1.12.0",
   "description": "Track and analyze AI experiments with a web dashboard and MCP tools",
   "author": {
     "name": "Claude Code Plugins",

@@ -11,7 +11,7 @@ description: 'Generate polished demo videos from a single prompt. Use when the u
 
   '
 allowed-tools: Read, Write, Edit, Bash, Glob
-version: 1.0.0
+version: 1.3.0
 author: Srinivas Vaddisrinivas <vaddisrinivas170497@gmail.com>
 license: MIT
 tags:

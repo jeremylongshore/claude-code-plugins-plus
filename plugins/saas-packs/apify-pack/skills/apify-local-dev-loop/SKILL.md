@@ -12,7 +12,7 @@ description: 'Set up local Apify Actor development with Apify CLI and Crawlee.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

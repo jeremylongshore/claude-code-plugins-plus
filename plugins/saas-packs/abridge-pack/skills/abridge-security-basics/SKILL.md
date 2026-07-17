@@ -12,7 +12,7 @@ description: 'Apply HIPAA-compliant security practices for Abridge clinical AI i
 
   '
 allowed-tools: Read, Write, Edit, Bash(openssl:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

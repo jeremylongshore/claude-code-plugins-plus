@@ -6,7 +6,7 @@ description: "Troubleshoot common Granola errors \u2014 audio capture failures, 
   granola not recording\",\n\"fix granola\", \"granola troubleshoot\".\n"
 allowed-tools: Read, Write, Edit, Bash(pgrep:*), Bash(ps:*), Bash(system_profiler:*),
   Bash(defaults:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

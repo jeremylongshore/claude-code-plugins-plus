@@ -10,7 +10,7 @@ description: 'Configure Perplexity API key scoping, per-team model access, cost 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -9,7 +9,7 @@ description: 'Execute use when generating infrastructure as code configurations.
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(aws:*), Bash(gcloud:*),
   Bash(az:*)
-version: 1.0.0
+version: 1.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -10,7 +10,7 @@ description: 'Use when the user asks to create a website, build a site, generate
 
   '
 allowed-tools: AskUserQuestion
-version: 1.0.0
+version: 1.9.0
 author: B12.io <support@b12.io>
 license: MIT
 tags:

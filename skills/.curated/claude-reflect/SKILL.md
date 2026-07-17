@@ -10,7 +10,7 @@ description: 'Execute self-learning system that captures corrections during sess
 
   '
 allowed-tools: Read, Write, Edit, Bash(jq:*), Bash(cat:*)
-version: 1.4.1
+version: 1.12.0
 license: MIT
 author: Bayram Annakov <bayram.annakov@gmail.com>
 tags:

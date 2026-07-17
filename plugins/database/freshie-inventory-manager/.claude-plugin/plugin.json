@@ -1,6 +1,6 @@
 {
   "name": "freshie-inventory-manager",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "Unified command center for the freshie ecosystem inventory database — discovery scans, compliance grading, batch remediation, querying, and reporting across 50 tables of plugin/skill/pack metadata",
   "author": {
     "name": "Jeremy Longshore",

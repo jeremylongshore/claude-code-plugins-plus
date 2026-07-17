@@ -1,6 +1,6 @@
 {
   "name": "ssl-certificate-manager",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "description": "Manage and monitor SSL/TLS certificates",
   "author": {
     "name": "Jeremy Longshore",

@@ -13,7 +13,7 @@ description: 'Production-ready Vercel REST API patterns with typed fetch wrapper
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

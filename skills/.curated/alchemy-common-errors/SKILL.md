@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Alchemy SDK and Web3 API errors.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -14,7 +14,7 @@ model: inherit
 argument-hint: <chain-or-agent-path>
 user-invocable: true
 disable-model-invocation: false
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

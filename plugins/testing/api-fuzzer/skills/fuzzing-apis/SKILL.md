@@ -10,7 +10,7 @@ description: 'Configure perform API fuzzing to discover edge cases, crashes, and
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:fuzz-*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

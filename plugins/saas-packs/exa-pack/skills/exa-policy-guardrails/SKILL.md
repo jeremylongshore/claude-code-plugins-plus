@@ -13,7 +13,7 @@ description: 'Implement content policy enforcement, domain filtering, and usage 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

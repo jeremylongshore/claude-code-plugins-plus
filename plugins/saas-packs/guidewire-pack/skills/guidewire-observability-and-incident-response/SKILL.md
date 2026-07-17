@@ -2,7 +2,7 @@
 name: guidewire-observability-and-incident-response
 description: Operate a Guidewire Cloud API integration in production — define SLIs/SLOs for token availability, bind success rate, FNOL p99 latency; route alerts so the on-call gets paged for real outages and never for transient noise; triage 401 spikes, 409 storms, 429 saturation, scope drift, and Gosu OOM cascades from signal to recovery in 15 minutes or less. Use when designing a dashboard for a new integration, writing the on-call runbook, or running a post-incident review. Trigger with "guidewire observability", "guidewire slo", "guidewire on-call", "guidewire 401 spike", "guidewire 409 storm", "guidewire incident".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep, Glob
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

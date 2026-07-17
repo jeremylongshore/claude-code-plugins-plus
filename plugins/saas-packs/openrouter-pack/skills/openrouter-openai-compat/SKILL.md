@@ -7,7 +7,7 @@ description: 'Migrate from OpenAI to OpenRouter with minimal code changes. Use w
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

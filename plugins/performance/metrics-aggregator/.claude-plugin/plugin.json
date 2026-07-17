@@ -1,6 +1,6 @@
 {
   "name": "metrics-aggregator",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "description": "Aggregate and centralize performance metrics",
   "author": {
     "name": "Claude Code Plugins",

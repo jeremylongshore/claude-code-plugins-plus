@@ -10,7 +10,7 @@ description: 'Track crypto options flow to identify institutional positioning an
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:options-*)
-version: 1.0.0
+version: 1.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

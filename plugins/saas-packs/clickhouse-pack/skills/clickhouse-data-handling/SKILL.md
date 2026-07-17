@@ -7,7 +7,7 @@ description: "Handle data lifecycle in ClickHouse \u2014 TTL expiration, data de
   , \"clickhouse GDPR\",\n\"delete data clickhouse\", \"clickhouse data lifecycle\"\
   , \"clickhouse PII\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

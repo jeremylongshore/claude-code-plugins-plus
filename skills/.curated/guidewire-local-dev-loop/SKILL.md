@@ -2,7 +2,7 @@
 name: guidewire-local-dev-loop
 description: Iterate on Gosu rules and configuration without paying the full 5–15 minute runServer rebuild every time. Use when standing up Guidewire Studio against a local InsuranceSuite instance, attaching an IntelliJ remote debugger to runServer, distinguishing changes that hot-reload from changes that force restart, or building a GUnit-driven TDD cycle for rule logic. Trigger with "guidewire studio", "gosu hot reload", "gosu debugger", "gunit", "guidewire runServer".
 allowed-tools: Read, Write, Edit, Bash(gradle:*), Bash(java:*), Bash(jdb:*), Grep, Glob
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

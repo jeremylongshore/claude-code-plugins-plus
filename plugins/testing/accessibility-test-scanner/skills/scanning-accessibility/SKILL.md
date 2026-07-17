@@ -10,7 +10,7 @@ description: 'Validate WCAG compliance and accessibility standards (ARIA, keyboa
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:a11y-*)
-version: 1.0.0
+version: 1.23.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

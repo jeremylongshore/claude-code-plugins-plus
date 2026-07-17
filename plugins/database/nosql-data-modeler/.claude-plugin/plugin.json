@@ -1,6 +1,6 @@
 {
   "name": "nosql-data-modeler",
-  "version": "1.0.0",
+  "version": "1.29.0",
   "description": "Database plugin for nosql-data-modeler",
   "author": {
     "name": "Claude Code Plugins",

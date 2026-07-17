@@ -23,7 +23,7 @@ description: 'Avoid and fix the most common Supabase mistakes: exposing service_
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

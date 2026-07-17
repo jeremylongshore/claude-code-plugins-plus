@@ -12,7 +12,7 @@ description: 'Collect Vercel debug evidence for support tickets and troubleshoot
 
   '
 allowed-tools: Read, Bash(vercel:*), Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

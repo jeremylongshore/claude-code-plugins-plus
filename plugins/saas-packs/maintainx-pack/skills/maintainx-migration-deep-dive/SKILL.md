@@ -12,7 +12,7 @@ description: 'Execute complete platform migrations to or from MaintainX.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -6,7 +6,7 @@ description: "Implement Webflow data handling \u2014 CMS content delivery patter
   \ PII\", \"webflow GDPR\",\n\"webflow data retention\", \"webflow privacy\", \"\
   webflow CCPA\", \"webflow forms data\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

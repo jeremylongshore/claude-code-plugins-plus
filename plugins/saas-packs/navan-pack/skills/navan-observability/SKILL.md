@@ -7,7 +7,7 @@ description: 'Use when setting up monitoring, logging, and alerting for Navan AP
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

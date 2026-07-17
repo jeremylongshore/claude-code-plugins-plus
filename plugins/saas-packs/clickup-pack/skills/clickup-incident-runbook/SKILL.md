@@ -10,7 +10,7 @@ description: 'Execute ClickUp API incident response: triage, diagnosis, mitigati
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -11,7 +11,7 @@ description: 'Aggregate breaking cryptocurrency news from 50+ sources including 
 
   '
 allowed-tools: Read, Bash(crypto:news-*)
-version: 2.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

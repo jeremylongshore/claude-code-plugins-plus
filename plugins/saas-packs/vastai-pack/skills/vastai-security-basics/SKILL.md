@@ -12,7 +12,7 @@ description: 'Apply Vast.ai security best practices for API keys and instance ac
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

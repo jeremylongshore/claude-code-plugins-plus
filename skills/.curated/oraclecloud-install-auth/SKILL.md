@@ -11,7 +11,7 @@ description: 'Install and configure Oracle Cloud Infrastructure (OCI) SDK and CL
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

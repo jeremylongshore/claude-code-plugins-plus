@@ -12,7 +12,7 @@ description: 'Execute Abridge production readiness checklist for clinical AI dep
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -10,7 +10,7 @@ description: 'Execute Flexport production deployment checklist for logistics int
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

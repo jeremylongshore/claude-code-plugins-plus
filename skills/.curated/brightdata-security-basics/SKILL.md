@@ -12,7 +12,7 @@ description: 'Apply Bright Data security best practices for secrets and access c
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

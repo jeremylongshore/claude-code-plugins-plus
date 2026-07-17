@@ -14,7 +14,7 @@ description: 'Configure enterprise role-based access control, SSO/SAML2, and SCI
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(python3:*), Bash(jq:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

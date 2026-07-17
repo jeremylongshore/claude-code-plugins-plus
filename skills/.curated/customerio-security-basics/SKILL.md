@@ -12,7 +12,7 @@ description: 'Apply Customer.io security best practices.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

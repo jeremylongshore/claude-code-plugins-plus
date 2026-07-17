@@ -10,7 +10,7 @@ description: 'Optimize daily development workflow with Cursor IDE using Chat, Co
 
   '
 allowed-tools: Read, Write, Edit, Bash(cmd:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

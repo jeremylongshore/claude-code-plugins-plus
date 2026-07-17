@@ -11,7 +11,7 @@ description: 'Diagnose and fix Oracle Cloud Infrastructure API errors with real 
 
   '
 allowed-tools: Read, Grep, Bash(oci:*), Bash(pip:*), Bash(openssl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

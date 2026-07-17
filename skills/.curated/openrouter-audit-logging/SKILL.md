@@ -7,7 +7,7 @@ description: 'Implement audit logging for OpenRouter API calls. Use when buildin
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(sqlite3:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

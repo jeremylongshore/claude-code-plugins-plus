@@ -13,7 +13,7 @@ description: 'Load test and scale Replit deployments with Autoscale tuning, Rese
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(curl:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

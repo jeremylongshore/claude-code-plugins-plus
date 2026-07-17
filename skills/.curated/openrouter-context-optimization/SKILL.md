@@ -7,7 +7,7 @@ description: 'Optimize context window usage for OpenRouter models to reduce cost
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(curl:*), Bash(jq:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

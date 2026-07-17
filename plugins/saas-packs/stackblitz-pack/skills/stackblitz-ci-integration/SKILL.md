@@ -8,7 +8,7 @@ description: 'CI testing for WebContainer apps with Playwright browser tests.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

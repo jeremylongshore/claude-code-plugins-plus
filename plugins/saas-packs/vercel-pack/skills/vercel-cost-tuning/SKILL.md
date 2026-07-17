@@ -13,7 +13,7 @@ description: 'Optimize Vercel costs through plan selection, function efficiency,
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

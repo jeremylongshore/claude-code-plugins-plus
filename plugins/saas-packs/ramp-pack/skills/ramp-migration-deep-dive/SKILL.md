@@ -5,7 +5,7 @@ description: "Ramp migration deep dive \u2014 corporate card and expense managem
   \ accounting sync.\nTrigger with phrases like \"ramp migration deep dive\", \"ramp-migration-deep-dive\"\
   , \"corporate card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

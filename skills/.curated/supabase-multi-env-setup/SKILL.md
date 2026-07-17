@@ -16,7 +16,7 @@ description: 'Configure Supabase across development, staging, and production wit
   '
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(vercel:*),
   Grep, Glob
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

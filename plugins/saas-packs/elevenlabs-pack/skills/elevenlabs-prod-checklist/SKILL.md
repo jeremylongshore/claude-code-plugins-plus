@@ -13,7 +13,7 @@ description: 'Execute ElevenLabs production deployment checklist with health che
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

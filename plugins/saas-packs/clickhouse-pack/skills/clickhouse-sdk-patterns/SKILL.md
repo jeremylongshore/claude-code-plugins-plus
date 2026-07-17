@@ -6,7 +6,7 @@ description: "Production-ready patterns for @clickhouse/client \u2014 streaming 
   \ coding standards.\nTrigger: \"clickhouse SDK patterns\", \"clickhouse client patterns\"\
   ,\n\"clickhouse best practices\", \"clickhouse streaming insert\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

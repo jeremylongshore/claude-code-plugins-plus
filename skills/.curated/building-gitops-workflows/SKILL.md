@@ -7,7 +7,7 @@ description: 'Execute use when constructing GitOps workflows using ArgoCD or Flu
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*), Bash(git:*)
-version: 1.0.0
+version: 1.22.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

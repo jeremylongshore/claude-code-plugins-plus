@@ -13,7 +13,7 @@ description: 'Collect Lokalise debug evidence for support tickets and troublesho
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(lokalise2:*), Bash(node:*),
   Bash(npm:*), Bash(jq:*), Bash(sed:*), Bash(mkdir:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

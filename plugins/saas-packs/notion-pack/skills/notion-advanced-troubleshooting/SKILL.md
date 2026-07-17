@@ -13,7 +13,7 @@ description: 'Deep debugging for Notion API: response inspection, permission cha
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

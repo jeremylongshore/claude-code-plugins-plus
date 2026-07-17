@@ -1,6 +1,6 @@
 {
   "name": "distributed-tracing-setup",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Set up distributed tracing for microservices",
   "author": {
     "name": "Claude Code Plugins",

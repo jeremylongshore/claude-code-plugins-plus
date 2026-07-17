@@ -14,7 +14,7 @@ description: 'Scale Sentry for high-traffic applications handling millions of ev
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*), Bash(k6:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

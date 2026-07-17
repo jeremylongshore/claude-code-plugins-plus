@@ -2,7 +2,7 @@
 name: guidewire-core-workflow-b
 description: Automate the ClaimCenter FNOL→investigation→reserve→payment→settlement→close pipeline including the failure paths — duplicate FNOL from multi-source intake, reserve-must-precede-payment ordering, supervisor-authorization tiers, premature settlement, and reopen-vs-new-claim ambiguity. Use when building claim intake from caller portals, IVR, or partner systems; automating reserve-setting jobs; or integrating settlement events with finance. Trigger with "claimcenter automation", "FNOL", "claim reserve", "claim payment", "claim settlement", "claim reopen".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

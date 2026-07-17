@@ -8,7 +8,7 @@ description: 'Create automatically creates new AI assistant code plugins with pr
 
   '
 allowed-tools: Write, Read, Grep, Bash(cmd:*)
-version: 1.0.0
+version: 2.19.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

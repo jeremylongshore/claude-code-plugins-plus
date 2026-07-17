@@ -8,7 +8,7 @@ description: "Build LangGraph 1.0 human-in-the-loop approval flows with `interru
   \ human in loop\", \"langgraph interrupt_before\",\n\"langgraph approval flow\"\
   , \"Command resume\", \"langgraph HITL\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

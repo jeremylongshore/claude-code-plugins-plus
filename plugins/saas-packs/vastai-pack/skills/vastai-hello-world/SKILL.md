@@ -12,7 +12,7 @@ description: 'Rent your first GPU instance on Vast.ai and run a workload.
 
   '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*), Bash(ssh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

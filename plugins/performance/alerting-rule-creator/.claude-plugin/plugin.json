@@ -1,6 +1,6 @@
 {
   "name": "alerting-rule-creator",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "description": "Create intelligent alerting rules for performance monitoring",
   "author": {
     "name": "Claude Code Plugins",

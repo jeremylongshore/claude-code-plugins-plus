@@ -2,7 +2,7 @@
 name: guidewire-core-workflow-a
 description: Automate the PolicyCenter account→submission→quote→bind→issue→endorse→renew pipeline including the failure paths — underwriting issues blocking bind, quotes expiring before bind, referrals stuck pending approval, and mid-term endorsements that trigger unexpected premium audit recalculation. Use when building outbound integrations against PolicyCenter Cloud API (CRM-driven submission, broker-portal binding, automated renewal jobs). Trigger with "policycenter automation", "submission to bind", "policy renewal", "policy endorsement", "underwriting issue".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

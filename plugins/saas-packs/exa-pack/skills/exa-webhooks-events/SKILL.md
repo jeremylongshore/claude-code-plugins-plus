@@ -13,7 +13,7 @@ description: 'Build event-driven integrations with Exa using scheduled monitors 
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

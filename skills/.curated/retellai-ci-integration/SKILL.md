@@ -5,7 +5,7 @@ description: "Retell AI ci integration \u2014 AI voice agent and phone call auto
   \ with phrases like \"retell ci integration\", \"retellai-ci-integration\", \"voice\
   \ agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

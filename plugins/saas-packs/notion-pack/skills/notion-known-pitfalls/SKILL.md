@@ -14,7 +14,7 @@ description: 'Common Notion API mistakes: wrong page ID format (dashes), rich te
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

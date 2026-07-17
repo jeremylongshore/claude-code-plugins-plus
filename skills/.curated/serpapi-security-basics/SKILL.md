@@ -10,7 +10,7 @@ description: 'Secure SerpApi API keys and prevent credit abuse.
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

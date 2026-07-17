@@ -12,7 +12,7 @@ description: 'Deploy ML training jobs and inference services on Vast.ai GPU clou
 
   '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(docker:*), Bash(ssh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

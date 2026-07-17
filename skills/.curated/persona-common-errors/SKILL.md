@@ -9,7 +9,7 @@ description: 'Fix top Persona API errors: 401, 422, webhook signature failures, 
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

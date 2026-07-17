@@ -12,7 +12,7 @@ description: 'Upgrade CAST AI Helm charts, Terraform provider, and agent compone
 
   '
 allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(terraform:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

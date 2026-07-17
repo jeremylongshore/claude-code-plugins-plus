@@ -13,7 +13,7 @@ description: 'Analyze, plan, and execute Framer SDK upgrades with breaking chang
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

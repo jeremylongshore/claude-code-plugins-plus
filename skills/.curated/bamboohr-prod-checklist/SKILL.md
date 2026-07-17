@@ -12,7 +12,7 @@ description: 'Execute BambooHR production deployment checklist and rollback proc
 
   '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

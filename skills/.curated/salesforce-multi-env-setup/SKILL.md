@@ -13,7 +13,7 @@ description: 'Configure Salesforce across Developer, Sandbox, and Production env
 
   '
 allowed-tools: Read, Write, Edit, Bash(sf:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

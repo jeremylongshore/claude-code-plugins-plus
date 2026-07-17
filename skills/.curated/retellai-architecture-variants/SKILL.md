@@ -5,7 +5,7 @@ description: "Retell AI architecture variants \u2014 AI voice agent and phone ca
   \ telephony.\nTrigger with phrases like \"retell architecture variants\", \"retellai-architecture-variants\"\
   , \"voice agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

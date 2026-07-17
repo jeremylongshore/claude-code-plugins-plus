@@ -4,7 +4,7 @@ description: Analyze network latency and optimize request patterns for faster co
   Use when diagnosing slow network performance or optimizing API calls. Trigger with
   phrases like "analyze network latency", "optimize API calls", or "reduce network
   delays".
-version: 1.0.0
+version: 1.21.0
 allowed-tools: Read, Write, Bash(curl:*), Bash(ping:*), Bash(traceroute:*), Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

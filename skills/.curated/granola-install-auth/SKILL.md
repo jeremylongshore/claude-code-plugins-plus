@@ -12,7 +12,7 @@ description: 'Install and configure Granola AI meeting notes with calendar and a
   '
 allowed-tools: Read, Write, Edit, Bash(brew:*), Bash(open:*), Bash(pgrep:*), Bash(defaults:*),
   Bash(ls:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "gdpr-compliance-scanner",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Scan for GDPR compliance issues",
   "author": {
     "name": "Jeremy Longshore",

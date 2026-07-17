@@ -7,7 +7,7 @@ description: "Execute Webflow production deployment checklist \u2014 token secur
   ,\n\"webflow go-live\", \"webflow launch checklist\", \"webflow production ready\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

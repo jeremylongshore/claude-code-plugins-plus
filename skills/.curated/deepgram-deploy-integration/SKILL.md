@@ -12,7 +12,7 @@ description: 'Deploy Deepgram integrations to production environments.
 
   '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

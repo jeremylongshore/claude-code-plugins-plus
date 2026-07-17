@@ -8,7 +8,7 @@ description: "Rate-limit LangChain 1.0 calls correctly across multi-worker deplo
   , \"langchain semaphore\",\n\"langchain token bucket\", \"anthropic rpm\", \"openai\
   \ rpm throttling\",\n\"InMemoryRateLimiter\", \"redis rate limiter\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(redis-cli:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

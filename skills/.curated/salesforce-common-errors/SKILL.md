@@ -12,7 +12,7 @@ description: 'Diagnose and fix Salesforce common errors, SOQL issues, and API ex
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(sf:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

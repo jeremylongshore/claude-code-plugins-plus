@@ -12,7 +12,7 @@ description: 'Production readiness checklist for Apify Actor deployments.
 
   '
 allowed-tools: Read, Bash(apify:*), Bash(curl:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

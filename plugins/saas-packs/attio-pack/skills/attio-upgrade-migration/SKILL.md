@@ -10,7 +10,7 @@ description: 'Migrate between Attio API versions, handle breaking changes in the
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

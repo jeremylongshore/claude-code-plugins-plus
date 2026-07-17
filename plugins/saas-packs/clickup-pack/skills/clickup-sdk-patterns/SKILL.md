@@ -10,7 +10,7 @@ description: 'Production-ready ClickUp API v2 client patterns with typed wrapper
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

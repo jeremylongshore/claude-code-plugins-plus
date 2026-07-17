@@ -13,7 +13,7 @@ description: 'Identify and avoid Salesforce anti-patterns including SOQL N+1, go
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

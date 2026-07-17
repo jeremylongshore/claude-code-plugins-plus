@@ -12,7 +12,7 @@ description: 'Collect BambooHR debug evidence for support tickets and troublesho
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

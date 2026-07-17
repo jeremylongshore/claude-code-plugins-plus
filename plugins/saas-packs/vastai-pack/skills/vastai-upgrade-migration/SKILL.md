@@ -12,7 +12,7 @@ description: 'Upgrade Vast.ai CLI, migrate API versions, and handle breaking cha
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(vastai:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

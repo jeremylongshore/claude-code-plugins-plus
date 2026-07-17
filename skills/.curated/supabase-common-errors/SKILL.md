@@ -14,7 +14,7 @@ description: 'Diagnose and fix Supabase errors across PostgREST, PostgreSQL, Aut
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(supabase:*), Bash(npx:*)
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

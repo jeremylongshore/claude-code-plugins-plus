@@ -5,7 +5,7 @@ description: "Retell AI debug bundle \u2014 AI voice agent and phone call automa
   \ with phrases like \"retell debug bundle\", \"retellai-debug-bundle\", \"voice\
   \ agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

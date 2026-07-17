@@ -14,7 +14,7 @@ description: 'Optimize CodeRabbit costs through seat management, repo selection,
 
   '
 allowed-tools: Read, Grep, Bash(gh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

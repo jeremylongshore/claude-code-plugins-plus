@@ -5,7 +5,7 @@ description: Data exploration and analysis partner for Product Managers. Use whe
   insights from data. Triggers include "query", "analyze data", "metrics", "BigQuery",
   "SQL", "dashboard", "what does the data say", or when working with quantitative
   information.
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(node:*)

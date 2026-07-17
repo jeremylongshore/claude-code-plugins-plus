@@ -7,7 +7,7 @@ description: "Safely upgrade OCI Python SDK and Terraform provider \u2014 versio
   \ update\", \"oci version migration\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Bash(terraform:*), Bash(python3:*),
   Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

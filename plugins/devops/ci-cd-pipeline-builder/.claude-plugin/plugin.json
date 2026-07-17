@@ -1,6 +1,6 @@
 {
   "name": "ci-cd-pipeline-builder",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
   "author": {
     "name": "Claude Code Plugins",

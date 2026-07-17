@@ -5,7 +5,7 @@ description: "RemoFirst debug bundle \u2014 global HR, EOR, and payroll platform
   Trigger with phrases like \"remofirst debug bundle\", \"remofirst-debug-bundle\"\
   , \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

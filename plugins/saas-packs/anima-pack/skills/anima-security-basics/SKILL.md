@@ -10,7 +10,7 @@ description: 'Secure Anima and Figma tokens for design-to-code pipelines.
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

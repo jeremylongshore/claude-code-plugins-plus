@@ -4,7 +4,7 @@ description: Create and execute load tests for performance validation using k6, 
   and Artillery. Use when validating application performance under load conditions
   or identifying bottlenecks. Trigger with phrases like "run load test", "create stress
   test", or "validate performance under load".
-version: 1.0.0
+version: 1.21.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(k6:*), Bash(jmeter:*), Bash(artillery:*),
   Bash(performance:*)
 license: MIT

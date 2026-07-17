@@ -13,7 +13,7 @@ description: 'Collect Notion API diagnostic info for troubleshooting and support
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Bash(node:*),
   Grep
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

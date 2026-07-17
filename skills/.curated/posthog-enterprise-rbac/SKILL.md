@@ -11,7 +11,7 @@ description: 'PostHog enterprise access control: organization/project hierarchy,
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

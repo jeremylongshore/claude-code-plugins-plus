@@ -5,7 +5,7 @@ description: "Ramp debug bundle \u2014 corporate card and expense management API
   Trigger with phrases like \"ramp debug bundle\", \"ramp-debug-bundle\", \"corporate\
   \ card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

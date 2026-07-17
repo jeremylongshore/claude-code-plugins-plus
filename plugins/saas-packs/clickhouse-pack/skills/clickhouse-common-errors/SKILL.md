@@ -6,7 +6,7 @@ description: "Diagnose and fix the top 15 ClickHouse errors \u2014 query failure
   Trigger: \"clickhouse error\", \"fix clickhouse\", \"clickhouse not working\",\n\
   \"debug clickhouse\", \"clickhouse exception\", \"clickhouse syntax error\".\n"
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

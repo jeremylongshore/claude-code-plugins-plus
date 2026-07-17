@@ -3,7 +3,7 @@ name: scanning-for-gdpr-compliance
 description: Scan for GDPR compliance issues in data handling and privacy practices.
   Use when ensuring EU data protection compliance. Trigger with 'scan GDPR compliance',
   'check data privacy', or 'validate GDPR'.
-version: 1.0.0
+version: 1.27.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

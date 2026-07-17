@@ -8,7 +8,7 @@ description: 'Execute proactive auto-loading: automatically detects and loads ag
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
-version: 1.0.0
+version: 1.23.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

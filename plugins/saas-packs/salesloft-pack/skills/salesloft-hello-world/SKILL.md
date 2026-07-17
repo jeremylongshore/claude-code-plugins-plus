@@ -5,7 +5,7 @@ description: "Create a minimal working SalesLoft example \u2014 list people and 
   or learning the People and Cadences API patterns.\nTrigger: \"salesloft hello world\"\
   , \"salesloft example\", \"salesloft quick start\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

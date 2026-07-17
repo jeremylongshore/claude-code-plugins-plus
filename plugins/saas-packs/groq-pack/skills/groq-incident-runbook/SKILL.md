@@ -12,7 +12,7 @@ description: 'Execute Groq incident response: triage, mitigation, fallback, and 
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
