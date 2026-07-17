@@ -10869,11 +10869,12 @@
       "category": "saas-packs",
       "plugin": "hubspot-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
         "references/API_REFERENCE.md",
+        "references/event-queue-implementation.md",
         "references/implementation-guide.md"
       ]
     },
@@ -10897,12 +10898,14 @@
       "category": "saas-packs",
       "plugin": "hubspot-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "eval-spec.yaml",
         "references/API_REFERENCE.md",
-        "references/implementation-guide.md"
+        "references/implementation-guide.md",
+        "references/warehouse-upsert-patterns.md"
       ]
     },
     {
@@ -21344,6 +21347,7 @@
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "eval-spec.yaml",
         "references/errors.md",
         "references/examples.md",
         "references/gdpr-compliance.md",
@@ -23269,6 +23273,7 @@
       "run_id": 9,
       "files": [
         "SKILL.md",
+        "eval-spec.yaml",
         "references/errors.md",
         "references/examples.md"
       ]
