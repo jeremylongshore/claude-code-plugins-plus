@@ -9,7 +9,7 @@ description: 'Generate comprehensive test reports with metrics, coverage, and vi
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:report-*)
-version: 1.0.0
+version: 1.23.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

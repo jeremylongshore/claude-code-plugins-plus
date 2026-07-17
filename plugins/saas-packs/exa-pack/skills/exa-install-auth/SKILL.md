@@ -12,7 +12,7 @@ description: 'Install the exa-js SDK and configure API key authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

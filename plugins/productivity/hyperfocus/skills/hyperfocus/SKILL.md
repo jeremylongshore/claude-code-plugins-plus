@@ -1,6 +1,6 @@
 ---
 name: hyperfocus
-version: 0.1.0
+version: 0.2.0
 description: 'ADHD-friendly output formatting for Claude Code. Restructures responses
   with evidence-based cognitive accessibility: chunking, visual hierarchy, front-loaded
   key points, and progressive disclosure. Three modes: clean, flow (default), zen.

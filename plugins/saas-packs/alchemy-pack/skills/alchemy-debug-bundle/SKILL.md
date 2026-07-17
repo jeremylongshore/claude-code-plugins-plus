@@ -10,7 +10,7 @@ description: 'Collect Alchemy SDK debug evidence for troubleshooting and support
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

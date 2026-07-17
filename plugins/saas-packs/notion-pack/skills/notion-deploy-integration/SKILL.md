@@ -15,7 +15,7 @@ description: 'Deploy Node.js applications that use the Notion API to production
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(railway:*), Bash(fly:*),
   Glob
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

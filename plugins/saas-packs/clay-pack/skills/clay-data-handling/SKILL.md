@@ -12,7 +12,7 @@ description: 'Implement GDPR/CCPA-compliant data handling for Clay enrichment pi
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

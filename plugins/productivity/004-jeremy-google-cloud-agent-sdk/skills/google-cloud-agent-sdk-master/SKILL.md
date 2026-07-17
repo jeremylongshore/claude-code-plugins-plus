@@ -6,7 +6,7 @@ description: 'Execute automatic activation for all google cloud agent developmen
 
   '
 allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+version: 2.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

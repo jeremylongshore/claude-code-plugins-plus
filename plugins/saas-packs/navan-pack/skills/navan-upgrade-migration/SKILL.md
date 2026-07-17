@@ -5,7 +5,7 @@ description: "Use when handling Navan API changes in production \u2014 defensive
   \ for unversioned APIs.\nTrigger with \"navan upgrade migration\" or \"navan api\
   \ change handling\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

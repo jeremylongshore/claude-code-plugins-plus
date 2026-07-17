@@ -10,7 +10,7 @@ description: 'Avoid common mistakes when using Kling AI API. Use when troublesho
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

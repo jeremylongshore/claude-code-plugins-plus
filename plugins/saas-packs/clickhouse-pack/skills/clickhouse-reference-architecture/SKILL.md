@@ -7,7 +7,7 @@ description: "Production reference architecture for ClickHouse-backed applicatio
   \ \"clickhouse project structure\",\n\"clickhouse design\", \"clickhouse multi-tenant\"\
   , \"clickhouse reference\".\n"
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

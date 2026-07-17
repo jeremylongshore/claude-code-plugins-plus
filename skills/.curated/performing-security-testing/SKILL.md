@@ -10,7 +10,7 @@ description: 'Test automate security vulnerability testing covering OWASP Top 10
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
-version: 1.0.0
+version: 1.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

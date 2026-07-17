@@ -10,7 +10,7 @@ description: 'Validate AI/ML models and datasets for bias, fairness, and ethical
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
-version: 1.0.0
+version: 1.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -12,7 +12,7 @@ description: 'Implement MaintainX API rate limiting, pagination, and backoff pat
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

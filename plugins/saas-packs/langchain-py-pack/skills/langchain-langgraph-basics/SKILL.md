@@ -7,7 +7,7 @@ description: "Build a correct LangGraph 1.0 StateGraph \u2014 typed TypedDict st
   \ picking recursion_limit.\nTrigger with \"langgraph statgraph\", \"langgraph basics\"\
   , \"GraphRecursionError\",\n\"langgraph conditional edges\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

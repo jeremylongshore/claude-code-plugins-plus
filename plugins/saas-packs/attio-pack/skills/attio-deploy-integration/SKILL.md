@@ -10,7 +10,7 @@ description: 'Deploy Attio integrations to Vercel, Fly.io, Railway, and Cloud Ru
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(railway:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Optimize Lindy AI agent execution speed, reliability, and cost eff
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

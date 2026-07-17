@@ -12,7 +12,7 @@ description: 'Implement CodeRabbit webhook signature validation and event handli
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

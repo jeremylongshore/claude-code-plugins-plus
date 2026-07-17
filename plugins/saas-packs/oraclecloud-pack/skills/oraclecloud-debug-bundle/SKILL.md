@@ -6,7 +6,7 @@ description: "Collect OCI instance diagnostics \u2014 serial console, cloud-init
   Trigger with \"oraclecloud debug bundle\", \"oci diagnostics\", \"oci serial console\"\
   , \"oci instance debug\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

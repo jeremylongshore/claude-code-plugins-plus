@@ -5,7 +5,7 @@ description: "Procore multi env setup \u2014 construction management platform in
   Trigger with phrases like \"procore multi env setup\", \"procore-multi-env-setup\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

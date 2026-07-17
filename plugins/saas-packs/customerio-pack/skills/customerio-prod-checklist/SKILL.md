@@ -12,7 +12,7 @@ description: 'Execute Customer.io production deployment checklist.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*), Glob, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

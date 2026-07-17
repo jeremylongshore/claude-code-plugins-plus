@@ -10,7 +10,7 @@ description: 'Optimize PostHog costs: autocapture tuning, event sampling with be
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

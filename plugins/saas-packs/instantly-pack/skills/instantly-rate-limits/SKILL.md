@@ -13,7 +13,7 @@ description: 'Implement Instantly.ai rate limiting, backoff, and request throttl
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

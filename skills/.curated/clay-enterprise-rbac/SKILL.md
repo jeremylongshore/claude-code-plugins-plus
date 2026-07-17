@@ -13,7 +13,7 @@ description: 'Configure Clay workspace roles, team access control, and credit bu
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

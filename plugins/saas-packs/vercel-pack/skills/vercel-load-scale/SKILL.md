@@ -13,7 +13,7 @@ description: 'Load test and scale Vercel deployments with concurrency tuning and
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

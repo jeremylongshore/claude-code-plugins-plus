@@ -4,7 +4,7 @@ description: Provide comprehensive prioritized performance optimization recommen
   for frontend, backend, and infrastructure. Use when analyzing bottlenecks or seeking
   improvement strategies. Trigger with phrases like "optimize performance", "improve
   speed", or "performance recommendations".
-version: 1.0.0
+version: 1.21.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(analysis:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

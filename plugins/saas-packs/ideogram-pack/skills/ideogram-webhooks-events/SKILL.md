@@ -12,7 +12,7 @@ description: 'Build event-driven workflows around Ideogram''s synchronous API.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

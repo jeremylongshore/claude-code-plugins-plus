@@ -8,7 +8,7 @@ description: 'Execute this skill allows AI assistant to construct and configure 
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.20.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

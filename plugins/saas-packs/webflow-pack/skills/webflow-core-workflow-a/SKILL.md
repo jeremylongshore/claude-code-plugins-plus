@@ -7,7 +7,7 @@ description: "Execute the primary Webflow workflow \u2014 CMS content management
   \ \"webflow CMS\", \"webflow collections\", \"webflow items\",\n\"create webflow\
   \ content\", \"manage webflow CMS\", \"webflow content management\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

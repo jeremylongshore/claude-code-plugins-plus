@@ -13,7 +13,7 @@ description: 'Debug complex Shopify API issues using cost analysis, request trac
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

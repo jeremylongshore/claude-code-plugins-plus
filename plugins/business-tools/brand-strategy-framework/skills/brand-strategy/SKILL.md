@@ -9,7 +9,7 @@ description: 'A 7-part brand strategy framework for building comprehensive brand
   plan". Use when working with brand strategy.
 
   '
-version: 1.0.0
+version: 1.7.0
 author: Rowan Brooks <rowanbrooks100@github.com>
 license: MIT
 allowed-tools: Read, Write, Edit, Glob, Grep

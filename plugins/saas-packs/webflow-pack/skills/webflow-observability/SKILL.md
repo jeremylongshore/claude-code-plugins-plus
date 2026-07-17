@@ -6,7 +6,7 @@ description: "Set up observability for Webflow integrations \u2014 Prometheus me
   webflow monitoring\", \"webflow metrics\",\n\"webflow observability\", \"monitor\
   \ webflow\", \"webflow alerts\", \"webflow tracing\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

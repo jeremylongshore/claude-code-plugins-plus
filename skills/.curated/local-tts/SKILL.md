@@ -15,7 +15,7 @@ description: 'Generate speech locally from text using VoxCPM2 (2B params, Apache
 
   '
 allowed-tools: Read, Bash(python3:*), Bash(file:*), Bash(ls:*)
-version: 1.0.0
+version: 1.3.0
 author: Bubble Invest <contact@bubbleinvest.com>
 license: Apache-2.0
 tags:

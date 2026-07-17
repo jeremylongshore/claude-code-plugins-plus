@@ -10,7 +10,7 @@ description: 'Test automatically generate comprehensive unit tests from source c
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:unit-*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

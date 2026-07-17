@@ -1,6 +1,6 @@
 {
   "name": "database-connection-pooler",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Implement and optimize database connection pooling for improved performance and resource management",
   "author": {
     "name": "Claude Code Plugins",

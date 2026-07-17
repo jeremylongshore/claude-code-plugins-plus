@@ -21,7 +21,7 @@ description: 'Scale Supabase projects for production load: read replicas, connec
 
   '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(psql:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

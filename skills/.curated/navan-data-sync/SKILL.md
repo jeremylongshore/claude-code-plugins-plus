@@ -10,7 +10,7 @@ description: 'Implement incremental sync strategies for Navan BOOKING and TRANSA
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Bash(pip:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

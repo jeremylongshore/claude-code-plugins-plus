@@ -12,7 +12,7 @@ description: 'Execute Perplexity production deployment checklist for Sonar API i
 
   '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

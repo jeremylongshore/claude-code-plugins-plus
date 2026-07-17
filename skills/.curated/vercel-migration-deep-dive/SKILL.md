@@ -13,7 +13,7 @@ description: 'Migrate to Vercel from other platforms or re-architecture existing
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

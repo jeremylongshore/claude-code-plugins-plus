@@ -4,7 +4,7 @@ description: Implement Real User Monitoring (RUM) to capture actual user perform
   data including Core Web Vitals and page load times. Use when setting up user experience
   monitoring or tracking custom performance events. Trigger with phrases like "setup
   RUM", "track Core Web Vitals", or "monitor real user performance".
-version: 1.0.0
+version: 1.22.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(rum:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

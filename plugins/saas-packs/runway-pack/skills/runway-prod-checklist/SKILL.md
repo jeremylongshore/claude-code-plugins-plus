@@ -5,7 +5,7 @@ description: "Runway prod checklist \u2014 AI video generation and creative AI p
   Trigger with phrases like \"runway prod checklist\", \"runway-prod-checklist\",\
   \ \"AI video generation\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

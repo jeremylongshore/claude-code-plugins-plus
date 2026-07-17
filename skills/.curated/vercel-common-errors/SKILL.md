@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Vercel deployment and function errors.
 
   '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

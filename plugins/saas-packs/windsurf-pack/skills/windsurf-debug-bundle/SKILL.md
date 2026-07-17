@@ -13,7 +13,7 @@ description: 'Collect Windsurf diagnostic information for troubleshooting and su
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(ls:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

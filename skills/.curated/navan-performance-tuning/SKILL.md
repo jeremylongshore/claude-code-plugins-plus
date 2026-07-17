@@ -5,7 +5,7 @@ description: "Use when optimizing Navan API call patterns for high-volume integr
   \ with \"navan performance tuning\" or \"navan api optimization\" or \"navan caching\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

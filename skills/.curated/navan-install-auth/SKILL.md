@@ -8,7 +8,7 @@ description: 'Set up OAuth 2.0 authentication for the Navan REST API.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

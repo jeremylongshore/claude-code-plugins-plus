@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for Apify Actor builds and deployments.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

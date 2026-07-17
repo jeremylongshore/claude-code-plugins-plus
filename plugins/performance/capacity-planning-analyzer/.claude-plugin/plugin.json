@@ -1,6 +1,6 @@
 {
   "name": "capacity-planning-analyzer",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "description": "Analyze and plan for capacity requirements",
   "author": {
     "name": "Claude Code Plugins",

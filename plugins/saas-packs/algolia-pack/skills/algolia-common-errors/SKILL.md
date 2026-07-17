@@ -10,7 +10,7 @@ description: 'Diagnose and fix the top Algolia API errors: 400, 403, 404, 429, A
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

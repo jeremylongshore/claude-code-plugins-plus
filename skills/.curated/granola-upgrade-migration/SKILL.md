@@ -12,7 +12,7 @@ description: 'Upgrade Granola app versions and migrate between subscription plan
 
   '
 allowed-tools: Read, Write, Edit, Bash(brew:*), Bash(defaults:*), Bash(rm:*), Bash(open:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

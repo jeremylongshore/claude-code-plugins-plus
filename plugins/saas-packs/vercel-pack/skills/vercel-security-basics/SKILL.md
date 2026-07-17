@@ -13,7 +13,7 @@ description: 'Apply Vercel security best practices for secrets, headers, and acc
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

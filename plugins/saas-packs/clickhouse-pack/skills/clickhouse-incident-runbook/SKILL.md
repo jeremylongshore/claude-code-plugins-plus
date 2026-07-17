@@ -6,7 +6,7 @@ description: "ClickHouse incident response \u2014 triage, diagnose, and remediat
   Trigger: \"clickhouse incident\", \"clickhouse outage\", \"clickhouse down\",\n\"\
   clickhouse emergency\", \"clickhouse on-call\", \"clickhouse broken\".\n"
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

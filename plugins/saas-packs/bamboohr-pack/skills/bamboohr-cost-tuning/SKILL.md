@@ -12,7 +12,7 @@ description: 'Optimize BambooHR integration costs through request reduction, cac
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

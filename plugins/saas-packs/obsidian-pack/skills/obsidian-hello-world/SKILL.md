@@ -13,7 +13,7 @@ description: 'Create a minimal working Obsidian plugin with commands, settings, 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob
-version: 2.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

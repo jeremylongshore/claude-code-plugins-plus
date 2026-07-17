@@ -6,7 +6,7 @@ description: 'Process split datasets into training, validation, and testing sets
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.22.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

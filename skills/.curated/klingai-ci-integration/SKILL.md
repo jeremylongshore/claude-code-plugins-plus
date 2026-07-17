@@ -10,7 +10,7 @@ description: 'Integrate Kling AI video generation into CI/CD pipelines. Use when
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

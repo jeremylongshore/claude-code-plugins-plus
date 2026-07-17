@@ -2,7 +2,7 @@
 name: guidewire-webhooks-integrations
 description: Consume Guidewire App Events into downstream systems (SQS/SNS, Kafka, webhooks) and survive the event-side failures — events not firing because Gosu registration was missed, duplicates from queue redelivery, out-of-order arrival on the same resource, replay from a checkpoint for backfill, and back-pressure when consumers cannot keep up with producers. Use when registering App Events in Gosu, building an event-consumer service, or recovering from a missed-event window. Trigger with "guidewire app events", "guidewire webhooks", "guidewire event consumer", "guidewire event replay", "guidewire idempotent consumer".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(aws:*), Grep, Glob
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

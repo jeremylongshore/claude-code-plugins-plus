@@ -7,7 +7,7 @@ description: 'Configure Glean local development with mock search responses, test
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

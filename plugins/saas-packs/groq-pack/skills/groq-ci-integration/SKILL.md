@@ -13,7 +13,7 @@ description: 'Configure Groq CI/CD integration with GitHub Actions, testing, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

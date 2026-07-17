@@ -1,6 +1,6 @@
 {
   "name": "infrastructure-metrics-collector",
-  "version": "1.0.0",
+  "version": "1.20.0",
   "description": "Collect comprehensive infrastructure performance metrics",
   "author": {
     "name": "Claude Code Plugins",

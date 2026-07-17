@@ -12,7 +12,7 @@ description: 'Create a minimal working Ideogram image generation example.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

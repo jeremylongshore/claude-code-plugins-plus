@@ -12,7 +12,7 @@ description: 'Collect Clari API diagnostic info for support cases.
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(python3:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

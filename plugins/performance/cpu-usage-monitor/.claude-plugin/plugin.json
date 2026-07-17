@@ -1,6 +1,6 @@
 {
   "name": "cpu-usage-monitor",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Monitor and analyze CPU usage patterns in applications",
   "author": {
     "name": "Claude Code Plugins",

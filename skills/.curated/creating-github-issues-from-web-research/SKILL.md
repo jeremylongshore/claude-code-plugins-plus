@@ -8,7 +8,7 @@ description: 'Execute this skill enhances AI assistant''s ability to conduct web
 
   '
 allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

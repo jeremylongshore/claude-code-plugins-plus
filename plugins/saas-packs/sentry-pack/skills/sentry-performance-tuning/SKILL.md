@@ -16,7 +16,7 @@ description: 'Optimize Sentry performance monitoring for lower overhead and high
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*),
   Bash(sentry-cli:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

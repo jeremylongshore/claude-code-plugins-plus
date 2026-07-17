@@ -5,7 +5,7 @@ description: "QuickNode install auth \u2014 blockchain RPC and Web3 infrastructu
   \ with phrases like \"quicknode install auth\", \"quicknode-install-auth\", \"blockchain\
   \ RPC\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

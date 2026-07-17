@@ -7,7 +7,7 @@ description: "Apply production-ready Webflow SDK patterns \u2014 singleton clien
   \ patterns\", \"webflow best practices\",\n\"webflow code patterns\", \"idiomatic\
   \ webflow\", \"webflow typescript\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: |
   reconciliation", "hubspot quota dashboard", "hubspot duplicate deals",
   "revops pipeline audit".
 allowed-tools: Read, Write, Bash(curl:*), Bash(jq:*), Bash(python3:*)
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

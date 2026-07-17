@@ -6,7 +6,7 @@ description: "Deploy Granola native integrations \u2014 Slack, Notion, HubSpot, 
   , \"granola hubspot\",\n\"granola attio\", \"connect granola\", \"granola integration\"\
   .\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -8,7 +8,7 @@ description: 'Configure this skill configures service meshes like istio and link
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

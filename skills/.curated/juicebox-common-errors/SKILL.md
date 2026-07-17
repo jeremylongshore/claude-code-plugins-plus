@@ -6,7 +6,7 @@ description: 'Diagnose and fix Juicebox API errors.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

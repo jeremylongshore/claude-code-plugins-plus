@@ -14,7 +14,7 @@ description: 'Configure Shopify local development with Shopify CLI, hot reload, 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Bash(shopify:*),
   Grep
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

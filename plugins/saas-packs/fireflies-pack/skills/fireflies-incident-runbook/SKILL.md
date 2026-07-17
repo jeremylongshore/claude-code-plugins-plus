@@ -13,7 +13,7 @@ description: 'Execute Fireflies.ai incident response with triage, remediation, a
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

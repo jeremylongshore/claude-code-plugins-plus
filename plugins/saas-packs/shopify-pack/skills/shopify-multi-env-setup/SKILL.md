@@ -14,7 +14,7 @@ description: 'Configure Shopify apps across development, staging, and production
 
   '
 allowed-tools: Read, Write, Edit, Bash(shopify:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

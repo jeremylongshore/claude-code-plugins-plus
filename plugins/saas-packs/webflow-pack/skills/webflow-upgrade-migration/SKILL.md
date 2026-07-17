@@ -11,7 +11,7 @@ description: 'Analyze, plan, and execute Webflow SDK upgrades (webflow-api v1 to
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

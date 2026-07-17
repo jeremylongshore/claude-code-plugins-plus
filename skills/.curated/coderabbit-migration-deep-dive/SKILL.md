@@ -14,7 +14,7 @@ description: 'Migrate to CodeRabbit from other code review tools or roll out acr
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Manage a fundraise pipeline end-to-end with Finta.
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

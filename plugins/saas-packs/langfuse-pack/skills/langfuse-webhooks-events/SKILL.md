@@ -13,7 +13,7 @@ description: 'Configure Langfuse webhooks for prompt change notifications and ev
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

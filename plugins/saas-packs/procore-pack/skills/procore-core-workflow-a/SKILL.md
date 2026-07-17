@@ -5,7 +5,7 @@ description: "Procore core workflow a \u2014 construction management platform in
   Trigger with phrases like \"procore core workflow a\", \"procore-core-workflow-a\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

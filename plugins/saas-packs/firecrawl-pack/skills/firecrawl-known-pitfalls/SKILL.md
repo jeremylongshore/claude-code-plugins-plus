@@ -12,7 +12,7 @@ description: 'Identify and avoid Firecrawl anti-patterns and common integration 
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

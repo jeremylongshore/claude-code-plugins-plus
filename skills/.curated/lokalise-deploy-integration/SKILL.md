@@ -12,7 +12,7 @@ description: 'Deploy Lokalise integrations to Vercel, Netlify, and Cloud Run pla
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(netlify:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

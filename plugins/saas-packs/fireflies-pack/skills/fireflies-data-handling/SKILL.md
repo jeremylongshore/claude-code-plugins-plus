@@ -13,7 +13,7 @@ description: 'Handle Fireflies.ai transcript data: export formats, PII redaction
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

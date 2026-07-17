@@ -12,7 +12,7 @@ description: 'Monitor Clari forecast changes using export job polling and change
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(python3:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Implement Documenso webhook configuration and event handling.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(ngrok:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

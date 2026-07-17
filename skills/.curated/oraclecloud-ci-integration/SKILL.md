@@ -10,7 +10,7 @@ description: 'Configure CI/CD pipelines for OCI with Terraform and GitHub Action
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(terraform:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

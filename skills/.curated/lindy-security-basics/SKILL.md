@@ -12,7 +12,7 @@ description: 'Implement security best practices for Lindy AI agents and integrat
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

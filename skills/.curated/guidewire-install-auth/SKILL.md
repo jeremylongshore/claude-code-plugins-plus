@@ -2,7 +2,7 @@
 name: guidewire-install-auth
 description: Authenticate production Guidewire Cloud API integrations and survive the auth-side failures — token expiry storms, scope drift, private-CA PKIX errors, secret rotation. Use when hardening OAuth2 token caching, configuring JVM trust stores, or rotating client secrets without downtime. Trigger with "guidewire auth", "guidewire OAuth2", "guidewire token cache", "guidewire PKIX", "guidewire secret rotation".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(java:*), Bash(keytool:*), Bash(openssl:*), Grep
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

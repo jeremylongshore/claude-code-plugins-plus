@@ -12,7 +12,7 @@ description: 'Automate Figma design token sync and asset export in CI/CD pipelin
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

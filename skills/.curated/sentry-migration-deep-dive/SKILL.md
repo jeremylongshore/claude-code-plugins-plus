@@ -13,7 +13,7 @@ description: 'Migrate to Sentry from other error tracking tools like Rollbar, Bu
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*), Grep, Glob
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

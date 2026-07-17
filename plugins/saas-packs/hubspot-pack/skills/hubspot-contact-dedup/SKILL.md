@@ -10,7 +10,7 @@ description: |
   "hubspot duplicate contacts", "hubspot contact cleanup", "hubspot import duplicates",
   "hubspot fuzzy match contacts".
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(python3:*)
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

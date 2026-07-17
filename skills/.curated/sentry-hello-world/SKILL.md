@@ -13,7 +13,7 @@ description: 'Capture your first test error with Sentry and verify it appears in
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(python:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

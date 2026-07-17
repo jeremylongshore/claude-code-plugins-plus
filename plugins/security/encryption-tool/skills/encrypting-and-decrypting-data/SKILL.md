@@ -3,7 +3,7 @@ name: encrypting-and-decrypting-data
 description: Validate encryption implementations and cryptographic practices. Use
   when reviewing data security measures. Trigger with 'check encryption', 'validate
   crypto', or 'review security keys'.
-version: 1.0.0
+version: 1.24.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

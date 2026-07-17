@@ -13,7 +13,7 @@ description: 'Configure Vercel CI/CD with GitHub Actions, preview deployments, a
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(vercel:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

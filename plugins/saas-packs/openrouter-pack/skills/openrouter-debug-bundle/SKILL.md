@@ -7,7 +7,7 @@ description: 'Create debug bundles for troubleshooting OpenRouter API issues. Us
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(node:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

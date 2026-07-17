@@ -10,7 +10,7 @@ description: 'Migrate from OpenAI/Anthropic/other LLM providers to Groq, or migr
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

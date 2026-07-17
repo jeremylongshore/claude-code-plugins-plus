@@ -10,7 +10,7 @@ description: 'Configure Fly.io local development with Docker, proxy, and SSH con
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(docker:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

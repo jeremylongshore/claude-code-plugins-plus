@@ -13,7 +13,7 @@ description: 'Deploy Salesforce-connected applications to Heroku, Vercel, and Cl
 
   '
 allowed-tools: Read, Write, Edit, Bash(heroku:*), Bash(vercel:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

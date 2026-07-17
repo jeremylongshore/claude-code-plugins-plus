@@ -6,7 +6,7 @@ description: "Execute major Miro migrations \u2014 migrate boards between teams/
   \ \"migrate miro\", \"miro migration\",\n\"export miro boards\", \"import to miro\"\
   , \"miro data migration\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

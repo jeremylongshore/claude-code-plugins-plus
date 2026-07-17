@@ -14,7 +14,7 @@ description: 'Implement Salesforce data privacy, GDPR/CCPA compliance, and field
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

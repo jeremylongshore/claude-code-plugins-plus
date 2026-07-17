@@ -12,7 +12,7 @@ description: 'High-volume Notion operations: parallel requests within 3 req/sec,
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

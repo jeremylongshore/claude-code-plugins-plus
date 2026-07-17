@@ -4,7 +4,7 @@ description: "Use when responding to Navan platform incidents \u2014 flight canc
   \ booking API failures, expense sync outages, or OAuth authentication errors.\n\
   Trigger with \"navan incident runbook\" or \"navan outage response\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

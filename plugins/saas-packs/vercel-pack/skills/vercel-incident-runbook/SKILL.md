@@ -13,7 +13,7 @@ description: 'Vercel incident response procedures with triage, instant rollback,
 
   '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Implement Firecrawl reference architecture with scrape/crawl/map/e
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

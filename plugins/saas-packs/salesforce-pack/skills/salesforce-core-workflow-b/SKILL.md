@@ -13,7 +13,7 @@ description: 'Execute Salesforce Bulk API 2.0 and Composite API operations for h
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Set up Obsidian plugin development environment with Node.js and Ty
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(mkdir:*), Bash(ln:*),
   Grep
-version: 2.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

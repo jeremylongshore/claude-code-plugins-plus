@@ -11,7 +11,7 @@ description: 'Deploy your first app to Fly.io with flyctl launch and the Machine
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Bash(docker:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

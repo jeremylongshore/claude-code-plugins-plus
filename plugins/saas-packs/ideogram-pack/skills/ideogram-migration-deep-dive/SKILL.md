@@ -13,7 +13,7 @@ description: 'Migrate from other image generation APIs to Ideogram, or re-archit
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

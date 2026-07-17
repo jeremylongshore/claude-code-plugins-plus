@@ -13,7 +13,7 @@ description: 'Execute Firecrawl incident response procedures with triage, mitiga
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -2,7 +2,7 @@
 name: guidewire-migration-and-upgrade
 description: Move a Guidewire deployment to a new platform or release without breaking running policies and claims — on-prem→cloud cutover (config reconciliation, data migration, parallel-run validation), in-place version upgrade (e.g., 202403→202503) with deprecated-API regression coverage, rehearsal-driven cutover with rollback path mid-flight, and broker/claimant communication so users hit the right system at the right time. Use when planning a cloud migration, executing a version upgrade, or rehearsing a cutover. Trigger with "guidewire migration", "guidewire upgrade", "guidewire cutover", "guidewire on-prem to cloud", "202503 upgrade".
 allowed-tools: Read, Write, Edit, Bash(gradle:*), Bash(curl:*), Bash(jq:*), Bash(diff:*), Grep, Glob
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

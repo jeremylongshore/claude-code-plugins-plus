@@ -1,6 +1,6 @@
 {
   "name": "environment-config-manager",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Manage environment configurations and secrets across deployments",
   "author": {
     "name": "Claude Code Plugins",

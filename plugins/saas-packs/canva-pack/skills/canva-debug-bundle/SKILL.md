@@ -12,7 +12,7 @@ description: 'Collect Canva Connect API debug evidence for troubleshooting and s
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

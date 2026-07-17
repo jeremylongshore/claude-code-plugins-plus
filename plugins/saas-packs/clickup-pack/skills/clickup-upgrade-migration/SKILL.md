@@ -13,7 +13,7 @@ description: 'Migrate between ClickUp API versions (v2 to v3) and handle breakin
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

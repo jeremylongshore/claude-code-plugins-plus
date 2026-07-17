@@ -5,7 +5,7 @@ description: "QuickNode deploy integration \u2014 blockchain RPC and Web3 infras
   \ with phrases like \"quicknode deploy integration\", \"quicknode-deploy-integration\"\
   , \"blockchain RPC\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

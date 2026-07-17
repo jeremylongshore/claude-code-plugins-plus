@@ -1,6 +1,6 @@
 {
   "name": "database-migration-manager",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Manage database migrations with version control, rollback capabilities, and automated schema evolution tracking",
   "author": {
     "name": "Claude Code Plugins",

@@ -13,7 +13,7 @@ description: 'Execute Windsurf incident response when AI features fail or cause 
 
   '
 allowed-tools: Read, Grep, Bash(git:*), Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

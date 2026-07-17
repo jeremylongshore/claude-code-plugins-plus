@@ -18,7 +18,7 @@ description: 'Implement Supabase database webhooks, pg_net async HTTP, LISTEN/NO
 
   '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(curl:*), Bash(psql:*), Grep
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Implement audio data handling best practices for Deepgram integrat
 
   '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

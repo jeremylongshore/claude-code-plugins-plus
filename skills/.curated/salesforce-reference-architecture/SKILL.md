@@ -14,7 +14,7 @@ description: 'Implement Salesforce integration reference architecture with jsfor
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

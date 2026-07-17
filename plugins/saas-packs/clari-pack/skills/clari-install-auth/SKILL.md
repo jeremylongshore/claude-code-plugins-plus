@@ -12,7 +12,7 @@ description: 'Configure Clari API authentication with API key and set up export 
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(pip:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

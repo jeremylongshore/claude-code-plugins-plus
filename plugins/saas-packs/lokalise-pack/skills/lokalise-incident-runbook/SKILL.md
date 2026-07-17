@@ -13,7 +13,7 @@ description: 'Execute Lokalise incident response procedures with triage, mitigat
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(lokalise2:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

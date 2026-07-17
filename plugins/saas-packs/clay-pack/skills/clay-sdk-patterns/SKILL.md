@@ -13,7 +13,7 @@ description: 'Apply production-ready patterns for integrating with Clay via webh
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

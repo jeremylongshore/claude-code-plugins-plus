@@ -17,7 +17,7 @@ description: 'Apply Notion API security best practices for integration tokens, O
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep, Glob
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

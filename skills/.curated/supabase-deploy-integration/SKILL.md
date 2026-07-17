@@ -16,7 +16,7 @@ description: 'Deploy and manage Supabase projects in production. Covers database
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:supabase), Bash(supabase:*), Bash(curl:*)
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

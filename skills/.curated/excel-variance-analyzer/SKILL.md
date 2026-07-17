@@ -10,7 +10,7 @@ description: 'Analyze budget vs actual variances in Excel with drill-down and ro
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

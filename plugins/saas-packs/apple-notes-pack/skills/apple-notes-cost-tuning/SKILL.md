@@ -3,7 +3,7 @@ name: apple-notes-cost-tuning
 description: "Apple Notes cost optimization \u2014 it is free, focus on iCloud storage\
   \ management.\nTrigger: \"apple notes cost\".\n"
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

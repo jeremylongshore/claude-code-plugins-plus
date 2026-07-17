@@ -1,6 +1,6 @@
 {
   "name": "sow-generator",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "description": "Generate professional Statements of Work for AI projects",
   "author": {
     "name": "Claude Code Plugin Hub",

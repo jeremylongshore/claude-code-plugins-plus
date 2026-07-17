@@ -10,7 +10,7 @@ description: 'Master OCI IAM policy syntax, common policy patterns, and API key 
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

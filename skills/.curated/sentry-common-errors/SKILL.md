@@ -15,7 +15,7 @@ description: 'Troubleshoot common Sentry integration issues and fixes.
   '
 allowed-tools: Read, Grep, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(npx:*), Bash(sentry-cli:*),
   Bash(python3:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

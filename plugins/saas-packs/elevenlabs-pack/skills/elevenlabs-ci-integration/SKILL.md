@@ -13,7 +13,7 @@ description: 'Configure CI/CD pipelines for ElevenLabs with mocked unit tests an
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

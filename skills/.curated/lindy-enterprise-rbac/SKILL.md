@@ -12,7 +12,7 @@ description: 'Configure enterprise role-based access control for Lindy AI worksp
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

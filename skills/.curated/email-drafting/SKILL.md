@@ -4,7 +4,7 @@ description: "Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hy
   \ Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies.\
   \ Use when user asks to draft or reply to an email, or when Gmail webhook triggers\
   \ arrive for auto-draft classification. Draft-only mode \u2014 never sends automatically."
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Martin Gontovnikas <martin@hypergrowthpartners.com>
 tags:

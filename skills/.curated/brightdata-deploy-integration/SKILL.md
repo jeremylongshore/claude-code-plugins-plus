@@ -12,7 +12,7 @@ description: 'Deploy Bright Data integrations to Vercel, Fly.io, and Cloud Run p
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

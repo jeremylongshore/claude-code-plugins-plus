@@ -14,7 +14,7 @@ description: 'Apply Salesforce advanced debugging with debug logs, SOQL query pl
 
   '
 allowed-tools: Read, Grep, Bash(sf:*), Bash(curl:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

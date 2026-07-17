@@ -6,7 +6,7 @@ description: "Implement Webflow reference architecture \u2014 layered project st
   \ structure\",\n\"how to organize webflow\", \"webflow integration design\", \"\
   webflow best practices\".\n"
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

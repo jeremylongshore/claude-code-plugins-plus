@@ -11,7 +11,7 @@ description: 'Secure PostHog integration: API key management, project key vs per
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

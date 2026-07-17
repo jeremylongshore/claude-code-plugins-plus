@@ -11,7 +11,7 @@ description: 'Build a browser-based code editor with WebContainers: file tree, e
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -14,7 +14,7 @@ description: 'Execute major Intercom data migrations and re-platforming with the
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

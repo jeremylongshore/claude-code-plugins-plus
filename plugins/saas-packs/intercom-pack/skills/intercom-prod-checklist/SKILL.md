@@ -12,7 +12,7 @@ description: 'Execute Intercom production readiness checklist and rollback proce
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

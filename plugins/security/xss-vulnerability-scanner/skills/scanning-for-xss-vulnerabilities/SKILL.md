@@ -8,7 +8,7 @@ description: 'Execute this skill enables AI assistant to automatically scan for 
 
   '
 allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+version: 1.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

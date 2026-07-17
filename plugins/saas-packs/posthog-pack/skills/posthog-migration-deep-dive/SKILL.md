@@ -12,7 +12,7 @@ description: 'Migrate to PostHog from Google Analytics, Mixpanel, Amplitude, or 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

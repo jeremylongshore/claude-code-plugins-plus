@@ -10,7 +10,7 @@ description: 'Configure Algolia across dev/staging/production: index prefixing, 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

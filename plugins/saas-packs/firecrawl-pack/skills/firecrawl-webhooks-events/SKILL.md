@@ -13,7 +13,7 @@ description: 'Implement Firecrawl webhook event handling for async crawl and bat
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

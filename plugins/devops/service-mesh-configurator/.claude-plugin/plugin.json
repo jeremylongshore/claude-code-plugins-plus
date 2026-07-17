@@ -1,6 +1,6 @@
 {
   "name": "service-mesh-configurator",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Configure service mesh (Istio, Linkerd) for microservices",
   "author": {
     "name": "Claude Code Plugins",

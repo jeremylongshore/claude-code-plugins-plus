@@ -5,7 +5,7 @@ description: "RemoFirst upgrade migration \u2014 global HR, EOR, and payroll pla
   \ or compliance.\nTrigger with phrases like \"remofirst upgrade migration\", \"\
   remofirst-upgrade-migration\", \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

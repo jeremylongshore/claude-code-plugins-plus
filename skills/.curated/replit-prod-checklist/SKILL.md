@@ -13,7 +13,7 @@ description: 'Execute Replit production deployment checklist with rollback and h
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

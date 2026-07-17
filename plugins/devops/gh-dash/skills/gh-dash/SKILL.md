@@ -13,7 +13,7 @@ description: 'Provides a GitHub pull request dashboard directly in the terminal.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Glob, Grep
-version: 1.0.0
+version: 1.6.0
 author: Jake Kozloski <jakozloski@gmail.com>
 license: MIT
 tags:

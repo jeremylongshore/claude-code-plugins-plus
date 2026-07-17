@@ -13,7 +13,7 @@ description: 'Execute Groq primary workflow: chat completions with tool use and 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

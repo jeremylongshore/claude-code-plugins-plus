@@ -12,7 +12,7 @@ description: 'Apply Canva Connect API advanced debugging for hard-to-diagnose is
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

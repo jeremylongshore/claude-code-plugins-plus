@@ -12,7 +12,7 @@ description: 'Configure Customer.io CI/CD integration with automated testing.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gh:*), Glob, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

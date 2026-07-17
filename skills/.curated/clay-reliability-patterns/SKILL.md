@@ -13,7 +13,7 @@ description: 'Build fault-tolerant Clay integrations with circuit breakers, dead
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "database-security-scanner",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Database plugin for database-security-scanner",
   "author": {
     "name": "Claude Code Plugins",

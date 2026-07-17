@@ -14,7 +14,7 @@ description: 'Create diagnostic bundles for Granola support requests.
 allowed-tools: Read, Write, Edit, Bash(system_profiler:*), Bash(sw_vers:*), Bash(defaults:*),
   Bash(curl:*), Bash(pgrep:*), Bash(ls:*), Bash(zip:*), Bash(mkdir:*), Bash(uname:*),
   Grep
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

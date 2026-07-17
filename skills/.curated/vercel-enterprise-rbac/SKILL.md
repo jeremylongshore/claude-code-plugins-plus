@@ -13,7 +13,7 @@ description: 'Configure Vercel enterprise RBAC, access groups, SSO integration, 
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Install and configure Lokalise SDK/CLI authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(lokalise2:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

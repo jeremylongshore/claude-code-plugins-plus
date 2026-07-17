@@ -4,7 +4,7 @@ description: "Procore data handling \u2014 construction management platform inte
   Use when working with Procore API for project management, RFIs, or submittals.\n\
   Trigger with phrases like \"procore data handling\", \"procore-data-handling\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

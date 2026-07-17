@@ -19,7 +19,7 @@ description: 'Implement GDPR/CCPA compliance with Supabase: RLS for data isolati
   '
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*),
   Grep, Glob
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

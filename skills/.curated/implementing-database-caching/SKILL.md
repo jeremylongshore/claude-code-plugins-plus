@@ -11,7 +11,7 @@ description: 'Process use when you need to implement multi-tier caching to impro
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), Bash(docker:redis:*)
-version: 1.0.0
+version: 1.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

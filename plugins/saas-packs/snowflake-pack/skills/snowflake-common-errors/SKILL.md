@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Snowflake errors and SQL compilation failu
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

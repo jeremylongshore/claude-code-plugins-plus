@@ -5,7 +5,7 @@ description: "Apply Miro REST API v2 security best practices \u2014 OAuth scope 
   \ phrases like \"miro security\", \"miro secrets\",\n\"secure miro\", \"miro token\
   \ security\", \"miro webhook signature\".\n"
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

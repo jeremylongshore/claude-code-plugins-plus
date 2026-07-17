@@ -13,7 +13,7 @@ description: 'Run ClickHouse integration tests in CI with GitHub Actions and Doc
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

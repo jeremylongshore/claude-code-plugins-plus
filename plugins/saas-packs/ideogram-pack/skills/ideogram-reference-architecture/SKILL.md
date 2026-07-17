@@ -13,7 +13,7 @@ description: 'Implement Ideogram reference architecture with prompt templates, a
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

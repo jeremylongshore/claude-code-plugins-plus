@@ -5,7 +5,7 @@ description: "QuickNode webhooks events \u2014 blockchain RPC and Web3 infrastru
   \ with phrases like \"quicknode webhooks events\", \"quicknode-webhooks-events\"\
   , \"blockchain RPC\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

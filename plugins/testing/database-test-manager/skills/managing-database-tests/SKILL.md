@@ -10,7 +10,7 @@ description: 'Test database testing including fixtures, transactions, and rollba
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:db-*)
-version: 1.0.0
+version: 1.26.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

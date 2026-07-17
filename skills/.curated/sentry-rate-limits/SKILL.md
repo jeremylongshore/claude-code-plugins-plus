@@ -17,7 +17,7 @@ description: 'Manage Sentry rate limits, quotas, and event volume optimization.
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(curl:*), Bash(node:*), Bash(python3:*),
   Bash(pip:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

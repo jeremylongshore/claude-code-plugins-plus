@@ -7,7 +7,7 @@ description: 'Execute software engineer specializing in creating production-read
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 2.1.0
+version: 2.19.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 effort: high

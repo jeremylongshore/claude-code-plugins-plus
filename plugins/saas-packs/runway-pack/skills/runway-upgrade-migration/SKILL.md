@@ -5,7 +5,7 @@ description: "Runway upgrade migration \u2014 AI video generation and creative A
   \ creative AI.\nTrigger with phrases like \"runway upgrade migration\", \"runway-upgrade-migration\"\
   , \"AI video generation\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

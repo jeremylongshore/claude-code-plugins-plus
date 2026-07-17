@@ -14,7 +14,7 @@ description: 'Run ClickHouse locally with Docker, configure test fixtures, and i
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(docker-compose:*),
   Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

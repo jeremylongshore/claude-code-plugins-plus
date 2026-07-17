@@ -13,7 +13,7 @@ description: 'Configure Mistral AI CI/CD integration with GitHub Actions and pro
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

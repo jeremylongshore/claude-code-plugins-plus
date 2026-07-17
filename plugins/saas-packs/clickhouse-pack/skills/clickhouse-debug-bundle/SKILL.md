@@ -7,7 +7,7 @@ description: "Collect ClickHouse diagnostic data \u2014 system tables, query log
   \ diagnostics\", \"clickhouse support bundle\",\n\"collect clickhouse logs\", \"\
   clickhouse system tables\".\n"
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

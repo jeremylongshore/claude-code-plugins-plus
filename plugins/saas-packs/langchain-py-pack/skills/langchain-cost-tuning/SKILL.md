@@ -16,7 +16,7 @@ description: 'Control LangChain 1.0 AI spend with accurate streaming token accou
 
   '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(redis-cli:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

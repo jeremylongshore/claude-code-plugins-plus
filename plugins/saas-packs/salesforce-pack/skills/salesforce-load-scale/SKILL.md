@@ -14,7 +14,7 @@ description: 'Implement Salesforce load testing, API limit capacity planning, an
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(sf:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

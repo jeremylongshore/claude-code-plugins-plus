@@ -15,7 +15,7 @@ description: 'Integrate the Notion API into CI/CD pipelines for automated docume
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*), Bash(npx:*), Bash(python3:*)
-version: 1.0.0
+version: 1.37.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

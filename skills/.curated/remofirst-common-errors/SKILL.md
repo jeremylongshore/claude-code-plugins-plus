@@ -5,7 +5,7 @@ description: "RemoFirst common errors \u2014 global HR, EOR, and payroll platfor
   \ or compliance.\nTrigger with phrases like \"remofirst common errors\", \"remofirst-common-errors\"\
   , \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

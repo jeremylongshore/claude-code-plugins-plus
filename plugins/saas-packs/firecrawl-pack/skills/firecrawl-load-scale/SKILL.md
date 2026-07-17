@@ -13,7 +13,7 @@ description: 'Load test and scale Firecrawl scraping pipelines with concurrency 
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

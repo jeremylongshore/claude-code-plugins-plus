@@ -7,7 +7,7 @@ description: 'Diagnose and fix common Glean API errors including indexing failur
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

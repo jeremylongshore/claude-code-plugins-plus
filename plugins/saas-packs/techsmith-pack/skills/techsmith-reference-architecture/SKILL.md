@@ -8,7 +8,7 @@ description: 'TechSmith reference architecture for Snagit COM API and Camtasia a
 
   '
 allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
-version: 1.0.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

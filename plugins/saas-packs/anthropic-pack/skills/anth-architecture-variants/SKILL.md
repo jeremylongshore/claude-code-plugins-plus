@@ -11,7 +11,7 @@ description: 'Choose and implement Claude API architecture patterns for differen
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

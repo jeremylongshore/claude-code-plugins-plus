@@ -7,7 +7,7 @@ description: 'Execute use when generating Helm charts for Kubernetes application
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(helm:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

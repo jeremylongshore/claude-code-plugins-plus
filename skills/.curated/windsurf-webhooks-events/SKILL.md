@@ -12,7 +12,7 @@ description: 'Build Windsurf extensions and integrate with VS Code extension API
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

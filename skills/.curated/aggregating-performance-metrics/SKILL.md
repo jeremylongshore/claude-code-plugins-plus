@@ -4,7 +4,7 @@ description: Aggregate and centralize performance metrics from applications, sys
   databases, caches, and services. Use when consolidating monitoring data from multiple
   sources. Trigger with phrases like "aggregate metrics", "centralize monitoring",
   or "collect performance data".
-version: 1.0.0
+version: 1.21.0
 allowed-tools: Read, Write, Bash(prometheus:*), Bash(metrics:*), Bash(monitoring:*),
   Grep
 license: MIT

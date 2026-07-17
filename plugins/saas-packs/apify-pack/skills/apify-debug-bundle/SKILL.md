@@ -13,7 +13,7 @@ description: 'Collect Apify debug evidence for support tickets and troubleshooti
   '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(node:*), Bash(tar:*), Bash(apify:*),
   Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

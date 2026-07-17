@@ -13,7 +13,7 @@ description: 'Design Supabase Postgres schema from business requirements with mi
 
   '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(npx:*), Grep
-version: 1.0.1
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

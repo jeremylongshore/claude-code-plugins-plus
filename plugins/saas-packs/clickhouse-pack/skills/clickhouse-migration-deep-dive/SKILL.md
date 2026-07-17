@@ -7,7 +7,7 @@ description: "Execute ClickHouse schema migrations \u2014 ALTER TABLE operations
   \ migration\", \"clickhouse ALTER TABLE\", \"clickhouse schema change\",\n\"migrate\
   \ clickhouse\", \"clickhouse add column\", \"clickhouse schema migration\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

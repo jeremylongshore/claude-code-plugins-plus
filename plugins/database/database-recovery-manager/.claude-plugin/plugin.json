@@ -1,6 +1,6 @@
 {
   "name": "database-recovery-manager",
-  "version": "1.0.0",
+  "version": "1.26.0",
   "description": "Database plugin for database-recovery-manager",
   "author": {
     "name": "Claude Code Plugins",
