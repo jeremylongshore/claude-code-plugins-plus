@@ -29,7 +29,7 @@ This repo is the **Tons of Skills** marketplace for Claude Code plugins and skil
 
 ## Related repos (multi-repo context)
 
-This repo depends on **`@intentsolutions/core`** (the authoring-schema kernel SSoT — a separate package/repo) and deploys to tonsofskills.com via the **intentsolutions-vps-runbook** repo. Greptile's current config schema does not expose a multi-repo `patternRepositories` key, so these are noted here for reviewer context rather than wired into `config.json`.
+This repo depends on **`@intentsolutions/core`** (the authoring-schema kernel SSoT — a separate package/repo) and follows the deployment authority in **`intent-solutions-io/intent-os/ops/deploy`**. Greptile's current config schema does not expose a multi-repo `patternRepositories` key, so these are noted here for reviewer context rather than wired into `config.json`.
 
 ## Reviewing a `sources.yaml` entry
 
