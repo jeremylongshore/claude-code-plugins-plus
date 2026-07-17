@@ -122,7 +122,7 @@ python3 freshie/scripts/dolt-sync.py --no-push           # local sync only
 python3 freshie/scripts/dolt-sync.py --recreate-tables   # after a legit schema change
 python3 freshie/scripts/dolt-sync.py --alert-on-regression  # exit 4 when grades regressed
 python3 freshie/scripts/run-delta.py                     # (re)generate the newest run's delta report
-python3 -m unittest tests.test_dolt_sync tests.test_run_delta -v  # exporter + delta unit tests (70)
+python3 -m unittest tests.test_dolt_sync tests.test_run_delta -v  # exporter + delta unit tests (71)
 ```
 
 ## Querying
@@ -175,9 +175,12 @@ The report answers two questions the append-only model couldn't before:
   run-9 → run-9.1 repopulation carried **7 schema changes**, invisible in
   `git diff grades.csv`).
 - **Which skills got WORSE?** `grade_regressions` lists every skill whose
-  grade dropped run-over-run (A→B etc.), computed from a temporal
+  grade dropped between the two tags (A→B etc.), computed from a temporal
   `AS OF '<tag>'` compare of `skill_compliance` at the two tagged revisions —
-  a data-quality probe emitted as structured output.
+  a data-quality probe emitted as structured output. The compare is
+  **tag-over-tag** (adjacent tags in `(run, suffix)` order), so an intra-run
+  repopulation pair like run-9 → run-9.1 is compared too, not only full
+  run-over-run movement.
 
 Every report (and `grade-histogram.json`) also carries `dolt_commit` — the
 immutable Dolt revision the artifact was cut from, so exports trace to

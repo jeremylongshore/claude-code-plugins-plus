@@ -10,8 +10,9 @@ SQLite runtime, parity gates, pump, and push are untouched).
   emitted comparing `run-(N-1)` → `run-N` via `DOLT_DIFF_SUMMARY` /
   `DOLT_DIFF_STAT` (per-table schema-vs-data change classification + row
   counts) plus a **grade-regression list** (skills whose grade dropped
-  run-over-run, computed from a temporal `AS OF '<tag>'` compare of
-  `skill_compliance`).
+  tag-over-tag — adjacent run tags, so intra-run repopulations like
+  run-9 → run-9.1 are compared too — computed from a temporal
+  `AS OF '<tag>'` compare of `skill_compliance`).
 - **Commit-hash stamping** — `grade-histogram.json` and every run-delta
   report now carry `dolt_commit`, the immutable Dolt revision the artifact
   was cut from (traceability beyond the `run-N` tag / git SHA).
@@ -20,8 +21,8 @@ SQLite runtime, parity gates, pump, and push are untouched).
   one-line GH-Actions-consumable summary. Default inert; new
   `--alert-on-regression` flag (on both scripts) exits 4 when grades
   regressed — the sync itself still succeeds.
-- Tests: `tests/test_run_delta.py` (28 pure-function tests) + 2 new
-  stamp tests in `tests/test_dolt_sync.py` (70 total across both).
+- Tests: `tests/test_run_delta.py` (29 pure-function tests) + 2 new
+  stamp tests in `tests/test_dolt_sync.py` (71 total across both).
 
 ## 1.0.0 — initial release
 

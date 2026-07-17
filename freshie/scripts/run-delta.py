@@ -194,6 +194,10 @@ def build_report(run_id: int, from_tag: str | None, to_tag: str,
     }
 
 
+def _n(count: int, singular: str, plural: str) -> str:
+    return f"{count} {singular if count == 1 else plural}"
+
+
 def summary_line(report: dict, out_path: Path) -> str:
     """One line a GitHub-Actions step (or an operator) can consume."""
     if report["from_tag"] is None:
@@ -201,11 +205,12 @@ def summary_line(report: dict, out_path: Path) -> str:
                 f"no previous run to diff against → {out_path}")
     return (
         f"run-delta: {report['from_tag']} → {report['to_tag']} · "
-        f"{report['tables_changed']} tables changed "
+        f"{_n(report['tables_changed'], 'table', 'tables')} changed "
         f"({len(report['schema_changes'])} schema) · "
         f"+{report['rows_added']}/-{report['rows_deleted']}"
         f"/~{report['rows_modified']} rows · "
-        f"{len(report['grade_regressions'])} grade regressions → {out_path}"
+        f"{_n(len(report['grade_regressions']), 'grade regression', 'grade regressions')}"
+        f" → {out_path}"
     )
 
 

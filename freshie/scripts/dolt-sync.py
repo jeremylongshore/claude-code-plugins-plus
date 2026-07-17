@@ -888,10 +888,11 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
 def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str | None, str]:
     """Commit the working set and tag run-<N>.
 
-    Returns (committed, tag_name, head_hash) — head_hash is the Dolt commit
-    the run's data sits on (HEAD after the commit attempt, which is also
-    correct on the nothing-changed retry paths), used to stamp exported
-    artifacts with an immutable revision.
+    Returns (committed, tag_name, head_hash) — head_hash is HEAD after the
+    commit attempt. Whenever tag_name is non-None, head_hash is exactly the
+    commit run N's data sits on (fresh commit or crash-retry); when
+    tag_name is None (nothing changed AND HEAD is not run N), it is only
+    "HEAD at sync time" — consumers must not stamp it as run N's revision.
     """
     before = head_commit(repo)
     dolt(["add", "-A"], repo)
@@ -981,15 +982,21 @@ def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
     discipline as maybe_gc.
     """
     regressions_found = False
+    if tag is None:
+        # No tag means HEAD demonstrably does NOT carry run N (the
+        # nothing-changed-and-HEAD-is-older path) — stamping that hash into
+        # a histogram labeled run N would lie about provenance, so skip
+        # both outputs. On the commit and crash-retry paths tag is set and
+        # head_hash is exactly the commit the run's data sits on.
+        log("post-commit: no run tag this sync — skipping dolt_commit stamp "
+            "and run-delta report")
+        return regressions_found
     try:
         stamp_dolt_commit(GRADE_HISTOGRAM, head_hash)
         log(f"stamped dolt_commit {head_hash} into {GRADE_HISTOGRAM.name}")
     except (OSError, json.JSONDecodeError) as exc:
         log(f"WARNING: could not stamp dolt_commit into "
             f"{GRADE_HISTOGRAM.name} ({exc}) — the sync itself succeeded")
-    if tag is None:
-        log("post-commit: no run tag this sync — skipping run-delta report")
-        return regressions_found
     try:
         run_delta = load_run_delta()
         out_path, report = run_delta.emit(repo, run_id, head_hash, tag)

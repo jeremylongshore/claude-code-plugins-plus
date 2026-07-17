@@ -207,9 +207,22 @@ class SummaryLineTests(unittest.TestCase):
         )
         line = run_delta.summary_line(report, Path("freshie/reports/run-delta-9.json"))
         self.assertIn("run-8 → run-9", line)
-        self.assertIn("1 tables changed (1 schema)", line)
-        self.assertIn("1 grade regressions", line)
+        self.assertIn("1 table changed (1 schema)", line)
+        self.assertIn("1 grade regression →", line)
         self.assertIn("run-delta-9.json", line)
+
+    def test_plural_counts_stay_plural(self):
+        report = run_delta.build_report(
+            9, "run-8", "run-9", "abc",
+            [{"table": t, "diff_type": "modified", "schema_change": False,
+              "data_change": True, "rows_added": 1, "rows_deleted": 0,
+              "rows_modified": 0} for t in ("a", "b")],
+            [{"skill_path": s, "from_grade": "A", "to_grade": "B"}
+             for s in ("s1", "s2")],
+        )
+        line = run_delta.summary_line(report, Path("x.json"))
+        self.assertIn("2 tables changed", line)
+        self.assertIn("2 grade regressions", line)
 
     def test_first_run_line(self):
         report = run_delta.build_report(1, None, "run-1", "abc", [], [])
