@@ -21,14 +21,14 @@
 # ---------------------------------------------------------------------------
 # Default: the Lead owns everything not explicitly delegated below.
 # ---------------------------------------------------------------------------
-*                                   @jeremylongshore
+*                                   @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: ci-infra  — HIGH TRUST. A workflow edit can bypass every validator gate.
 # Lead-owned until an Approver has passed the pipeline quiz (GOVERNANCE § Vetting).
 # ---------------------------------------------------------------------------
-/.github/                           @jeremylongshore
-/.github/workflows/                 @jeremylongshore
+/.github/                           @jeremylongshore @blueandyellow44
+/.github/workflows/                 @jeremylongshore @blueandyellow44
 # After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
 # satisfy the code-owner gate on CI/deploy — the Reviewer → Approver promotion:
 # /.github/workflows/               @jeremylongshore @opeyemiariyo-netizen
@@ -38,34 +38,34 @@
 # area: validator-schema  — HIGH TRUST. The quality bar itself. Changes are
 # approval-gated per 000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES. Lead-owned.
 # ---------------------------------------------------------------------------
-/scripts/validate-skills-schema.py  @jeremylongshore
-/scripts/validate-unicode-hygiene.py  @jeremylongshore
-/scripts/run-verification-pipeline.mjs  @jeremylongshore
-/scripts/check-package-manager.mjs  @jeremylongshore
-/scripts/kernel-shadow-validation.mjs  @jeremylongshore
-/scripts/kernel-vendor-hash.mjs     @jeremylongshore
-/000-docs/SCHEMA_CHANGELOG.md       @jeremylongshore
+/scripts/validate-skills-schema.py  @jeremylongshore @blueandyellow44
+/scripts/validate-unicode-hygiene.py  @jeremylongshore @blueandyellow44
+/scripts/run-verification-pipeline.mjs  @jeremylongshore @blueandyellow44
+/scripts/check-package-manager.mjs  @jeremylongshore @blueandyellow44
+/scripts/kernel-shadow-validation.mjs  @jeremylongshore @blueandyellow44
+/scripts/kernel-vendor-hash.mjs     @jeremylongshore @blueandyellow44
+/000-docs/SCHEMA_CHANGELOG.md       @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: deps  — HIGH TRUST. A single bad upgrade is a supply-chain incident.
 # ---------------------------------------------------------------------------
-/package.json                       @jeremylongshore
-/pnpm-lock.yaml                     @jeremylongshore
-/pnpm-workspace.yaml                @jeremylongshore
+/package.json                       @jeremylongshore @blueandyellow44
+/pnpm-lock.yaml                     @jeremylongshore @blueandyellow44
+/pnpm-workspace.yaml                @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: external-sync  — supply-chain-sensitive mirror pipeline.
 # ---------------------------------------------------------------------------
-/sources.yaml                       @jeremylongshore
-/sources.lock.json                  @jeremylongshore
-/scripts/sync-external.mjs          @jeremylongshore
-/scripts/scan-synced-content.mjs    @jeremylongshore
-/scripts/scan-allowlist.txt         @jeremylongshore
+/sources.yaml                       @jeremylongshore @blueandyellow44
+/sources.lock.json                  @jeremylongshore @blueandyellow44
+/scripts/sync-external.mjs          @jeremylongshore @blueandyellow44
+/scripts/scan-synced-content.mjs    @jeremylongshore @blueandyellow44
+/scripts/scan-allowlist.txt         @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: marketplace-site  — the Astro site, design system, build pipeline.
 # ---------------------------------------------------------------------------
-/marketplace/                       @jeremylongshore
+/marketplace/                       @jeremylongshore @blueandyellow44
 # After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
 # satisfy the code-owner gate on the site — the Reviewer → Approver promotion:
 # /marketplace/                     @jeremylongshore @opeyemiariyo-netizen
@@ -73,29 +73,29 @@
 # ---------------------------------------------------------------------------
 # area: freshie  — the inventory CMDB, Dolt sync, grading.
 # ---------------------------------------------------------------------------
-/freshie/                           @jeremylongshore
+/freshie/                           @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: docs-governance  — contributor-facing standards and the ladder itself.
 # ---------------------------------------------------------------------------
-/000-docs/                          @jeremylongshore
-/GOVERNANCE.md                      @jeremylongshore
-/MAINTAINERS.md                     @jeremylongshore
-/CONTRIBUTING.md                    @jeremylongshore
-/.github/CONTRIBUTING.md            @jeremylongshore
-/SECURITY.md                        @jeremylongshore
-/CODE_OF_CONDUCT.md                 @jeremylongshore
+/000-docs/                          @jeremylongshore @blueandyellow44
+/GOVERNANCE.md                      @jeremylongshore @blueandyellow44
+/MAINTAINERS.md                     @jeremylongshore @blueandyellow44
+/CONTRIBUTING.md                    @jeremylongshore @blueandyellow44
+/.github/CONTRIBUTING.md            @jeremylongshore @blueandyellow44
+/SECURITY.md                        @jeremylongshore @blueandyellow44
+/CODE_OF_CONDUCT.md                 @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # area: catalog + root policy  — source-of-truth catalog and repo policy.
 # ---------------------------------------------------------------------------
-/.claude-plugin/                    @jeremylongshore
-/.gemini/                           @jeremylongshore
-/.greptile/                         @jeremylongshore
-/CLAUDE.md                          @jeremylongshore
-/AGENTS.md                          @jeremylongshore
-/LICENSE                            @jeremylongshore
-/LICENSE-TEMPLATE-PROPRIETARY.txt   @jeremylongshore
+/.claude-plugin/                    @jeremylongshore @blueandyellow44
+/.gemini/                           @jeremylongshore @blueandyellow44
+/.greptile/                         @jeremylongshore @blueandyellow44
+/CLAUDE.md                          @jeremylongshore @blueandyellow44
+/AGENTS.md                          @jeremylongshore @blueandyellow44
+/LICENSE                            @jeremylongshore @blueandyellow44
+/LICENSE-TEMPLATE-PROPRIETARY.txt   @jeremylongshore @blueandyellow44
 
 # ---------------------------------------------------------------------------
 # Per-plugin owners (Home-Assistant style). AUTO-GENERATED — do not hand-edit
