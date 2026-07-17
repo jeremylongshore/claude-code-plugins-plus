@@ -17,11 +17,11 @@ quality signal but does not yet satisfy that gate.
 
 ## Roster
 
-| Handle                                                           | Tier                                                                                                                                 | Area(s)                        | Backup           | Notes                                                                                                                     |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [@jeremylongshore](https://github.com/jeremylongshore)           | **Lead**                                                                                                                             | all                            | —                | Owns the repo, releases, and all high-trust paths (validators, schema, CI, deps, root policy).                            |
-| [@blueandyellow44](https://github.com/blueandyellow44)           | **Maintainer**                                                                                                                       | all                            | @jeremylongshore | Co-maintainer at the top tier — code-owner on every area (paired with the Lead), sets direction, can sponsor others up.   |
-| [@opeyemiariyo-netizen](https://github.com/opeyemiariyo-netizen) | **Reviewer** → Approver on `ci-infra` + `marketplace-site` once the [pipeline quiz](000-docs/705-DR-GUID-pipeline-quiz.md) is passed | `ci-infra`, `marketplace-site` | @jeremylongshore | Promotion to Approver is gated on the pipeline quiz — see [GOVERNANCE § Vetting](GOVERNANCE.md#vetting--how-you-move-up). |
+| Handle                                                           | Tier           | Area(s)                        | Backup           | Notes                                                                                                                                  |
+| ---------------------------------------------------------------- | -------------- | ------------------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [@jeremylongshore](https://github.com/jeremylongshore)           | **Lead**       | all                            | —                | Owns the repo, releases, and all high-trust paths (validators, schema, CI, deps, root policy).                                         |
+| [@blueandyellow44](https://github.com/blueandyellow44)           | **Maintainer** | all                            | @jeremylongshore | Co-maintainer at the top tier — code-owner on every area (paired with the Lead), sets direction, can sponsor others up.                |
+| [@opeyemiariyo-netizen](https://github.com/opeyemiariyo-netizen) | **Approver**   | `ci-infra`, `marketplace-site` | @jeremylongshore | Code-owner on CI/deploy + the marketplace site. Promoted by the Lead 2026-07-16 (pipeline quiz waived for learn-on-the-job mentoring). |
 
 ### Invitation pending
 

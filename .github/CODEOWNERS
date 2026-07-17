@@ -25,14 +25,12 @@
 
 # ---------------------------------------------------------------------------
 # area: ci-infra  — HIGH TRUST. A workflow edit can bypass every validator gate.
-# Lead-owned until an Approver has passed the pipeline quiz (GOVERNANCE § Vetting).
+# @opeyemiariyo-netizen is an Approver here (Lead promotion 2026-07-16 — see GOVERNANCE
+# § Vetting; the pipeline quiz was waived in favor of learn-on-the-job mentoring).
 # ---------------------------------------------------------------------------
 /.github/                           @jeremylongshore @blueandyellow44
-/.github/workflows/                 @jeremylongshore @blueandyellow44
-# After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
-# satisfy the code-owner gate on CI/deploy — the Reviewer → Approver promotion:
-# /.github/workflows/               @jeremylongshore @opeyemiariyo-netizen
-# /.github/workflows/deploy-vps.yml @jeremylongshore @opeyemiariyo-netizen
+/.github/workflows/                 @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
+/.github/workflows/deploy-vps.yml   @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
 
 # ---------------------------------------------------------------------------
 # area: validator-schema  — HIGH TRUST. The quality bar itself. Changes are
@@ -64,11 +62,9 @@
 
 # ---------------------------------------------------------------------------
 # area: marketplace-site  — the Astro site, design system, build pipeline.
+# @opeyemiariyo-netizen is an Approver here (Lead promotion 2026-07-16).
 # ---------------------------------------------------------------------------
-/marketplace/                       @jeremylongshore @blueandyellow44
-# After @opeyemiariyo-netizen passes the pipeline quiz (000-docs/705), uncomment to make their review
-# satisfy the code-owner gate on the site — the Reviewer → Approver promotion:
-# /marketplace/                     @jeremylongshore @opeyemiariyo-netizen
+/marketplace/                       @jeremylongshore @blueandyellow44 @opeyemiariyo-netizen
 
 # ---------------------------------------------------------------------------
 # area: freshie  — the inventory CMDB, Dolt sync, grading.
