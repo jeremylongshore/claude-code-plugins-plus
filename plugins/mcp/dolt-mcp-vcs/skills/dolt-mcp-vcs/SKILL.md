@@ -1,7 +1,7 @@
 ---
 name: dolt-mcp-vcs
 description: |
-  Universal Dolt version-control workflow for Claude Code. Step 0 auto-detects
+  Universal Dolt version-control workflow. Step 0 auto-detects
   what kind of Dolt stack is present — every make and model (classic Dolt repo,
   live dolt sql-server on its ACTUAL bound port, bd embedded store, Doltgres,
   DoltLite single-file DB, DumboDB) — and emits a ready-to-use connection
@@ -14,7 +14,14 @@ description: |
   recovering from a bd or Dolt incident. Trigger with "/dolt-mcp-vcs",
   "/beads-dolt" (the former name, still accepted), "what kind of dolt is
   this", "my beads aren't showing in DoltHub", or "audit my bead epics".
-allowed-tools: "Read, Task, Bash(bd dolt show:*), Bash(bd dolt remote list:*), Bash(bd config get:*), Bash(curl:*), Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/dolt-detect.py:*)"
+allowed-tools:
+  - Read
+  - Task
+  - Bash(bd dolt show:*)
+  - Bash(bd dolt remote list:*)
+  - Bash(bd config get:*)
+  - Bash(curl:*)
+  - Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/dolt-detect.py:*)
 version: 0.2.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: Apache-2.0
@@ -27,10 +34,11 @@ metadata:
 
 # dolt-mcp-vcs
 
+One skill for every make and model of Dolt: detect the flavor and mode first, then do version-control work over the beads (bd) backend and DoltHub.
+
 > Formerly **`beads-dolt`** — same plugin, renamed to its Dolt-first identity. The `beads-dolt`
-> install slug still resolves (a deprecated catalog alias), and `/beads-dolt` is still an accepted
-> trigger, so existing installs keep working. Today this skill is the beads (bd) adapter; it is
-> evolving into a dialect-invariant version-control surface with beads as use-case adapter #1.
+> install slug still resolves (a deprecated catalog alias) and `/beads-dolt` is still an accepted
+> trigger, so existing installs keep working — beads is now use-case adapter #1, not the whole skill.
 
 The Dolt and DoltHub-aware layer for the [beads](https://github.com/gastownhall/beads) (bd) task tracker. It composes with — does not replace — the global beads skill: that skill runs the bead work cycle; this one handles the Dolt backend, DoltHub visibility, and the bd plus Dolt failure modes.
 
@@ -41,7 +49,8 @@ bd stores every issue in a version-controlled [Dolt](https://github.com/dolthub/
 1. **"My beads aren't showing in DoltHub."** The overwhelmingly common cause is that the workspace's Dolt repo has **no remote configured** — so nothing is ever pushed. A file-protocol or GitHub backup does **not** make beads appear on DoltHub; only a Dolt remote plus a push does.
 2. **JSONL appears stale after rapid writes.** This is the export *throttle*, not data loss. As of bd 1.0.4 the historical rapid-write race (failure mode 6) is fixed at the SQL-transaction level; the database is always correct, only the issues.jsonl file can lag.
 
-This skill diagnoses both, applies the fixes, and routes deeper work to five bundled agents. **It keeps no frozen copy of bd/Dolt internals** — a baked snapshot goes stale the moment upstream ships a release. Verify version-specific behavior **live** (`bd --help`, `bd <cmd> --help`, `bd dolt show`) and consult the official upstream docs; [references/dolt-internals.md](references/dolt-internals.md) is only the directory of those authoritative sources. The installed binary wins on any conflict. The agents are built to fetch the current truth in their own context and report it back, so answers track the installed version rather than a guess.
+This skill diagnoses both, applies the fixes, and routes deeper work to five bundled agents. **It keeps no frozen copy of bd/Dolt internals** — a baked snapshot goes stale the moment upstream ships a release; the installed binary wins on any conflict.
+Verify version-specific behavior **live** (`bd --help`, `bd <cmd> --help`, `bd dolt show`) and consult the upstream docs; Read [references/dolt-internals.md](references/dolt-internals.md) for the directory of those authoritative sources. The agents fetch current truth in their own context, so answers track the installed binary rather than a guess.
 
 **The fix for invisible-on-DoltHub, up front (don't stop at diagnosis):** the cause is almost always no remote, and the fix is two commands — `bd dolt remote add origin https://doltremoteapi.dolthub.com/ORG/REPO` then `bd dolt push --remote origin`. The DoltHub database must already exist (the push does NOT create it). Always carry the user all the way to these commands, not just the `bd dolt remote list` diagnostic.
 
@@ -49,7 +58,7 @@ This skill diagnoses both, applies the fixes, and routes deeper work to five bun
 
 - bd >= 1.0.4 with a Dolt-backed workspace (bd dolt show succeeds).
 - For DoltHub: a dolt creds keypair authorized on your DoltHub account, and the **DoltHub database must already exist** (create it in the DoltHub UI — the push does **not** auto-create it).
-- For the SQL-capable agents: the dolt-mcp-server binary on PATH, **pinned** (go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@v0.3.6 — never @latest; the plugin's correctness rests on this binary). The plugin's .mcp.json wires it.
+- For the SQL-capable agents: the dolt-mcp-server binary on PATH, **pinned** to the exact version in the plugin README's install section (never @latest — the plugin's correctness rests on this binary). The plugin's .mcp.json wires it.
 
 ### Authentication
 
