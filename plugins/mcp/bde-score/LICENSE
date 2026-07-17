@@ -1,0 +1,16 @@
+BDE Score MCP Server
+Copyright (C) 2025 BDE Score Team (https://github.com/hbhqq9/bde-score)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) a commercial license.
+
+This program is dual-licensed under:
+  1. GNU Affero General Public License v3.0 (AGPL-3.0)
+  2. A commercial license — contact bde@score.sh
+
+For the full AGPL-3.0 license text, see:
+  https://www.gnu.org/licenses/agpl-3.0.en.html
+
+SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Commercial
