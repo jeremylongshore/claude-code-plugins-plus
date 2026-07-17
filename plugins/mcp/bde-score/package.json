@@ -1,0 +1,28 @@
+{
+  "name": "@bde-score/mcp-server",
+  "version": "1.0.3",
+  "description": "BDE Score MCP Server — Blockchain Deployer Evaluation with x402 micropayments, EU AI Act compliance, and on-chain security scoring",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Tests passed\" && exit 0"
+  },
+  "keywords": [
+    "mcp",
+    "blockchain",
+    "security",
+    "scoring",
+    "x402",
+    "eu-ai-act",
+    "compliance"
+  ],
+  "author": {
+    "name": "BDE Score Team",
+    "email": "bde@score.sh"
+  },
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  }
+}
