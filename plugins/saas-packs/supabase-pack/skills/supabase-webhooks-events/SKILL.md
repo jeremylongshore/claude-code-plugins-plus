@@ -17,8 +17,8 @@ description: 'Implement Supabase database webhooks, pg_net async HTTP, LISTEN/NO
   "supabase event-driven", "supabase_functions.http_request".
 
   '
-allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(curl:*), Bash(psql:*), Grep
-version: 1.52.0
+allowed-tools: Write, Bash(supabase:*), Bash(curl:*), Bash(psql:*)
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -44,393 +44,77 @@ Supabase offers four complementary event mechanisms: **Database Webhooks** (trig
 - `@supabase/supabase-js` v2+ installed for client-side patterns
 - Edge Functions deployed for webhook receiver patterns
 
+## Authentication
+
+Both directions of a webhook are authenticated:
+
+- **Outbound (trigger → Edge Function):** the trigger sends an `Authorization: Bearer <service_role_key>` header. Store the key in a Postgres setting (`app.settings.service_role_key`) or Supabase Vault — never inline it in a committed migration.
+- **Inbound (Edge Function receiver):** verify an HMAC-SHA256 signature against a shared `WEBHOOK_SECRET` (read from `Deno.env`) using a constant-time comparison, and reject mismatches with `401`. See [signature-verification.md](references/signature-verification.md).
+
 ## Instructions
+
+Pick the mechanism that fits the consumer: `pg_net` triggers for server-side HTTP fan-out, Edge Function receivers for signed processing, LISTEN/NOTIFY for in-database pub/sub, and Realtime for client UI. Write each SQL trigger to a `supabase/migrations/` file and each handler to `supabase/functions/<name>/index.ts`, then apply and deploy with the `supabase` CLI.
 
 ### Step 1 — Database Webhooks with `pg_net` and Trigger Functions
 
-Database webhooks fire HTTP requests when rows change. Under the hood, Supabase uses the `pg_net` extension to make async, non-blocking HTTP calls from within PostgreSQL.
-
-#### Enable pg_net and Create the Trigger Function
+Enable `pg_net`, then write a trigger function that POSTs the changed row to an Edge Function. Attach it `AFTER INSERT/UPDATE/DELETE`. Full trigger set (conditional status-change trigger, the `supabase_functions.http_request()` built-in helper, and `net._http_response` inspection queries) is in [database-webhooks.md](references/database-webhooks.md).
 
 ```sql
--- Enable the pg_net extension (one-time)
 CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 
--- Trigger function: POST to an Edge Function on every new order
 CREATE OR REPLACE FUNCTION public.notify_order_created()
 RETURNS trigger AS $$
 BEGIN
   PERFORM net.http_post(
-    url    := 'https://<project-ref>.supabase.co/functions/v1/on-order-created',
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)
-    ),
-    body   := jsonb_build_object(
-      'table',  TG_TABLE_NAME,
-      'type',   TG_OP,
-      'record', row_to_json(NEW)::jsonb,
-      'old_record', CASE WHEN TG_OP = 'UPDATE' THEN row_to_json(OLD)::jsonb ELSE NULL END
-    )
+    url     := 'https://<project-ref>.supabase.co/functions/v1/on-order-created',
+    headers := jsonb_build_object('Content-Type', 'application/json'),
+    body    := jsonb_build_object('type', TG_OP, 'record', row_to_json(NEW)::jsonb)
   );
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
-```
 
-#### Attach Triggers for INSERT, UPDATE, DELETE
-
-```sql
--- Fire on new rows
 CREATE TRIGGER on_order_created
   AFTER INSERT ON public.orders
   FOR EACH ROW EXECUTE FUNCTION public.notify_order_created();
-
--- Fire on status changes only (conditional trigger)
-CREATE OR REPLACE FUNCTION public.notify_order_status_changed()
-RETURNS trigger AS $$
-BEGIN
-  IF OLD.status IS DISTINCT FROM NEW.status THEN
-    PERFORM net.http_post(
-      url    := 'https://<project-ref>.supabase.co/functions/v1/on-status-change',
-      headers := '{"Content-Type": "application/json"}'::jsonb,
-      body   := jsonb_build_object(
-        'order_id',   NEW.id,
-        'old_status', OLD.status,
-        'new_status', NEW.status,
-        'changed_at', now()
-      )
-    );
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER on_order_status_changed
-  AFTER UPDATE ON public.orders
-  FOR EACH ROW EXECUTE FUNCTION public.notify_order_status_changed();
-```
-
-#### Using `supabase_functions.http_request()` (Built-in Helper)
-
-Supabase provides a built-in wrapper that simplifies calling Edge Functions from triggers without managing headers manually:
-
-```sql
--- This is the function Supabase auto-creates for Dashboard-configured webhooks
--- You can also call it directly in your own trigger functions
-CREATE TRIGGER on_profile_updated
-  AFTER UPDATE ON public.profiles
-  FOR EACH ROW
-  EXECUTE FUNCTION supabase_functions.http_request(
-    'https://<project-ref>.supabase.co/functions/v1/on-profile-update',
-    'POST',
-    '{"Content-Type": "application/json"}',
-    '{}',  -- params
-    '5000' -- timeout ms
-  );
-```
-
-#### Inspect pg_net Responses
-
-```sql
--- Check recent HTTP responses (retained for 6 hours)
-SELECT id, status_code, content, created
-FROM net._http_response
-ORDER BY created DESC
-LIMIT 10;
-
--- Find failed requests
-SELECT id, status_code, content
-FROM net._http_response
-WHERE status_code >= 400
-ORDER BY created DESC;
 ```
 
 ### Step 2 — Edge Function Webhook Receivers with Signature Verification
 
-#### Webhook Receiver with Signature Verification
+Write an Edge Function that reads the raw body, verifies the HMAC signature, parses the typed payload, and routes by event type. Guard against duplicate delivery with a `processed_events` idempotency table. The complete receiver, the idempotent-handler variant, and the idempotency table DDL are in [edge-function-receivers.md](references/edge-function-receivers.md).
 
 ```typescript
 // supabase/functions/on-order-created/index.ts
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-
-interface WebhookPayload {
-  type: "INSERT" | "UPDATE" | "DELETE";
-  table: string;
-  record: Record<string, unknown>;
-  old_record: Record<string, unknown> | null;
-}
-
-// Verify webhook signature to prevent spoofing
-async function verifySignature(
-  body: string,
-  signature: string,
-  secret: string
-): Promise<boolean> {
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-  const signed = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
-  const expected = Array.from(new Uint8Array(signed))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  // Constant-time comparison
-  if (signature.length !== expected.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < signature.length; i++) {
-    mismatch |= signature.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  return mismatch === 0;
-}
-
 serve(async (req) => {
-  // Verify signature if webhook secret is configured
-  const webhookSecret = Deno.env.get("WEBHOOK_SECRET");
   const rawBody = await req.text();
-
-  if (webhookSecret) {
-    const signature = req.headers.get("x-webhook-signature") ?? "";
-    const valid = await verifySignature(rawBody, signature, webhookSecret);
-    if (!valid) {
-      return new Response(JSON.stringify({ error: "Invalid signature" }), {
-        status: 401,
-      });
-    }
+  const secret = Deno.env.get("WEBHOOK_SECRET");
+  if (secret) {
+    const sig = req.headers.get("x-webhook-signature") ?? "";
+    if (!(await verifySignature(rawBody, sig, secret)))
+      return new Response(JSON.stringify({ error: "Invalid signature" }), { status: 401 });
   }
-
-  const payload: WebhookPayload = JSON.parse(rawBody);
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
-
-  // Route by event type
-  switch (payload.type) {
-    case "INSERT": {
-      console.log(`New ${payload.table} row:`, payload.record.id);
-
-      // Example: log event, send notification, update related table
-      await supabase.from("audit_log").insert({
-        table_name: payload.table,
-        action: "INSERT",
-        record_id: payload.record.id,
-        payload: payload.record,
-      });
-      break;
-    }
-    case "UPDATE": {
-      console.log(`Updated ${payload.table}:`, payload.record.id);
-      // Compare old and new to detect specific field changes
-      if (payload.old_record?.status !== payload.record.status) {
-        await supabase.from("notifications").insert({
-          user_id: payload.record.user_id,
-          message: `Status changed to ${payload.record.status}`,
-        });
-      }
-      break;
-    }
-    case "DELETE": {
-      console.log(`Deleted from ${payload.table}:`, payload.old_record?.id);
-      break;
-    }
-  }
-
-  return new Response(JSON.stringify({ received: true }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  const payload = JSON.parse(rawBody); // { type, table, record, old_record }
+  // route by payload.type: INSERT | UPDATE | DELETE
+  return new Response(JSON.stringify({ received: true }));
 });
-```
-
-#### Idempotent Event Processing
-
-Webhooks may be delivered more than once. Use an idempotency table to prevent duplicate processing:
-
-```typescript
-// supabase/functions/idempotent-handler/index.ts
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-serve(async (req) => {
-  const payload = await req.json();
-  const eventId = `${payload.table}:${payload.type}:${payload.record.id}`;
-
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-  );
-
-  // Check if already processed (upsert pattern)
-  const { data: existing } = await supabase
-    .from("processed_events")
-    .select("id")
-    .eq("event_id", eventId)
-    .maybeSingle();
-
-  if (existing) {
-    return new Response(
-      JSON.stringify({ skipped: true, reason: "already processed" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  }
-
-  // --- Your business logic here ---
-  console.log(`Processing event: ${eventId}`);
-
-  // Mark as processed (with TTL for cleanup)
-  await supabase.from("processed_events").insert({
-    event_id: eventId,
-    processed_at: new Date().toISOString(),
-  });
-
-  return new Response(JSON.stringify({ processed: true }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-});
-```
-
-```sql
--- Idempotency table
-CREATE TABLE public.processed_events (
-  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  event_id   text UNIQUE NOT NULL,
-  processed_at timestamptz DEFAULT now()
-);
-
--- Auto-cleanup old records (run via pg_cron or scheduled function)
-DELETE FROM public.processed_events
-WHERE processed_at < now() - interval '7 days';
 ```
 
 ### Step 3 — Postgres LISTEN/NOTIFY and Realtime as Event Source
 
-#### Postgres LISTEN/NOTIFY for Lightweight Pub/Sub
-
-LISTEN/NOTIFY is PostgreSQL's built-in pub/sub. It does not persist messages and is best for ephemeral notifications between database functions or connected clients:
-
-```sql
--- Trigger function that emits a NOTIFY on row change
-CREATE OR REPLACE FUNCTION public.notify_changes()
-RETURNS trigger AS $$
-BEGIN
-  PERFORM pg_notify(
-    'db_changes',
-    json_build_object(
-      'table', TG_TABLE_NAME,
-      'op',    TG_OP,
-      'id',    COALESCE(NEW.id, OLD.id)
-    )::text
-  );
-  RETURN COALESCE(NEW, OLD);
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER orders_notify
-  AFTER INSERT OR UPDATE OR DELETE ON public.orders
-  FOR EACH ROW EXECUTE FUNCTION public.notify_changes();
-```
+Use `pg_notify` from a trigger for lightweight, non-persistent pub/sub consumed by a backend `LISTEN`; use Realtime `postgres_changes` for client-side UI subscriptions (keep NOTIFY payloads to IDs — they truncate past 8000 bytes). The backend listener, the full Realtime subscription with event routing, and the combined event-driven architecture diagram are in [listen-notify-realtime.md](references/listen-notify-realtime.md).
 
 ```typescript
-// Listen from a Node.js backend using pg driver
-import { Client } from "pg";
-
-const client = new Client({ connectionString: process.env.DATABASE_URL });
-await client.connect();
-
-await client.query("LISTEN db_changes");
-
-client.on("notification", (msg) => {
-  const payload = JSON.parse(msg.payload!);
-  console.log(`${payload.op} on ${payload.table}: id=${payload.id}`);
-});
-```
-
-#### Realtime `postgres_changes` as Client-Side Event Source
-
-Supabase Realtime lets frontend clients subscribe to database changes without polling. Enable Realtime on your table first (Dashboard > Database > Replication).
-
-```typescript
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
-
-// Subscribe to all changes on the orders table
 const channel = supabase
   .channel("orders-events")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",           // or 'INSERT' | 'UPDATE' | 'DELETE'
-      schema: "public",
-      table: "orders",
-      filter: "status=eq.pending",  // optional: RLS-style filter
-    },
-    (payload) => {
-      console.log("Change type:", payload.eventType);
-      console.log("New row:", payload.new);
-      console.log("Old row:", payload.old);
-
-      // React to the change
-      switch (payload.eventType) {
-        case "INSERT":
-          showToast(`New order #${payload.new.id}`);
-          break;
-        case "UPDATE":
-          updateOrderInUI(payload.new);
-          break;
-        case "DELETE":
-          removeOrderFromUI(payload.old.id);
-          break;
-      }
-    }
-  )
-  .subscribe((status) => {
-    console.log("Subscription status:", status);
-  });
-
-// Cleanup when done
-// await supabase.removeChannel(channel);
-```
-
-#### Event-Driven Architecture: Combining Patterns
-
-Use database triggers for server-side workflows and Realtime for client-side UI updates:
-
-```
-┌──────────────┐     INSERT      ┌──────────────────┐
-│   Client     │ ──────────────► │  orders table     │
-│  (browser)   │                 └────────┬─────────┘
-│              │                          │
-│  Realtime ◄──┼──── postgres_changes ────┤
-│  (UI update) │                          │
-└──────────────┘                          │ AFTER INSERT trigger
-                                          ▼
-                                 ┌──────────────────┐
-                                 │  pg_net HTTP POST │
-                                 │  → Edge Function  │
-                                 └────────┬─────────┘
-                                          │
-                                          ▼
-                                 ┌──────────────────┐
-                                 │  Send email       │
-                                 │  Update inventory │
-                                 │  Log to audit     │
-                                 └──────────────────┘
+  .on("postgres_changes",
+    { event: "*", schema: "public", table: "orders" },
+    (payload) => console.log(payload.eventType, payload.new))
+  .subscribe();
 ```
 
 ## Output
 
-After implementing these patterns you will have:
+These patterns produce:
 
 - Database trigger functions calling Edge Functions via `pg_net` on row changes
 - Conditional triggers that fire only when specific columns change
@@ -443,7 +127,7 @@ After implementing these patterns you will have:
 ## Error Handling
 
 | Error | Cause | Fix |
-|-------|-------|-----|
+| ------- | ------- | ----- |
 | `pg_net` returns 404 | Edge Function not deployed or wrong URL | Run `supabase functions deploy <name>` and verify the URL matches |
 | Webhook not firing | Trigger not attached or table not in publication | Check `SELECT * FROM pg_trigger WHERE tgrelid = 'orders'::regclass;` |
 | Duplicate events processed | No idempotency layer | Add `processed_events` table with unique `event_id` constraint |
@@ -455,11 +139,12 @@ After implementing these patterns you will have:
 
 ## Examples
 
-See [examples.md](references/examples.md) for local webhook testing with ngrok and curl.
-
-See [signature-verification.md](references/signature-verification.md) for Node.js HMAC signature verification.
-
-See [event-handler-pattern.md](references/event-handler-pattern.md) for a typed event dispatcher pattern.
+- [database-webhooks.md](references/database-webhooks.md) — full `pg_net` trigger set: conditional status-change trigger, the `supabase_functions.http_request()` helper, and `net._http_response` inspection queries.
+- [edge-function-receivers.md](references/edge-function-receivers.md) — complete signed Edge Function receiver, idempotent handler, and idempotency-table DDL.
+- [listen-notify-realtime.md](references/listen-notify-realtime.md) — backend `LISTEN` client, full Realtime subscription, and the combined event-driven architecture diagram.
+- [examples.md](references/examples.md) — local webhook testing with ngrok and curl.
+- [signature-verification.md](references/signature-verification.md) — Node.js HMAC signature verification.
+- [event-handler-pattern.md](references/event-handler-pattern.md) — a typed event dispatcher pattern.
 
 ## Resources
 

@@ -1,18 +1,14 @@
 ---
 name: notion-architecture-variants
-description: 'Different Notion integration architectures: CMS (headless blog), task
-
-  tracker (project management), knowledge base (wiki), form submission
-
-  handler, and data pipeline source.
-
+description: |
+  Use when you are choosing or scaffolding how an app talks to Notion via the
+  API — deciding between a headless CMS (blog/content site), a task tracker
+  (project management), a knowledge base (wiki), a form-submission handler, or a
+  data-pipeline source, and wiring the database schema plus integration code.
   Trigger with phrases like "notion cms", "notion headless blog",
-
   "notion task tracker", "notion wiki", "notion form handler", "notion data pipeline".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(node:*)
-version: 1.37.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,7 +21,17 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Five validated architecture patterns for using Notion as a backend via the API. Each variant shows a specific use case with real `Client` from `@notionhq/client` code: headless CMS for blogs, project management task tracker, wiki-style knowledge base, form submission handler, and data pipeline source for analytics. Includes database schema design, API integration code, and deployment considerations.
+Five validated architecture patterns for using Notion as a backend via the API, each with database schema design, integration code, and deployment tradeoffs. The full copy-ready code for every variant lives in [references/implementation.md](references/implementation.md); this page gives the decision framework, the shared skeleton, and one worked example so you can pick the right pattern and drill into depth on demand.
+
+The five variants:
+
+| Variant | Use case | Core operation |
+| --------- | ---------- | ---------------- |
+| Headless CMS | Blog / content site | Query `Status = Published`, render blocks to HTML |
+| Task Tracker | Project management | Group by status for a board, `pages.update` on move |
+| Knowledge Base | Wiki / internal docs | Workspace `search` filtered to the wiki database |
+| Form Handler | Contact / lead capture | One `pages.create` per submission |
+| Data Pipeline | Analytics / ETL source | Paginate on a `last_edited_time` watermark |
 
 ## Prerequisites
 
@@ -34,372 +40,53 @@ Five validated architecture patterns for using Notion as a backend via the API. 
 - `NOTION_TOKEN` environment variable set
 - Notion databases created and shared with your integration
 
+## Authentication
+
+All variants authenticate the same way: an internal integration token in the
+`NOTION_TOKEN` environment variable, passed as `auth` when constructing the
+client (`new Client({ auth: process.env.NOTION_TOKEN })` / `Client(auth=...)`).
+Create the integration at notion.so/my-integrations, then **share each database
+with the integration** from its Notion page — an unshared database returns
+`object_not_found` even with a valid token. Never hard-code the token; read it
+from the environment.
+
 ## Instructions
 
-### Step 1: Headless CMS (Blog / Content Site)
+1. **Pick the variant** that matches your workload using the decision helper in
+   [references/examples.md](references/examples.md) — content authoring vs.
+   real-time status vs. high read volume each point to a different pattern.
+2. **Model the database schema** in Notion for that variant (property names and
+   types are documented inline with each variant's code). Share the database
+   with your integration.
+3. **Read** any existing integration module, then **Write** the client setup:
+   construct one `Client` with `auth: process.env.NOTION_TOKEN` and reference
+   each database by its own `NOTION_*_DB` env var.
+4. **Implement the variant's operations** from
+   [references/implementation.md](references/implementation.md) — copy the
+   TypeScript (or Python equivalent) for CMS fetch/render, task board grouping,
+   wiki search, form intake, or pipeline extraction.
+5. **Handle the edge cases** in the table below (empty rich_text, unshared
+   databases, expiring image URLs, rate limits) before shipping.
 
-Use Notion as a content management system — authors write in Notion, your site fetches and renders content via the API.
+The shared client skeleton every variant builds on:
 
 ```typescript
 import { Client } from '@notionhq/client';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const CONTENT_DB = process.env.NOTION_CONTENT_DB!;
+const CONTENT_DB = process.env.NOTION_CONTENT_DB!; // one env var per database
 
-// Database schema in Notion:
-// Title (title), Slug (rich_text), Status (select: Draft/Review/Published),
-// Published Date (date), Author (people), Tags (multi_select),
-// Excerpt (rich_text), Cover Image (files)
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  status: string;
-  publishedDate: string | null;
-  author: string;
-  tags: string[];
-  excerpt: string;
-}
-
-// Fetch published posts for the blog index
-async function getPublishedPosts(): Promise<BlogPost[]> {
-  const response = await notion.databases.query({
-    database_id: CONTENT_DB,
-    filter: {
-      property: 'Status',
-      select: { equals: 'Published' },
-    },
-    sorts: [{ property: 'Published Date', direction: 'descending' }],
-    page_size: 100,
-  });
-
-  return response.results
-    .filter((p): p is any => 'properties' in p)
-    .map(page => ({
-      id: page.id,
-      title: page.properties['Title']?.title?.[0]?.plain_text ?? 'Untitled',
-      slug: page.properties['Slug']?.rich_text?.[0]?.plain_text ?? page.id,
-      status: page.properties['Status']?.select?.name ?? 'Draft',
-      publishedDate: page.properties['Published Date']?.date?.start ?? null,
-      author: page.properties['Author']?.people?.[0]?.name ?? 'Unknown',
-      tags: page.properties['Tags']?.multi_select?.map((t: any) => t.name) ?? [],
-      excerpt: page.properties['Excerpt']?.rich_text?.[0]?.plain_text ?? '',
-    }));
-}
-
-// Fetch full page content as blocks (for rendering)
-async function getPostContent(pageId: string): Promise<any[]> {
-  const blocks: any[] = [];
-  let cursor: string | undefined;
-
-  do {
-    const response = await notion.blocks.children.list({
-      block_id: pageId,
-      page_size: 100,
-      start_cursor: cursor,
-    });
-
-    blocks.push(...response.results);
-    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
-  } while (cursor);
-
-  return blocks;
-}
-
-// Render blocks to HTML (simplified)
-function blockToHtml(block: any): string {
-  const type = block.type;
-  switch (type) {
-    case 'paragraph':
-      const text = block.paragraph.rich_text.map((t: any) => t.plain_text).join('');
-      return text ? `<p>${text}</p>` : '';
-    case 'heading_1':
-      return `<h1>${block.heading_1.rich_text.map((t: any) => t.plain_text).join('')}</h1>`;
-    case 'heading_2':
-      return `<h2>${block.heading_2.rich_text.map((t: any) => t.plain_text).join('')}</h2>`;
-    case 'heading_3':
-      return `<h3>${block.heading_3.rich_text.map((t: any) => t.plain_text).join('')}</h3>`;
-    case 'bulleted_list_item':
-      return `<li>${block.bulleted_list_item.rich_text.map((t: any) => t.plain_text).join('')}</li>`;
-    case 'code':
-      return `<pre><code class="${block.code.language}">${block.code.rich_text.map((t: any) => t.plain_text).join('')}</code></pre>`;
-    case 'image':
-      const url = block.image.type === 'external' ? block.image.external.url : block.image.file.url;
-      return `<img src="${url}" alt="" />`;
-    default:
-      return `<!-- unsupported block type: ${type} -->`;
-  }
-}
+// Query published rows (CMS index example — full code in references/implementation.md)
+const response = await notion.databases.query({
+  database_id: CONTENT_DB,
+  filter: { property: 'Status', select: { equals: 'Published' } },
+  sorts: [{ property: 'Published Date', direction: 'descending' }],
+  page_size: 100,
+});
 ```
 
-### Step 2: Task Tracker (Project Management)
-
-Use Notion as a project management backend — read/write tasks, update statuses, assign team members.
-
-```typescript
-const TASKS_DB = process.env.NOTION_TASKS_DB!;
-
-// Database schema:
-// Name (title), Status (select: Backlog/Todo/In Progress/Done),
-// Priority (select: P0/P1/P2/P3), Assignee (people),
-// Due Date (date), Sprint (select), Labels (multi_select),
-// Story Points (number)
-
-interface Task {
-  id: string;
-  name: string;
-  status: string;
-  priority: string;
-  assignee: string | null;
-  dueDate: string | null;
-  labels: string[];
-}
-
-// Get sprint board view
-async function getSprintTasks(sprint: string): Promise<Record<string, Task[]>> {
-  const response = await notion.databases.query({
-    database_id: TASKS_DB,
-    filter: {
-      and: [
-        { property: 'Sprint', select: { equals: sprint } },
-        { property: 'Status', select: { does_not_equal: 'Archived' } },
-      ],
-    },
-    sorts: [{ property: 'Priority', direction: 'ascending' }],
-  });
-
-  const tasks = response.results
-    .filter((p): p is any => 'properties' in p)
-    .map(page => ({
-      id: page.id,
-      name: page.properties['Name']?.title?.[0]?.plain_text ?? 'Untitled',
-      status: page.properties['Status']?.select?.name ?? 'Backlog',
-      priority: page.properties['Priority']?.select?.name ?? 'P3',
-      assignee: page.properties['Assignee']?.people?.[0]?.name ?? null,
-      dueDate: page.properties['Due Date']?.date?.start ?? null,
-      labels: page.properties['Labels']?.multi_select?.map((l: any) => l.name) ?? [],
-    }));
-
-  // Group by status for board view
-  return tasks.reduce((board, task) => {
-    (board[task.status] ??= []).push(task);
-    return board;
-  }, {} as Record<string, Task[]>);
-}
-
-// Move task between columns
-async function updateTaskStatus(taskId: string, newStatus: string): Promise<void> {
-  await notion.pages.update({
-    page_id: taskId,
-    properties: {
-      Status: { select: { name: newStatus } },
-    },
-  });
-}
-
-// Create task from external source (Slack, email, API)
-async function createTask(input: {
-  name: string;
-  priority?: string;
-  assigneeId?: string;
-  dueDate?: string;
-  labels?: string[];
-}): Promise<string> {
-  const properties: any = {
-    Name: { title: [{ text: { content: input.name } }] },
-    Status: { select: { name: 'Backlog' } },
-  };
-
-  if (input.priority) properties.Priority = { select: { name: input.priority } };
-  if (input.assigneeId) properties.Assignee = { people: [{ id: input.assigneeId }] };
-  if (input.dueDate) properties['Due Date'] = { date: { start: input.dueDate } };
-  if (input.labels) properties.Labels = { multi_select: input.labels.map(name => ({ name })) };
-
-  const page = await notion.pages.create({
-    parent: { database_id: TASKS_DB },
-    properties,
-  });
-
-  return page.id;
-}
-```
-
-### Step 3: Knowledge Base (Wiki), Form Handler, and Data Pipeline
-
-Three additional patterns for common Notion use cases.
-
-```typescript
-// === KNOWLEDGE BASE (WIKI) ===
-const WIKI_DB = process.env.NOTION_WIKI_DB!;
-
-// Database schema:
-// Title (title), Category (select), Tags (multi_select),
-// Last Updated (last_edited_time), Author (created_by)
-
-// Full-text search across wiki articles
-async function searchWiki(query: string): Promise<any[]> {
-  // Notion's search endpoint searches across all shared content
-  const response = await notion.search({
-    query,
-    filter: { value: 'page', property: 'object' },
-    sort: { direction: 'descending', timestamp: 'last_edited_time' },
-    page_size: 20,
-  });
-
-  return response.results
-    .filter((r: any) => r.parent?.database_id === WIKI_DB)
-    .map((page: any) => ({
-      id: page.id,
-      title: page.properties?.['Title']?.title?.[0]?.plain_text ?? 'Untitled',
-      lastEdited: page.last_edited_time,
-      url: page.url,
-    }));
-}
-
-// Build table of contents from page blocks
-async function getTableOfContents(pageId: string): Promise<Array<{ level: number; text: string }>> {
-  const blocks = await notion.blocks.children.list({ block_id: pageId, page_size: 100 });
-
-  return blocks.results
-    .filter((b: any) => b.type?.startsWith('heading_'))
-    .map((b: any) => ({
-      level: parseInt(b.type.replace('heading_', '')),
-      text: b[b.type].rich_text.map((t: any) => t.plain_text).join(''),
-    }));
-}
-
-// === FORM SUBMISSION HANDLER ===
-const SUBMISSIONS_DB = process.env.NOTION_SUBMISSIONS_DB!;
-
-// Database schema:
-// Name (title), Email (email), Message (rich_text),
-// Submitted At (date), Status (select: New/Reviewed/Responded)
-
-async function handleFormSubmission(form: {
-  name: string;
-  email: string;
-  message: string;
-}): Promise<{ pageId: string; url: string }> {
-  const page = await notion.pages.create({
-    parent: { database_id: SUBMISSIONS_DB },
-    properties: {
-      Name: { title: [{ text: { content: form.name } }] },
-      Email: { email: form.email },
-      Message: { rich_text: [{ text: { content: form.message.substring(0, 2000) } }] },
-      'Submitted At': { date: { start: new Date().toISOString() } },
-      Status: { select: { name: 'New' } },
-    },
-  });
-
-  return { pageId: page.id, url: (page as any).url };
-}
-
-// === DATA PIPELINE SOURCE ===
-const METRICS_DB = process.env.NOTION_METRICS_DB!;
-
-// Use Notion as data source — extract, transform, load to analytics
-async function extractMetricsForAnalytics(since: string): Promise<any[]> {
-  const allRecords: any[] = [];
-  let cursor: string | undefined;
-
-  do {
-    const response = await notion.databases.query({
-      database_id: METRICS_DB,
-      filter: {
-        timestamp: 'last_edited_time',
-        last_edited_time: { on_or_after: since },
-      },
-      page_size: 100,
-      start_cursor: cursor,
-    });
-
-    // Transform Notion properties to flat analytics schema
-    const transformed = response.results
-      .filter((p): p is any => 'properties' in p)
-      .map(page => ({
-        notion_id: page.id,
-        created: page.created_time,
-        updated: page.last_edited_time,
-        // Extract properties into flat columns for BigQuery/Snowflake
-        ...Object.fromEntries(
-          Object.entries(page.properties).map(([key, prop]: [string, any]) => {
-            switch (prop.type) {
-              case 'title': return [key, prop.title?.[0]?.plain_text ?? ''];
-              case 'number': return [key, prop.number];
-              case 'select': return [key, prop.select?.name ?? null];
-              case 'date': return [key, prop.date?.start ?? null];
-              case 'checkbox': return [key, prop.checkbox];
-              default: return [key, null];
-            }
-          })
-        ),
-      }));
-
-    allRecords.push(...transformed);
-    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
-
-    await new Promise(r => setTimeout(r, 350)); // Rate limit
-  } while (cursor);
-
-  return allRecords;
-}
-```
-
-```python
-from notion_client import Client
-
-notion = Client(auth=os.environ["NOTION_TOKEN"])
-
-# CMS: get published posts
-def get_published_posts(content_db: str):
-    response = notion.databases.query(
-        database_id=content_db,
-        filter={"property": "Status", "select": {"equals": "Published"}},
-        sorts=[{"property": "Published Date", "direction": "descending"}],
-    )
-    return [
-        {
-            "id": p["id"],
-            "title": p["properties"]["Title"]["title"][0]["plain_text"]
-                if p["properties"]["Title"]["title"] else "Untitled",
-            "slug": p["properties"]["Slug"]["rich_text"][0]["plain_text"]
-                if p["properties"]["Slug"]["rich_text"] else p["id"],
-        }
-        for p in response["results"]
-    ]
-
-# Form handler
-def handle_submission(db_id: str, name: str, email: str, message: str):
-    return notion.pages.create(
-        parent={"database_id": db_id},
-        properties={
-            "Name": {"title": [{"text": {"content": name}}]},
-            "Email": {"email": email},
-            "Message": {"rich_text": [{"text": {"content": message[:2000]}}]},
-            "Status": {"select": {"name": "New"}},
-        },
-    )
-
-# Data pipeline extract
-def extract_for_analytics(db_id: str, since_iso: str):
-    records = []
-    cursor = None
-    while True:
-        kwargs = {
-            "database_id": db_id,
-            "filter": {"timestamp": "last_edited_time", "last_edited_time": {"on_or_after": since_iso}},
-            "page_size": 100,
-        }
-        if cursor:
-            kwargs["start_cursor"] = cursor
-        response = notion.databases.query(**kwargs)
-        records.extend(response["results"])
-        if not response.get("has_more"):
-            break
-        cursor = response.get("next_cursor")
-    return records
-```
+See [references/implementation.md](references/implementation.md) for the complete
+implementation of all five variants (TypeScript + Python).
 
 ## Output
 
@@ -412,7 +99,7 @@ def extract_for_analytics(db_id: str, since_iso: str):
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | Empty `rich_text` array | Property has no content | Always check `?.[0]?.plain_text ?? ''` |
 | `object_not_found` on query | Database not shared with integration | Share database in Notion UI |
 | Image URLs expire | Notion-hosted files have temporary URLs | Cache or proxy images |
@@ -422,29 +109,20 @@ def extract_for_analytics(db_id: str, since_iso: str):
 
 ## Examples
 
-### Architecture Decision Checklist
+Pick a variant with the `recommendArchitecture` decision helper, which maps
+author type, update frequency, and read volume onto the right pattern (CMS vs.
+task tracker vs. data pipeline). The full helper plus an at-a-glance selection
+table are in [references/examples.md](references/examples.md).
 
 ```typescript
-function recommendArchitecture(requirements: {
-  contentAuthors: 'technical' | 'non-technical';
-  updateFrequency: 'realtime' | 'minutes' | 'hourly' | 'daily';
-  readVolume: 'low' | 'medium' | 'high';
-}): string {
-  if (requirements.contentAuthors === 'non-technical' && requirements.updateFrequency === 'daily') {
-    return 'CMS: Non-technical authors + infrequent updates = perfect Notion CMS fit';
-  }
-  if (requirements.updateFrequency === 'realtime') {
-    return 'Task Tracker: Real-time status updates via API + webhooks';
-  }
-  if (requirements.readVolume === 'high') {
-    return 'Data Pipeline: High read volume — extract to analytics DB, not live queries';
-  }
-  return 'Knowledge Base: Default to wiki pattern with search';
-}
+recommendArchitecture({ contentAuthors: 'non-technical', updateFrequency: 'daily', readVolume: 'low' });
+// → "CMS: Non-technical authors + infrequent updates = perfect Notion CMS fit"
 ```
 
 ## Resources
 
+- [references/implementation.md](references/implementation.md) — full code for all five variants (TypeScript + Python)
+- [references/examples.md](references/examples.md) — architecture decision helper + selection table
 - [Notion API Introduction](https://developers.notion.com/reference/intro)
 - [Notion Database Properties](https://developers.notion.com/reference/property-object)
 - [Notion Block Types](https://developers.notion.com/reference/block)

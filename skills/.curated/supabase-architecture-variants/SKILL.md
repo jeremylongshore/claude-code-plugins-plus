@@ -1,30 +1,15 @@
 ---
 name: supabase-architecture-variants
-description: 'Implement Supabase across different app architectures: Next.js SSR with
-
-  server components using service_role and client components with anon key,
-
-  SPA (React/Vue), mobile (React Native), serverless (Edge Functions),
-
-  and multi-tenant with schema-per-tenant or RLS isolation.
-
-  Use when choosing how to integrate Supabase into your specific stack,
-
-  setting up SSR auth flows, configuring mobile deep links,
-
-  or designing multi-tenant data isolation.
-
-  Trigger with phrases like "supabase next.js", "supabase SSR",
-
-  "supabase react native", "supabase SPA", "supabase serverless",
-
-  "supabase multi-tenant", "supabase server component",
-
+description: |
+  Use when choosing how to integrate Supabase into a specific stack — setting up
+  Next.js SSR auth flows, wiring an SPA or React Native client, configuring mobile
+  deep links, or designing multi-tenant data isolation. Covers where the client runs
+  (browser vs server) and which key it uses (anon respects RLS, service_role bypasses it).
+  Trigger with phrases like "supabase next.js", "supabase SSR", "supabase react native",
+  "supabase SPA", "supabase serverless", "supabase multi-tenant", "supabase server component",
   "supabase architecture", "supabase service_role server".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(npx:*), Grep
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -43,405 +28,96 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Different application architectures require fundamentally different Supabase `createClient` configurations. The critical distinction is **where the client runs** (browser vs server) and **which key it uses** (anon key respects RLS; service_role bypasses it). This skill provides production-ready patterns for five architectures: **Next.js SSR** (server components with service_role, client components with anon), **SPA** (React/Vue with browser-only client), **Mobile** (React Native with deep link auth), **Serverless** (Edge Functions with per-request clients), and **Multi-tenant** (RLS-based or schema-per-tenant isolation).
+Every Supabase `createClient` configuration turns on two questions: **where the client runs** (browser vs server) and **which key it uses** (`anon` respects RLS; `service_role` bypasses it). This skill supplies production-ready patterns for five architectures — Next.js SSR, SPA, Mobile, Serverless Edge Functions, and Multi-tenant isolation.
 
 ## Prerequisites
 
 - `@supabase/supabase-js` v2+ installed
 - `@supabase/ssr` package for Next.js SSR (v0.5+)
-- Supabase project with URL, anon key, and service role key
+- Supabase project with URL, `anon` key, and `service_role` key
 - TypeScript project with generated database types (`supabase gen types typescript`)
 - For mobile: React Native with Expo or bare workflow
 
 ## Instructions
 
-### Step 1 — Next.js SSR (App Router with Server and Client Components)
+Pick the architecture that matches the target stack, then follow the linked walkthrough for the full, copy-ready client setup.
 
-Next.js App Router requires **two separate clients**: a server-side client using cookies for auth (with `@supabase/ssr`) and a browser client for client components. Never expose `service_role` to the client.
+| Architecture | Client(s) | Key | Session storage |
+| -------------- | ----------- | ----- | ----------------- |
+| Next.js SSR | Server (cookies) + browser + admin | `anon` in-request, `service_role` server-only | HTTP cookies |
+| SPA (React/Vue) | Single browser client | `anon` only | `localStorage` |
+| Mobile (React Native) | Single native client | `anon` only | `AsyncStorage` |
+| Serverless (Edge Functions) | Per-request client | `anon` (forwarded JWT) or `service_role` | none (stateless) |
+| Multi-tenant | Any of the above | `anon` + RLS, or schema-per-tenant | per host pattern |
 
-#### Server-Side Client (for Server Components, Route Handlers, Server Actions)
+### Step 1 — Next.js SSR (App Router)
 
-```typescript
-// lib/supabase/server.ts
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import type { Database } from '../database.types'
-
-export async function createSupabaseServer() {
-  const cookieStore = await cookies()
-
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Called from Server Component — cookies are read-only
-          }
-        },
-      },
-    }
-  )
-}
-
-// Admin client for server-only operations (bypasses RLS)
-// NEVER import this in client components or expose to the browser
-import { createClient } from '@supabase/supabase-js'
-
-export function createSupabaseAdmin() {
-  return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,  // NOT NEXT_PUBLIC_ — server only
-    {
-      auth: { autoRefreshToken: false, persistSession: false },
-    }
-  )
-}
-```
-
-#### Client-Side Client (for Client Components)
+Next.js App Router needs **two separate clients**: a server client that reads/writes auth cookies via `@supabase/ssr`, and a browser client for client components. A third `service_role` admin client is used only in Server Actions/Route Handlers and must **never** reach the browser. The browser client is the minimal skeleton:
 
 ```typescript
 // lib/supabase/client.ts
 'use client'
-
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '../database.types'
 
-let client: ReturnType<typeof createBrowserClient<Database>> | null = null
-
 export function createSupabaseBrowser() {
-  if (client) return client
-
-  client = createBrowserClient<Database>(
+  return createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!  // anon key only — respects RLS
   )
-
-  return client
 }
 ```
 
-#### Middleware for Auth Session Refresh
-
-```typescript
-// middleware.ts
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
-
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          response = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  // Refresh session — this is the critical call
-  await supabase.auth.getUser()
-
-  return response
-}
-
-export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
-}
-```
-
-#### Server Component Usage
-
-```typescript
-// app/dashboard/page.tsx
-import { createSupabaseServer } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-
-export default async function DashboardPage() {
-  const supabase = await createSupabaseServer()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: projects, error } = await supabase
-    .from('projects')
-    .select('id, name, status, created_at')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-
-  if (error) throw new Error(`Failed to load projects: ${error.message}`)
-
-  return (
-    <div>
-      <h1>My Projects</h1>
-      {projects.map(p => <ProjectCard key={p.id} project={p} />)}
-    </div>
-  )
-}
-```
-
-#### Server Action with Admin Client
-
-```typescript
-// app/actions/admin.ts
-'use server'
-
-import { createSupabaseAdmin } from '@/lib/supabase/server'
-
-export async function deleteUserAccount(userId: string) {
-  const supabase = createSupabaseAdmin()
-
-  // Admin operation — bypasses RLS
-  const { error: deleteError } = await supabase
-    .from('user_data')
-    .delete()
-    .eq('user_id', userId)
-
-  if (deleteError) throw new Error(`Data deletion failed: ${deleteError.message}`)
-
-  // Delete auth user
-  const { error: authError } = await supabase.auth.admin.deleteUser(userId)
-  if (authError) throw new Error(`Auth deletion failed: ${authError.message}`)
-}
-```
+Full walkthrough — server client, admin client, middleware session refresh, server component usage, Server Actions, and the OAuth callback route: [Next.js SSR patterns](references/nextjs-ssr.md).
 
 ### Step 2 — SPA (React/Vue) and Mobile (React Native)
 
-#### SPA Architecture (React with Vite)
-
-SPAs use a single browser client with the anon key. All authorization is enforced via RLS. The service_role key is never present in the SPA bundle.
+SPAs and mobile apps both use a **single browser/native client with the `anon` key**; all authorization is enforced by RLS and the `service_role` key is never bundled. They differ only in session storage (`localStorage` for SPA, `AsyncStorage` for mobile) and OAuth handling (URL detection for SPA, deep links for mobile). Minimal SPA skeleton:
 
 ```typescript
 // src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './database.types'
 
-// Singleton client — one instance for the entire SPA
 export const supabase = createClient<Database>(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,  // handles OAuth redirects
-      storage: window.localStorage,
-    },
-  }
-)
-
-// Auth state listener — call once at app initialization
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_OUT') {
-    // Clear local caches
-    queryClient.clear()  // React Query
-  }
-  if (event === 'TOKEN_REFRESHED') {
-    console.log('Token refreshed')
-  }
-})
-```
-
-#### React Hook for Auth-Protected Queries
-
-```typescript
-// src/hooks/useSupabaseQuery.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '../lib/supabase'
-
-export function useTodos() {
-  return useQuery({
-    queryKey: ['todos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('todos')
-        .select('id, title, is_complete, created_at')
-        .order('created_at', { ascending: false })
-
-      if (error) throw new Error(`Failed to load todos: ${error.message}`)
-      return data
-    },
-  })
-}
-
-export function useCreateTodo() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (title: string) => {
-      const { data, error } = await supabase
-        .from('todos')
-        .insert({ title })
-        .select('id, title, is_complete, created_at')
-        .single()
-
-      if (error) throw new Error(`Failed to create todo: ${error.message}`)
-      return data
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] })
-    },
-  })
-}
-```
-
-#### Mobile Architecture (React Native with Expo)
-
-React Native needs `AsyncStorage` for session persistence and deep link handling for OAuth.
-
-```typescript
-// lib/supabase.ts (React Native)
-import { createClient } from '@supabase/supabase-js'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import type { Database } from './database.types'
-
-export const supabase = createClient<Database>(
-  process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
-  {
-    auth: {
-      storage: AsyncStorage,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: false,  // disabled for React Native
-    },
-  }
+  { auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true } }
 )
 ```
 
-#### Mobile OAuth with Deep Links
-
-```typescript
-// lib/auth.ts (React Native)
-import { supabase } from './supabase'
-import * as Linking from 'expo-linking'
-import * as WebBrowser from 'expo-web-browser'
-
-const redirectUrl = Linking.createURL('auth/callback')
-
-export async function signInWithGoogle() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: redirectUrl,
-      skipBrowserRedirect: true,  // handle manually for RN
-    },
-  })
-
-  if (error) throw new Error(`OAuth failed: ${error.message}`)
-  if (!data.url) throw new Error('No OAuth URL returned')
-
-  // Open in-app browser
-  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl)
-
-  if (result.type === 'success') {
-    const url = new URL(result.url)
-    const params = new URLSearchParams(url.hash.substring(1))
-    const accessToken = params.get('access_token')
-    const refreshToken = params.get('refresh_token')
-
-    if (accessToken && refreshToken) {
-      const { error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      })
-      if (sessionError) throw sessionError
-    }
-  }
-}
-```
-
-#### App.json Deep Link Configuration (Expo)
-
-```json
-{
-  "expo": {
-    "scheme": "myapp",
-    "plugins": [
-      [
-        "expo-linking",
-        {
-          "scheme": "myapp"
-        }
-      ]
-    ]
-  }
-}
-```
+Full walkthrough — SPA singleton + auth-state listener, React Query hooks, React Native `AsyncStorage` client, mobile OAuth with deep links, and Expo `app.json` config: [SPA and mobile patterns](references/spa-and-mobile.md).
 
 ### Step 3 — Serverless (Edge Functions) and Multi-Tenant
 
-See [serverless and multi-tenant patterns](references/serverless-and-multi-tenant.md) for Edge Function per-request clients, admin operation escalation, RLS-based multi-tenant isolation with schema, and tenant-scoped SDK queries.
+Edge Functions create a **per-request** client from the forwarded JWT (stateless, no session persistence), escalating to `service_role` only for privileged operations. Multi-tenant isolation is either RLS-based (a `tenant_members` lookup gates every row) or schema-per-tenant.
+
+Full walkthrough — Edge Function per-request clients, admin escalation, RLS multi-tenant isolation, and tenant-scoped SDK queries: [serverless and multi-tenant patterns](references/serverless-and-multi-tenant.md).
 
 ## Output
 
 - Next.js SSR setup with server client (cookies-based auth), browser client, and middleware
-- Server Actions using admin client with service_role for privileged operations
+- Server Actions using admin client with `service_role` for privileged operations
 - SPA pattern with singleton client, React Query integration, and auth state listener
-- React Native setup with AsyncStorage, deep link OAuth, and in-app browser
+- React Native setup with `AsyncStorage`, deep link OAuth, and in-app browser
 - Edge Function patterns for per-request auth and admin escalation
-- Multi-tenant RLS isolation with tenant_members lookup and scoped queries
+- Multi-tenant RLS isolation with `tenant_members` lookup and scoped queries
 - Decision matrix for choosing the right architecture per stack
 
 ## Error Handling
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `AuthSessionMissingError` in Server Component | Cookies not passed to Supabase client | Use `createServerClient` from `@supabase/ssr` with cookie handlers |
 | OAuth redirect fails in React Native | Missing deep link scheme | Add `scheme` to app.json and configure Supabase redirect URL |
-| service_role key in client bundle | Wrong env var prefix (`NEXT_PUBLIC_`) | Remove `NEXT_PUBLIC_` prefix; only server code should access it |
-| Multi-tenant data leak | Missing RLS policy or missing tenant_id filter | Verify RLS is enabled and policies check `tenant_members` |
+| `service_role` key in client bundle | Wrong env var prefix (`NEXT_PUBLIC_`) | Remove `NEXT_PUBLIC_` prefix; only server code should access it |
+| Multi-tenant data leak | Missing RLS policy or missing `tenant_id` filter | Verify RLS is enabled and policies check `tenant_members` |
 | Edge Function `auth.getUser()` returns null | Missing Authorization header | Forward user's JWT from the client call |
-| Session not persisting on mobile | AsyncStorage not configured | Pass `AsyncStorage` in auth config; ensure package is installed |
+| Session not persisting on mobile | `AsyncStorage` not configured | Pass `AsyncStorage` in auth config; ensure package is installed |
 
 ## Examples
 
-### Test Auth Flow End-to-End (Next.js)
-
-```typescript
-// app/auth/callback/route.ts
-import { createSupabaseServer } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const code = searchParams.get('code')
-
-  if (code) {
-    const supabase = await createSupabaseServer()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (error) {
-      return NextResponse.redirect(new URL('/login?error=auth_failed', request.url))
-    }
-  }
-
-  return NextResponse.redirect(new URL('/dashboard', request.url))
-}
-```
-
-### Verify Tenant Isolation
+Verify tenant isolation by impersonating a JWT and confirming RLS scopes the result:
 
 ```sql
 -- Test that RLS properly isolates tenants
@@ -450,6 +126,8 @@ SET request.jwt.claims = '{"sub": "user-uuid-1"}';
 -- Should only return projects for user-uuid-1's tenant
 SELECT * FROM public.projects;
 ```
+
+More runnable examples — the Next.js OAuth callback route and further end-to-end flows: [Next.js SSR patterns](references/nextjs-ssr.md) and [examples](references/examples.md).
 
 ## Resources
 
@@ -462,4 +140,4 @@ SELECT * FROM public.projects;
 
 ## Next Steps
 
-For common mistakes and anti-patterns to avoid, see `supabase-known-pitfalls`.
+After wiring the client for your architecture, review `supabase-known-pitfalls` for common mistakes and anti-patterns to avoid, then generate database types with `supabase gen types typescript` and enable RLS on every table before shipping.
