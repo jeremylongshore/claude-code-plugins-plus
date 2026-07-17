@@ -1710,6 +1710,54 @@ sources:
       - '.git/**'
       - '*.log'
 
+  - name: twitch-vod-clipper
+    description: Download Twitch VODs, detect viral moments from audio energy and the transcript, and render vertical 9:16 clips with animated captions, face tracking, watermarks, and thumbnails
+    repo: gupsspam-netizen/clip-farmer-skills
+    source_path: twitch-vod-clipper
+    target_path: plugins/community/twitch-vod-clipper
+    author:
+      name: Carl Johnson
+      github: gupsspam-netizen
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - '.git/**'
+
+  - name: market-validator
+    description: Structured 40-minute process to validate a business idea — competition scan, demand signals, revenue estimate — outputs a GREEN/YELLOW/RED verdict with evidence
+    repo: gupsspam-netizen/clip-farmer-skills
+    source_path: market-validator
+    target_path: plugins/community/market-validator
+    author:
+      name: Carl Johnson
+      github: gupsspam-netizen
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - '.git/**'
+
+  - name: git-workflow
+    description: Execute common Git workflows safely — rebase, squash, conflict resolution, commit management, force-push with lease. 21 safe steps with recovery paths
+    repo: gupsspam-netizen/clip-farmer-skills
+    source_path: git-workflow
+    target_path: plugins/community/git-workflow
+    author:
+      name: Carl Johnson
+      github: gupsspam-netizen
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - '.git/**'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
