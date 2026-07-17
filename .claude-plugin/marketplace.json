@@ -2277,6 +2277,22 @@
       }
     },
     {
+      "name": "skillcrossroads",
+      "source": "./plugins/community/skillcrossroads",
+      "description": "Evidence-cited grader for Claude Code artifacts — the audit-skill runs the free skillcrossroads CLI for file:line scorecards, letter grades, and ranked fix lists",
+      "version": "0.11.3",
+      "category": "community",
+      "keywords": [
+        "audit",
+        "quality",
+        "linter",
+        "scorecard"
+      ],
+      "author": {
+        "name": "Steve Harlow"
+      }
+    },
+    {
       "name": "feature-engineering-toolkit",
       "source": "./plugins/ai-ml/feature-engineering-toolkit",
       "description": "Feature creation, selection, and transformation tools",
