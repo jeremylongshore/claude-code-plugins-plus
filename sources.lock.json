@@ -220,8 +220,8 @@
     },
     "dolt-mcp-vcs": {
       "repo": "jeremylongshore/dolt-mcp-vcs-plugin",
-      "resolved_ref": "4c295661056bdccae96e5c7e278bb9c20f1af624",
-      "locked_at": "2026-07-17T22:28:58.208Z",
+      "resolved_ref": "aadd76c267627ef81df988fa2da42dce214cecf1",
+      "locked_at": "2026-07-17T22:44:37.947Z",
       "files": {
         ".claude-plugin/marketplace.json": "sha256:9433a6d45064c087019be699ba87ad696a56d5a11947781a85427a416d5755eb",
         ".claude-plugin/plugin.json": "sha256:5924975c7620e1e0ca550ae469e4535005f1f71342f2431853408b6943df1b5c",
@@ -248,7 +248,7 @@
         "scripts/resolve-creds-ref.py": "sha256:3082992ed604103359022da661ab785c6934e4eab82f98a71b56221ff47d1b20",
         "scripts/server-health.sh": "sha256:dbf32f04e35ba321352d0b5082576e7615a705c15d58e5d0822479c30b4bbb85",
         "scripts/sql_classifier.py": "sha256:e885c7668b4e758471866f038c2bf4e1b3db13f9b8d4832b95ca105bbca258df",
-        "skills/dolt-mcp-vcs/SKILL.md": "sha256:170b274da0455a37eb194f733ae824ea2c1353b8276255e7326114189a3a24f7",
+        "skills/dolt-mcp-vcs/SKILL.md": "sha256:88b64b4ac21984c7a872a4f428b7e20dcfba9505ce7046554978b01043365f3a",
         "skills/dolt-mcp-vcs/eval.yaml": "sha256:a5bfe75a8d43cc48ae819854d7c4a63fe9b3640235d0a77920211ef11027c5c3",
         "skills/dolt-mcp-vcs/references/connection-descriptor-and-profiles.md": "sha256:f9d86828cb8e0cb14531d93e6253bc8104ccdfa5e473fd7fd22447aaab83c3f1",
         "skills/dolt-mcp-vcs/references/dolt-internals.md": "sha256:e4b2c11c55447526a8fa02d5f5dce8bab7ad793dc430be7da9cba3f2936cd0d9",
