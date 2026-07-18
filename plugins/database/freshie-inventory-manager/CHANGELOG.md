@@ -1,6 +1,6 @@
 # Changelog — freshie-inventory-manager
 
-## 1.1.0 — 2026-07-17
+## 1.5.0 — 2026-07-18
 
 DoltHub VCS-plugin patterns applied to the sync pipeline (additive; the
 SQLite runtime, parity gates, pump, and push are untouched).
