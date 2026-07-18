@@ -137,4 +137,3 @@ Green is a claim, not evidence. A recovery drill is a program, and like any prog
 For any recovery or verification harness, the question to ask is not "does it pass." It is "what would make this pass when it should fail," enumerated concretely, then tested one by one. Would an absent-by-default value satisfy an absence check? Does one fixture quietly serve two contradictory assertions? Can the verifier reach a source that holds the answer for the wrong reason?
 
 None of these four are specific to ClickHouse or SigNoz. A config drop-in that must always merge, a negative test that needs its subject to actually exist, a fixture pulled between two goals, and a verifier that defaults to the happy source: those generalize to any recovery drill you will ever build. The stack was observability. The lesson is about trusting your own green.
-

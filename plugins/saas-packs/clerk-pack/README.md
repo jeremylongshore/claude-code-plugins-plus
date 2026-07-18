@@ -39,7 +39,7 @@ A complete skill pack for building, deploying, and operating Clerk-authenticated
 | P14 | `clerk-deploy-integration` | Vercel/Netlify/Railway/Docker deployment, env var configuration, post-deploy verification |
 | P15 | `clerk-webhooks-events` | `verifyWebhook()` + manual Svix verification, event handlers, idempotency, Express raw body |
 | P16 | `clerk-performance-tuning` | Middleware matcher optimization, React `cache()`, lazy-loaded components, Edge Runtime |
-| P17 | `clerk-cost-tuning` | MAU pricing model, deferred auth routes, `unstable_cache()` for API call reduction |
+| P17 | `clerk-cost-tuning` | MRU pricing model, deferred auth routes, `unstable_cache()` for API call reduction |
 | P18 | `clerk-reference-architecture` | Next.js full-stack, microservices with JWT proxy, multi-tenant SaaS, mobile + web shared backend |
 
 ### Flagship Skills (F19-F24)
