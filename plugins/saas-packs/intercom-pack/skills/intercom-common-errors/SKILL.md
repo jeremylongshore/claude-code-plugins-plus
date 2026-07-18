@@ -12,7 +12,7 @@ description: 'Diagnose and fix Intercom API errors by HTTP status code and error
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,249 +26,53 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Quick reference for Intercom API errors by HTTP status code, with real error response shapes and proven solutions.
+Quick reference for diagnosing and fixing Intercom REST API errors by HTTP
+status code. Every Intercom error returns the same envelope, so triage is
+fast: read the `errors[].code`, match it to the table below, apply the fix.
 
-## Intercom Error Response Shape
-
-All Intercom errors return this structure:
+All Intercom errors share this shape:
 
 ```json
 {
   "type": "error.list",
   "request_id": "req_abc123",
-  "errors": [
-    {
-      "code": "unauthorized",
-      "message": "Access Token Invalid"
-    }
-  ]
-}
-```
-
-## Error Reference
-
-### 401 Unauthorized
-
-```json
-{
-  "type": "error.list",
   "errors": [{ "code": "unauthorized", "message": "Access Token Invalid" }]
 }
 ```
 
-**Causes:**
+The full per-code catalog (causes + copy-paste fixes) lives in
+[references/error-reference.md](references/error-reference.md).
 
-- Access token is expired, revoked, or malformed
-- Using a test token against production (or vice versa)
-- Token was regenerated in Developer Hub but not updated in app
+## Prerequisites
 
-**Fix:**
+- An Intercom access token in `INTERCOM_ACCESS_TOKEN` (Developer Hub > Your App > Authentication).
+- `curl` and `jq` for the diagnostic commands.
+- For the TypeScript fixes: the `intercom-client` SDK (`npm install intercom-client`).
+
+## Instructions
+
+1. **Capture the error.** Grab the HTTP status and the JSON body. Use **Read** on your app logs, or **Grep** the codebase for the failing call site to see how the request is built.
+2. **Match the code.** Find the `errors[].code` in the Error Handling table below.
+3. **Confirm the token/limits first.** Run the diagnostic script in [references/diagnostics.md](references/diagnostics.md) to rule out auth and rate-limit issues in one shot.
+4. **Apply the fix.** Open [references/error-reference.md](references/error-reference.md), jump to your status code, and use the causes + fix snippet there.
+5. **Retry only retryable errors.** 429 and 5xx are retryable with backoff; 4xx client errors are not — fix the request instead.
+
+Fast auth check:
 
 ```bash
-# Verify token works
 curl -s https://api.intercom.io/me \
   -H "Authorization: Bearer $INTERCOM_ACCESS_TOKEN" \
   -H "Accept: application/json" | jq '.type'
-# Should return "admin"
-
-# If invalid, regenerate at:
-# app.intercom.com > Settings > Developer Hub > Your App > Authentication
+# Returns "admin" when the token is valid
 ```
 
----
+## Output
 
-### 403 Forbidden
+You resolve the request into one of three outcomes:
 
-```json
-{
-  "type": "error.list",
-  "errors": [{ "code": "forbidden", "message": "You do not have permission to access this resource" }]
-}
-```
-
-**Causes:**
-
-- OAuth app missing required scope
-- Trying to access a resource in another workspace
-- Admin permissions insufficient
-
-**Fix:** Add the required OAuth scope in Developer Hub > OAuth Scopes.
-
----
-
-### 404 Not Found
-
-```json
-{
-  "type": "error.list",
-  "errors": [{ "code": "not_found", "message": "User Not Found" }]
-}
-```
-
-**Causes:**
-
-- Contact, conversation, or article ID is invalid
-- Resource was deleted
-- Using `user_id` where `contact_id` is expected (or vice versa)
-
-**Fix:**
-
-```typescript
-// Always check existence before operating
-try {
-  const contact = await client.contacts.find({ contactId: id });
-} catch (err) {
-  if (err instanceof IntercomError && err.statusCode === 404) {
-    console.log(`Contact ${id} not found, skipping`);
-  }
-}
-```
-
----
-
-### 409 Conflict
-
-```json
-{
-  "type": "error.list",
-  "errors": [{ "code": "conflict", "message": "A contact matching those details already exists with id=abc123" }]
-}
-```
-
-**Causes:**
-
-- Creating a contact with a duplicate `external_id` or `email`
-- Race condition in concurrent contact creation
-
-**Fix:**
-
-```typescript
-// Search first, create if not found
-async function findOrCreateContact(email: string, externalId: string) {
-  const existing = await client.contacts.search({
-    query: { field: "email", operator: "=", value: email },
-  });
-
-  if (existing.data.length > 0) {
-    return existing.data[0];
-  }
-
-  return client.contacts.create({
-    role: "user",
-    email,
-    externalId,
-  });
-}
-```
-
----
-
-### 422 Unprocessable Entity
-
-```json
-{
-  "type": "error.list",
-  "errors": [{ "code": "parameter_invalid", "message": "email is not a valid email address" }]
-}
-```
-
-**Causes:**
-
-- Invalid field value (bad email format, wrong type)
-- Missing required field
-- Custom attribute name exceeds 190 characters
-
-**Fix:** Validate inputs before sending. Check the `errors` array for specifics.
-
----
-
-### 429 Rate Limit Exceeded
-
-```json
-{
-  "type": "error.list",
-  "errors": [{ "code": "rate_limit_exceeded", "message": "Rate limit exceeded" }]
-}
-```
-
-**Response headers:**
-
-```
-X-RateLimit-Limit: 10000
-X-RateLimit-Remaining: 0
-X-RateLimit-Reset: 1711100060
-```
-
-**Limits:** 10,000 req/min per app, 25,000 req/min per workspace.
-
-**Fix:**
-
-```typescript
-import { IntercomError } from "intercom-client";
-
-async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (err) {
-      if (err instanceof IntercomError && err.statusCode === 429) {
-        if (attempt === maxRetries) throw err;
-        const resetAt = err.headers?.["x-ratelimit-reset"];
-        const waitMs = resetAt
-          ? (parseInt(resetAt) * 1000) - Date.now() + 1000
-          : 1000 * Math.pow(2, attempt);
-        console.log(`Rate limited, waiting ${waitMs}ms`);
-        await new Promise(r => setTimeout(r, Math.max(waitMs, 1000)));
-      } else {
-        throw err;
-      }
-    }
-  }
-  throw new Error("Unreachable");
-}
-```
-
----
-
-### 500/502/503 Server Errors
-
-**Causes:** Intercom-side issue, not your fault.
-
-**Fix:**
-
-```bash
-# 1. Check Intercom status
-curl -s https://status.intercom.com/api/v2/summary.json | jq '.status'
-
-# 2. Retry with backoff (same pattern as 429)
-# 3. If persistent, contact Intercom support with request_id
-```
-
-## Quick Diagnostic Script
-
-```bash
-#!/bin/bash
-TOKEN="${INTERCOM_ACCESS_TOKEN}"
-
-echo "=== Intercom API Diagnostics ==="
-
-# Test auth
-echo -n "Auth: "
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $TOKEN" \
-  https://api.intercom.io/me)
-echo "$STATUS $([ "$STATUS" = "200" ] && echo "OK" || echo "FAIL")"
-
-# Check rate limits
-echo -n "Rate limit remaining: "
-curl -s -D - -o /dev/null \
-  -H "Authorization: Bearer $TOKEN" \
-  https://api.intercom.io/me 2>/dev/null | grep -i x-ratelimit-remaining
-
-# Intercom status
-echo -n "Intercom status: "
-curl -s https://status.intercom.com/api/v2/status.json | jq -r '.status.description'
-```
+- **Fixed request** — a corrected token, added OAuth scope, valid payload, or existence check that makes the call succeed.
+- **Backoff-and-retry** — for 429 / 5xx, a retry wrapper that respects `X-RateLimit-Reset` and exponential backoff.
+- **Escalation** — for persistent 5xx, the `request_id` to hand to Intercom support along with the status-page state.
 
 ## Error Handling
 
@@ -282,13 +86,39 @@ curl -s https://status.intercom.com/api/v2/status.json | jq -r '.status.descript
 | `rate_limit_exceeded` | 429 | Yes | Backoff and retry |
 | `server_error` | 500+ | Yes | Retry, check status page |
 
+**Limits:** 10,000 req/min per app, 25,000 req/min per workspace. On 429,
+read `X-RateLimit-Reset` and wait until that epoch before retrying.
+
+## Examples
+
+**401 — invalid token.** The auth check returns nothing instead of `"admin"`. Regenerate the token in Developer Hub and update the app's env. Full walkthrough: [references/error-reference.md](references/error-reference.md).
+
+**409 — duplicate contact.** `create` fails because the `email`/`external_id` already exists. Search first, then create:
+
+```typescript
+const existing = await client.contacts.search({
+  query: { field: "email", operator: "=", value: email },
+});
+return existing.data.length > 0
+  ? existing.data[0]
+  : client.contacts.create({ role: "user", email, externalId });
+```
+
+**429 — rate limited.** Wrap the call in exponential backoff that honors
+`X-RateLimit-Reset`. Full retry helper: [references/error-reference.md](references/error-reference.md).
+
+For a full triage sweep (auth + rate limit + Intercom status in one command),
+run the script in [references/diagnostics.md](references/diagnostics.md).
+
 ## Resources
 
 - [Error Codes](https://developers.intercom.com/docs/references/rest-api/errors/error-codes)
 - [HTTP Responses](https://developers.intercom.com/docs/references/rest-api/errors/http-responses)
 - [Rate Limiting](https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting)
 - [Intercom Status](https://status.intercom.com)
+- [Full error reference](references/error-reference.md) — per-code causes and fixes
+- [Diagnostics](references/diagnostics.md) — one-shot health-check script
 
 ## Next Steps
 
-For comprehensive debugging, see `intercom-debug-bundle`.
+For deeper, end-to-end debugging of an Intercom integration — capturing request/response pairs, replaying failing calls, and correlating `request_id`s across a session — see the `intercom-debug-bundle` skill in this pack.

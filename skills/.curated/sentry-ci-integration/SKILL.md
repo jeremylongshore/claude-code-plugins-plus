@@ -17,7 +17,7 @@ description: 'Integrate Sentry into CI/CD pipelines for automated release creati
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(sentry-cli:*), Bash(npm:*), Bash(npx:*),
   Grep, Glob
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

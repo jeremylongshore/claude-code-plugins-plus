@@ -8,7 +8,7 @@ description: 'Build this skill enables AI assistant to provide interpretability 
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

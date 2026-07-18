@@ -6,7 +6,7 @@ description: "Execute Webflow incident response \u2014 triage by HTTP status (40
   , \"webflow outage\",\n\"webflow down\", \"webflow on-call\", \"webflow emergency\"\
   , \"webflow broken\".\n"
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

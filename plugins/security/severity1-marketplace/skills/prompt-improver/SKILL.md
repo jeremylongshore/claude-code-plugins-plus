@@ -7,7 +7,7 @@ description: 'Analyze and improve plugin prompts, skill definitions, and command
 
   '
 allowed-tools: Read, Write, Edit, Glob, Grep
-version: 1.0.0
+version: 1.6.0
 author: severity1 <severity1@intentsolutions.io>
 license: MIT
 tags:

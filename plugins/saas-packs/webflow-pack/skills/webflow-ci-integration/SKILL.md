@@ -6,7 +6,7 @@ description: "Configure Webflow CI/CD with GitHub Actions \u2014 automated CMS v
   \ like \"webflow CI\", \"webflow GitHub Actions\",\n\"webflow automated tests\"\
   , \"CI webflow\", \"webflow pipeline\".\n"
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

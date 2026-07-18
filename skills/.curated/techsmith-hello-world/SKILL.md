@@ -10,7 +10,7 @@ description: 'Capture a screenshot with Snagit COM API and produce a Camtasia vi
 
   '
 allowed-tools: Read, Write, Edit, Bash(powershell:*)
-version: 1.0.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

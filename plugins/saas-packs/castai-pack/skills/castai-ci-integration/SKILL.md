@@ -12,7 +12,7 @@ description: 'Integrate CAST AI policy validation and cost checks into CI/CD pip
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

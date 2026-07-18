@@ -12,7 +12,7 @@ description: 'Diagnose and fix AssemblyAI common errors and exceptions.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

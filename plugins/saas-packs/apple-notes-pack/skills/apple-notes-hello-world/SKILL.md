@@ -12,7 +12,7 @@ description: 'Create, read, and list Apple Notes using JXA and AppleScript.
 
   '
 allowed-tools: Read, Write, Edit, Bash(osascript:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

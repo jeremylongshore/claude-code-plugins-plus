@@ -1,6 +1,6 @@
 {
   "name": "hipaa-compliance-checker",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Check HIPAA compliance",
   "author": {
     "name": "Jeremy Longshore",

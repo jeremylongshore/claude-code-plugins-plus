@@ -13,7 +13,7 @@ description: 'Execute Salesforce data migrations using Bulk API, Data Loader, an
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(sf:*), Bash(node:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

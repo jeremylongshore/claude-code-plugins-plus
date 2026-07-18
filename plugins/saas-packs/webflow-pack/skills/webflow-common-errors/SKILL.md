@@ -6,7 +6,7 @@ description: "Diagnose and fix Webflow Data API v2 errors \u2014 400, 401, 403, 
   , \"fix webflow\",\n\"webflow not working\", \"debug webflow\", \"webflow 429\"\
   , \"webflow 401\".\n"
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npx:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

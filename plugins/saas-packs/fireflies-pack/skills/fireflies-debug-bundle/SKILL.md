@@ -12,7 +12,7 @@ description: 'Collect Fireflies.ai debug evidence for support tickets and troubl
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

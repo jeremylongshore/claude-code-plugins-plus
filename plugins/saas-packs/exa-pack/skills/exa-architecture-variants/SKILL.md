@@ -13,7 +13,7 @@ description: 'Choose and implement Exa architecture patterns at different scales
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

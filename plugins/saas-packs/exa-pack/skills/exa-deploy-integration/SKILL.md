@@ -12,7 +12,7 @@ description: 'Deploy Exa integrations to Vercel, Docker, and Cloud Run platforms
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(docker:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -8,7 +8,7 @@ description: 'TechSmith local dev loop for Snagit COM API and Camtasia automatio
 
   '
 allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
-version: 1.0.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

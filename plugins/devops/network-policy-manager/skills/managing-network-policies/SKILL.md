@@ -7,7 +7,7 @@ description: 'Execute use when managing Kubernetes network policies and firewall
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

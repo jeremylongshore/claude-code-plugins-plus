@@ -10,7 +10,7 @@ description: 'Migrate between SerpApi client versions and handle package changes
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

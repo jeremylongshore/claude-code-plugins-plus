@@ -6,7 +6,7 @@ description: |
   grant the right property-level access. Trigger with "set up GA4 auth",
   "GA4 service account", "GA4 OAuth", "connect to Google Analytics".
 allowed-tools: Bash(gcloud:*), Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(ls:*)
-version: 1.0.0
+version: 1.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, auth]

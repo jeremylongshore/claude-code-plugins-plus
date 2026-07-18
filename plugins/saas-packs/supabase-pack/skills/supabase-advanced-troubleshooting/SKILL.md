@@ -1,24 +1,17 @@
 ---
 name: supabase-advanced-troubleshooting
-description: 'Deep Supabase diagnostics: pg_stat_statements for slow queries, lock
-  debugging with
-
-  pg_locks, connection leak detection, RLS policy conflicts, Edge Function cold starts,
-
-  and Realtime connection drop analysis.
-
-  Use when standard troubleshooting fails, investigating performance regressions,
-  debugging
-
-  race conditions, or building evidence for Supabase support escalation.
-
-  Trigger: "supabase deep debug", "supabase slow query", "supabase lock contention",
-
-  "supabase connection leak", "supabase RLS conflict", "supabase cold start".
-
-  '
+description: |
+  Deep Supabase diagnostics: pg_stat_statements for slow queries, lock debugging
+  with pg_locks, connection leak detection, RLS policy conflicts, Edge Function
+  cold starts, and Realtime connection drop analysis.
+  Use when standard troubleshooting fails, when investigating performance
+  regressions, when debugging race conditions, or when building evidence for a
+  Supabase support escalation.
+  Trigger with "supabase deep debug", "supabase slow query", "supabase lock
+  contention", "supabase connection leak", "supabase RLS conflict", "supabase
+  cold start".
 allowed-tools: Read, Grep, Bash(npx supabase:*), Bash(supabase:*), Bash(curl:*), Bash(psql:*)
-version: 1.0.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -46,291 +39,80 @@ When basic debugging does not reveal the root cause, you need deep PostgreSQL di
 - Supabase CLI for Edge Function logs
 - Familiarity with PostgreSQL system catalogs
 
+## Authentication
+
+Every technique here runs against your own project's Postgres, so authenticate with
+project-scoped credentials, never a shared key:
+
+- **`psql` / SQL Editor** — connect with the project's direct connection string or
+  pooled Supavisor URI from Dashboard → Settings → Database. Keep the database
+  password in an env var (`PGPASSWORD` / `.pgpass`), never inline in a command.
+- **SDK (`createClient`)** — pass the **service-role key** (`SUPABASE_SERVICE_ROLE_KEY`)
+  for the diagnostic RPCs below, since they read `pg_stat_activity` and system
+  catalogs that the anon key cannot. Load it from the environment; never commit it.
+- **`supabase` CLI** — run `supabase login` once (stores a personal access token),
+  then `supabase link --project-ref <ref>` for Edge Function logs.
+
 ## Instructions
 
-### Step 1: pg_stat_statements and Slow Query Analysis
+Work the three diagnostic tracks in the order the symptom points to. Each track's
+full query set and SDK helper lives in a reference file — SKILL.md carries the
+skeleton so you can start immediately, then drill in for the complete toolkit.
 
-Enable and query `pg_stat_statements` to find the most expensive queries by total execution time, calls, and rows processed.
+### Step 1: pg_stat_statements and slow query analysis
 
-**Enable the extension and query slow queries:**
+Enable `pg_stat_statements`, then rank queries by total execution time, call
+frequency, and cache-hit ratio to find the real cost centers. Follow up with
+`EXPLAIN (ANALYZE, BUFFERS)` on the worst offenders and add targeted indexes with
+`CREATE INDEX CONCURRENTLY`. The starter query:
 
 ```sql
--- Enable pg_stat_statements (run once)
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
 
--- Top 10 slowest queries by total execution time
-SELECT
-  queryid,
-  calls,
+SELECT queryid, calls,
   round(total_exec_time::numeric, 2) AS total_ms,
-  round(mean_exec_time::numeric, 2) AS avg_ms,
-  round(max_exec_time::numeric, 2) AS max_ms,
-  rows AS total_rows,
-  round(100.0 * shared_blks_hit / nullif(shared_blks_hit + shared_blks_read, 0), 2) AS cache_hit_pct,
+  round(mean_exec_time::numeric, 2)  AS avg_ms,
   left(query, 150) AS query_preview
 FROM pg_stat_statements
-WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user)
 ORDER BY total_exec_time DESC
 LIMIT 10;
-
--- Top queries by frequency (most called)
-SELECT
-  queryid,
-  calls,
-  round(mean_exec_time::numeric, 2) AS avg_ms,
-  rows / nullif(calls, 0) AS rows_per_call,
-  left(query, 150) AS query_preview
-FROM pg_stat_statements
-WHERE calls > 100
-ORDER BY calls DESC
-LIMIT 10;
-
--- Queries with poor cache hit ratio (reading from disk)
-SELECT
-  queryid,
-  calls,
-  shared_blks_hit,
-  shared_blks_read,
-  round(100.0 * shared_blks_hit / nullif(shared_blks_hit + shared_blks_read, 0), 2) AS cache_hit_pct,
-  left(query, 150) AS query_preview
-FROM pg_stat_statements
-WHERE shared_blks_read > 100
-ORDER BY shared_blks_read DESC
-LIMIT 10;
-
--- Reset statistics after optimization (to measure improvement)
--- SELECT pg_stat_statements_reset();
 ```
 
-**EXPLAIN ANALYZE for specific slow queries:**
+The full toolkit — frequency and cache-hit-ratio rankings, the `EXPLAIN ANALYZE`
+reading guide, and a `timedQuery` SDK wrapper that flags any call over 500 ms — is
+in [slow query analysis](references/slow-query-analysis.md).
+
+### Step 2: lock debugging and connection leak detection
+
+Find blocked/blocking query pairs via `pg_locks` joined to `pg_stat_activity`,
+then hunt connection leaks — especially `idle in transaction` backends, which hold
+locks and exhaust the pool. The starter query surfaces who is blocked and who holds
+the lock:
 
 ```sql
--- Run EXPLAIN ANALYZE on the suspicious query
-EXPLAIN (ANALYZE, BUFFERS, TIMING, FORMAT TEXT)
-SELECT p.*, count(o.id) AS order_count
-FROM profiles p
-LEFT JOIN orders o ON o.user_id = p.id
-WHERE p.created_at > now() - interval '30 days'
-GROUP BY p.id
-ORDER BY order_count DESC
-LIMIT 50;
-
--- What to look for in the output:
--- 1. Seq Scan on large table → needs an index
--- 2. Nested Loop with high actual rows → consider Hash Join
--- 3. Sort with "Sort Method: external merge" → increase work_mem or add index
--- 4. Buffers read >> shared hit → data not cached, optimize query or increase shared_buffers
-
--- Create a targeted index based on EXPLAIN output
-CREATE INDEX CONCURRENTLY idx_profiles_created_at
-  ON profiles(created_at DESC);
-
-CREATE INDEX CONCURRENTLY idx_orders_user_id
-  ON orders(user_id);
-```
-
-**Monitor query performance from the SDK:**
-
-```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
-// Wrapper that measures and logs query performance
-async function timedQuery<T>(
-  label: string,
-  queryFn: () => Promise<{ data: T | null; error: any }>
-): Promise<T | null> {
-  const start = performance.now();
-  const { data, error } = await queryFn();
-  const duration = Math.round(performance.now() - start);
-
-  if (duration > 500) {
-    console.warn(`[SLOW QUERY] ${label}: ${duration}ms`);
-  }
-
-  if (error) {
-    console.error(`[QUERY ERROR] ${label}:`, error.message);
-    return null;
-  }
-
-  return data;
-}
-
-// Usage
-const profiles = await timedQuery('recent-profiles', () =>
-  supabase
-    .from('profiles')
-    .select('*, orders(count)')
-    .gte('created_at', new Date(Date.now() - 30 * 86400000).toISOString())
-    .order('created_at', { ascending: false })
-    .limit(50)
-);
-```
-
-### Step 2: Lock Debugging and Connection Leak Detection
-
-Find blocked queries, detect lock contention, and identify connection leaks that exhaust the pool.
-
-**Lock contention detection:**
-
-```sql
--- Find blocked queries and what's blocking them
-SELECT
-  blocked.pid AS blocked_pid,
-  blocked.usename AS blocked_user,
-  age(now(), blocked.query_start)::text AS blocked_duration,
-  left(blocked.query, 100) AS blocked_query,
-  blocking.pid AS blocking_pid,
-  blocking.usename AS blocking_user,
-  left(blocking.query, 100) AS blocking_query,
-  bl.mode AS lock_mode
+SELECT blocked.pid AS blocked_pid, blocking.pid AS blocking_pid,
+  bl.mode AS lock_mode, left(blocked.query, 80) AS blocked_query
 FROM pg_stat_activity blocked
 JOIN pg_locks bl ON bl.pid = blocked.pid AND NOT bl.granted
-JOIN pg_locks kl ON kl.locktype = bl.locktype
-  AND kl.database IS NOT DISTINCT FROM bl.database
-  AND kl.relation IS NOT DISTINCT FROM bl.relation
-  AND kl.page IS NOT DISTINCT FROM bl.page
-  AND kl.tuple IS NOT DISTINCT FROM bl.tuple
-  AND kl.pid != bl.pid
-  AND kl.granted
+JOIN pg_locks kl ON kl.relation = bl.relation AND kl.granted AND kl.pid != bl.pid
 JOIN pg_stat_activity blocking ON blocking.pid = kl.pid
 WHERE blocked.state = 'active';
-
--- Check all locks on a specific table
-SELECT
-  l.locktype, l.mode, l.granted, l.pid,
-  a.usename, a.state,
-  age(now(), a.query_start)::text AS duration,
-  left(a.query, 80) AS query
-FROM pg_locks l
-JOIN pg_stat_activity a ON a.pid = l.pid
-WHERE l.relation = 'orders'::regclass
-ORDER BY l.granted, a.query_start;
-
--- Detect potential deadlocks
-SELECT
-  l1.pid AS pid1, l2.pid AS pid2,
-  l1.mode AS lock1, l2.mode AS lock2,
-  l1.relation::regclass AS table1,
-  l2.relation::regclass AS table2
-FROM pg_locks l1
-JOIN pg_locks l2 ON l1.pid != l2.pid
-  AND l1.relation = l2.relation
-  AND NOT l1.granted AND l2.granted
-WHERE l1.locktype = 'relation';
 ```
 
-**Connection leak detection:**
+The full toolkit — deadlock detection, idle/idle-in-transaction leak queries with
+`pg_terminate_backend` cleanup, and a `get_connection_health` RPC with utilization
+alerts — is in [lock and connection diagnostics](references/lock-connection-diagnostics.md).
 
-```sql
--- Connections that have been idle for too long (likely leaks)
-SELECT
-  pid, usename, client_addr, state,
-  age(now(), state_change)::text AS idle_time,
-  age(now(), backend_start)::text AS connection_age,
-  left(query, 100) AS last_query
-FROM pg_stat_activity
-WHERE state = 'idle'
-  AND age(now(), state_change) > interval '5 minutes'
-  AND datname = current_database()
-ORDER BY state_change;
+### Step 3: RLS conflicts, Edge Function cold starts, and Realtime drops
 
--- Connections stuck in "idle in transaction" (the worst kind of leak)
-SELECT
-  pid, usename, client_addr,
-  age(now(), xact_start)::text AS transaction_duration,
-  age(now(), state_change)::text AS idle_in_tx_time,
-  left(query, 100) AS last_query
-FROM pg_stat_activity
-WHERE state = 'idle in transaction'
-ORDER BY xact_start;
-
--- Connection usage by application/user
-SELECT
-  usename,
-  client_addr,
-  state,
-  count(*) AS connections
-FROM pg_stat_activity
-WHERE datname = current_database()
-GROUP BY usename, client_addr, state
-ORDER BY connections DESC;
-
--- Kill leaked connections (batch)
--- SELECT pg_terminate_backend(pid)
--- FROM pg_stat_activity
--- WHERE state = 'idle in transaction'
---   AND age(now(), state_change) > interval '10 minutes';
-```
-
-**Connection pool monitoring from the SDK:**
-
-```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
-// Monitor connection pool health
-async function checkConnectionPool() {
-  const { data, error } = await supabase.rpc('get_connection_health');
-  if (error) {
-    console.error('Connection health check failed:', error.message);
-    return;
-  }
-
-  const health = data as {
-    active: number;
-    idle: number;
-    idle_in_transaction: number;
-    total: number;
-    max_connections: number;
-  };
-
-  const utilization = (health.total / health.max_connections) * 100;
-
-  console.log('Connection pool:', {
-    ...health,
-    utilization: `${utilization.toFixed(1)}%`,
-  });
-
-  if (health.idle_in_transaction > 0) {
-    console.warn(`WARNING: ${health.idle_in_transaction} idle-in-transaction connections (likely leaks)`);
-  }
-
-  if (utilization > 80) {
-    console.warn(`WARNING: Connection pool at ${utilization.toFixed(1)}% capacity`);
-  }
-}
-
-// Database function for the RPC call:
-// CREATE OR REPLACE FUNCTION get_connection_health()
-// RETURNS json AS $$
-//   SELECT json_build_object(
-//     'active', (SELECT count(*) FROM pg_stat_activity WHERE state = 'active' AND datname = current_database()),
-//     'idle', (SELECT count(*) FROM pg_stat_activity WHERE state = 'idle' AND datname = current_database()),
-//     'idle_in_transaction', (SELECT count(*) FROM pg_stat_activity WHERE state = 'idle in transaction' AND datname = current_database()),
-//     'total', (SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()),
-//     'max_connections', (SELECT setting::int FROM pg_settings WHERE name = 'max_connections')
-//   );
-// $$ LANGUAGE sql SECURITY DEFINER;
-```
-
-### Step 3: RLS Conflicts, Edge Function Cold Starts, and Realtime Drops
-
-See [RLS conflicts, Edge Function cold starts, and Realtime drops](references/rls-edge-functions-realtime.md) for RLS policy conflict analysis (SQL and SDK), Edge Function cold start profiling, Realtime channel monitoring, and publication configuration.
+Diagnose silent RLS data filtering, profile Edge Function cold-vs-warm latency, and
+trace Realtime channel drops. The full walkthrough — RLS policy conflict analysis
+(SQL and SDK), cold start profiling, channel-state monitoring, and publication
+configuration — is in [RLS, Edge Functions, and Realtime](references/rls-edge-functions-realtime.md).
 
 ## Output
 
-After completing this skill, you will have:
+This skill produces the following diagnostic artifacts:
 
 - **Slow query identification** — `pg_stat_statements` queries ranking by total time, frequency, and cache hit ratio
 - **EXPLAIN ANALYZE proficiency** — reading execution plans and creating targeted indexes
@@ -344,14 +126,14 @@ After completing this skill, you will have:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `pg_stat_statements` not available | Extension not enabled | Run `CREATE EXTENSION pg_stat_statements;` |
 | Seq Scan on large table | Missing index on filter column | Create index with `CREATE INDEX CONCURRENTLY` |
 | `deadlock detected` | Circular lock dependency | Ensure consistent lock ordering across transactions |
 | All connections in `idle in transaction` | Application not closing transactions | Add connection timeout; review ORM connection pool settings |
 | RLS returns empty for authenticated user | JWT claims don't match policy | Check `auth.jwt()` output; verify `app_metadata` is set |
 | Edge Function > 2s cold start | Large dependency bundle | Lazy-import heavy modules; reduce function size |
-| Realtime `TIMED_OUT` | Network/firewall blocking WebSocket | Check port 443 is open; verify no proxy strips `Upgrade` header |
+| Realtime `TIMED_OUT` | Network/firewall blocking WebSocket | Check port 443 (HTTPS/WSS) is open outbound; verify no proxy strips the `Upgrade` header |
 | `CHANNEL_ERROR` on subscribe | Table not in Realtime publication | Run `ALTER PUBLICATION supabase_realtime ADD TABLE ...` |
 
 ## Examples

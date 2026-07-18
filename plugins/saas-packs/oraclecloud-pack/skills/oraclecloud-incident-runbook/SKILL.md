@@ -6,7 +6,7 @@ description: "Self-service incident runbook for OCI outages \u2014 health probes
   \ support.\nTrigger with \"oraclecloud incident\", \"oci outage runbook\", \"oci\
   \ failover\", \"oci instance recovery\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

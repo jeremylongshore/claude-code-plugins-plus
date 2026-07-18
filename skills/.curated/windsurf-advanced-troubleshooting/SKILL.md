@@ -13,7 +13,7 @@ description: 'Advanced Windsurf debugging for hard-to-diagnose IDE, Cascade, and
 
   '
 allowed-tools: Read, Grep, Bash(ls:*), Bash(curl:*), Bash(find:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

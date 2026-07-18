@@ -17,7 +17,7 @@ description: 'Create production-grade agent .md files aligned with the Anthropic
 
   '
 allowed-tools: Read,Write,Edit,Glob,Grep,Bash(python:*),AskUserQuestion
-version: 1.0.0
+version: 5.20.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -10,7 +10,7 @@ description: 'Track OCI spend with the Usage API and set up budget alerts.
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

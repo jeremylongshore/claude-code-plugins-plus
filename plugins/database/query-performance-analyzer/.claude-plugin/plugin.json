@@ -1,6 +1,6 @@
 {
   "name": "query-performance-analyzer",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Analyze query performance with EXPLAIN plan interpretation, bottleneck identification, and optimization recommendations",
   "author": {
     "name": "Claude Code Plugins",

@@ -1,12 +1,14 @@
 ---
 name: clickhouse-cost-tuning
-description: "Optimize ClickHouse Cloud costs \u2014 compute scaling, storage tiering,\
-  \ compression,\nand query efficiency for lower bills.\nUse when analyzing ClickHouse\
-  \ Cloud bills, reducing storage costs,\nor optimizing compute utilization.\nTrigger:\
-  \ \"clickhouse cost\", \"clickhouse billing\", \"reduce clickhouse spend\",\n\"\
-  clickhouse pricing\", \"clickhouse expensive\", \"clickhouse storage cost\".\n"
-allowed-tools: Read, Grep
-version: 1.0.0
+description: |
+  Optimize ClickHouse Cloud costs — compute scaling, storage tiering, compression,
+  and query efficiency for lower bills.
+  Use when analyzing ClickHouse Cloud bills, reducing storage costs, or optimizing
+  compute utilization.
+  Trigger with "clickhouse cost", "clickhouse billing", "reduce clickhouse spend",
+  "clickhouse pricing", "clickhouse expensive", "clickhouse storage cost".
+allowed-tools: Read
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,7 +24,13 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Reduce ClickHouse Cloud costs through storage optimization, compression tuning,
-TTL policies, compute scaling, and query efficiency improvements.
+TTL policies, compute scaling, and query efficiency improvements. This skill walks
+the bill from top driver to fix: identify what you actually pay for, then apply the
+codec, TTL, compute, and query changes that move the number.
+
+Deep copy-paste queries for every step live in
+[references/implementation.md](references/implementation.md); end-to-end scenarios
+live in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
@@ -31,7 +39,10 @@ TTL policies, compute scaling, and query efficiency improvements.
 
 ## Instructions
 
-### Step 1: Understand ClickHouse Cloud Pricing
+### Step 1: Understand what you pay for
+
+ClickHouse Cloud bills on four axes — and the biggest one is usually **compute**,
+not storage, because ClickHouse compresses data 10-20x.
 
 | Component | Pricing Model | Key Driver |
 |-----------|---------------|------------|
@@ -40,182 +51,62 @@ TTL policies, compute scaling, and query efficiency improvements.
 | Network | Per GB egress | Query result sizes |
 | Backups | Per GB stored | Backup retention |
 
-**Key insight:** ClickHouse bills on **compressed** storage, and ClickHouse
-compresses extremely well (often 10-20x). Your cost driver is usually compute,
-not storage.
+### Step 2: Find the top cost driver
 
-### Step 2: Analyze Storage Usage
+Break storage down by table, then by column, to find bloated data. The starter
+query — full breakdowns in [references/implementation.md](references/implementation.md):
 
 ```sql
--- Storage cost breakdown by table
-SELECT
-    database,
-    table,
+SELECT database, table,
     formatReadableSize(sum(bytes_on_disk)) AS compressed_size,
-    formatReadableSize(sum(data_uncompressed_bytes)) AS raw_size,
-    round(sum(data_uncompressed_bytes) / sum(bytes_on_disk), 1) AS compression_ratio,
-    sum(rows) AS total_rows,
-    count() AS parts
-FROM system.parts
-WHERE active
-GROUP BY database, table
-ORDER BY sum(bytes_on_disk) DESC;
-
--- Storage by column (find bloated columns)
-SELECT
-    table,
-    column,
-    type,
-    formatReadableSize(sum(column_data_compressed_bytes)) AS compressed,
-    formatReadableSize(sum(column_data_uncompressed_bytes)) AS raw,
-    round(sum(column_data_uncompressed_bytes) / sum(column_data_compressed_bytes), 1) AS ratio
-FROM system.parts_columns
-WHERE active AND database = 'analytics'
-GROUP BY table, column, type
-ORDER BY sum(column_data_compressed_bytes) DESC
-LIMIT 30;
+    round(sum(data_uncompressed_bytes) / sum(bytes_on_disk), 1) AS compression_ratio
+FROM system.parts WHERE active
+GROUP BY database, table ORDER BY sum(bytes_on_disk) DESC;
 ```
 
-### Step 3: Improve Compression
+A column with a low compression ratio (e.g. 2x on a text/JSON blob) is your lever.
 
-```sql
--- Check current codec per column
-SELECT name, type, compression_codec
-FROM system.columns
-WHERE database = 'analytics' AND table = 'events';
+### Step 3: Improve compression
 
--- Apply better codecs to large columns
-ALTER TABLE analytics.events
-    MODIFY COLUMN properties String CODEC(ZSTD(3));  -- JSON blobs
+Apply codecs matched to the data shape — `ZSTD(3)` for JSON/text, `Delta, ZSTD`
+for sequential IDs, `DoubleDelta, ZSTD` for timestamps — then `OPTIMIZE ... FINAL`
+to re-merge. Full codec cheat sheet and verification queries in
+[references/implementation.md](references/implementation.md).
 
-ALTER TABLE analytics.events
-    MODIFY COLUMN created_at DateTime CODEC(DoubleDelta, ZSTD);  -- Timestamps
+### Step 4: Expire and tier old data with TTL
 
-ALTER TABLE analytics.events
-    MODIFY COLUMN user_id UInt64 CODEC(Delta, ZSTD);  -- Sequential IDs
+Add TTL to delete or move cold data automatically, or drop whole partitions for an
+immediate one-time reclaim. See the tiered hot/cold/delete TTL pattern in
+[references/implementation.md](references/implementation.md).
 
--- Verify improvement after next merge
-OPTIMIZE TABLE analytics.events FINAL;
+### Step 5: Cut compute cost
 
--- Check new compression ratio
-SELECT
-    column,
-    formatReadableSize(sum(column_data_compressed_bytes)) AS compressed,
-    round(sum(column_data_uncompressed_bytes) / sum(column_data_compressed_bytes), 1) AS ratio
-FROM system.parts_columns
-WHERE active AND database = 'analytics' AND table = 'events'
-GROUP BY column ORDER BY sum(column_data_compressed_bytes) DESC;
-```
+Enable auto-scaling and idle suspension in the Cloud Console, cap per-query cores
+and memory (`max_threads`, `max_memory_usage`), and batch small writes with
+`async_insert`. Exact settings in [references/implementation.md](references/implementation.md).
 
-### Step 4: TTL for Data Lifecycle
+### Step 6: Make queries cheaper
 
-```sql
--- Expire old data automatically (reduces storage)
-ALTER TABLE analytics.events
-    MODIFY TTL created_at + INTERVAL 90 DAY;
+Find the most-scanned queries in `system.query_log`, replace repeated full scans
+with materialized views, and use `PREWHERE` to read fewer columns. Queries in
+[references/implementation.md](references/implementation.md).
 
--- Move old data to cheaper storage tier (ClickHouse Cloud)
-ALTER TABLE analytics.events
-    MODIFY TTL
-        created_at + INTERVAL 30 DAY TO VOLUME 'hot',
-        created_at + INTERVAL 90 DAY TO VOLUME 'cold',
-        created_at + INTERVAL 365 DAY DELETE;
+### Step 7: Monitor going forward
 
--- Drop entire partitions manually (fastest way to delete bulk data)
-ALTER TABLE analytics.events
-    DROP PARTITION '202401';   -- Drops January 2024
+Track per-query read bytes/rows and duration in your application so cost regressions
+surface early. TypeScript cost-tracking wrapper in
+[references/implementation.md](references/implementation.md).
 
--- Check TTL status
-SELECT database, table, result_ttl_expression
-FROM system.tables
-WHERE database = 'analytics';
-```
+## Output
 
-### Step 5: Compute Cost Reduction
+Applying this skill produces:
 
-```sql
--- ClickHouse Cloud: Scale compute dynamically
--- Configure in Cloud Console:
--- - Auto-scaling: min 2 / max 8 replicas
--- - Idle timeout: 5 minutes (auto-suspend when no queries)
--- - Use "Development" tier for staging environments
-
--- Reduce per-query compute consumption
-SET max_threads = 4;                  -- Use fewer cores per query
-SET max_memory_usage = 5000000000;    -- 5GB cap per query
-
--- Server-side async inserts (reduces insert compute)
-SET async_insert = 1;
-SET async_insert_max_data_size = 10000000;  -- Flush at 10MB
-SET async_insert_busy_timeout_ms = 5000;    -- or every 5 seconds
-```
-
-### Step 6: Query Efficiency = Lower Costs
-
-```sql
--- Find the most expensive queries (by data scanned)
-SELECT
-    normalized_query_hash,
-    count() AS executions,
-    formatReadableSize(sum(read_bytes)) AS total_read,
-    round(avg(query_duration_ms)) AS avg_ms,
-    any(substring(query, 1, 200)) AS sample
-FROM system.query_log
-WHERE type = 'QueryFinish'
-  AND event_time >= now() - INTERVAL 7 DAY
-GROUP BY normalized_query_hash
-ORDER BY sum(read_bytes) DESC
-LIMIT 20;
-
--- Use materialized views to avoid repeated full scans
--- Instead of: SELECT count() FROM events WHERE date = today()
--- Pre-compute:
--- CREATE MATERIALIZED VIEW daily_counts_mv TO daily_counts AS
---   SELECT toDate(created_at) AS date, count() AS cnt FROM events GROUP BY date;
--- Then: SELECT cnt FROM daily_counts WHERE date = today()
-
--- Use PREWHERE to read less data
-SELECT user_id, properties FROM analytics.events
-PREWHERE event_type = 'purchase'    -- Filter first, read fewer columns
-WHERE created_at >= today() - 7;
-```
-
-### Step 7: Monitor Costs
-
-```typescript
-// Track query costs in your application
-async function queryWithCostTracking<T>(
-  client: ReturnType<typeof import('@clickhouse/client').createClient>,
-  sql: string,
-): Promise<{ rows: T[]; cost: { readRows: number; readBytes: number; durationMs: number } }> {
-  const start = Date.now();
-  const rs = await client.query({ query: sql, format: 'JSONEachRow' });
-  const rows = await rs.json<T>();
-  const durationMs = Date.now() - start;
-
-  // Log for cost analysis
-  console.log({
-    query: sql.slice(0, 100),
-    readRows: rs.response_headers['x-clickhouse-summary']
-      ? JSON.parse(rs.response_headers['x-clickhouse-summary']).read_rows
-      : 'unknown',
-    durationMs,
-  });
-
-  return { rows, cost: { readRows: 0, readBytes: 0, durationMs } };
-}
-```
-
-## Cost Optimization Checklist
-
-- [ ] Compression codecs applied to large columns (ZSTD, Delta, DoubleDelta)
-- [ ] TTL configured for data expiration
-- [ ] Auto-scaling and idle suspension enabled (Cloud)
-- [ ] Development/staging on smaller tiers
-- [ ] Materialized views for dashboard queries
-- [ ] `max_threads` limited for non-critical queries
-- [ ] `async_insert` enabled for high-frequency small inserts
-- [ ] Monthly cost review with `system.query_log` analysis
+- A ranked storage breakdown (by table and column) identifying the top cost drivers.
+- Concrete `ALTER TABLE ... MODIFY COLUMN ... CODEC(...)` statements for bloated columns.
+- A TTL / partition-drop plan for cold data.
+- Cloud compute settings (auto-scale bounds, idle timeout, per-query limits).
+- A shortlist of the most expensive queries from `system.query_log` with materialized-view or `PREWHERE` fixes.
+- The completed cost-optimization checklist in [references/implementation.md](references/implementation.md).
 
 ## Error Handling
 
@@ -226,6 +117,18 @@ async function queryWithCostTracking<T>(
 | Egress charges | Large result sets | Add LIMIT, use aggregations |
 | Idle compute cost | No auto-suspend | Enable idle timeout in Cloud console |
 
+## Examples
+
+Three worked scenarios take a real symptom through diagnosis → fix → verification —
+see [references/examples.md](references/examples.md):
+
+- **Storage bill doubled** — trace it to a poorly-compressed JSON column and cut the
+  table ~60% with a `ZSTD(3)` codec.
+- **Compute is the real driver** — replace a 30-second full-`count()` dashboard query
+  with a materialized view and enable idle suspension.
+- **Old data you never query** — add tiered hot/cold/delete TTL and drop stale
+  partitions for an immediate reclaim.
+
 ## Resources
 
 - [ClickHouse Cloud Pricing](https://clickhouse.com/pricing)
@@ -234,4 +137,6 @@ async function queryWithCostTracking<T>(
 
 ## Next Steps
 
-For architecture patterns, see `clickhouse-reference-architecture`.
+For broader design patterns — schema layout, ingestion pipelines, and replica
+topology that keep costs low by construction — see the
+`clickhouse-reference-architecture` skill in this pack.

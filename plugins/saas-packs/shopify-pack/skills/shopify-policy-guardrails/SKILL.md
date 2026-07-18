@@ -15,7 +15,7 @@ description: 'Implement Shopify app policy enforcement with ESLint rules for API
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

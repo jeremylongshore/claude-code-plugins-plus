@@ -1,6 +1,6 @@
 {
   "name": "travel-assistant",
-  "version": "1.1.0",
+  "version": "1.15.0",
   "description": "Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete travel companion.",
   "author": {
     "name": "Jeremy Longshore",

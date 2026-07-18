@@ -13,7 +13,7 @@ description: 'Create your first Persona identity verification inquiry and check 
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

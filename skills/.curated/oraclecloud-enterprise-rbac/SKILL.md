@@ -11,7 +11,7 @@ description: 'Design OCI compartment hierarchies, dynamic groups, and cross-tena
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

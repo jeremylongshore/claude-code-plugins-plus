@@ -12,7 +12,7 @@ description: 'Configure Figma API access across dev, staging, and production env
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(vault:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: 'Set up OpenRouter API authentication and configure API keys. Use w
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(python3:*), Bash(node:*), Bash(pip:*), Bash(npm:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

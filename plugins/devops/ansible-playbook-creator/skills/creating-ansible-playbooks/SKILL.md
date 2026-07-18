@@ -10,7 +10,7 @@ description: 'Execute use when you need to work with Ansible automation.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), Bash(terraform:*)
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

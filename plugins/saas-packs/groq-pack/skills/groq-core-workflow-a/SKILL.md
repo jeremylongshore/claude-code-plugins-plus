@@ -1,19 +1,15 @@
 ---
 name: groq-core-workflow-a
-description: 'Execute Groq primary workflow: chat completions with tool use and JSON
-  mode.
+description: |
+  Execute Groq's primary workflow: chat completions with tool use and JSON mode.
 
   Use when implementing chat interfaces, function calling, structured output,
-
-  or building AI features with Groq''s fast inference.
+  or building AI features with Groq's fast inference.
 
   Trigger with phrases like "groq chat completion", "groq tool use",
-
   "groq function calling", "groq JSON mode".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+allowed-tools: Read, Write, Edit, Bash(npm:*)
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,12 +22,20 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Primary integration patterns for Groq: chat completions, tool/function calling, JSON mode, and structured outputs. Groq's LPU delivers sub-200ms time-to-first-token, making these patterns viable for real-time user-facing features.
+Primary integration patterns for Groq: chat completions, tool/function calling, JSON mode, and structured outputs. Groq's LPU delivers sub-200ms time-to-first-token, making these patterns viable for real-time user-facing features. This skill walks through five workflow steps; the lean skeleton lives here, and the full copy-paste code lives in `references/`.
 
 ## Prerequisites
 
-- `groq-sdk` installed, `GROQ_API_KEY` set
-- Understanding of Groq model capabilities
+- Install the SDK with `npm install groq-sdk`.
+- Set `GROQ_API_KEY` in the environment (see Authentication below).
+- Familiarity with the Groq model line-up and which model fits each task.
+
+## Authentication
+
+Groq authenticates via an API key. Create one at `console.groq.com/keys` and
+export it as `GROQ_API_KEY`; the SDK reads it automatically, so `new Groq()`
+needs no explicit argument. Never hardcode the key — read it from the
+environment (or a secrets manager) so it stays out of source control.
 
 ## Model Selection for This Workflow
 
@@ -44,211 +48,60 @@ Primary integration patterns for Groq: chat completions, tool/function calling, 
 
 ## Instructions
 
-### Step 1: Chat Completion with System Prompt
+Work through the five patterns in order. Read the target file, then Write or
+Edit the integration code into your project.
+
+1. **Chat completion** — send `system` + `user` messages to
+   `groq.chat.completions.create` and return `choices[0].message.content` plus
+   `usage`. Skeleton below; full example in
+   [worked examples](references/examples.md).
+2. **Tool use / function calling** — a three-phase loop: send the message with
+   `tools` + `tool_choice: "auto"`, execute any returned `tool_calls`, then send
+   the results back for the final answer. Full code in
+   [implementation](references/implementation.md).
+3. **JSON mode** — set `response_format: { type: "json_object" }` and describe
+   the JSON shape in the system prompt. See
+   [implementation](references/implementation.md).
+4. **Structured outputs** — use `response_format.json_schema` with
+   `strict: true` for guaranteed schema compliance (no post-validation). See
+   [implementation](references/implementation.md).
+5. **Multi-turn conversation** — accumulate the message history and push each
+   assistant reply back onto the stack. See
+   [worked examples](references/examples.md).
+
+Minimal chat skeleton:
 
 ```typescript
 import Groq from "groq-sdk";
-
 const groq = new Groq();
 
-async function chat(userMessage: string, history: any[] = []) {
-  const messages = [
-    { role: "system" as const, content: "You are a concise technical assistant." },
-    ...history,
-    { role: "user" as const, content: userMessage },
-  ];
-
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages,
-    temperature: 0.7,
-    max_tokens: 1024,
-  });
-
-  return {
-    reply: completion.choices[0].message.content,
-    usage: completion.usage,
-  };
-}
+const completion = await groq.chat.completions.create({
+  model: "llama-3.3-70b-versatile",
+  messages: [
+    { role: "system", content: "You are a concise technical assistant." },
+    { role: "user", content: userMessage },
+  ],
+  temperature: 0.7,
+  max_tokens: 1024,
+});
+// completion.choices[0].message.content, completion.usage
 ```
 
-### Step 2: Tool Use / Function Calling
+## Output
 
-```typescript
-// Define tools with JSON Schema
-const tools: Groq.Chat.ChatCompletionTool[] = [
-  {
-    type: "function",
-    function: {
-      name: "get_weather",
-      description: "Get current weather for a location",
-      parameters: {
-        type: "object",
-        properties: {
-          location: { type: "string", description: "City name" },
-          unit: { type: "string", enum: ["celsius", "fahrenheit"] },
-        },
-        required: ["location"],
-      },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "search_docs",
-      description: "Search internal documentation",
-      parameters: {
-        type: "object",
-        properties: {
-          query: { type: "string" },
-          limit: { type: "number", description: "Max results" },
-        },
-        required: ["query"],
-      },
-    },
-  },
-];
+Each pattern returns a predictable shape:
 
-async function chatWithTools(userMessage: string) {
-  // Step A: Send message with tool definitions
-  const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: userMessage }],
-    tools,
-    tool_choice: "auto",
-  });
-
-  const message = response.choices[0].message;
-
-  // Step B: If model wants to call tools, execute them
-  if (message.tool_calls) {
-    const toolResults = await Promise.all(
-      message.tool_calls.map(async (tc) => {
-        const args = JSON.parse(tc.function.arguments);
-        const result = await executeFunction(tc.function.name, args);
-        return {
-          role: "tool" as const,
-          tool_call_id: tc.id,
-          content: JSON.stringify(result),
-        };
-      })
-    );
-
-    // Step C: Send tool results back for final response
-    const finalResponse = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "user", content: userMessage },
-        message,         // includes tool_calls
-        ...toolResults,  // tool execution results
-      ],
-      tools,
-    });
-
-    return finalResponse.choices[0].message.content;
-  }
-
-  return message.content;
-}
-
-// Implement your actual tool functions
-async function executeFunction(name: string, args: any): Promise<any> {
-  switch (name) {
-    case "get_weather":
-      return { temperature: 72, conditions: "sunny", location: args.location };
-    case "search_docs":
-      return { results: [`Doc about ${args.query}`], count: 1 };
-    default:
-      throw new Error(`Unknown function: ${name}`);
-  }
-}
-```
-
-### Step 3: JSON Mode
-
-```typescript
-// Force model to return valid JSON
-async function extractJSON(text: string) {
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    messages: [
-      {
-        role: "system",
-        content: "Extract entities from the text. Respond with JSON: {entities: [{name, type, confidence}]}",
-      },
-      { role: "user", content: text },
-    ],
-    response_format: { type: "json_object" },
-    temperature: 0,
-  });
-
-  return JSON.parse(completion.choices[0].message.content!);
-}
-```
-
-### Step 4: Structured Outputs (Strict Schema)
-
-```typescript
-// Guaranteed schema compliance -- no validation needed
-async function extractStructured(text: string) {
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      { role: "system", content: "Extract contact information from the text." },
-      { role: "user", content: text },
-    ],
-    response_format: {
-      type: "json_schema",
-      json_schema: {
-        name: "contact_info",
-        strict: true,
-        schema: {
-          type: "object",
-          properties: {
-            name: { type: "string" },
-            email: { type: "string" },
-            phone: { type: "string" },
-            company: { type: "string" },
-          },
-          required: ["name", "email"],
-          additionalProperties: false,
-        },
-      },
-    },
-  });
-
-  // With strict: true, output is guaranteed to match schema
-  return JSON.parse(completion.choices[0].message.content!);
-}
-```
-
-**Limitation**: Streaming and tool use are not supported with Structured Outputs. Use non-streaming mode when using `response_format` with `json_schema`.
-
-### Step 5: Multi-Turn Conversation
-
-```typescript
-class GroqConversation {
-  private messages: Groq.Chat.ChatCompletionMessageParam[] = [];
-
-  constructor(private systemPrompt: string) {
-    this.messages.push({ role: "system", content: systemPrompt });
-  }
-
-  async send(userMessage: string): Promise<string> {
-    this.messages.push({ role: "user", content: userMessage });
-
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: this.messages,
-      max_tokens: 1024,
-    });
-
-    const reply = completion.choices[0].message;
-    this.messages.push(reply);
-    return reply.content || "";
-  }
-}
-```
+- **Chat completion** — `{ reply: string, usage: {...} }`; `usage` carries
+  `prompt_tokens` / `completion_tokens` for cost metering.
+- **Tool use** — the final assistant `content` string, produced after the tool
+  results are fed back; intermediate `tool_calls` carry `function.name` and a
+  JSON-string `function.arguments`.
+- **JSON mode** — a parsed JavaScript object matching the shape described in the
+  system prompt (parse `message.content` with `JSON.parse`).
+- **Structured outputs** — a parsed object *guaranteed* to satisfy the declared
+  JSON schema, so no downstream validation is required.
+- **Multi-turn** — the latest reply string, with conversation state retained in
+  the class instance for the next turn.
 
 ## Error Handling
 
@@ -259,12 +112,27 @@ class GroqConversation {
 | `context_length_exceeded` | Conversation too long | Trim older messages, keep system prompt |
 | Tool call loop | Model keeps calling tools | Set `tool_choice: "none"` on final completion |
 
+## Examples
+
+The chat skeleton above is the smallest complete call. Two fuller runnable
+examples live in [worked examples](references/examples.md):
+
+- **Example 1 — Chat completion with system prompt + rolling history**, returning
+  `reply` and token `usage`.
+- **Example 2 — Multi-turn conversation class** that retains context across turns.
+
+For tool use, JSON mode, and strict structured outputs, see
+[full implementation](references/implementation.md).
+
 ## Resources
 
 - [Groq Tool Use Docs](https://console.groq.com/docs/tool-use)
 - [Groq Structured Outputs](https://console.groq.com/docs/structured-outputs)
 - [Groq Text Generation](https://console.groq.com/docs/text-chat)
+- [Full implementation](references/implementation.md) — tool use, JSON mode, structured outputs
+- [Worked examples](references/examples.md) — chat completion, multi-turn conversation
 
 ## Next Steps
 
-For audio, vision, and speech workflows, see `groq-core-workflow-b`.
+For audio, vision, and speech workflows, see the companion `groq-core-workflow-b`
+skill, which covers Whisper transcription, vision inputs, and text-to-speech.

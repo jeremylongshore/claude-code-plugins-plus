@@ -12,7 +12,7 @@ description: 'Monitor Vast.ai GPU instance health, utilization, and costs.
 
   '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,15 +1,15 @@
 ---
 name: groq-enterprise-rbac
-description: 'Configure Groq organization management, API key scoping, spending controls,
-  and team access patterns.
-
-  Trigger with phrases like "groq organization", "groq RBAC",
-
-  "groq enterprise", "groq team access", "groq spending limits", "groq multi-team".
-
-  '
+description: |
+  Use when you run Groq inference for multiple teams and need per-team model
+  allow-lists, spending caps, rate limits, and key rotation — because Groq API
+  keys have no built-in scopes, so access control must live in your gateway.
+  Configure Groq organization management, API key scoping, spending controls,
+  and team access patterns. Trigger with phrases like "groq organization",
+  "groq RBAC", "groq enterprise", "groq team access", "groq spending limits",
+  "groq multi-team".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,7 +22,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Manage team access to Groq's inference API through API key strategy, model-level routing controls, spending limits, and usage monitoring. Groq uses flat API keys (`gsk_` prefix) with no built-in scoping -- access control is implemented at the application layer.
+Manage team access to Groq's inference API through API key strategy, model-level routing controls, spending limits, and usage monitoring. Groq uses flat API keys (`gsk_` prefix) with no built-in scoping -- access control is implemented at the application layer, in a gateway that sits between your teams and Groq.
 
 ## Groq Access Model
 
@@ -32,221 +32,46 @@ Manage team access to Groq's inference API through API key strategy, model-level
 - **Spending limits** are configurable in the Groq Console
 - **Projects** allow creating isolated API keys with separate limits
 
+## Prerequisites
+
+- A Groq organization with Console access (console.groq.com) and billing configured.
+- Permission to create Groq **Projects** — one per team/service, each yielding its own `gsk_` key.
+- A secret manager (AWS Secrets Manager, GCP Secret Manager, Vault, etc.) to store per-team keys.
+- A gateway/service layer (Node/TypeScript in these examples) that every team's traffic passes through — Groq enforces nothing per-team, so your gateway is the control point.
+- `groq-sdk` and `p-queue` installed if you use the reference gateway.
+
 ## Instructions
 
-### Step 1: API Key Strategy
+Access control is enforced in your own gateway. The full, copy-paste implementation for every
+step lives in [references/implementation.md](references/implementation.md); the high-level flow:
 
-```typescript
-// Create separate keys per team/service via Groq Console Projects
-// Each project gets its own API key and can have independent rate limits
+1. **API key strategy** — one Groq Project (and key) per team/environment, named `{team}-{environment}-{purpose}`. Register keys in a lookup:
 
-// Key naming convention: {team}-{environment}-{purpose}
-const KEY_REGISTRY = {
-  // Each team gets a separate Groq Project
-  "chatbot-prod":         "gsk_...",  // Project: chatbot-production
-  "chatbot-staging":      "gsk_...",  // Project: chatbot-staging
-  "analytics-prod":       "gsk_...",  // Project: analytics-production
-  "batch-processor":      "gsk_...",  // Project: batch-processing
-} as const;
-```
+   ```typescript
+   // Key naming convention: {team}-{environment}-{purpose}
+   const KEY_REGISTRY = {
+     "chatbot-prod":    "gsk_...",  // Project: chatbot-production
+     "chatbot-staging": "gsk_...",  // Project: chatbot-staging
+     "analytics-prod":  "gsk_...",  // Project: analytics-production
+   } as const;
+   ```
 
-### Step 2: Application-Level Model Access Control
+2. **Model access control** — define a per-team config (`allowedModels`, `maxTokensPerRequest`, `monthlyBudgetUsd`, `rateLimitRPM`) and a `validateRequest(team, model, maxTokens)` guard that throws before any unauthorized model or oversized request reaches Groq.
+3. **API gateway** — `groqGateway(team, messages, model, maxTokens)` validates permissions, checks the monthly budget, rate-limits per team via `p-queue`, calls Groq with the team's key, and records usage.
+4. **Spending controls** — set an org-level cap + alerts in the Groq Console (50/80/95%, auto-pause), and track application-level per-team spend with `recordTeamUsage`, which logs threshold alerts.
+5. **Key rotation** — zero-downtime rotation: create a new key in the same Project, deploy alongside the old key, update the secret manager, restart, monitor 24h, then delete the old key.
 
-```typescript
-// Since Groq keys don't have model scoping, implement it in your gateway
-interface TeamConfig {
-  allowedModels: string[];
-  maxTokensPerRequest: number;
-  monthlyBudgetUsd: number;
-  rateLimitRPM: number;
-}
+See [references/implementation.md](references/implementation.md) for the complete code for each step.
 
-const TEAM_CONFIGS: Record<string, TeamConfig> = {
-  chatbot: {
-    allowedModels: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-    maxTokensPerRequest: 2048,
-    monthlyBudgetUsd: 200,
-    rateLimitRPM: 60,
-  },
-  analytics: {
-    allowedModels: ["llama-3.1-8b-instant"],  // Only cheapest model
-    maxTokensPerRequest: 512,
-    monthlyBudgetUsd: 50,
-    rateLimitRPM: 30,
-  },
-  research: {
-    allowedModels: [
-      "llama-3.3-70b-versatile",
-      "llama-3.1-8b-instant",
-      "meta-llama/llama-4-scout-17b-16e-instruct",
-    ],
-    maxTokensPerRequest: 4096,
-    monthlyBudgetUsd: 500,
-    rateLimitRPM: 120,
-  },
-};
+## Output
 
-function validateRequest(team: string, model: string, maxTokens: number): void {
-  const config = TEAM_CONFIGS[team];
-  if (!config) throw new Error(`Unknown team: ${team}`);
-  if (!config.allowedModels.includes(model)) {
-    throw new Error(`Team ${team} not authorized for model ${model}`);
-  }
-  if (maxTokens > config.maxTokensPerRequest) {
-    throw new Error(`max_tokens ${maxTokens} exceeds limit ${config.maxTokensPerRequest} for team ${team}`);
-  }
-}
-```
+Applying this skill produces a working per-team access layer in front of Groq:
 
-### Step 3: Groq API Gateway
-
-```typescript
-import Groq from "groq-sdk";
-import PQueue from "p-queue";
-
-// Per-team rate limiting
-const teamQueues = new Map<string, PQueue>();
-
-function getTeamQueue(team: string): PQueue {
-  if (!teamQueues.has(team)) {
-    const config = TEAM_CONFIGS[team];
-    teamQueues.set(team, new PQueue({
-      intervalCap: config?.rateLimitRPM || 30,
-      interval: 60_000,
-      concurrency: 5,
-    }));
-  }
-  return teamQueues.get(team)!;
-}
-
-// Gateway function: validates, rate-limits, and proxies to Groq
-async function groqGateway(
-  team: string,
-  messages: any[],
-  model: string,
-  maxTokens: number
-) {
-  // Validate permissions
-  validateRequest(team, model, maxTokens);
-
-  // Check budget
-  const monthlySpend = await getTeamMonthlySpend(team);
-  const config = TEAM_CONFIGS[team];
-  if (monthlySpend >= config.monthlyBudgetUsd) {
-    throw new Error(`Team ${team} monthly budget of $${config.monthlyBudgetUsd} exhausted`);
-  }
-
-  // Rate-limited execution
-  const queue = getTeamQueue(team);
-  return queue.add(async () => {
-    const groq = new Groq({ apiKey: getTeamApiKey(team) });
-    const result = await groq.chat.completions.create({
-      model,
-      messages,
-      max_tokens: maxTokens,
-    });
-
-    // Track usage
-    await recordTeamUsage(team, model, result.usage!);
-    return result;
-  });
-}
-```
-
-### Step 4: Spending Controls
-
-```markdown
-## Groq Console Setup (per organization)
-
-1. Go to console.groq.com > Organization > Billing
-2. Set monthly spending cap
-3. Configure alerts at 50%, 80%, 95% thresholds
-4. Enable auto-pause when cap is reached
-
-## Application-Level Controls (per team)
-```
-
-```typescript
-// Track spending per team
-const teamSpending = new Map<string, number>();
-
-async function recordTeamUsage(
-  team: string,
-  model: string,
-  usage: any
-): Promise<void> {
-  const pricing: Record<string, { input: number; output: number }> = {
-    "llama-3.1-8b-instant": { input: 0.05, output: 0.08 },
-    "llama-3.3-70b-versatile": { input: 0.59, output: 0.79 },
-    "meta-llama/llama-4-scout-17b-16e-instruct": { input: 0.11, output: 0.34 },
-  };
-
-  const price = pricing[model] || { input: 0.10, output: 0.10 };
-  const cost =
-    (usage.prompt_tokens / 1_000_000) * price.input +
-    (usage.completion_tokens / 1_000_000) * price.output;
-
-  const current = teamSpending.get(team) || 0;
-  teamSpending.set(team, current + cost);
-
-  // Alert at thresholds
-  const budget = TEAM_CONFIGS[team].monthlyBudgetUsd;
-  const pct = ((current + cost) / budget) * 100;
-
-  if (pct >= 95) {
-    console.error(`[ALERT] Team ${team} at ${pct.toFixed(0)}% of monthly budget!`);
-  } else if (pct >= 80) {
-    console.warn(`[WARN] Team ${team} at ${pct.toFixed(0)}% of monthly budget`);
-  }
-}
-```
-
-### Step 5: API Key Rotation
-
-```bash
-set -euo pipefail
-# Zero-downtime key rotation process:
-
-# 1. Create new key in Groq Console (same Project)
-#    Name: chatbot-prod-2026-04
-
-# 2. Deploy new key alongside old key
-#    Both keys are valid simultaneously
-
-# 3. Update secret manager
-#    AWS: aws secretsmanager update-secret --secret-id groq/chatbot-prod --secret-string "gsk_new_..."
-#    GCP: echo -n "gsk_new_..." | gcloud secrets versions add groq-chatbot-prod --data-file=-
-
-# 4. Restart services to pick up new key
-
-# 5. Monitor for 24h -- verify no requests on old key
-
-# 6. Delete old key in Groq Console
-```
-
-### Step 6: Usage Dashboard Query
-
-```typescript
-// Weekly usage report per team
-function weeklyReport(records: Array<{ team: string; model: string; cost: number; tokens: number }>) {
-  const byTeam: Record<string, { cost: number; tokens: number; topModel: string }> = {};
-
-  for (const r of records) {
-    if (!byTeam[r.team]) byTeam[r.team] = { cost: 0, tokens: 0, topModel: "" };
-    byTeam[r.team].cost += r.cost;
-    byTeam[r.team].tokens += r.tokens;
-  }
-
-  console.table(
-    Object.entries(byTeam).map(([team, data]) => ({
-      team,
-      cost: `$${data.cost.toFixed(2)}`,
-      tokens: data.tokens.toLocaleString(),
-      budget: `$${TEAM_CONFIGS[team]?.monthlyBudgetUsd || "N/A"}`,
-    }))
-  );
-}
-```
+- A **key registry** mapping each team/environment to its own Groq Project key.
+- A **`TEAM_CONFIGS` policy object** — the source of truth for which models, token ceilings, budgets, and rate limits each team gets.
+- A **gateway function** that rejects unauthorized model/token/budget requests before they reach Groq and rate-limits per team.
+- **Per-team spend tracking** with 80%/95% threshold alerts, plus a weekly cost/token report table.
+- A documented **key-rotation runbook** for zero-downtime credential changes.
 
 ## Error Handling
 
@@ -257,13 +82,25 @@ function weeklyReport(records: Array<{ team: string; model: string; cost: number
 | Budget exhausted | Monthly cap reached | Increase cap or wait for billing cycle reset |
 | Wrong model used | No server-side enforcement | Validate model against team config before calling Groq |
 
+## Examples
+
+Two worked examples — a weekly per-team usage dashboard and a request that gets blocked by
+the model allow-list — are in [references/examples.md](references/examples.md).
+
+The gateway rejects an out-of-scope model before it ever bills Groq:
+
+```typescript
+// analytics is scoped to llama-3.1-8b-instant only
+await groqGateway("analytics", messages, "llama-3.3-70b-versatile", 512);
+// throws: "Team analytics not authorized for model llama-3.3-70b-versatile"
+```
+
 ## Resources
 
 - [Groq Projects](https://console.groq.com/docs/projects)
 - [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq API Keys](https://console.groq.com/keys)
-
-## Next Steps
-
-For migration strategies, see `groq-migration-deep-dive`.
+- [Full implementation walkthrough](references/implementation.md)
+- [Worked examples](references/examples.md)
+- For migration strategies, see the `groq-migration-deep-dive` skill.

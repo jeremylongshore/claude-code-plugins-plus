@@ -12,7 +12,7 @@ description: 'Deploy inference services on CoreWeave with Helm charts and Kustom
 
   '
 allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(kustomize:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

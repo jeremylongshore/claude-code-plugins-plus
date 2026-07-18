@@ -14,7 +14,7 @@ description: 'Optimize Hootsuite costs through tier selection, sampling, and usa
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

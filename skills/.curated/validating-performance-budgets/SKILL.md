@@ -4,7 +4,7 @@ description: Validate application performance against defined budgets to identif
   regressions early. Use when checking page load times, bundle sizes, or API response
   times against thresholds. Trigger with phrases like "validate performance budget",
   "check performance metrics", or "detect performance regression".
-version: 1.0.0
+version: 1.22.0
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(lighthouse:*), Bash(webpack:*),
   Bash(performance:*)
 license: MIT

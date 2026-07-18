@@ -1,6 +1,6 @@
 {
   "name": "owasp-compliance-checker",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "description": "Check OWASP Top 10 compliance",
   "author": {
     "name": "Jeremy Longshore",

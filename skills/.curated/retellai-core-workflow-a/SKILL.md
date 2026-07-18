@@ -5,7 +5,7 @@ description: "Retell AI core workflow a \u2014 AI voice agent and phone call aut
   \ with phrases like \"retell core workflow a\", \"retellai-core-workflow-a\", \"\
   voice agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

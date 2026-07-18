@@ -12,7 +12,7 @@ description: |
   webhook retry storm", "hubspot event handler", "hubspot property change webhook",
   "hubspot list membership webhook", "hubspot dead letter queue".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Grep
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

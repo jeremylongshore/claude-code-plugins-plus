@@ -43,9 +43,15 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+// Circular import by design: reconstruct-versions.mjs imports parseVersion/
+// compareVersion from this module. Both modules only export hoisted function
+// declarations and neither runs main() on import, so the cycle is safe.
+import { setCatalogEntryVersion, editSkillFrontmatter } from './reconstruct-versions.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const SCOPE = '@intentsolutionsio/';
+const EXTENDED_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
+const CLI_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.json');
 
 export function parseVersion(v) {
   if (!v || typeof v !== 'string') return null;
@@ -60,6 +66,12 @@ function fmtVersion(p) {
 
 function bumpPatch(v) {
   return { major: v.major, minor: v.minor, patch: v.patch + 1 };
+}
+
+// Display surfaces move by MINOR per update (the approved 2026-07-16 formula:
+// a plugin's display minor ≈ its lifetime update count). npm keeps patch.
+export function bumpMinor(v) {
+  return { major: v.major, minor: v.minor + 1, patch: 0 };
 }
 
 // Compare two parsed versions. >0 if a>b, 0 if equal, <0 if a<b.
@@ -195,6 +207,89 @@ function applyPatchBump(absPath, raw, oldVersion, newVersion) {
   writeFileSync(absPath, raw.replace(oldLine, newLine));
 }
 
+// ---------------------------------------------------------------------------
+// Display surfaces (added 2026-07-16). package.json is the npm surface and
+// moves by patch above — but nothing browsable reads it. The surfaces users
+// actually see are plugin.json (tonsofskills plugin cards), the two catalog
+// files (→ /plugin browser), and SKILL.md frontmatter (skill cards). Those
+// froze at ~1.0.0 for nine months because only package.json ever moved.
+// Every npm patch bump now also minor-bumps the plugin's display version
+// (minor ≈ lifetime update count, per the reconstruction formula) and stamps
+// the PR's changed SKILL.md files with it. Idempotency rides on the same
+// bumpDecision guard as the patch bump.
+// ---------------------------------------------------------------------------
+function planDisplayBump(dir, changedFiles) {
+  if (!dir.startsWith('plugins/')) return null; // packages/* have no display surfaces
+  if (existsSync(join(ROOT, dir, '.source.json'))) return null; // external mirror — upstream owns versioning
+  const source = `./${dir}`;
+
+  const pjAbs = join(ROOT, dir, '.claude-plugin', 'plugin.json');
+  let pjOld = null;
+  if (existsSync(pjAbs)) {
+    try {
+      pjOld = JSON.parse(readFileSync(pjAbs, 'utf-8')).version || null;
+    } catch {
+      pjOld = null;
+    }
+  }
+  let catOld = null;
+  try {
+    const cat = JSON.parse(readFileSync(EXTENDED_CATALOG, 'utf-8'));
+    catOld = cat.plugins.find((p) => p.source === source)?.version || null;
+  } catch {
+    catOld = null;
+  }
+  const candidates = [pjOld, catOld].map(parseVersion).filter(Boolean);
+  if (!candidates.length) return null;
+  const base = candidates.reduce((a, b) => (compareVersion(a, b) >= 0 ? a : b));
+  const to = fmtVersion(bumpMinor(base));
+  return {
+    dir,
+    source,
+    from: fmtVersion(base),
+    to,
+    pjAbs: pjOld ? pjAbs : null,
+    pjOld,
+    skillFiles: changedFiles.filter((f) => f.endsWith('/SKILL.md')),
+  };
+}
+
+function applyDisplayBumps(plans) {
+  let extendedRaw = readFileSync(EXTENDED_CATALOG, 'utf-8');
+  let cliRaw = existsSync(CLI_CATALOG) ? readFileSync(CLI_CATALOG, 'utf-8') : null;
+  let extendedDirty = false;
+  let cliDirty = false;
+  for (const p of plans) {
+    if (p.pjAbs) {
+      const raw = readFileSync(p.pjAbs, 'utf-8');
+      const oldLine = `"version": "${p.pjOld}"`;
+      if (raw.includes(oldLine)) {
+        writeFileSync(p.pjAbs, raw.replace(oldLine, `"version": "${p.to}"`));
+      }
+    }
+    const ext = setCatalogEntryVersion(extendedRaw, p.source, p.to);
+    if (ext) {
+      extendedRaw = ext.out;
+      extendedDirty = true;
+    }
+    if (cliRaw) {
+      const cli = setCatalogEntryVersion(cliRaw, p.source, p.to);
+      if (cli) {
+        cliRaw = cli.out;
+        cliDirty = true;
+      }
+    }
+    for (const rel of p.skillFiles) {
+      const abs = join(ROOT, rel);
+      if (!existsSync(abs)) continue;
+      const res = editSkillFrontmatter(readFileSync(abs, 'utf-8'), p.to);
+      if (res.out) writeFileSync(abs, res.out);
+    }
+  }
+  if (extendedDirty) writeFileSync(EXTENDED_CATALOG, extendedRaw);
+  if (cliDirty) writeFileSync(CLI_CATALOG, cliRaw);
+}
+
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
@@ -280,9 +375,21 @@ function main() {
     return;
   }
 
+  const displayPlans = bumps
+    .map((b) => planDisplayBump(b.dir, groups.get(b.dir).changedFiles))
+    .filter(Boolean);
+
   console.log(`Plan (vs ${baseRef}):`);
   for (const b of bumps) {
     console.log(`  ${b.name.padEnd(50)}  ${b.from} → ${b.to}  (${b.dir})`);
+  }
+  if (displayPlans.length) {
+    console.log('Display surfaces (plugin.json + catalogs + changed SKILL.md):');
+    for (const p of displayPlans) {
+      console.log(
+        `  ${p.dir.padEnd(50)}  ${p.from} → ${p.to}  (${p.skillFiles.length} skill file(s))`,
+      );
+    }
   }
   if (skips.length) {
     console.log('Skipped:');
@@ -297,6 +404,7 @@ function main() {
   for (const b of bumps) {
     applyPatchBump(b.absPkg, b.raw, b.from, b.to);
   }
+  applyDisplayBumps(displayPlans);
 
   console.log('');
   console.log(`bumped: ${bumps.length}`);

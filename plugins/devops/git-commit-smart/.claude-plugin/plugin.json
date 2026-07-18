@@ -1,6 +1,6 @@
 {
   "name": "git-commit-smart",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "description": "AI-powered conventional commit message generator with smart analysis",
   "author": {
     "name": "Jeremy Longshore",

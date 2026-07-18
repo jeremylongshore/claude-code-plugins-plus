@@ -1,19 +1,14 @@
 ---
 name: clickhouse-upgrade-migration
-description: 'Upgrade ClickHouse server versions and @clickhouse/client SDK safely.
-
-  Use when upgrading ClickHouse, handling breaking changes between versions,
-
-  or migrating from older client libraries.
-
-  Trigger: "upgrade clickhouse", "clickhouse version upgrade", "update clickhouse
-  client",
-
-  "clickhouse breaking changes", "new clickhouse version".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+description: |
+  Use when upgrading ClickHouse server versions or the @clickhouse/client SDK,
+  handling breaking changes between versions, or migrating from older client
+  libraries — covers version checks, changelog review, staged upgrade, post-upgrade
+  validation, and rollback.
+  Trigger with phrases like "upgrade clickhouse", "clickhouse version upgrade",
+  "update clickhouse client", "clickhouse breaking changes", "new clickhouse version".
+allowed-tools: Read, Edit, Bash(npm:*), Bash(git:*)
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,58 +23,61 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Safely upgrade ClickHouse server and the `@clickhouse/client` Node.js SDK,
-with rollback procedures and breaking change detection.
+Safely upgrade ClickHouse server and the `@clickhouse/client` Node.js SDK, with
+rollback procedures and breaking-change detection. The workflow is check versions
+→ review changelogs → upgrade the client → upgrade the server → validate →
+rollback if needed. Full command sequences live in
+[references/implementation.md](references/implementation.md); the runnable
+migration, validation, and rollback code lives in
+[references/examples.md](references/examples.md).
 
 ## Prerequisites
 
 - Current ClickHouse version known (`SELECT version()`)
-- Git for version control
-- Test suite for integration validation
+- Git for version control (client changes land on an `upgrade/` branch)
+- Test suite for integration validation (`npm test`)
 - Staging environment for pre-production testing
+- `CLICKHOUSE_HOST` set (and credentials — see Authentication)
+
+## Authentication
+
+The client and validation scripts read the server URL from the
+`CLICKHOUSE_HOST` environment variable (e.g. `http://localhost:8123` locally, or
+your ClickHouse Cloud endpoint). Keep credentials in the environment, never
+hardcoded: pass `username` / `password` to `createClient` from
+`process.env.CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD`, and for raw `curl` send
+them via the `X-ClickHouse-User` / `X-ClickHouse-Key` headers. ClickHouse Cloud
+endpoints require TLS (`https://`) and a password; self-hosted default installs
+often run open on `8123` (the HTTP port) in dev only.
 
 ## Instructions
 
+Work the steps in order — the client upgrade and the server upgrade are separate,
+independently reversible changes. Read
+[references/implementation.md](references/implementation.md) for the full command
+sequence of each step.
+
 ### Step 1: Check Current Versions
 
+Capture the server version, the installed client version, and the latest
+published client before changing anything — this is your rollback target.
+
 ```bash
-# Check server version (via HTTP)
-curl 'http://localhost:8123/?query=SELECT+version()'
-
-# Check Node.js client version
-npm list @clickhouse/client
-
-# Check latest available
-npm view @clickhouse/client version
-```
-
-```sql
--- Server-side version details
-SELECT
-    version()           AS server_version,
-    uptime()            AS uptime_sec,
-    currentDatabase()   AS current_db;
+curl 'http://localhost:8123/?query=SELECT+version()'   # server
+npm list @clickhouse/client                            # installed client
+npm view @clickhouse/client version                    # latest available
 ```
 
 ### Step 2: Review Changelog
 
-```bash
-# View release notes
-open https://github.com/ClickHouse/clickhouse-js/releases
-
-# Server changelog
-open https://github.com/ClickHouse/ClickHouse/blob/master/CHANGELOG.md
-```
-
-**Key breaking changes to watch for:**
-
-- Client API signature changes (`createClient` options)
-- Default setting changes (compression, timeouts)
-- New query result format behavior
-- Deprecated SQL functions removed in server upgrades
-- MergeTree settings renamed or defaults changed
+Read the client and server changelogs and note breaking changes: `createClient`
+option renames, default setting changes (compression, timeouts), query
+result-format behavior, removed SQL functions, and renamed MergeTree settings.
+Full checklist and links: implementation.md Step 2.
 
 ### Step 3: Upgrade the Node.js Client
+
+Isolate the client bump on a branch so it is reversible independent of the server.
 
 ```bash
 git checkout -b upgrade/clickhouse-client
@@ -87,133 +85,30 @@ npm install @clickhouse/client@latest
 npm test
 ```
 
-**Common migration patterns:**
-
-```typescript
-// v0.x → v1.x: createClient options restructured
-// Before (v0.x)
-import { createClient } from '@clickhouse/client';
-const client = createClient({
-  host: 'http://localhost:8123',
-});
-
-// After (v1.x)
-const client = createClient({
-  url: 'http://localhost:8123',   // 'host' renamed to 'url'
-});
-
-// v0.x → v1.x: query result handling
-// Before: rs.json() returned { data: [...], statistics: {...} }
-// After: rs.json() returns the rows array directly
-
-// Before
-const result = await rs.json();
-const rows = result.data;
-
-// After
-const rows = await rs.json();
-```
+Then apply the code-migration patterns (the `host` → `url` option rename and the
+`rs.json()` result-shape change) — full before/after in
+[references/examples.md](references/examples.md) under "Common migration patterns".
+Edit the client-initialization and result-handling code to match.
 
 ### Step 4: Upgrade ClickHouse Server
 
-**ClickHouse Cloud:** Upgrades happen automatically. Check release notes in
-the Cloud console.
-
-**Self-hosted upgrade procedure:**
-
-```bash
-# 1. Backup current data
-clickhouse-client --query "BACKUP DATABASE analytics TO Disk('backups', 'pre-upgrade')"
-
-# 2. Check compatibility
-clickhouse-client --query "SELECT * FROM system.settings WHERE changed"
-
-# 3. Stop server gracefully
-sudo systemctl stop clickhouse-server
-
-# 4. Update packages
-# Ubuntu/Debian
-sudo apt-get update
-sudo apt-get install clickhouse-server clickhouse-client
-
-# 5. Start and verify
-sudo systemctl start clickhouse-server
-clickhouse-client --query "SELECT version()"
-
-# 6. Check for schema issues
-clickhouse-client --query "
-    SELECT database, table, engine, metadata_modification_time
-    FROM system.tables WHERE database NOT IN ('system', 'INFORMATION_SCHEMA')
-"
-```
+ClickHouse Cloud upgrades automatically — just read the console release notes.
+Self-hosted follows a fixed sequence: **backup → check changed settings → stop →
+`apt-get install` → start → verify version → scan schema**. Full command block:
+implementation.md Step 4.
 
 ### Step 5: Validate After Upgrade
 
-```typescript
-// Post-upgrade validation script
-import { createClient } from '@clickhouse/client';
-
-const client = createClient({ url: process.env.CLICKHOUSE_HOST! });
-
-async function validateUpgrade() {
-  const checks = [
-    { name: 'ping', fn: () => client.ping() },
-    { name: 'version', fn: async () => {
-      const rs = await client.query({ query: 'SELECT version()', format: 'JSONEachRow' });
-      return rs.json();
-    }},
-    { name: 'schema', fn: async () => {
-      const rs = await client.query({
-        query: 'SELECT database, name, engine FROM system.tables WHERE database = {db:String}',
-        query_params: { db: 'analytics' },
-        format: 'JSONEachRow',
-      });
-      return rs.json();
-    }},
-    { name: 'insert', fn: async () => {
-      await client.insert({
-        table: 'analytics.events',
-        values: [{ event_type: 'upgrade_test', user_id: 0, payload: '{}' }],
-        format: 'JSONEachRow',
-      });
-      return { success: true };
-    }},
-    { name: 'query', fn: async () => {
-      const rs = await client.query({
-        query: 'SELECT count() AS cnt FROM analytics.events',
-        format: 'JSONEachRow',
-      });
-      return rs.json();
-    }},
-  ];
-
-  for (const check of checks) {
-    try {
-      const result = await check.fn();
-      console.log(`[PASS] ${check.name}:`, JSON.stringify(result));
-    } catch (err) {
-      console.error(`[FAIL] ${check.name}:`, (err as Error).message);
-    }
-  }
-}
-
-validateUpgrade();
-```
+Run the post-upgrade validation script — ping, version, schema, insert, and query
+checks, each reporting PASS/FAIL. Full script:
+[references/examples.md](references/examples.md) under "Post-upgrade validation script".
 
 ### Step 6: Rollback Procedure
 
-```text
-# Node.js client rollback
-npm install @clickhouse/client@<previous-version> --save-exact
-
-# Server rollback (self-hosted)
-sudo systemctl stop clickhouse-server
-sudo apt-get install clickhouse-server=<previous-version>
-sudo systemctl start clickhouse-server
-
-# Restore from backup if needed
-clickhouse-client --query "RESTORE DATABASE analytics FROM Disk('backups', 'pre-upgrade')"
-```
+If validation fails, roll back the client (`npm install` the previous version
+with `--save-exact`), the server package, and — if data is affected — `RESTORE` from the
+pre-upgrade backup. Full commands:
+[references/examples.md](references/examples.md) under "Rollback commands".
 
 ## Version Compatibility Matrix
 
@@ -222,6 +117,15 @@ clickhouse-client --query "RESTORE DATABASE analytics FROM Disk('backups', 'pre-
 | 1.x | 22.6+ | 18+ | Stable API, `url` option |
 | 0.3.x | 22.6+ | 16+ | `host` option, different JSON result shape |
 | 0.2.x | 21.8+ | 14+ | Initial release |
+
+## Output
+
+- Current and target versions recorded (server + client) as the rollback baseline
+- Client upgraded on an isolated `upgrade/` branch with `npm test` green
+- Code migrated for known breaking changes (`host` → `url`, `rs.json()` shape)
+- Server upgraded via the backup → stop → install → verify sequence
+- Post-upgrade validation run: ping, version, schema, insert, and query all PASS
+- Documented rollback path for both client and server if any check fails
 
 ## Error Handling
 
@@ -232,12 +136,31 @@ clickhouse-client --query "RESTORE DATABASE analytics FROM Disk('backups', 'pre-
 | `Method not found` | Client API changed | Check migration guide |
 | `Checksum mismatch` | Corrupted upgrade | Rollback and re-download |
 
+## Examples
+
+Two ready-to-run starting points live in
+[references/examples.md](references/examples.md):
+
+- **Common migration patterns** — before/after for the `createClient` option
+  rename and the `rs.json()` result-shape change between v0.x and v1.x.
+- **Post-upgrade validation script** — a self-contained check runner that
+  exercises ping → version → schema → insert → query.
+
+```typescript
+// Validation entry point — full runner in references/examples.md
+const client = createClient({ url: process.env.CLICKHOUSE_HOST! });
+await client.ping();                                          // 1. reachable
+await client.query({ query: 'SELECT version()', format: 'JSONEachRow' }); // 2. new version live
+// 3. schema, insert, and query checks follow in the full script
+```
+
 ## Resources
 
 - [Client Releases](https://github.com/ClickHouse/clickhouse-js/releases)
 - [Server Changelog](https://github.com/ClickHouse/ClickHouse/blob/master/CHANGELOG.md)
-- Cloud Upgrades
+- [ClickHouse Cloud Upgrades](https://clickhouse.com/docs/en/manage/updates)
 
 ## Next Steps
 
-For CI/CD integration, see `clickhouse-ci-integration`.
+For CI/CD integration of the upgraded client, see `clickhouse-ci-integration`.
+For pre-production release gating, see `clickhouse-prod-checklist`.

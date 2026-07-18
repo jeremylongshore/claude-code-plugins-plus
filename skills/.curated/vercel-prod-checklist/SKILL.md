@@ -12,7 +12,7 @@ description: 'Vercel production deployment checklist with rollback and promotion
 
   '
 allowed-tools: Read, Bash(vercel:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

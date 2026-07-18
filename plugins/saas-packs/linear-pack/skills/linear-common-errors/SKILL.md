@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Linear API and SDK errors.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

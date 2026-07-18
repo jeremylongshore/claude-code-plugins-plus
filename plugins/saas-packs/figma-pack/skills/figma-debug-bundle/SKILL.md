@@ -12,7 +12,7 @@ description: 'Collect Figma API diagnostic evidence for support tickets and trou
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

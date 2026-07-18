@@ -1,6 +1,6 @@
 {
   "name": "helm-chart-generator",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "description": "Generate Helm charts for Kubernetes applications",
   "author": {
     "name": "Claude Code Plugins",

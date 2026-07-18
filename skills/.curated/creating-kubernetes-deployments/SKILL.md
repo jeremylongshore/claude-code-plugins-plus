@@ -11,7 +11,7 @@ description: 'Deploy applications to Kubernetes with production-ready manifests.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
-version: 2.0.0
+version: 1.28.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

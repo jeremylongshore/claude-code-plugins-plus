@@ -7,7 +7,7 @@ description: "Execute Webflow secondary workflows \u2014 Sites management, Pages
   \ like \"webflow sites\", \"webflow pages\", \"webflow forms\",\n\"webflow ecommerce\"\
   , \"webflow products\", \"webflow orders\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Migrate to Replit from Heroku, Railway, Vercel, or local developme
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -11,7 +11,7 @@ description: 'Run inference with Together AI -- chat completions, streaming, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(python3:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

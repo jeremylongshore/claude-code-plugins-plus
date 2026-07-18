@@ -12,7 +12,7 @@ description: 'Apply production-ready Klaviyo SDK patterns for the klaviyo-api pa
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,17 +26,33 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Production-ready patterns for the `klaviyo-api` Node.js SDK: singleton sessions, type-safe wrappers, retry logic, pagination, and multi-tenant support.
+Production-ready patterns for the `klaviyo-api` Node.js SDK: singleton
+sessions, type-safe wrappers, retry logic, cursor pagination, and multi-tenant
+support. Read the target project's Klaviyo files, then Write or Edit the
+`src/klaviyo/` modules below into place so every call goes through one
+consistent, retry-aware layer instead of ad-hoc `new ApiKeySession(...)` calls
+scattered across the codebase.
+
+The six patterns are summarized here with the essential skeleton; the full,
+copy-paste implementation for all of them lives in
+[references/implementation.md](references/implementation.md), and combined
+worked examples with expected output are in
+[references/examples.md](references/examples.md).
 
 ## Prerequisites
 
-- `klaviyo-api` package installed
-- Completed `klaviyo-install-auth` setup
-- TypeScript project with strict mode
+- `klaviyo-api` package installed in the target project.
+- The `klaviyo-install-auth` setup completed, so `KLAVIYO_PRIVATE_KEY` is
+  available in the environment.
+- A TypeScript project with `strict` mode enabled — every pattern is typed.
 
 ## Instructions
 
-### Step 1: Singleton Session Pattern
+### Step 1: Singleton session (the foundation)
+
+Create one lazily-initialized `ApiKeySession` and reuse it everywhere. Read the
+key from the environment, fail fast if it is missing, and expose a reset hook
+for tests.
 
 ```typescript
 // src/klaviyo/session.ts
@@ -52,189 +68,40 @@ export function getSession(apiKey?: string): ApiKeySession {
   }
   return _session;
 }
-
-// For testing: reset the singleton
-export function resetSession(): void {
-  _session = null;
-}
+export function resetSession(): void { _session = null; }
 ```
 
-### Step 2: Type-Safe API Wrapper
+### Steps 2-6: the rest of the layer
 
-```typescript
-// src/klaviyo/api.ts
-import {
-  ApiKeySession,
-  ProfilesApi,
-  EventsApi,
-  ListsApi,
-  SegmentsApi,
-  CampaignsApi,
-  FlowsApi,
-  MetricsApi,
-  TemplatesApi,
-  CatalogsApi,
-  DataPrivacyApi,
-  WebhooksApi,
-} from 'klaviyo-api';
-import { getSession } from './session';
+Each builds on the session singleton. Write the corresponding file from
+[references/implementation.md](references/implementation.md):
 
-// Lazy-initialized API clients -- avoids creating unused clients
-const apis = {
-  get profiles() { return new ProfilesApi(getSession()); },
-  get events() { return new EventsApi(getSession()); },
-  get lists() { return new ListsApi(getSession()); },
-  get segments() { return new SegmentsApi(getSession()); },
-  get campaigns() { return new CampaignsApi(getSession()); },
-  get flows() { return new FlowsApi(getSession()); },
-  get metrics() { return new MetricsApi(getSession()); },
-  get templates() { return new TemplatesApi(getSession()); },
-  get catalogs() { return new CatalogsApi(getSession()); },
-  get dataPrivacy() { return new DataPrivacyApi(getSession()); },
-  get webhooks() { return new WebhooksApi(getSession()); },
-};
+- **Step 2 — Type-safe API wrapper** (`api.ts`): lazy getters for all 11 API
+  clients (Profiles, Events, Lists, …) so unused clients are never constructed.
+- **Step 3 — Error wrapper** (`errors.ts`): `parseKlaviyoError` normalizes the
+  raw error and `safeCall` returns `{ data, error }` instead of throwing.
+- **Step 4 — Retry** (`retry.ts`): `withRetry` retries only on `429`/`5xx`,
+  honoring Klaviyo's `Retry-After` header, else exponential backoff with jitter.
+- **Step 5 — Pagination** (`pagination.ts`): `paginate` turns any cursor-based
+  list endpoint into an `AsyncGenerator`, extracting `page[cursor]` for you.
+- **Step 6 — Multi-tenant factory** (`multi-tenant.ts`): `getApisForTenant`
+  caches one client set per tenant id, isolating each customer's API key.
 
-export default apis;
-```
+## Output
 
-### Step 3: Error Handling Wrapper
+Applying this skill produces a `src/klaviyo/` module set:
 
-```typescript
-// src/klaviyo/errors.ts
+| File | Exports | Purpose |
+|------|---------|---------|
+| `session.ts` | `getSession`, `resetSession` | One shared authenticated session |
+| `api.ts` | default `apis` | Lazy, type-safe access to every API client |
+| `errors.ts` | `parseKlaviyoError`, `safeCall` | Non-throwing typed error results |
+| `retry.ts` | `withRetry` | Rate-limit/5xx retry honoring `Retry-After` |
+| `pagination.ts` | `paginate` | Async iteration over cursor pages |
+| `multi-tenant.ts` | `getApisForTenant` | Per-tenant client isolation |
 
-export interface KlaviyoApiError {
-  status: number;
-  statusText: string;
-  errors: Array<{ id: string; code: string; title: string; detail: string }>;
-  retryAfter?: number;
-}
-
-export function parseKlaviyoError(error: any): KlaviyoApiError {
-  return {
-    status: error.status || 500,
-    statusText: error.statusText || 'Unknown Error',
-    errors: error.body?.errors || [{ id: '', code: 'unknown', title: 'Unknown', detail: error.message }],
-    retryAfter: error.headers?.['retry-after'] ? parseInt(error.headers['retry-after']) : undefined,
-  };
-}
-
-export async function safeCall<T>(
-  operation: () => Promise<T>,
-  context: string
-): Promise<{ data: T | null; error: KlaviyoApiError | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err: any) {
-    const parsed = parseKlaviyoError(err);
-    console.error(`[Klaviyo] ${context} failed:`, {
-      status: parsed.status,
-      errors: parsed.errors.map(e => e.detail),
-    });
-    return { data: null, error: parsed };
-  }
-}
-```
-
-### Step 4: Retry with Retry-After Header
-
-```typescript
-// src/klaviyo/retry.ts
-
-export async function withRetry<T>(
-  operation: () => Promise<T>,
-  options = { maxRetries: 3, baseDelayMs: 1000 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === options.maxRetries) throw error;
-
-      const status = error.status;
-      // Only retry on 429 (rate limit) and 5xx (server errors)
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
-
-      // Honor Klaviyo's Retry-After header (seconds)
-      const retryAfter = error.headers?.['retry-after'];
-      const delay = retryAfter
-        ? parseInt(retryAfter) * 1000
-        : options.baseDelayMs * Math.pow(2, attempt) + Math.random() * 500;
-
-      console.log(`[Klaviyo] Retry ${attempt + 1}/${options.maxRetries} in ${delay.toFixed(0)}ms`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-### Step 5: Cursor-Based Pagination
-
-```typescript
-// src/klaviyo/pagination.ts
-
-/**
- * Auto-paginate any Klaviyo list endpoint.
- * Klaviyo uses cursor-based pagination with `page[cursor]` param.
- * Each page returns max 20 items (some endpoints allow up to 100).
- */
-export async function* paginate<T>(
-  fetcher: (pageCursor?: string) => Promise<{
-    body: { data: T[]; links?: { next?: string } };
-  }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const response = await fetcher(cursor);
-    for (const item of response.body.data) {
-      yield item;
-    }
-
-    // Extract cursor from next link URL
-    const nextLink = response.body.links?.next;
-    if (nextLink) {
-      const url = new URL(nextLink);
-      cursor = url.searchParams.get('page[cursor]') || undefined;
-    } else {
-      cursor = undefined;
-    }
-  } while (cursor);
-}
-
-// Usage: iterate all profiles
-// for await (const profile of paginate(cursor => profilesApi.getProfiles({ pageCursor: cursor }))) {
-//   console.log(profile.attributes.email);
-// }
-```
-
-### Step 6: Multi-Tenant Factory
-
-```typescript
-// src/klaviyo/multi-tenant.ts
-import { ApiKeySession, ProfilesApi, EventsApi, ListsApi } from 'klaviyo-api';
-
-interface TenantApis {
-  profiles: ProfilesApi;
-  events: EventsApi;
-  lists: ListsApi;
-}
-
-const tenantCache = new Map<string, TenantApis>();
-
-export function getApisForTenant(tenantId: string, apiKey: string): TenantApis {
-  if (!tenantCache.has(tenantId)) {
-    const session = new ApiKeySession(apiKey);
-    tenantCache.set(tenantId, {
-      profiles: new ProfilesApi(session),
-      events: new EventsApi(session),
-      lists: new ListsApi(session),
-    });
-  }
-  return tenantCache.get(tenantId)!;
-}
-```
+Callers then read as `const { data, error } = await safeCall(() => apis.profiles.getProfiles(...))`
+instead of managing sessions and try/catch by hand.
 
 ## SDK Conventions
 
@@ -258,6 +125,27 @@ export function getApisForTenant(tenantId: string, apiKey: string): TenantApis {
 | Server error | 500/503 | Yes | Retry with backoff |
 | Conflict | 409 | No | Resource already exists; use update |
 
+## Examples
+
+A quick taste — wrap any call so a failure returns a typed error instead of
+throwing:
+
+```typescript
+import apis from './klaviyo/api';
+import { safeCall } from './klaviyo/errors';
+
+const { data, error } = await safeCall(
+  () => apis.profiles.getProfiles({ pageSize: 20 }),
+  'list profiles',
+);
+if (error) console.error(`Failed (${error.status}):`, error.errors[0].detail);
+else console.log(`Fetched ${data!.body.data.length} profiles`);
+```
+
+Full worked examples — retrying a rate-limited write, paginating every profile,
+and serving two tenants from one process, each with expected output — are in
+[references/examples.md](references/examples.md).
+
 ## Resources
 
 - [klaviyo-api-node README](https://github.com/klaviyo/klaviyo-api-node/blob/main/README.md)
@@ -266,4 +154,6 @@ export function getApisForTenant(tenantId: string, apiKey: string): TenantApis {
 
 ## Next Steps
 
-Apply patterns in `klaviyo-core-workflow-a` for profile and list management.
+Once the `src/klaviyo/` layer is in place, apply the patterns in
+`klaviyo-core-workflow-a` for profile and list management — those workflows
+assume `apis`, `safeCall`, `withRetry`, and `paginate` already exist.

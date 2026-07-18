@@ -10,7 +10,7 @@ description: 'Set up Kling AI API authentication with JWT tokens. Use when start
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

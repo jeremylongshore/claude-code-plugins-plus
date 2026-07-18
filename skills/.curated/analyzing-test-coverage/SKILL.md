@@ -9,7 +9,7 @@ description: 'Analyze code coverage metrics and identify untested code paths.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:coverage-*)
-version: 1.0.0
+version: 1.24.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

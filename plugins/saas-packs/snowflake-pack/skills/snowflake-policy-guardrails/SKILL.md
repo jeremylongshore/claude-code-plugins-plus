@@ -15,7 +15,7 @@ description: 'Implement Snowflake governance guardrails with network rules, sess
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

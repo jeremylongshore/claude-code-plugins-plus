@@ -5,7 +5,7 @@ description: "Manage OCI Object Storage \u2014 buckets, uploads, PARs, and lifec
   \ configuring lifecycle rules.\nTrigger with \"oci object storage\", \"oci bucket\"\
   , \"par url\", \"multipart upload\", \"oci lifecycle\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

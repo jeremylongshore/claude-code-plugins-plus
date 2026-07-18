@@ -13,7 +13,7 @@ description: 'Implement advanced error capture and context enrichment with Sentr
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(pip:*),
   Bash(python:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

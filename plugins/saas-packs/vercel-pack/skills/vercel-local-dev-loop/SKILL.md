@@ -13,7 +13,7 @@ description: 'Configure Vercel local development with vercel dev, environment va
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

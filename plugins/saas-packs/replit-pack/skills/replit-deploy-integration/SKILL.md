@@ -14,7 +14,7 @@ description: 'Deploy Replit apps with Autoscale, Reserved VM, and Static deploym
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

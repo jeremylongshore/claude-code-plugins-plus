@@ -12,7 +12,7 @@ description: 'Debug Evernote API issues with diagnostic tools and techniques.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Implement Canva Connect API reference architecture with best-pract
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

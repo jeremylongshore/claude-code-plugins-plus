@@ -1,6 +1,6 @@
 {
   "name": "container-registry-manager",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Manage container registries (ECR, GCR, Harbor)",
   "author": {
     "name": "Claude Code Plugins",

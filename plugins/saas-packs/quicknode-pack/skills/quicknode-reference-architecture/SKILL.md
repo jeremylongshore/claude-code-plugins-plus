@@ -5,7 +5,7 @@ description: "QuickNode reference architecture \u2014 blockchain RPC and Web3 in
   \ with phrases like \"quicknode reference architecture\", \"quicknode-reference-architecture\"\
   , \"blockchain RPC\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -16,7 +16,7 @@ description: 'Configure Sentry error tracking and performance monitoring for dif
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

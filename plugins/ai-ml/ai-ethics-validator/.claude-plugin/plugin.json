@@ -1,6 +1,6 @@
 {
   "name": "ai-ethics-validator",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "AI ethics and fairness validation",
   "author": {
     "name": "Claude Code Plugins",

@@ -13,7 +13,7 @@ description: 'Choose and implement Firecrawl architecture patterns for different
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

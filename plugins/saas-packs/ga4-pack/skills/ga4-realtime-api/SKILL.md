@@ -7,7 +7,7 @@ description: |
   "GA4 realtime", "active users right now", "GA4 current sessions",
   "who's on my site now".
 allowed-tools: Bash(python3:*), Bash(curl:*)
-version: 1.0.0
+version: 1.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, realtime]

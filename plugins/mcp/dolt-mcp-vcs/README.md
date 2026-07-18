@@ -1,53 +1,147 @@
 # dolt-mcp-vcs
 
-A Dolt/DoltHub version-control toolkit for Claude Code, built on the [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server.
+**One plugin for every make and model of Dolt.** Point it at any workspace and it answers the
+first question that matters — *what kind of Dolt database am I working with?* — then does the
+work: version-control verbs (branch / merge / diff / log / `AS OF` / data-PR awareness) over
+the [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server, with a verb-class
+mutation gate that keeps destructive operations recommend-only.
 
-> **Formerly `beads-dolt`** — same plugin, renamed to its Dolt-first identity. The rename is **non-breaking**: the GitHub repo URL redirects, the `beads-dolt` marketplace install slug still resolves (a deprecated catalog alias), and `/beads-dolt` is still an accepted trigger. Today the toolkit ships the **beads (`bd`) task-tracker as use-case adapter #1**; it is evolving into a dialect-invariant version-control core (branch / merge / diff / log / `AS OF` / data-PR) with thin maturity-gated flavor adapters (Dolt · Doltgres · DoltLite · DumboDB).
+> **Formerly `beads-dolt`** — same plugin, renamed to its Dolt-first identity. The rename is
+> **non-breaking**: the GitHub repo URL redirects, the `beads-dolt` marketplace install slug
+> still resolves (a deprecated catalog alias), and `/beads-dolt` is still an accepted trigger.
+> The [beads (`bd`) task tracker](https://github.com/gastownhall/beads) ships as **use-case
+> adapter #1**.
 
-It packages, in one plugin:
+## Why this exists
 
-- **A skill** (`/dolt-mcp-vcs`, also `/beads-dolt`) — the beads workflow over bd's Dolt backend: it surfaces the common "my beads aren't visible in DoltHub" root cause (no remote configured), the `bd dolt remote add` + push fix, the JSONL throttle/export model, and the rapid-write-race safe pattern — and dispatches the agents below. A **verb-class mutation gate** keeps destructive ops (push / merge / `reset --hard` / branch-delete) recommend-only.
-- **Expert agents** — grounded in a live-fetched (never frozen) reference of bd's Dolt internals (`references/dolt-internals.md`):
+The Dolt ecosystem is no longer one product. There is classic **Dolt** (MySQL wire, GA),
+**Doltgres** (Postgres wire), **DoltLite** (an embeddable SQLite fork with a prolly-tree
+engine, alpha), and **DumboDB** (a Mongo-wire experiment on Dolt's storage engine) — and a
+single machine routinely hosts several *modes* of the same flavor at once: classic `.dolt/`
+repos, live `dolt sql-server` processes (which bind **ephemeral ports that differ from
+config.yaml**), and embedded single-writer stores owned by another tool. Every existing
+integration assumes you already know which of these you have and hand-writes the connection
+config to match.
+
+This plugin removes that assumption. **Detection is Step 0**: a stdlib-only detector
+(`scripts/dolt-detect.py`) probes the directory layout, the process table (reading the
+*actual* bound port from `/proc`, never a config file), file headers, and the wire — and
+returns ranked findings, each one a ready-to-use connection descriptor. What it cannot
+confirm it reports as unconfirmed; what it does not find it names as "not a Dolt database"
+with the list of what was checked. Nothing is guessed.
+
+## The detection contract
+
+| flavor | mode | Detected by | Do-work posture |
+|---|---|---|---|
+| `dolt` | `repo` | `.dolt/` directory (classic repo layout) | full CLI verbs (log/diff/branch/`AS OF`) |
+| `dolt` | `server` | live `dolt sql-server` (cwd-matched, **actual bound port via `/proc`** — never config.yaml), or a MySQL-wire greeting cross-checked against live processes | MySQL wire via the pinned `dolt-mcp-server` |
+| `dolt` | `embedded` | `.beads/embeddeddolt/<p>/.dolt` layout or `.beads/metadata.json` `dolt_mode:"embedded"` | **read-only** CLI verbs — the single-writer `.lock` is owned by the embedding tool (e.g. `bd`); mutation refused with the reason |
+| `doltgres` | `server` | Postgres-wire / version signature containing `Doltgres` | Postgres wire via `--doltgres` (derived from the descriptor — never hardcoded) |
+| `doltlite` | `file` | single-file DB whose header carries the chunk-store magic `b"CTLD"` (LE `0x444C5443`, verified against [`dolthub/doltlite`](https://github.com/dolthub/doltlite) `src/chunk_store.h`); plain-SQLite headers are noted, **not** claimed | detect + report; local `doltlite` CLI verbs; alpha ⇒ read-only; no wire (decision 6) |
+| `dumbo` | `server` | `dumbo` process / Mongo-wire version string containing `Dumbo` | detect + report only (experimental, fail-closed) |
+| *(none)* | — | nothing matched | honest negative + what was checked |
+
+Mixed layouts (a workspace with **both** `.beads/dolt/` and `.beads/embeddeddolt/` — migrated
+state) return **both** findings, ranked live-server > repo > embedded > file. A plain-SQLite
+runtime file paired with a `dolt/` system-of-record sidecar (the DoltLite-shaped pattern) is
+recorded as evidence on the repo finding.
+
+Detection output **is** a connection descriptor (`flavor`/`mode`/`endpoint`/`database`/
+`creds-ref`/`maturity`), so it composes with everything downstream with zero hand-written
+config:
+
+```bash
+python3 scripts/dolt-detect.py                          # what am I looking at? (read-only)
+python3 scripts/dolt-detect.py --json                   # machine-readable findings + evidence
+python3 scripts/dolt-detect.py --emit-descriptor        # write connection.descriptor.json
+python3 scripts/dolt-mcp-client.py \
+    --descriptor connection.descriptor.json list_databases   # connect — flavor honored
+```
+
+## What's in the plugin
+
+- **A skill** (`/dolt-mcp-vcs`, also `/beads-dolt`) — Step 0 detection, then routed work:
+  DoltHub visibility diagnosis (the near-universal cause is *no remote configured*), the
+  `bd dolt remote add` + push fix, the JSONL throttle/export model, and dispatch to the
+  agents below.
+- **Expert agents** — grounded in a live-fetched (never frozen) reference of Dolt internals
+  (`references/dolt-internals.md`):
   - `dolt-sync-advisor` — DoltHub remotes, `bd dolt push`/`pull`, backup vs push, federation, drift.
   - `bead-epic-auditor` — subtree/epic-closure audits (which epics have all children closed).
   - `bead-dependency-mapper` — dependency graphs, cycles, critical path (SQL via the Dolt MCP).
   - `bead-recovery-specialist` — rapid-write-race recovery, embedded↔server mode migration, dolt-server incidents.
   - `beads-guru` — general bd/Dolt expertise and the three-layer mirror discipline.
-- **A wired Dolt MCP server** (`.mcp.json`) — the official [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server (it exposes a ~40-tool version-control surface — fetch the exact list live, never freeze it) fronting your local `dolt sql-server` over the MySQL protocol. The plugin wires only the tools its agents actually use, least-privilege.
+- **A wired Dolt MCP server** (`.mcp.json`) — the official
+  [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server (a ~40-tool
+  version-control surface — fetch the exact list live, never freeze it), least-privilege
+  wired.
+- **The safety layer** — every `query`/`exec` passes the verb-class statement classifier
+  (`scripts/sql_classifier.py`) *before* reaching the server.
 
-## Built on
+## Declared mutation posture
 
-This plugin builds on, and credits, two open-source projects:
+- **Reads** execute freely.
+- **Safe writes** (INSERT/UPDATE/DELETE …) require an explicit `--allow-mutation`, a
+  non-`main` agent branch, and a GA/beta flavor maturity.
+- **History-affecting statements** (push / merge / `reset --hard` / branch-delete /
+  `DROP DATABASE` / unknown `CALL`) are **always refused** — recommend-only.
+- **Pre-GA flavors** (`doltlite` alpha, `dumbo` experimental) are held read-only by the
+  maturity gate and have **no wired connection** (fail-closed descriptor stubs, decision 6).
+- **Embedded stores** are never written — the single-writer lock belongs to the embedding
+  tool.
+- The detector itself is **read-only**: it never starts, stops, or writes to any database.
 
-- **[beads](https://github.com/gastownhall/beads)** — the `bd` task tracker (the data this plugin operates on).
-- **[Dolt](https://github.com/dolthub/dolt) / [DoltHub](https://www.dolthub.com)** — the version-controlled SQL database that is bd's backend, and the cloud host that makes a bead graph shareable. The MCP server is [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp).
+## Install
 
-## Prerequisites
+Any consumer, no estate-specific assumptions:
 
-- [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a Dolt-backed workspace.
-- The Dolt MCP server binary on `PATH`, **pinned** (the plugin's correctness rests on
-  this binary, so it is version-pinned — never `@latest`). Install it one of these ways:
-  ```bash
-  go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@v0.3.6   # native (Go)
-  # or
-  docker pull dolthub/dolt-mcp:v0.3.6                                      # container
-  # or grab the v0.3.6 release binary from https://github.com/dolthub/dolt-mcp/releases
-  ```
-  Pinned module `github.com/dolthub/dolt-mcp v0.3.6` verifies against the Go checksum
-  database as `h1:uwjh1zf0er51VBT6uY3tI7JLj5pYxWyk9uB6CYQOhfU=`. A version bump is
-  proposed by the `dolt-watch` routine and reviewed — it is never auto-trusted.
+1. **The plugin** — install `dolt-mcp-vcs` from the marketplace (the `beads-dolt` slug still
+   resolves), or clone this repo into your plugins directory.
+2. **The MCP server binary** (needed for wire work only — detection and CLI-verb work run
+   without it), **pinned** — never `@latest`:
+   ```bash
+   go install github.com/dolthub/dolt-mcp/mcp/cmd/dolt-mcp-server@v0.3.6   # native (Go)
+   # or
+   docker pull dolthub/dolt-mcp:v0.3.6                                     # container
+   # or grab the v0.3.6 release binary from https://github.com/dolthub/dolt-mcp/releases
+   ```
+   Pinned module `github.com/dolthub/dolt-mcp v0.3.6` verifies against the Go checksum
+   database as `h1:uwjh1zf0er51VBT6uY3tI7JLj5pYxWyk9uB6CYQOhfU=`. A version bump is proposed
+   by the `dolt-watch` routine and reviewed — never auto-trusted.
+3. **Detect** — `python3 scripts/dolt-detect.py` (stdlib-only; no other dependency).
+4. **For the beads adapter**: [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a
+   Dolt-backed workspace.
 
 ## Configuration
 
-The MCP connection is environment-overridable (defaults target the shared `bd dolt --global` server on `:3308`):
+Zero config is the default path: `dolt-detect.py --emit-descriptor` writes
+`connection.descriptor.json` and every downstream tool honors it. Environment overrides
+remain available:
 
 | Env var | Default | Notes |
 |---|---|---|
-| `DOLT_HOST` | `127.0.0.1` | bd's dolt server is loopback-bound. |
-| `DOLT_PORT` | `3308` | The shared-server port. For a per-project server, get the port from `bd dolt show`. |
+| `DOLT_HOST` | `127.0.0.1` | Dolt servers here are loopback-bound. |
+| `DOLT_PORT` | `3308` | Prefer the detector: live servers bind ephemeral ports that differ from config.yaml. |
 | `DOLT_USER` | `root` | bd's default. |
-| `DOLT_DATABASE` | `beads` | Your workspace's database name (see `bd dolt show`). |
-| `DOLT_PASSWORD` | _(empty)_ | bd's server is unauthenticated by default. |
+| `DOLT_DATABASE` | `beads` | Your workspace's database name. |
+| `DOLT_PASSWORD` | _(empty)_ | Resolved via `creds-ref` pointers (`env:`/`sops:`/`pass:`) — never a literal in config. |
+| `DOLT_FLAVOR` | `dolt` | Or let `--descriptor` supply it. |
+
+### Authentication
+
+DoltHub pushes authenticate with a dolt creds keypair (`dolt login`), or
+`DOLT_REMOTE_USER`/`DOLT_REMOTE_PASSWORD`. The MCP connection uses `DOLT_USER`/`DOLT_PASSWORD`
+(bd's local server is unauthenticated by default — user `root`, empty password).
+
+## Built on
+
+- **[Dolt](https://github.com/dolthub/dolt) / [DoltHub](https://www.dolthub.com)** — the
+  version-controlled SQL database family: [Doltgres](https://github.com/dolthub/doltgresql),
+  [DoltLite](https://github.com/dolthub/doltlite), DumboDB. The MCP server is
+  [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp).
+- **[beads](https://github.com/gastownhall/beads)** — the `bd` task tracker (use-case
+  adapter #1).
 
 ## How it was evaluated
 

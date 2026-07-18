@@ -5,7 +5,7 @@ description: "Use when designing a production Navan API integration architecture
   \ stack.\nTrigger with \"navan reference architecture\" or \"navan integration architecture\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

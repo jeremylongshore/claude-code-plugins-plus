@@ -7,7 +7,7 @@ description: "Build a correct LangGraph 1.0 ReAct agent with `create_react_agent
   \ prompts.\nTrigger with \"langgraph agent\", \"create_react_agent\", \"langgraph\
   \ tool calling\",\n\"AgentExecutor migration\", \"agent loop cost\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

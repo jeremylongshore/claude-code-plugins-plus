@@ -4,7 +4,7 @@ description: Extract action items from today's Granola/Grain meetings, create To
   tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. Use
   when running the daily action items cron, post-meeting cron, or when user asks to
   process meeting action items. NOT for general email drafting without meeting context.
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Martin Gontovnikas <martin@hypergrowthpartners.com>
 tags:

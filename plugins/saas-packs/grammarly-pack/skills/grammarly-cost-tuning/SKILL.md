@@ -14,7 +14,7 @@ description: 'Optimize Grammarly costs through tier selection, sampling, and usa
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -18,6 +18,7 @@ on:
     paths:
       - 'scripts/auto-bump-changed-plugins.mjs'
       - 'scripts/auto-bump-changed-plugins.test.mjs'
+      - 'scripts/reconstruct-versions.mjs'
       - '.github/workflows/auto-bump-test.yml'
 
 # Read-only — pure unit tests, no writes.

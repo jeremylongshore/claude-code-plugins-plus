@@ -13,7 +13,7 @@ description: 'Apply Salesforce security best practices for Connected Apps, OAuth
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

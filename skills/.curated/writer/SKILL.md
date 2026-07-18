@@ -4,7 +4,7 @@ description: Professional writing assistant for PM documents. Use when the user 
   to write, draft, or polish documents like briefs, updates, emails, or presentations.
   Triggers include "write", "draft", "document", "help me write", "create a brief",
   "polish this", or when producing any written deliverable.
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

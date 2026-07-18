@@ -13,7 +13,7 @@ description: 'Optimize Groq API performance with model selection, caching, strea
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,6 +29,15 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 Maximize Groq's LPU inference speed advantage. Groq already delivers extreme throughput (280-560 tok/s) and low latency (<200ms TTFT), but client-side optimization -- model selection, prompt size, streaming, caching, and parallelism -- determines whether your application fully exploits that speed.
 
+This skill walks through six tuning levers at a high level; the complete, copy-pasteable code for each lives in [references/implementation.md](references/implementation.md), and end-to-end worked scenarios live in [references/examples.md](references/examples.md).
+
+## Prerequisites
+
+- **Groq API key** — set `GROQ_API_KEY` in the environment. The `groq-sdk` client (`new Groq()`) reads it automatically; never hardcode the key.
+- **Node.js 18+** with the `groq-sdk` package installed (`npm install groq-sdk`).
+- Optional packages for the caching and parallelism steps: `lru-cache` and `p-queue` (`npm install lru-cache p-queue`).
+- A baseline latency measurement of your current integration so you can confirm the tuning actually helps.
+
 ## Groq Speed Benchmarks
 
 | Model | TTFT | Throughput | Context |
@@ -42,195 +51,54 @@ TTFT = Time to First Token. Actual values depend on prompt size and server load.
 
 ## Instructions
 
-### Step 1: Choose the Right Model for Speed
+Apply these six levers in order. Each is a small, independent change — start with the ones that match your bottleneck (model choice and caching give the biggest wins on most workloads). The full code for every step is in [references/implementation.md](references/implementation.md).
+
+1. **Choose the right model for speed.** Map each call site to a speed tier: `llama-3.1-8b-instant` for latency-critical paths, `llama-3.3-70b-versatile` for quality-sensitive paths, `llama-3.3-70b-specdec` for 70b quality at higher throughput. Set `temperature: 0` so responses are deterministic (and cacheable).
+2. **Minimize token count.** Trim verbose system prompts to their essence and set `max_tokens` to the expected output size, not a safe-looking ceiling. Fewer tokens means faster responses and less TPM-quota pressure.
+3. **Stream for perceived performance.** For any output the user watches arrive, stream chunks and surface live TTFT / tokens-per-second metrics. Streaming hides TTFT even when total wall-clock is unchanged.
+4. **Cache deterministic responses.** Hash `{messages, model}` and serve repeat `temperature: 0` requests from an LRU cache with a short TTL — turning a repeated call into a ~0ms hit.
+5. **Parallelize under a rate-limit-aware queue.** Fan out bulk work with `p-queue`, capping concurrency and per-minute volume so you saturate throughput without tripping 429s.
+6. **Benchmark before you commit.** Measure the candidate models against your real prompt shape and pick the fastest that clears your quality bar.
+
+The essential skeleton — a tiered client every other step builds on:
 
 ```typescript
 import Groq from "groq-sdk";
 
-const groq = new Groq();
+const groq = new Groq();  // reads GROQ_API_KEY from the environment
 
-// Speed tiers for different use cases
 const SPEED_MAP = {
-  // Under 100ms TTFT -- use for latency-critical paths
-  instant: "llama-3.1-8b-instant",
-  // Under 200ms TTFT -- use for quality-sensitive paths
-  balanced: "llama-3.3-70b-versatile",
-  // Speculative decoding -- same quality as 70b, faster throughput
-  fast70b: "llama-3.3-70b-specdec",
+  instant: "llama-3.1-8b-instant",      // <100ms TTFT — latency-critical
+  balanced: "llama-3.3-70b-versatile",  // <200ms TTFT — quality-sensitive
+  fast70b: "llama-3.3-70b-specdec",     // 70b quality, faster throughput
 } as const;
 
-type SpeedTier = keyof typeof SPEED_MAP;
-
-async function tieredCompletion(prompt: string, tier: SpeedTier = "instant") {
+async function tieredCompletion(prompt: string, tier: keyof typeof SPEED_MAP = "instant") {
   return groq.chat.completions.create({
     model: SPEED_MAP[tier],
     messages: [{ role: "user", content: prompt }],
-    temperature: 0,        // Deterministic = cacheable
-    max_tokens: 256,       // Only request what you need
+    temperature: 0,   // deterministic = cacheable
+    max_tokens: 256,  // request only what you need
   });
 }
 ```
 
-### Step 2: Minimize Token Count
+See [references/implementation.md](references/implementation.md) for the streaming, caching, parallel-queue, and benchmarking functions in full.
 
-```typescript
-// Groq charges per token AND rate limits on TPM
-// Smaller prompts = faster responses + less quota usage
+## Output
 
-// BAD: verbose system prompt (200+ tokens)
-const verbosePrompt = "You are an AI assistant that classifies text. Given a piece of text, analyze it carefully and determine whether the sentiment is positive, negative, or neutral. Consider the tone, word choice, and overall message...";
+Applying these levers to a Groq integration produces:
 
-// GOOD: concise system prompt (15 tokens)
-const concisePrompt = "Classify as positive/negative/neutral. One word only.";
+- **A tiered model map** (`SPEED_MAP`) so each call site uses the fastest model that meets its quality bar.
+- **A streaming helper** that returns `{ content, ttftMs, totalMs, tokPerSec }` for live latency instrumentation.
+- **A deterministic prompt cache** (LRU + SHA-256 key) that collapses repeated requests to ~0ms.
+- **A rate-limit-aware parallel executor** that maximizes throughput without hitting 429s.
+- **A benchmark report** printing average latency and tokens/sec per model, e.g.:
 
-// BAD: high max_tokens for short expected output
-const wasteful = { max_tokens: 4096 }; // for a one-word response
-
-// GOOD: match max_tokens to expected output
-const efficient = { max_tokens: 5 };   // "positive" is 1 token
-```
-
-### Step 3: Streaming for Perceived Performance
-
-```typescript
-async function streamWithMetrics(
-  messages: any[],
-  onToken: (token: string) => void
-): Promise<{ content: string; ttftMs: number; totalMs: number; tokPerSec: number }> {
-  const start = performance.now();
-  let ttft = 0;
-  let content = "";
-  let tokenCount = 0;
-
-  const stream = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages,
-    stream: true,
-    max_tokens: 1024,
-  });
-
-  for await (const chunk of stream) {
-    const token = chunk.choices[0]?.delta?.content || "";
-    if (token) {
-      if (!ttft) ttft = performance.now() - start;
-      content += token;
-      tokenCount++;
-      onToken(token);
-    }
-  }
-
-  const totalMs = performance.now() - start;
-  return {
-    content,
-    ttftMs: Math.round(ttft),
-    totalMs: Math.round(totalMs),
-    tokPerSec: Math.round(tokenCount / (totalMs / 1000)),
-  };
-}
-```
-
-### Step 4: Semantic Prompt Cache
-
-```typescript
-import { LRUCache } from "lru-cache";
-import { createHash } from "crypto";
-
-const promptCache = new LRUCache<string, string>({
-  max: 1000,
-  ttl: 10 * 60_000,  // 10 min TTL for deterministic responses
-});
-
-function hashRequest(messages: any[], model: string): string {
-  return createHash("sha256")
-    .update(JSON.stringify({ messages, model }))
-    .digest("hex");
-}
-
-async function cachedCompletion(
-  messages: any[],
-  model = "llama-3.1-8b-instant"
-): Promise<string> {
-  const key = hashRequest(messages, model);
-  const cached = promptCache.get(key);
-  if (cached) return cached;
-
-  const response = await groq.chat.completions.create({
-    model,
-    messages,
-    temperature: 0,  // Cache only works with deterministic output
-  });
-
-  const result = response.choices[0].message.content!;
-  promptCache.set(key, result);
-  return result;
-}
-```
-
-### Step 5: Parallel Request Orchestration
-
-```typescript
-import PQueue from "p-queue";
-
-// Respect RPM limits while maximizing throughput
-const queue = new PQueue({
-  concurrency: 10,
-  intervalCap: 25,
-  interval: 60_000,
-});
-
-async function parallelCompletions(
-  prompts: string[],
-  model = "llama-3.1-8b-instant"
-): Promise<string[]> {
-  const results = await Promise.all(
-    prompts.map((prompt) =>
-      queue.add(() =>
-        cachedCompletion(
-          [{ role: "user", content: prompt }],
-          model
-        )
-      )
-    )
-  );
-  return results as string[];
-}
-```
-
-### Step 6: Latency Benchmarking
-
-```typescript
-async function benchmarkModels(prompt: string, iterations = 3) {
-  const models = [
-    "llama-3.1-8b-instant",
-    "llama-3.3-70b-versatile",
-    "llama-3.3-70b-specdec",
-  ];
-
-  for (const model of models) {
-    const latencies: number[] = [];
-    const speeds: number[] = [];
-
-    for (let i = 0; i < iterations; i++) {
-      const start = performance.now();
-      const result = await groq.chat.completions.create({
-        model,
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 100,
-      });
-      const elapsed = performance.now() - start;
-      latencies.push(elapsed);
-      const tps = result.usage!.completion_tokens /
-        ((result.usage as any).completion_time || elapsed / 1000);
-      speeds.push(tps);
-    }
-
-    const avgLatency = latencies.reduce((a, b) => a + b) / latencies.length;
-    const avgSpeed = speeds.reduce((a, b) => a + b) / speeds.length;
-    console.log(
-      `${model.padEnd(45)} | ${avgLatency.toFixed(0)}ms avg | ${avgSpeed.toFixed(0)} tok/s avg`
-    );
-  }
-}
+```text
+llama-3.1-8b-instant     |  61ms avg | 548 tok/s avg
+llama-3.3-70b-versatile  | 148ms avg | 279 tok/s avg
+llama-3.3-70b-specdec    | 103ms avg | 401 tok/s avg
 ```
 
 ## Performance Decision Matrix
@@ -242,6 +110,29 @@ async function benchmarkModels(prompt: string, iterations = 3) {
 | Data extraction | 8b-instant | 200 | No | Yes |
 | Code generation | 70b-versatile | 2048 | Yes | No |
 | Bulk processing | 8b-instant | 256 | No | Yes |
+
+## Examples
+
+Common scenarios mapped to the levers above. Full code for each is in [references/examples.md](references/examples.md).
+
+- **Latency-critical classification** — `8b-instant` + one-word prompt + `max_tokens: 5` + cache. First call ~50ms TTFT; identical repeats return from cache at ~0ms.
+- **Interactive chat** — `70b-versatile` streamed with `streamWithMetrics`, printing tokens as they arrive plus a `[TTFT | tok/s]` footer.
+- **Bulk processing (500 records)** — `parallelCompletions` wraps each call in a rate-limit-aware `p-queue` and reuses the cache for duplicate rows.
+- **Empirical model choice** — run `benchmarkModels` against your real prompt, then hardcode the fastest tier that clears your quality bar.
+
+```typescript
+// Latency-critical classification, cached
+const label = await cachedCompletion(
+  [
+    { role: "system", content: "Classify as positive/negative/neutral. One word only." },
+    { role: "user", content: "This product exceeded every expectation." },
+  ],
+  "llama-3.1-8b-instant"
+);
+// => "positive"
+```
+
+See [references/examples.md](references/examples.md) for the streaming, bulk, and benchmarking walkthroughs.
 
 ## Error Handling
 
@@ -255,10 +146,9 @@ async function benchmarkModels(prompt: string, iterations = 3) {
 
 ## Resources
 
+- [Full implementation walkthrough](references/implementation.md) — copy-pasteable code for all six steps.
+- [Worked examples](references/examples.md) — end-to-end scenarios mapped to the tuning levers.
 - [Groq Models & Speed](https://console.groq.com/docs/models)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [lru-cache on npm](https://www.npmjs.com/package/lru-cache)
-
-## Next Steps
-
-For cost optimization, see `groq-cost-tuning`.
+- For cost optimization, see the `groq-cost-tuning` skill.

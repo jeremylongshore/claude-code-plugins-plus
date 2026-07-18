@@ -11,7 +11,7 @@ description: |
   natural-language variants ("add a suggestion: …", "let's discuss X",
   "run the queue").
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(npx:*), Glob, Grep
-version: 0.1.8
+version: 0.2.0
 author: ratamaha-git <ratamaha@automatelab.tech>
 license: MIT
 compatibility: Designed for Claude Code; requires the Notion MCP server (@notionhq/notion-mcp-server) and a Notion workspace with a Tasks database

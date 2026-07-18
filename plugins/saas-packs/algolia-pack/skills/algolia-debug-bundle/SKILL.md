@@ -10,7 +10,7 @@ description: 'Collect Algolia debug evidence: index stats, API key ACLs, query l
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(tar:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "jeremy-vertex-validator",
-  "version": "2.0.0",
+  "version": "2.22.0",
   "description": "Production readiness validator for Vertex AI deployments and configurations",
   "author": {
     "name": "Jeremy Longshore",

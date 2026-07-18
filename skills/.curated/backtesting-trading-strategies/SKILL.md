@@ -17,7 +17,7 @@ description: 'Backtest crypto and traditional trading strategies against histori
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
-version: 2.0.0
+version: 1.28.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

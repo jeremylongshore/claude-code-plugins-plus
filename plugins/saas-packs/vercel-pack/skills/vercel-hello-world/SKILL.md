@@ -12,7 +12,7 @@ description: 'Create a minimal working Vercel deployment with a serverless API r
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Bash(curl:*)
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

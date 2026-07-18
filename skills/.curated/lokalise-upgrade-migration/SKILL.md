@@ -14,7 +14,7 @@ description: 'Analyze, plan, and execute Lokalise SDK upgrades with breaking cha
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Bash(node:*),
   Bash(grep:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

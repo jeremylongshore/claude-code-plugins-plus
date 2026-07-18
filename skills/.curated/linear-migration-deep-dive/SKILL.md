@@ -12,7 +12,7 @@ description: 'Migrate from Jira, Asana, GitHub Issues, or other tools to Linear.
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

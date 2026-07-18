@@ -1,18 +1,14 @@
 ---
 name: apify-prod-checklist
-description: 'Production readiness checklist for Apify Actor deployments.
-
-  Use when deploying Actors to production, preparing for launch,
-
-  or validating Actor configuration before going live.
-
-  Trigger: "apify production", "deploy actor to prod",
-
-  "apify go-live", "apify launch checklist", "actor production ready".
-
-  '
-allowed-tools: Read, Bash(apify:*), Bash(curl:*), Bash(npm:*), Grep
-version: 1.0.0
+description: |
+  Production readiness checklist for Apify Actor deployments.
+  Use when deploying an Actor to production, preparing for launch, or
+  validating Actor configuration, scheduling, monitoring, and rollback
+  before going live.
+  Trigger with "apify production", "deploy actor to prod", "apify go-live",
+  "apify launch checklist", "actor production ready".
+allowed-tools: Read, Bash(apify:*), Bash(curl:*), Bash(npm:*)
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,7 +22,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Complete checklist for deploying Actors to the Apify platform and integrating them into production applications. Covers Actor configuration, scheduling, monitoring, alerting, and rollback.
+Complete checklist for deploying Actors to the Apify platform and integrating them into production applications. Covers Actor configuration, scheduling, monitoring, alerting, and rollback. Work top to bottom: clear the pre-deployment gates, then run the six deploy steps, then wire the alert conditions.
 
 ## Prerequisites
 
@@ -63,7 +59,16 @@ Complete checklist for deploying Actors to the Apify platform and integrating th
 
 ## Instructions
 
-### Step 1: Deploy Actor
+Read the Actor's `.actor/actor.json`, `INPUT_SCHEMA.json`, and `Dockerfile` first to confirm the pre-deployment gates above, then run the six deploy steps. Each step's full command and code block lives in [references/implementation.md](references/implementation.md); the skeleton is below.
+
+1. **Deploy Actor** — `apify push`, then `apify builds ls` to confirm the build, then `apify actors call` with a small production-like input to smoke-test on-platform.
+2. **Configure Scheduling** — create a cron schedule with `client.schedules().create({...})` (or Apify Console: Actors > Your Actor > Schedules). Set `cronExpression`, `runInput`, and `runOptions` (memory/timeout).
+3. **Set Up Webhooks** — `client.webhooks().create({...})` on `ACTOR.RUN.SUCCEEDED`/`FAILED`/`TIMED_OUT` with a `payloadTemplate` posting runId, status, and datasetId to your server.
+4. **Monitor Runs** — a `checkActorHealth(actorId, lookbackHours)` helper lists recent runs and reports success rate, failures, timeouts, and total cost.
+5. **Implement Rollback** — `apify builds ls`, then repoint the Actor at a prior build via the `POST /v2/acts/ACTOR_ID?build=N` API, or redeploy from a git tag.
+6. **Cost Guard** — `runWithCostGuard(actorId, input, maxCostUsd)` polls `usageTotalUsd` every 30s and aborts the run if it exceeds budget.
+
+The first deploy step in full:
 
 ```bash
 # Build and push to Apify platform
@@ -71,148 +76,25 @@ apify push
 
 # Verify the build succeeded
 apify builds ls
-
-# Test on platform with production-like input
-apify actors call username/my-actor \
-  --input='{"startUrls":[{"url":"https://target.com"}],"maxItems":10}'
 ```
 
-### Step 2: Configure Scheduling
+## Output
 
-```typescript
-import { ApifyClient } from 'apify-client';
+Working through this skill produces a production-ready Actor with:
 
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+- A pushed, verified build (`apify builds ls` shows a `SUCCEEDED` build).
+- A live cron **schedule** and a completion **webhook** firing on success/failure/timeout.
+- A repeatable **health check** printing success rate, failure/timeout counts, and 24h cost.
+- A tested **rollback** path (build repoint or git-tag redeploy).
+- A **cost guard** that aborts runs exceeding budget.
 
-// Create a scheduled task (cron)
-const schedule = await client.schedules().create({
-  name: 'daily-product-scrape',
-  cronExpression: '0 6 * * *',  // Daily at 6 AM UTC
-  isEnabled: true,
-  actions: [{
-    type: 'RUN_ACTOR',
-    actorId: 'username/my-actor',
-    runInput: {
-      body: JSON.stringify({
-        startUrls: [{ url: 'https://target.com/products' }],
-        maxItems: 5000,
-      }),
-      contentType: 'application/json',
-    },
-    runOptions: {
-      memory: 2048,
-      timeout: 3600,
-      build: 'latest',
-    },
-  }],
-});
+Health-check output looks like:
 
-console.log(`Schedule created: ${schedule.id}`);
-```
-
-Or configure in Apify Console: Actors > Your Actor > Schedules.
-
-### Step 3: Set Up Webhooks for Monitoring
-
-```typescript
-// Create webhook for run completion alerts
-const webhook = await client.webhooks().create({
-  eventTypes: ['ACTOR.RUN.SUCCEEDED', 'ACTOR.RUN.FAILED', 'ACTOR.RUN.TIMED_OUT'],
-  condition: { actorId: 'ACTOR_ID' },
-  requestUrl: 'https://your-server.com/api/apify-webhook',
-  payloadTemplate: JSON.stringify({
-    eventType: '{{eventType}}',
-    actorId: '{{actorId}}',
-    runId: '{{actorRunId}}',
-    status: '{{resource.status}}',
-    datasetId: '{{resource.defaultDatasetId}}',
-    startedAt: '{{resource.startedAt}}',
-    finishedAt: '{{resource.finishedAt}}',
-  }),
-});
-```
-
-### Step 4: Monitor Runs
-
-```typescript
-// Check recent runs for failures
-async function checkActorHealth(actorId: string, lookbackHours = 24) {
-  const { items: runs } = await client.actor(actorId).runs().list({
-    limit: 50,
-    desc: true,
-  });
-
-  const cutoff = new Date(Date.now() - lookbackHours * 3600_000);
-  const recentRuns = runs.filter(r => new Date(r.startedAt) > cutoff);
-
-  const stats = {
-    total: recentRuns.length,
-    succeeded: recentRuns.filter(r => r.status === 'SUCCEEDED').length,
-    failed: recentRuns.filter(r => r.status === 'FAILED').length,
-    timedOut: recentRuns.filter(r => r.status === 'TIMED-OUT').length,
-    totalCostUsd: recentRuns.reduce((sum, r) => sum + (r.usageTotalUsd ?? 0), 0),
-  };
-
-  const successRate = stats.total > 0
-    ? ((stats.succeeded / stats.total) * 100).toFixed(1)
-    : 'N/A';
-
-  console.log(`Actor: ${actorId}`);
-  console.log(`Last ${lookbackHours}h: ${stats.total} runs, ${successRate}% success`);
-  console.log(`Failed: ${stats.failed}, Timed out: ${stats.timedOut}`);
-  console.log(`Total cost: $${stats.totalCostUsd.toFixed(4)}`);
-
-  if (stats.failed > 0) {
-    console.warn('ALERT: Failed runs detected!');
-  }
-
-  return stats;
-}
-```
-
-### Step 5: Implement Rollback
-
-```bash
-# List available builds
-apify builds ls
-
-# Roll back to a previous build
-curl -X POST \
-  -H "Authorization: Bearer $APIFY_TOKEN" \
-  "https://api.apify.com/v2/acts/ACTOR_ID?build=BUILD_NUMBER"
-
-# Or redeploy from a git tag
-git checkout v1.2.3
-apify push
-```
-
-### Step 6: Cost Guard
-
-```typescript
-// Set up a cost guard that aborts runs exceeding budget
-async function runWithCostGuard(
-  actorId: string,
-  input: Record<string, unknown>,
-  maxCostUsd: number,
-) {
-  const run = await client.actor(actorId).start(input);
-
-  // Poll every 30 seconds
-  const pollInterval = setInterval(async () => {
-    const status = await client.run(run.id).get();
-    const cost = status.usageTotalUsd ?? 0;
-
-    if (cost > maxCostUsd) {
-      console.error(`Cost guard: $${cost.toFixed(4)} exceeds $${maxCostUsd}. Aborting.`);
-      await client.run(run.id).abort();
-      clearInterval(pollInterval);
-    }
-  }, 30_000);
-
-  const finished = await client.run(run.id).waitForFinish();
-  clearInterval(pollInterval);
-  return finished;
-}
+```text
+Actor: username/product-scraper
+Last 24h: 3 runs, 66.7% success
+Failed: 1, Timed out: 0
+Total cost: $0.4213
 ```
 
 ## Production Alert Conditions
@@ -236,8 +118,22 @@ async function runWithCostGuard(
 | Memory exceeded | Workload too large | Increase memory or reduce concurrency |
 | Unexpected cost spike | No `maxRequestsPerCrawl` | Always set an upper bound |
 
+## Examples
+
+Four worked examples — a first production deploy, health-check output, a cost guard aborting a runaway run, and a build rollback — are in [references/examples.md](references/examples.md). A first production deploy in brief:
+
+```bash
+# Smoke-test on-platform with a tiny input before scheduling
+apify actors call username/product-scraper \
+  --input='{"startUrls":[{"url":"https://target.com"}],"maxItems":10}'
+```
+
+Then create the daily schedule and completion webhook (implementation.md Steps 2–3).
+
 ## Resources
 
+- [Full deploy walkthrough (Steps 1–6)](references/implementation.md)
+- [Worked examples](references/examples.md)
 - [Actor Deployment Guide](https://docs.apify.com/platform/actors/development/deployment)
 - [Schedules Documentation](https://docs.apify.com/platform/schedules)
 - [Webhook Event Types](https://docs.apify.com/platform/integrations/webhooks/events)
@@ -245,4 +141,4 @@ async function runWithCostGuard(
 
 ## Next Steps
 
-For version upgrades, see `apify-upgrade-migration`.
+Once production is stable, plan version upgrades with the `apify-upgrade-migration` skill: it covers bumping the Actor base image, migrating `INPUT_SCHEMA.json` fields without breaking existing schedules, and re-running this checklist against the new build before repointing traffic.

@@ -12,7 +12,7 @@ description: 'Publish Obsidian plugins to the community plugin directory.
 
   '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

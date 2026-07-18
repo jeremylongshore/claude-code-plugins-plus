@@ -10,7 +10,7 @@ description: 'Diagnose and fix common Anima SDK design-to-code errors.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

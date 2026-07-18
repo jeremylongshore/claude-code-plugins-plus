@@ -12,7 +12,7 @@ description: 'Configure Customer.io multi-environment setup with workspace isola
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(kubectl:*), Glob, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

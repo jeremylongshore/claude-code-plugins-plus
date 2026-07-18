@@ -1,6 +1,6 @@
 {
   "name": "deployment-rollback-manager",
-  "version": "1.0.0",
+  "version": "1.28.0",
   "description": "Manage and execute deployment rollbacks with safety checks",
   "author": {
     "name": "Claude Code Plugins",

@@ -1,6 +1,6 @@
 {
   "name": "model-evaluation-suite",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Comprehensive model evaluation with multiple metrics",
   "author": {
     "name": "Claude Code Plugins",

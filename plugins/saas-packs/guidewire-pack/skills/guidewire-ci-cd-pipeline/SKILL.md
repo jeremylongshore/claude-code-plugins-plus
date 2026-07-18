@@ -2,7 +2,7 @@
 name: guidewire-ci-cd-pipeline
 description: Ship Gosu code and configuration changes through Guidewire Cloud Console deployment slots without breaking running policies — Gosu compile + GUnit + lint gates per PR, config-package promotion dev→UAT→prod, schema-change rollouts with rollback hazards documented, canary deploy for high-risk changes, and the rollback decision tree when a release affects already-bound policies. Use when designing the deploy pipeline for a new InsuranceSuite project, hardening an existing one, or recovering from a bad release. Trigger with "guidewire ci cd", "guidewire deploy", "guidewire promotion", "guidewire slots", "guidewire rollback".
 allowed-tools: Read, Write, Edit, Bash(gradle:*), Bash(curl:*), Bash(jq:*), Bash(git:*), Grep, Glob
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

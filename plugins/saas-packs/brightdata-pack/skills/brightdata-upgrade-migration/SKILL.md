@@ -13,7 +13,7 @@ description: 'Analyze, plan, and execute Bright Data SDK upgrades with breaking 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

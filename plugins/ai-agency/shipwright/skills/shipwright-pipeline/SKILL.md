@@ -7,7 +7,7 @@ description: Autonomous app builder that converts plain-English descriptions int
   a project", "generate an application".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pip:*), Bash(python:*), Bash(npm:*),
   Bash(npx:*), Bash(git:*)
-version: 1.0.0
+version: 1.3.0
 author: Nate Nelson <nate@blacksheephq.ai>
 license: MIT
 tags:

@@ -12,7 +12,7 @@ description: 'Collect Clay debug evidence for support tickets and troubleshootin
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -792,14 +792,14 @@ sources:
 
   # ============================================================
   # dolt-mcp-vcs (Jeremy Longshore / Intent Solutions)
-  # https://github.com/jeremylongshore/dolt-mcp-vcs
+  # https://github.com/jeremylongshore/dolt-mcp-vcs-plugin
   # (formerly beads-dolt — the beads-dolt install slug is kept as a
   #  deprecated alias in marketplace.extended.json so old installs resolve)
   # ============================================================
 
   - name: dolt-mcp-vcs
     description: Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.
-    repo: jeremylongshore/dolt-mcp-vcs
+    repo: jeremylongshore/dolt-mcp-vcs-plugin
     source_path: .
     target_path: plugins/mcp/dolt-mcp-vcs
     author:

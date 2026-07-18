@@ -12,7 +12,7 @@ description: 'Configure Sentry security settings and data protection.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(grep:*), Bash(curl:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

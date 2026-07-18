@@ -15,7 +15,7 @@ description: 'Apply Shopify security best practices for API credentials, webhook
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

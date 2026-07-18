@@ -12,7 +12,7 @@ description: 'Set up a local development loop for MaintainX integration developm
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(docker:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

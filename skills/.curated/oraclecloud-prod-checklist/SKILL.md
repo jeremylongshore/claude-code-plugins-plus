@@ -6,7 +6,7 @@ description: "Pre-production readiness checklist for OCI \u2014 backup policies,
   oraclecloud prod checklist\", \"oci production ready\", \"oci security audit\",\
   \ \"oci well-architected\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Collect Vast.ai debug evidence for support tickets and troubleshoo
 
   '
 allowed-tools: Read, Bash(vastai:*), Bash(curl:*), Bash(ssh:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

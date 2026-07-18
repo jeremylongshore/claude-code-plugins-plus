@@ -16,7 +16,7 @@ description: 'Apply Supabase security best practices: anon vs service_role key s
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*), Bash(npx supabase:*)
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Make your first Figma REST API call to fetch a file and inspect it
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

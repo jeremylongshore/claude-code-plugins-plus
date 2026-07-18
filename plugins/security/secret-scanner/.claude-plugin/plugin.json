@@ -1,6 +1,6 @@
 {
   "name": "secret-scanner",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Scan codebase for exposed secrets, API keys, passwords, and sensitive credentials",
   "author": {
     "name": "Jeremy Longshore",

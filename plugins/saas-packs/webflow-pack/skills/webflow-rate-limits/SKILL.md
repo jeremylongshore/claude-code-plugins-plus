@@ -7,7 +7,7 @@ description: "Handle Webflow Data API v2 rate limits \u2014 per-key limits, Retr
   ,\n\"webflow 429\", \"webflow retry\", \"webflow backoff\", \"webflow too many requests\"\
   .\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

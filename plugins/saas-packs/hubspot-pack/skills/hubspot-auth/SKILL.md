@@ -8,7 +8,7 @@ description: Authenticate production HubSpot integrations and survive the auth-s
   auth", "hubspot token cache", "hubspot rate limit", "hubspot scope drift", "hubspot
   multi-portal", "hubspot OAuth refresh".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(openssl:*), Grep
-version: 2.0.0
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

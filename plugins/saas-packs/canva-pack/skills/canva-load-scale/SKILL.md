@@ -13,7 +13,7 @@ description: 'Implement Canva Connect API load testing, auto-scaling, and capaci
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

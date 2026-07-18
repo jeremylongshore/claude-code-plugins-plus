@@ -13,7 +13,7 @@ description: 'Collect Shopify debug evidence including API versions, scopes, rat
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

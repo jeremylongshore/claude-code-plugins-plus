@@ -12,7 +12,7 @@ description: 'Apply Customer.io advanced debugging and incident response.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*), Glob, Grep
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

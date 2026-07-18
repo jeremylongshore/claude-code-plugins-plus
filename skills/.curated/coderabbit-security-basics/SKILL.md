@@ -14,7 +14,7 @@ description: 'Configure CodeRabbit for security-focused code review with secret 
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -10,7 +10,7 @@ description: 'Optimize Attio API usage costs -- reduce request volume, select th
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

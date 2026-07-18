@@ -7,7 +7,7 @@ description: "Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, o
   \ spikes.\nTrigger with \"langchain deploy\", \"langchain cloud run\", \"langchain\
   \ vercel python\",\n\"langchain langserve\", \"langchain docker\".\n"
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*), Bash(vercel:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

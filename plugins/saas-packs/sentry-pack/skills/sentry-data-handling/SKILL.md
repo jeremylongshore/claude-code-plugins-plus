@@ -16,7 +16,7 @@ description: 'Configure GDPR-compliant data handling, PII scrubbing, and data
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

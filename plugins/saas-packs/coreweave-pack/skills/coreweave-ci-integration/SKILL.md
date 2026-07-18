@@ -12,7 +12,7 @@ description: 'Integrate CoreWeave deployments into CI/CD pipelines with GitHub A
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

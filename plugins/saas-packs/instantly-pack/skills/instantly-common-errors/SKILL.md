@@ -12,7 +12,7 @@ description: 'Diagnose and fix Instantly.ai API v2 common errors and exceptions.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

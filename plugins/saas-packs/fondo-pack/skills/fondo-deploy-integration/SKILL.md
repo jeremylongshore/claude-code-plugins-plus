@@ -9,7 +9,7 @@ description: 'Deploy financial dashboards and reporting tools that consume Fondo
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

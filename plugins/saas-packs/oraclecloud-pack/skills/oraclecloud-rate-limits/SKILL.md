@@ -11,7 +11,7 @@ description: 'Handle OCI API rate limits with defensive retry patterns and known
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

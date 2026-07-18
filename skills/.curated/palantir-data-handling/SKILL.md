@@ -13,7 +13,7 @@ description: 'Implement Palantir Foundry data handling with PII protection, mark
 
   '
 allowed-tools: Read, Write, Edit
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

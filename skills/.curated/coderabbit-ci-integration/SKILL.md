@@ -13,7 +13,7 @@ description: 'Configure CodeRabbit as a CI gate with GitHub Actions, branch prot
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

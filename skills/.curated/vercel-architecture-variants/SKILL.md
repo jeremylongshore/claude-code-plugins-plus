@@ -14,7 +14,7 @@ description: 'Choose and implement Vercel architecture blueprints for different 
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

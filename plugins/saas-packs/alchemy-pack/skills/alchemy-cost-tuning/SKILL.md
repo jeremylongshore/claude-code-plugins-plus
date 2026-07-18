@@ -12,7 +12,7 @@ description: 'Optimize Alchemy API costs through CU budgeting, caching, and plan
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

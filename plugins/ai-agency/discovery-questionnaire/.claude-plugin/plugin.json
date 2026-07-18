@@ -1,6 +1,6 @@
 {
   "name": "discovery-questionnaire",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "description": "Generate custom discovery questionnaires for AI agency prospects",
   "author": {
     "name": "Claude Code Plugin Hub",

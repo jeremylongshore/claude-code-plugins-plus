@@ -6,7 +6,7 @@ description: "Analyze, plan, and execute Adobe SDK upgrades \u2014 including the
   , \"adobe migration\",\n\"adobe breaking changes\", \"update adobe SDK\", \"jwt\
   \ to oauth\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

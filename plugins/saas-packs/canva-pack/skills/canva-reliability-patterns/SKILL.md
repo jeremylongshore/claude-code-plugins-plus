@@ -7,7 +7,7 @@ description: "Implement reliability patterns for Canva Connect API \u2014 circui
   \ breaker\",\n\"canva resilience\", \"canva fallback\", \"canva fault tolerance\"\
   .\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

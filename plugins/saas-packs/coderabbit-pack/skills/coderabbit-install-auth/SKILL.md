@@ -13,7 +13,7 @@ description: 'Install and configure CodeRabbit AI code review on GitHub or GitLa
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -11,8 +11,8 @@ description: 'Install and configure Groq SDK authentication for TypeScript or Py
   "groq auth", "configure groq API key".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+allowed-tools: Bash(npm:*), Bash(pip:*), Bash(export:*)
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,6 +27,10 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ## Overview
 
 Install the official Groq SDK and configure API key authentication. Groq provides ultra-fast LLM inference on custom LPU hardware through an OpenAI-compatible REST API at `api.groq.com/openai/v1/`.
+
+The workflow is four steps: install the SDK, mint an API key, export it as an
+environment variable, and verify the connection by listing models. Each step is
+summarized below; deep detail lives in [`references/`](references/).
 
 ## Prerequisites
 
@@ -57,6 +61,9 @@ pip install groq
 
 ### Step 3: Configure Environment
 
+Add the [`.gitignore` template](references/configuration.md#gitignore-template)
+**before** writing any `.env` file so a key can never be committed:
+
 ```bash
 # Set environment variable (recommended)
 export GROQ_API_KEY="gsk_your_key_here"
@@ -65,60 +72,46 @@ export GROQ_API_KEY="gsk_your_key_here"
 echo 'GROQ_API_KEY=gsk_your_key_here' >> .env
 ```
 
-### Step 4: Verify Connection (TypeScript)
+### Step 4: Verify the Connection
+
+Run a short script that lists the models your key can access — a successful list
+proves authentication end-to-end. The essential TypeScript skeleton:
 
 ```typescript
 import Groq from "groq-sdk";
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
-
-async function verify() {
-  const models = await groq.models.list();
-  console.log("Connected! Available models:");
-  for (const model of models.data) {
-    console.log(`  ${model.id} (owned by ${model.owned_by})`);
-  }
-}
-
-verify().catch(console.error);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const models = await groq.models.list();
+console.log(models.data.map((m) => m.id));
 ```
 
-### Step 5: Verify Connection (Python)
+Full runnable TypeScript **and** Python verification scripts, with expected
+output: [verification walkthrough](references/verification.md).
 
-```python
-import os
-from groq import Groq
+## Output
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+A successful setup produces:
 
-models = client.models.list()
-print("Connected! Available models:")
-for model in models.data:
-    print(f"  {model.id} (owned by {model.owned_by})")
+- `groq-sdk` (Node) or `groq` (Python) installed in the project.
+- `GROQ_API_KEY` available in the environment (or `.env`, with `.env` gitignored).
+- A verification run that prints the accessible models, for example:
+
+```
+Connected! Available models:
+  llama-3.3-70b-versatile (owned by Meta)
+  llama-3.1-8b-instant (owned by Meta)
 ```
 
-## SDK Defaults
+If the verification run prints a `401` instead of a model list, authentication
+failed — see [Error Handling](#error-handling).
 
-The Groq SDK auto-reads `GROQ_API_KEY` from environment if no `apiKey` is passed to the constructor. Additional constructor options:
+## SDK Defaults & Key Formats
 
-```typescript
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,  // Optional if env var set
-  baseURL: "https://api.groq.com/openai/v1",  // Default
-  maxRetries: 2,      // Default retry count
-  timeout: 60_000,    // 60 second timeout (ms)
-});
-```
-
-## API Key Formats
-
-| Prefix | Type | Usage |
-|--------|------|-------|
-| `gsk_` | Standard API key | All API endpoints |
-
-Groq uses a single key type. There are no separate read/write scopes -- all keys have full API access. Restrict access through organizational controls in the console.
+The SDK auto-reads `GROQ_API_KEY` from the environment when no `apiKey` is passed.
+Groq uses a single `gsk_` key type with full API access (no read/write scopes).
+Constructor options (`baseURL`, `maxRetries`, `timeout`), the OpenAI-SDK
+compatibility path, and the key-format table are in the
+[configuration reference](references/configuration.md).
 
 ## Error Handling
 
@@ -129,14 +122,33 @@ Groq uses a single key type. There are no separate read/write scopes -- all keys
 | `ModuleNotFoundError: No module named 'groq'` | Python SDK missing | Run `pip install groq` |
 | `ENOTFOUND api.groq.com` | Network/DNS issue | Check internet connectivity and firewall |
 
-## .gitignore Template
+Extended diagnostics (checking the exported variable, `.env` loading, key
+rotation): [troubleshooting reference](references/troubleshooting.md).
 
+## Examples
+
+**Example 1 — Node project from scratch:**
+
+```bash
+npm install groq-sdk
+export GROQ_API_KEY="gsk_your_key_here"
+node --env-file=.env verify.mjs   # lists models → auth confirmed
 ```
-# Groq secrets
-.env
-.env.local
-.env.*.local
+
+**Example 2 — Python project:**
+
+```bash
+pip install groq
+export GROQ_API_KEY="gsk_your_key_here"
+python verify.py                  # prints accessible models
 ```
+
+**Example 3 — reuse an existing OpenAI codebase:** point the OpenAI SDK at Groq
+by overriding `baseURL` to `https://api.groq.com/openai/v1` and passing your
+`gsk_` key. See the [configuration reference](references/configuration.md#sdk-defaults).
+
+Complete, runnable versions of the verification scripts are in the
+[verification walkthrough](references/verification.md).
 
 ## Resources
 
@@ -147,4 +159,6 @@ Groq uses a single key type. There are no separate read/write scopes -- all keys
 
 ## Next Steps
 
-After successful auth, proceed to `groq-hello-world` for your first chat completion.
+After successful auth, proceed to the `groq-hello-world` skill to run your first
+chat completion. For SDK tuning (retries, timeouts, custom base URL), read the
+[configuration reference](references/configuration.md).

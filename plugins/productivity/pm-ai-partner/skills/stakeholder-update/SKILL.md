@@ -5,7 +5,7 @@ description: Stakeholder communication assistant for status updates, progress re
   status report, progress summary, or any upward communication. Triggers include "stakeholder
   update", "status update", "progress report", "update leadership", "weekly update",
   or "executive summary".
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

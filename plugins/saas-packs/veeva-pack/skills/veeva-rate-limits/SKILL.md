@@ -8,7 +8,7 @@ description: 'Veeva Vault rate limits for REST API and clinical operations.
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

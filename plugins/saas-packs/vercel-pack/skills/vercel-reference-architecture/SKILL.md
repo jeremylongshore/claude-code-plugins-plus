@@ -13,7 +13,7 @@ description: 'Implement a Vercel reference architecture with layered project str
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

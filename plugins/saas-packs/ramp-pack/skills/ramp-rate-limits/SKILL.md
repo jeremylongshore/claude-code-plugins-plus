@@ -5,7 +5,7 @@ description: "Ramp rate limits \u2014 corporate card and expense management API 
   Trigger with phrases like \"ramp rate limits\", \"ramp-rate-limits\", \"corporate\
   \ card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

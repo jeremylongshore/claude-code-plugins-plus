@@ -12,7 +12,7 @@ description: 'Implement Abridge rate limiting, backoff, and session throttling p
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

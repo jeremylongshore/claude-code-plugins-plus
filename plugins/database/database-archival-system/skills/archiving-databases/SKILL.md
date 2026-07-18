@@ -14,7 +14,7 @@ description: 'Process use when you need to archive historical database records t
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(aws:s3:*),
   Bash(az:storage:*)
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

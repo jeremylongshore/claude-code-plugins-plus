@@ -12,7 +12,7 @@ description: 'Implement Exa load testing, capacity planning, and scaling strateg
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

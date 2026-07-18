@@ -5,7 +5,7 @@ description: "Ramp upgrade migration \u2014 corporate card and expense managemen
   \ accounting sync.\nTrigger with phrases like \"ramp upgrade migration\", \"ramp-upgrade-migration\"\
   , \"corporate card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

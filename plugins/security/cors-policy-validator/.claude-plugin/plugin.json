@@ -1,6 +1,6 @@
 {
   "name": "cors-policy-validator",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Validate CORS policies",
   "author": {
     "name": "Jeremy Longshore",

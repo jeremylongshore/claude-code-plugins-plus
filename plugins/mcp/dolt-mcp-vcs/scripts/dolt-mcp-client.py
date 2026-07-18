@@ -28,6 +28,10 @@ Requires: python3 (stdlib only) + a PINNED `dolt-mcp-server` on PATH. The plugin
 Usage:
   dolt-mcp-client.py --port 35579 --database beads query "SELECT COUNT(*) FROM issues"
   dolt-mcp-client.py --port 35579 list_databases
+  # zero hand-written config: detect -> descriptor -> connect (flavor honored,
+  # --dolt/--doltgres derived from the descriptor, never hardcoded):
+  dolt-detect.py --emit-descriptor && dolt-mcp-client.py \
+      --descriptor connection.descriptor.json list_databases
   echo "SELECT ..." | dolt-mcp-client.py --port 35579 --database beads query -
   # a safe-write must opt in AND target an agent branch (never main):
   dolt-mcp-client.py --port 35579 --database beads --allow-mutation \
@@ -40,6 +44,7 @@ Exit codes: 0 ok · 2 bad usage · 3 binary missing · 4 connection/tool error �
             5 timeout · 6 mutation refused by the verb-class gate
 """
 import argparse
+import importlib.util
 import json
 import os
 import shutil
@@ -47,8 +52,19 @@ import subprocess
 import sys
 import threading
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_SCRIPTS = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _SCRIPTS)
 from sql_classifier import gate_decision  # noqa: E402
+
+# The flavor->connect-flag map lives in descriptor-to-mcp-args.py (single source;
+# import, don't duplicate). The client derives its connect flag from it instead
+# of hardcoding --dolt, so Doltgres is genuinely connectable end-to-end and the
+# doltlite/dumbo stubs keep their decision-6 fail-closed refusal.
+_spec = importlib.util.spec_from_file_location(
+    "descriptor_to_mcp_args", os.path.join(_SCRIPTS, "descriptor-to-mcp-args.py"))
+_dta = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_dta)
+FLAVOR_CONNECT, FLAVOR_STUB = _dta.FLAVOR_CONNECT, _dta.FLAVOR_STUB
 
 BIN = "dolt-mcp-server"
 PINNED_VERSION = "v0.3.6"  # blocker B4 — see module docstring; bump only via dolt-watch
@@ -62,6 +78,13 @@ def eprint(*a):
 
 def main():
     ap = argparse.ArgumentParser(description="stdio client for dolthub/dolt-mcp")
+    ap.add_argument("--descriptor", metavar="PATH",
+                    help="read flavor/endpoint/database/maturity defaults from a "
+                         "connection.descriptor.json (e.g. one emitted by "
+                         "dolt-detect.py --emit-descriptor); explicit flags win")
+    ap.add_argument("--flavor", default=os.environ.get("DOLT_FLAVOR"),
+                    help="wire flavor (dolt|doltgres); default from --descriptor "
+                         "or DOLT_FLAVOR, else dolt")
     ap.add_argument("--host", default=os.environ.get("DOLT_HOST", "127.0.0.1"))
     ap.add_argument("--port", default=os.environ.get("DOLT_PORT"))
     ap.add_argument("--user", default=os.environ.get("DOLT_USER", "root"))
@@ -79,8 +102,48 @@ def main():
     ap.add_argument("sql", nargs="?", help="SQL for query/exec ('-' to read from stdin)")
     args = ap.parse_args()
 
+    if args.descriptor:
+        try:
+            with open(args.descriptor) as fh:
+                d = json.load(fh)
+        except (OSError, json.JSONDecodeError) as e:
+            eprint(f"error: cannot read descriptor '{args.descriptor}': {e}")
+            return 2
+        errs = _dta.validate(d)
+        if errs:
+            eprint(f"error: invalid descriptor '{args.descriptor}': {'; '.join(errs)}")
+            return 2
+        mode = (d.get("mode") or "server").lower()
+        endpoint = str(d.get("endpoint", ""))
+        if mode != "server" or endpoint.startswith("file:"):
+            eprint(f"refused: descriptor is {d.get('flavor')}/{mode} at '{endpoint}' — "
+                   "not a wire connection. Work that store with dolt CLI verbs "
+                   "(read-only if embedded); only mode 'server' connects here.")
+            return 2
+        args.flavor = args.flavor or d.get("flavor")
+        ep_host, _, ep_port = endpoint.partition(":")
+        if not args.port:
+            args.port = ep_port or None
+        if args.host == "127.0.0.1" and ep_host:
+            args.host = ep_host
+        if args.database == "information_schema" and d.get("database"):
+            args.database = d["database"]
+        if args.maturity == "ga" and d.get("maturity"):
+            args.maturity = d["maturity"]
+
+    flavor = (args.flavor or "dolt").lower()
+    if flavor in FLAVOR_STUB:
+        eprint(f"refused: flavor '{flavor}' is a descriptor-stub (pre-beta, decision 6) — "
+               "no live connection is wired until dolt-watch reports it has reached beta.")
+        return 2
+    if flavor not in FLAVOR_CONNECT:
+        eprint(f"error: unknown flavor '{flavor}' "
+               f"(known: {', '.join(sorted(set(FLAVOR_CONNECT) | FLAVOR_STUB))})")
+        return 2
+
     if not args.port:
-        eprint("error: --port (or DOLT_PORT) is required")
+        eprint("error: --port (or DOLT_PORT, or a --descriptor with a host:port "
+               "endpoint) is required")
         return 2
     if not shutil.which(BIN):
         eprint(f"error: '{BIN}' not found on PATH. Install (pinned): {INSTALL_HINT}")
@@ -111,7 +174,7 @@ def main():
         if args.tool == "list_dolt_commits":
             tool_args["working_branch"] = args.branch
 
-    cmd = [BIN, "--stdio", "--dolt",
+    cmd = [BIN, "--stdio", FLAVOR_CONNECT[flavor],
            "--host", args.host, "--port", str(args.port),
            "--user", args.user, "--database", args.database]
     env = dict(os.environ)

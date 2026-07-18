@@ -13,7 +13,7 @@ description: 'Configure CodeRabbit CLI for local pre-commit code reviews and fas
 
   '
 allowed-tools: Read, Write, Edit, Bash(cr:*), Bash(git:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

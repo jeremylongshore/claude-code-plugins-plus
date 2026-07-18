@@ -12,7 +12,7 @@ description: 'Configure identify security misconfigurations in infrastructure-as
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(config-scan:*), Bash(iac-check:*)
-version: 1.0.0
+version: 1.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

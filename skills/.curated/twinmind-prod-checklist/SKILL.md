@@ -12,7 +12,7 @@ description: 'Complete production deployment checklist for TwinMind integrations
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

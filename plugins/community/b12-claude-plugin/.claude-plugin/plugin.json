@@ -1,6 +1,6 @@
 {
   "name": "b12-claude-plugin",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "description": "B12 Website Generator plugin allows you to create a professional, engaging, and user-friendly website in seconds using AI. To create a website, you need to provide a name for your project/business, along with a description of the project/business (goals, structure, etc.).",
   "author": {
     "name": "B12.io",

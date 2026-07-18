@@ -13,7 +13,7 @@ description: 'Deploy Shopify apps to Vercel, Fly.io, Railway, and Cloud Run with
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(shopify:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

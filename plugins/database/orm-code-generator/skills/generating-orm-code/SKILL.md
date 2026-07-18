@@ -11,7 +11,7 @@ description: 'Execute use when you need to work with ORM code generation.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
-version: 1.0.0
+version: 1.28.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

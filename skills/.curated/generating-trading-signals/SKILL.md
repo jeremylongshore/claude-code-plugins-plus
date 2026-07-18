@@ -14,7 +14,7 @@ description: 'Generate trading signals using technical indicators (RSI, MACD, Bo
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
-version: 2.0.0
+version: 1.30.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

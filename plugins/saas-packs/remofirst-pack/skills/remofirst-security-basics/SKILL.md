@@ -5,7 +5,7 @@ description: "RemoFirst security basics \u2014 global HR, EOR, and payroll platf
   \ or compliance.\nTrigger with phrases like \"remofirst security basics\", \"remofirst-security-basics\"\
   , \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

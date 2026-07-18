@@ -13,7 +13,7 @@ description: 'Incident response procedures for Granola meeting capture failures 
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(pgrep:*), Bash(pkill:*), Bash(open:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: |
   "/plane-reviewer-gate-strength", "/plane-priority-drift", "/plane-cross-project-load",
   "audit Plane cycle", "team behavior plane", "how is my team behaving".
 allowed-tools: "Read,Bash(jq:*),Bash(date:*),AskUserQuestion"
-version: 0.1.0
+version: 0.3.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Designed for Claude Code; requires mcp__plane MCP server configured (PLANE_API_KEY, PLANE_WORKSPACE_SLUG, PLANE_API_HOST_URL env vars)

@@ -5,7 +5,7 @@ description: "Retell AI hello world \u2014 AI voice agent and phone call automat
   \ with phrases like \"retell hello world\", \"retellai-hello-world\", \"voice agent\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

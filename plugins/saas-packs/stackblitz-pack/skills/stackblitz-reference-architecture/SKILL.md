@@ -8,7 +8,7 @@ description: 'Production architecture for WebContainer-powered browser IDEs and 
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

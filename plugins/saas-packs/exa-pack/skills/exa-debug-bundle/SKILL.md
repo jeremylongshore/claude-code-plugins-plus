@@ -12,7 +12,7 @@ description: 'Collect Exa debug evidence for support tickets and troubleshooting
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

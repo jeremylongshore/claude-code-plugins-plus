@@ -10,7 +10,7 @@ description: 'Apply artistic styles and visual effects to Kling AI video generat
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

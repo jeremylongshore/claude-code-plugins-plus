@@ -1,6 +1,6 @@
 {
   "name": "encryption-tool",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Encrypt and decrypt data with various algorithms",
   "author": {
     "name": "Jeremy Longshore",

@@ -12,7 +12,7 @@ description: 'Manage incident response for MaintainX integration failures.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

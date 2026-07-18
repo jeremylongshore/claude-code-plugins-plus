@@ -8,7 +8,7 @@ description: 'Migrate between Fly.io platform versions including Apps v1 to v2 (
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

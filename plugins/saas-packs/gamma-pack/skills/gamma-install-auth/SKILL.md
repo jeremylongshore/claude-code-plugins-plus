@@ -12,7 +12,7 @@ description: 'Set up Gamma API v1.0 authentication and first request.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(pip:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

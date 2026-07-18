@@ -10,7 +10,7 @@ description: 'Install flyctl CLI and configure Fly.io authentication with API to
 
   '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

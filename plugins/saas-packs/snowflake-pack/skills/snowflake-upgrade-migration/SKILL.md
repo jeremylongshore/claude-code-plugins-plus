@@ -13,7 +13,7 @@ description: 'Upgrade Snowflake drivers, handle breaking changes, and migrate be
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

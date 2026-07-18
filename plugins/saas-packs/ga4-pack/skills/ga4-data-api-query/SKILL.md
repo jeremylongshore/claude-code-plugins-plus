@@ -6,7 +6,7 @@ description: |
   paginate large result sets, handle sampling thresholds. Trigger with "query GA4",
   "GA4 Data API", "runReport", "fetch GA4 metrics", "GA4 pageviews", "GA4 sessions".
 allowed-tools: Bash(python3:*), Bash(curl:*)
-version: 1.0.0
+version: 1.2.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, data-api]

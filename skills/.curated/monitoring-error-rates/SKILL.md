@@ -4,7 +4,7 @@ description: Monitor and analyze application error rates to improve reliability.
   when tracking errors in applications including HTTP errors, exceptions, and database
   issues. Trigger with phrases like "monitor error rates", "track application errors",
   or "analyze error patterns".
-version: 1.0.0
+version: 1.22.0
 allowed-tools: Read, Bash(monitoring:*), Bash(metrics:*), Bash(logs:*), Grep, Glob
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

@@ -12,7 +12,7 @@ description: 'Install and configure Miro REST API v2 authentication with OAuth 2
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

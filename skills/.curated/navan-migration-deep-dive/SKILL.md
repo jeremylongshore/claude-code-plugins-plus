@@ -5,7 +5,7 @@ description: "Use when planning or executing a migration from SAP Concur or lega
   \ cutover planning.\nTrigger with \"navan migration deep dive\" or \"migrate to\
   \ navan from concur\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

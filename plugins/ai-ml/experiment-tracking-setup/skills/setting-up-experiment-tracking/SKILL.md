@@ -7,7 +7,7 @@ description: 'Implement machine learning experiment tracking using MLflow or Wei
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 1.19.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

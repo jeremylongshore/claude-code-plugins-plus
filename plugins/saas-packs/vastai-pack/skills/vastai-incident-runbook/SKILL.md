@@ -12,7 +12,7 @@ description: 'Execute Vast.ai incident response for GPU instance failures and ou
 
   '
 allowed-tools: Read, Grep, Bash(vastai:*), Bash(curl:*), Bash(ssh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

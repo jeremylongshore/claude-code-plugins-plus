@@ -12,7 +12,7 @@ description: 'Comprehensive debugging toolkit for Linear integrations.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

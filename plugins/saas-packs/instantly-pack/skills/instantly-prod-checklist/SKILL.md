@@ -12,7 +12,7 @@ description: 'Execute Instantly.ai production launch checklist and pre-flight va
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "log-analysis-tool",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Analyze logs for performance insights and issues",
   "author": {
     "name": "Claude Code Plugins",

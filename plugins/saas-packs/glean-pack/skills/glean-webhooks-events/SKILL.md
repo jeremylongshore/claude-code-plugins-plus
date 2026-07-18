@@ -9,7 +9,7 @@ description: 'Implement event-driven Glean indexing triggered by source system w
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
