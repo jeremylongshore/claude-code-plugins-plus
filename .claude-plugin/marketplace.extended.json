@@ -6517,7 +6517,7 @@
       "name": "clerk-pack",
       "source": "./plugins/saas-packs/clerk-pack",
       "description": "Complete Clerk integration skill pack with 24 skills covering authentication, user management, embeddable UIs, and identity platform. Flagship tier vendor pack.",
-      "version": "1.13.0",
+      "version": "1.14.0",
       "category": "saas-packs",
       "keywords": [
         "clerk",
