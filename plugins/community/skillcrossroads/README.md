@@ -8,8 +8,8 @@ subagents, slash commands, `.mcp.json` configs, and plugins. Every finding in th
 cites file and line, and the skill walks the ranked fix list until the grade stops improving —
 then offers an embeddable badge.
 
-- Say: *"audit my skill"*, *"grade my skill"*, *"why doesn't my skill trigger"*, or
-  *"lint my SKILL.md"*.
+- Invoke it explicitly (it applies fixes to your files, so it never auto-fires) — ask Claude to
+  run the audit-skill on your skill, or use the plugin's skill picker.
 - Keyless scans score all six rubric categories deterministically; setting
   `ANTHROPIC_API_KEY` upgrades Triggering to an LLM judge and adds three more checks.
 - Hosted scans, badges, per-check fix docs, and ecosystem reports:

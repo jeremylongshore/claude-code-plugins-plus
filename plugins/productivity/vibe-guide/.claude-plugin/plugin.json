@@ -1,7 +1,0 @@
-{
-  "name": "vibe-guide",
-  "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
-  "version": "1.0.0",
-  "author": { "name": "Intent Solutions" },
-  "keywords": ["ux", "accessibility", "explain", "pairing", "non-technical"]
-}

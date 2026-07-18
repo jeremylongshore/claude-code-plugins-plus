@@ -1,19 +1,9 @@
 ---
 name: audit-skill
-description: 'Audit and improve a Claude Code skill using Skill Crossroads. Use when the user
-  says "audit my skill", "grade my skill", "check my skill quality", "why doesn''t my skill
-  trigger", or "lint my SKILL.md" — or before publishing any skill, to get an evidence-cited
-  quality score, ranked fix list, and badge.'
+description: Audit and improve a Claude Code skill with an evidence-cited, file-and-line quality scorecard and a ranked fix list — grade, apply fixes, and re-grade until the score stops improving. Invoke explicitly, since it applies fixes to your files and never auto-fires. Use when the user asks to audit, review, critique, or check the quality of a skill, asks why a skill won't trigger, or wants a skill checked before publishing it.
+disable-model-invocation: true
 allowed-tools: Read, Edit, Grep, Glob, Bash(npx:*)
 version: 0.11.3
-author: Steve Harlow <sgharlow@users.noreply.github.com>
-license: MIT
-tags:
-- audit
-- quality
-- linter
-- skills
-compatibility: Designed for Claude Code; the underlying CLI grades skills, subagents, slash commands, MCP configs, and plugins
 ---
 
 # Audit a skill with Skill Crossroads

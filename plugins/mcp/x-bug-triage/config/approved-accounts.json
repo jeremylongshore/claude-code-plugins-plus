@@ -1,7 +1,0 @@
-{
-  "$schema": "Config for approved intake accounts and known account categories",
-  "approved_intake_accounts": [],
-  "known_internal_accounts": [],
-  "known_partner_accounts": [],
-  "known_tester_accounts": []
-}

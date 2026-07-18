@@ -1,1 +1,0 @@
-"""Bundled Hermes Tweet skills."""

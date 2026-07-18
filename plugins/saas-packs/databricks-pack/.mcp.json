@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "databricks-workspace-mcp": {
-      "command": "npx",
-      "args": ["-y", "@intentsolutions/databricks-workspace-mcp@^0.1.0"],
-      "env": {}
-    }
-  }
-}

@@ -1,7 +1,0 @@
-packages:
-  - 'plugins/mcp/*'
-  - 'plugins/saas-packs/*-pack'
-  - 'marketplace'
-  - 'packages/cli'
-  - 'packages/analytics-daemon'
-  - 'packages/analytics-dashboard'

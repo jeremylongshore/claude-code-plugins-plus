@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "pr-spec-analyzer": {
-      "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/servers/pr-spec-analyzer.js"],
-      "env": {}
-    }
-  }
-}

@@ -1,1 +1,0 @@
-# Assets for overnight-dev
