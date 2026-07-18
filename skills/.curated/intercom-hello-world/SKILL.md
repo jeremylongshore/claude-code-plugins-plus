@@ -27,15 +27,22 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Minimal working examples covering the Intercom core data model: contacts (users and leads), conversations, messages, and tags.
+Minimal working examples covering the Intercom core data model: contacts (users and leads), conversations, messages, and tags. This skill gives you the first end-to-end round trip against the Intercom REST API — create a contact, search it, message it, open a conversation, and tag it — so you can confirm your credentials work and internalize how the entities relate before building anything real.
 
 ## Prerequisites
 
-- Completed `intercom-install-auth` setup
-- `intercom-client` package installed
-- Valid access token in environment
+Before running any snippet below, make sure the following are in place. Each is verified once during the `intercom-install-auth` setup step:
+
+- Completed the `intercom-install-auth` setup (installs the SDK and stores your token).
+- The `intercom-client` npm package installed in your project (`npm install intercom-client`).
+- A valid Intercom access token exported as `INTERCOM_ACCESS_TOKEN` in your environment. The SDK reads this token to authenticate every request; there is no separate login call.
 
 ## Instructions
+
+The workflow is five short steps against the core data model. The first —
+creating a contact — is shown in full here so you can run immediately. Steps 2
+through 5 (search, message, conversation, tag) follow the identical
+`client.<resource>.<verb>(...)` shape and live in the walkthrough reference.
 
 ### Step 1: Create a Contact
 
@@ -54,148 +61,35 @@ const user = await client.contacts.create({
   externalId: "user-12345",
   email: "jane@example.com",
   name: "Jane Smith",
-  customAttributes: {
-    plan: "pro",
-    signup_date: Math.floor(Date.now() / 1000),
-  },
 });
 
 console.log(`Created contact: ${user.id} (${user.role})`);
-
-// Response shape:
-// {
-//   type: "contact",
-//   id: "6657add46abd0167d9419c3a",
-//   workspace_id: "abc123",
-//   external_id: "user-12345",
-//   role: "user",
-//   email: "jane@example.com",
-//   name: "Jane Smith",
-//   custom_attributes: { plan: "pro", signup_date: 1711100000 },
-//   created_at: 1711100000,
-//   updated_at: 1711100000,
-//   ...
-// }
 ```
 
-### Step 2: Search for Contacts
+### Remaining steps
 
-```typescript
-// Search contacts by email
-const results = await client.contacts.search({
-  query: {
-    field: "email",
-    operator: "=",
-    value: "jane@example.com",
-  },
-});
+Continue in [the full walkthrough](references/walkthrough.md), which covers,
+with complete code and response shapes:
 
-console.log(`Found ${results.totalCount} contacts`);
-for (const contact of results.data) {
-  console.log(`  ${contact.name} - ${contact.email} (${contact.role})`);
-}
-```
+- **Step 2 — Search for Contacts** (`client.contacts.search`)
+- **Step 3 — Send a Message** (`client.messages.create`, admin → contact)
+- **Step 4 — Create a Conversation** (`client.conversations.create`)
+- **Step 5 — Tag a Contact** (`client.tags.create` + `client.contacts.tag`)
 
-### Step 3: Send a Message
+The walkthrough also carries the full **Core Data Model** reference table
+(Contact, Conversation, Message, Tag, Company, Admin and their key fields).
 
-Messages are outbound communications from admins to contacts.
+## Output
 
-```typescript
-// Send an in-app message
-const message = await client.messages.create({
-  messageType: "inapp",
-  body: "Welcome to our platform! Need help getting started?",
-  from: {
-    type: "admin",
-    id: "12345", // Admin ID from client.admins.list()
-  },
-  to: {
-    type: "user",
-    id: user.id,
-  },
-});
+Running the snippets produces:
 
-console.log(`Sent message: ${message.id}`);
-```
+- A created **contact** object — `id`, `role`, `email`, `external_id`, `custom_attributes`, and timestamps (see the full response shape in the walkthrough).
+- Console log lines confirming each operation, e.g. `Created contact: 6657add46abd0167d9419c3a (user)`.
+- When you run the end-to-end script, a short report of your authenticated admin name plus workspace contact and conversation counts.
 
-### Step 4: Create a Conversation
-
-Conversations are created when a contact replies or an admin initiates.
-
-```typescript
-// Create a conversation (as a contact)
-const conversation = await client.conversations.create({
-  from: {
-    type: "user",
-    id: user.id,
-  },
-  body: "Hi, I have a question about billing.",
-});
-
-console.log(`Conversation created: ${conversation.conversationId}`);
-```
-
-### Step 5: Tag a Contact
-
-```typescript
-// Create a tag
-const tag = await client.tags.create({ name: "vip-customer" });
-
-// Tag a contact
-await client.contacts.tag({
-  contactId: user.id,
-  id: tag.id,
-});
-
-console.log(`Tagged contact ${user.id} with "${tag.name}"`);
-```
-
-## Core Data Model
-
-| Entity | Description | Key Fields |
-|--------|-------------|------------|
-| Contact | Users and leads | `id`, `role`, `email`, `external_id`, `custom_attributes` |
-| Conversation | Threaded exchanges | `id`, `state`, `contacts`, `conversation_parts` |
-| Message | Outbound from admin | `id`, `message_type`, `body`, `from`, `to` |
-| Tag | Labels for entities | `id`, `name`, `applied_to` |
-| Company | Organization grouping | `id`, `company_id`, `name`, `plan` |
-| Admin | Workspace team member | `id`, `name`, `email`, `type` |
-
-## Complete Working Script
-
-```typescript
-import { IntercomClient } from "intercom-client";
-
-const client = new IntercomClient({
-  token: process.env.INTERCOM_ACCESS_TOKEN!,
-});
-
-async function main() {
-  // 1. Verify connection
-  const me = await client.admins.list();
-  const admin = me.admins[0];
-  console.log(`Authenticated as: ${admin.name}`);
-
-  // 2. Create or find a contact
-  const contact = await client.contacts.create({
-    role: "user",
-    externalId: `hello-world-${Date.now()}`,
-    email: `test-${Date.now()}@example.com`,
-    name: "Hello World User",
-  });
-  console.log(`Contact: ${contact.id}`);
-
-  // 3. List all contacts (paginated)
-  const contacts = await client.contacts.list();
-  console.log(`Total contacts in workspace: ${contacts.totalCount}`);
-
-  // 4. List conversations
-  const conversations = await client.conversations.list();
-  console.log(`Total conversations: ${conversations.totalCount}`);
-}
-
-main().catch(console.error);
-```
+Nothing is written to disk — every result is an in-memory API object plus the
+`console.log` lines above. A successful run means every call returned without
+throwing.
 
 ## Error Handling
 
@@ -204,7 +98,18 @@ main().catch(console.error);
 | `not_found` (404) | Contact/conversation ID invalid | Verify the ID exists |
 | `parameter_invalid` | Missing required field | Check required params in docs |
 | `conflict` (409) | Duplicate `external_id` | Use unique identifiers |
-| `unauthorized` (401) | Invalid token | Regenerate access token |
+| `unauthorized` (401) | Invalid token | Regenerate access token (re-run `intercom-install-auth`) |
+
+## Examples
+
+- **Full five-step walkthrough** — create, search, message, converse, and tag,
+  each with complete code and response shapes:
+  [references/walkthrough.md](references/walkthrough.md).
+- **Complete working script** — one runnable file that verifies the connection,
+  creates a contact, and lists workspace contacts and conversations, with the
+  expected console output: [references/complete-script.md](references/complete-script.md).
+
+Both are copy-paste runnable once the Prerequisites above are met.
 
 ## Resources
 
@@ -215,4 +120,6 @@ main().catch(console.error);
 
 ## Next Steps
 
-Proceed to `intercom-local-dev-loop` for development workflow setup.
+Proceed to the `intercom-local-dev-loop` skill to set up a fast local
+development workflow (watch mode, sandbox workspace, and safe test data) once
+this hello-world round trip succeeds.

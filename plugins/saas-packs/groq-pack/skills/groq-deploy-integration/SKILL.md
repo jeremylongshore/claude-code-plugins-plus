@@ -27,208 +27,40 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 Deploy applications using Groq's inference API to Vercel Edge, Cloud Run, Docker, and other platforms. Groq's sub-200ms latency makes it ideal for edge deployments and real-time applications.
 
+This SKILL.md is the high-level workflow. Every platform recipe — full source for the Vercel Edge Function, Dockerfile, Cloud Run command, Express health-check server, and Vercel AI SDK handler — lives verbatim in [`references/implementation.md`](references/implementation.md). End-to-end walkthroughs that chain those recipes are in [`references/examples.md`](references/examples.md).
+
 ## Prerequisites
 
 - Groq API key stored in `GROQ_API_KEY`
-- Application using `groq-sdk` package
-- Platform CLI installed (vercel, docker, or gcloud)
+- Application using `groq-sdk` (or `@ai-sdk/groq` for the Vercel AI SDK path)
+- Platform CLI installed (`vercel`, `docker`, or `gcloud`)
 
 ## Instructions
 
-### Step 1: Vercel Edge Function
+Pick the deployment target, then follow its recipe in [`references/implementation.md`](references/implementation.md).
+
+1. **Write the handler.** For Vercel Edge, create `app/api/chat/route.ts` with `export const runtime = "edge"` and stream Server-Sent Events when the request asks for them; otherwise return a JSON completion. See Step 1 in [`references/implementation.md`](references/implementation.md).
+2. **Store the secret.** Never bake `GROQ_API_KEY` into an image. Use the platform's secret store — see the Environment Variable Config table below.
+3. **Deploy.** `vercel --prod` for Vercel (Step 2); build the Dockerfile (Step 3) and `gcloud run deploy --source .` for Cloud Run (Step 4) — all in [`references/implementation.md`](references/implementation.md).
+4. **Add a health check.** The Express server (Step 5) exposes `/health` that pings Groq with the cheapest model (`llama-3.1-8b-instant`, `max_tokens: 1`) and reports latency, so orchestrators can probe liveness cheaply.
+5. **Keep instances warm.** On serverless platforms set `min-instances=1` to keep cold-start latency off the request path.
+
+The essential Vercel Edge skeleton looks like this — the full streaming body is in the reference:
 
 ```typescript
-// app/api/chat/route.ts (Next.js App Router)
+// app/api/chat/route.ts
 import Groq from "groq-sdk";
-
 export const runtime = "edge";
 
 export async function POST(req: Request) {
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
-  const { messages, stream: useStream } = await req.json();
-
-  if (useStream) {
-    const stream = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages,
-      stream: true,
-      max_tokens: 2048,
-    });
-
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of stream) {
-          const content = chunk.choices[0]?.delta?.content;
-          if (content) {
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ content })}\n\n`)
-            );
-          }
-        }
-        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-        controller.close();
-      },
-    });
-
-    return new Response(readable, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-      },
-    });
-  }
-
+  const { messages } = await req.json();
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages,
     max_tokens: 2048,
   });
-
   return Response.json(completion);
-}
-```
-
-### Step 2: Vercel Deployment
-
-```bash
-set -euo pipefail
-# Set secret
-vercel env add GROQ_API_KEY production
-
-# Deploy
-vercel --prod
-```
-
-### Step 3: Docker Container
-
-```dockerfile
-FROM node:20-slim AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:20-slim
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json .
-EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s CMD curl -sf http://localhost:3000/health || exit 1
-CMD ["node", "dist/index.js"]
-```
-
-### Step 4: Cloud Run Deployment
-
-```bash
-set -euo pipefail
-# Store API key in Secret Manager
-echo -n "$GROQ_API_KEY" | gcloud secrets create groq-api-key --data-file=-
-
-# Deploy with streaming support
-gcloud run deploy groq-api \
-  --source . \
-  --region us-central1 \
-  --set-secrets=GROQ_API_KEY=groq-api-key:latest \
-  --min-instances=1 \
-  --max-instances=10 \
-  --cpu=1 --memory=512Mi \
-  --allow-unauthenticated \
-  --timeout=60s
-```
-
-### Step 5: Express Server with Health Check
-
-```typescript
-import express from "express";
-import Groq from "groq-sdk";
-
-const app = express();
-const groq = new Groq();
-
-app.use(express.json());
-
-// Health check -- uses cheapest model with minimal tokens
-app.get("/health", async (_req, res) => {
-  try {
-    const start = performance.now();
-    await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [{ role: "user", content: "OK" }],
-      max_tokens: 1,
-    });
-    res.json({
-      status: "healthy",
-      groq: { connected: true, latencyMs: Math.round(performance.now() - start) },
-    });
-  } catch (err: any) {
-    res.status(503).json({
-      status: "unhealthy",
-      groq: { connected: false, error: err.message },
-    });
-  }
-});
-
-// Chat endpoint with streaming
-app.post("/api/chat", async (req, res) => {
-  const { messages, model = "llama-3.3-70b-versatile" } = req.body;
-
-  if (req.headers.accept === "text/event-stream") {
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    });
-
-    const stream = await groq.chat.completions.create({
-      model,
-      messages,
-      stream: true,
-      max_tokens: 2048,
-    });
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) {
-        res.write(`data: ${JSON.stringify({ content })}\n\n`);
-      }
-    }
-    res.write("data: [DONE]\n\n");
-    res.end();
-  } else {
-    const completion = await groq.chat.completions.create({
-      model,
-      messages,
-      max_tokens: 2048,
-    });
-    res.json(completion);
-  }
-});
-
-app.listen(3000, () => console.log("Groq API server on :3000"));
-```
-
-### Step 6: Vercel AI SDK Integration
-
-```typescript
-// Using @ai-sdk/groq for Vercel AI SDK
-import { createGroq } from "@ai-sdk/groq";
-import { streamText } from "ai";
-
-const groq = createGroq({ apiKey: process.env.GROQ_API_KEY });
-
-export async function POST(req: Request) {
-  const { messages } = await req.json();
-
-  const result = streamText({
-    model: groq("llama-3.3-70b-versatile"),
-    messages,
-  });
-
-  return result.toDataStreamResponse();
 }
 ```
 
@@ -242,6 +74,15 @@ export async function POST(req: Request) {
 | Railway | `railway variables set GROQ_API_KEY=gsk_...` |
 | Docker | `-e GROQ_API_KEY=gsk_...` or Docker secrets |
 
+## Output
+
+Following this skill produces:
+
+- A deployed Groq inference endpoint (`POST /api/chat`) on the chosen platform that streams `text/event-stream` chunks on demand and returns JSON completions otherwise.
+- The secret registered in the platform's secret store — never committed to source or an image layer.
+- A `/health` liveness endpoint returning `{ status: "healthy", groq: { connected: true, latencyMs: N } }` (HTTP 200) or `{ status: "unhealthy", ... }` (HTTP 503) for orchestrator probes.
+- A warm serverless configuration (`min-instances=1`) keeping cold-start latency off the request path.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
@@ -252,12 +93,22 @@ export async function POST(req: Request) {
 | Cold start latency | Serverless function init | Set `min-instances=1` on Cloud Run |
 | API key not found | Secret not configured | Check platform secret config |
 
+## Examples
+
+Full worked walkthroughs live in [`references/examples.md`](references/examples.md):
+
+- **Example A — Vercel Edge streaming chat:** drop in the Step 1 handler, `vercel env add` + `vercel --prod`, get a streaming `POST /api/chat` URL.
+- **Example B — Cloud Run with a liveness probe:** Dockerfile `HEALTHCHECK` + Express `/health` + `gcloud run deploy --min-instances=1`, yielding a 200/503 health signal Cloud Run consumes.
+- **Example C — Vercel AI SDK path:** swap the raw client for `@ai-sdk/groq` `streamText` + `toDataStreamResponse()` for zero manual stream plumbing.
+
 ## Resources
 
 - [Groq API Documentation](https://console.groq.com/docs)
 - [Vercel AI SDK + Groq](https://console.groq.com/docs/ai-sdk)
 - [Groq Client Libraries](https://console.groq.com/docs/libraries)
+- [Full implementation recipes](references/implementation.md)
+- [Worked examples](references/examples.md)
 
 ## Next Steps
 
-For multi-environment setup, see `groq-multi-env-setup`.
+For multi-environment setup (separate dev/staging/prod secrets and pipelines), see the `groq-multi-env-setup` skill in this pack.

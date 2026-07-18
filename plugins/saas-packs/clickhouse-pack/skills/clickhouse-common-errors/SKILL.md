@@ -1,10 +1,12 @@
 ---
 name: clickhouse-common-errors
-description: "Diagnose and fix the top 15 ClickHouse errors \u2014 query failures,\
-  \ insert problems,\nmemory limits, and merge issues.\nUse when encountering ClickHouse\
-  \ exceptions, debugging failed queries,\nor troubleshooting server-side errors.\n\
-  Trigger: \"clickhouse error\", \"fix clickhouse\", \"clickhouse not working\",\n\
-  \"debug clickhouse\", \"clickhouse exception\", \"clickhouse syntax error\".\n"
+description: |
+  Diagnose and fix the top 15 ClickHouse errors — query failures, insert problems,
+  memory limits, and merge issues.
+  Use when a ClickHouse query or insert throws an exception, a server-side error
+  appears in logs, or a failed query needs root-cause analysis.
+  Trigger with "clickhouse error", "fix clickhouse", "clickhouse not working",
+  "debug clickhouse", "clickhouse exception", "clickhouse syntax error".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.6.0
 license: MIT
@@ -22,262 +24,80 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Quick reference for the most common ClickHouse errors with real error codes,
-diagnostic queries, and proven solutions.
+diagnostic queries, and proven solutions. The three highest-frequency errors are
+inline below; the full catalog of 10 errors plus system-table diagnostics lives
+in [references/error-reference.md](references/error-reference.md).
 
 ## Prerequisites
 
-- Access to ClickHouse (client or HTTP interface)
-- Ability to query `system.*` tables
+- Access to a ClickHouse endpoint — either the native `clickhouse-client` or the
+  HTTP interface (`curl` against `:8123`).
+- Permission to read the `system.*` introspection tables (`system.parts`,
+  `system.processes`, `system.query_log`, `system.columns`, `system.replicas`).
+- The failing statement's text and, ideally, the raw exception string — the
+  parenthetical name (e.g. `MEMORY_LIMIT_EXCEEDED`) and numeric code drive lookup.
 
-## Error Reference
+## Instructions
 
-### 1. Too Many Parts (Code 252)
+Follow this loop to turn a raw ClickHouse exception into a verified fix:
 
-```
-DB::Exception: Too many parts (600). Merges are processing significantly slower than inserts.
-```
+1. **Capture the exception name and code.** Read the error string the client
+   returned. If you only have a log file, use `Grep` to pull the matching line —
+   `Grep` for `DB::Exception` or a specific token like `MEMORY_LIMIT_EXCEEDED`
+   across the log to isolate the failure.
+2. **Map it to a category.** Use the [Error Handling](#error-handling) code table
+   to classify the error as Schema, Query, Performance, Permissions, Concurrency,
+   Resources, or Insert-pattern.
+3. **Apply the inline fix** for the three top errors (Too Many Parts, Memory
+   Limit, Syntax) below, or open
+   [references/error-reference.md](references/error-reference.md) for the other
+   seven plus copy-paste diagnostic queries.
+4. **Confirm with a system table.** Re-run the relevant `system.*` query (part
+   count, `system.processes`, `system.query_log`) to prove the condition cleared
+   rather than assuming the fix took.
 
-**Cause:** Each INSERT creates a new data part. Hundreds of tiny inserts per second
-overwhelm the merge process.
+### Top 3 errors (inline)
 
-**Fix:**
+**Too Many Parts (Code 252)** — hundreds of tiny inserts outpace merges:
 
 ```sql
 -- Check current part count per table
 SELECT database, table, count() AS part_count
 FROM system.parts WHERE active GROUP BY database, table ORDER BY part_count DESC;
 
--- Temporary: raise the limit
-ALTER TABLE events MODIFY SETTING parts_to_throw_insert = 1000;
-
--- Permanent: batch your inserts (10K+ rows per INSERT)
--- See clickhouse-sdk-patterns for batching code
+-- Temporary relief; permanent fix is batching (10K+ rows per INSERT)
+ALTER TABLE events MODIFY SETTING parts_to_throw_insert = 1000;  -- default 300
 ```
 
-### 2. Memory Limit Exceeded (Code 241)
-
-```
-DB::Exception: Memory limit (for query) exceeded: ... (MEMORY_LIMIT_EXCEEDED)
-```
-
-**Cause:** Query allocates more RAM than `max_memory_usage` (default ~10GB).
-
-**Fix:**
+**Memory Limit Exceeded (Code 241)** — query wants more RAM than `max_memory_usage`:
 
 ```sql
--- Check what's consuming memory
-SELECT query, memory_usage, peak_memory_usage
-FROM system.processes ORDER BY peak_memory_usage DESC;
-
--- Option A: Increase limit for this query
-SET max_memory_usage = 20000000000;  -- 20GB
-
--- Option B: Reduce data scanned
-SELECT ... FROM events
-WHERE created_at >= today() - 7  -- Add time filters
-LIMIT 10000;                      -- Cap result size
-
--- Option C: Enable disk spill for large sorts/GROUP BY
-SET max_bytes_before_external_sort = 10000000000;
-SET max_bytes_before_external_group_by = 10000000000;
+SET max_memory_usage = 20000000000;             -- 20GB for this query, OR
+SET max_bytes_before_external_group_by = 10000000000;  -- spill big GROUP BY to disk
 ```
 
-### 3. Syntax Error (Code 62)
-
-```
-DB::Exception: Syntax error: ... Expected ... before ... (SYNTAX_ERROR)
-```
-
-**Common causes:**
+**Syntax Error (Code 62)** — most often MySQL habits leaking in:
 
 ```sql
--- Wrong: using backticks for identifiers (MySQL habit)
-SELECT `user_id` FROM events;
--- Fix: use double-quotes or no quotes
-SELECT "user_id" FROM events;
-SELECT user_id FROM events;
-
--- Wrong: LIMIT with OFFSET keyword
-SELECT * FROM events LIMIT 10, 20;
--- Fix: use LIMIT ... OFFSET
-SELECT * FROM events LIMIT 10 OFFSET 20;
-
--- Wrong: using != in older versions
-WHERE status != 'active';
--- Fix: use <>
-WHERE status <> 'active';
+SELECT "user_id" FROM events;          -- double-quote (not `backtick`) identifiers
+SELECT * FROM events LIMIT 10 OFFSET 20;  -- OFFSET keyword, not LIMIT 10, 20
 ```
 
-### 4. Unknown Table (Code 60)
+See [references/error-reference.md](references/error-reference.md) for Unknown
+Table, Timeout, DateTime parsing, Readonly, No Such Column, Type Mismatch, and
+Distributed-table errors.
 
-```
-DB::Exception: Table default.events does not exist. (UNKNOWN_TABLE)
-```
+## Output
 
-**Fix:**
+Working through this skill produces:
 
-```sql
--- List all tables in the database
-SHOW TABLES FROM default;
-
--- Check all databases
-SHOW DATABASES;
-
--- The table might be in a different database
-SELECT database, name FROM system.tables WHERE name LIKE '%events%';
-```
-
-### 5. Timeout Exceeded (Code 159)
-
-```
-DB::Exception: Timeout exceeded: elapsed ... seconds, max ... (TIMEOUT_EXCEEDED)
-```
-
-**Fix:**
-
-```sql
--- Increase timeout for this query
-SET max_execution_time = 120;  -- seconds
-
--- Find slow queries in history
-SELECT
-    query,
-    query_duration_ms,
-    read_rows,
-    result_rows,
-    memory_usage
-FROM system.query_log
-WHERE type = 'QueryFinish'
-ORDER BY query_duration_ms DESC
-LIMIT 10;
-```
-
-### 6. Cannot Parse DateTime
-
-```
-DB::Exception: Cannot parse datetime ... (CANNOT_PARSE_DATETIME)
-```
-
-**Fix:**
-
-```sql
--- ClickHouse expects: YYYY-MM-DD HH:MM:SS
--- Wrong: ISO 8601 with T and Z
-INSERT INTO events (created_at) VALUES ('2025-01-15T10:30:00Z');
-
--- Fix: strip T and Z
-INSERT INTO events (created_at) VALUES ('2025-01-15 10:30:00');
-
--- Or parse it explicitly
-SELECT parseDateTimeBestEffort('2025-01-15T10:30:00Z');
-```
-
-### 7. Readonly Mode (Code 164)
-
-```
-DB::Exception: ... is in readonly mode (READONLY)
-```
-
-**Cause:** User lacks write permissions or server is in readonly mode.
-
-**Fix:**
-
-```sql
--- Check user permissions
-SHOW GRANTS FOR CURRENT_USER;
-
--- Check server setting
-SELECT name, value FROM system.settings WHERE name = 'readonly';
-```
-
-### 8. No Such Column (Code 16)
-
-```
-DB::Exception: Missing columns: 'user_name' ... (NO_SUCH_COLUMN_IN_TABLE)
-```
-
-**Fix:**
-
-```sql
--- Inspect actual column names
-DESCRIBE TABLE events;
-
--- Check column types too
-SELECT name, type, default_kind, default_expression
-FROM system.columns WHERE database = 'default' AND table = 'events';
-```
-
-### 9. Type Mismatch on Insert
-
-```
-DB::Exception: Cannot convert ... to UInt64 (TYPE_MISMATCH)
-```
-
-**Fix:**
-
-```sql
--- Check expected types
-DESCRIBE TABLE events;
-
--- Cast in your INSERT if needed
-INSERT INTO events (user_id) VALUES (toUInt64('12345'));
-
--- In Node.js, ensure numeric types:
-await client.insert({
-  table: 'events',
-  values: [{ user_id: 42 }],  // number, not "42"
-  format: 'JSONEachRow',
-});
-```
-
-### 10. Distributed Table Errors
-
-```
-DB::Exception: All connection tries failed. ... (ALL_CONNECTION_TRIES_FAILED)
-```
-
-**Fix:**
-
-```sql
--- Check cluster health
-SELECT * FROM system.clusters;
-
--- Check replica status
-SELECT database, table, is_leader, total_replicas, active_replicas
-FROM system.replicas;
-```
-
-## Diagnostic Queries
-
-```sql
--- Currently running queries
-SELECT query_id, user, query, elapsed, read_rows, memory_usage
-FROM system.processes;
-
--- Kill a stuck query
-KILL QUERY WHERE query_id = 'abc-123';
-
--- Recent errors from query log
-SELECT event_time, query, exception_code, exception
-FROM system.query_log
-WHERE type = 'ExceptionWhileProcessing'
-ORDER BY event_time DESC
-LIMIT 20;
-
--- Disk usage by table
-SELECT
-    database, table,
-    formatReadableSize(sum(bytes_on_disk)) AS size,
-    sum(rows) AS total_rows,
-    count() AS parts
-FROM system.parts WHERE active
-GROUP BY database, table
-ORDER BY sum(bytes_on_disk) DESC;
-
--- Merge health
-SELECT database, table, progress, elapsed, num_parts
-FROM system.merges;
-```
+- A **classified diagnosis** — the error name, numeric code, and category from
+  the table below.
+- A **concrete remediation** — the exact `SET`, `ALTER`, or corrected SQL to run,
+  plus whether it is a temporary relief valve or a permanent fix.
+- A **verification query** against a `system.*` table confirming the condition
+  cleared (e.g. part count back under threshold, no query stuck in
+  `system.processes`).
 
 ## Error Handling
 
@@ -292,12 +112,31 @@ FROM system.merges;
 | 241 | MEMORY_LIMIT_EXCEEDED | Resources |
 | 252 | TOO_MANY_PARTS | Insert pattern |
 
+If the error name is not in this table, search the raw exception text against the
+[Error Codes Reference](https://clickhouse.com/docs/knowledgebase) and inspect
+`system.query_log` (`WHERE type = 'ExceptionWhileProcessing'`) for the full
+server-side context.
+
+## Examples
+
+**Diagnosing a stalled insert pipeline.** Inserts start failing with
+`Too many parts (600)`. Classify as code 252 (Insert pattern), run the
+`system.parts` count query to see which table is affected, raise
+`parts_to_throw_insert` for immediate relief, then switch the writer to batched
+inserts. Full walkthrough and the other nine errors are in
+[references/error-reference.md](references/error-reference.md).
+
+**Killing a runaway query.** A dashboard query hangs. Query `system.processes`
+to find its `query_id`, then `KILL QUERY WHERE query_id = '...'`. The complete
+set of diagnostic queries (running queries, recent errors, disk usage, merge
+health) lives in the Diagnostic Queries section of
+[references/error-reference.md](references/error-reference.md).
+
 ## Resources
 
 - [Error Codes Reference](https://clickhouse.com/docs/knowledgebase)
 - [System Tables](https://clickhouse.com/docs/operations/system-tables)
 - [Query Log](https://clickhouse.com/docs/operations/system-tables/query_log)
-
-## Next Steps
-
-For comprehensive debugging, see `clickhouse-debug-bundle`.
+- [references/error-reference.md](references/error-reference.md) — full 10-error
+  catalog plus diagnostic queries
+- For comprehensive debugging, see the `clickhouse-debug-bundle` skill.

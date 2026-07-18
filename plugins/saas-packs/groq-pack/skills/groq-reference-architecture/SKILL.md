@@ -26,291 +26,63 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Production architecture for applications built on Groq's LPU inference API. Covers model routing by latency requirements, streaming pipelines, multi-provider fallback, and the middleware layer that ties it together.
+Production architecture for applications built on Groq's LPU inference API. It
+covers four concerns that every serious Groq integration needs: routing requests
+to the right model by latency/capability/cost, a middleware band (cache, metrics,
+retry), a multi-provider fallback chain, and a streaming pipeline. The service
+layer built here is reusable across a chat UI, an API backend, a batch processor,
+or an agent.
 
-## Architecture Diagram
+The full layer diagram and how the pieces interact lives in
+[references/architecture.md](references/architecture.md); the complete,
+copy-ready TypeScript for every layer is in
+[references/implementation.md](references/implementation.md).
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                     Application Layer                         │
-│  Chat UI  │  API Backend  │  Batch Processor  │  Agent       │
-└─────┬─────┴──────┬────────┴────────┬──────────┴──────┬───────┘
-      │            │                 │                 │
-      ▼            ▼                 ▼                 ▼
-┌──────────────────────────────────────────────────────────────┐
-│                    Groq Service Layer                         │
-│  ┌─────────────┐  ┌────────────┐  ┌─────────────────────┐   │
-│  │ Model Router │  │ Middleware │  │ Fallback Chain      │   │
-│  │             │  │            │  │                     │   │
-│  │ speed →     │  │ Cache      │  │ Groq (primary)      │   │
-│  │   8b-instant│  │ Rate Guard │  │   ↓ 429/5xx         │   │
-│  │ quality →   │  │ Metrics    │  │ Groq (fallback model)│  │
-│  │   70b-versa.│  │ Logging    │  │   ↓ still failing    │   │
-│  │ vision →    │  │ Retry      │  │ OpenAI (backup)     │   │
-│  │   llama-4   │  │            │  │   ↓ also failing     │   │
-│  │ audio →     │  │            │  │ Graceful degrade    │   │
-│  │   whisper   │  │            │  │                     │   │
-│  └─────────────┘  └────────────┘  └─────────────────────┘   │
-└──────────────────────────────────────────────────────────────┘
-```
+## Prerequisites
 
-## Project Structure
-
-```
-src/
-├── groq/
-│   ├── client.ts            # Singleton Groq client
-│   ├── models.ts            # Model constants and capabilities
-│   ├── router.ts            # Model selection logic
-│   ├── middleware.ts         # Cache, rate limit, metrics
-│   ├── fallback.ts          # Multi-provider fallback chain
-│   └── types.ts             # Shared types
-├── services/
-│   ├── chat.ts              # Chat completion service
-│   ├── transcription.ts     # Audio transcription (Whisper)
-│   ├── extraction.ts        # Structured data extraction
-│   └── batch.ts             # Batch processing service
-└── api/
-    ├── chat.ts              # HTTP endpoint
-    ├── transcribe.ts        # Audio endpoint
-    └── health.ts            # Health check
-```
+- **Groq API key** — create one at [console.groq.com](https://console.groq.com)
+  and export it as `GROQ_API_KEY`. The Groq SDK reads it from the environment;
+  the client is constructed as `new Groq({ apiKey: process.env.GROQ_API_KEY })`.
+  Never hardcode the key.
+- **Runtime**: Node.js 18+ (for `performance.now()` and native `fetch`).
+- **Packages**: `groq-sdk` and `lru-cache` (`npm install groq-sdk lru-cache`).
+- **Optional backup provider**: an OpenAI-compatible key if you extend the
+  fallback chain beyond Groq's own models.
 
 ## Instructions
 
-### Step 1: Model Registry
+Build the service layer in five ordered steps. Each step is one file under
+`src/groq/`. The router depends on the registry; the middleware and fallback
+depend on the client; the streaming pipeline stands alone. Full source for every
+step (verbatim) is in [references/implementation.md](references/implementation.md).
 
-```typescript
-// src/groq/models.ts
-export interface ModelSpec {
-  id: string;
-  tier: "speed" | "quality" | "vision" | "audio";
-  contextWindow: number;
-  maxOutput: number;
-  speedTokPerSec: number;
-  inputCostPer1M: number;
-  outputCostPer1M: number;
-  capabilities: ("text" | "tools" | "json" | "vision" | "audio")[];
-}
+1. **Model Registry** (`models.ts`) — declare a `ModelSpec` for each model with
+   its tier, context window, speed, cost, and capabilities. Skeleton:
 
-export const MODELS: Record<string, ModelSpec> = {
-  "llama-3.1-8b-instant": {
-    id: "llama-3.1-8b-instant",
-    tier: "speed",
-    contextWindow: 131_072,
-    maxOutput: 8_192,
-    speedTokPerSec: 560,
-    inputCostPer1M: 0.05,
-    outputCostPer1M: 0.08,
-    capabilities: ["text", "tools", "json"],
-  },
-  "llama-3.3-70b-versatile": {
-    id: "llama-3.3-70b-versatile",
-    tier: "quality",
-    contextWindow: 131_072,
-    maxOutput: 32_768,
-    speedTokPerSec: 280,
-    inputCostPer1M: 0.59,
-    outputCostPer1M: 0.79,
-    capabilities: ["text", "tools", "json"],
-  },
-  "meta-llama/llama-4-scout-17b-16e-instruct": {
-    id: "meta-llama/llama-4-scout-17b-16e-instruct",
-    tier: "vision",
-    contextWindow: 131_072,
-    maxOutput: 8_192,
-    speedTokPerSec: 460,
-    inputCostPer1M: 0.11,
-    outputCostPer1M: 0.34,
-    capabilities: ["text", "tools", "json", "vision"],
-  },
-  "whisper-large-v3-turbo": {
-    id: "whisper-large-v3-turbo",
-    tier: "audio",
-    contextWindow: 0,
-    maxOutput: 0,
-    speedTokPerSec: 0,
-    inputCostPer1M: 0,
-    outputCostPer1M: 0,
-    capabilities: ["audio"],
-  },
-};
-```
+   ```typescript
+   export const MODELS: Record<string, ModelSpec> = {
+     "llama-3.1-8b-instant":     { tier: "speed",   /* fast, cheap */ },
+     "llama-3.3-70b-versatile":  { tier: "quality", /* tools + JSON */ },
+     "meta-llama/llama-4-scout-17b-16e-instruct": { tier: "vision" },
+     "whisper-large-v3-turbo":   { tier: "audio" },
+   };
+   ```
 
-### Step 2: Model Router
+2. **Model Router** (`router.ts`) — `selectModel(req)` maps requirements
+   (`maxLatencyMs`, `needsVision`, `needsTools`, `costSensitive`) to the cheapest
+   model that satisfies them. Callers pass requirements, never hardcoded ids.
+3. **Middleware** (`middleware.ts`) — `completionWithMiddleware()` wraps each call
+   with an LRU cache (deterministic requests only, `temperature === 0`), latency +
+   token metrics, and a pluggable metrics sink.
+4. **Fallback Chain** (`fallback.ts`) — `completionWithFallback()` tries the
+   primary model, drops to a model in a different rate-limit pool on 429/5xx, then
+   returns a graceful-degradation payload instead of throwing.
+5. **Streaming Pipeline** (`streaming.ts`) — `streamCompletion()` is an async
+   generator yielding `{ type: "token" | "done" | "error" }` for real-time SSE UIs.
 
-```typescript
-// src/groq/router.ts
-import { MODELS, ModelSpec } from "./models";
-
-interface RoutingRequest {
-  maxLatencyMs?: number;
-  needsVision?: boolean;
-  needsTools?: boolean;
-  needsJSON?: boolean;
-  contextLength?: number;
-  costSensitive?: boolean;
-}
-
-export function selectModel(req: RoutingRequest): ModelSpec {
-  if (req.needsVision) return MODELS["meta-llama/llama-4-scout-17b-16e-instruct"];
-
-  if (req.costSensitive || (req.maxLatencyMs && req.maxLatencyMs < 100)) {
-    return MODELS["llama-3.1-8b-instant"];
-  }
-
-  if (req.needsTools || req.needsJSON) {
-    return MODELS["llama-3.3-70b-versatile"];
-  }
-
-  // Default: speed tier
-  return MODELS["llama-3.1-8b-instant"];
-}
-```
-
-### Step 3: Middleware Layer
-
-```typescript
-// src/groq/middleware.ts
-import Groq from "groq-sdk";
-import { LRUCache } from "lru-cache";
-import { createHash } from "crypto";
-
-const cache = new LRUCache<string, any>({ max: 500, ttl: 10 * 60_000 });
-
-export async function completionWithMiddleware(
-  groq: Groq,
-  model: string,
-  messages: any[],
-  options?: { maxTokens?: number; temperature?: number; stream?: boolean }
-) {
-  const temp = options?.temperature ?? 0.7;
-
-  // Cache check (only for deterministic requests)
-  if (temp === 0 && !options?.stream) {
-    const key = createHash("sha256").update(JSON.stringify({ model, messages })).digest("hex");
-    const cached = cache.get(key);
-    if (cached) return cached;
-  }
-
-  // Metrics
-  const start = performance.now();
-
-  const response = await groq.chat.completions.create({
-    model,
-    messages,
-    max_tokens: options?.maxTokens ?? 1024,
-    temperature: temp,
-    stream: options?.stream ?? false,
-  });
-
-  const latency = performance.now() - start;
-
-  // Emit metrics
-  emitMetrics({
-    model,
-    latencyMs: Math.round(latency),
-    tokens: (response as any).usage?.total_tokens ?? 0,
-    cached: false,
-  });
-
-  // Cache deterministic responses
-  if (temp === 0 && !options?.stream) {
-    const key = createHash("sha256").update(JSON.stringify({ model, messages })).digest("hex");
-    cache.set(key, response);
-  }
-
-  return response;
-}
-
-function emitMetrics(data: any) {
-  // Plug in your metrics system: Prometheus, Datadog, etc.
-  console.log(`[groq-metrics] ${JSON.stringify(data)}`);
-}
-```
-
-### Step 4: Fallback Chain
-
-```typescript
-// src/groq/fallback.ts
-import Groq from "groq-sdk";
-
-export async function completionWithFallback(
-  groq: Groq,
-  messages: any[],
-  options?: { primaryModel?: string; maxTokens?: number }
-) {
-  const primary = options?.primaryModel || "llama-3.3-70b-versatile";
-  const fallbackModel = "llama-3.1-8b-instant";
-
-  // Attempt 1: Primary model
-  try {
-    return await groq.chat.completions.create({
-      model: primary,
-      messages,
-      max_tokens: options?.maxTokens ?? 1024,
-    });
-  } catch (err: any) {
-    if (err.status !== 429 && err.status < 500) throw err;
-    console.warn(`Primary model ${primary} failed (${err.status}), trying fallback`);
-  }
-
-  // Attempt 2: Fallback model (different rate limit pool)
-  try {
-    return await groq.chat.completions.create({
-      model: fallbackModel,
-      messages,
-      max_tokens: options?.maxTokens ?? 1024,
-    });
-  } catch (err: any) {
-    console.warn(`Groq fallback also failed (${err.status})`);
-  }
-
-  // Attempt 3: Graceful degradation
-  return {
-    choices: [{
-      message: {
-        role: "assistant" as const,
-        content: "Service temporarily unavailable. Please try again in a moment.",
-      },
-      finish_reason: "stop" as const,
-    }],
-    model: "fallback",
-    usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-  };
-}
-```
-
-### Step 5: Streaming Pipeline
-
-```typescript
-// src/groq/streaming.ts
-import Groq from "groq-sdk";
-
-export async function* streamCompletion(
-  groq: Groq,
-  messages: any[],
-  model = "llama-3.3-70b-versatile"
-): AsyncGenerator<{ type: "token" | "done" | "error"; content?: string; error?: string }> {
-  try {
-    const stream = await groq.chat.completions.create({
-      model,
-      messages,
-      stream: true,
-      max_tokens: 2048,
-    });
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) yield { type: "token", content };
-    }
-
-    yield { type: "done" };
-  } catch (err: any) {
-    yield { type: "error", error: err.message };
-  }
-}
-```
+When applying this to an existing repo, `Read` the current `src/` layout and
+`Grep` for direct `groq.chat.completions.create` calls to find code that should
+route through the middleware and fallback wrappers instead.
 
 ## Integration Patterns
 
@@ -324,6 +96,23 @@ export async function* streamCompletion(
 | Audio transcription | Voice input | `audio.transcriptions.create` |
 | Vision analysis | Image understanding | Llama 4 Scout/Maverick |
 
+## Output
+
+Applying this skill produces a `src/groq/` service layer with six files
+(`client.ts`, `models.ts`, `router.ts`, `middleware.ts`, `fallback.ts`,
+`streaming.ts`) plus the service and API layers that consume it. At runtime you get:
+
+- **Routed completions** — `selectModel()` returns a `ModelSpec`; callers never
+  hardcode a model id, so cost/latency policy lives in one place.
+- **Cached deterministic responses** — repeated `temperature: 0` calls return from
+  the LRU cache instead of re-billing the API.
+- **Resilient calls** — `completionWithFallback()` returns a valid completion shape
+  even when Groq is rate-limited, never surfacing a raw 429 to the user.
+- **Streamed tokens** — `streamCompletion()` yields `{ type, content }` events for
+  SSE, with a terminal `done` or `error` event.
+- **Metrics** — every call emits `{ model, latencyMs, tokens, cached }` to your
+  metrics sink (Prometheus, Datadog, or `console.log` by default).
+
 ## Error Handling
 
 | Issue | Cause | Solution |
@@ -332,6 +121,28 @@ export async function* streamCompletion(
 | High latency | Wrong model tier | Route to `8b-instant` for latency-critical paths |
 | Context overflow | Input > 128K tokens | Truncate or chunk input |
 | Vision errors | Wrong model for images | Use Llama 4 Scout full model path |
+| `GROQ_API_KEY` undefined | Env var not exported | Export the key before starting the process |
+
+## Examples
+
+A latency-critical chat turn routes to the speed tier and returns one completion:
+
+```typescript
+const model = selectModel({ maxLatencyMs: 80, costSensitive: true });
+// → llama-3.1-8b-instant
+const res = await completionWithMiddleware(groq, model.id, messages);
+```
+
+Streaming a UI consumes the async generator token-by-token:
+
+```typescript
+for await (const event of streamCompletion(groq, messages)) {
+  if (event.type === "token") process.stdout.write(event.content!);
+}
+```
+
+Four fully worked examples — latency-critical, quality-with-fallback, streaming,
+and vision routing — are in [references/examples.md](references/examples.md).
 
 ## Resources
 
@@ -342,4 +153,5 @@ export async function* streamCompletion(
 
 ## Next Steps
 
-For multi-environment deployment, see `groq-multi-env-setup`.
+For multi-environment deployment, see the `groq-multi-env-setup` skill, which
+extends this service layer with per-environment configuration and secrets handling.

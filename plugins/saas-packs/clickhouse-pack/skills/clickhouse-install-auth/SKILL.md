@@ -1,18 +1,12 @@
 ---
 name: clickhouse-install-auth
-description: 'Install @clickhouse/client and configure authentication to ClickHouse
-  Cloud or self-hosted.
-
-  Use when setting up a new ClickHouse project, configuring connection strings,
-
-  or initializing the official Node.js client.
-
-  Trigger: "install clickhouse", "setup clickhouse client", "clickhouse auth",
-
-  "connect to clickhouse", "clickhouse credentials".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(pip:*), Grep
+description: |
+  Install @clickhouse/client and configure authentication to ClickHouse Cloud
+  or self-hosted. Use when setting up a new ClickHouse project, configuring
+  connection strings, or initializing the official Node.js or Python client.
+  Trigger with "install clickhouse", "setup clickhouse client", "clickhouse
+  auth", "connect to clickhouse", "clickhouse credentials".
+allowed-tools: Read, Write, Bash(npm:*), Bash(pnpm:*), Bash(pip:*)
 version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -28,8 +22,10 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up the official ClickHouse client for Node.js or Python and configure authentication
-to ClickHouse Cloud or a self-hosted instance.
+Set up the official ClickHouse client for Node.js or Python and configure
+authentication to ClickHouse Cloud or a self-hosted instance. The workflow
+below is the high-level path; each step links to a full walkthrough with
+complete code in [references/implementation.md](references/implementation.md).
 
 ## Prerequisites
 
@@ -39,109 +35,56 @@ to ClickHouse Cloud or a self-hosted instance.
 
 ## Instructions
 
-### Step 1: Install the Official Client
+Follow these five steps. Read the current project for an existing `.env` before
+writing one; write credentials to `.env` (never commit it).
 
-```bash
-# Node.js — official client (HTTP-based, supports streaming)
-npm install @clickhouse/client
+1. **Install the official client.** Node.js uses the HTTP-based
+   `@clickhouse/client`; Python uses `clickhouse-connect`.
 
-# Python — official client
-pip install clickhouse-connect
-```
+   ```bash
+   npm install @clickhouse/client   # Node.js
+   pip install clickhouse-connect   # Python
+   ```
 
-### Step 2: Configure Environment Variables
+2. **Configure environment variables.** Put host, user, and password in `.env`
+   and add it to `.gitignore`. Cloud hosts use port `8443` (HTTPS); self-hosted
+   uses `8123` (HTTP).
 
-```bash
-# .env (NEVER commit — add to .gitignore)
-CLICKHOUSE_HOST=https://abc123.us-east-1.aws.clickhouse.cloud:8443
-CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=your-password-here
+3. **Create the client.** Pass `url`, `username`, and `password` to
+   `createClient()` (Node.js) or `get_client()` (Python). Cloud requires TLS —
+   supply an `https://` URL and the client handles it.
 
-# Self-hosted (HTTP interface on port 8123, native on 9000)
-# CLICKHOUSE_HOST=http://localhost:8123
-```
+   ```typescript
+   import { createClient } from '@clickhouse/client';
+   const client = createClient({
+     url: process.env.CLICKHOUSE_HOST,
+     username: process.env.CLICKHOUSE_USER,
+     password: process.env.CLICKHOUSE_PASSWORD,
+   });
+   ```
 
-### Step 3: Create the Client (Node.js)
+4. **Verify the connection** with `client.ping()` plus a `SELECT version()`
+   probe.
 
-```typescript
-import { createClient } from '@clickhouse/client';
+5. **Python alternative** — same shape via `clickhouse_connect.get_client(...)`
+   with `secure=True` for Cloud.
 
-// ClickHouse Cloud
-const client = createClient({
-  url: process.env.CLICKHOUSE_HOST,           // https://<host>:8443
-  username: process.env.CLICKHOUSE_USER,       // default
-  password: process.env.CLICKHOUSE_PASSWORD,
-  // ClickHouse Cloud requires TLS — the client handles it via https:// URL
-});
+Full code for every step (Cloud + self-hosted variants, the verify routine,
+and the Python client): [references/implementation.md](references/implementation.md).
+Every `createClient()` option and a Cloud-vs-self-hosted comparison:
+[references/connection-reference.md](references/connection-reference.md).
 
-// Self-hosted (no TLS)
-const localClient = createClient({
-  url: 'http://localhost:8123',
-  username: 'default',
-  password: '',
-});
-```
+## Output
 
-### Step 4: Verify Connection
+After completing the workflow you have:
 
-```typescript
-async function verifyConnection() {
-  // Ping returns true if the server is reachable
-  const alive = await client.ping();
-  console.log('ClickHouse ping:', alive.success);  // true
-
-  // Run a test query
-  const rs = await client.query({
-    query: 'SELECT version() AS ver, uptime() AS uptime_sec',
-    format: 'JSONEachRow',
-  });
-  const rows = await rs.json<{ ver: string; uptime_sec: number }>();
-  console.log('Server version:', rows[0].ver);
-  console.log('Uptime (sec):', rows[0].uptime_sec);
-}
-
-verifyConnection().catch(console.error);
-```
-
-### Step 5: Python Alternative
-
-```python
-import clickhouse_connect
-
-client = clickhouse_connect.get_client(
-    host='abc123.us-east-1.aws.clickhouse.cloud',
-    port=8443,
-    username='default',
-    password='your-password-here',
-    secure=True,
-)
-
-result = client.query('SELECT version(), uptime()')
-print(f"Version: {result.result_rows[0][0]}")
-```
-
-## Connection Options Reference
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `url` | `http://localhost:8123` | Full URL including protocol and port |
-| `username` | `default` | ClickHouse user |
-| `password` | `''` | User password |
-| `database` | `default` | Default database for queries |
-| `request_timeout` | `30000` | Query timeout in ms |
-| `compression.request` | `false` | Compress request bodies (gzip) |
-| `compression.response` | `true` | Decompress responses |
-| `max_open_connections` | `10` | HTTP keep-alive pool size |
-| `clickhouse_settings` | `{}` | Server-side settings per session |
-
-## ClickHouse Cloud vs Self-Hosted
-
-| Feature | Cloud | Self-Hosted |
-|---------|-------|-------------|
-| Port | 8443 (HTTPS) | 8123 (HTTP) / 8443 (HTTPS) |
-| TLS | Required | Optional |
-| Engine | SharedMergeTree | MergeTree family |
-| Auth | User/password, Cloud API keys | User/password, LDAP, Kerberos |
+- The official client installed (`@clickhouse/client` or `clickhouse-connect`).
+- A `.env` holding `CLICKHOUSE_HOST` / `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD`
+  (gitignored).
+- An initialized client module that reads those variables.
+- A successful `ping()` returning `success: true` and a `SELECT version()`
+  probe printing the server version and uptime — proof the connection and auth
+  both work.
 
 ## Error Handling
 
@@ -153,6 +96,34 @@ print(f"Version: {result.result_rows[0][0]}")
 | `TIMEOUT` | Network/firewall | Check IP allowlists in Cloud console, firewall rules |
 | `Database not found` | Wrong database name | Run `SHOW DATABASES` to list available databases |
 
+## Examples
+
+**Connect to ClickHouse Cloud (Node.js).** With `.env` populated, create the
+client against the `https://…:8443` host and verify:
+
+```typescript
+const alive = await client.ping();        // { success: true }
+const rs = await client.query({
+  query: 'SELECT version() AS ver',
+  format: 'JSONEachRow',
+});
+console.log((await rs.json())[0].ver);    // e.g. "24.8.1"
+```
+
+**Connect to a local self-hosted instance (no TLS).** Point at the HTTP
+interface on `8123` with an empty password:
+
+```typescript
+const localClient = createClient({
+  url: 'http://localhost:8123',
+  username: 'default',
+  password: '',
+});
+```
+
+The full Cloud + self-hosted + Python set is in
+[references/implementation.md](references/implementation.md).
+
 ## Resources
 
 - [Official Node.js Client](https://clickhouse.com/docs/integrations/javascript)
@@ -162,4 +133,5 @@ print(f"Version: {result.result_rows[0][0]}")
 
 ## Next Steps
 
-Proceed to `clickhouse-hello-world` for your first table and query.
+Proceed to `clickhouse-hello-world` to create your first table and run an
+insert-and-select round trip against the connection you just verified.

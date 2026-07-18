@@ -2,13 +2,12 @@
 name: apify-core-workflow-a
 description: 'Build a complete web scraping Actor with Crawlee and deploy to Apify.
 
-  Use when implementing end-to-end scraping: input schema, crawler,
+  Use when you need end-to-end web scraping on Apify: defining an input schema,
+  building a router-based Crawlee crawler, extracting structured data, storing
+  results in a dataset, testing locally, and deploying the Actor to the platform.
 
-  data extraction, dataset output, and platform deployment.
-
-  Trigger: "apify scrape website", "build apify actor",
-
-  "crawlee scraper", "apify main workflow".
+  Trigger with "apify scrape website", "build apify actor", "crawlee scraper",
+  "apify main workflow".
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
@@ -32,6 +31,8 @@ End-to-end workflow: define input schema, build a Crawlee-based Actor, extract s
 
 - `npm install apify crawlee` in your project
 - `npm install -g apify-cli` and `apify login` completed
+- For programmatic retrieval (Step 6), an API token in `APIFY_TOKEN` — read it from
+  the environment (`process.env.APIFY_TOKEN`), never hard-code it
 - Familiarity with `apify-sdk-patterns`
 
 ## Instructions
@@ -75,124 +76,42 @@ Create `.actor/INPUT_SCHEMA.json`:
 
 ### Step 2: Build the Actor with Router Pattern
 
+Use a Crawlee router that splits handling by page type: the default handler
+enqueues product links + pagination from listing pages, and a `PRODUCT`-labeled
+handler extracts structured fields from detail pages. The entry point wires proxy
+config, concurrency, a failed-request handler, and a run summary into the key-value
+store. Skeleton:
+
 ```typescript
 // src/main.ts
 import { Actor } from 'apify';
 import { CheerioCrawler, createCheerioRouter, Dataset, log } from 'crawlee';
 
-interface ProductInput {
-  startUrls: { url: string }[];
-  maxItems?: number;
-  proxyConfig?: { useApifyProxy: boolean; groups?: string[] };
-}
-
-interface Product {
-  url: string;
-  name: string;
-  price: number | null;
-  currency: string;
-  description: string;
-  imageUrl: string | null;
-  inStock: boolean;
-  scrapedAt: string;
-}
-
 const router = createCheerioRouter();
-
-// LISTING pages — extract product links
-router.addDefaultHandler(async ({ request, $, enqueueLinks, log }) => {
-  log.info(`Listing page: ${request.url}`);
-
-  await enqueueLinks({
-    selector: 'a.product-card',
-    label: 'PRODUCT',
-  });
-
-  // Handle pagination
-  await enqueueLinks({
-    selector: 'a.next-page',
-    label: 'LISTING',
-  });
+router.addDefaultHandler(async ({ enqueueLinks }) => {
+  await enqueueLinks({ selector: 'a.product-card', label: 'PRODUCT' });
+  await enqueueLinks({ selector: 'a.next-page', label: 'LISTING' });
+});
+router.addHandler('PRODUCT', async ({ request, $ }) => {
+  await Actor.pushData({ url: request.url, name: $('h1.product-title').text().trim() });
 });
 
-// PRODUCT detail pages — extract structured data
-router.addHandler('PRODUCT', async ({ request, $, log }) => {
-  log.info(`Product page: ${request.url}`);
-
-  const product: Product = {
-    url: request.url,
-    name: $('h1.product-title').text().trim(),
-    price: parseFloat($('.price').text().replace(/[^0-9.]/g, '')) || null,
-    currency: $('.currency').text().trim() || 'USD',
-    description: $('div.description').text().trim(),
-    imageUrl: $('img.product-image').attr('src') || null,
-    inStock: !$('.out-of-stock').length,
-    scrapedAt: new Date().toISOString(),
-  };
-
-  await Actor.pushData(product);
-});
-
-// Entry point
 await Actor.main(async () => {
-  const input = await Actor.getInput<ProductInput>();
-  if (!input?.startUrls?.length) throw new Error('startUrls required');
-
-  const proxyConfiguration = input.proxyConfig?.useApifyProxy
-    ? await Actor.createProxyConfiguration({
-        groups: input.proxyConfig.groups,
-      })
-    : undefined;
-
-  const crawler = new CheerioCrawler({
-    requestHandler: router,
-    proxyConfiguration,
-    maxRequestsPerCrawl: input.maxItems ?? 100,
-    maxConcurrency: 10,
-    requestHandlerTimeoutSecs: 60,
-
-    async failedRequestHandler({ request }, error) {
-      log.error(`Failed: ${request.url} — ${error.message}`);
-      await Actor.pushData({
-        url: request.url,
-        error: error.message,
-        '#isFailed': true,
-      });
-    },
-  });
-
+  const input = await Actor.getInput();
+  const crawler = new CheerioCrawler({ requestHandler: router, maxRequestsPerCrawl: input?.maxItems ?? 100 });
   await crawler.run(input.startUrls.map(s => s.url));
-
-  // Save run summary to key-value store
-  const dataset = await Dataset.open();
-  const info = await dataset.getInfo();
-  await Actor.setValue('SUMMARY', {
-    itemCount: info?.itemCount ?? 0,
-    finishedAt: new Date().toISOString(),
-    startUrls: input.startUrls.map(s => s.url),
-  });
-
-  log.info(`Done. Scraped ${info?.itemCount ?? 0} products.`);
 });
 ```
+
+The full typed Actor — `Product`/`ProductInput` interfaces, proxy configuration,
+`failedRequestHandler`, and the `SUMMARY` key-value write — is in
+[implementation.md, Step 2](references/implementation.md).
 
 ### Step 3: Configure Dockerfile
 
-```dockerfile
-# .actor/Dockerfile
-FROM apify/actor-node:20 AS builder
-COPY package*.json ./
-RUN npm ci --include=dev --audit=false
-COPY . .
-RUN npm run build
-
-FROM apify/actor-node:20
-COPY package*.json ./
-RUN npm ci --omit=dev --audit=false
-COPY --from=builder /usr/src/app/dist ./dist
-COPY .actor .actor
-CMD ["npm", "start"]
-```
+Use the `apify/actor-node:20` base with a two-stage build (compile TypeScript in a
+`builder` stage, ship only `dist/` + production deps). Full Dockerfile:
+[implementation.md, Step 3](references/implementation.md).
 
 ### Step 4: Test Locally
 
@@ -225,24 +144,10 @@ apify actors call username/my-actor
 
 ### Step 6: Retrieve Results Programmatically
 
-```typescript
-import { ApifyClient } from 'apify-client';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-// Run the deployed Actor
-const run = await client.actor('username/my-actor').call({
-  startUrls: [{ url: 'https://target-store.com/products' }],
-  maxItems: 500,
-});
-
-// Get results
-const { items } = await client.dataset(run.defaultDatasetId).listItems();
-console.log(`Scraped ${items.length} products`);
-
-// Download as CSV
-const csv = await client.dataset(run.defaultDatasetId).downloadItems('csv');
-```
+From any client, use the `apify-client` SDK to call the deployed Actor, list its
+dataset items, and download results (JSON/CSV). The token comes from
+`process.env.APIFY_TOKEN` — never hard-code it. Full retrieval code:
+[implementation.md, Step 6](references/implementation.md).
 
 ## Output
 
@@ -262,12 +167,37 @@ const csv = await client.dataset(run.defaultDatasetId).downloadItems('csv');
 | Proxy errors | Anti-bot blocking | Switch to residential proxy |
 | `TIMED-OUT` status | Actor exceeded timeout | Increase timeout or reduce scope |
 
+## Examples
+
+A quick example — seed a local input, run the Actor, and check results:
+
+```bash
+mkdir -p storage/key_value_stores/default
+echo '{"startUrls":[{"url":"https://example-store.com/products"}],"maxItems":5}' \
+  > storage/key_value_stores/default/INPUT.json
+apify run
+cat storage/key_value_stores/default/SUMMARY.json
+```
+
+Three fuller worked scenarios live in [examples.md](references/examples.md):
+
+- **Scrape a catalog locally, then deploy** — the full seed → `apify run` →
+  inspect → `apify push` loop, with the expected `SUMMARY.json` output.
+- **Run the deployed Actor and export CSV** — call the Actor via `apify-client`
+  and download the dataset as CSV.
+- **Route through residential proxy** — pass a `proxyConfig` group at run time to
+  get past anti-bot blocking.
+
 ## Resources
 
 - [Crawlee Quick Start](https://crawlee.dev/js/docs/quick-start)
 - [Actor Deployment](https://docs.apify.com/platform/actors/development/deployment)
 - [Input Schema Spec](https://docs.apify.com/platform/actors/development/actor-definition/input-schema)
+- [Full implementation walkthrough](references/implementation.md) — complete Actor source, Dockerfile, and retrieval code
+- [Worked examples](references/examples.md) — three end-to-end run scenarios
 
 ## Next Steps
 
-For dataset/KV store management, see `apify-core-workflow-b`.
+Once your Actor is deployed and producing data, move on to dataset and key-value
+store management — pagination over large datasets, deduplication, exporting to
+external stores, and scheduling recurring runs — covered in `apify-core-workflow-b`.

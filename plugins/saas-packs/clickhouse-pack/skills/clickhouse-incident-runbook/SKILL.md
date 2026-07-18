@@ -1,11 +1,13 @@
 ---
 name: clickhouse-incident-runbook
-description: "ClickHouse incident response \u2014 triage, diagnose, and remediate\
-  \ server issues\nusing system tables, kill stuck queries, and execute recovery procedures.\n\
-  Use when ClickHouse is slow, unresponsive, or producing errors in production.\n\
-  Trigger: \"clickhouse incident\", \"clickhouse outage\", \"clickhouse down\",\n\"\
-  clickhouse emergency\", \"clickhouse on-call\", \"clickhouse broken\".\n"
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+description: |
+  ClickHouse incident response — triage, diagnose, and remediate server issues
+  using system tables, kill stuck queries, and execute recovery procedures.
+  Use when ClickHouse is slow, unresponsive, OOM-killed, out of disk, backing up
+  merges, or producing errors in production and you need an on-call playbook.
+  Trigger with "clickhouse incident", "clickhouse outage", "clickhouse down",
+  "clickhouse emergency", "clickhouse on-call", "clickhouse broken".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*)
 version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -21,8 +23,17 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Step-by-step procedures for triaging and resolving ClickHouse incidents
-using built-in system tables and SQL commands.
+Step-by-step procedures for triaging and resolving ClickHouse incidents using
+built-in system tables and SQL commands. Start here: assess severity, run quick
+triage, walk the decision tree, then jump to the matching remediation procedure.
+
+## Prerequisites
+
+- Network access to the ClickHouse HTTP interface (default port `8123`) or a
+  working `clickhouse-client`.
+- A user with rights to read `system.*` tables and issue `KILL QUERY` / `ALTER`.
+- Shell access to the host or container for P1 restarts (`systemctl`, `docker`,
+  or `kubectl`).
 
 ## Severity Levels
 
@@ -33,10 +44,15 @@ using built-in system tables and SQL commands.
 | P3 | Minor impact / non-critical errors | < 4 hours | Single table issue, warnings |
 | P4 | No user impact | Next business day | Monitoring gaps, optimization |
 
-## Quick Triage (Run First)
+## Instructions
+
+Work the incident top to bottom: triage, classify with the decision tree, then
+apply the matching procedure.
+
+### 1. Quick triage (run first)
 
 ```bash
-# 1. Is ClickHouse alive?
+# 1. Is ClickHouse alive? (8123 is the default ClickHouse HTTP interface port)
 curl -sf 'http://localhost:8123/ping' && echo "UP" || echo "DOWN"
 
 # 2. Can it answer a query?
@@ -49,7 +65,7 @@ curl -sf 'https://status.clickhouse.cloud' | head -5
 ```sql
 -- 4. Server health snapshot (run if server responds)
 SELECT
-    version()                         AS version,
+    version()                          AS version,
     formatReadableTimeDelta(uptime())  AS uptime,
     (SELECT count() FROM system.processes) AS running_queries,
     (SELECT value FROM system.metrics WHERE metric = 'MemoryTracking')
@@ -65,7 +81,7 @@ ORDER BY event_time DESC
 LIMIT 10;
 ```
 
-## Decision Tree
+### 2. Decision tree — classify the failure
 
 ```
 Server responds to ping?
@@ -81,178 +97,34 @@ Server responds to ping?
     └─ YES but slow → Performance triage below
 ```
 
-## Remediation Procedures
+### 3. Apply the matching remediation
 
-### P1: Server Down / OOM
+Each branch maps to a full procedure (SQL + shell, copy-paste ready) in
+[references/remediation-procedures.md](references/remediation-procedures.md):
 
-```bash
-# Check if process was OOM-killed
-dmesg | grep -i "out of memory" | tail -5
-journalctl -u clickhouse-server --since "10 minutes ago" | tail -20
+- **P1: Server down / OOM** — inspect `dmesg`/`journalctl`, restart, verify.
+- **P1: Disk full** — find largest tables, drop old partitions, check `system.disks`.
+- **P2: Stuck queries** — inspect `system.processes`, `KILL QUERY` by id/user/elapsed.
+- **P2: Too many parts** — check part counts, raise `parts_to_throw_insert`, batch inserts.
+- **P2: Memory pressure** — rank by `memory_usage`, kill the largest, cap `max_memory_usage`.
+- **P3: Replication lag** — inspect `system.replicas` for queue and replica gaps.
 
-# Restart
-sudo systemctl restart clickhouse-server
-# or for Docker:
-docker restart clickhouse
+### 4. Collect evidence and communicate
 
-# Verify recovery
-curl 'http://localhost:8123/?query=SELECT+version()'
-```
+Once mitigated, export the error window and post status updates. Templates and
+`INTO OUTFILE` exports are in
+[references/evidence-and-comms.md](references/evidence-and-comms.md).
 
-### P1: Disk Full
+## Output
 
-```sql
--- Find largest tables
-SELECT database, table,
-       formatReadableSize(sum(bytes_on_disk)) AS size,
-       sum(rows) AS rows
-FROM system.parts WHERE active
-GROUP BY database, table
-ORDER BY sum(bytes_on_disk) DESC
-LIMIT 10;
+Working through this runbook produces:
 
--- Emergency: drop old partitions
-ALTER TABLE analytics.events DROP PARTITION '202301';
-ALTER TABLE analytics.events DROP PARTITION '202302';
-
--- Check free space
-SELECT name, formatReadableSize(free_space) AS free,
-       formatReadableSize(total_space) AS total
-FROM system.disks;
-```
-
-### P2: Stuck / Long-Running Queries
-
-```sql
--- Find stuck queries
-SELECT
-    query_id,
-    user,
-    elapsed,
-    formatReadableSize(memory_usage) AS memory,
-    substring(query, 1, 200) AS query_preview
-FROM system.processes
-ORDER BY elapsed DESC;
-
--- Kill a specific query
-KILL QUERY WHERE query_id = 'abc-123-def';
-
--- Kill all queries from a user
-KILL QUERY WHERE user = 'runaway_user';
-
--- Kill all queries running longer than 5 minutes
-KILL QUERY WHERE elapsed > 300;
-```
-
-### P2: Too Many Parts (Merge Backlog)
-
-```sql
--- Check part counts
-SELECT database, table, count() AS parts
-FROM system.parts WHERE active
-GROUP BY database, table
-HAVING parts > 200
-ORDER BY parts DESC;
-
--- Check active merges
-SELECT database, table, progress, elapsed,
-       formatReadableSize(total_size_bytes_compressed) AS size
-FROM system.merges;
-
--- Temporary: raise the limit to prevent INSERT failures
-ALTER TABLE analytics.events MODIFY SETTING parts_to_throw_insert = 1000;
-
--- Wait for merges to catch up, then lower back
--- Root cause: too many small inserts — batch them
-```
-
-### P2: Memory Pressure
-
-```sql
--- Who's using the most memory?
-SELECT user, query_id, elapsed,
-       formatReadableSize(memory_usage) AS memory,
-       substring(query, 1, 200) AS q
-FROM system.processes
-ORDER BY memory_usage DESC;
-
--- Kill the largest query
-KILL QUERY WHERE query_id = '<largest_query_id>';
-
--- Reduce per-query memory for all users
-ALTER USER app_writer SETTINGS max_memory_usage = 5000000000;  -- 5GB
-```
-
-### P3: Replication Lag (Clustered/Cloud)
-
-```sql
--- Check replica status
-SELECT
-    database, table,
-    is_leader,
-    total_replicas,
-    active_replicas,
-    queue_size,
-    inserts_in_queue,
-    merges_in_queue,
-    log_pointer,
-    last_queue_update
-FROM system.replicas
-WHERE active_replicas < total_replicas OR queue_size > 0;
-```
-
-## Post-Incident Evidence Collection
-
-```sql
--- Export error window from query log
-SELECT *
-FROM system.query_log
-WHERE event_time BETWEEN '2025-01-15 14:00:00' AND '2025-01-15 15:00:00'
-  AND (type = 'ExceptionWhileProcessing' OR query_duration_ms > 10000)
-FORMAT JSONEachRow
-INTO OUTFILE '/tmp/incident-queries.json';
-
--- Metrics snapshot during incident window
-SELECT metric, value
-FROM system.metrics
-FORMAT TabSeparatedWithNames
-INTO OUTFILE '/tmp/incident-metrics.tsv';
-```
-
-## Communication Templates
-
-**Internal (Slack):**
-
-```
-[P1] INCIDENT: ClickHouse [Issue Type]
-Status: INVESTIGATING / MITIGATING / RESOLVED
-Impact: [What users see]
-Root cause: [If known]
-Actions taken: [What you did]
-Next update: [Time]
-Commander: @[name]
-```
-
-**Postmortem Template:**
-
-```markdown
-## ClickHouse Incident: [Title]
-- Date: YYYY-MM-DD
-- Duration: X hours Y minutes
-- Severity: P[1-4]
-
-### Timeline
-- HH:MM — [Event/action]
-
-### Root Cause
-[Technical explanation]
-
-### Resolution
-[What fixed it]
-
-### Action Items
-- [ ] [Preventive measure] — Owner — Due date
-```
+- A **severity classification** (P1–P4) and the identified failure class.
+- **Remediation actions applied** — killed query ids, dropped partitions,
+  restarted service, or adjusted settings.
+- A **recovery confirmation** (`SELECT version()` / `SELECT 1` succeeds again).
+- **Forensic artifacts** for the postmortem: `/tmp/incident-queries.json` and
+  `/tmp/incident-metrics.tsv`, plus a filled-in postmortem document.
 
 ## Error Handling
 
@@ -264,12 +136,33 @@ Commander: @[name]
 | Disk alerts | No TTL / no cleanup | Drop old partitions |
 | Replication lag | Network / merge backlog | Check `system.replicas` |
 
+If the server does not respond to `ping` at all, do not keep issuing SQL — move
+straight to the P1 host-level checks (process, disk, OOM logs) before anything else.
+
+## Examples
+
+**Kill a runaway query (P2).** Triage shows one query pinning memory; classify as
+"queries succeeding but slow", then from the stuck-query procedure:
+
+```sql
+KILL QUERY WHERE query_id = 'abc-123-def';
+```
+
+**Emergency disk reclaim (P1).** Ping fails and the host is out of disk; the
+disk-full procedure drops the oldest partition to restore writes:
+
+```sql
+ALTER TABLE analytics.events DROP PARTITION '202301';
+```
+
+Full multi-step walkthroughs for every severity live in
+[references/remediation-procedures.md](references/remediation-procedures.md); the
+post-incident export and comms templates live in
+[references/evidence-and-comms.md](references/evidence-and-comms.md).
+
 ## Resources
 
 - [ClickHouse Cloud Status](https://status.clickhouse.cloud)
 - [System Tables Reference](https://clickhouse.com/docs/operations/system-tables)
 - [KILL QUERY](https://clickhouse.com/docs/sql-reference/statements/kill)
-
-## Next Steps
-
-For data compliance, see `clickhouse-data-handling`.
+- Related skill: `clickhouse-data-handling` for data-compliance follow-up.

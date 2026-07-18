@@ -26,205 +26,37 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Primary money-path workflow: create/update profiles, manage lists, and subscribe contacts for email and SMS marketing via the `klaviyo-api` SDK.
+Primary money-path workflow: create/update profiles, manage lists, and subscribe contacts for email and SMS marketing via the `klaviyo-api` SDK. This skill covers the six-step path from a raw customer record to a consented, segmentable subscriber. High-level flow lives here; the full code for every step is in [references/implementation.md](references/implementation.md).
 
 ## Prerequisites
 
-- Completed `klaviyo-install-auth` setup
-- API key with scopes: `profiles:read`, `profiles:write`, `lists:read`, `lists:write`
+- Completed the `klaviyo-install-auth` setup so `KLAVIYO_PRIVATE_KEY` is available in the environment.
+- A Klaviyo private API key scoped to `profiles:read`, `profiles:write`, `lists:read`, and `lists:write`.
+- The `klaviyo-api` npm package installed in the project (`npm install klaviyo-api`).
+- Node.js with TypeScript configured, since all examples use the typed SDK.
 
 ## Instructions
 
-### Step 1: Create or Update a Profile
+Every call authenticates through a single `ApiKeySession` built from the private key:
 
 ```typescript
-import { ApiKeySession, ProfilesApi, ProfileEnum } from 'klaviyo-api';
+import { ApiKeySession, ProfilesApi, ListsApi } from 'klaviyo-api';
 
 const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
 const profilesApi = new ProfilesApi(session);
-
-// Create a new profile (409 if email already exists)
-const newProfile = await profilesApi.createProfile({
-  data: {
-    type: ProfileEnum.Profile,
-    attributes: {
-      email: 'customer@example.com',
-      firstName: 'Jane',
-      lastName: 'Doe',
-      phoneNumber: '+15551234567',
-      location: {
-        city: 'Atlanta',
-        region: 'GA',
-        country: 'US',
-        zip: '30309',
-      },
-      properties: {
-        plan: 'pro',
-        signupSource: 'website',
-        lifetime_value: 250.00,
-      },
-    },
-  },
-});
-console.log('Profile ID:', newProfile.body.data.id);
-
-// Create OR update (upsert) -- preferred for syncing
-const upserted = await profilesApi.createOrUpdateProfile({
-  data: {
-    type: ProfileEnum.Profile,
-    attributes: {
-      email: 'customer@example.com',
-      firstName: 'Jane',
-      lastName: 'Doe-Smith',  // Updated last name
-      properties: {
-        plan: 'enterprise',   // Updated plan
-        lastLogin: new Date().toISOString(),
-      },
-    },
-  },
-});
-console.log('Upserted profile:', upserted.body.data.id);
-```
-
-### Step 2: Create a List
-
-```typescript
-import { ListsApi, ListEnum } from 'klaviyo-api';
-
 const listsApi = new ListsApi(session);
-
-// Create a new list
-const list = await listsApi.createList({
-  data: {
-    type: ListEnum.List,
-    attributes: {
-      name: 'Newsletter Subscribers',
-    },
-  },
-});
-const listId = list.body.data.id;
-console.log('List created:', listId);
-
-// Get all lists
-const allLists = await listsApi.getLists();
-for (const l of allLists.body.data) {
-  console.log(`${l.attributes.name} (${l.id})`);
-}
 ```
 
-### Step 3: Add Profiles to a List
+The workflow runs in six steps. Use the linked walkthrough for the complete code of each:
 
-```typescript
-// Add existing profiles to a list (does NOT change subscription status)
-await listsApi.createListRelationships({
-  id: listId,
-  relationshipType: 'profiles' as any,
-  body: {
-    data: [
-      { type: ProfileEnum.Profile, id: 'PROFILE_ID_1' },
-      { type: ProfileEnum.Profile, id: 'PROFILE_ID_2' },
-    ],
-  },
-});
-```
+1. **Create or update a profile** — prefer `createOrUpdateProfile` (upsert) over `createProfile` so re-syncs don't 409 on an existing email.
+2. **Create a list** — `listsApi.createList(...)` returns the `listId` you use downstream; `getLists()` enumerates existing lists.
+3. **Add profiles to a list** — `createListRelationships` adds membership only; it does NOT grant marketing consent.
+4. **Subscribe profiles** — `subscribeProfiles` records email/SMS marketing consent with a `consentTimestamp`. This is the correct way to create real subscribers.
+5. **Query profiles with filters** — `getProfiles({ filter, sort })` supports `equals`, `greater-than`, and `contains` for segmentation.
+6. **Bulk import** — batch upserts in groups of 100 to stay within rate limits.
 
-### Step 4: Subscribe Profiles (Email + SMS Consent)
-
-```typescript
-// Subscribe profiles to a list WITH marketing consent
-// This is the correct way to add subscribers (not just list members)
-await profilesApi.subscribeProfiles({
-  data: {
-    type: 'profile-subscription-bulk-create-job',
-    attributes: {
-      profiles: {
-        data: [
-          {
-            type: ProfileEnum.Profile,
-            attributes: {
-              email: 'subscriber@example.com',
-              phoneNumber: '+15559876543',
-              subscriptions: {
-                email: {
-                  marketing: {
-                    consent: 'SUBSCRIBED',
-                    consentTimestamp: new Date().toISOString(),
-                  },
-                },
-                sms: {
-                  marketing: {
-                    consent: 'SUBSCRIBED',
-                    consentTimestamp: new Date().toISOString(),
-                  },
-                },
-              },
-            },
-          },
-        ],
-      },
-    },
-    relationships: {
-      list: {
-        data: {
-          type: ListEnum.List,
-          id: listId,
-        },
-      },
-    },
-  },
-});
-console.log('Profile subscribed to email + SMS');
-```
-
-### Step 5: Query Profiles with Filters
-
-```typescript
-// Filter profiles by custom property
-const proUsers = await profilesApi.getProfiles({
-  filter: 'equals(properties.plan,"pro")',
-  sort: '-created',  // Newest first
-});
-
-// Filter by date range
-const recentProfiles = await profilesApi.getProfiles({
-  filter: 'greater-than(created,2024-01-01T00:00:00Z)',
-});
-
-// Filter by email domain
-const gmailUsers = await profilesApi.getProfiles({
-  filter: 'contains(email,"@gmail.com")',
-});
-
-// Get profiles for a specific list
-const listMembers = await listsApi.getListProfiles({ id: listId });
-for (const member of listMembers.body.data) {
-  console.log(member.attributes.email);
-}
-```
-
-### Step 6: Bulk Profile Import
-
-```typescript
-// Batch create/update up to 100 profiles at a time
-const profiles = customers.map(c => ({
-  type: ProfileEnum.Profile as const,
-  attributes: {
-    email: c.email,
-    firstName: c.firstName,
-    lastName: c.lastName,
-    properties: { source: 'bulk-import', importedAt: new Date().toISOString() },
-  },
-}));
-
-// Process in batches of 100
-for (let i = 0; i < profiles.length; i += 100) {
-  const batch = profiles.slice(i, i + 100);
-  await Promise.all(
-    batch.map(p => profilesApi.createOrUpdateProfile({ data: p }))
-  );
-  console.log(`Imported ${Math.min(i + 100, profiles.length)}/${profiles.length}`);
-}
-```
+Full code for all six steps: [references/implementation.md](references/implementation.md).
 
 ## Output
 
@@ -243,8 +75,36 @@ for (let i = 0; i < profiles.length; i += 100) {
 | Missing consent | 400 | No consent timestamp | Always include `consentTimestamp` |
 | Rate limited | 429 | >75 req/s burst | See `klaviyo-rate-limits` |
 
+## Examples
+
+Three end-to-end scenarios that string the six steps into complete flows are in [references/examples.md](references/examples.md):
+
+- **Sync a new signup into a newsletter list with consent** — upsert the profile, ensure the list exists, then subscribe with email + SMS consent in one pass.
+- **Segment pro-plan customers** — filter by a custom property and export the audience emails for a targeted campaign.
+- **Bulk-import a customer CSV** — map records to upsert payloads and process in batches of 100.
+
+Minimal upsert-then-subscribe skeleton:
+
+```typescript
+const upserted = await profilesApi.createOrUpdateProfile({
+  data: { type: ProfileEnum.Profile, attributes: { email: 'customer@example.com' } },
+});
+await profilesApi.subscribeProfiles({
+  data: {
+    type: 'profile-subscription-bulk-create-job',
+    attributes: { profiles: { data: [{ type: ProfileEnum.Profile, attributes: {
+      email: 'customer@example.com',
+      subscriptions: { email: { marketing: { consent: 'SUBSCRIBED', consentTimestamp: new Date().toISOString() } } },
+    } }] } },
+    relationships: { list: { data: { type: ListEnum.List, id: listId } } },
+  },
+});
+```
+
 ## Resources
 
+- [references/implementation.md](references/implementation.md) — full six-step code walkthrough
+- [references/examples.md](references/examples.md) — end-to-end worked examples
 - [Profiles API](https://developers.klaviyo.com/en/reference/profiles_api_overview)
 - [Lists API](https://developers.klaviyo.com/en/reference/lists_api_overview)
 - [Subscribe Profiles](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles)
@@ -252,4 +112,4 @@ for (let i = 0; i < profiles.length; i += 100) {
 
 ## Next Steps
 
-For event tracking and campaign triggers, see `klaviyo-core-workflow-b`.
+For event tracking and campaign triggers, see `klaviyo-core-workflow-b`. To harden against burst limits during bulk imports, see `klaviyo-rate-limits`.

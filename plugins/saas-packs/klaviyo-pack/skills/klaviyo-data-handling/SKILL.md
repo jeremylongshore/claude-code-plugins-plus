@@ -29,7 +29,9 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Handle profile data, PII, and privacy compliance with Klaviyo's Data Privacy API, GDPR right-to-deletion, CCPA requests, and safe logging patterns.
+Handle profile data, PII, and privacy compliance with Klaviyo's Data Privacy API, GDPR right-to-deletion, CCPA requests, and safe logging patterns. This skill covers five workflows: GDPR profile deletion, Data Subject Access Requests (DSAR), PII redaction in logs, consent management, and compliance audit logging.
+
+The GDPR deletion skeleton is inline below. The deeper step-by-step code — DSAR export, PII redaction, consent management, and audit logging — lives in [references/implementation.md](references/implementation.md) so this file stays scannable. Read the summary here, then drill into the reference for full copy-ready code.
 
 ## Prerequisites
 
@@ -40,11 +42,15 @@ Handle profile data, PII, and privacy compliance with Klaviyo's Data Privacy API
 
 ## Klaviyo Data Privacy API
 
-Klaviyo provides a dedicated **Data Privacy API** for GDPR/CCPA profile deletion. When you delete a profile via this API, Klaviyo performs a full GDPR erasure -- the profile is permanently removed and cannot be recovered.
+Klaviyo provides a dedicated **Data Privacy API** for GDPR/CCPA profile deletion. When you delete a profile via this API, Klaviyo performs a full GDPR erasure — the profile is permanently removed and cannot be recovered.
 
 ## Instructions
 
+The workflow has five steps. Step 1 (deletion) is shown in full here because it is the highest-risk, most-requested operation. Steps 2–5 follow the same session pattern and are fully implemented in [references/implementation.md](references/implementation.md).
+
 ### Step 1: GDPR Profile Deletion (Right to Erasure)
+
+Request deletion with **exactly one** identifier (email, phone, or profile ID). Providing more than one returns an error. Deletion is irreversible, so always audit-log the request.
 
 ```typescript
 import { ApiKeySession, DataPrivacyApi } from 'klaviyo-api';
@@ -52,227 +58,54 @@ import { ApiKeySession, DataPrivacyApi } from 'klaviyo-api';
 const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
 const dataPrivacyApi = new DataPrivacyApi(session);
 
-/**
- * Request profile deletion via Klaviyo's Data Privacy API.
- * Accepts ONE identifier: email, phone_number, or profile ID.
- * Providing multiple identifiers returns an error.
- *
- * WARNING: This is irreversible. Profile is permanently erased.
- */
-async function requestProfileDeletion(identifier: {
-  email?: string;
-  phoneNumber?: string;
-  profileId?: string;
-}): Promise<void> {
-  // Build the profile identifier (only ONE allowed)
-  const profileData: any = { type: 'profile' };
-
-  if (identifier.email) {
-    profileData.attributes = { email: identifier.email };
-  } else if (identifier.phoneNumber) {
-    profileData.attributes = { phone_number: identifier.phoneNumber };
-  } else if (identifier.profileId) {
-    profileData.id = identifier.profileId;
-  } else {
-    throw new Error('Must provide exactly one identifier: email, phoneNumber, or profileId');
-  }
-
+async function requestProfileDeletion(email: string): Promise<void> {
   await dataPrivacyApi.requestProfileDeletion({
     data: {
       type: 'data-privacy-deletion-job',
       attributes: {
-        profile: { data: profileData },
+        profile: { data: { type: 'profile', attributes: { email } } },
       },
     },
   });
 
-  // Audit log (required for compliance)
   await auditLog({
     action: 'GDPR_DELETION_REQUESTED',
-    identifier: identifier.email || identifier.phoneNumber || identifier.profileId!,
+    identifier: email,
     service: 'klaviyo',
     timestamp: new Date().toISOString(),
   });
-
-  console.log(`Deletion requested for ${JSON.stringify(identifier)}`);
 }
 
-// Usage
-await requestProfileDeletion({ email: 'user-wants-deletion@example.com' });
+await requestProfileDeletion('user-wants-deletion@example.com');
 ```
+
+The multi-identifier form (email / phone / profile ID with validation) is in [references/implementation.md § Step 1](references/implementation.md).
 
 ### Step 2: Data Subject Access Request (DSAR)
 
-```typescript
-import { ProfilesApi, EventsApi, ListsApi } from 'klaviyo-api';
-
-/**
- * Export all Klaviyo data for a given profile (GDPR Article 15).
- * Returns all profile attributes, event history, and list memberships.
- */
-async function exportProfileData(email: string): Promise<{
-  profile: any;
-  events: any[];
-  lists: any[];
-}> {
-  const profilesApi = new ProfilesApi(session);
-  const eventsApi = new EventsApi(session);
-
-  // 1. Get profile
-  const profiles = await profilesApi.getProfiles({
-    filter: `equals(email,"${email}")`,
-  });
-  const profile = profiles.body.data[0];
-  if (!profile) throw new Error(`No profile found for ${email}`);
-
-  // 2. Get profile's events
-  const events = await eventsApi.getEvents({
-    filter: `equals(profile_id,"${profile.id}")`,
-    sort: '-datetime',
-  });
-
-  // 3. Get profile's list memberships
-  const profileLists = await profilesApi.getProfileLists({ id: profile.id });
-
-  return {
-    profile: {
-      id: profile.id,
-      ...profile.attributes,
-    },
-    events: events.body.data.map(e => ({
-      metric: e.attributes.metricId,
-      datetime: e.attributes.datetime,
-      properties: e.attributes.eventProperties,
-    })),
-    lists: profileLists.body.data.map(l => ({
-      id: l.id,
-      name: l.attributes.name,
-    })),
-  };
-}
-```
+Export every profile attribute, event, and list membership for a subject (GDPR Article 15) using `ProfilesApi` + `EventsApi`. Full `exportProfileData()` in [references/implementation.md § Step 2](references/implementation.md).
 
 ### Step 3: PII Detection and Redaction in Logs
 
-```typescript
-// src/klaviyo/pii.ts
-
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\+?\d{10,15}/g },
-  { type: 'api_key', regex: /pk_[a-zA-Z0-9]{20,}/g },
-];
-
-export function redactPII(text: string): string {
-  let redacted = text;
-  for (const pattern of PII_PATTERNS) {
-    redacted = redacted.replace(pattern.regex, `[REDACTED:${pattern.type}]`);
-  }
-  return redacted;
-}
-
-export function redactObject(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phoneNumber', 'phone_number', 'firstName', 'lastName', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = typeof redacted[field] === 'string'
-        ? `${redacted[field].substring(0, 3)}***`
-        : '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Usage: safe logging of Klaviyo API responses
-console.log('Profile data:', redactObject(profile.attributes));
-```
+Wrap every log of a Klaviyo response with `redactPII()` / `redactObject()` so emails, phone numbers, and API keys never land in plaintext logs. Full patterns in [references/implementation.md § Step 3](references/implementation.md).
 
 ### Step 4: Consent Management
 
-```typescript
-/**
- * Record consent and subscribe to marketing.
- * Always include consent timestamp for GDPR compliance.
- */
-async function recordConsent(
-  email: string,
-  channels: { email?: boolean; sms?: boolean },
-  listId: string,
-  consentSource: string
-): Promise<void> {
-  const subscriptions: any = {};
-  const now = new Date().toISOString();
-
-  if (channels.email) {
-    subscriptions.email = {
-      marketing: { consent: 'SUBSCRIBED', consentTimestamp: now },
-    };
-  }
-  if (channels.sms) {
-    subscriptions.sms = {
-      marketing: { consent: 'SUBSCRIBED', consentTimestamp: now },
-    };
-  }
-
-  await profilesApi.subscribeProfiles({
-    data: {
-      type: 'profile-subscription-bulk-create-job',
-      attributes: {
-        profiles: {
-          data: [{
-            type: 'profile' as any,
-            attributes: {
-              email,
-              subscriptions,
-            },
-          }],
-        },
-        historicalImport: false,  // Set true for pre-existing consent
-      },
-      relationships: {
-        list: { data: { type: 'list', id: listId } },
-      },
-    },
-  });
-
-  await auditLog({
-    action: 'CONSENT_RECORDED',
-    identifier: email,
-    channels: Object.keys(channels).filter(c => channels[c as keyof typeof channels]),
-    source: consentSource,
-    timestamp: now,
-  });
-}
-```
+Record marketing consent with a `consentTimestamp` on every subscribe call, and audit-log the source. Full `recordConsent()` in [references/implementation.md § Step 4](references/implementation.md).
 
 ### Step 5: Audit Logging
 
-```typescript
-// src/klaviyo/audit.ts
+Persist every privacy action to a retained audit store (7-year retention per GDPR). Full `auditLog()` and schema in [references/implementation.md § Step 5](references/implementation.md).
 
-interface AuditEntry {
-  action: string;
-  identifier: string;
-  service: string;
-  timestamp: string;
-  details?: Record<string, any>;
-}
+## Output
 
-async function auditLog(entry: AuditEntry): Promise<void> {
-  // Write to your audit database (must be retained per GDPR)
-  await db.auditLog.create({
-    data: {
-      ...entry,
-      retainUntil: new Date(Date.now() + 7 * 365 * 24 * 60 * 60 * 1000), // 7 years
-    },
-  });
+Applying this skill produces:
 
-  console.log(`[AUDIT] ${entry.action}: ${entry.identifier} at ${entry.timestamp}`);
-}
-```
+- A `requestProfileDeletion()` call that submits an irreversible GDPR erasure job to Klaviyo and writes a `GDPR_DELETION_REQUESTED` audit entry.
+- A DSAR export object containing the subject's profile attributes, event history, and list memberships (GDPR Article 15 response payload).
+- Log output with PII replaced by `[REDACTED:type]` markers, e.g. `Profile data: { email: 'joh***' }`.
+- Consent records carrying an ISO-8601 `consentTimestamp` plus a matching `CONSENT_RECORDED` audit entry.
+- Audit entries retained for 7 years, each carrying `action`, `identifier`, `service`, and `timestamp`.
 
 ## Data Classification for Klaviyo
 
@@ -293,13 +126,35 @@ async function auditLog(entry: AuditEntry): Promise<void> {
 | Profile not found for DSAR | Wrong email or already deleted | Search by ID or phone instead |
 | PII in error logs | Unredacted API responses | Wrap logger with `redactObject()` |
 
+## Examples
+
+**Delete a profile on a right-to-be-forgotten request:**
+
+```typescript
+await requestProfileDeletion('user-wants-deletion@example.com');
+// → GDPR erasure job submitted; GDPR_DELETION_REQUESTED audit entry written
+```
+
+**Export a subject's data for a DSAR** (see [references/implementation.md § Step 2](references/implementation.md)):
+
+```typescript
+const bundle = await exportProfileData('subject@example.com');
+// → { profile: {...}, events: [...], lists: [...] }
+```
+
+**Redact PII before logging an API response** (see [references/implementation.md § Step 3](references/implementation.md)):
+
+```typescript
+console.log('Profile data:', redactObject(profile.attributes));
+// → Profile data: { email: 'joh***', firstName: 'Jan***' }
+```
+
+Full, copy-ready versions of every example live in [references/implementation.md](references/implementation.md).
+
 ## Resources
 
 - [Data Privacy API](https://developers.klaviyo.com/en/reference/data_privacy_api_overview)
 - [Request Profile Deletion](https://developers.klaviyo.com/en/reference/request_profile_deletion)
 - [Consent Collection Guide](https://developers.klaviyo.com/en/docs/collect_email_and_sms_consent_via_api)
-- GDPR Developer Guide
-
-## Next Steps
-
-For enterprise access control, see `klaviyo-enterprise-rbac`.
+- [Full implementation walkthrough](references/implementation.md) — DSAR, PII redaction, consent, audit logging
+- For enterprise access control, see the `klaviyo-enterprise-rbac` skill.

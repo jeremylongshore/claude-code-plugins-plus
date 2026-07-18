@@ -1,18 +1,12 @@
 ---
 name: intercom-local-dev-loop
-description: 'Configure Intercom local development with testing, mocking, and hot
-  reload.
-
+description: |
+  Configure Intercom local development with testing, mocking, and hot reload.
   Use when setting up a development environment, writing tests against the
-
-  Intercom API, or establishing a fast iteration cycle.
-
+  Intercom API, or establishing a fast iteration cycle against a dev workspace.
   Trigger with phrases like "intercom dev setup", "intercom local development",
-
   "intercom dev environment", "develop with intercom", "test intercom locally".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -27,7 +21,11 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up a fast local development workflow for Intercom integrations with proper test isolation, mocking strategies, and webhook tunneling.
+Set up a fast local development workflow for Intercom integrations with proper
+test isolation, mocking strategies, and webhook tunneling. The loop has two
+lanes: a mocked unit lane that runs offline with no token, and an integration
+lane that talks to a real dev workspace and is skipped automatically when no
+token is present.
 
 ## Prerequisites
 
@@ -35,244 +33,87 @@ Set up a fast local development workflow for Intercom integrations with proper t
 - Node.js 18+ with npm/pnpm
 - A test/development Intercom workspace (separate from production)
 
+## Authentication
+
+The client authenticates with a single Intercom bearer access token, issued per
+workspace by the `intercom-install-auth` step. Read it from
+`process.env.INTERCOM_ACCESS_TOKEN` (loaded from git-ignored `.env.development`);
+never hardcode it. The mocked unit lane needs no token at all — pointing the loop
+at a different dev workspace is only a matter of swapping the `.env.development`
+value.
+
 ## Instructions
 
-### Step 1: Project Structure
+Work through these steps to stand up the loop. The full, copy-paste-ready code
+for every step lives in [the implementation walkthrough](references/implementation.md).
 
-```
-my-intercom-app/
-├── src/
-│   ├── intercom/
-│   │   ├── client.ts       # Singleton client
-│   │   ├── contacts.ts     # Contact operations
-│   │   ├── conversations.ts # Conversation operations
-│   │   └── types.ts        # Intercom type extensions
-│   └── index.ts
-├── tests/
-│   ├── mocks/
-│   │   └── intercom.ts     # Mock client factory
-│   ├── contacts.test.ts
-│   └── conversations.test.ts
-├── .env.development        # Dev workspace token
-├── .env.test               # Test config (mocked)
-├── .env.example            # Template
-└── package.json
-```
+1. **Scaffold the project structure** — an `src/intercom/` module (singleton
+   `client.ts`, plus `contacts.ts` / `conversations.ts` / `types.ts`), a `tests/`
+   tree with a `mocks/` factory, and three env files (`.env.example` committed,
+   `.env.development` and `.env.test` git-ignored). Use **Write** to create each
+   file. See [implementation.md](references/implementation.md).
 
-### Step 2: Environment Configuration
+2. **Configure environments** — commit `.env.example` as the template and keep
+   real tokens in the git-ignored `.env.development`. See
+   [implementation.md](references/implementation.md).
 
-```bash
-# .env.example (commit this)
-INTERCOM_ACCESS_TOKEN=
-INTERCOM_WEBHOOK_SECRET=
-NODE_ENV=development
+3. **Write an environment-aware client singleton** that reads the token, throws a
+   clear error when it is missing, and exposes a `resetClient()` for tests. The
+   skeleton:
 
-# .env.development (git-ignored, real dev workspace token)
-INTERCOM_ACCESS_TOKEN=dG9rOmRldl90b2tlbl9oZXJl
-INTERCOM_WEBHOOK_SECRET=your-webhook-secret
-NODE_ENV=development
-```
+   ```typescript
+   // src/intercom/client.ts
+   import { IntercomClient } from "intercom-client";
 
-### Step 3: Client Singleton with Environment Awareness
+   let instance: IntercomClient | null = null;
 
-```typescript
-// src/intercom/client.ts
-import { IntercomClient } from "intercom-client";
+   export function getClient(): IntercomClient {
+     if (!instance) {
+       const token = process.env.INTERCOM_ACCESS_TOKEN;
+       if (!token) {
+         throw new Error(
+           "INTERCOM_ACCESS_TOKEN not set. Copy .env.example to .env.development"
+         );
+       }
+       instance = new IntercomClient({ token });
+     }
+     return instance;
+   }
 
-let instance: IntercomClient | null = null;
+   export function resetClient(): void {
+     instance = null;
+   }
+   ```
 
-export function getClient(): IntercomClient {
-  if (!instance) {
-    const token = process.env.INTERCOM_ACCESS_TOKEN;
-    if (!token) {
-      throw new Error(
-        "INTERCOM_ACCESS_TOKEN not set. Copy .env.example to .env.development"
-      );
-    }
-    instance = new IntercomClient({ token });
-  }
-  return instance;
-}
+4. **Build a mock client factory** (`tests/mocks/intercom.ts`) covering contacts,
+   conversations, messages, admins, and tags with `vi.fn()` resolved values, so
+   the unit lane never touches the network. Full factory in
+   [implementation.md](references/implementation.md).
 
-// Reset for testing
-export function resetClient(): void {
-  instance = null;
-}
-```
+5. **Write mocked unit tests** against the factory, asserting call arguments and
+   returned shapes. See [implementation.md](references/implementation.md).
 
-### Step 4: Mock Client for Tests
+6. **Tunnel webhooks with ngrok** — run the local server, `ngrok http 3000`, and
+   register the HTTPS URL in Intercom Developer Hub. Use **Bash(npx:*)** for
+   ngrok. See [implementation.md](references/implementation.md).
 
-```typescript
-// tests/mocks/intercom.ts
-import { vi } from "vitest";
+7. **Wire package scripts** (`dev`, `test`, `test:watch`, `test:integration`,
+   `typecheck`) — use **Edit** to add them to `package.json`, then drive the loop
+   with **Bash(npm:*)**. See [implementation.md](references/implementation.md).
 
-export function createMockClient() {
-  return {
-    contacts: {
-      create: vi.fn().mockResolvedValue({
-        type: "contact",
-        id: "mock-contact-id",
-        role: "user",
-        email: "test@example.com",
-        name: "Test User",
-        external_id: "ext-123",
-        custom_attributes: {},
-        created_at: 1711100000,
-        updated_at: 1711100000,
-      }),
-      find: vi.fn().mockResolvedValue({
-        type: "contact",
-        id: "mock-contact-id",
-        email: "test@example.com",
-      }),
-      search: vi.fn().mockResolvedValue({
-        type: "list",
-        data: [],
-        total_count: 0,
-        pages: { type: "pages", page: 1, per_page: 50, total_pages: 0 },
-      }),
-      list: vi.fn().mockResolvedValue({
-        type: "list",
-        data: [],
-        total_count: 0,
-        pages: { next: null },
-      }),
-      update: vi.fn(),
-      delete: vi.fn(),
-      tag: vi.fn(),
-      untag: vi.fn(),
-    },
-    conversations: {
-      create: vi.fn().mockResolvedValue({
-        type: "conversation",
-        id: "mock-convo-id",
-        state: "open",
-      }),
-      find: vi.fn(),
-      list: vi.fn().mockResolvedValue({
-        type: "conversation.list",
-        conversations: [],
-        pages: { next: null },
-      }),
-      reply: vi.fn(),
-      close: vi.fn(),
-      assign: vi.fn(),
-    },
-    messages: {
-      create: vi.fn().mockResolvedValue({
-        type: "user_message",
-        id: "mock-msg-id",
-      }),
-    },
-    admins: {
-      list: vi.fn().mockResolvedValue({
-        type: "admin.list",
-        admins: [{ id: "admin-1", name: "Test Admin", email: "admin@test.com" }],
-      }),
-    },
-    tags: {
-      create: vi.fn().mockResolvedValue({ type: "tag", id: "tag-1", name: "test" }),
-      list: vi.fn().mockResolvedValue({ type: "list", data: [] }),
-    },
-  };
-}
-```
+## Output
 
-### Step 5: Write Tests
+Following this skill produces a working local Intercom development loop:
 
-```typescript
-// tests/contacts.test.ts
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createMockClient } from "./mocks/intercom";
-
-describe("Contact Operations", () => {
-  let mockClient: ReturnType<typeof createMockClient>;
-
-  beforeEach(() => {
-    mockClient = createMockClient();
-  });
-
-  it("should create a user contact", async () => {
-    const contact = await mockClient.contacts.create({
-      role: "user",
-      externalId: "user-123",
-      email: "test@example.com",
-    });
-
-    expect(contact.id).toBe("mock-contact-id");
-    expect(contact.role).toBe("user");
-    expect(mockClient.contacts.create).toHaveBeenCalledWith({
-      role: "user",
-      externalId: "user-123",
-      email: "test@example.com",
-    });
-  });
-
-  it("should search contacts by email", async () => {
-    await mockClient.contacts.search({
-      query: { field: "email", operator: "=", value: "test@example.com" },
-    });
-
-    expect(mockClient.contacts.search).toHaveBeenCalledOnce();
-  });
-});
-```
-
-### Step 6: Webhook Testing with ngrok
-
-```bash
-# Install ngrok
-npm install -g ngrok
-
-# Start your local server
-npm run dev  # Starts on port 3000
-
-# Tunnel to expose locally
-ngrok http 3000
-
-# Use the HTTPS URL (e.g., https://abc123.ngrok.io) as your webhook URL
-# in Intercom Developer Hub > Webhooks
-```
-
-### Step 7: Package Scripts
-
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:integration": "INTERCOM_ACCESS_TOKEN=$INTERCOM_DEV_TOKEN vitest --config vitest.integration.config.ts",
-    "typecheck": "tsc --noEmit"
-  }
-}
-```
-
-## Integration Test Pattern
-
-```typescript
-// tests/integration/contacts.integration.test.ts
-import { describe, it, expect } from "vitest";
-import { IntercomClient } from "intercom-client";
-
-const client = new IntercomClient({
-  token: process.env.INTERCOM_ACCESS_TOKEN!,
-});
-
-describe.skipIf(!process.env.INTERCOM_ACCESS_TOKEN)("Contacts Integration", () => {
-  it("should create and retrieve a contact", async () => {
-    const created = await client.contacts.create({
-      role: "lead",
-      name: `Integration Test ${Date.now()}`,
-    });
-
-    expect(created.id).toBeDefined();
-
-    // Clean up
-    await client.contacts.delete({ contactId: created.id });
-  });
-});
-```
+- A scaffolded `src/intercom/` client module and `tests/` tree with a reusable
+  mock factory.
+- Three environment files — a committed `.env.example` template plus git-ignored
+  `.env.development` / `.env.test`.
+- An offline mocked unit test lane (`npm run test` / `test:watch`) that runs with
+  no token and no network.
+- A token-gated integration lane (`npm run test:integration`) that is skipped
+  automatically when `INTERCOM_ACCESS_TOKEN` is absent.
+- An ngrok webhook tunnel exposing the local server to Intercom's Developer Hub.
 
 ## Error Handling
 
@@ -284,12 +125,33 @@ describe.skipIf(!process.env.INTERCOM_ACCESS_TOKEN)("Contacts Integration", () =
 | Mock type mismatch | SDK updated | Regenerate mocks from SDK types |
 | `rate_limit_exceeded` in dev | Dev workspace limits | Add delays between integration tests |
 
+## Examples
+
+A minimal mocked unit test (from
+[implementation.md](references/implementation.md)):
+
+```typescript
+it("should create a user contact", async () => {
+  const contact = await mockClient.contacts.create({
+    role: "user",
+    externalId: "user-123",
+    email: "test@example.com",
+  });
+
+  expect(contact.id).toBe("mock-contact-id");
+  expect(mockClient.contacts.create).toHaveBeenCalledOnce();
+});
+```
+
+For the token-gated integration test pattern (`describe.skipIf`, live create +
+cleanup) and the commands that drive each lane, see
+[the examples reference](references/examples.md).
+
 ## Resources
 
+- [Full implementation walkthrough](references/implementation.md) — every step's complete code
+- [Integration examples](references/examples.md) — live-workspace test pattern and run commands
 - [intercom-client npm](https://www.npmjs.com/package/intercom-client)
 - [Vitest Documentation](https://vitest.dev/)
 - [ngrok](https://ngrok.com/)
-
-## Next Steps
-
-See `intercom-sdk-patterns` for production-ready code patterns.
+- See `intercom-sdk-patterns` for production-ready code patterns.

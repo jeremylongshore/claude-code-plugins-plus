@@ -2,14 +2,11 @@
 name: intercom-core-workflow-a
 description: 'Manage Intercom contacts: create, search, update, merge leads into users.
 
-  Use when building contact management features, syncing user data,
-
-  or implementing contact search and segmentation.
+  Use when building contact management features, syncing user data, or implementing
+  contact search and segmentation against the Intercom REST API.
 
   Trigger with phrases like "intercom contacts", "intercom users",
-
   "intercom leads", "create intercom contact", "search intercom contacts",
-
   "merge intercom lead".
 
   '
@@ -28,7 +25,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Primary workflow for managing Intercom contacts. Covers creating users and leads, searching with filters, updating custom attributes, merging leads into users, and managing tags and segments.
+Primary workflow for managing Intercom contacts. Covers creating users and leads, searching with filters, updating custom attributes, merging leads into users, and listing segments. This SKILL.md gives you the high-level workflow and the first example; drill into [references/implementation.md](references/implementation.md) for the full step-by-step code and [references/examples.md](references/examples.md) for end-to-end flows.
 
 ## Prerequisites
 
@@ -38,7 +35,7 @@ Primary workflow for managing Intercom contacts. Covers creating users and leads
 
 ## Instructions
 
-### Step 1: Create Contacts
+The contact workflow is six operations against the `intercom-client` SDK. Instantiate the client once, then call the operation you need:
 
 ```typescript
 import { IntercomClient } from "intercom-client";
@@ -53,130 +50,32 @@ const user = await client.contacts.create({
   externalId: "customer-9001",
   email: "alice@acme.com",
   name: "Alice Johnson",
-  phone: "+1-555-0100",
-  customAttributes: {
-    plan: "enterprise",
-    company_size: 500,
-    signed_up_at: Math.floor(Date.now() / 1000),
-  },
-});
-// Response: { type: "contact", id: "6657add46abd...", role: "user", ... }
-
-// Create an anonymous lead (no external_id required)
-const lead = await client.contacts.create({
-  role: "lead",
-  email: "visitor@example.com",
-  name: "Website Visitor",
-  customAttributes: {
-    landing_page: "/pricing",
-    utm_source: "google",
-  },
+  customAttributes: { plan: "enterprise" },
 });
 ```
 
-### Step 2: Search Contacts
+The six operations, in the order you typically reach for them:
 
-POST to `https://api.intercom.io/contacts/search` with query filters.
+1. **Create contacts** — `contacts.create` with `role: "user"` (identified, needs `externalId`) or `role: "lead"` (anonymous).
+2. **Search contacts** — `contacts.search` with a single filter or a compound `AND`/`OR` query, plus pagination and sort.
+3. **Update a contact** — `contacts.update` by `contactId` to change name or custom attributes.
+4. **Merge a lead into a user** — `contacts.merge({ from: leadId, into: userId })`; the lead's conversations, events, and tags transfer to the user.
+5. **List segments** — `contacts.listSegments({ contactId })` to see which segments a contact belongs to.
+6. **Paginate all contacts** — `contacts.list` with `startingAfter` cursor to stream the full contact base.
 
-```typescript
-// Simple search by email
-const byEmail = await client.contacts.search({
-  query: {
-    field: "email",
-    operator: "=",
-    value: "alice@acme.com",
-  },
-});
+Full code for every step, including compound-search filters and the async-generator pagination helper, is in [references/implementation.md](references/implementation.md).
 
-// Compound search: users on enterprise plan who signed up recently
-const filtered = await client.contacts.search({
-  query: {
-    operator: "AND",
-    value: [
-      { field: "role", operator: "=", value: "user" },
-      { field: "custom_attributes.plan", operator: "=", value: "enterprise" },
-      { field: "signed_up_at", operator: ">", value: Math.floor(Date.now() / 1000) - 86400 * 30 },
-    ],
-  },
-  pagination: { per_page: 50 },
-  sort: { field: "created_at", order: "descending" },
-});
+## Output
 
-console.log(`Found ${filtered.totalCount} contacts`);
-for (const contact of filtered.data) {
-  console.log(`  ${contact.name} (${contact.email}) - plan: ${contact.customAttributes?.plan}`);
-}
-```
+Each operation returns a typed response from the SDK:
 
-### Step 3: Update a Contact
+- **`create` / `update`** — a single `contact` object: `{ type: "contact", id, role, email, name, customAttributes, created_at, ... }`. The `id` is the Intercom-generated handle you pass to later calls.
+- **`search`** — `{ data: Contact[], totalCount, pages }`. Iterate `data`; read `totalCount` for the match count; use `pages.next.startingAfter` to page.
+- **`merge`** — the surviving `user` contact (the `into` target); the `from` lead is deleted.
+- **`listSegments`** — `{ data: Segment[] }`, each `{ id, name }`.
+- **`list`** — one page `{ data: Contact[], pages }`; follow `pages.next.startingAfter` until it is absent.
 
-```typescript
-const updated = await client.contacts.update({
-  contactId: user.id,
-  name: "Alice Johnson-Smith",
-  customAttributes: {
-    plan: "enterprise_plus",
-    upgraded_at: Math.floor(Date.now() / 1000),
-  },
-});
-```
-
-### Step 4: Merge a Lead into a User
-
-When an anonymous lead is identified, merge them into a user contact. The lead's conversation history transfers to the user.
-
-```typescript
-// Lead must have role "lead", user must have role "user"
-const merged = await client.contacts.merge({
-  from: lead.id,  // Lead ID (will be deleted)
-  into: user.id,  // User ID (will absorb lead data)
-});
-
-console.log(`Merged lead into user: ${merged.id}`);
-// The lead's conversations, events, and tags are now on the user
-```
-
-### Step 5: List Segments for a Contact
-
-```typescript
-const segments = await client.contacts.listSegments({
-  contactId: user.id,
-});
-
-for (const segment of segments.data) {
-  console.log(`Segment: ${segment.name} (${segment.id})`);
-}
-```
-
-### Step 6: Paginate All Contacts
-
-```typescript
-async function* allContacts(client: IntercomClient) {
-  let startingAfter: string | undefined;
-
-  do {
-    const page = await client.contacts.list({
-      perPage: 50,
-      startingAfter,
-    });
-
-    for (const contact of page.data) {
-      yield contact;
-    }
-
-    startingAfter = page.pages?.next?.startingAfter ?? undefined;
-  } while (startingAfter);
-}
-
-// Stream all contacts
-let count = 0;
-for await (const contact of allContacts(client)) {
-  count++;
-  if (count % 100 === 0) console.log(`Processed ${count} contacts`);
-}
-```
-
-## Contact Data Model
+### Contact Data Model
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -204,6 +103,26 @@ for await (const contact of allContacts(client)) {
 | `rate_limit_exceeded` | 429 | Over 10,000 req/min (private apps) | Add backoff, batch operations |
 | `merge_not_possible` | 400 | Merging user into lead (reversed) | `from` must be lead, `into` must be user |
 
+## Examples
+
+Quick create-then-search flow:
+
+```typescript
+const user = await client.contacts.create({
+  role: "user",
+  externalId: "customer-9001",
+  email: "alice@acme.com",
+  name: "Alice Johnson",
+});
+
+const found = await client.contacts.search({
+  query: { field: "email", operator: "=", value: "alice@acme.com" },
+});
+console.log(`Found ${found.totalCount} match(es)`);
+```
+
+Three fuller worked flows — lead-to-user lifecycle, segmenting recent enterprise signups, and streaming every contact for an export — are in [references/examples.md](references/examples.md).
+
 ## Resources
 
 - [Contacts API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/contacts)
@@ -213,4 +132,4 @@ for await (const contact of allContacts(client)) {
 
 ## Next Steps
 
-For conversation management, see `intercom-core-workflow-b`.
+For conversation management (creating, replying to, and searching conversations), see the companion skill `intercom-core-workflow-b`, which builds on the contact IDs produced by this workflow.

@@ -1,17 +1,11 @@
 ---
 name: klaviyo-performance-tuning
-description: 'Optimize Klaviyo API performance with caching, batching, and pagination
-  tuning.
-
+description: |
+  Optimize Klaviyo API performance with caching, batching, and pagination tuning.
   Use when experiencing slow API responses, implementing caching strategies,
-
   or optimizing request throughput for Klaviyo integrations.
-
   Trigger with phrases like "klaviyo performance", "optimize klaviyo",
-
   "klaviyo latency", "klaviyo caching", "klaviyo slow", "klaviyo batch".
-
-  '
 allowed-tools: Read, Write, Edit
 version: 1.6.0
 license: MIT
@@ -27,13 +21,16 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Optimize Klaviyo API performance with response caching, request batching, cursor-based pagination, sparse fieldsets, and connection pooling.
+Optimize Klaviyo API performance with response caching, request batching, cursor-based pagination, sparse fieldsets, and connection pooling. This skill diagnoses where an integration is slow, then applies the right technique — payload reduction, memory caching, bounded pagination, request coalescing, or rate-limit-aware concurrency.
+
+Read this file for the workflow and the decision guide. Full, copy-pasteable code for every step lives in [references/implementation.md](references/implementation.md); combined real-world scenarios live in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
 - `klaviyo-api` SDK installed
 - Understanding of Klaviyo's rate limits (75 req/s burst, 700 req/min)
 - Redis or in-memory cache (optional)
+- For batching/concurrency helpers: `dataloader`, `p-queue`, `lru-cache`
 
 ## Klaviyo API Performance Characteristics
 
@@ -48,232 +45,48 @@ Optimize Klaviyo API performance with response caching, request batching, cursor
 
 ## Instructions
 
+Apply the techniques in order — each is independent, so start with the one that matches your bottleneck. Every step below has a full implementation in [references/implementation.md](references/implementation.md).
+
 ### Step 1: Sparse Fieldsets (Reduce Payload Size)
 
-Klaviyo supports JSON:API sparse fieldsets -- request only the fields you need.
+Klaviyo supports JSON:API sparse fieldsets — request only the fields you need instead of the 20+ default attributes. This is the cheapest win and applies to every read.
 
 ```typescript
-// BAD: Fetches all profile fields (20+ attributes)
-const profiles = await profilesApi.getProfiles();
-
-// GOOD: Only fetch email and firstName (much smaller payload)
+// GOOD: Only fetch the fields you use (much smaller payload)
 const profiles = await profilesApi.getProfiles({
-  fieldsProfile: ['email', 'first_name', 'created'],
-});
-// Note: fieldsProfile uses snake_case field names (API-level names)
-
-// Fetch profiles with included list relationships
-const profilesWithLists = await profilesApi.getProfiles({
-  fieldsProfile: ['email', 'first_name'],
-  include: ['lists'],
-  fieldsLists: ['name'],
+  fieldsProfile: ['email', 'first_name', 'created'],  // snake_case = API names
 });
 ```
 
 ### Step 2: Response Caching
 
-```typescript
-// src/klaviyo/cache.ts
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 5000,             // Max cached items
-  ttl: 60 * 1000,        // 1 minute default TTL
-  updateAgeOnGet: true,   // Reset TTL on access
-});
-
-export async function cachedKlaviyoCall<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlMs?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached !== undefined) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl: ttlMs });
-  return result;
-}
-
-// Cache profile lookups by email
-export async function getCachedProfile(email: string) {
-  return cachedKlaviyoCall(
-    `profile:${email}`,
-    () => profilesApi.getProfiles({ filter: `equals(email,"${email}")` }),
-    5 * 60 * 1000  // 5 minute TTL for profiles
-  );
-}
-
-// Cache segment data (changes less frequently)
-export async function getCachedSegments() {
-  return cachedKlaviyoCall(
-    'segments:all',
-    () => segmentsApi.getSegments(),
-    15 * 60 * 1000  // 15 minute TTL for segments
-  );
-}
-```
+Wrap read calls in an `LRUCache` keyed by query, with per-resource TTLs (profiles 5 min, segments 15 min — they change less often). See the caching implementation in [references/implementation.md](references/implementation.md).
 
 ### Step 3: Efficient Pagination
 
-```typescript
-// src/klaviyo/pagination.ts
-
-/**
- * Auto-paginate with configurable page size and concurrency.
- * Klaviyo cursor pagination: response.body.links.next contains the cursor URL.
- */
-export async function fetchAllPages<T>(
-  fetcher: (pageCursor?: string) => Promise<{
-    body: { data: T[]; links?: { next?: string } };
-  }>,
-  options = { maxPages: 100 }
-): Promise<T[]> {
-  const results: T[] = [];
-  let cursor: string | undefined;
-  let pageCount = 0;
-
-  do {
-    const response = await fetcher(cursor);
-    results.push(...response.body.data);
-    pageCount++;
-
-    const nextLink = response.body.links?.next;
-    if (nextLink && pageCount < options.maxPages) {
-      const url = new URL(nextLink);
-      cursor = url.searchParams.get('page[cursor]') || undefined;
-    } else {
-      cursor = undefined;
-    }
-  } while (cursor);
-
-  return results;
-}
-
-// Usage: fetch all profiles in a list
-const allProfiles = await fetchAllPages(
-  (cursor) => listsApi.getListProfiles({ id: listId, pageCursor: cursor })
-);
-console.log(`Total profiles: ${allProfiles.length}`);
-```
+Use a `fetchAllPages` helper that follows the `links.next` cursor with a `maxPages` ceiling so large exports terminate predictably. See the pagination implementation in [references/implementation.md](references/implementation.md).
 
 ### Step 4: Request Batching with DataLoader
 
-```typescript
-import DataLoader from 'dataloader';
-import { ProfilesApi } from 'klaviyo-api';
-
-// Batch profile lookups: multiple getProfile(id) calls within
-// a single tick are combined into one getProfiles() call
-const profileLoader = new DataLoader<string, any>(
-  async (profileIds) => {
-    // Klaviyo doesn't have a batch-get-by-IDs endpoint,
-    // so we fetch individually but with concurrency control
-    const results = await Promise.allSettled(
-      profileIds.map(id => profilesApi.getProfile({ id }))
-    );
-    return results.map(r =>
-      r.status === 'fulfilled' ? r.value.body.data : null
-    );
-  },
-  {
-    maxBatchSize: 10,  // Stay well under rate limits
-    batchScheduleFn: cb => setTimeout(cb, 50),  // 50ms batch window
-    cache: true,  // In-memory cache within the DataLoader
-  }
-);
-
-// These three calls are batched into concurrent requests
-const [p1, p2, p3] = await Promise.all([
-  profileLoader.load('PROFILE_ID_1'),
-  profileLoader.load('PROFILE_ID_2'),
-  profileLoader.load('PROFILE_ID_3'),
-]);
-```
+Coalesce many `getProfile(id)` calls in a single tick into concurrency-controlled requests with `DataLoader` (`maxBatchSize: 10`, 50 ms window). See the batching implementation in [references/implementation.md](references/implementation.md).
 
 ### Step 5: Parallel API Calls with Concurrency Control
 
-```typescript
-import PQueue from 'p-queue';
-
-// Process large operations with controlled concurrency
-const queue = new PQueue({
-  concurrency: 10,    // Max 10 parallel requests
-  interval: 1000,     // Per second
-  intervalCap: 50,    // 50 requests/second (safe margin under 75 burst)
-});
-
-// Example: update 10,000 profiles efficiently
-async function bulkUpdateProfiles(updates: Array<{ email: string; data: any }>) {
-  let completed = 0;
-
-  const promises = updates.map(update =>
-    queue.add(async () => {
-      await profilesApi.createOrUpdateProfile({
-        data: {
-          type: 'profile' as any,
-          attributes: { email: update.email, ...update.data },
-        },
-      });
-      completed++;
-      if (completed % 500 === 0) {
-        console.log(`Progress: ${completed}/${updates.length}`);
-      }
-    })
-  );
-
-  await Promise.allSettled(promises);
-  console.log(`Done: ${completed}/${updates.length}`);
-}
-```
+Drive bulk writes through a `PQueue` capped at 50 req/s — a safe margin under the 75 req/s burst limit — with progress logging. See the concurrency implementation in [references/implementation.md](references/implementation.md).
 
 ### Step 6: Performance Monitoring
 
-```typescript
-// src/klaviyo/perf-monitor.ts
+Wrap calls in `measuredCall` and read a p95 summary via `getPerfSummary` to find the real bottleneck before optimizing. See the monitoring implementation in [references/implementation.md](references/implementation.md).
 
-interface PerfMetrics {
-  operation: string;
-  durationMs: number;
-  success: boolean;
-  cached: boolean;
-}
+## Output
 
-const perfLog: PerfMetrics[] = [];
+Applying this skill produces:
 
-export async function measuredCall<T>(
-  operation: string,
-  fn: () => Promise<T>,
-  cached = false
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    perfLog.push({ operation, durationMs: performance.now() - start, success: true, cached });
-    return result;
-  } catch (error) {
-    perfLog.push({ operation, durationMs: performance.now() - start, success: false, cached });
-    throw error;
-  }
-}
-
-export function getPerfSummary(): Record<string, { avg: number; p95: number; count: number }> {
-  const byOp: Record<string, number[]> = {};
-  for (const m of perfLog) {
-    (byOp[m.operation] ??= []).push(m.durationMs);
-  }
-  const summary: Record<string, any> = {};
-  for (const [op, durations] of Object.entries(byOp)) {
-    durations.sort((a, b) => a - b);
-    summary[op] = {
-      avg: Math.round(durations.reduce((a, b) => a + b, 0) / durations.length),
-      p95: Math.round(durations[Math.floor(durations.length * 0.95)]),
-      count: durations.length,
-    };
-  }
-  return summary;
-}
-```
+- **Sparse-fieldset read calls** with 50-80% smaller payloads on list endpoints.
+- **A cache module** (`src/klaviyo/cache.ts`) that serves repeated reads from memory with per-resource TTLs.
+- **A pagination helper** (`src/klaviyo/pagination.ts`) that safely walks cursor-paginated endpoints to completion under a `maxPages` guard.
+- **Batching + concurrency helpers** that keep bulk operations under Klaviyo's 75 req/s burst and 700 req/min ceilings.
+- **A perf-monitoring module** (`src/klaviyo/perf-monitor.ts`) emitting per-operation `avg`, `p95`, and `count` so you can verify the gains.
 
 ## Error Handling
 
@@ -284,13 +97,36 @@ export function getPerfSummary(): Record<string, { avg: number; p95: number; cou
 | Rate limit on bulk ops | Too much concurrency | Reduce `PQueue` concurrency/intervalCap |
 | Slow filter queries | Complex filter expressions | Simplify filters, use segment IDs instead |
 
+## Examples
+
+Worked, end-to-end scenarios that combine the steps above are in [references/examples.md](references/examples.md):
+
+- **Fast cached profile lookup** — sparse fieldsets + LRU caching for a repeated lookup.
+- **Export a large list** — bounded cursor pagination for a multi-hundred-thousand-member list.
+- **Bulk-update 10,000 profiles** — `PQueue` concurrency under the rate limit.
+- **Measure where the time goes** — `measuredCall` + `getPerfSummary` to find the slow op first.
+
+Minimal caching example (full versions in the reference):
+
+```typescript
+import { cachedKlaviyoCall } from './cache';
+
+const profile = await cachedKlaviyoCall(
+  `profile:${email}`,
+  () => profilesApi.getProfiles({ filter: `equals(email,"${email}")` }),
+  5 * 60 * 1000  // 5 minute TTL
+);
+```
+
 ## Resources
 
 - [Klaviyo API Filtering](https://developers.klaviyo.com/en/reference/api_overview#filtering)
 - [JSON:API Sparse Fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets)
 - [DataLoader](https://github.com/graphql/dataloader)
 - [p-queue](https://github.com/sindresorhus/p-queue)
+- [references/implementation.md](references/implementation.md) — full code for every step
+- [references/examples.md](references/examples.md) — combined real-world scenarios
 
 ## Next Steps
 
-For cost optimization, see `klaviyo-cost-tuning`.
+Once reads are cached and bulk writes are rate-limit-safe, profile the workload with `getPerfSummary` (Step 6) to confirm the p95 improvement, then tune TTLs and concurrency to your traffic. For cost optimization of the same integration, see the `klaviyo-cost-tuning` skill.

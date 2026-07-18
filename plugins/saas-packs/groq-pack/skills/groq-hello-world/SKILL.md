@@ -1,16 +1,11 @@
 ---
 name: groq-hello-world
-description: 'Create a minimal working Groq chat completion example.
-
-  Use when starting a new Groq integration, testing your setup,
-
-  or learning basic Groq API patterns.
-
+description: |
+  Create a minimal working Groq chat completion example. Use when starting a new
+  Groq integration, testing your setup after installing the SDK, or learning the
+  basic Groq API request/response pattern before building something larger.
   Trigger with phrases like "groq hello world", "groq example",
-
   "groq quick start", "simple groq code".
-
-  '
 allowed-tools: Read, Write, Edit
 version: 1.10.0
 license: MIT
@@ -26,7 +21,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Build a minimal chat completion with Groq's LPU inference API. Groq uses an OpenAI-compatible endpoint, so the API shape is familiar -- but responses arrive 10-50x faster than GPU-based providers.
+Build a minimal chat completion with Groq's LPU inference API. Groq uses an OpenAI-compatible endpoint, so the API shape is familiar -- but responses arrive 10-50x faster than GPU-based providers. This skill gets you from an installed SDK to a working, verified request; deeper variants (streaming, Python, model selection) live in `references/`.
 
 ## Prerequisites
 
@@ -35,6 +30,8 @@ Build a minimal chat completion with Groq's LPU inference API. Groq uses an Open
 - Completed `groq-install-auth` setup
 
 ## Instructions
+
+Use `Write` to create the example file, then run it to confirm your key and SDK work. Start with the single basic request below; reach for the reference variants only once this succeeds.
 
 ### Step 1: Basic Chat Completion (TypeScript)
 
@@ -59,107 +56,24 @@ async function main() {
 main().catch(console.error);
 ```
 
-### Step 2: Streaming Response
+### Step 2: Go deeper (references)
 
-```typescript
-async function streamExample() {
-  const stream = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      { role: "user", content: "Explain quantum computing in 3 sentences." },
-    ],
-    stream: true,
-  });
+Once Step 1 returns text, extend it with the moved-out variants:
 
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content || "";
-    process.stdout.write(content);
-  }
-  console.log(); // newline
-}
+- **Streaming** tokens as they generate, plus the **Python** equivalent and a **model-selection** cheat sheet — [references/examples.md](references/examples.md).
+- Full **model catalog** (IDs, params, context, speed) and the complete **response interface** — [references/models-and-response.md](references/models-and-response.md).
+
+## Output
+
+A successful run prints the assistant's reply text followed by the total token count, e.g.:
+
+```
+Groq's LPU (Language Processing Unit) is a deterministic, single-core
+inference chip... [assistant response continues]
+Tokens: 142
 ```
 
-### Step 3: Python Equivalent
-
-```python
-from groq import Groq
-
-client = Groq()
-
-completion = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "What is Groq's LPU and why is it fast?"},
-    ],
-)
-
-print(completion.choices[0].message.content)
-print(f"Tokens: {completion.usage.total_tokens}")
-```
-
-### Step 4: Try Different Models
-
-```typescript
-// Speed tier -- fastest responses (~560 tok/s)
-const fast = await groq.chat.completions.create({
-  model: "llama-3.1-8b-instant",
-  messages: [{ role: "user", content: "Hello!" }],
-});
-
-// Quality tier -- best reasoning (~280 tok/s)
-const quality = await groq.chat.completions.create({
-  model: "llama-3.3-70b-versatile",
-  messages: [{ role: "user", content: "Explain monads in Haskell." }],
-});
-
-// Vision tier -- multimodal understanding
-const vision = await groq.chat.completions.create({
-  model: "meta-llama/llama-4-scout-17b-16e-instruct",
-  messages: [{
-    role: "user",
-    content: [
-      { type: "text", text: "Describe this image." },
-      { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } },
-    ],
-  }],
-});
-```
-
-## Available Models (Current)
-
-| Model ID | Params | Context | Speed | Best For |
-|----------|--------|---------|-------|----------|
-| `llama-3.1-8b-instant` | 8B | 128K | ~560 tok/s | Classification, extraction, fast tasks |
-| `llama-3.3-70b-versatile` | 70B | 128K | ~280 tok/s | General purpose, reasoning, code |
-| `llama-3.3-70b-specdec` | 70B | 128K | Faster | Same quality, speculative decoding |
-| `meta-llama/llama-4-scout-17b-16e-instruct` | 17Bx16E | 128K | ~460 tok/s | Vision, multimodal |
-| `meta-llama/llama-4-maverick-17b-128e-instruct` | 17Bx128E | 128K | — | Best multimodal quality |
-
-## Response Structure
-
-```typescript
-interface ChatCompletion {
-  id: string;                    // "chatcmpl-xxx"
-  object: "chat.completion";
-  created: number;               // Unix timestamp
-  model: string;                 // Actual model used
-  choices: [{
-    index: number;
-    message: { role: "assistant"; content: string };
-    finish_reason: "stop" | "length" | "tool_calls";
-  }];
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-    queue_time: number;          // Groq-specific: seconds in queue
-    prompt_time: number;         // Groq-specific: seconds for prompt
-    completion_time: number;     // Groq-specific: seconds for completion
-    total_time: number;          // Groq-specific: total processing seconds
-  };
-}
-```
+The underlying API returns an OpenAI-compatible `ChatCompletion` object: the text is at `choices[0].message.content`, and `usage` carries token counts plus four Groq-specific timing fields (`queue_time`, `prompt_time`, `completion_time`, `total_time`). Full response shape: [references/models-and-response.md](references/models-and-response.md).
 
 ## Error Handling
 
@@ -170,12 +84,16 @@ interface ChatCompletion {
 | `429 Rate limit` | Free tier: 30 RPM on large models | Wait for `retry-after` header value |
 | `context_length_exceeded` | Prompt + max_tokens > model context | Reduce prompt size or set lower `max_tokens` |
 
+## Examples
+
+- **Minimal request** — the TypeScript block in Step 1 above is the canonical hello-world; run it as-is after setting `GROQ_API_KEY`.
+- **Streaming a response** — see [references/examples.md](references/examples.md) for the `stream: true` loop that writes tokens to stdout as they arrive.
+- **Python equivalent** — the same request in Python: [references/examples.md](references/examples.md).
+- **Choosing a model per task** (speed vs. quality vs. vision) — [references/examples.md](references/examples.md).
+
 ## Resources
 
 - [Groq Text Generation Docs](https://console.groq.com/docs/text-chat)
 - [Groq Models Reference](https://console.groq.com/docs/models)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
-
-## Next Steps
-
-Proceed to `groq-local-dev-loop` for development workflow setup.
+- Next: proceed to `groq-local-dev-loop` for development workflow setup.

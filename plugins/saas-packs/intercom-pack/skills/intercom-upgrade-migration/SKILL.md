@@ -1,20 +1,17 @@
 ---
 name: intercom-upgrade-migration
-description: 'Upgrade intercom-client SDK versions and handle API version changes.
-
-  Use when upgrading the SDK, migrating between API versions,
-
-  or detecting breaking changes in Intercom releases.
-
+description: |
+  Upgrade the intercom-client SDK across major versions and handle Intercom API
+  version changes safely. Use when a project is pinned to an old intercom-client
+  release, when the v5 CommonJS API must move to the v6 TypeScript rewrite, or
+  when detecting breaking changes in a new Intercom release before shipping.
   Trigger with phrases like "upgrade intercom", "intercom migration",
-
   "intercom breaking changes", "update intercom SDK", "intercom API version".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+argument-hint: "[current-version] [target-version]"
 tags:
 - saas
 - support
@@ -26,184 +23,104 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Guide for upgrading the `intercom-client` npm package and handling Intercom API version changes. The SDK was rewritten in TypeScript starting at v6, which introduced significant breaking changes from the v5 CommonJS API.
+Upgrade the `intercom-client` npm package and handle Intercom API version
+changes without breaking production traffic. The v6 TypeScript rewrite changed
+the API surface — most notably unifying `users`/`leads` into a single `contacts`
+API — so this skill drives a branch-based, type-checked upgrade that surfaces
+every breaking change through the compiler and test suite before merge.
+
+Deep material lives in `references/` so this file stays scannable:
+
+- [Full v5 → v6 migration guide](references/migration-guide.md) — every changed
+  operation with before/after code, API-version pinning, the upgrade procedure,
+  type-import changes, and the method cheat sheet.
+- [Worked examples](references/examples.md) — three end-to-end runs from version
+  detection through a committed upgrade branch.
 
 ## Prerequisites
 
-- Current `intercom-client` installed
-- Git for version control
-- Test suite available
+- A project with `intercom-client` already installed (`npm list intercom-client`
+  shows the current version).
+- Git available for branch-based upgrades and reviewable diffs.
+- A working test suite, ideally including an integration suite that can run
+  against a dev Intercom workspace.
+- TypeScript (`tsc`) configured if migrating to v6+, since the compiler is the
+  primary breaking-change detector.
+
+## Authentication
+
+Intercom API calls authenticate with a workspace access token passed as a Bearer
+token. Read it from the `INTERCOM_ACCESS_TOKEN` environment variable — never
+hardcode it. Version-detection curls and the integration test step both consume
+this variable:
+
+```bash
+export INTERCOM_ACCESS_TOKEN="<workspace-access-token>"   # from Intercom > Developer Hub
+```
+
+Use a separate dev-workspace token (`$DEV_TOKEN`) for the integration test step
+so the upgrade is validated without touching production data.
 
 ## Instructions
 
-### Step 1: Check Current Versions
+Follow the workflow at a high level here; drill into
+[the migration guide](references/migration-guide.md) for the exact code diffs.
+
+### Step 1: Check current versions
+
+Read (with the `Read` tool or `npm list`) the installed version, the latest
+published version, and the live API version to size the upgrade:
 
 ```bash
-# Current SDK version
-npm list intercom-client
-
-# Latest available
-npm view intercom-client version
-
-# Current API version (check response headers)
+npm list intercom-client                  # installed SDK version
+npm view intercom-client version          # latest available
 curl -s -D - -o /dev/null \
   -H "Authorization: Bearer $INTERCOM_ACCESS_TOKEN" \
   https://api.intercom.io/me 2>/dev/null | grep -i intercom-version
 ```
 
-### Step 2: SDK v5 to v6 Migration (Major Breaking Change)
+If the installed major is < 6 and the target is ≥ 6, expect the TypeScript-rewrite
+breaking changes.
 
-The v6 SDK is a full TypeScript rewrite with a new API surface.
+### Step 2: Migrate the code (v5 → v6)
 
-**Client Initialization:**
+For a major crossing, apply the breaking-change diffs with the `Edit`/`Write`
+tools: swap `new Intercom.Client()` for `new IntercomClient()`, move
+`users`/`leads` calls to the unified `contacts` API, rename positional params
+(`id` → `contactId`/`conversationId`), and update error handling to the
+`IntercomError` instance check. The full before/after set and a one-line-per-method
+cheat sheet are in [the migration guide](references/migration-guide.md).
 
-```typescript
-// v5 (CommonJS)
-const Intercom = require("intercom-client");
-const client = new Intercom.Client({ token: "xxx" });
+### Step 3: Pin the API version if needed
 
-// v6+ (TypeScript ESM)
-import { IntercomClient } from "intercom-client";
-const client = new IntercomClient({ token: "xxx" });
-```
+The SDK sends a compatible `Intercom-Version` header automatically. Pin it
+explicitly only when using raw `fetch` requests or when a response shape must be
+frozen — see the API-version-pinning section of the migration guide.
 
-**Contact Operations:**
+### Step 4: Run the type-checked upgrade on a branch
 
-```typescript
-// v5
-await client.users.create({ email: "test@example.com" });
-await client.leads.create({ email: "lead@example.com" });
-await client.users.find({ id: "abc" });
-await client.users.list();
-
-// v6+ (unified contacts API)
-await client.contacts.create({ role: "user", email: "test@example.com" });
-await client.contacts.create({ role: "lead", email: "lead@example.com" });
-await client.contacts.find({ contactId: "abc" });
-await client.contacts.list();
-```
-
-**Conversation Operations:**
-
-```typescript
-// v5
-await client.conversations.reply({ id: "123", body: "Hello", type: "admin", admin_id: "456" });
-
-// v6+
-await client.conversations.reply({
-  conversationId: "123",
-  body: "Hello",
-  type: "admin",
-  adminId: "456",
-});
-```
-
-**Error Handling:**
-
-```typescript
-// v5
-try { ... } catch (e) { console.log(e.statusCode, e.body); }
-
-// v6+
-import { IntercomError } from "intercom-client";
-try { ... } catch (e) {
-  if (e instanceof IntercomError) {
-    console.log(e.statusCode, e.message, e.body);
-  }
-}
-```
-
-**Pagination:**
-
-```typescript
-// v5 - callback style
-client.users.scroll.each({}, (users) => { /* ... */ });
-
-// v6+ - async iteration
-const response = await client.contacts.list();
-for await (const contact of response) {
-  // Auto-paginates
-}
-
-// Or manual cursor-based pagination
-let startingAfter: string | undefined;
-do {
-  const page = await client.contacts.list({ perPage: 50, startingAfter });
-  // process page.data
-  startingAfter = page.pages?.next?.startingAfter ?? undefined;
-} while (startingAfter);
-```
-
-### Step 3: API Version Pinning
-
-Intercom API versions control response shapes. The SDK defaults to a compatible version, but you can pin explicitly.
-
-```typescript
-// Current stable version: 2.11
-// SDK handles version headers automatically
-// To use specific version via raw requests:
-const response = await fetch("https://api.intercom.io/contacts", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Intercom-Version": "2.11",
-    "Content-Type": "application/json",
-  },
-});
-```
-
-### Step 4: Upgrade Procedure
+Do the whole upgrade on a dedicated branch so TypeScript and the tests gate it:
 
 ```bash
-# 1. Create upgrade branch
 git checkout -b upgrade/intercom-client-v6
-
-# 2. Install new version
 npm install intercom-client@latest
-
-# 3. Run type checks (will surface breaking changes)
-npx tsc --noEmit 2>&1 | grep "intercom"
-
-# 4. Run tests
+npx tsc --noEmit 2>&1 | grep "intercom"    # surfaces every breaking change
 npm test
-
-# 5. Fix breaking changes identified by TypeScript and tests
-
-# 6. Test against dev workspace
-INTERCOM_ACCESS_TOKEN=$DEV_TOKEN npm run test:integration
-
-# 7. Commit and PR
-git add -A && git commit -m "chore: upgrade intercom-client to v6"
 ```
 
-### Step 5: Type Import Changes
+Fix each error the compiler reports, re-run until clean, then validate against a
+dev workspace and commit. The complete procedure is in the migration guide.
 
-```typescript
-// v6+ exports types under Intercom namespace
-import { Intercom } from "intercom-client";
+## Output
 
-// Use typed request/response interfaces
-const request: Intercom.CreateContactRequest = {
-  role: "user",
-  email: "test@example.com",
-};
+Running this skill produces:
 
-const contact: Intercom.Contact = await client.contacts.create(request);
-```
-
-## v5 to v6 Migration Cheat Sheet
-
-| v5 Method | v6 Method |
-|-----------|-----------|
-| `client.users.create()` | `client.contacts.create({ role: "user" })` |
-| `client.leads.create()` | `client.contacts.create({ role: "lead" })` |
-| `client.users.find({ id })` | `client.contacts.find({ contactId })` |
-| `client.users.update({ id })` | `client.contacts.update({ contactId })` |
-| `client.users.list()` | `client.contacts.list()` |
-| `client.conversations.reply({ id })` | `client.conversations.reply({ conversationId })` |
-| `client.events.create()` | `client.dataEvents.create()` |
-| `client.tags.tag()` | `client.contacts.tag()` |
-| `new Intercom.Client({ token })` | `new IntercomClient({ token })` |
-| `e.statusCode` | `e instanceof IntercomError ? e.statusCode : ...` |
+- A dedicated upgrade branch (e.g. `upgrade/intercom-client-v6`) with
+  `intercom-client` bumped in `package.json` / lockfile.
+- Source edits that migrate every v5 call site to the v6 API surface.
+- A clean `npx tsc --noEmit` run (no remaining `intercom-client` type errors) and
+  a green `npm test` / integration run against a dev workspace.
+- A commit ready for PR, e.g. `chore: upgrade intercom-client to v6`.
 
 ## Error Handling
 
@@ -212,7 +129,26 @@ const contact: Intercom.Contact = await client.contacts.create(request);
 | `Cannot find module 'intercom-client'` | Import fails | `npm install intercom-client` |
 | `Property 'users' does not exist` | TypeScript error | Migrate `users`/`leads` to `contacts` |
 | `Property 'id' does not exist` | Changed param names | Use `contactId`, `conversationId` |
-| Response shape changed | Runtime errors | Check API version headers |
+| Response shape changed | Runtime errors | Check API version headers, pin `Intercom-Version` |
+| `401 Unauthorized` | curl/test fails | Verify `INTERCOM_ACCESS_TOKEN` is set and valid |
+
+## Examples
+
+Quick skeleton — detect, then migrate one call:
+
+```bash
+npm list intercom-client        # e.g. 5.4.0
+npm view intercom-client version # e.g. 6.4.0 → major upgrade
+```
+
+```typescript
+// v5  → migrate to →  v6
+// await client.users.create({ email });
+await client.contacts.create({ role: "user", email });
+```
+
+Three full end-to-end runs — version detection, a single-call migration, and a
+complete branch upgrade — are in [references/examples.md](references/examples.md).
 
 ## Resources
 
@@ -223,4 +159,6 @@ const contact: Intercom.Contact = await client.contacts.create(request);
 
 ## Next Steps
 
-For CI integration during upgrades, see `intercom-ci-integration`.
+After the upgrade branch is green, wire the version bump into CI so future
+regressions are caught automatically — see the `intercom-ci-integration` skill
+for the pipeline configuration.

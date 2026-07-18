@@ -26,11 +26,25 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Complete checklist for deploying Intercom integrations to production, covering authentication, error handling, rate limits, webhooks, and monitoring.
+Complete checklist for deploying Intercom integrations to production, covering
+authentication, error handling, rate limits, webhooks, and monitoring. Work the
+pre-deployment checklist below section by section, run the pre-flight script as
+the go-live gate, and keep the rollback procedure ready before you launch.
 
-## Pre-Deployment Checklist
+## Prerequisites
 
-### Authentication and Secrets
+- A production Intercom workspace with an access token issued from the Developer Hub.
+- `$INTERCOM_ACCESS_TOKEN` exported in the environment where you run the checks.
+- `curl` and `jq` available for the pre-flight and status probes.
+- The integration deployed behind a feature flag so it can be disabled without a redeploy.
+- (Optional) `$WEBHOOK_URL` set if the integration receives Intercom webhooks.
+
+## Instructions
+
+Work through the checklist in order. Each group gates a distinct failure class —
+do not skip a group because "it probably works."
+
+### Authentication and secrets
 
 - [ ] Production access token stored in secret manager (not env files)
 - [ ] Token has minimal required OAuth scopes
@@ -38,7 +52,7 @@ Complete checklist for deploying Intercom integrations to production, covering a
 - [ ] Separate tokens for dev/staging/production workspaces
 - [ ] No hardcoded tokens in source code (verified with `grep -r "dG9r" .`)
 
-### API Integration Quality
+### API integration quality
 
 - [ ] All API calls wrapped in error handling (`try/catch` with `IntercomError`)
 - [ ] 429 rate limit retry with exponential backoff implemented
@@ -47,7 +61,7 @@ Complete checklist for deploying Intercom integrations to production, covering a
 - [ ] Pagination handles cursor-based iteration correctly
 - [ ] Contact search uses compound queries efficiently
 
-### Webhook Endpoints
+### Webhook endpoints
 
 - [ ] Webhook URL uses HTTPS (Intercom requires it)
 - [ ] `X-Hub-Signature` verification implemented (HMAC-SHA1)
@@ -55,14 +69,14 @@ Complete checklist for deploying Intercom integrations to production, covering a
 - [ ] Idempotency: duplicate webhooks handled gracefully
 - [ ] Failed webhook retry handled (Intercom retries once after 1 min)
 
-### Data Handling
+### Data handling
 
 - [ ] PII redacted from logs (emails, names, phone numbers)
 - [ ] Contact data cached with appropriate TTL
 - [ ] GDPR deletion handler implemented for contact data
 - [ ] Custom attributes validated before sending to API
 
-### Monitoring and Alerting
+### Monitoring and alerting
 
 - [ ] Health check endpoint includes Intercom connectivity test
 - [ ] Error rate alerting configured (threshold: 5% over 5 min)
@@ -70,115 +84,41 @@ Complete checklist for deploying Intercom integrations to production, covering a
 - [ ] Latency monitoring (alert if P95 > 2 seconds)
 - [ ] Intercom status page monitored (https://status.intercom.com)
 
-## Production Health Check
+### Health check and go-live
+
+- [ ] Production health endpoint returns `503` when Intercom is unhealthy —
+  skeleton below, full implementation in
+  [references/implementation.md](references/implementation.md).
+- [ ] Pre-flight verification script passes against the production token —
+  full script in [references/examples.md](references/examples.md).
+- [ ] Rollback procedure rehearsed — see
+  [references/examples.md](references/examples.md).
+
+Minimal health-check skeleton (the full module classifies degraded-vs-unhealthy
+from the `IntercomError` status code and wires an Express `/health` route — see
+[the full walkthrough](references/implementation.md)):
 
 ```typescript
-import { IntercomClient, IntercomError } from "intercom-client";
-
-interface IntercomHealthStatus {
-  status: "healthy" | "degraded" | "unhealthy";
-  latencyMs: number;
-  authenticated: boolean;
-  rateLimitRemaining?: number;
-  error?: string;
-}
-
-async function checkIntercomHealth(
-  client: IntercomClient
-): Promise<IntercomHealthStatus> {
+async function checkIntercomHealth(client: IntercomClient) {
   const start = Date.now();
   try {
-    const admins = await client.admins.list();
-    return {
-      status: "healthy",
-      latencyMs: Date.now() - start,
-      authenticated: true,
-      rateLimitRemaining: undefined, // Parsed from response headers
-    };
+    await client.admins.list();
+    return { status: "healthy", latencyMs: Date.now() - start };
   } catch (err) {
-    const latencyMs = Date.now() - start;
-    if (err instanceof IntercomError) {
-      return {
-        status: err.statusCode === 429 ? "degraded" : "unhealthy",
-        latencyMs,
-        authenticated: err.statusCode !== 401,
-        error: `${err.statusCode}: ${err.message}`,
-      };
-    }
-    return {
-      status: "unhealthy",
-      latencyMs,
-      authenticated: false,
-      error: (err as Error).message,
-    };
+    // 429 → degraded, 401 → unhealthy + unauthenticated, else unhealthy
+    return { status: "unhealthy", latencyMs: Date.now() - start };
   }
 }
-
-// Express health endpoint
-app.get("/health", async (req, res) => {
-  const intercom = await checkIntercomHealth(client);
-  const overall = intercom.status === "healthy" ? 200 : 503;
-  res.status(overall).json({
-    status: intercom.status,
-    services: { intercom },
-    timestamp: new Date().toISOString(),
-  });
-});
 ```
 
-## Pre-Flight Verification Script
+## Output
 
-```bash
-#!/bin/bash
-set -euo pipefail
-
-echo "=== Intercom Production Pre-Flight ==="
-
-# 1. Auth check
-echo -n "Auth: "
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $INTERCOM_ACCESS_TOKEN" \
-  https://api.intercom.io/me)
-[ "$STATUS" = "200" ] && echo "PASS" || { echo "FAIL ($STATUS)"; exit 1; }
-
-# 2. Rate limit headroom
-echo -n "Rate limit remaining: "
-REMAINING=$(curl -s -D - -o /dev/null \
-  -H "Authorization: Bearer $INTERCOM_ACCESS_TOKEN" \
-  https://api.intercom.io/me 2>/dev/null | grep -i x-ratelimit-remaining | awk '{print $2}')
-echo "$REMAINING"
-
-# 3. Intercom platform status
-echo -n "Intercom status: "
-curl -s https://status.intercom.com/api/v2/status.json | jq -r '.status.indicator'
-
-# 4. Webhook endpoint reachable (if configured)
-if [ -n "${WEBHOOK_URL:-}" ]; then
-  echo -n "Webhook endpoint: "
-  WH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$WEBHOOK_URL")
-  echo "$WH_STATUS"
-fi
-
-echo "=== Pre-flight complete ==="
-```
-
-## Rollback Procedure
-
-```bash
-# 1. Disable Intercom integration via feature flag
-curl -X PATCH https://your-config-service/flags/intercom_enabled \
-  -d '{"value": false}'
-
-# 2. If using k8s, rollback deployment
-kubectl rollout undo deployment/intercom-service
-kubectl rollout status deployment/intercom-service
-
-# 3. Verify rollback
-curl -s https://your-app.com/health | jq '.services.intercom'
-
-# 4. Disable webhooks in Intercom Developer Hub
-# (prevents queued webhook deliveries to unhealthy endpoint)
-```
+- A completed checklist where every applicable box is checked before launch.
+- A pre-flight run that prints `Auth: PASS`, current rate-limit headroom, the
+  Intercom status indicator (`none` = clear), and the webhook endpoint HTTP code.
+  A non-`200` auth code exits non-zero and blocks the go-live.
+- A `/health` endpoint returning `200` when Intercom is healthy and `503` when it
+  is degraded or unhealthy, with the classification reason in the JSON body.
 
 ## Error Handling
 
@@ -190,12 +130,30 @@ curl -s https://your-app.com/health | jq '.services.intercom'
 | High latency | P95 > 3s | P2 | Check Intercom status, enable caching |
 | Webhook failures | Delivery errors | P3 | Check endpoint health, verify signature |
 
+If the integration is failing in production, run the rollback procedure in
+[references/examples.md](references/examples.md): flip the feature flag off first,
+then roll back the deployment, verify `/health`, and disable webhooks in the
+Developer Hub to stop queued deliveries reaching an unhealthy endpoint.
+
+## Examples
+
+- **Production health check** — a full TypeScript module plus Express `/health`
+  endpoint with status classification: [references/implementation.md](references/implementation.md).
+- **Pre-flight verification script** — a `set -euo pipefail` bash gate that
+  checks auth, rate-limit headroom, platform status, and webhook reachability,
+  with expected output: [references/examples.md](references/examples.md).
+- **Rollback procedure** — feature-flag disable, `kubectl rollout undo`, health
+  verification, and webhook teardown: [references/examples.md](references/examples.md).
+
 ## Resources
 
 - [Intercom Status](https://status.intercom.com)
 - [Rate Limiting](https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting)
 - [Webhook Setup](https://developers.intercom.com/docs/webhooks/setting-up-webhooks)
+- Production health check + monitoring detail: [references/implementation.md](references/implementation.md)
+- Pre-flight + rollback scripts: [references/examples.md](references/examples.md)
 
 ## Next Steps
 
-For version upgrades, see `intercom-upgrade-migration`.
+For version upgrades, see the `intercom-upgrade-migration` skill in this pack,
+which covers breaking-change migration and dependency bumps.

@@ -1,11 +1,13 @@
 ---
 name: clickhouse-migration-deep-dive
-description: "Execute ClickHouse schema migrations \u2014 ALTER TABLE operations,\
-  \ data migration\nbetween engines, versioned migration runners, and zero-downtime\
-  \ schema changes.\nUse when modifying ClickHouse schemas, migrating data between\
-  \ tables,\nor implementing versioned migration workflows.\nTrigger: \"clickhouse\
-  \ migration\", \"clickhouse ALTER TABLE\", \"clickhouse schema change\",\n\"migrate\
-  \ clickhouse\", \"clickhouse add column\", \"clickhouse schema migration\".\n"
+description: |
+  Execute ClickHouse schema migrations — ALTER TABLE operations, data migration
+  between engines, versioned migration runners, and zero-downtime schema changes.
+  Use when modifying ClickHouse schemas, migrating data between tables, or
+  implementing versioned migration workflows.
+  Trigger with "clickhouse migration", "clickhouse ALTER TABLE",
+  "clickhouse schema change", "migrate clickhouse", "clickhouse add column",
+  or "clickhouse schema migration".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.6.0
 license: MIT
@@ -23,7 +25,10 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Plan and execute ClickHouse schema migrations: column changes, engine migrations,
-ORDER BY modifications, and versioned migration runners.
+ORDER BY modifications, and versioned migration runners. ClickHouse ALTER
+operations behave unlike PostgreSQL/MySQL — most are asynchronous **mutations**
+that rewrite data parts in the background, and some changes (ORDER BY, engine)
+require full table recreation. This skill walks the safe path for each.
 
 ## Prerequisites
 
@@ -33,234 +38,58 @@ ORDER BY modifications, and versioned migration runners.
 
 ## Instructions
 
-### Step 1: Understanding ClickHouse DDL
+Follow these steps in order. SQL and runner code for each step live in the
+linked reference files — keep them open while you work.
 
-ClickHouse ALTER operations are **mutations** — they run asynchronously and
-rewrite data parts in the background. This is fundamentally different from
-PostgreSQL/MySQL where ALTER is often instant or blocking.
+### Step 1: Classify the operation
+
+Decide whether your change is lightweight (instant, metadata only) or a
+heavyweight mutation (rewrites parts in the background):
 
 ```sql
--- Lightweight operations (instant, metadata only)
+-- Lightweight (instant): ADD COLUMN, RENAME COLUMN, COMMENT COLUMN
 ALTER TABLE events ADD COLUMN country LowCardinality(String) DEFAULT '';
-ALTER TABLE events RENAME COLUMN old_name TO new_name;
-ALTER TABLE events COMMENT COLUMN user_id 'Unique user identifier';
 
--- Heavyweight operations (mutations — rewrite parts in background)
+-- Heavyweight (mutation): MODIFY COLUMN, DROP COLUMN, DELETE, UPDATE
 ALTER TABLE events MODIFY COLUMN properties String CODEC(ZSTD(3));
-ALTER TABLE events DROP COLUMN deprecated_field;
-ALTER TABLE events DELETE WHERE user_id = 0;
-ALTER TABLE events UPDATE email = '' WHERE created_at < '2024-01-01';
 
--- Check mutation progress
-SELECT database, table, mutation_id, command, is_done,
-       parts_to_do, create_time
-FROM system.mutations
-WHERE NOT is_done ORDER BY create_time;
+-- Always monitor mutation progress
+SELECT database, table, mutation_id, is_done, parts_to_do
+FROM system.mutations WHERE NOT is_done ORDER BY create_time;
 ```
 
-### Step 2: Column Operations
+### Step 2: Run column operations
 
-```sql
--- Add a column (instant — no data rewrite)
-ALTER TABLE analytics.events
-    ADD COLUMN IF NOT EXISTS country LowCardinality(String) DEFAULT ''
-    AFTER user_id;
+Use `Edit`/`Write` to author the `ALTER TABLE` statements, then apply them.
+Add/modify/drop columns, set materialized defaults, and attach codecs. Full DDL
+semantics and every column-operation variant:
+[DDL & column operations](references/column-operations.md).
 
--- Add column with materialized default (fills new data, not old)
-ALTER TABLE analytics.events
-    ADD COLUMN IF NOT EXISTS event_date Date
-    MATERIALIZED toDate(created_at);
+### Step 3: Recreate the table for ORDER BY / engine changes
 
--- Modify column type (mutation — rewrites all parts)
-ALTER TABLE analytics.events
-    MODIFY COLUMN user_id UInt64;   -- Was UInt32, now UInt64
+ClickHouse has no `MODIFY ORDER BY` and no in-place engine change. Create a new
+table, `INSERT ... SELECT` the data, then atomically `RENAME TABLE` to swap.
+Full create → copy → swap → verify → drop recipe for both cases:
+[table recreation](references/table-recreation.md).
 
--- Drop a column
-ALTER TABLE analytics.events
-    DROP COLUMN IF EXISTS deprecated_field;
+### Step 4: Wire a versioned migration runner
 
--- Change default value
-ALTER TABLE analytics.events
-    MODIFY COLUMN created_at DateTime DEFAULT now();
+For repeatable, tracked migrations, drive numbered `.sql` files through a runner
+that records applied versions in a `_migrations` table and stops on first
+failure. Use `Write` to scaffold `runner.ts` and the `sql/NNN-*.sql` files, then
+run it with `npm`/`node`. Full runner, example migration files, and the
+operation downtime matrix: [migration runner](references/migration-runner.md).
 
--- Add codec to existing column (mutation)
-ALTER TABLE analytics.events
-    MODIFY COLUMN properties String CODEC(ZSTD(3));
-```
+## Output
 
-### Step 3: Change ORDER BY (Requires Table Recreation)
+Applying this skill produces:
 
-ClickHouse does **not** support `ALTER TABLE ... MODIFY ORDER BY`. You must
-create a new table and migrate data.
-
-```sql
--- Step 1: Create new table with desired ORDER BY
-CREATE TABLE analytics.events_v2 AS analytics.events
-ENGINE = MergeTree()
-ORDER BY (tenant_id, event_type, toDate(created_at))  -- New key
-PARTITION BY toYYYYMM(created_at);
-
--- Step 2: Copy data
-INSERT INTO analytics.events_v2 SELECT * FROM analytics.events;
-
--- Step 3: Atomic swap (zero-downtime if app handles reconnect)
-RENAME TABLE
-    analytics.events TO analytics.events_old,
-    analytics.events_v2 TO analytics.events;
-
--- Step 4: Verify and drop old table
-SELECT count() FROM analytics.events;
-SELECT count() FROM analytics.events_old;
--- When satisfied:
-DROP TABLE analytics.events_old;
-```
-
-### Step 4: Change Engine (MergeTree to ReplacingMergeTree)
-
-```sql
--- Create new table with ReplacingMergeTree
-CREATE TABLE analytics.users_v2 (
-    user_id    UInt64,
-    email      String,
-    plan       LowCardinality(String),
-    updated_at DateTime DEFAULT now()
-)
-ENGINE = ReplacingMergeTree(updated_at)
-ORDER BY user_id;
-
--- Migrate data
-INSERT INTO analytics.users_v2 SELECT * FROM analytics.users;
-
--- Atomic swap
-RENAME TABLE
-    analytics.users TO analytics.users_old,
-    analytics.users_v2 TO analytics.users;
-
-DROP TABLE analytics.users_old;
-```
-
-### Step 5: Versioned Migration Runner
-
-```typescript
-// src/clickhouse/migrations/runner.ts
-import { createClient } from '@clickhouse/client';
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
-
-const client = createClient({ url: process.env.CLICKHOUSE_HOST! });
-
-async function runMigrations() {
-  // Create migration tracking table
-  await client.command({
-    query: `
-      CREATE TABLE IF NOT EXISTS _migrations (
-          version     String,
-          name        String,
-          applied_at  DateTime DEFAULT now(),
-          checksum    String
-      )
-      ENGINE = ReplacingMergeTree(applied_at)
-      ORDER BY version
-    `,
-  });
-
-  // Get applied migrations
-  const rs = await client.query({
-    query: 'SELECT version FROM _migrations FINAL',
-    format: 'JSONEachRow',
-  });
-  const applied = new Set((await rs.json<{ version: string }>()).map((r) => r.version));
-
-  // Read migration files
-  const migrationsDir = join(__dirname, 'sql');
-  const files = readdirSync(migrationsDir)
-    .filter((f) => f.endsWith('.sql'))
-    .sort();  // 001-create-events.sql, 002-add-country.sql, etc.
-
-  for (const file of files) {
-    const version = file.split('-')[0];  // "001"
-    if (applied.has(version)) {
-      console.log(`  [SKIP] ${file} (already applied)`);
-      continue;
-    }
-
-    const sql = readFileSync(join(migrationsDir, file), 'utf-8');
-    console.log(`  [APPLY] ${file}...`);
-
-    try {
-      // Split on semicolons to handle multi-statement files
-      const statements = sql.split(';').filter((s) => s.trim());
-      for (const stmt of statements) {
-        await client.command({ query: stmt });
-      }
-
-      // Record migration
-      await client.insert({
-        table: '_migrations',
-        values: [{ version, name: file, checksum: '' }],
-        format: 'JSONEachRow',
-      });
-      console.log(`  [OK] ${file}`);
-    } catch (err) {
-      console.error(`  [FAIL] ${file}: ${(err as Error).message}`);
-      throw err;  // Stop on first failure
-    }
-  }
-
-  console.log('Migrations complete.');
-}
-
-runMigrations();
-```
-
-### Step 6: Example Migration Files
-
-```sql
--- migrations/sql/001-create-events.sql
-CREATE TABLE IF NOT EXISTS analytics.events (
-    event_id    UUID DEFAULT generateUUIDv4(),
-    event_type  LowCardinality(String),
-    user_id     UInt64,
-    properties  String CODEC(ZSTD(3)),
-    created_at  DateTime DEFAULT now()
-)
-ENGINE = MergeTree()
-ORDER BY (event_type, created_at)
-PARTITION BY toYYYYMM(created_at);
-```
-
-```sql
--- migrations/sql/002-add-country.sql
-ALTER TABLE analytics.events
-    ADD COLUMN IF NOT EXISTS country LowCardinality(String) DEFAULT '';
-```
-
-```sql
--- migrations/sql/003-add-ttl.sql
-ALTER TABLE analytics.events
-    MODIFY TTL created_at + INTERVAL 90 DAY;
-```
-
-```sql
--- migrations/sql/004-add-bloom-index.sql
-ALTER TABLE analytics.events
-    ADD INDEX IF NOT EXISTS idx_session session_id TYPE bloom_filter(0.01) GRANULARITY 4;
-ALTER TABLE analytics.events MATERIALIZE INDEX idx_session;
-```
-
-### Step 7: Migration Best Practices
-
-| Operation | Downtime? | Notes |
-|-----------|-----------|-------|
-| ADD COLUMN | None | Instant metadata change |
-| DROP COLUMN | None | Mutation runs in background |
-| MODIFY COLUMN type | None* | Mutation rewrites — can be slow on large tables |
-| Change ORDER BY | Brief | Requires table recreation + RENAME |
-| Change ENGINE | Brief | Requires table recreation + RENAME |
-| ADD INDEX | None | MATERIALIZE runs in background |
-| ALTER TTL | None | Takes effect on next merge |
-
-*No application downtime, but queries on the affected column may be slower during mutation.
+- **Executed ALTER statements** or recreated-and-swapped tables, with mutations
+  confirmed complete via `system.mutations WHERE NOT is_done` (empty result).
+- **Migration `.sql` files** under `migrations/sql/` (e.g. `001-create-events.sql`)
+  and a `runner.ts` that records each applied version in the `_migrations` table.
+- **Verification counts** — row counts on the new/old tables matching before the
+  old table is dropped.
 
 ## Pre-Migration Checklist
 
@@ -270,6 +99,36 @@ ALTER TABLE analytics.events MATERIALIZE INDEX idx_session;
 - [ ] Schedule during low-traffic window (for heavy mutations)
 - [ ] Prepare rollback procedure
 - [ ] Verify mutation completes (`system.mutations WHERE NOT is_done`)
+
+## Examples
+
+**Add a column (instant, no data rewrite):**
+
+```sql
+ALTER TABLE analytics.events
+    ADD COLUMN IF NOT EXISTS country LowCardinality(String) DEFAULT ''
+    AFTER user_id;
+```
+
+**Change ORDER BY via table recreation and atomic swap:**
+
+```sql
+CREATE TABLE analytics.events_v2 AS analytics.events
+ENGINE = MergeTree()
+ORDER BY (tenant_id, event_type, toDate(created_at))
+PARTITION BY toYYYYMM(created_at);
+
+INSERT INTO analytics.events_v2 SELECT * FROM analytics.events;
+
+RENAME TABLE
+    analytics.events TO analytics.events_old,
+    analytics.events_v2 TO analytics.events;
+```
+
+More worked examples: column codecs and materialized defaults in
+[column operations](references/column-operations.md), the MergeTree →
+ReplacingMergeTree engine swap in [table recreation](references/table-recreation.md),
+and end-to-end versioned files in [migration runner](references/migration-runner.md).
 
 ## Error Handling
 
@@ -286,7 +145,4 @@ ALTER TABLE analytics.events MATERIALIZE INDEX idx_session;
 - [Column Manipulations](https://clickhouse.com/docs/sql-reference/statements/alter/column)
 - [Schema Migration Tools](https://clickhouse.com/docs/knowledgebase/schema_migration_tools)
 - [Mutations](https://clickhouse.com/docs/guides/developer/mutations)
-
-## Next Steps
-
-For architecture patterns, see `clickhouse-reference-architecture`.
+- For architecture patterns, see `clickhouse-reference-architecture`.
