@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/freshie-inventory-manager",
-  "version": "1.0.4",
-  "description": "Unified command center for the freshie ecosystem inventory database — discovery scans, compliance grading, batch remediation, querying, and reporting across 50 tables of plugin/skill/pack metadata",
+  "version": "1.1.0",
+  "description": "Unified command center for the freshie ecosystem inventory database — discovery scans, compliance grading, batch remediation, querying, and reporting across 51 tables of plugin/skill/pack metadata",
   "keywords": [
     "database",
     "inventory",

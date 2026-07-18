@@ -45,13 +45,22 @@ What one sync does:
      means `dolt diff run-7 run-8` shows added rows, not cell changes;
      history queries against Dolt are `WHERE run_id = N` / `AS OF 'run-N'`.
   7. Commits (`--skip-empty`), tags run-<N> (N = MAX(discovery_runs.id))
-     only when the tag would sit on a commit that actually carries run N,
-     then pushes main AND the tag (tags do not ride along on a branch push)
+     only when the tag would sit on a commit that actually carries run N.
+  8. Runs the NON-FATAL post-commit step (same loud-skip discipline as gc —
+     the commit already succeeded): stamps the Dolt commit hash into
+     grade-histogram.json (artifact → immutable-revision traceability) and
+     emits freshie/reports/run-delta-<N>.json via run-delta.py
+     (DOLT_DIFF_SUMMARY/DOLT_DIFF_STAT schema-vs-data classification per
+     table + run-over-run grade regressions), printing a one-line summary
+     a GitHub-Actions step can consume. Default inert beyond the report;
+     --alert-on-regression makes an otherwise-successful sync exit 4 when
+     grades regressed.
+  9. Pushes main AND the tag (tags do not ride along on a branch push)
      — plus any older local tag a prior failed push stranded (reconciled
      against the DoltHub API's dolt_tags, best-effort). Push failure with
      valid creds exits non-zero and loud — a silently unpushed Dolt repo is
      single-copy history on an OOM-prone box.
-  8. Runs `dolt gc` under the same flock every GC_EVERY_N_SYNCS syncs or
+ 10. Runs `dolt gc` under the same flock every GC_EVERY_N_SYNCS syncs or
      when the repo directory doubles since the last gc (no auto-GC runs on
      the import path in this Dolt build).
 
@@ -90,7 +99,9 @@ Usage:
         [--recreate-tables] [--gc] [--org ORG] [--repo NAME]
 
 Exit codes: 0 ok · 1 gate/translation failure · 2 lock contention ·
-            3 push failure (loud, actionable).
+            3 push failure (loud, actionable) ·
+            4 sync succeeded but grade regressions were detected
+              (only with --alert-on-regression).
 """
 
 from __future__ import annotations
@@ -874,8 +885,15 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
 # ---------------------------------------------------------------------------
 
 
-def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str | None]:
-    """Commit the working set and tag run-<N>. Returns (committed, tag_name)."""
+def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str | None, str]:
+    """Commit the working set and tag run-<N>.
+
+    Returns (committed, tag_name, head_hash) — head_hash is HEAD after the
+    commit attempt. Whenever tag_name is non-None, head_hash is exactly the
+    commit run N's data sits on (fresh commit or crash-retry); when
+    tag_name is None (nothing changed AND HEAD is not run N), it is only
+    "HEAD at sync time" — consumers must not stamp it as run N's revision.
+    """
     before = head_commit(repo)
     dolt(["add", "-A"], repo)
     msg = f"freshie sync: run {run_id} from inventory.sqlite ({source_sha})"
@@ -890,7 +908,7 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
 
     if tag_base in existing and existing[tag_base] == after:
         # Retry after a crash between tag and push — the tag already tells the truth.
-        return committed, tag_base
+        return committed, tag_base, after
 
     if committed:
         tag = tag_base
@@ -911,7 +929,7 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
                 f"re-populated without a new discovery run. Do not treat this "
                 f"suffix as routine.")
         dolt(["tag", tag, "-m", msg], repo)
-        return committed, tag
+        return committed, tag, after
 
     # Nothing changed this run. Only tag HEAD if it demonstrably carries run N
     # (crash-between-commit-and-tag retry); otherwise a tag would lie.
@@ -920,10 +938,75 @@ def commit_and_tag(repo: Path, run_id: int, source_sha: str) -> tuple[bool, str 
         head_msg = head_msg_rows[0][0] if head_msg_rows else ""
         if f"run {run_id} " in head_msg or head_msg.endswith(f"run {run_id}"):
             dolt(["tag", tag_base, "-m", msg], repo)
-            return committed, tag_base
+            return committed, tag_base, after
         log(f"no data changes and HEAD is not run {run_id} — skipping tag")
-        return committed, None
-    return committed, tag_base
+        return committed, None, after
+    return committed, tag_base, after
+
+
+# ---------------------------------------------------------------------------
+# Post-commit structured output (NON-FATAL — the commit already succeeded)
+# ---------------------------------------------------------------------------
+
+
+def stamp_dolt_commit(histogram_path: Path, commit_hash: str) -> None:
+    """Add the Dolt commit hash to the already-written grade histogram.
+
+    Stamped AFTER commit_and_tag because the hash does not exist when
+    write_grades_export runs; the histogram is a git-tracked export, not
+    part of the Dolt working set, so rewriting it post-commit changes
+    nothing about the Dolt history it points at.
+    """
+    payload = json.loads(histogram_path.read_text())
+    payload["dolt_commit"] = commit_hash
+    histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
+
+
+def load_run_delta():
+    """Import the sibling run-delta.py (hyphenated name → importlib)."""
+    import importlib.util
+    path = Path(__file__).resolve().parent / "run-delta.py"
+    spec = importlib.util.spec_from_file_location("run_delta", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
+                        head_hash: str) -> bool:
+    """Stamp the histogram + emit the run-delta report. Returns True when
+    grade regressions were found (the --alert-on-regression signal).
+
+    Never raises: a failure here must not fail a sync whose commit (and, by
+    exit-code contract, whose push) is the actual product — same loud-skip
+    discipline as maybe_gc.
+    """
+    regressions_found = False
+    if tag is None:
+        # No tag means HEAD demonstrably does NOT carry run N (the
+        # nothing-changed-and-HEAD-is-older path) — stamping that hash into
+        # a histogram labeled run N would lie about provenance, so skip
+        # both outputs. On the commit and crash-retry paths tag is set and
+        # head_hash is exactly the commit the run's data sits on.
+        log("post-commit: no run tag this sync — skipping dolt_commit stamp "
+            "and run-delta report")
+        return regressions_found
+    try:
+        stamp_dolt_commit(GRADE_HISTOGRAM, head_hash)
+        log(f"stamped dolt_commit {head_hash} into {GRADE_HISTOGRAM.name}")
+    except (OSError, json.JSONDecodeError) as exc:
+        log(f"WARNING: could not stamp dolt_commit into "
+            f"{GRADE_HISTOGRAM.name} ({exc}) — the sync itself succeeded")
+    try:
+        run_delta = load_run_delta()
+        out_path, report = run_delta.emit(repo, run_id, head_hash, tag)
+        log(run_delta.summary_line(report, out_path))
+        regressions_found = bool(report["grade_regressions"])
+    except Exception as exc:  # noqa: BLE001 — deliberately non-fatal
+        log(f"WARNING: run-delta report failed ({exc}) — the sync itself "
+            f"succeeded; regenerate with: python3 "
+            f"freshie/scripts/run-delta.py --run-id {run_id}")
+    return regressions_found
 
 
 def ensure_remote(repo: Path, org: str, repo_name: str) -> None:
@@ -1126,6 +1209,9 @@ def main() -> int:
     parser.add_argument("--recreate-tables", action="store_true",
                         help="drop + recreate Dolt tables whose schema drifted")
     parser.add_argument("--gc", action="store_true", help="force dolt gc this run")
+    parser.add_argument("--alert-on-regression", action="store_true",
+                        help="exit 4 when the post-commit run-delta finds "
+                             "grade regressions (default: report only)")
     args = parser.parse_args()
 
     if not args.db.exists():
@@ -1246,8 +1332,12 @@ def main() -> int:
         write_grades_export(conn, run_id)
         conn.close()
 
-        committed, tag = commit_and_tag(repo, run_id, source_git_sha())
+        committed, tag, head_hash = commit_and_tag(repo, run_id, source_git_sha())
         log(f"commit created: {committed}; tag: {tag or '(none)'}")
+
+        # Non-fatal by contract; runs BEFORE push so the report exists even
+        # when a push fails (exit 3) — the local commit it describes does.
+        regressions_found = post_commit_outputs(repo, run_id, tag, head_hash)
 
         if args.no_push:
             log("--no-push: skipping DoltHub push (history is LOCAL-ONLY until pushed)")
@@ -1256,6 +1346,10 @@ def main() -> int:
 
         maybe_gc(repo, repo.parent / ".sync-state.json", args.gc)
         log("sync complete")
+        if args.alert_on_regression and regressions_found:
+            log("ALERT: grade regressions detected this run — exiting 4 as "
+                "requested (--alert-on-regression); the sync itself succeeded")
+            return 4
         return 0
 
     except PushError as exc:

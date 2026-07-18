@@ -1,0 +1,94 @@
+{
+  "run_id": 9,
+  "from_tag": "run-9",
+  "to_tag": "run-9.1",
+  "dolt_commit": "aa574a2vgc93t4bp3q45ikhdmvsmjnuu",
+  "tables_changed": 8,
+  "schema_changes": [
+    "artifacts",
+    "criterion_results",
+    "run_summaries",
+    "runs",
+    "skill_human_reviews",
+    "skill_usage_events",
+    "skill_versions"
+  ],
+  "rows_added": 67,
+  "rows_deleted": 0,
+  "rows_modified": 0,
+  "tables": [
+    {
+      "table": "artifacts",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": false,
+      "rows_added": 0,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "criterion_results",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": true,
+      "rows_added": 51,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "forge_proofs",
+      "diff_type": "modified",
+      "schema_change": false,
+      "data_change": true,
+      "rows_added": 3,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "run_summaries",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": true,
+      "rows_added": 4,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "runs",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": true,
+      "rows_added": 5,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_human_reviews",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": false,
+      "rows_added": 0,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_usage_events",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": false,
+      "rows_added": 0,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    },
+    {
+      "table": "skill_versions",
+      "diff_type": "added",
+      "schema_change": true,
+      "data_change": true,
+      "rows_added": 4,
+      "rows_deleted": 0,
+      "rows_modified": 0
+    }
+  ],
+  "grade_regressions": []
+}

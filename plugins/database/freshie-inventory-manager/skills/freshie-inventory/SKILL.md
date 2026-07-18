@@ -1,7 +1,7 @@
 ---
 name: freshie-inventory
 description: "Manage the freshie ecosystem inventory database \u2014 a CMDB tracking\
-  \ all plugins,\nskills, packs, and compliance grades across 50 SQLite tables. Use\
+  \ all plugins,\nskills, packs, and compliance grades across 51 SQLite tables. Use\
   \ when checking\necosystem health, running discovery scans, validating compliance,\
   \ remediating\nissues, querying inventory data, comparing runs, exporting data,\
   \ or generating\nstatus reports. Trigger with \"freshie status\", \"inventory scan\"\
@@ -10,6 +10,7 @@ description: "Manage the freshie ecosystem inventory database \u2014 a CMDB trac
   .\n"
 allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*),
   Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Task
+argument-hint: "<subcommand> [--query SQL] [--run-id N]"
 version: 1.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -39,13 +40,17 @@ skill compliance grades, pack coverage, anomaly detection, and historical trends
 discovery runs. This skill is an **interactive wizard** — it always asks what you want to do,
 then delegates heavy operations to specialized subagents.
 
-**Database location:** `freshie/inventory.sqlite` (50 tables, versioned by `run_id`)
+**Database location:** `freshie/inventory.sqlite` (51 tables, versioned by `run_id`)
 
 **Key scripts:**
 
 - `freshie/scripts/rebuild-inventory.py` — full repo scan, creates new discovery run
 - `freshie/scripts/batch-remediate.py` — auto-fix compliance issues
 - `scripts/validate-skills-schema.py` — enterprise validation with DB population
+- `freshie/scripts/run-delta.py [--run-id N] [--alert-on-regression]` — (re)generate a run's
+  delta report (schema-vs-data changes + grade regressions; exit 4 signal on regressions)
+- `freshie/scripts/dolt-sync.py [--alert-on-regression]` — Dolt sync; emits the delta report
+  post-commit and can exit 4 when grades regressed
 
 ## Prerequisites
 
@@ -409,6 +414,6 @@ See [examples.md](references/examples.md) for detailed input/output examples cov
 - `freshie/scripts/rebuild-inventory.py` — full repo scanner, versioned discovery runs
 - `freshie/scripts/batch-remediate.py` — compliance fix engine (`--dry-run`, `--all --execute`)
 - `scripts/validate-skills-schema.py` — universal validator (`--enterprise --populate-db`)
-- `freshie/inventory.sqlite` — the database (50 tables, versioned by `run_id`)
+- `freshie/inventory.sqlite` — the database (51 tables, versioned by `run_id`)
 - `~/.claude/skills/email/scripts/md-to-pdf.py` — markdown to PDF converter
 - `/email` skill — email sending with attachments

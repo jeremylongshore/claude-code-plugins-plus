@@ -139,6 +139,7 @@ jobs:
         run: |
           python3 -m unittest tests.test_sql_classifier -v
           python3 -m unittest tests.test_dolt_sync -v
+          python3 -m unittest tests.test_run_delta -v
           python3 -m unittest tests.test_batch_remediate_compat -v
           python3 -m unittest tests.test_hms_readiness_classifier -v
           python3 -m unittest tests.test_enable_system_schemas -v
