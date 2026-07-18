@@ -9,7 +9,7 @@ description: |
   Trigger with "elevenlabs CI", "elevenlabs GitHub Actions",
   "elevenlabs automated tests", "CI elevenlabs", "elevenlabs pipeline".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

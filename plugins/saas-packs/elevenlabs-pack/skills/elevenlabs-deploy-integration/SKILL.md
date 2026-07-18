@@ -7,7 +7,7 @@ description: |
   Trigger with "deploy elevenlabs", "elevenlabs Vercel", "elevenlabs Cloud Run",
   "elevenlabs Fly.io", "elevenlabs serverless", "host TTS API".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

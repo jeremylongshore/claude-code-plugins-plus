@@ -7,7 +7,7 @@ description: |
   Trigger with "elevenlabs hello world", "elevenlabs example", "elevenlabs quick
   start", "first elevenlabs TTS", "text to speech demo".
 allowed-tools: Read, Write, Bash(npm:*), Bash(node:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

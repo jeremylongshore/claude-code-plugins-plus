@@ -7,7 +7,7 @@ description: |
   Trigger with "elevenlabs error", "fix elevenlabs", "elevenlabs not working",
   "debug elevenlabs", "elevenlabs 401", "elevenlabs 429", "elevenlabs 400".
 allowed-tools: Bash(curl:*), Bash(node:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

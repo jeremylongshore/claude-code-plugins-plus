@@ -7,7 +7,7 @@ description: |
   Trigger with "elevenlabs rate limit", "elevenlabs throttling", "elevenlabs 429",
   "elevenlabs retry", "elevenlabs backoff", "elevenlabs concurrent requests".
 allowed-tools: Read, Write, Edit
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

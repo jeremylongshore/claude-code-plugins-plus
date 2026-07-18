@@ -8,7 +8,7 @@ description: |
   "elevenlabs dev environment", "develop with elevenlabs", "test elevenlabs
   locally".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

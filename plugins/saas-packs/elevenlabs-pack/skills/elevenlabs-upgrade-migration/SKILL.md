@@ -9,7 +9,7 @@ description: |
   "elevenlabs breaking changes", "update elevenlabs SDK",
   "migrate elevenlabs model", "eleven_v3 migration".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -8,7 +8,7 @@ description: |
   Trigger with "elevenlabs TTS", "text to speech", "voice cloning elevenlabs",
   "clone a voice", "generate speech", "elevenlabs voice".
 allowed-tools: Read, Write, Bash(npm:*), Bash(curl:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

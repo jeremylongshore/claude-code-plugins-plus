@@ -7,7 +7,7 @@ description: |
   Trigger with "elevenlabs SDK patterns", "elevenlabs best practices",
   "elevenlabs code patterns", "idiomatic elevenlabs", "elevenlabs typescript".
 allowed-tools: Read, Write, Edit
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

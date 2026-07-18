@@ -7,7 +7,7 @@ description: |
   Trigger with "elevenlabs production", "deploy elevenlabs", "elevenlabs go-live",
   "elevenlabs launch checklist", or "production TTS".
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
