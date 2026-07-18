@@ -1,18 +1,12 @@
 ---
 name: elevenlabs-webhooks-events
-description: 'Implement ElevenLabs webhook HMAC signature verification and event handling.
-
-  Use when setting up webhook endpoints for transcription completion,
-
-  call recording, or agent conversation events from ElevenLabs.
-
-  Trigger: "elevenlabs webhook", "elevenlabs events",
-
+description: |
+  Implement ElevenLabs webhook HMAC signature verification and event handling.
+  Use when setting up webhook endpoints for transcription completion, call
+  recording, or agent conversation events from ElevenLabs.
+  Trigger with "elevenlabs webhook", "elevenlabs events",
   "elevenlabs webhook signature", "handle elevenlabs notifications",
-
   "elevenlabs post-call webhook", "elevenlabs transcription webhook".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.5.0
 license: MIT
@@ -30,7 +24,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-ElevenLabs webhooks send HTTP POST notifications when async operations complete. Supported event types include transcription completion, post-call data from Conversational AI agents, and call initiation failures. Webhooks use HMAC-SHA256 signatures for verification.
+ElevenLabs webhooks send HTTP POST notifications when async operations complete: transcription completion, post-call data from Conversational AI agents, and call initiation failures. Every delivery is signed with an HMAC-SHA256 signature you must verify before processing. This skill builds a secure endpoint that verifies signatures, routes events by type, and acks fast to avoid auto-disable.
 
 ## Prerequisites
 
@@ -40,7 +34,17 @@ ElevenLabs webhooks send HTTP POST notifications when async operations complete.
 
 ## Instructions
 
-### Step 1: Webhook Event Types
+The full, copy-ready code for each step lives in [references/implementation.md](references/implementation.md); per-event handlers live in [references/examples.md](references/examples.md). The high-level workflow:
+
+1. **Know the event types** — subscribe only to what you handle (table below).
+2. **Create the webhook** in the dashboard (Settings > Webhooks) and copy the HMAC secret.
+3. **Verify the signature** with HMAC-SHA256 over `"<timestamp>.<raw_body>"`, using a timing-safe compare and a 5-minute replay window. See the [full verifier](references/implementation.md).
+4. **Handle the request** with a raw body parser, ack `200` immediately, then process asynchronously. See the [Express handler](references/implementation.md).
+5. **Route events** to per-type handlers. See [handler examples](references/examples.md).
+6. **Guard against duplicates** with idempotency keyed on the event ID. See [idempotency](references/implementation.md).
+7. **Test locally** by tunneling with ngrok. See [local testing](references/implementation.md).
+
+### Webhook event types
 
 | Event Type | Payload | When Triggered |
 |------------|---------|----------------|
@@ -49,237 +53,37 @@ ElevenLabs webhooks send HTTP POST notifications when async operations complete.
 | `call_initiation_failure` | Failure reason, metadata | When an outbound call fails to connect |
 | `speech_to_text.completed` | Transcription result, word timestamps | Async STT job completes |
 
-### Step 2: Webhook Setup
-
-```bash
-# Create webhook in ElevenLabs dashboard:
-# Settings > Webhooks > Create Webhook
-# - URL: https://your-app.com/webhooks/elevenlabs
-# - Select event types to subscribe to
-# - Copy the generated HMAC secret
-```
-
-### Step 3: HMAC Signature Verification
+### Signature verification skeleton
 
 ```typescript
-// src/elevenlabs/webhook-verify.ts
-import crypto from "crypto";
-
-/**
- * Verify the ElevenLabs-Signature header using HMAC-SHA256.
- *
- * Header format: t=<unix_timestamp>,v1=<hex_signature>
- * Signed payload: "<timestamp>.<raw_body>"
- */
-export function verifyWebhookSignature(
-  rawBody: string | Buffer,
-  signatureHeader: string,
-  secret: string
-): { valid: boolean; reason?: string } {
-  if (!signatureHeader || !secret) {
-    return { valid: false, reason: "Missing signature header or secret" };
+// src/elevenlabs/webhook-verify.ts — Header: t=<unix_ts>,v1=<hex_sig>
+export function verifyWebhookSignature(rawBody, signatureHeader, secret) {
+  const parts = new Map(signatureHeader.split(",").map(p => {
+    const [k, ...v] = p.split("="); return [k, v.join("=")];
+  }));
+  const timestamp = parts.get("t"), signature = parts.get("v1");
+  if (Math.floor(Date.now() / 1000) - parseInt(timestamp) > 300) {
+    return { valid: false, reason: "Timestamp too old" };   // replay guard
   }
-
-  // Parse header: t=1234567890,v1=abcdef...
-  const parts = new Map(
-    signatureHeader.split(",").map(p => {
-      const [key, ...val] = p.split("=");
-      return [key, val.join("=")] as [string, string];
-    })
-  );
-
-  const timestamp = parts.get("t");
-  const signature = parts.get("v1");
-
-  if (!timestamp || !signature) {
-    return { valid: false, reason: "Malformed signature header" };
-  }
-
-  // Replay protection: reject if older than 5 minutes
-  const age = Math.floor(Date.now() / 1000) - parseInt(timestamp);
-  if (age > 300) {
-    return { valid: false, reason: `Timestamp too old: ${age}s` };
-  }
-
-  // Compute expected HMAC
-  const signedPayload = `${timestamp}.${rawBody.toString()}`;
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(signedPayload)
-    .digest("hex");
-
-  // Timing-safe comparison
-  try {
-    const isValid = crypto.timingSafeEqual(
-      Buffer.from(signature, "hex"),
-      Buffer.from(expected, "hex")
-    );
-    return { valid: isValid };
-  } catch {
-    return { valid: false, reason: "Signature length mismatch" };
-  }
+  const expected = crypto.createHmac("sha256", secret)
+    .update(`${timestamp}.${rawBody.toString()}`).digest("hex");
+  return { valid: crypto.timingSafeEqual(
+    Buffer.from(signature, "hex"), Buffer.from(expected, "hex")) };
 }
 ```
 
-### Step 4: Express Webhook Handler
+See [references/implementation.md](references/implementation.md) for the production-hardened version with full error handling.
 
-```typescript
-// src/api/webhooks/elevenlabs.ts
-import express from "express";
-import { verifyWebhookSignature } from "../../elevenlabs/webhook-verify";
+## Output
 
-const router = express.Router();
+Applying this skill produces:
 
-// CRITICAL: Use raw body parser for signature verification
-router.post("/webhooks/elevenlabs",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const signature = req.headers["elevenlabs-signature"] as string;
-    const secret = process.env.ELEVENLABS_WEBHOOK_SECRET!;
+- `src/elevenlabs/webhook-verify.ts` — reusable HMAC-SHA256 verifier with replay protection and timing-safe comparison.
+- `src/api/webhooks/elevenlabs.ts` — Express route that verifies signatures, acks `200` immediately, and routes events to per-type handlers.
+- Per-event handler functions (`handleTranscription`, `handleCallAudio`, `handleCallFailure`, `handleSTTCompleted`) extracting the fields each payload carries.
+- An idempotency wrapper keyed on event ID so retried deliveries are processed once.
 
-    const { valid, reason } = verifyWebhookSignature(req.body, signature, secret);
-
-    if (!valid) {
-      console.error("Webhook verification failed:", reason);
-      return res.status(401).json({ error: "Invalid signature" });
-    }
-
-    // Return 200 immediately to prevent webhook auto-disable
-    res.status(200).json({ received: true });
-
-    // Process asynchronously
-    const event = JSON.parse(req.body.toString());
-    processEvent(event).catch(err =>
-      console.error("Webhook processing failed:", err)
-    );
-  }
-);
-
-// Event routing
-async function processEvent(event: any) {
-  const eventType = event.type || event.event_type;
-
-  switch (eventType) {
-    case "post_call_transcription":
-      await handleTranscription(event);
-      break;
-    case "post_call_audio":
-      await handleCallAudio(event);
-      break;
-    case "call_initiation_failure":
-      await handleCallFailure(event);
-      break;
-    case "speech_to_text.completed":
-      await handleSTTCompleted(event);
-      break;
-    default:
-      console.log("Unhandled event type:", eventType);
-  }
-}
-```
-
-### Step 5: Event Handlers
-
-```typescript
-// Conversational AI post-call transcript
-async function handleTranscription(event: any) {
-  const {
-    conversation_id,
-    transcript,       // Full conversation text
-    analysis,         // AI analysis of the call
-    metadata,         // Custom metadata from agent config
-    recording_url,    // Audio recording URL (if enabled)
-  } = event.data;
-
-  console.log(`[Transcript] Conversation ${conversation_id}`);
-  console.log(`Transcript: ${transcript?.substring(0, 200)}...`);
-
-  // Store in your database
-  // await db.conversations.upsert({ conversation_id, transcript, analysis });
-}
-
-// Post-call audio recording
-async function handleCallAudio(event: any) {
-  const {
-    conversation_id,
-    audio_base64,     // Base64-encoded audio of the full conversation
-  } = event.data;
-
-  if (audio_base64) {
-    const audioBuffer = Buffer.from(audio_base64, "base64");
-    console.log(`[Audio] Received ${audioBuffer.length} bytes for ${conversation_id}`);
-    // Save audio: await fs.writeFile(`recordings/${conversation_id}.mp3`, audioBuffer);
-  }
-}
-
-// Failed outbound call
-async function handleCallFailure(event: any) {
-  const {
-    conversation_id,
-    failure_reason,
-    metadata,
-  } = event.data;
-
-  console.error(`[Call Failed] ${conversation_id}: ${failure_reason}`);
-  // Alert: await alerting.notify("Call initiation failed", { conversation_id, failure_reason });
-}
-
-// Async Speech-to-Text completion
-async function handleSTTCompleted(event: any) {
-  const {
-    transcription_id,
-    text,
-    words,           // Word-level timestamps
-    language,
-  } = event.data;
-
-  console.log(`[STT Complete] ${transcription_id}: ${language}`);
-  console.log(`Text: ${text?.substring(0, 200)}...`);
-  // Process transcription results
-}
-```
-
-### Step 6: Idempotency Protection
-
-```typescript
-// Prevent duplicate processing if ElevenLabs retries delivery
-const processedEvents = new Set<string>();
-
-async function withIdempotency(
-  eventId: string,
-  handler: () => Promise<void>
-): Promise<void> {
-  if (processedEvents.has(eventId)) {
-    console.log(`Event ${eventId} already processed, skipping`);
-    return;
-  }
-
-  await handler();
-  processedEvents.add(eventId);
-
-  // Clean up old entries (in production, use Redis with TTL)
-  if (processedEvents.size > 10000) {
-    const oldest = Array.from(processedEvents).slice(0, 5000);
-    oldest.forEach(id => processedEvents.delete(id));
-  }
-}
-```
-
-### Step 7: Local Testing with ngrok
-
-```bash
-# Expose local server to internet
-ngrok http 3000
-
-# Use the ngrok URL as webhook endpoint in ElevenLabs dashboard
-# https://abc123.ngrok.io/webhooks/elevenlabs
-
-# Test with curl (simulated event)
-curl -X POST http://localhost:3000/webhooks/elevenlabs \
-  -H "Content-Type: application/json" \
-  -H "ElevenLabs-Signature: t=$(date +%s),v1=test" \
-  -d '{"type":"speech_to_text.completed","data":{"text":"Hello world"}}'
-```
+At runtime a verified delivery returns `{ "received": true }` with HTTP `200`; a bad signature or expired timestamp returns HTTP `401` `{ "error": "Invalid signature" }`.
 
 ## Webhook Reliability
 
@@ -301,13 +105,38 @@ curl -X POST http://localhost:3000/webhooks/elevenlabs \
 | Handler timeout | Slow processing | Return 200 immediately, process async |
 | Replay attack | Old timestamp reused | Check timestamp age (reject > 5 min) |
 
+## Examples
+
+**Route a decoded event to the right handler:**
+
+```typescript
+switch (event.type || event.event_type) {
+  case "post_call_transcription": await handleTranscription(event); break;
+  case "post_call_audio":         await handleCallAudio(event);     break;
+  case "call_initiation_failure": await handleCallFailure(event);   break;
+  case "speech_to_text.completed": await handleSTTCompleted(event); break;
+  default: console.log("Unhandled event type:", event.type);
+}
+```
+
+**Simulate a delivery locally with curl:**
+
+```bash
+curl -X POST http://localhost:3000/webhooks/elevenlabs \
+  -H "Content-Type: application/json" \
+  -H "ElevenLabs-Signature: t=$(date +%s),v1=test" \
+  -d '{"type":"speech_to_text.completed","data":{"text":"Hello world"}}'
+```
+
+Full per-event handlers (transcript, audio, call-failure, STT) with the exact fields each payload carries are in [references/examples.md](references/examples.md).
+
 ## Resources
 
-- ElevenLabs Webhooks Guide
 - [Post-Call Webhooks](https://elevenlabs.io/docs/agents-platform/workflows/post-call-webhooks)
-- STT Webhooks
 - [Webhook API Reference](https://elevenlabs.io/docs/api-reference/webhooks/list)
+- [references/implementation.md](references/implementation.md) — full verifier, Express handler, idempotency, ngrok testing
+- [references/examples.md](references/examples.md) — per-event handler examples
 
 ## Next Steps
 
-For performance optimization, see `elevenlabs-performance-tuning`.
+For performance optimization, see the `elevenlabs-performance-tuning` skill, which covers connection pooling and batching to keep webhook handlers fast enough to ack within the ElevenLabs timeout window.

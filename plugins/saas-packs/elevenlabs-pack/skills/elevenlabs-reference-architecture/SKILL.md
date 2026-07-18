@@ -1,20 +1,13 @@
 ---
 name: elevenlabs-reference-architecture
-description: 'Implement ElevenLabs reference architecture for production TTS/voice
-  applications.
-
-  Use when designing new ElevenLabs integrations, reviewing project structure,
-
-  or building a scalable audio generation service.
-
-  Trigger: "elevenlabs architecture", "elevenlabs project structure",
-
+description: |
+  Implement an ElevenLabs reference architecture for production TTS/voice
+  applications. Use when designing new ElevenLabs integrations, reviewing
+  project structure, or building a scalable audio generation service.
+  Trigger with "elevenlabs architecture", "elevenlabs project structure",
   "how to organize elevenlabs", "TTS service architecture",
-
   "elevenlabs design patterns", "voice API architecture".
-
-  '
-allowed-tools: Read, Grep
+allowed-tools: Read
 version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -31,7 +24,10 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Production-ready architecture for ElevenLabs TTS/voice applications. Covers project layout, service layers, caching, streaming, and multi-model orchestration.
+Production-ready architecture for ElevenLabs TTS/voice applications. Covers project
+layout, service layers, caching, streaming, and multi-model orchestration. The full
+code for each layer lives in `references/` so this file stays a navigable map; drill
+into a reference file when you need the exact implementation.
 
 ## Prerequisites
 
@@ -39,340 +35,72 @@ Production-ready architecture for ElevenLabs TTS/voice applications. Covers proj
 - ElevenLabs SDK knowledge (see `elevenlabs-sdk-patterns`)
 - TypeScript project with async patterns
 - Redis (optional, for distributed caching)
+- **Auth**: an ElevenLabs API key exported as `ELEVENLABS_API_KEY` (read by the
+  config layer). This is the only ElevenLabs credential — your app's own request
+  auth (`middleware/auth.ts`) is separate and unrelated.
 
 ## Instructions
 
-### Step 1: Project Structure
+Build the service in six layers. Each step below is the high-level move; the
+verbatim code and diagrams are in the linked reference files.
 
-```
-my-elevenlabs-service/
-├── src/
-│   ├── elevenlabs/
-│   │   ├── client.ts            # Singleton client with retry config
-│   │   ├── config.ts            # Environment-aware configuration
-│   │   ├── models.ts            # Model selection logic
-│   │   ├── errors.ts            # Error classification (see sdk-patterns)
-│   │   └── types.ts             # TypeScript interfaces
-│   ├── services/
-│   │   ├── tts-service.ts       # Text-to-Speech orchestration
-│   │   ├── voice-service.ts     # Voice management (clone, list, settings)
-│   │   ├── audio-service.ts     # SFX, isolation, transcription
-│   │   └── cache-service.ts     # Audio caching layer
-│   ├── api/
-│   │   ├── routes/
-│   │   │   ├── tts.ts           # POST /api/tts
-│   │   │   ├── voices.ts        # GET/POST /api/voices
-│   │   │   ├── webhooks.ts      # POST /webhooks/elevenlabs
-│   │   │   └── health.ts        # GET /health
-│   │   └── middleware/
-│   │       ├── rate-limit.ts    # Request throttling
-│   │       └── auth.ts          # Your app's auth (not ElevenLabs auth)
-│   ├── queue/
-│   │   ├── tts-queue.ts         # Async TTS job processing
-│   │   └── workers.ts           # Queue workers
-│   └── monitoring/
-│       ├── metrics.ts           # Latency, error rate, quota tracking
-│       └── alerts.ts            # Budget and health alerts
-├── tests/
-│   ├── unit/
-│   │   ├── tts-service.test.ts
-│   │   └── cache-service.test.ts
-│   └── integration/
-│       └── tts-smoke.test.ts
-├── config/
-│   ├── development.json
-│   ├── staging.json
-│   └── production.json
-└── .env.example
-```
+### Step 1: Lay out the project
 
-### Step 2: Configuration Layer
+Split the codebase into `elevenlabs/` (client, config, models, errors, types),
+`services/` (tts, voice, audio, cache), `api/` (routes + middleware), `queue/`, and
+`monitoring/`. See the [full project tree](references/architecture.md).
 
-```typescript
-// src/elevenlabs/config.ts
-export interface ElevenLabsConfig {
-  apiKey: string;
-  environment: "development" | "staging" | "production";
-  defaults: {
-    modelId: string;
-    voiceId: string;
-    outputFormat: string;
-    voiceSettings: {
-      stability: number;
-      similarity_boost: number;
-      style: number;
-      speed: number;
-    };
-  };
-  performance: {
-    maxConcurrency: number;
-    timeoutMs: number;
-    maxRetries: number;
-  };
-  cache: {
-    enabled: boolean;
-    maxSizeMB: number;
-    ttlSeconds: number;
-  };
-}
+### Step 2: Configuration layer
 
-const ENV_CONFIGS: Record<string, Partial<ElevenLabsConfig>> = {
-  development: {
-    defaults: {
-      modelId: "eleven_flash_v2_5",    // Cheap + fast for dev
-      voiceId: "21m00Tcm4TlvDq8ikWAM", // Rachel
-      outputFormat: "mp3_22050_32",     // Small files
-      voiceSettings: { stability: 0.5, similarity_boost: 0.75, style: 0, speed: 1 },
-    },
-    performance: { maxConcurrency: 2, timeoutMs: 30_000, maxRetries: 1 },
-    cache: { enabled: true, maxSizeMB: 50, ttlSeconds: 3600 },
-  },
-  production: {
-    defaults: {
-      modelId: "eleven_multilingual_v2", // High quality for prod
-      voiceId: "21m00Tcm4TlvDq8ikWAM",
-      outputFormat: "mp3_44100_128",     // High quality
-      voiceSettings: { stability: 0.5, similarity_boost: 0.75, style: 0, speed: 1 },
-    },
-    performance: { maxConcurrency: 10, timeoutMs: 60_000, maxRetries: 3 },
-    cache: { enabled: true, maxSizeMB: 500, ttlSeconds: 86_400 },
-  },
-};
+Define an environment-aware `ElevenLabsConfig` — dev uses the cheap/fast
+`eleven_flash_v2_5` and small output format; production uses `eleven_multilingual_v2`
+at higher quality, more concurrency, and a larger cache. `loadConfig()` merges the
+per-environment defaults with `ELEVENLABS_API_KEY`. Full interface and `ENV_CONFIGS`:
+[implementation walkthrough](references/implementation.md).
 
-export function loadConfig(): ElevenLabsConfig {
-  const env = process.env.NODE_ENV || "development";
-  const envConfig = ENV_CONFIGS[env] || ENV_CONFIGS.development;
+### Step 3: TTS service layer
 
-  return {
-    apiKey: process.env.ELEVENLABS_API_KEY!,
-    environment: env as any,
-    ...envConfig,
-  } as ElevenLabsConfig;
-}
-```
+Wrap the SDK client in a `TTSService` that owns a singleton client and a `p-queue`
+sized to `maxConcurrency` (this is what prevents 429s). `generate()` supports both
+streaming and buffered convert, logs latency, and routes errors through
+`classifyError`. `generateLongText()` splits on sentence boundaries under the 5000-char
+limit to preserve prosody. Full class:
+[implementation walkthrough](references/implementation.md).
 
-### Step 3: TTS Service Layer
+### Step 4: Voice management service
 
-```typescript
-// src/services/tts-service.ts
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-import PQueue from "p-queue";
-import { loadConfig } from "../elevenlabs/config";
-import { classifyError } from "../elevenlabs/errors";
+A `VoiceService` over the client for list/clone/get-settings/update-settings/delete,
+with category filtering (premade / cloned / generated). Full class:
+[implementation walkthrough](references/implementation.md).
 
-export class TTSService {
-  private client: ElevenLabsClient;
-  private queue: PQueue;
-  private config: ReturnType<typeof loadConfig>;
+### Step 5: Wire the data flow
 
-  constructor() {
-    this.config = loadConfig();
-    this.client = new ElevenLabsClient({
-      apiKey: this.config.apiKey,
-      maxRetries: this.config.performance.maxRetries,
-      timeoutInSeconds: this.config.performance.timeoutMs / 1000,
-    });
-    this.queue = new PQueue({
-      concurrency: this.config.performance.maxConcurrency,
-    });
-  }
+Requests flow Client → API layer → Cache/TTS/Voice services → queue → singleton SDK
+client → ElevenLabs REST/WS endpoints. See the
+[data flow diagram](references/architecture.md).
 
-  async generate(text: string, options?: {
-    voiceId?: string;
-    modelId?: string;
-    outputFormat?: string;
-    streaming?: boolean;
-  }): Promise<ReadableStream | Buffer> {
-    const voiceId = options?.voiceId || this.config.defaults.voiceId;
-    const modelId = options?.modelId || this.config.defaults.modelId;
-    const format = options?.outputFormat || this.config.defaults.outputFormat;
+### Step 6: Health check composition
 
-    return this.queue.add(async () => {
-      const start = performance.now();
+Compose a `/health` route that runs connectivity, quota, and cache checks with
+`Promise.allSettled`, returning `healthy` / `degraded` / `unhealthy` (degraded once
+quota exceeds 90%). Full function:
+[implementation walkthrough](references/implementation.md).
 
-      try {
-        if (options?.streaming) {
-          return await this.client.textToSpeech.stream(voiceId, {
-            text,
-            model_id: modelId,
-            output_format: format,
-            voice_settings: this.config.defaults.voiceSettings,
-          });
-        }
+Every architectural choice (singleton client, p-queue, LRU-vs-Redis, sentence
+splitting, environment-based model selection, HTTP-vs-WS streaming) and its rationale
+is tabulated in the [architecture decisions table](references/architecture.md).
 
-        const audio = await this.client.textToSpeech.convert(voiceId, {
-          text,
-          model_id: modelId,
-          output_format: format,
-          voice_settings: this.config.defaults.voiceSettings,
-        });
+## Output
 
-        const latency = performance.now() - start;
-        console.log(`[TTS] ${text.length} chars, ${modelId}, ${latency.toFixed(0)}ms`);
-        return audio;
-      } catch (error) {
-        throw classifyError(error);
-      }
-    }) as Promise<ReadableStream | Buffer>;
-  }
+Applying this skill produces a layered service scaffold, not a single file:
 
-  // Split long text into chunks with prosody context
-  async generateLongText(text: string, voiceId?: string): Promise<Buffer[]> {
-    const chunks = this.splitText(text, 4500); // Stay under 5000 limit
-    const results: Buffer[] = [];
-
-    for (let i = 0; i < chunks.length; i++) {
-      const audio = await this.generate(chunks[i], {
-        voiceId,
-        // Pass context for natural prosody across chunks
-      });
-      results.push(audio as Buffer);
-    }
-
-    return results;
-  }
-
-  private splitText(text: string, maxChars: number): string[] {
-    const chunks: string[] = [];
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-    let current = "";
-
-    for (const sentence of sentences) {
-      if ((current + sentence).length > maxChars) {
-        if (current) chunks.push(current.trim());
-        current = sentence;
-      } else {
-        current += sentence;
-      }
-    }
-    if (current) chunks.push(current.trim());
-    return chunks;
-  }
-}
-```
-
-### Step 4: Voice Management Service
-
-```typescript
-// src/services/voice-service.ts
-export class VoiceService {
-  private client: ElevenLabsClient;
-
-  constructor(client: ElevenLabsClient) {
-    this.client = client;
-  }
-
-  async listVoices(filter?: { category?: "premade" | "cloned" | "generated" }) {
-    const { voices } = await this.client.voices.getAll();
-    if (filter?.category) {
-      return voices.filter(v => v.category === filter.category);
-    }
-    return voices;
-  }
-
-  async cloneVoice(name: string, description: string, audioFiles: NodeJS.ReadableStream[]) {
-    return this.client.voices.add({
-      name,
-      description,
-      files: audioFiles,
-    });
-  }
-
-  async getVoiceSettings(voiceId: string) {
-    return this.client.voices.getSettings(voiceId);
-  }
-
-  async updateVoiceSettings(voiceId: string, settings: {
-    stability: number;
-    similarity_boost: number;
-  }) {
-    return this.client.voices.editSettings(voiceId, settings);
-  }
-
-  async deleteVoice(voiceId: string) {
-    return this.client.voices.delete(voiceId);
-  }
-}
-```
-
-### Step 5: Data Flow Diagram
-
-```
-                         ┌──────────────┐
-                         │   Client     │
-                         │  (Browser/   │
-                         │   Mobile)    │
-                         └──────┬───────┘
-                                │
-                         ┌──────▼───────┐
-                         │   API Layer  │
-                         │   /api/tts   │
-                         │   /api/voice │
-                         └──────┬───────┘
-                                │
-                    ┌───────────┼───────────┐
-                    │           │           │
-             ┌──────▼──┐ ┌─────▼─────┐ ┌──▼──────┐
-             │  Cache   │ │   TTS     │ │  Voice  │
-             │ Service  │ │  Service  │ │ Service │
-             └──────┬───┘ └─────┬─────┘ └────────┘
-                    │           │
-              ┌─────▼─┐  ┌─────▼──────────┐
-              │ Redis/ │  │ Concurrency    │
-              │ LRU    │  │ Queue (p-queue)│
-              └────────┘  └─────┬──────────┘
-                                │
-                         ┌──────▼───────┐
-                         │  ElevenLabs  │
-                         │  Client SDK  │
-                         │  (singleton) │
-                         └──────┬───────┘
-                                │
-                    ┌───────────┼───────────┐
-                    │           │           │
-             ┌──────▼──┐ ┌─────▼─────┐ ┌──▼──────┐
-             │ /v1/tts  │ │ /v1/voices│ │ /v1/sfx │
-             │ REST/WS  │ │  REST     │ │  REST   │
-             └──────────┘ └───────────┘ └─────────┘
-                    ElevenLabs API (api.elevenlabs.io)
-```
-
-### Step 6: Health Check Composition
-
-```typescript
-// src/api/routes/health.ts
-export async function healthCheck() {
-  const checks = await Promise.allSettled([
-    checkElevenLabsConnectivity(),
-    checkQuotaStatus(),
-    checkCacheHealth(),
-  ]);
-
-  const elevenlabs = checks[0].status === "fulfilled" ? checks[0].value : null;
-  const quota = checks[1].status === "fulfilled" ? checks[1].value : null;
-  const cache = checks[2].status === "fulfilled" ? checks[2].value : null;
-
-  const degraded = !elevenlabs || (quota && quota.pctUsed > 90);
-
-  return {
-    status: !elevenlabs ? "unhealthy" : degraded ? "degraded" : "healthy",
-    services: { elevenlabs, quota, cache },
-    timestamp: new Date().toISOString(),
-  };
-}
-```
-
-## Architecture Decisions
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Client pattern | Singleton | One connection pool, shared retry config |
-| Concurrency | p-queue | Respects plan limits, prevents 429 |
-| Caching | LRU (local) or Redis (distributed) | Repeated content is common in TTS |
-| Long text | Sentence-boundary splitting | Preserves natural speech prosody |
-| Error handling | Classification + retry | Different strategies for 429 vs 401 vs 500 |
-| Model selection | Environment-based | Flash in dev (cheap), Multilingual in prod (quality) |
-| Streaming | HTTP streaming + WebSocket | HTTP for simple, WS for LLM integration |
+- A directory tree matching the [project structure](references/architecture.md).
+- An environment-aware config module resolving dev/staging/production defaults.
+- A `TTSService` (queued, retry-aware, streaming-capable) and a `VoiceService`.
+- A `/health` route returning `{ status, services, timestamp }` where `status` is
+  `healthy`, `degraded`, or `unhealthy`.
+- At runtime, `generate()` returns a `Buffer` (or a `ReadableStream` when
+  `streaming: true`); `generateLongText()` returns `Buffer[]`, one per chunk.
 
 ## Error Handling
 
@@ -382,6 +110,31 @@ export async function healthCheck() {
 | Cold start latency | Client initialization | Pre-warm in server startup |
 | Memory pressure | Unbounded audio cache | Set `maxSizeMB` on cache |
 | Type errors | SDK version mismatch | Pin SDK version in package.json |
+| Frequent 429s | Concurrency above plan limit | Lower `maxConcurrency` in config |
+| Missing API key | `ELEVENLABS_API_KEY` unset | Export it before `loadConfig()` runs |
+
+## Examples
+
+**Generate speech through the service layer:**
+
+```typescript
+const tts = new TTSService();
+const audio = await tts.generate("Hello from production.", {
+  voiceId: "21m00Tcm4TlvDq8ikWAM",
+});
+```
+
+**Stream a long article with prosody-preserving chunking:**
+
+```typescript
+const chunks = await tts.generateLongText(longArticleText);
+// chunks: Buffer[] — concatenate or pipe in order
+```
+
+For the complete, runnable layers behind these snippets — config, full `TTSService`,
+`VoiceService`, and the `/health` composition — see the
+[implementation walkthrough](references/implementation.md). For the project tree,
+data flow, and decision rationale, see [architecture.md](references/architecture.md).
 
 ## Resources
 
@@ -389,7 +142,10 @@ export async function healthCheck() {
 - [ElevenLabs SDK Source](https://github.com/elevenlabs/elevenlabs-js)
 - [p-queue](https://github.com/sindresorhus/p-queue)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
+- [Implementation walkthrough](references/implementation.md) — full service code
+- [Architecture reference](references/architecture.md) — project tree, data flow, decisions
 
 ## Next Steps
 
-Start with `elevenlabs-install-auth` for setup, then apply this architecture. Use `elevenlabs-core-workflow-a` and `elevenlabs-core-workflow-b` for feature implementation.
+Start with `elevenlabs-install-auth` for setup, then apply this architecture. Use
+`elevenlabs-core-workflow-a` and `elevenlabs-core-workflow-b` for feature implementation.

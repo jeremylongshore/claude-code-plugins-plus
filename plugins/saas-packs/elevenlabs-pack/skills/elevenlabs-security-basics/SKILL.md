@@ -1,21 +1,13 @@
 ---
 name: elevenlabs-security-basics
-description: 'Apply ElevenLabs security best practices for API keys, webhook HMAC
-  validation,
-
-  and voice data protection.
-
-  Use when securing API keys, validating webhook signatures,
-
-  or auditing ElevenLabs security configuration.
-
-  Trigger: "elevenlabs security", "elevenlabs secrets",
-
-  "secure elevenlabs", "elevenlabs API key security",
-
-  "elevenlabs webhook signature", "elevenlabs HMAC".
-
-  '
+description: |
+  Apply ElevenLabs security best practices for API keys, webhook HMAC
+  validation, and voice data protection.
+  Use when securing API keys, validating webhook signatures, or auditing
+  ElevenLabs security configuration.
+  Trigger with "elevenlabs security", "elevenlabs secrets", "secure elevenlabs",
+  "elevenlabs API key security", "elevenlabs webhook signature",
+  "elevenlabs HMAC".
 allowed-tools: Read, Write, Grep
 version: 1.5.0
 license: MIT
@@ -33,7 +25,14 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Security best practices for ElevenLabs API key management, webhook HMAC signature verification, and protecting cloned voice data. ElevenLabs uses a single API key (`xi-api-key`) and HMAC webhook authentication.
+Security best practices for ElevenLabs API key management, webhook HMAC
+signature verification, and protecting cloned voice data. ElevenLabs uses a
+single API key (`xi-api-key`) and HMAC webhook authentication.
+
+This SKILL.md carries the workflow at a high level with the essential
+skeletons. Full production code for each step lives in
+[references/implementation.md](references/implementation.md), and end-to-end
+scenarios live in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
@@ -45,6 +44,8 @@ Security best practices for ElevenLabs API key management, webhook HMAC signatur
 
 ### Step 1: API Key Management
 
+Keep keys out of source, and add a hook that blocks accidental commits:
+
 ```bash
 # .env (NEVER commit to git)
 ELEVENLABS_API_KEY=sk_your_key_here
@@ -55,11 +56,9 @@ ELEVENLABS_API_KEY=sk_your_key_here
 .env.*.local
 ```
 
-**Git pre-commit hook** to prevent accidental key commits:
-
 ```bash
 #!/bin/bash
-# .git/hooks/pre-commit
+# .git/hooks/pre-commit — reject staged ElevenLabs keys
 if git diff --cached | grep -qE 'sk_[a-zA-Z0-9]{20,}'; then
   echo "ERROR: ElevenLabs API key detected in staged changes!"
   echo "Remove the key and use environment variables instead."
@@ -69,172 +68,47 @@ fi
 
 ### Step 2: Environment-Specific Keys
 
-```typescript
-// src/elevenlabs/config.ts
-interface ElevenLabsSecurityConfig {
-  apiKey: string;
-  webhookSecret: string;
-  environment: "development" | "staging" | "production";
-}
-
-export function getSecurityConfig(): ElevenLabsSecurityConfig {
-  const env = (process.env.NODE_ENV || "development") as ElevenLabsSecurityConfig["environment"];
-
-  const apiKey = process.env.ELEVENLABS_API_KEY;
-  if (!apiKey) {
-    throw new Error("ELEVENLABS_API_KEY is required");
-  }
-
-  // Warn if production key is used in dev
-  if (env === "development" && apiKey.startsWith("sk_live_")) {
-    console.warn("WARNING: Using production API key in development environment");
-  }
-
-  return {
-    apiKey,
-    webhookSecret: process.env.ELEVENLABS_WEBHOOK_SECRET || "",
-    environment: env,
-  };
-}
-```
+Load the key at startup, fail fast when it is missing, and warn if a production
+key leaks into development. Full `getSecurityConfig()` implementation:
+[references/implementation.md](references/implementation.md).
 
 ### Step 3: Webhook HMAC Signature Verification
 
-ElevenLabs webhooks include an `ElevenLabs-Signature` header for HMAC verification:
-
-```typescript
-// src/elevenlabs/webhook-verify.ts
-import crypto from "crypto";
-
-/**
- * Verify ElevenLabs webhook signature using HMAC-SHA256.
- * The shared secret is generated when you create a webhook in the dashboard.
- */
-export function verifyWebhookSignature(
-  payload: string | Buffer,
-  signatureHeader: string,
-  secret: string
-): boolean {
-  if (!signatureHeader || !secret) return false;
-
-  // ElevenLabs signature format: t=<timestamp>,v1=<signature>
-  const parts = signatureHeader.split(",");
-  const timestamp = parts.find(p => p.startsWith("t="))?.slice(2);
-  const signature = parts.find(p => p.startsWith("v1="))?.slice(3);
-
-  if (!timestamp || !signature) return false;
-
-  // Reject timestamps older than 5 minutes (replay protection)
-  const age = Math.floor(Date.now() / 1000) - parseInt(timestamp);
-  if (age > 300) {
-    console.error("Webhook timestamp too old:", age, "seconds");
-    return false;
-  }
-
-  // Compute expected HMAC
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(signedPayload)
-    .digest("hex");
-
-  // Timing-safe comparison to prevent timing attacks
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(signature, "hex"),
-      Buffer.from(expected, "hex")
-    );
-  } catch {
-    return false;
-  }
-}
-```
+ElevenLabs webhooks carry an `ElevenLabs-Signature` header formatted as
+`t=TIMESTAMP,v1=SIGNATURE`. Verify it with HMAC-SHA256, reject timestamps older
+than 5 minutes (replay protection), and use a timing-safe comparison. Full
+`verifyWebhookSignature()` implementation:
+[references/implementation.md](references/implementation.md).
 
 ### Step 4: Express Webhook Endpoint with Verification
 
-```typescript
-import express from "express";
-import { verifyWebhookSignature } from "./webhook-verify";
-
-const app = express();
-
-// IMPORTANT: Must use raw body for signature verification
-app.post("/webhooks/elevenlabs",
-  express.raw({ type: "application/json" }),
-  (req, res) => {
-    const signature = req.headers["elevenlabs-signature"] as string;
-    const secret = process.env.ELEVENLABS_WEBHOOK_SECRET!;
-
-    if (!verifyWebhookSignature(req.body, signature, secret)) {
-      console.error("Webhook signature verification failed");
-      return res.status(401).json({ error: "Invalid signature" });
-    }
-
-    const event = JSON.parse(req.body.toString());
-
-    // Return 200 quickly to acknowledge receipt
-    // Process asynchronously to avoid webhook timeout/disable
-    res.status(200).json({ received: true });
-
-    processWebhookAsync(event).catch(console.error);
-  }
-);
-```
+Verify against the **raw** request body, respond 200 fast, then process
+asynchronously so you never trip the webhook timeout. Full endpoint:
+[references/implementation.md](references/implementation.md).
 
 ### Step 5: API Key Rotation Procedure
 
-```bash
-# 1. Generate new API key in ElevenLabs dashboard
-#    Settings > API Keys > Create new key
-
-# 2. Test new key before rotating
-curl -s https://api.elevenlabs.io/v1/user \
-  -H "xi-api-key: sk_new_key_here" | jq '.subscription.tier'
-
-# 3. Update in all environments
-# Vercel:
-vercel env add ELEVENLABS_API_KEY production
-
-# Fly.io:
-fly secrets set ELEVENLABS_API_KEY=sk_new_key_here
-
-# GitHub Actions:
-gh secret set ELEVENLABS_API_KEY --body "sk_new_key_here"
-
-# 4. Deploy with new key
-# 5. Verify production works
-# 6. Delete old key in ElevenLabs dashboard
-```
+Generate the new key, validate it before cutover, push to every environment,
+verify production, then revoke the old key — zero downtime. Full runbook:
+[references/implementation.md](references/implementation.md).
 
 ### Step 6: Voice Data Protection
 
-```typescript
-// Cloned voices contain biometric data — treat as PII
-const voiceSecurityPolicy = {
-  // Restrict who can create/delete cloned voices
-  clonePermissions: "admin_only",
+Cloned voices are biometric PII: restrict who can clone, audit-log every
+operation, and require documented consent. Full policy and audit logger:
+[references/implementation.md](references/implementation.md).
 
-  // Log all voice cloning operations
-  auditCloning: true,
+## Output
 
-  // Require consent documentation before cloning
-  consentRequired: true,
+Applying this skill produces a hardened ElevenLabs integration:
 
-  // Auto-delete test clones after N days
-  testVoiceTtlDays: 30,
-};
-
-// Audit log for voice operations
-function logVoiceOperation(operation: string, voiceId: string, userId: string) {
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    type: "elevenlabs.voice.audit",
-    operation,  // "clone", "delete", "use"
-    voiceId,
-    userId,
-  }));
-}
-```
+- API keys stored only in environment variables, with `.env` gitignored and a
+  pre-commit hook that blocks the `sk_` key pattern.
+- A `verifyWebhookSignature()` helper and Express endpoint that reject invalid
+  signatures (HTTP 401) and replayed requests (timestamp > 5 minutes).
+- A documented, zero-downtime key rotation runbook.
+- Structured audit logs (`elevenlabs.voice.audit`) for every voice clone,
+  delete, and use, plus a completed Security Checklist below.
 
 ## Security Checklist
 
@@ -267,12 +141,29 @@ Always return HTTP 200 quickly from your webhook handler.
 | Replay attack | Timestamp > 5 minutes old | Reject with timestamp check |
 | Unauthorized voice cloning | Audit logs | Restrict clone permissions |
 
+## Examples
+
+Worked, end-to-end scenarios live in
+[references/examples.md](references/examples.md):
+
+- **Block a key commit before it happens** — the pre-commit hook aborts a
+  commit containing `sk_...`.
+- **Reject a replayed webhook** — a correct HMAC still fails on a 6-minute-old
+  timestamp.
+- **Rotate a leaked production key with zero downtime** — validate the new key,
+  cut over, then revoke.
+- **Audit a voice-clone operation** — structured JSON proving who cloned a
+  voice and whether consent was on file.
+
 ## Resources
 
-- ElevenLabs Webhooks
+- [ElevenLabs Webhooks](https://elevenlabs.io/docs/product-guides/administration/webhooks)
 - [ElevenLabs API Keys](https://elevenlabs.io/app/settings/api-keys)
 - [Voice Cloning Policy](https://elevenlabs.io/safety)
 
 ## Next Steps
 
-For production deployment, see `elevenlabs-prod-checklist`.
+Once these basics are in place, harden the wider deployment: apply the
+`elevenlabs-prod-checklist` skill for production readiness, schedule the
+quarterly key rotation from Step 5, and wire the voice audit logs into your
+central logging or SIEM so cloning activity is reviewable.
