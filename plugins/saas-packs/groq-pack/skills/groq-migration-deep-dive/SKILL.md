@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "migrate to groq", "switch to groq",
   "groq migration", "openai to groq", "groq replatform".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

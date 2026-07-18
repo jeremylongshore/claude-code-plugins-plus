@@ -7,7 +7,7 @@ description: |
   Trigger with "clickhouse query", "clickhouse insert", "clickhouse aggregate",
   "clickhouse materialized view", "clickhouse SQL".
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: |
   Trigger with "clickhouse local dev", "clickhouse docker", "clickhouse dev
   environment", "run clickhouse locally", "clickhouse docker compose".
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(docker-compose:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

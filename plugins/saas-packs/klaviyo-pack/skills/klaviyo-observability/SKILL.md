@@ -13,7 +13,7 @@ description: 'Set up observability for Klaviyo integrations with metrics, traces
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

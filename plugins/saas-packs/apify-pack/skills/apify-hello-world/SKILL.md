@@ -7,7 +7,7 @@ description: |
   Trigger with "apify hello world", "apify example", "run an apify actor",
   "apify quick start", "first apify scrape".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

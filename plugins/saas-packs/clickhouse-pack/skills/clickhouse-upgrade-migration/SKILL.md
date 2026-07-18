@@ -8,7 +8,7 @@ description: |
   Trigger with phrases like "upgrade clickhouse", "clickhouse version upgrade",
   "update clickhouse client", "clickhouse breaking changes", "new clickhouse version".
 allowed-tools: Read, Edit, Bash(npm:*), Bash(git:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

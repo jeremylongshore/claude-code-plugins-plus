@@ -10,7 +10,7 @@ description: 'Install and configure Apify SDK, CLI, and API client authenticatio
 
   '
 allowed-tools: Read, Write, Bash(npm:*), Bash(npx:*), Bash(apify:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

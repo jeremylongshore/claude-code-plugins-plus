@@ -10,7 +10,7 @@ description: |
   Trigger with "clickhouse schema design", "clickhouse table design",
   "clickhouse ORDER BY", "clickhouse partitioning", "MergeTree table".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

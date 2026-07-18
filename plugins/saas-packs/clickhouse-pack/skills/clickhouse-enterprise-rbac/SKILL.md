@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse RBAC", "clickhouse roles", "clickhouse permissions",
   "clickhouse row policy", "clickhouse enterprise access", "clickhouse GRANT".
 allowed-tools: Read, Write
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

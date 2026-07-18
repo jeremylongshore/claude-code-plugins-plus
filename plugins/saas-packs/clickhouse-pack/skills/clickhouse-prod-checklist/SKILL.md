@@ -9,7 +9,7 @@ description: |
   "clickhouse launch checklist", "production clickhouse",
   "clickhouse prod ready".
 allowed-tools: Read, Bash(clickhouse-client:*), Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

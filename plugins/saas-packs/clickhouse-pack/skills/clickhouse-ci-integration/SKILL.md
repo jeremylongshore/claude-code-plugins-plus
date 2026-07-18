@@ -7,7 +7,7 @@ description: |
   Trigger with "clickhouse CI", "clickhouse GitHub Actions", "clickhouse
   integration tests", "test clickhouse in CI", "clickhouse automated testing".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

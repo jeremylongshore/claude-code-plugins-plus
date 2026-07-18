@@ -12,7 +12,7 @@ description: 'Execute Groq production deployment checklist and go-live procedure
 
   '
 allowed-tools: Read, Bash(curl:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

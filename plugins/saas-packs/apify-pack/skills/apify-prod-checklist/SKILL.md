@@ -8,7 +8,7 @@ description: |
   Trigger with "apify production", "deploy actor to prod", "apify go-live",
   "apify launch checklist", "actor production ready".
 allowed-tools: Read, Bash(apify:*), Bash(curl:*), Bash(npm:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

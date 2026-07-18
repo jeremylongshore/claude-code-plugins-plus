@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "klaviyo scopes", "klaviyo RBAC",
   "klaviyo enterprise", "klaviyo permissions", "klaviyo OAuth", "klaviyo access control".
 allowed-tools: Read, Write
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

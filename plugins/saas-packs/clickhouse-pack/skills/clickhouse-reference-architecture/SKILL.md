@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse architecture", "clickhouse project structure",
   "clickhouse design", "clickhouse multi-tenant", "clickhouse reference".
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

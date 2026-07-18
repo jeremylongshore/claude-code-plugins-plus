@@ -8,7 +8,7 @@ description: |
   management", "secure clickhouse", "clickhouse TLS", "clickhouse access
   control", "clickhouse firewall".
 allowed-tools: Read
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

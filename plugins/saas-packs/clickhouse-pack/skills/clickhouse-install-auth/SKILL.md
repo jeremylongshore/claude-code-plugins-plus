@@ -7,7 +7,7 @@ description: |
   Trigger with "install clickhouse", "setup clickhouse client", "clickhouse
   auth", "connect to clickhouse", "clickhouse credentials".
 allowed-tools: Read, Write, Bash(npm:*), Bash(pnpm:*), Bash(pip:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

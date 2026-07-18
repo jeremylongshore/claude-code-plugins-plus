@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "groq whisper", "groq transcription",
   "groq audio", "groq vision", "groq TTS", "groq speech".
 allowed-tools: Read, Bash(npm:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

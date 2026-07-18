@@ -12,7 +12,7 @@ description: 'Install and configure Groq SDK authentication for TypeScript or Py
 
   '
 allowed-tools: Bash(npm:*), Bash(pip:*), Bash(export:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

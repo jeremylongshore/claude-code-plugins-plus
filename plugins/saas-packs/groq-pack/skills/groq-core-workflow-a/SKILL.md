@@ -9,7 +9,7 @@ description: |
   Trigger with phrases like "groq chat completion", "groq tool use",
   "groq function calling", "groq JSON mode".
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

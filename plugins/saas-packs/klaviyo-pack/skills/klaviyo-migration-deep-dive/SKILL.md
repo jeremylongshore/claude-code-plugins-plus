@@ -13,7 +13,7 @@ description: 'Use when you are moving an email/CDP stack onto Klaviyo — off th
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

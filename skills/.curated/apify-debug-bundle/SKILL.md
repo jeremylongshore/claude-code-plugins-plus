@@ -9,7 +9,7 @@ description: |
   "apify diagnostic", "apify run failed why".
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(node:*), Bash(tar:*), Bash(apify:*),
   Grep
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Diagnose and fix Intercom API errors by HTTP status code and error
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

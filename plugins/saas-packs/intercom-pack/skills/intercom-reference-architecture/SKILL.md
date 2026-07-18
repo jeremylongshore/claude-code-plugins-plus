@@ -12,7 +12,7 @@ description: 'Implement Intercom reference architecture with layered project str
 
   '
 allowed-tools: Read, Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

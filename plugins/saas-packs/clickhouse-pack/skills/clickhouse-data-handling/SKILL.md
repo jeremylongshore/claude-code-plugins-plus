@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse data retention", "clickhouse TTL", "clickhouse GDPR",
   "delete data clickhouse", "clickhouse data lifecycle", "clickhouse PII".
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

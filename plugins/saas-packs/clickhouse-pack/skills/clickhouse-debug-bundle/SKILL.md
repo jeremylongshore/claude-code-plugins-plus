@@ -9,7 +9,7 @@ description: |
   "clickhouse support bundle", "collect clickhouse logs",
   "clickhouse system tables".
 allowed-tools: Read, Bash(curl:*), Bash(tar:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

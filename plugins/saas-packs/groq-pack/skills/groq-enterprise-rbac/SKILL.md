@@ -9,7 +9,7 @@ description: |
   "groq RBAC", "groq enterprise", "groq team access", "groq spending limits",
   "groq multi-team".
 allowed-tools: Read, Write, Edit
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

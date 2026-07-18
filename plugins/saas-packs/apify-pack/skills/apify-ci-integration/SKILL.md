@@ -8,7 +8,7 @@ description: |
   Trigger with "apify CI", "apify GitHub Actions", "apify automated deploy",
   "CI apify", "apify pipeline", "auto deploy actor".
 allowed-tools: Write, Bash(gh:*), Bash(npm:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

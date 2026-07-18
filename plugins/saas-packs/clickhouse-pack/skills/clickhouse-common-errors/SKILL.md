@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse error", "fix clickhouse", "clickhouse not working",
   "debug clickhouse", "clickhouse exception", "clickhouse syntax error".
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

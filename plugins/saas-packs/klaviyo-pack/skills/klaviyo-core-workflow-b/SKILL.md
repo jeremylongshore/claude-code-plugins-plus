@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "klaviyo events", "klaviyo segments", "klaviyo campaigns",
   "track klaviyo event", "klaviyo flow trigger".
 allowed-tools: Read, Write, Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

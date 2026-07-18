@@ -13,7 +13,7 @@ description: 'Implement Apify webhooks for Actor run notifications and event-dri
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

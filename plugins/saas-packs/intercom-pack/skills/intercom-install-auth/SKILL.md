@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "install intercom", "setup intercom",
   "intercom auth", "configure intercom API key", "intercom access token".
 allowed-tools: Write, Bash(npm:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

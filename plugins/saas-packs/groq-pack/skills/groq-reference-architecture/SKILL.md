@@ -13,7 +13,7 @@ description: 'Implement Groq reference architecture with model routing, streamin
 
   '
 allowed-tools: Read, Grep
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "klaviyo performance", "optimize klaviyo",
   "klaviyo latency", "klaviyo caching", "klaviyo slow", "klaviyo batch".
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

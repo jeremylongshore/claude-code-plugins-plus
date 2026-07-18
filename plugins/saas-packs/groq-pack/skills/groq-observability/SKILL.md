@@ -14,7 +14,7 @@ description: 'Set up observability for Groq integrations: latency histograms, to
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

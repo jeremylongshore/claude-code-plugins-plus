@@ -15,7 +15,7 @@ description: 'Implement Klaviyo data privacy, GDPR/CCPA compliance, and PII hand
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

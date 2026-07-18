@@ -12,7 +12,7 @@ description: 'Upgrade groq-sdk versions and handle Groq model deprecations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

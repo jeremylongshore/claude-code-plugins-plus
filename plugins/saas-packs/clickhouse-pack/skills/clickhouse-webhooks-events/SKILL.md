@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse ingestion", "clickhouse webhook", "clickhouse Kafka",
   "stream data to clickhouse", "clickhouse data pipeline".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

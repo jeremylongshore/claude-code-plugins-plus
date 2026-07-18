@@ -8,7 +8,7 @@ description: |
   Trigger with phrases like "groq environments", "groq staging", "groq dev prod",
   "groq environment setup", "groq multi-env", "groq config by env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

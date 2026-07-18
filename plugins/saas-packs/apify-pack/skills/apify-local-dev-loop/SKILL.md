@@ -8,7 +8,7 @@ description: |
   Trigger with "apify dev setup", "apify local development", "develop actor
   locally", "apify run local".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*)
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

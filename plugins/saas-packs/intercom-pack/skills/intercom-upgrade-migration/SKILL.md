@@ -8,7 +8,7 @@ description: |
   Trigger with phrases like "upgrade intercom", "intercom migration",
   "intercom breaking changes", "update intercom SDK", "intercom API version".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 argument-hint: "[current-version] [target-version]"

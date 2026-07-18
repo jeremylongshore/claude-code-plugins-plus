@@ -9,7 +9,7 @@ description: |
   Trigger with phrases like "klaviyo incident", "klaviyo outage", "klaviyo down",
   "klaviyo on-call", "klaviyo emergency", "klaviyo broken".
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

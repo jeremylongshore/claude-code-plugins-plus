@@ -8,7 +8,7 @@ description: |
   Trigger with "clickhouse SDK patterns", "clickhouse client patterns",
   "clickhouse best practices", "clickhouse streaming insert".
 allowed-tools: Read
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -9,7 +9,7 @@ description: |
   Trigger with phrases like "intercom incident", "intercom outage",
   "intercom down", "intercom on-call", "intercom emergency", "intercom broken".
 allowed-tools: Bash(curl:*), Bash(kubectl:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

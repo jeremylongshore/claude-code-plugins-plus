@@ -9,7 +9,7 @@ description: |
   Trigger with "deploy clickhouse app", "clickhouse Vercel", "clickhouse Cloud
   Run", "clickhouse production deploy", "clickhouse Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

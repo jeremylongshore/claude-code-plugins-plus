@@ -7,7 +7,7 @@ description: |
   migration", "import contacts to intercom", "switch to intercom", "zendesk to
   intercom", "intercom data import".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

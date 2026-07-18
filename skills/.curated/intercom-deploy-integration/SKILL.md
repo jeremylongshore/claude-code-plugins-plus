@@ -7,7 +7,7 @@ description: |
   Trigger with phrases like "deploy intercom", "intercom Vercel",
   "intercom production deploy", "intercom Cloud Run", "intercom Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

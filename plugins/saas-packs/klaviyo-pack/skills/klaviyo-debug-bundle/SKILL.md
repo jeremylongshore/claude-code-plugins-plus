@@ -12,7 +12,7 @@ description: 'Collect Klaviyo debug evidence for support tickets and troubleshoo
 
   '
 allowed-tools: Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

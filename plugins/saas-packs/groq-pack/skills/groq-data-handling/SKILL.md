@@ -7,7 +7,7 @@ description: |
   tracking. Trigger with phrases like "groq data", "groq PII", "groq GDPR",
   "groq data retention", "groq privacy", "groq compliance".
 allowed-tools: Read, Write, Edit
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Apply Groq security best practices for API key management and data
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
