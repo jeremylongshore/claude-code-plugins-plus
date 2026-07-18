@@ -1,12 +1,14 @@
 ---
 name: clickhouse-sdk-patterns
-description: "Production-ready patterns for @clickhouse/client \u2014 streaming inserts,\
-  \ typed queries,\nerror handling, and connection management.\nUse when building\
-  \ robust ClickHouse integrations, implementing streaming,\nor establishing team\
-  \ coding standards.\nTrigger: \"clickhouse SDK patterns\", \"clickhouse client patterns\"\
-  ,\n\"clickhouse best practices\", \"clickhouse streaming insert\".\n"
-allowed-tools: Read, Write, Edit
-version: 1.6.0
+description: |
+  Production-ready patterns for @clickhouse/client — streaming inserts, typed
+  queries, error handling, and connection management.
+  Use when building robust ClickHouse integrations, implementing streaming
+  inserts or low-memory streaming reads, or establishing team coding standards.
+  Trigger with "clickhouse SDK patterns", "clickhouse client patterns",
+  "clickhouse best practices", "clickhouse streaming insert".
+allowed-tools: Read
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,16 +24,38 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Production patterns for `@clickhouse/client` — typed queries, streaming inserts,
-error handling, and connection lifecycle management.
+error handling, and connection lifecycle management. Start from the typed query
+helper below, then drill into `references/implementation.md` for the streaming,
+batching, and lifecycle patterns.
 
 ## Prerequisites
 
-- `@clickhouse/client` installed (see `clickhouse-install-auth`)
-- Familiarity with async/await and Node.js streams
+- `@clickhouse/client` installed and authenticated (see `clickhouse-install-auth`)
+- Node.js 18+ with a `CLICKHOUSE_HOST` / `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD` env set
+- Familiarity with async/await and Node.js streams (backpressure, `drain`, `Readable`)
 
 ## Instructions
 
-### Pattern 1: Typed Query Helper
+Apply the pattern that fits your workload. Steps 2–7 live in
+[references/implementation.md](references/implementation.md) with full,
+copy-pasteable code; the core typed-query skeleton stays here.
+
+1. **Typed query helper** — the foundation every other pattern builds on. Define
+   a generic `query<T>` wrapper that returns parsed rows (skeleton below).
+2. **Streaming insert (backpressure-safe)** — stream large inserts through a
+   `Readable` instead of buffering in memory; honor `drain`.
+3. **Batch insert with retry** — chunk rows (default 10k) with exponential-backoff
+   retries, returning `{ inserted, errors }`.
+4. **Streaming SELECT (low memory)** — consume large result sets as an
+   `AsyncGenerator` so you never load the full set into RAM.
+5. **Error handling** — distinguish server-side `ClickHouseError` (code + message)
+   from network/client errors and normalize into a structured result.
+6. **Connection lifecycle** — flush pending inserts on `SIGTERM` via
+   `client.close()`; expose a `ping()`-based health check.
+7. **Per-query settings** — override `max_threads`, `max_memory_usage`,
+   `max_execution_time`, and `max_result_rows` for heavy queries.
+
+### Skeleton: Typed Query Helper
 
 ```typescript
 import { createClient } from '@clickhouse/client';
@@ -51,8 +75,46 @@ async function query<T>(sql: string, params?: Record<string, unknown>): Promise<
   });
   return rs.json<T>();
 }
+```
 
-// Usage
+**Note on parameterized queries:** ClickHouse uses `{name:Type}` syntax for
+parameters, not `$1` or `?`. Always use typed parameters to prevent SQL injection.
+
+## Output
+
+Applying these patterns produces:
+
+- A single reusable `client` instance plus a generic `query<T>` helper that
+  returns typed, parsed rows.
+- Streaming insert/read paths that keep memory flat regardless of dataset size.
+- A batch-insert result object `{ inserted: number; errors: Error[] }` you can act
+  on programmatically.
+- Normalized error results (`CH-<code>: <message>` for server-side failures) rather
+  than raw thrown exceptions.
+- Graceful shutdown that flushes pending inserts before the process exits.
+
+## Error Handling
+
+Map common ClickHouse server error codes to a corrective action:
+
+| Error Code | Meaning | Action |
+|------------|---------|--------|
+| `SYNTAX_ERROR (62)` | Bad SQL | Fix query syntax |
+| `UNKNOWN_TABLE (60)` | Table doesn't exist | Check table name, database |
+| `TOO_MANY_SIMULTANEOUS_QUERIES (202)` | Connection overload | Reduce concurrency or pool |
+| `MEMORY_LIMIT_EXCEEDED (241)` | Query uses too much RAM | Add filters, use streaming |
+| `TIMEOUT_EXCEEDED (159)` | Query too slow | Optimize ORDER BY, add indexes |
+
+Full `safeQuery` wrapper (server-vs-client error discrimination) is in
+[references/implementation.md](references/implementation.md) under Pattern 5.
+
+## Examples
+
+Worked, runnable usage of each helper is in
+[references/examples.md](references/examples.md). Quick look — a typed aggregation
+query with named parameters:
+
+```typescript
 interface EventCount {
   event_type: string;
   cnt: string;  // ClickHouse JSON returns numbers as strings
@@ -64,188 +126,19 @@ const rows = await query<EventCount>(
 );
 ```
 
-**Note on parameterized queries:** ClickHouse uses `{name:Type}` syntax for parameters,
-not `$1` or `?`. Always use typed parameters to prevent SQL injection.
-
-### Pattern 2: Streaming Insert (Backpressure-Safe)
-
-```typescript
-import { createClient } from '@clickhouse/client';
-import { Readable } from 'stream';
-
-// For large inserts, stream data instead of buffering in memory
-async function streamInsert(rows: AsyncIterable<Record<string, unknown>>) {
-  const stream = new Readable({
-    objectMode: true,
-    read() {},  // push-based
-  });
-
-  const insertPromise = client.insert({
-    table: 'events',
-    values: stream,
-    format: 'JSONEachRow',
-  });
-
-  for await (const row of rows) {
-    // Backpressure: if push returns false, wait for drain
-    if (!stream.push(row)) {
-      await new Promise<void>((resolve) => stream.once('drain', resolve));
-    }
-  }
-  stream.push(null);  // Signal end of stream
-
-  await insertPromise;
-}
-```
-
-### Pattern 3: Batch Insert with Retry
-
-```typescript
-async function batchInsert<T extends Record<string, unknown>>(
-  table: string,
-  rows: T[],
-  batchSize = 10_000,
-  maxRetries = 3,
-): Promise<{ inserted: number; errors: Error[] }> {
-  let inserted = 0;
-  const errors: Error[] = [];
-
-  for (let i = 0; i < rows.length; i += batchSize) {
-    const batch = rows.slice(i, i + batchSize);
-    let attempt = 0;
-
-    while (attempt < maxRetries) {
-      try {
-        await client.insert({
-          table,
-          values: batch,
-          format: 'JSONEachRow',
-        });
-        inserted += batch.length;
-        break;
-      } catch (err) {
-        attempt++;
-        if (attempt === maxRetries) {
-          errors.push(err as Error);
-        } else {
-          await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
-        }
-      }
-    }
-  }
-
-  return { inserted, errors };
-}
-```
-
-### Pattern 4: Streaming SELECT (Low Memory)
-
-```typescript
-// For large result sets, stream rows instead of loading all into memory
-async function* streamQuery<T>(sql: string): AsyncGenerator<T> {
-  const rs = await client.query({ query: sql, format: 'JSONEachRow' });
-  const stream = rs.stream();
-
-  for await (const rows of stream) {
-    // Each chunk is an array of rows (typically ~8KB worth)
-    for (const row of rows) {
-      yield (row as { json: () => T }).json();
-    }
-  }
-}
-
-// Usage
-for await (const event of streamQuery<{ event_type: string }>('SELECT * FROM events')) {
-  process.stdout.write(`${event.event_type}\n`);
-}
-```
-
-### Pattern 5: Error Handling
-
-```typescript
-import { ClickHouseError } from '@clickhouse/client';
-
-async function safeQuery<T>(sql: string): Promise<{ data: T[] | null; error: string | null }> {
-  try {
-    const rs = await client.query({ query: sql, format: 'JSONEachRow' });
-    return { data: await rs.json<T>(), error: null };
-  } catch (err) {
-    if (err instanceof ClickHouseError) {
-      // ClickHouse server-side error (syntax, permissions, etc.)
-      console.error(`ClickHouse error ${err.code}: ${err.message}`);
-      return { data: null, error: `CH-${err.code}: ${err.message}` };
-    }
-    // Network or client-side error
-    console.error('Client error:', (err as Error).message);
-    return { data: null, error: (err as Error).message };
-  }
-}
-```
-
-### Pattern 6: Connection Lifecycle
-
-```typescript
-// Graceful shutdown — important for flush of pending inserts
-process.on('SIGTERM', async () => {
-  console.log('Closing ClickHouse connection...');
-  await client.close();
-  process.exit(0);
-});
-
-// Health check
-async function isHealthy(): Promise<boolean> {
-  try {
-    const { success } = await client.ping();
-    return success;
-  } catch {
-    return false;
-  }
-}
-```
-
-### Pattern 7: ClickHouse Settings Per Query
-
-```typescript
-// Override server settings for specific queries
-const rs = await client.query({
-  query: 'SELECT * FROM huge_table',
-  format: 'JSONEachRow',
-  clickhouse_settings: {
-    max_threads: 4,                    // Limit parallelism
-    max_memory_usage: 1_000_000_000,   // 1GB memory limit
-    max_execution_time: 30,            // 30s timeout
-    max_result_rows: 100_000,          // Cap result size
-  },
-});
-```
-
-## Format Reference
-
-| Format | Use Case | Streaming |
-|--------|----------|-----------|
-| `JSONEachRow` | Standard JSON rows (NDJSON) | Yes |
-| `JSONCompactEachRow` | Arrays instead of objects (smaller) | Yes |
-| `CSV` | Export/import | Yes |
-| `TabSeparated` | CLI-compatible output | Yes |
-| `Parquet` | Analytics interchange | Yes |
-| `Native` | Fastest binary format | Yes |
-
-## Error Handling
-
-| Error Code | Meaning | Action |
-|------------|---------|--------|
-| `SYNTAX_ERROR (62)` | Bad SQL | Fix query syntax |
-| `UNKNOWN_TABLE (60)` | Table doesn't exist | Check table name, database |
-| `TOO_MANY_SIMULTANEOUS_QUERIES (202)` | Connection overload | Reduce concurrency or pool |
-| `MEMORY_LIMIT_EXCEEDED (241)` | Query uses too much RAM | Add filters, use streaming |
-| `TIMEOUT_EXCEEDED (159)` | Query too slow | Optimize ORDER BY, add indexes |
+See [references/examples.md](references/examples.md) for streaming reads and
+structured error-result usage.
 
 ## Resources
 
+- [references/implementation.md](references/implementation.md) — full code for patterns 2–7 + format table
+- [references/examples.md](references/examples.md) — worked, runnable usage examples
 - [Node.js Client Docs](https://clickhouse.com/docs/integrations/javascript)
 - [Client Examples (GitHub)](https://github.com/ClickHouse/clickhouse-js/tree/main/examples)
 - [Query Settings Reference](https://clickhouse.com/docs/operations/settings/settings)
 
 ## Next Steps
 
-Apply these patterns in `clickhouse-core-workflow-a` for real data modeling.
+Apply these patterns in `clickhouse-core-workflow-a` for real data modeling, then
+tune query cost and concurrency with `clickhouse-cost-tuning` and
+`clickhouse-performance-tuning`.

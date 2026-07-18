@@ -1,19 +1,13 @@
 ---
 name: clickhouse-hello-world
-description: 'Create your first ClickHouse table, insert data, and run analytical
-  queries.
-
+description: |
+  Create your first ClickHouse table, insert data, and run analytical queries.
   Use when starting a new ClickHouse project, learning MergeTree basics,
-
   or testing your ClickHouse connection with real operations.
-
-  Trigger: "clickhouse hello world", "first clickhouse table",
-
+  Trigger with "clickhouse hello world", "first clickhouse table",
   "clickhouse quick start", "create clickhouse table", "clickhouse example".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,11 +23,18 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Create a MergeTree table, insert rows with JSONEachRow, and run your first
-analytical query -- all using the official `@clickhouse/client`.
+analytical query -- all using the official `@clickhouse/client`. This is the
+smoke test that proves your connection works and teaches the four MergeTree
+concepts (`ORDER BY`, `PARTITION BY`, `TTL`, `LowCardinality`) reused in every
+real schema.
 
 ## Prerequisites
 
-- `@clickhouse/client` installed and connected (see `clickhouse-install-auth`)
+- `@clickhouse/client` installed and connected (see the `clickhouse-install-auth`
+  skill for connection setup).
+- A reachable ClickHouse server (local Docker, ClickHouse Cloud, or self-hosted)
+  with `CLICKHOUSE_HOST` / `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD` set as
+  environment variables.
 
 ## Instructions
 
@@ -73,6 +74,9 @@ console.log('Table "events" created.');
 - `PARTITION BY` -- splits data into parts by month for efficient pruning
 - `TTL` -- automatic data expiration
 - `LowCardinality(String)` -- dictionary-encoded string, ideal for columns with < 10K distinct values
+
+For the full engine menu (`ReplacingMergeTree`, `SummingMergeTree`, etc.) and the
+column-type table, see [MergeTree engines & data types](references/mergetree-and-types.md).
 
 ### Step 2: Insert Data with JSONEachRow
 
@@ -119,7 +123,19 @@ for (const row of rows) {
 }
 ```
 
-**Expected output:**
+### Step 4: Explore System Tables (optional)
+
+Once data lands, inspect on-disk size and part counts via `system.parts` to
+confirm your partitioning is healthy. Full query and column reference:
+[exploring system tables](references/system-tables.md).
+
+## Output
+
+Running the three core steps against a fresh table produces:
+
+- **Step 1** -- `Table "events" created.` (idempotent via `IF NOT EXISTS`).
+- **Step 2** -- `Inserted 5 events.`
+- **Step 3** -- one aggregated row per `event_type`, sorted by count descending:
 
 ```
 page_view: 3 events, 3 users
@@ -127,50 +143,8 @@ click: 1 events, 1 users
 purchase: 1 events, 1 users
 ```
 
-### Step 4: Explore System Tables
-
-```typescript
-// Check table size and row count
-const stats = await client.query({
-  query: `
-    SELECT
-      table,
-      formatReadableSize(sum(bytes_on_disk)) AS disk_size,
-      sum(rows) AS row_count,
-      count() AS part_count
-    FROM system.parts
-    WHERE active AND database = currentDatabase() AND table = 'events'
-    GROUP BY table
-  `,
-  format: 'JSONEachRow',
-});
-console.log('Table stats:', await stats.json());
-```
-
-## MergeTree Engine Quick Reference
-
-| Engine | Use Case |
-|--------|----------|
-| `MergeTree` | General-purpose analytics |
-| `ReplacingMergeTree` | Upserts (dedup by ORDER BY key) |
-| `SummingMergeTree` | Auto-sum numeric columns on merge |
-| `AggregatingMergeTree` | Pre-aggregated materialized views |
-| `CollapsingMergeTree` | State changes / versioned rows |
-
-## Common Data Types
-
-| Type | Example | Notes |
-|------|---------|-------|
-| `UInt8/16/32/64` | `user_id UInt64` | Unsigned integers |
-| `Int8/16/32/64` | `delta Int32` | Signed integers |
-| `Float32/64` | `price Float64` | IEEE 754 |
-| `Decimal(P,S)` | `amount Decimal(18,2)` | Exact decimal |
-| `String` | `name String` | Variable-length bytes |
-| `DateTime` | `created_at DateTime` | Unix timestamp (seconds) |
-| `DateTime64(3)` | `ts DateTime64(3)` | Millisecond precision |
-| `UUID` | `id UUID` | 128-bit UUID |
-| `Array(T)` | `tags Array(String)` | Variable-length array |
-| `LowCardinality(T)` | `status LowCardinality(String)` | Dictionary encoding |
+ClickHouse returns numeric aggregates as JSON strings, so cast `total` /
+`unique_users` before doing arithmetic in TypeScript.
 
 ## Error Handling
 
@@ -181,6 +155,17 @@ console.log('Table stats:', await stats.json());
 | `Type mismatch` | Wrong data type in insert | Match types to schema |
 | `Memory limit exceeded` | Query too broad | Add WHERE clauses, use LIMIT |
 
+## Examples
+
+Steps 1-3 form the canonical end-to-end example: create → insert → aggregate.
+Two extensions live in the reference files:
+
+- **Different engine or column types** -- swap `MergeTree` for
+  `ReplacingMergeTree` (upserts) or add a `Decimal(18,2)` column:
+  [MergeTree engines & data types](references/mergetree-and-types.md).
+- **Verifying on-disk layout** -- the `system.parts` size/part-count query:
+  [exploring system tables](references/system-tables.md).
+
 ## Resources
 
 - [MergeTree Engine Docs](https://clickhouse.com/docs/engines/table-engines/mergetree-family/mergetree)
@@ -189,4 +174,5 @@ console.log('Table stats:', await stats.json());
 
 ## Next Steps
 
-Proceed to `clickhouse-local-dev-loop` for Docker-based local development.
+Proceed to the `clickhouse-local-dev-loop` skill for Docker-based local
+development and an iterative schema-editing workflow.

@@ -6,11 +6,11 @@ description: 'Install and configure Apify SDK, CLI, and API client authenticatio
 
   or initializing apify-client / Apify SDK in your codebase.
 
-  Trigger: "install apify", "setup apify", "apify auth", "configure apify token".
+  Trigger with "install apify", "setup apify", "apify auth", "configure apify token".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
-version: 1.4.0
+allowed-tools: Read, Write, Bash(npm:*), Bash(npx:*), Bash(apify:*)
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,7 +24,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up the Apify ecosystem: the `apify-client` JS library (for calling Actors remotely), the `apify` SDK (for building Actors), the Apify CLI (for deploying), and Crawlee (for crawling). Each package serves a different purpose.
+Set up the Apify ecosystem: the `apify-client` JS library (for calling Actors remotely), the `apify` SDK (for building Actors), the Apify CLI (for deploying), and Crawlee (for crawling). Each package serves a different purpose — install only what the task needs, then wire up a single API token.
 
 ## Package Map
 
@@ -58,6 +58,8 @@ npm install -g apify-cli
 
 ### Step 2: Configure Authentication
 
+Pick one. Read any existing `.env` first so you do not clobber it, then Write the token in.
+
 ```bash
 # Option A: Environment variable (recommended for apps)
 export APIFY_TOKEN="apify_api_YOUR_TOKEN_HERE"
@@ -70,14 +72,14 @@ apify login
 # Paste your token when prompted
 ```
 
+The `APIFY_TOKEN` env var is auto-detected by both `apify-client` and the `apify` SDK. For every place a token can be supplied (constructor option, header, precedence) plus the full platform env-var list, see [authentication reference](references/authentication.md).
+
 ### Step 3: Verify Connection
 
 ```typescript
 import { ApifyClient } from 'apify-client';
 
-const client = new ApifyClient({
-  token: process.env.APIFY_TOKEN,
-});
+const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 
 // List your Actors to confirm auth works
 const { items } = await client.actors().list();
@@ -91,23 +93,16 @@ apify login --token YOUR_TOKEN
 apify info  # Shows your account info
 ```
 
-## Auth Token Details
+## Output
 
-- Token format: `apify_api_` prefix followed by alphanumeric string
-- Pass via `Authorization: Bearer <token>` header (REST API)
-- Pass via `token` constructor option (JS client)
-- The `APIFY_TOKEN` env var is auto-detected by both `apify-client` and `apify` SDK
+A working, authenticated Apify setup:
 
-## Environment Variable Reference
+- The needed packages installed in `node_modules` (verify with `npm ls apify-client`).
+- `APIFY_TOKEN` available to the process — via a Write to `.env`, an exported shell var, or `apify login` credentials in `~/.apify/auth.json`.
+- The Step 3 snippet printing `Authenticated. You have N Actors.` — proof the token reaches the API.
+- `apify info` showing your account (only when the CLI was installed in Step 1).
 
-| Variable | Purpose |
-|----------|---------|
-| `APIFY_TOKEN` | API authentication (primary) |
-| `APIFY_PROXY_PASSWORD` | Proxy access (auto-set on platform) |
-| `APIFY_IS_AT_HOME` | `true` when running on Apify platform |
-| `APIFY_DEFAULT_DATASET_ID` | Default dataset for current run |
-| `APIFY_DEFAULT_KEY_VALUE_STORE_ID` | Default KV store for current run |
-| `APIFY_DEFAULT_REQUEST_QUEUE_ID` | Default request queue for current run |
+If the verify snippet throws instead of printing the count, jump to Error Handling below.
 
 ## Error Handling
 
@@ -120,12 +115,12 @@ apify info  # Shows your account info
 
 ## Examples
 
-### TypeScript Project Setup
+The essential singleton-client skeleton:
 
 ```typescript
 // src/apify/client.ts
 import { ApifyClient } from 'apify-client';
-import 'dotenv/config'; // npm install dotenv
+import 'dotenv/config';
 
 let client: ApifyClient | null = null;
 
@@ -140,12 +135,7 @@ export function getClient(): ApifyClient {
 }
 ```
 
-### .env.example Template
-
-```bash
-# Apify — get your token at https://console.apify.com/account/integrations
-APIFY_TOKEN=apify_api_REPLACE_ME
-```
+For the full worked set — the `.env.example` template, the verify snippet, and CLI verification — see [worked examples](references/examples.md).
 
 ## Resources
 
@@ -156,4 +146,7 @@ APIFY_TOKEN=apify_api_REPLACE_ME
 
 ## Next Steps
 
-Proceed to `apify-hello-world` for your first Actor call.
+With the client authenticated, proceed to `apify-hello-world` to make your first
+Actor call and push results to a dataset. If you are building your own Actor
+instead of calling one, the `apify` SDK and Crawlee installed above are your
+starting point — deploy with `apify push`.

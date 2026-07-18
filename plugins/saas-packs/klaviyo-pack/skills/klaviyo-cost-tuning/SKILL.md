@@ -13,7 +13,7 @@ description: 'Optimize Klaviyo costs through plan selection, contact management,
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -64,7 +64,23 @@ Klaviyo bills based on **active profiles** (contacts who have received or been t
 
 ## Instructions
 
-### Step 1: Audit Active Profile Count
+Work the levers in order — active-profile reduction has the largest impact, so start
+there before touching event sampling or API monitoring. Each step maps to a `klaviyo-api`
+routine in the full walkthrough; the [complete five-step implementation](references/implementation.md)
+carries the runnable code for every step, and [worked examples](references/examples.md) show
+the dollar impact of each.
+
+1. **Audit active profile count** — page through `ProfilesApi.getProfiles` with a minimal
+   fieldset to establish the current tier. Skeleton below.
+2. **Identify unengaged profiles** — query an "Unengaged 180+ Days" segment via `SegmentsApi`.
+3. **Suppress unengaged contacts** — unsubscribe (stays but unmarketable = not billed) or
+   add a global suppression property. This is what actually lowers the bill.
+4. **Sample non-critical events** — keep revenue events at 100%, sample high-volume/low-value
+   events (`Viewed Product`, `Page View`) to cut ingestion.
+5. **Monitor API usage** — wrap SDK calls in a rate tracker to catch runaway processes before
+   they trip the 700 req/min limit.
+
+Establish a session once, then run the audit (Step 1):
 
 ```typescript
 import { ApiKeySession, ProfilesApi, SegmentsApi } from 'klaviyo-api';
@@ -72,7 +88,7 @@ import { ApiKeySession, ProfilesApi, SegmentsApi } from 'klaviyo-api';
 const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
 const profilesApi = new ProfilesApi(session);
 
-// Count total profiles
+// Count total profiles (paginate with page[cursor])
 let totalProfiles = 0;
 let cursor: string | undefined;
 do {
@@ -88,124 +104,32 @@ do {
 console.log(`Total profiles: ${totalProfiles}`);
 ```
 
-### Step 2: Identify Unengaged Profiles
+Steps 2–5 (segment query, suppression job, event sampling, usage tracker) live in the
+[full implementation walkthrough](references/implementation.md).
 
-```typescript
-// Find profiles that haven't opened/clicked in 180+ days
-// Create a segment in Klaviyo for this, then query it
-const segmentsApi = new SegmentsApi(session);
+## Output
 
-const segments = await segmentsApi.getSegments({
-  filter: 'equals(name,"Unengaged 180+ Days")',
-});
+Applying this skill produces:
 
-if (segments.body.data.length > 0) {
-  const segmentId = segments.body.data[0].id;
-  const unengaged = await segmentsApi.getSegmentProfiles({
-    id: segmentId,
-    fieldsProfile: ['email', 'created'],
-  });
-  console.log(`Unengaged profiles: ${unengaged.body.data.length}+`);
-}
-```
+- **A current active-profile count** and the pricing tier it falls into (see the tables above).
+- **A list of unengaged profiles** (180+ days no open/click) eligible for suppression.
+- **A suppression run** — profiles unsubscribed or globally suppressed, lowering the billed
+  active count (often enough to drop a tier).
+- **An event-sampling config** that keeps revenue-critical events at 100% while sampling noise.
+- **A `KlaviyoUsageTracker`** emitting `[Klaviyo] High API rate: N req/min` warnings before the
+  700 req/min steady limit is reached.
 
-### Step 3: Suppress Unengaged Contacts
+## Examples
 
-```typescript
-// Move unengaged profiles to a suppressed list (removes from active count)
-import { ListsApi, ListEnum, ProfileEnum } from 'klaviyo-api';
+- **Drop a pricing tier:** suppressing 3,100 unengaged profiles takes an account from 12,400 to
+  9,300 active profiles, moving it from the 10,001–25,000 tier down to 5,001–10,000.
+- **Cut SMS spend:** gating the abandoned-cart flow on an engaged-only segment stops full-list
+  texting and its per-message carrier charges.
+- **Sample noisy events:** a 0.25/0.10 sample on `Viewed Product`/`Page View` cuts ingestion of
+  those events ~75–90% with no loss to revenue attribution.
 
-const listsApi = new ListsApi(session);
-
-// Option 1: Unsubscribe (profile stays but isn't marketable = not billed)
-await profilesApi.unsubscribeProfiles({
-  data: {
-    type: 'profile-subscription-bulk-delete-job',
-    attributes: {
-      profiles: {
-        data: unengagedEmails.map(email => ({
-          type: ProfileEnum.Profile,
-          attributes: {
-            email,
-            subscriptions: {
-              email: { marketing: { consent: 'UNSUBSCRIBED' } },
-            },
-          },
-        })),
-      },
-    },
-    relationships: {
-      list: { data: { type: ListEnum.List, id: 'MAIN_LIST_ID' } },
-    },
-  },
-});
-
-// Option 2: Suppress via profile update (add to global suppression)
-for (const email of unengagedEmails) {
-  await profilesApi.createOrUpdateProfile({
-    data: {
-      type: ProfileEnum.Profile,
-      attributes: {
-        email,
-        properties: { suppressedAt: new Date().toISOString(), suppressReason: 'unengaged-180d' },
-      },
-    },
-  });
-}
-```
-
-### Step 4: Event Sampling for Non-Critical Tracking
-
-```typescript
-// Not all events need to be tracked -- sample non-critical ones
-function shouldTrackEvent(eventName: string, samplingRates: Record<string, number>): boolean {
-  const rate = samplingRates[eventName] ?? 1.0;  // Default: track everything
-  return Math.random() < rate;
-}
-
-const samplingConfig = {
-  'Placed Order': 1.0,       // Always track (revenue attribution)
-  'Started Checkout': 1.0,   // Always track (cart abandonment)
-  'Viewed Product': 0.25,    // 25% sample (high volume, less critical)
-  'Page View': 0.1,          // 10% sample (very high volume)
-};
-
-// Before tracking
-if (shouldTrackEvent('Viewed Product', samplingConfig)) {
-  await eventsApi.createEvent({ /* ... */ });
-}
-```
-
-### Step 5: API Usage Monitor
-
-```typescript
-// Track API call volume to detect runaway processes
-class KlaviyoUsageTracker {
-  private callCount = 0;
-  private readonly startTime = Date.now();
-
-  track(): void {
-    this.callCount++;
-    // Warn if approaching steady rate limit
-    const elapsedMinutes = (Date.now() - this.startTime) / 60000;
-    const ratePerMinute = this.callCount / Math.max(elapsedMinutes, 1);
-
-    if (ratePerMinute > 500) {
-      console.warn(`[Klaviyo] High API rate: ${Math.round(ratePerMinute)} req/min (limit: 700)`);
-    }
-  }
-
-  getStats(): { totalCalls: number; ratePerMinute: number } {
-    const elapsedMinutes = (Date.now() - this.startTime) / 60000;
-    return {
-      totalCalls: this.callCount,
-      ratePerMinute: Math.round(this.callCount / Math.max(elapsedMinutes, 1)),
-    };
-  }
-}
-
-export const usageTracker = new KlaviyoUsageTracker();
-```
+See [references/examples.md](references/examples.md) for the full before/after figures and code
+for each scenario.
 
 ## Cost Reduction Checklist
 
@@ -231,11 +155,8 @@ export const usageTracker = new KlaviyoUsageTracker();
 
 ## Resources
 
+- [Full implementation walkthrough](references/implementation.md) — runnable code for all five steps
+- [Worked examples](references/examples.md) — before/after cost scenarios
 - [Klaviyo Pricing](https://www.klaviyo.com/pricing)
-- Understanding Active Profiles
-- Sunset Flow Best Practices
 - [Data Privacy API](https://developers.klaviyo.com/en/reference/data_privacy_api_overview)
-
-## Next Steps
-
-For architecture patterns, see `klaviyo-reference-architecture`.
+- For architecture patterns, see the `klaviyo-reference-architecture` skill in this pack.

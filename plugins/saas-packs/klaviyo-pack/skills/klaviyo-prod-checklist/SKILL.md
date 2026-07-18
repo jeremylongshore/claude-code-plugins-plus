@@ -12,7 +12,7 @@ description: 'Execute Klaviyo production deployment checklist and validation pro
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,7 +26,10 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Complete checklist for deploying Klaviyo integrations to production, with health checks, rollback procedures, and validation against real Klaviyo API endpoints.
+Complete checklist for deploying Klaviyo integrations to production, with health
+checks, rollback procedures, and validation against real Klaviyo API endpoints.
+Work the pre-deployment checklist below, run the pre-flight script, then verify
+the live health endpoint before declaring the deploy done.
 
 ## Prerequisites
 
@@ -36,6 +39,24 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 - Monitoring and alerting ready
 
 ## Instructions
+
+Follow these steps in order. Steps 1–2 are read-only audits of the codebase and
+config; steps 3–5 exercise the live API and health surface.
+
+1. **Audit secrets and code.** Confirm the production key lives in a secret
+   manager and no keys are hardcoded — run `Grep`/`grep -r "pk_" src/` to catch
+   leaks, and `Read` the deployment manifest to verify scopes. See the
+   Pre-Deployment Checklist below.
+2. **Audit the integration, resilience, and webhooks.** Walk the remaining
+   checklist sections (API integration, error handling, webhook security,
+   monitoring).
+3. **Run the pre-flight script** (`scripts/preflight-klaviyo.sh`) to validate the
+   status page, API auth, rate-limit headroom, and pinned SDK version.
+4. **Deploy**, then **verify the health endpoint** returns `healthy`.
+5. **Keep the rollback path ready** (feature flag first) in case metrics regress.
+
+Health check, pre-flight script, and rollback code are in
+[references/implementation.md](references/implementation.md).
 
 ### Pre-Deployment Checklist
 
@@ -80,108 +101,26 @@ Complete checklist for deploying Klaviyo integrations to production, with health
 - [ ] API latency tracked (P95 > 5s = P2)
 - [ ] Klaviyo status page monitored ([status.klaviyo.com](https://status.klaviyo.com))
 
-### Health Check Implementation
+## Output
 
-```typescript
-// src/health/klaviyo.ts
-import { ApiKeySession, AccountsApi } from 'klaviyo-api';
+Working through this skill produces:
 
-export async function checkKlaviyoHealth(): Promise<{
-  status: 'healthy' | 'degraded' | 'down';
-  latencyMs: number;
-  accountId?: string;
-  error?: string;
-}> {
-  const start = Date.now();
-  try {
-    const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-    const accountsApi = new AccountsApi(session);
-    const result = await accountsApi.getAccounts();
+- A completed pre-deployment checklist (every box ticked, or a documented
+  exception).
+- A pre-flight run that exits `0` with all four gates green (status page, API
+  auth `200`, rate-limit headroom, pinned SDK version) — see
+  [references/examples.md](references/examples.md).
+- A live `/health` endpoint that returns `healthy` with sub-500ms latency and
+  the resolved `accountId`.
+- A rehearsed rollback path (feature flag → git revert → `kubectl rollout undo`).
 
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-      accountId: result.body.data[0].id,
-    };
-  } catch (error: any) {
-    return {
-      status: error.status === 429 ? 'degraded' : 'down',
-      latencyMs: Date.now() - start,
-      error: `${error.status}: ${error.body?.errors?.[0]?.detail || error.message}`,
-    };
-  }
-}
+A go-live is "prod ready" only when the checklist is complete, pre-flight is
+green, and the health endpoint reports `healthy`.
 
-// Express health endpoint
-app.get('/health', async (req, res) => {
-  const klaviyo = await checkKlaviyoHealth();
-  const overallStatus = klaviyo.status === 'healthy' ? 200 : 503;
-  res.status(overallStatus).json({
-    status: klaviyo.status,
-    services: { klaviyo },
-    timestamp: new Date().toISOString(),
-  });
-});
-```
+## Error Handling
 
-### Pre-Flight Validation Script
-
-```bash
-#!/bin/bash
-# scripts/preflight-klaviyo.sh
-set -euo pipefail
-
-echo "=== Klaviyo Production Pre-Flight ==="
-
-# 1. Check Klaviyo status
-echo -n "Klaviyo Status Page: "
-STATUS=$(curl -s "https://status.klaviyo.com/api/v2/status.json" | python3 -c "import sys,json; print(json.load(sys.stdin)['status']['description'])" 2>/dev/null)
-echo "$STATUS"
-[ "$STATUS" = "All Systems Operational" ] || echo "WARNING: Klaviyo has active incidents"
-
-# 2. Verify API key
-echo -n "API Auth: "
-HTTP_CODE=$(curl -s -w "%{http_code}" -o /dev/null \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/")
-echo "HTTP $HTTP_CODE"
-[ "$HTTP_CODE" = "200" ] || { echo "FAIL: API auth returned $HTTP_CODE"; exit 1; }
-
-# 3. Check rate limit headroom
-echo -n "Rate Limit: "
-curl -s -I \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/profiles/?page[size]=1" 2>/dev/null \
-  | grep -i "ratelimit-remaining" || echo "Headers not available"
-
-# 4. Verify SDK version
-echo -n "SDK Version: "
-node -e "console.log(require('klaviyo-api/package.json').version)" 2>/dev/null || echo "Not installed"
-
-echo ""
-echo "=== Pre-flight complete ==="
-```
-
-### Rollback Procedure
-
-```bash
-# Immediate rollback: disable Klaviyo integration
-# Option 1: Feature flag (preferred)
-# Set KLAVIYO_ENABLED=false in your deployment platform
-
-# Option 2: Deploy previous version
-git log --oneline -5  # Find last known-good commit
-git revert HEAD        # Revert the deployment commit
-# Push and deploy
-
-# Option 3: If using Kubernetes
-kubectl rollout undo deployment/your-app
-kubectl rollout status deployment/your-app
-```
-
-## Alert Thresholds
+Map each failure to the correct severity and response. Full alert-threshold
+table:
 
 | Alert | Condition | Severity |
 |-------|-----------|----------|
@@ -191,11 +130,36 @@ kubectl rollout status deployment/your-app
 | High Latency | P95 > 5s | P2 -- check network/Klaviyo load |
 | Webhook Signature Invalid | Any rejection | P2 -- verify signing secret |
 
+- **Pre-flight fails auth (`403`/`401`):** the key is revoked or under-scoped.
+  Rotate/repair before deploying — do not proceed (see Example 2 in
+  [references/examples.md](references/examples.md)).
+- **Health endpoint `degraded`:** Klaviyo returned `429`. Back off; honor
+  `Retry-After` and confirm the request queue caps at 75 req/s.
+- **Health endpoint `down`:** Klaviyo unreachable (5xx) — check
+  [status.klaviyo.com](https://status.klaviyo.com) and trip the circuit breaker.
+- **Metrics regress post-deploy:** execute the rollback procedure, feature flag
+  first, from [references/implementation.md](references/implementation.md).
+
+## Examples
+
+Read the full endpoint on a live integration to confirm health before sign-off:
+
+```bash
+curl -s localhost:3000/health | python3 -m json.tool
+# → { "status": "healthy", "services": { "klaviyo": { "status": "healthy", "latencyMs": 142, ... } } }
+```
+
+Four worked runs — green pre-flight, a blocked `403`, reading the health
+endpoint, and an instant feature-flag rollback — are in
+[references/examples.md](references/examples.md).
+
 ## Resources
 
 - [Klaviyo Status Page](https://status.klaviyo.com)
 - [API Versioning Policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
 - [Rate Limits](https://developers.klaviyo.com/en/docs/rate_limits_and_error_handling)
+- [Implementation code](references/implementation.md) — health check, pre-flight script, rollback
+- [Worked examples](references/examples.md) — green/failed pre-flight, health reads, rollback
 
 ## Next Steps
 

@@ -5499,7 +5499,7 @@
       "name": "groq-pack",
       "source": "./plugins/saas-packs/groq-pack",
       "description": "Complete Groq integration skill pack with 24 skills covering LPU inference, ultra-fast AI, and Groq Cloud deployment. Flagship tier vendor pack.",
-      "version": "1.10.0",
+      "version": "1.11.0",
       "category": "saas-packs",
       "keywords": [
         "groq",
@@ -6978,7 +6978,7 @@
       "name": "apify-pack",
       "source": "./plugins/saas-packs/apify-pack",
       "description": "Claude Code skill pack for Apify (18 skills)",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "category": "saas-packs",
       "keywords": [
         "apify",
@@ -7161,7 +7161,7 @@
       "name": "clickhouse-pack",
       "source": "./plugins/saas-packs/clickhouse-pack",
       "description": "Claude Code skill pack for ClickHouse (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "clickhouse",
@@ -7468,7 +7468,7 @@
       "name": "intercom-pack",
       "source": "./plugins/saas-packs/intercom-pack",
       "description": "Claude Code skill pack for Intercom (24 skills)",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "intercom",
@@ -7486,7 +7486,7 @@
       "name": "klaviyo-pack",
       "source": "./plugins/saas-packs/klaviyo-pack",
       "description": "Claude Code skill pack for Klaviyo (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "klaviyo",

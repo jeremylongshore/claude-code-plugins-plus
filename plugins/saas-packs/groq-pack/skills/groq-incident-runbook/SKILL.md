@@ -11,8 +11,8 @@ description: 'Execute Groq incident response: triage, mitigation, fallback, and 
   "groq down", "groq on-call", "groq emergency", "groq broken".
 
   '
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.10.0
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*)
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,220 +27,49 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 Rapid incident response procedures for Groq API failures. Groq is a third-party inference provider -- when it goes down, your mitigation options are: wait, fall back to a different model, or fall back to a different provider.
 
-## Severity Levels
+This SKILL.md is the high-level flow. Deep, copy-paste-ready material lives in `references/`:
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete API failure | < 15 min | Groq API returns 5xx on all models |
-| P2 | Degraded performance | < 1 hour | High latency, partial 429s, one model down |
-| P3 | Minor impact | < 4 hours | Intermittent errors, non-critical feature affected |
-| P4 | No user impact | Next business day | Monitoring gap, cost anomaly |
+- [triage-and-diagnostics.md](references/triage-and-diagnostics.md) — severity table, the Quick Triage script, and the full decision tree.
+- [mitigations.md](references/mitigations.md) — fallback-model routing (TypeScript), 429 rate-limit actions, 401 key rotation.
+- [communication-and-postmortem.md](references/communication-and-postmortem.md) — Slack/status-page templates, evidence collection, postmortem template.
 
-## Quick Triage (Run First)
+## Prerequisites
 
-```bash
-set -euo pipefail
-echo "=== 1. Groq API Status ==="
-curl -sf https://status.groq.com > /dev/null && echo "status.groq.com: REACHABLE" || echo "status.groq.com: UNREACHABLE"
+- `GROQ_API_KEY` exported in the environment you run the triage commands from.
+- `curl` for API probes; `kubectl` only if you collect logs from a Kubernetes deployment.
+- Access to [console.groq.com](https://console.groq.com) to rotate keys or upgrade the plan.
+- A configured fallback provider (e.g. OpenAI) if you need to fail away from Groq entirely.
 
-echo ""
-echo "=== 2. API Authentication ==="
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-  https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY")
-echo "GET /models: HTTP $HTTP_CODE"
+**Authentication:** every Groq API call in this runbook authenticates with a bearer token — `Authorization: Bearer $GROQ_API_KEY`. Keep the key in a secret manager, never inline; the evidence-collection step in [communication-and-postmortem.md](references/communication-and-postmortem.md) redacts `gsk_` tokens from logs before archiving.
 
-echo ""
-echo "=== 3. Model Availability ==="
-for model in "llama-3.1-8b-instant" "llama-3.3-70b-versatile"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-    https://api.groq.com/openai/v1/chat/completions \
-    -H "Authorization: Bearer $GROQ_API_KEY" \
-    -H "Content-Type: application/json" \
-    -d "{\"model\":\"$model\",\"messages\":[{\"role\":\"user\",\"content\":\"ping\"}],\"max_tokens\":1}")
-  echo "$model: HTTP $CODE"
-done
+## Instructions
 
-echo ""
-echo "=== 4. Rate Limit Status ==="
-curl -si https://api.groq.com/openai/v1/chat/completions \
-  -H "Authorization: Bearer $GROQ_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":1}' \
-  2>/dev/null | grep -iE "^(x-ratelimit|retry-after)" || echo "No rate limit headers"
-```
+Work the incident in five phases. Each phase points to the reference file with the exact commands.
 
-## Decision Tree
+1. **Classify severity.** Match user impact to the P1–P4 table in
+   [triage-and-diagnostics.md](references/triage-and-diagnostics.md) — this sets your response-time budget (P1 < 15 min, P4 next business day).
+2. **Triage.** Run the Quick Triage script (status reachability, auth, per-model availability, rate-limit headers). The one-line probe that starts most incidents:
 
-```
-Is the Groq API responding?
-├─ NO (timeout/connection refused):
-│   ├─ Check status.groq.com
-│   │   ├─ Incident reported → Wait, enable fallback provider
-│   │   └─ No incident → Network issue on our side (check DNS, firewall, proxy)
-│   └─ Check if api.groq.com resolves: dig api.groq.com
-│
-├─ YES, but 401/403:
-│   ├─ API key revoked or expired → Rotate key
-│   └─ Key not set in environment → Check secret manager
-│
-├─ YES, but 429:
-│   ├─ retry-after header present → Wait that many seconds
-│   ├─ All models 429 → Org-level limit hit; reduce traffic or upgrade plan
-│   └─ One model 429 → Route to a different model
-│
-├─ YES, but 500/503:
-│   ├─ One model → Groq capacity issue on that model; use fallback model
-│   └─ All models → Groq-wide outage; enable fallback provider
-│
-└─ YES, but slow (latency > 2s):
-    ├─ Large prompts → Reduce input size
-    ├─ 70B model → Switch to 8B for speed
-    └─ queue_time high → Groq queue congestion; try different model
-```
+   ```bash
+   curl -s -o /dev/null -w "%{http_code}\n" \
+     https://api.groq.com/openai/v1/models \
+     -H "Authorization: Bearer $GROQ_API_KEY"
+   ```
 
-## Immediate Mitigations
+3. **Decide.** Walk the decision tree in
+   [triage-and-diagnostics.md](references/triage-and-diagnostics.md) to turn the HTTP code (timeout / 401 / 429 / 5xx / slow) into an action path.
+4. **Mitigate.** Apply the matching fix from [mitigations.md](references/mitigations.md): fallback-model routing for 5xx on one model, wait-or-reroute for 429, key rotation for 401, enable the fallback provider for a Groq-wide outage.
+5. **Communicate & close.** Post the internal alert and status-page update, then after resolution collect evidence and write the postmortem — all in [communication-and-postmortem.md](references/communication-and-postmortem.md).
 
-### Enable Fallback to Different Model
+## Output
 
-```typescript
-// If primary model is failing, route to fallback
-async function mitigateModelFailure(messages: any[]) {
-  const models = [
-    "llama-3.3-70b-versatile",  // Primary
-    "llama-3.3-70b-specdec",    // Same quality, different infra
-    "llama-3.1-8b-instant",     // Fastest, most available
-  ];
+Running this runbook produces:
 
-  for (const model of models) {
-    try {
-      return await groq.chat.completions.create({
-        model,
-        messages,
-        max_tokens: 1024,
-        timeout: 10_000,
-      });
-    } catch (err: any) {
-      console.warn(`Model ${model} failed: ${err.status} ${err.message}`);
-      continue;
-    }
-  }
-
-  throw new Error("All Groq models unavailable");
-}
-```
-
-### 429 Rate Limit — Immediate Actions
-
-```bash
-set -euo pipefail
-# Check exact limit info
-curl -si https://api.groq.com/openai/v1/chat/completions \
-  -H "Authorization: Bearer $GROQ_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":1}' \
-  2>/dev/null | grep -i "x-ratelimit\|retry-after"
-
-# Options:
-# 1. Wait for retry-after seconds
-# 2. Switch to a different model (each model has separate limits)
-# 3. Reduce request volume (disable non-critical features)
-# 4. If persistent, upgrade Groq plan at console.groq.com
-```
-
-### 401 Auth Failure — Key Rotation
-
-```bash
-set -euo pipefail
-# 1. Verify current key
-echo "Current key prefix: ${GROQ_API_KEY:0:8}"
-
-# 2. Create new key at console.groq.com/keys
-# 3. Test new key
-curl -s -o /dev/null -w "%{http_code}" \
-  https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $NEW_GROQ_KEY"
-
-# 4. Deploy new key to production
-# 5. Delete old key in console
-```
-
-## Communication Templates
-
-### Internal Alert (Slack/PagerDuty)
-
-```
-P[1-4] INCIDENT: Groq API [Error Type]
-Status: INVESTIGATING | MITIGATING | RESOLVED
-Impact: [What users see]
-Current action: [What we're doing]
-Fallback: [Enabled/Disabled]
-Next update in: [Time]
-Commander: @[name]
-```
-
-### Status Page (External)
-
-```
-AI Feature Performance Issue
-
-We're experiencing [degraded performance / intermittent errors] with our AI features.
-[Feature X] may respond slower than usual.
-We've activated backup systems and are monitoring the situation.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-
-```bash
-set -euo pipefail
-INCIDENT_DIR="groq-incident-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$INCIDENT_DIR"
-
-# API diagnostics
-curl -s https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" > "$INCIDENT_DIR/models.json"
-
-# Application logs (redacted)
-kubectl logs -l app=your-app --since=1h 2>/dev/null | \
-  grep -i "groq\|429\|error\|timeout" | \
-  sed 's/gsk_[a-zA-Z0-9]*/gsk_REDACTED/g' | \
-  tail -100 > "$INCIDENT_DIR/app-logs.txt"
-
-tar -czf "$INCIDENT_DIR.tar.gz" "$INCIDENT_DIR"
-echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
-```
-
-### Postmortem Template
-
-```markdown
-## Incident: Groq [Error Type] — [Date]
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-**Impact:** [N users affected, feature X degraded]
-
-### Timeline
-- HH:MM — First alert fired
-- HH:MM — On-call acknowledged, began triage
-- HH:MM — Root cause identified: [cause]
-- HH:MM — Mitigation applied: [what]
-- HH:MM — Resolved, monitoring
-
-### Root Cause
-[Was it Groq-side or our side? Rate limit hit? Model deprecated? Key expired?]
-
-### What Went Well
-- [Fallback activated automatically]
-
-### What Could Improve
-- [Alert fired too late / fallback didn't work / no runbook]
-
-### Action Items
-- [ ] [Action] — Owner — Due date
-```
+- A **triage verdict** — the HTTP status per model and whether the fault is Groq-side or ours.
+- An **applied mitigation** — traffic routed to a healthy model or provider, or a rotated key.
+- A **communication trail** — internal alert + external status-page message.
+- An **evidence bundle** — `groq-incident-TIMESTAMP.tar.gz` containing `models.json` and redacted `app-logs.txt`.
+- A **postmortem document** — timeline, root cause, and dated action items.
 
 ## Error Handling
 
@@ -251,6 +80,16 @@ echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 | Key rotation fails | No admin access | Escalate to team lead with console access |
 | Fallback provider also down | Multi-provider outage | Degrade gracefully, show cached content |
 
+## Examples
+
+**Example — 429 on the primary model.** Triage shows `llama-3.3-70b-versatile: HTTP 429`
+while `llama-3.1-8b-instant: HTTP 200`. The decision tree routes "one model 429 → route to a
+different model," so you switch traffic to the 8B model per
+[mitigations.md](references/mitigations.md), post a P3 internal alert, and file an action item
+to add fallback routing. The fallback-routing function lives in
+[mitigations.md](references/mitigations.md); the alert and postmortem templates are in
+[communication-and-postmortem.md](references/communication-and-postmortem.md).
+
 ## Resources
 
 - [Groq Status Page](https://status.groq.com)
@@ -259,4 +98,4 @@ echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 
 ## Next Steps
 
-For data handling compliance, see `groq-data-handling`.
+For data-handling and compliance procedures after an incident, see the `groq-data-handling` skill in this pack.

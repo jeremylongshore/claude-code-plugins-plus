@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Klaviyo API errors and exceptions.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,19 +26,29 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Quick reference for the most common Klaviyo API errors with real error payloads, root causes, and solutions.
+Quick reference for the most common Klaviyo API errors with real error payloads,
+root causes, and solutions. Because Klaviyo returns JSON:API errors (a status
+code plus a structured `errors[]` array), this skill walks you from a raw
+exception to a targeted fix: extract the status code, match it against the
+catalog, apply the documented remedy.
+
+The full per-status-code catalog and the SDK-level failure table live in
+`references/` to keep this workflow scannable — drill in once you know which
+status code you are chasing.
 
 ## Prerequisites
 
-- `klaviyo-api` SDK installed
-- API credentials configured
-- Access to application logs
+- `klaviyo-api` SDK installed (`npm install klaviyo-api` — note: not `@klaviyo/sdk`)
+- A private API key (`pk_*`) exported as `KLAVIYO_PRIVATE_KEY`
+- Access to the application logs where the failed request was recorded, so you
+  can `Read` the stack trace and `Grep` for the status code and error `code`
 
 ## Instructions
 
 ### Step 1: Identify the Error
 
-Klaviyo returns JSON:API error responses. Extract the status code and error detail:
+Extract the status code and error detail from the caught exception. `Read` the
+log line or wrap the call so the structured payload is visible:
 
 ```typescript
 try {
@@ -50,235 +60,88 @@ try {
 }
 ```
 
+If you only have raw logs, `Grep` for the status code (`grep -E "40[0-9]|429|50[0-9]"`)
+and the `code` field to isolate the failing request.
+
 ### Step 2: Match and Fix
 
----
+Map the status code to its root cause and remedy. Each row links into the full
+catalog, which carries the actual response payload and the fix code block:
 
-### 400 -- Bad Request (Validation Error)
+| Status | Meaning | Most common root cause |
+|--------|---------|------------------------|
+| 400 | Bad Request | Missing field, non-E.164 phone, or `snake_case` instead of `camelCase` |
+| 401 | Unauthorized | Missing `KLAVIYO_PRIVATE_KEY`, or a public key used as a private key |
+| 403 | Forbidden | API key lacks the required scope (e.g. `profiles:write`) |
+| 404 | Not Found | Wrong resource ID or a dead `/api/v2/` path |
+| 409 | Conflict | Duplicate — use `createOrUpdateProfile` upsert |
+| 429 | Rate Limited | Exceeded burst (75/s) or steady (700/min); honor `Retry-After` |
+| 500/503 | Server Error | Klaviyo-side — check status page, retry with backoff |
 
-**Actual Klaviyo response:**
-
-```json
-{
-  "errors": [{
-    "id": "abc-123",
-    "code": "invalid",
-    "title": "Invalid input.",
-    "detail": "The email field is required.",
-    "source": { "pointer": "/data/attributes/email" }
-  }]
-}
-```
-
-**Common causes:**
-
-- Missing required field (email, metric name, list name)
-- Invalid phone number format (must be E.164: `+15551234567`)
-- Invalid filter syntax in query params
-- Wrong `type` value in JSON:API payload
-- Sending `snake_case` instead of `camelCase` (SDK uses camelCase)
-
-**Fix:**
+The most common one, 400, is almost always a casing mismatch (the SDK expects
+`camelCase`):
 
 ```typescript
-// Wrong: snake_case
-{ first_name: 'Jane', phone_number: '+155...' }
-
-// Right: camelCase (SDK convention)
-{ firstName: 'Jane', phoneNumber: '+15551234567' }
+// Wrong: snake_case              // Right: camelCase (SDK convention)
+{ first_name: 'Jane' }            { firstName: 'Jane' }
 ```
 
----
+See [the full error catalog](references/error-catalog.md) for every status
+code's real payload, complete cause list, and fix. For client-side failures that
+never reach the network (wrong import, `response.data` vs `response.body.data`,
+bad filter syntax) plus copy-paste diagnostic commands, see
+[diagnostics & SDK errors](references/diagnostics.md).
 
-### 401 -- Unauthorized
+## Output
 
-**Actual response:**
+Working through this skill produces a diagnosis and a fix, not a generated
+artifact:
 
-```json
-{
-  "errors": [{
-    "code": "not_authenticated",
-    "title": "Authentication credentials were not provided.",
-    "detail": "Missing or invalid Authorization header."
-  }]
-}
-```
+- The **status code** and **error `code`** identifying the failure class
+- The **root cause** matched from the catalog
+- A **concrete code or config change** (casing fix, scope grant, upsert, backoff)
+- For 5xx: confirmation of whether the fault is Klaviyo-side (status page) or yours
 
-**Root causes:**
+## Error Handling
 
-1. Missing `KLAVIYO_PRIVATE_KEY` environment variable
-2. Using a public key (6 chars) instead of private key (`pk_*`)
-3. API key was revoked or rotated
+- **Status code is missing from the exception** — the failure is client-side, not
+  an API response. Check the SDK-level errors table in
+  [diagnostics](references/diagnostics.md) (module-not-found, wrong constructor).
+- **401 persists after setting the key** — you are using a public key. Verify with
+  `echo $KLAVIYO_PRIVATE_KEY | head -c 3` (must print `pk_`).
+- **429 with no `RateLimit-Remaining` header** — expected. On a 429 Klaviyo returns
+  only `Retry-After`; do not depend on the reset headers, honor `Retry-After`.
+- **Fix does not resolve the error** — collect evidence with `klaviyo-debug-bundle`,
+  check [status.klaviyo.com](https://status.klaviyo.com), then open a support
+  ticket with the request IDs from the error responses.
 
-**Fix:**
+## Examples
 
-```bash
-# Verify key is set and starts with pk_
-echo $KLAVIYO_PRIVATE_KEY | head -c 3
-# Should print: pk_
+**Example — 403 permission_denied on profile create.** The exception shows
+`status: 403`, `detail: "...required scope: profiles:write"`. Match to the 403 row:
+the key lacks a scope. Fix: mint a new key with `profiles:write` at
+**Settings > API Keys**. Full payload and the endpoint→scope table are in
+[the error catalog](references/error-catalog.md) under the 403 section.
 
-# Test with cURL
-curl -s -w "%{http_code}" -o /dev/null \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/"
-```
-
----
-
-### 403 -- Forbidden (Missing Scope)
-
-**Actual response:**
-
-```json
-{
-  "errors": [{
-    "code": "permission_denied",
-    "title": "You do not have permission to perform this action.",
-    "detail": "The API key does not have the required scope: profiles:write"
-  }]
-}
-```
-
-**Fix:** Generate a new API key with the required scope at **Settings > API Keys > Create Private API Key**.
-
-| Endpoint | Required Scope |
-|----------|---------------|
-| `POST /api/profiles/` | `profiles:write` |
-| `GET /api/segments/` | `segments:read` |
-| `POST /api/events/` | `events:write` |
-| `POST /api/campaigns/` | `campaigns:write` |
-| `POST /api/data-privacy-deletion-jobs/` | `data-privacy:write` |
-
----
-
-### 404 -- Not Found
-
-**Typical causes:**
-
-- Wrong resource ID (profile, list, segment, campaign)
-- Using v1/v2 URL paths instead of new API (`/api/v2/` is dead, use `/api/`)
-- Resource was deleted
-
-**Fix:**
+**Example — intermittent 429 under load.** Requests fail once traffic exceeds
+700/min. Honor the `Retry-After` header and back off instead of tight-retrying:
 
 ```typescript
-// Verify the resource exists first
-const lists = await listsApi.getLists();
-const targetList = lists.body.data.find(l => l.attributes.name === 'Newsletter');
-if (!targetList) throw new Error('List not found');
-```
-
----
-
-### 409 -- Conflict (Duplicate)
-
-**Actual response:**
-
-```json
-{
-  "errors": [{
-    "code": "duplicate",
-    "title": "Conflict.",
-    "detail": "A profile already exists with the email customer@example.com"
-  }]
+if (error.status === 429) {
+  const retryAfter = parseInt(error.headers?.['retry-after'] || '10'); // seconds
+  await new Promise(r => setTimeout(r, retryAfter * 1000));
+  // then retry
 }
 ```
 
-**Fix:** Use `createOrUpdateProfile` (upsert) instead of `createProfile`:
-
-```typescript
-// This handles both create and update
-await profilesApi.createOrUpdateProfile({
-  data: {
-    type: 'profile' as any,
-    attributes: { email: 'customer@example.com', firstName: 'Updated' },
-  },
-});
-```
-
----
-
-### 429 -- Rate Limited
-
-**Headers on 429 response:**
-
-```
-Retry-After: 10
-```
-
-**Klaviyo rate limits (per-account, fixed window):**
-
-| Window | Limit |
-|--------|-------|
-| Burst (1 second) | 75 requests |
-| Steady (1 minute) | 700 requests |
-
-**Note:** When rate limited, `RateLimit-Remaining` and `RateLimit-Reset` headers are NOT returned. Only `Retry-After` (integer seconds) is present.
-
-**Fix:** Honor `Retry-After` header:
-
-```typescript
-catch (error: any) {
-  if (error.status === 429) {
-    const retryAfter = parseInt(error.headers?.['retry-after'] || '10');
-    console.log(`Rate limited. Waiting ${retryAfter}s...`);
-    await new Promise(r => setTimeout(r, retryAfter * 1000));
-    // Retry the request
-  }
-}
-```
-
----
-
-### 500/503 -- Klaviyo Server Error
-
-**Fix:**
-
-1. Check [Klaviyo Status Page](https://status.klaviyo.com)
-2. Retry with exponential backoff (see `klaviyo-rate-limits`)
-3. If persistent, check Klaviyo's [changelog](https://developers.klaviyo.com/en/docs/changelog_) for known issues
-
----
-
-### Common SDK-Level Errors
-
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Cannot find module 'klaviyo-api'` | Wrong package | `npm install klaviyo-api` (not `@klaviyo/sdk`) |
-| `TypeError: ... is not a constructor` | Wrong import | Use `new ProfilesApi(session)` not `new KlaviyoClient()` |
-| `response.data is undefined` | Wrong access pattern | Use `response.body.data` (not `response.data`) |
-| `filter is not valid` | Bad filter syntax | Use `equals(field,"value")` not `field = value` |
-
-## Quick Diagnostic Commands
-
-```bash
-# Check Klaviyo API health
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/"
-
-# Check Klaviyo status page
-curl -s https://status.klaviyo.com/api/v2/status.json | python3 -m json.tool
-
-# Verify local env
-env | grep KLAVIYO
-npm list klaviyo-api
-```
-
-## Escalation Path
-
-1. Collect evidence with `klaviyo-debug-bundle`
-2. Check [status.klaviyo.com](https://status.klaviyo.com)
-3. Open ticket at Klaviyo Support with request IDs from error responses
+More worked cases (400 casing, 404 stale ID, 409 upsert) are in
+[the error catalog](references/error-catalog.md).
 
 ## Resources
 
+- [Full error catalog](references/error-catalog.md) — per-status-code payloads and fixes
+- [Diagnostics & SDK errors](references/diagnostics.md) — client-side failures, diagnostic commands, escalation
 - [Rate Limits & Error Handling](https://developers.klaviyo.com/en/docs/rate_limits_and_error_handling)
 - [API Error Alerts](https://developers.klaviyo.com/en/docs/review_api_error_alerts)
 - [Klaviyo Status Page](https://status.klaviyo.com)
-
-## Next Steps
-
-For comprehensive debugging, see `klaviyo-debug-bundle`.
+- For evidence collection see the `klaviyo-debug-bundle` skill

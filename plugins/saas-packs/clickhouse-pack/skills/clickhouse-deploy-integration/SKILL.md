@@ -1,21 +1,15 @@
 ---
 name: clickhouse-deploy-integration
-description: 'Deploy ClickHouse-backed applications to Vercel, Fly.io, and Cloud Run
-  with
-
+description: |
+  Deploy ClickHouse-backed applications to Vercel, Fly.io, and Cloud Run with
   connection pooling, secrets, and health checks.
-
-  Use when deploying applications that connect to ClickHouse Cloud,
-
-  configuring platform secrets, or setting up deployment pipelines.
-
-  Trigger: "deploy clickhouse app", "clickhouse Vercel", "clickhouse Cloud Run",
-
-  "clickhouse production deploy", "clickhouse Fly.io".
-
-  '
+  Use when deploying applications that connect to ClickHouse Cloud, configuring
+  platform secrets, or setting up deployment pipelines to serverless or
+  container hosts.
+  Trigger with "deploy clickhouse app", "clickhouse Vercel", "clickhouse Cloud
+  Run", "clickhouse production deploy", "clickhouse Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -31,7 +25,10 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Deploy applications that connect to ClickHouse Cloud from serverless and
-container platforms with proper connection management and secrets handling.
+container platforms with proper connection management and secrets handling. The
+same platform-agnostic connection module drives all three targets — Vercel,
+Fly.io, and Cloud Run — so only the secrets mechanism and runtime model change
+per platform.
 
 ## Prerequisites
 
@@ -42,6 +39,10 @@ container platforms with proper connection management and secrets handling.
 ## Instructions
 
 ### Step 1: ClickHouse Connection Module (Platform-Agnostic)
+
+Write a singleton client so a serverless cold start reuses one connection
+instead of opening a new pool per invocation. Keep `max_open_connections` low
+for serverless and enable compression to cut egress.
 
 ```typescript
 // src/db.ts — singleton for serverless-safe connections
@@ -68,159 +69,40 @@ export function getClickHouse(): ClickHouseClient {
 }
 ```
 
-### Step 2: Vercel (Serverless Functions)
+### Step 2: Pick a platform and deploy
 
-```bash
-# Set secrets
-vercel env add CLICKHOUSE_HOST production
-vercel env add CLICKHOUSE_USER production
-vercel env add CLICKHOUSE_PASSWORD production
-vercel env add CLICKHOUSE_DATABASE production
-```
+Choose the target that matches your runtime model, then set secrets and deploy.
+All three import the `getClickHouse()` module above unchanged.
 
-```typescript
-// api/events/route.ts (Next.js App Router)
-import { getClickHouse } from '@/src/db';
-import { NextResponse } from 'next/server';
+- **Vercel (serverless functions)** — `vercel env add` per secret; best for API
+  endpoints. Keep `max_open_connections` at 1-3.
+- **Fly.io (containers)** — `fly secrets set` + a `fly.toml` health check; best
+  for long-running apps with persistent connections.
+- **Cloud Run (containers)** — secrets via Secret Manager (`--set-secrets`);
+  best for event-driven workloads. Set `--min-instances=1` to avoid cold-start
+  connection churn.
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const days = Number(searchParams.get('days') ?? 7);
+Full per-platform commands, the Next.js App Router query example, `fly.toml`,
+the Cloud Run deploy script, and a platform comparison table:
+[Platform deployment walkthrough](references/platform-deployment.md).
 
-  const client = getClickHouse();
-  const rs = await client.query({
-    query: `
-      SELECT event_type, count() AS cnt
-      FROM events
-      WHERE created_at >= now() - INTERVAL {days:UInt32} DAY
-      GROUP BY event_type ORDER BY cnt DESC
-    `,
-    query_params: { days },
-    format: 'JSONEachRow',
-  });
+### Step 3: Add health check and graceful shutdown
 
-  return NextResponse.json(await rs.json());
-}
-```
+Expose a `/health` endpoint that pings ClickHouse (drives Fly.io / Cloud Run
+readiness probes) and close the client on `SIGTERM`/`SIGINT` so pending inserts
+flush before the container is recycled. Full code:
+[Production patterns](references/production-patterns.md).
 
-**Vercel gotchas:**
+## Output
 
-- Serverless function timeout: 30s (Pro) / 10s (Hobby)
-- Each invocation may create a new connection — set `max_open_connections` low
-- Use Edge Runtime only with HTTP-based clients (ClickHouse client works fine)
+Running this skill produces a deployable ClickHouse-connected application:
 
-### Step 3: Fly.io (Containers)
-
-```toml
-# fly.toml
-app = "my-clickhouse-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-  CLICKHOUSE_DATABASE = "analytics"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-
-[[http_service.checks]]
-  grace_period = "10s"
-  interval = "30s"
-  method = "GET"
-  path = "/health"
-  timeout = "5s"
-```
-
-```bash
-# Set ClickHouse secrets
-fly secrets set CLICKHOUSE_HOST="https://abc123.clickhouse.cloud:8443"
-fly secrets set CLICKHOUSE_USER="app_writer"
-fly secrets set CLICKHOUSE_PASSWORD="secret"
-
-fly deploy
-```
-
-### Step 4: Google Cloud Run
-
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE="clickhouse-app"
-REGION="us-central1"
-
-# Store secrets in Secret Manager
-echo -n "https://abc123.clickhouse.cloud:8443" | \
-  gcloud secrets create ch-host --data-file=- --project=$PROJECT_ID
-echo -n "secret-password" | \
-  gcloud secrets create ch-password --data-file=- --project=$PROJECT_ID
-
-# Build and deploy
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE
-
-gcloud run deploy $SERVICE \
-  --image gcr.io/$PROJECT_ID/$SERVICE \
-  --region $REGION \
-  --platform managed \
-  --set-secrets="CLICKHOUSE_HOST=ch-host:latest,CLICKHOUSE_PASSWORD=ch-password:latest" \
-  --set-env-vars="CLICKHOUSE_USER=app_writer,CLICKHOUSE_DATABASE=analytics" \
-  --min-instances=1 \
-  --max-instances=10 \
-  --memory=512Mi
-```
-
-### Step 5: Health Check Endpoint
-
-```typescript
-// Works on all platforms
-app.get('/health', async (req, res) => {
-  const start = Date.now();
-  try {
-    const client = getClickHouse();
-    const { success } = await client.ping();
-    const latencyMs = Date.now() - start;
-
-    res.json({
-      status: success ? 'healthy' : 'degraded',
-      clickhouse: { connected: success, latencyMs },
-      version: process.env.npm_package_version,
-    });
-  } catch (err) {
-    res.status(503).json({
-      status: 'unhealthy',
-      clickhouse: { connected: false, error: (err as Error).message },
-    });
-  }
-});
-```
-
-### Step 6: Graceful Shutdown
-
-```typescript
-// Critical: flush pending inserts on shutdown
-async function gracefulShutdown() {
-  console.log('Shutting down...');
-  const client = getClickHouse();
-  await client.close();    // Waits for pending operations to complete
-  process.exit(0);
-}
-
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
-```
-
-## Platform Comparison
-
-| Feature | Vercel | Fly.io | Cloud Run |
-|---------|--------|--------|-----------|
-| Model | Serverless functions | Containers | Containers |
-| Persistent connections | No (cold starts) | Yes | Yes (min-instances) |
-| Max timeout | 30s (Pro) | Unlimited | 60min |
-| Best for | API endpoints | Long-running apps | Event-driven |
-| `max_open_connections` | 1-3 | 10-20 | 5-10 |
+- `src/db.ts` — a singleton ClickHouse client, serverless-safe and compressed.
+- Platform config with secrets set: Vercel env vars, `fly.toml` + `fly secrets`,
+  or a Cloud Run service wired to Secret Manager.
+- A `/health` endpoint reporting `{ status, clickhouse: { connected, latencyMs } }`.
+- Graceful-shutdown handlers that flush pending inserts on `SIGTERM`/`SIGINT`.
+- A live deployment reachable over HTTPS on the chosen platform.
 
 ## Error Handling
 
@@ -230,6 +112,24 @@ process.on('SIGINT', gracefulShutdown);
 | `TLS handshake` failed | Wrong port | Use port 8443 for Cloud |
 | Secret not found | Env var not set | Check platform secret config |
 | Cold start latency | New connection per invocation | Use `min-instances=1` on Cloud Run |
+
+## Examples
+
+**Deploy an analytics API to Vercel:** set the four `CLICKHOUSE_*` secrets with
+`vercel env add`, drop the `getClickHouse()` module in `src/db.ts`, and add a
+route that runs a parameterized `SELECT ... GROUP BY event_type`. See the full
+Next.js App Router handler under the Vercel section of the
+[Platform deployment walkthrough](references/platform-deployment.md).
+
+**Deploy a long-running container to Fly.io:** add a `[[http_service.checks]]`
+block pointing at `/health`, `fly secrets set` the ClickHouse credentials, then
+`fly deploy` — see the complete `fly.toml` in the
+[Platform deployment walkthrough](references/platform-deployment.md).
+
+**Deploy an event-driven service to Cloud Run:** store host + password in Secret
+Manager, wire them with `--set-secrets`, and set `--min-instances=1`. Full
+deploy script in the
+[Platform deployment walkthrough](references/platform-deployment.md).
 
 ## Resources
 

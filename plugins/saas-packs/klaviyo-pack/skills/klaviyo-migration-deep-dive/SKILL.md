@@ -1,9 +1,9 @@
 ---
 name: klaviyo-migration-deep-dive
-description: 'Execute major Klaviyo migration strategies: from legacy v1/v2 APIs,
-  from competitors,
-
-  or full re-platforming to Klaviyo with the strangler fig pattern.
+description: 'Use when you are moving an email/CDP stack onto Klaviyo — off the
+  deprecated v1/v2 APIs, off a competitor ESP (Mailchimp, SendGrid), or re-platforming
+  gradually with the strangler fig pattern — and need field mapping, batch import,
+  and post-migration validation.
 
   Trigger with phrases like "migrate to klaviyo", "klaviyo migration",
 
@@ -13,7 +13,7 @@ description: 'Execute major Klaviyo migration strategies: from legacy v1/v2 APIs
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,14 +27,19 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Comprehensive guide for migrating to Klaviyo from legacy APIs (v1/v2), competing ESPs (Mailchimp, SendGrid, etc.), or re-platforming with the strangler fig pattern. Covers data migration, API mapping, and validation.
+Comprehensive guide for migrating to Klaviyo from legacy APIs (v1/v2), competing ESPs (Mailchimp, SendGrid, etc.), or re-platforming with the strangler fig pattern. Covers data migration, API mapping, batch import, and post-migration validation.
+
+This SKILL.md is the high-level workflow. The full, copy-paste code for every step
+lives in [references/implementation.md](references/implementation.md); worked
+end-to-end scenarios live in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
 - Target Klaviyo account configured
-- `klaviyo-api` SDK installed
+- `klaviyo-api` SDK installed (`npm install klaviyo-api`)
 - Source system access for data export
 - Feature flag infrastructure (for gradual rollout)
+- **Auth:** a Klaviyo **private API key** (`pk_***`) exported as `KLAVIYO_PRIVATE_KEY` — used by the SDK's `ApiKeySession`. Legacy v1/v2 calls used a public token in the request body; the current REST API uses the private key in the session header. See [references/implementation.md](references/implementation.md#authentication).
 
 ## Migration Types
 
@@ -47,328 +52,69 @@ Comprehensive guide for migrating to Klaviyo from legacy APIs (v1/v2), competing
 
 ## Instructions
 
-### Step 1: Legacy v1/v2 to Current API
+Pick your migration type from the table above, then work the five steps. Each step
+has full code in [references/implementation.md](references/implementation.md).
 
-The most common migration. Klaviyo deprecated v1/v2 endpoints in favor of the JSON:API REST API.
+1. **Legacy v1/v2 to current API** — replace deprecated `track` / `identify` / `v2 subscribe` HTTP calls with the `klaviyo-api` SDK (`createOrUpdateProfile`, `createEvent`, `subscribeProfiles`). The session skeleton every step builds on:
 
-```typescript
-// ============================================================
-// BEFORE: Legacy v1/v2 endpoints (DEPRECATED, will stop working)
-// ============================================================
+   ```typescript
+   import { ApiKeySession, ProfilesApi, EventsApi } from 'klaviyo-api';
 
-// v1 Track (event tracking)
-// POST https://a.klaviyo.com/api/track
-// Body: { token: "PUBLIC_KEY", event: "Placed Order", ... }
+   const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+   const profilesApi = new ProfilesApi(session);
+   const eventsApi = new EventsApi(session);
+   ```
 
-// v2 List Subscribe
-// POST https://a.klaviyo.com/api/v2/list/LIST_ID/subscribe
-// Headers: { api-key: "pk_***" }
+2. **API field mapping** — rename v1/v2 fields to the current schema: drop the `$` prefix, camelCase everything (`$first_name` → `firstName`), and nest address fields under `location`. Full mapping table in [references/implementation.md](references/implementation.md#step-2-api-field-mapping-v1v2-to-current).
+3. **Competitor migration** — write a transform adapter that maps the competitor's contact shape to a Klaviyo profile, then batch-import (50 per batch) with `Promise.allSettled`, progress logging, and rate-limit delays. Skip suppressed/unsubscribed contacts.
+4. **Strangler fig pattern** — route traffic through a `MigrationRouter` behind a feature flag, ramping Klaviyo from 0% to 100% while optionally dual-writing for comparison.
+5. **Post-migration validation** — run `validateMigration()` to compare profile counts, sample data integrity, and list membership against the source before decommissioning the legacy system.
 
-// v1 Identify (profile creation)
-// POST https://a.klaviyo.com/api/identify
-// Body: { token: "PUBLIC_KEY", properties: { $email: "..." } }
+Full migration checklist (export → map → import → validate → cut over → decommission) is in [references/implementation.md](references/implementation.md#migration-checklist).
 
-// ============================================================
-// AFTER: Current REST API (revision 2024-10-15)
-// ============================================================
+## Output
 
-import {
-  ApiKeySession,
-  ProfilesApi,
-  EventsApi,
-  ProfileEnum,
-  EventEnum,
-} from 'klaviyo-api';
+Working through this skill produces:
 
-const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-const profilesApi = new ProfilesApi(session);
-const eventsApi = new EventsApi(session);
-
-// v1 Identify → createOrUpdateProfile
-await profilesApi.createOrUpdateProfile({
-  data: {
-    type: ProfileEnum.Profile,
-    attributes: {
-      email: 'user@example.com',     // was $email
-      firstName: 'Jane',              // was $first_name
-      lastName: 'Doe',                // was $last_name
-      phoneNumber: '+15551234567',    // was $phone_number
-      properties: {                   // custom properties stay the same
-        plan: 'pro',
-        signupDate: '2024-01-15',
-      },
-    },
-  },
-});
-
-// v1 Track → createEvent
-await eventsApi.createEvent({
-  data: {
-    type: EventEnum.Event,
-    attributes: {
-      metric: {
-        data: { type: 'metric', attributes: { name: 'Placed Order' } },
-      },
-      profile: {
-        data: { type: ProfileEnum.Profile, attributes: { email: 'user@example.com' } },
-      },
-      properties: {
-        orderId: 'ORD-123',
-        items: [{ name: 'Widget', price: 29.99 }],
-      },
-      value: 29.99,
-      time: new Date().toISOString(),
-      uniqueId: 'ORD-123',
-    },
-  },
-});
-
-// v2 List Subscribe → subscribeProfiles (bulk)
-await profilesApi.subscribeProfiles({
-  data: {
-    type: 'profile-subscription-bulk-create-job',
-    attributes: {
-      profiles: {
-        data: [{
-          type: ProfileEnum.Profile,
-          attributes: {
-            email: 'user@example.com',
-            subscriptions: {
-              email: { marketing: { consent: 'SUBSCRIBED', consentTimestamp: new Date().toISOString() } },
-            },
-          },
-        }],
-      },
-    },
-    relationships: {
-      list: { data: { type: 'list', id: 'LIST_ID' } },
-    },
-  },
-});
-```
-
-### Step 2: API Field Mapping (v1/v2 to Current)
-
-| v1/v2 Field | Current API Field | Notes |
-|-------------|-------------------|-------|
-| `$email` | `email` | No `$` prefix |
-| `$first_name` | `firstName` | camelCase |
-| `$last_name` | `lastName` | camelCase |
-| `$phone_number` | `phoneNumber` | camelCase, E.164 format |
-| `$city` | `location.city` | Nested under `location` |
-| `$region` | `location.region` | Nested under `location` |
-| `$country` | `location.country` | Nested under `location` |
-| `$zip` | `location.zip` | Nested under `location` |
-| `$title` | `title` | camelCase |
-| `$organization` | `organization` | camelCase |
-| Custom props | `properties.yourProp` | Same structure |
-
-### Step 3: Competitor Migration (Mailchimp/SendGrid)
-
-```typescript
-// Data migration adapter -- transform competitor data to Klaviyo format
-
-interface CompetitorContact {
-  email_address: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  tags: string[];
-  status: 'subscribed' | 'unsubscribed' | 'cleaned';
-  stats: { avg_open_rate: number; avg_click_rate: number };
-}
-
-function transformToKlaviyo(contact: CompetitorContact) {
-  return {
-    data: {
-      type: 'profile' as const,
-      attributes: {
-        email: contact.email_address,
-        firstName: contact.first_name,
-        lastName: contact.last_name,
-        phoneNumber: contact.phone ? formatE164(contact.phone) : undefined,
-        properties: {
-          migrationSource: 'mailchimp',
-          migratedAt: new Date().toISOString(),
-          previousTags: contact.tags,
-          historicalOpenRate: contact.stats.avg_open_rate,
-          historicalClickRate: contact.stats.avg_click_rate,
-        },
-      },
-    },
-  };
-}
-
-// Batch import with progress tracking
-async function migrateContacts(contacts: CompetitorContact[]): Promise<{
-  imported: number;
-  skipped: number;
-  failed: string[];
-}> {
-  let imported = 0;
-  let skipped = 0;
-  const failed: string[] = [];
-
-  for (let i = 0; i < contacts.length; i += 50) {
-    const batch = contacts.slice(i, i + 50);
-
-    const results = await Promise.allSettled(
-      batch.map(async contact => {
-        // Skip unsubscribed/cleaned -- don't import suppressed contacts
-        if (contact.status !== 'subscribed') {
-          skipped++;
-          return;
-        }
-
-        const payload = transformToKlaviyo(contact);
-        await profilesApi.createOrUpdateProfile(payload);
-        imported++;
-      })
-    );
-
-    results.forEach((r, idx) => {
-      if (r.status === 'rejected') {
-        failed.push(batch[idx].email_address);
-      }
-    });
-
-    console.log(`Progress: ${Math.min(i + 50, contacts.length)}/${contacts.length} (${imported} imported, ${skipped} skipped)`);
-
-    // Respect rate limits
-    await new Promise(r => setTimeout(r, 1000));
-  }
-
-  return { imported, skipped, failed };
-}
-```
-
-### Step 4: Strangler Fig Pattern (Gradual Migration)
-
-```typescript
-// src/email/service-router.ts
-
-interface EmailService {
-  sendCampaign(campaign: CampaignData): Promise<void>;
-  trackEvent(event: EventData): Promise<void>;
-  getProfile(email: string): Promise<ProfileData>;
-}
-
-class LegacyEmailService implements EmailService { /* ... */ }
-class KlaviyoEmailService implements EmailService { /* ... */ }
-
-/**
- * Route requests between legacy and Klaviyo based on feature flag.
- * Gradually increase Klaviyo percentage from 0% to 100%.
- */
-class MigrationRouter implements EmailService {
-  constructor(
-    private legacy: EmailService,
-    private klaviyo: EmailService,
-    private getKlaviyoPercentage: () => number  // Feature flag
-  ) {}
-
-  private useKlaviyo(): boolean {
-    return Math.random() * 100 < this.getKlaviyoPercentage();
-  }
-
-  async trackEvent(event: EventData): Promise<void> {
-    if (this.useKlaviyo()) {
-      // Send to Klaviyo
-      await this.klaviyo.trackEvent(event);
-    } else {
-      // Send to legacy
-      await this.legacy.trackEvent(event);
-    }
-
-    // During migration: dual-write to both for comparison
-    // Remove dual-write after validation
-  }
-
-  async sendCampaign(campaign: CampaignData): Promise<void> {
-    // Campaigns always go through one system at a time
-    if (this.getKlaviyoPercentage() >= 100) {
-      return this.klaviyo.sendCampaign(campaign);
-    }
-    return this.legacy.sendCampaign(campaign);
-  }
-}
-```
-
-### Step 5: Post-Migration Validation
-
-```typescript
-async function validateMigration(sampleSize = 100): Promise<{
-  passed: boolean;
-  checks: Array<{ name: string; passed: boolean; details: string }>;
-}> {
-  const checks = [];
-
-  // 1. Profile count comparison
-  const profiles = await fetchAllPages(cursor => profilesApi.getProfiles({ pageCursor: cursor }));
-  checks.push({
-    name: 'Profile count',
-    passed: profiles.length >= expectedProfileCount * 0.95,
-    details: `Found ${profiles.length}, expected ~${expectedProfileCount}`,
-  });
-
-  // 2. Sample profile data integrity
-  const sample = profiles.slice(0, sampleSize);
-  let dataMatchCount = 0;
-  for (const profile of sample) {
-    const sourceData = await getSourceProfileData(profile.attributes.email);
-    if (sourceData && profile.attributes.firstName === sourceData.first_name) {
-      dataMatchCount++;
-    }
-  }
-  checks.push({
-    name: 'Data integrity',
-    passed: dataMatchCount / sampleSize > 0.98,
-    details: `${dataMatchCount}/${sampleSize} profiles match source data`,
-  });
-
-  // 3. List membership verification
-  const lists = await listsApi.getLists();
-  checks.push({
-    name: 'Lists created',
-    passed: lists.body.data.length >= expectedListCount,
-    details: `Found ${lists.body.data.length} lists`,
-  });
-
-  return {
-    passed: checks.every(c => c.passed),
-    checks,
-  };
-}
-```
-
-## Migration Checklist
-
-- [ ] Export all contacts from source system
-- [ ] Map fields to Klaviyo format (camelCase, E.164 phones)
-- [ ] Exclude suppressed/bounced contacts from import
-- [ ] Create lists in Klaviyo before import
-- [ ] Import profiles in batches (50-100 per batch, with delays)
-- [ ] Verify subscription consent timestamps
-- [ ] Recreate segments in Klaviyo
-- [ ] Migrate email templates
-- [ ] Rebuild flows (welcome series, abandoned cart, etc.)
-- [ ] Validate data integrity with sample checks
-- [ ] Switch DNS/tracking domain to Klaviyo
-- [ ] Monitor deliverability for 2 weeks post-migration
-- [ ] Decommission legacy system after 30-day validation
+- **Migrated code** — v1/v2 HTTP calls replaced with `klaviyo-api` SDK calls, or a competitor-to-Klaviyo transform adapter plus a batch-import runner.
+- **An import result** — `{ imported, skipped, failed[] }` from `migrateContacts`, with the `failed` list ready for a targeted retry.
+- **A `MigrationRouter`** (for gradual cutovers) that routes a configurable percentage of traffic to Klaviyo behind a feature flag.
+- **A validation report** — `{ passed, checks[] }` from `validateMigration` covering profile count, data integrity, and list membership, used as the go/no-go gate before decommissioning the legacy system.
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Duplicate profiles | Same email imported twice | Use `createOrUpdateProfile` (upsert) |
-| Phone format errors | Non-E.164 format | Pre-validate and format as `+{country}{number}` |
+| Phone format errors | Non-E.164 format | Pre-validate and format to E.164 (`+<countrycode><subscriber>`) |
 | Rate limited during import | Too fast | Reduce batch size, add delays |
 | Missing consent timestamps | Historical data | Set `historicalImport: true` flag |
 | Template rendering errors | Incompatible template syntax | Convert to Klaviyo Django template syntax |
 
+## Examples
+
+Worked, end-to-end scenarios are in [references/examples.md](references/examples.md):
+
+- **Mailchimp export → Klaviyo import** — load a CSV, skip suppressed contacts, batch-import with progress output.
+- **Cut over a v1 `identify` call** to `createOrUpdateProfile`, showing the field renames.
+- **Feature-flagged cutover** — route 10% of events to Klaviyo while campaigns stay legacy.
+- **Gate a deployment** on a `validateMigration` pass.
+
+Minimal first cutover — one profile upsert on the current API:
+
+```typescript
+await profilesApi.createOrUpdateProfile({
+  data: {
+    type: 'profile',
+    attributes: { email: 'user@example.com', firstName: 'Jane', properties: { plan: 'pro' } },
+  },
+});
+```
+
 ## Resources
 
+- [Full implementation walkthrough](references/implementation.md) — verbatim code for all five steps + checklist
+- [Worked examples](references/examples.md) — end-to-end migration scenarios
 - [v1/v2 Migration Best Practices](https://developers.klaviyo.com/en/v2024-10-15/docs/best_practices_v1v2_migration)
 - [Relationship Migration Guide](https://developers.klaviyo.com/en/v2024-10-15/docs/migrate_to_2023_07_15_relationships)
 - [Custom Integration Guide](https://developers.klaviyo.com/en/docs/guide_to_integrating_a_platform_without_a_pre_built_klaviyo_integration)

@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for Klaviyo integrations with GitHub Act
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,190 +26,125 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up GitHub Actions CI/CD pipelines for Klaviyo integrations with unit tests, integration tests against the real API, and deployment automation.
+Set up a GitHub Actions CI/CD pipeline for Klaviyo integrations: mocked unit tests
+on every pull request, gated integration tests against the real Klaviyo API on
+main-branch pushes, SDK-version verification, and an API connectivity smoke test.
+
+The workflow follows the standard two-job split — a fast, key-free `unit-tests` job
+safe to require on every PR, and an `integration-tests` job gated so real-API calls
+never run on fork PRs where secrets are unavailable.
 
 ## Prerequisites
 
 - GitHub repository with Actions enabled
 - Klaviyo test API key (from a test/sandbox account)
-- `klaviyo-api` SDK and vitest configured
+- `klaviyo-api` SDK and Vitest configured in the repository
 
 ## Instructions
 
-### Step 1: Configure GitHub Secrets
+### Step 1: Configure GitHub secrets
+
+Store the Klaviyo test credentials as encrypted repository secrets:
 
 ```bash
-# Store Klaviyo test credentials as GitHub secrets
 gh secret set KLAVIYO_PRIVATE_KEY --body "pk_test_***"
 gh secret set KLAVIYO_WEBHOOK_SIGNING_SECRET --body "whsec_test_***"
 ```
 
-### Step 2: CI Workflow
+### Step 2: Add the CI workflow
 
-Create `.github/workflows/klaviyo-ci.yml`:
+Create `.github/workflows/klaviyo-ci.yml` with two jobs. The essential skeleton:
 
 ```yaml
 name: Klaviyo Integration CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
-  unit-tests:
+  unit-tests:        # mocked, runs on every PR, no API key
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: '20', cache: 'npm' }
       - run: npm ci
-      - run: npx tsc --noEmit
       - run: npm test -- --coverage
-      - name: Check Klaviyo SDK version
-        run: npm list klaviyo-api
-
-  integration-tests:
-    runs-on: ubuntu-latest
+  integration-tests: # real API, gated to main-branch pushes only
     needs: unit-tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
     env:
       KLAVIYO_PRIVATE_KEY: ${{ secrets.KLAVIYO_PRIVATE_KEY }}
       KLAVIYO_TEST: '1'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - name: Run integration tests
-        run: npm run test:integration
-        timeout-minutes: 5
-      - name: Verify Klaviyo connectivity
-        run: |
-          curl -s -w "HTTP %{http_code}\n" -o /dev/null \
-            -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-            -H "revision: 2024-10-15" \
-            "https://a.klaviyo.com/api/accounts/"
+    steps: [...]
 ```
 
-### Step 3: Unit Test Examples
+The full workflow — including `tsc --noEmit`, `npm list klaviyo-api` version check,
+the connectivity smoke test, and the branch-protection config — is in
+[the CI workflow reference](references/ci-workflow.md).
 
-```typescript
-// tests/unit/klaviyo-events.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ApiKeySession, EventsApi, ProfileEnum } from 'klaviyo-api';
+### Step 3: Write the tests
 
-vi.mock('klaviyo-api', () => ({
-  ApiKeySession: vi.fn(),
-  EventsApi: vi.fn().mockImplementation(() => ({
-    createEvent: vi.fn().mockResolvedValue({ body: { data: { id: 'EVT_MOCK' } } }),
-    getEvents: vi.fn().mockResolvedValue({
-      body: { data: [], links: { next: null } },
-    }),
-  })),
-  ProfileEnum: { Profile: 'profile' },
-  EventEnum: { Event: 'event' },
-}));
+Author two suites the workflow drives:
 
-describe('Event Tracking', () => {
-  let eventsApi: EventsApi;
+- **Unit tests** mock the `klaviyo-api` SDK (`vi.mock`) and run with no key.
+- **Integration tests** hit the real API behind a `describe.skipIf` guard keyed on
+  `KLAVIYO_TEST` + `KLAVIYO_PRIVATE_KEY`, so they skip cleanly when no key is present.
 
-  beforeEach(() => {
-    eventsApi = new EventsApi(new ApiKeySession('pk_test'));
-  });
-
-  it('tracks a purchase event', async () => {
-    const result = await eventsApi.createEvent({
-      data: {
-        type: 'event' as any,
-        attributes: {
-          metric: { data: { type: 'metric', attributes: { name: 'Placed Order' } } },
-          profile: { data: { type: 'profile', attributes: { email: 'test@example.com' } } },
-          properties: { orderId: 'ORD-TEST-001', value: 99.99 },
-          time: new Date().toISOString(),
-        },
-      },
-    });
-    expect(result.body.data.id).toBe('EVT_MOCK');
-  });
-});
-```
-
-### Step 4: Integration Test (Gated)
-
-```typescript
-// tests/integration/klaviyo-live.test.ts
-import { describe, it, expect } from 'vitest';
-import { ApiKeySession, AccountsApi, ProfilesApi, ProfileEnum } from 'klaviyo-api';
-
-const SKIP = !process.env.KLAVIYO_TEST || !process.env.KLAVIYO_PRIVATE_KEY;
-
-describe.skipIf(SKIP)('Klaviyo Live API', () => {
-  const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-
-  it('authenticates successfully', async () => {
-    const accountsApi = new AccountsApi(session);
-    const accounts = await accountsApi.getAccounts();
-    expect(accounts.body.data).toHaveLength(1);
-  });
-
-  it('creates and cleans up a test profile', async () => {
-    const profilesApi = new ProfilesApi(session);
-    const testEmail = `ci-test-${Date.now()}@example.com`;
-
-    const created = await profilesApi.createProfile({
-      data: {
-        type: ProfileEnum.Profile,
-        attributes: {
-          email: testEmail,
-          firstName: 'CI',
-          lastName: 'Test',
-          properties: { source: 'github-actions', timestamp: new Date().toISOString() },
-        },
-      },
-    });
-
-    expect(created.body.data.id).toBeTruthy();
-    expect(created.body.data.attributes.email).toBe(testEmail);
-  });
-});
-```
-
-### Step 5: PR Checks Configuration
-
-```yaml
-# .github/branch-protection.yml (or set via GitHub UI)
-# Required checks: unit-tests
-# Integration tests: optional (only on main push)
-```
+Full, runnable examples for both suites — event-tracking unit test and a
+create-and-clean-up live profile test — are in
+[the test examples reference](references/test-examples.md).
 
 ## Output
 
 - Unit tests run on every PR (mocked, no API key needed)
-- Integration tests run on main branch pushes (real API)
-- SDK version verified in CI
-- API connectivity smoke test included
+- Integration tests run on main-branch pushes only (real API)
+- SDK version verified in CI via `npm list klaviyo-api`
+- API connectivity smoke test included in the integration job
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found in CI | Missing `gh secret set` | Add secret via repository settings |
-| Integration test 429 | Rate limited in CI | Add delays between tests, use dedicated test key |
-| Auth failures in CI | Wrong secret name | Verify secret name matches workflow env var |
-| Test timeout | Slow Klaviyo response | Increase `timeout-minutes` |
+| Secret not found in CI | Missing `gh secret set` | Add the secret via repository settings |
+| Integration test 429 | Rate limited in CI | Add delays between tests, use a dedicated test key |
+| Auth failures in CI | Wrong secret name | Verify the secret name matches the workflow env var |
+| Test timeout | Slow Klaviyo response | Increase `timeout-minutes` on the job step |
+
+## Examples
+
+**Set up CI on a fresh repository.** Store the test credentials, drop in the
+workflow, then let the pipeline gate itself:
+
+```bash
+gh secret set KLAVIYO_PRIVATE_KEY --body "pk_test_***"
+# add .github/workflows/klaviyo-ci.yml (see Step 2 skeleton + full reference)
+git add .github/workflows/klaviyo-ci.yml && git commit -m "ci: add Klaviyo pipeline"
+git push   # opens a PR → unit-tests run mocked; integration-tests stay gated to main
+```
+
+**Run the gated integration suite locally** before pushing to main:
+
+```bash
+export KLAVIYO_TEST=1
+export KLAVIYO_PRIVATE_KEY="pk_test_***"
+npm run test:integration   # skipIf guard now active → live API exercised
+```
+
+Both example flows are expanded — full workflow YAML in
+[references/ci-workflow.md](references/ci-workflow.md) and the complete unit +
+integration suites in [references/test-examples.md](references/test-examples.md).
 
 ## Resources
 
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
-- Vitest CI Configuration
+- [GitHub Actions documentation](https://docs.github.com/en/actions)
+- [GitHub encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+- [Full CI workflow reference](references/ci-workflow.md)
+- [Test examples reference](references/test-examples.md)
 
 ## Next Steps
 
-For deployment patterns, see `klaviyo-deploy-integration`.
+For deployment patterns that build on this pipeline, see the
+`klaviyo-deploy-integration` skill in this pack.

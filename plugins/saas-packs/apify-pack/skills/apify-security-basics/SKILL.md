@@ -1,18 +1,13 @@
 ---
 name: apify-security-basics
-description: 'Secure Apify API tokens, configure proxy access, and protect Actor data.
-
+description: |
+  Secure Apify API tokens, configure proxy access, and protect Actor data.
   Use when hardening API key management, setting up environment-specific tokens,
-
-  or auditing Apify security configuration.
-
-  Trigger: "apify security", "apify secrets", "secure apify token",
-
+  rotating a leaked token, or auditing Apify security configuration.
+  Trigger with "apify security", "apify secrets", "secure apify token",
   "apify API key security", "rotate apify token".
-
-  '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.4.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,7 +21,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Security best practices for Apify API tokens, Actor data, proxy credentials, and webhook verification. Apify uses personal API tokens (prefixed `apify_api_`) for all authentication.
+Security best practices for Apify API tokens, Actor data, proxy credentials, and webhook verification. Apify uses personal API tokens (prefixed `apify_api_`) for all authentication. Because a single token grants full account access with no per-token scoping, token hygiene is the whole game.
 
 ## Prerequisites
 
@@ -45,151 +40,50 @@ Apify uses a single API token per user account for full API access. There is no 
 
 ## Instructions
 
-### Step 1: Secure Token Storage
+Follow the six hardening steps in order. Each has a lean summary below; the full
+copy-paste code for every step is in
+[references/implementation.md](references/implementation.md).
 
-```bash
-# .env (NEVER commit — must be in .gitignore)
-APIFY_TOKEN=apify_api_YOUR_TOKEN_HERE
+1. **Secure token storage** — keep the token in `.env` (never hardcoded) and add
+   `.env`, `.env.*.local`, and `storage/` to `.gitignore`. Validate presence at
+   startup so the app fails fast:
 
-# .gitignore — mandatory entries
-.env
-.env.local
-.env.*.local
-storage/   # Local Apify storage may contain scraped data
-```
+   ```typescript
+   function requireToken(): string {
+     const token = process.env.APIFY_TOKEN;
+     if (!token) throw new Error('APIFY_TOKEN is required');
+     if (!token.startsWith('apify_api_')) console.warn('unexpected token prefix');
+     return token;
+   }
+   ```
 
-```typescript
-// Validate token exists at startup
-function requireToken(): string {
-  const token = process.env.APIFY_TOKEN;
-  if (!token) {
-    throw new Error(
-      'APIFY_TOKEN is required. Get yours at ' +
-      'https://console.apify.com/account/integrations'
-    );
-  }
-  if (!token.startsWith('apify_api_')) {
-    console.warn('Warning: APIFY_TOKEN does not have expected prefix');
-  }
-  return token;
-}
-```
+2. **Per-environment token isolation** — separate tokens (ideally separate
+   accounts) for dev / staging / prod, injected via each platform's secret store
+   (`gh secret set`, `vercel env add`, GCP Secret Manager).
+3. **Token rotation** — generate the new token first (old stays valid), push to
+   every environment, verify it authenticates, then revoke the old one.
+4. **Webhook payload verification** — Apify does not sign webhooks; confirm the
+   run ID in the payload actually exists, or gate on a shared URL secret compared
+   with `crypto.timingSafeEqual`.
+5. **Actor data security** — redact sensitive fields before `pushData`; keep
+   datasets named and private (no public sharing).
+6. **Proxy security** — never log `proxyConfig.newUrl()` (it embeds the proxy
+   password); log the proxy group only.
 
-### Step 2: Per-Environment Token Isolation
+See [references/implementation.md](references/implementation.md) for the complete
+code of every step, and [references/examples.md](references/examples.md) for
+end-to-end scenarios.
 
-Use separate Apify accounts (or at minimum separate tokens) per environment:
+## Output
 
-```bash
-# Development — your personal account
-APIFY_TOKEN=apify_api_dev_token
+Applying this skill produces a hardened project state:
 
-# Staging — shared team account (limited usage)
-APIFY_TOKEN=apify_api_staging_token
-
-# Production — production account (separate billing)
-APIFY_TOKEN=apify_api_prod_token
-```
-
-Platform secrets management:
-
-```bash
-# GitHub Actions
-gh secret set APIFY_TOKEN --body "apify_api_prod_token"
-
-# Vercel
-vercel env add APIFY_TOKEN production
-
-# Google Cloud Secret Manager
-echo -n "apify_api_prod_token" | \
-  gcloud secrets create apify-token --data-file=-
-```
-
-### Step 3: Token Rotation Procedure
-
-```bash
-# 1. Generate new token in Console > Settings > Integrations
-#    (old token remains valid until explicitly revoked)
-
-# 2. Update in all environments
-gh secret set APIFY_TOKEN --body "apify_api_NEW_TOKEN"
-
-# 3. Verify new token works
-curl -sf -H "Authorization: Bearer $NEW_TOKEN" \
-  https://api.apify.com/v2/users/me | jq '.data.username'
-
-# 4. Revoke old token in Console
-#    Settings > Integrations > (regenerate invalidates old token)
-```
-
-### Step 4: Webhook Payload Verification
-
-Apify webhooks include run data in the POST body. Verify the source:
-
-```typescript
-import crypto from 'crypto';
-import { type Request, type Response } from 'express';
-
-// Apify doesn't sign webhooks by default, but you can verify
-// by checking that the run ID in the payload actually exists
-async function verifyWebhookPayload(
-  payload: { eventData: { actorRunId: string } },
-  client: ApifyClient,
-): Promise<boolean> {
-  try {
-    const run = await client.run(payload.eventData.actorRunId).get();
-    return run !== null && run !== undefined;
-  } catch {
-    return false;
-  }
-}
-
-// Alternatively, use a shared secret in your webhook URL
-// https://your-server.com/webhook?secret=YOUR_WEBHOOK_SECRET
-function verifyWebhookSecret(req: Request): boolean {
-  const secret = req.query.secret as string;
-  if (!secret || !process.env.APIFY_WEBHOOK_SECRET) return false;
-  return crypto.timingSafeEqual(
-    Buffer.from(secret),
-    Buffer.from(process.env.APIFY_WEBHOOK_SECRET),
-  );
-}
-```
-
-### Step 5: Actor Data Security
-
-```typescript
-// Sanitize sensitive data before pushing to datasets
-function sanitizeForDataset(item: Record<string, unknown>): Record<string, unknown> {
-  const sensitiveFields = ['email', 'phone', 'password', 'ssn', 'creditCard'];
-  const sanitized = { ...item };
-  for (const field of sensitiveFields) {
-    if (field in sanitized) {
-      sanitized[field] = '***REDACTED***';
-    }
-  }
-  return sanitized;
-}
-
-// Use named datasets with access control
-// Only your account can access your datasets by default
-// Public datasets require explicit sharing via API
-```
-
-### Step 6: Proxy Security
-
-```typescript
-// Never log or expose proxy URLs (they contain credentials)
-const proxyConfig = await Actor.createProxyConfiguration({
-  groups: ['RESIDENTIAL'],
-  countryCode: 'US',
-});
-
-// DO NOT do this:
-// console.log(await proxyConfig.newUrl()); // Leaks proxy password!
-
-// Instead, log proxy group info only
-console.log(`Using proxy group: ${proxyConfig.groups?.join(', ')}`);
-```
+- A `.gitignore` that excludes `.env*` and `storage/`, with no token in the tree.
+- A startup token validator that throws on a missing/malformed `APIFY_TOKEN`.
+- Environment-specific tokens wired into each platform's secret store.
+- A documented rotation procedure and a completed **Security Checklist** (below).
+- Webhook handlers that reject unverified runs and pipelines that redact PII
+  before storage.
 
 ## Security Checklist
 
@@ -222,12 +116,33 @@ If a token is exposed:
 | Proxy password exposed | Credentials in logs | Regenerate proxy password |
 | Data breach in dataset | PII in public dataset | Delete dataset, sanitize pipeline |
 
+## Examples
+
+Quick starting point — bootstrap a new project's secrets safely:
+
+```bash
+cat >> .gitignore <<'EOF'
+.env
+.env.*.local
+storage/
+EOF
+echo 'APIFY_TOKEN=apify_api_dev_token' > .env
+git status --short   # .env must NOT appear
+```
+
+Four full worked scenarios — secure bootstrap, cross-environment rotation,
+webhook-verify-then-sanitize, and a git-history leak audit — are in
+[references/examples.md](references/examples.md).
+
 ## Resources
 
 - [Apify Account Security](https://docs.apify.com/platform/collaboration)
 - [API Authentication](https://docs.apify.com/api/v2/getting-started)
 - [Proxy Connection Settings](https://docs.apify.com/platform/proxy)
+- [Full implementation reference](references/implementation.md)
+- [Worked examples](references/examples.md)
 
 ## Next Steps
 
-For production deployment, see `apify-prod-checklist`.
+For production deployment hardening beyond secrets — health checks, rate limits,
+and monitoring — see the `apify-prod-checklist` skill in this pack.

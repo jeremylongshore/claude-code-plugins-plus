@@ -1,13 +1,14 @@
 ---
 name: clickhouse-enterprise-rbac
-description: "Configure ClickHouse enterprise RBAC \u2014 SQL-based users, roles,\
-  \ row policies,\ncolumn-level grants, and quota management.\nUse when setting up\
-  \ multi-user access control, implementing tenant isolation,\nor configuring enterprise\
-  \ security for ClickHouse.\nTrigger: \"clickhouse RBAC\", \"clickhouse roles\",\
-  \ \"clickhouse permissions\",\n\"clickhouse row policy\", \"clickhouse enterprise\
-  \ access\", \"clickhouse GRANT\".\n"
-allowed-tools: Read, Write, Edit
-version: 1.6.0
+description: |
+  Configure ClickHouse enterprise RBAC — SQL-based users, roles, row policies,
+  column-level grants, and quota management.
+  Use when setting up multi-user access control, implementing tenant isolation,
+  or configuring enterprise security for ClickHouse.
+  Trigger with "clickhouse RBAC", "clickhouse roles", "clickhouse permissions",
+  "clickhouse row policy", "clickhouse enterprise access", "clickhouse GRANT".
+allowed-tools: Read, Write
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -23,7 +24,14 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Implement enterprise-grade role-based access control in ClickHouse using SQL-based
-user management, hierarchical roles, row-level policies, and quotas.
+user management, hierarchical roles, row-level policies, column grants, quotas, and
+settings profiles. The workflow builds least-privilege access from the ground up:
+create authenticated users, compose reusable roles, then narrow visibility with row
+and column policies and cap resource use with quotas.
+
+Follow the seven steps below at a high level from this file; drill into
+[the full implementation](references/implementation.md) for every SQL statement, and
+[worked examples](references/examples.md) for two end-to-end scenarios plus audit queries.
 
 ## Prerequisites
 
@@ -32,10 +40,19 @@ user management, hierarchical roles, row-level policies, and quotas.
 
 ## Instructions
 
+The build-out is seven steps. Steps 1–3 (users, roles, row security) carry the core
+skeleton here; Steps 4–7 (column grants, quotas, settings profiles, and the
+application wrapper) are summarized here and fully specified in
+[references/implementation.md](references/implementation.md).
+
 ### Step 1: Create Users with Authentication
 
+Pick an authentication method per user: `sha256_password` (standard),
+`double_sha1_password` (MySQL wire protocol), or `bcrypt_password` (strongest — use
+for admin accounts). Restrict network reach with `HOST IP` and cap per-user resources
+inline with `SETTINGS`.
+
 ```sql
--- SHA256 password (standard)
 CREATE USER app_backend
     IDENTIFIED WITH sha256_password BY 'strong-password-here'
     DEFAULT DATABASE analytics
@@ -43,227 +60,66 @@ CREATE USER app_backend
     SETTINGS max_memory_usage = 10000000000,   -- 10GB per query
              max_execution_time = 60;          -- 60s timeout
 
--- Double SHA1 (MySQL wire protocol compatible)
-CREATE USER legacy_app
-    IDENTIFIED WITH double_sha1_password BY 'password'
-    DEFAULT DATABASE analytics;
-
--- bcrypt (strongest, slowest — use for admin accounts)
-CREATE USER admin_user
-    IDENTIFIED WITH bcrypt_password BY 'admin-password';
-
--- Verify user was created
-SHOW CREATE USER app_backend;
-SELECT name, host_ip, default_database FROM system.users;
+SHOW CREATE USER app_backend;      -- Verify
 ```
 
 ### Step 2: Create Role Hierarchy
 
+Build leaf-level base roles (`data_reader`, `data_writer`, `schema_manager`), then
+compose them into job roles (`analyst`, `developer`, `platform_admin`). Grant roles to
+users and set a default role that activates on connect.
+
 ```sql
--- Base roles (leaf-level permissions)
 CREATE ROLE data_reader;
 GRANT SELECT ON analytics.* TO data_reader;
 
-CREATE ROLE data_writer;
-GRANT INSERT ON analytics.* TO data_writer;
-
-CREATE ROLE schema_manager;
-GRANT CREATE TABLE, ALTER TABLE, DROP TABLE ON analytics.* TO schema_manager;
-
--- Composite roles (inherit from base roles)
 CREATE ROLE analyst;
-GRANT data_reader TO analyst;
--- Analysts can also create temporary tables for ad-hoc work
-GRANT CREATE TEMPORARY TABLE ON *.* TO analyst;
+GRANT data_reader TO analyst;      -- Composite inherits base
 
-CREATE ROLE developer;
-GRANT data_reader, data_writer TO developer;
-
-CREATE ROLE platform_admin;
-GRANT data_reader, data_writer, schema_manager TO platform_admin;
-GRANT SYSTEM RELOAD, SYSTEM FLUSH LOGS ON *.* TO platform_admin;
-
--- Assign roles to users
-GRANT analyst TO app_backend;         -- Read-only
-GRANT developer TO app_backend;       -- Read + write
-GRANT platform_admin TO admin_user;   -- Full access
-
--- Set default role (active when user connects)
-SET DEFAULT ROLE developer TO app_backend;
-
--- Verify the full permission chain
-SHOW GRANTS FOR app_backend;
-SHOW ACCESS;  -- All users, roles, policies
+GRANT analyst TO app_backend;
+SET DEFAULT ROLE analyst TO app_backend;
+SHOW GRANTS FOR app_backend;       -- Verify the full chain
 ```
 
 ### Step 3: Row-Level Security
 
+Isolate multi-tenant data with row policies — each user sees only rows matching its
+`USING` predicate. A permissive `USING 1 = 1` policy lets an admin role see everything.
+
 ```sql
--- Multi-tenant isolation: each user sees only their tenant's data
-CREATE USER tenant_acme
-    IDENTIFIED WITH sha256_password BY 'pass'
-    DEFAULT DATABASE analytics;
-
-CREATE USER tenant_globex
-    IDENTIFIED WITH sha256_password BY 'pass'
-    DEFAULT DATABASE analytics;
-
--- Row policy: restrict by tenant_id
 CREATE ROW POLICY acme_isolation ON analytics.events
     FOR SELECT
     USING tenant_id = 1
     TO tenant_acme;
 
-CREATE ROW POLICY globex_isolation ON analytics.events
-    FOR SELECT
-    USING tenant_id = 2
-    TO tenant_globex;
-
--- Admin sees all rows (permissive policy)
-CREATE ROW POLICY admin_all ON analytics.events
-    FOR SELECT
-    USING 1 = 1                     -- No filter
-    TO platform_admin;
-
--- Verify: this user only sees tenant_id = 1
--- (connect as tenant_acme)
-SELECT tenant_id, count() FROM analytics.events GROUP BY tenant_id;
--- Returns only rows where tenant_id = 1
-
--- List all row policies
-SELECT * FROM system.row_policies;
+SELECT * FROM system.row_policies;  -- List all policies
 ```
 
-### Step 4: Column-Level Grants
+### Steps 4–7: Column Grants, Quotas, Profiles, App Wrapper
 
-```sql
--- Grant SELECT on specific columns only (hide PII)
-GRANT SELECT(event_id, event_type, created_at) ON analytics.events TO analyst;
--- Analyst cannot SELECT email, user_id, ip_address
+- **Step 4 — Column-level grants:** `GRANT SELECT(col, ...)` to hide PII columns and
+  `GRANT INSERT(col, ...)` to prevent metadata injection.
+- **Step 5 — Quotas:** cap `queries`, `read_rows`, `result_rows`, and `execution_time`
+  per interval so one user cannot exhaust the cluster.
+- **Step 6 — Settings profiles:** enforce `readonly`, memory, thread, and concurrency
+  ceilings; a separate ETL profile enables `async_insert`.
+- **Step 7 — Application wrapper:** a per-role client factory in the app layer so read,
+  write, and admin operations use distinct ClickHouse users.
 
--- Grant INSERT on specific columns (prevent metadata injection)
-GRANT INSERT(event_type, user_id, properties) ON analytics.events TO data_writer;
+Full SQL and the TypeScript wrapper: [references/implementation.md](references/implementation.md).
 
--- Verify column-level grants
-SHOW GRANTS FOR analyst;
-```
+## Output
 
-### Step 5: Quotas (Resource Limits per User)
+Running this workflow produces, in the target ClickHouse instance:
 
-```sql
--- Limit query resources per time interval
-CREATE QUOTA analyst_quota
-    FOR INTERVAL 1 HOUR
-        MAX queries = 1000,
-        MAX result_rows = 10000000,        -- 10M result rows
-        MAX read_rows = 1000000000,        -- 1B rows read
-        MAX execution_time = 1800          -- 30 minutes total
-    FOR INTERVAL 1 DAY
-        MAX queries = 10000,
-        MAX read_rows = 10000000000
-    TO analyst;
+- **Users** with scoped authentication, network restrictions, and per-user resource caps.
+- **A role hierarchy** — base roles composed into job roles, assigned as default roles.
+- **Row policies** enforcing tenant/row isolation, visible in `system.row_policies`.
+- **Column grants** hiding PII, verifiable via `SHOW GRANTS FOR <role>`.
+- **Quotas and settings profiles** bounding resource use per user/role.
 
--- Check quota usage
-SELECT
-    quota_name, quota_key,
-    interval_duration,
-    queries, max_queries,
-    result_rows, max_result_rows,
-    round(queries / max_queries * 100, 1) AS usage_pct
-FROM system.quota_usage;
-
--- Override quota for specific user
-CREATE QUOTA power_user_quota
-    FOR INTERVAL 1 HOUR MAX queries = 10000
-    TO developer;
-```
-
-### Step 6: Settings Profiles
-
-```sql
--- Create a restrictive profile for external analysts
-CREATE SETTINGS PROFILE analyst_profile
-    SETTINGS
-        readonly = 1,                            -- Read-only mode
-        max_memory_usage = 5000000000 MIN 0 MAX 10000000000,  -- 5GB, can request up to 10GB
-        max_execution_time = 120,                -- 2 min timeout
-        max_threads = 4,                         -- 4 threads per query
-        max_result_rows = 1000000,               -- 1M result rows
-        max_concurrent_queries_for_user = 5,     -- 5 parallel queries
-        use_uncompressed_cache = 0               -- Don't pollute cache
-    TO analyst;
-
--- Create a profile for ETL / ingestion users
-CREATE SETTINGS PROFILE writer_profile
-    SETTINGS
-        max_memory_usage = 10000000000,
-        max_execution_time = 300,
-        max_insert_block_size = 1000000,
-        async_insert = 1,
-        async_insert_busy_timeout_ms = 5000
-    TO developer;
-```
-
-### Step 7: Application-Level RBAC Wrapper
-
-```typescript
-import { createClient } from '@clickhouse/client';
-
-// Create per-role clients
-function createRoleClient(role: 'reader' | 'writer' | 'admin') {
-  const credentials = {
-    reader: { user: 'app_reader', pass: process.env.CH_READER_PASS! },
-    writer: { user: 'app_writer', pass: process.env.CH_WRITER_PASS! },
-    admin:  { user: 'app_admin',  pass: process.env.CH_ADMIN_PASS! },
-  };
-
-  const cred = credentials[role];
-  return createClient({
-    url: process.env.CLICKHOUSE_HOST!,
-    username: cred.user,
-    password: cred.pass,
-  });
-}
-
-// Use the appropriate client for each operation
-const readerClient = createRoleClient('reader');
-const writerClient = createRoleClient('writer');
-
-// Read operations use the reader client
-async function queryEvents() {
-  return readerClient.query({ query: 'SELECT * FROM events LIMIT 100', format: 'JSONEachRow' });
-}
-
-// Write operations use the writer client
-async function insertEvents(events: Record<string, unknown>[]) {
-  return writerClient.insert({ table: 'events', values: events, format: 'JSONEachRow' });
-}
-```
-
-## Access Control Audit
-
-```sql
--- Who has access to what?
-SELECT
-    user_name, role_name, granted_role_name,
-    access_type, database, table, column
-FROM system.grants
-ORDER BY user_name, role_name;
-
--- Track authentication failures
-SELECT event_time, user, client_hostname, exception
-FROM system.query_log
-WHERE exception_code = 516  -- AUTHENTICATION_FAILED
-ORDER BY event_time DESC
-LIMIT 20;
-
--- Track privilege denials
-SELECT event_time, user, exception, substring(query, 1, 200)
-FROM system.query_log
-WHERE exception_code = 497  -- ACCESS_DENIED
-ORDER BY event_time DESC
-LIMIT 20;
-```
+Verify the deployment with `SHOW ACCESS`, `SHOW GRANTS FOR <user>`, and the audit
+queries in [references/examples.md](references/examples.md).
 
 ## Error Handling
 
@@ -273,6 +129,20 @@ LIMIT 20;
 | 516 | AUTHENTICATION_FAILED | Verify password, check HOST restriction |
 | 164 | READONLY | User has `readonly=1`, grant write if needed |
 | 497 | Not enough privileges to execute GRANT | Use admin user with GRANT OPTION |
+
+## Examples
+
+Two end-to-end scenarios — a multi-tenant SaaS isolation setup and a PII-safe analyst
+role — plus the access-control audit queries live in
+[references/examples.md](references/examples.md). The core of Example 1:
+
+```sql
+-- Each tenant reads only its own rows from a shared table
+CREATE ROW POLICY acme_isolation   ON analytics.events FOR SELECT USING tenant_id = 1 TO tenant_acme;
+CREATE ROW POLICY globex_isolation ON analytics.events FOR SELECT USING tenant_id = 2 TO tenant_globex;
+-- Connected as tenant_acme, this returns ONLY tenant_id = 1:
+SELECT tenant_id, count() FROM analytics.events GROUP BY tenant_id;
+```
 
 ## Resources
 
@@ -284,4 +154,4 @@ LIMIT 20;
 
 ## Next Steps
 
-For schema migrations, see `clickhouse-migration-deep-dive`.
+For schema migrations, see the `clickhouse-migration-deep-dive` skill in this pack.

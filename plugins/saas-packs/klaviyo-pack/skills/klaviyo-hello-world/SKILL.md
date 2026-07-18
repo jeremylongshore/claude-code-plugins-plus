@@ -11,8 +11,8 @@ description: 'Create a minimal working Klaviyo example with real API calls.
   "klaviyo quick start", "simple klaviyo code", "first klaviyo call".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
-version: 1.6.0
+allowed-tools: Write, Bash(npm:*), Bash(npx:*)
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,169 +26,58 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Minimal working example: create a profile, track an event, and query the result using the `klaviyo-api` Node.js SDK against `a.klaviyo.com/api/*`.
+Minimal working example: create a profile, track an event, and query the result
+using the `klaviyo-api` Node.js SDK against `a.klaviyo.com/api/*`. This is the
+smoke test that proves your API key, SDK install, and network path all work
+end-to-end before you build anything real.
 
 ## Prerequisites
 
-- Completed `klaviyo-install-auth` setup
-- `KLAVIYO_PRIVATE_KEY` set in environment
-- `klaviyo-api` package installed
+- Completed the `klaviyo-install-auth` setup so credentials are in place.
+- `KLAVIYO_PRIVATE_KEY` exported in your environment (a private API key with
+  Profiles and Events scopes).
+- `klaviyo-api` installed in the project (`npm install klaviyo-api`).
+- `tsx` available to run the TypeScript file (`npx tsx …`).
 
 ## Instructions
 
-### Step 1: Create a Profile
+Write the code into a single `hello-klaviyo.ts` file, then run it with
+`npx tsx hello-klaviyo.ts`. The full script performs four things in order:
 
-```typescript
-// hello-klaviyo.ts
-import {
-  ApiKeySession,
-  ProfilesApi,
-  EventsApi,
-  ProfileCreateQuery,
-  ProfileEnum,
-  EventCreateQueryV2,
-  EventEnum,
-} from 'klaviyo-api';
+1. **Create a profile** — `profilesApi.createProfile(...)` with a JSON:API
+   payload. The essential skeleton:
 
-const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-const profilesApi = new ProfilesApi(session);
-const eventsApi = new EventsApi(session);
+   ```typescript
+   import { ApiKeySession, ProfilesApi, ProfileEnum } from 'klaviyo-api';
 
-// Create or update a profile
-// NOTE: SDK uses camelCase (firstName, not first_name)
-const profilePayload: ProfileCreateQuery = {
-  data: {
-    type: ProfileEnum.Profile,
-    attributes: {
-      email: 'hello@example.com',
-      firstName: 'Hello',
-      lastName: 'World',
-      properties: {
-        source: 'hello-world-script',
-        signupDate: new Date().toISOString(),
-      },
-    },
-  },
-};
+   const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+   const profilesApi = new ProfilesApi(session);
 
-const profile = await profilesApi.createProfile(profilePayload);
-console.log('Profile created:', profile.body.data.id);
-```
+   const profile = await profilesApi.createProfile({
+     data: {
+       type: ProfileEnum.Profile,
+       attributes: { email: 'hello@example.com', firstName: 'Hello', lastName: 'World' },
+     },
+   });
+   console.log('Profile created:', profile.body.data.id);
+   ```
 
-### Step 2: Track an Event
+2. **Track an event** — `eventsApi.createEvent(...)` with a `metric` (created on
+   first use) linked to the profile by email.
+3. **Retrieve the profile** — `profilesApi.getProfiles({ filter: '...' })` to
+   confirm the write landed.
+4. **Run the combined script** — `npx tsx hello-klaviyo.ts`.
 
-```typescript
-// Track a custom event tied to the profile
-const eventPayload: EventCreateQueryV2 = {
-  data: {
-    type: EventEnum.Event,
-    attributes: {
-      // The metric name -- creates the metric if it doesn't exist
-      metric: {
-        data: {
-          type: 'metric',
-          attributes: {
-            name: 'Hello World Test',
-          },
-        },
-      },
-      // Link to the profile by email
-      profile: {
-        data: {
-          type: ProfileEnum.Profile,
-          attributes: {
-            email: 'hello@example.com',
-          },
-        },
-      },
-      properties: {
-        message: 'First event from API!',
-        timestamp: new Date().toISOString(),
-      },
-      time: new Date().toISOString(),
-      value: 0,
-    },
-  },
-};
-
-await eventsApi.createEvent(eventPayload);
-console.log('Event tracked: Hello World Test');
-```
-
-### Step 3: Retrieve the Profile
-
-```typescript
-// Fetch profiles filtered by email
-const profiles = await profilesApi.getProfiles({
-  filter: 'equals(email,"hello@example.com")',
-});
-
-const p = profiles.body.data[0];
-console.log(`Found: ${p.attributes.firstName} ${p.attributes.lastName}`);
-console.log(`ID: ${p.id}`);
-console.log(`Created: ${p.attributes.created}`);
-```
-
-### Step 4: Complete Script
-
-```typescript
-// hello-klaviyo.ts -- full runnable script
-import {
-  ApiKeySession,
-  ProfilesApi,
-  EventsApi,
-  ProfileEnum,
-} from 'klaviyo-api';
-
-async function main() {
-  const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-  const profilesApi = new ProfilesApi(session);
-  const eventsApi = new EventsApi(session);
-
-  // 1. Create profile
-  const profile = await profilesApi.createProfile({
-    data: {
-      type: ProfileEnum.Profile,
-      attributes: {
-        email: 'hello@example.com',
-        firstName: 'Hello',
-        lastName: 'World',
-      },
-    },
-  });
-  console.log(`Profile created: ${profile.body.data.id}`);
-
-  // 2. Track event
-  await eventsApi.createEvent({
-    data: {
-      type: 'event',
-      attributes: {
-        metric: { data: { type: 'metric', attributes: { name: 'Hello World Test' } } },
-        profile: { data: { type: 'profile', attributes: { email: 'hello@example.com' } } },
-        properties: { source: 'hello-world' },
-        time: new Date().toISOString(),
-      },
-    },
-  });
-  console.log('Event tracked successfully');
-
-  // 3. Query profile back
-  const result = await profilesApi.getProfiles({
-    filter: 'equals(email,"hello@example.com")',
-  });
-  console.log(`Verified: ${result.body.data[0]?.attributes.firstName}`);
-}
-
-main().catch(console.error);
-```
-
-Run it:
-
-```bash
-npx tsx hello-klaviyo.ts
-```
+For the complete step-by-step code (all payloads with camelCase and JSON:API
+detail), see the [full walkthrough](references/implementation.md). For the
+single combined runnable script and variations, see
+[worked examples](references/examples.md).
 
 ## Output
+
+Running the combined script prints one line per operation. The profile ID is a
+26-character ULID; `Verified` echoes the `firstName` read back from the API,
+proving the round trip succeeded:
 
 ```
 Profile created: 01JXXXXXXXXXXXXXXXXXXXXXX
@@ -204,6 +93,28 @@ Verified: Hello
 | `Invalid email format` | 400 | Malformed email | Validate email before sending |
 | `Missing metric name` | 400 | Empty metric object | Always include `metric.data.attributes.name` |
 | `Unauthorized` | 401 | Bad API key | Check `KLAVIYO_PRIVATE_KEY` env var |
+
+## Examples
+
+The canonical example is the single combined script that creates a profile,
+tracks an event, and reads the profile back — see the
+[worked examples](references/examples.md) for the full file plus two common
+variations (idempotent upsert with `createOrUpdateProfile`, and a revenue event
+that sets `value`). The core shape of every call is the same JSON:API envelope:
+
+```typescript
+await eventsApi.createEvent({
+  data: {
+    type: 'event',
+    attributes: {
+      metric: { data: { type: 'metric', attributes: { name: 'Hello World Test' } } },
+      profile: { data: { type: 'profile', attributes: { email: 'hello@example.com' } } },
+      properties: { source: 'hello-world' },
+      time: new Date().toISOString(),
+    },
+  },
+});
+```
 
 ## Key SDK Conventions
 
@@ -221,4 +132,5 @@ Verified: Hello
 
 ## Next Steps
 
-Proceed to `klaviyo-local-dev-loop` for development workflow setup, or `klaviyo-core-workflow-a` for profile and list management.
+Proceed to `klaviyo-local-dev-loop` for development workflow setup, or
+`klaviyo-core-workflow-a` for profile and list management.

@@ -1,20 +1,15 @@
 ---
 name: clickhouse-multi-env-setup
-description: 'Configure ClickHouse across dev, staging, and production with environment-specific
-
-  settings, secrets management, and infrastructure-as-code patterns.
-
-  Use when setting up per-environment ClickHouse instances, managing connection
-
-  configs, or deploying to multiple environments.
-
-  Trigger: "clickhouse environments", "clickhouse dev staging prod",
-
-  "clickhouse multi-env", "clickhouse environment config", "clickhouse staging setup".
-
-  '
+description: |
+  Configure ClickHouse across dev, staging, and production with
+  environment-specific settings, secrets management, and infrastructure-as-code
+  patterns. Use when setting up per-environment ClickHouse instances, managing
+  connection configs, wiring secrets per environment, or deploying to multiple
+  environments. Trigger with "clickhouse environments", "clickhouse dev staging
+  prod", "clickhouse multi-env", "clickhouse environment config", "clickhouse
+  staging setup".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -31,6 +26,13 @@ compatibility: Designed for Claude Code
 
 Configure separate ClickHouse instances for development, staging, and production
 with proper secrets management, environment detection, and infrastructure-as-code.
+A single typed config module resolves the right instance from `NODE_ENV`, so
+application code never branches on environment and destructive operations are
+blocked outside dev/staging.
+
+The full code for every step lives in
+[references/implementation.md](references/implementation.md); worked end-to-end
+flows are in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
@@ -40,7 +42,9 @@ with proper secrets management, environment detection, and infrastructure-as-cod
 
 ## Instructions
 
-### Step 1: Environment Strategy
+### Step 1: Choose an environment strategy
+
+Provision one instance per tier, isolated by data sensitivity:
 
 | Environment | Instance | Purpose | Data |
 |-------------|----------|---------|------|
@@ -48,229 +52,75 @@ with proper secrets management, environment detection, and infrastructure-as-cod
 | Staging | ClickHouse Cloud (Dev tier) | Pre-prod validation | Sampled prod copy |
 | Production | ClickHouse Cloud (Prod tier) | Live traffic | Real data |
 
-### Step 2: Configuration Module
+### Step 2: Build a typed config module
+
+Create `src/config/clickhouse.ts` with one `ClickHouseEnvConfig` per environment,
+keyed by `NODE_ENV`. Fail fast in non-dev environments — require a password and
+enforce HTTPS at startup:
 
 ```typescript
-// src/config/clickhouse.ts
-interface ClickHouseEnvConfig {
-  url: string;
-  username: string;
-  password: string;
-  database: string;
-  maxConnections: number;
-  requestTimeout: number;
-  compression: boolean;
-}
-
-const configs: Record<string, ClickHouseEnvConfig> = {
-  development: {
-    url: 'http://localhost:8123',
-    username: 'default',
-    password: process.env.CLICKHOUSE_PASSWORD ?? 'dev_password',
-    database: 'app_dev',
-    maxConnections: 5,
-    requestTimeout: 60_000,    // Longer for debugging
-    compression: false,         // Easier to debug raw
-  },
-  staging: {
-    url: process.env.CLICKHOUSE_HOST ?? 'https://staging.clickhouse.cloud:8443',
-    username: process.env.CLICKHOUSE_USER ?? 'app_staging',
-    password: process.env.CLICKHOUSE_PASSWORD!,
-    database: 'app_staging',
-    maxConnections: 10,
-    requestTimeout: 30_000,
-    compression: true,
-  },
-  production: {
-    url: process.env.CLICKHOUSE_HOST!,
-    username: process.env.CLICKHOUSE_USER!,
-    password: process.env.CLICKHOUSE_PASSWORD!,
-    database: 'app_prod',
-    maxConnections: 20,
-    requestTimeout: 30_000,
-    compression: true,
-  },
-};
-
 export function getConfig(): ClickHouseEnvConfig {
   const env = process.env.NODE_ENV ?? 'development';
   const config = configs[env];
   if (!config) throw new Error(`Unknown environment: ${env}`);
-
-  // Validate required fields in non-dev environments
   if (env !== 'development') {
     if (!config.password) throw new Error(`CLICKHOUSE_PASSWORD not set for ${env}`);
     if (!config.url.startsWith('https://')) {
       throw new Error(`ClickHouse ${env} must use HTTPS`);
     }
   }
-
   return config;
 }
 ```
 
-### Step 3: Client Factory
+Full per-environment config table (pool sizes, timeouts, compression):
+[references/implementation.md](references/implementation.md).
 
-```typescript
-// src/clickhouse/client.ts
-import { createClient, ClickHouseClient } from '@clickhouse/client';
-import { getConfig } from '../config/clickhouse';
+### Step 3: Add a client factory
 
-let client: ClickHouseClient | null = null;
+A lazily-initialized singleton in `src/clickhouse/client.ts` builds the pool once
+per process from the resolved config. Full code:
+[references/implementation.md](references/implementation.md).
 
-export function getClient(): ClickHouseClient {
-  if (!client) {
-    const config = getConfig();
-    client = createClient({
-      url: config.url,
-      username: config.username,
-      password: config.password,
-      database: config.database,
-      max_open_connections: config.maxConnections,
-      request_timeout: config.requestTimeout,
-      compression: {
-        request: config.compression,
-        response: config.compression,
-      },
-    });
-  }
-  return client;
-}
-```
+### Step 4: Wire secrets per environment
 
-### Step 4: Secrets Management
+Dev uses a git-ignored `.env.local`; every other tier pulls from a secret manager
+(AWS Secrets Manager, GCP Secret Manager, or Vault) — never commit credentials.
+CLI recipes for all three:
+[references/implementation.md](references/implementation.md).
 
-```bash
-# --- Development ---
-# .env.local (git-ignored)
-CLICKHOUSE_PASSWORD=dev_password
+### Step 5: Apply schema deterministically
 
-# --- Staging (GitHub Actions) ---
-# Set via: gh secret set CLICKHOUSE_PASSWORD_STAGING
-# Access in workflow:
-#   env:
-#     CLICKHOUSE_PASSWORD: ${{ secrets.CLICKHOUSE_PASSWORD_STAGING }}
+Run sorted `.sql` files through a migration runner (`scripts/apply-schema.ts`).
+Fail hard in production, log-and-continue in dev/staging:
+[references/implementation.md](references/implementation.md).
 
-# --- Production (AWS Secrets Manager) ---
-aws secretsmanager create-secret \
-  --name clickhouse/production \
-  --secret-string '{"host":"https://prod.clickhouse.cloud:8443","password":"..."}'
+### Step 6: Add environment guards
 
-# Fetch at runtime:
-aws secretsmanager get-secret-value \
-  --secret-id clickhouse/production \
-  --query SecretString --output text
+`requireNonProduction` blocks TRUNCATE/reset in prod and `validateDatabaseName`
+catches cross-environment queries. Full guards:
+[references/implementation.md](references/implementation.md).
 
-# --- Production (GCP Secret Manager) ---
-echo -n "https://prod.clickhouse.cloud:8443" | \
-  gcloud secrets create ch-prod-host --data-file=-
+### Step 7: Integrate with CI/CD
 
-gcloud secrets versions access latest --secret=ch-prod-host
+Auto-deploy staging; gate production behind `needs: deploy-staging` plus a
+manual-approval environment. Full workflow:
+[references/examples.md](references/examples.md).
 
-# --- Production (HashiCorp Vault) ---
-vault kv put secret/clickhouse/prod \
-  host="https://prod.clickhouse.cloud:8443" \
-  password="..."
-vault kv get -field=password secret/clickhouse/prod
-```
+## Output
 
-### Step 5: Schema Management Across Environments
+Completing this workflow yields:
 
-```typescript
-// scripts/apply-schema.ts
-import { getClient } from '../src/clickhouse/client';
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+- `src/config/clickhouse.ts` — typed, per-environment ClickHouse config with
+  startup validation (password present, HTTPS enforced outside dev).
+- `src/clickhouse/client.ts` — a singleton client factory keyed off `NODE_ENV`.
+- `scripts/apply-schema.ts` — a deterministic, sorted migration runner.
+- Environment guards preventing destructive operations against production.
+- Secrets stored in a secret manager per environment (nothing committed).
+- A `.github/workflows/deploy.yml` pipeline that migrates schema and deploys
+  staging automatically, production behind manual approval.
 
-async function applySchema() {
-  const client = getClient();
-  const env = process.env.NODE_ENV ?? 'development';
-  const schemaDir = join(__dirname, '../src/clickhouse/schemas');
-  const files = readdirSync(schemaDir).filter((f) => f.endsWith('.sql')).sort();
-
-  console.log(`Applying ${files.length} schema files to ${env}...`);
-
-  for (const file of files) {
-    const sql = readFileSync(join(schemaDir, file), 'utf-8');
-    try {
-      await client.command({ query: sql });
-      console.log(`  [OK] ${file}`);
-    } catch (err) {
-      console.error(`  [FAIL] ${file}: ${(err as Error).message}`);
-      if (env === 'production') throw err;  // Fail hard in prod
-    }
-  }
-}
-
-applySchema();
-```
-
-### Step 6: Environment Guards
-
-```typescript
-// Prevent dangerous operations in production
-function requireNonProduction(operation: string): void {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error(`${operation} is blocked in production`);
-  }
-}
-
-// TRUNCATE only in dev/staging
-async function resetTestData() {
-  requireNonProduction('resetTestData');
-  const client = getClient();
-  await client.command({ query: 'TRUNCATE TABLE events' });
-}
-
-// Prevent accidental cross-environment queries
-function validateDatabaseName(database: string): void {
-  const env = process.env.NODE_ENV ?? 'development';
-  const expected = `app_${env === 'development' ? 'dev' : env}`;
-  if (database !== expected) {
-    throw new Error(`Database mismatch: expected ${expected}, got ${database}`);
-  }
-}
-```
-
-### Step 7: CI/CD Integration
-
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    runs-on: ubuntu-latest
-    environment: staging
-    env:
-      NODE_ENV: staging
-      CLICKHOUSE_HOST: ${{ secrets.CLICKHOUSE_HOST_STAGING }}
-      CLICKHOUSE_USER: ${{ secrets.CLICKHOUSE_USER_STAGING }}
-      CLICKHOUSE_PASSWORD: ${{ secrets.CLICKHOUSE_PASSWORD_STAGING }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: npm ci
-      - run: npm run schema:apply   # Apply schema changes
-      - run: npm run test:integration  # Run against staging CH
-      - run: npm run deploy:staging
-
-  deploy-production:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    environment: production   # Requires manual approval
-    env:
-      NODE_ENV: production
-      CLICKHOUSE_HOST: ${{ secrets.CLICKHOUSE_HOST_PROD }}
-      CLICKHOUSE_USER: ${{ secrets.CLICKHOUSE_USER_PROD }}
-      CLICKHOUSE_PASSWORD: ${{ secrets.CLICKHOUSE_PASSWORD_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: npm ci
-      - run: npm run schema:apply
-      - run: npm run deploy:production
-```
+Application code then calls `getClient()` with zero environment branching.
 
 ## Error Handling
 
@@ -281,8 +131,29 @@ jobs:
 | Schema drift | Applied manually | Use migration runner in CI |
 | Secret not found | Missing env var | Check secret manager + CI config |
 
+## Examples
+
+Query from application code with no environment logic — `getConfig()` resolves the
+right instance from `NODE_ENV`:
+
+```typescript
+import { getClient } from './clickhouse/client';
+
+const rows = await getClient().query({
+  query: 'SELECT count() AS c FROM events WHERE date = today()',
+  format: 'JSONEachRow',
+});
+console.log(await rows.json());
+```
+
+More worked flows — the environment-strategy layout, the full CI/CD deploy
+pipeline, and end-to-end query usage — are in
+[references/examples.md](references/examples.md).
+
 ## Resources
 
+- [full implementation walkthrough](references/implementation.md)
+- [worked examples](references/examples.md)
 - [12-Factor App Config](https://12factor.net/config)
 - [ClickHouse Cloud Console](https://clickhouse.cloud/)
 - [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
@@ -290,4 +161,6 @@ jobs:
 
 ## Next Steps
 
-For monitoring and observability, see `clickhouse-observability`.
+For monitoring and observability, see the `clickhouse-observability` skill, which
+covers query performance dashboards, slow-query logging, and alerting across the
+same dev/staging/production tiers you configured here.

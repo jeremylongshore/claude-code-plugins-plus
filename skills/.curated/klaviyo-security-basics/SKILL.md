@@ -13,7 +13,7 @@ description: 'Apply Klaviyo security best practices for API key management and a
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -46,140 +46,56 @@ Security best practices for Klaviyo: API key types, OAuth scopes, webhook HMAC-S
 
 Private keys authenticate via `Authorization: Klaviyo-API-Key pk_***` header. Public keys pass as `company_id` query parameter.
 
-### Step 2: Environment Variable Configuration
+### Step 2: Store Keys in Environment Variables
 
-```bash
-# .env (NEVER commit)
-KLAVIYO_PRIVATE_KEY=pk_***************************************
-KLAVIYO_PUBLIC_KEY=UXxxXx
-KLAVIYO_WEBHOOK_SIGNING_SECRET=whsec_*************************
-
-# .gitignore -- mandatory entries
-.env
-.env.local
-.env.*.local
-```
+Keep every private key and the webhook signing secret out of source: load them
+from `.env` (git-ignored) through a validated config loader that throws on a
+missing secret, so misconfiguration fails at boot instead of at first API call.
 
 ```typescript
-// src/config/klaviyo.ts -- validated config loader
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required env: ${name}`);
-  return value;
-}
-
+// src/config/klaviyo.ts -- validated config loader (skeleton)
 export const klaviyoConfig = {
-  privateKey: requireEnv('KLAVIYO_PRIVATE_KEY'),
+  privateKey: requireEnv('KLAVIYO_PRIVATE_KEY'),        // throws if absent
   publicKey: process.env.KLAVIYO_PUBLIC_KEY || '',
   webhookSecret: process.env.KLAVIYO_WEBHOOK_SIGNING_SECRET || '',
 };
 ```
 
-### Step 3: Least-Privilege API Key Scopes
+Full `.env` template, `.gitignore` entries, and the `requireEnv` helper:
+[implementation.md → Environment Variable Configuration](references/implementation.md#environment-variable-configuration).
 
-Create separate API keys per environment with minimal scopes:
+### Step 3: Scope Keys per Environment (Least Privilege)
 
-| Environment | Recommended Scopes | Rationale |
-|-------------|-------------------|-----------|
-| Development | `profiles:read`, `events:read`, `lists:read` | Read-only exploration |
-| Staging | `profiles:read/write`, `events:write`, `lists:read/write` | Full test coverage |
-| Production | Exact scopes your app needs | Minimize blast radius |
-| CI/CD | `profiles:read`, `events:read` | Smoke tests only |
+Issue a separate key for each environment with only the scopes that environment
+needs — read-only in dev and CI, full read/write in staging, the exact production
+scope set in prod — so a leaked key has the smallest possible blast radius. Scope
+table and per-environment env-var layout:
+[implementation.md → Least-Privilege API Key Scopes](references/implementation.md#least-privilege-api-key-scopes).
 
-```bash
-# Use separate env vars per environment
-KLAVIYO_PRIVATE_KEY_DEV=pk_dev_***
-KLAVIYO_PRIVATE_KEY_STAGING=pk_staging_***
-KLAVIYO_PRIVATE_KEY_PROD=pk_prod_***
-```
+### Step 4: Verify Webhook Signatures (HMAC-SHA256)
 
-### Step 4: Webhook Signature Verification (HMAC-SHA256)
-
-Klaviyo signs webhook payloads using HMAC-SHA256 with your webhook signing secret.
+Klaviyo signs each webhook payload with your signing secret. Recompute the
+HMAC-SHA256 digest over the raw body and compare with `crypto.timingSafeEqual`
+to defeat timing attacks; reject anything that does not match with `401`.
 
 ```typescript
-// src/klaviyo/webhook-verify.ts
-import crypto from 'crypto';
-
-/**
- * Verify Klaviyo webhook signature.
- * Klaviyo uses the webhook signing secret (set when creating the webhook)
- * to compute an HMAC-SHA256 signature of the payload.
- */
-export function verifyKlaviyoWebhookSignature(
-  payload: Buffer | string,
-  signature: string,
-  secret: string
-): boolean {
-  if (!signature || !secret) return false;
-
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(typeof payload === 'string' ? payload : payload.toString())
-    .digest('base64');
-
-  // Timing-safe comparison to prevent timing attacks
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
-  } catch {
-    return false;  // Different lengths
-  }
-}
+const expected = crypto.createHmac('sha256', secret)
+  .update(rawBody).digest('base64');
+return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 ```
 
-### Step 5: Express Webhook Middleware
+Full verifier plus the Express raw-body middleware that returns
+`401 Invalid signature`:
+[implementation.md → Webhook Signature Verification](references/implementation.md#webhook-signature-verification-hmac-sha256)
+and [Express Webhook Middleware](references/implementation.md#express-webhook-middleware).
 
-```typescript
-import express from 'express';
+### Step 5: Rotate Keys with Zero Downtime
 
-app.post('/webhooks/klaviyo',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['klaviyo-webhook-signature'] as string;
-
-    if (!verifyKlaviyoWebhookSignature(
-      req.body,
-      signature,
-      process.env.KLAVIYO_WEBHOOK_SIGNING_SECRET!
-    )) {
-      console.warn('[Security] Invalid webhook signature rejected');
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    // Process verified event...
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-### Step 6: API Key Rotation Procedure
-
-```bash
-# 1. Generate new key in Klaviyo dashboard (Settings > API Keys)
-#    - Name it with date: "Production API Key 2025-03"
-#    - Assign same scopes as the old key
-
-# 2. Deploy new key (zero-downtime)
-#    Update secret in your deployment platform:
-#    - Vercel: vercel env add KLAVIYO_PRIVATE_KEY production
-#    - AWS: aws secretsmanager update-secret --secret-id klaviyo-key --secret-string pk_new_***
-#    - GCP: echo -n "pk_new_***" | gcloud secrets versions add klaviyo-key --data-file=-
-
-# 3. Verify new key works
-curl -s -w "%{http_code}" -o /dev/null \
-  -H "Authorization: Klaviyo-API-Key pk_new_***" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/"
-
-# 4. Revoke old key in Klaviyo dashboard
-#    Settings > API Keys > Delete old key
-
-# 5. Audit: check logs for any 401s after rotation
-```
+Rotate private keys on a schedule (quarterly) or immediately on suspected leak:
+generate a replacement with identical scopes, deploy it to the secret store,
+verify with a `curl` against `/api/accounts/`, then revoke the old key and watch
+logs for `401`s. Full five-step runbook with per-platform commands:
+[implementation.md → API Key Rotation Procedure](references/implementation.md#api-key-rotation-procedure).
 
 ## Security Checklist
 
@@ -203,12 +119,41 @@ curl -s -w "%{http_code}" -o /dev/null \
 | Key not rotated | Age > 90 days | Schedule rotation |
 | 401s after rotation | Log monitoring | Verify all services updated |
 
+## Output
+
+Applying this skill produces a hardened Klaviyo integration:
+
+- A git-ignored `.env` plus a `src/config/klaviyo.ts` loader that fails fast on a
+  missing private key.
+- Environment-scoped API keys (dev/staging/prod/CI) each holding minimum scopes.
+- A webhook endpoint that returns `200 { "received": true }` only for payloads
+  whose HMAC-SHA256 signature verifies, and `401 { "error": "Invalid signature" }`
+  for everything else.
+- A documented, zero-downtime rotation runbook and a completed security checklist.
+
+## Examples
+
+Three worked scenarios — validated config loader, rejecting a forged webhook, and
+zero-downtime key rotation — with inputs and expected results are in
+[examples.md](references/examples.md). Quick sketch of the webhook case:
+
+```text
+POST /webhooks/klaviyo  (tampered body, original signature)
+  → verifyKlaviyoWebhookSignature() recomputes HMAC → mismatch
+  → 401 { "error": "Invalid signature" }, logged as rejected
+```
+
+See [examples.md](references/examples.md) for the full walkthrough of each.
+
 ## Resources
 
 - [Authenticate API Requests](https://developers.klaviyo.com/en/docs/authenticate_)
 - [OAuth Setup](https://developers.klaviyo.com/en/docs/set_up_oauth)
 - [Webhooks API Overview](https://developers.klaviyo.com/en/reference/webhooks_api_overview)
+- [implementation.md](references/implementation.md) — full copy-paste code for every step
+- [examples.md](references/examples.md) — end-to-end worked scenarios
 
 ## Next Steps
 
-For production deployment, see `klaviyo-prod-checklist`.
+For production hardening beyond secrets — rate limits, monitoring, and deploy
+gates — see the `klaviyo-prod-checklist` skill in this pack.

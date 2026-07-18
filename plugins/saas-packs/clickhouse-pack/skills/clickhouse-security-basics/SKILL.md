@@ -1,19 +1,14 @@
 ---
 name: clickhouse-security-basics
-description: 'Secure ClickHouse with user management, network restrictions, TLS, and
-  audit logging.
-
-  Use when hardening a ClickHouse deployment, creating restricted users,
-
-  or configuring network-level access controls.
-
-  Trigger: "clickhouse security", "clickhouse user management", "secure clickhouse",
-
-  "clickhouse TLS", "clickhouse access control", "clickhouse firewall".
-
-  '
-allowed-tools: Read, Write, Grep
-version: 1.6.0
+description: |
+  Secure ClickHouse with user management, network restrictions, TLS, and
+  audit logging. Use when hardening a ClickHouse deployment, creating restricted
+  users, enforcing multi-tenant row isolation, or configuring network-level
+  access controls. Trigger with "clickhouse security", "clickhouse user
+  management", "secure clickhouse", "clickhouse TLS", "clickhouse access
+  control", "clickhouse firewall".
+allowed-tools: Read
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,188 +24,80 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Secure a ClickHouse deployment with SQL-based user management, network restrictions,
-TLS encryption, and query audit logging.
+TLS encryption, and query audit logging. This skill walks the seven core hardening
+steps at a high level; the full copy-pasteable SQL, XML, and connection code lives in
+[references/implementation.md](references/implementation.md).
 
 ## Prerequisites
 
 - ClickHouse admin access
 - `CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1` for SQL-based user management
-- For self-hosted: access to server config files
+- For self-hosted: access to server config files (`config.xml`, `users.xml`)
 
 ## Instructions
 
-### Step 1: Create Restricted Users (SQL-Based RBAC)
+Work through the seven steps in order. Each summary below gives the essential
+first move; drill into [references/implementation.md](references/implementation.md)
+for the complete, copy-ready code for every step.
+
+### Step 1: Create restricted users (SQL-based RBAC)
+
+Create least-privilege users and `REVOKE` destructive verbs from application users.
 
 ```sql
--- Create a read-only analyst user
 CREATE USER analyst
     IDENTIFIED WITH sha256_password BY 'strong-password-here'
     DEFAULT DATABASE analytics
-    SETTINGS
-        readonly = 1,                -- Read-only mode
-        max_memory_usage = 5000000000,  -- 5GB per query
-        max_execution_time = 60;     -- 60s timeout
-
+    SETTINGS readonly = 1, max_execution_time = 60;
 GRANT SELECT ON analytics.* TO analyst;
-
--- Create an application user with insert permissions
-CREATE USER app_writer
-    IDENTIFIED WITH sha256_password BY 'another-strong-password'
-    DEFAULT DATABASE analytics;
-
-GRANT SELECT, INSERT ON analytics.* TO app_writer;
--- Explicitly deny destructive operations
-REVOKE DROP, ALTER, CREATE ON *.* FROM app_writer;
-
--- Create an admin user
-CREATE USER ch_admin
-    IDENTIFIED WITH sha256_password BY 'admin-password'
-    SETTINGS PROFILE 'default';
-
-GRANT ALL ON *.* TO ch_admin WITH GRANT OPTION;
 ```
 
-### Step 2: Use Roles for Permission Groups
+### Step 2: Use roles for permission groups
 
-```sql
--- Create reusable roles
-CREATE ROLE data_reader;
-GRANT SELECT ON analytics.* TO data_reader;
+Define `data_reader` / `data_writer` / `schema_admin` roles once, then grant roles
+to users instead of hand-managing per-user grants. Verify with `SHOW GRANTS`.
 
-CREATE ROLE data_writer;
-GRANT SELECT, INSERT ON analytics.* TO data_writer;
+### Step 3: Row-level security
 
-CREATE ROLE schema_admin;
-GRANT CREATE TABLE, ALTER TABLE, DROP TABLE ON analytics.* TO schema_admin;
+Isolate multi-tenant data with `CREATE ROW POLICY`, mapping each user to a tenant
+via a custom setting (`getSetting('custom_tenant_id')`).
 
--- Assign roles to users
-GRANT data_reader TO analyst;
-GRANT data_writer TO app_writer;
-GRANT schema_admin, data_writer TO ch_admin;
+### Step 4: Network security
 
--- Verify grants
-SHOW GRANTS FOR analyst;
-SHOW GRANTS FOR app_writer;
-```
+Restrict connection sources — SQL `HOST IP '10.0.0.0/8'` (22.6+), `users.xml`
+per-user network allowlists for self-hosted, or the ClickHouse Cloud IP Access List.
 
-### Step 3: Row-Level Security
+### Step 5: TLS configuration
 
-```sql
--- Create a row policy: tenant users only see their own data
-CREATE ROW POLICY tenant_isolation ON analytics.events
-    FOR SELECT
-    USING tenant_id = currentUser()  -- or a mapped value
-    TO data_reader;
+Enable the HTTPS port (8443) in `config.xml` with a server cert, private key, and
+strict verification mode.
 
--- More practical: map users to tenant IDs via settings
-CREATE USER tenant_42
-    IDENTIFIED WITH sha256_password BY 'pass'
-    SETTINGS custom_tenant_id = 42;
+### Step 6: Audit logging
 
-CREATE ROW POLICY tenant_filter ON analytics.events
-    FOR SELECT
-    USING tenant_id = getSetting('custom_tenant_id')
-    TO tenant_42;
-```
+Query `system.query_log` (on by default) to see who ran what, and filter
+`exception_code = 516` to hunt failed logins.
 
-### Step 4: Network Security
+### Step 7: Application connection security
 
-```xml
-<!-- config.xml — restrict listen addresses -->
-<listen_host>0.0.0.0</listen_host>  <!-- or specific IP -->
+Connect over `https://…:8443` with a minimal-privilege user (never `default`) and a
+password sourced from a secret manager — see the client snippet in
+[references/examples.md](references/examples.md).
 
-<!-- IP allowlist per user -->
-<users>
-    <app_writer>
-        <networks>
-            <ip>10.0.0.0/8</ip>          <!-- VPC only -->
-            <ip>172.16.0.0/12</ip>
-        </networks>
-    </app_writer>
-</users>
-```
+Run through the Security Checklist in
+[references/implementation.md](references/implementation.md) before declaring a
+deployment hardened.
 
-```sql
--- SQL-based network restriction (ClickHouse 22.6+)
-CREATE USER app_writer
-    IDENTIFIED WITH sha256_password BY 'pass'
-    HOST IP '10.0.0.0/8', IP '172.16.0.0/12';
-```
+## Output
 
-**ClickHouse Cloud:** Use the Cloud console IP Access List to restrict connections
-to specific IPs or CIDR ranges.
+Applying this skill produces:
 
-### Step 5: TLS Configuration
-
-```xml
-<!-- config.xml — enable TLS for HTTPS (port 8443) -->
-<https_port>8443</https_port>
-<openSSL>
-    <server>
-        <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
-        <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
-        <caConfig>/etc/clickhouse-server/ca.crt</caConfig>
-        <verificationMode>strict</verificationMode>
-    </server>
-</openSSL>
-```
-
-### Step 6: Audit Logging
-
-```sql
--- Enable query logging (on by default)
--- All queries are logged to system.query_log
-
--- Check who ran what queries
-SELECT
-    event_time,
-    user,
-    client_hostname,
-    query_kind,
-    substring(query, 1, 200) AS query_preview,
-    exception_code
-FROM system.query_log
-WHERE event_time >= now() - INTERVAL 1 HOUR
-  AND user NOT IN ('default')  -- skip system queries
-ORDER BY event_time DESC
-LIMIT 50;
-
--- Track failed login attempts
-SELECT
-    event_time, user, client_hostname, exception
-FROM system.query_log
-WHERE exception_code = 516  -- AUTHENTICATION_FAILED
-ORDER BY event_time DESC;
-```
-
-### Step 7: Application Connection Security
-
-```typescript
-import { createClient } from '@clickhouse/client';
-
-// Production: always use TLS, minimal-privilege user
-const client = createClient({
-  url: 'https://your-host:8443',        // HTTPS, not HTTP
-  username: 'app_writer',                // Not 'default'
-  password: process.env.CH_PASSWORD!,    // From secret manager
-  database: 'analytics',                 // Explicit database
-  clickhouse_settings: {
-    readonly: 0,                          // Matches user's permission level
-  },
-});
-```
-
-## Security Checklist
-
-- [ ] Default password changed or `default` user disabled
-- [ ] Application users created with minimal privileges
-- [ ] Roles used for permission groups
-- [ ] TLS enabled for all connections (port 8443)
-- [ ] IP allowlists configured (Cloud: console; self-hosted: config)
-- [ ] Query logging enabled (`system.query_log`)
-- [ ] Row policies for multi-tenant isolation (if needed)
-- [ ] Secrets stored in environment variables or secret manager
-- [ ] `.env` files in `.gitignore`
+- **Restricted user and role definitions** — least-privilege `CREATE USER` /
+  `CREATE ROLE` / `GRANT` / `REVOKE` statements ready to run against your cluster.
+- **Row policies** for multi-tenant isolation.
+- **`config.xml` / `users.xml` fragments** for network allowlists and TLS.
+- **Audit queries** against `system.query_log` for access review and failed-login detection.
+- A completed **security checklist** confirming default credentials, TLS, IP
+  allowlists, logging, and secret handling are all in place.
 
 ## Error Handling
 
@@ -221,6 +108,25 @@ const client = createClient({
 | `READONLY (164)` | User in readonly mode | Grant write if needed |
 | `Not enough privileges` | Row policy blocking | Check `SHOW ROW POLICIES` |
 
+## Examples
+
+Four worked, end-to-end scenarios live in
+[references/examples.md](references/examples.md):
+
+1. **Stand up a least-privilege analyst** — read-only BI user capped on memory and time.
+2. **Multi-tenant isolation with a row policy** — each tenant sees only its own rows.
+3. **Lock the app user to the VPC and require TLS** — SQL `HOST IP` + TLS client.
+4. **Audit the last hour and hunt failed logins** — `system.query_log` queries.
+
+Minimal first example — a read-only analyst:
+
+```sql
+CREATE USER analyst
+    IDENTIFIED WITH sha256_password BY 'strong-password-here'
+    DEFAULT DATABASE analytics SETTINGS readonly = 1;
+GRANT SELECT ON analytics.* TO analyst;
+```
+
 ## Resources
 
 - [Access Control & Account Management](https://clickhouse.com/docs/operations/access-rights)
@@ -230,4 +136,6 @@ const client = createClient({
 
 ## Next Steps
 
-For production deployment, see `clickhouse-prod-checklist`.
+For production deployment, harden the wider cluster with the
+`clickhouse-prod-checklist` skill, which covers backups, replication, resource
+quotas, and monitoring beyond the security surface covered here.

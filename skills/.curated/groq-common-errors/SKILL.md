@@ -12,7 +12,7 @@ description: 'Diagnose and fix Groq API errors with real error codes and solutio
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,9 +25,9 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Comprehensive reference for Groq API error codes, their root causes, and proven fixes. Groq returns standard HTTP status codes with structured error bodies and rate-limit headers.
+Comprehensive reference for Groq API error codes, their root causes, and proven fixes. Groq returns standard HTTP status codes with structured error bodies and rate-limit headers. This skill walks the diagnosis from raw error string to fix, then hands off to the full per-status reference for depth.
 
-## Error Response Format
+Every Groq error body follows one shape — read the `code` and `type` first:
 
 ```json
 {
@@ -39,166 +39,68 @@ Comprehensive reference for Groq API error codes, their root causes, and proven 
 }
 ```
 
-## Quick Diagnostic
+## Prerequisites
+
+- `GROQ_API_KEY` exported in the environment (keys start with `gsk_`).
+- `curl` and `jq` available for the diagnostic probes below.
+- For SDK-level handling: `groq-sdk` (TypeScript) or `groq` (Python) installed.
+
+## Instructions
+
+1. **Capture the failing status and body.** Read the raw error response — the HTTP status plus the `code`/`type` fields determine the whole diagnosis path.
+2. **Confirm the key works** before assuming anything deeper:
+
+   ```bash
+   set -euo pipefail
+   # Verify API key is valid — expect a model count, not an auth error
+   curl -s https://api.groq.com/openai/v1/models \
+     -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data | length'
+   ```
+
+3. **Confirm the model still exists.** Many 400s are deprecated model IDs — list the live models and Grep your codebase for any stale ID:
+
+   ```bash
+   curl -s https://api.groq.com/openai/v1/models \
+     -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data[].id' | sort
+   ```
+
+4. **Map the status to a fix** using the table below, then drill into [references/error-reference.md](references/error-reference.md) for the exact error string, causes, and copy-paste fix.
+5. **For SDK integrations**, branch on the typed exception classes — see [references/sdk-error-handling.md](references/sdk-error-handling.md).
+
+## Output
+
+A diagnosis that names the error class, the root cause, and the concrete fix — for example: "429 on TPM: token budget exhausted; add the single-retry `handleRateLimit` wrapper and honor `retry-after`," or "400: `mixtral-8x7b-32768` is deprecated; switch to `llama-3.3-70b-versatile`." When run against real code, the output is the edited call site plus a verification `curl` that returns `200`.
+
+## Error Handling
+
+Map the HTTP status to its cause; full error strings, rate-limit headers, and fixes live in [references/error-reference.md](references/error-reference.md).
+
+| Status | Meaning | First move |
+|--------|---------|------------|
+| **401** | Invalid / missing key | Confirm `GROQ_API_KEY` starts with `gsk_`; test with `/models` |
+| **429** | RPM / TPM / RPD limit hit | Read `retry-after`; back off and single-retry |
+| **400** | Deprecated model or bad params | List live models; replace stale IDs |
+| **413** | Request over context window | Trim prompt (Llama models cap at 128K tokens) |
+| **500 / 503** | Groq-side outage or overload | Retry with backoff; fall back model; check status page |
+
+When the failure is transient (429/500/503), retry with backoff and honor `retry-after` rather than hammering. When it is structural (401/400/413), fix the request — retrying will not help.
+
+## Examples
+
+Minimal end-to-end probe that isolates auth vs. model vs. payload problems:
 
 ```bash
-set -euo pipefail
-# 1. Verify API key is valid
-curl -s https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data | length'
-
-# 2. Check specific model availability
-curl -s https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data[].id' | sort
-
-# 3. Test a minimal completion
-curl -s https://api.groq.com/openai/v1/chat/completions \
+# A 200 here means key + model + payload are all valid; a non-200 status
+# tells you which layer failed.
+curl -s -o /dev/null -w "%{http_code}" \
+  https://api.groq.com/openai/v1/chat/completions \
   -H "Authorization: Bearer $GROQ_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":5}' | jq .
+  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":5}'
 ```
 
-## Error Reference
-
-### 401 — Authentication Error
-
-```
-Authentication error: Invalid API key provided
-```
-
-**Causes**: Key missing, revoked, or malformed.
-**Fix**:
-
-```bash
-# Verify key is set and starts with gsk_
-echo "${GROQ_API_KEY:0:4}"  # Should print "gsk_"
-
-# Test key directly
-curl -s -o /dev/null -w "%{http_code}" \
-  https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY"
-# Should return 200
-```
-
-### 429 — Rate Limit Exceeded
-
-```
-Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_xxx`
-on tokens per minute (TPM): Limit 6000, Used 5800, Requested 500.
-```
-
-**Causes**: RPM (requests/min), TPM (tokens/min), or RPD (requests/day) limit hit.
-
-**Rate limit headers returned**:
-
-| Header | Description |
-|--------|-------------|
-| `retry-after` | Seconds to wait before retrying |
-| `x-ratelimit-limit-requests` | Max requests per window |
-| `x-ratelimit-limit-tokens` | Max tokens per window |
-| `x-ratelimit-remaining-requests` | Requests remaining |
-| `x-ratelimit-remaining-tokens` | Tokens remaining |
-| `x-ratelimit-reset-requests` | When request limit resets |
-| `x-ratelimit-reset-tokens` | When token limit resets |
-
-**Fix**:
-
-```typescript
-import Groq from "groq-sdk";
-
-async function handleRateLimit<T>(fn: () => Promise<T>): Promise<T> {
-  try {
-    return await fn();
-  } catch (err) {
-    if (err instanceof Groq.APIError && err.status === 429) {
-      const retryAfter = parseInt(err.headers?.["retry-after"] || "10");
-      console.warn(`Rate limited. Waiting ${retryAfter}s...`);
-      await new Promise((r) => setTimeout(r, retryAfter * 1000));
-      return fn(); // Single retry
-    }
-    throw err;
-  }
-}
-```
-
-### 400 — Bad Request
-
-```
-Invalid parameter: model 'mixtral-8x7b-32768' is not available
-```
-
-**Causes**: Deprecated model ID, invalid parameters, or schema violation.
-
-**Common deprecated model IDs**:
-
-| Deprecated | Replacement |
-|-----------|-------------|
-| `mixtral-8x7b-32768` | `llama-3.1-8b-instant` or `llama-3.3-70b-versatile` |
-| `gemma2-9b-it` | `llama-3.1-8b-instant` |
-| `llama-3.1-70b-versatile` | `llama-3.3-70b-versatile` |
-
-**Fix**: Check current models at [console.groq.com/docs/models](https://console.groq.com/docs/models) or call `GET /openai/v1/models`.
-
-### 413 — Request Too Large
-
-```
-Maximum context length is 131072 tokens. However, your messages resulted in 140000 tokens.
-```
-
-**Fix**: Reduce prompt size or split into smaller requests. All current Llama models have 128K context.
-
-### 500 / 503 — Server Errors
-
-```
-Internal server error / Service temporarily unavailable
-```
-
-**Causes**: Groq infrastructure issue, model overloaded.
-**Fix**: Retry with backoff, fall back to a different model, check [status.groq.com](https://status.groq.com).
-
-### SDK-Specific Errors
-
-**TypeScript**:
-
-```typescript
-import Groq from "groq-sdk";
-
-try {
-  await groq.chat.completions.create({ /* ... */ });
-} catch (err) {
-  if (err instanceof Groq.APIError) {
-    console.error(`Status: ${err.status}, Message: ${err.message}`);
-  } else if (err instanceof Groq.APIConnectionError) {
-    console.error("Network error:", err.message);
-  } else if (err instanceof Groq.RateLimitError) {
-    console.error("Rate limited:", err.message);
-  } else if (err instanceof Groq.AuthenticationError) {
-    console.error("Auth failed:", err.message);
-  }
-}
-```
-
-**Python**:
-
-```python
-from groq import Groq, APIError, RateLimitError, AuthenticationError
-
-try:
-    client.chat.completions.create(...)
-except RateLimitError as e:
-    print(f"Rate limited: {e.message}")
-except AuthenticationError as e:
-    print(f"Auth error: {e.message}")
-except APIError as e:
-    print(f"API error {e.status_code}: {e.message}")
-```
-
-## Escalation Path
-
-1. Check [status.groq.com](https://status.groq.com) for ongoing incidents
-2. Collect request ID from error response (`x-request-id` header)
-3. Run `groq-debug-bundle` skill to gather diagnostics
-4. Contact Groq support with request ID and debug bundle
+- **Rate-limit retry wrapper** (TypeScript, honors `retry-after`): see the 429 section of [references/error-reference.md](references/error-reference.md).
+- **Typed SDK exception branching** (TypeScript + Python): [references/sdk-error-handling.md](references/sdk-error-handling.md).
 
 ## Resources
 
@@ -206,7 +108,6 @@ except APIError as e:
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 - [Groq Model Deprecations](https://console.groq.com/docs/deprecations)
 - [Groq Status Page](https://status.groq.com)
-
-## Next Steps
-
-For comprehensive debugging, see `groq-debug-bundle`.
+- Full per-status reference: [references/error-reference.md](references/error-reference.md)
+- SDK error handling + escalation path: [references/sdk-error-handling.md](references/sdk-error-handling.md)
+- For comprehensive debugging, see the `groq-debug-bundle` skill.

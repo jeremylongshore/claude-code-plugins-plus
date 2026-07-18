@@ -14,7 +14,7 @@ description: 'Implement Intercom webhook handling and data event tracking.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,267 +28,44 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Handle incoming Intercom webhooks (notifications) with signature verification and implement outbound data event tracking via the Events API.
+Handle incoming Intercom webhooks (notifications) with signature verification and implement outbound data event tracking via the Events API. Incoming webhooks push conversation and contact changes to your endpoint; outbound data events push custom activity into Intercom for segmentation and messaging.
+
+The full, copy-ready code lives in `references/`; this file walks the workflow at a high level so you can follow it start to finish, then drill in for depth.
 
 ## Prerequisites
 
 - HTTPS endpoint accessible from internet
 - Webhook secret from Intercom Developer Hub
+- Access token from Intercom Developer Hub (for outbound data events)
 - `intercom-client` SDK installed
 - Redis or database for idempotency (recommended)
 
-## Part 1: Incoming Webhooks (Notifications)
+## Authentication
 
-### Step 1: Webhook Endpoint with Signature Verification
+Two distinct credentials, both issued from the Intercom Developer Hub and read from environment variables — never hard-code them:
 
-Intercom signs webhooks with HMAC-SHA1 via the `X-Hub-Signature` header.
+- **Incoming webhooks** are verified with `INTERCOM_WEBHOOK_SECRET`. Intercom signs every delivery with HMAC-SHA1 in the `X-Hub-Signature` header; you recompute the digest over the **raw** request body and compare with `crypto.timingSafeEqual`. Reject any request that fails or is missing the header.
+- **Outbound data events** authenticate with a bearer `INTERCOM_ACCESS_TOKEN` passed to `IntercomClient`.
 
-```typescript
-import express from "express";
-import crypto from "crypto";
+## Instructions
 
-const app = express();
+Read the relevant reference file, then use Write/Edit to scaffold the handler into the target project.
 
-// IMPORTANT: Use raw body for signature verification
-app.post(
-  "/webhooks/intercom",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const signature = req.headers["x-hub-signature"] as string;
-    const secret = process.env.INTERCOM_WEBHOOK_SECRET!;
+1. **Build the signed endpoint.** Create an Express route that captures the **raw** body (`express.raw`), verifies the `X-Hub-Signature` HMAC-SHA1 digest against `INTERCOM_WEBHOOK_SECRET`, and returns `200` within 5 seconds — Intercom treats a slower response as a failure. Respond first, process after. See [incoming webhooks walkthrough](references/incoming-webhooks.md) Step 1.
+2. **Model the payload.** Every delivery is a `notification_event` envelope carrying `topic`, `id`, and `data.item` (the changed resource). Type it so the router is safe. See [incoming webhooks walkthrough](references/incoming-webhooks.md) Step 2.
+3. **Route by topic.** Dispatch on `notification.topic` through a handler map; log and no-op unknown topics rather than throwing. Pick topics from the [topics reference](references/webhook-topics.md). See [incoming webhooks walkthrough](references/incoming-webhooks.md) Step 3.
+4. **Add idempotency.** Intercom retries a failed delivery once after ~1 minute. Guard each `notification.id` with a Redis `SET NX` lock so retries never double-process; release the lock on failure to allow a genuine retry. See [incoming webhooks walkthrough](references/incoming-webhooks.md) Step 4.
+5. **Track outbound events.** Submit custom activity with `client.dataEvents.create` using a past-tense `verb-noun` `eventName`, a Unix `createdAt`, the contact's external `userId`, and optional `metadata`. See [data events walkthrough](references/data-events.md) Step 5.
+6. **Submit in bulk when needed.** There is no batch events endpoint — throttle individual `dataEvents.create` calls (e.g. a short delay every 50) and tally succeeded/failed. See [data events walkthrough](references/data-events.md) Step 6.
 
-    if (!signature) {
-      return res.status(401).json({ error: "Missing X-Hub-Signature" });
-    }
+## Output
 
-    // Verify HMAC-SHA1 signature
-    const expected = "sha1=" + crypto
-      .createHmac("sha1", secret)
-      .update(req.body)
-      .digest("hex");
+A working integration produces:
 
-    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-      console.error("Webhook signature verification failed");
-      return res.status(401).json({ error: "Invalid signature" });
-    }
-
-    // MUST respond within 5 seconds or Intercom treats as failure
-    // Parse and queue for async processing
-    const notification = JSON.parse(req.body.toString());
-    res.status(200).json({ received: true });
-
-    // Process asynchronously after responding
-    processWebhookAsync(notification).catch(console.error);
-  }
-);
-```
-
-### Step 2: Notification Payload Shape
-
-```typescript
-// Every Intercom webhook notification follows this structure
-interface IntercomNotification {
-  type: "notification_event";
-  id: string;                        // Unique notification ID
-  topic: string;                     // e.g., "conversation.user.created"
-  app_id: string;                    // Your app ID
-  created_at: number;                // Unix timestamp
-  delivery_attempts: number;         // 1 on first try, 2 on retry
-  data: {
-    type: "notification_event_data";
-    item: any;                       // The actual resource (conversation, contact, etc.)
-  };
-}
-
-// Example: conversation.user.created
-// {
-//   "type": "notification_event",
-//   "id": "notif_abc123",
-//   "topic": "conversation.user.created",
-//   "created_at": 1711100000,
-//   "data": {
-//     "type": "notification_event_data",
-//     "item": {
-//       "type": "conversation",
-//       "id": "123",
-//       "state": "open",
-//       "source": { "body": "Hi, I need help!" },
-//       "contacts": { "contacts": [{ "id": "contact-1", "type": "contact" }] }
-//     }
-//   }
-// }
-```
-
-### Step 3: Topic-Based Event Router
-
-```typescript
-type WebhookHandler = (data: any) => Promise<void>;
-
-const handlers: Record<string, WebhookHandler> = {
-  "conversation.user.created": async (data) => {
-    const conversation = data.item;
-    console.log(`New conversation: ${conversation.id}`);
-    // Notify support channel, auto-assign, etc.
-  },
-
-  "conversation.user.replied": async (data) => {
-    const conversation = data.item;
-    console.log(`Customer replied to: ${conversation.id}`);
-    // Update ticket system, escalate if needed
-  },
-
-  "conversation.admin.closed": async (data) => {
-    const conversation = data.item;
-    console.log(`Conversation closed: ${conversation.id}`);
-    // Send satisfaction survey, update CRM
-  },
-
-  "contact.created": async (data) => {
-    const contact = data.item;
-    console.log(`New contact: ${contact.id} (${contact.email})`);
-    // Sync to CRM, enrich data, trigger welcome flow
-  },
-
-  "contact.tag.created": async (data) => {
-    const contact = data.item;
-    console.log(`Contact tagged: ${contact.id}`);
-    // Trigger automation based on tag
-  },
-};
-
-async function processWebhookAsync(notification: IntercomNotification): Promise<void> {
-  const handler = handlers[notification.topic];
-
-  if (!handler) {
-    console.log(`Unhandled topic: ${notification.topic}`);
-    return;
-  }
-
-  try {
-    await handler(notification.data);
-    console.log(`Processed ${notification.topic}: ${notification.id}`);
-  } catch (error) {
-    console.error(`Failed ${notification.topic}: ${notification.id}`, error);
-    // Dead-letter queue for failed events
-  }
-}
-```
-
-### Step 4: Idempotency (Prevent Duplicate Processing)
-
-Intercom retries failed webhooks once after 1 minute. Guard against duplicates:
-
-```typescript
-import { Redis } from "ioredis";
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function processIdempotent(
-  notification: IntercomNotification,
-  handler: () => Promise<void>
-): Promise<void> {
-  const key = `intercom:webhook:${notification.id}`;
-
-  // SET NX: only succeeds if key doesn't exist
-  const acquired = await redis.set(key, "processing", "EX", 86400 * 7, "NX");
-
-  if (!acquired) {
-    console.log(`Duplicate webhook skipped: ${notification.id}`);
-    return;
-  }
-
-  try {
-    await handler();
-    await redis.set(key, "completed", "EX", 86400 * 7);
-  } catch (error) {
-    await redis.del(key); // Allow retry on failure
-    throw error;
-  }
-}
-```
-
-## Part 2: Outbound Data Events
-
-Submit custom events to track contact activity in Intercom.
-
-### Step 5: Track Data Events
-
-```typescript
-import { IntercomClient } from "intercom-client";
-
-const client = new IntercomClient({
-  token: process.env.INTERCOM_ACCESS_TOKEN!,
-});
-
-// Submit a data event
-await client.dataEvents.create({
-  eventName: "completed-onboarding",
-  createdAt: Math.floor(Date.now() / 1000),
-  userId: "user-12345", // External ID of the contact
-  metadata: {
-    steps_completed: 5,
-    time_to_complete_minutes: 12,
-    plan: "pro",
-  },
-});
-
-// Event naming convention: past-tense verb-noun
-// Good: "placed-order", "upgraded-plan", "invited-teammate"
-// Bad: "order", "click", "page_view"
-```
-
-### Step 6: Bulk Event Submission
-
-```typescript
-// Submit events for multiple users efficiently
-async function trackBulkEvents(
-  client: IntercomClient,
-  events: Array<{ userId: string; eventName: string; metadata?: Record<string, any> }>
-): Promise<{ succeeded: number; failed: number }> {
-  let succeeded = 0;
-  let failed = 0;
-
-  // Intercom doesn't have a batch events endpoint; throttle individual calls
-  for (const event of events) {
-    try {
-      await client.dataEvents.create({
-        eventName: event.eventName,
-        createdAt: Math.floor(Date.now() / 1000),
-        userId: event.userId,
-        metadata: event.metadata,
-      });
-      succeeded++;
-
-      // Rate limit: slight delay between calls
-      if (succeeded % 50 === 0) {
-        await new Promise(r => setTimeout(r, 500));
-      }
-    } catch (error) {
-      failed++;
-      console.error(`Failed to track event for ${event.userId}:`, error);
-    }
-  }
-
-  return { succeeded, failed };
-}
-```
-
-## Available Webhook Topics
-
-| Topic | Description |
-|-------|-------------|
-| `conversation.user.created` | New conversation from contact |
-| `conversation.user.replied` | Contact replies to conversation |
-| `conversation.admin.replied` | Admin replies to conversation |
-| `conversation.admin.closed` | Conversation closed by admin |
-| `conversation.admin.opened` | Conversation reopened |
-| `conversation.admin.snoozed` | Conversation snoozed |
-| `conversation.admin.assigned` | Conversation reassigned |
-| `contact.created` | New contact created |
-| `contact.signed_up` | Lead converts to user |
-| `contact.tag.created` | Tag applied to contact |
-| `contact.tag.deleted` | Tag removed from contact |
-| `visitor.signed_up` | Visitor becomes lead |
+- A signed `/webhooks/intercom` endpoint that returns `200 {"received": true}` on valid deliveries and `401` on missing/invalid signatures.
+- Per-topic handler execution logged as `Processed <topic>: <id>`, with unknown topics logged and skipped.
+- Idempotent processing — duplicate `notification.id` deliveries are skipped with `Duplicate webhook skipped: <id>`.
+- Outbound `dataEvents.create` calls that appear on the contact's Intercom timeline; bulk runs return `{ succeeded, failed }` counts.
 
 ## Error Handling
 
@@ -300,6 +77,34 @@ async function trackBulkEvents(
 | Missing topic handler | New topic added | Log unhandled topics, add handler |
 | Event rejected (422) | Invalid user_id or event_name | Verify contact exists, use verb-noun naming |
 
+## Examples
+
+**Verify a signature and respond fast** (skeleton — full version in [incoming webhooks](references/incoming-webhooks.md)):
+
+```typescript
+const expected = "sha1=" + crypto
+  .createHmac("sha1", process.env.INTERCOM_WEBHOOK_SECRET!)
+  .update(req.body)              // raw Buffer, not parsed JSON
+  .digest("hex");
+if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+  return res.status(401).json({ error: "Invalid signature" });
+}
+res.status(200).json({ received: true });   // respond within 5s, then process async
+```
+
+**Track a custom data event** (full version in [data events](references/data-events.md)):
+
+```typescript
+await client.dataEvents.create({
+  eventName: "completed-onboarding",         // past-tense verb-noun
+  createdAt: Math.floor(Date.now() / 1000),
+  userId: "user-12345",                      // contact's external ID
+  metadata: { steps_completed: 5, plan: "pro" },
+});
+```
+
+More: [incoming webhooks](references/incoming-webhooks.md) · [data events](references/data-events.md) · [webhook topics](references/webhook-topics.md).
+
 ## Resources
 
 - [Webhook Setup](https://developers.intercom.com/docs/webhooks/setting-up-webhooks)
@@ -309,4 +114,4 @@ async function trackBulkEvents(
 
 ## Next Steps
 
-For performance optimization, see `intercom-performance-tuning`.
+For performance optimization once the webhook endpoint and event pipeline are live, see the `intercom-performance-tuning` skill to profile throughput and tune rate limits.

@@ -168,3 +168,106 @@ plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/SKILL.md:
 plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/references/examples.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
 plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/references/migration-guide.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
 plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-webhooks-events/references/implementation.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-ci-integration/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-common-errors/references/error-reference.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-debug-bundle/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-debug-bundle/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-prod-checklist/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-rate-limits/references/examples.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-security-basics/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-webhooks-events/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-ci-integration/references/implementation.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-local-dev-loop/references/implementation.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-webhooks-events/SKILL.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/groq-pack/skills/groq-deploy-integration/references/implementation.md:secret-exfil-cooccur  documented groq
+groq API-client example: reads its own-service API key from env and sends it only to the groq
+groq API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-core-workflow-b/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-data-handling/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-deploy-integration/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-deploy-integration/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-enterprise-rbac/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-install-auth/references/oauth.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-performance-tuning/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-security-basics/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-security-basics/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-upgrade-migration/references/examples.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-webhooks-events/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-deploy-integration/references/platform-deployments.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-enterprise-rbac/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/SKILL.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/references/examples.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-multi-env-setup/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-security-basics/SKILL.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-security-basics/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-common-errors/references/diagnostics.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-incident-runbook/references/remediation.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/examples.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/implementation.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17

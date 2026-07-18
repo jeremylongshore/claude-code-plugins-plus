@@ -13,7 +13,7 @@ description: 'Configure Groq CI/CD integration with GitHub Actions, testing, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.10.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -37,200 +37,72 @@ Set up CI/CD pipelines for Groq integrations with unit tests (mocked), integrati
 
 ## Instructions
 
-### Step 1: GitHub Actions Workflow
+The integration has four moving parts. Read this section for the high-level
+flow, then drill into the reference files for the full copy-paste blocks — the
+complete workflows and configuration live in
+[references/implementation.md](references/implementation.md) and the full test
+suite in [references/examples.md](references/examples.md).
+
+### Step 1: GitHub Actions workflow
+
+Write `.github/workflows/groq-tests.yml` with three jobs: `unit-tests` (mocked
+`groq-sdk`, runs on every PR, no key), `integration-tests` (live API,
+push-to-`main` only, guarded by `if: github.event_name != 'pull_request'`), and
+a weekly `model-check` cron that diffs the model IDs the code references against
+Groq's live model list. The job skeleton:
 
 ```yaml
-# .github/workflows/groq-tests.yml
-name: Groq Integration Tests
-
+# .github/workflows/groq-tests.yml — see references/implementation.md for full file
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
   schedule:
     - cron: "0 6 * * 1"  # Weekly model deprecation check
-
 jobs:
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-      - run: npm ci
-      - run: npm test -- --coverage
-        # Unit tests use mocked groq-sdk -- no API key needed
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'  # Only on push to main
-    env:
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-      - run: npm ci
-      - name: Run Groq integration tests
-        run: GROQ_INTEGRATION=1 npx vitest tests/groq.integration.ts --reporter=verbose
-        timeout-minutes: 2
-
-  model-check:
-    runs-on: ubuntu-latest
-    env:
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check for deprecated models
-        run: |
-          set -euo pipefail
-          # Get current models from Groq API
-          MODELS=$(curl -sf https://api.groq.com/openai/v1/models \
-            -H "Authorization: Bearer $GROQ_API_KEY" | jq -r '.data[].id')
-
-          # Check our code references valid models
-          USED=$(grep -roh "model.*['\"].*['\"]" src/ --include="*.ts" | \
-            grep -oP "(?<=['\"])[\w./-]+(?=['\"])" | sort -u)
-
-          echo "=== Models in our code ==="
-          echo "$USED"
-          echo ""
-          echo "=== Available on Groq ==="
-          echo "$MODELS"
-
-          # Flag any model in our code that's not in the API response
-          MISSING=""
-          while IFS= read -r model; do
-            if ! echo "$MODELS" | grep -qF "$model"; then
-              MISSING="$MISSING\n  - $model"
-            fi
-          done <<< "$USED"
-
-          if [ -n "$MISSING" ]; then
-            echo "WARNING: These models in code are not available on Groq:$MISSING"
-            exit 1
-          fi
-          echo "All models valid."
+  unit-tests:        # mocked groq-sdk, no API key
+  integration-tests: # live API, push-to-main only
+  model-check:       # curl /v1/models, flag deprecated IDs
 ```
 
-### Step 2: Configure Secrets
+### Step 2: Configure secrets
 
-```bash
-# Store Groq API key as GitHub secret
-gh secret set GROQ_API_KEY --body "gsk_your_ci_key_here"
+Store a CI-scoped key with `gh secret set GROQ_API_KEY --body
+"gsk_your_ci_key_here"`. Keep it separate from the production key so it rotates
+and tracks CI usage independently.
 
-# Use a separate key for CI (easier to rotate, track usage)
-```
+### Step 3: Integration test suite
 
-### Step 3: Integration Test Suite
+Add `tests/groq.integration.ts` gated on a `GROQ_INTEGRATION` env var (so the
+file is a no-op without a key). It asserts model listing, chat completion,
+streaming, and JSON mode. Full file:
+[references/examples.md](references/examples.md).
 
-```typescript
-// tests/groq.integration.ts
-import { describe, it, expect } from "vitest";
-import Groq from "groq-sdk";
+### Step 4: Release workflow
 
-const shouldRun = !!process.env.GROQ_INTEGRATION;
+Gate `npm publish` behind a live production Groq round-trip so a broken key or
+deprecated model blocks the release. Full `release.yml`:
+[references/implementation.md](references/implementation.md).
 
-describe.skipIf(!shouldRun)("Groq API Integration", () => {
-  const groq = new Groq();
+**CI best practices:** mock `groq-sdk` in unit tests, run integration tests
+only on `main` push (saves quota), prefer `llama-3.1-8b-instant` (cheapest,
+fastest) with low `max_tokens` (5-50), add `timeout-minutes: 2`, and schedule
+the weekly deprecation check.
 
-  it("lists available models", async () => {
-    const models = await groq.models.list();
-    expect(models.data.length).toBeGreaterThan(0);
+## Output
 
-    const ids = models.data.map((m) => m.id);
-    expect(ids).toContain("llama-3.1-8b-instant");
-    expect(ids).toContain("llama-3.3-70b-versatile");
-  }, 10_000);
+Applying this skill produces the following files in the target repository:
 
-  it("completes a chat request with 8B model", async () => {
-    const result = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [{ role: "user", content: "Reply with exactly one word: PONG" }],
-      temperature: 0,
-      max_tokens: 10,
-    });
+| File | Purpose |
+|------|---------|
+| `.github/workflows/groq-tests.yml` | Unit + integration + weekly model-check jobs |
+| `.github/workflows/release.yml` | Tag-triggered release gated on a live Groq check |
+| `tests/groq.integration.ts` | `GROQ_INTEGRATION`-gated live API test suite |
+| `GROQ_API_KEY` GitHub secret | CI-scoped key set via `gh secret set` |
 
-    expect(result.choices[0].message.content).toContain("PONG");
-    expect(result.usage?.total_tokens).toBeGreaterThan(0);
-  }, 10_000);
-
-  it("streams a response", async () => {
-    const stream = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [{ role: "user", content: "Count from 1 to 5." }],
-      stream: true,
-      max_tokens: 50,
-    });
-
-    let content = "";
-    for await (const chunk of stream) {
-      content += chunk.choices[0]?.delta?.content || "";
-    }
-
-    expect(content).toContain("1");
-    expect(content).toContain("5");
-  }, 10_000);
-
-  it("returns JSON mode output", async () => {
-    const result = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [
-        { role: "system", content: "Respond with JSON: {\"status\": \"ok\"}" },
-        { role: "user", content: "Health check" },
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0,
-      max_tokens: 50,
-    });
-
-    const parsed = JSON.parse(result.choices[0].message.content!);
-    expect(parsed).toHaveProperty("status");
-  }, 10_000);
-});
-```
-
-### Step 4: Release Workflow
-
-```yaml
-# .github/workflows/release.yml
-on:
-  push:
-    tags: ["v*"]
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm test
-      - name: Verify Groq API in production
-        run: GROQ_INTEGRATION=1 npx vitest tests/groq.integration.ts
-      - run: npm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
-
-## CI Best Practices
-
-- Mock `groq-sdk` in unit tests (no API key needed, no network)
-- Run integration tests only on `main` push (not PRs -- saves quota)
-- Use `llama-3.1-8b-instant` for CI tests (cheapest, fastest)
-- Set `max_tokens` low (5-50) in CI to minimize token usage
-- Add `timeout-minutes: 2` to prevent hung jobs
-- Schedule weekly model deprecation checks
+At runtime the workflow reports three independent checks in the GitHub Actions
+panel — `unit-tests` (green without any key), `integration-tests` (verbose
+per-assertion output on push to `main`), and `model-check` (a code-vs-Groq
+model diff that exits non-zero on any deprecated model ID).
 
 ## Error Handling
 
@@ -241,6 +113,28 @@ jobs:
 | Model check fails | Model deprecated | Update model ID in source code |
 | Flaky tests | Rate limiting in CI | Add backoff, run integration tests less often |
 
+## Examples
+
+**Set the CI secret and scaffold the workflow.** Store a dedicated CI key, then
+drop in the workflow from the reference file:
+
+```bash
+gh secret set GROQ_API_KEY --body "gsk_your_ci_key_here"
+# copy .github/workflows/groq-tests.yml from references/implementation.md
+```
+
+**Run the integration suite locally before pushing.** The suite is inert
+without the flag, so opt in explicitly:
+
+```bash
+GROQ_INTEGRATION=1 npx vitest tests/groq.integration.ts --reporter=verbose
+```
+
+Full walkthroughs: [references/implementation.md](references/implementation.md)
+(workflows, secrets, release gate) and
+[references/examples.md](references/examples.md) (complete integration test
+suite + how to read the CI output).
+
 ## Resources
 
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
@@ -249,4 +143,6 @@ jobs:
 
 ## Next Steps
 
-For deployment patterns, see `groq-deploy-integration`.
+For deployment patterns — provisioning production keys, environment promotion,
+and rollback on a failed Groq health check — see the `groq-deploy-integration`
+skill, which picks up where this CI gate leaves off.

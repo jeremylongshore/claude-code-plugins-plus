@@ -12,7 +12,7 @@ description: 'Apply production-ready intercom-client SDK patterns for TypeScript
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,17 +26,43 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Production-ready patterns for the `intercom-client` TypeScript SDK covering client initialization, pagination, error handling, and type safety.
+Production-ready patterns for the `intercom-client` TypeScript SDK covering
+client initialization, cursor-based pagination, error handling, retry with
+backoff, compound search, and multi-tenant client factories. Use this skill to
+Read existing Intercom code, then Write or Edit it to match these patterns —
+type-safe singletons, memory-efficient pagination, and resilient error handling.
+
+The SKILL.md body carries the essential skeletons (client wrapper, pagination,
+error-handling shape). Deep implementations and worked examples live in
+`references/` so you can drill in only when you need them:
+
+- [Full implementation patterns](references/implementation.md) — error handling,
+  retry/backoff, multi-tenant factory, search-operator table.
+- [Worked examples](references/examples.md) — pagination, compound search,
+  combined retry + safe-call.
 
 ## Prerequisites
 
-- `intercom-client` package installed
-- TypeScript 5.0+ project
-- Familiarity with async/await and generators
+- `intercom-client` package installed (`npm install intercom-client`).
+- TypeScript 5.0+ project with `strict` mode enabled.
+- Familiarity with `async`/`await` and async generators.
+- An Intercom access token available at runtime (see Authentication below).
+
+## Authentication
+
+The SDK authenticates with a workspace **access token** passed to the
+`IntercomClient` constructor. Store it in the `INTERCOM_ACCESS_TOKEN` environment
+variable — never hardcode it. Generate the token from Intercom's Developer Hub
+(Settings → Authentication). For multi-workspace apps, each workspace has its own
+token; see the multi-tenant factory in
+[references/implementation.md](references/implementation.md).
 
 ## Instructions
 
 ### Step 1: Type-Safe Client Wrapper
+
+Create one lazily-initialized singleton client plus thin, typed helpers. This
+keeps a single connection pool and gives every call-site full SDK types.
 
 ```typescript
 // src/intercom/client.ts
@@ -60,200 +86,62 @@ export async function createContact(
 ): Promise<Intercom.Contact> {
   return getClient().contacts.create(params);
 }
-
-// Type-safe search helper
-export async function searchContacts(
-  query: Intercom.SearchRequest
-): Promise<Intercom.ContactList> {
-  return getClient().contacts.search(query);
-}
 ```
 
 ### Step 2: Cursor-Based Pagination
 
-Intercom uses cursor-based pagination. The `starting_after` parameter points to the next page.
+Intercom lists are cursor-paginated — `starting_after` points to the next page.
+Prefer the SDK's built-in async iteration, which manages the cursor for you:
 
 ```typescript
-// Generic paginator for any list endpoint
-async function* paginateContacts(
-  client: IntercomClient,
-  perPage = 50
-): AsyncGenerator<Intercom.Contact> {
-  let startingAfter: string | undefined;
-
-  do {
-    const page = await client.contacts.list({
-      perPage,
-      startingAfter,
-    });
-
-    for (const contact of page.data) {
-      yield contact;
-    }
-
-    // Cursor for next page
-    startingAfter = page.pages?.next?.startingAfter ?? undefined;
-  } while (startingAfter);
-}
-
-// Usage
-const client = getClient();
-for await (const contact of paginateContacts(client)) {
-  console.log(contact.email);
-}
-```
-
-The SDK also supports built-in iteration:
-
-```typescript
-// SDK auto-pagination (articles, contacts, etc.)
 const response = await client.articles.list();
 for await (const article of response) {
   console.log(article.title);
 }
 ```
 
-### Step 3: Error Handling with IntercomError
+When explicit control is needed, an alternative option is a custom generator
+that yields each item and advances `startingAfter` until the cursor is
+exhausted. Choose auto-iteration for simplicity, or the manual generator when a
+custom `perPage`, early exit, or per-page side effects are required. Both
+variants: [references/examples.md](references/examples.md).
+
+### Step 3: Error Handling and Retry
+
+Wrap every call so a thrown `IntercomError` becomes a normalized
+`{ data, error }` result, then layer retry/backoff on transient failures (429,
+5xx). Skeleton:
 
 ```typescript
 import { IntercomError } from "intercom-client";
 
-async function safeIntercomCall<T>(
-  operation: () => Promise<T>,
-  context: string
-): Promise<{ data: T | null; error: IntercomError | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof IntercomError) {
-      console.error(`[Intercom:${context}] ${err.statusCode}: ${err.message}`, {
-        requestId: err.body?.request_id,
-        errors: err.body?.errors,
-      });
-
-      // Specific error handling
-      switch (err.statusCode) {
-        case 401:
-          console.error("Token invalid or expired. Regenerate access token.");
-          break;
-        case 404:
-          console.error("Resource not found. Verify the ID.");
-          break;
-        case 409:
-          console.error("Conflict: resource already exists.");
-          break;
-        case 422:
-          console.error("Validation failed:", err.body?.errors);
-          break;
-        case 429:
-          console.error("Rate limited. Back off and retry.");
-          break;
-      }
-
-      return { data: null, error: err };
-    }
-    throw err; // Re-throw non-Intercom errors
+try {
+  const data = await client.contacts.find({ contactId: "abc123" });
+  // use data
+} catch (err) {
+  if (err instanceof IntercomError) {
+    // inspect err.statusCode (401/404/409/422/429), err.body?.errors
   }
-}
-
-// Usage
-const { data: contact, error } = await safeIntercomCall(
-  () => client.contacts.find({ contactId: "abc123" }),
-  "findContact"
-);
-```
-
-### Step 4: Retry with Exponential Backoff
-
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 3, baseDelayMs: 1000 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (err instanceof IntercomError) {
-        // Only retry on rate limits and server errors
-        if (err.statusCode !== 429 && (err.statusCode ?? 0) < 500) {
-          throw err;
-        }
-
-        if (attempt === config.maxRetries) throw err;
-
-        // Use Retry-After header if available, otherwise exponential backoff
-        const retryAfter = err.headers?.["retry-after"];
-        const delay = retryAfter
-          ? parseInt(retryAfter) * 1000
-          : config.baseDelayMs * Math.pow(2, attempt) + Math.random() * 500;
-
-        console.log(`Retry ${attempt + 1}/${config.maxRetries} in ${delay}ms`);
-        await new Promise((r) => setTimeout(r, delay));
-      } else {
-        throw err;
-      }
-    }
-  }
-  throw new Error("Unreachable");
+  throw err; // re-throw non-Intercom errors
 }
 ```
 
-### Step 5: Contact Search with Compound Queries
+Full `safeIntercomCall` wrapper, `withRetry` exponential-backoff helper (with
+`Retry-After` support), and compound search live in
+[references/implementation.md](references/implementation.md).
 
-```typescript
-// Search with multiple conditions (AND/OR)
-const results = await client.contacts.search({
-  query: {
-    operator: "AND",
-    value: [
-      { field: "role", operator: "=", value: "user" },
-      { field: "custom_attributes.plan", operator: "=", value: "pro" },
-      {
-        operator: "OR",
-        value: [
-          { field: "email", operator: "~", value: "@acme.com" },
-          { field: "email", operator: "~", value: "@bigcorp.com" },
-        ],
-      },
-    ],
-  },
-  pagination: { per_page: 25 },
-  sort: { field: "created_at", order: "descending" },
-});
-```
+## Output
 
-### Step 6: Multi-Tenant Client Factory
+Applying this skill produces TypeScript source that follows these patterns:
 
-```typescript
-const clientCache = new Map<string, IntercomClient>();
-
-export function getClientForWorkspace(
-  workspaceToken: string
-): IntercomClient {
-  if (!clientCache.has(workspaceToken)) {
-    clientCache.set(
-      workspaceToken,
-      new IntercomClient({ token: workspaceToken })
-    );
-  }
-  return clientCache.get(workspaceToken)!;
-}
-```
-
-## Intercom Search Operators
-
-| Operator | Meaning | Example |
-|----------|---------|---------|
-| `=` | Equals | `email = "test@example.com"` |
-| `!=` | Not equals | `role != "lead"` |
-| `~` | Contains | `email ~ "@acme.com"` |
-| `!~` | Not contains | `name !~ "test"` |
-| `>` | Greater than | `created_at > 1700000000` |
-| `<` | Less than | `last_seen_at < 1700000000` |
-| `IN` | In list | `tag_id IN ["tag1", "tag2"]` |
-| `NIN` | Not in list | `segment_id NIN ["seg1"]` |
+- A singleton client module (e.g. `src/intercom/client.ts`) exporting `getClient`
+  and typed helpers.
+- Pagination code that streams items via async iteration instead of buffering
+  full result sets.
+- API calls wrapped in `safeIntercomCall` returning `{ data, error }`, with
+  `withRetry` applied to rate-limited and server-error responses.
+- No hardcoded tokens — all auth reads `INTERCOM_ACCESS_TOKEN` (or a per-workspace
+  token via the factory).
 
 ## Error Handling
 
@@ -264,6 +152,33 @@ export function getClientForWorkspace(
 | Cursor pagination generator | Large data sets | Memory-efficient streaming |
 | Client factory | Multi-tenant apps | Workspace isolation |
 
+Status codes to handle explicitly: `401` (bad/expired token), `404` (missing
+resource), `409` (conflict/duplicate), `422` (validation — check
+`err.body?.errors`), `429` (rate limited — back off). Full switch-based handler:
+[references/implementation.md](references/implementation.md).
+
+## Examples
+
+- **Pagination** — manual generator plus SDK auto-iteration:
+  [references/examples.md](references/examples.md).
+- **Compound search** — AND/OR conditions with sort and pagination:
+  [references/examples.md](references/examples.md).
+- **Resilient call** — `withRetry` composed with `safeIntercomCall`:
+  [references/examples.md](references/examples.md).
+
+Minimal end-to-end shape:
+
+```typescript
+import { getClient } from "./intercom/client";
+
+const client = getClient();
+const contact = await client.contacts.create({
+  role: "user",
+  email: "new@acme.com",
+});
+console.log(contact.id);
+```
+
 ## Resources
 
 - [intercom-client npm](https://www.npmjs.com/package/intercom-client)
@@ -272,4 +187,7 @@ export function getClientForWorkspace(
 
 ## Next Steps
 
-Apply patterns in `intercom-core-workflow-a` for contact management workflows.
+Apply these patterns alongside `intercom-core-workflow-a` for contact management
+workflows. For the full implementation catalog and worked examples, open
+[references/implementation.md](references/implementation.md) and
+[references/examples.md](references/examples.md).
