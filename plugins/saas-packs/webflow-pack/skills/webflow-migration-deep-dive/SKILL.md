@@ -7,7 +7,7 @@ description: "Execute major Webflow migrations \u2014 from other CMS platforms t
   \ into webflow\", \"webflow replatform\", \"move content to webflow\",\n\"webflow\
   \ bulk import\", \"wordpress to webflow\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

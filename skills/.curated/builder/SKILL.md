@@ -5,7 +5,7 @@ description: "Hands-on implementation partner for creating tools, scripts, dashb
   \ scripts, automations, or internal tools. Triggers include \"build\", \"create\
   \ tool\", \"make app\", \"implement\", \"prototype\", \"automate\", or when the\
   \ goal is working software."
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npm:*), Bash(node:*)

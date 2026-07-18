@@ -137,3 +137,138 @@ plugins/skill-enhancers/skill-creator/skills/skill-creator/references/validation
 # ── ops-review docs-truth pass (claude-k0h2, 2026-07-14): sources.yaml HEADER COMMENTS only. ──
 sources.yaml:sources-change-unscanned  comment-only header fix (stale curated-set list + daily→weekly cadence wording); zero source entries added, removed, or repointed — no data line in the sources: list changed, nothing new to vet or pin
 plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/SKILL.md:secret-exfil-cooccur  documented backfill example reads HUBSPOT_ACCESS_TOKEN from env and sends it only to api.hubapi.com (the credential's own service); BigQuery sink uses GCP client creds, not the HubSpot token — reviewed 2026-07-16
+
+# ── dolt-mcp-vcs repo rename (2026-07-17): repoint only, same vetted source. ──
+sources.yaml:sources-change-unscanned  repoint of the dolt-mcp-vcs source from jeremylongshore/dolt-mcp-vcs to jeremylongshore/dolt-mcp-vcs-plugin (GitHub repo rename by the owner) — same already-vetted first-party repo, REFUSE-scanned at sync time and pinned in sources.lock.json via the relock re-sync; catalog name/target_path unchanged, no new or foreign source added
+plugins/saas-packs/notion-pack/skills/notion-advanced-troubleshooting/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-advanced-troubleshooting/references/implementation.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-common-errors/references/examples.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-debug-bundle/references/implementation.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-deploy-integration/references/examples.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-enterprise-rbac/references/implementation.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-incident-runbook/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-load-scale/references/implementation.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-multi-env-setup/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-prod-checklist/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-security-basics/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-security-basics/references/oauth2-and-webhooks.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/notion-pack/skills/notion-webhooks-events/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/supabase-pack/skills/supabase-advanced-troubleshooting/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (SUPABASE_ANON_KEY→Supabase); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/supabase-pack/skills/supabase-incident-runbook/references/diagnostics.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (SUPABASE_ANON_KEY→Supabase); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/supabase-pack/skills/supabase-incident-runbook/references/examples.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (SUPABASE_ANON_KEY→Supabase); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/supabase-pack/skills/supabase-load-scale/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (SUPABASE_ANON_KEY→Supabase); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-common-errors/references/error-reference.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-install-auth/SKILL.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-install-auth/references/examples.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-install-auth/references/implementation.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-security-basics/references/examples.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-security-basics/references/implementation.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/references/examples.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-upgrade-migration/references/migration-guide.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-webhooks-events/references/implementation.md:secret-exfil-cooccur  documented ElevenLabs API-client example: ELEVENLABS_API_KEY is read from env and sent only to api.elevenlabs.io (its own service, verified at the flagged line); other hosts in-file (pypi.org install URLs, ngrok.io/your-app.com webhook-receiver placeholders) do NOT receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-ci-integration/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-common-errors/references/error-reference.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-debug-bundle/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-debug-bundle/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-prod-checklist/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-rate-limits/references/examples.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-security-basics/references/implementation.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/apify-pack/skills/apify-webhooks-events/SKILL.md:secret-exfil-cooccur  documented apify
+apify API-client example: reads its own-service API key from env and sends it only to the apify
+apify API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-ci-integration/references/implementation.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-local-dev-loop/references/implementation.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/clickhouse-pack/skills/clickhouse-webhooks-events/SKILL.md:secret-exfil-cooccur  documented clickhouse
+clickhouse API-client example: reads its own-service API key from env and sends it only to the clickhouse
+clickhouse API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/groq-pack/skills/groq-deploy-integration/references/implementation.md:secret-exfil-cooccur  documented groq
+groq API-client example: reads its own-service API key from env and sends it only to the groq
+groq API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-core-workflow-b/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-data-handling/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-deploy-integration/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-deploy-integration/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-enterprise-rbac/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-install-auth/references/oauth.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-performance-tuning/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-security-basics/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-security-basics/references/implementation.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-upgrade-migration/references/examples.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/intercom-pack/skills/intercom-webhooks-events/SKILL.md:secret-exfil-cooccur  documented intercom
+intercom API-client example: reads its own-service API key from env and sends it only to the intercom
+intercom API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-deploy-integration/references/platform-deployments.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-enterprise-rbac/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/SKILL.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/references/examples.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-install-auth/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-multi-env-setup/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-security-basics/SKILL.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-security-basics/references/implementation.md:secret-exfil-cooccur  documented klaviyo
+klaviyo API-client example: reads its own-service API key from env and sends it only to the klaviyo
+klaviyo API (verified at the flagged line); other in-file hosts (install URLs, status pages) do not receive the credential — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-common-errors/references/diagnostics.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-incident-runbook/references/remediation.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/examples.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/implementation.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
+plugins/saas-packs/clerk-pack/skills/clerk-rate-limits/SKILL.md:secret-exfil-cooccur  documented Clerk API-client example: createClerkClient reads CLERK_SECRET_KEY from env and uses it only against the Clerk API (its own service); no third-party sink — reviewed 2026-07-18

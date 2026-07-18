@@ -18,7 +18,7 @@ description: 'Comprehensive codebase cleanup across 11 quality dimensions: dead 
   '
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(npm:*), Bash(npx:*),
   Bash(pnpm:*), Bash(python3:*), Bash(tsc:*), Bash(wc:*), Bash(ls:*), AskUserQuestion
-version: 1.0.0
+version: 1.7.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

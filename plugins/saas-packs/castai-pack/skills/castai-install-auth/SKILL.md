@@ -14,7 +14,7 @@ description: 'Install and configure CAST AI agent on a Kubernetes cluster with A
   '
 allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(terraform:*),
   Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

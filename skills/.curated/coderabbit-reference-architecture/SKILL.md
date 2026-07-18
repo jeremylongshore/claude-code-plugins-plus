@@ -14,7 +14,7 @@ description: 'Implement CodeRabbit reference architecture with production-grade 
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

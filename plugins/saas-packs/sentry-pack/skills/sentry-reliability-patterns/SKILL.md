@@ -14,7 +14,7 @@ description: 'Build reliable Sentry integrations with graceful degradation, circ
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(pip:*), Bash(python*:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

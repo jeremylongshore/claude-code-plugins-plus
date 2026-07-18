@@ -12,7 +12,7 @@ description: 'Diagnose and fix Fireflies.ai GraphQL API errors by error code.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

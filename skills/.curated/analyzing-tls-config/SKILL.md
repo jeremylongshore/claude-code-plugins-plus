@@ -18,7 +18,7 @@ disallowed-tools:
   - Bash(rm:*)
   - Edit(/etc/*)
   - Write(/etc/*)
-version: 3.0.0-dev
+version: 3.30.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Designed for Claude Code

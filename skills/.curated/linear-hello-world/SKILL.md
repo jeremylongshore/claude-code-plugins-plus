@@ -12,7 +12,7 @@ description: 'Create your first Linear issue and query using the SDK and GraphQL
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

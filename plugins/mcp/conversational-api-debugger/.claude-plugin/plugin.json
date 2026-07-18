@@ -1,6 +1,6 @@
 {
   "name": "conversational-api-debugger",
-  "version": "1.0.0",
+  "version": "1.14.0",
   "description": "Debug REST API failures using OpenAPI specs and HTTP logs. Analyzes errors, suggests fixes, and generates test commands.",
   "author": {
     "name": "Intent Solutions",

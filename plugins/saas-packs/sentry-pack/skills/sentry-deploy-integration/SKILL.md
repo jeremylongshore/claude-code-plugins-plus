@@ -15,7 +15,7 @@ description: 'Track deployments and release health in Sentry.
   '
 allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(curl:*), Bash(node:*),
   Bash(npx:*), Grep
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

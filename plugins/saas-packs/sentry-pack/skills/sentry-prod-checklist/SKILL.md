@@ -13,7 +13,7 @@ description: 'Production deployment checklist for Sentry integration.
   '
 allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(curl:*),
   Bash(sentry-cli:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

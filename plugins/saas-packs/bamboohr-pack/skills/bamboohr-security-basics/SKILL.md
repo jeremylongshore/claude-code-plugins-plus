@@ -14,7 +14,7 @@ description: 'Apply BambooHR security best practices for API keys, webhook verif
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

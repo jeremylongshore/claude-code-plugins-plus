@@ -13,7 +13,7 @@ description: 'Creates ADHD-friendly visual organizational tools using Mermaid di
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 3.1.1
+version: 3.10.0
 author: Jack Reis <hello@jack.digital>
 license: MIT
 tags:

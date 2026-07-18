@@ -20,7 +20,7 @@ description: 'Advanced Sentry troubleshooting for complex SDK issues, silent eve
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npm:*), Bash(npx:*), Bash(curl:*),
   Bash(sentry-cli:*), Bash(dig:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

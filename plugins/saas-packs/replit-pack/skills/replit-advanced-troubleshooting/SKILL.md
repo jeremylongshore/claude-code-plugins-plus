@@ -13,7 +13,7 @@ description: 'Debug hard Replit issues: container lifecycle, Nix build failures,
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*), Bash(python3:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

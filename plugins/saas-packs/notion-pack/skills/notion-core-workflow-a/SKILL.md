@@ -12,7 +12,7 @@ description: 'Query, filter, and manage Notion databases and pages.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -33,9 +33,24 @@ Primary workflow for Notion integrations: querying databases with filters/sorts,
 - A Notion database shared with your integration
 - Understanding of your database's property schema
 
+## Authentication
+
+Every call below uses a `Client` authenticated with an integration token
+(`process.env.NOTION_TOKEN`). Token creation, secret storage, and sharing a
+database with the integration are covered end-to-end in the `notion-install-auth`
+skill — complete it first. Never hardcode the token; read it from the environment.
+
 ## Instructions
 
+The workflow is six steps. Steps 1–2 (schema + filtered query) are the skeleton
+you almost always start with, shown here in full. Steps 3–6 (filter syntax by
+type, page creation, updates/archive, pagination) live in
+[the full walkthrough](references/implementation.md) so this file stays scannable.
+
 ### Step 1: Retrieve Database Schema
+
+Always inspect the schema first — property names and types drive every filter
+and write. `databases.retrieve` returns `db.properties` keyed by property name.
 
 ```typescript
 import { Client } from '@notionhq/client';
@@ -44,10 +59,8 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function getDatabaseSchema(databaseId: string) {
   const db = await notion.databases.retrieve({ database_id: databaseId });
-  // db.properties contains the schema
   for (const [name, prop] of Object.entries(db.properties)) {
     console.log(`${name}: ${prop.type}`);
-    // For select/multi_select, show options:
     if (prop.type === 'select') {
       console.log('  Options:', prop.select.options.map(o => o.name));
     }
@@ -58,7 +71,8 @@ async function getDatabaseSchema(databaseId: string) {
 
 ### Step 2: Query with Filters
 
-Notion filters use a unique nested structure based on property type:
+Notion filters use a nested structure keyed by property type, and combine with
+`and` / `or`. `sorts` and `page_size` (max 100) tune the result set.
 
 ```typescript
 async function queryWithFilters(databaseId: string) {
@@ -66,172 +80,30 @@ async function queryWithFilters(databaseId: string) {
     database_id: databaseId,
     filter: {
       and: [
-        {
-          property: 'Status',
-          select: { equals: 'In Progress' },
-        },
-        {
-          property: 'Priority',
-          select: { does_not_equal: 'Low' },
-        },
-        {
-          or: [
-            {
-              property: 'Assignee',
-              people: { contains: 'user-uuid-here' },
-            },
-            {
-              property: 'Tags',
-              multi_select: { contains: 'Urgent' },
-            },
-          ],
-        },
+        { property: 'Status', select: { equals: 'In Progress' } },
+        { property: 'Priority', select: { does_not_equal: 'Low' } },
       ],
     },
-    sorts: [
-      { property: 'Priority', direction: 'ascending' },
-      { property: 'Created', direction: 'descending' },
-    ],
+    sorts: [{ property: 'Priority', direction: 'ascending' }],
     page_size: 50,
   });
-
   return response.results;
 }
 ```
 
-### Step 3: Filter Syntax by Property Type
+### Steps 3–6: Filter syntax, create, update, paginate
 
-```typescript
-// Text (title, rich_text, url, email, phone_number)
-{ property: 'Name', title: { contains: 'search term' } }
-{ property: 'Description', rich_text: { starts_with: 'Draft' } }
-{ property: 'Email', email: { equals: 'user@example.com' } }
+See [the full walkthrough](references/implementation.md) for copy-paste code:
 
-// Number
-{ property: 'Score', number: { greater_than: 80 } }
-{ property: 'Price', number: { less_than_or_equal_to: 100 } }
-
-// Select / Multi-select
-{ property: 'Status', select: { equals: 'Done' } }
-{ property: 'Tags', multi_select: { contains: 'Bug' } }
-
-// Date
-{ property: 'Due Date', date: { before: '2026-04-01' } }
-{ property: 'Created', date: { past_week: {} } }
-{ property: 'Updated', date: { on_or_after: '2026-01-01' } }
-
-// Checkbox
-{ property: 'Archived', checkbox: { equals: false } }
-
-// People
-{ property: 'Assignee', people: { contains: 'user-uuid' } }
-
-// Relation
-{ property: 'Project', relation: { contains: 'page-uuid' } }
-
-// Formula (filter on the result type)
-{ property: 'Computed', formula: { number: { greater_than: 0 } } }
-
-// Rollup (filter on the aggregated result)
-{ property: 'Total', rollup: { number: { greater_than: 100 } } }
-
-// Timestamp (no property name needed)
-{ timestamp: 'last_edited_time', last_edited_time: { after: '2026-03-01' } }
-```
-
-### Step 4: Create a Page with All Property Types
-
-```typescript
-async function createFullPage(databaseId: string) {
-  return notion.pages.create({
-    parent: { database_id: databaseId },
-    icon: { emoji: '📋' },
-    properties: {
-      // Title (required — every database has exactly one)
-      Name: {
-        title: [{ text: { content: 'New Task' } }],
-      },
-      // Rich text
-      Description: {
-        rich_text: [
-          { text: { content: 'This is ' } },
-          { text: { content: 'important' }, annotations: { bold: true, color: 'red' } },
-        ],
-      },
-      // Number
-      Score: { number: 95 },
-      // Select
-      Status: { select: { name: 'In Progress' } },
-      // Multi-select
-      Tags: {
-        multi_select: [{ name: 'API' }, { name: 'Backend' }],
-      },
-      // Date (with optional end and timezone)
-      'Due Date': {
-        date: { start: '2026-04-15', end: '2026-04-20' },
-      },
-      // Checkbox
-      Urgent: { checkbox: true },
-      // URL
-      Link: { url: 'https://developers.notion.com' },
-      // Email
-      Contact: { email: 'team@example.com' },
-      // People (array of user objects)
-      Assignee: {
-        people: [{ id: 'user-uuid-here' }],
-      },
-      // Relation (array of page references)
-      Project: {
-        relation: [{ id: 'related-page-uuid' }],
-      },
-    },
-  });
-}
-```
-
-### Step 5: Update Page Properties
-
-```typescript
-async function updatePage(pageId: string) {
-  return notion.pages.update({
-    page_id: pageId,
-    properties: {
-      Status: { select: { name: 'Done' } },
-      Score: { number: 100 },
-      Urgent: { checkbox: false },
-    },
-  });
-}
-
-// Archive (soft delete) a page
-async function archivePage(pageId: string) {
-  return notion.pages.update({
-    page_id: pageId,
-    archived: true,
-  });
-}
-```
-
-### Step 6: Paginate Through All Results
-
-```typescript
-async function getAllPages(databaseId: string) {
-  const allPages = [];
-  let cursor: string | undefined = undefined;
-
-  do {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      start_cursor: cursor,
-      page_size: 100, // max is 100
-    });
-    allPages.push(...response.results);
-    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
-  } while (cursor);
-
-  return allPages;
-}
-```
+- **Step 3 — Filter syntax by property type.** Every property type (text,
+  number, select, date, checkbox, people, relation, formula, rollup, timestamp)
+  has its own filter shape.
+- **Step 4 — Create a page with all property types.** One `pages.create` call
+  showing the correct payload for each typed property.
+- **Step 5 — Update & archive.** `pages.update` to change properties, or set
+  `archived: true` to soft-delete.
+- **Step 6 — Paginate all results.** Loop on `has_more` / `next_cursor` to pull
+  a full database beyond the 100-row page limit.
 
 ## Output
 
@@ -243,7 +115,7 @@ async function getAllPages(databaseId: string) {
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `validation_error` | Property name mismatch or wrong type | Use `databases.retrieve` to check schema |
 | `object_not_found` | Database not shared with integration | Add integration via Connections |
 | `rate_limited` (429) | >3 requests/second average | Respect `Retry-After` header |
@@ -251,33 +123,20 @@ async function getAllPages(databaseId: string) {
 
 ## Examples
 
-### Extract Property Values Helper
+Reading queried pages back into plain values requires switching on each
+property's `type`. A reusable `getPropertyValue` helper plus a full
+"flatten a database into an array of objects" example live in
+[examples & helpers](references/examples.md):
 
 ```typescript
-function getPropertyValue(property: any): string | number | boolean | null {
+// Excerpt — full helper in references/examples.md
+function getPropertyValue(property: any) {
   switch (property.type) {
-    case 'title':
-      return property.title.map((t: any) => t.plain_text).join('');
-    case 'rich_text':
-      return property.rich_text.map((t: any) => t.plain_text).join('');
-    case 'number':
-      return property.number;
-    case 'select':
-      return property.select?.name ?? null;
-    case 'multi_select':
-      return property.multi_select.map((s: any) => s.name).join(', ');
-    case 'date':
-      return property.date?.start ?? null;
-    case 'checkbox':
-      return property.checkbox;
-    case 'url':
-      return property.url;
-    case 'email':
-      return property.email;
-    case 'formula':
-      return property.formula?.[property.formula.type] ?? null;
-    default:
-      return null;
+    case 'title':  return property.title.map((t: any) => t.plain_text).join('');
+    case 'number': return property.number;
+    case 'select': return property.select?.name ?? null;
+    // ...rich_text, multi_select, date, checkbox, url, email, formula
+    default:       return null;
   }
 }
 ```
@@ -289,7 +148,6 @@ function getPropertyValue(property: any): string | number | boolean | null {
 - [Create a Page](https://developers.notion.com/reference/post-page)
 - [Page Property Values](https://developers.notion.com/reference/page-property-values)
 - [Database Object](https://developers.notion.com/reference/database)
-
-## Next Steps
-
-For block-level content operations, see `notion-core-workflow-b`.
+- [Full CRUD walkthrough (Steps 1–6)](references/implementation.md)
+- [Examples & helpers](references/examples.md)
+- For block-level content operations, see the `notion-core-workflow-b` skill.

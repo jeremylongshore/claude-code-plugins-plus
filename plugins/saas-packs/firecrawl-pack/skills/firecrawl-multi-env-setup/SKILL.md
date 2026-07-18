@@ -13,7 +13,7 @@ description: 'Configure Firecrawl across development, staging, and production en
 
   '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

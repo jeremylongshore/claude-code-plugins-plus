@@ -13,7 +13,7 @@ description: 'Build and deploy Vercel Edge Functions for ultra-low latency at th
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Grep
-version: 1.0.0
+version: 1.18.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

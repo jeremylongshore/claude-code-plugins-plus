@@ -1,6 +1,6 @@
 {
   "name": "workflow-orchestrator",
-  "version": "1.0.0",
+  "version": "1.15.0",
   "description": "Orchestrate complex workflows with DAG-based execution, parallel tasks, and run history tracking",
   "author": {
     "name": "Intent Solutions",

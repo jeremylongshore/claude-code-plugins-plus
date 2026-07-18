@@ -14,7 +14,7 @@ description: 'Execute Adobe incident response procedures with triage, mitigation
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

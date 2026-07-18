@@ -4,7 +4,7 @@ description: Track and optimize resource usage across application stack includin
   CPU, memory, disk, and network I/O. Use when identifying bottlenecks or optimizing
   costs. Trigger with phrases like "track resource usage", "monitor CPU and memory",
   or "optimize resource allocation".
-version: 1.0.0
+version: 1.22.0
 allowed-tools: Read, Bash(top:*), Bash(ps:*), Bash(vmstat:*), Bash(iostat:*), Grep,
   Glob
 license: MIT

@@ -9,7 +9,7 @@ description: |
   "sync events to hubspot", "hubspot custom properties", "hubspot event pipeline",
   "hubspot segment alternative", "push usage data to hubspot".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Grep
-version: 2.0.1
+version: 2.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code

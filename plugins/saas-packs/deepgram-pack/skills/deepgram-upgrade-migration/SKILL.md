@@ -12,7 +12,7 @@ description: 'Plan and execute Deepgram SDK upgrades and model migrations.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(npm:*), Bash(pip:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

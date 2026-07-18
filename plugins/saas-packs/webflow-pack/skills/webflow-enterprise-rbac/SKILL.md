@@ -6,7 +6,7 @@ description: "Configure Webflow enterprise access control \u2014 OAuth 2.0 app a
   \ enterprise\",\n\"webflow roles\", \"webflow permissions\", \"webflow OAuth scopes\"\
   ,\n\"webflow access control\", \"webflow workspace members\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -15,7 +15,7 @@ description: 'Researches infrastructure best practices and generates deployment-
   '
 allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(docker:*), Bash(kubectl:*),
   Bash(git:*), Bash(npm:*), Glob, Grep, WebSearch, WebFetch
-version: 1.0.0
+version: 0.14.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

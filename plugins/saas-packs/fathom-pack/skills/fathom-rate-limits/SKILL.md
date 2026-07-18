@@ -6,7 +6,7 @@ description: 'Handle Fathom API rate limits (60 requests/minute per user).
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "real-user-monitoring",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Implement Real User Monitoring for actual performance data",
   "author": {
     "name": "Claude Code Plugins",

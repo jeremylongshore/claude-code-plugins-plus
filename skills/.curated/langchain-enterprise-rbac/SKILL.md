@@ -7,7 +7,7 @@ description: "Enforce tenant isolation and role-based access across LangChain 1.
   \ Trigger with \"langchain multi-tenant\", \"langchain tenant isolation\",\n\"langchain\
   \ rbac\", \"langchain row-level security\", \"langchain audit log\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

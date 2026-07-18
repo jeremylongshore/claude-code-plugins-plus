@@ -13,7 +13,7 @@ description: 'Retrieve and process Fireflies.ai meeting transcripts with speaker
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

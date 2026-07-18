@@ -12,7 +12,7 @@ description: 'Implement comprehensive observability for MaintainX integrations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

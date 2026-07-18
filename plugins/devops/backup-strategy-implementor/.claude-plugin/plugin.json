@@ -1,6 +1,6 @@
 {
   "name": "backup-strategy-implementor",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "description": "Implement backup strategies for databases and applications",
   "author": {
     "name": "Claude Code Plugins",

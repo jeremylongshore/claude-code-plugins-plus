@@ -13,7 +13,7 @@ description: 'Identify and fix common Sentry SDK pitfalls that cause silent data
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*),
   Bash(grep:*), Bash(find:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

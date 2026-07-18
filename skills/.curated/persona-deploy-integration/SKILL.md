@@ -8,7 +8,7 @@ description: 'Deploy Persona verification service to cloud platforms.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

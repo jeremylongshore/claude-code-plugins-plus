@@ -4,7 +4,7 @@ description: "Prepare briefings for today's meetings \u2014 attendee research, e
   \ history, past meeting notes, LinkedIn, and company context. Use when running the\
   \ daily meeting prep cron, or when user asks to prepare for meetings, review who\
   \ they're meeting with, or get context on upcoming calls."
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Martin Gontovnikas <martin@hypergrowthpartners.com>
 tags:

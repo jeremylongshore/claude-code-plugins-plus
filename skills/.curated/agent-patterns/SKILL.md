@@ -8,7 +8,7 @@ description: 'Execute this skill should be used when the user asks about "SPAWN 
 
   '
 allowed-tools: Read
-version: 1.0.0
+version: 1.20.0
 author: Damien Laine <damien.laine@gmail.com>
 license: MIT
 tags:

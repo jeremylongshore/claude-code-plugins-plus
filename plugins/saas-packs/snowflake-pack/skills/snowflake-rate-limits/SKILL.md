@@ -12,7 +12,7 @@ description: 'Handle Snowflake concurrency limits, warehouse queuing, and query 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

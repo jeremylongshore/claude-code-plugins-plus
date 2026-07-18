@@ -10,7 +10,7 @@ description: 'Install TechSmith Snagit COM API and register the COM server for a
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

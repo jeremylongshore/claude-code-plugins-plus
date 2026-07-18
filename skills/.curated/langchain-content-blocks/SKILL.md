@@ -8,7 +8,7 @@ description: "Works correctly with LangChain 1.0's typed content blocks on AIMes
   , \"AIMessage.content\", \"tool_use block\", \"claude\nimage input\", \"langchain\
   \ multimodal\", \"thinking block replay\",\n\"claude citations\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
-version: 2.0.0
+version: 2.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

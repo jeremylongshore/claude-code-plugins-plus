@@ -10,7 +10,7 @@ description: 'Secure Navan API credentials with OAuth 2.0 best practices, SSO/SA
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

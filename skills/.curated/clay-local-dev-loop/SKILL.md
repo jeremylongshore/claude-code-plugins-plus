@@ -13,7 +13,7 @@ description: 'Set up a local development loop for building and testing Clay inte
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(npx:*), Bash(node:*),
   Bash(python3:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "feature-engineering-toolkit",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "Feature creation, selection, and transformation tools",
   "author": {
     "name": "Claude Code Plugins",

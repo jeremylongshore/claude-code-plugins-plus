@@ -1,6 +1,6 @@
 {
   "name": "input-validation-scanner",
-  "version": "1.0.0",
+  "version": "1.25.0",
   "description": "Scan input validation practices",
   "author": {
     "name": "Jeremy Longshore",

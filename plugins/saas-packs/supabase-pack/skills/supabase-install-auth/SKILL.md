@@ -13,7 +13,7 @@ description: 'Install and configure Supabase SDK, CLI, and project authenticatio
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(pip:*),
   Bash(supabase:*), Grep, Glob
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

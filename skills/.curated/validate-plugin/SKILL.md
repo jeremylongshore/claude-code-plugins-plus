@@ -15,7 +15,7 @@ description: 'Validate a Claude Code plugin directory against the official Anthr
 
   '
 allowed-tools: Read, Bash(python3:*), Bash(jq:*), Bash(chmod:*), Glob, Grep
-version: 1.0.0
+version: 1.8.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 user-invocable: true

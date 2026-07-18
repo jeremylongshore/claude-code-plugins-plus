@@ -825,6 +825,50 @@ function addedAllowlistLines(base) {
   }
 }
 
+/**
+ * True when a changed file's ENTIRE diff vs `base` is the version field —
+ * i.e. every added/removed line (hunk headers excluded) is a lone
+ * `version: X` (YAML frontmatter) or `"version": "X"` (JSON manifest) line.
+ *
+ * Why: a mass version reconstruction / auto-bump edits the version string in
+ * thousands of first-party SKILL.md + plugin.json files. Those files then show
+ * up as "changed vs base" and, in --changed-only mode, get FULLY re-scanned —
+ * surfacing every pre-existing documented dual-use example (the classic
+ * secret-exfil-cooccur false positive in SaaS-pack API docs) as a fresh
+ * CHALLENGE, even though the PR injected nothing.
+ *
+ * Skipping is SAFE, not a bypass: a lone version-string line carries no
+ * executable / exfil / network content, and the moment ANY other line in the
+ * file changes, this returns false and the file is scanned in full — so a
+ * payload cannot hide behind a co-changed version bump. Fail-closed: if the
+ * diff can't be computed, returns false (scan the file).
+ */
+export function isVersionOnlyChange(diffText) {
+  if (!diffText) return false;
+  const changed = diffText
+    .split('\n')
+    .filter(
+      (l) =>
+        (l.startsWith('+') || l.startsWith('-')) && !l.startsWith('+++') && !l.startsWith('---'),
+    );
+  if (changed.length === 0) return false; // no content delta we can attribute — scan it
+  const YAML_VERSION = /^[+-]\s*version:\s*['"]?[\w.+-]+['"]?\s*(#.*)?$/;
+  const JSON_VERSION = /^[+-]\s*"version":\s*"[\w.+-]+",?\s*$/;
+  return changed.every((l) => YAML_VERSION.test(l) || JSON_VERSION.test(l));
+}
+
+function isVersionOnlyDiff(base, rel) {
+  try {
+    const out = execFileSync('git', ['-C', ROOT_DIR, 'diff', '--unified=0', base, '--', rel], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return isVersionOnlyChange(out);
+  } catch {
+    return false; // fail closed — scan the file
+  }
+}
+
 /** Resolve the list of repo-relative files to scan from CLI options. */
 function collectTargets(opts) {
   let rels = [];
@@ -835,7 +879,12 @@ function collectTargets(opts) {
     // under scripts/, so scanning them would self-flag the malicious sample
     // strings. sources.yaml-only PRs legitimately produce no plugin diff here;
     // their protection is the sync-time scan of the resulting mirrored content.
-    rels = changedFiles(opts.base || 'origin/main').filter((r) => r.startsWith('plugins/'));
+    const base = opts.base || 'origin/main';
+    rels = changedFiles(base)
+      .filter((r) => r.startsWith('plugins/'))
+      // Drop files whose only change is the version string (mass version
+      // reconstruction / auto-bump) — provably inert, see isVersionOnlyChange.
+      .filter((r) => !isVersionOnlyDiff(base, r));
   } else if (opts.paths.length > 0) {
     for (const p of opts.paths) {
       const abs = path.resolve(ROOT_DIR, p);

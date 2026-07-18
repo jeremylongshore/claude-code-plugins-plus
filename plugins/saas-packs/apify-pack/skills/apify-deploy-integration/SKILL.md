@@ -2,17 +2,15 @@
 name: apify-deploy-integration
 description: 'Deploy Apify Actors and integrate scraping into external applications.
 
-  Use when deploying Actors to the platform, integrating Actor results
+  Use when deploying an Actor to the platform, integrating Actor results into a web
+  app (Next.js, Express), wiring webhooks, or scheduling scraping pipelines.
 
-  into web apps, or connecting Apify with external services.
-
-  Trigger: "deploy apify actor", "apify Vercel integration",
-
+  Trigger with "deploy apify actor", "apify Vercel integration",
   "apify production deploy", "integrate apify results", "apify API endpoint".
 
   '
 allowed-tools: Read, Write, Edit, Bash(apify:*), Bash(npm:*), Bash(vercel:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,280 +24,91 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Deploy Actors to the Apify platform and integrate their results into external applications. Covers `apify push` deployment, API-triggered runs from web apps, scheduled scraping with data pipelines, and platform-specific integration patterns.
+Deploy Actors to the Apify platform and integrate their results into external
+applications. Covers `apify push` deployment, API-triggered runs from web apps
+(synchronous and async patterns), webhook receivers, scheduled scraping pipelines,
+and container deployment.
+
+SKILL.md gives you the workflow and the core skeleton. Complete, copy-paste code
+for every pattern lives in [references/implementation.md](references/implementation.md);
+end-to-end worked scenarios are in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
 - Actor tested locally (`apify run`)
-- `apify login` completed
+- `apify login` completed (stores CLI credentials)
 - Target application ready for integration
+
+## Authentication
+
+Apps authenticate with an Apify API token. Generate one in **Apify Console →
+Settings → Integrations** and expose it as the `APIFY_TOKEN` environment variable —
+never hard-code it. The `apify` CLI uses its own credentials from `apify login`,
+separate from `APIFY_TOKEN`. Full auth notes: [references/implementation.md](references/implementation.md).
 
 ## Instructions
 
-### Step 1: Deploy Actor to Platform
+### Step 1: Deploy the Actor to the platform
 
 ```bash
 # Push Actor code to Apify
 apify push
 
-# Push to a specific Actor (creates if doesn't exist)
+# Push to a specific Actor (creates if it doesn't exist)
 apify push username/my-scraper
 
 # Pull an existing Actor to modify
 apify pull username/existing-actor
 ```
 
-### Step 2: Integrate with a Web Application
+### Step 2: Trigger the Actor from your app
 
-The most common pattern: trigger an Actor from your app and consume results.
+Instantiate `ApifyClient` with your token, then either `call()` (blocks until the
+run finishes) or `start()` (returns immediately for polling). Here is the core
+synchronous skeleton:
 
 ```typescript
-// src/services/apify.ts
 import { ApifyClient } from 'apify-client';
 
 const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 
-interface ScrapeResult {
-  url: string;
-  title: string;
-  price: number;
-  inStock: boolean;
-}
-
-/**
- * Run a scraping Actor and return typed results.
- * Blocks until the Actor finishes (synchronous pattern).
- */
-export async function scrapeProducts(urls: string[]): Promise<ScrapeResult[]> {
-  const run = await client.actor('username/product-scraper').call({
-    startUrls: urls.map(url => ({ url })),
-    maxItems: 500,
-  }, {
-    memory: 2048,
-    timeout: 600,  // 10 minutes
-  });
-
-  if (run.status !== 'SUCCEEDED') {
-    throw new Error(`Scrape failed: ${run.status} — ${run.statusMessage}`);
-  }
-
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  return items as ScrapeResult[];
-}
-
-/**
- * Start a scraping Actor without waiting (async pattern).
- * Returns run ID for later polling.
- */
-export async function startScrape(urls: string[]): Promise<string> {
-  const run = await client.actor('username/product-scraper').start({
-    startUrls: urls.map(url => ({ url })),
-  });
-  return run.id;
-}
-
-/**
- * Check if a run has finished and get results.
- */
-export async function getScrapeResults(runId: string): Promise<{
-  status: string;
-  items?: ScrapeResult[];
-}> {
-  const run = await client.run(runId).get();
-
-  if (run.status === 'RUNNING' || run.status === 'READY') {
-    return { status: run.status };
-  }
-
-  if (run.status === 'SUCCEEDED') {
-    const { items } = await client.dataset(run.defaultDatasetId).listItems();
-    return { status: 'SUCCEEDED', items: items as ScrapeResult[] };
-  }
-
-  return { status: run.status };
-}
-```
-
-### Step 3: Next.js API Route Integration
-
-```typescript
-// app/api/scrape/route.ts (Next.js App Router)
-import { NextResponse } from 'next/server';
-import { ApifyClient } from 'apify-client';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-export async function POST(request: Request) {
-  const { urls } = await request.json();
-
-  if (!urls?.length) {
-    return NextResponse.json({ error: 'urls required' }, { status: 400 });
-  }
-
-  try {
-    // Start Actor (non-blocking)
-    const run = await client.actor('username/product-scraper').start({
-      startUrls: urls.map((url: string) => ({ url })),
-      maxItems: 100,
-    });
-
-    return NextResponse.json({
-      runId: run.id,
-      status: run.status,
-      statusUrl: `/api/scrape/${run.id}`,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 },
-    );
-  }
-}
-
-// app/api/scrape/[runId]/route.ts
-export async function GET(
-  _req: Request,
-  { params }: { params: { runId: string } },
-) {
-  const run = await client.run(params.runId).get();
-
-  if (run.status === 'SUCCEEDED') {
-    const { items } = await client
-      .dataset(run.defaultDatasetId)
-      .listItems({ limit: 100 });
-    return NextResponse.json({ status: 'SUCCEEDED', items });
-  }
-
-  return NextResponse.json({
-    status: run.status,
-    statusMessage: run.statusMessage,
-  });
-}
-```
-
-### Step 4: Express.js Webhook Receiver
-
-```typescript
-// Receive notifications when an Actor run completes
-import express from 'express';
-import { ApifyClient } from 'apify-client';
-
-const app = express();
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-app.use(express.json());
-
-app.post('/webhooks/apify', async (req, res) => {
-  const { eventType, eventData } = req.body;
-
-  // Verify the webhook (check run exists)
-  const { actorRunId } = eventData;
-  const run = await client.run(actorRunId).get();
-
-  if (!run) {
-    return res.status(400).json({ error: 'Invalid run ID' });
-  }
-
-  switch (eventType) {
-    case 'ACTOR.RUN.SUCCEEDED': {
-      const { items } = await client
-        .dataset(run.defaultDatasetId)
-        .listItems();
-      console.log(`Run succeeded with ${items.length} items`);
-      // Process items: save to DB, send notifications, etc.
-      await processScrapedData(items);
-      break;
-    }
-
-    case 'ACTOR.RUN.FAILED':
-    case 'ACTOR.RUN.TIMED_OUT':
-      console.error(`Run ${eventType}: ${run.statusMessage}`);
-      // Alert team via Slack, PagerDuty, etc.
-      await sendAlert(`Apify run ${eventType}: ${run.statusMessage}`);
-      break;
-  }
-
-  res.json({ received: true });
+const run = await client.actor('username/product-scraper').call({
+  startUrls: [{ url: 'https://store.example.com' }],
+  maxItems: 500,
 });
+if (run.status !== 'SUCCEEDED') throw new Error(run.statusMessage);
+
+const { items } = await client.dataset(run.defaultDatasetId).listItems();
 ```
 
-### Step 5: Scheduled Pipeline with Data Export
+The full typed service — `scrapeProducts` (blocking), `startScrape` +
+`getScrapeResults` (async poll) — is in
+[references/implementation.md](references/implementation.md).
 
-```typescript
-// Run daily via cron, schedule, or Apify Schedule
-import { ApifyClient } from 'apify-client';
-import { writeFileSync } from 'fs';
+### Step 3: Choose an integration pattern
 
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+Pick the pattern that matches your app, then copy the full handler from the
+reference:
 
-async function dailyScrapeAndExport() {
-  // Run Actor
-  const run = await client.actor('username/product-scraper').call({
-    startUrls: [{ url: 'https://target-store.com/products' }],
-    maxItems: 5000,
-  });
+- **Next.js API route** — start a run in a `POST`, poll by run ID in a `GET`. Avoids
+  serverless timeouts. See [implementation.md](references/implementation.md).
+- **Express webhook receiver** — register an Apify webhook and react on
+  `ACTOR.RUN.SUCCEEDED` / `FAILED` / `TIMED_OUT`. See [implementation.md](references/implementation.md).
+- **Scheduled pipeline** — run on cron/Apify Schedule, export CSV, archive to a
+  named dataset. See [implementation.md](references/implementation.md).
+- **Docker / Cloud Run** — containerize an app that calls Apify, inject the token
+  as a secret. See [implementation.md](references/implementation.md).
 
-  if (run.status !== 'SUCCEEDED') {
-    throw new Error(`Run failed: ${run.status}`);
-  }
+**Rule of thumb:** poll for request/response UX (a user waits on a result); use
+webhooks for fire-and-forget pipelines (scheduled scrapes, background enrichment).
 
-  // Export as CSV
-  const csvBuffer = await client
-    .dataset(run.defaultDatasetId)
-    .downloadItems('csv');
-  writeFileSync(`exports/products-${Date.now()}.csv`, csvBuffer);
+## Output
 
-  // Also store in a named dataset for historical access
-  const archive = await client.datasets().getOrCreate('product-archive');
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  await client.dataset(archive.id).pushItems(
-    items.map(item => ({ ...item, scrapedDate: new Date().toISOString() })),
-  );
-
-  console.log(`Exported ${items.length} products`);
-}
-```
-
-### Step 6: Docker Deployment (Self-Hosted Integration)
-
-```dockerfile
-# Dockerfile for an app that calls Apify
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY . .
-CMD ["node", "dist/index.js"]
-```
-
-```bash
-# Build and deploy
-docker build -t apify-integration .
-docker run -e APIFY_TOKEN=apify_api_xxx apify-integration
-
-# Or deploy to Cloud Run
-gcloud run deploy apify-service \
-  --source . \
-  --set-secrets=APIFY_TOKEN=apify-token:latest \
-  --region us-central1
-```
-
-## Integration Architecture
-
-```
-┌────────────────┐     ┌──────────────┐     ┌────────────────┐
-│  Your App      │────▶│  Apify API   │────▶│  Actor Run     │
-│  (apify-client)│     │              │     │  (on Apify     │
-│                │◀────│              │◀────│   platform)    │
-└────────────────┘     └──────────────┘     └────────────────┘
-       │                                           │
-       │  Poll or Webhook                          │
-       ▼                                           ▼
-┌────────────────┐                        ┌────────────────┐
-│  Your DB       │                        │  Dataset       │
-│  (processed)   │                        │  (raw results) │
-└────────────────┘                        └────────────────┘
-```
+- A deployed Actor on the Apify platform (`apify push` build succeeds)
+- An integration module (`src/services/apify.ts`) exposing blocking + async calls
+- API routes / webhook receivers wired into your app's framework
+- Structured results read from the Actor's default dataset (JSON or CSV export)
+- Optional date-stamped archive in a named dataset for historical access
 
 ## Error Handling
 
@@ -311,6 +120,18 @@ gcloud run deploy apify-service \
 | Memory error on platform | Actor needs more RAM | Increase `memory` option |
 | Large dataset download | >100MB results | Use pagination or streaming |
 
+## Examples
+
+Three end-to-end scenarios — synchronous script call, non-blocking Next.js API,
+and a scheduled CSV-export pipeline — are worked through in
+[references/examples.md](references/examples.md). Minimal blocking call:
+
+```typescript
+import { scrapeProducts } from './services/apify';
+const products = await scrapeProducts(['https://store.example.com/p/1']);
+console.log(`Got ${products.length} products`);
+```
+
 ## Resources
 
 - [Actor Deployment](https://docs.apify.com/platform/actors/development/deployment)
@@ -319,4 +140,6 @@ gcloud run deploy apify-service \
 
 ## Next Steps
 
-For webhook handling, see `apify-webhooks-events`.
+For webhook event handling in depth, see the `apify-webhooks-events` skill. For the
+full integration code referenced above, see
+[references/implementation.md](references/implementation.md).

@@ -13,7 +13,7 @@ description: 'Execute Salesforce production deployment checklist with sandbox te
 
   '
 allowed-tools: Read, Bash(sf:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

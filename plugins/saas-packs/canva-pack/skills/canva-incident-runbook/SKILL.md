@@ -13,7 +13,7 @@ description: 'Execute Canva Connect API incident response with triage, mitigatio
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

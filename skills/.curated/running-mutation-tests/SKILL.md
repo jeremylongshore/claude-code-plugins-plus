@@ -9,7 +9,7 @@ description: 'Execute mutation testing to evaluate test suite effectiveness.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mutation-*)
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

@@ -10,7 +10,7 @@ description: 'Deep dive into Grammarly API migration patterns.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

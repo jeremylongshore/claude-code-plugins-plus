@@ -5,7 +5,7 @@ description: Structured hypothesis formulation, experiment design, and results i
   an A/B test, evaluate experiment results, or decide whether to ship based on data.
   Triggers include "hypothesis", "A/B test", "experiment", "validate assumption",
   "test this", "should we ship", or when making a decision that should be data-informed.
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

@@ -10,7 +10,7 @@ description: 'Test provision and manage isolated test environments with configur
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:env-*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

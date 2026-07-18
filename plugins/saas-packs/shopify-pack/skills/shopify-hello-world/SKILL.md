@@ -13,7 +13,7 @@ description: 'Create a minimal working Shopify app that queries products via Gra
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: 'Send your first OpenRouter API request and understand the response
 
   '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(python3:*), Bash(node:*), Bash(jq:*)
-version: 2.0.0
+version: 1.20.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

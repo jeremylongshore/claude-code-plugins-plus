@@ -12,7 +12,7 @@ description: 'Create a minimal working Firecrawl example that scrapes a page to 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

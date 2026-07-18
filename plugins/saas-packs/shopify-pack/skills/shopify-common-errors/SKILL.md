@@ -13,7 +13,7 @@ description: 'Diagnose and fix common Shopify API errors including 401, 403, 422
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

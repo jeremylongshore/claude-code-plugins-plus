@@ -5,7 +5,7 @@ description: "Optimize Granola costs \u2014 plan selection, ROI calculation, sea
   \ cost\", \"granola pricing\", \"granola plan selection\",\n\"save money granola\"\
   , \"granola ROI\", \"granola subscription\".\n"
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

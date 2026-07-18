@@ -14,7 +14,7 @@ description: 'Use when you need to generate, validate, or deploy stored procedur
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(sqlcmd:*),
   Bash(python3:*)
-version: 2.0.0
+version: 1.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

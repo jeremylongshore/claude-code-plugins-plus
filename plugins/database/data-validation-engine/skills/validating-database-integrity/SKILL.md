@@ -12,7 +12,7 @@ description: 'Process use when you need to ensure database integrity through com
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
-version: 1.0.0
+version: 1.28.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

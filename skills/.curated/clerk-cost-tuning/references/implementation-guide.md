@@ -4,23 +4,24 @@ Detailed implementation examples and code patterns.
 
 ## Clerk Pricing Model
 
-### Pricing Tiers (as of 2024)
+### Pricing Tiers (as of February 2026)
 
-| Tier | MAU Included | Price | Features |
+| Tier | MRU Included | Price | Features |
 |------|--------------|-------|----------|
-| Free | 10,000 | $0 | Basic auth, 5 social providers |
-| Pro | 10,000 | $25/mo | Custom domain, priority support |
+| Free (Hobby) | 50,000 | $0 | Basic auth, 3 social connections, custom domain, unlimited apps |
+| Pro | 50,000 | $25/mo ($20/mo billed annually) | Remove Clerk branding, passkeys, MFA, custom email templates |
+| Business | 50,000 | $300/mo ($250/mo billed annually) | 10 dashboard seats, SOC 2 report, priority support |
 | Enterprise | Custom | Custom | SSO, SLA, dedicated support |
 
-### Per-User Pricing (after included MAU)
+### Per-User Pricing (after included MRU)
 
-- Pro: ~$0.02 per MAU above 10,000
+- Pro: $0.02 per MRU above 50,000 (volume discounts at higher tiers)
 
-### What Counts as MAU?
+### What Counts as MRU?
 
-- Any user who signs in during the month
-- Active session = counted
-- Multiple sign-ins = counted once
+- A user who returns to your app 24+ hours after signing up ("first day free")
+- Users who sign up and never come back = not counted
+- Multiple visits in a month = counted once
 
 ## Cost Optimization Strategies
 
@@ -52,7 +53,7 @@ export async function getOrCreateSession() {
 
 ```typescript
 // lib/guest-users.ts
-// Use guest mode for non-essential features to reduce MAU
+// Use guest mode for non-essential features to reduce MRU
 
 export function useGuestOrAuth() {
   const { userId, isLoaded, isSignedIn } = useUser()
@@ -84,7 +85,7 @@ export async function savePreference(key: string, value: any) {
     // Authenticated - save to user profile
     await saveToUserProfile(userId, key, value)
   } else if (guestId) {
-    // Guest - save to localStorage (no Clerk MAU cost)
+    // Guest - save to localStorage (no Clerk MRU cost)
     localStorage.setItem(`pref_${key}`, JSON.stringify(value))
   }
 }
@@ -123,7 +124,7 @@ export function FeatureGate({ children, requiresAuth = false }) {
   return children
 }
 
-// Usage - only count MAU when user accesses premium features
+// Usage - only accrue MRU when user accesses premium features
 function App() {
   return (
     <div>
@@ -196,16 +197,16 @@ export async function getMonthlyUsageEstimate() {
   })
 
   // Estimate cost
-  const includedMAU = 10000 // Pro tier
-  const extraUsers = Math.max(0, totalCount - includedMAU)
+  const includedMRU = 50000 // Free (Hobby) and Pro tiers
+  const extraUsers = Math.max(0, totalCount - includedMRU)
   const estimatedCost = 25 + (extraUsers * 0.02)
 
   return {
     totalUsers: totalCount,
-    includedMAU,
+    includedMRU,
     extraUsers,
     estimatedCost,
-    percentageUsed: (totalCount / includedMAU) * 100
+    percentageUsed: (totalCount / includedMRU) * 100
   }
 }
 
@@ -214,7 +215,7 @@ export async function checkUsageAlerts() {
   const usage = await getMonthlyUsageEstimate()
 
   if (usage.percentageUsed > 80) {
-    await sendAlert(`Clerk usage at ${usage.percentageUsed}% of included MAU`)
+    await sendAlert(`Clerk usage at ${usage.percentageUsed}% of included MRU`)
   }
 }
 ```
@@ -226,7 +227,7 @@ export async function checkUsageAlerts() {
 - [ ] Defer authentication until necessary
 - [ ] Batch API calls
 - [ ] Cache user/org data aggressively
-- [ ] Monitor MAU usage regularly
+- [ ] Monitor MRU usage regularly
 - [ ] Remove inactive users periodically
 - [ ] Use webhooks instead of polling
 
@@ -236,15 +237,15 @@ export async function checkUsageAlerts() {
 // Calculate monthly cost
 function estimateMonthlyCost(
   tier: 'free' | 'pro' | 'enterprise',
-  expectedMAU: number
+  expectedMRU: number
 ): number {
   switch (tier) {
     case 'free':
-      return expectedMAU <= 10000 ? 0 : Infinity // Upgrade required
+      return expectedMRU <= 50000 ? 0 : Infinity // Upgrade required
     case 'pro':
-      const includedMAU = 10000
+      const includedMRU = 50000
       const basePrice = 25
-      const extraUsers = Math.max(0, expectedMAU - includedMAU)
+      const extraUsers = Math.max(0, expectedMRU - includedMRU)
       return basePrice + (extraUsers * 0.02)
     case 'enterprise':
       return -1 // Contact sales
@@ -252,7 +253,7 @@ function estimateMonthlyCost(
 }
 
 // Examples
-console.log(estimateMonthlyCost('pro', 5000))   // $25
-console.log(estimateMonthlyCost('pro', 20000))  // $225
-console.log(estimateMonthlyCost('pro', 100000)) // $1825
+console.log(estimateMonthlyCost('free', 20000))  // $0
+console.log(estimateMonthlyCost('pro', 60000))   // $225
+console.log(estimateMonthlyCost('pro', 100000))  // $1025
 ```

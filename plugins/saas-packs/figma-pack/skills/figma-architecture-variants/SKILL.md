@@ -13,7 +13,7 @@ description: 'Choose between Figma integration architectures: CLI script, webhoo
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

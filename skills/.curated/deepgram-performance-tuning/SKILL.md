@@ -13,7 +13,7 @@ description: 'Optimize Deepgram API performance for faster transcription and low
 
   '
 allowed-tools: Read, Write, Edit, Bash(ffmpeg:*), Bash(ffprobe:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

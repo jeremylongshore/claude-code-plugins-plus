@@ -3,7 +3,7 @@ name: validating-cors-policies
 description: Validate CORS policies for security issues and misconfigurations. Use
   when reviewing cross-origin resource sharing. Trigger with 'validate CORS', 'check
   CORS policy', or 'review cross-origin'.
-version: 1.0.0
+version: 1.24.0
 allowed-tools: Read, WebFetch, WebSearch, Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

@@ -10,7 +10,7 @@ description: 'Collect Attio integration diagnostic evidence -- API health, scope
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

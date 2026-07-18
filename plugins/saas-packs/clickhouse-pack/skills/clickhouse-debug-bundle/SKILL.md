@@ -1,13 +1,15 @@
 ---
 name: clickhouse-debug-bundle
-description: "Collect ClickHouse diagnostic data \u2014 system tables, query logs,\
-  \ merge status,\nand server metrics for support tickets and troubleshooting.\nUse\
-  \ when investigating persistent issues, preparing debug artifacts,\nor collecting\
-  \ evidence for ClickHouse support.\nTrigger: \"clickhouse debug\", \"clickhouse\
-  \ diagnostics\", \"clickhouse support bundle\",\n\"collect clickhouse logs\", \"\
-  clickhouse system tables\".\n"
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+description: |
+  Collect ClickHouse diagnostic data — system tables, query logs, merge status,
+  and server metrics for support tickets and troubleshooting.
+  Use when investigating persistent issues, preparing debug artifacts,
+  or collecting evidence for ClickHouse support.
+  Trigger with "clickhouse debug", "clickhouse diagnostics",
+  "clickhouse support bundle", "collect clickhouse logs",
+  "clickhouse system tables".
+allowed-tools: Read, Bash(curl:*), Bash(tar:*)
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -22,229 +24,103 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Collect comprehensive diagnostic data from ClickHouse system tables for
-troubleshooting performance issues, merge problems, or support escalation.
+Collect comprehensive diagnostic data from ClickHouse `system.*` tables for
+troubleshooting performance issues, merge problems, or support escalation. The
+skill runs a graduated set of queries — server health, disk and table health,
+query performance, and merge/mutation status — then packages the output into a
+single artifact you can attach to a support ticket.
 
 ## Prerequisites
 
-- Access to ClickHouse with `system.*` table read permissions
-- `curl` or `clickhouse-client` available
+- Access to a ClickHouse server with `SELECT` permission on `system.*` tables
+  (grant `SELECT ON system.*` to a restricted user if needed).
+- Either `curl` (for the HTTP interface, port 8123) or `clickhouse-client`.
+- Connection settings exported as environment variables so no credentials are
+  hardcoded: `CLICKHOUSE_HOST`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`.
+- For deep query-log analysis, `log_queries = 1` must be enabled on the server.
 
 ## Instructions
 
-### Step 1: Server Health Overview
+Work through the four diagnostic areas below. For an interactive investigation,
+run the query for the symptom you are chasing; to produce a full artifact, run
+the automated collector in Step 5. The complete query set for every step lives
+in [references/diagnostic-queries.md](references/diagnostic-queries.md).
+
+### Step 1: Server health overview
+
+Confirm the server version, uptime, and current-load gauges first — this frames
+every later finding.
 
 ```sql
--- Server version and uptime
 SELECT
     version()                       AS version,
     uptime()                        AS uptime_seconds,
     formatReadableTimeDelta(uptime()) AS uptime_human,
     currentDatabase()               AS current_db;
-
--- Global metrics snapshot
-SELECT metric, value, description
-FROM system.metrics
-WHERE metric IN (
-    'Query', 'Merge', 'PartMutation', 'ReplicatedFetch',
-    'TCPConnection', 'HTTPConnection', 'MemoryTracking',
-    'BackgroundMergesAndMutationsPoolTask'
-);
 ```
 
-### Step 2: Disk and Table Health
+Then snapshot `system.metrics` for the key gauges (`Query`, `Merge`,
+`MemoryTracking`, connection counts). Full metric list in the reference.
+
+### Step 2: Disk and table health
+
+Find the largest tables and any table under merge pressure (too many active
+parts). The full query set covers per-table disk usage, the `parts > 100`
+merge-pressure check, and per-disk free space from `system.disks`.
 
 ```sql
--- Disk usage by table (top 20)
-SELECT
-    database,
-    table,
-    formatReadableSize(sum(bytes_on_disk))  AS disk_size,
-    sum(rows)                               AS total_rows,
-    count()                                 AS active_parts,
-    max(modification_time)                  AS last_modified
-FROM system.parts
-WHERE active
-GROUP BY database, table
-ORDER BY sum(bytes_on_disk) DESC
-LIMIT 20;
-
 -- Tables with too many parts (merge pressure)
 SELECT database, table, count() AS parts
 FROM system.parts WHERE active
 GROUP BY database, table
 HAVING parts > 100
 ORDER BY parts DESC;
-
--- Disk space per disk
-SELECT
-    name,
-    path,
-    formatReadableSize(total_space)     AS total,
-    formatReadableSize(free_space)      AS free,
-    round(free_space / total_space * 100, 1) AS free_pct
-FROM system.disks;
 ```
 
-### Step 3: Query Performance Analysis
+### Step 3: Query performance analysis
 
-```sql
--- Slowest queries in the last 24 hours
-SELECT
-    event_time,
-    query_duration_ms,
-    read_rows,
-    read_bytes,
-    result_rows,
-    memory_usage,
-    substring(query, 1, 200) AS query_preview
-FROM system.query_log
-WHERE type = 'QueryFinish'
-  AND event_time >= now() - INTERVAL 24 HOUR
-ORDER BY query_duration_ms DESC
-LIMIT 20;
+Pull the slowest queries, failed queries, and normalized query patterns from
+`system.query_log` over the last 24 hours. See the reference for the slow-query,
+exception, and `normalized_query_hash` aggregation queries.
 
--- Failed queries (last 24h)
-SELECT
-    event_time,
-    exception_code,
-    exception,
-    substring(query, 1, 200) AS query_preview
-FROM system.query_log
-WHERE type = 'ExceptionWhileProcessing'
-  AND event_time >= now() - INTERVAL 24 HOUR
-ORDER BY event_time DESC
-LIMIT 20;
+### Step 4: Merge and mutation status
 
--- Query patterns (group by normalized query)
-SELECT
-    normalized_query_hash,
-    count()                          AS executions,
-    avg(query_duration_ms)           AS avg_ms,
-    max(query_duration_ms)           AS max_ms,
-    sum(read_rows)                   AS total_rows_read,
-    formatReadableSize(sum(read_bytes)) AS total_read,
-    any(substring(query, 1, 150))    AS sample_query
-FROM system.query_log
-WHERE type = 'QueryFinish'
-  AND event_time >= now() - INTERVAL 24 HOUR
-GROUP BY normalized_query_hash
-ORDER BY sum(query_duration_ms) DESC
-LIMIT 20;
-```
+Inspect `system.merges`, pending `system.mutations`, and `system.replicas` to
+spot stuck merges, long-running mutations, or replicas that have fallen behind.
+Full queries in the reference.
 
-### Step 4: Merge and Mutation Status
+### Step 5: Run the automated collector
 
-```sql
--- Active merges
-SELECT
-    database, table, elapsed, progress,
-    num_parts, result_part_name,
-    formatReadableSize(total_size_bytes_compressed) AS size
-FROM system.merges;
-
--- Pending mutations
-SELECT database, table, mutation_id, command, create_time, is_done
-FROM system.mutations
-WHERE NOT is_done
-ORDER BY create_time DESC;
-
--- Replication health (if using ReplicatedMergeTree)
-SELECT
-    database, table,
-    is_leader, total_replicas, active_replicas,
-    queue_size, inserts_in_queue, merges_in_queue
-FROM system.replicas
-WHERE active_replicas < total_replicas OR queue_size > 0;
-```
-
-### Step 5: Automated Debug Script
+For a one-shot artifact, use the bash or Node.js collector in
+[references/collectors.md](references/collectors.md). Both authenticate from the
+environment variables above and write one file per diagnostic area:
 
 ```bash
-#!/bin/bash
-# clickhouse-debug-bundle.sh
-set -euo pipefail
-
-CH_HOST="${CLICKHOUSE_HOST:-http://localhost:8123}"
-CH_USER="${CLICKHOUSE_USER:-default}"
-CH_PASS="${CLICKHOUSE_PASSWORD:-}"
-BUNDLE="ch-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"
-
-ch_query() {
-  curl -sS "${CH_HOST}" \
-    --user "${CH_USER}:${CH_PASS}" \
-    --data-binary "$1" 2>&1
-}
-
-echo "Collecting ClickHouse diagnostics..."
-
-ch_query "SELECT version(), uptime(), currentDatabase()" > "$BUNDLE/version.txt"
-ch_query "SELECT * FROM system.metrics FORMAT TabSeparatedWithNames" > "$BUNDLE/metrics.tsv"
-ch_query "SELECT * FROM system.events FORMAT TabSeparatedWithNames" > "$BUNDLE/events.tsv"
-ch_query "SELECT database, table, count() AS parts, sum(rows) AS rows, \
-  formatReadableSize(sum(bytes_on_disk)) AS size FROM system.parts \
-  WHERE active GROUP BY database, table ORDER BY sum(bytes_on_disk) DESC \
-  FORMAT TabSeparatedWithNames" > "$BUNDLE/tables.tsv"
-ch_query "SELECT * FROM system.merges FORMAT TabSeparatedWithNames" > "$BUNDLE/merges.tsv"
-ch_query "SELECT * FROM system.query_log WHERE type IN ('ExceptionWhileProcessing') \
-  AND event_time >= now() - INTERVAL 1 HOUR ORDER BY event_time DESC LIMIT 50 \
-  FORMAT TabSeparatedWithNames" > "$BUNDLE/errors.tsv"
-ch_query "SELECT * FROM system.replicas FORMAT TabSeparatedWithNames" > "$BUNDLE/replicas.tsv" 2>/dev/null || true
-
-tar -czf "${BUNDLE}.tar.gz" "$BUNDLE"
-rm -rf "$BUNDLE"
-echo "Bundle created: ${BUNDLE}.tar.gz"
+CLICKHOUSE_HOST=http://localhost:8123 \
+CLICKHOUSE_USER=default \
+CLICKHOUSE_PASSWORD=secret \
+  ./clickhouse-debug-bundle.sh
 ```
 
-### Step 6: Node.js Debug Collector
+## Output
 
-```typescript
-import { createClient } from '@clickhouse/client';
+The automated collector produces a timestamped gzipped tarball
+`ch-debug-YYYYMMDD-HHMMSS.tar.gz` containing one TSV/TXT file per diagnostic
+area:
 
-async function collectDebugBundle(client: ReturnType<typeof createClient>) {
-  const queries = {
-    version: 'SELECT version() AS ver, uptime() AS up',
-    tables: `SELECT database, table, count() AS parts, sum(rows) AS rows
-             FROM system.parts WHERE active GROUP BY database, table
-             ORDER BY sum(bytes_on_disk) DESC LIMIT 20`,
-    slow: `SELECT query_duration_ms, substring(query,1,200) AS q
-           FROM system.query_log WHERE type='QueryFinish'
-           AND event_time >= now() - INTERVAL 1 HOUR
-           ORDER BY query_duration_ms DESC LIMIT 10`,
-    errors: `SELECT exception_code, exception, substring(query,1,200) AS q
-             FROM system.query_log WHERE type='ExceptionWhileProcessing'
-             AND event_time >= now() - INTERVAL 1 HOUR LIMIT 10`,
-    merges: 'SELECT * FROM system.merges',
-  };
+| File | Contents |
+|------|----------|
+| `version.txt` | Server version, uptime, current database |
+| `metrics.tsv` | Full `system.metrics` snapshot (gauges) |
+| `events.tsv` | Full `system.events` snapshot (cumulative counters) |
+| `tables.tsv` | Per-table parts, rows, and on-disk size |
+| `merges.tsv` | Currently running merges |
+| `errors.tsv` | Exceptions from `system.query_log` (last hour) |
+| `replicas.tsv` | Replication status (best-effort; empty if not replicated) |
 
-  const bundle: Record<string, unknown> = {};
-  for (const [key, sql] of Object.entries(queries)) {
-    try {
-      const rs = await client.query({ query: sql, format: 'JSONEachRow' });
-      bundle[key] = await rs.json();
-    } catch (e) {
-      bundle[key] = { error: (e as Error).message };
-    }
-  }
-
-  return bundle;
-}
-```
-
-## Key System Tables
-
-| Table | Purpose |
-|-------|---------|
-| `system.parts` | Data parts per table (size, rows, merge status) |
-| `system.query_log` | Query history with timing and errors |
-| `system.metrics` | Real-time server metrics (gauges) |
-| `system.events` | Cumulative server counters |
-| `system.merges` | Currently running merges |
-| `system.mutations` | ALTER TABLE mutations (UPDATE/DELETE) |
-| `system.replicas` | Replication status per table |
-| `system.processes` | Currently executing queries |
-| `system.disks` | Disk space and health |
+An interactive run instead returns the result set of each query directly. The
+Node.js collector returns a single JSON object keyed by diagnostic area, with a
+per-key `{ error }` entry when an individual query fails.
 
 ## Error Handling
 
@@ -252,14 +128,42 @@ async function collectDebugBundle(client: ReturnType<typeof createClient>) {
 |-------|-------|----------|
 | `system.query_log` empty | Logging disabled | Set `log_queries = 1` |
 | Permission denied on system tables | Restricted user | Grant `SELECT ON system.*` |
-| Bundle too large | Too much history | Narrow time window |
+| Bundle too large | Too much history | Narrow the `INTERVAL` time window |
+| `system.replicas` errors | Table not replicated | Expected — collector ignores it (`\|\| true`) |
+| `curl: (7) connection refused` | Wrong host/port | Verify `CLICKHOUSE_HOST` (HTTP interface is 8123) |
+
+## Examples
+
+**Investigate a slow dashboard (interactive).** Run Step 1 to confirm the server
+is healthy, then Step 3's slow-query select to find the offending queries and
+Step 2's merge-pressure check to rule out a table with 100+ parts starving the
+merge pool.
+
+**Prepare a support ticket (artifact).** Export the three connection variables
+and run the Step 5 bash collector. Attach the resulting
+`ch-debug-YYYYMMDD-HHMMSS.tar.gz` to the ticket — it gives ClickHouse support
+the version, metrics, table sizes, active merges, and recent exceptions in one
+file.
+
+**Collect from application code.** Import `collectDebugBundle` from
+[references/collectors.md](references/collectors.md), pass it an authenticated
+`@clickhouse/client` handle, and persist the returned JSON object alongside the
+error you are triaging.
+
+Full, runnable query text and both collector scripts:
+[references/diagnostic-queries.md](references/diagnostic-queries.md) and
+[references/collectors.md](references/collectors.md).
 
 ## Resources
 
 - [System Tables Reference](https://clickhouse.com/docs/operations/system-tables)
 - [Query Log](https://clickhouse.com/docs/operations/system-tables/query_log)
 - [Server Metrics](https://clickhouse.com/docs/operations/system-tables/metrics)
+- [references/diagnostic-queries.md](references/diagnostic-queries.md) — every diagnostic query, grouped by area
+- [references/collectors.md](references/collectors.md) — bash + Node.js bundle collectors with auth notes
 
 ## Next Steps
 
-For connection and concurrency issues, see `clickhouse-rate-limits`.
+For connection and concurrency issues that show up as failed queries or
+exhausted connection gauges in this bundle, follow up with the
+`clickhouse-rate-limits` skill.

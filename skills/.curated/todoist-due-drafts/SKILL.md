@@ -4,7 +4,7 @@ description: Check Todoist for tasks due today (and overdue) that involve pingin
   emailing, or following up with someone. Auto-draft the emails using meeting context
   and notify via WhatsApp. Use when running the daily due-drafts cron, or when user
   asks to process email tasks from Todoist.
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Martin Gontovnikas <martin@hypergrowthpartners.com>
 tags:

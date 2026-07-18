@@ -1,6 +1,6 @@
 {
   "name": "accessibility-test-scanner",
-  "version": "1.0.0",
+  "version": "1.23.0",
   "description": "A11y compliance testing with WCAG 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits",
   "author": {
     "name": "Claude Code Plugin Hub",

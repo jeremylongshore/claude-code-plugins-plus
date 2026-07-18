@@ -3,7 +3,7 @@ name: zero-tech-debt
 description: |
   Rebuild a feature as if the correct product architecture existed from day one — remove compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Use when the operator says "refactor properly," "clean up," "rewrite," "modernize," "remove legacy," "simplify," "rethink," "pay down tech debt," or signals frustration with accumulated complexity. Do NOT use for hotfixes, bug repros, surgical patches, or security backports — blast-radius minimization wins there. Trigger with "/zero-tech-debt", "do it right this time", "the way it should have been built", "refactor toward intent".
 allowed-tools: Read, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(fd:*)
-version: 1.0.0
+version: 1.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Designed for Claude Code

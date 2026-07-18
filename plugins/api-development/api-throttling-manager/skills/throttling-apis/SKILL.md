@@ -8,7 +8,7 @@ description: 'Implement API throttling policies to protect backend services from
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

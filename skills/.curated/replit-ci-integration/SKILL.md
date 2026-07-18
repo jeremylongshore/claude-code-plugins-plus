@@ -13,7 +13,7 @@ description: 'Configure CI/CD for Replit with GitHub Actions, automated testing,
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

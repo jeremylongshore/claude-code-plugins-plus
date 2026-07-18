@@ -6,7 +6,7 @@ description: 'Execute Juicebox production checklist.
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.0.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

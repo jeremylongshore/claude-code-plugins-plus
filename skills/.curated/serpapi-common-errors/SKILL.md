@@ -9,7 +9,7 @@ description: 'Diagnose and fix SerpApi errors: invalid keys, exhausted credits, 
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

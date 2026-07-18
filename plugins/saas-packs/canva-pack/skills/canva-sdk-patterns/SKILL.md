@@ -13,7 +13,7 @@ description: 'Apply production-ready Canva Connect API client patterns for TypeS
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

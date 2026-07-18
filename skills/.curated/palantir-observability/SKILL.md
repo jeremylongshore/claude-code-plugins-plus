@@ -13,7 +13,7 @@ description: 'Set up observability for Palantir Foundry integrations with metric
 
   '
 allowed-tools: Read, Write, Edit
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

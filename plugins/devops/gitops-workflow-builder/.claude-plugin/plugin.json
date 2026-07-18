@@ -1,6 +1,6 @@
 {
   "name": "gitops-workflow-builder",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Build GitOps workflows with ArgoCD and Flux",
   "author": {
     "name": "Claude Code Plugins",

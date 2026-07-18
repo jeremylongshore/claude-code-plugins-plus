@@ -5,7 +5,7 @@ description: "Generate the daily executive digest \u2014 a single WhatsApp summa
   \ emails, promised follow-ups, open Todoist tasks, and upcoming calendar events.\
   \ Use when running the daily digest cron, or when user asks for a status digest,\
   \ daily summary, \"what's pending\", or \"catch me up\"."
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Martin Gontovnikas <martin@hypergrowthpartners.com>
 tags:

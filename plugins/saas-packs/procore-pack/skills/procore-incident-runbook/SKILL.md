@@ -5,7 +5,7 @@ description: "Procore incident runbook \u2014 construction management platform i
   Trigger with phrases like \"procore incident runbook\", \"procore-incident-runbook\"\
   .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

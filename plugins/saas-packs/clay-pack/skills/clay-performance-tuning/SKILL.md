@@ -13,7 +13,7 @@ description: 'Optimize Clay table enrichment throughput, reduce processing time,
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

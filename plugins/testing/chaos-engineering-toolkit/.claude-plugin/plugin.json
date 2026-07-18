@@ -1,6 +1,6 @@
 {
   "name": "chaos-engineering-toolkit",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
   "author": {
     "name": "Claude Code Plugin Hub",

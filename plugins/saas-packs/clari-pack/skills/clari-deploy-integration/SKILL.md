@@ -13,7 +13,7 @@ description: 'Deploy Clari export pipelines to production with Airflow, Cloud Fu
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

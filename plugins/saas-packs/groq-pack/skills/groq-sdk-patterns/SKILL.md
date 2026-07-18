@@ -12,7 +12,7 @@ description: 'Apply production-ready Groq SDK patterns for TypeScript and Python
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,15 +28,28 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 Production patterns for the `groq-sdk` package. The Groq SDK mirrors the OpenAI SDK interface (`chat.completions.create`), so patterns feel familiar but must account for Groq-specific behavior: extreme speed (500+ tok/s), aggressive rate limits on free tier, and unique response metadata like `queue_time` and `completion_time`.
 
+The full, copy-paste-ready implementations live in `references/` so this file stays a fast map of the workflow. Read the summary here, then drill into the language file you need.
+
 ## Prerequisites
 
-- `groq-sdk` installed
+- `groq-sdk` (TypeScript) or `groq` (Python) installed
+- `GROQ_API_KEY` set in the environment
 - Understanding of async/await and error handling
 - Familiarity with OpenAI SDK patterns (Groq is API-compatible)
 
 ## Instructions
 
-### Step 1: Typed Client Singleton
+Build the integration in layers. Each step below is a one-line summary; the full typed implementation is in [references/typescript-patterns.md](references/typescript-patterns.md) (steps 1–5, 7) and [references/python-patterns.md](references/python-patterns.md) (step 6).
+
+1. **Typed client singleton** — one shared `Groq` client with `maxRetries` and `timeout`, so the whole app reuses one connection pool and config.
+2. **Type-safe completion wrapper** — return a typed result that surfaces Groq's unique timing fields (`queue_time`, `completion_time`, `total_time`) and a computed `tokensPerSec`.
+3. **Streaming with typed events** — an `AsyncGenerator<string>` that yields `delta.content` tokens.
+4. **Error handling with Groq error types** — branch on `Groq.APIError` (429, 401, other) and `Groq.APIConnectionError`; rethrow the unknown.
+5. **Retry with exponential backoff** — honor the `retry-after` header on 429s, else jittered backoff.
+6. **Python patterns** — sync `Groq()`, `AsyncGroq()`, and streaming (see the Python reference).
+7. **Multi-tenant client factory** — cache one client per tenant so API keys stay isolated.
+
+The essential skeleton — a shared singleton every other pattern builds on:
 
 ```typescript
 // src/groq/client.ts
@@ -56,202 +69,16 @@ export function getGroq(): Groq {
 }
 ```
 
-### Step 2: Type-Safe Completion Wrapper
+Groq differs from OpenAI in a few details (package name, base URL, extra `usage` timing fields, error class names). The full comparison and error-handling matrix are in [references/sdk-differences.md](references/sdk-differences.md).
 
-```typescript
-import Groq from "groq-sdk";
-import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
+## Output
 
-const groq = getGroq();
+Applying these patterns produces:
 
-interface CompletionResult {
-  content: string;
-  model: string;
-  tokens: { prompt: number; completion: number; total: number };
-  timing: { queueMs: number; totalMs: number; tokensPerSec: number };
-}
-
-async function complete(
-  messages: ChatCompletionMessageParam[],
-  model = "llama-3.3-70b-versatile",
-  options?: { maxTokens?: number; temperature?: number }
-): Promise<CompletionResult> {
-  const response = await groq.chat.completions.create({
-    model,
-    messages,
-    max_tokens: options?.maxTokens ?? 1024,
-    temperature: options?.temperature ?? 0.7,
-  });
-
-  const usage = response.usage!;
-  return {
-    content: response.choices[0].message.content || "",
-    model: response.model,
-    tokens: {
-      prompt: usage.prompt_tokens,
-      completion: usage.completion_tokens,
-      total: usage.total_tokens,
-    },
-    timing: {
-      queueMs: (usage.queue_time ?? 0) * 1000,
-      totalMs: (usage.total_time ?? 0) * 1000,
-      tokensPerSec: usage.completion_tokens / ((usage.completion_time ?? 1) || 1),
-    },
-  };
-}
-```
-
-### Step 3: Streaming with Typed Events
-
-```typescript
-async function* streamCompletion(
-  messages: ChatCompletionMessageParam[],
-  model = "llama-3.3-70b-versatile"
-): AsyncGenerator<string> {
-  const stream = await groq.chat.completions.create({
-    model,
-    messages,
-    stream: true,
-    max_tokens: 2048,
-  });
-
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content;
-    if (content) yield content;
-  }
-}
-
-// Usage
-async function printStream(prompt: string) {
-  const messages: ChatCompletionMessageParam[] = [
-    { role: "user", content: prompt },
-  ];
-
-  for await (const token of streamCompletion(messages)) {
-    process.stdout.write(token);
-  }
-}
-```
-
-### Step 4: Error Handling with Groq Error Types
-
-```typescript
-import Groq from "groq-sdk";
-
-async function safeComplete(
-  messages: ChatCompletionMessageParam[],
-  model = "llama-3.3-70b-versatile"
-): Promise<{ data: CompletionResult | null; error: string | null }> {
-  try {
-    const data = await complete(messages, model);
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof Groq.APIError) {
-      // Groq SDK throws typed API errors
-      if (err.status === 429) {
-        const retryAfter = err.headers?.["retry-after"];
-        return { data: null, error: `Rate limited. Retry after ${retryAfter}s` };
-      }
-      if (err.status === 401) {
-        return { data: null, error: "Invalid API key. Check GROQ_API_KEY." };
-      }
-      return { data: null, error: `API error ${err.status}: ${err.message}` };
-    }
-    if (err instanceof Groq.APIConnectionError) {
-      return { data: null, error: "Network error connecting to api.groq.com" };
-    }
-    throw err; // Unknown error, let it propagate
-  }
-}
-```
-
-### Step 5: Retry with Exponential Backoff
-
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  baseDelayMs = 1000
-): Promise<T> {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (err instanceof Groq.APIError && err.status === 429) {
-        const retryAfter = parseInt(err.headers?.["retry-after"] || "0");
-        const delay = retryAfter > 0
-          ? retryAfter * 1000
-          : baseDelayMs * Math.pow(2, attempt) + Math.random() * 500;
-        console.warn(`Rate limited. Waiting ${(delay / 1000).toFixed(1)}s...`);
-        await new Promise((r) => setTimeout(r, delay));
-        continue;
-      }
-      throw err; // Non-retryable error
-    }
-  }
-  throw new Error(`Failed after ${maxRetries} retries`);
-}
-```
-
-### Step 6: Python Patterns
-
-```python
-# Synchronous client
-from groq import Groq
-
-client = Groq()  # Reads GROQ_API_KEY from env
-
-completion = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
-    messages=[{"role": "user", "content": "Hello"}],
-)
-
-# Async client
-from groq import AsyncGroq
-
-async_client = AsyncGroq()
-
-async def async_complete(prompt: str) -> str:
-    completion = await async_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return completion.choices[0].message.content
-
-# Streaming
-stream = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
-    messages=[{"role": "user", "content": "Hello"}],
-    stream=True,
-)
-for chunk in stream:
-    content = chunk.choices[0].delta.content
-    if content:
-        print(content, end="")
-```
-
-### Step 7: Multi-Tenant Client Factory
-
-```typescript
-const clients = new Map<string, Groq>();
-
-export function getClientForTenant(tenantId: string, apiKey: string): Groq {
-  if (!clients.has(tenantId)) {
-    clients.set(tenantId, new Groq({ apiKey, maxRetries: 3 }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-## Key SDK Differences from OpenAI
-
-| Feature | OpenAI SDK | Groq SDK |
-|---------|-----------|----------|
-| Package name | `openai` | `groq-sdk` |
-| Import | `import OpenAI from "openai"` | `import Groq from "groq-sdk"` |
-| Base URL | `api.openai.com/v1` | `api.groq.com/openai/v1` |
-| Response `usage` | Standard fields | Adds `queue_time`, `prompt_time`, `completion_time`, `total_time` |
-| Error types | `OpenAI.APIError` | `Groq.APIError`, `Groq.APIConnectionError` |
+- A reusable `getGroq()` client module and, for multi-tenant apps, a `getClientForTenant()` factory.
+- A `complete()` wrapper returning a typed `CompletionResult` — `content`, `model`, `tokens` (prompt/completion/total), and `timing` (`queueMs`, `totalMs`, `tokensPerSec`).
+- A `safeComplete()` variant returning `{ data, error }` so callers never face an uncaught exception.
+- Streaming helpers that yield string tokens as they arrive.
 
 ## Error Handling
 
@@ -262,12 +89,54 @@ export function getClientForTenant(tenantId: string, apiKey: string): Groq {
 | Typed error checking | `instanceof Groq.APIError` | Handles each status code specifically |
 | Client singleton | App-wide usage | Single connection pool, consistent config |
 
+- **429 (rate limited):** read `err.headers["retry-after"]` and wait that long before retrying; free tier hits this often.
+- **401 (bad key):** surface a clear "Check GROQ_API_KEY" message — do not retry.
+- **`APIConnectionError`:** network issue reaching `api.groq.com`; retry or fail fast per context.
+- **Unknown errors:** rethrow so they are not silently swallowed.
+
+Full typed handlers: [references/typescript-patterns.md](references/typescript-patterns.md) (Step 4 and Step 5).
+
+## Examples
+
+**Non-streaming completion with timing metadata** (full code in [references/typescript-patterns.md](references/typescript-patterns.md), Step 2):
+
+```typescript
+const result = await complete(
+  [{ role: "user", content: "Summarize Groq's speed advantage." }],
+  "llama-3.3-70b-versatile"
+);
+console.log(result.content);
+console.log(`${result.timing.tokensPerSec.toFixed(0)} tok/s`);
+```
+
+**Streaming tokens to stdout** (full code in the TS reference, Step 3):
+
+```typescript
+for await (const token of streamCompletion([{ role: "user", content: "Hello" }])) {
+  process.stdout.write(token);
+}
+```
+
+**Python one-liner** (full sync/async/streaming in [references/python-patterns.md](references/python-patterns.md)):
+
+```python
+from groq import Groq
+client = Groq()
+print(client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[{"role": "user", "content": "Hello"}],
+).choices[0].message.content)
+```
+
 ## Resources
 
 - [Groq TypeScript SDK](https://github.com/groq/groq-typescript)
 - [Groq API Reference](https://console.groq.com/docs/api-reference)
 - [Groq Error Codes](https://console.groq.com/docs/errors)
+- [references/typescript-patterns.md](references/typescript-patterns.md) — full TS implementations (steps 1–5, 7)
+- [references/python-patterns.md](references/python-patterns.md) — full Python implementations (step 6)
+- [references/sdk-differences.md](references/sdk-differences.md) — OpenAI-vs-Groq comparison and error matrix
 
 ## Next Steps
 
-Apply patterns in `groq-core-workflow-a` for real-world chat completions.
+Apply these patterns in `groq-core-workflow-a` for real-world chat completions, then wire `safeComplete` and `withRetry` into every call site so rate limits and network errors are handled consistently across the codebase.

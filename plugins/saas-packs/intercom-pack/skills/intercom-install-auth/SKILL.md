@@ -1,19 +1,13 @@
 ---
 name: intercom-install-auth
-description: 'Install and configure Intercom API authentication with access tokens
-  or OAuth.
-
+description: |
+  Install and configure Intercom API authentication with access tokens or OAuth.
   Use when setting up a new Intercom integration, configuring API credentials,
-
   or initializing the intercom-client SDK in your project.
-
   Trigger with phrases like "install intercom", "setup intercom",
-
   "intercom auth", "configure intercom API key", "intercom access token".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+allowed-tools: Write, Bash(npm:*)
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,7 +21,7 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up the official `intercom-client` TypeScript SDK and configure authentication via access tokens (private apps) or OAuth (public apps).
+Set up the official `intercom-client` TypeScript SDK and configure authentication via access tokens (private apps) or OAuth (public apps). This skill installs the SDK with a Bash npm command, uses Write to create the client config and `.env`, and verifies the connection.
 
 ## Prerequisites
 
@@ -48,7 +42,7 @@ The package exports `IntercomClient` and all TypeScript types under the `Interco
 
 ### Step 2: Configure Access Token Authentication
 
-Access tokens authenticate private apps that access your own Intercom workspace.
+Access tokens authenticate private apps that access your own Intercom workspace. Use Write to create the client module and a `.env` holding the token (add `.env` to `.gitignore`):
 
 ```typescript
 import { IntercomClient } from "intercom-client";
@@ -58,95 +52,41 @@ const client = new IntercomClient({
 });
 ```
 
-Store the token securely:
-
-```bash
-# .env (add to .gitignore)
-INTERCOM_ACCESS_TOKEN=dG9rOmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6
-
-# Verify .gitignore includes .env
-echo '.env' >> .gitignore
-```
+See [examples.md](references/examples.md) for the full `.env` setup and secure-storage steps.
 
 ### Step 3: Verify Connection
 
-```typescript
-async function verifyConnection() {
-  try {
-    // List admins to verify the token works
-    const admins = await client.admins.list();
-    console.log("Connected! Admins:", admins.admins.length);
-    for (const admin of admins.admins) {
-      console.log(`  - ${admin.name} (${admin.email})`);
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Connection failed:", error.message);
-    }
-  }
-}
+List admins to confirm the token authenticates end-to-end:
 
-verifyConnection();
+```typescript
+const admins = await client.admins.list();
+console.log("Connected! Admins:", admins.admins.length);
 ```
+
+The complete verification function (with error handling and expected output) is in [examples.md](references/examples.md).
 
 ### Step 4: OAuth Setup (Public Apps)
 
-For apps that access other workspaces, configure OAuth:
+For a **public app** that accesses other workspaces, run the OAuth authorization → token-exchange flow, then initialize the client with the returned token:
 
 ```typescript
-// Step 1: Redirect user to Intercom authorization
-const authUrl = `https://app.intercom.com/oauth?client_id=${CLIENT_ID}&state=${STATE}`;
-
-// Step 2: Exchange code for token at your callback endpoint
-async function handleOAuthCallback(code: string): Promise<string> {
-  const response = await fetch("https://api.intercom.io/auth/eagle/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      client_id: process.env.INTERCOM_CLIENT_ID,
-      client_secret: process.env.INTERCOM_CLIENT_SECRET,
-      code,
-    }),
-  });
-
-  const data = await response.json();
-  return data.token; // Use this token for API calls
-}
-
-// Step 3: Initialize client with OAuth token
 const client = new IntercomClient({ token: oauthToken });
 ```
 
-## API Versioning
+Full OAuth exchange, API-version pinning, and the scope matrix are in [oauth.md](references/oauth.md).
 
-Specify the API version header to pin behavior:
+## Output
 
-```typescript
-const client = new IntercomClient({
-  token: process.env.INTERCOM_ACCESS_TOKEN!,
-});
+Running this skill produces:
 
-// All requests use Bearer token in Authorization header:
-// Authorization: Bearer <token>
-// Intercom-Version: 2.11
-```
-
-The current stable API version is **2.11**. The SDK handles this automatically.
-
-## OAuth Scopes Reference
-
-| Scope | Access Granted |
-|-------|---------------|
-| Read admins | List workspace admins |
-| Read/write contacts | Create, update, search contacts |
-| Read/write conversations | Manage conversations and replies |
-| Read/write messages | Send outbound messages |
-| Read/write articles | Manage Help Center content |
-| Read/write tags | Tag contacts, companies, conversations |
-| Read/write events | Submit and read data events |
-| Read/write companies | Manage company records |
+- `intercom-client` installed in `node_modules` and added to `package.json`.
+- A configured `IntercomClient` module authenticated via access token or OAuth.
+- A `.env` holding `INTERCOM_ACCESS_TOKEN` (private app) or `INTERCOM_CLIENT_ID` / `INTERCOM_CLIENT_SECRET` (OAuth), with `.env` gitignored.
+- A verified connection — `client.admins.list()` returns your workspace admins, confirming the token and API version (**2.11**, applied automatically by the SDK) are correct.
 
 ## Error Handling
+
+Common authentication failures and fixes:
 
 | Error | HTTP Code | Cause | Solution |
 |-------|-----------|-------|----------|
@@ -155,23 +95,27 @@ The current stable API version is **2.11**. The SDK handles this automatically.
 | `token_revoked` | 401 | Token was revoked | Generate new access token |
 | `invalid_grant` | 400 | OAuth code expired | Restart OAuth flow |
 
-```typescript
-import { IntercomError } from "intercom-client";
+Catch `IntercomError` to branch on `statusCode` — the full typed pattern is in [error-handling.md](references/error-handling.md).
 
-try {
-  await client.contacts.list();
-} catch (error) {
-  if (error instanceof IntercomError) {
-    console.error(`Intercom error: ${error.statusCode} - ${error.message}`);
-    if (error.statusCode === 401) {
-      console.error("Token invalid. Regenerate at app.intercom.com > Developer Hub");
-    }
-  }
-}
+## Examples
+
+See [examples.md](references/examples.md) for three worked setups: the access-token client (private app, the common path), a connection-verify function with expected output, and an OAuth client (public app).
+
+Minimal working setup:
+
+```typescript
+import { IntercomClient } from "intercom-client";
+
+const client = new IntercomClient({ token: process.env.INTERCOM_ACCESS_TOKEN! });
+const admins = await client.admins.list();
+console.log("Connected! Admins:", admins.admins.length);
 ```
 
 ## Resources
 
+- [OAuth, versioning & scopes](references/oauth.md) — public-app deep dive.
+- [Error handling reference](references/error-handling.md) — full error matrix.
+- [Worked examples](references/examples.md) — copy-paste setups.
 - [Authentication Guide](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication)
 - [OAuth Scopes](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/oauth-scopes)
 - [Setting up OAuth](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/setting-up-oauth)
@@ -179,4 +123,4 @@ try {
 
 ## Next Steps
 
-After successful auth, proceed to `intercom-hello-world` for your first API call.
+After successful authentication, proceed to the `intercom-hello-world` skill to make your first API call — create a contact, then fetch it back to confirm read and write both work with your configured client.

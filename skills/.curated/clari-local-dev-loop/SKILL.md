@@ -12,7 +12,7 @@ description: 'Set up local development for Clari API integrations with mock data
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "recommendation-engine",
-  "version": "1.0.0",
+  "version": "1.21.0",
   "description": "Build recommendation systems and engines",
   "author": {
     "name": "Claude Code Plugins",

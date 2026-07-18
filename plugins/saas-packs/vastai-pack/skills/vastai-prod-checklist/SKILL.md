@@ -12,7 +12,7 @@ description: 'Execute Vast.ai production deployment checklist for GPU workloads.
 
   '
 allowed-tools: Read, Bash(vastai:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

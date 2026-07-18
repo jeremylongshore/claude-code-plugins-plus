@@ -10,7 +10,7 @@ description: 'Create comprehensive API documentation with examples, authenticati
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:docs-*)
-version: 1.0.0
+version: 1.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

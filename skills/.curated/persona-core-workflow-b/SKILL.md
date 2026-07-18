@@ -13,7 +13,7 @@ description: 'Work with Persona verification types: government ID, selfie, datab
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 2.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

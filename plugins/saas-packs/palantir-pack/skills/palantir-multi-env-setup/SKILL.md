@@ -13,7 +13,7 @@ description: 'Configure Palantir Foundry across development, staging, and produc
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

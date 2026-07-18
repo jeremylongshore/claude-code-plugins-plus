@@ -13,7 +13,7 @@ description: 'Implement credit spending limits, data privacy enforcement, and in
 
   '
 allowed-tools: Read, Write, Edit, Bash(node:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

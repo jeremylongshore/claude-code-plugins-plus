@@ -13,7 +13,7 @@ description: 'Analyze, plan, and execute Salesforce API version upgrades and jsf
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(sf:*), Bash(git:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

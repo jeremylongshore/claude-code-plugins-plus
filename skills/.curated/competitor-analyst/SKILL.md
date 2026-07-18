@@ -5,7 +5,7 @@ description: Competitive analysis and market positioning partner for Product Man
   feature gaps, or prepare for competitive conversations. Triggers include "competitor",
   "competitive analysis", "market map", "feature comparison", "how does X compare",
   "positioning", or when evaluating the competitive landscape.
-version: 1.0.0
+version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep

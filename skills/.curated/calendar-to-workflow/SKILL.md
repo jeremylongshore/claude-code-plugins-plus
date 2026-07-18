@@ -13,7 +13,7 @@ description: 'Converts calendar events and schedules into Claude Code workflows,
 
   '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*), Bash(chmod:*), Glob, Grep
-version: 1.0.0
+version: 0.14.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

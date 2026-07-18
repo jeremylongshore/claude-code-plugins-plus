@@ -1,20 +1,14 @@
 ---
 name: clickhouse-webhooks-events
-description: 'Ingest data into ClickHouse from webhooks, Kafka, and streaming sources
-
+description: |
+  Ingest data into ClickHouse from webhooks, Kafka, and streaming sources
   with batching, dedup, and exactly-once patterns.
-
   Use when building data ingestion pipelines, consuming webhook payloads,
-
   or integrating Kafka topics into ClickHouse.
-
-  Trigger: "clickhouse ingestion", "clickhouse webhook", "clickhouse Kafka",
-
+  Trigger with "clickhouse ingestion", "clickhouse webhook", "clickhouse Kafka",
   "stream data to clickhouse", "clickhouse data pipeline".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,17 +23,29 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Build data ingestion pipelines into ClickHouse from HTTP webhooks, Kafka,
-and streaming sources with proper batching, deduplication, and error handling.
+Build data ingestion pipelines into ClickHouse from HTTP webhooks, Kafka, and
+streaming sources with proper batching, deduplication, and error handling.
+
+The core rule: ClickHouse hates one-row-at-a-time inserts — buffer events and
+flush them in batches. This skill covers four ingestion paths (application-side
+webhook receiver, server-side Kafka engine, managed ClickPipes, and HTTP bulk
+loads) plus idempotent dedup and insert monitoring.
 
 ## Prerequisites
 
-- ClickHouse table with appropriate engine (see `clickhouse-core-workflow-a`)
-- `@clickhouse/client` connected
+- A ClickHouse table with an appropriate engine already exists (a `MergeTree`
+  variant, e.g. `analytics.events`) — see `clickhouse-core-workflow-a`.
+- The `@clickhouse/client` package is installed and connected via
+  `CLICKHOUSE_HOST`.
+- For the Kafka paths, a reachable Kafka broker and topic.
 
 ## Instructions
 
 ### Step 1: Webhook Receiver with Batched Inserts
+
+Buffer incoming events in memory, flush on a size threshold or a timer, and
+re-queue the batch on failure so no event is lost. This is the application-side
+core of the skill:
 
 ```typescript
 import express from 'express';
@@ -95,138 +101,40 @@ app.post('/ingest', async (req, res) => {
 });
 ```
 
-### Step 2: Kafka Table Engine (Server-Side Ingestion)
+### Step 2: Choose a Server-Side or Managed Path
 
-```sql
--- Create a Kafka engine table (consumes messages automatically)
-CREATE TABLE analytics.events_kafka (
-    event_type  String,
-    user_id     UInt64,
-    properties  String,
-    timestamp   DateTime
-)
-ENGINE = Kafka()
-SETTINGS
-    kafka_broker_list = 'kafka:9092',
-    kafka_topic_list = 'events',
-    kafka_group_name = 'clickhouse_consumer',
-    kafka_format = 'JSONEachRow',
-    kafka_num_consumers = 2,
-    kafka_max_block_size = 65536;
+For high-volume streams, prefer a path that needs no application consumer:
 
--- Materialized view pipes Kafka → MergeTree automatically
-CREATE MATERIALIZED VIEW analytics.events_kafka_mv
-TO analytics.events
-AS SELECT
-    event_type,
-    user_id,
-    properties,
-    timestamp AS created_at
-FROM analytics.events_kafka;
+- **Kafka table engine** — ClickHouse consumes a topic directly and a
+  materialized view pipes rows into your MergeTree table. No consumer to run.
+- **ClickPipes** — ClickHouse Cloud's managed, code-free ingestion for Kafka,
+  Confluent, Amazon MSK, S3, and GCS.
+- **HTTP interface** — bulk-load CSV / NDJSON / Parquet from files, remote
+  URLs, or S3 with plain `curl`, no client library.
 
--- ClickHouse now consumes from Kafka continuously!
--- Check lag:
-SELECT * FROM system.kafka_consumers;
-```
+Full DDL and configuration for all three: see
+[Ingestion methods](references/ingestion-methods.md).
 
-### Step 3: ClickPipes (ClickHouse Cloud Managed Ingestion)
+### Step 3: Make Ingestion Idempotent and Observable
 
-ClickHouse Cloud offers **ClickPipes** — a managed ingestion service that
-connects to Kafka, Confluent, Amazon MSK, S3, and GCS without code.
+Webhook retries and Kafka reprocessing deliver duplicates. Use a
+`ReplacingMergeTree` keyed on a unique `event_id` so re-delivered events collapse
+to one row, and query `system.query_log` to watch insert throughput and errors.
+Full DDL, monitoring queries, and the batch-tuning matrix:
+[Deduplication & monitoring](references/dedup-and-monitoring.md).
 
-```
-ClickPipes Configuration (Cloud Console):
-1. Source: Amazon MSK / Confluent Cloud / Apache Kafka
-2. Topic: events
-3. Format: JSONEachRow
-4. Target: analytics.events
-5. Scaling: 2 consumers (auto-scales)
-```
+## Output
 
-### Step 4: HTTP Interface Bulk Insert
+Applying this skill produces:
 
-```text
-# Insert from CSV file via HTTP (no client needed)
-curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+CSVWithNames' \
-  --data-binary @events.csv
-
-# Insert from NDJSON file
-curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+JSONEachRow' \
-  --data-binary @events.ndjson
-
-# Insert from Parquet file
-curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+Parquet' \
-  --data-binary @events.parquet
-
-# Insert from remote URL (ClickHouse fetches it)
-INSERT INTO analytics.events
-SELECT * FROM url('https://data.example.com/events.csv', CSVWithNames);
-
-# Insert from S3
-INSERT INTO analytics.events
-SELECT * FROM s3(
-    'https://my-bucket.s3.amazonaws.com/events/*.parquet',
-    'ACCESS_KEY', 'SECRET_KEY',
-    'Parquet'
-);
-```
-
-### Step 5: Deduplication with ReplacingMergeTree
-
-```sql
--- For idempotent ingestion (webhook retries, Kafka reprocessing)
-CREATE TABLE analytics.events_dedup (
-    event_id    String,           -- Unique event identifier
-    event_type  LowCardinality(String),
-    user_id     UInt64,
-    properties  String,
-    created_at  DateTime,
-    _version    UInt64 DEFAULT toUnixTimestamp(now())
-)
-ENGINE = ReplacingMergeTree(_version)
-ORDER BY event_id;               -- Dedup key
-
--- Insert duplicate-safe: same event_id keeps latest _version
--- Query with FINAL for deduplicated results
-SELECT * FROM analytics.events_dedup FINAL
-WHERE created_at >= today() - 7;
-```
-
-### Step 6: Insert Monitoring
-
-```sql
--- Track insert throughput
-SELECT
-    toStartOfMinute(event_time) AS minute,
-    count() AS inserts,
-    sum(written_rows) AS rows_inserted,
-    formatReadableSize(sum(written_bytes)) AS bytes_inserted
-FROM system.query_log
-WHERE type = 'QueryFinish'
-  AND query_kind = 'Insert'
-  AND event_time >= now() - INTERVAL 1 HOUR
-GROUP BY minute
-ORDER BY minute;
-
--- Check for insert errors
-SELECT event_time, exception, substring(query, 1, 200)
-FROM system.query_log
-WHERE type = 'ExceptionWhileProcessing'
-  AND query_kind = 'Insert'
-  AND event_time >= now() - INTERVAL 1 HOUR
-ORDER BY event_time DESC;
-```
-
-## Insert Best Practices
-
-| Practice | Why |
-|----------|-----|
-| Batch 10K-100K rows per INSERT | Fewer parts, faster merges |
-| Buffer 1-5 seconds for real-time | Balances latency vs throughput |
-| Use `JSONEachRow` format | Client handles serialization |
-| Compress with `ZSTD` on wire | Reduces network transfer |
-| Use `ReplacingMergeTree` for retries | Handles duplicate delivery |
-| Use `async_insert=1` for small batches | Server-side batching |
+- A running **webhook receiver** (`POST /ingest`) that buffers events and
+  batch-flushes to ClickHouse, returning `202 { queued, buffer_size }`.
+- Optionally, a **Kafka engine table + materialized view** (or a ClickPipes
+  pipe) that ingests a topic server-side with no application consumer.
+- A **`ReplacingMergeTree` dedup table** keyed on `event_id` for idempotent,
+  retry-safe ingestion.
+- **Monitoring queries** over `system.query_log` reporting inserts/minute,
+  rows, bytes, and insert exceptions in the last hour.
 
 ## Error Handling
 
@@ -237,8 +145,39 @@ ORDER BY event_time DESC;
 | `TIMEOUT` on large insert | Slow network | Enable compression, split batch |
 | Duplicate events | Webhook retries | Use ReplacingMergeTree + event_id |
 
+## Examples
+
+**Ingest a webhook batch via the receiver** (Step 1):
+
+```bash
+curl -X POST http://localhost:3000/ingest \
+  -H 'Content-Type: application/json' \
+  -d '[{"type":"signup","userId":42,"properties":{"plan":"pro"}}]'
+# → 202 { "queued": 1, "buffer_size": 1 }
+```
+
+**Bulk-load a Parquet file with no client** (HTTP interface — see
+[Ingestion methods](references/ingestion-methods.md)):
+
+```bash
+curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+Parquet' \
+  --data-binary @events.parquet
+```
+
+**Read deduplicated events** (ReplacingMergeTree — see
+[Deduplication & monitoring](references/dedup-and-monitoring.md)):
+
+```sql
+SELECT * FROM analytics.events_dedup FINAL
+WHERE created_at >= today() - 7;
+```
+
 ## Resources
 
+- [Ingestion methods](references/ingestion-methods.md) — Kafka engine,
+  ClickPipes, HTTP bulk insert (full DDL)
+- [Deduplication & monitoring](references/dedup-and-monitoring.md) —
+  ReplacingMergeTree, `system.query_log` queries, best-practices matrix
 - [Kafka Integration](https://clickhouse.com/docs/integrations/kafka)
 - [ClickPipes](https://clickhouse.com/cloud/clickpipes)
 - [HTTP Interface](https://clickhouse.com/docs/interfaces/http)
@@ -246,4 +185,6 @@ ORDER BY event_time DESC;
 
 ## Next Steps
 
-For query and server performance, see `clickhouse-performance-tuning`.
+For query and server performance after ingestion is flowing, see
+`clickhouse-performance-tuning`. For engine and schema choices on the target
+table, see `clickhouse-core-workflow-a`.

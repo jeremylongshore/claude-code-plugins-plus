@@ -12,7 +12,7 @@ description: 'Send your first record to Clay and get enriched data back.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
-version: 1.0.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -8,7 +8,7 @@ description: 'Execute use when setting up log aggregation solutions using ELK, L
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.26.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

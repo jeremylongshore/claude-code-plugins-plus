@@ -12,7 +12,7 @@ description: 'Configure and handle Linear webhooks for real-time event processin
 
   '
 allowed-tools: Read, Write, Edit, Bash(ngrok:*), Grep
-version: 1.0.0
+version: 1.12.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

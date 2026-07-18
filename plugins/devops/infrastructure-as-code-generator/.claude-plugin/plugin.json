@@ -1,6 +1,6 @@
 {
   "name": "infrastructure-as-code-generator",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
   "author": {
     "name": "Claude Code Plugins",

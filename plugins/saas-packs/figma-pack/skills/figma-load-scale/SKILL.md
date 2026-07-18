@@ -12,7 +12,7 @@ description: 'Load test Figma API integrations and plan for scale.
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

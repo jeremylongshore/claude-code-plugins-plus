@@ -14,7 +14,7 @@ description: 'Manage Sentry releases with versioning, commit association, and so
   '
 allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(npx:*), Bash(node:*), Bash(git:*),
   Grep
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

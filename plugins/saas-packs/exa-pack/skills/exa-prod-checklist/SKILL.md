@@ -13,7 +13,7 @@ description: 'Execute Exa production deployment checklist with pre-flight, deplo
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -11,7 +11,7 @@ description: 'Capture your first meeting with Granola and review AI-enhanced not
 
   '
 allowed-tools: Read, Write, Edit, Bash(pgrep:*), Bash(open:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -9,7 +9,7 @@ description: 'Detect visual changes in UI components using screenshot comparison
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:visual-*)
-version: 1.0.0
+version: 1.25.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

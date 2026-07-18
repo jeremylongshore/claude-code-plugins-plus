@@ -1,6 +1,6 @@
 {
   "name": "ansible-playbook-creator",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Create Ansible playbooks for configuration management",
   "author": {
     "name": "Claude Code Plugins",

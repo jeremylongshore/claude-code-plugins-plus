@@ -2,7 +2,7 @@
 name: guidewire-sdk-patterns
 description: Build a production-grade Guidewire Cloud API client that survives the request-side failures — 409 checksum conflicts on PATCH/PUT, 429 quota throttling, offsetToken pagination drift, retry-unsafe POSTs, and unstructured error responses. Use when designing an HTTP client wrapper around PolicyCenter, ClaimCenter, or BillingCenter REST endpoints. Trigger with "guidewire client", "guidewire sdk", "checksum 409", "guidewire pagination", "guidewire rate limit", "Retry-After".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
-version: 2.0.0
+version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw

@@ -13,7 +13,7 @@ description: 'Upgrade Shopify API versions and migrate from REST to GraphQL with
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

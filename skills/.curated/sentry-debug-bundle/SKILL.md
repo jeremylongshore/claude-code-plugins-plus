@@ -13,7 +13,7 @@ description: 'Collect diagnostic information for Sentry troubleshooting and supp
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(pip:*),
   Bash(python:*), Bash(curl:*), Bash(dig:*), Bash(sentry-cli:*), Grep, Glob
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

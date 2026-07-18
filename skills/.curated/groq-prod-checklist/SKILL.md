@@ -11,8 +11,8 @@ description: 'Execute Groq production deployment checklist and go-live procedure
   "groq go-live", "groq launch checklist".
 
   '
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+allowed-tools: Read, Bash(curl:*)
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,7 +25,9 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Complete pre-launch checklist for deploying Groq-powered applications to production. Covers API key security, model selection, rate limit planning, fallback strategies, and monitoring setup.
+Complete pre-launch checklist for deploying Groq-powered applications to production. Covers API key security, model selection, rate limit planning, fallback strategies, and monitoring setup. Work top-to-bottom: each section is a gate that must be green before the go-live verification runs.
+
+Deep code (fallback function, health-check endpoint, go-live script) lives in `references/` so this file stays scannable — drill in when you reach that step.
 
 ## Prerequisites
 
@@ -34,23 +36,25 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 - Production API key created in console.groq.com
 - Monitoring and alerting infrastructure ready
 
-## Pre-Deployment Checklist
+## Instructions
 
-### API Key & Auth
+Read the target app's Groq integration and config, then walk each gate below. Tick every box; an unchecked item is a launch blocker.
+
+### 1. API Key & Auth
 
 - [ ] Production API key stored in secret manager (not `.env` files)
 - [ ] Key is NOT shared with development or staging environments
 - [ ] Key rotation procedure documented and tested
 - [ ] Pre-commit hook blocks `gsk_` pattern in code
 
-### Model Selection
+### 2. Model Selection
 
 - [ ] Production model chosen and tested (recommend `llama-3.3-70b-versatile`)
 - [ ] Fallback model configured (`llama-3.1-8b-instant`)
 - [ ] Deprecated model IDs removed (check [deprecations](https://console.groq.com/docs/deprecations))
 - [ ] `max_tokens` set to actual expected output size (not context max)
 
-### Rate Limit Planning
+### 3. Rate Limit Planning
 
 - [ ] Production rate limits known (check console.groq.com/settings/limits)
 - [ ] Estimated peak RPM < 80% of limit
@@ -58,7 +62,7 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 - [ ] Exponential backoff with `retry-after` header implemented
 - [ ] Request queue for burst protection (`p-queue` or similar)
 
-### Error Handling
+### 4. Error Handling & Fallback
 
 - [ ] All Groq error types caught (`Groq.APIError`, `Groq.APIConnectionError`)
 - [ ] 429 errors retried with backoff
@@ -66,62 +70,13 @@ Complete pre-launch checklist for deploying Groq-powered applications to product
 - [ ] 401 errors trigger alert (key may be revoked)
 - [ ] Network timeouts configured (default 60s may be too long)
 - [ ] Circuit breaker pattern for sustained failures
+- [ ] Fallback-to-degradation wrapper in place — see the `completionWithFallback` pattern in [references/implementation.md](references/implementation.md)
 
-### Fallback & Degradation
+### 5. Health Check
 
-```typescript
-async function completionWithFallback(messages: any[]) {
-  try {
-    return await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages,
-      timeout: 15_000,
-    });
-  } catch (err: any) {
-    if (err.status === 429 || err.status >= 500) {
-      console.warn("Groq primary failed, trying fallback model");
-      try {
-        return await groq.chat.completions.create({
-          model: "llama-3.1-8b-instant",
-          messages,
-          timeout: 10_000,
-        });
-      } catch {
-        console.error("Groq fully unavailable, degrading gracefully");
-        return { choices: [{ message: { content: "Service temporarily unavailable. Please try again." } }] };
-      }
-    }
-    throw err;
-  }
-}
-```
+- [ ] `/api/health` (or `/healthz`) probes Groq with a 1-token request and returns `503` when degraded — full route in [references/implementation.md](references/implementation.md)
 
-### Health Check Endpoint
-
-```typescript
-// /api/health or /healthz
-export async function GET() {
-  const checks: Record<string, any> = { status: "healthy" };
-  const start = performance.now();
-
-  try {
-    await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [{ role: "user", content: "OK" }],
-      max_tokens: 1,
-      temperature: 0,
-    });
-    checks.groq = { status: "connected", latencyMs: Math.round(performance.now() - start) };
-  } catch (err: any) {
-    checks.status = "degraded";
-    checks.groq = { status: "error", error: err.status || err.message };
-  }
-
-  return Response.json(checks, { status: checks.status === "healthy" ? 200 : 503 });
-}
-```
-
-### Monitoring Setup
+### 6. Monitoring Setup
 
 - [ ] Latency histogram (p50, p95, p99)
 - [ ] Token throughput counter (tokens/sec by model)
@@ -132,43 +87,36 @@ export async function GET() {
 - [ ] Alert: error rate > 5%
 - [ ] Alert: rate limit remaining < 10%
 
-### Spending Controls
+### 7. Spending Controls
 
 - [ ] Monthly spending cap set in Groq Console
 - [ ] Budget alerts at 50%, 80%, 95%
 - [ ] Auto-pause enabled when cap is reached
 
-### Documentation
+### 8. Documentation
 
 - [ ] Incident runbook created (see `groq-incident-runbook`)
 - [ ] Key rotation SOP documented
 - [ ] On-call knows how to check [status.groq.com](https://status.groq.com)
 - [ ] Rollback procedure tested
 
-## Go-Live Verification
+### 9. Go-Live Verification
 
-```bash
-set -euo pipefail
-# Pre-flight checks
-echo "1. Groq API status..."
-curl -sf https://status.groq.com > /dev/null && echo "OK" || echo "ISSUE"
+Run the pre-flight `curl` script against production — status, key, health endpoint, and rate-limit headroom must all pass. Full script and pass/fail table in [references/go-live.md](references/go-live.md).
 
-echo "2. Production key valid..."
-curl -sf https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY_PROD" | jq '.data | length'
+## Output
 
-echo "3. Health endpoint..."
-curl -sf https://your-app.com/api/health | jq .
+Working through this skill produces a **go / no-go launch decision**:
 
-echo "4. Rate limit headroom..."
-curl -si https://api.groq.com/openai/v1/chat/completions \
-  -H "Authorization: Bearer $GROQ_API_KEY_PROD" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":1}' \
-  2>/dev/null | grep -i "x-ratelimit-remaining"
-```
+- A completed checklist where every box is ticked or explicitly waived with a reason.
+- A green go-live verification run (all four pre-flight checks passing).
+- The alert matrix (below) wired into your monitoring stack.
+
+Any unchecked security or auth item (Sections 1, 2) is a hard blocker; unchecked monitoring or spending items (Sections 6, 7) are P3 blockers that may launch with a tracked follow-up.
 
 ## Error Handling
+
+Wire these alerts before go-live so production failures page the right severity:
 
 | Alert | Condition | Severity |
 |-------|-----------|----------|
@@ -177,6 +125,24 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 | Rate limited | 429 count > 5/min | P2 |
 | Auth failure | Any 401 error | P1 |
 | Spending near cap | >90% of monthly budget | P3 |
+
+## Examples
+
+Minimal fallback skeleton — try the primary model, fall back to the fast model on 429/5xx:
+
+```typescript
+try {
+  return await groq.chat.completions.create({ model: "llama-3.3-70b-versatile", messages, timeout: 15_000 });
+} catch (err: any) {
+  if (err.status === 429 || err.status >= 500) {
+    return await groq.chat.completions.create({ model: "llama-3.1-8b-instant", messages, timeout: 10_000 });
+  }
+  throw err;
+}
+```
+
+- Full fallback-with-degradation function and health-check endpoint: [references/implementation.md](references/implementation.md)
+- Complete go-live verification script and result interpretation: [references/go-live.md](references/go-live.md)
 
 ## Resources
 
@@ -187,4 +153,4 @@ curl -si https://api.groq.com/openai/v1/chat/completions \
 
 ## Next Steps
 
-For version upgrades, see `groq-upgrade-migration`.
+Once launched, keep the integration current: schedule model-deprecation reviews against the Groq deprecations page, and for version upgrades follow the `groq-upgrade-migration` skill. If an incident fires an alert above, escalate through the `groq-incident-runbook`.

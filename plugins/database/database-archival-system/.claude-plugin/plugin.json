@@ -1,6 +1,6 @@
 {
   "name": "database-archival-system",
-  "version": "1.0.0",
+  "version": "1.27.0",
   "description": "Database plugin for database-archival-system",
   "author": {
     "name": "Claude Code Plugins",

@@ -7,7 +7,7 @@ description: "Migrate workloads from AWS or Azure to OCI \u2014 IAM translation,
   \ migration deep dive\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*),
   Grep
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

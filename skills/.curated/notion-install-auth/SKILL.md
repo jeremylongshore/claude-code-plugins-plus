@@ -11,8 +11,8 @@ description: 'Install and configure the Notion API SDK with authentication.
   "notion auth", "configure notion API", "notion integration setup".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+allowed-tools: Read, Edit, Bash(npm:*), Bash(pip:*)
+version: 1.38.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,7 +28,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Set up the official Notion SDK and configure authentication for internal integrations. The Node.js SDK is `@notionhq/client` (npm) and the Python SDK is `notion-client` (pip). Both wrap the Notion API at `https://api.notion.com/v1` using API version `2022-06-28`.
+Set up the official Notion SDK and configure authentication for internal integrations. The Node.js SDK is `@notionhq/client` (npm) and the Python SDK is `notion-client` (pip) — both wrap the Notion API at `https://api.notion.com/v1` using API version `2022-06-28`.
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ Set up the official Notion SDK and configure authentication for internal integra
 
 ### Step 1: Create Integration and Install SDK
 
-Create an internal integration at https://www.notion.so/my-integrations:
+Create an internal integration at <https://www.notion.so/my-integrations>:
 
 1. Click **New integration**
 2. Name it, select the workspace, and choose capabilities (Read content, Update content, Insert content)
@@ -95,7 +95,7 @@ If the bot user is returned, authentication is working.
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `unauthorized` | Invalid or expired token | Regenerate at notion.so/my-integrations |
 | `object_not_found` | Page not shared with integration | Open page > `...` > Connections > add integration |
 | `restricted_resource` | Missing capabilities | Edit integration capabilities in dashboard |
@@ -105,42 +105,23 @@ If the bot user is returned, authentication is working.
 
 ## Examples
 
-### TypeScript — Full Setup
+Minimal Node.js client — pin the API version and verify before doing real work:
 
 ```typescript
 import { Client } from '@notionhq/client';
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
-  timeoutMs: 60_000,
   notionVersion: '2022-06-28',
 });
 
-// Verify connection
 const me = await notion.users.me({});
 console.log(`Connected as ${me.name}`);
-
-// List all users in the workspace
-const users = await notion.users.list({});
-console.log(`Workspace has ${users.results.length} users`);
 ```
 
-### Python — Full Setup
-
-```python
-import os
-from notion_client import Client
-
-notion = Client(auth=os.environ["NOTION_TOKEN"])
-
-# Verify connection
-me = notion.users.me()
-print(f"Connected as {me['name']} ({me['type']})")
-
-# List all users in the workspace
-users = notion.users.list()
-print(f"Workspace has {len(users['results'])} users")
-```
+For the complete TypeScript and Python setups — client timeouts, `users.list()`
+access checks, per-line notes, and a "what success looks like" checklist — see
+[full setup examples](references/examples.md).
 
 ## Resources
 
@@ -152,4 +133,8 @@ print(f"Workspace has {len(users['results'])} users")
 
 ## Next Steps
 
-After successful auth, proceed to `notion-hello-world` for your first page query.
+After successful auth, proceed to the `notion-hello-world` skill for your first
+page query. From there, share additional databases with the integration through
+the **Connections** menu and grant only the capabilities each workflow needs —
+Notion enforces both the token scope and the per-page share, so widen access
+deliberately rather than up front.

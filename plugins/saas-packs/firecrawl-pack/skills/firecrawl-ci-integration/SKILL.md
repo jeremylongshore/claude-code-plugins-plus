@@ -14,7 +14,7 @@ description: 'Configure Firecrawl CI/CD integration with GitHub Actions and auto
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -10,7 +10,7 @@ description: 'Diagnose and fix common Fly.io errors including deployment failure
 
   '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

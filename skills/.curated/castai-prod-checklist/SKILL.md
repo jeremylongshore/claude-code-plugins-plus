@@ -12,7 +12,7 @@ description: 'Production readiness checklist for CAST AI cluster onboarding.
 
   '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Bash(helm:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

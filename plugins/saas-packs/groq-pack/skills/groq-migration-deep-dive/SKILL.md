@@ -1,16 +1,13 @@
 ---
 name: groq-migration-deep-dive
-description: 'Migrate from OpenAI/Anthropic/other LLM providers to Groq, or migrate
-
-  between Groq model generations with zero-downtime traffic shifting.
-
+description: |
+  Use when you are moving a codebase off OpenAI, Anthropic, or another LLM
+  provider onto Groq (or between Groq model generations) and want a
+  zero-downtime, feature-flagged cutover with a benchmark and rollback plan.
   Trigger with phrases like "migrate to groq", "switch to groq",
-
   "groq migration", "openai to groq", "groq replatform".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,20 +24,46 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Migrate to Groq from OpenAI, Anthropic, or other LLM providers. Groq's OpenAI-compatible API makes migration straightforward -- the primary changes are: different SDK import, different model IDs, and different response metadata. The reward is 10-50x faster inference.
+Migrate to Groq from OpenAI, Anthropic, or other LLM providers. Groq's
+OpenAI-compatible API makes migration straightforward — the primary changes
+are a different SDK import, different model IDs, and different response
+metadata. The reward is 10-50x faster inference.
+
+The safe path is a provider-abstraction layer plus feature-flagged traffic
+shifting: route a small canary to Groq, benchmark quality and speed, ramp to
+100%, and keep a one-flag rollback the whole way.
 
 ## Migration Complexity
 
 | Source | Complexity | Key Changes |
 |--------|-----------|-------------|
-| OpenAI | Low | Import, model IDs, base URL -- API shape is identical |
+| OpenAI | Low | Import, model IDs, base URL — API shape is identical |
 | Anthropic | Medium | Different API shape, message format, streaming protocol |
 | Local LLMs | Medium | Remove infra, add API calls |
 | Other cloud (Bedrock, Vertex) | Medium | Remove cloud SDK, add groq-sdk |
 
+## Prerequisites
+
+- A Groq API key (`GROQ_API_KEY`) from [console.groq.com](https://console.groq.com).
+- `groq-sdk` installed: `npm install groq-sdk`.
+- A feature-flag mechanism (LaunchDarkly, env var, config service) exposing a
+  `groq_migration_pct` value for gradual traffic shifting.
+- The existing provider's key still available (`OPENAI_API_KEY` or equivalent)
+  so you can run both providers side-by-side during the cutover.
+- Node `>=18` if you use the `performance.now()` benchmark helper.
+
 ## Instructions
 
+Steps 1-2 below are the essential skeleton — the two changes every migration
+needs. Steps 3-7 (the provider abstraction, traffic shifting, scanner,
+benchmark, and full compatibility matrix) are moved verbatim into the
+reference files linked under Examples so this file stays scannable.
+
 ### Step 1: OpenAI to Groq Migration
+
+The minimal change: swap the SDK import, client, and model ID. The response
+shape is identical, so downstream code (`result.choices[0].message.content`)
+is untouched.
 
 ```typescript
 // BEFORE: OpenAI
@@ -64,6 +87,9 @@ const result = await groq.chat.completions.create({
 
 ### Step 2: Model ID Mapping
 
+Centralize the OpenAI/Anthropic → Groq translation so a single map drives the
+whole codebase and unknown models fall back to a safe default.
+
 ```typescript
 // OpenAI → Groq model equivalents
 const MODEL_MAP: Record<string, string> = {
@@ -83,177 +109,32 @@ function migrateModelId(model: string): string {
 }
 ```
 
-### Step 3: Provider Abstraction Layer
+### Steps 3-7: Zero-Downtime Rollout
 
-```typescript
-// Build a provider-agnostic layer for zero-downtime migration
-interface LLMProvider {
-  name: string;
-  complete(messages: any[], model: string, maxTokens: number): Promise<{
-    content: string;
-    model: string;
-    tokens: { prompt: number; completion: number; total: number };
-  }>;
-}
+Once Steps 1-2 compile, wrap both providers in a common interface and shift
+traffic gradually. The full code lives in the references:
 
-class GroqProvider implements LLMProvider {
-  name = "groq";
-  private client: Groq;
+- **Step 3 — Provider abstraction layer** and **Step 4 — feature-flag traffic
+  shifting**: [references/implementation.md](references/implementation.md).
+- **Step 5 — automated migration scanner** (sizes the migration before you
+  start) and the **rollback plan**: [references/implementation.md](references/implementation.md).
+- **Step 6 — comparison benchmark** and **Step 7 — the OpenAI↔Groq
+  compatibility matrix**: [references/examples.md](references/examples.md).
 
-  constructor() {
-    this.client = new Groq();
-  }
+## Output
 
-  async complete(messages: any[], model: string, maxTokens: number) {
-    const result = await this.client.chat.completions.create({
-      model,
-      messages,
-      max_tokens: maxTokens,
-    });
+Running this skill's workflow produces:
 
-    return {
-      content: result.choices[0].message.content || "",
-      model: result.model,
-      tokens: {
-        prompt: result.usage!.prompt_tokens,
-        completion: result.usage!.completion_tokens,
-        total: result.usage!.total_tokens,
-      },
-    };
-  }
-}
-
-class OpenAIProvider implements LLMProvider {
-  name = "openai";
-  private client: OpenAI;
-
-  constructor() {
-    this.client = new OpenAI();
-  }
-
-  async complete(messages: any[], model: string, maxTokens: number) {
-    const result = await this.client.chat.completions.create({
-      model,
-      messages,
-      max_tokens: maxTokens,
-    });
-
-    return {
-      content: result.choices[0].message.content || "",
-      model: result.model,
-      tokens: {
-        prompt: result.usage!.prompt_tokens,
-        completion: result.usage!.completion_tokens,
-        total: result.usage!.total_tokens,
-      },
-    };
-  }
-}
-```
-
-### Step 4: Feature Flag Traffic Shifting
-
-```typescript
-// Gradually shift traffic from OpenAI to Groq
-function getProvider(): LLMProvider {
-  const groqPercentage = getFeatureFlag("groq_migration_pct"); // 0-100
-
-  if (Math.random() * 100 < groqPercentage) {
-    return new GroqProvider();
-  }
-  return new OpenAIProvider();
-}
-
-// Migration schedule:
-// Week 1: groq_migration_pct = 10  (canary)
-// Week 2: groq_migration_pct = 50  (validate quality)
-// Week 3: groq_migration_pct = 90  (near-complete)
-// Week 4: groq_migration_pct = 100 (done, remove OpenAI)
-```
-
-### Step 5: Automated Migration Scanner
-
-```bash
-set -euo pipefail
-echo "=== Migration Assessment ==="
-
-echo ""
-echo "--- OpenAI references ---"
-grep -rn "from ['\"]openai['\"]" src/ --include="*.ts" --include="*.js" 2>/dev/null | wc -l
-grep -rn "openai\." src/ --include="*.ts" --include="*.js" 2>/dev/null | head -5
-
-echo ""
-echo "--- Model IDs to migrate ---"
-grep -roh "model.*['\"]gpt-[^'\"]*['\"]" src/ --include="*.ts" --include="*.js" 2>/dev/null | sort -u
-
-echo ""
-echo "--- OpenAI-specific features used ---"
-grep -rn "\.images\.\|\.audio\.\|\.embeddings\.\|\.moderations\.\|\.files\.\|\.fine_tuning\." \
-  src/ --include="*.ts" --include="*.js" 2>/dev/null || echo "None (chat.completions only -- easy migration)"
-
-echo ""
-echo "--- API keys to update ---"
-grep -rn "OPENAI_API_KEY" src/ .env* --include="*.ts" --include="*.js" --include=".env*" 2>/dev/null | wc -l
-```
-
-### Step 6: Comparison Benchmark
-
-```typescript
-// Run the same prompts through both providers to compare quality + speed
-async function migrationBenchmark(prompts: string[]) {
-  const groq = new GroqProvider();
-  const openai = new OpenAIProvider();
-
-  for (const prompt of prompts) {
-    const messages = [{ role: "user" as const, content: prompt }];
-
-    const startGroq = performance.now();
-    const groqResult = await groq.complete(messages, "llama-3.3-70b-versatile", 256);
-    const groqMs = performance.now() - startGroq;
-
-    const startOAI = performance.now();
-    const oaiResult = await openai.complete(messages, "gpt-4o-mini", 256);
-    const oaiMs = performance.now() - startOAI;
-
-    console.log(`Prompt: "${prompt.slice(0, 50)}..."`);
-    console.log(`  Groq:   ${groqMs.toFixed(0)}ms | ${groqResult.tokens.total} tokens`);
-    console.log(`  OpenAI: ${oaiMs.toFixed(0)}ms | ${oaiResult.tokens.total} tokens`);
-    console.log(`  Speedup: ${(oaiMs / groqMs).toFixed(1)}x faster with Groq`);
-    console.log();
-  }
-}
-```
-
-### Step 7: Key Differences to Handle
-
-| Feature | OpenAI | Groq |
-|---------|--------|------|
-| SDK import | `import OpenAI from "openai"` | `import Groq from "groq-sdk"` |
-| Env var | `OPENAI_API_KEY` | `GROQ_API_KEY` |
-| Models | `gpt-4o`, `gpt-4o-mini` | `llama-3.3-70b-versatile`, `llama-3.1-8b-instant` |
-| Embeddings | `openai.embeddings.create()` | Not available (use OpenAI or local) |
-| Fine-tuning | Supported | Not available |
-| Image generation | `openai.images.generate()` | Not available |
-| Audio (STT) | `openai.audio.transcriptions` | `groq.audio.transcriptions` (faster) |
-| Structured outputs | `strict: true` | `strict: true` (same format) |
-| Tool calling | Supported | Supported (same format) |
-| JSON mode | `response_format: { type: "json_object" }` | Same |
-| Vision | `gpt-4o` with images | Llama 4 Scout/Maverick |
-| Streaming | Supported | Supported (same SSE format) |
-| Response usage | Standard fields | Adds `queue_time`, `completion_time`, `total_time` |
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback: flip feature flag
-# groq_migration_pct = 0
-
-# Verify:
-# - All requests routing to OpenAI
-# - Error rates returned to baseline
-# - No Groq API calls in logs
-```
+- A migration assessment printout from the scanner (Step 5): OpenAI import
+  count, the distinct `gpt-*` model IDs in use, any OpenAI-only features
+  (embeddings/images/fine-tuning) that block a clean cutover, and the number
+  of API-key references to update.
+- A provider-agnostic `LLMProvider` layer with `GroqProvider` and
+  `OpenAIProvider` implementations both live behind one `getProvider()` call.
+- A benchmark table per prompt: Groq vs OpenAI latency in ms, token counts,
+  and the measured speedup factor.
+- A `groq_migration_pct` feature flag driving the canary → 100% ramp, with a
+  one-flag rollback to 0%.
 
 ## Error Handling
 
@@ -264,6 +145,15 @@ set -euo pipefail
 | Rate limits | Different limits than OpenAI | Configure per-model rate limits |
 | Cost increase | Different pricing structure | Route simple tasks to 8B model |
 
+## Examples
+
+- **Full provider abstraction + traffic shifting + scanner + rollback**:
+  [references/implementation.md](references/implementation.md) — the complete
+  Step 3-5 code plus the rollback procedure.
+- **Benchmark harness + compatibility matrix**:
+  [references/examples.md](references/examples.md) — the side-by-side
+  quality/speed benchmark and the full OpenAI↔Groq feature table.
+
 ## Resources
 
 - [Groq Quickstart](https://console.groq.com/docs/quickstart)
@@ -273,4 +163,5 @@ set -euo pipefail
 
 ## Next Steps
 
-For ongoing SDK version upgrades, see `groq-upgrade-migration`.
+For ongoing SDK version upgrades between Groq model generations, see the
+companion `groq-upgrade-migration` skill in this pack.

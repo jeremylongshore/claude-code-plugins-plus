@@ -13,7 +13,7 @@ description: 'Deploy CAST AI across multi-cloud Kubernetes clusters with Terrafo
 
   '
 allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(helm:*), Bash(kubectl:*)
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

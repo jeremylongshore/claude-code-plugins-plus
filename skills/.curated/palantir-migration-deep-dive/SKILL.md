@@ -14,7 +14,7 @@ description: 'Execute major Palantir Foundry migration strategies including data
 
   '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(node:*)
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Execute Salesforce incident response procedures with triage, mitig
 
   '
 allowed-tools: Read, Grep, Bash(sf:*), Bash(curl:*)
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,6 +1,6 @@
 {
   "name": "neural-network-builder",
-  "version": "1.0.0",
+  "version": "1.20.0",
   "description": "Build and configure neural network architectures",
   "author": {
     "name": "Claude Code Plugins",

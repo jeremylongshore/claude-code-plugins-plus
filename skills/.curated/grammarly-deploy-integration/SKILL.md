@@ -12,7 +12,7 @@ description: 'Deploy Grammarly integrations to Vercel, Fly.io, and Cloud Run pla
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.0.0
+version: 1.8.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

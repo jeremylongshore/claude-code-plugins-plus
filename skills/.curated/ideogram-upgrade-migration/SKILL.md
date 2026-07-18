@@ -13,7 +13,7 @@ description: 'Migrate between Ideogram API versions (V_1 to V_2 to V3) with brea
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+version: 1.10.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

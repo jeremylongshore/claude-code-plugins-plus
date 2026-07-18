@@ -17,7 +17,7 @@ description: 'Optimize Supabase query performance with indexes, EXPLAIN ANALYZE,
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:supabase), Bash(supabase:*), Grep
-version: 1.0.0
+version: 1.52.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

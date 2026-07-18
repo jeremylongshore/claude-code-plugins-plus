@@ -5,7 +5,7 @@ description: "Retell AI prod checklist \u2014 AI voice agent and phone call auto
   \ with phrases like \"retell prod checklist\", \"retellai-prod-checklist\", \"voice\
   \ agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.9.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

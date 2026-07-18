@@ -8,7 +8,7 @@ description: 'Execute Flexport incident response for API outages, webhook failur
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

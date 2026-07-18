@@ -12,7 +12,7 @@ description: 'Install Windsurf IDE and configure Codeium authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(brew:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

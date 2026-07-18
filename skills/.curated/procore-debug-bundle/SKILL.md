@@ -4,7 +4,7 @@ description: "Procore debug bundle \u2014 construction management platform integ
   Use when working with Procore API for project management, RFIs, or submittals.\n\
   Trigger with phrases like \"procore debug bundle\", \"procore-debug-bundle\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 2.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

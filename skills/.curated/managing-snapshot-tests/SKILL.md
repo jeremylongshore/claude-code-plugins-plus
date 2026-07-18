@@ -9,7 +9,7 @@ description: 'Create and validate component snapshots for UI regression testing.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:snapshot-*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

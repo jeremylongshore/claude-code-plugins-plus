@@ -4,7 +4,7 @@ description: Analyze application logs for performance insights and issue detecti
   including slow requests, error patterns, and resource usage. Use when troubleshooting
   performance issues or debugging errors. Trigger with phrases like "analyze logs",
   "find slow requests", or "detect error patterns".
-version: 1.0.0
+version: 1.24.0
 allowed-tools: Read, Write, Bash(logs:*), Bash(grep:*), Bash(awk:*), Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

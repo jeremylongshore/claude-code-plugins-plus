@@ -9,7 +9,7 @@ description: 'Execute mobile app testing on iOS and Android devices/simulators.
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mobile-*)
-version: 1.0.0
+version: 1.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

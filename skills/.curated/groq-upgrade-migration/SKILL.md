@@ -12,7 +12,7 @@ description: 'Upgrade groq-sdk versions and handle Groq model deprecations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -31,7 +31,21 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Guide for upgrading the `groq-sdk` package and migrating away from deprecated model IDs. Groq regularly deprecates older models in favor of newer, faster alternatives.
+Guide for upgrading the `groq-sdk` package and migrating away from deprecated
+model IDs. It walks a safe upgrade path — branch, bump, scan for deprecated
+model references, rewrite them, and verify against the live models endpoint
+before merging.
+
+## Prerequisites
+
+- A Node project that depends on `groq-sdk` (or the Python `groq` package).
+- `npm`, `git`, `curl`, and `jq` available on `PATH`.
+- **Authentication:** `GROQ_API_KEY` exported in your shell (or CI secret
+  store). The SDK constructor `new Groq()` reads it automatically; the live
+  model check passes it as `Authorization: Bearer $GROQ_API_KEY`. Get a key at
+  <https://console.groq.com/keys>. See
+  the Authentication section of
+  [references/implementation.md](references/implementation.md).
 
 ## Model Deprecation Timeline
 
@@ -59,48 +73,38 @@ Groq announces deprecations with advance notice. These models have been deprecat
 | `whisper-large-v3` | Audio STT | — | 164x RT |
 | `whisper-large-v3-turbo` | Audio STT | — | 216x RT |
 
-Always verify at: `GET https://api.groq.com/openai/v1/models`
+Always verify against the live endpoint: `GET https://api.groq.com/openai/v1/models`.
 
 ## Instructions
 
-### Step 1: Check Current Version and Models
+Work through these six steps. Each has a copy-paste command block in
+[references/implementation.md](references/implementation.md); the summary here is
+enough to drive the workflow, then drill in for the exact commands.
 
-```bash
-set -euo pipefail
-# SDK version
-npm list groq-sdk 2>/dev/null
-npm view groq-sdk version  # latest on npm
+1. **Check current version and models** — read the installed `groq-sdk` version,
+   compare to `npm view groq-sdk version`, and `grep` your `src/` for every
+   model string reference.
+2. **Upgrade the SDK** — `git checkout -b chore/upgrade-groq-sdk`, then
+   `npm install groq-sdk@latest`.
+3. **Find and replace deprecated models** — use `Read`/`Edit` to fold the
+   `MODEL_MIGRATIONS` resolver map (below) into your Groq client module, or
+   `Write` a new `groq-migrations.ts` helper, so deprecated IDs are rewritten
+   at runtime.
+4. **Run the migration scanner** — the `grep` sweep in the reference flags
+   deprecated model IDs, old `@groq/sdk` imports, and removed method calls.
+5. **Validate and test** — `npm test`, then confirm current IDs against the live
+   `/v1/models` endpoint and run the SDK integration smoke test.
+6. **Roll back if needed** — pin the previous version with
+   `npm install groq-sdk@0.11.0 --save-exact` and re-run tests.
 
-# Find all model references in your code
-grep -rn "model.*['\"]" src/ --include="*.ts" --include="*.js" | grep -i "groq\|llama\|mixtral\|gemma\|whisper"
-```
-
-### Step 2: Upgrade SDK
-
-```bash
-set -euo pipefail
-# Create upgrade branch
-git checkout -b chore/upgrade-groq-sdk
-
-# Update to latest
-npm install groq-sdk@latest
-
-# Check for breaking changes
-npm ls groq-sdk
-```
-
-### Step 3: Find and Replace Deprecated Models
+The essential resolver skeleton (full version in the reference):
 
 ```typescript
-// Find-and-replace map for deprecated model IDs
 const MODEL_MIGRATIONS: Record<string, string> = {
   "mixtral-8x7b-32768": "llama-3.3-70b-versatile",
   "gemma2-9b-it": "llama-3.1-8b-instant",
-  "llama-3.1-70b-versatile": "llama-3.3-70b-versatile",
-  "llama-3.1-70b-specdec": "llama-3.3-70b-specdec",
-  "llama3-70b-8192": "llama-3.3-70b-versatile",
-  "llama3-8b-8192": "llama-3.1-8b-instant",
   "distil-whisper-large-v3-en": "whisper-large-v3-turbo",
+  // ...full map in references/implementation.md
 };
 
 function resolveModel(model: string): string {
@@ -112,69 +116,18 @@ function resolveModel(model: string): string {
 }
 ```
 
-### Step 4: Run Migration Scanner
+## Output
 
-```bash
-set -euo pipefail
-# Automated scan for deprecated patterns
-echo "=== Deprecated Model IDs ==="
-grep -rn "mixtral-8x7b\|gemma2-9b\|llama-3.1-70b-versatile\|llama3-70b\|llama3-8b\|distil-whisper" \
-  src/ --include="*.ts" --include="*.js" --include="*.py" || echo "None found"
+Running this workflow produces:
 
-echo ""
-echo "=== Old Import Patterns ==="
-grep -rn "from '@groq/sdk'\|from \"@groq/sdk\"\|require('@groq/sdk')" \
-  src/ --include="*.ts" --include="*.js" || echo "None found (correct import is 'groq-sdk')"
-
-echo ""
-echo "=== Deprecated Method Calls ==="
-grep -rn "\.ping()\|\.healthCheck()\|GroqClient\|GroqError" \
-  src/ --include="*.ts" --include="*.js" || echo "None found"
-```
-
-### Step 5: Validate and Test
-
-```bash
-set -euo pipefail
-# Run tests
-npm test
-
-# Verify models are current
-curl -s https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" | \
-  jq -r '.data[].id' | sort
-
-# Integration test
-node -e "
-const Groq = require('groq-sdk').default;
-const g = new Groq();
-g.chat.completions.create({
-  model: 'llama-3.1-8b-instant',
-  messages: [{role: 'user', content: 'ping'}],
-  max_tokens: 5
-}).then(r => console.log('OK:', r.choices[0].message.content));
-"
-```
-
-### Step 6: Rollback If Needed
-
-```bash
-set -euo pipefail
-# Pin to previous version
-npm install groq-sdk@0.11.0 --save-exact
-npm test
-```
-
-## SDK Changelog Highlights
-
-The `groq-sdk` package mirrors the OpenAI SDK structure. Key changes to watch:
-
-- New model IDs added to type definitions
-- Response type changes (e.g., new `usage` fields)
-- Constructor options changes
-- New endpoint support (vision, audio, TTS)
-
-Always check the [GitHub releases](https://github.com/groq/groq-typescript/releases).
+- A `chore/upgrade-groq-sdk` branch with `groq-sdk` bumped in `package.json` and
+  the lockfile.
+- A scanner report listing any remaining deprecated model IDs, stale
+  `@groq/sdk` imports, or removed method calls — empty under every heading means
+  the code is clean.
+- Updated call sites (or a `resolveModel` wrapper) pointing at current model IDs.
+- A green `npm test` run plus a live `/v1/models` listing confirming every model
+  your code uses is still served.
 
 ## Error Handling
 
@@ -182,16 +135,25 @@ Always check the [GitHub releases](https://github.com/groq/groq-typescript/relea
 |-------|---------|----------|
 | Deprecated model | `400 model_not_found` or `400 model_decommissioned` | Replace with current model ID |
 | Type errors after upgrade | TypeScript compilation fails | Check SDK changelog for type changes |
-| Auth format change | `401` after upgrade | Verify constructor uses `apiKey`, not `key` |
+| Auth format change | `401` after upgrade | Verify constructor uses `apiKey`, not `key`, and `GROQ_API_KEY` is set |
 | New required fields | `400` on previously working requests | Check API docs for parameter changes |
+
+## Examples
+
+Worked before/after migrations — replacing a decommissioned chat model, routing
+every call through `resolveModel`, migrating a transcription model, and reading a
+clean scanner run — are in
+[references/examples.md](references/examples.md). Quick example: a call still
+using `mixtral-8x7b-32768` swaps to `llama-3.3-70b-versatile` per the migration
+map, clearing the `400 model_decommissioned` error.
 
 ## Resources
 
+- [Full walkthrough (all commands)](references/implementation.md)
+- [Worked examples](references/examples.md)
 - [Groq Model Deprecations](https://console.groq.com/docs/deprecations)
 - [Groq Changelog](https://console.groq.com/docs/changelog)
 - [groq-sdk GitHub Releases](https://github.com/groq/groq-typescript/releases)
 - [Groq Current Models](https://console.groq.com/docs/models)
 
-## Next Steps
-
-For CI integration during upgrades, see `groq-ci-integration`.
+For CI integration during upgrades, see the `groq-ci-integration` skill.

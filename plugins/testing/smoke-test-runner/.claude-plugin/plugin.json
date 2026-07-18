@@ -1,6 +1,6 @@
 {
   "name": "smoke-test-runner",
-  "version": "1.0.0",
+  "version": "1.20.0",
   "description": "Quick smoke test suites to verify critical functionality after deployments",
   "author": {
     "name": "Claude Code Plugin Hub",

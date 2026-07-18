@@ -7,7 +7,7 @@ description: 'Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Ma
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 2.1.0
+version: 2.29.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 effort: high

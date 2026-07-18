@@ -12,7 +12,7 @@ description: 'Create a minimal working Cohere example with Chat, Embed, and Rera
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

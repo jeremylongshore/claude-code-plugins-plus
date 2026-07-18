@@ -9,7 +9,7 @@ description: "Personal boycott list \u2014 users can conversationally tell the a
   , \"never buying from\", \"sick of\", \"add to boycott\",\n\"show my boycott list\"\
   , \"remove from boycott\".\n"
 allowed-tools: Bash(curl:*)
-version: 1.0.0
+version: 1.2.0
 author: Bubble Invest <contact@bubbleinvest.com>
 license: MIT
 tags:

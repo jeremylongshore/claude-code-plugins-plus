@@ -11,7 +11,7 @@ description: 'Execute extract and use project memories from previous sessions fo
 
   '
 allowed-tools: Read, Write
-version: 1.0.0
+version: 0.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

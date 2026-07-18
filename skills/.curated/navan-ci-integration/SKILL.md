@@ -7,7 +7,7 @@ description: 'Use when setting up CI/CD pipelines that validate Navan API integr
 
   '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*), Grep, Glob
-version: 1.0.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -1,24 +1,16 @@
 ---
 name: supabase-enterprise-rbac
-description: 'Implement custom role-based access control via JWT claims in Supabase:
-  app_metadata.role,
-
-  RLS policies with auth.jwt() role extraction, organization-scoped access, and API
-  key scoping.
-
-  Use when implementing role-based permissions, configuring organization-level access,
-
-  building admin/member/viewer hierarchies, or scoping API keys per role.
-
-  Trigger: "supabase RBAC", "supabase roles", "supabase permissions", "supabase JWT
-  claims",
-
-  "supabase organization access", "supabase custom roles", "supabase app_metadata".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*),
-  Grep, Glob
-version: 1.0.0
+description: |
+  Implement custom role-based access control via JWT claims in Supabase:
+  app_metadata.role, RLS policies with auth.jwt() role extraction,
+  organization-scoped access, and API key scoping.
+  Use when implementing role-based permissions, configuring organization-level
+  access, building admin/member/viewer hierarchies, or scoping API keys per role.
+  Trigger with "supabase RBAC", "supabase roles", "supabase permissions",
+  "supabase JWT claims", "supabase organization access", "supabase custom roles",
+  "supabase app_metadata".
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*)
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -35,7 +27,7 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Supabase supports custom role-based access control (RBAC) by storing role information in `app_metadata` on the user's JWT, then reading those claims in RLS policies via `auth.jwt() ->> 'role'`. This skill implements a complete RBAC system: defining roles in `app_metadata`, writing RLS policies that enforce role hierarchies, scoping access by organization, managing roles through the Admin API, and protecting API endpoints with role checks — all using real `createClient` from `@supabase/supabase-js`.
+Supabase supports custom role-based access control (RBAC) by storing role information in `app_metadata` on the user's JWT, then reading those claims in RLS policies via `auth.jwt() ->> 'role'`. This skill implements a complete RBAC system: roles in `app_metadata`, RLS policies that enforce role hierarchies, organization-scoped access, role management through the Admin API, and API endpoints protected with role checks — all using real `createClient` from `@supabase/supabase-js`.
 
 **When to use:** Building multi-role applications (admin/editor/viewer), implementing organization-scoped access, creating custom permission systems beyond Supabase's built-in `anon`/`authenticated` roles, or scoping API operations by user role.
 
@@ -48,248 +40,54 @@ Supabase supports custom role-based access control (RBAC) by storing role inform
 
 ## Instructions
 
+The workflow has three steps: assign roles into the JWT, enforce them in the database with RLS, then enforce them again in application code.
+
 ### Step 1: Define Roles via app_metadata and JWT Claims
 
-Store custom roles in the user's `app_metadata` using the Admin API. These claims appear in every JWT the user receives and are available in RLS policies.
-
-**Set user roles with the Admin API:**
+Store custom roles in the user's `app_metadata` using the Admin API. These claims appear in every JWT the user receives and are readable in RLS policies. Assign roles with the service-role client:
 
 ```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
 // Define the role hierarchy
 type AppRole = 'admin' | 'editor' | 'viewer' | 'member';
 
-interface AppMetadata {
-  role: AppRole;
-  org_id: string;
-  permissions?: string[];
-}
-
-// Assign a role to a user (admin operation)
+// Assign a role to a user (admin operation, service role key required)
 async function setUserRole(userId: string, role: AppRole, orgId: string) {
   const { data, error } = await supabase.auth.admin.updateUserById(userId, {
-    app_metadata: {
-      role,
-      org_id: orgId,
-    },
+    app_metadata: { role, org_id: orgId },
   });
-
   if (error) throw new Error(`Failed to set role: ${error.message}`);
-
-  console.log(`User ${userId} assigned role "${role}" in org "${orgId}"`);
   return data.user;
-}
-
-// Assign granular permissions (optional, for fine-grained control)
-async function setUserPermissions(
-  userId: string,
-  permissions: string[]
-) {
-  const { data, error } = await supabase.auth.admin.updateUserById(userId, {
-    app_metadata: { permissions },
-  });
-
-  if (error) throw new Error(`Failed to set permissions: ${error.message}`);
-  return data.user;
-}
-
-// Bulk role assignment (e.g., onboarding a team)
-async function assignTeamRoles(
-  orgId: string,
-  assignments: { userId: string; role: AppRole }[]
-) {
-  const results = await Promise.allSettled(
-    assignments.map(({ userId, role }) => setUserRole(userId, role, orgId))
-  );
-
-  const succeeded = results.filter((r) => r.status === 'fulfilled').length;
-  const failed = results.filter((r) => r.status === 'rejected').length;
-  console.log(`Assigned ${succeeded} roles, ${failed} failures`);
 }
 ```
 
-**Read roles from the JWT in application code:**
-
-```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-// Get the current user's role from their JWT
-async function getCurrentUserRole(): Promise<AppRole | null> {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) return null;
-
-  return (user.app_metadata?.role as AppRole) ?? null;
-}
-
-// Get the current user's organization
-async function getCurrentOrg(): Promise<string | null> {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user?.app_metadata?.org_id ?? null;
-}
-
-// Check if current user has a specific role or higher
-function hasRole(userRole: AppRole, requiredRole: AppRole): boolean {
-  const hierarchy: Record<AppRole, number> = {
-    admin: 4,
-    editor: 3,
-    member: 2,
-    viewer: 1,
-  };
-  return hierarchy[userRole] >= hierarchy[requiredRole];
-}
-
-// Middleware-style role check for API routes
-async function requireRole(requiredRole: AppRole) {
-  const role = await getCurrentUserRole();
-  if (!role || !hasRole(role, requiredRole)) {
-    throw new Error(
-      `Access denied: requires "${requiredRole}" role, user has "${role ?? 'none'}"`
-    );
-  }
-}
-```
+Read the role back in app code with `supabase.auth.getUser()` and compare it against a numeric hierarchy so `hasRole('editor', 'viewer')` is true. See [role assignment and JWT extraction](references/role-assignment.md) for the full service-role client setup, granular permissions, bulk `assignTeamRoles()`, `getCurrentUserRole()`, `getCurrentOrg()`, `hasRole()`, and the `requireRole()` guard.
 
 ### Step 2: RLS Policies with JWT Role Claims
 
-Write Row Level Security policies that read `auth.jwt() ->> 'role'` and `auth.jwt() -> 'app_metadata' ->> 'org_id'` to enforce role-based and organization-scoped access.
-
-**Role-based RLS policies:**
+Write Row Level Security policies that read `auth.jwt() -> 'app_metadata' ->> 'role'` and `... ->> 'org_id'`. Wrap the JWT extraction in helper functions so every policy stays readable:
 
 ```sql
--- Create a helper function to extract role from JWT
 CREATE OR REPLACE FUNCTION public.get_user_role()
 RETURNS text AS $$
-  SELECT coalesce(
-    auth.jwt() -> 'app_metadata' ->> 'role',
-    'viewer'  -- default role if not set
-  );
+  SELECT coalesce(auth.jwt() -> 'app_metadata' ->> 'role', 'viewer');
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
-
--- Create a helper function to extract org_id from JWT
-CREATE OR REPLACE FUNCTION public.get_user_org_id()
-RETURNS text AS $$
-  SELECT auth.jwt() -> 'app_metadata' ->> 'org_id';
-$$ LANGUAGE sql STABLE SECURITY DEFINER;
-
--- Enable RLS on all tables
-ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.team_members ENABLE ROW LEVEL SECURITY;
-
--- Projects: org members can read, editors+ can create/update, admins can delete
-CREATE POLICY "org_members_read_projects" ON public.projects
-  FOR SELECT USING (
-    org_id = get_user_org_id()
-  );
 
 CREATE POLICY "editors_create_projects" ON public.projects
   FOR INSERT WITH CHECK (
     org_id = get_user_org_id()
     AND get_user_role() IN ('admin', 'editor')
   );
-
-CREATE POLICY "editors_update_projects" ON public.projects
-  FOR UPDATE USING (
-    org_id = get_user_org_id()
-    AND get_user_role() IN ('admin', 'editor')
-  );
-
-CREATE POLICY "admins_delete_projects" ON public.projects
-  FOR DELETE USING (
-    org_id = get_user_org_id()
-    AND get_user_role() = 'admin'
-  );
-
--- Documents: org-scoped with role-based write access
-CREATE POLICY "org_read_documents" ON public.documents
-  FOR SELECT USING (
-    org_id = get_user_org_id()
-  );
-
-CREATE POLICY "editors_write_documents" ON public.documents
-  FOR INSERT WITH CHECK (
-    org_id = get_user_org_id()
-    AND get_user_role() IN ('admin', 'editor')
-  );
-
-CREATE POLICY "owner_or_admin_update_documents" ON public.documents
-  FOR UPDATE USING (
-    org_id = get_user_org_id()
-    AND (
-      created_by = auth.uid()
-      OR get_user_role() = 'admin'
-    )
-  );
-
--- Team members: admins manage team, members can read
-CREATE POLICY "org_read_team" ON public.team_members
-  FOR SELECT USING (
-    org_id = get_user_org_id()
-  );
-
-CREATE POLICY "admins_manage_team" ON public.team_members
-  FOR ALL USING (
-    org_id = get_user_org_id()
-    AND get_user_role() = 'admin'
-  );
 ```
 
-**Organization-scoped access table schema:**
-
-```sql
--- Organizations table
-CREATE TABLE public.organizations (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  name text NOT NULL,
-  slug text UNIQUE NOT NULL,
-  created_at timestamptz DEFAULT now()
-);
-
--- Team members junction table
-CREATE TABLE public.team_members (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  org_id uuid REFERENCES public.organizations(id) ON DELETE CASCADE,
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
-  role text NOT NULL DEFAULT 'member' CHECK (role IN ('admin', 'editor', 'member', 'viewer')),
-  invited_by uuid REFERENCES auth.users(id),
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(org_id, user_id)
-);
-
--- Projects scoped to organizations
-CREATE TABLE public.projects (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  org_id uuid REFERENCES public.organizations(id) ON DELETE CASCADE,
-  name text NOT NULL,
-  created_by uuid REFERENCES auth.users(id),
-  created_at timestamptz DEFAULT now()
-);
-
--- Index for fast org-scoped queries
-CREATE INDEX idx_team_members_org ON public.team_members(org_id);
-CREATE INDEX idx_team_members_user ON public.team_members(user_id);
-CREATE INDEX idx_projects_org ON public.projects(org_id);
-```
+Policies pair an `org_id = get_user_org_id()` tenant check with a `get_user_role()` role check per operation (SELECT/INSERT/UPDATE/DELETE). See [RLS policies and org-scoped schema](references/rls-policies.md) for both helper functions, the full policy set across projects/documents/team_members, and the `organizations`/`team_members`/`projects` table schema with indexes.
 
 ### Step 3: API Key Scoping and Role Enforcement in Application Code
 
-See [API key scoping and role enforcement](references/api-scoping-and-enforcement.md) for server-side `withRole()` middleware, per-request client creation, admin panel operations (list members, invite users, change roles), and organization management patterns.
+Enforce roles a second time at the application layer so API routes never rely on RLS alone. See [API key scoping and role enforcement](references/api-scoping-and-enforcement.md) for server-side `withRole()` middleware, per-request client creation, admin panel operations (list members, invite users, change roles), and organization management patterns.
 
 ## Output
 
-After completing this skill, you will have:
+Completing this skill produces:
 
 - **Role assignment via app_metadata** — `admin.updateUserById()` sets role claims on user JWTs
 - **JWT claim extraction** — `get_user_role()` and `get_user_org_id()` SQL helper functions
@@ -302,7 +100,7 @@ After completing this skill, you will have:
 ## Error Handling
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `app_metadata.role` is null in JWT | Role not set or user needs to re-login | Call `admin.updateUserById()` to set role; user must refresh their session |
 | RLS policy returns empty results | JWT claims don't match policy conditions | Check `auth.jwt()` output in SQL Editor; verify `app_metadata` was set correctly |
 | `permission denied for function` | Helper function not created or wrong schema | Create `get_user_role()` in the `public` schema with `SECURITY DEFINER` |
@@ -316,10 +114,6 @@ After completing this skill, you will have:
 **Example 1 — Quick role check in a component:**
 
 ```typescript
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(url, anonKey);
-
 async function canEditProject(): Promise<boolean> {
   const { data: { user } } = await supabase.auth.getUser();
   const role = user?.app_metadata?.role;
@@ -333,45 +127,14 @@ async function canEditProject(): Promise<boolean> {
 -- Test as an editor in org-123
 SET request.jwt.claims = '{"sub": "user-uuid", "role": "authenticated", "app_metadata": {"role": "editor", "org_id": "org-123"}}';
 
--- Should return only org-123 projects
-SELECT * FROM projects;
-
--- Should succeed (editors can create)
-INSERT INTO projects (org_id, name, created_by) VALUES ('org-123', 'Test', 'user-uuid');
-
--- Should fail (editors cannot delete)
-DELETE FROM projects WHERE id = 'some-project-id';
+SELECT * FROM projects;                                                    -- returns only org-123 rows
+INSERT INTO projects (org_id, name, created_by) VALUES ('org-123', 'Test', 'user-uuid');  -- succeeds
+DELETE FROM projects WHERE id = 'some-project-id';                          -- fails (editors cannot delete)
 
 RESET request.jwt.claims;
 ```
 
-**Example 3 — Onboard a new organization:**
-
-```typescript
-async function onboardOrganization(orgName: string, adminEmail: string) {
-  // 1. Create the organization
-  const { data: org } = await adminClient
-    .from('organizations')
-    .insert({ name: orgName, slug: orgName.toLowerCase().replace(/\s+/g, '-') })
-    .select('id')
-    .single();
-
-  // 2. Assign the creator as admin
-  const { data: { users } } = await adminClient.auth.admin.listUsers();
-  const adminUser = users.find((u) => u.email === adminEmail);
-
-  if (adminUser && org) {
-    await setUserRole(adminUser.id, 'admin', org.id);
-    await adminClient.from('team_members').insert({
-      org_id: org.id,
-      user_id: adminUser.id,
-      role: 'admin',
-    });
-  }
-
-  return org;
-}
-```
+For the full onboarding example (`onboardOrganization()` — create org, assign creator as admin, seed `team_members`), see [role assignment reference](references/role-assignment.md) and [API scoping reference](references/api-scoping-and-enforcement.md).
 
 ## Resources
 

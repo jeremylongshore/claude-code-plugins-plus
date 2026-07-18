@@ -12,7 +12,7 @@ description: 'Diagnose and fix common Obsidian plugin errors and exceptions.
 
   '
 allowed-tools: Read, Grep, Bash(node:*)
-version: 1.0.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

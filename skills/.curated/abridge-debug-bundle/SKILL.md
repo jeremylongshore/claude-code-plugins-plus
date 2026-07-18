@@ -12,7 +12,7 @@ description: 'Collect Abridge debug evidence for support tickets and troubleshoo
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
-version: 1.0.0
+version: 1.4.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

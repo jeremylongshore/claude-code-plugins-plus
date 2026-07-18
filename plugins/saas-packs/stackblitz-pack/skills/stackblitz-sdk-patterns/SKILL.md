@@ -12,7 +12,7 @@ description: 'Production patterns for WebContainer API: file system operations, 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

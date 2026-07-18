@@ -8,7 +8,7 @@ description: 'Execute Fondo production readiness checklist for year-end tax fili
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

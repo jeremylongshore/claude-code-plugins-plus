@@ -1,18 +1,13 @@
 ---
 name: clickhouse-core-workflow-b
-description: 'Insert, query, and aggregate data in ClickHouse with real SQL patterns.
-
-  Use when writing analytical queries, inserting data at scale,
-
-  building dashboards, or implementing materialized views.
-
-  Trigger: "clickhouse query", "clickhouse insert", "clickhouse aggregate",
-
+description: |
+  Insert, query, and aggregate data in ClickHouse with real SQL patterns.
+  Use when writing analytical queries, inserting data at scale, building
+  dashboards, or implementing materialized views for pre-aggregation.
+  Trigger with "clickhouse query", "clickhouse insert", "clickhouse aggregate",
   "clickhouse materialized view", "clickhouse SQL".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+allowed-tools: Read, Write, Edit, Bash(npm:*)
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,17 +22,27 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Insert data efficiently and write analytical queries with aggregations,
-window functions, and materialized views.
+Move data into ClickHouse efficiently, then answer analytical questions with
+aggregations, funnels, retention, window functions, and materialized views.
+This skill covers the read/write half of the core workflow: the fast-path insert
+patterns that avoid "too many parts", the parameterized query API for Node.js,
+and pre-aggregation via materialized views. The high-frequency patterns live
+inline below; the deep query library and advanced engine patterns are broken out
+into `references/` so you can drill in only when you need them.
 
 ## Prerequisites
 
-- Tables created (see `clickhouse-core-workflow-a`)
-- `@clickhouse/client` connected
+- Tables already created — run `clickhouse-core-workflow-a` first if not.
+- `@clickhouse/client` installed and connected (`CLICKHOUSE_HOST`, `CLICKHOUSE_USER`,
+  `CLICKHOUSE_PASSWORD` in the environment).
+- A target database/table (examples use `analytics.events`).
 
 ## Instructions
 
-### Step 1: Bulk Insert Patterns
+### Step 1: Bulk insert (the fast path)
+
+Batch rows and let the client buffer. ClickHouse writes a new "part" per INSERT,
+so many tiny inserts are the number-one performance mistake.
 
 ```typescript
 import { createClient } from '@clickhouse/client';
@@ -54,34 +59,24 @@ await client.insert({
   values: events,   // Array of objects matching table columns
   format: 'JSONEachRow',
 });
-
-// Insert from file (CSV, Parquet, etc.)
-import { createReadStream } from 'fs';
-
-await client.insert({
-  table: 'analytics.events',
-  values: createReadStream('./data/events.csv'),
-  format: 'CSVWithNames',
-});
 ```
+
+Streaming a file (CSV, Parquet, etc.) uses the same call with a read stream and
+the matching `format` (e.g. `CSVWithNames`).
 
 **Insert best practices:**
 
-- Batch rows: aim for 10K-100K rows per INSERT (not one at a time)
-- ClickHouse creates a new "part" per INSERT — too many small inserts cause "too many parts"
-- For real-time streams, buffer 1-5 seconds then flush
+- Batch rows: aim for 10K-100K rows per INSERT (not one at a time).
+- ClickHouse creates a new "part" per INSERT — too many small inserts cause "too many parts".
+- For real-time streams, buffer 1-5 seconds then flush.
 
-### Step 2: Analytical Queries
+### Step 2: Analytical queries
+
+Aggregate with `count()`, `uniqExact()`, and time filters. The canonical
+"top events by tenant" shape:
 
 ```sql
--- Top events by tenant in the last 7 days
-SELECT
-    tenant_id,
-    event_type,
-    count()                  AS event_count,
-    uniqExact(user_id)       AS unique_users,
-    min(created_at)          AS first_seen,
-    max(created_at)          AS last_seen
+SELECT tenant_id, event_type, count() AS event_count, uniqExact(user_id) AS unique_users
 FROM analytics.events
 WHERE created_at >= now() - INTERVAL 7 DAY
 GROUP BY tenant_id, event_type
@@ -89,129 +84,27 @@ ORDER BY event_count DESC
 LIMIT 100;
 ```
 
-```sql
--- Funnel analysis: signup → activation → purchase
-SELECT
-    level,
-    count() AS users
-FROM (
-    SELECT
-        user_id,
-        groupArray(event_type) AS journey
-    FROM analytics.events
-    WHERE event_type IN ('signup', 'activation', 'purchase')
-      AND created_at >= today() - 30
-    GROUP BY user_id
-)
-ARRAY JOIN arrayEnumerate(journey) AS level
-GROUP BY level
-ORDER BY level;
-```
+Funnel, retention, and safe parameterized-query patterns are in
+[references/queries.md](references/queries.md).
 
-```sql
--- Retention: users active this week who were also active last week
-SELECT
-    count(DISTINCT curr.user_id) AS retained_users
-FROM analytics.events AS curr
-INNER JOIN analytics.events AS prev
-    ON curr.user_id = prev.user_id
-WHERE curr.created_at >= toMonday(today())
-  AND prev.created_at >= toMonday(today()) - 7
-  AND prev.created_at < toMonday(today());
-```
+### Step 3: Pre-aggregation and windowing
 
-### Step 3: Parameterized Queries in Node.js
+For dashboards, pre-aggregate on INSERT with a materialized view backed by an
+`AggregatingMergeTree` target, then merge states at read time. Window functions
+(`row_number()`, running totals via `OVER (PARTITION BY ...)`) and the full
+function reference table are in
+[references/advanced.md](references/advanced.md).
 
-```typescript
-// Use {param:Type} syntax for safe parameterized queries
-const rs = await client.query({
-  query: `
-    SELECT event_type, count() AS cnt
-    FROM analytics.events
-    WHERE tenant_id = {tenant_id:UInt32}
-      AND created_at >= {from_date:DateTime}
-    GROUP BY event_type
-    ORDER BY cnt DESC
-  `,
-  query_params: {
-    tenant_id: 1,
-    from_date: '2025-01-01 00:00:00',
-  },
-  format: 'JSONEachRow',
-});
-const rows = await rs.json();
-```
+## Output
 
-### Step 4: Materialized Views (Pre-Aggregation)
+Applying this skill produces:
 
-```sql
--- Source table receives raw events
--- Materialized view aggregates automatically on INSERT
-
-CREATE MATERIALIZED VIEW analytics.hourly_stats_mv
-TO analytics.hourly_stats  -- target table
-AS
-SELECT
-    toStartOfHour(created_at) AS hour,
-    tenant_id,
-    event_type,
-    count()                   AS event_count,
-    uniqState(user_id)        AS unique_users_state
-FROM analytics.events
-GROUP BY hour, tenant_id, event_type;
-
--- Target table uses AggregatingMergeTree
-CREATE TABLE analytics.hourly_stats (
-    hour              DateTime,
-    tenant_id         UInt32,
-    event_type        LowCardinality(String),
-    event_count       UInt64,
-    unique_users_state AggregateFunction(uniq, UInt64)
-)
-ENGINE = AggregatingMergeTree()
-ORDER BY (tenant_id, event_type, hour);
-
--- Query the materialized view (merge aggregation states)
-SELECT
-    hour,
-    sum(event_count)           AS events,
-    uniqMerge(unique_users_state) AS unique_users
-FROM analytics.hourly_stats
-WHERE tenant_id = 1
-GROUP BY hour
-ORDER BY hour;
-```
-
-### Step 5: Window Functions
-
-```sql
--- Running total and rank within each tenant
-SELECT
-    tenant_id,
-    event_type,
-    count()   AS cnt,
-    sum(count()) OVER (PARTITION BY tenant_id ORDER BY count() DESC) AS running_total,
-    row_number() OVER (PARTITION BY tenant_id ORDER BY count() DESC) AS rank
-FROM analytics.events
-WHERE created_at >= today() - 7
-GROUP BY tenant_id, event_type
-ORDER BY tenant_id, rank;
-```
-
-### Step 6: Common ClickHouse Functions
-
-| Function | Description | Example |
-|----------|-------------|---------|
-| `count()` | Row count | `count()` |
-| `uniq(col)` | Approximate distinct count (HyperLogLog) | `uniq(user_id)` |
-| `uniqExact(col)` | Exact distinct count | `uniqExact(user_id)` |
-| `quantile(0.95)(col)` | Percentile | `quantile(0.95)(latency_ms)` |
-| `arrayJoin(arr)` | Unnest array to rows | `arrayJoin(tags)` |
-| `JSONExtractString(col, key)` | Extract from JSON string | `JSONExtractString(properties, 'plan')` |
-| `toStartOfHour(dt)` | Truncate to hour | `toStartOfHour(created_at)` |
-| `formatReadableSize(n)` | Human-readable bytes | `formatReadableSize(bytes)` |
-| `if(cond, then, else)` | Conditional | `if(cnt > 0, cnt, NULL)` |
-| `multiIf(...)` | Multi-branch conditional | `multiIf(x>10, 'high', x>5, 'med', 'low')` |
+- **Insert code** — a batched `client.insert(...)` call (or file stream) that
+  loads rows without triggering "too many parts".
+- **Query results** — aggregation rows returned as JSON via `rs.json()`, ready
+  to feed a dashboard or API response.
+- **Materialized view + target table** — DDL that keeps a small pre-rolled table
+  updated automatically on every source INSERT.
 
 ## Error Handling
 
@@ -222,6 +115,15 @@ ORDER BY tenant_id, rank;
 | `UNKNOWN_FUNCTION` | Wrong ClickHouse version | Check `SELECT version()` |
 | `Cannot parse datetime` | Wrong format | Use `YYYY-MM-DD HH:MM:SS` format |
 
+## Examples
+
+- **Insert a batch of events** — Step 1 above; adapt `values` to your row shape.
+- **Top events / funnel / retention / parameterized queries** — full runnable
+  SQL and Node.js in [references/queries.md](references/queries.md).
+- **Materialized view, window functions, function reference** — the pre-aggregation
+  and windowing patterns plus the common-function cheat sheet in
+  [references/advanced.md](references/advanced.md).
+
 ## Resources
 
 - [SQL Reference](https://clickhouse.com/docs/sql-reference)
@@ -230,4 +132,5 @@ ORDER BY tenant_id, rank;
 
 ## Next Steps
 
-For error troubleshooting, see `clickhouse-common-errors`.
+For error troubleshooting once queries are running, see `clickhouse-common-errors`.
+For table and schema design, revisit `clickhouse-core-workflow-a`.

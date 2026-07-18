@@ -11,7 +11,7 @@ description: "Manage the freshie ecosystem inventory database \u2014 a CMDB trac
 allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*),
   Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Task
 argument-hint: "<subcommand> [--query SQL] [--run-id N]"
-version: 1.1.0
+version: 1.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

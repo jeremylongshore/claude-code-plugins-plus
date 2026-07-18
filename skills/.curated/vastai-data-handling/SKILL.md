@@ -12,7 +12,7 @@ description: 'Manage training data and model artifacts securely on Vast.ai GPU i
 
   '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(ssh:*), Bash(scp:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

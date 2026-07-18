@@ -1,6 +1,6 @@
 {
   "name": "database-schema-designer",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
   "author": {
     "name": "Claude Code Plugins",

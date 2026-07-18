@@ -1,6 +1,6 @@
 {
   "name": "throughput-analyzer",
-  "version": "1.0.0",
+  "version": "1.24.0",
   "description": "Analyze and optimize system throughput",
   "author": {
     "name": "Claude Code Plugins",

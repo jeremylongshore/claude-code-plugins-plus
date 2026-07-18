@@ -13,7 +13,7 @@ description: 'Enforce organizational governance and policy guardrails for Sentry
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*),
   Bash(curl:*), Bash(grep:*), Bash(git:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

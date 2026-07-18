@@ -1,6 +1,6 @@
 {
   "name": "004-jeremy-google-cloud-agent-sdk",
-  "version": "2.0.0",
+  "version": "2.24.0",
   "description": "Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready templates, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, and multi-agent orchestration.",
   "author": {
     "name": "Jeremy Longshore",

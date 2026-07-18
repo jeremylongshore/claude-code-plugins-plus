@@ -13,7 +13,7 @@ description: 'Optimize Vast.ai GPU cloud costs through smart instance selection 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

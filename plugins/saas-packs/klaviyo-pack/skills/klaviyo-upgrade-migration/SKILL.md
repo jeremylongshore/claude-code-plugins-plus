@@ -3,16 +3,13 @@ name: klaviyo-upgrade-migration
 description: 'Upgrade Klaviyo SDK versions and migrate between API revisions.
 
   Use when upgrading the klaviyo-api package, migrating from v1/v2 legacy APIs
-
   to the current REST API, or handling breaking changes between revisions.
-
   Trigger with phrases like "upgrade klaviyo", "klaviyo migration",
-
   "klaviyo breaking changes", "update klaviyo SDK", "klaviyo API revision".
 
   '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+allowed-tools: Read, Edit, Bash(npm:*), Bash(git:*)
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,17 +23,28 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Guide for upgrading the `klaviyo-api` SDK, migrating from legacy v1/v2 APIs, and handling breaking changes between Klaviyo API revisions.
+Guide for upgrading the `klaviyo-api` SDK, migrating from legacy v1/v2 APIs, and
+handling breaking changes between Klaviyo API revisions. The workflow assesses the
+current version, surfaces breaking changes with the TypeScript compiler, applies the
+matching migration pattern, and ships behind a staging deploy with a clean rollback.
+
+Deep before/after code and the full command sequence live in `references/` so this
+file stays a scannable map of the workflow:
+
+- [Migration patterns](references/migration-patterns.md) — legacy v1/v2 → current API, SDK major upgrade (`ConfigWrapper` → `ApiKeySession`), property casing.
+- [Upgrade & rollback procedure](references/upgrade-procedure.md) — pinned install, tsc/test gates, staging deploy, rollback, migration checklist.
 
 ## Prerequisites
 
-- Current Klaviyo SDK installed
-- Git for version control
-- Test suite available
+- The `klaviyo-api` package installed and a known current version (`npm list klaviyo-api`).
+- Git available, with a clean working tree so the upgrade lands on its own branch.
+- A working test suite (`npm test`), and ideally a staging integration test target.
+- A Klaviyo private API key in the environment for integration verification.
 
 ## Klaviyo API Revision Timeline
 
-Each revision is supported for **2 years** after release. Connect to the latest every 12-18 months.
+Each revision is supported for **2 years** after release. Plan to move to the latest
+every 12-18 months so you never fall inside the deprecation window.
 
 | Revision | Released | Deprecated | Key Changes |
 |----------|----------|------------|-------------|
@@ -48,144 +56,61 @@ Each revision is supported for **2 years** after release. Connect to the latest 
 
 ## Instructions
 
-### Step 1: Assess Current State
+### Step 1: Assess the current state
+
+Compare what is installed against what is published to size the jump. A single major
+step is routine; skipping several majors means expect casing and import changes.
 
 ```bash
-# Check current SDK version
-npm list klaviyo-api
-# e.g., klaviyo-api@15.0.0
-
-# Check latest available
-npm view klaviyo-api version
-# e.g., 21.0.0
-
-# See all available versions
-npm view klaviyo-api versions --json | tail -10
+npm list klaviyo-api          # e.g. klaviyo-api@15.0.0
+npm view klaviyo-api version  # latest, e.g. 21.0.0
 ```
 
-### Step 2: Review Breaking Changes
+### Step 2: Find affected usage
+
+Read the [releases changelog](https://github.com/klaviyo/klaviyo-api-node/releases)
+for the target major, then locate the call sites that will need edits.
 
 ```bash
-# View changelog
-# https://github.com/klaviyo/klaviyo-api-node/releases
-
-# Find your usage patterns that may be affected
 grep -rn "from 'klaviyo-api'" src/
-grep -rn "ApiKeySession\|ProfilesApi\|EventsApi" src/
+grep -rn "ApiKeySession\|ConfigWrapper\|ProfilesApi\|EventsApi" src/
 ```
 
-### Step 3: Common Migration Patterns
+### Step 3: Apply the matching migration pattern
 
-#### Legacy v1/v2 to Current API
+Pick the pattern that fits the errors you see and edit each call site. Full
+before/after code is in [migration patterns](references/migration-patterns.md):
 
-```typescript
-// BEFORE: Legacy v1/v2 endpoints (DEPRECATED)
-// POST https://a.klaviyo.com/api/v2/list/LIST_ID/subscribe
-// POST https://a.klaviyo.com/api/track
+- **Legacy v1/v2 → current API** — replace raw `/api/v2/...` HTTP calls with typed `EventsApi` / `ProfilesApi` resource classes.
+- **SDK major upgrade** — swap the global `ConfigWrapper('pk_***')` for a per-instance `new ApiKeySession('pk_***')` passed to each `*Api`.
+- **Property casing** — rename `snake_case` attributes (`first_name`) to `camelCase` (`firstName`).
 
-// AFTER: Current REST API (2024-10-15)
-import { ApiKeySession, ProfilesApi, EventsApi, ProfileEnum } from 'klaviyo-api';
+### Step 4: Upgrade, verify, and ship
 
-const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
-
-// v2 Track → Create Event
-const eventsApi = new EventsApi(session);
-await eventsApi.createEvent({
-  data: {
-    type: 'event',
-    attributes: {
-      metric: { data: { type: 'metric', attributes: { name: 'Placed Order' } } },
-      profile: { data: { type: 'profile', attributes: { email: 'user@example.com' } } },
-      properties: { orderId: '123' },
-      time: new Date().toISOString(),
-      value: 99.99,
-    },
-  },
-});
-
-// v2 Identify → Create or Update Profile
-const profilesApi = new ProfilesApi(session);
-await profilesApi.createOrUpdateProfile({
-  data: {
-    type: ProfileEnum.Profile,
-    attributes: {
-      email: 'user@example.com',
-      firstName: 'Jane',
-      properties: { plan: 'pro' },
-    },
-  },
-});
-```
-
-#### SDK Version Upgrade (e.g., v15 to v21)
-
-```typescript
-// BEFORE (older SDK versions): ConfigWrapper pattern
-// import { ConfigWrapper, Profiles } from 'klaviyo-api';
-// ConfigWrapper('pk_***');
-// const profiles = await Profiles.getProfiles();
-
-// AFTER (v21+): ApiKeySession pattern
-import { ApiKeySession, ProfilesApi } from 'klaviyo-api';
-const session = new ApiKeySession('pk_***');
-const profilesApi = new ProfilesApi(session);
-const profiles = await profilesApi.getProfiles();
-```
-
-#### Property Casing Changes
-
-```typescript
-// BEFORE: Some older versions used snake_case
-// { first_name: 'Jane', phone_number: '+1555...' }
-
-// AFTER: SDK v21+ uses camelCase everywhere
-{ firstName: 'Jane', phoneNumber: '+15551234567' }
-```
-
-### Step 4: Upgrade Procedure
+Install the target version pinned, let `tsc` and the test suite gate the change, and
+deploy to staging before production. Full commands: [upgrade procedure](references/upgrade-procedure.md).
 
 ```bash
-# 1. Create upgrade branch
 git checkout -b upgrade/klaviyo-api-v21
-
-# 2. Install new version
 npm install klaviyo-api@21.0.0 --save-exact
-
-# 3. Run TypeScript compiler to find breaking changes
-npx tsc --noEmit 2>&1 | grep -i "klaviyo\|error TS"
-
-# 4. Fix all type errors, then run tests
+npx tsc --noEmit 2>&1 | grep -i "klaviyo\|error TS"   # find breaking changes
 npm test
-
-# 5. Run integration tests against staging
-KLAVIYO_TEST=1 npm run test:integration
-
-# 6. Commit and deploy to staging first
-git add package.json package-lock.json src/
-git commit -m "upgrade: klaviyo-api to v21.0.0"
 ```
 
-### Step 5: Rollback Procedure
+### Step 5: Roll back if needed
 
-```bash
-# If issues found after upgrade
-npm install klaviyo-api@15.0.0 --save-exact
-npm test
-git add package.json package-lock.json
-git commit -m "revert: rollback klaviyo-api to v15.0.0"
-```
+If error rates rise after the upgrade, reinstall the previous exact version — see the
+[rollback procedure](references/upgrade-procedure.md). Because Step 4 pinned versions,
+rollback is a clean reinstall with no dependency guesswork.
 
-## Migration Checklist
+## Output
 
-- [ ] Backup current `package-lock.json`
-- [ ] Read SDK changelog for target version
-- [ ] Update `ApiKeySession` import (if changed)
-- [ ] Fix property casing (camelCase in v21+)
-- [ ] Update response access pattern (`response.body.data`)
-- [ ] Verify all filter syntax still works
-- [ ] Run full test suite
-- [ ] Deploy to staging first
-- [ ] Monitor error rates for 24 hours after production deploy
+Running this workflow produces:
+
+- An `upgrade/klaviyo-api-vNN` branch with `package.json` + `package-lock.json` pinned to the target version via `--save-exact`.
+- Edited call sites in `src/` using the current `ApiKeySession` pattern and `camelCase` attributes, with `npx tsc --noEmit` clean.
+- A green `npm test` (and staging `test:integration`) run confirming the migration.
+- A commit deployed to staging first, with a documented rollback commit ready if 24-hour error monitoring flags a regression.
 
 ## Error Handling
 
@@ -196,6 +121,28 @@ git commit -m "revert: rollback klaviyo-api to v15.0.0"
 | `response.data is undefined` | Access pattern change | Use `response.body.data` |
 | `revision not supported` | Deprecated revision | Update `revision` header value |
 
+## Examples
+
+**Migrate a v2 identify call to the current SDK.** After `grep` finds a legacy
+`/api/identify` call, replace it with `createOrUpdateProfile`:
+
+```typescript
+import { ApiKeySession, ProfilesApi, ProfileEnum } from 'klaviyo-api';
+
+const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+const profilesApi = new ProfilesApi(session);
+await profilesApi.createOrUpdateProfile({
+  data: {
+    type: ProfileEnum.Profile,
+    attributes: { email: 'user@example.com', firstName: 'Jane', properties: { plan: 'pro' } },
+  },
+});
+```
+
+The full set of before/after examples — event tracking, the `ConfigWrapper` →
+`ApiKeySession` upgrade, and property casing — is in
+[migration patterns](references/migration-patterns.md).
+
 ## Resources
 
 - [API Versioning & Deprecation Policy](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
@@ -205,4 +152,5 @@ git commit -m "revert: rollback klaviyo-api to v15.0.0"
 
 ## Next Steps
 
-For CI integration during upgrades, see `klaviyo-ci-integration`.
+For wiring these upgrade checks into continuous integration, see the
+`klaviyo-ci-integration` skill.

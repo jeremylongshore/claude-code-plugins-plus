@@ -1,6 +1,6 @@
 {
   "name": "integration-test-runner",
-  "version": "1.0.0",
+  "version": "1.22.0",
   "description": "Run and manage integration test suites with environment setup, database seeding, and cleanup",
   "author": {
     "name": "Claude Code Plugins",

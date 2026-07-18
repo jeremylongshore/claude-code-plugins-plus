@@ -1,6 +1,6 @@
 {
   "name": "hello-world",
-  "version": "1.0.0",
+  "version": "1.12.0",
   "description": "Simple example plugin demonstrating basic slash commands",
   "author": {
     "name": "Jeremy Longshore",

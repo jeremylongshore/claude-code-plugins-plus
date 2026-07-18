@@ -1,16 +1,13 @@
 ---
 name: groq-core-workflow-b
-description: 'Execute Groq secondary workflows: audio transcription (Whisper), vision,
-
-  text-to-speech, and batch model evaluation.
-
+description: |
+  Use when you need Groq's non-chat endpoints — transcribing or translating
+  audio with Whisper, understanding images with Llama 4 vision, generating
+  speech (TTS), or benchmarking models for speed vs quality.
   Trigger with phrases like "groq whisper", "groq transcription",
-
   "groq audio", "groq vision", "groq TTS", "groq speech".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+allowed-tools: Read, Bash(npm:*)
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,13 +22,13 @@ compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 
 ## Overview
 
-Beyond chat completions, Groq provides ultra-fast audio transcription (Whisper at 216x real-time), multimodal vision (Llama 4 Scout/Maverick), and text-to-speech. These endpoints use the same `groq-sdk` client.
+Beyond chat completions, Groq offers ultra-fast Whisper transcription (216x real-time), Llama 4 vision, and text-to-speech — all on the same `groq-sdk` client. This skill covers transcription/translation, vision, TTS, and model benchmarking, with full runnable code in [references/implementation.md](references/implementation.md) and worked scripts in [references/examples.md](references/examples.md).
 
 ## Prerequisites
 
-- `groq-sdk` installed, `GROQ_API_KEY` set
-- For audio: audio files in supported formats
-- For vision: image URLs or base64 images
+- `groq-sdk` installed, `GROQ_API_KEY` set (the SDK reads it from the environment automatically)
+- For audio: audio files in a supported format
+- For vision: image URLs or base64-encoded images
 
 ## Audio Models
 
@@ -44,7 +41,15 @@ Beyond chat completions, Groq provides ultra-fast audio transcription (Whisper a
 
 ## Instructions
 
-### Step 1: Audio Transcription (Whisper)
+Each workflow is a single SDK call on the shared `groq` client. Pick the endpoint for your task, then follow the full walkthrough in [references/implementation.md](references/implementation.md) for the complete, copy-pasteable version of each.
+
+1. **Transcription** — `groq.audio.transcriptions.create({ file, model: "whisper-large-v3-turbo", response_format })`. Use `response_format: "verbose_json"` with `timestamp_granularities: ["segment"]` to get per-segment start/end times.
+2. **Translation** — `groq.audio.translations.create({ file, model: "whisper-large-v3" })` transcribes any-language audio directly to English text.
+3. **Vision** — a normal `groq.chat.completions.create` call where `content` is an array mixing `{ type: "text" }` and `{ type: "image_url" }` parts. Accepts up to 5 images (URL or `data:` base64) with `meta-llama/llama-4-scout-17b-16e-instruct`.
+4. **Text-to-Speech** — `groq.audio.speech.create({ model: "playai-tts", input, voice, response_format })`, then write `Buffer.from(await response.arrayBuffer())` to a file.
+5. **Benchmarking** — loop a prompt across several chat models and time each call to compare latency and tokens/sec (see [references/examples.md](references/examples.md)).
+
+Minimal transcription skeleton:
 
 ```typescript
 import Groq from "groq-sdk";
@@ -52,169 +57,22 @@ import fs from "fs";
 
 const groq = new Groq();
 
-// Transcribe audio file
 async function transcribe(filePath: string): Promise<string> {
   const transcription = await groq.audio.transcriptions.create({
     file: fs.createReadStream(filePath),
     model: "whisper-large-v3-turbo",
-    response_format: "json",        // or "text" or "verbose_json"
-    language: "en",                  // Optional: ISO 639-1 code
+    response_format: "json",
   });
-
   return transcription.text;
 }
-
-// With timestamps (verbose mode)
-async function transcribeWithTimestamps(filePath: string) {
-  const transcription = await groq.audio.transcriptions.create({
-    file: fs.createReadStream(filePath),
-    model: "whisper-large-v3-turbo",
-    response_format: "verbose_json",
-    timestamp_granularities: ["segment"],
-  });
-
-  return transcription;
-  // Returns segments with start/end times
-}
 ```
 
-### Step 2: Audio Translation (to English)
+## Output
 
-```typescript
-// Translate any language audio to English text
-async function translateAudio(filePath: string): Promise<string> {
-  const translation = await groq.audio.translations.create({
-    file: fs.createReadStream(filePath),
-    model: "whisper-large-v3",
-  });
-
-  return translation.text;
-}
-```
-
-### Step 3: Vision (Image Understanding)
-
-```typescript
-// Analyze images with Llama 4 Scout (up to 5 images per request)
-async function analyzeImage(imageUrl: string, question: string) {
-  const completion = await groq.chat.completions.create({
-    model: "meta-llama/llama-4-scout-17b-16e-instruct",
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: question },
-          { type: "image_url", image_url: { url: imageUrl } },
-        ],
-      },
-    ],
-    max_tokens: 1024,
-  });
-
-  return completion.choices[0].message.content;
-}
-
-// Multiple images
-async function compareImages(urls: string[], prompt: string) {
-  const imageContent = urls.map((url) => ({
-    type: "image_url" as const,
-    image_url: { url },
-  }));
-
-  const completion = await groq.chat.completions.create({
-    model: "meta-llama/llama-4-scout-17b-16e-instruct",
-    messages: [{
-      role: "user",
-      content: [{ type: "text", text: prompt }, ...imageContent],
-    }],
-    max_tokens: 2048,
-  });
-
-  return completion.choices[0].message.content;
-}
-
-// Base64 image input
-async function analyzeBase64Image(base64Data: string) {
-  return groq.chat.completions.create({
-    model: "meta-llama/llama-4-scout-17b-16e-instruct",
-    messages: [{
-      role: "user",
-      content: [
-        { type: "text", text: "Describe this image in detail." },
-        {
-          type: "image_url",
-          image_url: { url: `data:image/jpeg;base64,${base64Data}` },
-        },
-      ],
-    }],
-  });
-}
-```
-
-### Step 4: Text-to-Speech
-
-```typescript
-// Generate speech from text
-async function textToSpeech(text: string, outputPath: string) {
-  const response = await groq.audio.speech.create({
-    model: "playai-tts",          // or "playai-tts-arabic"
-    input: text,
-    voice: "Arista-PlayAI",      // See Groq docs for voice options
-    response_format: "wav",       // wav, mp3, flac, opus, aac
-  });
-
-  const buffer = Buffer.from(await response.arrayBuffer());
-  fs.writeFileSync(outputPath, buffer);
-  console.log(`Audio saved to ${outputPath}`);
-}
-```
-
-### Step 5: Python Audio Transcription
-
-```python
-from groq import Groq
-
-client = Groq()
-
-# Transcribe
-with open("audio.mp3", "rb") as file:
-    transcription = client.audio.transcriptions.create(
-        file=("audio.mp3", file),
-        model="whisper-large-v3-turbo",
-        response_format="verbose_json",
-    )
-    print(transcription.text)
-    for segment in transcription.segments:
-        print(f"[{segment.start:.1f}s - {segment.end:.1f}s] {segment.text}")
-```
-
-### Step 6: Model Benchmarking
-
-```typescript
-// Compare models on same prompt for speed vs quality
-async function benchmarkModels(prompt: string) {
-  const models = [
-    "llama-3.1-8b-instant",
-    "llama-3.3-70b-versatile",
-    "llama-3.3-70b-specdec",
-  ];
-
-  for (const model of models) {
-    const start = performance.now();
-    const result = await groq.chat.completions.create({
-      model,
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 200,
-    });
-    const elapsed = performance.now() - start;
-    const tps = result.usage!.completion_tokens / ((result.usage as any).completion_time || 1);
-
-    console.log(
-      `${model.padEnd(45)} | ${elapsed.toFixed(0)}ms | ${tps.toFixed(0)} tok/s | ${result.usage!.total_tokens} tokens`
-    );
-  }
-}
-```
+- **Transcription/translation**: a `transcription.text` string. With `verbose_json`, a `segments[]` array where each segment has `start`, `end`, and `text`.
+- **Vision**: the assistant reply at `completion.choices[0].message.content` (a natural-language answer about the image(s)).
+- **Text-to-Speech**: an audio response you convert to a `Buffer` and write to disk (`wav`, `mp3`, `flac`, `opus`, or `aac`).
+- **Benchmarking**: one console line per model — latency in ms, throughput in tok/s, and total tokens.
 
 ## Vision Model Limits
 
@@ -233,6 +91,30 @@ async function benchmarkModels(prompt: string) {
 | `max_images_exceeded` | >5 images in request | Reduce to 5 or fewer images |
 | `429` on Whisper | Audio RPM limit hit | Queue transcription requests |
 
+## Examples
+
+Complete, runnable scripts live in [references/examples.md](references/examples.md):
+
+- **Python transcription with timestamps** — transcribe a local MP3 and print each segment with its start/end time.
+- **Model benchmarking** — run one prompt across `llama-3.1-8b-instant`, `llama-3.3-70b-versatile`, and `llama-3.3-70b-specdec` and print latency + throughput per model.
+
+Quick vision example (analyze one image by URL):
+
+```typescript
+const completion = await groq.chat.completions.create({
+  model: "meta-llama/llama-4-scout-17b-16e-instruct",
+  messages: [{
+    role: "user",
+    content: [
+      { type: "text", text: "What is in this image?" },
+      { type: "image_url", image_url: { url: imageUrl } },
+    ],
+  }],
+  max_tokens: 1024,
+});
+console.log(completion.choices[0].message.content);
+```
+
 ## Resources
 
 - [Groq Speech-to-Text](https://console.groq.com/docs/speech-to-text)
@@ -242,4 +124,4 @@ async function benchmarkModels(prompt: string) {
 
 ## Next Steps
 
-For common errors and troubleshooting, see `groq-common-errors`.
+For common errors and troubleshooting patterns across all Groq workflows, see the `groq-common-errors` skill. For chat completions, streaming, tool use, and JSON mode, see `groq-core-workflow-a`.

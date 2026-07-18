@@ -1,6 +1,6 @@
 {
   "name": "database-query-profiler",
-  "version": "1.0.0",
+  "version": "1.9.0",
   "description": "Profile and optimize database queries for performance",
   "author": {
     "name": "Claude Code Plugins",

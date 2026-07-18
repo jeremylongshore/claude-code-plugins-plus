@@ -12,7 +12,7 @@ description: 'Implement Vast.ai reference architecture for GPU compute workflows
 
   '
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

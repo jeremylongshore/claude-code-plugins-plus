@@ -13,7 +13,7 @@ description: 'Configure Fireflies.ai across dev, staging, and production with is
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
-version: 1.0.0
+version: 1.11.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

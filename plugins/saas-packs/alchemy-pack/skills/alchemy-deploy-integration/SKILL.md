@@ -12,7 +12,7 @@ description: 'Deploy Alchemy-powered Web3 applications to Vercel, Cloud Run, and
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

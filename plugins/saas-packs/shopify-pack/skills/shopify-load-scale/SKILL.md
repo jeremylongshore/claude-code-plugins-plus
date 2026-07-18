@@ -14,7 +14,7 @@ description: 'Load test Shopify integrations respecting API rate limits, plan ca
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(curl:*)
-version: 1.0.0
+version: 2.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

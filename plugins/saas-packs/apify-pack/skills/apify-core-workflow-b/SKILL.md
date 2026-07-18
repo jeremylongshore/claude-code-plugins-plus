@@ -1,18 +1,18 @@
 ---
 name: apify-core-workflow-b
-description: 'Manage Apify datasets, key-value stores, and request queues programmatically.
+description: |
+  Manage Apify datasets, key-value stores, and request queues programmatically,
+  and orchestrate multi-Actor pipelines.
 
-  Use when reading/writing datasets, exporting data, managing Actor storage,
+  Use when you need to read or write Apify datasets, export scraped data to
+  CSV/JSON/XLSX, store config or binary artifacts in a key-value store, manage a
+  resumable request queue, chain Actors into a scrape → transform → export
+  pipeline, or monitor Actor run status and cost.
 
-  or orchestrating multi-Actor pipelines.
-
-  Trigger: "apify dataset", "apify key-value store", "apify storage",
-
+  Trigger with "apify dataset", "apify key-value store", "apify storage",
   "export apify data", "apify pipeline", "apify request queue".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.0.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,12 +26,40 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Manage Apify's three storage types (datasets, key-value stores, request queues) and orchestrate multi-Actor pipelines. Covers CRUD operations, data export, pagination, and chaining Actors together.
+Manage Apify's three storage types (datasets, key-value stores, request queues)
+and orchestrate multi-Actor pipelines using the `apify-client` JS SDK. Covers
+CRUD operations, data export, automatic pagination, and chaining Actors
+together (scrape → transform → export).
+
+This SKILL.md gives you the high-level workflow plus the essential first example
+for each storage type. Drill into the reference files for the complete,
+copy-ready code:
+
+- **[Storage operations — full reference](references/storage-operations.md)** —
+  every dataset, key-value store, and request queue operation with pagination,
+  format export, and binary records.
+- **[Pipelines & run monitoring — full reference](references/pipelines.md)** —
+  the multi-Actor pipeline function and Actor-run status/cost/abort monitoring.
 
 ## Prerequisites
 
-- `apify-client` installed and authenticated
-- Familiarity with `apify-core-workflow-a`
+- Node.js with `apify-client` installed (`npm install apify-client`).
+- An Apify account token exported as `APIFY_TOKEN` (see Authentication below).
+- Familiarity with `apify-core-workflow-a` (Actor invocation and run lifecycle),
+  since pipelines chain Actor runs and read their default storages.
+
+## Authentication
+
+All operations authenticate with an Apify API token. Never hard-code it —
+read it from the environment and construct the client once:
+
+```typescript
+import { ApifyClient } from 'apify-client';
+const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+```
+
+Generate a token at Apify Console → Settings → Integrations, then export it
+(`export APIFY_TOKEN=apify_api_...`) or load it from your secrets manager.
 
 ## Storage Types at a Glance
 
@@ -45,194 +73,66 @@ Named storages persist indefinitely. Unnamed (default run) storages expire after
 
 ## Instructions
 
-### Step 1: Dataset Operations
+Pick the storage type you need, use the skeleton below to get started, then open
+the linked reference for the full operation set.
+
+### Datasets — append-only item lists
+
+`getOrCreate` a named dataset, push items, and list them (pagination is manual):
 
 ```typescript
-import { ApifyClient } from 'apify-client';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-// Create a named dataset (persists indefinitely)
 const dataset = await client.datasets().getOrCreate('product-catalog');
 const dsClient = client.dataset(dataset.id);
-
-// Push items (single or batch)
-await dsClient.pushItems([
-  { sku: 'ABC123', name: 'Widget', price: 9.99 },
-  { sku: 'DEF456', name: 'Gadget', price: 19.99 },
-]);
-
-// List items with pagination
-const page1 = await dsClient.listItems({ limit: 100, offset: 0 });
-console.log(`Total items: ${page1.total}, this page: ${page1.items.length}`);
-
-// Iterate all items (handles pagination automatically)
-let offset = 0;
-const limit = 1000;
-const allItems = [];
-while (true) {
-  const { items } = await dsClient.listItems({ limit, offset });
-  if (items.length === 0) break;
-  allItems.push(...items);
-  offset += items.length;
-}
-
-// Download in various formats
-const csvBuffer = await dsClient.downloadItems('csv');
-const jsonBuffer = await dsClient.downloadItems('json');
-const xlsxBuffer = await dsClient.downloadItems('xlsx');
-
-// Download filtered/transformed
-const filtered = await dsClient.downloadItems('json', {
-  fields: ['sku', 'name', 'price'],   // Only these fields
-  unwind: 'variants',                  // Flatten nested arrays
-  desc: true,                          // Reverse order
-});
-
-// Get dataset info (item count, size)
-const info = await dsClient.get();
-console.log(`${info.itemCount} items, ${info.actSize} bytes`);
+await dsClient.pushItems([{ sku: 'ABC123', name: 'Widget', price: 9.99 }]);
+const { items, total } = await dsClient.listItems({ limit: 100, offset: 0 });
 ```
 
-### Step 2: Key-Value Store Operations
+Full auto-pagination loop, CSV/JSON/XLSX export, and field filtering:
+**[storage-operations.md, Step 1](references/storage-operations.md)**.
+
+### Key-value stores — config, files, and Actor OUTPUT
+
+Store JSON or binary records by key, then retrieve them:
 
 ```typescript
-// Create a named store
 const store = await client.keyValueStores().getOrCreate('scraper-config');
 const kvClient = client.keyValueStore(store.id);
-
-// Store JSON config
-await kvClient.setRecord({
-  key: 'settings',
-  value: { maxRetries: 3, proxy: 'residential', country: 'US' },
-  contentType: 'application/json',
-});
-
-// Store binary data (screenshot, PDF)
-import { readFileSync } from 'fs';
-await kvClient.setRecord({
-  key: 'report.pdf',
-  value: readFileSync('report.pdf'),
-  contentType: 'application/pdf',
-});
-
-// Retrieve a record
+await kvClient.setRecord({ key: 'settings', value: { maxRetries: 3 }, contentType: 'application/json' });
 const record = await kvClient.getRecord('settings');
-console.log(record.value); // { maxRetries: 3, proxy: 'residential', ... }
-
-// List all keys in the store
-const { items: keys } = await kvClient.listKeys();
-keys.forEach(k => console.log(`${k.key} (${k.size} bytes)`));
-
-// Delete a record
-await kvClient.deleteRecord('old-config');
-
-// Access an Actor run's default stores
-const run = await client.actor('apify/web-scraper').call(input);
-const runKv = client.keyValueStore(run.defaultKeyValueStoreId);
-const output = await runKv.getRecord('OUTPUT');
 ```
 
-### Step 3: Request Queue Management
+Binary records, key listing, and reading a run's default `OUTPUT`:
+**[storage-operations.md, Step 2](references/storage-operations.md)**.
+
+### Request queues — resumable crawl URLs
+
+Create a named queue and add requests (deduplicated by `uniqueKey`):
 
 ```typescript
-// Create a named request queue (useful for resumable crawls)
 const queue = await client.requestQueues().getOrCreate('my-crawl-queue');
 const rqClient = client.requestQueue(queue.id);
-
-// Add requests
 await rqClient.addRequest({ url: 'https://example.com/page1', uniqueKey: 'page1' });
-
-// Batch add (up to 25 per call)
-await rqClient.batchAddRequests([
-  { url: 'https://example.com/page2', uniqueKey: 'page2' },
-  { url: 'https://example.com/page3', uniqueKey: 'page3' },
-]);
-
-// Get queue info
-const queueInfo = await rqClient.get();
-console.log(`Pending: ${queueInfo.pendingRequestCount}, Handled: ${queueInfo.handledRequestCount}`);
 ```
 
-### Step 4: Multi-Actor Pipeline
+Batch adds and queue stats:
+**[storage-operations.md, Step 3](references/storage-operations.md)**.
 
-```typescript
-// Pipeline: Scrape -> Transform -> Export
-async function runPipeline(urls: string[]) {
-  const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+### Multi-Actor pipelines & monitoring
 
-  // Stage 1: Scrape raw data
-  console.log('Stage 1: Scraping...');
-  const scrapeRun = await client.actor('username/product-scraper').call({
-    startUrls: urls.map(url => ({ url })),
-    maxItems: 1000,
-  });
-  const { items: rawData } = await client
-    .dataset(scrapeRun.defaultDatasetId)
-    .listItems();
-  console.log(`Scraped ${rawData.length} items`);
+Chain Actors (scrape → transform → export) and monitor run status and cost.
+Full `runPipeline()` function and run-monitoring code:
+**[pipelines.md](references/pipelines.md)**.
 
-  // Stage 2: Transform (using a data-processing Actor)
-  console.log('Stage 2: Transforming...');
-  const transformRun = await client.actor('username/data-transformer').call({
-    datasetId: scrapeRun.defaultDatasetId,
-    transformations: {
-      dedup: { field: 'sku' },
-      filter: { field: 'price', operator: 'gt', value: 0 },
-    },
-  });
+## Output
 
-  // Stage 3: Export to named dataset for long-term storage
-  console.log('Stage 3: Exporting...');
-  const { items: cleanData } = await client
-    .dataset(transformRun.defaultDatasetId)
-    .listItems();
-
-  const exportDs = await client.datasets().getOrCreate('product-catalog-clean');
-  await client.dataset(exportDs.id).pushItems(cleanData);
-
-  console.log(`Pipeline complete. ${cleanData.length} clean items stored.`);
-  return exportDs.id;
-}
-```
-
-### Step 5: Monitor Actor Runs
-
-```typescript
-// List recent runs for an Actor
-const { items: runs } = await client.actor('username/my-actor').runs().list({
-  limit: 10,
-  desc: true,
-});
-
-runs.forEach(run => {
-  console.log(`${run.id} | ${run.status} | ${run.startedAt} | ${run.usageTotalUsd?.toFixed(4)} USD`);
-});
-
-// Get detailed run info
-const runDetail = await client.run('RUN_ID').get();
-console.log({
-  status: runDetail.status,
-  statusMessage: runDetail.statusMessage,
-  datasetItems: runDetail.stats?.datasetItemCount,
-  computeUnits: runDetail.usage?.ACTOR_COMPUTE_UNITS,
-  durationSecs: runDetail.stats?.runTimeSecs,
-});
-
-// Abort a running Actor
-await client.run('RUN_ID').abort();
-```
-
-## Data Flow Diagram
-
-```
-Actor Run
-  ├── Default Dataset      ← Actor.pushData() writes here
-  ├── Default KV Store     ← Actor.setValue() writes here
-  │     ├── INPUT          ← Input passed at run start
-  │     └── OUTPUT         ← Convention for main output
-  └── Default Request Queue ← Crawlee manages this
-```
+- **Datasets** return `{ items, total, count, offset, limit }` from `listItems()`;
+  `downloadItems(format)` returns a `Buffer` in `csv` / `json` / `xlsx`.
+- **Key-value stores** return `{ key, value, contentType }` from `getRecord()`
+  and `{ items }` (each `{ key, size }`) from `listKeys()`.
+- **Request queues** return `{ pendingRequestCount, handledRequestCount, ... }`
+  from `get()`.
+- **Pipelines** return the named export dataset id; run monitoring yields
+  `{ status, statusMessage, stats, usage, usageTotalUsd }` per run.
 
 ## Error Handling
 
@@ -243,6 +143,27 @@ Actor Run
 | `Push failed` | Dataset items >9MB batch | Push in smaller batches |
 | `Request already exists` | Duplicate uniqueKey | Expected behavior, queue deduplicates |
 
+## Examples
+
+**Export a named dataset to CSV** — get the client, download the buffer, write it:
+
+```typescript
+const csvBuffer = await client.dataset('product-catalog').downloadItems('csv');
+require('fs').writeFileSync('products.csv', csvBuffer);
+```
+
+**Read an Actor run's OUTPUT record** — after a run completes:
+
+```typescript
+const run = await client.actor('apify/web-scraper').call(input);
+const output = await client.keyValueStore(run.defaultKeyValueStoreId).getRecord('OUTPUT');
+```
+
+Longer end-to-end examples — the full pagination loop, binary record storage,
+and the three-stage `runPipeline()` — live in the reference files:
+[storage-operations.md](references/storage-operations.md) and
+[pipelines.md](references/pipelines.md).
+
 ## Resources
 
 - [Dataset Documentation](https://docs.apify.com/platform/storage/dataset)
@@ -252,4 +173,6 @@ Actor Run
 
 ## Next Steps
 
-For common errors, see `apify-common-errors`.
+For common errors and their fixes across the Apify pack, see the
+`apify-common-errors` skill. For Actor invocation and run lifecycle basics that
+pipelines build on, see `apify-core-workflow-a`.

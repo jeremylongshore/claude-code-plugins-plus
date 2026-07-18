@@ -8,7 +8,7 @@ description: "Integrate Sentry with your observability stack \u2014 logging, met
   sentry metrics\", \"sentry grafana\",\n\"sentry datadog correlation\", \"sentry\
   \ discover dashboard\".\n"
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*), Bash(pip:*)
-version: 1.0.0
+version: 1.51.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

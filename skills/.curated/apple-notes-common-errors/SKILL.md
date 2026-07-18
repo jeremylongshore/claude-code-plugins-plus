@@ -6,7 +6,7 @@ description: 'Diagnose and fix common Apple Notes automation errors.
 
   '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
-version: 1.0.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
