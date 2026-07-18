@@ -1,19 +1,14 @@
 ---
 name: elevenlabs-performance-tuning
-description: 'Optimize ElevenLabs TTS latency with model selection, streaming, caching,
-  and audio format tuning.
-
-  Use when experiencing slow TTS responses, implementing real-time voice features,
-
-  or optimizing audio generation throughput.
-
-  Trigger: "elevenlabs performance", "optimize elevenlabs", "elevenlabs latency",
-
-  "elevenlabs slow", "fast TTS", "reduce elevenlabs latency", "TTS streaming".
-
-  '
+description: |
+  Optimize ElevenLabs TTS latency with model selection, streaming, caching, and
+  audio format tuning. Use when experiencing slow TTS responses, implementing
+  real-time voice features, or optimizing audio generation throughput.
+  Trigger with "elevenlabs performance", "optimize elevenlabs", "elevenlabs
+  latency", "elevenlabs slow", "fast TTS", "reduce elevenlabs latency", or
+  "TTS streaming".
 allowed-tools: Read, Write, Edit
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -31,9 +26,12 @@ compatibility: Designed for Claude Code
 
 Optimize ElevenLabs TTS latency and throughput through model selection, streaming strategies, audio format tuning, and caching. Latency ranges from ~75ms (Flash) to ~500ms (v3) depending on configuration.
 
+The two highest-leverage, lowest-effort levers — model choice (Step 1) and output format (Step 2) — are documented inline below. The four deeper integrations (HTTP streaming, WebSocket streaming, caching, parallel generation) are summarized here with copy-ready code in [the full implementation walkthrough](references/implementation.md).
+
 ## Prerequisites
 
-- ElevenLabs SDK installed
+- ElevenLabs SDK installed (`@elevenlabs/elevenlabs-js`)
+- An ElevenLabs API key exported as `ELEVENLABS_API_KEY` (used by the SDK and passed as `xi_api_key` on the WebSocket handshake)
 - Understanding of your latency requirements
 - Audio playback infrastructure (browser, mobile, server-side)
 
@@ -90,207 +88,30 @@ const downloadConfig = {
 
 ### Step 3: HTTP Streaming for Time-to-First-Byte
 
-Use the streaming endpoint to start playback before full generation completes:
-
-```typescript
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-
-const client = new ElevenLabsClient();
-
-async function streamToResponse(
-  text: string,
-  voiceId: string,
-  res: Response | import("express").Response
-) {
-  const startTime = performance.now();
-
-  const stream = await client.textToSpeech.stream(voiceId, {
-    text,
-    model_id: "eleven_flash_v2_5",
-    output_format: "mp3_22050_32",
-    voice_settings: {
-      stability: 0.5,
-      similarity_boost: 0.75,
-      style: 0.0,        // style=0 reduces latency
-    },
-  });
-
-  let firstChunk = true;
-  for await (const chunk of stream) {
-    if (firstChunk) {
-      const ttfb = performance.now() - startTime;
-      console.log(`Time to first byte: ${ttfb.toFixed(0)}ms`);
-      firstChunk = false;
-    }
-    // Write chunk to response or audio player
-    (res as any).write(chunk);
-  }
-  (res as any).end();
-}
-```
+Call `client.textToSpeech.stream()` instead of `.convert()` and write each chunk to the response as it arrives, so playback starts before generation finishes — roughly halving time-to-first-byte. Set `style: 0.0` in `voice_settings` to shave another 10–20%. Full server handler: [implementation.md § Step 3](references/implementation.md).
 
 ### Step 4: WebSocket Streaming for Lowest Latency
 
-For interactive applications where text arrives in chunks (e.g., from an LLM):
-
-```typescript
-import WebSocket from "ws";
-
-interface WSStreamConfig {
-  voiceId: string;
-  modelId?: string;
-  chunkLengthSchedule?: number[];
-}
-
-async function createTTSStream(config: WSStreamConfig) {
-  const model = config.modelId || "eleven_flash_v2_5";
-  const url = `wss://api.elevenlabs.io/v1/text-to-speech/${config.voiceId}/stream-input?model_id=${model}`;
-
-  const ws = new WebSocket(url);
-  const audioChunks: Buffer[] = [];
-  let totalLatency = 0;
-  let firstAudioTime = 0;
-
-  await new Promise<void>((resolve, reject) => {
-    ws.on("open", resolve);
-    ws.on("error", reject);
-  });
-
-  // Initialize stream
-  ws.send(JSON.stringify({
-    text: " ",
-    xi_api_key: process.env.ELEVENLABS_API_KEY,
-    voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-    // Control buffering: fewer chars = lower latency, more = better prosody
-    chunk_length_schedule: config.chunkLengthSchedule || [50, 120, 200],
-  }));
-
-  return {
-    // Send text chunks as they arrive (e.g., from LLM stream)
-    sendText(text: string) {
-      ws.send(JSON.stringify({ text }));
-    },
-
-    // Signal end of input
-    finish(): Promise<Buffer> {
-      return new Promise((resolve) => {
-        const sendTime = Date.now();
-
-        ws.on("message", (data: Buffer) => {
-          const msg = JSON.parse(data.toString());
-          if (msg.audio) {
-            if (!firstAudioTime) {
-              firstAudioTime = Date.now();
-              totalLatency = firstAudioTime - sendTime;
-            }
-            audioChunks.push(Buffer.from(msg.audio, "base64"));
-          }
-          if (msg.isFinal) {
-            console.log(`WebSocket TTFB: ${totalLatency}ms`);
-            ws.close();
-            resolve(Buffer.concat(audioChunks));
-          }
-        });
-
-        ws.send(JSON.stringify({ text: "" })); // EOS signal
-      });
-    },
-  };
-}
-
-// Usage with LLM streaming
-const stream = await createTTSStream({
-  voiceId: "21m00Tcm4TlvDq8ikWAM",
-  chunkLengthSchedule: [50, 100, 150],  // Aggressive buffering for speed
-});
-
-// As LLM tokens arrive:
-stream.sendText("Hello, ");
-stream.sendText("how are ");
-stream.sendText("you today?");
-
-const audio = await stream.finish();
-```
+For interactive apps where text arrives incrementally (e.g., an LLM token stream), open a `stream-input` WebSocket, `sendText()` chunks as they arrive, and tune `chunk_length_schedule` — fewer characters per chunk means lower latency but less prosody context. Full bidirectional client: [implementation.md § Step 4](references/implementation.md).
 
 ### Step 5: Audio Caching
 
-Cache generated audio for repeated content (greetings, prompts, errors):
-
-```typescript
-import { LRUCache } from "lru-cache";
-import crypto from "crypto";
-
-const audioCache = new LRUCache<string, Buffer>({
-  max: 500,                    // Max cached audio files
-  maxSize: 100 * 1024 * 1024,  // 100MB total
-  sizeCalculation: (value) => value.length,
-  ttl: 24 * 60 * 60 * 1000,    // 24 hours
-});
-
-function cacheKey(text: string, voiceId: string, modelId: string): string {
-  return crypto.createHash("sha256")
-    .update(`${voiceId}:${modelId}:${text}`)
-    .digest("hex");
-}
-
-async function cachedTTS(
-  text: string,
-  voiceId: string,
-  modelId = "eleven_multilingual_v2"
-): Promise<Buffer> {
-  const key = cacheKey(text, voiceId, modelId);
-
-  const cached = audioCache.get(key);
-  if (cached) {
-    console.log("[Cache HIT]", key.substring(0, 8));
-    return cached;
-  }
-
-  const stream = await client.textToSpeech.convert(voiceId, {
-    text,
-    model_id: modelId,
-  });
-
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream as any) {
-    chunks.push(Buffer.from(chunk));
-  }
-  const audio = Buffer.concat(chunks);
-
-  audioCache.set(key, audio);
-  console.log("[Cache MISS]", key.substring(0, 8), `${audio.length} bytes`);
-  return audio;
-}
-```
+Cache generated audio for repeated content (greetings, prompts, errors) in an LRU cache keyed by a SHA-256 of `voiceId:modelId:text`, so a changed voice or model never serves stale audio. This eliminates ~99% of latency for repeated phrases. Full `cachedTTS` helper: [implementation.md § Step 5](references/implementation.md).
 
 ### Step 6: Parallel Generation
 
-Generate multiple audio segments concurrently:
+Generate multiple segments concurrently with a `p-queue` whose `concurrency` matches your plan's request limit (going higher returns 429s, not more throughput). Full chapter-generator: [implementation.md § Step 6](references/implementation.md).
 
-```typescript
-import PQueue from "p-queue";
+## Output
 
-const queue = new PQueue({ concurrency: 5 }); // Match plan limit
+Applying these levers produces:
 
-async function generateChapters(
-  chapters: { title: string; text: string }[],
-  voiceId: string
-): Promise<Buffer[]> {
-  const results = await Promise.all(
-    chapters.map(chapter =>
-      queue.add(async () => {
-        const start = performance.now();
-        const audio = await cachedTTS(chapter.text, voiceId);
-        const duration = performance.now() - start;
-        console.log(`${chapter.title}: ${duration.toFixed(0)}ms`);
-        return audio;
-      })
-    )
-  );
+- A model + output-format choice matched to the use case (Steps 1–2).
+- A streaming code path (HTTP or WebSocket) that logs measured time-to-first-byte, e.g. `Time to first byte: 78ms` / `WebSocket TTFB: 91ms`.
+- An LRU audio cache emitting `[Cache HIT]` / `[Cache MISS]` telemetry for repeated content.
+- A concurrency-bounded batch path that logs per-segment generation time.
 
-  return results as Buffer[];
-}
-```
+Expected latency after tuning: ~75–150ms first byte on Flash/Turbo with streaming, versus ~300–500ms for a blocking `convert()` call on a higher-quality model.
 
 ## Performance Optimization Checklist
 
@@ -298,7 +119,7 @@ async function generateChapters(
 |-------------|----------------|----------------|
 | Flash model | -60% vs v2, -85% vs v3 | Change `model_id` |
 | Streaming endpoint | -50% time-to-first-byte | Use `.stream()` instead of `.convert()` |
-| WebSocket streaming | Best for LLM integration | See Step 4 |
+| WebSocket streaming | Best for LLM integration | See [Step 4](references/implementation.md) |
 | Smaller output format | -30% transfer time | `mp3_22050_32` vs `mp3_44100_128` |
 | Audio caching | -99% for repeated content | LRU cache with SHA-256 keys |
 | `style: 0` | -10-20% latency | Remove style exaggeration |
@@ -313,6 +134,31 @@ async function generateChapters(
 | Cache miss storm | TTL expired for popular content | Use stale-while-revalidate pattern |
 | WebSocket drops | Network instability | Reconnect with buffered text |
 | Memory pressure | Audio cache too large | Set `maxSize` limit on LRU cache |
+| HTTP 429 | Concurrency above plan limit | Lower `p-queue` `concurrency` |
+
+## Examples
+
+**Real-time IVR (lowest latency).** Pick `eleven_flash_v2_5` + `ulaw_8000` via `selectModel("realtime")`, then stream over HTTP:
+
+```typescript
+await streamToResponse(greeting, voiceId, res); // logs "Time to first byte: 78ms"
+```
+
+**LLM voice agent (incremental text).** Open a WebSocket and forward tokens as they stream from the model, ending with `finish()`:
+
+```typescript
+const stream = await createTTSStream({ voiceId, chunkLengthSchedule: [50, 100, 150] });
+stream.sendText("Hello, "); stream.sendText("how are you?");
+const audio = await stream.finish();
+```
+
+**Audiobook batch (throughput).** Cache repeated phrases and generate chapters concurrently:
+
+```typescript
+const buffers = await generateChapters(chapters, voiceId); // 5-wide, cache-backed
+```
+
+Full, runnable versions of every snippet above are in [the implementation walkthrough](references/implementation.md).
 
 ## Resources
 
@@ -320,7 +166,8 @@ async function generateChapters(
 - [WebSocket API Reference](https://elevenlabs.io/docs/api-reference/text-to-speech/v-1-text-to-speech-voice-id-stream-input)
 - [ElevenLabs Models](https://elevenlabs.io/docs/overview/models)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
+- [Full implementation walkthrough](references/implementation.md) — copy-ready HTTP streaming, WebSocket, caching, and parallel-generation code
 
 ## Next Steps
 
-For cost optimization, see `elevenlabs-cost-tuning`.
+For cost optimization once latency is tuned, see the `elevenlabs-cost-tuning` skill, which covers character-usage budgeting, model-tier cost tradeoffs, and cache-hit-rate targets.

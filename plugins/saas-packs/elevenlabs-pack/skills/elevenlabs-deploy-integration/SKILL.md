@@ -1,18 +1,13 @@
 ---
 name: elevenlabs-deploy-integration
-description: 'Deploy ElevenLabs TTS applications to Vercel, Fly.io, and Cloud Run.
-
-  Use when deploying ElevenLabs-powered apps to production,
-
-  configuring platform-specific secrets, or setting up serverless TTS.
-
-  Trigger: "deploy elevenlabs", "elevenlabs Vercel", "elevenlabs Cloud Run",
-
+description: |
+  Deploy ElevenLabs TTS applications to Vercel, Fly.io, and Cloud Run.
+  Use when deploying ElevenLabs-powered apps to production, configuring
+  platform-specific secrets, or setting up serverless TTS.
+  Trigger with "deploy elevenlabs", "elevenlabs Vercel", "elevenlabs Cloud Run",
   "elevenlabs Fly.io", "elevenlabs serverless", "host TTS API".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,7 +23,11 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Deploy ElevenLabs TTS/voice applications to cloud platforms. Covers Vercel (serverless), Fly.io (containers), and Google Cloud Run with proper secrets management, timeout configuration, and streaming support.
+Deploy ElevenLabs TTS/voice applications to Vercel (serverless), Fly.io
+(containers), or Google Cloud Run with proper secrets management, timeout
+configuration, and streaming support. Pick the platform that matches your
+traffic shape, write the platform config + server code, store the API key as a
+platform secret, then deploy and smoke-test the live endpoint.
 
 ## Prerequisites
 
@@ -38,214 +37,37 @@ Deploy ElevenLabs TTS/voice applications to cloud platforms. Covers Vercel (serv
 
 ## Instructions
 
-### Vercel Deployment (Serverless)
+Follow these steps. The lean skeleton is below; the full config files and
+server code for each platform are in
+[references/implementation.md](references/implementation.md).
 
-**Key constraint:** Vercel functions have a 10-second timeout on Hobby (30s on Pro). Use Flash model for speed.
+1. **Inspect the repo and pick a platform.** `Read` the existing app code and
+   any current deploy config, then choose from the comparison table below —
+   Vercel for a simple stateless TTS API, Fly.io for streaming/WebSocket, Cloud
+   Run for bursty variable load.
+2. **Write the platform config + server code.** Use `Write`/`Edit` to create
+   the platform files in the repo — `vercel.json` + the API route for Vercel,
+   `fly.toml` + Express server for Fly.io, `Dockerfile` for Cloud Run. Full
+   versions are in [references/implementation.md](references/implementation.md).
+3. **Set the API key as a platform secret** (never commit it):
 
-```bash
-# Set secrets
-vercel env add ELEVENLABS_API_KEY production
-vercel env add ELEVENLABS_API_KEY preview
+   ```bash
+   vercel env add ELEVENLABS_API_KEY production   # Vercel
+   fly secrets set ELEVENLABS_API_KEY=sk_...       # Fly.io
+   echo -n "sk_..." | gcloud secrets create elevenlabs-api-key --data-file=-  # Cloud Run
+   ```
 
-# Deploy
-vercel --prod
-```
+4. **Mind the timeout.** Vercel Hobby caps functions at 10s (30s on Pro) — use
+   the `eleven_flash_v2_5` model to stay under it. Fly.io and Cloud Run have no
+   such short cap.
+5. **Deploy**, then smoke-test the live endpoint (see
+   [references/examples.md](references/examples.md)):
 
-**API Route (Next.js / Vercel):**
-
-```typescript
-// app/api/tts/route.ts
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-import { NextResponse } from "next/server";
-
-export const runtime = "nodejs";
-export const maxDuration = 30; // Vercel Pro max
-
-const client = new ElevenLabsClient();
-
-export async function POST(req: Request) {
-  const { text, voiceId = "21m00Tcm4TlvDq8ikWAM" } = await req.json();
-
-  if (!text || text.length > 5000) {
-    return NextResponse.json(
-      { error: "Text required, max 5000 characters" },
-      { status: 400 }
-    );
-  }
-
-  try {
-    const audio = await client.textToSpeech.convert(voiceId, {
-      text,
-      model_id: "eleven_flash_v2_5",  // Fast for serverless
-      output_format: "mp3_22050_32",
-      voice_settings: {
-        stability: 0.5,
-        similarity_boost: 0.75,
-      },
-    });
-
-    return new Response(audio as any, {
-      headers: {
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "public, max-age=3600",
-      },
-    });
-  } catch (error: any) {
-    const status = error.statusCode || 500;
-    return NextResponse.json(
-      { error: error.message || "TTS generation failed" },
-      { status }
-    );
-  }
-}
-```
-
-**vercel.json:**
-
-```json
-{
-  "env": {
-    "ELEVENLABS_API_KEY": "@elevenlabs_api_key"
-  },
-  "functions": {
-    "app/api/tts/route.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-### Fly.io Deployment (Container)
-
-Better for long-running TTS, WebSocket streaming, and high concurrency.
-
-**fly.toml:**
-
-```toml
-app = "my-tts-service"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-  # Use the closest region to ElevenLabs servers (US East)
-  ELEVENLABS_MODEL = "eleven_multilingual_v2"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 1
-
-  [http_service.concurrency]
-    type = "requests"
-    hard_limit = 25
-    soft_limit = 20
-
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 512
-```
-
-```bash
-# Set secrets
-fly secrets set ELEVENLABS_API_KEY=sk_your_prod_key
-fly secrets set ELEVENLABS_WEBHOOK_SECRET=whsec_your_secret
-
-# Deploy
-fly deploy
-
-# Check logs
-fly logs
-```
-
-**Express server with streaming:**
-
-```typescript
-// server.ts
-import express from "express";
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-import { Readable } from "stream";
-
-const app = express();
-app.use(express.json());
-
-const client = new ElevenLabsClient();
-
-// Streaming TTS endpoint
-app.post("/api/tts/stream", async (req, res) => {
-  const { text, voiceId = "21m00Tcm4TlvDq8ikWAM", modelId } = req.body;
-
-  res.setHeader("Content-Type", "audio/mpeg");
-  res.setHeader("Transfer-Encoding", "chunked");
-
-  try {
-    const stream = await client.textToSpeech.stream(voiceId, {
-      text,
-      model_id: modelId || "eleven_flash_v2_5",
-      output_format: "mp3_22050_32",
-    });
-
-    // Pipe streaming audio directly to response
-    const readable = Readable.fromWeb(stream as any);
-    readable.pipe(res);
-  } catch (error: any) {
-    if (!res.headersSent) {
-      res.status(error.statusCode || 500).json({ error: error.message });
-    }
-  }
-});
-
-// Health check
-app.get("/health", async (_req, res) => {
-  try {
-    const user = await client.user.get();
-    res.json({
-      status: "healthy",
-      quota: {
-        used: user.subscription.character_count,
-        limit: user.subscription.character_limit,
-      },
-    });
-  } catch {
-    res.status(503).json({ status: "unhealthy" });
-  }
-});
-
-app.listen(3000, () => console.log("TTS service running on :3000"));
-```
-
-### Google Cloud Run
-
-```bash
-# Build and deploy
-gcloud run deploy tts-service \
-  --source . \
-  --region us-central1 \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ELEVENLABS_API_KEY=elevenlabs-api-key:latest \
-  --timeout=60 \
-  --concurrency=10 \
-  --min-instances=0 \
-  --max-instances=5
-
-# Store secret in Secret Manager first
-echo -n "sk_your_prod_key" | gcloud secrets create elevenlabs-api-key --data-file=-
-```
-
-**Dockerfile:**
-
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["node", "dist/server.js"]
-```
+   ```bash
+   vercel --prod        # Vercel
+   fly deploy           # Fly.io
+   gcloud run deploy tts-service --source .   # Cloud Run (see full flags in implementation.md)
+   ```
 
 ## Platform Comparison for ElevenLabs
 
@@ -258,6 +80,17 @@ CMD ["node", "dist/server.js"]
 | Best for | Simple TTS API | Streaming/WebSocket | Variable load |
 | Min cost | Free tier | ~$2/mo | Free tier |
 
+## Output
+
+A working deployment of a validated TTS build produces:
+
+- A live TTS endpoint returning `audio/mpeg` (Vercel/Fly.io/Cloud Run URL)
+- `ELEVENLABS_API_KEY` (and any webhook secret) stored as a platform secret,
+  never in the repo
+- Platform config committed to the repo — `vercel.json`, `fly.toml`, or
+  `Dockerfile` — matching the chosen platform's timeout/concurrency limits
+- A `/health` endpoint (Fly.io/Cloud Run) reporting live quota via the SDK
+
 ## Error Handling
 
 | Issue | Cause | Solution |
@@ -268,8 +101,30 @@ CMD ["node", "dist/server.js"]
 | Streaming broken | Proxy buffering | Disable response buffering in nginx/CDN |
 | CORS errors | Missing headers | Add `Access-Control-Allow-Origin` to TTS endpoint |
 
+## Examples
+
+**Deploy a simple TTS API to Vercel** (Flash model, under the Pro timeout):
+
+```bash
+vercel env add ELEVENLABS_API_KEY production
+vercel --prod
+```
+
+**Deploy a streaming service to Fly.io** and confirm quota via the health check:
+
+```bash
+fly secrets set ELEVENLABS_API_KEY=sk_your_prod_key
+fly deploy
+curl -s https://my-tts-service.fly.dev/health | jq
+```
+
+Full end-to-end flows for all three platforms — secret setup, deploy, and live
+smoke-test — are in [references/examples.md](references/examples.md).
+
 ## Resources
 
+- [references/implementation.md](references/implementation.md) — complete config files + server code per platform
+- [references/examples.md](references/examples.md) — end-to-end deploy + smoke-test flows for Vercel, Fly.io, Cloud Run
 - [Vercel Functions](https://vercel.com/docs/functions)
 - [Fly.io Node.js](https://fly.io/docs/languages-and-frameworks/node/)
 - [Cloud Run Docs](https://cloud.google.com/run/docs)
@@ -277,4 +132,6 @@ CMD ["node", "dist/server.js"]
 
 ## Next Steps
 
-For webhook handling, see `elevenlabs-webhooks-events`.
+For webhook handling on a deployed service, see the `elevenlabs-webhooks-events`
+skill, which covers verifying signatures and handling ElevenLabs event
+callbacks against the endpoints you just shipped.

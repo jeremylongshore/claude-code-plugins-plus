@@ -1,19 +1,14 @@
 ---
 name: elevenlabs-local-dev-loop
-description: 'Configure local ElevenLabs development with mocking, hot reload, and
-  audio testing.
-
-  Use when setting up a dev environment for TTS/voice projects, configuring test
-
-  workflows, or building a fast iteration cycle with ElevenLabs audio.
-
-  Trigger: "elevenlabs dev setup", "elevenlabs local development",
-
-  "elevenlabs dev environment", "develop with elevenlabs", "test elevenlabs locally".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.5.0
+description: |
+  Use when setting up a local ElevenLabs dev environment for a TTS/voice
+  project and you need SDK mocking, hot reload, quota-aware iteration, and
+  audio-output testing that does not burn character quota during development.
+  Trigger with "elevenlabs dev setup", "elevenlabs local development",
+  "elevenlabs dev environment", "develop with elevenlabs", "test elevenlabs
+  locally".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*)
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,180 +24,71 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Set up a fast, cost-effective local development workflow for ElevenLabs audio projects. Includes SDK mocking to avoid burning character quota during development, audio output testing, and hot-reload patterns.
+Set up a fast, cost-effective local development workflow for ElevenLabs audio
+projects. The loop centers on three moves — mock the SDK so unit tests never
+burn character quota, gate real API calls behind an explicit
+`ELEVENLABS_INTEGRATION=1` flag, and select a cheaper model in dev while keeping
+the high-quality model for production — with `tsx watch` hot reload and a quota
+checker to round out the cycle.
+
+Follow the high-level flow below to scaffold the project, then drill into
+[references/implementation.md](references/implementation.md) for the full code
+of every step and [references/examples.md](references/examples.md) for worked
+end-to-end runs.
 
 ## Prerequisites
 
-- Completed `elevenlabs-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- `vitest` for testing (recommended)
+Before starting, confirm your environment is ready:
+
+- The `elevenlabs-install-auth` setup is complete, so the SDK
+  (`@elevenlabs/elevenlabs-js`) is installed and `ELEVENLABS_API_KEY` is
+  available in `.env.local`.
+- Node.js 18+ with `npm` or `pnpm`.
+- `vitest` installed as the test runner (recommended) — it powers the mock
+  layer and the integration-test guard.
 
 ## Instructions
 
-### Step 1: Project Structure
+Work through the six steps in order. Each is summarized here; the full code for
+every step lives in [references/implementation.md](references/implementation.md).
 
-```
-my-elevenlabs-project/
-├── src/
-│   ├── elevenlabs/
-│   │   ├── client.ts       # Singleton client wrapper
-│   │   ├── config.ts       # Environment-aware config
-│   │   └── tts.ts          # TTS service layer
-│   └── index.ts
-├── tests/
-│   ├── __mocks__/
-│   │   └── elevenlabs.ts   # SDK mock for free testing
-│   ├── tts.test.ts
-│   └── fixtures/
-│       └── sample.mp3      # Known-good audio for comparison
-├── output/                  # Generated audio (git-ignored)
-├── .env.local               # Local API key (git-ignored)
-├── .env.example             # Template for team
-└── package.json
-```
+1. **Project structure** — lay out `src/elevenlabs/` (client, config, tts),
+   `tests/__mocks__/` and `tests/fixtures/sample.mp3`, a git-ignored `output/`,
+   and `.env.local` / `.env.example`. Full tree in the reference.
+2. **Environment configuration** — write an environment-aware `config.ts` that
+   picks the model and output format by `NODE_ENV`. This is the essential
+   skeleton:
 
-### Step 2: Environment Configuration
+   ```typescript
+   // src/elevenlabs/config.ts
+   export function loadConfig() {
+     const env = process.env.NODE_ENV || "development";
+     return {
+       apiKey: process.env.ELEVENLABS_API_KEY || "",
+       // cheaper/faster in dev, best quality in prod
+       modelId: env === "production"
+         ? "eleven_multilingual_v2"   // 1.0 credits/char
+         : "eleven_flash_v2_5",       // 0.5 credits/char, ~75ms
+       defaultVoiceId: process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM",
+       outputFormat: "mp3_22050_32",  // smaller files for dev
+     };
+   }
+   ```
 
-```typescript
-// src/elevenlabs/config.ts
-export interface ElevenLabsConfig {
-  apiKey: string;
-  modelId: string;
-  defaultVoiceId: string;
-  outputFormat: string;
-}
+3. **Mock the SDK** — write `tests/__mocks__/elevenlabs.ts` that returns the
+   `sample.mp3` fixture from `textToSpeech.convert`/`stream` and stubs
+   `voices.getAll` and `user.get`, so unit tests cost nothing.
+4. **Development scripts** — add `dev` (`tsx watch`), `test`, `test:watch`,
+   `test:integration`, `generate`, and `quota` scripts to `package.json`.
+5. **Quota-aware development** — add `src/check-quota.ts` that reads
+   `user.subscription` and exits non-zero when fewer than 1000 characters
+   remain, so a low balance fails fast.
+6. **Integration test guard** — write `tests/tts.test.ts` where the real-API
+   test is `it.skipIf(!useRealApi)` and only runs under
+   `ELEVENLABS_INTEGRATION=1`; the mocked test always runs.
 
-export function loadConfig(): ElevenLabsConfig {
-  const env = process.env.NODE_ENV || "development";
-
-  return {
-    apiKey: process.env.ELEVENLABS_API_KEY || "",
-    // Use cheaper/faster model in dev, high-quality in prod
-    modelId: env === "production"
-      ? "eleven_multilingual_v2"    // 1.0 credits/char, best quality
-      : "eleven_flash_v2_5",       // 0.5 credits/char, ~75ms latency
-    defaultVoiceId: process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM",
-    outputFormat: "mp3_22050_32",  // Smaller files for dev
-  };
-}
-```
-
-### Step 3: Mock the SDK for Unit Tests
-
-```typescript
-// tests/__mocks__/elevenlabs.ts
-// Avoids API calls (and character charges) during testing
-import { vi } from "vitest";
-import { readFileSync } from "fs";
-
-const sampleAudio = readFileSync("tests/fixtures/sample.mp3");
-
-export const mockElevenLabsClient = {
-  textToSpeech: {
-    convert: vi.fn().mockResolvedValue(
-      new ReadableStream({
-        start(controller) {
-          controller.enqueue(sampleAudio);
-          controller.close();
-        },
-      })
-    ),
-    stream: vi.fn().mockImplementation(async function* () {
-      yield sampleAudio.subarray(0, 1024);
-      yield sampleAudio.subarray(1024);
-    }),
-  },
-  voices: {
-    getAll: vi.fn().mockResolvedValue({
-      voices: [
-        { voice_id: "21m00Tcm4TlvDq8ikWAM", name: "Rachel" },
-        { voice_id: "ErXwobaYiN019PkySvjV", name: "Antoni" },
-      ],
-    }),
-  },
-  user: {
-    get: vi.fn().mockResolvedValue({
-      subscription: {
-        tier: "free",
-        character_count: 500,
-        character_limit: 10000,
-      },
-    }),
-  },
-};
-```
-
-### Step 4: Development Scripts
-
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:integration": "ELEVENLABS_INTEGRATION=1 vitest run tests/integration/",
-    "generate": "tsx src/generate.ts",
-    "quota": "tsx src/check-quota.ts"
-  }
-}
-```
-
-### Step 5: Quota-Aware Development
-
-```typescript
-// src/check-quota.ts — run before integration tests
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-
-const client = new ElevenLabsClient();
-
-async function checkQuota() {
-  const user = await client.user.get();
-  const { character_count, character_limit } = user.subscription;
-  const remaining = character_limit - character_count;
-  const pct = ((character_count / character_limit) * 100).toFixed(1);
-
-  console.log(`Characters: ${character_count.toLocaleString()} / ${character_limit.toLocaleString()} (${pct}% used)`);
-  console.log(`Remaining: ${remaining.toLocaleString()} characters`);
-
-  if (remaining < 1000) {
-    console.warn("WARNING: Low character quota. Use mocks for development.");
-    process.exit(1);
-  }
-}
-
-checkQuota().catch(console.error);
-```
-
-### Step 6: Integration Test Guard
-
-```typescript
-// tests/tts.test.ts
-import { describe, it, expect, vi, beforeAll } from "vitest";
-import { mockElevenLabsClient } from "./__mocks__/elevenlabs";
-
-// Only hit real API when explicitly enabled
-const useRealApi = process.env.ELEVENLABS_INTEGRATION === "1";
-
-describe("TTS Service", () => {
-  it("should generate audio from text (mocked)", async () => {
-    const audio = await mockElevenLabsClient.textToSpeech.convert(
-      "21m00Tcm4TlvDq8ikWAM",
-      { text: "Test speech", model_id: "eleven_flash_v2_5" }
-    );
-    expect(audio).toBeDefined();
-  });
-
-  it.skipIf(!useRealApi)("should generate real audio (integration)", async () => {
-    const { ElevenLabsClient } = await import("@elevenlabs/elevenlabs-js");
-    const client = new ElevenLabsClient();
-    const audio = await client.textToSpeech.convert("21m00Tcm4TlvDq8ikWAM", {
-      text: "Integration test.",
-      model_id: "eleven_flash_v2_5",
-    });
-    expect(audio).toBeDefined();
-  });
-});
-```
+See [references/implementation.md](references/implementation.md) for the
+complete, copy-pasteable code for each step.
 
 ## Output
 
@@ -221,6 +107,22 @@ describe("TTS Service", () => {
 | Integration test fails | No API key | Set `ELEVENLABS_API_KEY` in `.env.local` |
 | Quota exceeded in dev | Running real API calls | Use mock layer; run `npm run quota` first |
 
+## Examples
+
+Four worked runs of the loop — full walkthroughs in
+[references/examples.md](references/examples.md):
+
+- **Zero-cost unit tests** — `npm run test` drives the service through the mock
+  client, passes offline, and never touches the API or your quota.
+- **Quota preflight** — `npm run quota` prints `Characters: 500 / 10,000 (5.0%
+  used)` and exits `1` when fewer than 1000 characters remain, blocking a paid
+  run before it starts.
+- **Opt-in integration run** — `npm run test:integration` sets
+  `ELEVENLABS_INTEGRATION=1`, flipping the `it.skipIf(!useRealApi)` test on so
+  the real API is hit only when you ask for it.
+- **Hot-reload iteration** — `npm run dev` (`tsx watch`) restarts on save; with
+  the dev model (`eleven_flash_v2_5`) and mocks, each loop stays fast and free.
+
 ## Resources
 
 - [ElevenLabs JS SDK](https://github.com/elevenlabs/elevenlabs-js)
@@ -229,4 +131,6 @@ describe("TTS Service", () => {
 
 ## Next Steps
 
-See `elevenlabs-sdk-patterns` for production-ready code patterns.
+Once the dev loop is running, move on to production-ready code: see the
+`elevenlabs-sdk-patterns` skill for streaming, retries, and voice-management
+patterns you can layer on top of this environment.

@@ -1,19 +1,13 @@
 ---
 name: elevenlabs-prod-checklist
-description: 'Execute ElevenLabs production deployment checklist with health checks
-  and rollback.
-
-  Use when deploying TTS/voice integrations to production, preparing for launch,
-
-  or implementing go-live procedures for ElevenLabs-powered apps.
-
-  Trigger: "elevenlabs production", "deploy elevenlabs",
-
-  "elevenlabs go-live", "elevenlabs launch checklist", "production TTS".
-
-  '
-allowed-tools: Read, Bash(curl:*), Bash(node:*), Grep
-version: 1.5.0
+description: |
+  Execute an ElevenLabs production deployment checklist with health checks and rollback.
+  Use when deploying TTS/voice integrations to production, preparing for launch, or
+  implementing go-live procedures for ElevenLabs-powered apps.
+  Trigger with "elevenlabs production", "deploy elevenlabs", "elevenlabs go-live",
+  "elevenlabs launch checklist", or "production TTS".
+allowed-tools: Read, Bash(curl:*), Bash(jq:*), Grep
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -29,7 +23,10 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Complete checklist for deploying ElevenLabs TTS/voice integrations to production. Covers API configuration, health checks, circuit breakers, monitoring, and rollback procedures.
+Complete checklist for deploying ElevenLabs TTS/voice integrations to production. Covers
+API configuration, health checks, circuit breakers, monitoring, and rollback procedures.
+The deep code for the resilience primitives lives in `references/` so this file stays a
+fast, scannable runbook — drill in when you need the full implementation.
 
 ## Prerequisites
 
@@ -40,6 +37,8 @@ Complete checklist for deploying ElevenLabs TTS/voice integrations to production
 ## Instructions
 
 ### Step 1: Pre-Deployment Verification
+
+Walk the checklist below. Every unchecked box is a launch blocker.
 
 **Configuration:**
 
@@ -63,203 +62,44 @@ Complete checklist for deploying ElevenLabs TTS/voice integrations to production
 - [ ] Usage-based billing enabled (Creator+ plans) if needed
 - [ ] Flash/Turbo models used where latency matters more than quality
 
-### Step 2: Health Check Endpoint
+### Step 2: Wire the resilience primitives
 
-```typescript
-// src/api/health.ts
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+Production ElevenLabs integrations need three primitives. The full drop-in TypeScript for
+each is in [references/implementation.md](references/implementation.md) — high-level intent:
 
-interface HealthStatus {
-  status: "healthy" | "degraded" | "unhealthy";
-  elevenlabs: {
-    connected: boolean;
-    latencyMs: number;
-    quotaRemaining: number | null;
-    quotaPctUsed: number | null;
-  };
-  timestamp: string;
-}
+1. **Health check endpoint** — reports connectivity, latency, and remaining quota; returns
+   `degraded` past 90% quota and `unhealthy` on any API failure, so a load balancer can gate
+   traffic.
+2. **Circuit breaker** — opens after N consecutive failures, cools down, then probes
+   half-open; accepts a `fallback` (placeholder audio / cached clip / `null`) so a TTS outage
+   degrades gracefully instead of throwing.
+3. **Monitoring & alerting** — emit one structured metric per TTS call and drive the alert
+   thresholds in the table below into your observability platform.
 
-export async function healthCheck(): Promise<HealthStatus> {
-  const client = new ElevenLabsClient();
-  const start = Date.now();
+### Step 3: Run the pre-flight gate
 
-  try {
-    const user = await client.user.get();
-    const latency = Date.now() - start;
-    const { character_count, character_limit } = user.subscription;
-    const remaining = character_limit - character_count;
-    const pctUsed = Math.round((character_count / character_limit) * 100);
-
-    return {
-      status: pctUsed > 90 ? "degraded" : "healthy",
-      elevenlabs: {
-        connected: true,
-        latencyMs: latency,
-        quotaRemaining: remaining,
-        quotaPctUsed: pctUsed,
-      },
-      timestamp: new Date().toISOString(),
-    };
-  } catch (error) {
-    return {
-      status: "unhealthy",
-      elevenlabs: {
-        connected: false,
-        latencyMs: Date.now() - start,
-        quotaRemaining: null,
-        quotaPctUsed: null,
-      },
-      timestamp: new Date().toISOString(),
-    };
-  }
-}
-```
-
-### Step 3: Circuit Breaker
-
-```typescript
-// src/elevenlabs/circuit-breaker.ts
-type CircuitState = "closed" | "open" | "half-open";
-
-export class ElevenLabsCircuitBreaker {
-  private state: CircuitState = "closed";
-  private failures = 0;
-  private lastFailure = 0;
-
-  constructor(
-    private failureThreshold = 5,       // Open after N consecutive failures
-    private resetTimeMs = 30_000,       // Try again after 30s
-  ) {}
-
-  async execute<T>(operation: () => Promise<T>, fallback?: () => T): Promise<T> {
-    if (this.state === "open") {
-      if (Date.now() - this.lastFailure > this.resetTimeMs) {
-        this.state = "half-open";
-      } else {
-        if (fallback) return fallback();
-        throw new Error("ElevenLabs circuit breaker is open — service unavailable");
-      }
-    }
-
-    try {
-      const result = await operation();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure();
-      if (fallback) return fallback();
-      throw error;
-    }
-  }
-
-  private onSuccess() {
-    this.failures = 0;
-    this.state = "closed";
-  }
-
-  private onFailure() {
-    this.failures++;
-    this.lastFailure = Date.now();
-    if (this.failures >= this.failureThreshold) {
-      this.state = "open";
-      console.error(`[ElevenLabs] Circuit breaker OPEN after ${this.failures} failures`);
-    }
-  }
-
-  getState(): CircuitState {
-    return this.state;
-  }
-}
-
-// Usage: graceful degradation when ElevenLabs is down
-const breaker = new ElevenLabsCircuitBreaker();
-
-async function generateSpeechWithFallback(text: string, voiceId: string) {
-  return breaker.execute(
-    () => client.textToSpeech.convert(voiceId, {
-      text,
-      model_id: "eleven_multilingual_v2",
-    }),
-    () => {
-      // Fallback: return pre-generated placeholder audio or null
-      console.warn("[ElevenLabs] Using fallback — TTS unavailable");
-      return null;
-    }
-  );
-}
-```
-
-### Step 4: Monitoring & Alerting
-
-```typescript
-// src/elevenlabs/monitor.ts
-interface TTSMetric {
-  operation: string;
-  voiceId: string;
-  modelId: string;
-  textLength: number;
-  latencyMs: number;
-  success: boolean;
-  errorCode?: string;
-}
-
-function emitMetric(metric: TTSMetric) {
-  // Send to your monitoring system (Datadog, CloudWatch, Prometheus, etc.)
-  console.log(JSON.stringify({
-    ...metric,
-    timestamp: new Date().toISOString(),
-    service: "elevenlabs",
-  }));
-}
-
-// Alert thresholds
-const ALERT_RULES = {
-  p99_latency_ms: 5000,       // Alert if p99 > 5 seconds
-  error_rate_pct: 5,           // Alert if error rate > 5%
-  quota_used_pct: 80,          // Alert when 80% quota used
-  circuit_breaker_open: true,  // Alert on circuit breaker trip
-};
-```
-
-### Step 5: Pre-Flight Check Script
+Before promoting a build, run the pre-flight script — it checks connectivity, quota, voice
+availability, and a live TTS smoke test, exiting non-zero on any hard failure so it can block
+a CI/CD deploy step. Full script + CI wiring: [references/preflight.md](references/preflight.md).
 
 ```bash
-#!/bin/bash
-# pre-flight-check.sh — Run before deploying
-
-echo "=== ElevenLabs Pre-Flight Check ==="
-
-# 1. API connectivity
+# The load-bearing first gate — full script in references/preflight.md
 HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
   https://api.elevenlabs.io/v1/user \
   -H "xi-api-key: ${ELEVENLABS_API_KEY}")
-echo "API connectivity: HTTP $HTTP"
 [ "$HTTP" != "200" ] && echo "FAIL: API not reachable" && exit 1
-
-# 2. Quota check
-QUOTA=$(curl -s https://api.elevenlabs.io/v1/user \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY}" | \
-  jq '.subscription | (.character_limit - .character_count)')
-echo "Characters remaining: $QUOTA"
-[ "$QUOTA" -lt 10000 ] && echo "WARN: Low quota"
-
-# 3. Voice availability
-VOICE_COUNT=$(curl -s https://api.elevenlabs.io/v1/voices \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY}" | jq '.voices | length')
-echo "Voices available: $VOICE_COUNT"
-
-# 4. TTS smoke test
-TTS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM" \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY}" \
-  -H "Content-Type: application/json" \
-  -d '{"text":"Pre-flight check.","model_id":"eleven_flash_v2_5"}')
-echo "TTS smoke test: HTTP $TTS_STATUS"
-[ "$TTS_STATUS" != "200" ] && echo "FAIL: TTS not working" && exit 1
-
-echo "=== All checks passed ==="
 ```
+
+## Output
+
+Running this checklist produces:
+
+- A completed pre-deployment verification (every box in Step 1 checked or explicitly waived).
+- A health-check endpoint returning `healthy` / `degraded` / `unhealthy` plus latency and
+  remaining quota.
+- A circuit breaker and monitoring harness wired into the TTS call path.
+- A green pre-flight run (`=== All checks passed ===`, exit 0) gating the deploy.
+- A monitoring/alerting matrix mapped to your on-call severities (see below).
 
 ## Deployment Monitoring
 
@@ -281,11 +121,42 @@ echo "=== All checks passed ==="
 | Voice deleted | Return 404 to caller; alert; fall back to default voice |
 | Webhook delivery failing | Monitor ElevenLabs webhook health; webhooks auto-disable after 10 failures |
 
+## Examples
+
+**Gate a deploy on the pre-flight script.** Run it as the last step before promotion; a
+non-zero exit blocks the pipeline:
+
+```bash
+$ ELEVENLABS_API_KEY=$PROD_KEY ./scripts/pre-flight-check.sh
+=== ElevenLabs Pre-Flight Check ===
+API connectivity: HTTP 200
+Characters remaining: 428193
+Voices available: 14
+TTS smoke test: HTTP 200
+=== All checks passed ===
+$ echo $?
+0
+```
+
+**Poll the health endpoint for a load-balancer probe.** A `degraded` status (quota > 90%)
+still serves traffic but pages on-call; `unhealthy` drains the node:
+
+```bash
+$ curl -s https://myapp.example.com/health | jq '.status, .elevenlabs.quotaPctUsed'
+"healthy"
+41
+```
+
+Full worked implementations for both: [references/implementation.md](references/implementation.md)
+and [references/preflight.md](references/preflight.md).
+
 ## Resources
 
 - [ElevenLabs Status](https://status.elevenlabs.io)
 - [ElevenLabs API Reference](https://elevenlabs.io/docs/api-reference/introduction)
 - [Usage Dashboard](https://elevenlabs.io/app/usage)
+- [references/implementation.md](references/implementation.md) — health check, circuit breaker, monitoring code
+- [references/preflight.md](references/preflight.md) — pre-flight script + CI wiring
 
 ## Next Steps
 

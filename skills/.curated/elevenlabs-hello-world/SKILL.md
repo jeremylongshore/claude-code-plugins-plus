@@ -1,18 +1,13 @@
 ---
 name: elevenlabs-hello-world
-description: 'Generate your first ElevenLabs text-to-speech audio file.
-
-  Use when starting a new ElevenLabs integration, testing your setup,
-
-  or learning basic TTS API patterns.
-
-  Trigger: "elevenlabs hello world", "elevenlabs example",
-
-  "elevenlabs quick start", "first elevenlabs TTS", "text to speech demo".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
-version: 1.5.0
+description: |
+  Generate your first ElevenLabs text-to-speech audio file. Use when starting a
+  new ElevenLabs integration, testing your setup, or learning basic TTS API
+  patterns before wiring voice into a real app.
+  Trigger with "elevenlabs hello world", "elevenlabs example", "elevenlabs quick
+  start", "first elevenlabs TTS", "text to speech demo".
+allowed-tools: Read, Write, Bash(npm:*), Bash(node:*)
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,18 +23,22 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Generate speech from text using the ElevenLabs TTS API. This skill covers the core `POST /v1/text-to-speech/{voice_id}` endpoint with real voice IDs, model selection, and audio output.
+Generate speech from text using the ElevenLabs TTS API. This skill covers the
+core `POST /v1/text-to-speech/<voice-id>` endpoint with real voice IDs, model
+selection, and audio output. Start from the minimal SDK call below, then drill
+into [the full implementation](references/implementation.md) for the cURL,
+streaming, and multi-language paths.
 
 ## Prerequisites
 
-- Completed `elevenlabs-install-auth` setup
-- Valid API key in `ELEVENLABS_API_KEY`
+- Completed the `elevenlabs-install-auth` setup skill so the SDK is installed.
+- A valid API key exported as `ELEVENLABS_API_KEY` in your shell environment.
+- Node 20+ (for the TypeScript SDK path) or Python 3.9+ (for the Python path).
 
 ## Instructions
 
-### Step 1: Text-to-Speech with the SDK
-
-**TypeScript (recommended):**
+The whole workflow is one API call: pick a voice ID, pick a model, send text,
+write the returned audio stream to a file. The minimal TypeScript path:
 
 ```typescript
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
@@ -48,139 +47,70 @@ import { Readable } from "stream";
 import { pipeline } from "stream/promises";
 
 const client = new ElevenLabsClient();
-
-async function generateSpeech() {
-  // Use a pre-made voice — "Rachel" is a default voice available on all accounts
-  // Find voice IDs via: GET /v1/voices
-  const audio = await client.textToSpeech.convert("21m00Tcm4TlvDq8ikWAM", {
-    text: "Hello! This is your first ElevenLabs text-to-speech generation.",
-    model_id: "eleven_multilingual_v2",  // Best quality, 29 languages
-    voice_settings: {
-      stability: 0.5,           // 0-1: lower = more expressive
-      similarity_boost: 0.75,   // 0-1: higher = closer to original voice
-      style: 0.0,               // 0-1: higher = more dramatic (costs more latency)
-      speed: 1.0,               // 0.7-1.2: speech speed multiplier
-    },
-  });
-
-  // audio is a ReadableStream — pipe to file
-  await pipeline(
-    Readable.fromWeb(audio as any),
-    createWriteStream("output.mp3")
-  );
-
-  console.log("Audio saved to output.mp3");
-}
-
-generateSpeech().catch(console.error);
+const audio = await client.textToSpeech.convert("21m00Tcm4TlvDq8ikWAM", {
+  text: "Hello! This is your first ElevenLabs text-to-speech generation.",
+  model_id: "eleven_multilingual_v2",
+});
+await pipeline(Readable.fromWeb(audio as any), createWriteStream("output.mp3"));
 ```
 
-**Python:**
+The four generation paths, with full copy-paste code and inline commentary on
+every `voice_settings` field, live in
+[references/implementation.md](references/implementation.md):
 
-```python
-from elevenlabs.client import ElevenLabsClient
+1. **SDK (TypeScript / Python)** — batch generation with tuned voice settings.
+2. **cURL** — the raw REST call, no SDK, for shell scripts and testing.
+3. **Streaming** — the `eleven_flash_v2_5` low-latency path (~75 ms first chunk).
+4. **Model / voice / output-format tables** — the exact IDs to plug in above.
 
-client = ElevenLabsClient()
+Pick the path that matches your stack, swap the voice ID and text, and run it.
 
-audio = client.text_to_speech.convert(
-    voice_id="21m00Tcm4TlvDq8ikWAM",  # Rachel
-    text="Hello! This is your first ElevenLabs text-to-speech generation.",
-    model_id="eleven_multilingual_v2",
-    voice_settings={
-        "stability": 0.5,
-        "similarity_boost": 0.75,
-        "style": 0.0,
-    },
-)
+## Output
 
-with open("output.mp3", "wb") as f:
-    for chunk in audio:
-        f.write(chunk)
+A single audio file written to disk (default `output.mp3`), plus a console line
+confirming the write:
 
-print("Audio saved to output.mp3")
-```
+- `output.mp3` — MP3 at `mp3_44100_128` by default (~35–50 KB for a one-line
+  greeting). Override the codec via `output_format` (see the output-format table
+  in [implementation.md](references/implementation.md)).
+- stdout: `Audio saved to output.mp3` (or `Streamed audio saved to
+  streamed.mp3` on the streaming path).
 
-### Step 2: Using cURL (Raw REST API)
-
-```bash
-curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM" \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "Hello from the ElevenLabs API!",
-    "model_id": "eleven_multilingual_v2",
-    "voice_settings": {
-      "stability": 0.5,
-      "similarity_boost": 0.75
-    }
-  }' \
-  --output output.mp3
-```
-
-### Step 3: Streaming TTS (Low Latency)
-
-For real-time playback, use the streaming endpoint:
-
-```typescript
-async function streamSpeech() {
-  const audioStream = await client.textToSpeech.stream("21m00Tcm4TlvDq8ikWAM", {
-    text: "This audio is streamed in real-time for low-latency playback.",
-    model_id: "eleven_flash_v2_5",  // Optimized for streaming (~75ms latency)
-    output_format: "mp3_22050_32",  // codec_sampleRate_bitrate
-  });
-
-  // Stream chunks arrive as they're generated
-  const writer = createWriteStream("streamed.mp3");
-  for await (const chunk of audioStream) {
-    writer.write(chunk);
-  }
-  writer.end();
-  console.log("Streamed audio saved to streamed.mp3");
-}
-```
-
-## Available Models
-
-| Model ID | Quality | Latency | Languages | Cost (credits/char) |
-|----------|---------|---------|-----------|---------------------|
-| `eleven_v3` | Highest expressiveness | Medium | 70+ | 1.0 |
-| `eleven_multilingual_v2` | High quality, emotional | Medium | 29 | 1.0 |
-| `eleven_flash_v2_5` | Good, ultra-fast | ~75ms | 32 | 0.5 |
-| `eleven_turbo_v2_5` | Good, fast | Low | 32 | 0.5 |
-| `eleven_monolingual_v1` | English only | Low | 1 | 0.5 |
-
-## Common Default Voice IDs
-
-| Voice | ID | Style |
-|-------|----|-------|
-| Rachel | `21m00Tcm4TlvDq8ikWAM` | Calm, narration |
-| Domi | `AZnzlk1XvdvUeBnXmlld` | Strong, assertive |
-| Bella | `EXAVITQu4vr4xnSDxMaL` | Soft, warm |
-| Antoni | `ErXwobaYiN019PkySvjV` | Well-rounded, male |
-| Josh | `TxGEqnHWrfWFTfGW9XjX` | Deep, narrative |
-
-## Output Formats
-
-Specified as `codec_sampleRate_bitrate`:
-
-- `mp3_44100_128` (default, high quality)
-- `mp3_22050_32` (smaller file, streaming)
-- `pcm_16000` (raw PCM for processing)
-- `pcm_44100` (high-quality raw)
-- `ulaw_8000` (telephony)
+A non-200 response returns a JSON error body instead of audio — see Error
+Handling below.
 
 ## Error Handling
 
 | Error | HTTP | Cause | Solution |
 |-------|------|-------|----------|
-| `voice_not_found` | 404 | Invalid voice_id | Use `GET /v1/voices` to list valid IDs |
+| `voice_not_found` | 404 | Invalid voice ID | Use `GET /v1/voices` to list valid IDs |
 | `invalid_api_key` | 401 | Bad or missing key | Check `ELEVENLABS_API_KEY` env var |
-| `model_not_found` | 400 | Wrong model_id string | Use exact IDs from models table |
+| `model_not_found` | 400 | Wrong model_id string | Use exact IDs from the models table |
 | `text_too_long` | 400 | Exceeds 5,000 chars | Split into chunks; use streaming for long text |
 | `quota_exceeded` | 401 | Monthly character limit hit | Check usage at elevenlabs.io/app/usage |
 
+With cURL, a failure writes the JSON error body to `output.mp3`; inspect it with
+`cat output.mp3` before assuming the audio is corrupt.
+
+## Examples
+
+Three end-to-end scenarios — first SDK MP3, one-shot cURL, and low-latency
+streaming — with the exact commands and the resulting on-disk artifacts are in
+[references/examples.md](references/examples.md). The quickest smoke test:
+
+```bash
+export ELEVENLABS_API_KEY="sk_..."
+curl -X POST "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM" \
+  -H "xi-api-key: ${ELEVENLABS_API_KEY}" -H "Content-Type: application/json" \
+  -d '{"text":"Hello from the ElevenLabs API!","model_id":"eleven_multilingual_v2"}' \
+  --output output.mp3
+```
+
 ## Resources
 
+- [Full implementation walkthrough](references/implementation.md) — SDK, cURL,
+  streaming, and the model / voice / output-format tables.
+- [Worked examples](references/examples.md) — three runnable scenarios.
 - [TTS API Reference](https://elevenlabs.io/docs/api-reference/text-to-speech/convert)
 - [Stream API Reference](https://elevenlabs.io/docs/api-reference/text-to-speech/stream)
 - [Models Overview](https://elevenlabs.io/docs/overview/models)
@@ -188,4 +118,6 @@ Specified as `codec_sampleRate_bitrate`:
 
 ## Next Steps
 
-Proceed to `elevenlabs-local-dev-loop` for development workflow setup, or `elevenlabs-core-workflow-a` for voice cloning.
+Once your first file plays back cleanly, proceed to `elevenlabs-local-dev-loop`
+for a development workflow with hot-reload and caching, or
+`elevenlabs-core-workflow-a` to move from pre-made voices into voice cloning.

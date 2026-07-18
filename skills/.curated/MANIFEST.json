@@ -6776,10 +6776,12 @@
       "category": "saas-packs",
       "plugin": "elevenlabs-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -6788,10 +6790,12 @@
       "category": "saas-packs",
       "plugin": "elevenlabs-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {
@@ -6800,10 +6804,12 @@
       "category": "saas-packs",
       "plugin": "elevenlabs-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 9,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/examples.md",
+        "references/implementation.md"
       ]
     },
     {

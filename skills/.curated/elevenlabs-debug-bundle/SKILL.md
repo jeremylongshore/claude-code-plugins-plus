@@ -1,18 +1,15 @@
 ---
 name: elevenlabs-debug-bundle
-description: 'Collect ElevenLabs debug evidence for support tickets and troubleshooting.
-
-  Use when encountering persistent issues, preparing support tickets,
-
-  or collecting diagnostic information for ElevenLabs problems.
-
-  Trigger: "elevenlabs debug", "elevenlabs support bundle",
-
-  "collect elevenlabs logs", "elevenlabs diagnostic", "elevenlabs support ticket".
-
-  '
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
-version: 1.5.0
+description: |
+  Collect ElevenLabs debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent issues, preparing a support ticket, or
+  gathering diagnostic information (SDK version, API connectivity, quota, voice
+  inventory, model availability) for an ElevenLabs problem, with secrets
+  redacted automatically. Trigger with "elevenlabs debug", "elevenlabs support
+  bundle", "collect elevenlabs logs", "elevenlabs diagnostic", "elevenlabs
+  support ticket".
+allowed-tools: Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(node:*)
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,186 +25,52 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
-Collect all diagnostic information needed for ElevenLabs support tickets. Gathers SDK version, API connectivity, quota status, voice inventory, and model availability while redacting all secrets.
+Collect all diagnostic information needed for ElevenLabs support tickets. Gathers SDK version, API connectivity (HTTP status, DNS, TLS), quota status, voice inventory, and model availability into a single archive while redacting all secrets before anything touches disk.
+
+Two collection paths are available and produce equivalent evidence: a shell script (no code dependency — good for servers and CI) and a programmatic TypeScript collector (good when the app already imports the SDK). The full, ready-to-run source for both lives in [references/implementation.md](references/implementation.md); this file is the high-level workflow.
 
 ## Prerequisites
 
 - ElevenLabs SDK installed
 - API key configured (to test connectivity)
 - Access to application logs
+- `jq` available (used by the shell script to format API responses)
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+The workflow is three steps: run a collector, review the output for stray secrets, then attach it to a support ticket. Follow the summary here and open [references/implementation.md](references/implementation.md) for the complete scripts.
+
+### Step 1: Run a collector
+
+**Shell path** — the script writes each section to `summary.txt`, redacts secrets, then tars and removes the working directory. The skeleton:
 
 ```bash
 #!/bin/bash
 # elevenlabs-debug-bundle.sh
 set -euo pipefail
-
 BUNDLE_DIR="elevenlabs-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
-
-echo "=== ElevenLabs Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-
-# --- Environment ---
-echo "--- Runtime Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "Node.js: not found" >> "$BUNDLE_DIR/summary.txt"
-python3 --version 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "Python: not found" >> "$BUNDLE_DIR/summary.txt"
-echo "OS: $(uname -s) $(uname -r)" >> "$BUNDLE_DIR/summary.txt"
-echo "API Key: ${ELEVENLABS_API_KEY:+SET (${#ELEVENLABS_API_KEY} chars)}" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-
-# --- SDK Versions ---
-echo "--- SDK Versions ---" >> "$BUNDLE_DIR/summary.txt"
-npm list @elevenlabs/elevenlabs-js 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "JS SDK: not installed" >> "$BUNDLE_DIR/summary.txt"
-pip show elevenlabs 2>/dev/null | grep -E "^(Name|Version)" >> "$BUNDLE_DIR/summary.txt" || echo "Python SDK: not installed" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-
-# --- API Connectivity ---
-echo "--- API Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-  https://api.elevenlabs.io/v1/user \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY:-missing}" 2>/dev/null || echo "FAILED")
-echo "GET /v1/user: HTTP $HTTP_CODE" >> "$BUNDLE_DIR/summary.txt"
-
-DNS_CHECK=$(dig +short api.elevenlabs.io 2>/dev/null | head -1 || echo "DNS lookup failed")
-echo "DNS api.elevenlabs.io: $DNS_CHECK" >> "$BUNDLE_DIR/summary.txt"
-
-TLS_CHECK=$(echo | openssl s_client -connect api.elevenlabs.io:443 2>/dev/null | grep -c "Verify return code: 0" || echo "0")
-echo "TLS valid: $([ "$TLS_CHECK" = "1" ] && echo "yes" || echo "no")" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-
-# --- Subscription & Quota ---
-if [ "$HTTP_CODE" = "200" ]; then
-  echo "--- Subscription ---" >> "$BUNDLE_DIR/summary.txt"
-  curl -s https://api.elevenlabs.io/v1/user \
-    -H "xi-api-key: ${ELEVENLABS_API_KEY}" | \
-    jq '{tier: .subscription.tier, character_count: .subscription.character_count, character_limit: .subscription.character_limit, next_reset: .subscription.next_character_count_reset_unix}' \
-    >> "$BUNDLE_DIR/summary.txt" 2>/dev/null
-  echo "" >> "$BUNDLE_DIR/summary.txt"
-
-  # --- Voice Inventory ---
-  echo "--- Voice Inventory ---" >> "$BUNDLE_DIR/summary.txt"
-  curl -s https://api.elevenlabs.io/v1/voices \
-    -H "xi-api-key: ${ELEVENLABS_API_KEY}" | \
-    jq '[.voices[] | {name, voice_id, category}]' \
-    >> "$BUNDLE_DIR/summary.txt" 2>/dev/null
-  echo "" >> "$BUNDLE_DIR/summary.txt"
-
-  # --- Model Availability ---
-  echo "--- Available Models ---" >> "$BUNDLE_DIR/summary.txt"
-  curl -s https://api.elevenlabs.io/v1/models \
-    -H "xi-api-key: ${ELEVENLABS_API_KEY}" | \
-    jq '[.[] | {model_id, name, can_do_text_to_speech, can_do_voice_conversion}]' \
-    >> "$BUNDLE_DIR/summary.txt" 2>/dev/null
-fi
-
-# --- Configuration (redacted) ---
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-if [ -f .env ]; then
-  sed 's/=.*/=***REDACTED***/' .env >> "$BUNDLE_DIR/config-redacted.txt"
-fi
-
-# --- Recent Error Logs ---
-echo "--- Recent Errors ---" >> "$BUNDLE_DIR/summary.txt"
-grep -ri "elevenlabs\|ElevenLabs\|xi-api-key" *.log 2>/dev/null | \
-  sed 's/sk_[a-zA-Z0-9]*/sk_***REDACTED***/g' | \
-  tail -50 >> "$BUNDLE_DIR/errors.txt" 2>/dev/null || echo "No log files found" >> "$BUNDLE_DIR/errors.txt"
-
-# --- Package Bundle ---
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-rm -rf "$BUNDLE_DIR"
-echo ""
+# ... collect environment, SDK versions, connectivity, quota, voices, models ...
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR" && rm -rf "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
-echo "Review for sensitive data before sharing with support."
 ```
 
-### Step 2: Programmatic Debug Collection
+**Programmatic path** — build a structured `DebugReport` when the SDK is already a dependency. Each section is wrapped independently so one failure still returns a partial report:
 
 ```typescript
-// src/elevenlabs/debug.ts
-import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
-
-interface DebugReport {
-  timestamp: string;
-  sdk: { package: string; version: string };
-  connectivity: { status: number; latencyMs: number };
-  subscription: { tier: string; used: number; limit: number; resetAt: string } | null;
-  voices: { total: number; cloned: number; premade: number } | null;
-  models: string[] | null;
-  errors: string[];
-}
-
-export async function collectDebugReport(): Promise<DebugReport> {
-  const client = new ElevenLabsClient();
-  const errors: string[] = [];
-  const report: DebugReport = {
-    timestamp: new Date().toISOString(),
-    sdk: { package: "@elevenlabs/elevenlabs-js", version: "unknown" },
-    connectivity: { status: 0, latencyMs: 0 },
-    subscription: null,
-    voices: null,
-    models: null,
-    errors,
-  };
-
-  // Test connectivity + get user info
-  const start = Date.now();
-  try {
-    const user = await client.user.get();
-    report.connectivity = { status: 200, latencyMs: Date.now() - start };
-    report.subscription = {
-      tier: user.subscription.tier,
-      used: user.subscription.character_count,
-      limit: user.subscription.character_limit,
-      resetAt: new Date(user.subscription.next_character_count_reset_unix * 1000).toISOString(),
-    };
-  } catch (err: any) {
-    report.connectivity = { status: err.statusCode || 0, latencyMs: Date.now() - start };
-    errors.push(`Auth: ${err.message}`);
-  }
-
-  // Voice inventory
-  try {
-    const { voices } = await client.voices.getAll();
-    report.voices = {
-      total: voices.length,
-      cloned: voices.filter(v => v.category === "cloned").length,
-      premade: voices.filter(v => v.category === "premade").length,
-    };
-  } catch (err: any) {
-    errors.push(`Voices: ${err.message}`);
-  }
-
-  // Model availability
-  try {
-    const models = await client.models.getAll();
-    report.models = models.map(m => m.model_id);
-  } catch (err: any) {
-    errors.push(`Models: ${err.message}`);
-  }
-
-  return report;
-}
-
-// Usage
 const report = await collectDebugReport();
 console.log(JSON.stringify(report, null, 2));
 ```
 
-### Step 3: Submit to Support
+Full source for both, including the connectivity/TLS probes and quota/voice/model collectors: [references/implementation.md](references/implementation.md).
 
-1. Run: `bash elevenlabs-debug-bundle.sh` (or the programmatic version)
-2. Review the output for any accidentally included secrets
-3. Open a ticket at https://help.elevenlabs.io
-4. Attach the bundle and describe the issue with:
-   - What you expected to happen
-   - What actually happened
-   - Steps to reproduce
-   - Request IDs from error responses (if available)
+### Step 2: Review for secrets
+
+Inspect the archive before sharing — API keys, webhook secrets, and any `.env` value are redacted automatically, but confirm nothing sensitive slipped into an error log or stack trace.
+
+### Step 3: Submit to support
+
+Open a ticket at https://help.elevenlabs.io, attach the bundle, and describe what you expected, what happened, steps to reproduce, and any request IDs from error responses.
 
 ## Output
 
@@ -240,11 +103,31 @@ console.log(JSON.stringify(report, null, 2));
 | HTTP 401 | Bad API key | Regenerate key at elevenlabs.io |
 | Empty voice list | No voices on account | Normal for new free accounts |
 
+## Examples
+
+A healthy shell run produces a masked `summary.txt` whose top signals are `HTTP 200`, `TLS valid: yes`, and `character_count` under `character_limit`:
+
+```console
+$ bash elevenlabs-debug-bundle.sh
+Bundle created: elevenlabs-debug-20260717-143022.tar.gz
+Review for sensitive data before sharing with support.
+```
+
+The programmatic collector returns the same evidence as JSON — an empty `errors` array with `connectivity.status: 200` is healthy, while `"errors": ["Voices: 429 Too Many Requests"]` alongside `connectivity.status: 200` isolates a rate-limit on one endpoint:
+
+```json
+{ "connectivity": { "status": 200, "latencyMs": 214 },
+  "voices": { "total": 12, "cloned": 3, "premade": 9 }, "errors": [] }
+```
+
+Worked runs for a healthy account, a `401` bad key, and the full JSON report: [references/examples.md](references/examples.md).
+
 ## Resources
 
+- [Full implementation (shell + TypeScript)](references/implementation.md)
+- [Worked examples and sample output](references/examples.md)
 - [ElevenLabs Support](https://help.elevenlabs.io)
 - [ElevenLabs Status](https://status.elevenlabs.io)
-- API Error Reference
 
 ## Next Steps
 

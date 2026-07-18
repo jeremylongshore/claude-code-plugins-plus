@@ -1,18 +1,13 @@
 ---
 name: elevenlabs-install-auth
-description: 'Install and configure ElevenLabs SDK authentication for Node.js or Python.
-
-  Use when setting up a new ElevenLabs project, configuring API keys,
-
-  or initializing the elevenlabs npm/pip package.
-
-  Trigger: "install elevenlabs", "setup elevenlabs", "elevenlabs auth",
-
+description: |
+  Install and configure ElevenLabs SDK authentication for Node.js or Python.
+  Use when setting up a new ElevenLabs project, configuring API keys, or
+  initializing the elevenlabs npm/pip package.
+  Trigger with "install elevenlabs", "setup elevenlabs", "elevenlabs auth",
   "configure elevenlabs API key", "elevenlabs credentials".
-
-  '
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
-version: 1.5.0
+allowed-tools: Write, Bash(npm:*), Bash(pip:*), Bash(pnpm:*)
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -74,70 +69,32 @@ Add to `.gitignore`:
 
 ### Step 3: Initialize the Client
 
-**TypeScript:**
+Both SDKs auto-detect `ELEVENLABS_API_KEY`. Minimal TypeScript skeleton:
 
 ```typescript
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 
 const client = new ElevenLabsClient({
   apiKey: process.env.ELEVENLABS_API_KEY,
-  // Optional: configure retries (default: 2)
-  maxRetries: 3,
-  // Optional: configure timeout in seconds
-  timeoutInSeconds: 30,
 });
 ```
 
-**Python:**
-
-```python
-import os
-from elevenlabs.client import ElevenLabsClient
-
-client = ElevenLabsClient(
-    api_key=os.environ.get("ELEVENLABS_API_KEY")
-)
-```
+The Python client mirrors this with `ElevenLabsClient(api_key=...)`. For retry,
+timeout, and the full Python skeleton, see
+[implementation.md](references/implementation.md).
 
 ### Step 4: Verify Connection
 
-**TypeScript:**
+Confirm auth by listing voices — a successful call proves the key is valid and
+not over quota:
 
 ```typescript
-async function verifyConnection() {
-  // List available voices to confirm auth works
-  const voices = await client.voices.getAll();
-  console.log(`Connected. ${voices.voices.length} voices available.`);
-
-  // Check subscription/quota
-  const user = await client.user.get();
-  console.log(`Plan: ${user.subscription.tier}`);
-  console.log(`Characters used: ${user.subscription.character_count}/${user.subscription.character_limit}`);
-}
-
-verifyConnection().catch(console.error);
+const voices = await client.voices.getAll();
+console.log(`Connected. ${voices.voices.length} voices available.`);
 ```
 
-**Python:**
-
-```python
-def verify_connection():
-    voices = client.voices.get_all()
-    print(f"Connected. {len(voices.voices)} voices available.")
-
-    user = client.user.get()
-    print(f"Plan: {user.subscription.tier}")
-    print(f"Characters used: {user.subscription.character_count}/{user.subscription.character_limit}")
-
-verify_connection()
-```
-
-**cURL (raw API):**
-
-```bash
-curl -s https://api.elevenlabs.io/v1/user \
-  -H "xi-api-key: ${ELEVENLABS_API_KEY}" | jq '.subscription.tier'
-```
+Full TypeScript + Python + cURL verification (including subscription/quota
+inspection) is in [implementation.md](references/implementation.md).
 
 ## Output
 
@@ -155,13 +112,38 @@ curl -s https://api.elevenlabs.io/v1/user \
 | `MODULE_NOT_FOUND` | N/A | SDK not installed | Run `npm install @elevenlabs/elevenlabs-js` |
 | `quota_exceeded` | 401 | Character limit reached for billing period | Upgrade plan or wait for reset |
 
+## Examples
+
+Two full setup walkthroughs (Node.js and Python) plus a no-SDK CI smoke test
+live in [examples.md](references/examples.md). The shortest complete path for a
+new Node.js project:
+
+```bash
+npm install @elevenlabs/elevenlabs-js
+echo 'ELEVENLABS_API_KEY=sk_your_key_here' >> .env
+printf '.env\n' >> .gitignore
+```
+
+```typescript
+import "dotenv/config";
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+
+const client = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
+const voices = await client.voices.getAll();
+console.log(`Connected. ${voices.voices.length} voices available.`);
+```
+
+See [examples.md](references/examples.md) for the Python equivalent and the
+`curl`-only pipeline gate.
+
 ## API Key Best Practices
 
 - Never hardcode keys in source files
 - Use separate keys for dev/staging/prod
 - Rotate keys quarterly via the dashboard
-- The `xi-api-key` header is used for REST calls; SDKs handle this automatically
 - Free tier: 10,000 characters/month, Starter: 30,000, Creator: 100,000
+
+Full best-practices notes are in [implementation.md](references/implementation.md).
 
 ## Resources
 
@@ -172,4 +154,4 @@ curl -s https://api.elevenlabs.io/v1/user \
 
 ## Next Steps
 
-After auth is confirmed, proceed to `elevenlabs-hello-world` for your first text-to-speech generation.
+After auth is confirmed, proceed to the `elevenlabs-hello-world` skill for your first text-to-speech generation, then explore voice listing and streaming in the rest of the ElevenLabs pack.
