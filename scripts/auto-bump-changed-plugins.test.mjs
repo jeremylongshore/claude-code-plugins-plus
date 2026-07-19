@@ -25,9 +25,25 @@ import {
   setCatalogEntryVersion,
   editCatalogVersions,
   editSkillFrontmatter,
+  findSkillFiles,
 } from './reconstruct-versions.mjs';
 
 const v = (s) => parseVersion(s);
+
+// Recurrence guard: a display bump must stamp EVERY SKILL.md in the plugin,
+// not only the ones in the PR diff — otherwise a non-SKILL edit (command/README)
+// strands sibling skills' frontmatter a minor behind the plugin/catalog cards
+// and the surface drift regrows. planDisplayBump now sources skillFiles from
+// findSkillFiles(dir), so this locks that helper to the "all skills" contract.
+test('findSkillFiles returns every SKILL.md under a multi-skill plugin dir', () => {
+  const files = findSkillFiles('plugins/saas-packs/clerk-pack');
+  assert.ok(Array.isArray(files));
+  assert.ok(files.length > 1, `expected multiple skills, got ${files.length}`);
+  for (const f of files) {
+    assert.ok(f.endsWith('/SKILL.md'), `not a SKILL.md: ${f}`);
+    assert.ok(f.startsWith('plugins/saas-packs/clerk-pack/'), `outside plugin dir: ${f}`);
+  }
+});
 
 test('compareVersion orders by major, then minor, then patch', () => {
   assert.ok(compareVersion(v('1.0.0'), v('0.9.9')) > 0);

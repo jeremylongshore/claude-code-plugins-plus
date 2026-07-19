@@ -13,7 +13,7 @@ description: 'Collect Supabase diagnostic info for troubleshooting and support t
   '
 allowed-tools: Read, Bash(npx:*), Bash(node:*), Bash(curl:*), Bash(supabase:*), Bash(tar:*),
   Grep, Glob
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

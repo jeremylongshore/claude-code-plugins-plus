@@ -46,7 +46,11 @@ import { pathToFileURL } from 'node:url';
 // Circular import by design: reconstruct-versions.mjs imports parseVersion/
 // compareVersion from this module. Both modules only export hoisted function
 // declarations and neither runs main() on import, so the cycle is safe.
-import { setCatalogEntryVersion, editSkillFrontmatter } from './reconstruct-versions.mjs';
+import {
+  setCatalogEntryVersion,
+  editSkillFrontmatter,
+  findSkillFiles,
+} from './reconstruct-versions.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const SCOPE = '@intentsolutionsio/';
@@ -250,7 +254,13 @@ function planDisplayBump(dir, changedFiles) {
     to,
     pjAbs: pjOld ? pjAbs : null,
     pjOld,
-    skillFiles: changedFiles.filter((f) => f.endsWith('/SKILL.md')),
+    // Stamp ALL of the plugin's SKILL.md files on a display bump, not only the
+    // ones in this PR's diff. Stamping only changed SKILL.md strands sibling
+    // skills' frontmatter one minor behind the plugin/catalog cards every time
+    // a non-SKILL file (command, agent, README) is edited — the exact
+    // skill-card-vs-plugin-card drift this bump exists to prevent. changedFiles
+    // is retained only for the sourceChanged gate upstream.
+    skillFiles: findSkillFiles(dir),
   };
 }
 

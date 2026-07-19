@@ -48,6 +48,7 @@ import { parseVersion, compareVersion } from './auto-bump-changed-plugins.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const CATALOG = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
+const CLI_CATALOG = join(ROOT, '.claude-plugin', 'marketplace.json');
 
 function fmt(v) {
   return `${v.major}.${v.minor}.${v.patch}`;
@@ -239,7 +240,7 @@ export function editSkillFrontmatter(raw, newVersion) {
   return { old, out: raw.slice(0, 4) + lines.join('\n') + raw.slice(end) };
 }
 
-function findSkillFiles(dir) {
+export function findSkillFiles(dir) {
   const out = [];
   const walk = (d) => {
     for (const ent of readdirSync(join(ROOT, d), { withFileTypes: true })) {
@@ -304,7 +305,20 @@ function main() {
     const commits = history.get(p.dir)?.commits ?? [];
     // Oldest commit = the one that introduced the dir → creation, not an update.
     const updates = Math.max(0, commits.length - 1);
-    const existing = parseVersion(p.catalogVersion) || { major: 1, minor: 0, patch: 0 };
+    // Floor = the HIGHEST of catalog + plugin.json. The plugin.json can lead
+    // the catalog (e.g. a hand-bump that never reached the catalog); flooring on
+    // the catalog alone silently DOWNGRADED such plugins — the 2026-07
+    // reconstruction bug (claude-never-forgets 1.0.0→0.21.0 etc.). Taking the
+    // higher of the two, and its major, keeps a leading plugin.json's major.
+    const catV = parseVersion(p.catalogVersion) || { major: 1, minor: 0, patch: 0 };
+    let pjV = null;
+    try {
+      const pjRaw = readFileSync(join(ROOT, p.dir, '.claude-plugin', 'plugin.json'), 'utf-8');
+      pjV = parseVersion(JSON.parse(pjRaw).version);
+    } catch {
+      /* no plugin.json (vendored sub-marketplace) — the catalog is the floor */
+    }
+    const existing = pjV && compareVersion(pjV, catV) > 0 ? pjV : catV;
     const derived = { major: existing.major, minor: updates, patch: 0 };
     const finalV = compareVersion(derived, existing) > 0 ? derived : existing;
     rows.push({
@@ -319,22 +333,65 @@ function main() {
 
   // -------------------------------------------------------------- check mode
   if (check) {
-    let bad = 0;
-    for (const p of plugins) {
-      const pj = join(ROOT, p.dir, '.claude-plugin', 'plugin.json');
-      if (!existsSync(pj)) continue;
-      let v;
-      try {
-        v = JSON.parse(readFileSync(pj, 'utf-8')).version;
-      } catch {
-        continue;
+    // Compare ALL FOUR display surfaces to the extended-catalog version (the
+    // authority reconstruction writes): plugin.json, the generated CLI catalog
+    // (marketplace.json), and EVERY SKILL.md frontmatter under the plugin dir.
+    // The pre-2026-07 check read only plugin.json vs catalog, so it printed
+    // "All surfaces agree" while SKILL.md frontmatter drifted — a false pass.
+    let cliBySource = new Map();
+    try {
+      const cli = JSON.parse(readFileSync(CLI_CATALOG, 'utf-8'));
+      for (const e of cli.plugins || []) {
+        if (typeof e.source === 'string') cliBySource.set(e.source, e.version);
       }
-      if (v && p.catalogVersion && v !== p.catalogVersion) {
+    } catch {
+      /* CLI catalog unreadable — skip that surface rather than crash */
+    }
+    let bad = 0;
+    const noPluginJson = [];
+    for (const p of plugins) {
+      const want = p.catalogVersion;
+      if (!want) continue;
+      const mismatches = [];
+
+      const pj = join(ROOT, p.dir, '.claude-plugin', 'plugin.json');
+      if (existsSync(pj)) {
+        try {
+          const v = JSON.parse(readFileSync(pj, 'utf-8')).version;
+          if (v && v !== want) mismatches.push(`plugin.json=${v}`);
+        } catch {
+          mismatches.push('plugin.json=UNPARSEABLE');
+        }
+      } else {
+        // A catalog entry whose dir has no plugin.json (e.g. the vendored axiom
+        // sub-marketplace). Surface it instead of silently skipping.
+        noPluginJson.push(p.dir);
+      }
+
+      const cliV = cliBySource.get(p.source);
+      if (cliV && cliV !== want) mismatches.push(`marketplace.json=${cliV}`);
+
+      for (const rel of findSkillFiles(p.dir)) {
+        const res = editSkillFrontmatter(readFileSync(join(ROOT, rel), 'utf-8'), want);
+        if (res.old && res.old !== want) mismatches.push(`${rel}=${res.old}`);
+      }
+
+      if (mismatches.length) {
         bad++;
-        console.log(`DISAGREE ${p.dir}: plugin.json=${v} catalog=${p.catalogVersion}`);
+        console.log(`DISAGREE ${p.dir}: catalog=${want} · ${mismatches.join(' · ')}`);
       }
     }
-    console.log(bad ? `\n${bad} plugin(s) disagree across surfaces.` : 'All surfaces agree.');
+    if (noPluginJson.length) {
+      console.log(
+        `\nNOTE: ${noPluginJson.length} catalog dir(s) have no plugin.json (vendored sub-marketplace?) ` +
+          `and were not version-checked: ${noPluginJson.join(', ')}`,
+      );
+    }
+    console.log(
+      bad
+        ? `\n${bad} plugin(s) disagree across surfaces (plugin.json / marketplace.json / SKILL.md vs catalog).`
+        : 'All surfaces agree (plugin.json + marketplace.json + SKILL.md frontmatter vs catalog).',
+    );
     process.exit(bad ? 2 : 0);
   }
 
