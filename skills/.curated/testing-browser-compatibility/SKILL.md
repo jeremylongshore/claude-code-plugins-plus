@@ -11,7 +11,7 @@ description: 'Test across multiple browsers and devices for cross-browser compat
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npx playwright:*), Bash(npm:*),
   Bash(curl:*)
-version: 1.20.0
+version: 2.20.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

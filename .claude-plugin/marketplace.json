@@ -879,7 +879,7 @@
       "name": "browser-compatibility-tester",
       "source": "./plugins/testing/browser-compatibility-tester",
       "description": "Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge",
-      "version": "1.20.0",
+      "version": "2.20.0",
       "category": "testing",
       "keywords": [
         "testing",
@@ -2334,7 +2334,7 @@
       "name": "formatter",
       "source": "./plugins/examples/formatter",
       "description": "Code formatting plugin using hooks to auto-format on save",
-      "version": "1.26.0",
+      "version": "2.26.0",
       "category": "examples",
       "keywords": [
         "formatting",
@@ -4977,7 +4977,7 @@
       "name": "claude-never-forgets",
       "source": "./plugins/community/claude-never-forgets",
       "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
-      "version": "0.21.0",
+      "version": "1.21.0",
       "category": "community",
       "keywords": [
         "memory",
