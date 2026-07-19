@@ -7,7 +7,7 @@ description: "Upgrade Supabase SDK and CLI versions with breaking-change detecti
   , \"migrate supabase v2\", \"update supabase SDK\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(supabase:*),
   Bash(git:*), Grep, Glob
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

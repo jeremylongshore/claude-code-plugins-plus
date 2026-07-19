@@ -23,7 +23,7 @@ description: 'Enforce organizational governance for Supabase projects: shared RL
 
   '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(psql:*), Bash(npx:*), Grep
-version: 1.52.0
+version: 1.53.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
