@@ -325,6 +325,23 @@ History queries go to Dolt (`cd freshie/dolt/freshie`): `WHERE run_id = N`,
 append-only, so diffs between run tags show added rows, not cell changes.
 Clone-free check: `curl "https://www.dolthub.com/api/v1alpha1/jeremylongshore/freshie-inventory/main?q=SELECT+COUNT(*)+FROM+skill_compliance"`.
 
+**Interactive/MCP history — the in-repo `dolt-mcp-vcs` plugin** (`plugins/mcp/dolt-mcp-vcs/`,
+registered as this project's MCP server → freshie Dolt on `127.0.0.1:3308`). Use it to query the
+run-over-run history conversationally instead of hand-writing `dolt sql`:
+
+- **Start the sql-server first** — the MCP client connects to a _running_ server; it is NOT
+  auto-started. From `freshie/dolt/freshie`: `dolt sql-server -H 127.0.0.1 -P 3308 -u root` (run
+  detached; log to a scratch path). Then load tools with `ToolSearch
+query="select:mcp__dolt-mcp-vcs__query,mcp__dolt-mcp-vcs__list_dolt_commits,mcp__dolt-mcp-vcs__list_dolt_diff_changes_by_table_name"`
+  — `query` for `AS OF 'run-N'` reads, the diff tools for per-run deltas; expert agents
+  `dolt-sync-advisor` / `bead-epic-auditor` / `dolt-mcp-vcs:beads-guru` are also available.
+- **⚠️ Stop the sql-server before `freshie/scripts/dolt-sync.py`** — both write
+  `freshie/dolt/freshie`; a live server holds the lock and the sync will clobber/deadlock. `kill
+<server-pid>`, sync, then restart if you still need it.
+- **Mutation gate**: destructive verbs (`push`/`merge`/`reset`/`branch-delete`) are
+  **recommend-only** — the plugin surfaces them but won't execute, so DoltHub pushes still go
+  through the one-way `dolt-sync.py` exporter, never the MCP.
+
 **Rules:** local is the sole writer — never merge DoltHub PRs or web-edit the
 public database (the exporter is one-way and will clobber them). A failed
 DoltHub push exits non-zero on purpose: until pushed, Dolt history is

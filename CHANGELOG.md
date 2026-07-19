@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Operator guidance for the `dolt-mcp-vcs` MCP plugin** in `CLAUDE.md` (Freshie
+  Inventory) — how to query the freshie Dolt run-history over MCP instead of raw
+  `dolt sql`: start the `127.0.0.1:3308` sql-server first (it is not auto-started),
+  load the `mcp__dolt-mcp-vcs__*` tools, the ⚠️ stop-the-server-before-`dolt-sync.py`
+  lock caveat, and the recommend-only mutation gate (`push`/`merge`/`reset` never
+  execute via MCP — DoltHub pushes stay on the one-way `dolt-sync.py` exporter).
 - **Marketplace version reconstruction** (`scripts/reconstruct-versions.mjs`) —
   deterministic, idempotent tool that rebuilds every in-repo plugin's DISPLAY
   version from full first-parent git history (`minor` = lifetime update count,
@@ -111,6 +117,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Version-surface completeness** — an adversarial re-audit of the reconstruction
+  (#1086) found its `--check` verified only `plugin.json` vs the catalog (never
+  SKILL.md frontmatter or `marketplace.json`), so it falsely reported "all surfaces
+  agree" while 33 pack SKILL.md files (clerk/supabase/notion) had drifted a minor
+  behind and 3 plugins had been silently downgraded a full major
+  (`claude-never-forgets` 1.0.0→0.21.0, `formatter` 2.1.0→1.26.0,
+  `browser-compatibility-tester` 2.0.0→1.20.0 — the reconstruction floored on the
+  catalog value alone). `--check` now verifies **all three** display surfaces and
+  reports catalog dirs lacking a `plugin.json`; the reconstruction floor is
+  `max(catalog, plugin.json)`; and `auto-bump-changed-plugins.mjs` stamps **every**
+  SKILL.md in a bumped plugin (via `findSkillFiles`), not just diff-changed ones, so
+  sibling skill versions can no longer strand. Drifted files restamped and the three
+  downgrades restored to `1.21.0` / `2.26.0` / `2.20.0`
+  ([#1098](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1098)).
 - **CI/CD — supply-chain scanner skips version-only diffs.**
   `scripts/scan-synced-content.mjs` (`--changed-only`) now excludes any changed
   `plugins/**` file whose entire diff vs base is the version string
