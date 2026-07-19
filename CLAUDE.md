@@ -330,8 +330,10 @@ registered as this project's MCP server → freshie Dolt on `127.0.0.1:3308`). U
 run-over-run history conversationally instead of hand-writing `dolt sql`:
 
 - **Start the sql-server first** — the MCP client connects to a _running_ server; it is NOT
-  auto-started. From `freshie/dolt/freshie`: `dolt sql-server -H 127.0.0.1 -P 3308 -u root` (run
-  detached; log to a scratch path). Then load tools with `ToolSearch
+  auto-started. From `freshie/dolt/freshie`: `dolt sql-server -H 127.0.0.1 -P 3308` (run
+  detached; log to a scratch path). Do NOT pass `-u`/`-p` — dolt ≥2 removed them from
+  `sql-server`; the default `root` is passwordless, matching the MCP config's `DOLT_PASSWORD=""`.
+  Then load tools with `ToolSearch
 query="select:mcp__dolt-mcp-vcs__query,mcp__dolt-mcp-vcs__list_dolt_commits,mcp__dolt-mcp-vcs__list_dolt_diff_changes_by_table_name"`
   — `query` for `AS OF 'run-N'` reads, the diff tools for per-run deltas; expert agents
   `dolt-sync-advisor` / `bead-epic-auditor` / `dolt-mcp-vcs:beads-guru` are also available.
