@@ -344,6 +344,9 @@ export function getMarketSentiment(results) {
   else if (avgScore >= 35) sentiment = 'BEARISH';
   else sentiment = 'STRONGLY_BEARISH';
 
+  // Sort by compositeScore descending to rank performers
+  const sorted = [...results].sort((a, b) => b.compositeScore - a.compositeScore);
+
   return {
     sentiment,
     avgScore: Math.round(avgScore * 10) / 10,
@@ -351,12 +354,12 @@ export function getMarketSentiment(results) {
     bullishCount,
     bearishCount,
     totalAnalyzed: results.length,
-    topPerformers: results.slice(0, 5).map(r => ({
+    topPerformers: sorted.slice(0, 5).map(r => ({
       symbol: r.symbol,
       score: r.compositeScore,
       signal: r.signal,
     })),
-    worstPerformers: results.slice(-5).reverse().map(r => ({
+    worstPerformers: sorted.slice(-5).reverse().map(r => ({
       symbol: r.symbol,
       score: r.compositeScore,
       signal: r.signal,

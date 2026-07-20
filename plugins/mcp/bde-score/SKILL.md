@@ -15,7 +15,7 @@ mcp
 - `explain_factors` — Educational explanation of the scoring model
 
 ## Requirements
-- Node.js >= 18
+- Node.js >= 20
 - Internet access (for market data)
 
 ## License

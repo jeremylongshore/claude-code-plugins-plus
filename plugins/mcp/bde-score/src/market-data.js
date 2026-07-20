@@ -22,7 +22,16 @@ export async function fetchStockData(symbol, range = 60) {
   try {
     // Yahoo Finance uses calendar days, ~1.5x trading days
     const calendarDays = Math.ceil(range * 1.5);
-    const url = `${YAHOO_CHART_URL}${encodeURIComponent(symbol)}?range=3mo&interval=1d`;
+    // Map calendar days to Yahoo Finance range parameter
+    let yahooRange;
+    if (calendarDays <= 5) yahooRange = '5d';
+    else if (calendarDays <= 30) yahooRange = '1mo';
+    else if (calendarDays <= 90) yahooRange = '3mo';
+    else if (calendarDays <= 180) yahooRange = '6mo';
+    else if (calendarDays <= 365) yahooRange = '1y';
+    else if (calendarDays <= 730) yahooRange = '2y';
+    else yahooRange = '5y';
+    const url = `${YAHOO_CHART_URL}${encodeURIComponent(symbol)}?range=${yahooRange}&interval=1d`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
