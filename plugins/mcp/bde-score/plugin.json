@@ -1,0 +1,11 @@
+{
+  "name": "bde-score",
+  "version": "1.0.0",
+  "description": "Multi-factor quantitative stock scoring MCP server",
+  "type": "mcp",
+  "author": "BDE Score",
+  "license": "AGPL-3.0",
+  "repository": "https://github.com/hbhqq9/bde-score",
+  "tools": ["analyze_stock", "analyze_portfolio", "get_market_sentiment", "explain_factors"],
+  "entry": "src/index.js"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@claude-plugins/bde-score",
+  "version": "1.0.0",
+  "description": "BDE Score MCP Server - Multi-factor quantitative stock scoring with transparent 5-factor model (Momentum, Mean Reversion, Volume, Volatility, Trend). Self-contained, no external API keys required.",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "bde-score": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "mcp",
+    "stock-analysis",
+    "quantitative",
+    "scoring",
+    "multi-factor",
+    "momentum",
+    "technical-analysis"
+  ],
+  "author": "BDE Score",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  }
+}
