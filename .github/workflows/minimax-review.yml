@@ -249,13 +249,21 @@ jobs:
               >> "$REPORT" || true
             echo "" >> "$REPORT"
           done <<< "$CHANGED"
-          # Bound the prompt payload.
+          # Bound the prompt payload. `head -c` cuts on a BYTE boundary, which can
+          # leave the capped file without a trailing newline; without one the
+          # closing heredoc delimiter is appended to the last content line instead
+          # of standing alone, and the runner fails with "Matching delimiter not
+          # found" (seen on PRs with enough changed skills to fill the cap, e.g.
+          # #1098's 36 SKILL.md). Force a trailing newline, and use a per-run
+          # random delimiter so validator output can never collide with it.
           head -c 16000 "$REPORT" > "$REPORT.cap"
+          printf '\n' >> "$REPORT.cap"
+          DELIM="MINIMAX_EOF_$(date +%s)_${RANDOM}"
           echo "has_changes=true" >> "$GITHUB_OUTPUT"
           {
-            echo "report<<__MINIMAX_EOF__"
+            echo "report<<${DELIM}"
             cat "$REPORT.cap"
-            echo "__MINIMAX_EOF__"
+            echo "${DELIM}"
           } >> "$GITHUB_OUTPUT"
 
       - name: MiniMax A-grade coach (validator-grounded)
