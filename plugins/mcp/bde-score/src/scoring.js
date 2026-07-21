@@ -144,12 +144,16 @@ function calcMeanReversionScore(closes) {
  * Higher volume = stronger conviction in the move.
  */
 function calcVolumeScore(volumes, closes) {
-  if (volumes.length < VOLUME_LOOKBACK) return 50;
+  // Filter out null/missing volume entries to avoid biasing the average
+  const validVolumes = volumes.filter(v => v != null);
+  if (validVolumes.length < VOLUME_LOOKBACK) return 50;
 
-  const avgVolume = calcSMA(volumes, VOLUME_LOOKBACK);
+  const avgVolume = calcSMA(validVolumes, VOLUME_LOOKBACK);
   if (!avgVolume || avgVolume === 0) return 50;
 
   const currentVolume = volumes[volumes.length - 1];
+  // If the latest volume is missing, return neutral score
+  if (currentVolume == null) return 50;
   const volumeRatio = currentVolume / avgVolume;
 
   // Combine volume strength with price direction

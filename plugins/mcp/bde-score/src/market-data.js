@@ -73,7 +73,7 @@ export async function fetchStockData(symbol, range = 60) {
       closes: selected.map(i => quotes.close[i]),
       highs: selected.map(i => quotes.high[i]),
       lows: selected.map(i => quotes.low[i]),
-      volumes: selected.map(i => quotes.volume?.[i] || 0),
+      volumes: selected.map(i => (quotes.volume?.[i] != null) ? quotes.volume[i] : null),
       currency: result?.meta?.currency || 'USD',
       exchangeTimezone: result?.meta?.exchangeTimezoneName || 'America/New_York',
     };

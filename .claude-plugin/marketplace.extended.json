@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 426,
+    "totalPlugins": 425,
     "skillsEnabled": 275,
     "lastUpdated": "2026-05-20"
   },
@@ -18,7 +18,7 @@
     {
       "name": "000-jeremy-content-consistency-validator",
       "source": "./plugins/productivity/000-jeremy-content-consistency-validator",
-      "description": "Read-only consistency validator: 9 deterministic drift checks across docs, code, tests, and CI, adjudicated by a per-fact-class authority registry (sot-map.yaml) \u2014 no global source-of-truth ranking, LLM-judged findings advisory-only, golden-fixture gated. Invoked by /release Phase 1.6.",
+      "description": "Read-only consistency validator: 9 deterministic drift checks across docs, code, tests, and CI, adjudicated by a per-fact-class authority registry (sot-map.yaml) — no global source-of-truth ranking, LLM-judged findings advisory-only, golden-fixture gated. Invoked by /release Phase 1.6.",
       "version": "3.29.0",
       "category": "productivity",
       "maintainer": "@jeremylongshore",
@@ -2817,7 +2817,7 @@
     {
       "name": "engineer-design-diagram",
       "source": "./plugins/devops/engineer-design-diagram",
-      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI \u2014 package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
+      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI — package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
       "version": "0.5.0",
       "category": "devops",
       "keywords": [
@@ -3117,7 +3117,7 @@
     {
       "name": "freshie-inventory-manager",
       "source": "./plugins/database/freshie-inventory-manager",
-      "description": "Interactive command center for the freshie ecosystem inventory database \u2014 conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
       "version": "1.5.0",
       "category": "database",
       "keywords": [
@@ -3517,7 +3517,7 @@
     {
       "name": "kobiton-automate",
       "source": "./plugins/testing/kobiton-automate",
-      "description": "Real mobile devices on demand via Kobiton's remote MCP \u2014 no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+      "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
       "version": "1.0.2",
       "category": "testing",
       "keywords": [
@@ -4621,7 +4621,7 @@
     {
       "name": "code-cleanup",
       "source": "./plugins/testing/code-cleanup",
-      "description": "Comprehensive codebase cleanup across 11 quality dimensions \u2014 dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
+      "description": "Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
       "version": "1.7.0",
       "category": "testing",
       "keywords": [
@@ -4677,7 +4677,7 @@
     {
       "name": "promptbook",
       "source": "./plugins/business-tools/promptbook",
-      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating \u2014 no data transmitted without explicit opt-in. Background submission after session end.",
+      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
       "version": "1.4.0",
       "category": "business-tools",
       "keywords": [
@@ -6281,7 +6281,7 @@
     {
       "name": "jeremy-google-adk",
       "source": "./plugins/ai-ml/jeremy-google-adk",
-      "description": "Google Agent Development Kit (ADK) starter for building production AI agents \u2014 ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+      "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
       "version": "2.2.0",
       "category": "ai-ml",
       "keywords": [
@@ -7678,7 +7678,7 @@
     {
       "name": "ga4-pack",
       "source": "./plugins/saas-packs/ga4-pack",
-      "description": "Claude Code skill pack for Google Analytics 4 \u2014 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
+      "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
       "version": "1.2.0",
       "category": "saas-packs",
       "keywords": [
@@ -7800,7 +7800,7 @@
     {
       "name": "databricks-pack",
       "source": "./plugins/saas-packs/databricks-pack",
-      "description": "5 live-detection Databricks skills \u2014 cost-leak-hunter, cluster-forensics, uc-migration-pilot, streaming-guardian, bundle-medic \u2014 backed by the databricks-workspace-mcp server (npm). The v2 rebuild: real workspace detection over static docs.",
+      "description": "5 live-detection Databricks skills — cost-leak-hunter, cluster-forensics, uc-migration-pilot, streaming-guardian, bundle-medic — backed by the databricks-workspace-mcp server (npm). The v2 rebuild: real workspace detection over static docs.",
       "version": "2.27.0",
       "category": "saas-packs",
       "keywords": [
@@ -8373,7 +8373,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.9.0",
       "category": "community",
       "keywords": [
@@ -11125,7 +11125,7 @@
     {
       "name": "zero-tech-debt",
       "source": "./plugins/skill-enhancers/zero-tech-debt",
-      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only \u2014 surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
       "version": "1.1.0",
       "category": "skill-enhancers",
       "keywords": [
@@ -11215,7 +11215,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "mcp",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -11238,7 +11238,7 @@
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "mcp",
       "keywords": [
@@ -11267,7 +11267,7 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
+      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "mcp",
       "author": {
@@ -11349,7 +11349,7 @@
     {
       "name": "shipwright",
       "source": "./plugins/ai-agency/shipwright",
-      "description": "Describe your app in plain English \u2014 Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
       "version": "1.3.0",
       "category": "ai-agency",
       "author": {
@@ -11409,7 +11409,7 @@
     {
       "name": "plane",
       "source": "./plugins/productivity/plane",
-      "description": "Plane is a team behavior observatory \u2014 synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "description": "Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
       "tagline": "Team behavior observatory for Plane workspaces",
       "version": "0.3.0",
       "category": "productivity",
@@ -11436,7 +11436,7 @@
     {
       "name": "local-tts",
       "source": "./plugins/ai-ml/local-tts",
-      "description": "Offline text-to-speech via VoxCPM2 \u2014 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
+      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
       "version": "1.3.0",
       "category": "ai-ml",
       "keywords": [
@@ -11484,7 +11484,7 @@
     {
       "name": "web-analytics",
       "source": "./plugins/analytics/web-analytics",
-      "description": "Push-based web analytics intelligence team \u2014 self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
+      "description": "Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
       "version": "1.4.0",
       "category": "analytics",
       "keywords": [
@@ -11541,7 +11541,7 @@
     {
       "name": "cli-power-skills",
       "source": "./plugins/productivity/cli-power-skills",
-      "description": "Agentic CLI tool skills \u2014 7 domain-grouped skills covering 26 CLI tools",
+      "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
       "version": "1.0.0",
       "category": "productivity",
       "keywords": [
@@ -11563,7 +11563,7 @@
     {
       "name": "claude-workflow-skills",
       "source": "./plugins/productivity/claude-workflow-skills",
-      "description": "Common Claude Code workflow skills \u2014 promote, audit-plugin, audit-standards, improve, and triage",
+      "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
       "version": "1.7.1",
       "category": "productivity",
       "keywords": [
@@ -11611,7 +11611,7 @@
     {
       "name": "skyvern",
       "source": "./plugins/productivity/skyvern",
-      "description": "AI browser automation via CLI \u2014 navigate sites, fill forms, extract data, handle logins",
+      "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
       "version": "0.1.0",
       "category": "productivity",
       "author": {
@@ -11662,7 +11662,7 @@
     {
       "name": "x-bug-triage",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage \u2014 X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
+      "description": "Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "mcp",
       "keywords": [
@@ -11844,7 +11844,7 @@
     {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
-      "description": "Bob's Big Brain \u2014 governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
+      "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
       "version": "1.1.2",
       "category": "mcp",
       "keywords": [
@@ -11890,7 +11890,7 @@
     {
       "name": "databricks-workspace-mcp",
       "source": "./plugins/mcp/databricks-workspace-mcp",
-      "description": "MCP server for the Databricks control plane \u2014 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The endpoint families no managed Databricks MCP exposes; pairs with the managed SQL MCP for system.* reads.",
+      "description": "MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The endpoint families no managed Databricks MCP exposes; pairs with the managed SQL MCP for system.* reads.",
       "version": "0.1.0",
       "category": "mcp",
       "keywords": [
@@ -11915,7 +11915,7 @@
     {
       "name": "beads-dolt",
       "source": "./plugins/mcp/dolt-mcp-vcs",
-      "description": "\u26a0\ufe0f Renamed to dolt-mcp-vcs. Deprecated alias \u2014 kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead. Same plugin: a Dolt/DoltHub version-control toolkit shipping the beads (bd) task-tracker adapter.",
+      "description": "⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead. Same plugin: a Dolt/DoltHub version-control toolkit shipping the beads (bd) task-tracker adapter.",
       "version": "0.1.0",
       "category": "mcp",
       "keywords": [
@@ -11939,7 +11939,7 @@
     {
       "name": "publishing-skills",
       "source": "./plugins/productivity/publishing-skills",
-      "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline \u2014 topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
+      "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline — topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [
@@ -11962,7 +11962,7 @@
     {
       "name": "dolt-mcp-vcs",
       "source": "./plugins/mcp/dolt-mcp-vcs",
-      "description": "Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server \u2014 a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.",
+      "description": "Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server — a VC-surface skill + expert agents over a Dolt backend, with a verb-class mutation gate that keeps destructive ops recommend-only. Ships the beads (bd) task-tracker as use-case adapter #1. Formerly beads-dolt.",
       "version": "0.1.0",
       "category": "mcp",
       "keywords": [
@@ -12025,7 +12025,7 @@
     {
       "name": "servicegraph",
       "source": "./plugins/mcp/servicegraph",
-      "description": "ServiceGraph business datasets for founders \u2014 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)",
+      "description": "ServiceGraph business datasets for founders — 18 skills for finding agencies, firms, and directories via metrics-enriched data (110k+ US professional-services agencies, product and business directories, newsletters)",
       "version": "0.2.0",
       "category": "mcp",
       "keywords": [
@@ -12101,7 +12101,7 @@
     {
       "name": "mnemos",
       "source": "./plugins/community/mnemos",
-      "description": "Persistent memory for Claude Code \u2014 capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
+      "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
       "version": "0.9.0",
       "category": "community",
       "keywords": [
@@ -12119,7 +12119,7 @@
         "golang"
       ],
       "author": {
-        "name": "Andr\u00e9 Figueira",
+        "name": "André Figueira",
         "url": "https://polyxmedia.com",
         "email": "andre@polyxmedia.com"
       },
@@ -12130,7 +12130,7 @@
     {
       "name": "portaljs",
       "source": "./plugins/community/portaljs",
-      "description": "Agent skills that build data portals \u2014 scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
+      "description": "Agent skills that build data portals — scaffold a portal, add datasets, charts and maps, connect CKAN, and generate DCAT/Croissant metadata",
       "version": "0.1.0",
       "category": "community",
       "keywords": [
@@ -12174,7 +12174,7 @@
     {
       "name": "j-rig",
       "source": "./plugins/productivity/j-rig",
-      "description": "Skill Refiner \u2014 the eval-guided SKILL.md improvement loop. Thin wrapper over the published @intentsolutions/refiner CLI (bootstrap/score/propose/apply/status) with a 3-layer cost-tiered hook architecture (sinker/line/hook) that gates skill quality at edit time, end of turn, and commit time.",
+      "description": "Skill Refiner — the eval-guided SKILL.md improvement loop. Thin wrapper over the published @intentsolutions/refiner CLI (bootstrap/score/propose/apply/status) with a 3-layer cost-tiered hook architecture (sinker/line/hook) that gates skill quality at edit time, end of turn, and commit time.",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [
@@ -12244,7 +12244,7 @@
     {
       "name": "skills-janitor",
       "source": "./plugins/community/skills-janitor",
-      "description": "Audit, clean and swipe-triage your Claude Code skills \u2014 honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
+      "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
       "version": "0.1.0",
       "category": "community",
       "keywords": [
@@ -12324,7 +12324,7 @@
     {
       "name": "quit-sponsor",
       "source": "./plugins/community/quit-sponsor",
-      "description": "Turns an AI agent with persistent memory into a quit-smoking sponsor \u2014 evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree",
+      "description": "Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree",
       "version": "0.1.0",
       "category": "community",
       "author": {
