@@ -77,6 +77,10 @@ plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec
 # ── hyperflow orchestrator skill: upstream web-research feature. ──
 plugins/ai-agency/hyperflow/skills/hyperflow/SKILL.md:allowed-tools-network  upstream v5.8.x added WebFetch/WebSearch to the orchestrator skill for its web-research feature (skills/hyperflow/web-research.md); mirror content hand-reviewed 2026-07-10 (evidence gate on #1008 + the be6ae2d3->eae6e34c5 delta review) — external mirror, upstream's design, no credential surface
 
+# ── UIZZE free catalogue workflow — vetted 2026-07-22 @ upstream c95111fd1517. ──
+plugins/design/uizze/skills/anti-ui-slop/SKILL.md:allowed-tools-network  WebFetch is limited to gathering structural UI evidence from the documented public https://uizze.com catalogue; the complete free workflow requires no account, token, MCP, script, or executable, and the skill forbids copying proprietary assets
+sources.yaml:sources-change-unscanned  UIZZE vetted per the 699 playbook @ samuelbushi/uizze c95111fd1517 (2026-07-22): all 5 admitted files read; markdown-only tier with no scripts/hooks/MCP config; scanner 0 REFUSE / 1 CHALLENGE (WebFetch to documented public catalogue, signed off above) / 0 FLAG; schema 3.15.2 grade A 90/100, unicode hygiene clean, MIT verified; author account active since 2018 with 101 public repos and external site; include globs root-anchored and dry-run matched exactly 5 files
+
 # ── Skill Refiner plugin: the 3-layer hook architecture IS the product. ──
 # /j-rig is the eval-guided SKILL.md improvement loop; its sinker/line/hook hooks
 # are the reviewed, intended feature (not an injected payload). They only invoke

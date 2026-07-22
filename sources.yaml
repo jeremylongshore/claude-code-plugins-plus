@@ -1710,6 +1710,41 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # UIZZE (Samuel Bushi)
+  # https://github.com/samuelbushi/uizze
+  # Submission: #1104
+  # ============================================================
+
+  - name: uizze
+    description: STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.
+    repo: samuelbushi/uizze
+    source_path: .
+    target_path: plugins/design/uizze
+    author:
+      name: UIZZE
+      github: samuelbushi
+      email: business@uizze.com
+    license: MIT
+    category: design
+    verified: false
+    keywords:
+      - ui-design
+      - frontend
+      - design-systems
+      - code-quality
+      - anti-slop
+    include:
+      - '/.claude-plugin/plugin.json'
+      - '/.claude-plugin/marketplace.json'
+      - '/skills/anti-ui-slop/SKILL.md'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
