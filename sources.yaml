@@ -1712,13 +1712,13 @@ sources:
 
   # ============================================================
   # UIZZE (Samuel Bushi)
-  # https://github.com/samuelbushi/uizze
+  # https://github.com/uizze/uizze
   # Submission: #1104
   # ============================================================
 
   - name: uizze
     description: STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.
-    repo: samuelbushi/uizze
+    repo: uizze/uizze
     source_path: .
     target_path: plugins/design/uizze
     author:
