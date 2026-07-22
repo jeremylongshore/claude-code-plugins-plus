@@ -200,4 +200,3 @@ Classify it when it is small, or accept that you now own an LMS.
 - [Copying Files Is Not Installing](/posts/copying-files-is-not-installing/)
 - [Passing Is Not Validating: A Green Check With No Teeth](/posts/passing-is-not-validating/)
 - [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
-
