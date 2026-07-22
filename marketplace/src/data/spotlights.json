@@ -1,19 +1,32 @@
 {
-  "week": "2026-W28",
+  "week": "2026-W30",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "tonone",
-    "headline": "A 23-agent engineering and product team that ships from one session — two commands, zero meetings",
-    "whyKiller": "tonone turns Claude Code into a full delivery team: 23 specialist agents (architect, reviewers, product, QA and the rest of the org chart) coordinated through 125 skills, so one session runs discovery, build, review, and ship without you playing project manager between tools. The mirror featured here is the curated cut — every one of its 114 agent definitions verifies clean at the kernel-strict frontmatter floor in the latest inventory run, preserved by the marketplace's never-clobber freeze. MIT-licensed and actively developed upstream; a frontmatter sweep for the skill tier is offered upstream and the roster works as-is today.",
-    "author": "tonone-ai",
-    "authorGithub": "tonone-ai",
+    "pluginSlug": "no-ai-slop",
+    "headline": "Strip AI slop from any draft — named-pattern edits that keep the writer's real voice",
+    "whyKiller": "no-ai-slop does two jobs and refuses to fake a third. In Edit mode it makes the minimum effective edit — cutting throat-clearing, weak verbs, and abstract nouns while deliberately preserving the writer's cadence, bluntness, humor, and honest admissions, so a rough draft still sounds like the same person afterward. In Detect mode it names each AI-slop pattern it finds, quotes the offending line, and gives the fix in a few words — and pointedly does NOT score the draft or guess whether an AI wrote it. That restraint is the whole point: AI detectors guess; named patterns are evidence the reader can check. MIT-licensed, single focused skill, actively maintained by Peter Yang.",
+    "author": "Peter Yang",
+    "authorGithub": "petergyang",
     "grade": "A",
-    "skillCount": 125,
-    "category": "ai-agency",
-    "link": "https://github.com/tonone-ai/tonone",
-    "quote": "One session. Two commands. Full team. Zero meetings."
+    "skillCount": 1,
+    "category": "productivity",
+    "link": "https://github.com/petergyang/no-ai-slop",
+    "quote": "AI detectors guess. Named patterns are evidence the user can check."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W28",
+      "pluginSlug": "tonone",
+      "headline": "A 23-agent engineering and product team that ships from one session — two commands, zero meetings",
+      "whyKiller": "tonone turns Claude Code into a full delivery team: 23 specialist agents (architect, reviewers, product, QA and the rest of the org chart) coordinated through 125 skills, so one session runs discovery, build, review, and ship without you playing project manager between tools. The mirror featured here is the curated cut — every one of its 114 agent definitions verifies clean at the kernel-strict frontmatter floor in the latest inventory run, preserved by the marketplace's never-clobber freeze. MIT-licensed and actively developed upstream; a frontmatter sweep for the skill tier is offered upstream and the roster works as-is today.",
+      "author": "tonone-ai",
+      "authorGithub": "tonone-ai",
+      "grade": "A",
+      "skillCount": 125,
+      "category": "ai-agency",
+      "link": "https://github.com/tonone-ai/tonone",
+      "quote": "One session. Two commands. Full team. Zero meetings."
+    },
     {
       "week": "2026-W28",
       "pluginSlug": "mnemos",
@@ -152,8 +165,8 @@
     }
   ],
   "meta": {
-    "version": "2.7.0",
-    "lastUpdated": "2026-07-10",
+    "version": "2.8.0",
+    "lastUpdated": "2026-07-22",
     "curatedBy": "Jeremy Longshore"
   }
 }
