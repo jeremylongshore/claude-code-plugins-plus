@@ -36,17 +36,17 @@ Or use Claude's built-in command:
 
 <!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
 
-> **Killer Skill of the Week** — [tonone](https://github.com/tonone-ai/tonone) by [tonone-ai](https://github.com/tonone-ai)
+> **Killer Skill of the Week** — [no-ai-slop](https://github.com/petergyang/no-ai-slop) by [Peter Yang](https://github.com/petergyang)
 >
-> **A 23-agent engineering and product team that ships from one session — two commands, zero meetings**
+> **Strip AI slop from any draft — named-pattern edits that keep the writer's real voice**
 >
-> tonone turns Claude Code into a full delivery team: 23 specialist agents (architect, reviewers, product, QA and the rest of the org chart) coordinated through 125 skills, so one session runs discovery, build, review, and ship without you playing project manager between tools. The mirror featured here is the curated cut — every one of its 114 agent definitions verifies clean at the kernel-strict frontmatter floor in the latest inventory run, preserved by the marketplace's never-clobber freeze. MIT-licensed and actively developed upstream; a frontmatter sweep for the skill tier is offered upstream and the roster works as-is today.
+> no-ai-slop does two jobs and refuses to fake a third. In Edit mode it makes the minimum effective edit — cutting throat-clearing, weak verbs, and abstract nouns while deliberately preserving the writer's cadence, bluntness, humor, and honest admissions, so a rough draft still sounds like the same person afterward. In Detect mode it names each AI-slop pattern it finds, quotes the offending line, and gives the fix in a few words — and pointedly does NOT score the draft or guess whether an AI wrote it. That restraint is the whole point: AI detectors guess; named patterns are evidence the reader can check. MIT-licensed, single focused skill, actively maintained by Peter Yang.
 >
-> _"One session. Two commands. Full team. Zero meetings."_ — tonone-ai
+> _"AI detectors guess. Named patterns are evidence the user can check."_ — Peter Yang
 >
-> Grade: A | Week of July 10, 2026 (W28) | [View on GitHub](https://github.com/tonone-ai/tonone)
+> Grade: A | Week of July 22, 2026 (W30) | [View on GitHub](https://github.com/petergyang/no-ai-slop)
 >
-> Previous picks: [mnemos](https://github.com/polyxmedia/mnemos), [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [tonone](https://github.com/tonone-ai/tonone), [mnemos](https://github.com/polyxmedia/mnemos), [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 <!-- KILLER-SKILL:END -->
 
