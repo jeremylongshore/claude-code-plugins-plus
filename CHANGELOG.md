@@ -9,6 +9,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Required `skill-conform` gate** (`.github/workflows/skill-conform.yml`) — own
+  branch-protection context running `audit-harness conform --strict` over the full
+  marketplace corpus. Never inside `ci-required`'s `needs:` (doc 110 § 5).
+  Companion **advisory** `skill-eval-advisory.yml` for changed skills with
+  `eval-spec.yaml` (kill-switch `ENABLE_SKILL_EVAL`).
+  ([#1118](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1118)).
+- **`skill-creator` hand-authored `eval-spec.yaml`** (+ curated mirror + harness
+  re-pin) so the j-rig nightly roster can grow 13→14
+  ([#1118](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1118);
+  j-rig [#234](https://github.com/jeremylongshore/j-rig-skill-binary-eval/pull/234)).
+- **Eval-spec harness pin** — `.harness-hash-extra-patterns` pins
+  `plugins/**/eval-spec.yaml` so `audit-harness verify` is a real gate
+  ([#1117](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1117)).
+- **`intent-labs-pack`** public skills (`audit-tests`, `validate-skillmd`) for the
+  nightly roster
+  ([#1116](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1116)).
+- **Deterministic fork-safe CI failure-explainer** reusing j-rig `CheckResult`
+  ([#1107](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1107)).
+
+### Fixed (2026-07-23 marketplace gates)
+
+- **VALID_TOOLS expanded to the canonical 43** + `Task`→`Agent` legacy alias
+  (schema 3.16.0)
+  ([#1115](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1115)).
+- **Conform advisories cleared + escape-scan fail-open closed** via
+  `audit-harness@1.3.1`
+  ([#1108](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1108)).
+- **Ruff pinned to 0.15.22** in `validate-plugins.yml` after 0.16.0 reformatted
+  ~1132 SKILL.md files mid-flight (#1118 fix-up).
+
+### Added (prior unreleased)
+
 - **Operator guidance for the `dolt-mcp-vcs` MCP plugin** in `CLAUDE.md` (Freshie
   Inventory) — how to query the freshie Dolt run-history over MCP instead of raw
   `dolt sql`: start the `127.0.0.1:3308` sql-server first (it is not auto-started),
