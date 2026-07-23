@@ -321,6 +321,7 @@ DISPATCH = {
 
 
 def main() -> int:
+    gate_passed = False  # initialized early for static analyzers; set before return
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--root", default=".", help="Repository root")
     ap.add_argument("--target", choices=["src", "test", "both"], default="both")
