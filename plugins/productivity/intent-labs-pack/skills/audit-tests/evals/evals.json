@@ -1,0 +1,100 @@
+{
+  "skill": "audit-tests",
+  "version": "7.0.0",
+  "evals": [
+    {
+      "id": "discovery-and-classification",
+      "description": "Discovers frameworks + stack and classifies repo type correctly",
+      "input": "audit tests",
+      "expected_behavior": "Dispatches test-discovery-agent; returns classification (service/library/cli/frontend/embedded/monorepo) + detected frameworks + compliance overlay (if any)",
+      "success_criteria": [
+        "Calls test-discovery-agent via Task tool",
+        "Produces a repo_type classification",
+        "Reads tests/TESTING.md if present and honors engineer policy override",
+        "Detects monorepo and classifies per-package"
+      ]
+    },
+    {
+      "id": "full-7-layer-sweep",
+      "description": "Maps all 7 taxonomy layers, classifies each as installed/partial/absent/waived, produces gap list with P0/P1/P2 severity",
+      "input": "full sweep",
+      "expected_behavior": "Dispatches taxonomy-mapper-agent + quality-gate-runner-agent in parallel; per-layer presence table; severity per layer-applicability.md matrix",
+      "success_criteria": [
+        "Every applicable layer L1-L7 appears in report",
+        "Waived layers listed separately",
+        "Each P0 gap has a specific detail and layer reference",
+        "Install order emitted topologically (L1 → L2 → L3 → L4..L7)"
+      ]
+    },
+    {
+      "id": "mandatory-handoff-on-feat-branch",
+      "description": "When P0/P1 gaps exist on a feat/* branch, hand off to implement-tests autonomously without prompting",
+      "input": "audit tests (on branch feat/new-feature)",
+      "expected_behavior": "Detects branch name; bypasses AskUserQuestion; dispatches Skill(implement-tests) with handoff payload",
+      "success_criteria": [
+        "Branch detection via git branch --show-current",
+        "No AskUserQuestion invoked",
+        "Skill tool called with implement-tests and structured args",
+        "Handoff payload includes classification, p0_gaps, p1_gaps, install_order"
+      ]
+    },
+    {
+      "id": "handoff-prompts-on-main-branch",
+      "description": "On main/develop/protected branches, prompt engineer via AskUserQuestion before handoff",
+      "input": "audit tests (on branch main)",
+      "expected_behavior": "Detects protected branch; invokes AskUserQuestion; only dispatches implement-tests if engineer approves",
+      "success_criteria": [
+        "AskUserQuestion called with \"P0/P1 gaps found. Run implement-tests now?\"",
+        "On decline: prints report only, exits without handoff",
+        "On approve: proceeds with Skill(implement-tests)"
+      ]
+    },
+    {
+      "id": "escape-scan-refuses-coverage-lowering",
+      "description": "When a diff lowers coverage fail_under below policy floor, escape-scan REFUSES and halts",
+      "input": "audit tests (pending diff: pyproject.toml fail_under = 60 with TESTING.md coverage.line = 80)",
+      "expected_behavior": "Dispatches escape-detection-agent; reads floor from TESTING.md; escape-scan.sh exits 2; TEST_AUDIT.md records REFUSE; no handoff",
+      "success_criteria": [
+        "escape-scan.sh reads floor from tests/TESTING.md (not hardcoded 80)",
+        "REFUSE pattern matched and reported with specific detail",
+        "Pipeline halts before Step 7 TEST_AUDIT.md write",
+        "No Skill(implement-tests) dispatched"
+      ]
+    },
+    {
+      "id": "rtm-moscow-precedence",
+      "description": "RTM builder applies MoSCoW precedence correctly: engineer override > explicit tag > source default > SHOULD fallback",
+      "input": "audit tests (RTM.md has engineer edit downgrading REQ-003 from MUST to SHOULD — hash-pinned)",
+      "expected_behavior": "rtm-builder-agent preserves the engineer override; does NOT re-promote REQ-003 back to MUST from the Gherkin default",
+      "success_criteria": [
+        "REQ-003 row retains SHOULD tag after rebuild",
+        "No escape-scan REFUSE fires (engineer override is legitimate)",
+        "rtm_total, by_moscow.must, by_moscow.should counts reflect the override"
+      ]
+    },
+    {
+      "id": "hash-tampered-halts-immediately",
+      "description": "If harness-hash.sh --verify reports tampering, audit halts before any other work",
+      "input": "audit tests (features/checkout.feature modified after hash init)",
+      "expected_behavior": "Step 1 hash verify fails; returns HARNESS_TAMPERED; no TEST_AUDIT.md written; no handoff",
+      "success_criteria": [
+        "Hash verify runs as Step 1",
+        "Mismatch returns error",
+        "No discovery or gate execution proceeds",
+        "TEST_AUDIT.md not created"
+      ]
+    },
+    {
+      "id": "monorepo-per-package-audit",
+      "description": "Monorepo produces per-package TESTING.md and aggregate TEST_AUDIT.md",
+      "input": "audit tests (repo with packages/a, packages/b, packages/c)",
+      "expected_behavior": "Classifies each package independently; writes packages/*/tests/TESTING.md for each; root TEST_AUDIT.md has per-package sections",
+      "success_criteria": [
+        "test-discovery-agent returns monorepo: true with package list",
+        "Each package gets its own classification",
+        "Policy is per-package (can differ across packages)",
+        "Aggregate TEST_AUDIT.md has one section per package"
+      ]
+    }
+  ]
+}

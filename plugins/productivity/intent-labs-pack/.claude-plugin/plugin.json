@@ -1,0 +1,20 @@
+{
+  "name": "intent-labs-pack",
+  "version": "0.1.0",
+  "description": "Intent Solutions labs skills for the nightly eval roster: audit-tests and validate-skillmd — the dogfood surface for running our own gates on our own marketplace.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+  "homepage": "https://tonsofskills.com/plugins/intent-labs-pack",
+  "license": "MIT",
+  "keywords": [
+    "audit-tests",
+    "validate-skillmd",
+    "testing",
+    "skill-validation",
+    "intent-eval",
+    "dogfood"
+  ]
+}
