@@ -1,6 +1,6 @@
 ---
 name: walkie-talkie
-description: Use when two or more agent sessions — same or different platforms (Claude Code, Codex, Gemini CLI, Copilot, Cursor) — work the same repo concurrently, hand off in-flight work, or need to interrogate each other about a handoff. Triggers: "set up comms with the other session", "hand this off to Codex/Gemini", "grill the handoff", "check the mailbox", parallel sessions clobbering shared files, resuming work another agent left half-done.
+description: 'Use when two or more agent sessions — same or different platforms (Claude Code, Codex, Gemini CLI, Copilot, Cursor) — work the same repo concurrently, hand off in-flight work, or need to interrogate each other about a handoff. Triggers: "set up comms with the other session", "hand this off to Codex/Gemini", "grill the handoff", "check the mailbox", parallel sessions clobbering shared files, resuming work another agent left half-done.'
 ---
 
 # Walkie-Talkie

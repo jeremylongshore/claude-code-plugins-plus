@@ -9,8 +9,7 @@ version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
-argument-hint:
-- phase: absorb/audit/articulate/align
+argument-hint: "phase: absorb/audit/articulate/align"
 tags:
 - productivity
 - workflow
