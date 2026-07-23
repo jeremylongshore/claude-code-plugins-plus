@@ -31,3 +31,11 @@ Add or update focused tests beside the affected package or in `tests/`; Python t
 ## Commits and Pull Requests
 
 Use Conventional Commit-style subjects visible in history, such as `fix(ci): harden validation` or `docs(contributing): clarify workflow`. Keep each commit scoped. PRs should explain the user-facing change, link the beads issue, include screenshots for visual site changes, and include regenerated derived files when applicable. Use `bd` for task tracking: run `bd ready`, claim the issue, and close it when complete. Before finishing, commit, pull/rebase, run `bd sync`, push, and confirm `git status` is up to date.
+
+## Merge gates (do not weaken)
+
+Required branch-protection contexts on `main`: **`ci-required`**, **`gitleaks`**, **`skill-conform`**.
+
+- `skill-conform` is a **separate** always-report workflow (`audit-harness conform --strict`). Never add it (or any path-scoped / provider-dependent job) to `ci-required`'s `needs:`.
+- Behavioral skill eval (`skill-eval-advisory.yml`) is **advisory only** until explicitly graduated.
+- Full gate architecture, validator SSoT rules, and non-negotiables: see `CLAUDE.md`.

@@ -175,12 +175,15 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 - **Defense-in-depth disallow list (3.7.0):** `disallowed-tools` — kebab-case string or YAML list of tool patterns. Removes those tools from the model while the skill is active. Parallel to (not a replacement for) `allowed-tools`. Cross-field overlap with `allowed-tools` is an ERROR (mirrors the 3.5.0 visibility-gating overlap rule). Defense-in-depth for skills that legitimately need broad `allowed-tools` but should never reach for specific high-risk operations (`rm`, `curl`, `wget`, `.env` writes). Full reference: `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Change 1.
 - **NON-NEGOTIABLE:** these are optional. `ALWAYS_REQUIRED` is still the 8-field set above. See issue #612 + `000-docs/681-AT-ADEC-claude-code-platform-changelog-impact.md` § Implementation directives before proposing any change to required fields — the 8-field set is preserved; `disallowed-tools` is additive, not required.
 
-## CI gate architecture — two required checks (rebuilt 2026-07)
+## CI gate architecture — three required checks (rebuilt 2026-07; skill-conform added 2026-07-23)
 
-**Branch protection on `main` requires exactly TWO always-reporting contexts: `ci-required` + `gitleaks`** (both from the GitHub Actions app; `strict:false`, `enforce_admins:false`, 1 approving review). Every other blocking check gates _through_ the aggregate:
+**Branch protection on `main` requires THREE always-reporting contexts: `ci-required` + `gitleaks` + `skill-conform`** (GitHub Actions app; `strict:false`, `enforce_admins:false`, 1 approving review).
 
 - **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 17 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content, promote-curated-check, check-submission-docs). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
 - **`gitleaks`** comes from `secret-scan.yml` (also unfiltered).
+- **`skill-conform`** is its **own** workflow (`.github/workflows/skill-conform.yml`) — `pnpm exec audit-harness conform --strict` over the full marketplace corpus. Always-reports (no path filter). **Never** folded into `ci-required`'s `needs:` (doc 110 § 5: a skippable/path-scoped job must not green the aggregate). Baseline after #1108/#1118: thousands PASS / 0 FAIL; remaining ADVISORY is the harness-side missing marketplace schema only.
+- **Advisory (never required):** `.github/workflows/skill-eval-advisory.yml` — j-rig behavioral eval on changed skills that already carry `eval-spec.yaml`. Kill-switch `vars.ENABLE_SKILL_EVAL=true` + same-repo guard + `MINIMAX_API_KEY`. Graduation to required needs Jeremy + ≥4-week clean flap window (doc 110).
+- **Ruff pin:** `validate-plugins.yml` installs **`ruff==0.15.22`** for both ruff-check and ruff-format-check. Unpinned install pulled 0.16.0 mid-2026-07-23 and treated SKILL.md fenced Python as format targets (~1132 files). Do not unpin without a deliberate corpus reformat.
 
 **Why, and the rules that keep it fixed (do not regress):** the previous 10-context required set sourced checks from path-filtered workflows, so a PR without matching files left them "Expected" forever and could never merge (the #778/#964 stuck-PR class).
 
@@ -195,9 +198,11 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Advisory lanes (report, never block — never promote into the required set from a side PR):** the two kernel lanes (next section); agent frontmatter (`validate-skills-schema.py --agents-only`, report-only with a tracked `REPORT-ONLY-UNTIL:` marker — corpus unbaselined); `.mcp.json` (`scripts/validate-mcp-config.mjs`, never `--strict` — that promotion belongs to the DR-049 soak checklist); CodeQL (PR trigger scoped to `packages/**` + `marketplace/src/**` so it adds no fan-out to plugin PRs); and the PR pre-screen (below).
 
-### AI review — Greptile only
+### AI review — both dark; CI is the only merge gate
 
-Greptile is the single repo-controlled AI reviewer (config in `.greptile/`). Gemini Code Assist is disabled (`.gemini/config.yaml` → `code_review.disable: true`; the consumer product sunsets 2026-07-17) — note that fully removing it requires uninstalling the GitHub App, a UI/admin action. A contributor's Codex connector is contributor-side, not repo-controlled. The deterministic gate is always `ci-required` + `gitleaks`, never the AI review.
+**As of 2026-07-22 no AI reviewer is a reliable merge signal on this repo.** Gemini Code Assist consumer product is **sunset** (bot posts a sunset notice only; `.gemini/config.yaml` has `code_review.disable: true`). Greptile config remains under `.greptile/` but showed **zero activity** on recent IEP/CCPI PRs. Fully removing Apps is a UI/admin action. Optional future path: SHA-pinned MiniMax review (`MINIMAX_API_KEY` + `ENABLE_MINIMAX_REVIEW`) as already patterned in `minimax-review.yml`.
+
+**Operationally: never block a merge waiting for an AI review.** Required contexts are **`ci-required` + `gitleaks` + `skill-conform`**.
 
 ### PR pre-screen (advisory respond leg)
 
