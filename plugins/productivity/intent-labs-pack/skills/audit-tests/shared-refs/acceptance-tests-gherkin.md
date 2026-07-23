@@ -162,6 +162,7 @@ ACCEPTANCE (Wall 1)
 When the repo has **no** `features/` directory, the skill implements Wall 1:
 
 1. **Create directory tree**
+
    ```
    features/
    ├── README.md          # ownership banner
@@ -170,6 +171,7 @@ When the repo has **no** `features/` directory, the skill implements Wall 1:
    ```
 
 2. **Write `features/README.md`** with the ownership banner:
+
    ```markdown
    # Acceptance Features
 
