@@ -175,6 +175,7 @@ against the real service.
 - **Seed data**: deterministic fixtures per test (rollback between tests).
 
 Python-specific helpers:
+
 - `pytest-postgresql`, `pytest-mysql`, `pytest-mongo`
 - `factory_boy` for test data
 - `Faker` for plausible data
@@ -239,6 +240,7 @@ Database migrations are code. They must be tested like code.
 | **golang-migrate** | `migrate -path ... up && migrate down` |
 
 Essential tests per migration:
+
 1. **Forward migration succeeds** (up runs cleanly)
 2. **Backward migration succeeds** (down runs cleanly)
 3. **Idempotency** (up twice is not worse than up once)
@@ -307,11 +309,13 @@ pulumi test  # language-native (Go/Py/TS) test runners
 | **Open Policy Agent / Gatekeeper** | Admission policy enforcement |
 
 Helm-specific:
+
 - `helm lint` (syntax)
 - `helm template | kubeconform -` (rendered validation)
 - `helm unittest` (Helm chart unit tests)
 
 GitOps (Flux/ArgoCD):
+
 - **flux-kustomization** diff tests
 - **argocd-diff-preview** PR comment
 - drift-detection via **argocd app sync --dry-run**

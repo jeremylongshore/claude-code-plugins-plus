@@ -272,3 +272,10 @@ plugins/saas-packs/klaviyo-pack/skills/klaviyo-incident-runbook/references/remed
 plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/examples.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
 plugins/saas-packs/klaviyo-pack/skills/klaviyo-prod-checklist/references/implementation.md:pipe-to-shell  diagnostic: curl fetches a status-API JSON response (or localhost /health) piped to `python3 -m json.tool` / `json.load` — a JSON formatter/parser, NOT a shell; no fetched-code execution — reviewed 2026-07-17
 plugins/saas-packs/clerk-pack/skills/clerk-rate-limits/SKILL.md:secret-exfil-cooccur  documented Clerk API-client example: createClerkClient reads CLERK_SECRET_KEY from env and uses it only against the Clerk API (its own service); no third-party sink — reviewed 2026-07-18
+
+# intent-labs-pack (labs dogfood skills) — dual-use docs/examples reviewed 2026-07-23
+plugins/productivity/intent-labs-pack/skills/audit-tests/SKILL.md:pipe-to-shell  documented npm registry version probe (curl to registry.npmjs.org JSON, not piped to a shell) for audit-harness currency check
+plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/hooks-and-ci.md:hook-definition  instructional documentation of Claude Code hooks for test enforcement — not an auto-executing plugin hooks.json
+plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/security-testing.md:hook-definition  instructional documentation of security testing hooks — not shippable auto-exec config
+plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:hook-definition  skill body discusses hooks as a validation surface; no hooks.json shipped
+plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:allowed-tools-network  documentation of how to detect over-broad allowed-tools (mentions WebFetch as a pattern to flag), not granting network tools

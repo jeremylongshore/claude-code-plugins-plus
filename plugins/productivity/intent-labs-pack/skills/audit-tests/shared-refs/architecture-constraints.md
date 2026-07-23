@@ -22,6 +22,7 @@ The skill runs two flows against this wall:
 
 - **AUDIT flow**: detect language, invoke the right checker with the
   repo's rule pack, fail the pipeline on any violation.
+
 - **IMPLEMENT flow**: install the language-appropriate checker, emit the
   standard rule pack config (hash-pinned immediately), wire the project
   target and CI job.
@@ -63,6 +64,7 @@ target tool's config language:
 1. **No circular dependencies** — any cycle fails the build.
 2. **Domain isolation** — `domain/` (or `src/core/`, `lib/core/`) imports
    nothing from `infrastructure/`, `ui/`, or external frameworks.
+
 3. **Test → source one-way** — `tests/` may import `src/`; reverse forbidden.
 4. **Dev deps stay dev** — `devDependencies` never imported by production code.
 5. **No orphan modules** — every module is reachable from at least one
@@ -271,12 +273,15 @@ When no rule config exists, the skill implements Wall 7:
 
 1. **Detect primary language** — by top-level files (`package.json`,
    `pyproject.toml`, `composer.json`, `go.mod`, `Cargo.toml`, `build.gradle`).
+
 2. **Install the language tool** from Section 1 matrix.
 3. **Emit the rule-pack config** from Section 2, tuned to the repo's
    discovered layer names (scan top-level `src/` subdirectories to pick
    `domain/core/app` names).
+
 4. **Initialize the hash manifest** for the new config file:
    `bash scripts/harness-hash.sh --init`.
+
 5. **Wire a project target**:
    - `npm run arch` → `depcruise --validate src/`
    - `make arch` → `lint-imports`
@@ -284,6 +289,7 @@ When no rule config exists, the skill implements Wall 7:
    - `composer arch` → `vendor/bin/deptrac`
 6. **Wire CI job** that runs the target and fails the build on non-zero
    exit.
+
 7. **Report** all proposed files to the engineer for review.
 
 ---
@@ -296,8 +302,10 @@ When a violation is detected, the skill proposes one of:
   outer layer implements it. Example: `domain/billing.py` defines
   `PaymentGateway`; `infrastructure/stripe.py` implements it; composition
   wires them together at the edge.
+
 - **Import relocation** — the offending module is in the wrong layer;
   move it.
+
 - **Extract shared type** — for cycles, pull the shared contract into a
   more-inner module that both cycle members depend on.
 
@@ -306,6 +314,7 @@ The skill never proposes:
 - Editing the rule config to allow the violation
 - Adding inline `depcruise-disable`, `@ArchIgnore`, `ignore_imports`,
   `skip_violations`
+
 - Moving the rule from `error` to `warn`
 
 Those are escape attempts caught by `scripts/escape-scan.sh` at the
@@ -314,6 +323,7 @@ REFUSE severity.
 ### Example proposed diff (Python, dependency inversion)
 
 Before (violates `domain-pure`):
+
 ```python
 # myapp/domain/billing.py
 from myapp.infrastructure.stripe import charge   # VIOLATION
@@ -323,6 +333,7 @@ def process_refund(order):
 ```
 
 After:
+
 ```python
 # myapp/domain/billing.py
 from typing import Protocol

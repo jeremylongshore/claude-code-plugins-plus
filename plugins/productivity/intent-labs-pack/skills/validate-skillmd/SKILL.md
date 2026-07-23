@@ -23,7 +23,7 @@ argument-hint: "[path-to-SKILL.md] [--marketplace|--deep|--thorough]"
 
 Grade any SKILL.md file against the Intent Solutions rubric (validator v7.0 / schema 3.3.1). Four-tier validation: **Tier 0** (locate), **Tier 1** (standard or marketplace grading), **Tier 2** (static production gate), **Tier 3** (JRig behavioral eval — opt-in).
 
-Source of truth: `skill-creator` validation workflow + `the marketplace repo 000-docs/SCHEMA_CHANGELOG.md` + `the j-rig-skill-binary-eval repo ` (Tier 3).
+Source of truth: `/skill-creator` validation workflow + `claude-code-plugins-plus-skills/000-docs/SCHEMA_CHANGELOG.md` + `j-rig-skill-binary-eval/` (Tier 3).
 
 ## Overview
 
@@ -39,7 +39,7 @@ Schema 3.3.1 enforces the 8-field IS enterprise required-field set at marketplac
 ## Prerequisites
 
 - Python 3 with `pyyaml` installed
-- Validator script: `the marketplace repo scripts/validate-skills-schema.py` (v7.0+)
+- Validator script: `claude-code-plugins-plus-skills/scripts/validate-skills-schema.py` (v7.0+)
 - For `--thorough` (Tier 3): JRig CLI on PATH (`jrig --version` returns ≥ v0.14.0). Install: `cd ~/000-projects/j-rig-binary-eval && pnpm install && pnpm build && pnpm link --global`. Tier 3 is opt-in; the rest of the skill works without JRig installed.
 
 ### Kernel schema first (canonical machine spec)
@@ -53,67 +53,7 @@ resolve them. Provenance + refresh: `references/kernel-schemas/PROVENANCE.md`.
 
 ## Schema Reminder — Frontmatter Fields
 
-Every SKILL.md must have:
-
-```yaml
-name: my-skill                  # Required (Anthropic)
-description: |                  # Required (Anthropic)
-  What it does. Use when ...
-```
-
-Optional fields the validator accepts (validates only when present):
-
-```yaml
-# Per Anthropic + AgentSkills.io spec
-allowed-tools: "Read,Write,Bash(git:*)"
-license: MIT
-compatibility: "Designed for Claude Code"   # Free-text, max 500 chars per agentskills.io/specification
-metadata: { category: devops }              # Arbitrary key-value mapping
-
-# Per code.claude.com/docs/en/skills
-model: inherit
-effort: medium
-argument-hint: "[file-path]"
-context: fork
-agent: Explore
-user-invocable: true
-disable-model-invocation: false
-hooks: { ... }
-
-# Marketplace polish (Intent Solutions extension — recommended for submission)
-version: 1.0.0
-author: Name <email>
-tags: [devops, ci]
-```
-
-### `compatibility` Field Examples (per `agentskills.io/specification`)
-
-The `compatibility` field is a free-text string, max 500 characters. It indicates environment requirements (intended product, system packages, network access, etc.). Pick the form that matches your skill:
-
-```yaml
-# Single platform
-compatibility: "Designed for Claude Code"
-
-# Multi-platform — free-text, no allow-list
-compatibility: "Designed for Claude Code, also compatible with Codex and OpenClaw"
-
-# Runtime requirements
-compatibility: "Requires Python 3.10+ with uv installed"
-compatibility: "Requires git, docker, and jq on PATH"
-compatibility: "Node.js >= 18, npm >= 9"
-
-# Platform + tooling
-compatibility: "Designed for Claude Code; requires Bash 5+ and rg (ripgrep)"
-
-# Network / capability requirements
-compatibility: "Requires network access to api.example.com (port 443)"
-```
-
-**Migration**: The deprecated `compatible-with` CSV-platform-list field (`compatible-with: claude-code, codex, openclaw`) was an Intent Solutions invention not in any published spec. Replaced by free-text `compatibility`. Run:
-
-```bash
-python3 the marketplace repo scripts/batch-remediate.py --migrate-compatible-with --root <path>
-```
+Full field table: [schema-reminder-frontmatter.md](references/schema-reminder-frontmatter.md).
 
 ## Instructions
 
@@ -125,6 +65,7 @@ If path provided via `$ARGUMENTS`, use it directly. Otherwise:
 - Ask user with AskUserQuestion
 
 Common locations:
+
 - `~/.claude/skills/{name}/SKILL.md` (global)
 - `.claude/skills/{name}/SKILL.md` (project)
 
@@ -132,29 +73,29 @@ Common locations:
 
 ```bash
 # Standard tier (default — Anthropic spec exactly)
-python3 the marketplace repo scripts/validate-skills-schema.py <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py SKILL.md
 
 # Marketplace tier (full 100-point rubric, polish recommendations as warnings)
-python3 the marketplace repo scripts/validate-skills-schema.py --marketplace <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --marketplace SKILL.md
 
 # Deep evaluation (10 dimensions, badges, Elo ranking)
-python3 the marketplace repo scripts/validate-skills-schema.py --deep <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --deep SKILL.md
 
 # Deep + LLM quality assessment via Groq (requires GROQ_API_KEY)
-python3 the marketplace repo scripts/validate-skills-schema.py --deep --thorough <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --deep --thorough SKILL.md
 
 # Deep eval with JSON/markdown/HTML report output
-python3 the marketplace repo scripts/validate-skills-schema.py --deep --report-format json <path>
-python3 the marketplace repo scripts/validate-skills-schema.py --deep --report-format html <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --deep --report-format json SKILL.md
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --deep --report-format html SKILL.md
 
 # Marketplace + write to compliance DB
-python3 the marketplace repo scripts/validate-skills-schema.py --marketplace --populate-db the marketplace repo freshie/inventory.sqlite <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --marketplace --populate-db claude-code-plugins-plus-skills/freshie/inventory.sqlite SKILL.md
 
 # Show D/F grade skills in full scan
-python3 the marketplace repo scripts/validate-skills-schema.py --marketplace --show-low-grades
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --marketplace --show-low-grades
 
 # Minimum grade gate (exits 1 if any skill below threshold)
-python3 the marketplace repo scripts/validate-skills-schema.py --marketplace --min-grade B <path>
+python3 claude-code-plugins-plus-skills/scripts/validate-skills-schema.py --marketplace --min-grade B SKILL.md
 ```
 
 Default to marketplace tier when the user is preparing for marketplace submission. Use `--deep` for functional quality assessment beyond structural compliance. The `--enterprise` flag still works as a deprecated alias for `--marketplace`.
@@ -171,11 +112,11 @@ Every tool declared in `allowed-tools` should actually be referenced somewhere i
 
 ```bash
 # Extract declared tools (handles CSV string, space-separated, and YAML list forms — schema 3.3.1)
-declared=$(python3 -c "import yaml,sys; fm=yaml.safe_load(open('${1}').read().split('---')[1]); t=fm.get('allowed-tools',''); print(t if isinstance(t,str) else ' '.join(t))")
+declared=$(python3 -c "import yaml,sys; fm=yaml.safe_load(open('SKILL.md').read().split('---')[1]); t=fm.get('allowed-tools',''); print(t if isinstance(t,str) else ' '.join(t))")
 
 # Each declared base tool (Read, Write, Bash, etc.) must appear in the body
 for tool in $(echo "$declared" | grep -oE '[A-Z][a-zA-Z]+' | sort -u); do
-  if ! grep -q "$tool" "${1}"; then
+  if ! grep -q "$tool" "SKILL.md"; then
     echo "FAIL: tool '$tool' declared but not referenced in body"
   fi
 done
@@ -189,8 +130,8 @@ If the skill mentions an external API (any URL, `curl`, `fetch`, MCP server, OAu
 
 ```bash
 # Heuristic: look for API indicators
-if grep -qE "(curl |fetch\(|mcp__|API_KEY|TOKEN|OAuth|Bearer )" "${1}"; then
-  if ! grep -qiE "(authentication|auth method|api key|bearer token|oauth flow|credentials)" "${1}"; then
+if grep -qE "(curl |fetch\(|mcp__|API_KEY|TOKEN|OAuth|Bearer )" "SKILL.md"; then
+  if ! grep -qiE "(authentication|auth method|api key|bearer token|oauth flow|credentials)" "SKILL.md"; then
     echo "FAIL: external API referenced but no auth protocol documented"
   fi
 fi
@@ -204,8 +145,8 @@ Conditional structures that can never fire (e.g., `if false`, mutually exclusive
 
 ```bash
 # Conservative checks — flag for human review, don't auto-fail
-grep -nE "^(if false|if \[ false \]|elif false)" "${1}" && echo "WARN: literal-false branch found"
-grep -cE "^### " "${1}" # If section count grossly exceeds the table-of-contents count → drift
+grep -nE "^(if false|if \[ false \]|elif false)" "SKILL.md" && echo "WARN: literal-false branch found"
+grep -cE "^### " "SKILL.md" # If section count grossly exceeds the table-of-contents count → drift
 ```
 
 **Warn when**: a literal-false branch is found OR the body contains sections not present in the table of contents (silent drift).
@@ -223,10 +164,10 @@ Dangerous combinations require explicit justification:
 
 ```bash
 # Check for unscoped Bash + dangerous companion
-if grep -qE "^allowed-tools:.*\bBash\b" "${1}" && \
-   ! grep -qE "^allowed-tools:.*Bash\(" "${1}" && \
-   grep -qE "^allowed-tools:.*\b(Write|WebFetch)\b" "${1}"; then
-  if ! grep -qiE "(safety justification|why unscoped Bash|why Bash + )" "${1}"; then
+if grep -qE "^allowed-tools:.*\bBash\b" "SKILL.md" && \
+   ! grep -qE "^allowed-tools:.*Bash\(" "SKILL.md" && \
+   grep -qE "^allowed-tools:.*\b(Write|WebFetch)\b" "SKILL.md"; then
+  if ! grep -qiE "(safety justification|why unscoped Bash|why Bash + )" "SKILL.md"; then
     echo "FAIL: unscoped Bash + Write/WebFetch without safety justification"
   fi
 fi
@@ -236,11 +177,11 @@ fi
 
 #### 2.5.5 Orchestration bounds
 
-Skills are NOT plugins. A skill should not spawn other skills, delegate to other agents as a primary control flow, or self-coordinate across sessions. That's `skill-creator --forge` territory and plugin-level orchestration. Skills do one job.
+Skills are NOT plugins. A skill should not spawn other skills, delegate to other agents as a primary control flow, or self-coordinate across sessions. That's `/skill-creator --forge` territory and plugin-level orchestration. Skills do one job.
 
 ```bash
 # Look for orchestration smells in skills
-if grep -qE "(spawn another skill|delegate to /|invoke .* skill|orchestrate across|self-coordinate)" "${1}"; then
+if grep -qE "(spawn another skill|delegate to /|invoke .* skill|orchestrate across|self-coordinate)" "SKILL.md"; then
   echo "FAIL: skill appears to orchestrate other skills/agents — that belongs at the plugin layer"
 fi
 ```
@@ -260,7 +201,7 @@ fi
 #### Prerequisites
 
 - JRig CLI on PATH: `j-rig --version` (note: bin name is `j-rig` with hyphen, not `jrig`)
-- Install: `cd the j-rig-skill-binary-eval repo packages/cli && pnpm build && ln -sf $PWD/dist/index.js ~/.local/bin/j-rig`
+- Install: `cd j-rig-skill-binary-eval/packages/cli && pnpm build && ln -sf $PWD/dist/index.js ~/.local/bin/j-rig`
 - For Tier 3B (7-layer eval): API keys for Haiku, Sonnet, Opus configured per JRig docs
 
 If JRig isn't on PATH, the skill emits a placeholder verdict and a one-line install hint, then continues to Step 3 (grade report) without blocking. **Tier 3 absence does not mean a skill fails** — only Tier 1+2 are mandatory.
@@ -271,12 +212,13 @@ Run JRig's `check` command on the **skill directory** (not the SKILL.md path). R
 
 ```bash
 # JSON output for parsing into the unified report
-j-rig check "$(dirname "${1}")" --json
+j-rig check "$(dirname "SKILL.md")" --json
 ```
 
 This is a separate concern from the IS spec-compliance check (Tier 1) — JRig's `check` is structural, not rubric-based. The Anthropic + AgentSkills.io spec snapshots in `000-docs/` are read by the IS validator (`scripts/validate-skills-schema.py`), not by JRig directly. The two are complementary: IS validator scores against the spec rubric; JRig verifies the package shape and surfaces structural anti-patterns.
 
 **Verdict mapping**:
+
 - All `severity: "pass"` → Tier 3A GREEN
 - Any `severity: "warning"` → Tier 3A YELLOW (non-blocking; surfaced in unified report)
 - Any `severity: "error"` → Tier 3A RED (blocks production promotion)
@@ -285,16 +227,16 @@ This is a separate concern from the IS spec-compliance check (Tier 1) — JRig's
 
 ```bash
 # Default invocation — Sonnet only, no DB persistence
-j-rig eval "$(dirname "${1}")" --json
+j-rig eval "$(dirname "SKILL.md")" --json
 
 # Full model matrix with DB persistence
-j-rig eval "$(dirname "${1}")" \
+j-rig eval "$(dirname "SKILL.md")" \
   --models haiku,sonnet,opus \
-  --db the marketplace repo freshie/inventory.sqlite \
+  --db claude-code-plugins-plus-skills/freshie/inventory.sqlite \
   --json
 
 # Skip specific layers (when iterating)
-j-rig eval "$(dirname "${1}")" --no-trigger --no-functional --json
+j-rig eval "$(dirname "SKILL.md")" --no-trigger --no-functional --json
 ```
 
 Eval spec source: JRig reads `<skill-dir>/eval-spec.yaml` if present, or use `--spec <path>` to point at one elsewhere. A spec is currently **required** — `j-rig eval` errors if neither is found. (Auto-generating a baseline spec from the SKILL.md frontmatter — `should_trigger`/`should_not_trigger` cases derived from the `description` trigger phrases — is the planned `j-rig scaffold-spec <skill-dir>` command; until it ships, author the spec by hand or copy `skill/eval.yaml` as a template.)
@@ -320,9 +262,9 @@ Layers:
 JRig writes its own SQLite DB by default (`j-rig.db` in cwd, or `--db <path>`). To unify with Freshie, point `--db` at `freshie/inventory.sqlite`:
 
 ```bash
-j-rig eval "$(dirname "${1}")" \
+j-rig eval "$(dirname "SKILL.md")" \
   --models haiku,sonnet,opus \
-  --db the marketplace repo freshie/inventory.sqlite
+  --db claude-code-plugins-plus-skills/freshie/inventory.sqlite
 ```
 
 JRig manages its own tables in that DB; cross-table joins to `skill_compliance` happen in the Freshie rebuild script. The unified-report rendering reads both:
@@ -413,11 +355,13 @@ Grade scale: A (90+), B (80-89), C (70-79), D (60-69), F (<60)
 List fixes sorted by point value (highest first):
 
 **Top improvements:**
+
 1. {fix description} (+N pts)
 2. {fix description} (+N pts)
 3. {fix description} (+N pts)
 
 Common high-value fixes:
+
 - Add "Use when" to description (+3 pts marketplace tier)
 - Add "Trigger with" to description (+3 pts marketplace tier)
 - Extract long content to references/ (up to +10 pts on token_economy)
@@ -444,6 +388,7 @@ The validator emits INFO-level structural suggestions (marketplace tier):
 If grade < B (80), ask user: "Fix issues automatically?"
 
 If approved, apply in order:
+
 1. Add missing sections (Overview, Prerequisites, Output, Error Handling, Examples)
 2. Add "Use when" / "Trigger with" to description if missing
 3. Move `author`/`version`/`license` from nested `metadata` to top-level (or vice versa per AgentSkills.io spec — both valid)
@@ -485,16 +430,19 @@ Final report includes:
 ## Examples
 
 **Validate a specific skill:**
+
 ```
 /validate-skillmd ~/.claude/skills/repo-sweep/SKILL.md
 ```
 
 **Marketplace grading (recommended for marketplace submissions):**
+
 ```
 /validate-skillmd --marketplace path/to/SKILL.md
 ```
 
 **Natural language:**
+
 ```
 grade my skill
 check skill quality
@@ -506,6 +454,6 @@ check skill quality
 - [Anthropic Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
 - [Claude Code Skills](https://code.claude.com/docs/en/skills)
 - [AgentSkills.io Specification](https://agentskills.io/specification)
-- Schema log: `the marketplace repo 000-docs/SCHEMA_CHANGELOG.md`
-- Master spec: `the marketplace repo 000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
-- Source of truth: `skill-creator` (Steps V1-V5 in validation workflow)
+- Schema log: `claude-code-plugins-plus-skills/000-docs/SCHEMA_CHANGELOG.md`
+- Master spec: `claude-code-plugins-plus-skills/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
+- Source of truth: `/skill-creator` (Steps V1-V5 in validation workflow)

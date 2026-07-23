@@ -19,6 +19,7 @@ The skill runs two flows against this wall:
 
 - **AUDIT flow**: hash-pin existing `.feature` files, run every scenario,
   report which public business entry points are uncovered.
+
 - **IMPLEMENT flow**: scaffold `features/` directory, install the
   language-appropriate runner, write a starter `.feature` from the
   engineer's spoken intent, initialize the hash manifest.
@@ -216,11 +217,14 @@ The AI may write and refactor them freely, but:
 - **Must not weaken scenarios by stubbing them to pass** — step definitions
   exercise real code. If the feature needs infrastructure (database,
   HTTP server), the step definition brings it up.
+
 - **Must not contain business logic** — that belongs in the application,
   not in steps. Steps wire inputs, invoke behavior, assert observations.
+
 - **Keep step bodies thin** — under 10 lines is a good rubric.
 
 Python (behave):
+
 ```python
 # features/steps/checkout_steps.py
 from behave import given, when, then
@@ -240,6 +244,7 @@ def step_discount_shown(context):
 ```
 
 JS/TS (@cucumber/cucumber):
+
 ```ts
 // features/steps/checkout.steps.ts
 import { Given, When, Then } from '@cucumber/cucumber';

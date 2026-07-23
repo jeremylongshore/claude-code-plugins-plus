@@ -289,6 +289,7 @@ Produce `QUALITY_GATES.md` at repo root alongside `TEST_AUDIT.md`:
 ### 5.5.4 — Remediation plan
 
 For each P0 gap, emit:
+
 - Install command (verbatim shell)
 - Minimal config (file + content)
 - CI wiring (YAML snippet)
@@ -302,6 +303,7 @@ AUDIT mode: report only.
 Gate presence is inferred from these signals (rough priority order):
 
 ### JavaScript / TypeScript
+
 - **ESLint**: `.eslintrc*`, `eslint.config.js`, `"eslint"` in `package.json` devDeps
 - **Prettier**: `.prettierrc*`, `.prettier.config.js`, `"prettier"` in deps
 - **Biome**: `biome.json`
@@ -310,6 +312,7 @@ Gate presence is inferred from these signals (rough priority order):
 - **commitlint**: `commitlint.config.js` or `.commitlintrc*`
 
 ### Python
+
 - **Ruff**: `ruff.toml`, `pyproject.toml` `[tool.ruff]`
 - **Black**: `pyproject.toml` `[tool.black]`
 - **mypy**: `mypy.ini`, `pyproject.toml` `[tool.mypy]`
@@ -318,15 +321,18 @@ Gate presence is inferred from these signals (rough priority order):
 - **Bandit**: `.bandit` or `pyproject.toml` `[tool.bandit]`
 
 ### Rust
+
 - **Clippy**: `.cargo/config.toml` or `clippy.toml`; on by default via rustup
 - **rustfmt**: `rustfmt.toml` or `.rustfmt.toml`
 - **cargo audit**: `deny.toml` (for cargo-deny)
 
 ### Go
+
 - **golangci-lint**: `.golangci.yml` / `.golangci.toml`
 - **goreleaser**: `.goreleaser.yml`
 
 ### Everywhere
+
 - **gitleaks**: `.gitleaks.toml`, `.github/workflows/*gitleaks*`
 - **Trivy**: `.trivyignore`, workflow file reference
 - **Checkov**: `.checkov.yml`

@@ -200,9 +200,11 @@ Threshold derivation:
 - **CRAP = 30 is the original "not acceptable" line** Savoia publicly cited
   in 2007 — a 10-complexity method needs ≈ 55% coverage to score 30; a
   15-complexity method needs ≈ 90%.
+
 - **CRAP ≤ 10 as project average** corresponds to either simple methods
   (CC ≤ 3) regardless of coverage, or modestly complex methods (CC ~ 5)
   with full coverage.
+
 - **CRAP ≤ 15 on tests (Wall 6)** is a skill-local tightening; the paper
   did not contemplate scoring tests. See Section 5 for the rationale.
 
@@ -217,6 +219,7 @@ the exit-0 contract.
 - **Pre**: `features/` exists; hash manifest covers every `.feature` file.
 - **Post**: `runner` returns exit 0 ∧ every scenario is GREEN ∧
   `harness-hash.sh --verify` returns exit 0.
+
 - **Violation ⇒** `HARNESS_TAMPERED` or `SCENARIO_FAILED`. The AI cannot
   proceed to Walls 2–7.
 
@@ -225,6 +228,7 @@ the exit-0 contract.
 - **Pre**: a test runner is detected (pytest, vitest, jest, go test, …).
 - **Post**: `runner` returns exit 0 ∧ `skip_count ≤ approved_skip_budget` ∧
   zero tests are marked `only`/`focus`/`fit`.
+
 - **Violation ⇒** AI edit is rolled back. Repeat; do not mask.
 
 ### Wall 3 — Coverage floor
@@ -232,6 +236,7 @@ the exit-0 contract.
 - **Pre**: coverage tool is configured (coverage.py, c8, JaCoCo, tarpaulin).
 - **Post**: `line_cov ≥ N` ∧ `branch_cov ≥ M` where `(N,M)` are engineer-
   authored policy, recorded in the hash manifest.
+
 - **Violation ⇒** AI writes tests (not threshold edits). The threshold is
   human-owned and hash-pinned.
 
@@ -247,6 +252,7 @@ the exit-0 contract.
 - **Pre**: complexity tool available for the detected language.
 - **Post**: ∀ *m* ∈ production_methods : `CRAP(m) ≤ 30` ∧
   `mean(CRAP) ≤ 10`.
+
 - **Violation ⇒** split method, add targeted tests, or refactor. Never
   suppress.
 
@@ -263,6 +269,7 @@ the exit-0 contract.
 - **Pre**: rule config exists and its SHA-256 is in the hash manifest.
 - **Post**: `checker` returns exit 0 ∧ zero violations ∧
   `harness-hash.sh --verify` returns exit 0 for the rule file itself.
+
 - **Violation ⇒** invert the dependency. The AI may not edit the rule file
   — that path leads to `HARNESS_TAMPERED`.
 
@@ -278,6 +285,7 @@ machine over proposed diffs.
 - `CHALLENGE` — diff contains a conditional escape (e.g., test skip with no
   comment). Pipeline halts; engineer must either add an approved reason or
   remove the pattern.
+
 - `REFUSE` — diff contains an unconditional escape (e.g., threshold
   lowered, hash-pinned file modified). Pipeline halts; no engineer comment
   can approve in-place; a policy change is required first.
@@ -375,6 +383,7 @@ decade. Relevant surveys:
 - Yue Jia & Mark Harman, *An Analysis and Survey of the Development of
   Mutation Testing*, IEEE TSE, 2011. Section 5 discusses test-suite
   complexity as a confound in kill-rate interpretation.
+
 - René Just et al., *Are Mutants a Valid Substitute for Real Faults in
   Software Testing?*, FSE 2014. Finding: test complexity correlates with
   false-negative mutation survivors.
@@ -400,10 +409,12 @@ IMPLEMENT routine to dispatch per-wall scaffolding to an ephemeral
 - **No persistent agent files.** Files under `~/.claude/agents/` load into
   every Claude Code session. The skill refuses to add weight to the
   always-on context.
+
 - **Task-tool fan-out is ephemeral.** Each subagent lives only for its
   scaffolding step, returns its diff, and terminates. The main skill
   assembles the collected diffs into a single review surface for the
   engineer.
+
 - **Engineer review is serialized.** Even when scaffolding runs in
   parallel, diffs are staged to disk and presented to the engineer in a
   deterministic order (Wall 1 → 7). Nothing is committed until the
@@ -421,8 +432,10 @@ understands the judgment calls.
 
 - "The engineer owns the walls; the AI operates inside them." — became the
   preamble in `SKILL.md`.
+
 - "The AI does not grade itself." — became the hard rule that every gate
   is a deterministic tool with an exit code.
+
 - "Do not replace the philosophy; evolve it." — governs this file: nothing
   here substitutes for the `SKILL.md` preamble; everything additive.
 
@@ -468,13 +481,17 @@ every time, and keep everything else one hop away.
 - Robert C. Martin, *Clean Architecture*, Prentice Hall, 2017. Ch. 22.
 - Alberto Savoia & Bob Evans, *CRAP4J: A Java Implementation of the
   Change Risk Analyzer and Predictor*, AGILE 2007; crap4j.org (archived).
+
 - Dan North, *Introducing BDD*, dannorth.net, March 2006.
 - Cucumber project, *Writing Better Gherkin*, cucumber.io/docs/bdd/better-gherkin/.
 - Yue Jia & Mark Harman, *An Analysis and Survey of the Development of
   Mutation Testing*, IEEE TSE 37(5), 2011.
+
 - René Just et al., *Are Mutants a Valid Substitute for Real Faults in
   Software Testing?*, FSE 2014.
+
 - Simon Willison, *Skills: A new way to extend Claude*, simonwillison.net,
   October 2025.
+
 - Anthropic Skills specification, code.claude.com / platform.claude.com,
   2026.

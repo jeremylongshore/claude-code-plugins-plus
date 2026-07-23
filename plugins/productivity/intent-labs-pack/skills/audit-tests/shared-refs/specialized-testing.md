@@ -286,6 +286,7 @@ cargo mutants --file src/core.rs
 ### Configuration
 
 **Python (pyproject.toml):**
+
 ```toml
 [tool.mutmut]
 paths_to_mutate = ["src/"]
@@ -295,6 +296,7 @@ also_copy = ["fixtures/", "*.json", "*.yaml"]   # critical for non-Python test d
 ```
 
 **JavaScript/TypeScript (stryker.conf.json):**
+
 ```json
 {
   "mutate": ["src/**/*.ts", "!src/**/*.test.ts", "!src/**/*.d.ts"],

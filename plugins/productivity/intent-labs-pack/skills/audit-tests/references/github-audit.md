@@ -275,6 +275,7 @@ This is the highest-risk untested surface in the codebase."]
 
 **What to add:**
 ```typescript
+
 // tests/middleware/auth.test.ts
 describe('auth middleware', () => {
   it('rejects requests with no token')
@@ -283,6 +284,7 @@ describe('auth middleware', () => {
   it('allows valid tokens through')
   it('enforces role-based access per route')
 })
+
 ```
 
 ---
@@ -318,16 +320,20 @@ manual discipline rather than automation."]
 **What to add:**
 
 ```yaml
+
 # .github/workflows/test.yml
+
 name: Tests
 on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v4
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+
 ```
 
 ---
@@ -362,6 +368,7 @@ New features get shipped without tests and the coverage metric becomes meaningle
 **What to add:**
 
 ```typescript
+
 // vitest.config.ts
 coverage: {
   thresholds: {
@@ -370,6 +377,7 @@ coverage: {
     lines: 80
   }
 }
+
 ```
 
 ---
@@ -402,7 +410,9 @@ detection. Consumers of the API build against the spec — a mismatch breaks the
 **What to add:**
 
 ```bash
+
 npx dredd openapi.yaml http://localhost:3000
+
 ```
 
 Add to CI after server startup step.

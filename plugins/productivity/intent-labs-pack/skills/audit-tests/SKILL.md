@@ -18,6 +18,7 @@ allowed-tools: Read, Glob, Grep, Bash(find:*), Bash(git:*), Bash(gh:*), Bash(ls:
   Bash(sha256sum:*), Bash(python:*), Bash(python3:*), Bash(radon:*), Bash(gocyclo:*),
   Bash(depcruise:*), Bash(gherkin-lint:*), Task, AskUserQuestion, Skill
 tags:
+
 - testing
 - audit
 - quality-gates
@@ -27,6 +28,7 @@ tags:
 - moscow
 compatibility: Designed for Claude Code
 ---
+
 # audit-tests — Diagnostic Test Auditor (7-Layer + RTM)
 
 **Invocation**: "audit tests" · "find gaps" · "full sweep" · "7-layer audit" · "rtm check" · "test quality".
@@ -36,6 +38,22 @@ compatibility: Designed for Claude Code
 Read-only diagnostic skill. Classifies the repo, maps applicable layers from the 7-layer testing taxonomy, runs deterministic gates, builds requirements traceability (RTM / personas / journeys), writes `TEST_AUDIT.md` + updates `tests/TESTING.md`, and **mandatorily hands off** to `implement-tests` when P0/P1 gaps exist.
 
 No filesystem mutations other than `TEST_AUDIT.md` (transient) and the observational sections of `tests/TESTING.md`, `tests/RTM.md`, `tests/PERSONAS.md`, `tests/JOURNEYS.md`.
+
+## Overview
+
+Diagnostic-only test suite auditor for any Intent Solutions (or compatible) repo.
+Classifies the repository, maps the 7-layer testing taxonomy, runs deterministic
+gates via in-repo `@intentsolutions/audit-harness`, builds RTM/personas/journeys
+traceability, and writes `TEST_AUDIT.md` plus observational sections of
+`tests/TESTING.md`. When P0/P1 gaps exist it **hands off** to `implement-tests`
+instead of implementing tests itself.
+
+## Prerequisites
+
+- A git working tree for the target repository
+- Ability to run `Read`/`Glob`/`Grep`/`Bash` against that tree
+- For deterministic gates: in-repo `audit-harness` (or install path documented
+  for the language) — **never** wire target CI/hooks to `~/.claude/...`
 
 ## You are the engineer
 
@@ -76,9 +94,12 @@ Classification → applicable layers: `{baseDir}/references/layer-applicability.
 Run this early so drift surfaces without remembering to invoke `/sync-testing-harness`:
 
 ```bash
+
 CACHE=~/.cache/audit-harness/freshness-check
 mkdir -p "$(dirname "$CACHE")"
+
 # Skip if checked in last 24h
+
 if [[ -f "$CACHE" ]] && [[ $(($(date +%s) - $(date -r "$CACHE" +%s))) -lt 86400 ]]; then
   cat "$CACHE"
 else
@@ -91,6 +112,7 @@ else
   fi
   echo "$msg" | tee "$CACHE"
 fi
+
 ```
 
 - Cache hit (< 24h old) → instant, no network
@@ -171,7 +193,9 @@ Classify findings:
 Dispatch `escape-detection-agent`:
 
 ```bash
+
 bash {baseDir}/scripts/escape-scan.sh --staged    # reads policy floors from tests/TESTING.md
+
 ```
 
 Exit grammar: 0 clean · 1 CHALLENGE · 2 REFUSE. Any REFUSE halts the audit with the specific pattern recorded in `TEST_AUDIT.md`.
@@ -191,6 +215,7 @@ Exit grammar: 0 clean · 1 CHALLENGE · 2 REFUSE. Any REFUSE halts the audit wit
 ### Step 8 — Mandatory handoff to implement-tests
 
 ```
+
 if any(P0 gaps) OR any(P1 gaps):
     payload = {
         "classification": {...},
@@ -208,6 +233,7 @@ if any(P0 gaps) OR any(P1 gaps):
     Skill("implement-tests", args=payload)
 else:
     print "✓ No P0/P1 gaps. Audit clean."
+
 ```
 
 Handoff pattern mirrors `repo-sweep → gist-auditor` — no silent escalation, but autonomous on feature branches per global git policy.
@@ -266,6 +292,7 @@ GitHub-scoped audit (CI health, branch protection, coverage-threshold enforcemen
 ### Clean audit
 
 ```
+
 AUDIT COMPLETE — {repo-name}
 Grade:            A (92/100)
 Classification:   service
@@ -278,26 +305,31 @@ Escape-scan:      clean
 Report:           TEST_AUDIT.md
 TESTING.md:       updated (observational sections)
 Handoff:          none needed
+
 ```
 
 ### Gaps found (feat branch — autonomous)
 
 ```
+
 AUDIT COMPLETE — {repo-name}
 Grade:            C (68/100)
 P0 gaps:          2 (L3 coverage below 80; REQ-002 MUST uncovered)
 P1 gaps:          5
 Handoff →         implement-tests (autonomous; feat branch)
+
 ```
 
 ### Gaps found (main branch — confirmation prompt)
 
 ```
+
 AUDIT COMPLETE — {repo-name}
 Grade:            C (68/100)
 P0 gaps:          2
 P1 gaps:          5
 Branch:           main (protected) — prompting for handoff confirmation...
+
 ```
 
 ## Examples

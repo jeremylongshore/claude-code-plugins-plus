@@ -13,6 +13,7 @@ catalogs what the skill expects to see per language and how to install +
 wire + enforce each tool.
 
 The sweep (Step 5.5) checks three things per language:
+
 1. **Linter** present and configured
 2. **Formatter** present and configured (not just installed)
 3. **Type checker** present and run in CI (where the language supports it)

@@ -22,7 +22,9 @@ marketplace publish, not a dedicated repo).
 ## Install
 
 ```text
+
 /plugin install intent-labs-pack@claude-code-plugins-plus
+
 ```
 
 Or install the individual skills from this pack's `skills/` directory.

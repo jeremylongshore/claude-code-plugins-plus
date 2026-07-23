@@ -131,6 +131,7 @@ open html/index.html
 ```
 
 **v3 vs v2 gotchas:**
+
 - v3 uses `mutmut run` not `mutmut run --paths-to-mutate` (path is positional in some versions)
 - v3 stores results in `.mutmut-cache/` (SQLite), not a flat file
 - `mutmut results` output format changed — parse carefully
@@ -197,9 +198,11 @@ cargo mutants -- --test-threads=1       # reduce parallelism if flaky
 | <40% | F | Failing — tests are decoration, not verification |
 
 **Quality-adjusted coverage formula:**
+
 ```
 effective_coverage = line_coverage × kill_rate
 ```
+
 Example: 90% line coverage × 65% kill rate = 58.5% effective coverage (D grade)
 
 ### Equivalent Mutant Patterns
@@ -341,6 +344,7 @@ grep -rn "unauthorized\|forbidden\|403\|401\|access.denied\|permission\|role.*ch
 ```
 
 **Should test:**
+
 - [ ] Unauthenticated access to protected endpoints returns 401
 - [ ] Wrong role/permission returns 403
 - [ ] Horizontal privilege escalation (user A can't access user B's data)
@@ -354,6 +358,7 @@ grep -rn "encrypt\|decrypt\|hash\|bcrypt\|argon\|scrypt\|hmac\|jwt\|token.*valid
 ```
 
 **Should test:**
+
 - [ ] Passwords are hashed (not stored in plaintext)
 - [ ] Tokens expire and are rejected after expiry
 - [ ] Sensitive data is not logged or returned in error responses
@@ -365,6 +370,7 @@ grep -rn "injection\|sql.*inject\|xss\|sanitize\|escape\|parameterized\|prepared
 ```
 
 **Should test:**
+
 - [ ] SQL injection payloads are rejected or parameterized
 - [ ] XSS payloads in input are sanitized
 - [ ] Command injection via user input is blocked
@@ -377,6 +383,7 @@ grep -rn "rate.limit\|throttle\|brute.force\|lockout\|captcha\|anti.automation" 
 ```
 
 **Should test:**
+
 - [ ] Rate limiting enforced on auth endpoints
 - [ ] Account lockout after failed attempts
 - [ ] Business logic abuse scenarios
@@ -388,6 +395,7 @@ grep -rn "header.*security\|content.security.policy\|csp\|x.frame\|hsts\|x.conte
 ```
 
 **Should test:**
+
 - [ ] Security headers present (CSP, HSTS, X-Frame-Options)
 - [ ] Debug mode disabled in production config
 - [ ] Default credentials not accepted
@@ -400,6 +408,7 @@ grep -rn "audit\|vulnerability\|cve\|advisory\|outdated\|deprecated" "$TEST_DIR"
 ```
 
 **Should test:**
+
 - [ ] Dependency audit runs in CI (pnpm audit, pip-audit, etc.)
 - [ ] Known vulnerable versions are blocked
 
@@ -410,6 +419,7 @@ grep -rn "login\|logout\|auth\|session\|password\|credential\|mfa\|2fa\|otp\|res
 ```
 
 **Should test:**
+
 - [ ] Login with valid credentials succeeds
 - [ ] Login with invalid credentials fails with generic message
 - [ ] Session expires after timeout
@@ -423,6 +433,7 @@ grep -rn "checksum\|integrity\|signature\|verify.*sign\|webhook.*valid\|csrf\|an
 ```
 
 **Should test:**
+
 - [ ] CSRF tokens required for state-changing operations
 - [ ] Webhook signatures verified before processing
 - [ ] File upload integrity checks
@@ -434,6 +445,7 @@ grep -rn "audit.*log\|security.*log\|log.*auth\|log.*fail\|log.*access\|monitori
 ```
 
 **Should test:**
+
 - [ ] Failed auth attempts are logged
 - [ ] Sensitive data is NOT in logs
 - [ ] Security events trigger alerts
@@ -445,6 +457,7 @@ grep -rn "ssrf\|url.*valid\|allowlist\|blocklist\|internal.*url\|localhost.*bloc
 ```
 
 **Should test:**
+
 - [ ] User-supplied URLs are validated against allowlist
 - [ ] Internal/private IP ranges are blocked
 - [ ] Cloud metadata endpoints (169.254.169.254) are blocked
@@ -472,6 +485,7 @@ Grading: A = ≥80% items covered, B = 60–79%, C = 40–59%, D = 20–39%, F =
 ## Section 5: AI-Written Test Detection
 
 AI-generated tests (from Copilot, ChatGPT, Claude, vibe coding sessions) have characteristic patterns. They're not inherently bad, but they need extra scrutiny because they tend to:
+
 - Test what the code does rather than what it should do
 - Use generic placeholder values
 - Have high structural similarity

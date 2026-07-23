@@ -248,6 +248,7 @@ bundle exec cucumber --tags @smoke
 ```elixir
 # mix.exs: {:white_bread, "~> 4.5", only: :test}
 ```
+
 ```bash
 mix white_bread.run
 mix white_bread.run --path features/

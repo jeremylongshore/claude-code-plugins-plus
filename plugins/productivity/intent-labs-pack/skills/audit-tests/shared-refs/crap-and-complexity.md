@@ -12,6 +12,7 @@ This reference covers two walls:
 
 - **Wall 5** — CRAP on production code. Gate: no method CRAP > 30; project
   average ≤ 10.
+
 - **Wall 6** — CRAP on test code. Gate: no test method CRAP > 15. Complex
   tests mask bugs and weaken mutation testing.
 
@@ -57,8 +58,10 @@ Remediation priority (applied automatically by the auto-remediation engine):
 1. If complexity > 15 → **refactor first**. Extract methods, replace
    conditionals with polymorphism, split responsibilities. Tests won't
    save a tangled method.
+
 2. If complexity ≤ 15 and coverage < 80% → **tests first**. Add negative
    and boundary tests until coverage crosses 80%, then re-score.
+
 3. If complexity ≤ 5 and coverage ≥ 90% → already clean. Leave alone.
 
 ---
@@ -158,6 +161,7 @@ When CRAP tooling is not yet installed, the skill implements Wall 5/6:
 ### 1. Install tooling (language-detected)
 
 For Python:
+
 ```bash
 pip install radon coverage
 ```
@@ -165,6 +169,7 @@ pip install radon coverage
 ### 2. Emit project config
 
 Add to `pyproject.toml`:
+
 ```toml
 [tool.radon]
 exclude = "tests/fixtures/*,migrations/*"
@@ -185,6 +190,7 @@ test_max = 15
 ```
 
 For JS/TS, add `.c8rc.json`:
+
 ```json
 {
   "reporter": ["json", "text-summary"],
@@ -198,6 +204,7 @@ For JS/TS, add `.c8rc.json`:
 ### 3. Wire a project target
 
 Add to `Makefile`:
+
 ```makefile
 .PHONY: crap
 crap:
@@ -206,6 +213,7 @@ crap:
 ```
 
 Or `package.json`:
+
 ```json
 {
   "scripts": {
@@ -221,6 +229,7 @@ So the repo is portable without the skill loaded.
 ### 5. Wire CI
 
 GitHub Actions snippet:
+
 ```yaml
 - name: CRAP gate
   run: |
@@ -241,10 +250,13 @@ When a method fails the CRAP gate, the skill proposes one of:
 
 - **Extract Method** — pull conditional branches or loops into named
   helpers. Each helper gets its own tests.
+
 - **Replace Conditional with Polymorphism** — if/elif chains on a type
   discriminator become subclasses or a dispatch dict.
+
 - **Split by Responsibility** — if the method does I/O *and* business
   logic, split them. Test the logic in isolation.
+
 - **Add boundary tests** — if complexity is ≤ 15 and coverage is the
   problem, generate negative and boundary tests per
   `{baseDir}/references/auto-remediation.md`.

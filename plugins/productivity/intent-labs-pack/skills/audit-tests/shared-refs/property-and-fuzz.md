@@ -119,6 +119,7 @@ network input handlers, protocol implementations.
 1. **Coverage-guided fuzzing** — feedback-driven, mutates inputs to
    maximize newly-reached code paths. Modern approach. AFL, libFuzzer,
    go-fuzz, cargo-fuzz, Jazzer.
+
 2. **Structure-aware fuzzing** — uses grammar/schema to generate valid-looking
    input, then mutates at the structural level. Nautilus, dharma.
 
@@ -212,6 +213,7 @@ carefully, production) to validate that the system survives.
 ### What to test
 
 Classic chaos scenarios:
+
 1. **Service dependency fails** — primary DB goes down; app should serve from replica / cache / graceful degradation.
 2. **Network partition** — one AZ isolated; app should use other AZ.
 3. **Latency injection** — 500ms added to inter-service calls; app should have reasonable timeouts.

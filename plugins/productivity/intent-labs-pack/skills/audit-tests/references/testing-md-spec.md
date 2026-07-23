@@ -137,6 +137,7 @@ First time a repo runs `implement-tests` (or `audit-tests` and finds no `TESTING
 ### Versioning
 
 Top-of-file version comment:
+
 ```markdown
 <!-- TESTING.md schema v1 (see audit-tests/references/testing-md-spec.md) -->
 ```

@@ -17,7 +17,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -263,7 +262,6 @@ def score_rust(root: Path, kind: str) -> list[MethodScore]:
         except json.JSONDecodeError:
             continue
         fpath = rec.get("name", "")
-        metrics = rec.get("metrics", {}).get("cyclomatic", {})
         for func in rec.get("spaces", []):
             c = int(func.get("metrics", {}).get("cyclomatic", {}).get("sum", 1))
             complexity.append((fpath, func.get("name", "<anon>"), c))

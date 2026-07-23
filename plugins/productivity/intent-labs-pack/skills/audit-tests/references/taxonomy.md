@@ -46,6 +46,7 @@ No code execution — reads source and config. Fastest feedback, highest signal-
 Deep references: `shared-refs/linters-formatters-types.md`, `shared-refs/security-testing.md`.
 
 **Gap additions vs raw user taxonomy:**
+
 - Container scanning and IaC scanning are separated from "dependency scanning" — different tool ecosystems, different findings.
 - **Doc & Prose Quality is a first-class L2 concern**, not "below the line." Repos that ship documentation (specs, blueprints, marketplace listings, partner deliverables, SKILL.md corpora) MUST gate doc quality at L2; the failure mode of a broken link in a partner deliverable or a banned-term leak in a public spec is as material as a lint error in source. The 5 doc rows above are evaluated by `/audit-tests` whenever the repo has `>= 50` markdown files OR a `000-docs/` directory OR an `agentskills.io`-style SKILL.md corpus.
 
@@ -70,6 +71,7 @@ Covers the core TDD cycle. Walls 2–6 live here.
 Deep references: `shared-refs/frameworks.md`, `shared-refs/crap-and-complexity.md`, `shared-refs/architecture-constraints.md`, `shared-refs/property-and-fuzz.md`, `test-quality-deep-audit.md`.
 
 **Gap additions vs raw user taxonomy:**
+
 - **Fuzzing separated from property-based.** PBT proves invariants; fuzzing finds crashers. Both needed for adversarial repos.
 - **Flakiness gate** is an explicit measurable threshold (e.g., "0 flaky tests over 3 reruns"), not a note.
 - **Per-module mutation floors** — certain hot modules (payments, auth) carry stricter kill-rate targets set in `tests/TESTING.md`.
@@ -97,6 +99,7 @@ Covers unit interactions with real external systems (DB, message queue, storage)
 Deep references: `shared-refs/integration-and-infra.md`, `shared-refs/specialized-testing.md`.
 
 **Gap additions vs raw user taxonomy:**
+
 - **Migration testing** separated out — a broken migration in prod is unrecoverable; a missing unit test is not.
 - **Contract testing (Pact)** separated from plain "API testing" — different discipline (bidirectional), different artifacts (pact files), different CI.
 
@@ -119,9 +122,11 @@ Non-functional requirements: performance, security, accessibility, compatibility
 Deep references: `shared-refs/security-testing.md`, `shared-refs/specialized-testing.md`, `shared-refs/property-and-fuzz.md` § Chaos.
 
 **Gap additions vs raw user taxonomy:**
+
 - **Chaos engineering** separated from load/perf — a service can survive load and still fail under a partition.
 
 **Demotions:**
+
 - **Usability testing** moves out of the audited pyramid. It cannot be automated and is covered informationally in `philosophy.md`.
 
 ---
@@ -141,6 +146,7 @@ User-facing, through the full stack.
 Deep references: `shared-refs/e2e-testing.md`, `shared-refs/acceptance-tests-gherkin.md`.
 
 **Gap additions vs raw user taxonomy:**
+
 - **Visual regression** separated from snapshot (L4) — snapshot diffs data shape; visual regression diffs rendered pixels. Both needed for UI repos.
 
 ---
@@ -158,6 +164,7 @@ Does the delivered thing solve the stated problem?
 Deep reference: `shared-refs/acceptance-tests-gherkin.md`.
 
 **Demotions:**
+
 - **Exploratory testing** moves out of the audited pyramid (cannot automate); documented informationally in `philosophy.md`.
 
 ---

@@ -212,4 +212,3 @@ Wrong-mode green is not a gate. It is a board that learned to smile.
 - [Empty Is Not Clean](/posts/empty-is-not-clean/)
 - [When Green CI Proves Nothing](/posts/when-green-ci-proves-nothing/)
 - [Adversarial Review Before Team Rollout](/posts/adversarial-review-before-team-rollout/)
-
