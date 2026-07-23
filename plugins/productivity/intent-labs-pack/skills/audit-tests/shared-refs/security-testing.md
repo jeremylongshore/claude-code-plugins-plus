@@ -27,7 +27,7 @@ Before prescribing tools, the sweep asks:
 Answers determine which layers are P0 vs P1. E.g., a static site has no
 DAST target but has strong IaC exposure; a CLI has no DAST but heavy SAST
 
-+ dep-audit focus.
+- dep-audit focus.
 
 ## SAST (Static Application Security Testing)
 

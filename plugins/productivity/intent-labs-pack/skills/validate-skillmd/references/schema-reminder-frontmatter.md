@@ -33,7 +33,7 @@ author: Name <email>
 tags: [devops, ci]
 ```
 
-### `compatibility` Field Examples (per `agentskills.io/specification`)
+## `compatibility` Field Examples (per `agentskills.io/specification`)
 
 The `compatibility` field is a free-text string, max 500 characters. It indicates environment requirements (intended product, system packages, network access, etc.). Pick the form that matches your skill:
 

@@ -208,8 +208,8 @@ Add to `Makefile`:
 ```makefile
 .PHONY: crap
 crap:
-	python scripts/crap-score.py --target both --format both --out reports/crap/
-	@cat reports/crap/summary.json
+  python scripts/crap-score.py --target both --format both --out reports/crap/
+  @cat reports/crap/summary.json
 ```
 
 Or `package.json`:
