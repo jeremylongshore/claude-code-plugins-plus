@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Deterministic fork-safe CI failure-explainer** reusing j-rig `CheckResult`
   ([#1107](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1107)).
 
-### Changed
+### Fixed (2026-07-23 marketplace gates)
 
 - **VALID_TOOLS expanded to the canonical 43** + `Task`→`Agent` legacy alias
   (schema 3.16.0)
