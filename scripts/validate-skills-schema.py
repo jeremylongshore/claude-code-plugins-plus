@@ -189,8 +189,16 @@ except ImportError:
 #                       already-documented behavior (repo CLAUDE.md + 000-docs/681);
 #                       not an architectural change — ALWAYS_REQUIRED, tiers, and
 #                       error-vs-warning semantics are unchanged. Closes claude-41c2.2.
+# 3.16.0 (2026-07-23) — VALID_TOOLS expanded from 13 names to the full 43-tool
+#                       set from code.claude.com/docs/en/tools-reference. Adds
+#                       Agent (was missing — gate treated it as unknown) and
+#                       demotes Task to LEGACY_TOOL_ALIASES with a warn (renamed
+#                       to Agent in v2.1.63; SDK still emits Task in places).
+#                       Spec-compliance bug fix (NON-NEGOTIABLE #6) — advisory
+#                       severity only; ALWAYS_REQUIRED / tiers / error-vs-warning
+#                       unchanged. Source: IEP plan golden-imagining-planet Phase A.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.15.2"
+SCHEMA_VERSION = "3.16.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -198,21 +206,64 @@ TIER_MARKETPLACE = "marketplace"
 # Backward-compat alias; --enterprise still resolves to TIER_MARKETPLACE
 TIER_ENTERPRISE = TIER_MARKETPLACE
 
-# Valid tools per Claude Code spec (2026)
+# Canonical built-in tool names from code.claude.com/docs/en/tools-reference
+# (captured 2026-07-23). These are the exact strings used in permission rules,
+# subagent tool lists, and hook matchers. Count = 43.
+# Previously this set had 13 names and omitted `Agent` while listing the
+# retired alias `Task` — which made the marketplace gate reject correct
+# declarations and silently bless the legacy name (IEP plan golden-imagining-planet,
+# Phase A).
 VALID_TOOLS = {
-    "Read",
-    "Write",
-    "Edit",
+    "Agent",
+    "Artifact",
+    "AskUserQuestion",
     "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EndConversation",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ExitPlanMode",
+    "ExitWorktree",
     "Glob",
     "Grep",
+    "ListMcpResourcesTool",
+    "LSP",
+    "Monitor",
+    "NotebookEdit",
+    "PowerShell",
+    "PushNotification",
+    "Read",
+    "ReadMcpResourceTool",
+    "RemoteTrigger",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "SendUserFile",
+    "ShareOnboardingGuide",
+    "Skill",
+    "TaskCreate",
+    "TaskGet",
+    "TaskList",
+    "TaskOutput",
+    "TaskStop",
+    "TaskUpdate",
+    "TodoWrite",
+    "ToolSearch",
+    "WaitForMcpServers",
     "WebFetch",
     "WebSearch",
-    "Task",
-    "TodoWrite",
-    "NotebookEdit",
-    "AskUserQuestion",
-    "Skill",
+    "Workflow",
+    "Write",
+}
+
+# Retired names that still appear in the wild. Accept with a warning; prefer
+# the canonical name. SDK system:init still emits "Task" in some tool lists
+# even though tool_use events use "Agent" (v2.1.63+ rename).
+LEGACY_TOOL_ALIASES = {
+    "Task": "Agent",
 }
 
 # === Two-tier field definitions (Anthropic spec alignment, 2026-04-28) ===
@@ -2370,6 +2421,13 @@ def validate_tool_permission(tool: str) -> Tuple[bool, str]:
         if not inner:
             return False, f"Empty scope in allowed-tools entry: {tool}"
 
+    if base_tool in LEGACY_TOOL_ALIASES:
+        canonical = LEGACY_TOOL_ALIASES[base_tool]
+        return True, (
+            f"Legacy tool alias '{base_tool}' in entry '{tool}' — prefer '{canonical}' "
+            f"(Task was renamed to Agent in Claude Code v2.1.63; both still accepted)"
+        )
+
     if base_tool not in VALID_TOOLS:
         suggestion = difflib.get_close_matches(base_tool, sorted(VALID_TOOLS), n=1, cutoff=0.75)
         if suggestion:
@@ -3706,7 +3764,7 @@ TIER2_ORCHESTRATION_SMELLS = (
     "invokes other skills as primary",
 )
 TIER2_BASE_TOOL_PATTERN = re.compile(
-    r"\b(Read|Write|Edit|Bash|Glob|Grep|WebFetch|WebSearch|Task|TodoWrite|NotebookEdit|AskUserQuestion|Skill)\b"
+    r"\b(Agent|Artifact|AskUserQuestion|Bash|CronCreate|CronDelete|CronList|Edit|EndConversation|EnterPlanMode|EnterWorktree|ExitPlanMode|ExitWorktree|Glob|Grep|ListMcpResourcesTool|LSP|Monitor|NotebookEdit|PowerShell|PushNotification|Read|ReadMcpResourceTool|RemoteTrigger|ReportFindings|ScheduleWakeup|SendMessage|SendUserFile|ShareOnboardingGuide|Skill|Task|TaskCreate|TaskGet|TaskList|TaskOutput|TaskStop|TaskUpdate|TodoWrite|ToolSearch|WaitForMcpServers|WebFetch|WebSearch|Workflow|Write)\b"
 )
 TIER2_LITERAL_FALSE_PATTERN = re.compile(r"^\s*(if false|if \[ false \]|elif false)\b", re.MULTILINE)
 
