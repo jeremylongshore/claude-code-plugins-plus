@@ -197,8 +197,11 @@ except ImportError:
 #                       Spec-compliance bug fix (NON-NEGOTIABLE #6) — advisory
 #                       severity only; ALWAYS_REQUIRED / tiers / error-vs-warning
 #                       unchanged. Source: IEP plan golden-imagining-planet Phase A.
+# 3.16.1 (2026-07-23) — security lane (advisory only): load-time shell
+#                       substitution (!`cmd` / ```!) + disallowed-tools entry
+#                       validation (mirrors allowed-tools). Residual of closed #1113.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.16.0"
+SCHEMA_VERSION = "3.16.1"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -2914,7 +2917,17 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                 f"[frontmatter] 'disallowed-tools' must be a list of strings or a "
                 f"space/comma-separated string, got: {type(dt_val).__name__}"
             )
-        elif "allowed-tools" in fm:
+        else:
+            # Entry-level validation, mirroring allowed-tools (schema 3.16.1).
+            # A misspelling or retired name in a deny list matched nothing silently.
+            for tool in parse_allowed_tools(dt_val):
+                valid, msg = validate_tool_permission(tool)
+                if not valid:
+                    warnings.append(f"[frontmatter] disallowed-tools: {msg}")
+                elif msg:
+                    warnings.append(f"[frontmatter] disallowed-tools: {msg}")
+
+        if isinstance(dt_val, (list, str)) and "allowed-tools" in fm:
             allowed_set = set(parse_allowed_tools(fm.get("allowed-tools")))
             disallowed_set = set(parse_allowed_tools(dt_val))
             tool_overlap = allowed_set & disallowed_set
@@ -3036,8 +3049,42 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     return errors, warnings, infos
 
 
+# Load-time shell substitution, the two documented forms:
+#   !`command`   inline substitution
+#   ```!         a fenced block whose body is executed
+RE_INLINE_SHELL = re.compile(r"!`([^`\n]+)`")
+RE_SHELL_FENCE = re.compile(r"^\s*```!")
+RE_ANY_FENCE = re.compile(r"^\s*(```|~~~)")
+
+
+def _load_time_shell_hits(body: str, line_offset: int = 0) -> List[str]:
+    """Locations of load-time shell substitution, as 'L<line>: <snippet>'.
+
+    Occurrences inside an ordinary code fence are excluded (skills that
+    document the syntax). The ```! fence is itself the executable form, so
+    it is always counted. `line_offset` shifts reported lines into file
+    coordinates when frontmatter was already stripped.
+    """
+    hits: List[str] = []
+    in_fence = False
+    for i, line in enumerate(body.splitlines(), start=1 + line_offset):
+        if RE_SHELL_FENCE.match(line):
+            hits.append(f"L{i}: ```! block")
+            in_fence = not in_fence
+            continue
+        if RE_ANY_FENCE.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        for m in RE_INLINE_SHELL.finditer(line):
+            cmd = m.group(1).strip()
+            hits.append(f"L{i}: !`{cmd[:40]}{'…' if len(cmd) > 40 else ''}`")
+    return hits
+
+
 def validate_body(
-    path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = None
+    path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = None, line_offset: int = 0
 ) -> Tuple[List[str], List[str], List[str]]:
     """
     Validate SKILL.md body content.
@@ -3049,6 +3096,22 @@ def validate_body(
     if fm is None:
         fm = {}
     lines = body.splitlines()
+
+    # === LOAD-TIME SHELL EXECUTION (schema 3.16.1) — advisory only ===
+    # Preprocessing, not a tool call; allowed-tools does not gate it.
+    shell_hits = _load_time_shell_hits(body, line_offset)
+    if shell_hits:
+        where = ", ".join(shell_hits[:3]) + (
+            f" (+{len(shell_hits) - 3} more)" if len(shell_hits) > 3 else ""
+        )
+        target = fm.get("shell")
+        target_note = f"; `shell: {target}` selects the interpreter" if target else ""
+        warnings.append(
+            f"[security] SKILL.md runs {len(shell_hits)} shell substitution(s) at LOAD time, before Claude "
+            f"reads the body: {where}. This is preprocessing — it is not a tool call, allowed-tools does not "
+            f"gate it, and the output is not re-scanned{target_note}. Review it as executable code. The "
+            f"documented kill switch is the `disableSkillShellExecution` setting."
+        )
 
     # === LENGTH CHECKS ===
 
