@@ -279,3 +279,4 @@ plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/hooks-and-c
 plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/security-testing.md:hook-definition  instructional documentation of security testing hooks — not shippable auto-exec config
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:hook-definition  skill body discusses hooks as a validation surface; no hooks.json shipped
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:allowed-tools-network  documentation of how to detect over-broad allowed-tools (mentions WebFetch as a pattern to flag), not granting network tools
+plugins/productivity/intent-labs-pack/skills/validate-skillmd/references/schema-reminder-frontmatter.md:hook-definition  extracted schema field docs mentioning hooks as a frontmatter topic — not an executable hooks.json
