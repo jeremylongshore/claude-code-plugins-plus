@@ -3,9 +3,10 @@
 Reads the classifier output produced by classify.py and asks an
 OpenAI-compatible chat API (DeepSeek by default) for a ≤5-line human
 summary. Returns the original classifier output with an added
-"summary_lines" key on success, or a "summary_lines" key set to a
-single fallback line + an "llm_status" key indicating why the LLM call
-was skipped or failed.
+"summary_lines" key on success. When the optional LLM is unavailable,
+the output keeps only the machine-readable "llm_status" diagnostic;
+reviewer-facing consumers already render the deterministic classifier
+summary and must not repeat provider failures as notification noise.
 
 Constraints:
 - Single attempt. No retries. 5-second wall-clock deadline.
@@ -107,19 +108,6 @@ def call_llm(classifier_output: dict, *, api_key: str, api_url: str, model: str,
     return content
 
 
-def _fallback_summary(classifier_output: dict, reason: str) -> str:
-    verdict = classifier_output.get("verdict", "PASS")
-    summary = classifier_output.get("summary", "")
-    icon = {"PASS": "✅", "CHANGES_REQUESTED": "⚠️", "HARD_BLOCK": "🛑"}.get(verdict, "•")
-    return (
-        f"{icon} {verdict}\n"
-        f"{summary}\n"
-        f"LLM screener unavailable: {reason}.\n"
-        "Falling back to deterministic validator output only.\n"
-        "See per-skill table below for full detail."
-    )
-
-
 def normalise_summary_lines(text: str) -> str:
     """Trim to 5 lines, strip stray markdown fences, no trailing whitespace."""
     lines = [l.rstrip() for l in text.splitlines() if l.strip()]
@@ -135,11 +123,13 @@ def normalise_summary_lines(text: str) -> str:
 
 
 def summarize(classifier_output: dict) -> dict:
-    """Augment classifier output with an LLM summary or fallback explanation."""
+    """Augment classifier output with an LLM summary or a quiet status diagnostic."""
     out = dict(classifier_output)
+    # Never propagate a caller-supplied/stale summary into notifications when
+    # this invocation cannot produce a successful LLM result.
+    out.pop("summary_lines", None)
     api_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
     if not api_key:
-        out["summary_lines"] = _fallback_summary(out, "DEEPSEEK_API_KEY not set")
         out["llm_status"] = "skipped: no api key"
         return out
 
@@ -153,7 +143,6 @@ def summarize(classifier_output: dict) -> dict:
     try:
         raw = call_llm(out, api_key=api_key, api_url=api_url, model=model, timeout=timeout)
     except urllib.error.HTTPError as exc:
-        out["summary_lines"] = _fallback_summary(out, f"LLM HTTP {exc.code}")
         out["llm_status"] = f"failed: http {exc.code}"
         return out
     except Exception as exc:
@@ -163,7 +152,6 @@ def summarize(classifier_output: dict) -> dict:
         # deterministic fallback, not propagate and kill the workflow.
         # Also avoids the Python 3.11 TimeoutError-builtin issue on
         # older runners.
-        out["summary_lines"] = _fallback_summary(out, str(exc) or exc.__class__.__name__)
         out["llm_status"] = f"failed: {exc.__class__.__name__}"
         return out
 
