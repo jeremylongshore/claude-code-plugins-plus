@@ -384,7 +384,8 @@ def test_843_end_to_end_validate_agent_surfaces_check3(tmp_path):
 
 def test_allowed_disallowed_tool_overlap_is_error():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read, Bash(rm:*)",
         "disallowed-tools": "Bash(rm:*)",
     }
@@ -394,7 +395,8 @@ def test_allowed_disallowed_tool_overlap_is_error():
 
 def test_overlap_is_error_at_marketplace_tier_too():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": ["Read", "Write"],
         "disallowed-tools": ["Write"],
     }
@@ -405,7 +407,8 @@ def test_overlap_is_error_at_marketplace_tier_too():
 def test_disjoint_allowed_disallowed_is_clean():
     # Defense-in-depth: disallow a tool NOT in allowed-tools (the intended use).
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read, Write",
         "disallowed-tools": "Bash(rm:*), Bash(curl:*)",
     }
@@ -417,7 +420,8 @@ def test_overlap_detection_uses_shared_normalization():
     # Space-separated allowed-tools vs the same token in disallowed-tools must
     # still overlap — both go through parse_allowed_tools().
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read Bash(rm:*)",
         "disallowed-tools": ["Bash(rm:*)"],
     }
@@ -434,8 +438,10 @@ def test_disallowed_tools_without_allowed_tools_is_clean():
 
 def test_disallowed_tools_bad_shape_is_error():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
-        "allowed-tools": "Read", "disallowed-tools": 123,
+        "name": "my-skill",
+        "description": GOOD_DESC,
+        "allowed-tools": "Read",
+        "disallowed-tools": 123,
     }
     errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
     assert any("'disallowed-tools' must be" in e for e in errors), errors

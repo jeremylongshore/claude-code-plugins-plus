@@ -3101,9 +3101,7 @@ def validate_body(
     # Preprocessing, not a tool call; allowed-tools does not gate it.
     shell_hits = _load_time_shell_hits(body, line_offset)
     if shell_hits:
-        where = ", ".join(shell_hits[:3]) + (
-            f" (+{len(shell_hits) - 3} more)" if len(shell_hits) > 3 else ""
-        )
+        where = ", ".join(shell_hits[:3]) + (f" (+{len(shell_hits) - 3} more)" if len(shell_hits) > 3 else "")
         target = fm.get("shell")
         target_note = f"; `shell: {target}` selects the interpreter" if target else ""
         warnings.append(
