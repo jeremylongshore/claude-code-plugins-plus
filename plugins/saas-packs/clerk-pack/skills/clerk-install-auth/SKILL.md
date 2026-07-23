@@ -250,3 +250,25 @@ app.listen(3001, () => console.log('Server running on :3001'))
 ## Next Steps
 
 Proceed to `clerk-hello-world` for your first authenticated request.
+
+## Output
+
+- Installed Clerk SDK/packages for the target stack
+- Auth routes/middleware wired and smoke-tested sign-in/sign-out
+- Documented env vars and local-dev secrets posture (never commit real keys)
+
+## Examples
+
+### Fresh install on Next.js
+
+```
+User: Install Clerk auth from zero on this Next.js repo.
+Skill: adds dependencies, env template, middleware, and a protected smoke route.
+```
+
+### Repair a half-finished install
+
+```
+User: Clerk packages are present but middleware never runs.
+Skill: fixes matcher config, provider placement, and env loading order.
+```

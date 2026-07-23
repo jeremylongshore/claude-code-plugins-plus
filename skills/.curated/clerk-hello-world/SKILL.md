@@ -223,3 +223,25 @@ app.listen(3001)
 ## Next Steps
 
 Proceed to `clerk-local-dev-loop` for local development workflow setup.
+
+## Output
+
+- Minimal Clerk "hello world" that signs in a user and shows identity on a protected page
+- Exact install + env steps for the chosen framework
+- Next-step links into deeper clerk-pack skills (webhooks, RBAC, production checklist)
+
+## Examples
+
+### Next.js hello world
+
+```
+User: Smallest possible Clerk + Next.js demo with a protected /me page.
+Skill: scaffolds packages, middleware, sign-in UI, and /me reading user id.
+```
+
+### Verify keys are live
+
+```
+User: Confirm publishable + secret keys work against Clerk API.
+Skill: runs a minimal session/user fetch and reports success or key-mismatch errors.
+```
