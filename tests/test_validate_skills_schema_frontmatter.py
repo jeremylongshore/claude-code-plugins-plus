@@ -415,3 +415,81 @@ def test_disallowed_tools_bad_shape_is_error():
     }
     errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
     assert any("'disallowed-tools' must be" in e for e in errors), errors
+
+
+# =========================================================================
+# schema 3.16.0 — canonical tool names resynced to the upstream Tools
+#   reference. Pins the two defects the old 13-name set produced: `Agent`
+#   (correct) advised as unknown, `Task` (retired) passing silently.
+# =========================================================================
+
+
+def test_agent_is_a_canonical_tool_and_draws_no_diagnostic():
+    """`Agent` is the current name for the subagent-spawning tool."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, Agent"}
+    errors, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert not any("Agent" in w and ("Unknown tool" in w or "Legacy" in w) for w in warnings), warnings
+    assert not any("allowed-tools" in e for e in errors), errors
+
+
+def test_task_reports_as_a_rename_not_as_unknown():
+    """`Task` was renamed to `Agent` in v2.1.63; it must not pass silently."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, Task"}
+    errors, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    task_warns = [w for w in warnings if "Task" in w]
+    assert task_warns, f"Task drew no diagnostic at all: {warnings}"
+    assert any("Legacy tool name" in w and "Agent" in w for w in task_warns), task_warns
+    # Stays advisory — escalating is a semantics change (NON-NEGOTIABLE #7).
+    assert not any("Task" in e for e in errors), errors
+
+
+def test_task_prefixed_tools_are_canonical_not_legacy():
+    """Exact-match guard: TaskStop et al are real tools, unlike bare `Task`."""
+    for name in ("TaskCreate", "TaskGet", "TaskList", "TaskOutput", "TaskStop", "TaskUpdate"):
+        fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": f"Read, {name}"}
+        errors, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+        assert not any(name in w and ("Unknown tool" in w or "Legacy" in w) for w in warnings), (name, warnings)
+        assert not any("allowed-tools" in e for e in errors), (name, errors)
+
+
+def test_previously_rejected_real_tools_now_accepted():
+    """Tools that existed upstream but were missing from the old 13-name set."""
+    for name in ("Monitor", "Workflow", "ToolSearch", "Artifact", "LSP", "PowerShell"):
+        fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": f"Read, {name}"}
+        _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+        assert not any(name in w and "Unknown tool" in w for w in warnings), (name, warnings)
+
+
+def test_genuinely_unknown_tool_still_advised():
+    """The resync must not turn the unknown-tool check into a no-op."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, Wibble"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("Unknown tool" in w and "Wibble" in w for w in warnings), warnings
+
+
+def test_canonical_set_matches_upstream_count():
+    """43 names in the upstream Tools table; drift here is a resync signal."""
+    assert len(validator.VALID_TOOLS) == 43, sorted(validator.VALID_TOOLS)
+    assert "Task" not in validator.VALID_TOOLS
+    assert "Agent" in validator.VALID_TOOLS
+
+
+def test_mcp_permission_rule_forms():
+    """The three allow-rule forms upstream documents in permissions.md."""
+    for entry in (
+        "mcp__puppeteer",
+        "mcp__puppeteer__puppeteer_navigate",
+        "mcp__puppeteer__*",
+        "mcp__github__get_*",
+    ):
+        fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": f"Read, {entry}"}
+        errors, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+        assert not any(entry in w for w in warnings), (entry, warnings)
+        assert not any("allowed-tools" in e for e in errors), (entry, errors)
+
+
+def test_server_segment_glob_is_not_blessed():
+    """`mcp__*` is an unanchored glob upstream skips; it must not pass clean."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, mcp__*"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("mcp__*" in w for w in warnings), warnings

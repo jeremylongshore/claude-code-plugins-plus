@@ -189,8 +189,23 @@ except ImportError:
 #                       already-documented behavior (repo CLAUDE.md + 000-docs/681);
 #                       not an architectural change — ALWAYS_REQUIRED, tiers, and
 #                       error-vs-warning semantics are unchanged. Closes claude-41c2.2.
+# 3.16.0 (2026-07-23) — VALID_TOOLS resynced to the upstream Tools reference:
+#                       13 hand-maintained names → the canonical 43. The old set
+#                       listed `Task` (renamed to `Agent` in v2.1.63) and omitted
+#                       `Agent`, so the gate emitted a spurious "not a built-in
+#                       Claude Code tool" advisory on the CORRECT name while the
+#                       retired one passed silently — steering authors toward a
+#                       legacy alias. Adds LEGACY_TOOL_ALIASES so `Task` reports
+#                       as a rename rather than as unknown. Corpus effect at
+#                       marketplace tier: 12 spurious advisories cleared, 137
+#                       silent `Task` declarations now advised. Spec-compliance
+#                       fix (NON-NEGOTIABLE #5), not architectural: every tool
+#                       diagnostic stays WARNING-level, ALWAYS_REQUIRED and tier
+#                       semantics unchanged. Membership is EXACT-MATCH — `Task`
+#                       is retired but `TaskCreate`/`TaskGet`/`TaskList`/
+#                       `TaskOutput`/`TaskStop`/`TaskUpdate` are all canonical.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.15.2"
+SCHEMA_VERSION = "3.16.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -198,21 +213,84 @@ TIER_MARKETPLACE = "marketplace"
 # Backward-compat alias; --enterprise still resolves to TIER_MARKETPLACE
 TIER_ENTERPRISE = TIER_MARKETPLACE
 
-# Valid tools per Claude Code spec (2026)
+# Canonical built-in tool names, transcribed from the upstream Tools reference
+# (https://code.claude.com/docs/en/tools-reference.md, "Tools" table).
+#
+# Upstream states these are "the exact strings you use in permission rules,
+# subagent tool lists, and hook matchers" — so this set is the authority for
+# what an `allowed-tools` entry may name, and membership is EXACT-MATCH only.
+#
+# Exact-match matters more than it looks: `Task` is NOT a member, but
+# `TaskCreate`/`TaskGet`/`TaskList`/`TaskOutput`/`TaskStop`/`TaskUpdate` all
+# are. Any prefix/substring rule over this set would mis-classify both
+# directions. See LEGACY_TOOL_ALIASES below for the `Task` → `Agent` rename.
+#
+# Previously this set held 13 names hand-maintained since 2026; it listed
+# `Task` (renamed to `Agent` upstream) and omitted `Agent` itself along with 31
+# other real tools, so the gate emitted a spurious "not a built-in Claude Code
+# tool" advisory on the CORRECT name while the retired one passed silently.
 VALID_TOOLS = {
-    "Read",
-    "Write",
-    "Edit",
+    "Agent",
+    "Artifact",
+    "AskUserQuestion",
     "Bash",
+    "CronCreate",
+    "CronDelete",
+    "CronList",
+    "Edit",
+    "EndConversation",
+    "EnterPlanMode",
+    "EnterWorktree",
+    "ExitPlanMode",
+    "ExitWorktree",
     "Glob",
     "Grep",
+    "ListMcpResourcesTool",
+    "LSP",
+    "Monitor",
+    "NotebookEdit",
+    "PowerShell",
+    "PushNotification",
+    "Read",
+    "ReadMcpResourceTool",
+    "RemoteTrigger",
+    "ReportFindings",
+    "ScheduleWakeup",
+    "SendMessage",
+    "SendUserFile",
+    "ShareOnboardingGuide",
+    "Skill",
+    "TaskCreate",
+    "TaskGet",
+    "TaskList",
+    "TaskOutput",
+    "TaskStop",
+    "TaskUpdate",
+    "TodoWrite",
+    "ToolSearch",
+    "WaitForMcpServers",
     "WebFetch",
     "WebSearch",
-    "Task",
-    "TodoWrite",
-    "NotebookEdit",
-    "AskUserQuestion",
-    "Skill",
+    "Workflow",
+    "Write",
+}
+
+# Retired tool names that upstream renamed, mapped to their current spelling.
+#
+# `Task` → `Agent` landed in Claude Code v2.1.63. The rename predates this
+# repo's spec-drift monitoring window, which is why no drift check ever
+# surfaced it. `Task` appears ZERO times in the current Tools reference — not
+# even as a documented legacy alias.
+#
+# It is still warned rather than errored, deliberately, on two grounds:
+#   1. The Agent SDK continues to emit "Task" in the `system:init` tools list
+#      and in `permission_denials[].tool_name`, so the name is not fully dead
+#      at runtime even though it is gone from the authoring surface.
+#   2. Escalating a diagnostic from warning to error is an error-vs-warning
+#      semantics change — architectural per 000-docs/SCHEMA_CHANGELOG.md
+#      NON-NEGOTIABLE #7, requiring prior approval. Not in scope here.
+LEGACY_TOOL_ALIASES = {
+    "Task": "Agent",
 }
 
 # === Two-tier field definitions (Anthropic spec alignment, 2026-04-28) ===
@@ -2303,9 +2381,20 @@ def parse_allowed_tools(tools_value: Any) -> List[str]:
 
 # Well-formed base tool / server identifier (letters, digits, underscore, hyphen).
 RE_TOOL_BASE_IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
-# MCP tool reference: mcp__<server> or mcp__<server>__<tool> (Claude Code
-# permission-rule form; appears in the corpus, e.g. mcp__database-explorer__query_database).
-RE_MCP_TOOL_REF = re.compile(r"^mcp__[A-Za-z0-9_-]+(?:__[A-Za-z0-9_-]+)?$")
+# MCP tool reference, per the three forms upstream documents for allow rules
+# (https://code.claude.com/docs/en/permissions.md):
+#   mcp__puppeteer                      — any tool from the `puppeteer` server
+#   mcp__puppeteer__puppeteer_navigate  — one specific tool
+#   mcp__puppeteer__*  /  mcp__github__get_*
+#                                       — tool-name glob, allowed ONLY after a
+#                                         literal `mcp__<server>__` prefix
+#
+# The server segment stays glob-free on purpose: upstream requires an allow
+# rule to name a concrete configured server, and skips unanchored globs such
+# as `*`, `B*`, or `mcp__*` with a warning rather than auto-approving. Keeping
+# `*` out of the server character class is what makes `mcp__*` fall through to
+# the unknown-tool advisory instead of being silently blessed here.
+RE_MCP_TOOL_REF = re.compile(r"^mcp__[A-Za-z0-9_-]+(?:__[A-Za-z0-9_*-]+)?$")
 
 
 def validate_tool_permission(tool: str) -> Tuple[bool, str]:
@@ -2369,6 +2458,17 @@ def validate_tool_permission(tool: str) -> Tuple[bool, str]:
         inner = entry[entry.index("(") + 1 : -1].strip()
         if not inner:
             return False, f"Empty scope in allowed-tools entry: {tool}"
+
+    # Retired-but-recognised names are reported as a rename, not as "unknown".
+    # Checked before the VALID_TOOLS membership test because a legacy name is
+    # by definition absent from the canonical set, and difflib would otherwise
+    # offer a misleading near-match (`Task` → `TaskGet`).
+    if base_tool in LEGACY_TOOL_ALIASES:
+        current = LEGACY_TOOL_ALIASES[base_tool]
+        return True, (
+            f"Legacy tool name '{base_tool}' in entry '{tool}' — renamed to "
+            f"'{current}' upstream; update the declaration to '{current}'"
+        )
 
     if base_tool not in VALID_TOOLS:
         suggestion = difflib.get_close_matches(base_tool, sorted(VALID_TOOLS), n=1, cutoff=0.75)
