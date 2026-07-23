@@ -3647,7 +3647,7 @@
       "category": "saas-packs",
       "plugin": "clerk-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 10,
       "files": [
         "SKILL.md",
@@ -3660,11 +3660,12 @@
       "category": "saas-packs",
       "plugin": "clerk-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 10,
       "files": [
         "SKILL.md",
-        "references/implementation.md"
+        "references/implementation.md",
+        "references/session-middleware-deep-dive.md"
       ]
     },
     {
@@ -3725,7 +3726,7 @@
       "category": "saas-packs",
       "plugin": "clerk-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 10,
       "files": [
         "SKILL.md",
@@ -3738,10 +3739,11 @@
       "category": "saas-packs",
       "plugin": "clerk-pack",
       "recorded_grade": "B",
-      "fresh_grade": "B",
+      "fresh_grade": "A",
       "run_id": 10,
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "references/quickstart-notes.md"
       ]
     },
     {

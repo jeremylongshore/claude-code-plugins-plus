@@ -278,6 +278,7 @@ export async function updateOrgSettings(settings: Record<string, any>) {
 Full session, JWT template, and organization-session patterns are in
 [references/session-middleware-deep-dive.md](references/session-middleware-deep-dive.md).
 
+
 ## Output
 
 - Completed Clerk workflow for the requested advanced flow (orgs, multi-session, or custom session claims)
