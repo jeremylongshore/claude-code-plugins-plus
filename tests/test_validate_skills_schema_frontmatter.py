@@ -384,7 +384,8 @@ def test_843_end_to_end_validate_agent_surfaces_check3(tmp_path):
 
 def test_allowed_disallowed_tool_overlap_is_error():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read, Bash(rm:*)",
         "disallowed-tools": "Bash(rm:*)",
     }
@@ -394,7 +395,8 @@ def test_allowed_disallowed_tool_overlap_is_error():
 
 def test_overlap_is_error_at_marketplace_tier_too():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": ["Read", "Write"],
         "disallowed-tools": ["Write"],
     }
@@ -405,7 +407,8 @@ def test_overlap_is_error_at_marketplace_tier_too():
 def test_disjoint_allowed_disallowed_is_clean():
     # Defense-in-depth: disallow a tool NOT in allowed-tools (the intended use).
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read, Write",
         "disallowed-tools": "Bash(rm:*), Bash(curl:*)",
     }
@@ -417,7 +420,8 @@ def test_overlap_detection_uses_shared_normalization():
     # Space-separated allowed-tools vs the same token in disallowed-tools must
     # still overlap — both go through parse_allowed_tools().
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
+        "name": "my-skill",
+        "description": GOOD_DESC,
         "allowed-tools": "Read Bash(rm:*)",
         "disallowed-tools": ["Bash(rm:*)"],
     }
@@ -434,8 +438,89 @@ def test_disallowed_tools_without_allowed_tools_is_clean():
 
 def test_disallowed_tools_bad_shape_is_error():
     fm = {
-        "name": "my-skill", "description": GOOD_DESC,
-        "allowed-tools": "Read", "disallowed-tools": 123,
+        "name": "my-skill",
+        "description": GOOD_DESC,
+        "allowed-tools": "Read",
+        "disallowed-tools": 123,
     }
     errors, _warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
     assert any("'disallowed-tools' must be" in e for e in errors), errors
+
+
+# =========================================================================
+# schema 3.16.1 — security lane (load-time shell + disallowed-tools entries)
+# Residual of closed PR #1113; re-cut cleanly on main after VALID_TOOLS 3.16.0.
+# =========================================================================
+
+SHELL_SKILL = """---
+name: my-skill
+description: Validate skill frontmatter fields against the published schema registry.
+---
+
+# Body
+
+!`git status`
+"""
+
+
+def test_load_time_shell_substitution_is_reported():
+    hits = validator._load_time_shell_hits("a\n!`git status`\nb")
+    assert len(hits) == 1, hits
+    assert "git status" in hits[0]
+
+
+def test_shell_hits_are_reported_in_file_line_numbers():
+    """A security finding pointing at the wrong line is worse than none."""
+    body = "x\n!`whoami`\n"
+    assert validator._load_time_shell_hits(body)[0].startswith("L2:")
+    assert validator._load_time_shell_hits(body, line_offset=10)[0].startswith("L12:")
+
+
+def test_shell_syntax_inside_an_ordinary_fence_is_not_a_finding():
+    """Skills that DOCUMENT the syntax must not be flagged as executing it."""
+    body = "```\n!`git status`\n```\n"
+    assert validator._load_time_shell_hits(body) == []
+
+
+def test_shell_fence_form_is_always_counted():
+    hits = validator._load_time_shell_hits("```!\necho hi\n```\n")
+    assert any("```! block" in h for h in hits), hits
+
+
+def test_body_check_surfaces_shell_execution_as_a_warning_not_an_error():
+    errors, warnings, _ = validator.validate_body(
+        SKILL_PATH, SHELL_SKILL.split("---", 2)[2], validator.TIER_MARKETPLACE, {"name": "my-skill"}
+    )
+    assert any("LOAD time" in w for w in warnings), warnings
+    assert not any("LOAD time" in e for e in errors), errors
+
+
+def test_disallowed_tools_entries_are_validated():
+    """A deny rule naming a non-existent tool denies nothing."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Wibble"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("disallowed-tools" in w and "Wibble" in w for w in warnings), warnings
+
+
+def test_disallowed_tools_flags_the_legacy_name():
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Task"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("disallowed-tools" in w and ("Legacy" in w or "Task" in w) for w in warnings), warnings
+
+
+def test_disallowed_tools_overlap_error_still_fires():
+    """Regression guard: entry validation must not displace the overlap rule."""
+    fm = {
+        "name": "my-skill",
+        "description": GOOD_DESC,
+        "allowed-tools": "Read",
+        "disallowed-tools": "Read",
+    }
+    errors, _, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("contradictory" in e for e in errors), errors
+
+
+def test_clean_disallowed_tools_is_quiet():
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Bash(rm:*), Agent"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert not any("disallowed-tools" in w for w in warnings), warnings

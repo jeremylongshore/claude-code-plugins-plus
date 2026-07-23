@@ -146,6 +146,30 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.16.1] — 2026-07-23 — Security lane: load-time shell + disallowed-tools entry validation (advisory)
+
+**Additive advisory-only surface — no change to `ALWAYS_REQUIRED`, tiers, or
+error-vs-warning semantics for required fields.** Residual of closed PR #1113
+(VALID_TOOLS portion already shipped as 3.16.0 via #1115).
+
+### Added
+
+- **Load-time shell substitution findings** on SKILL.md bodies: `` !`cmd` `` and
+  ` ```! ` blocks reported as `[security]` warnings (not errors). Ordinary
+  fenced documentation of the syntax is excluded. Kill switch named:
+  `disableSkillShellExecution`.
+- **`disallowed-tools` entry validation** mirroring `allowed-tools` — misspelled
+  or legacy names in a deny list no longer pass silently (a deny that matches
+  nothing is worse than a missing deny).
+
+### Why advisory
+
+This is widely used, documented Claude Code preprocessing. Making the first
+detection of it a merge-blocking error would burn trust. The goal is reviewable
+surface, not a sudden corpus red wall.
+
+---
+
 ## [3.16.0] — 2026-07-23 — Canonical 43-tool `VALID_TOOLS` + `Task`→`Agent` legacy alias (spec-compliance)
 
 **Additive spec-compliance bug fix — no change to `ALWAYS_REQUIRED`, the tier
