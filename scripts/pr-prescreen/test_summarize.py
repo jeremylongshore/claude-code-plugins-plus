@@ -48,12 +48,11 @@ class _FakeResp:
 
 
 class SummarizeTests(unittest.TestCase):
-    def test_no_api_key_falls_back(self):
+    def test_no_api_key_records_status_without_reviewer_summary(self):
         with patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}, clear=False):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertEqual(out["llm_status"], "skipped: no api key")
-        self.assertIn("LLM screener unavailable", out["summary_lines"])
-        self.assertIn("CHANGES_REQUESTED", out["summary_lines"])
+        self.assertNotIn("summary_lines", out)
 
     def test_happy_path_includes_summary_lines(self):
         canned = (
@@ -72,7 +71,7 @@ class SummarizeTests(unittest.TestCase):
         self.assertEqual(len(out["summary_lines"].splitlines()), 5)
         self.assertIn("CHANGES_REQUESTED", out["summary_lines"])
 
-    def test_groq_http_error_falls_back(self):
+    def test_deepseek_http_error_records_status_without_reviewer_summary(self):
         err = urllib.error.HTTPError(summarize.DEFAULT_API_URL, 503, "service unavailable", {}, None)
         with (
             patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}),
@@ -80,7 +79,7 @@ class SummarizeTests(unittest.TestCase):
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertEqual(out["llm_status"], "failed: http 503")
-        self.assertIn("LLM screener unavailable", out["summary_lines"])
+        self.assertNotIn("summary_lines", out)
 
     def test_timeout_falls_back(self):
         # OSError covers timeouts across Python versions (TimeoutError is a
@@ -92,7 +91,13 @@ class SummarizeTests(unittest.TestCase):
         ):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertTrue(out["llm_status"].startswith("failed:"))
-        self.assertIn("LLM screener unavailable", out["summary_lines"])
+        self.assertNotIn("summary_lines", out)
+
+    def test_failure_drops_stale_input_summary(self):
+        stale = dict(SAMPLE_CLASSIFIER_OUT, summary_lines="stale provider output")
+        with patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}, clear=False):
+            out = summarize.summarize(stale)
+        self.assertNotIn("summary_lines", out)
 
     def test_unexpected_exception_falls_back(self):
         # Regression for the "never block" contract: even an unforeseen
