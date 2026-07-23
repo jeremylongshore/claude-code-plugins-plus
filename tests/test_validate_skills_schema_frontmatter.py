@@ -49,6 +49,30 @@ def test_known_bare_tools_are_valid_with_no_message():
         assert msg == "", (tool, msg)
 
 
+def test_valid_tools_is_the_canonical_43_from_tools_reference():
+    # code.claude.com/docs/en/tools-reference (captured 2026-07-23).
+    assert len(validator.VALID_TOOLS) == 43
+    assert "Agent" in validator.VALID_TOOLS
+    assert "Task" not in validator.VALID_TOOLS  # retired alias, see LEGACY_TOOL_ALIASES
+    assert "Workflow" in validator.VALID_TOOLS
+    assert "ExitPlanMode" in validator.VALID_TOOLS
+
+
+def test_agent_is_a_first_class_tool_not_unknown():
+    # Pre-3.16.0: Agent produced "Unknown tool 'Agent'" — the gate was wrong.
+    valid, msg = validator.validate_tool_permission("Agent")
+    assert valid is True
+    assert msg == "", msg
+
+
+def test_task_is_legacy_alias_of_agent_with_warning():
+    valid, msg = validator.validate_tool_permission("Task")
+    assert valid is True  # still accepted (SDK still emits Task in places)
+    assert "Legacy" in msg
+    assert "Agent" in msg
+    assert validator.LEGACY_TOOL_ALIASES["Task"] == "Agent"
+
+
 def test_scoped_colon_form_is_valid():
     valid, msg = validator.validate_tool_permission("Bash(git:*)")
     assert valid is True

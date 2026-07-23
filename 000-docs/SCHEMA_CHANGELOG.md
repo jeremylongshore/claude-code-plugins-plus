@@ -146,6 +146,44 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.16.0] — 2026-07-23 — Canonical 43-tool `VALID_TOOLS` + `Task`→`Agent` legacy alias (spec-compliance)
+
+**Additive spec-compliance bug fix — no change to `ALWAYS_REQUIRED`, the tier
+model, or error-vs-warning semantics.** Autonomous-OK class per NON-NEGOTIABLE
+#6 (aligns the allowlist with the published tools reference).
+
+### Changed
+
+- **`VALID_TOOLS`** expanded from **13** names to the full **43** built-ins from
+  [code.claude.com/docs/en/tools-reference](https://code.claude.com/docs/en/tools-reference)
+  (captured 2026-07-23). The previous set omitted `Agent` (and dozens of other
+  current tools) while listing the retired name `Task`.
+- **`Task`** moved to **`LEGACY_TOOL_ALIASES` → `Agent`**. Still accepted, but
+  emits a warning preferring `Agent` (rename since Claude Code v2.1.63; the
+  SDK still emits `Task` in some `system:init` tool lists).
+- Body-vs-allowlist tool-name regex updated to recognise the same set (plus the
+  legacy `Task` alias so body mentions still count as references).
+
+### Why this is not architectural
+
+Unknown-tool feedback was already **advisory** (WARNING), not a marketplace
+ERROR. Expanding the known set only removes false "unknown tool" warnings for
+correct modern names and adds an explicit legacy-alias warning for `Task`.
+`ALWAYS_REQUIRED`, tiers, and error-vs-warning semantics are untouched.
+
+### Evidence
+
+Pre-fix: declaring `Agent` in `allowed-tools` produced *Unknown tool 'Agent'*.
+Post-fix: clean. Declaring `Task` produces the legacy-alias warning instead of
+passing silently as a first-class tool.
+
+### Source
+
+IEP plan `golden-imagining-planet` Phase A; resumes Claude sessions
+`fix-spec-currency-loop` + `run-tools-current-spec`.
+
+---
+
 ## [3.15.2] — 2026-07-12 — `disallowed-tools` cross-field enforcement made real (spec-compliance, additive; closes claude-41c2.2)
 
 **Additive spec-compliance implementation — no change to `ALWAYS_REQUIRED`, the
