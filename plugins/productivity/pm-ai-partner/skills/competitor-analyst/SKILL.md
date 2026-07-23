@@ -9,8 +9,7 @@ version: 1.8.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
-argument-hint:
-- competitor or market
+argument-hint: "competitor or market"
 tags:
 - productivity
 - competitor-analyst
