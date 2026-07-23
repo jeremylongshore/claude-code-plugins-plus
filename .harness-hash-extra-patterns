@@ -1,0 +1,17 @@
+# Self-pin patterns for claude-code-plugins-plus-skills.
+#
+# Makes `pnpm exec audit-harness verify` a real gate (IEP #18 / 1jn0.2.1).
+# Previously the hashing surface was empty by design (ADR-260/261/263); the
+# step was wired but unconditional exit 0.
+#
+# Pin the load-bearing judge contracts: eval-spec.yaml files decide whether
+# a skill passes j-rig behavioral eval. An unpinned eval-spec can be edited
+# in the same PR as the skill it judges — weaken the bar, skill "passes",
+# no integrity signal. Pinning forces a paired `audit-harness init`.
+
+# Nightly-roster and marketplace behavioral eval contracts
+plugins/**/eval-spec.yaml
+skills/.curated/**/eval-spec.yaml
+
+# This extras file itself — bootstrap pin
+.harness-hash-extra-patterns

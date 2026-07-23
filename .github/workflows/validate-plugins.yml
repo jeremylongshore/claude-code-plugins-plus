@@ -64,12 +64,12 @@ jobs:
           node scripts/sync-lint-ignores.mjs --check-source-anchoring --base="origin/${{ github.base_ref }}"
 
       # @intentsolutions/audit-harness verify — exit 0 when policy hashes
-      # match `.harness-hash`, exit 2 when a hash-pinned policy file (e.g.
-      # tests/TESTING.md, .dependency-cruiser.cjs, *.feature) was changed
+      # match `.harness-hash`, exit 2 when a hash-pinned file was changed
       # without a paired engineer-initiated `pnpm exec audit-harness init`.
-      # Hashing surface is currently empty (we declined the tools that get
-      # pinned — ADR-260/261/263) so this is exit 0; kept here so the gate
-      # is wired the moment any pinned file lands.
+      # Pin surface (IEP #18 / 1jn0.2.1): plugins/**/eval-spec.yaml,
+      # skills/.curated/**/eval-spec.yaml, and .harness-hash-extra-patterns.
+      # Re-pin ritual: edit an eval-spec → `pnpm exec audit-harness init` →
+      # commit both in the same PR.
       - name: Verify audit-harness integrity
         run: pnpm exec audit-harness verify
 
