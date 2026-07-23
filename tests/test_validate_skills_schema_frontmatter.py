@@ -493,3 +493,84 @@ def test_server_segment_glob_is_not_blessed():
     fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, mcp__*"}
     _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
     assert any("mcp__*" in w for w in warnings), warnings
+
+
+# =========================================================================
+# schema 3.16.0 — security lane. Load-time shell substitution is preprocessing
+#   (not a tool call, not gated by allowed-tools); disallowed-tools entries
+#   were previously unvalidated, so a deny rule could match nothing silently.
+# =========================================================================
+
+SHELL_SKILL = """---
+name: my-skill
+description: Validate skill frontmatter fields against the published schema registry.
+---
+
+# Body
+
+Repo root: !`git rev-parse --show-toplevel`
+"""
+
+
+def test_load_time_shell_substitution_is_reported():
+    hits = validator._load_time_shell_hits("a\n!`git status`\nb")
+    assert len(hits) == 1, hits
+    assert "git status" in hits[0]
+
+
+def test_shell_hits_are_reported_in_file_line_numbers():
+    """A security finding pointing at the wrong line is worse than none."""
+    body = "x\n!`whoami`\n"
+    assert validator._load_time_shell_hits(body)[0].startswith("L2:")
+    # Frontmatter offset shifts it back into file coordinates.
+    assert validator._load_time_shell_hits(body, line_offset=10)[0].startswith("L12:")
+
+
+def test_shell_syntax_inside_an_ordinary_fence_is_not_a_finding():
+    """Skills that DOCUMENT the syntax must not be flagged as executing it."""
+    body = "```\n!`git status`\n```\n"
+    assert validator._load_time_shell_hits(body) == []
+
+
+def test_shell_fence_form_is_always_counted():
+    hits = validator._load_time_shell_hits("```!\necho hi\n```\n")
+    assert any("```! block" in h for h in hits), hits
+
+
+def test_body_check_surfaces_shell_execution_as_a_warning_not_an_error():
+    errors, warnings, _ = validator.validate_body(
+        SKILL_PATH, SHELL_SKILL.split("---", 2)[2], validator.TIER_MARKETPLACE, {"name": "my-skill"}
+    )
+    assert any("LOAD time" in w for w in warnings), warnings
+    assert not any("LOAD time" in e for e in errors), errors
+
+
+def test_disallowed_tools_entries_are_validated():
+    """A deny rule naming a non-existent tool denies nothing."""
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Wibble"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("disallowed-tools" in w and "Wibble" in w for w in warnings), warnings
+
+
+def test_disallowed_tools_flags_the_legacy_name():
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Task"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("disallowed-tools" in w and "Legacy tool name" in w for w in warnings), warnings
+
+
+def test_disallowed_tools_overlap_error_still_fires():
+    """Regression guard: entry validation must not displace the overlap rule."""
+    fm = {
+        "name": "my-skill",
+        "description": GOOD_DESC,
+        "allowed-tools": "Read",
+        "disallowed-tools": "Read",
+    }
+    errors, _, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert any("contradictory" in e for e in errors), errors
+
+
+def test_clean_disallowed_tools_is_quiet():
+    fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Bash(rm:*), Agent"}
+    _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
+    assert not any("disallowed-tools" in w for w in warnings), warnings

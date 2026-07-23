@@ -204,6 +204,21 @@ except ImportError:
 #                       semantics unchanged. Membership is EXACT-MATCH — `Task`
 #                       is retired but `TaskCreate`/`TaskGet`/`TaskList`/
 #                       `TaskOutput`/`TaskStop`/`TaskUpdate` are all canonical.
+# 3.16.0 (cont.) — security lane, all advisory:
+#                       (a) load-time shell substitution (!`cmd` and ```! blocks)
+#                       is now reported. It is PREPROCESSING — substituted before
+#                       Claude reads the body, not a tool call, not gated by
+#                       allowed-tools, output not re-scanned — so nothing in the
+#                       validator saw it before. 103 marketplace skills / 223
+#                       substitutions today. Occurrences inside an ORDINARY code
+#                       fence are excluded (skills documenting the syntax);
+#                       ```! is always counted. Line numbers are shifted into
+#                       FILE coordinates via a line_offset, since validate_body
+#                       receives the body with frontmatter stripped.
+#                       (b) disallowed-tools entries are validated like
+#                       allowed-tools. Previously only shape + the
+#                       allowed∩disallowed overlap were checked, so a misspelled
+#                       or retired name in a DENY list matched nothing, silently.
 # See 000-docs/SCHEMA_CHANGELOG.md.
 SCHEMA_VERSION = "3.16.0"
 
@@ -2956,7 +2971,22 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                 f"[frontmatter] 'disallowed-tools' must be a list of strings or a "
                 f"space/comma-separated string, got: {type(dt_val).__name__}"
             )
-        elif "allowed-tools" in fm:
+        else:
+            # Entry-level validation, mirroring allowed-tools (schema 3.16.0).
+            # Until now only the SHAPE and the allowed∩disallowed overlap were
+            # checked, so a misspelling or a retired name sat in disallowed-tools
+            # and denied nothing at all — silently, and in the one field whose
+            # entire purpose is to take capability away. A deny rule that matches
+            # no tool is strictly worse than a missing one: it reads as a control
+            # while providing none.
+            for tool in parse_allowed_tools(dt_val):
+                valid, msg = validate_tool_permission(tool)
+                if not valid:
+                    warnings.append(f"[frontmatter] disallowed-tools: {msg}")
+                elif msg:
+                    warnings.append(f"[frontmatter] disallowed-tools: {msg}")
+
+        if isinstance(dt_val, (list, str)) and "allowed-tools" in fm:
             allowed_set = set(parse_allowed_tools(fm.get("allowed-tools")))
             disallowed_set = set(parse_allowed_tools(dt_val))
             tool_overlap = allowed_set & disallowed_set
@@ -3078,8 +3108,53 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     return errors, warnings, infos
 
 
+# Load-time shell substitution, the two documented forms:
+#   !`command`   inline substitution
+#   ```!         a fenced block whose body is executed
+RE_INLINE_SHELL = re.compile(r"!`([^`\n]+)`")
+RE_SHELL_FENCE = re.compile(r"^\s*```!")
+RE_ANY_FENCE = re.compile(r"^\s*(```|~~~)")
+
+
+def _load_time_shell_hits(body: str, line_offset: int = 0) -> List[str]:
+    """Locations of load-time shell substitution, as 'L<line>: <snippet>'.
+
+    Occurrences inside an ORDINARY code fence are excluded. A large share of the
+    corpus hits are skills that document this very syntax — authoring guides
+    showing `` !`date` `` as an example — and reporting those as security
+    findings would bury the executable ones under noise, which is the failure
+    mode that gets a check ignored rather than acted on.
+
+    The ```!  fence is itself the executable form, so it is always counted; it
+    opens a shell block rather than an ordinary one.
+
+    `line_offset` shifts reported lines back into FILE coordinates. validate_body
+    receives the body with frontmatter already stripped, so an unshifted number
+    points a reviewer at the wrong line — the one defect that makes a security
+    finding actively worse than none, because it costs trust on first use.
+    """
+    hits: List[str] = []
+    in_fence = False
+    for i, line in enumerate(body.splitlines(), start=1 + line_offset):
+        if RE_SHELL_FENCE.match(line):
+            hits.append(f"L{i}: ```! block")
+            # A shell fence opens a block like any other; track it so the lines
+            # inside are not double-reported as inline hits.
+            in_fence = not in_fence
+            continue
+        if RE_ANY_FENCE.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        for m in RE_INLINE_SHELL.finditer(line):
+            cmd = m.group(1).strip()
+            hits.append(f"L{i}: !`{cmd[:40]}{'…' if len(cmd) > 40 else ''}`")
+    return hits
+
+
 def validate_body(
-    path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = None
+    path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = None, line_offset: int = 0
 ) -> Tuple[List[str], List[str], List[str]]:
     """
     Validate SKILL.md body content.
@@ -3091,6 +3166,33 @@ def validate_body(
     if fm is None:
         fm = {}
     lines = body.splitlines()
+
+    # === LOAD-TIME SHELL EXECUTION (schema 3.16.0) ===
+    #
+    # `` !`cmd` `` and ```` ```! ```` blocks are PREPROCESSING: Claude Code
+    # substitutes their output into the body before the model ever sees the
+    # skill. Upstream is explicit that this is "not something Claude executes"
+    # — substitution runs once and the output is NOT re-scanned. So this is not
+    # a tool call, it is not gated by allowed-tools, and no permission rule sees
+    # it. It runs on load.
+    #
+    # Reported, never blocked: this is existing, documented, widely-used
+    # behaviour, and turning a brand-new check into a merge-blocking error in
+    # the change that introduces it is how a gate loses trust. The point is to
+    # make an invisible surface reviewable — upstream's own guidance is "review
+    # project skills before trusting a repository, since a skill can grant
+    # itself broad tool access".
+    shell_hits = _load_time_shell_hits(body, line_offset)
+    if shell_hits:
+        where = ", ".join(shell_hits[:3]) + (f" (+{len(shell_hits) - 3} more)" if len(shell_hits) > 3 else "")
+        target = fm.get("shell")
+        target_note = f"; `shell: {target}` selects the interpreter" if target else ""
+        warnings.append(
+            f"[security] SKILL.md runs {len(shell_hits)} shell substitution(s) at LOAD time, before Claude "
+            f"reads the body: {where}. This is preprocessing — it is not a tool call, allowed-tools does not "
+            f"gate it, and the output is not re-scanned{target_note}. Review it as executable code. The "
+            f"documented kill switch is the `disableSkillShellExecution` setting."
+        )
 
     # === LENGTH CHECKS ===
 
@@ -4406,7 +4508,8 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     errors.extend(check_yaml_shell_substitution(fm))
 
     # Validate body
-    body_errors, body_warnings, body_infos = validate_body(path, body, tier, fm)
+    _body_offset = len(content.splitlines()) - len(body.splitlines())
+    body_errors, body_warnings, body_infos = validate_body(path, body, tier, fm, _body_offset)
     errors.extend(body_errors)
     warnings.extend(body_warnings)
     infos.extend(body_infos)
