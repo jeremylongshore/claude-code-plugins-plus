@@ -10607,6 +10607,31 @@
       }
     },
     {
+      "name": "intent-labs-pack",
+      "source": "./plugins/productivity/intent-labs-pack",
+      "description": "Labs skills for Intent Eval Platform dogfood: audit-tests (7-layer test auditor) and validate-skillmd (four-tier SKILL.md grader). Public checkout path for the nightly signed roster.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "audit-tests",
+        "validate-skillmd",
+        "testing",
+        "skill-validation",
+        "intent-eval",
+        "dogfood"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 2,
+        "commands": 0,
+        "agents": 0,
+        "total": 2
+      }
+    },
+    {
       "name": "agent-safety-preflight",
       "source": "./plugins/security/agent-safety-preflight",
       "description": "Local Claude Code command that generates a repo-risk receipt before AI-agent edits.",

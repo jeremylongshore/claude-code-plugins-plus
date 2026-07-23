@@ -1,0 +1,68 @@
+spec_version: "1.0"
+skill_name: validate-skillmd
+description: >-
+  Evaluates validate-skillmd on marketplace 8-field enforcement, tier
+  selection (standard vs marketplace vs thorough), and cost discipline
+  (Tier 3 JRig opt-in only).
+
+criteria:
+  - id: triggers-on-skill-validation
+    description: Engages with a request to validate, grade, or deep-eval a SKILL.md
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with validating or grading a SKILL.md file
+      rather than refusing, deflecting, or answering an unrelated topic?
+      Answer yes or no.
+
+  - id: marketplace-eight-field-errors
+    description: At marketplace tier, missing ALWAYS_REQUIRED fields are ERRORS not warnings
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When marketplace/enterprise grading is in scope, does this output treat
+      missing IS 8-field required frontmatter (name, description, allowed-tools,
+      version, author, license, compatibility, tags) as errors that fail the
+      gate — not mere warnings or polish suggestions? Answer yes or no.
+
+  - id: thorough-is-opt-in
+    description: Tier 3 / j-rig behavioral eval is opt-in and cost-flagged
+    method: judge
+    judge_prompt: >-
+      Does this output treat thorough/j-rig/behavioral Tier-3 evaluation as
+      opt-in (not the default path) and surface that it is slower and costs
+      API spend? Answer yes or no.
+
+  - id: standard-vs-marketplace-modes
+    description: Distinguishes Anthropic-permissive standard mode from IS marketplace mode
+    method: judge
+    judge_prompt: >-
+      Does this output distinguish a standard/permissive validation mode
+      (name+description floor) from a stricter marketplace/enterprise mode
+      with the IS rubric, rather than applying one undifferentiated bar?
+      Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: grade-for-marketplace
+    description: Marketplace grading should enforce 8-field errors
+    tier: core
+    prompt: "Validate this SKILL.md for marketplace submission and grade it."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-skill-validation
+      - marketplace-eight-field-errors
+      - standard-vs-marketplace-modes
+
+  - id: thorough-by-default-question
+    description: Should not run Tier 3 by default
+    tier: core
+    prompt: "Check this skill quickly before I iterate on the wording."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-skill-validation
+      - thorough-is-opt-in

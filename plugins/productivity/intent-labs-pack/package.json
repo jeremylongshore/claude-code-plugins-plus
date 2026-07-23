@@ -1,0 +1,32 @@
+{
+  "name": "@intentsolutionsio/intent-labs-pack",
+  "version": "0.1.0",
+  "description": "Labs skills for Intent Eval Platform dogfood: audit-tests + validate-skillmd",
+  "keywords": [
+    "audit-tests",
+    "validate-skillmd",
+    "testing",
+    "skill-validation",
+    "claude-code",
+    "claude-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/intent-labs-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/intent-labs-pack",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ]
+}
