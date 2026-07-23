@@ -140,7 +140,7 @@ def score_python(root: Path, kind: str) -> list[MethodScore]:
                 pct = summary.get("summary", {}).get("percent_covered", 0.0)
                 coverage[fpath] = float(pct)
         except (OSError, json.JSONDecodeError):
-            pass
+            pass  # missing or malformed coverage artifact — treat as zero coverage
 
     scores: list[MethodScore] = []
     for (fpath, name), c in complexity.items():
@@ -247,7 +247,7 @@ def score_js(root: Path, kind: str) -> list[MethodScore]:
                 lines_pct = summary.get("lines", {}).get("pct", 0.0)
                 coverage[fpath] = float(lines_pct)
         except (OSError, json.JSONDecodeError):
-            pass
+            pass  # missing or malformed coverage artifact — treat as zero coverage
 
     scores: list[MethodScore] = []
     for report in data.get("reports", []):
@@ -384,7 +384,7 @@ def main() -> int:
     test_blockers = [asdict(s) for s in test_scores if s.crap > args.threshold_test]
     avg_fail = prod_avg > args.threshold_avg
 
-    pass_ = not (prod_blockers or test_blockers or avg_fail)
+    gate_passed = not (prod_blockers or test_blockers or avg_fail)
 
     summary = {
         "language": lang,
@@ -404,14 +404,14 @@ def main() -> int:
             "max_crap": round(test_max, 2),
             "blockers": test_blockers,
         },
-        "pass": pass_,
+        "pass": gate_passed,
     }
 
     if args.format in ("json", "both"):
         (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 
-    print(json.dumps({"pass": pass_, "summary_path": str(out_dir / "summary.json")}))
-    return 0 if pass_ else 1
+    print(json.dumps({"pass": gate_passed, "summary_path": str(out_dir / "summary.json")}))
+    return 0 if gate_passed else 1
 
 
 if __name__ == "__main__":
