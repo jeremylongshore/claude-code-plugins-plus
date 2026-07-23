@@ -1072,7 +1072,10 @@ jobs:
           python-version: '3.12'
 
       - name: Install ruff
-        run: pip install ruff
+        # Pin: ruff 0.16.0+ rewrites SKILL.md fenced Python as format targets
+        # (1132 "would be reformatted" on an otherwise green main). Keep in
+        # lockstep with ruff-format-check below.
+        run: pip install 'ruff==0.15.22'
 
       # BLOCKING — codebase passed baseline at PR #765 (2026-05-22, 730→0).
       # ruff.toml at repo root governs rule selection.
@@ -1091,7 +1094,8 @@ jobs:
           python-version: '3.12'
 
       - name: Install ruff
-        run: pip install ruff
+        # See ruff-check pin note — 0.16.0 broke the skill-markdown corpus.
+        run: pip install 'ruff==0.15.22'
 
       # BLOCKING — 374 files formatted at PR #765 baseline.
       # Run `ruff format plugins/ scripts/` locally to fix before pushing.

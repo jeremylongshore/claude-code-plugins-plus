@@ -45,10 +45,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      # packageManager in package.json is SoT — do not also pass version:
+      # here (pnpm/action-setup@v4 errors on mismatch with packageManager).
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node
         uses: actions/setup-node@v4
