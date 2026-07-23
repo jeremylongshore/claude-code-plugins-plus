@@ -1,0 +1,177 @@
+name: CI Failure Explainer
+
+# Posts a DETERMINISTIC "why did CI fail + how to fix each check" comment on a
+# PR whose "Validate Plugins" run failed — so fork contributors get actionable
+# feedback instead of a wall of red. No LLM, no secrets, no fork-code checkout:
+# it reads the failed jobs' logs via the base GITHUB_TOKEN and runs the
+# base-authored scripts/ci-failure-explainer.mjs. Advisory only — this workflow
+# is NOT in the ci-required aggregate and can never block a merge.
+#
+# FORK-SAFE via `workflow_run`: it runs in BASE context (base workflow file,
+# base token) regardless of whether the triggering PR is a fork, which is why
+# it can comment on fork PRs at all. See the audit must-fixes encoded below
+# (spoof-proof PR resolution, event/conclusion gates, least privilege).
+
+on:
+  workflow_run:
+    workflows: ['Validate Plugins']
+    types: [completed]
+  # Manual hook to test the whole pipeline against a KNOWN historical failed
+  # run (e.g. #1101's Validate Plugins run) — workflow_run lanes only execute
+  # the copy on the default branch, so this is the only way to exercise it
+  # before trusting it on live PRs.
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'A failed "Validate Plugins" run id to explain (for testing)'
+        type: string
+        required: true
+
+concurrency:
+  # PR number isn't known at trigger time (workflow_run), so key on the head
+  # branch + head repo (both present on the payload) — dedupes a force-push
+  # storm to one live run per PR head.
+  group: >-
+    ci-failure-explainer-${{ github.event.workflow_run.head_repository.full_name
+    || github.repository }}-${{ github.event.workflow_run.head_branch
+    || inputs.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read # read the failed run's jobs + their logs
+  checks: read
+  pull-requests: write # upsert the one marker comment
+
+jobs:
+  explain:
+    runs-on: ubuntu-latest
+    # Only for genuinely-failed PR-triggered runs (skip pushes to main,
+    # successes, and in-progress). workflow_dispatch always proceeds.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (vars.ENABLE_CI_FAILURE_EXPLAINER == 'true' &&
+       github.event.workflow_run.event == 'pull_request' &&
+       github.event.workflow_run.conclusion == 'failure')
+    steps:
+      # Base repo only — we run scripts/ci-failure-explainer.mjs from main,
+      # never any fork content.
+      - name: Checkout base (script source)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Resolve the run + PR (spoof-proof)
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RUN_ID="${{ inputs.run_id }}"
+            RUN=$(gh api "repos/$REPO/actions/runs/$RUN_ID")
+            HEAD_SHA=$(echo "$RUN" | jq -r '.head_sha')
+            HEAD_REPO=$(echo "$RUN" | jq -r '.head_repository.full_name')
+          else
+            RUN_ID="${{ github.event.workflow_run.id }}"
+            HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+            HEAD_REPO="${{ github.event.workflow_run.head_repository.full_name }}"
+          fi
+
+          # workflow_run.pull_requests[] is EMPTY for fork PRs — resolve via the
+          # commit→PRs association against the BASE repo, then VERIFY the match.
+          CANDIDATES=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
+            --jq '[.[] | {number, head_sha: .head.sha, head_repo: .head.repo.full_name, state}]')
+          PR_NUMBER=$(echo "$CANDIDATES" | jq -r \
+            --arg sha "$HEAD_SHA" --arg repo "$HEAD_REPO" \
+            'map(select(.head_sha == $sha and .head_repo == $repo and .state == "open")) | (.[0].number // empty)')
+
+          if [ -z "${PR_NUMBER:-}" ]; then
+            echo "::notice::No open PR matches head_sha=$HEAD_SHA head_repo=$HEAD_REPO — refusing to comment (anti-spoof)."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Belt-and-suspenders: re-fetch the resolved PR and confirm BOTH the
+          # head SHA and head repo still equal the run's — never post otherwise.
+          PR=$(gh api "repos/$REPO/pulls/$PR_NUMBER")
+          if [ "$(echo "$PR" | jq -r '.head.sha')" != "$HEAD_SHA" ] || \
+             [ "$(echo "$PR" | jq -r '.head.repo.full_name')" != "$HEAD_REPO" ]; then
+            echo "::notice::Resolved PR #$PR_NUMBER no longer matches the run head — refusing to comment."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "skip=false"
+            echo "run_id=$RUN_ID"
+            echo "pr_number=$PR_NUMBER"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Gather failed checks (name + bounded error text)
+        id: gather
+        if: steps.resolve.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          # Failed jobs of the Validate Plugins run (base repo → base token).
+          gh api --paginate "repos/$REPO/actions/runs/$RUN_ID/jobs" \
+            > /tmp/jobs.json
+          jq -c '[.jobs[] | select(.conclusion=="failure") | {name, id, url: .html_url}]' \
+            /tmp/jobs.json > /tmp/failed-jobs.json
+          COUNT=$(jq 'length' /tmp/failed-jobs.json)
+          echo "failed jobs: $COUNT" >&2
+
+          # For each failed job, pull its log and keep only signature-bearing
+          # lines, hard-capped. The log is base-repo CI output; we never execute
+          # it, only pattern-match it in the explainer.
+          echo '[]' > /tmp/failed-checks.json
+          for row in $(jq -c '.[]' /tmp/failed-jobs.json); do
+            JID=$(echo "$row" | jq -r '.id')
+            NAME=$(echo "$row" | jq -r '.name')
+            URL=$(echo "$row" | jq -r '.url')
+            LOG=$(gh api "repos/$REPO/actions/jobs/$JID/logs" 2>/dev/null || true)
+            # Keep only lines carrying a known signature; cap to 4000 bytes.
+            TEXT=$(printf '%s' "$LOG" \
+              | grep -aiE 'ERR_PNPM_OUTDATED_LOCKFILE|MD[0-9]{3}|MISSING required document|error|not formatted|::error' \
+              | head -c 4000 || true)
+            jq --arg n "$NAME" --arg t "$TEXT" --arg u "$URL" \
+              '. += [{name:$n, text:$t, url:$u}]' /tmp/failed-checks.json \
+              > /tmp/failed-checks.json.tmp && mv /tmp/failed-checks.json.tmp /tmp/failed-checks.json
+          done
+          echo "have=$( [ "$COUNT" -gt 0 ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+
+      - name: Render the deterministic explanation
+        id: render
+        if: steps.resolve.outputs.skip == 'false' && steps.gather.outputs.have == 'true'
+        run: |
+          set -euo pipefail
+          node scripts/ci-failure-explainer.mjs --checks /tmp/failed-checks.json \
+            > /tmp/comment.md
+          echo "rendered comment ($(wc -c < /tmp/comment.md) bytes):" >&2
+          cat /tmp/comment.md >&2
+
+      - name: Upsert the marker comment (idempotent)
+        if: steps.resolve.outputs.skip == 'false' && steps.gather.outputs.have == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          MARKER='<!-- ci-failure-explainer -->'
+          # Find an existing comment carrying our marker; PATCH it, else create.
+          CID=$(gh api --paginate "repos/$REPO/issues/$PR_NUMBER/comments" \
+            --jq "map(select(.body | contains(\"$MARKER\"))) | (.[0].id // empty)")
+          if [ -n "${CID:-}" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$CID" \
+              -F body=@/tmp/comment.md >/dev/null
+            echo "updated comment $CID on PR #$PR_NUMBER"
+          else
+            gh api -X POST "repos/$REPO/issues/$PR_NUMBER/comments" \
+              -F body=@/tmp/comment.md >/dev/null
+            echo "created comment on PR #$PR_NUMBER"
+          fi
