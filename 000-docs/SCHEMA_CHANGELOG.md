@@ -146,6 +146,87 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.16.0] — 2026-07-23 — Canonical tool names resynced (spec-compliance fix) + advisory security lane
+
+### The defect
+
+`VALID_TOOLS` held 13 hand-maintained names. The upstream Tools reference
+defines **43**, and states they are *"the exact strings you use in permission
+rules, subagent tool lists, and hook matchers"* — which makes that table the
+authority for what an `allowed-tools` entry may name.
+
+The old set listed `Task`, renamed to `Agent` in Claude Code **v2.1.63**, and
+omitted `Agent` itself along with 31 other real tools. So the gate emitted
+`not a built-in Claude Code tool` on the **correct** name while the **retired**
+one passed silently — steering marketplace authors toward a legacy alias.
+
+The rename predates this repo's spec-drift monitoring window entirely, which is
+why no drift check ever surfaced it.
+
+### Changed
+
+- `VALID_TOOLS` → the canonical 43, transcribed from a raw fetch of
+  `tools-reference.md`. Membership is **EXACT-MATCH**: `Task` is retired but
+  `TaskCreate`/`TaskGet`/`TaskList`/`TaskOutput`/`TaskStop`/`TaskUpdate` are all
+  canonical, so any prefix or substring rule mis-classifies in both directions.
+- `LEGACY_TOOL_ALIASES` (new) — `Task` → `Agent`, reported as a rename rather
+  than as unknown. Checked before the membership test, because a legacy name is
+  by definition absent from the canonical set and `difflib` would otherwise
+  suggest a misleading near-match (`Task` → `TaskGet`).
+- `RE_MCP_TOOL_REF` widened to the three documented MCP allow-rule forms
+  (`mcp__server`, `mcp__server__tool`, `mcp__server__glob`). The server segment
+  stays glob-free: upstream skips unanchored globs such as `mcp__*` with a
+  warning rather than auto-approving, so it must fall through to the
+  unknown-tool advisory instead of being blessed here.
+- **Security lane, advisory:** load-time shell substitution (`` !`cmd` `` and
+  ` ```! ` blocks) is now reported. It is PREPROCESSING — substituted before
+  Claude reads the body, not a tool call, not gated by `allowed-tools`, output
+  not re-scanned — so nothing in the validator saw it. Occurrences inside an
+  ORDINARY code fence are excluded (skills that document the syntax);
+  ` ```! ` is always counted. The documented kill switch,
+  `disableSkillShellExecution`, is named in the finding.
+- **Security lane, advisory:** `disallowed-tools` entries are validated like
+  `allowed-tools` entries. Previously only shape and the
+  allowed∩disallowed overlap were checked, so a misspelled or retired name in a
+  **deny** list matched nothing, silently. A deny rule that matches no tool is
+  worse than a missing one: it reads as a control while providing none.
+
+### Corpus effect (measured over all 3,176 marketplace `SKILL.md` with `allowed-tools`)
+
+| | count |
+|---|---|
+| spurious advisories cleared (12 `Agent`, 2 `Monitor`, 2 `TaskStop`) | 16 decls / 14 files |
+| silent `Task` declarations now advised as a rename | 137 |
+| regressions (known → unknown) | **0** |
+| files gaining the load-time-shell advisory | 103 (223 substitutions) |
+
+### Not architectural — NON-NEGOTIABLES unchanged
+
+Per NON-NEGOTIABLE #5 this is a spec-compliance fix, made autonomously.
+`ALWAYS_REQUIRED`, the tier model, and error-vs-warning semantics are all
+untouched: **every** tool diagnostic stays WARNING-level, and grades are
+unchanged across 37 sampled affected files (0 movements).
+
+`Task` warns rather than errors deliberately. The Agent SDK still emits `"Task"`
+in the `system:init` tools list and in `permission_denials[].tool_name`, so the
+name is not dead at runtime even though it is gone from the authoring surface —
+and warning→error would be an error-vs-warning semantics change, architectural
+per NON-NEGOTIABLE #7.
+
+### Verified
+
+17 new tests. Suite 54/54 in `tests/test_validate_skills_schema_frontmatter.py`;
+104 passed / 2 skipped across validator tests. Every lock mutation-verified:
+reverting `VALID_TOOLS` → 4 red; dropping `LEGACY_TOOL_ALIASES` → 1 red;
+reverting the MCP regex → 1 red; neutering shell detection → 1 red; dropping the
+`disallowed-tools` entry check → 2 red.
+
+Shell-finding line numbers are shifted into FILE coordinates via a
+`line_offset` (`validate_body` receives the body with frontmatter stripped) and
+checked against the file: reported L71 == `grep` L71.
+
+---
+
 ## [3.15.2] — 2026-07-12 — `disallowed-tools` cross-field enforcement made real (spec-compliance, additive; closes claude-41c2.2)
 
 **Additive spec-compliance implementation — no change to `ALWAYS_REQUIRED`, the
