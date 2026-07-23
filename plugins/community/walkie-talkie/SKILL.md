@@ -1,8 +1,23 @@
 ---
 name: walkie-talkie
-description: 'Use when two or more agent sessions — same or different platforms (Claude Code, Codex, Gemini CLI, Copilot, Cursor) — work the same repo concurrently, hand off in-flight work, or need to interrogate each other about a handoff. Triggers: "set up comms with the other session", "hand this off to Codex/Gemini", "grill the handoff", "check the mailbox", parallel sessions clobbering shared files, resuming work another agent left half-done.'
+description: >-
+  Use when two or more agent sessions — same or different platforms (Claude Code,
+  Codex, Gemini CLI, Copilot, Cursor) — work the same repo concurrently, hand off
+  in-flight work, or need to interrogate each other about a handoff. Triggers:
+  "set up comms with the other session", "hand this off to Codex/Gemini", "grill
+  the handoff", "check the mailbox", parallel sessions clobbering shared files,
+  resuming work another agent left half-done. Trigger with "/walkie-talkie".
+allowed-tools: Read,Write,Edit,Glob,Grep,Bash(git:*)
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
+compatibility: Designed for Claude Code; also usable from Codex/Gemini/Copilot/Cursor sessions that can read and write files
+tags:
+  - multi-agent
+  - coordination
+  - handoff
+  - mailbox
 ---
-
 # Walkie-Talkie
 
 ## Overview
@@ -89,3 +104,54 @@ Any grill question that cannot be answered with evidence is recorded as a **RISK
 | Mailbox only written at session end | Checkpoint cadence: start, before each slice, after each slice |
 | Protocol described only in chat | README.md in the comms dir + shims in CLAUDE.md/AGENTS.md/GEMINI.md |
 | Committing code without its mailbox entry | Commit them together — a pull must never show unexplained code |
+
+## Prerequisites
+
+- A shared git repo both sessions can pull/push
+- Write access to create `comms/` (or an agreed path) and one outbox file per agent handle
+- Participating platforms that auto-read at least one bootstrap file (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, …)
+
+## Instructions
+
+Follow the Setup / Message Format / Grill sections above. Non-negotiables:
+
+1. One writer per outbox file; append-only.
+2. Never edit another agent's outbox.
+3. Commit mailbox updates with the code they describe.
+4. On handoff receipt, run the Grill before trusting claims.
+
+## Output
+
+- A `comms/` (or agreed) mailbox directory with `README.md` (protocol) and `<HANDLE>.md` outboxes
+- Appended status / handoff / ACTION-REQUESTED entries with timestamps
+- Optional Grill notes on the receiving agent's outbox after interrogation
+
+## Examples
+
+### Two Claude sessions hand off mid-feature
+
+```
+Session A: /walkie-talkie set up comms at .agents/comms/
+Session A: writes STATUS + handoff with file:line load-bearing state
+Session B: reads mailbox, grills ambiguous claims, continues work
+```
+
+### Claude → Codex handoff
+
+```
+Session A (Claude): creates comms/, appends handoff entry
+Human: git push; opens Codex on same branch
+Session B (Codex): reads AGENTS.md → mailbox path → grills → continues
+```
+
+## Edge Cases
+
+- **Same-harness Claude-only teams:** prefer Agent Teams / SendMessage; this skill is for heterogeneous or cross-machine sessions.
+- **Empty peer outbox:** initialize with a one-line pointer to README so first read routes correctly.
+- **Merge conflicts on outboxes:** design forbids multi-writer files; if it happens, treat as process break and re-split by handle.
+- **Stale handoff:** Grill for freshness (commit SHA, branch tip, uncommitted work) before applying.
+
+## Resources
+
+- Protocol template: [PROTOCOL_TEMPLATE.md](PROTOCOL_TEMPLATE.md)
+- Package metadata: [package.json](package.json)
