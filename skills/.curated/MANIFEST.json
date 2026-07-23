@@ -23239,6 +23239,7 @@
         "agents/comparator.md",
         "agents/grader.md",
         "assets/eval_review.html",
+        "eval-spec.yaml",
         "eval-viewer/generate_review.py",
         "eval-viewer/viewer.html",
         "references/advanced-eval-workflow.md",

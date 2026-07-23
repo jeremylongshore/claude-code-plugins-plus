@@ -1,0 +1,70 @@
+name: Skill Conform
+
+# Deterministic conformance gate for marketplace artifacts (SKILL.md, agents,
+# mcp configs, plugin manifests) via audit-harness@>=1.3.1 `conform`.
+#
+# OWN branch-protection context — never added to ci-required's needs: (doc 110
+# § 5: ci-required must not gain path-scoped or skippable jobs). Always-reports
+# on every PR/push so a required check never sits "Expected" forever.
+#
+# IEP #17 / bd_000-projects-1jn0.2 — first required use of our own tools on
+# our own marketplace. Behavioral j-rig eval stays advisory (sibling workflow).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-conform-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  skill-conform:
+    name: skill-conform
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # packageManager in package.json is SoT — do not also pass version:
+      # here (pnpm/action-setup@v4 errors on mismatch with packageManager).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: audit-harness conform --strict
+        run: |
+          set -euo pipefail
+          pnpm exec audit-harness --version
+          # --strict: FAIL rows exit 1. ADVISORY (e.g. marketplace schema not
+          # bundled) stays non-blocking by harness design.
+          pnpm exec audit-harness conform --strict | tee /tmp/conform.json
+          # Surface a short summary for the job log
+          python3 - <<'PY'
+          import json
+          rows = json.load(open("/tmp/conform.json"))
+          from collections import Counter
+          c = Counter(r.get("result") for r in rows)
+          print("conform summary:", dict(c), "total", len(rows))
+          fails = [r for r in rows if r.get("result") == "FAIL"]
+          if fails:
+              print("FAIL rows:")
+              for r in fails[:20]:
+                  print(" ", r.get("metadata", {}).get("artifact_path"), r.get("message") or r.get("result"))
+              raise SystemExit(1)
+          PY

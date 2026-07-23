@@ -1,0 +1,97 @@
+spec_version: "1.0"
+skill_name: skill-creator
+description: >-
+  Evaluates skill-creator on create vs validate mode detection, marketplace
+  8-field / top-level metadata discipline, AgentSkills.io + Anthropic alignment,
+  and scoped Bash / disallowed-tools non-overlap rules.
+
+criteria:
+  - id: triggers-on-skill-authoring
+    description: Engages with a request to create, validate, grade, or optimize a skill
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with creating, validating, grading, or optimizing
+      a Claude Code / AgentSkills skill (SKILL.md package) rather than refusing,
+      deflecting, or answering an unrelated topic? Answer yes or no.
+
+  - id: mode-detection-create-vs-validate
+    description: Distinguishes create-new-skill mode from validate/grade existing skill
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output distinguish create/build mode (new skill package) from
+      validate/grade/audit mode (existing SKILL.md), and pick a path consistent
+      with the user request rather than blending them into one undifferentiated
+      workflow? Answer yes or no.
+
+  - id: marketplace-top-level-fields
+    description: Enforces top-level IS 8-field / top-level metadata (not nested under metadata:)
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output require or produce top-level frontmatter fields for the
+      Intent Solutions marketplace set (name, description, allowed-tools, version,
+      author, license, compatibility, tags) and reject nesting author/version/license
+      under a metadata: block as the desired shape? Answer yes or no.
+
+  - id: agentskills-and-anthropic-aligned
+    description: Aligns with AgentSkills.io + Anthropic skill/frontmatter norms
+    method: judge
+    judge_prompt: >-
+      Does this output ground skill structure in AgentSkills.io and/or Anthropic
+      Claude Code skill conventions (frontmatter identity, progressive disclosure,
+      description trigger phrasing) rather than inventing an incompatible package
+      shape? Answer yes or no.
+
+  - id: bash-scoped-and-disallowed-no-overlap
+    description: Scopes Bash tools and never overlaps allowed-tools with disallowed-tools
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When tools are discussed, does this output scope Bash (e.g. Bash(git:*) not
+      bare Bash) and treat allowed-tools / disallowed-tools overlap as an error
+      to avoid? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: create-simple-skill
+    description: Create-mode request should plan a compliant package
+    tier: core
+    prompt: >-
+      Create a skill called "code-review" that reviews code quality for PRs.
+      Keep it simple (SKILL.md only) for marketplace submission.
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-skill-authoring
+      - mode-detection-create-vs-validate
+      - marketplace-top-level-fields
+      - agentskills-and-anthropic-aligned
+
+  - id: grade-existing-skill
+    description: Validate-mode request should grade, not scaffold a new skill
+    tier: core
+    prompt: >-
+      Grade my skill at ~/.claude/skills/code-review/SKILL.md against the
+      marketplace rubric and tell me what to fix first.
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-skill-authoring
+      - mode-detection-create-vs-validate
+      - marketplace-top-level-fields
+
+  - id: bare-bash-request
+    description: Should scope Bash and avoid allow/deny overlap
+    tier: core
+    prompt: >-
+      Build a deploy skill that needs full shell access — just put Bash in
+      allowed-tools and also block rm somehow.
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-skill-authoring
+      - bash-scoped-and-disallowed-no-overlap
+      - marketplace-top-level-fields

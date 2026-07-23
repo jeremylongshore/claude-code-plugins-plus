@@ -1,0 +1,182 @@
+name: Skill Eval Advisory
+
+# Advisory behavioral eval lane for marketplace skill PRs (doc 110 option a).
+# ADVISORY ONLY — never a required check, never in ci-required's needs, never
+# blocks a merge. Mirrors minimax-review.yml shape: pull_request (not
+# pull_request_target), same-repo guard, kill-switch variable, per-PR concurrency.
+#
+# Runs j-rig eval only for changed skill directories that carry a hand-authored
+# eval-spec.yaml. No such skill changed → designed no-op green.
+#
+# Activation:
+#   Repo variable ENABLE_SKILL_EVAL = true
+#   Repo secret   MINIMAX_API_KEY (already present for minimax-review)
+#
+# Graduation to required is NOT authorized here (doc 110 § 3b / § 6 step 6 —
+# Jeremy explicit + 4-week soak + flap window).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - 'plugins/**'
+      - 'skills/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: skill-eval-advisory-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  skill-eval-advisory:
+    name: skill-eval-advisory
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: >-
+      ${{ vars.ENABLE_SKILL_EVAL == 'true' &&
+          github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # packageManager in package.json is SoT — do not also pass version:
+      # here (pnpm/action-setup@v4 errors on mismatch with packageManager).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Detect changed skills with eval-spec.yaml
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          mapfile -t CHANGED < <(git diff --name-only "$BASE"..."$HEAD" | grep -E 'SKILL\.md$|eval-spec\.yaml$' || true)
+          SKILLS=()
+          for f in "${CHANGED[@]:-}"; do
+            dir=$(dirname "$f")
+            # Walk up to find a directory that has both SKILL.md and eval-spec.yaml
+            while [[ "$dir" != "." && "$dir" != "/" ]]; do
+              if [[ -f "$dir/SKILL.md" && -f "$dir/eval-spec.yaml" ]]; then
+                SKILLS+=("$dir")
+                break
+              fi
+              dir=$(dirname "$dir")
+            done
+          done
+          # Unique
+          if [[ ${#SKILLS[@]} -eq 0 ]]; then
+            echo "skills=" >> "$GITHUB_OUTPUT"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo "No changed skills with eval-spec.yaml — designed no-op."
+            exit 0
+          fi
+          # de-dupe
+          mapfile -t SKILLS < <(printf '%s\n' "${SKILLS[@]}" | sort -u)
+          echo "count=${#SKILLS[@]}" >> "$GITHUB_OUTPUT"
+          echo "skills=${SKILLS[*]}" >> "$GITHUB_OUTPUT"
+          printf 'Will evaluate %d skill(s):\n' "${#SKILLS[@]}"
+          printf '  - %s\n' "${SKILLS[@]}"
+
+      - name: j-rig eval (advisory)
+        if: steps.detect.outputs.count != '0' && steps.detect.outputs.count != ''
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          J_RIG_ALLOW_STUB: ${{ secrets.MINIMAX_API_KEY == '' && '1' || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # @intentsolutions/jrig-cli exposes the `j-rig` binary (package.json bin).
+          if pnpm exec j-rig --version >/dev/null 2>&1; then
+            JRIG=(pnpm exec j-rig)
+          elif pnpm exec jrig --version >/dev/null 2>&1; then
+            JRIG=(pnpm exec jrig)
+          else
+            echo "j-rig CLI not installed — skipping advisory eval (still green)"
+            exit 0
+          fi
+          mkdir -p /tmp/skill-eval-advisory
+          STATUS=0
+          for skill in ${{ steps.detect.outputs.skills }}; do
+            echo "=== $skill ==="
+            key=$(basename "$skill")
+            # Provider: MiniMax when key present, else stub (still posts advisory note)
+            if [[ -n "${MINIMAX_API_KEY:-}" ]]; then
+              "${JRIG[@]}" eval "$skill" \
+                --spec "$skill/eval-spec.yaml" \
+                --provider minimax \
+                --models MiniMax-M3 \
+                --json > "/tmp/skill-eval-advisory/${key}.json" \
+                || STATUS=1
+            else
+              echo "MINIMAX_API_KEY unset — stub advisory run only"
+              J_RIG_ALLOW_STUB=1 "${JRIG[@]}" eval "$skill" \
+                --spec "$skill/eval-spec.yaml" \
+                --json > "/tmp/skill-eval-advisory/${key}.json" \
+                || STATUS=1
+            fi
+          done
+          echo "advisory_status=$STATUS" >> "$GITHUB_OUTPUT"
+          # Never fail the job — advisory only
+          exit 0
+
+      - name: Sticky advisory comment
+        if: always() && steps.detect.outputs.count != '0' && steps.detect.outputs.count != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const dir = '/tmp/skill-eval-advisory';
+            let body = '## Skill Eval Advisory\n\n';
+            body += '_ADVISORY ONLY — does not block merge. Behavioral j-rig eval on changed skills that carry `eval-spec.yaml` (doc 110 option a)._\n\n';
+            if (!fs.existsSync(dir)) {
+              body += 'No results produced.\n';
+            } else {
+              for (const f of fs.readdirSync(dir).filter(n => n.endsWith('.json'))) {
+                body += `### \`${f.replace('.json','')}\`\n\n`;
+                try {
+                  const j = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+                  body += '```json\n' + JSON.stringify(j, null, 2).slice(0, 4000) + '\n```\n\n';
+                } catch (e) {
+                  body += `_(unreadable result: ${e.message})_\n\n`;
+                }
+              }
+            }
+            body += '\n<!-- skill-eval-advisory-marker -->\n';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes('skill-eval-advisory-marker'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
