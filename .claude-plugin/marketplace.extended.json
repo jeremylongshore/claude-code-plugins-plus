@@ -156,7 +156,11 @@
       "description": "Audit access control implementations",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -200,7 +204,11 @@
       "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions",
       "version": "1.23.0",
       "category": "productivity",
-      "keywords": ["agents", "context", "automation"],
+      "keywords": [
+        "agents",
+        "context",
+        "automation"
+      ],
       "author": {
         "name": "Jeremy Longshore"
       },
@@ -262,7 +270,13 @@
       "description": "AI ethics and fairness validation",
       "version": "1.24.0",
       "category": "ai-ml",
-      "keywords": ["ethics", "fairness", "bias", "responsible-ai", "ml"],
+      "keywords": [
+        "ethics",
+        "fairness",
+        "bias",
+        "responsible-ai",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -280,7 +294,12 @@
       "description": "Track and analyze AI experiments with a web dashboard and MCP tools",
       "version": "1.12.0",
       "category": "mcp",
-      "keywords": ["ai", "experiments", "logging", "mcp"],
+      "keywords": [
+        "ai",
+        "experiments",
+        "logging",
+        "mcp"
+      ],
       "author": {
         "name": "Claude Code Plugins"
       },
@@ -366,7 +385,12 @@
       "description": "Create intelligent alerting rules for performance monitoring",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["alerting", "monitoring", "sre", "observability"],
+      "keywords": [
+        "alerting",
+        "monitoring",
+        "sre",
+        "observability"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -384,7 +408,13 @@
       "description": "Detect anomalies and outliers in data",
       "version": "1.26.0",
       "category": "ai-ml",
-      "keywords": ["anomaly", "outliers", "detection", "isolation", "ml"],
+      "keywords": [
+        "anomaly",
+        "outliers",
+        "detection",
+        "isolation",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -402,7 +432,13 @@
       "description": "Create Ansible playbooks for configuration management",
       "version": "1.27.0",
       "category": "devops",
-      "keywords": ["ansible", "automation", "configuration", "playbooks", "devops"],
+      "keywords": [
+        "ansible",
+        "automation",
+        "configuration",
+        "playbooks",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -420,7 +456,12 @@
       "description": "Build authentication systems with JWT, OAuth2, and API keys",
       "version": "1.23.0",
       "category": "api-development",
-      "keywords": ["authentication", "jwt", "oauth", "security"],
+      "keywords": [
+        "authentication",
+        "jwt",
+        "oauth",
+        "security"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -438,7 +479,12 @@
       "description": "Implement batch API operations with bulk processing and job queues",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["batch", "bulk", "queue", "job-processing"],
+      "keywords": [
+        "batch",
+        "bulk",
+        "queue",
+        "job-processing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -456,7 +502,12 @@
       "description": "Implement caching strategies with Redis, CDN, and HTTP headers",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["caching", "redis", "cdn", "performance"],
+      "keywords": [
+        "caching",
+        "redis",
+        "cdn",
+        "performance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -474,7 +525,12 @@
       "description": "Generate API contracts for consumer-driven contract testing",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["contract", "pact", "testing", "microservices"],
+      "keywords": [
+        "contract",
+        "pact",
+        "testing",
+        "microservices"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -492,7 +548,13 @@
       "description": "Generate comprehensive API documentation from OpenAPI/Swagger specs",
       "version": "1.27.0",
       "category": "api-development",
-      "keywords": ["api", "documentation", "openapi", "swagger", "docs"],
+      "keywords": [
+        "api",
+        "documentation",
+        "openapi",
+        "swagger",
+        "docs"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -510,7 +572,12 @@
       "description": "Implement standardized error handling with proper HTTP status codes",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["error-handling", "api", "http-status", "exceptions"],
+      "keywords": [
+        "error-handling",
+        "api",
+        "http-status",
+        "exceptions"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -528,7 +595,13 @@
       "description": "Implement event-driven APIs with message queues and event streaming",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["events", "messaging", "kafka", "rabbitmq", "event-driven"],
+      "keywords": [
+        "events",
+        "messaging",
+        "kafka",
+        "rabbitmq",
+        "event-driven"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -546,7 +619,14 @@
       "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
       "version": "1.25.0",
       "category": "testing",
-      "keywords": ["testing", "fuzzing", "api", "security", "edge-cases", "input-validation"],
+      "keywords": [
+        "testing",
+        "fuzzing",
+        "api",
+        "security",
+        "edge-cases",
+        "input-validation"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -564,7 +644,12 @@
       "description": "Build API gateway with routing, authentication, and rate limiting",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["api-gateway", "routing", "proxy", "microservices"],
+      "keywords": [
+        "api-gateway",
+        "routing",
+        "proxy",
+        "microservices"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -582,7 +667,12 @@
       "description": "Load test APIs with k6, Gatling, or Artillery",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["load-testing", "performance", "k6", "stress-testing"],
+      "keywords": [
+        "load-testing",
+        "performance",
+        "k6",
+        "stress-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -600,7 +690,12 @@
       "description": "Migrate APIs between versions with backward compatibility",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["migration", "versioning", "api", "backward-compatibility"],
+      "keywords": [
+        "migration",
+        "versioning",
+        "api",
+        "backward-compatibility"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -618,7 +713,12 @@
       "description": "Create mock API servers from OpenAPI specs for testing",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["mock", "testing", "openapi", "stub"],
+      "keywords": [
+        "mock",
+        "testing",
+        "openapi",
+        "stub"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -636,7 +736,12 @@
       "description": "Create monitoring dashboards for API health, metrics, and alerts",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["monitoring", "metrics", "observability", "dashboard"],
+      "keywords": [
+        "monitoring",
+        "metrics",
+        "observability",
+        "dashboard"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -654,7 +759,12 @@
       "description": "Implement rate limiting with token bucket, sliding window, and Redis",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["rate-limiting", "throttling", "api", "redis"],
+      "keywords": [
+        "rate-limiting",
+        "throttling",
+        "api",
+        "redis"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -672,7 +782,12 @@
       "description": "Log API requests with structured logging and correlation IDs",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["logging", "observability", "audit", "correlation"],
+      "keywords": [
+        "logging",
+        "observability",
+        "audit",
+        "correlation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -690,7 +805,12 @@
       "description": "Validate API responses against schemas and contracts",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["validation", "schema", "testing", "api"],
+      "keywords": [
+        "validation",
+        "schema",
+        "testing",
+        "api"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -708,7 +828,13 @@
       "description": "Validate API schemas with JSON Schema, Joi, Yup, or Zod",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["schema", "validation", "json-schema", "joi", "zod"],
+      "keywords": [
+        "schema",
+        "validation",
+        "json-schema",
+        "joi",
+        "zod"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -726,7 +852,12 @@
       "description": "Generate client SDKs from OpenAPI specs for multiple languages",
       "version": "1.22.0",
       "category": "api-development",
-      "keywords": ["sdk", "client", "openapi", "codegen"],
+      "keywords": [
+        "sdk",
+        "client",
+        "openapi",
+        "codegen"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -744,7 +875,12 @@
       "description": "Scan APIs for security vulnerabilities and OWASP API Top 10",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["security", "api", "owasp", "vulnerability"],
+      "keywords": [
+        "security",
+        "api",
+        "owasp",
+        "vulnerability"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -762,7 +898,14 @@
       "description": "Automated API endpoint testing with request generation, validation, and comprehensive test coverage",
       "version": "1.27.0",
       "category": "testing",
-      "keywords": ["testing", "api", "rest", "graphql", "automation", "endpoints"],
+      "keywords": [
+        "testing",
+        "api",
+        "rest",
+        "graphql",
+        "automation",
+        "endpoints"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -780,7 +923,12 @@
       "description": "Manage API throttling with dynamic rate limits and quota management",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["throttling", "rate-limiting", "quota", "traffic-management"],
+      "keywords": [
+        "throttling",
+        "rate-limiting",
+        "quota",
+        "traffic-management"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -798,7 +946,12 @@
       "description": "Manage API versions with migration strategies and backward compatibility",
       "version": "1.26.0",
       "category": "api-development",
-      "keywords": ["api", "versioning", "migration", "backward-compatibility"],
+      "keywords": [
+        "api",
+        "versioning",
+        "migration",
+        "backward-compatibility"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -816,7 +969,13 @@
       "description": "Create Application Performance Monitoring dashboards",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["apm", "monitoring", "dashboard", "grafana", "datadog"],
+      "keywords": [
+        "apm",
+        "monitoring",
+        "dashboard",
+        "grafana",
+        "datadog"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -834,7 +993,12 @@
       "description": "Profile application performance with CPU, memory, and execution time analysis",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["performance", "profiling", "monitoring", "optimization"],
+      "keywords": [
+        "performance",
+        "profiling",
+        "monitoring",
+        "optimization"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -852,7 +1016,13 @@
       "description": "Find and analyze arbitrage opportunities across exchanges and DeFi protocols",
       "version": "1.26.0",
       "category": "crypto",
-      "keywords": ["arbitrage", "trading", "defi", "mev", "profit"],
+      "keywords": [
+        "arbitrage",
+        "trading",
+        "defi",
+        "mev",
+        "profit"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -871,7 +1041,11 @@
       "description": "Validate authentication implementations",
       "version": "1.26.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -889,7 +1063,13 @@
       "description": "Configure auto-scaling policies for applications and infrastructure",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["autoscaling", "scaling", "hpa", "kubernetes", "devops"],
+      "keywords": [
+        "autoscaling",
+        "scaling",
+        "hpa",
+        "kubernetes",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -907,7 +1087,13 @@
       "description": "Build AutoML pipelines",
       "version": "1.25.0",
       "category": "ai-ml",
-      "keywords": ["automl", "automated", "pipeline", "h2o", "ml"],
+      "keywords": [
+        "automl",
+        "automated",
+        "pipeline",
+        "h2o",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -925,7 +1111,12 @@
       "description": "Implement backup strategies for databases and applications",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["backup", "disaster-recovery", "restoration", "devops"],
+      "keywords": [
+        "backup",
+        "disaster-recovery",
+        "restoration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -943,7 +1134,14 @@
       "description": "Command-line blockchain explorer for transactions, addresses, and contracts",
       "version": "1.30.0",
       "category": "crypto",
-      "keywords": ["blockchain", "explorer", "etherscan", "transactions", "addresses", "contracts"],
+      "keywords": [
+        "blockchain",
+        "explorer",
+        "etherscan",
+        "transactions",
+        "addresses",
+        "contracts"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -961,7 +1159,12 @@
       "description": "Detect and resolve performance bottlenecks",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["bottleneck", "performance", "optimization", "profiling"],
+      "keywords": [
+        "bottleneck",
+        "performance",
+        "optimization",
+        "profiling"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1004,7 +1207,12 @@
       "description": "Optimize caching strategies for improved performance",
       "version": "1.19.0",
       "category": "performance",
-      "keywords": ["cache", "performance", "optimization", "redis"],
+      "keywords": [
+        "cache",
+        "performance",
+        "optimization",
+        "redis"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1022,7 +1230,12 @@
       "description": "Enhances calendar Skills by automating meeting prep and workflow triggers",
       "version": "0.14.0",
       "category": "skill-enhancers",
-      "keywords": ["calendar", "automation", "meetings", "productivity"],
+      "keywords": [
+        "calendar",
+        "automation",
+        "meetings",
+        "productivity"
+      ],
       "author": {
         "name": "Claude Code Plugins Team"
       }
@@ -1033,7 +1246,12 @@
       "description": "Analyze and plan for capacity requirements",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["capacity-planning", "scaling", "forecasting", "infrastructure"],
+      "keywords": [
+        "capacity-planning",
+        "scaling",
+        "forecasting",
+        "infrastructure"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1076,7 +1294,14 @@
       "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
       "version": "1.24.0",
       "category": "devops",
-      "keywords": ["ci-cd", "github-actions", "gitlab-ci", "jenkins", "devops", "automation"],
+      "keywords": [
+        "ci-cd",
+        "github-actions",
+        "gitlab-ci",
+        "jenkins",
+        "devops",
+        "automation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1095,7 +1320,13 @@
       "description": "Build classification models",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["classification", "supervised", "predictor", "labels", "ml"],
+      "keywords": [
+        "classification",
+        "supervised",
+        "predictor",
+        "labels",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1113,7 +1344,14 @@
       "description": "Optimize cloud costs and generate cost reports",
       "version": "1.27.0",
       "category": "devops",
-      "keywords": ["cost", "optimization", "finops", "cloud", "aws", "devops"],
+      "keywords": [
+        "cost",
+        "optimization",
+        "finops",
+        "cloud",
+        "aws",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1131,7 +1369,13 @@
       "description": "Run clustering algorithms on datasets",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["clustering", "kmeans", "dbscan", "hierarchical", "ml"],
+      "keywords": [
+        "clustering",
+        "kmeans",
+        "dbscan",
+        "hierarchical",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1149,7 +1393,14 @@
       "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
       "version": "1.26.0",
       "category": "devops",
-      "keywords": ["compliance", "security", "audit", "soc2", "hipaa", "devops"],
+      "keywords": [
+        "compliance",
+        "security",
+        "audit",
+        "soc2",
+        "hipaa",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1167,7 +1418,11 @@
       "description": "Generate compliance reports",
       "version": "1.25.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1185,7 +1440,13 @@
       "description": "Computer vision image processing and analysis",
       "version": "1.21.0",
       "category": "ai-ml",
-      "keywords": ["cv", "vision", "images", "detection", "ml"],
+      "keywords": [
+        "cv",
+        "vision",
+        "images",
+        "detection",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1203,7 +1464,14 @@
       "description": "Manage container registries (ECR, GCR, Harbor)",
       "version": "1.24.0",
       "category": "devops",
-      "keywords": ["registry", "containers", "docker", "ecr", "gcr", "devops"],
+      "keywords": [
+        "registry",
+        "containers",
+        "docker",
+        "ecr",
+        "gcr",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1221,7 +1489,14 @@
       "description": "Scan containers for vulnerabilities using Trivy, Snyk, and other security tools",
       "version": "1.27.0",
       "category": "devops",
-      "keywords": ["security", "containers", "scanning", "vulnerabilities", "trivy", "devops"],
+      "keywords": [
+        "security",
+        "containers",
+        "scanning",
+        "vulnerabilities",
+        "trivy",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1265,7 +1540,16 @@
       "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
       "version": "1.14.0",
       "category": "mcp",
-      "keywords": ["mcp", "api", "debugging", "openapi", "har", "rest", "curl", "http"],
+      "keywords": [
+        "mcp",
+        "api",
+        "debugging",
+        "openapi",
+        "har",
+        "rest",
+        "curl",
+        "http"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1285,7 +1569,11 @@
       "description": "Validate CORS policies",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1303,7 +1591,12 @@
       "description": "Monitor and analyze CPU usage patterns in applications",
       "version": "1.23.0",
       "category": "performance",
-      "keywords": ["cpu", "monitoring", "performance", "optimization"],
+      "keywords": [
+        "cpu",
+        "monitoring",
+        "performance",
+        "optimization"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1417,7 +1710,13 @@
       "description": "Aggregate and analyze crypto news from multiple sources with sentiment analysis",
       "version": "1.25.0",
       "category": "crypto",
-      "keywords": ["news", "aggregator", "sentiment", "crypto", "media"],
+      "keywords": [
+        "news",
+        "aggregator",
+        "sentiment",
+        "crypto",
+        "media"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1435,7 +1734,15 @@
       "description": "Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics",
       "version": "1.27.0",
       "category": "crypto",
-      "keywords": ["crypto", "portfolio", "trading", "investment", "bitcoin", "ethereum", "defi"],
+      "keywords": [
+        "crypto",
+        "portfolio",
+        "trading",
+        "investment",
+        "bitcoin",
+        "ethereum",
+        "defi"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1454,7 +1761,13 @@
       "description": "Generate trading signals from technical indicators and market analysis",
       "version": "1.30.0",
       "category": "crypto",
-      "keywords": ["trading", "signals", "technical-analysis", "indicators", "crypto"],
+      "keywords": [
+        "trading",
+        "signals",
+        "technical-analysis",
+        "indicators",
+        "crypto"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1472,7 +1785,14 @@
       "description": "Calculate crypto taxes with FIFO/LIFO methods and generate tax reports",
       "version": "1.27.0",
       "category": "crypto",
-      "keywords": ["crypto", "tax", "calculator", "fifo", "lifo", "capital gains"],
+      "keywords": [
+        "crypto",
+        "tax",
+        "calculator",
+        "fifo",
+        "lifo",
+        "capital gains"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1490,7 +1810,11 @@
       "description": "Validate CSRF protection",
       "version": "1.26.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1508,7 +1832,13 @@
       "description": "Automated data preprocessing and cleaning pipelines",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["preprocessing", "cleaning", "etl", "pipeline", "data"],
+      "keywords": [
+        "preprocessing",
+        "cleaning",
+        "etl",
+        "pipeline",
+        "data"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1526,7 +1856,11 @@
       "description": "Scan for data privacy issues",
       "version": "1.23.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1544,7 +1878,13 @@
       "description": "Generate realistic test data and database seed scripts for development and testing environments",
       "version": "1.22.0",
       "category": "database",
-      "keywords": ["seeding", "test-data", "fixtures", "database", "testing"],
+      "keywords": [
+        "seeding",
+        "test-data",
+        "fixtures",
+        "database",
+        "testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1562,7 +1902,11 @@
       "description": "Database plugin for data-validation-engine",
       "version": "1.28.0",
       "category": "database",
-      "keywords": ["database", "backend", "validation"],
+      "keywords": [
+        "database",
+        "backend",
+        "validation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1580,7 +1924,13 @@
       "description": "Create data visualizations and plots",
       "version": "1.21.0",
       "category": "ai-ml",
-      "keywords": ["visualization", "plots", "charts", "graphs", "analytics"],
+      "keywords": [
+        "visualization",
+        "plots",
+        "charts",
+        "graphs",
+        "analytics"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1598,7 +1948,11 @@
       "description": "Database plugin for database-archival-system",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "archival"],
+      "keywords": [
+        "database",
+        "backend",
+        "archival"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1616,7 +1970,11 @@
       "description": "Database plugin for database-audit-logger",
       "version": "1.28.0",
       "category": "database",
-      "keywords": ["database", "backend", "audit"],
+      "keywords": [
+        "database",
+        "backend",
+        "audit"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1634,7 +1992,13 @@
       "description": "Automate database backups with scheduling, compression, encryption, and restore procedures",
       "version": "1.26.0",
       "category": "database",
-      "keywords": ["database", "backup", "automation", "disaster-recovery", "devops"],
+      "keywords": [
+        "database",
+        "backup",
+        "automation",
+        "disaster-recovery",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1652,7 +2016,11 @@
       "description": "Database plugin for database-cache-layer",
       "version": "1.29.0",
       "category": "database",
-      "keywords": ["database", "backend", "cache"],
+      "keywords": [
+        "database",
+        "backend",
+        "cache"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1670,7 +2038,13 @@
       "description": "Implement and optimize database connection pooling for improved performance and resource management",
       "version": "1.23.0",
       "category": "database",
-      "keywords": ["connection-pool", "database", "performance", "backend", "optimization"],
+      "keywords": [
+        "connection-pool",
+        "database",
+        "performance",
+        "backend",
+        "optimization"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1688,7 +2062,11 @@
       "description": "Database plugin for database-deadlock-detector",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "deadlock"],
+      "keywords": [
+        "database",
+        "backend",
+        "deadlock"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1706,7 +2084,11 @@
       "description": "Database plugin for database-diff-tool",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "diff"],
+      "keywords": [
+        "database",
+        "backend",
+        "diff"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1724,7 +2106,11 @@
       "description": "Database plugin for database-documentation-gen",
       "version": "1.29.0",
       "category": "database",
-      "keywords": ["database", "backend", "documentation"],
+      "keywords": [
+        "database",
+        "backend",
+        "documentation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1742,7 +2128,11 @@
       "description": "Database plugin for database-health-monitor",
       "version": "1.25.0",
       "category": "database",
-      "keywords": ["database", "backend", "health"],
+      "keywords": [
+        "database",
+        "backend",
+        "health"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1760,7 +2150,12 @@
       "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "indexes", "optimization", "performance"],
+      "keywords": [
+        "database",
+        "indexes",
+        "optimization",
+        "performance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1778,7 +2173,13 @@
       "description": "Manage database migrations with version control, rollback capabilities, and automated schema evolution tracking",
       "version": "1.23.0",
       "category": "database",
-      "keywords": ["database", "migration", "schema", "version-control", "backend"],
+      "keywords": [
+        "database",
+        "migration",
+        "schema",
+        "version-control",
+        "backend"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1796,7 +2197,11 @@
       "description": "Database plugin for database-partition-manager",
       "version": "1.25.0",
       "category": "database",
-      "keywords": ["database", "backend", "partition"],
+      "keywords": [
+        "database",
+        "backend",
+        "partition"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1814,7 +2219,13 @@
       "description": "Profile and optimize database queries for performance",
       "version": "1.9.0",
       "category": "performance",
-      "keywords": ["database", "query", "profiling", "optimization", "sql"],
+      "keywords": [
+        "database",
+        "query",
+        "profiling",
+        "optimization",
+        "sql"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1826,7 +2237,11 @@
       "description": "Database plugin for database-recovery-manager",
       "version": "1.26.0",
       "category": "database",
-      "keywords": ["database", "backend", "recovery"],
+      "keywords": [
+        "database",
+        "backend",
+        "recovery"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1844,7 +2259,13 @@
       "description": "Manage database replication, failover, and high availability configurations",
       "version": "1.28.0",
       "category": "database",
-      "keywords": ["replication", "high-availability", "failover", "database", "devops"],
+      "keywords": [
+        "replication",
+        "high-availability",
+        "failover",
+        "database",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1862,7 +2283,13 @@
       "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
       "version": "1.24.0",
       "category": "database",
-      "keywords": ["database", "schema", "design", "erd", "normalization"],
+      "keywords": [
+        "database",
+        "schema",
+        "design",
+        "erd",
+        "normalization"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1880,7 +2307,11 @@
       "description": "Database plugin for database-security-scanner",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "security"],
+      "keywords": [
+        "database",
+        "backend",
+        "security"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1898,7 +2329,11 @@
       "description": "Database plugin for database-sharding-manager",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "sharding"],
+      "keywords": [
+        "database",
+        "backend",
+        "sharding"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1942,7 +2377,11 @@
       "description": "Database plugin for database-transaction-monitor",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["database", "backend", "transaction"],
+      "keywords": [
+        "database",
+        "backend",
+        "transaction"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1960,7 +2399,13 @@
       "description": "Split datasets for training, validation, and testing",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["split", "train-test", "validation", "stratify", "ml"],
+      "keywords": [
+        "split",
+        "train-test",
+        "validation",
+        "stratify",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1978,7 +2423,13 @@
       "description": "Deep learning optimization techniques",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["optimization", "adam", "sgd", "learning-rate", "deep-learning"],
+      "keywords": [
+        "optimization",
+        "adam",
+        "sgd",
+        "learning-rate",
+        "deep-learning"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1996,7 +2447,15 @@
       "description": "Optimize DeFi yield farming strategies across protocols with APY tracking and risk assessment",
       "version": "1.28.0",
       "category": "crypto",
-      "keywords": ["defi", "yield", "farming", "liquidity", "apy", "optimization", "crypto"],
+      "keywords": [
+        "defi",
+        "yield",
+        "farming",
+        "liquidity",
+        "apy",
+        "optimization",
+        "crypto"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2014,7 +2473,14 @@
       "description": "Check dependencies for known vulnerabilities, outdated packages, and license compliance",
       "version": "1.27.0",
       "category": "security",
-      "keywords": ["security", "dependencies", "npm", "pip", "composer", "vulnerabilities"],
+      "keywords": [
+        "security",
+        "dependencies",
+        "npm",
+        "pip",
+        "composer",
+        "vulnerabilities"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2032,7 +2498,13 @@
       "description": "Orchestrate complex multi-stage deployment pipelines",
       "version": "1.28.0",
       "category": "devops",
-      "keywords": ["pipeline", "orchestration", "deployment", "cicd", "devops"],
+      "keywords": [
+        "pipeline",
+        "orchestration",
+        "deployment",
+        "cicd",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2050,7 +2522,13 @@
       "description": "Manage and execute deployment rollbacks with safety checks",
       "version": "1.28.0",
       "category": "devops",
-      "keywords": ["rollback", "deployment", "kubernetes", "recovery", "devops"],
+      "keywords": [
+        "rollback",
+        "deployment",
+        "kubernetes",
+        "recovery",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2126,7 +2604,14 @@
       "description": "Find optimal DEX routes for token swaps across multiple exchanges",
       "version": "1.25.0",
       "category": "crypto",
-      "keywords": ["dex", "swap", "trading", "defi", "aggregator", "routing"],
+      "keywords": [
+        "dex",
+        "swap",
+        "trading",
+        "defi",
+        "aggregator",
+        "routing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2144,7 +2629,12 @@
       "description": "Plan and implement disaster recovery procedures",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["disaster-recovery", "dr", "business-continuity", "devops"],
+      "keywords": [
+        "disaster-recovery",
+        "dr",
+        "business-continuity",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2162,7 +2652,14 @@
       "description": "Generate custom discovery questionnaires for AI agency prospects",
       "version": "1.9.0",
       "category": "ai-agency",
-      "keywords": ["discovery", "questionnaire", "client", "sales", "agency", "ai-agency"],
+      "keywords": [
+        "discovery",
+        "questionnaire",
+        "client",
+        "sales",
+        "agency",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -2173,7 +2670,12 @@
       "description": "Set up distributed tracing for microservices",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["tracing", "observability", "microservices", "opentelemetry"],
+      "keywords": [
+        "tracing",
+        "observability",
+        "microservices",
+        "opentelemetry"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2191,7 +2693,13 @@
       "description": "Generate Docker Compose configurations for multi-container applications with best practices",
       "version": "1.28.0",
       "category": "devops",
-      "keywords": ["docker", "docker-compose", "containers", "orchestration", "devops"],
+      "keywords": [
+        "docker",
+        "docker-compose",
+        "containers",
+        "orchestration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2238,12 +2746,26 @@
       "description": "Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across sessions.",
       "version": "1.7.0",
       "category": "mcp",
-      "keywords": ["mcp", "memory", "cascade", "storage", "encryption", "search", "fts", "agent"],
+      "keywords": [
+        "mcp",
+        "memory",
+        "cascade",
+        "storage",
+        "encryption",
+        "search",
+        "fts",
+        "agent"
+      ],
       "author": {
         "name": "Intent Solutions IO",
         "email": "jeremy@intentsolutions.io"
       },
-      "mcpTools": ["store_memory", "recall_memory", "search_memory", "delete_memory"]
+      "mcpTools": [
+        "store_memory",
+        "recall_memory",
+        "search_memory",
+        "delete_memory"
+      ]
     },
     {
       "name": "e2e-test-framework",
@@ -2251,7 +2773,14 @@
       "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
       "version": "1.21.0",
       "category": "testing",
-      "keywords": ["testing", "e2e", "playwright", "cypress", "selenium", "browser-testing"],
+      "keywords": [
+        "testing",
+        "e2e",
+        "playwright",
+        "cypress",
+        "selenium",
+        "browser-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2269,7 +2798,11 @@
       "description": "Encrypt and decrypt data with various algorithms",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2284,7 +2817,7 @@
     {
       "name": "engineer-design-diagram",
       "source": "./plugins/devops/engineer-design-diagram",
-      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI \u2014 package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
+      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI — package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
       "version": "0.5.0",
       "category": "devops",
       "keywords": [
@@ -2314,7 +2847,13 @@
       "description": "Manage environment configurations and secrets across deployments",
       "version": "1.23.0",
       "category": "devops",
-      "keywords": ["config", "environment", "secrets", "configuration", "devops"],
+      "keywords": [
+        "config",
+        "environment",
+        "secrets",
+        "configuration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2332,7 +2871,12 @@
       "description": "Monitor and analyze application error rates",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["errors", "monitoring", "reliability", "sre"],
+      "keywords": [
+        "errors",
+        "monitoring",
+        "reliability",
+        "sre"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2418,7 +2962,13 @@
       "description": "Set up ML experiment tracking",
       "version": "1.19.0",
       "category": "ai-ml",
-      "keywords": ["experiments", "mlflow", "wandb", "tracking", "mlops"],
+      "keywords": [
+        "experiments",
+        "mlflow",
+        "wandb",
+        "tracking",
+        "mlops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2471,7 +3021,11 @@
       "description": "Database operations management for FairDB PostgreSQL clusters",
       "version": "1.12.0",
       "category": "community",
-      "keywords": ["database", "postgresql", "operations"],
+      "keywords": [
+        "database",
+        "postgresql",
+        "operations"
+      ],
       "author": {
         "name": "Community"
       }
@@ -2482,7 +3036,13 @@
       "description": "Feature creation, selection, and transformation tools",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["features", "engineering", "selection", "transformation", "ml"],
+      "keywords": [
+        "features",
+        "engineering",
+        "selection",
+        "transformation",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2500,7 +3060,11 @@
       "description": "Converts file references into executable code implementations",
       "version": "0.16.0",
       "category": "skill-enhancers",
-      "keywords": ["files", "automation", "code-generation"],
+      "keywords": [
+        "files",
+        "automation",
+        "code-generation"
+      ],
       "author": {
         "name": "Claude Code Plugins Team"
       }
@@ -2538,7 +3102,11 @@
       "description": "Code formatting plugin using hooks to auto-format on save",
       "version": "2.26.0",
       "category": "examples",
-      "keywords": ["formatting", "hooks", "automation"],
+      "keywords": [
+        "formatting",
+        "hooks",
+        "automation"
+      ],
       "verification": {
         "score": 95,
         "grade": "A",
@@ -2549,7 +3117,7 @@
     {
       "name": "freshie-inventory-manager",
       "source": "./plugins/database/freshie-inventory-manager",
-      "description": "Interactive command center for the freshie ecosystem inventory database \u2014 conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
       "version": "1.5.0",
       "category": "database",
       "keywords": [
@@ -2601,7 +3169,14 @@
       "description": "Optimize transaction gas fees with timing and routing recommendations",
       "version": "1.27.0",
       "category": "crypto",
-      "keywords": ["gas", "fees", "ethereum", "optimization", "transaction", "l2"],
+      "keywords": [
+        "gas",
+        "fees",
+        "ethereum",
+        "optimization",
+        "transaction",
+        "l2"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2619,7 +3194,11 @@
       "description": "Scan for GDPR compliance issues",
       "version": "1.27.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2663,7 +3242,14 @@
       "description": "Build GitOps workflows with ArgoCD and Flux",
       "version": "1.22.0",
       "category": "devops",
-      "keywords": ["gitops", "argocd", "flux", "cd", "kubernetes", "devops"],
+      "keywords": [
+        "gitops",
+        "argocd",
+        "flux",
+        "cd",
+        "kubernetes",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2681,7 +3267,14 @@
       "description": "Build GraphQL servers with schema-first design, resolvers, and subscriptions",
       "version": "1.22.0",
       "category": "api-development",
-      "keywords": ["graphql", "api", "server", "apollo", "schema", "resolvers"],
+      "keywords": [
+        "graphql",
+        "api",
+        "server",
+        "apollo",
+        "schema",
+        "resolvers"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2700,7 +3293,12 @@
       "description": "Generate gRPC services with Protocol Buffers and streaming support",
       "version": "1.23.0",
       "category": "api-development",
-      "keywords": ["grpc", "protobuf", "microservices", "streaming"],
+      "keywords": [
+        "grpc",
+        "protobuf",
+        "microservices",
+        "streaming"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2718,7 +3316,11 @@
       "description": "Simple example plugin demonstrating basic slash commands",
       "version": "1.12.0",
       "category": "examples",
-      "keywords": ["example", "tutorial", "beginner"],
+      "keywords": [
+        "example",
+        "tutorial",
+        "beginner"
+      ],
       "author": {
         "name": "Jeremy Longshore"
       }
@@ -2729,7 +3331,13 @@
       "description": "Generate Helm charts for Kubernetes applications",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["helm", "kubernetes", "packaging", "charts", "devops"],
+      "keywords": [
+        "helm",
+        "kubernetes",
+        "packaging",
+        "charts",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2747,7 +3355,11 @@
       "description": "Check HIPAA compliance",
       "version": "1.23.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2765,7 +3377,13 @@
       "description": "Optimize hyperparameters using grid/random/bayesian search",
       "version": "1.21.0",
       "category": "ai-ml",
-      "keywords": ["hyperparameters", "optimization", "tuning", "search", "ml"],
+      "keywords": [
+        "hyperparameters",
+        "optimization",
+        "tuning",
+        "search",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2783,7 +3401,14 @@
       "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
       "version": "1.24.0",
       "category": "devops",
-      "keywords": ["iac", "terraform", "cloudformation", "pulumi", "infrastructure", "devops"],
+      "keywords": [
+        "iac",
+        "terraform",
+        "cloudformation",
+        "pulumi",
+        "infrastructure",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2802,7 +3427,13 @@
       "description": "Detect infrastructure drift from desired state",
       "version": "1.24.0",
       "category": "devops",
-      "keywords": ["drift", "terraform", "infrastructure", "monitoring", "devops"],
+      "keywords": [
+        "drift",
+        "terraform",
+        "infrastructure",
+        "monitoring",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2820,7 +3451,12 @@
       "description": "Collect comprehensive infrastructure performance metrics",
       "version": "1.20.0",
       "category": "performance",
-      "keywords": ["infrastructure", "metrics", "monitoring", "observability"],
+      "keywords": [
+        "infrastructure",
+        "metrics",
+        "monitoring",
+        "observability"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2838,7 +3474,11 @@
       "description": "Scan input validation practices",
       "version": "1.25.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2856,7 +3496,13 @@
       "description": "Run and manage integration test suites with environment setup, database seeding, and cleanup",
       "version": "1.22.0",
       "category": "testing",
-      "keywords": ["testing", "integration-tests", "test-runner", "e2e", "api-testing"],
+      "keywords": [
+        "testing",
+        "integration-tests",
+        "test-runner",
+        "e2e",
+        "api-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2871,7 +3517,7 @@
     {
       "name": "kobiton-automate",
       "source": "./plugins/testing/kobiton-automate",
-      "description": "Real mobile devices on demand via Kobiton's remote MCP \u2014 no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+      "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
       "version": "1.0.2",
       "category": "testing",
       "keywords": [
@@ -2911,7 +3557,13 @@
       "description": "Create Kubernetes deployments, services, and configurations with best practices",
       "version": "1.28.0",
       "category": "devops",
-      "keywords": ["kubernetes", "k8s", "deployment", "orchestration", "containers"],
+      "keywords": [
+        "kubernetes",
+        "k8s",
+        "deployment",
+        "orchestration",
+        "containers"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2930,7 +3582,14 @@
       "description": "Analyze DeFi liquidity pools for impermanent loss, APY, and optimization opportunities",
       "version": "1.23.0",
       "category": "crypto",
-      "keywords": ["liquidity", "pool", "defi", "impermanent", "loss", "apy"],
+      "keywords": [
+        "liquidity",
+        "pool",
+        "defi",
+        "impermanent",
+        "loss",
+        "apy"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2948,7 +3607,14 @@
       "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
       "version": "1.28.0",
       "category": "devops",
-      "keywords": ["load-balancer", "alb", "nginx", "haproxy", "networking", "devops"],
+      "keywords": [
+        "load-balancer",
+        "alb",
+        "nginx",
+        "haproxy",
+        "networking",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -2990,7 +3656,12 @@
       "description": "Create and execute load tests for performance validation",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["load-testing", "performance", "stress-test", "k6"],
+      "keywords": [
+        "load-testing",
+        "performance",
+        "stress-test",
+        "k6"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3008,7 +3679,14 @@
       "description": "Set up log aggregation (ELK, Loki, Splunk)",
       "version": "1.26.0",
       "category": "devops",
-      "keywords": ["logging", "elk", "loki", "splunk", "observability", "devops"],
+      "keywords": [
+        "logging",
+        "elk",
+        "loki",
+        "splunk",
+        "observability",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3026,7 +3704,12 @@
       "description": "Analyze logs for performance insights and issues",
       "version": "1.24.0",
       "category": "performance",
-      "keywords": ["logs", "analysis", "performance", "debugging"],
+      "keywords": [
+        "logs",
+        "analysis",
+        "performance",
+        "debugging"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3044,7 +3727,14 @@
       "description": "Create Make.com (Integromat) scenarios with AI assistance",
       "version": "1.15.0",
       "category": "ai-agency",
-      "keywords": ["make", "integromat", "automation", "scenarios", "workflow", "ai-agency"],
+      "keywords": [
+        "make",
+        "integromat",
+        "automation",
+        "scenarios",
+        "workflow",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -3055,7 +3745,15 @@
       "description": "Scan for top market movers - gainers, losers, volume spikes, and unusual activity",
       "version": "1.27.0",
       "category": "crypto",
-      "keywords": ["market", "scanner", "movers", "gainers", "losers", "volume", "trading"],
+      "keywords": [
+        "market",
+        "scanner",
+        "movers",
+        "gainers",
+        "losers",
+        "volume",
+        "trading"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3073,7 +3771,15 @@
       "description": "Real-time market price tracking with multi-exchange feeds and advanced alerts",
       "version": "1.27.0",
       "category": "crypto",
-      "keywords": ["market", "price", "tracking", "trading", "crypto", "stocks", "forex"],
+      "keywords": [
+        "market",
+        "price",
+        "tracking",
+        "trading",
+        "crypto",
+        "stocks",
+        "forex"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3091,7 +3797,14 @@
       "description": "Analyze market sentiment from social media, news, and on-chain data",
       "version": "1.24.0",
       "category": "crypto",
-      "keywords": ["sentiment", "analysis", "social", "news", "market", "crypto"],
+      "keywords": [
+        "sentiment",
+        "analysis",
+        "social",
+        "news",
+        "market",
+        "crypto"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3110,7 +3823,12 @@
       "description": "Detect memory leaks and analyze memory usage patterns",
       "version": "1.24.0",
       "category": "performance",
-      "keywords": ["memory", "leak", "detection", "performance"],
+      "keywords": [
+        "memory",
+        "leak",
+        "detection",
+        "performance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3155,7 +3873,12 @@
       "description": "Aggregate and centralize performance metrics",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["metrics", "aggregation", "prometheus", "monitoring"],
+      "keywords": [
+        "metrics",
+        "aggregation",
+        "prometheus",
+        "monitoring"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3173,7 +3896,13 @@
       "description": "Train and optimize machine learning models with automated workflows",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["ml", "machine-learning", "training", "models", "ai"],
+      "keywords": [
+        "ml",
+        "machine-learning",
+        "training",
+        "models",
+        "ai"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3218,7 +3947,13 @@
       "description": "Deploy ML models to production",
       "version": "1.19.0",
       "category": "ai-ml",
-      "keywords": ["deployment", "serving", "production", "api", "mlops"],
+      "keywords": [
+        "deployment",
+        "serving",
+        "production",
+        "api",
+        "mlops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3236,7 +3971,13 @@
       "description": "Comprehensive model evaluation with multiple metrics",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["evaluation", "metrics", "testing", "validation", "ml"],
+      "keywords": [
+        "evaluation",
+        "metrics",
+        "testing",
+        "validation",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3254,7 +3995,13 @@
       "description": "Model interpretability and explainability",
       "version": "1.21.0",
       "category": "ai-ml",
-      "keywords": ["explainability", "shap", "lime", "interpretability", "ml"],
+      "keywords": [
+        "explainability",
+        "shap",
+        "lime",
+        "interpretability",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3272,7 +4019,13 @@
       "description": "Track and manage model versions",
       "version": "1.24.0",
       "category": "ai-ml",
-      "keywords": ["versioning", "mlflow", "tracking", "registry", "mlops"],
+      "keywords": [
+        "versioning",
+        "mlflow",
+        "tracking",
+        "registry",
+        "mlops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3290,7 +4043,13 @@
       "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
       "version": "1.26.0",
       "category": "devops",
-      "keywords": ["monitoring", "prometheus", "grafana", "observability", "devops"],
+      "keywords": [
+        "monitoring",
+        "prometheus",
+        "grafana",
+        "observability",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3308,7 +4067,13 @@
       "description": "Mutation testing to validate test quality by introducing code changes and verifying tests catch them",
       "version": "1.27.0",
       "category": "testing",
-      "keywords": ["testing", "mutation-testing", "test-quality", "stryker", "pitest"],
+      "keywords": [
+        "testing",
+        "mutation-testing",
+        "test-quality",
+        "stryker",
+        "pitest"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3326,7 +4091,14 @@
       "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
       "version": "1.13.0",
       "category": "ai-agency",
-      "keywords": ["n8n", "workflow", "automation", "self-hosted", "open-source", "ai-agency"],
+      "keywords": [
+        "n8n",
+        "workflow",
+        "automation",
+        "self-hosted",
+        "open-source",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
@@ -3339,7 +4111,12 @@
       "description": "Analyze network latency and optimize request patterns",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["network", "latency", "performance", "api"],
+      "keywords": [
+        "network",
+        "latency",
+        "performance",
+        "api"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3357,7 +4134,13 @@
       "description": "Manage Kubernetes network policies and firewall rules",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["network-policy", "security", "kubernetes", "firewall", "devops"],
+      "keywords": [
+        "network-policy",
+        "security",
+        "kubernetes",
+        "firewall",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3375,7 +4158,13 @@
       "description": "Build and configure neural network architectures",
       "version": "1.20.0",
       "category": "ai-ml",
-      "keywords": ["neural-networks", "deep-learning", "architecture", "pytorch", "ml"],
+      "keywords": [
+        "neural-networks",
+        "deep-learning",
+        "architecture",
+        "pytorch",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3393,7 +4182,14 @@
       "description": "Analyze NFT rarity scores and valuations across collections",
       "version": "1.25.0",
       "category": "crypto",
-      "keywords": ["nft", "rarity", "valuation", "traits", "opensea", "crypto"],
+      "keywords": [
+        "nft",
+        "rarity",
+        "valuation",
+        "traits",
+        "opensea",
+        "crypto"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3411,7 +4207,13 @@
       "description": "Natural language processing and text analysis",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["nlp", "text", "analysis", "tokenization", "ml"],
+      "keywords": [
+        "nlp",
+        "text",
+        "analysis",
+        "tokenization",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3462,7 +4264,11 @@
       "description": "Database plugin for nosql-data-modeler",
       "version": "1.29.0",
       "category": "database",
-      "keywords": ["database", "backend", "data"],
+      "keywords": [
+        "database",
+        "backend",
+        "data"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3480,7 +4286,13 @@
       "description": "Analyze on-chain metrics including whale movements, network activity, and holder distribution",
       "version": "1.28.0",
       "category": "crypto",
-      "keywords": ["on-chain", "analytics", "whale", "metrics", "blockchain"],
+      "keywords": [
+        "on-chain",
+        "analytics",
+        "whale",
+        "metrics",
+        "blockchain"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3533,7 +4345,14 @@
       "description": "Track institutional options flow, unusual activity, and smart money movements",
       "version": "1.29.0",
       "category": "crypto",
-      "keywords": ["options", "flow", "institutional", "trading", "derivatives", "smart money"],
+      "keywords": [
+        "options",
+        "flow",
+        "institutional",
+        "trading",
+        "derivatives",
+        "smart money"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3551,7 +4370,13 @@
       "description": "Generate ORM models from database schemas or create database schemas from models for TypeORM, Prisma, Sequelize, SQLAlchemy, and more",
       "version": "1.28.0",
       "category": "database",
-      "keywords": ["orm", "models", "code-generation", "database", "backend"],
+      "keywords": [
+        "orm",
+        "models",
+        "code-generation",
+        "database",
+        "backend"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3599,7 +4424,11 @@
       "description": "Check OWASP Top 10 compliance",
       "version": "1.28.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3617,7 +4446,11 @@
       "description": "Validate PCI DSS compliance",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3635,7 +4468,18 @@
       "description": "25-skill pentest pack with engagement governance, network/code/dependency scans, OWASP Top 10 mapping, and exec-readable reporting. Heavy-hitter compliant; chain-of-custody attestable.",
       "version": "3.30.0",
       "category": "security",
-      "keywords": ["security", "penetration-testing", "pentesting", "owasp", "owasp-top-10", "vulnerability-scanning", "dependency-audit", "license-compliance", "engagement-governance", "chain-of-custody"],
+      "keywords": [
+        "security",
+        "penetration-testing",
+        "pentesting",
+        "owasp",
+        "owasp-top-10",
+        "vulnerability-scanning",
+        "dependency-audit",
+        "license-compliance",
+        "engagement-governance",
+        "chain-of-custody"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3653,7 +4497,12 @@
       "description": "Validate application against performance budgets",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["performance-budget", "validation", "ci-cd", "testing"],
+      "keywords": [
+        "performance-budget",
+        "validation",
+        "ci-cd",
+        "testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3671,7 +4520,12 @@
       "description": "Get comprehensive performance optimization recommendations",
       "version": "1.21.0",
       "category": "performance",
-      "keywords": ["optimization", "performance", "best-practices", "advisor"],
+      "keywords": [
+        "optimization",
+        "performance",
+        "best-practices",
+        "advisor"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3689,7 +4543,12 @@
       "description": "Detect performance regressions in CI/CD pipeline",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["regression", "performance", "ci-cd", "testing"],
+      "keywords": [
+        "regression",
+        "performance",
+        "ci-cd",
+        "testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3707,7 +4566,13 @@
       "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
       "version": "1.30.0",
       "category": "testing",
-      "keywords": ["testing", "performance", "load-testing", "benchmarking", "stress-testing"],
+      "keywords": [
+        "testing",
+        "performance",
+        "load-testing",
+        "benchmarking",
+        "stress-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3756,7 +4621,7 @@
     {
       "name": "code-cleanup",
       "source": "./plugins/testing/code-cleanup",
-      "description": "Comprehensive codebase cleanup across 11 quality dimensions \u2014 dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
+      "description": "Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
       "version": "1.7.0",
       "category": "testing",
       "keywords": [
@@ -3812,7 +4677,7 @@
     {
       "name": "promptbook",
       "source": "./plugins/business-tools/promptbook",
-      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating \u2014 no data transmitted without explicit opt-in. Background submission after session end.",
+      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
       "version": "1.4.0",
       "category": "business-tools",
       "keywords": [
@@ -3842,7 +4707,13 @@
       "description": "Analyze query performance with EXPLAIN plan interpretation, bottleneck identification, and optimization recommendations",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["performance", "query", "optimization", "explain", "database"],
+      "keywords": [
+        "performance",
+        "query",
+        "optimization",
+        "explain",
+        "database"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3860,7 +4731,12 @@
       "description": "Implement Real User Monitoring for actual performance data",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["rum", "monitoring", "performance", "user-experience"],
+      "keywords": [
+        "rum",
+        "monitoring",
+        "performance",
+        "user-experience"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3878,7 +4754,13 @@
       "description": "Build recommendation systems and engines",
       "version": "1.21.0",
       "category": "ai-ml",
-      "keywords": ["recommendations", "collaborative", "content-based", "ranking", "ml"],
+      "keywords": [
+        "recommendations",
+        "collaborative",
+        "content-based",
+        "ranking",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3896,7 +4778,13 @@
       "description": "Regression analysis and modeling",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["regression", "prediction", "linear", "polynomial", "ml"],
+      "keywords": [
+        "regression",
+        "prediction",
+        "linear",
+        "polynomial",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3914,7 +4802,13 @@
       "description": "Track and run regression tests to ensure new changes don't break existing functionality",
       "version": "1.26.0",
       "category": "testing",
-      "keywords": ["testing", "regression-testing", "test-tracking", "ci-cd", "quality-assurance"],
+      "keywords": [
+        "testing",
+        "regression-testing",
+        "test-tracking",
+        "ci-cd",
+        "quality-assurance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3932,7 +4826,11 @@
       "description": "Transforms research findings into deployed solutions automatically",
       "version": "0.14.0",
       "category": "skill-enhancers",
-      "keywords": ["research", "automation", "deployment"],
+      "keywords": [
+        "research",
+        "automation",
+        "deployment"
+      ],
       "author": {
         "name": "Claude Code Plugins Team"
       }
@@ -3943,7 +4841,12 @@
       "description": "Track and optimize resource usage across the stack",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["resources", "monitoring", "optimization", "metrics"],
+      "keywords": [
+        "resources",
+        "monitoring",
+        "optimization",
+        "metrics"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3961,7 +4864,12 @@
       "description": "Track and optimize application response times",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["response-time", "latency", "performance", "monitoring"],
+      "keywords": [
+        "response-time",
+        "latency",
+        "performance",
+        "monitoring"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3979,7 +4887,14 @@
       "description": "Generate RESTful APIs from schemas with proper routing, validation, and documentation",
       "version": "1.23.0",
       "category": "api-development",
-      "keywords": ["api", "rest", "generator", "openapi", "swagger", "backend"],
+      "keywords": [
+        "api",
+        "rest",
+        "generator",
+        "openapi",
+        "swagger",
+        "backend"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -3998,7 +4913,14 @@
       "description": "Calculate and present ROI for AI automation projects",
       "version": "1.9.0",
       "category": "ai-agency",
-      "keywords": ["roi", "return on investment", "calculator", "sales", "value", "ai-agency"],
+      "keywords": [
+        "roi",
+        "return on investment",
+        "calculator",
+        "sales",
+        "value",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -4009,7 +4931,12 @@
       "description": "Automatically posts search results to Slack channels",
       "version": "0.14.0",
       "category": "skill-enhancers",
-      "keywords": ["search", "slack", "automation", "integration"],
+      "keywords": [
+        "search",
+        "slack",
+        "automation",
+        "integration"
+      ],
       "author": {
         "name": "Claude Code Plugins Team"
       }
@@ -4020,7 +4947,13 @@
       "description": "Scan codebase for exposed secrets, API keys, passwords, and sensitive credentials",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "secrets", "api-keys", "credentials", "passwords"],
+      "keywords": [
+        "security",
+        "secrets",
+        "api-keys",
+        "credentials",
+        "passwords"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4064,7 +4997,14 @@
       "description": "Integrate with secrets managers (Vault, AWS Secrets Manager, etc)",
       "version": "1.25.0",
       "category": "devops",
-      "keywords": ["secrets", "vault", "aws", "security", "credentials", "devops"],
+      "keywords": [
+        "secrets",
+        "vault",
+        "aws",
+        "security",
+        "credentials",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4082,7 +5022,11 @@
       "description": "Security review subagent for code analysis",
       "version": "1.28.0",
       "category": "examples",
-      "keywords": ["security", "agent", "code-review"],
+      "keywords": [
+        "security",
+        "agent",
+        "code-review"
+      ],
       "verification": {
         "score": 94,
         "grade": "A",
@@ -4096,7 +5040,11 @@
       "description": "Generate comprehensive security audit reports",
       "version": "1.28.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4114,7 +5062,11 @@
       "description": "Analyze HTTP security headers",
       "version": "1.28.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4132,7 +5084,11 @@
       "description": "Assist with security incident response",
       "version": "1.32.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4150,7 +5106,11 @@
       "description": "Find security misconfigurations",
       "version": "1.29.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4199,7 +5159,13 @@
       "description": "Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues",
       "version": "1.29.0",
       "category": "testing",
-      "keywords": ["testing", "security", "vulnerabilities", "owasp", "penetration-testing"],
+      "keywords": [
+        "testing",
+        "security",
+        "vulnerabilities",
+        "owasp",
+        "penetration-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4217,7 +5183,13 @@
       "description": "Sentiment analysis on text data",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["sentiment", "opinion", "emotion", "polarity", "nlp"],
+      "keywords": [
+        "sentiment",
+        "opinion",
+        "emotion",
+        "polarity",
+        "nlp"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4235,7 +5207,13 @@
       "description": "Configure service mesh (Istio, Linkerd) for microservices",
       "version": "1.24.0",
       "category": "devops",
-      "keywords": ["service-mesh", "istio", "linkerd", "microservices", "devops"],
+      "keywords": [
+        "service-mesh",
+        "istio",
+        "linkerd",
+        "microservices",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4253,7 +5231,11 @@
       "description": "Check session security implementation",
       "version": "1.27.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4301,7 +5283,13 @@
       "description": "Track SLAs, SLIs, and SLOs for service reliability",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["sla", "sli", "slo", "sre", "reliability"],
+      "keywords": [
+        "sla",
+        "sli",
+        "slo",
+        "sre",
+        "reliability"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4319,7 +5307,13 @@
       "description": "Quick smoke test suites to verify critical functionality after deployments",
       "version": "1.20.0",
       "category": "testing",
-      "keywords": ["testing", "smoke-tests", "deployment", "sanity-check", "critical-path"],
+      "keywords": [
+        "testing",
+        "smoke-tests",
+        "deployment",
+        "sanity-check",
+        "critical-path"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -4337,7 +5331,14 @@
       "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
       "version": "1.21.0",
       "category": "testing",
-      "keywords": ["testing", "snapshot", "jest", "vitest", "diff-analysis", "test-management"],
+      "keywords": [
+        "testing",
+        "snapshot",
+        "jest",
+        "vitest",
+        "diff-analysis",
+        "test-management"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -4355,7 +5356,11 @@
       "description": "Assist with SOC2 audit preparation",
       "version": "1.30.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4373,7 +5378,14 @@
       "description": "Generate professional Statements of Work for AI projects",
       "version": "1.9.0",
       "category": "ai-agency",
-      "keywords": ["sow", "statement of work", "contract", "proposal", "agency", "ai-agency"],
+      "keywords": [
+        "sow",
+        "statement of work",
+        "contract",
+        "proposal",
+        "agency",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -4384,7 +5396,11 @@
       "description": "Detect SQL injection vulnerabilities",
       "version": "1.31.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4402,7 +5418,13 @@
       "description": "Analyze and optimize SQL queries for better performance, suggesting indexes, query rewrites, and execution plan improvements",
       "version": "1.27.0",
       "category": "database",
-      "keywords": ["sql", "optimization", "performance", "database", "query"],
+      "keywords": [
+        "sql",
+        "optimization",
+        "performance",
+        "database",
+        "query"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4420,7 +5442,11 @@
       "description": "Manage and monitor SSL/TLS certificates",
       "version": "1.21.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4438,7 +5464,14 @@
       "description": "Optimize staking rewards across multiple protocols and chains",
       "version": "1.26.0",
       "category": "crypto",
-      "keywords": ["crypto", "staking", "defi", "yield", "optimization", "rewards"],
+      "keywords": [
+        "crypto",
+        "staking",
+        "defi",
+        "yield",
+        "optimization",
+        "rewards"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4456,7 +5489,11 @@
       "description": "Database plugin for stored-procedure-generator",
       "version": "1.29.0",
       "category": "database",
-      "keywords": ["database", "backend", "procedure"],
+      "keywords": [
+        "database",
+        "backend",
+        "procedure"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4544,7 +5581,12 @@
       "description": "Set up synthetic monitoring for proactive performance tracking",
       "version": "1.22.0",
       "category": "performance",
-      "keywords": ["synthetic-monitoring", "uptime", "performance", "testing"],
+      "keywords": [
+        "synthetic-monitoring",
+        "uptime",
+        "performance",
+        "testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4562,7 +5604,13 @@
       "description": "Build reusable Terraform modules",
       "version": "1.23.0",
       "category": "devops",
-      "keywords": ["terraform", "iac", "modules", "infrastructure", "devops"],
+      "keywords": [
+        "terraform",
+        "iac",
+        "modules",
+        "infrastructure",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4580,7 +5628,13 @@
       "description": "Analyze code coverage metrics, identify untested code, and generate comprehensive coverage reports",
       "version": "1.24.0",
       "category": "testing",
-      "keywords": ["testing", "coverage", "code-coverage", "metrics", "analysis"],
+      "keywords": [
+        "testing",
+        "coverage",
+        "code-coverage",
+        "metrics",
+        "analysis"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4598,7 +5652,13 @@
       "description": "Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing",
       "version": "1.24.0",
       "category": "testing",
-      "keywords": ["testing", "test-data", "fake-data", "fixtures", "factory"],
+      "keywords": [
+        "testing",
+        "test-data",
+        "fake-data",
+        "fixtures",
+        "factory"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4616,7 +5676,16 @@
       "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
       "version": "1.22.0",
       "category": "testing",
-      "keywords": ["testing", "mocks", "stubs", "spies", "fakes", "test-doubles", "jest", "sinon"],
+      "keywords": [
+        "testing",
+        "mocks",
+        "stubs",
+        "spies",
+        "fakes",
+        "test-doubles",
+        "jest",
+        "sinon"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -4659,7 +5728,14 @@
       "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
       "version": "1.25.0",
       "category": "testing",
-      "keywords": ["testing", "orchestration", "workflow", "parallel", "test-selection", "ci-cd"],
+      "keywords": [
+        "testing",
+        "orchestration",
+        "workflow",
+        "parallel",
+        "test-selection",
+        "ci-cd"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -4677,7 +5753,14 @@
       "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
       "version": "1.23.0",
       "category": "testing",
-      "keywords": ["testing", "reporting", "coverage", "metrics", "dashboard", "ci-cd"],
+      "keywords": [
+        "testing",
+        "reporting",
+        "coverage",
+        "metrics",
+        "dashboard",
+        "ci-cd"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -4695,7 +5778,12 @@
       "description": "Analyze and optimize system throughput",
       "version": "1.24.0",
       "category": "performance",
-      "keywords": ["throughput", "performance", "capacity", "optimization"],
+      "keywords": [
+        "throughput",
+        "performance",
+        "capacity",
+        "optimization"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4713,7 +5801,13 @@
       "description": "Time series forecasting and analysis",
       "version": "1.23.0",
       "category": "ai-ml",
-      "keywords": ["time-series", "forecasting", "arima", "prophet", "ml"],
+      "keywords": [
+        "time-series",
+        "forecasting",
+        "arima",
+        "prophet",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4758,7 +5852,14 @@
       "description": "Backtest trading strategies with historical data, performance metrics, and risk analysis",
       "version": "1.28.0",
       "category": "crypto",
-      "keywords": ["trading", "backtesting", "strategy", "historical", "performance", "risk"],
+      "keywords": [
+        "trading",
+        "backtesting",
+        "strategy",
+        "historical",
+        "performance",
+        "risk"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4776,7 +5877,13 @@
       "description": "Transfer learning adaptation",
       "version": "1.22.0",
       "category": "ai-ml",
-      "keywords": ["transfer-learning", "fine-tuning", "pretrained", "adapters", "ml"],
+      "keywords": [
+        "transfer-learning",
+        "fine-tuning",
+        "pretrained",
+        "adapters",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4827,7 +5934,15 @@
       "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
       "version": "1.21.0",
       "category": "testing",
-      "keywords": ["testing", "unit-tests", "test-generation", "jest", "pytest", "mocha", "junit"],
+      "keywords": [
+        "testing",
+        "unit-tests",
+        "test-generation",
+        "jest",
+        "pytest",
+        "mocha",
+        "junit"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4871,7 +5986,13 @@
       "description": "Comprehensive vulnerability scanning for code, dependencies, and configurations with CVE detection",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "vulnerability", "scanning", "cve", "sast"],
+      "keywords": [
+        "security",
+        "vulnerability",
+        "scanning",
+        "cve",
+        "sast"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4889,7 +6010,14 @@
       "description": "Track crypto wallets across multiple chains with portfolio analytics and transaction history",
       "version": "1.12.0",
       "category": "crypto",
-      "keywords": ["wallet", "portfolio", "tracking", "blockchain", "defi", "crypto"],
+      "keywords": [
+        "wallet",
+        "portfolio",
+        "tracking",
+        "blockchain",
+        "defi",
+        "crypto"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4930,7 +6058,12 @@
       "description": "Create secure webhook endpoints with signature verification and retry logic",
       "version": "1.25.0",
       "category": "api-development",
-      "keywords": ["webhook", "events", "signature", "security"],
+      "keywords": [
+        "webhook",
+        "events",
+        "signature",
+        "security"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4948,7 +6081,12 @@
       "description": "Build WebSocket servers for real-time bidirectional communication",
       "version": "1.24.0",
       "category": "api-development",
-      "keywords": ["websocket", "real-time", "socket.io", "ws"],
+      "keywords": [
+        "websocket",
+        "real-time",
+        "socket.io",
+        "ws"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -4966,7 +6104,13 @@
       "description": "Monitor large crypto transactions and whale wallet movements in real-time",
       "version": "1.26.0",
       "category": "crypto",
-      "keywords": ["whale", "alert", "monitor", "large", "transactions"],
+      "keywords": [
+        "whale",
+        "alert",
+        "monitor",
+        "large",
+        "transactions"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -5013,7 +6157,11 @@
       "description": "Scan for XSS vulnerabilities",
       "version": "1.24.0",
       "category": "security",
-      "keywords": ["security", "compliance", "auditing"],
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -5031,7 +6179,14 @@
       "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
       "version": "1.10.0",
       "category": "ai-agency",
-      "keywords": ["zapier", "zap", "automation", "integration", "workflow", "ai-agency"],
+      "keywords": [
+        "zapier",
+        "zap",
+        "automation",
+        "integration",
+        "workflow",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -5042,7 +6197,15 @@
       "description": "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling",
       "version": "2.26.0",
       "category": "ai-ml",
-      "keywords": ["firebase", "genkit", "ai-flows", "rag", "monitoring", "gemini", "vertex-ai"],
+      "keywords": [
+        "firebase",
+        "genkit",
+        "ai-flows",
+        "rag",
+        "monitoring",
+        "gemini",
+        "vertex-ai"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5094,7 +6257,13 @@
       "description": "Production readiness validator for Vertex AI deployments and configurations",
       "version": "2.22.0",
       "category": "ai-ml",
-      "keywords": ["vertex-ai", "validation", "production-readiness", "security", "compliance"],
+      "keywords": [
+        "vertex-ai",
+        "validation",
+        "production-readiness",
+        "security",
+        "compliance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5112,7 +6281,7 @@
     {
       "name": "jeremy-google-adk",
       "source": "./plugins/ai-ml/jeremy-google-adk",
-      "description": "Google Agent Development Kit (ADK) starter for building production AI agents \u2014 ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+      "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
       "version": "2.2.0",
       "category": "ai-ml",
       "keywords": [
@@ -5164,7 +6333,13 @@
       "description": "Terraform modules for Firebase Genkit infrastructure and deployments",
       "version": "2.21.0",
       "category": "devops",
-      "keywords": ["terraform", "genkit", "firebase", "cloud-run", "infrastructure"],
+      "keywords": [
+        "terraform",
+        "genkit",
+        "firebase",
+        "cloud-run",
+        "infrastructure"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5185,7 +6360,14 @@
       "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments",
       "version": "2.22.0",
       "category": "devops",
-      "keywords": ["terraform", "adk", "agent-engine", "vertex-ai", "infrastructure", "vpc-sc"],
+      "keywords": [
+        "terraform",
+        "adk",
+        "agent-engine",
+        "vertex-ai",
+        "infrastructure",
+        "vpc-sc"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5206,7 +6388,13 @@
       "description": "Terraform configurations for Vertex AI platform and Agent Engine",
       "version": "2.22.0",
       "category": "devops",
-      "keywords": ["terraform", "vertex-ai", "gemini", "model-garden", "infrastructure"],
+      "keywords": [
+        "terraform",
+        "vertex-ai",
+        "gemini",
+        "model-garden",
+        "infrastructure"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5379,7 +6567,13 @@
       "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
       "version": "5.20.0",
       "category": "skill-enhancers",
-      "keywords": ["skill-creation", "validation", "meta-tooling", "grading", "anthropic-spec"],
+      "keywords": [
+        "skill-creation",
+        "validation",
+        "meta-tooling",
+        "grading",
+        "anthropic-spec"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5399,7 +6593,14 @@
       "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
       "version": "1.21.0",
       "category": "community",
-      "keywords": ["memory", "context", "persistent", "preferences", "sessions", "recall"],
+      "keywords": [
+        "memory",
+        "context",
+        "persistent",
+        "preferences",
+        "sessions",
+        "recall"
+      ],
       "author": {
         "name": "yldrmahmet",
         "url": "https://github.com/yldrmahmet"
@@ -5512,7 +6713,11 @@
         "hooks": 1,
         "total": 11
       },
-      "tags": ["beginner-friendly", "explanations", "noise-filtering"],
+      "tags": [
+        "beginner-friendly",
+        "explanations",
+        "noise-filtering"
+      ],
       "strict": true
     },
     {
@@ -5521,7 +6726,12 @@
       "description": "ADK software engineer for creating production-ready Agent Development Kit agents with clean structure, testability, safe tool usage, and deployment automation",
       "version": "2.19.0",
       "category": "ai-ml",
-      "keywords": ["adk", "software-engineer", "agent-development", "vertex-ai"],
+      "keywords": [
+        "adk",
+        "software-engineer",
+        "agent-development",
+        "vertex-ai"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5603,7 +6813,13 @@
       "description": "Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns.",
       "version": "1.17.0",
       "category": "crypto",
-      "keywords": ["crypto", "wallet", "security", "audit", "web3"],
+      "keywords": [
+        "crypto",
+        "wallet",
+        "security",
+        "audit",
+        "web3"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -5624,7 +6840,14 @@
       "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
       "version": "0.3.0",
       "category": "devops",
-      "keywords": ["changelog", "release-notes", "weekly-update", "git", "github", "automation"],
+      "keywords": [
+        "changelog",
+        "release-notes",
+        "weekly-update",
+        "git",
+        "github",
+        "automation"
+      ],
       "author": {
         "name": "Mattyp",
         "email": "mattyp@tonsofskills.com",
@@ -6455,7 +7678,7 @@
     {
       "name": "ga4-pack",
       "source": "./plugins/saas-packs/ga4-pack",
-      "description": "Claude Code skill pack for Google Analytics 4 \u2014 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
+      "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
       "version": "1.2.0",
       "category": "saas-packs",
       "keywords": [
@@ -6936,82 +8159,6 @@
       }
     },
     {
-      "name": "gastown",
-      "source": "./plugins/community/gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "multi-agent",
-        "orchestration",
-        "automation",
-        "polecats",
-        "convoys",
-        "beads",
-        "work-tracking",
-        "ai-factory",
-        "gastown",
-        "claude-code"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/gastown"
-      },
-      "verification": {
-        "score": 95,
-        "grade": "A",
-        "badge": "gold",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "zai-cli",
-      "source": "./plugins/community/zai-cli",
-      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "vision",
-        "image-analysis",
-        "ocr",
-        "web-search",
-        "web-reader",
-        "github",
-        "mcp",
-        "z-ai",
-        "glm-4",
-        "multimodal"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/zai-cli"
-      },
-      "verification": {
-        "score": 96,
-        "grade": "A",
-        "badge": "gold",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
       "name": "claude-reflect",
       "source": "./plugins/community/claude-reflect",
       "description": "Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically",
@@ -7150,7 +8297,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.9.0",
       "category": "community",
       "keywords": [
@@ -7173,487 +8320,6 @@
         "score": 75,
         "grade": "C",
         "badge": "silver",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-blue-ocean-strategy",
-      "source": "./plugins/business-tools/wondelai-blue-ocean-strategy",
-      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "strategy",
-        "blue-ocean",
-        "value-innovation",
-        "market-creation",
-        "errc",
-        "strategy-canvas",
-        "competition",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "blue-ocean-strategy"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-contagious",
-      "source": "./plugins/business-tools/wondelai-contagious",
-      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "virality",
-        "word-of-mouth",
-        "stepps",
-        "social-currency",
-        "marketing",
-        "content-strategy",
-        "sharing",
-        "growth"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "contagious"
-      },
-      "verification": {
-        "score": 54,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-cro-methodology",
-      "source": "./plugins/business-tools/wondelai-cro-methodology",
-      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "cro",
-        "conversion",
-        "optimization",
-        "landing-pages",
-        "ab-testing",
-        "copywriting",
-        "persuasion",
-        "funnels"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "cro-methodology"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-crossing-the-chasm",
-      "source": "./plugins/business-tools/wondelai-crossing-the-chasm",
-      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "go-to-market",
-        "technology-adoption",
-        "chasm",
-        "beachhead",
-        "b2b",
-        "saas",
-        "market-strategy",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "crossing-the-chasm"
-      },
-      "verification": {
-        "score": 67,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-design-everyday-things",
-      "source": "./plugins/design/wondelai-design-everyday-things",
-      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "design",
-        "ux",
-        "affordances",
-        "signifiers",
-        "human-centered-design",
-        "usability",
-        "don-norman",
-        "hcd"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "design-everyday-things"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-design-sprint",
-      "source": "./plugins/productivity/wondelai-design-sprint",
-      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "design-sprint",
-        "prototyping",
-        "user-testing",
-        "validation",
-        "gv",
-        "product-design",
-        "rapid-iteration",
-        "mvp"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "design-sprint"
-      },
-      "verification": {
-        "score": 58,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-drive-motivation",
-      "source": "./plugins/business-tools/wondelai-drive-motivation",
-      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "motivation",
-        "autonomy",
-        "mastery",
-        "purpose",
-        "engagement",
-        "gamification",
-        "intrinsic-motivation",
-        "team-management"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "drive-motivation"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-hooked-ux",
-      "source": "./plugins/design/wondelai-hooked-ux",
-      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "habits",
-        "engagement",
-        "retention",
-        "hook-model",
-        "triggers",
-        "rewards",
-        "onboarding",
-        "ux"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "hooked-ux"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-hundred-million-offers",
-      "source": "./plugins/business-tools/wondelai-hundred-million-offers",
-      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "offers",
-        "pricing",
-        "value-equation",
-        "guarantees",
-        "bonuses",
-        "scarcity",
-        "sales",
-        "hormozi"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "hundred-million-offers"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-influence-psychology",
-      "source": "./plugins/business-tools/wondelai-influence-psychology",
-      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "persuasion",
-        "influence",
-        "cialdini",
-        "social-proof",
-        "reciprocity",
-        "scarcity",
-        "psychology",
-        "marketing"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "influence-psychology"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-ios-hig-design",
-      "source": "./plugins/design/wondelai-ios-hig-design",
-      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ios",
-        "apple",
-        "hig",
-        "swiftui",
-        "uikit",
-        "mobile-design",
-        "accessibility",
-        "interface-guidelines"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "ios-hig-design"
-      },
-      "verification": {
-        "score": 57,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-jobs-to-be-done",
-      "source": "./plugins/business-tools/wondelai-jobs-to-be-done",
-      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "jtbd",
-        "jobs-to-be-done",
-        "product-strategy",
-        "customer-discovery",
-        "innovation",
-        "christensen",
-        "product-market-fit",
-        "interviews"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "jobs-to-be-done"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-lean-startup",
-      "source": "./plugins/productivity/wondelai-lean-startup",
-      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "lean-startup",
-        "mvp",
-        "validated-learning",
-        "pivot",
-        "metrics",
-        "innovation-accounting",
-        "experimentation",
-        "build-measure-learn"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "lean-startup"
-      },
-      "verification": {
-        "score": 63,
-        "grade": "D",
-        "badge": "bronze",
         "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
@@ -7699,457 +8365,17 @@
       }
     },
     {
-      "name": "wondelai-made-to-stick",
-      "source": "./plugins/business-tools/wondelai-made-to-stick",
-      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "messaging",
-        "storytelling",
-        "success",
-        "sticky",
-        "communication",
-        "presentations",
-        "copywriting",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "made-to-stick"
-      },
-      "verification": {
-        "score": 61,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-negotiation",
-      "source": "./plugins/business-tools/wondelai-negotiation",
-      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "negotiation",
-        "chris-voss",
-        "mirroring",
-        "labeling",
-        "ackerman",
-        "salary",
-        "deals",
-        "conflict-resolution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "negotiation"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-obviously-awesome",
-      "source": "./plugins/business-tools/wondelai-obviously-awesome",
-      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "positioning",
-        "differentiation",
-        "competitive-analysis",
-        "market-category",
-        "value-proposition",
-        "april-dunford",
-        "go-to-market",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "obviously-awesome"
-      },
-      "verification": {
-        "score": 67,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-one-page-marketing",
-      "source": "./plugins/business-tools/wondelai-one-page-marketing",
-      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "marketing-plan",
-        "usp",
-        "lead-generation",
-        "nurture",
-        "referral",
-        "advertising",
-        "customer-lifetime-value",
-        "marketing-strategy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "one-page-marketing"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-predictable-revenue",
-      "source": "./plugins/business-tools/wondelai-predictable-revenue",
-      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "sales",
-        "outbound",
-        "sdr",
-        "pipeline",
-        "b2b",
-        "saas",
-        "prospecting",
-        "cold-calling",
-        "revenue"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "predictable-revenue"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-refactoring-ui",
-      "source": "./plugins/design/wondelai-refactoring-ui",
-      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ui-design",
-        "visual-hierarchy",
-        "typography",
-        "color-palette",
-        "tailwind",
-        "shadows",
-        "spacing",
-        "refactoring-ui"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "refactoring-ui"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-scorecard-marketing",
-      "source": "./plugins/business-tools/wondelai-scorecard-marketing",
-      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "lead-generation",
-        "quiz-funnel",
-        "assessment",
-        "scorecard",
-        "conversion",
-        "segmentation",
-        "lead-magnet",
-        "marketing-automation"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "scorecard-marketing"
-      },
-      "verification": {
-        "score": 70,
-        "grade": "C",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-storybrand-messaging",
-      "source": "./plugins/business-tools/wondelai-storybrand-messaging",
-      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "storybrand",
-        "messaging",
-        "brand-script",
-        "copywriting",
-        "narrative",
-        "website-copy",
-        "one-liner",
-        "donald-miller"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "storybrand-messaging"
-      },
-      "verification": {
-        "score": 63,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-top-design",
-      "source": "./plugins/design/wondelai-top-design",
-      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "web-design",
-        "awwwards",
-        "animations",
-        "typography",
-        "scroll-effects",
-        "brand-website",
-        "premium-design",
-        "motion"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "top-design"
-      },
-      "verification": {
-        "score": 61,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-traction-eos",
-      "source": "./plugins/business-tools/wondelai-traction-eos",
-      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "eos",
-        "traction",
-        "operating-system",
-        "rocks",
-        "l10-meetings",
-        "accountability",
-        "vision",
-        "execution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "traction-eos"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-ux-heuristics",
-      "source": "./plugins/design/wondelai-ux-heuristics",
-      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ux",
-        "usability",
-        "heuristics",
-        "nielsen",
-        "krug",
-        "ux-audit",
-        "evaluation",
-        "accessibility"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "ux-heuristics"
-      },
-      "verification": {
-        "score": 66,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-web-typography",
-      "source": "./plugins/design/wondelai-web-typography",
-      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "typography",
-        "web-fonts",
-        "typeface",
-        "font-pairing",
-        "readability",
-        "responsive-typography",
-        "css",
-        "type-hierarchy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "web-typography"
-      },
-      "verification": {
-        "score": 59,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
       "name": "abridge-pack",
       "source": "./plugins/saas-packs/abridge-pack",
       "description": "Claude Code skill pack for Abridge (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["abridge", "saas", "sdk", "integration"],
+      "keywords": [
+        "abridge",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8171,7 +8397,12 @@
       "description": "Claude Code skill pack for Adobe (30 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["adobe", "saas", "sdk", "integration"],
+      "keywords": [
+        "adobe",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8193,7 +8424,12 @@
       "description": "Claude Code skill pack for Alchemy (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["alchemy", "saas", "sdk", "integration"],
+      "keywords": [
+        "alchemy",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8215,7 +8451,12 @@
       "description": "Claude Code skill pack for Algolia (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["algolia", "saas", "sdk", "integration"],
+      "keywords": [
+        "algolia",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8237,7 +8478,12 @@
       "description": "Claude Code skill pack for Anima (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["anima", "saas", "sdk", "integration"],
+      "keywords": [
+        "anima",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8259,7 +8505,12 @@
       "description": "Claude Code skill pack for Anthropic (30 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["anthropic", "saas", "sdk", "integration"],
+      "keywords": [
+        "anthropic",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8281,7 +8532,12 @@
       "description": "Claude Code skill pack for Apify (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["apify", "saas", "sdk", "integration"],
+      "keywords": [
+        "apify",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8303,7 +8559,12 @@
       "description": "Claude Code skill pack for AppFolio (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["appfolio", "saas", "sdk", "integration"],
+      "keywords": [
+        "appfolio",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8325,7 +8586,13 @@
       "description": "Claude Code skill pack for Apple Notes (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["apple-notes", "apple notes", "saas", "sdk", "integration"],
+      "keywords": [
+        "apple-notes",
+        "apple notes",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8347,7 +8614,12 @@
       "description": "Claude Code skill pack for AssemblyAI (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["assemblyai", "saas", "sdk", "integration"],
+      "keywords": [
+        "assemblyai",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8369,7 +8641,12 @@
       "description": "Claude Code skill pack for Attio (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["attio", "saas", "sdk", "integration"],
+      "keywords": [
+        "attio",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8391,7 +8668,12 @@
       "description": "Claude Code skill pack for BambooHR (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["bamboohr", "saas", "sdk", "integration"],
+      "keywords": [
+        "bamboohr",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8413,7 +8695,13 @@
       "description": "Claude Code skill pack for Bright Data (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["brightdata", "bright data", "saas", "sdk", "integration"],
+      "keywords": [
+        "brightdata",
+        "bright data",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8435,7 +8723,12 @@
       "description": "Claude Code skill pack for Canva (30 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["canva", "saas", "sdk", "integration"],
+      "keywords": [
+        "canva",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8457,7 +8750,13 @@
       "description": "Claude Code skill pack for Cast AI (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["castai", "cast ai", "saas", "sdk", "integration"],
+      "keywords": [
+        "castai",
+        "cast ai",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8479,7 +8778,12 @@
       "description": "Claude Code skill pack for Clari (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["clari", "saas", "sdk", "integration"],
+      "keywords": [
+        "clari",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8501,7 +8805,12 @@
       "description": "Claude Code skill pack for ClickHouse (24 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["clickhouse", "saas", "sdk", "integration"],
+      "keywords": [
+        "clickhouse",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8523,7 +8832,12 @@
       "description": "Claude Code skill pack for ClickUp (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["clickup", "saas", "sdk", "integration"],
+      "keywords": [
+        "clickup",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8545,7 +8859,12 @@
       "description": "Claude Code skill pack for Cohere (24 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["cohere", "saas", "sdk", "integration"],
+      "keywords": [
+        "cohere",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8567,7 +8886,12 @@
       "description": "Claude Code skill pack for CoreWeave (23 skills)",
       "version": "1.11.0",
       "category": "saas-packs",
-      "keywords": ["coreweave", "saas", "sdk", "integration"],
+      "keywords": [
+        "coreweave",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8589,7 +8913,12 @@
       "description": "Claude Code skill pack for ElevenLabs (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["elevenlabs", "saas", "sdk", "integration"],
+      "keywords": [
+        "elevenlabs",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8611,7 +8940,12 @@
       "description": "Claude Code skill pack for Fathom (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["fathom", "saas", "sdk", "integration"],
+      "keywords": [
+        "fathom",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8633,7 +8967,12 @@
       "description": "Claude Code skill pack for Figma (30 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["figma", "saas", "sdk", "integration"],
+      "keywords": [
+        "figma",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8655,7 +8994,12 @@
       "description": "Claude Code skill pack for Finta (18 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["finta", "saas", "sdk", "integration"],
+      "keywords": [
+        "finta",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8677,7 +9021,12 @@
       "description": "Claude Code skill pack for Flexport (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["flexport", "saas", "sdk", "integration"],
+      "keywords": [
+        "flexport",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8699,7 +9048,13 @@
       "description": "Claude Code skill pack for Fly.io (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["flyio", "fly.io", "saas", "sdk", "integration"],
+      "keywords": [
+        "flyio",
+        "fly.io",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8721,7 +9076,12 @@
       "description": "Claude Code skill pack for Fondo (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["fondo", "saas", "sdk", "integration"],
+      "keywords": [
+        "fondo",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8743,7 +9103,12 @@
       "description": "Claude Code skill pack for Framer (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["framer", "saas", "sdk", "integration"],
+      "keywords": [
+        "framer",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8765,7 +9130,12 @@
       "description": "Claude Code skill pack for Glean (24 skills)",
       "version": "1.8.0",
       "category": "saas-packs",
-      "keywords": ["glean", "saas", "sdk", "integration"],
+      "keywords": [
+        "glean",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8787,7 +9157,12 @@
       "description": "Claude Code skill pack for Grammarly (24 skills)",
       "version": "1.8.0",
       "category": "saas-packs",
-      "keywords": ["grammarly", "saas", "sdk", "integration"],
+      "keywords": [
+        "grammarly",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8809,7 +9184,12 @@
       "description": "Claude Code skill pack for Hex (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["hex", "saas", "sdk", "integration"],
+      "keywords": [
+        "hex",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8831,7 +9211,12 @@
       "description": "Claude Code skill pack for Hootsuite (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["hootsuite", "saas", "sdk", "integration"],
+      "keywords": [
+        "hootsuite",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8853,7 +9238,12 @@
       "description": "Claude Code skill pack for HubSpot (10 production-engineer skills)",
       "version": "2.9.0",
       "category": "saas-packs",
-      "keywords": ["hubspot", "saas", "sdk", "integration"],
+      "keywords": [
+        "hubspot",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8869,7 +9259,12 @@
       "description": "Claude Code skill pack for Intercom (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["intercom", "saas", "sdk", "integration"],
+      "keywords": [
+        "intercom",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8891,7 +9286,12 @@
       "description": "Claude Code skill pack for Klaviyo (24 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["klaviyo", "saas", "sdk", "integration"],
+      "keywords": [
+        "klaviyo",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8913,7 +9313,12 @@
       "description": "Claude Code skill pack for Linktree (18 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["linktree", "saas", "sdk", "integration"],
+      "keywords": [
+        "linktree",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8935,7 +9340,12 @@
       "description": "Claude Code skill pack for Lucidchart (18 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["lucidchart", "saas", "sdk", "integration"],
+      "keywords": [
+        "lucidchart",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8957,7 +9367,12 @@
       "description": "Claude Code skill pack for Mindtickle (18 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["mindtickle", "saas", "sdk", "integration"],
+      "keywords": [
+        "mindtickle",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -8979,7 +9394,12 @@
       "description": "Claude Code skill pack for Miro (24 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["miro", "saas", "sdk", "integration"],
+      "keywords": [
+        "miro",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9001,7 +9421,12 @@
       "description": "Claude Code skill pack for Navan (24 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["navan", "saas", "sdk", "integration"],
+      "keywords": [
+        "navan",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9023,7 +9448,12 @@
       "description": "Claude Code skill pack for Notion (30 skills)",
       "version": "1.38.0",
       "category": "saas-packs",
-      "keywords": ["notion", "saas", "sdk", "integration"],
+      "keywords": [
+        "notion",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9045,7 +9475,12 @@
       "description": "Claude Code skill pack for OneNote (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["onenote", "saas", "sdk", "integration"],
+      "keywords": [
+        "onenote",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9067,7 +9502,13 @@
       "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["oraclecloud", "oracle cloud", "saas", "sdk", "integration"],
+      "keywords": [
+        "oraclecloud",
+        "oracle cloud",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9089,7 +9530,12 @@
       "description": "Claude Code skill pack for Palantir (24 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["palantir", "saas", "sdk", "integration"],
+      "keywords": [
+        "palantir",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9111,7 +9557,12 @@
       "description": "Claude Code skill pack for Persona (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["persona", "saas", "sdk", "integration"],
+      "keywords": [
+        "persona",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9165,7 +9616,12 @@
       "description": "Claude Code skill pack for Procore (24 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["procore", "saas", "sdk", "integration"],
+      "keywords": [
+        "procore",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9187,7 +9643,12 @@
       "description": "Claude Code skill pack for QuickNode (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["quicknode", "saas", "sdk", "integration"],
+      "keywords": [
+        "quicknode",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9209,7 +9670,12 @@
       "description": "Claude Code skill pack for Ramp (24 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["ramp", "saas", "sdk", "integration"],
+      "keywords": [
+        "ramp",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9231,7 +9697,12 @@
       "description": "Claude Code skill pack for RemoFirst (12 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["remofirst", "saas", "sdk", "integration"],
+      "keywords": [
+        "remofirst",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9253,7 +9724,12 @@
       "description": "Claude Code skill pack for Runway (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["runway", "saas", "sdk", "integration"],
+      "keywords": [
+        "runway",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9275,7 +9751,12 @@
       "description": "Claude Code skill pack for Salesforce (30 skills)",
       "version": "1.7.0",
       "category": "saas-packs",
-      "keywords": ["salesforce", "saas", "sdk", "integration"],
+      "keywords": [
+        "salesforce",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9297,7 +9778,12 @@
       "description": "Claude Code skill pack for Salesloft (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["salesloft", "saas", "sdk", "integration"],
+      "keywords": [
+        "salesloft",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9319,7 +9805,12 @@
       "description": "Claude Code skill pack for SerpApi (18 skills)",
       "version": "1.4.0",
       "category": "saas-packs",
-      "keywords": ["serpapi", "saas", "sdk", "integration"],
+      "keywords": [
+        "serpapi",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9370,7 +9861,12 @@
       "description": "Claude Code skill pack for Snowflake (30 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["snowflake", "saas", "sdk", "integration"],
+      "keywords": [
+        "snowflake",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9392,7 +9888,12 @@
       "description": "Claude Code skill pack for StackBlitz (18 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["stackblitz", "saas", "sdk", "integration"],
+      "keywords": [
+        "stackblitz",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9414,7 +9915,12 @@
       "description": "Claude Code skill pack for TechSmith (18 skills)",
       "version": "1.3.0",
       "category": "saas-packs",
-      "keywords": ["techsmith", "saas", "sdk", "integration"],
+      "keywords": [
+        "techsmith",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9436,7 +9942,13 @@
       "description": "Claude Code skill pack for Together AI (18 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["together", "together ai", "saas", "sdk", "integration"],
+      "keywords": [
+        "together",
+        "together ai",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9458,7 +9970,12 @@
       "description": "Claude Code skill pack for Veeva (24 skills)",
       "version": "1.3.0",
       "category": "saas-packs",
-      "keywords": ["veeva", "saas", "sdk", "integration"],
+      "keywords": [
+        "veeva",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9480,7 +9997,12 @@
       "description": "Claude Code skill pack for Webflow (24 skills)",
       "version": "1.5.0",
       "category": "saas-packs",
-      "keywords": ["webflow", "saas", "sdk", "integration"],
+      "keywords": [
+        "webflow",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9502,7 +10024,12 @@
       "description": "Claude Code skill pack for Wispr (18 skills)",
       "version": "1.3.0",
       "category": "saas-packs",
-      "keywords": ["wispr", "saas", "sdk", "integration"],
+      "keywords": [
+        "wispr",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9524,7 +10051,12 @@
       "description": "Claude Code skill pack for Workhuman (18 skills)",
       "version": "1.3.0",
       "category": "saas-packs",
-      "keywords": ["workhuman", "saas", "sdk", "integration"],
+      "keywords": [
+        "workhuman",
+        "saas",
+        "sdk",
+        "integration"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
@@ -9546,7 +10078,14 @@
       "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
       "version": "1.8.0",
       "category": "productivity",
-      "keywords": ["product-management", "pm", "ai-partner", "skills", "commands", "hooks"],
+      "keywords": [
+        "product-management",
+        "pm",
+        "ai-partner",
+        "skills",
+        "commands",
+        "hooks"
+      ],
       "author": {
         "name": "Ahmed Khaled",
         "email": "ahmd.khaled.a.mohamed@gmail.com"
@@ -9564,7 +10103,12 @@
       "description": "Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.",
       "version": "1.8.0",
       "category": "skill-enhancers",
-      "keywords": ["validation", "plugin-development", "quality-assurance", "linting"],
+      "keywords": [
+        "validation",
+        "plugin-development",
+        "quality-assurance",
+        "linting"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -9579,7 +10123,7 @@
     {
       "name": "zero-tech-debt",
       "source": "./plugins/skill-enhancers/zero-tech-debt",
-      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only \u2014 surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
       "version": "1.1.0",
       "category": "skill-enhancers",
       "keywords": [
@@ -9669,7 +10213,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "mcp",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -9681,15 +10225,28 @@
       "featured": true,
       "external_sync": true,
       "mcpTools": 6,
-      "keywords": ["mcp", "pr-analysis", "intent-drift", "code-review", "agent-protocol"]
+      "keywords": [
+        "mcp",
+        "pr-analysis",
+        "intent-drift",
+        "code-review",
+        "agent-protocol"
+      ]
     },
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "mcp",
-      "keywords": ["slack", "channel", "mcp", "socket-mode", "chatops", "claude-code"],
+      "keywords": [
+        "slack",
+        "channel",
+        "mcp",
+        "socket-mode",
+        "chatops",
+        "claude-code"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -9708,14 +10265,20 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
+      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "mcp",
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       },
-      "keywords": ["bug-triage", "x-twitter", "slack", "devops", "mcp"],
+      "keywords": [
+        "bug-triage",
+        "x-twitter",
+        "slack",
+        "devops",
+        "mcp"
+      ],
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "homepage": "https://tonsofskills.com",
       "license": "MIT",
@@ -9734,7 +10297,14 @@
       "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
       "version": "1.3.0",
       "category": "community",
-      "keywords": ["demo-video", "video-generation", "playwright", "ffmpeg", "edge-tts", "mcp"],
+      "keywords": [
+        "demo-video",
+        "video-generation",
+        "playwright",
+        "ffmpeg",
+        "edge-tts",
+        "mcp"
+      ],
       "author": {
         "name": "vaddisrinivas",
         "url": "https://github.com/vaddisrinivas"
@@ -9777,7 +10347,7 @@
     {
       "name": "shipwright",
       "source": "./plugins/ai-agency/shipwright",
-      "description": "Describe your app in plain English \u2014 Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
       "version": "1.3.0",
       "category": "ai-agency",
       "author": {
@@ -9837,7 +10407,7 @@
     {
       "name": "plane",
       "source": "./plugins/productivity/plane",
-      "description": "Plane is a team behavior observatory \u2014 synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "description": "Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
       "tagline": "Team behavior observatory for Plane workspaces",
       "version": "0.3.0",
       "category": "productivity",
@@ -9864,7 +10434,7 @@
     {
       "name": "local-tts",
       "source": "./plugins/ai-ml/local-tts",
-      "description": "Offline text-to-speech via VoxCPM2 \u2014 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
+      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
       "version": "1.3.0",
       "category": "ai-ml",
       "keywords": [
@@ -9912,7 +10482,7 @@
     {
       "name": "web-analytics",
       "source": "./plugins/analytics/web-analytics",
-      "description": "Push-based web analytics intelligence team \u2014 self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
+      "description": "Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
       "version": "1.4.0",
       "category": "analytics",
       "keywords": [
@@ -9965,7 +10535,8 @@
         "email": "info@aomi.dev"
       },
       "featured": false
-    },    {
+    },
+    {
       "name": "cli-power-skills",
       "source": "./plugins/productivity/cli-power-skills",
       "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
@@ -9986,7 +10557,8 @@
       },
       "repository": "https://github.com/ykotik/cli-power-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claude-workflow-skills",
       "source": "./plugins/productivity/claude-workflow-skills",
       "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
@@ -10011,7 +10583,8 @@
       "homepage": "https://github.com/ali5ter/claude-workflow-skills",
       "repository": "https://github.com/ali5ter/claude-workflow-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "cli-ux-tester",
       "source": "./plugins/testing/cli-ux-tester",
       "description": "Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents",
@@ -10032,7 +10605,8 @@
       "homepage": "https://github.com/ali5ter/claude-cli-ux-skill",
       "repository": "https://github.com/ali5ter/claude-cli-ux-skill",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "skyvern",
       "source": "./plugins/productivity/skyvern",
       "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
@@ -10043,7 +10617,8 @@
         "url": "https://github.com/Skyvern-AI"
       },
       "license": "AGPL-3.0"
-    },    {
+    },
+    {
       "name": "tonone",
       "source": "./plugins/ai-agency/tonone",
       "description": "23-agent engineering + product team with 125 skills for Claude Code",
@@ -10081,7 +10656,8 @@
       },
       "repository": "https://github.com/tonone-ai/tonone",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "x-bug-triage",
       "source": "./plugins/mcp/x-bug-triage",
       "description": "Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
@@ -10101,7 +10677,8 @@
       "homepage": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "hyperflow",
       "source": "./plugins/ai-agency/hyperflow",
       "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
@@ -10126,7 +10703,8 @@
       "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claudebase",
       "source": "./plugins/productivity/claudebase",
       "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
@@ -10147,7 +10725,8 @@
       "homepage": "https://github.com/rohithzr/claudebase",
       "repository": "https://github.com/rohithzr/claudebase",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-anti-deception",
       "source": "./plugins/community/ejentum-anti-deception",
       "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10159,7 +10738,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-code",
       "source": "./plugins/community/ejentum-code",
       "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10171,7 +10751,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-memory",
       "source": "./plugins/community/ejentum-memory",
       "description": "Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10183,7 +10764,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-reasoning",
       "source": "./plugins/community/ejentum-reasoning",
       "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10195,7 +10777,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "over-50s-health",
       "source": "./plugins/productivity/over-50s-health",
       "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
@@ -10215,7 +10798,8 @@
       "homepage": "https://github.com/ali5ter/over-50s-health-advisor",
       "repository": "https://github.com/ali5ter/over-50s-health-advisor",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "obsidian-project-documentation",
       "source": "./plugins/productivity/obsidian-project-documentation",
       "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
@@ -10234,7 +10818,8 @@
       "homepage": "https://github.com/ali5ter/obsidian-project-assistant",
       "repository": "https://github.com/ali5ter/obsidian-project-assistant",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "pair-programmer",
       "source": "./plugins/productivity/pair-programmer",
       "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
@@ -10253,7 +10838,8 @@
       "homepage": "https://github.com/ali5ter/pair-programmer",
       "repository": "https://github.com/ali5ter/pair-programmer",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
@@ -10276,7 +10862,8 @@
       "homepage": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "repository": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "license": "Apache-2.0"
-    },    {
+    },
+    {
       "name": "claudebase",
       "source": "./plugins/productivity/claudebase",
       "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",

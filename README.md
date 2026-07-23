@@ -4,14 +4,14 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-470-blue)](https://tonsofskills.com/explore)
+[![Plugins](https://img.shields.io/badge/plugins-443-blue)](https://tonsofskills.com/explore)
 [![Skills](https://img.shields.io/badge/skills-3677-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-470 plugins, 3,677 skills, 347 agents, 30 community contributors — validated and ready to install.
+443 plugins, 3,677 skills, 347 agents, 30 community contributors — validated and ready to install.
 
 ## Why this repo
 
@@ -124,17 +124,17 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
 | 🔌  | [API Development](#api-development)                |      26 |
-| 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      25 |
+| 💼  | [Business Tools](#business-tools)                  |       5 |
+| 👥  | [Community](#community)                            |      23 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
-| 🎨  | [Design](#design)                                  |       8 |
+| 🎨  | [Design](#design)                                  |       1 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      33 |
+| ✅  | [Productivity](#productivity)                      |      31 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      27 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -242,37 +242,21 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Business Tools
 
-💼 **21 plugins** · category slug: `business-tools`
+💼 **5 plugins** · category slug: `business-tools`
 
-| Plugin                            | Description                                                                                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `brand-strategy-framework`        | A 7-part brand strategy framework for building comprehensive brand foundations - the same methodology top agencies use with Fortune 500…    |
-| `excel-analyst-pro`               | Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO…          |
-| `executive-assistant-skills`      | AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and…  |
-| `openbb-terminal`                 | Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio…         |
-| `promptbook`                      | Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session.…          |
-| `wondelai-blue-ocean-strategy`    | Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value…     |
-| `wondelai-contagious`             | Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories).…        |
-| `wondelai-cro-methodology`        | Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy,…       |
-| `wondelai-crossing-the-chasm`     | Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build…      |
-| `wondelai-drive-motivation`       | Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress…   |
-| `wondelai-hundred-million-offers` | Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees,… |
-| `wondelai-influence-psychology`   | Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity).…      |
-| `wondelai-jobs-to-be-done`        | Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery…           |
-| `wondelai-made-to-stick`          | Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging…    |
-| `wondelai-negotiation`            | Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and…   |
-| `wondelai-obviously-awesome`      | Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value…      |
-| `wondelai-one-page-marketing`     | End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize… |
-| `wondelai-predictable-revenue`    | Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting…           |
-| `wondelai-scorecard-marketing`    | Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and…     |
-| `wondelai-storybrand-messaging`   | StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners,…  |
-| `wondelai-traction-eos`           | Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build…              |
+| Plugin                       | Description                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `brand-strategy-framework`   | A 7-part brand strategy framework for building comprehensive brand foundations - the same methodology top agencies use with Fortune 500…   |
+| `excel-analyst-pro`          | Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO…         |
+| `executive-assistant-skills` | AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and… |
+| `openbb-terminal`            | Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio…        |
+| `promptbook`                 | Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session.…         |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
 ### Community
 
-👥 **25 plugins** · category slug: `community`
+👥 **23 plugins** · category slug: `community`
 
 | Plugin                   | Description                                                                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -287,7 +271,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ejentum-reasoning`      | Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a… |
 | `fairdb-ops-manager`     | Database operations management for FairDB PostgreSQL clusters                                                                               |
 | `framecraft`             | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
-| `gastown`                | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
 | `hermes-tweet`           | Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions                                                          |
@@ -300,7 +283,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `skills-janitor`         | Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate…           |
 | `sprint`                 | Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend,…      |
 | `walkie-talkie`          | Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs                    |
-| `zai-cli`                | Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos. |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -377,18 +359,11 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Design
 
-🎨 **8 plugins** · category slug: `design`
+🎨 **1 plugins** · category slug: `design`
 
-| Plugin                            | Description                                                                                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `brand-forge`                     | Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is…    |
-| `wondelai-design-everyday-things` | Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered…  |
-| `wondelai-hooked-ux`              | Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize…  |
-| `wondelai-ios-hig-design`         | Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and…      |
-| `wondelai-refactoring-ui`         | Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows,…  |
-| `wondelai-top-design`             | Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography,…    |
-| `wondelai-ux-heuristics`          | Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and…     |
-| `wondelai-web-typography`         | Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive… |
+| Plugin        | Description                                                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `brand-forge` | Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is… |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -526,7 +501,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **33 plugins** · category slug: `productivity`
+✅ **31 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -560,8 +535,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `skyvern`                                  | AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins                                                     |
 | `travel-assistant`                         | Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete…  |
 | `vibe-guide`                               | Non-technical progress summaries for Claude Code work (hides diffs/log noise).                                                              |
-| `wondelai-design-sprint`                   | Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured…           |
-| `wondelai-lean-startup`                    | Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere,…  |
 | `youtube-strategy`                         | Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and…   |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
@@ -1075,7 +1048,7 @@ The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-sk
 
 ## FAQ
 
-**What is this?** A Claude Code plugin marketplace: 470 plugins, 3,677 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+**What is this?** A Claude Code plugin marketplace: 443 plugins, 3,677 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
 
 **How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
 
