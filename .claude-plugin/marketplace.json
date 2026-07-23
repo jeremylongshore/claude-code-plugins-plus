@@ -21,7 +21,6 @@
       "description": "Read-only consistency validator: 9 deterministic drift checks across docs, code, tests, and CI, adjudicated by a per-fact-class authority registry (sot-map.yaml) — no global source-of-truth ranking, LLM-judged findings advisory-only, golden-fixture gated. Invoked by /release Phase 1.6.",
       "version": "3.29.0",
       "category": "productivity",
-      "maintainer": "@jeremylongshore",
       "keywords": [
         "documentation",
         "consistency",
