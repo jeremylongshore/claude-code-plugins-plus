@@ -340,3 +340,25 @@ Configure in **Clerk Dashboard > SSO Connections > Add SAML Connection**:
 ## Next Steps
 
 Proceed to `clerk-migration-deep-dive` for auth provider migration.
+
+## Output
+
+- RBAC model mapping Clerk orgs/roles/permissions to app authorization checks
+- Code or config for role gates (middleware, server actions, or API guards)
+- Escalation notes for SSO/SAML enterprise setups when in scope
+
+## Examples
+
+### Map org roles to feature access
+
+```
+User: Only org:billing can open the invoices page.
+Skill: implements role check on the server and fails closed when claims missing.
+```
+
+### Audit permission matrix
+
+```
+User: Produce a role × capability matrix for our Clerk org roles.
+Skill: enumerates Clerk roles/permissions and maps them to app routes/actions.
+```

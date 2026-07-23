@@ -354,3 +354,26 @@ export function MFAVerification() {
 ## Next Steps
 
 Proceed to `clerk-core-workflow-b` for session management and middleware.
+
+## Output
+
+- Working Clerk auth integration for the target stack (components + middleware/routes as applicable)
+- Documented env vars (`CLERK_*`) and session verification path
+- Checklist of production-hardening steps completed or explicitly deferred
+
+## Examples
+
+### Add Clerk to a Next.js App Router app
+
+```
+User: Wire Clerk auth into my Next.js App Router app with protected /dashboard.
+Skill: installs Clerk packages, adds middleware, wraps layout with ClerkProvider,
+       protects /dashboard, documents CLERK_SECRET_KEY + NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.
+```
+
+### Diagnose a broken session redirect
+
+```
+User: Users bounce between /sign-in and /dashboard in a loop.
+Skill: traces middleware matcher, publicRoutes, and afterSignInUrl; fixes redirect cycle.
+```
