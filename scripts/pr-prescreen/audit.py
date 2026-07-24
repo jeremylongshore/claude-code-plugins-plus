@@ -23,7 +23,7 @@ Columns:
     matched_skill_count INTEGER
     blockers_count INTEGER
     warnings_count INTEGER
-    groq_used INTEGER (0/1)
+    llm_used INTEGER (0/1)          1 if the optional LLM layer succeeded, 0 otherwise (column name retained as `groq_used` in the schema for backward-compat with any downstream SQL)
     llm_status TEXT
     latency_ms INTEGER NOT NULL     end-to-end pre-screen wall time
     created_at TEXT NOT NULL        ISO-8601 UTC

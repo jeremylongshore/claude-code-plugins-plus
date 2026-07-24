@@ -9,7 +9,7 @@ Replaces: `.github/workflows/gemini-code-review.yml` (deleted in Phase 3).
 For every external PR opened against `main`, the `PR Pre-screen` workflow
 runs the deterministic `validate-skills-schema.py --marketplace --json`
 scanner, classifies the result via `scripts/pr-prescreen/classify.py`,
-optionally asks Groq for a 5-line human summary via
+optionally asks MiniMax for a 5-line human summary via
 `scripts/pr-prescreen/summarize.py`, and emits one of three verdicts:
 
 | Verdict | What it means | PR action | Slack action |
@@ -23,21 +23,50 @@ required checks are still `validate` and `marketplace-validation`.
 
 ## How it stays fork-safe
 
-The workflow runs on `pull_request_target`, which means it executes in
-the base-branch context with access to repo secrets even when the PR
-comes from a fork. Two rules keep this safe:
+The workflow is split into **two jobs** that pass an artifact between
+them. This makes the fork-safe design **structural** instead of a
+per-review invariant.
 
-1. PR content is checked out **by HEAD SHA** (not ref) with
-   `persist-credentials: false`. Using the SHA prevents TOCTOU on
-   force-pushes mid-run.
-2. PR-controlled code is **never executed**. We only:
-   - Read the diff via the GitHub API.
-   - Run the repo's pinned validator (from `main`) against PR content.
-   - Send the validator's JSON output to Groq.
+```
+  validate  (pull_request)        — checks out main + PR; runs the
+                                    validator + classifier; bundles
+                                    verdict.json + meta.json into an
+                                    artifact. NO secrets.
+       ↓ artifact
+  respond   (pull_request_target) — downloads the artifact; posts the
+                                    trusted PR comment + Slack ping +
+                                    audit log. Checks out MAIN only.
+                                    NO PR checkout. NO execution of
+                                    any PR-controlled code.
+```
 
-The Groq prompt explicitly treats the payload as data, not as
-instructions. Prompt-injection resistance is unit-tested in
-`scripts/pr-prescreen/test_summarize.py`.
+Why two jobs and not one:
+
+- The privileged job (`respond`) runs under `pull_request_target`, so
+  it has access to `MINIMAX_API_KEY` and
+  `SLACK_OPERATION_HIRED_WEBHOOK_URL`. It must NOT execute PR-controlled
+  code (the "pwn request" pattern that compromised Nx, PostHog, and
+  TanStack in 2025–2026).
+- `actions/checkout@v6`/`v7` blocks checking out fork PR code from a
+  `pull_request_target` workflow by default. The opt-out
+  (`allow-unsafe-pr-checkout: true`) exists, but GitHub's
+  [guidance](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target)
+  is explicit: do not check out fork code in a privileged workflow.
+- The validator still runs in the same fork-context it always did
+  (no secrets). It now lives in `validate` (a `pull_request` job).
+- The trusted-comment + Slack + audit-log posting lives in `respond`,
+  which physically cannot execute PR bytes — there is no `actions/checkout`
+  for the PR ref in that job.
+
+The MiniMax prompt (`scripts/pr-prescreen/summarize.py`) explicitly
+treats the payload as data, not as instructions. Prompt-injection
+resistance is unit-tested in `scripts/pr-prescreen/test_summarize.py`.
+The payload itself is the validator's JSON output (paths, grades,
+errors) — never any PR-controlled text. The MiniMax call reads
+`MINIMAX_API_KEY` from the workflow env and defaults to
+`https://api.minimax.io/v1/chat/completions` with model `MiniMax-M3`.
+Both can be overridden via `LLM_API_URL` / `LLM_MODEL` if the vendor
+changes.
 
 ## How to disable in an emergency
 
@@ -63,13 +92,14 @@ Workflow stays defined in `.github/workflows/pr-prescreen.yml`; only the
    comment is posted in that case to avoid noise. (Comment-on-empty is
    a future change if needed.)
 
-3. **Comment posted but no Groq summary.**
+3. **Comment posted but no MiniMax summary.**
    Look for `LLM status:` in the comment body. Common reasons:
-   - `skipped: no api key` → `GROQ_API_KEY` secret missing.
-   - `failed: http 429` → Groq free-tier rate limit hit; will recover
+   - `skipped: no api key` → `MINIMAX_API_KEY` secret missing.
+   - `failed: http 402` → MiniMax account out of credit or key revoked.
+   - `failed: http 429` → MiniMax rate limit hit; will recover
      on next run.
    - `failed: TimeoutError` → 5s deadline exceeded; usually transient.
-   The deterministic verdict is always present regardless of Groq state.
+   The deterministic verdict is always present regardless of MiniMax state.
 
 4. **Slack ping never arrived.**
    `SLACK_OPERATION_HIRED_WEBHOOK_URL` secret must be set. The workflow
@@ -105,10 +135,10 @@ sqlite3 freshie/inventory.sqlite "
   GROUP BY verdict;
 "
 
-# Groq hit rate
+# Optional LLM hit rate (status + counts)
 sqlite3 freshie/inventory.sqlite "
-  SELECT groq_used, COUNT(*) AS n
-  FROM pr_prescreen_log GROUP BY groq_used;
+  SELECT llm_status, COUNT(*) AS n
+  FROM pr_prescreen_log GROUP BY llm_status;
 "
 ```
 
@@ -121,7 +151,7 @@ fired before this step runs).
 | Name | Type | Scope | Purpose |
 |---|---|---|---|
 | `SLACK_OPERATION_HIRED_WEBHOOK_URL` | secret | repo | Incoming webhook to `#operation-hired`. Shared with 3 other workflows. |
-| `GROQ_API_KEY` | secret | repo | Free-tier key from console.groq.com. Optional — workflow falls back to deterministic-only if absent. |
+| `MINIMAX_API_KEY` | secret | repo | OpenAI-compatible key from MiniMax (paid annual plan). Optional — workflow falls back to deterministic-only if absent. Used by `summarize.py` for the 5-line reviewer summary. |
 | `ENABLE_PR_PRESCREEN` | variable | repo | `true` enables the workflow. Set to `false` to disable in an emergency. |
 
 ## Critical files
@@ -130,7 +160,7 @@ fired before this step runs).
 |---|---|
 | `.github/workflows/pr-prescreen.yml` | The workflow itself. |
 | `scripts/pr-prescreen/classify.py` | Pure function: validator JSON → verdict. |
-| `scripts/pr-prescreen/summarize.py` | Optional Groq layer with deterministic fallback. |
+| `scripts/pr-prescreen/summarize.py` | Optional MiniMax layer with deterministic fallback. |
 | `scripts/pr-prescreen/audit.py` | Appends one row per run to the audit log. |
 | `scripts/pr-prescreen/test_classify.py` | Unit tests for the classifier (12 tests). |
 | `scripts/pr-prescreen/test_summarize.py` | Unit tests for the summarizer (9 tests). |
@@ -144,8 +174,8 @@ python3 scripts/pr-prescreen/test_summarize.py
 
 ## Deferred (separate beads, not in scope here)
 
-- NVIDIA Nemotron as alternative LLM provider — only if Groq rate-limit
-  becomes a real constraint.
+- Adding a second LLM provider (NVIDIA Nemotron) as a true fallback — only if
+  MiniMax becomes a real constraint.
 - Retroactive run against the `claude-tcss` PR backlog.
 - Cross-repo rollout to other Intent Solutions repos.
 - Promoting any pre-screen verdict to auto-merge — explicit non-goal.
