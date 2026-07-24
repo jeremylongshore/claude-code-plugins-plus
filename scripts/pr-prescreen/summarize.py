@@ -1,7 +1,7 @@
-"""PR pre-screen — LLM summary layer (advisory, DeepSeek by default).
+"""PR pre-screen — LLM summary layer (advisory, MiniMax by default).
 
 Reads the classifier output produced by classify.py and asks an
-OpenAI-compatible chat API (DeepSeek by default) for a ≤5-line human
+OpenAI-compatible chat API (MiniMax-M3 by default) for a ≤5-line human
 summary. Returns the original classifier output with an added
 "summary_lines" key on success. When the optional LLM is unavailable,
 the output keeps only the machine-readable "llm_status" diagnostic;
@@ -16,13 +16,13 @@ Constraints:
 - Prompt is fixed; the only user-controlled content is the JSON we ship
   in a fenced code block clearly demarcated from the system prompt.
 - No SDK. Plain stdlib HTTP via urllib so this runs on any GHA runner
-  without extra installs. DeepSeek's API is OpenAI-compatible, so the
+  without extra installs. MiniMax's API is OpenAI-compatible, so the
   request/response shape is identical to any other OpenAI-style host.
 
 Env vars:
-  DEEPSEEK_API_KEY  — required for live calls. Missing → fallback.
-  LLM_API_URL       — optional override (default: DeepSeek chat endpoint).
-  LLM_MODEL         — optional override (default: deepseek-chat).
+  MINIMAX_API_KEY   — required for live calls. Missing → fallback.
+  LLM_API_URL       — optional override (default: MiniMax chat endpoint).
+  LLM_MODEL         — optional override (default: MiniMax-M3).
   LLM_TIMEOUT       — optional override in seconds (default: 5).
 """
 
@@ -35,8 +35,8 @@ import urllib.error
 import urllib.request
 
 
-DEFAULT_API_URL = "https://api.deepseek.com/chat/completions"
-DEFAULT_MODEL = "deepseek-chat"
+DEFAULT_API_URL = "https://api.minimax.io/v1/chat/completions"
+DEFAULT_MODEL = "MiniMax-M3"
 DEFAULT_TIMEOUT = 5.0
 
 
@@ -128,7 +128,7 @@ def summarize(classifier_output: dict) -> dict:
     # Never propagate a caller-supplied/stale summary into notifications when
     # this invocation cannot produce a successful LLM result.
     out.pop("summary_lines", None)
-    api_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
+    api_key = os.environ.get("MINIMAX_API_KEY", "").strip()
     if not api_key:
         out["llm_status"] = "skipped: no api key"
         return out

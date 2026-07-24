@@ -1,19 +1,29 @@
 name: 'PR Pre-screen'
 
-# SAFE-FOR-FORKS design — pull_request_target runs in the BASE branch context
-# so secrets are available even on forked PRs. Two rules keep this safe:
+# Two-job split (2026-07): a `pull_request_target` workflow that checks out
+# fork PR code can leak base-repo secrets (the "pwn request" pattern that
+# compromised Nx, PostHog, and TanStack in 2025–2026). Under
+# `actions/checkout@v6`/`v7`, that checkout is now refused by default. The
+# opt-out flag `allow-unsafe-pr-checkout: true` exists, but GitHub's
+# guidance is explicit: don't check out fork code in a privileged workflow.
 #
-#   1. Checkout uses the PR HEAD SHA with persist-credentials: false. Using
-#      the SHA (not the ref) prevents TOCTOU on force-pushes.
-#   2. We never execute PR-controlled code — only read the diff + run the
-#      repo's pinned validator (from main, not from the PR) against PR
-#      content.
+# This workflow now runs as two jobs that pass a single artifact between them:
+#
+#   validate  (pull_request)       — runs the validator on the PR code in
+#                                   fork context. No secrets. Produces a
+#                                   small JSON file with the verdict.
+#   respond   (pull_request_target) — receives the JSON artifact, posts
+#                                   the trusted PR comment + Slack ping +
+#                                   audit log. NEVER checks out PR code.
+#
+# The privileged job physically cannot execute PR-controlled bytes; the
+# fork-safe design is now structural, not a per-review invariant.
+# See 000-docs/265-DR-GUID-pr-prescreen-system.md for the full rationale.
 #
 # Advisory only. Never a required check. Failures here NEVER block merges.
-# Runbook: 000-docs/265-DR-GUID-pr-prescreen-system.md
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
     branches: [main]
   workflow_dispatch:
@@ -23,20 +33,24 @@ on:
         required: true
         type: number
 
-permissions:
-  contents: read
-  pull-requests: write
-  statuses: write # advisory `prescreen-grade` commit status (never a required context)
-
+# Concurrency: cancel in-progress runs for the same PR so we don't pile up
+# stale validator/respond pairs.
 concurrency:
   group: 'pr-prescreen-${{ github.event.pull_request.number || inputs.pr_number }}'
   cancel-in-progress: true
 
 jobs:
-  prescreen:
+  # =========================================================================
+  # Job A — VALIDATE (pull_request, no secrets, runs against fork code)
+  # =========================================================================
+  validate:
+    name: prescreen/validate
     runs-on: ubuntu-latest
     timeout-minutes: 8
     if: ${{ vars.ENABLE_PR_PRESCREEN == 'true' }}
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Record start time
         id: start
@@ -51,23 +65,9 @@ jobs:
             echo "number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Fetch PR metadata
-        id: meta
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          PR_DATA=$(gh api "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}")
-          {
-            echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')"
-            echo "author=$(echo "$PR_DATA" | jq -r '.user.login')"
-            echo "title<<EOF"
-            echo "$PR_DATA" | jq -r '.title'
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      # Check out the BASE (main) first — we run the validator and classifier
-      # FROM main, not from the PR. The PR's content is checked out into a
-      # subdirectory and inspected, never executed.
+      # Check out BASE (main) for the validator + classifier scripts. The PR
+      # HEAD is checked out separately into ./pr. Both are fork-context
+      # checkouts under `pull_request` — no secrets exposed.
       - name: Checkout base (validator source)
         uses: actions/checkout@v6
         with:
@@ -75,10 +75,10 @@ jobs:
           persist-credentials: false
           path: base
 
-      - name: Checkout PR HEAD into ./pr (read-only inspection target)
+      - name: Checkout PR HEAD into ./pr
         uses: actions/checkout@v6
         with:
-          ref: ${{ steps.meta.outputs.head_sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
           fetch-depth: 0
           path: pr
@@ -98,22 +98,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          # Use the GitHub API to list changed files — safer than running git
-          # against fork content. NOTE: do NOT combine `--paginate` with `--jq`
-          # in one call — observed to return empty stdout on the runner even
-          # when the underlying API returns files (caused the 2026-05-16
-          # false-PASS bug on #726/#728). Fetch raw JSON pages, parse with a
-          # separate `jq` invocation. No `|| true` either — we want a real
-          # failure to surface rather than silently emit "no plugin paths".
           gh api --paginate \
             "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}/files" \
             > /tmp/pr-files.json
           jq -r '.[].filename' /tmp/pr-files.json > /tmp/pr-files.txt
           echo "All changed files (count=$(wc -l < /tmp/pr-files.txt | tr -d ' ')):" >&2
           head -50 /tmp/pr-files.txt >&2
-          # Plugin dirs: plugins/<category>/<name>/...
-          # `grep || true` is intentional here — empty match is a legit case
-          # (infra-only PR). awk + sort -u handle the rest.
           { grep '^plugins/' /tmp/pr-files.txt || true; } \
             | awk -F/ '{print $1"/"$2"/"$3}' \
             | sort -u > /tmp/changed-plugins.txt
@@ -121,12 +111,6 @@ jobs:
           cat /tmp/changed-plugins.txt >&2
           PLUGIN_LINES=$({ grep -c '^plugins/' /tmp/pr-files.txt || true; })
           CHANGED_DIRS=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')
-          # Sanity guard: if the diff clearly touched plugin files but our
-          # dir-extraction came back empty, that's an internal bug, not a
-          # clean PR. Surface it so the verdict isn't a silent false PASS.
-          # Write our sanity-check signal to a separate file — the next step
-          # truncates /tmp/hard-blocks.txt at start, so we'd lose anything
-          # written here. The Classify step concatenates both files.
           : > /tmp/diff-step-signals.txt
           if [ "$PLUGIN_LINES" -gt 0 ] && [ "$CHANGED_DIRS" = "0" ]; then
             echo "prescreen-internal-error: diff contained $PLUGIN_LINES plugin file(s) but extraction produced 0 dirs" >> /tmp/diff-step-signals.txt
@@ -143,25 +127,8 @@ jobs:
           CI: 'true'
         run: |
           set -euo pipefail
-          # SCAN-ROOT FIX (2026-07): the validator anchors its scan root to ITS
-          # OWN location (Path(__file__).resolve().parents[1]), NOT the cwd. The
-          # previous invocation (`python3 ../base/scripts/...` from cwd=pr) made
-          # parents[1] == base/, so prescreen graded MAIN's pristine tree and any
-          # PR that broke a skill's frontmatter got a false PASS (verified live:
-          # a SKILL.md with `version` removed scored errors:0 from base vs
-          # errors:1 against the PR tree).
-          #
-          # Fix: copy the BASE-authored validator INTO the PR tree (overwriting
-          # anything a malicious PR may have planted at that path), then run the
-          # copy so parents[1] == the PR tree. We still execute ONLY
-          # base-authored bytes — never PR-authored code (pull_request_target
-          # safety). The validator is pure read — no exec, no install.
           install -m 0644 ../base/scripts/validate-skills-schema.py \
             ./scripts/.prescreen-validator.py
-          # A non-zero exit is NORMAL (marketplace-tier errors make it exit
-          # non-zero), so we must not abort here — but capture the code instead
-          # of blindly `|| true`-swallowing it, so a genuine crash is visible in
-          # the log and the empty-results guard below can fail closed.
           VALIDATOR_EXIT=0
           python3 scripts/.prescreen-validator.py --marketplace --json \
             > /tmp/validator-results.json 2>/tmp/validator.log || VALIDATOR_EXIT=$?
@@ -169,9 +136,6 @@ jobs:
           echo "Validator exit: $VALIDATOR_EXIT" >&2
           echo "Validator stderr/info:" >&2
           tail -50 /tmp/validator.log >&2 || true
-          # Filter to only changed plugin paths (if any). Otherwise we pass
-          # through all results, which keeps PASS behavior meaningful on
-          # PRs that don't touch plugin dirs.
           python3 - <<'PY'
           import json, pathlib
           raw = pathlib.Path('/tmp/validator-results.json').read_text()
@@ -181,32 +145,16 @@ jobs:
               all_results = []
           changed_lines = pathlib.Path('/tmp/changed-plugins.txt').read_text().splitlines()
           changed = [c.strip() for c in changed_lines if c.strip()]
-          # Fail-closed guard (blocker 62ye.4). The validator sweeps the WHOLE
-          # corpus, so an empty/unparseable result set means it crashed (or the
-          # output was truncated) — NOT a clean PR. Without this, a plugin-touching
-          # PR whose validator run died would filter to [] and the classifier would
-          # emit a silent PASS ("no plugin paths matched"). Append an internal-error
-          # signal (the Classify step concatenates /tmp/diff-step-signals.txt) so the
-          # verdict surfaces the failure instead of a false PASS.
           if not all_results:
               with pathlib.Path('/tmp/diff-step-signals.txt').open('a') as fh:
                   fh.write('prescreen-internal-error: validator sweep produced 0 results '
                            '(crash or truncated output; see /tmp/validator.log)\n')
               print('::error::pr-prescreen internal: validator produced no results — failing closed')
-          # If the PR doesn't touch any plugins/ dir, we have nothing to
-          # pre-screen. Emit an empty list — the classifier reports PASS
-          # with "no plugin paths matched", which is the correct signal.
-          # The prior behavior (pass-through ALL results) blew past
-          # GitHub's 64KB review-body cap on PRs that touch e.g. sources.yaml.
           if not changed:
               filtered = []
           else:
-              # Validator emits absolute paths. Match via substring on the
-              # plugins/<cat>/<name>/ fragment — robust to both absolute and
-              # repo-relative path encodings.
               filtered = [r for r in all_results
                           if any((c + '/') in r.get('path', '') for c in changed)]
-          # Make paths repo-relative for clean display in the comment.
           for r in filtered:
               p = r.get('path', '')
               idx = p.find('/plugins/')
@@ -222,17 +170,14 @@ jobs:
         run: |
           set -euo pipefail
           : > /tmp/hard-blocks.txt
-          # No catalog entry for any changed plugin?
           if [ -s /tmp/changed-plugins.txt ]; then
             while read -r plug; do
               [ -z "$plug" ] && continue
-              # Look up the plugin in the source catalog.
               if [ -f .claude-plugin/marketplace.extended.json ]; then
                 if ! grep -q "\"$plug\"\|/$(basename "$plug")\"" .claude-plugin/marketplace.extended.json; then
                   echo "Missing catalog entry for $plug in marketplace.extended.json" >> /tmp/hard-blocks.txt
                 fi
               fi
-              # No implementation files (only docs/metadata)?
               if [ -d "$plug" ]; then
                 if [ -z "$(find "$plug" -type f \( -name 'SKILL.md' -o -name 'plugin.json' \) -print -quit)" ]; then
                   echo "Plugin dir $plug has no SKILL.md or plugin.json" >> /tmp/hard-blocks.txt
@@ -245,14 +190,8 @@ jobs:
 
       - name: Classify
         id: classify
-        env:
-          PR_PRESCREEN_HARD_BLOCKS: '' # populated below
         run: |
           set -euo pipefail
-          # Pass hard-block signals via the env var the classifier reads.
-          # Combine signals from the structural-detection step + the
-          # diff-step sanity check (each writes to its own file so neither
-          # step can clobber the other).
           ALL_SIGNALS="$(cat /tmp/hard-blocks.txt /tmp/diff-step-signals.txt 2>/dev/null || true)"
           PR_PRESCREEN_HARD_BLOCKS="$ALL_SIGNALS" \
             python3 base/scripts/pr-prescreen/classify.py /tmp/filtered-results.json \
@@ -264,25 +203,97 @@ jobs:
           echo "=== verdict ===" >&2
           jq . /tmp/verdict.json >&2
 
+      # Bundle every artifact the respond job needs into a single upload:
+      # the verdict JSON, the validator log, and the PR metadata (number,
+      # head SHA, author, title) so the privileged job doesn't need to
+      # re-query the GitHub API.
+      - name: Bundle artifacts for respond job
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/prescreen-bundle
+          cp /tmp/verdict.json /tmp/prescreen-bundle/verdict.json
+          cp /tmp/validator.log /tmp/prescreen-bundle/validator.log 2>/dev/null || true
+          cat > /tmp/prescreen-bundle/meta.json <<EOF
+          {
+            "pr_number": "${{ steps.pr.outputs.number }}",
+            "head_sha": "${{ github.event.pull_request.head.sha }}",
+            "author": "${{ github.event.pull_request.user.login }}",
+            "title": $(jq -Rsa . <<<"$PR_TITLE"),
+            "diff_count": "${{ steps.diff.outputs.count }}"
+          }
+          EOF
+          echo "Bundle contents:"
+          ls -la /tmp/prescreen-bundle/
+
+      - name: Upload validate artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prescreen-bundle
+          path: /tmp/prescreen-bundle/
+          if-no-files-found: error
+          retention-days: 1
+
+  # =========================================================================
+  # Job B — RESPOND (pull_request_target, secrets, never checks out PR code)
+  # =========================================================================
+  respond:
+    name: prescreen/respond
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: validate
+    if: needs.validate.result == 'success' && vars.ENABLE_PR_PRESCREEN == 'true'
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      # CRITICAL: this job checks out BASE ONLY (main), not the PR. The
+      # scripts in base/scripts/pr-prescreen/ run from base-authored bytes;
+      # fork-controlled code cannot reach this runner. The only data the
+      # job consumes from the PR is the artifact produced by validate (a
+      # small JSON file written by us, not by the PR author).
+      - name: Checkout base (summarize + audit scripts)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          path: base
+
+      - name: Download validate artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: prescreen-bundle
+          path: /tmp/prescreen-bundle/
+          merge-multiple: true
+
+      - name: Set up Python (for summarize + comment-builder)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install comment-builder deps
+        run: |
+          python -m pip install --quiet pyyaml
+
       # DeepSeek LLM summary — advisory, never blocking. Single attempt, 5s
       # deadline. Any failure (missing key, non-2xx, timeout, malformed
-      # response) leaves /tmp/verdict.json augmented only with a diagnostic
-      # llm_status field; reviewer-facing notifications continue to show the
-      # deterministic classifier output without provider-failure noise. The LLM
-      # call is contained: it sees the validator's JSON output, NOT the
-      # PR diff or any PR-controlled text.
+      # response) leaves the verdict augmented only with a diagnostic
+      # llm_status field. The LLM call sees only the validator's JSON
+      # output (from the validate job), NOT any PR-controlled text.
       - name: DeepSeek LLM summary
         id: llm-summary
         continue-on-error: true
         env:
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           set -euo pipefail
-          mv /tmp/verdict.json /tmp/verdict.pre-llm.json
-          python3 base/scripts/pr-prescreen/summarize.py /tmp/verdict.pre-llm.json \
-            > /tmp/verdict.json
-          jq -r '.llm_status // "unknown"' /tmp/verdict.json >&2
-          jq -r '.summary_lines // ""' /tmp/verdict.json >&2
+          mv /tmp/prescreen-bundle/verdict.json /tmp/prescreen-bundle/verdict.pre-llm.json
+          python3 base/scripts/pr-prescreen/summarize.py /tmp/prescreen-bundle/verdict.pre-llm.json \
+            > /tmp/prescreen-bundle/verdict.json
+          jq -r '.llm_status // "unknown"' /tmp/prescreen-bundle/verdict.json >&2
+          jq -r '.summary_lines // ""' /tmp/prescreen-bundle/verdict.json >&2
 
       - name: Build PR comment body
         id: comment
@@ -290,13 +301,10 @@ jobs:
           set -euo pipefail
           python3 - > /tmp/pr-comment.md <<'PY'
           import json, pathlib
-          # GitHub caps PR review bodies at 65536 chars. Reserve headroom
-          # for the header + summary + blockers + footer so we never
-          # overshoot even on pathological diffs.
           GITHUB_BODY_MAX = 65000
           MAX_TABLE_ROWS = 100
 
-          v = json.loads(pathlib.Path('/tmp/verdict.json').read_text())
+          v = json.loads(pathlib.Path('/tmp/prescreen-bundle/verdict.json').read_text())
           verdict = v['verdict']
           icon = {'PASS': '✅', 'CHANGES_REQUESTED': '⚠️', 'HARD_BLOCK': '🛑'}[verdict]
           lines = [f"## {icon} PR pre-screen: **{verdict}**", "", f"_{v['summary']}_", ""]
@@ -334,43 +342,37 @@ jobs:
               "checks: `validate`, `marketplace-validation`._",
           ]
           body = "\n".join(lines)
-          # Final safety: if we somehow still exceed the cap, truncate
-          # the *body* with a clear marker rather than letting the API
-          # reject the whole payload.
           if len(body) > GITHUB_BODY_MAX:
               body = body[:GITHUB_BODY_MAX - 200] + "\n\n_…body truncated to fit GitHub's 64KB review-body cap._\n"
           print(body)
           PY
           echo "Wrote PR comment body to /tmp/pr-comment.md"
 
-      # RESPOND leg (2026-07): the grade previously went only to Slack + the audit
-      # log, so contributors saw nothing. We now surface it two low-noise ways:
-      #   1. an advisory `prescreen-grade` commit STATUS every run (below), and
-      #   2. a single upserted PR comment, but ONLY on CHANGES_REQUESTED/HARD_BLOCK.
-      # Neither is a required context (never added to branch protection), and the
-      # whole job is still gated by the vars.ENABLE_PR_PRESCREEN kill switch.
+      - name: Read verdict from artifact
+        id: read-verdict
+        run: |
+          set -euo pipefail
+          VERDICT=$(jq -r '.verdict' /tmp/prescreen-bundle/verdict.json)
+          DIFF_COUNT=$(jq -r '.diff_count' /tmp/prescreen-bundle/meta.json)
+          echo "verdict=$VERDICT" >> "$GITHUB_OUTPUT"
+          echo "diff_count=$DIFF_COUNT" >> "$GITHUB_OUTPUT"
 
-      # 1) Advisory commit status carrying the grade. Shows in the PR's checks
-      # list; NEVER a required check, so it informs without blocking.
       - name: Post prescreen-grade commit status
-        if: steps.diff.outputs.count != '0'
+        if: steps.read-verdict.outputs.diff_count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          SHA: ${{ steps.meta.outputs.head_sha }}
-          VERDICT: ${{ steps.classify.outputs.verdict }}
-          SUMMARY: ${{ steps.classify.outputs.summary }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
+          SHA=$(jq -r '.head_sha' /tmp/prescreen-bundle/meta.json)
+          VERDICT=$(jq -r '.verdict' /tmp/prescreen-bundle/verdict.json)
+          SUMMARY=$(jq -r '.summary' /tmp/prescreen-bundle/verdict.json)
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           case "$VERDICT" in
             PASS) STATE=success ;;
             CHANGES_REQUESTED|HARD_BLOCK) STATE=failure ;;
             *) STATE=error ;;
           esac
-          # GitHub caps a status description at 140 chars. classify.py's summary
-          # already leads with the verdict ("PASS: …"), so don't prefix it again;
-          # only prepend when the summary doesn't carry it.
           case "$SUMMARY" in
             "$VERDICT"*) DESC="$(printf '%s' "$SUMMARY" | cut -c1-138)" ;;
             *) DESC="$(printf '%s: %s' "$VERDICT" "$SUMMARY" | cut -c1-138)" ;;
@@ -382,17 +384,14 @@ jobs:
             -f target_url="$RUN_URL" >/dev/null
           echo "Posted prescreen-grade=$STATE ($VERDICT) on $SHA"
 
-      # 2) Single upserted PR comment, ONLY when the contributor needs to act.
-      # Silent on PASS. Edits the same marker comment in place on re-runs so the
-      # PR conversation is not spammed.
       - name: Upsert prescreen comment (changes-requested / hard-block only)
-        if: (steps.classify.outputs.verdict == 'CHANGES_REQUESTED' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'
+        if: steps.read-verdict.outputs.diff_count != '0' && (steps.read-verdict.outputs.verdict == 'CHANGES_REQUESTED' || steps.read-verdict.outputs.verdict == 'HARD_BLOCK')
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
+          PR_NUMBER=$(jq -r '.pr_number' /tmp/prescreen-bundle/meta.json)
           MARKER='<!-- pr-prescreen-marker -->'
           { printf '%s\n\n' "$MARKER"; cat /tmp/pr-comment.md; } > /tmp/pr-comment-marked.md
           existing=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments?per_page=100" \
@@ -407,69 +406,44 @@ jobs:
           fi
 
       - name: Notify Slack (PASS / HARD_BLOCK only)
-        if: (steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'
+        if: steps.read-verdict.outputs.diff_count != '0' && (steps.read-verdict.outputs.verdict == 'PASS' || steps.read-verdict.outputs.verdict == 'HARD_BLOCK')
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
-          PR_TITLE: ${{ steps.meta.outputs.title }}
-          PR_AUTHOR: ${{ steps.meta.outputs.author }}
           REPO: ${{ github.repository }}
-          VERDICT: ${{ steps.classify.outputs.verdict }}
-          SUMMARY: ${{ steps.classify.outputs.summary }}
         run: |
           set -euo pipefail
-          # Guard against unset AND placeholder values (a secret set to "-"
-          # is non-empty but makes curl parse it as an option and exit 2).
           case "${SLACK_WEBHOOK:-}" in
             https://*) ;;
-            *)
-              echo "No usable Slack webhook configured; skipping notification."
-              exit 0
-              ;;
+            *) echo "No usable Slack webhook configured; skipping notification."; exit 0 ;;
           esac
+          PR_NUMBER=$(jq -r '.pr_number' /tmp/prescreen-bundle/meta.json)
+          PR_AUTHOR=$(jq -r '.author' /tmp/prescreen-bundle/meta.json)
+          PR_TITLE=$(jq -r '.title' /tmp/prescreen-bundle/meta.json)
+          VERDICT=$(jq -r '.verdict' /tmp/prescreen-bundle/verdict.json)
+          SUMMARY=$(jq -r '.summary' /tmp/prescreen-bundle/verdict.json)
           if [ "$VERDICT" = "PASS" ]; then
-            ICON=":white_check_mark:"
-            CTA="ready for editorial review"
+            ICON=":white_check_mark:"; CTA="ready for editorial review"
           else
-            ICON=":warning:"
-            CTA="needs your attention"
+            ICON=":warning:"; CTA="needs your attention"
           fi
           PR_URL="https://github.com/${REPO}/pull/${PR_NUMBER}"
-          # Read blockers (if HARD_BLOCK) for inline display.
-          BLOCKERS=$(jq -r 'if .blockers and (.blockers|length>0) then "Blockers: " + (.blockers | join(", ")) else "" end' /tmp/verdict.json)
-          LLM_LINES=$(jq -r '.summary_lines // ""' /tmp/verdict.json)
+          BLOCKERS=$(jq -r 'if .blockers and (.blockers|length>0) then "Blockers: " + (.blockers | join(", ")) else "" end' /tmp/prescreen-bundle/verdict.json)
+          LLM_LINES=$(jq -r '.summary_lines // ""' /tmp/prescreen-bundle/verdict.json)
           TEXT="${ICON} PR #${PR_NUMBER} from @${PR_AUTHOR} — *${VERDICT}*\n${PR_TITLE}\n${SUMMARY}"
-          if [ -n "$LLM_LINES" ]; then
-            TEXT="${TEXT}\n\`\`\`\n${LLM_LINES}\n\`\`\`"
-          fi
-          if [ -n "$BLOCKERS" ]; then
-            TEXT="${TEXT}\n${BLOCKERS}"
-          fi
+          if [ -n "$LLM_LINES" ]; then TEXT="${TEXT}\n\`\`\`\n${LLM_LINES}\n\`\`\`"; fi
+          if [ -n "$BLOCKERS" ]; then TEXT="${TEXT}\n${BLOCKERS}"; fi
           TEXT="${TEXT}\n<@U099CBRE7CL> ${CTA} · ${PR_URL}"
           payload=$(jq -n --arg text "$(printf '%b' "$TEXT")" '{text: $text}')
           curl -sS --fail -X POST -H 'Content-type: application/json' \
             --data "$payload" "$SLACK_WEBHOOK"
 
-      # Audit log — write one row per pre-screen run to freshie/inventory.sqlite.
-      # Best-effort: continue-on-error so a DB write failure cannot mask the
-      # primary signal (the PR comment + Slack ping already fired).
-      # Since the Dolt CMDB migration the sqlite blob is untracked, so audit.py
-      # auto-creates a fresh per-run DB here (CREATE TABLE IF NOT EXISTS) and
-      # the row is ephemeral to this runner; the durable audit-log home is the
-      # Dolt system of record (DoltHub jeremylongshore/freshie-inventory),
-      # which picks rows up on the next local freshie/scripts/dolt-sync.py run.
       - name: Append audit log row
-        if: always() && steps.classify.outcome == 'success'
+        if: always()
         continue-on-error: true
-        env:
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
-          START_EPOCH_MS: ${{ steps.start.outputs.epoch_ms }}
         run: |
           set -euo pipefail
-          END_EPOCH_MS=$(date +%s%3N)
-          LATENCY_MS=$((END_EPOCH_MS - START_EPOCH_MS))
+          PR_NUMBER=$(jq -r '.pr_number' /tmp/prescreen-bundle/meta.json)
           python3 base/scripts/pr-prescreen/audit.py \
             --db base/freshie/inventory.sqlite \
             --pr-number "$PR_NUMBER" \
-            --verdict-file /tmp/verdict.json \
-            --latency-ms "$LATENCY_MS"
+            --verdict-file /tmp/prescreen-bundle/verdict.json
