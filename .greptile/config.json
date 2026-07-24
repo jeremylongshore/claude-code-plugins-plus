@@ -4,7 +4,19 @@
     "logic",
     "syntax"
   ],
-  "triggerOnUpdates": true,
+  "triggerOnUpdates": false,
+  "triggerOnDrafts": false,
+  "disabledLabels": [
+    "automated",
+    "generated",
+    "skip-greptile",
+    "no-ai-review"
+  ],
+  "excludeAuthors": [
+    "dependabot[bot]",
+    "renovate[bot]"
+  ],
+  "ignoreKeywords": "[skip greptile]\n[skip ai review]\nDaily npm download stats refresh",
   "fixWithAI": true,
   "confidenceScoreSection": {
     "included": true
@@ -12,7 +24,7 @@
   "sequenceDiagramSection": {
     "included": true
   },
-  "ignorePatterns": "node_modules/\n.venv/\ndist/\nbuild/\ncoverage/\nmarketplace/dist/\nmarketplace/.astro/\nmarketplace/public/downloads/\npnpm-lock.yaml\npackage-lock.json\n*.min.js\n.claude-plugin/marketplace.json\nfreshie/inventory.sqlite",
+  "ignorePatterns": "node_modules/\n.venv/\ndist/\nbuild/\ncoverage/\nmarketplace/dist/\nmarketplace/.astro/\nmarketplace/public/downloads/\npnpm-lock.yaml\npackage-lock.json\n*.min.js\n.claude-plugin/marketplace.json\nfreshie/inventory.sqlite\nmarketplace/src/data/npm-stats.json",
   "rules": [
     {
       "id": "no-gate-weakening",
