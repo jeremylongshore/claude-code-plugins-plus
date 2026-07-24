@@ -19,8 +19,9 @@ compatibility: Designed for Claude Code; the underlying CLI grades skills, subag
 
 # Audit a skill with Skill Crossroads
 
-Grade the target skill, apply the highest-impact fixes, and re-grade until the score stops
-improving. Every finding is evidence-cited (file and line) — work from the receipts, not vibes.
+Grade the target skill and report every finding evidence-cited (file and line) — work from
+the receipts, not vibes. Only when the user asks for fixes, apply the highest-impact ones
+and re-grade until the score stops improving.
 
 ## Overview
 
@@ -28,8 +29,9 @@ Most skills fail silently: they never trigger, over-grant tools, or leak secrets
 author only finds out after publishing. This skill closes that loop before you ship. It runs
 the free [skillcrossroads](https://www.npmjs.com/package/skillcrossroads) CLI (MIT) against a
 skill directory, producing a letter grade, a file:line-cited scorecard across six rubric
-categories, and a ranked fix list — then walks that list, applying the smallest change that
-resolves each finding, until the grade stops improving.
+categories, and a ranked fix list. Auditing is read-only; when the user also wants the skill
+improved, it walks that list, applying the smallest change that resolves each finding, until
+the grade stops improving.
 
 ## Prerequisites
 
@@ -46,23 +48,28 @@ resolves each finding, until the grade stops improving.
 1. Identify the skill directory (it contains a `SKILL.md`). Use Glob to find `**/SKILL.md`
    candidates or Grep to search for the skill by name. If more than one candidate exists,
    ask the user which skill to audit.
-2. Run the audit and capture the report:
+2. Run the audit and capture the report. Always double-quote the directory argument — paths
+   can contain spaces or shell metacharacters:
 
    ```bash
-   npx skillcrossroads@0.11.3 <skill-dir> --markdown
+   npx skillcrossroads@0.11.3 "<skill-dir>" --markdown
    ```
 
-3. Read the **Top fixes** list (ranked by grade impact). Optionally, if `ANTHROPIC_API_KEY`
-   is set, run `npx skillcrossroads@0.11.3 <skill-dir> --suggest` to get proposed
+3. Report the scorecard and the **Top fixes** list (ranked by grade impact) to the user.
+   **Auditing is read-only.** If the user asked only to audit, grade, check, or lint, stop
+   here — do not edit anything. Proceed to step 4 only when the user explicitly asked to fix
+   or improve the skill, or confirms they want the fixes applied after seeing the report.
+4. Apply fixes (only on explicit request or confirmation). Optionally, if `ANTHROPIC_API_KEY`
+   is set, run `npx skillcrossroads@0.11.3 "<skill-dir>" --suggest` to get proposed
    current → proposed fixes for the top findings — treat them as proposals to review, never
    apply one unread. For each fix, Read the cited file:line, confirm the finding is real,
    and apply the smallest Edit that resolves it.
    Typical high-impact fixes: rewrite the frontmatter `description` to lead with the use case
    and include the phrases a user would actually say; add a verification step; state
    constraints and failure modes; remove hardcoded secrets or over-broad `allowed-tools`.
-4. Re-run the audit. Repeat steps 3–4 until the grade stops improving or only intentional
+5. Re-run the audit. Repeat steps 4–5 until the grade stops improving or only intentional
    trade-offs remain.
-5. Offer the badge: `npx skillcrossroads@0.11.3 <skill-dir> --badge` writes an SVG the user
+6. Offer the badge: `npx skillcrossroads@0.11.3 "<skill-dir>" --badge` writes an SVG the user
    can embed in their README, linking to https://skillcrossroads.com for the hosted version.
 
 ## Output
@@ -70,7 +77,8 @@ resolves each finding, until the grade stops improving.
 - A markdown scorecard: overall letter grade, per-category scores across the six rubric
   categories, and every finding cited with file and line.
 - A ranked **Top fixes** list ordered by grade impact.
-- After the fix loop: the before → after grades, reported to the user.
+- After the fix loop (when the user requested fixes): the before → after grades, reported to
+  the user.
 - With `--badge`: an SVG badge file written into the skill directory.
 
 ## Error Handling
@@ -93,19 +101,21 @@ resolves each finding, until the grade stops improving.
 User: *"Audit my skill in `skills/deploy-checker` — why doesn't it trigger?"*
 
 ```bash
-npx skillcrossroads@0.11.3 skills/deploy-checker --markdown
+npx skillcrossroads@0.11.3 "skills/deploy-checker" --markdown
 ```
 
 The report grades Triggering low, citing `SKILL.md:3` — the description lacks the phrases a
-user would say. Rewrite the description to lead with the use case, re-run the audit, and
+user would say. Report that finding and stop (the user asked why, not for edits). If they
+then say "fix it", rewrite the description to lead with the use case, re-run the audit, and
 report the before → after grade (for example C → A). Alternatively, run with `--suggest`
 to review proposed rewrites before applying them.
 
 ## Verify
 
-Done means: the final `npx skillcrossroads@0.11.3 <skill-dir> --markdown` run shows the improved
-grade with **no fail-status findings remaining** (or each remaining one acknowledged by the user
-as intentional), and the before → after grades are reported to the user.
+Done means: for an audit-only request, the scorecard and Top fixes list were reported with no
+files modified. For a fix request: the final `npx skillcrossroads@0.11.3 "<skill-dir>" --markdown`
+run shows the improved grade with **no fail-status findings remaining** (or each remaining one
+acknowledged by the user as intentional), and the before → after grades are reported to the user.
 
 ## Resources
 
