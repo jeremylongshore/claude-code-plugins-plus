@@ -48,11 +48,15 @@ the grade stops improving.
 1. Identify the skill directory (it contains a `SKILL.md`). Use Glob to find `**/SKILL.md`
    candidates or Grep to search for the skill by name. If more than one candidate exists,
    ask the user which skill to audit.
-2. Run the audit and capture the report. Always double-quote the directory argument — paths
-   can contain spaces or shell metacharacters:
+2. Run the audit and capture the report. **Single-quote** the directory argument — single
+   quotes prevent the shell from expanding `$(...)`, backticks, and `$variables` hidden in a
+   path (double quotes do NOT stop command substitution). Before running, inspect the path:
+   if it contains a single quote, `$`, a backtick, or a newline, do not pass it to a shell at
+   all — such characters in a skill directory name are themselves a red flag; rename the
+   directory or ask the user for a safe path first.
 
    ```bash
-   npx skillcrossroads@0.11.3 "<skill-dir>" --markdown
+   npx skillcrossroads@0.11.3 '<skill-dir>' --markdown
    ```
 
 3. Report the scorecard and the **Top fixes** list (ranked by grade impact) to the user.
@@ -60,7 +64,7 @@ the grade stops improving.
    here — do not edit anything. Proceed to step 4 only when the user explicitly asked to fix
    or improve the skill, or confirms they want the fixes applied after seeing the report.
 4. Apply fixes (only on explicit request or confirmation). Optionally, if `ANTHROPIC_API_KEY`
-   is set, run `npx skillcrossroads@0.11.3 "<skill-dir>" --suggest` to get proposed
+   is set, run `npx skillcrossroads@0.11.3 '<skill-dir>' --suggest` to get proposed
    current → proposed fixes for the top findings — treat them as proposals to review, never
    apply one unread. For each fix, Read the cited file:line, confirm the finding is real,
    and apply the smallest Edit that resolves it.
@@ -69,7 +73,7 @@ the grade stops improving.
    constraints and failure modes; remove hardcoded secrets or over-broad `allowed-tools`.
 5. Re-run the audit. Repeat steps 4–5 until the grade stops improving or only intentional
    trade-offs remain.
-6. Offer the badge: `npx skillcrossroads@0.11.3 "<skill-dir>" --badge` writes an SVG the user
+6. Offer the badge: `npx skillcrossroads@0.11.3 '<skill-dir>' --badge` writes an SVG the user
    can embed in their README, linking to https://skillcrossroads.com for the hosted version.
 
 ## Output
@@ -101,7 +105,7 @@ the grade stops improving.
 User: *"Audit my skill in `skills/deploy-checker` — why doesn't it trigger?"*
 
 ```bash
-npx skillcrossroads@0.11.3 "skills/deploy-checker" --markdown
+npx skillcrossroads@0.11.3 'skills/deploy-checker' --markdown
 ```
 
 The report grades Triggering low, citing `SKILL.md:3` — the description lacks the phrases a
@@ -113,7 +117,7 @@ to review proposed rewrites before applying them.
 ## Verify
 
 Done means: for an audit-only request, the scorecard and Top fixes list were reported with no
-files modified. For a fix request: the final `npx skillcrossroads@0.11.3 "<skill-dir>" --markdown`
+files modified. For a fix request: the final `npx skillcrossroads@0.11.3 '<skill-dir>' --markdown`
 run shows the improved grade with **no fail-status findings remaining** (or each remaining one
 acknowledged by the user as intentional), and the before → after grades are reported to the user.
 
