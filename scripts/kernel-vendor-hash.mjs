@@ -437,11 +437,16 @@ function readCcpSchemaVersion() {
  * local run while CI (which passes --kernel-latest) correctly reported it.
  */
 export function verdictFor(report) {
-  if (report.violations.length > 0) return { kind: 'violation', missing: [] };
+  if ((report?.violations?.length ?? 0) > 0) return { kind: 'violation', missing: [] };
+  // Optional chaining on purpose: a report missing an `identities.X` key entirely
+  // (rather than carrying `{ version: null }`) must degrade to a named missing leg,
+  // NOT throw a TypeError mid-print. A crash here would be a strictly worse failure
+  // than the fail-open this function exists to close.
+  const ids = report?.identities;
   const missing = [
-    !report.identities.V_vendored.version && 'V',
-    !report.identities.C_ccpDeclaredKernel.version && 'C',
-    !report.identities.K_kernelLatest.version && 'K',
+    !ids?.V_vendored?.version && 'V',
+    !ids?.C_ccpDeclaredKernel?.version && 'C',
+    !ids?.K_kernelLatest?.version && 'K',
   ].filter(Boolean);
   if (missing.length > 0) return { kind: 'inconclusive', missing };
   return { kind: 'pass', missing: [] };

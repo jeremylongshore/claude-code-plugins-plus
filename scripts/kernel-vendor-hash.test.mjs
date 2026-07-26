@@ -334,3 +334,14 @@ test('verdictFor: a violation with an unresolved leg still reports violation, no
   const v = verdictFor({ violations: ['ORDERING: ...'], identities: idents({ K: null }) });
   assert.equal(v.kind, 'violation');
 });
+
+test('verdictFor: a report missing identities entirely degrades, never throws', () => {
+  // Regression for the reviewer note on #1129: a crash here would be strictly worse
+  // than the fail-open this function closes.
+  assert.doesNotThrow(() => verdictFor({ violations: [], identities: {} }));
+  const v = verdictFor({ violations: [], identities: {} });
+  assert.equal(v.kind, 'inconclusive');
+  assert.deepEqual(v.missing, ['V', 'C', 'K']);
+  assert.doesNotThrow(() => verdictFor({ violations: [] }));
+  assert.equal(verdictFor({}).kind, 'inconclusive');
+});
