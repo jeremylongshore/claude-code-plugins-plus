@@ -51,8 +51,12 @@
  *
  * SOAK DISCIPLINE — ADVISORY BY DEFAULT (CRITICAL)
  * ------------------------------------------------
- *   The CCPI kernel pin tracks the latest published kernel (currently 0.9.0). This
- *   check is ORTHOGONAL to the advisory→blocking authority flip — it polices
+ *   The CCPI kernel pin is INTENDED to track the latest published kernel. Do not
+ *   restate the current version here — a hardcoded "(currently X)" goes stale the
+ *   moment a newer kernel ships and then reads as a false all-clear. The live state
+ *   is computed and printed in the report's `soak` line every run.
+ *
+ *   This check is ORTHOGONAL to the advisory→blocking authority flip — it polices
  *   VERSION ORDERING + STALENESS, never validator authority. It must NOT, by
  *   existing or being added, change any validator's authority and it must NOT
  *   pressure a pin bump on its own.
@@ -87,17 +91,25 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
 
-// Read-only kernel repo (sibling under the intent-eval-platform umbrella). Used to
-// resolve K (kernel latest published) when running locally. Absent in CI → pass
+// Read-only kernel repo (under the intent-eval-platform umbrella). Used to resolve
+// K (kernel latest published) when running locally. Absent in CI → pass
 // --kernel-latest or accept advisory-unknown.
-const KERNEL_REPO_PKG = resolve(
-  REPO_ROOT,
-  '..',
-  '..',
-  'intent-eval-platform',
-  'intent-eval-core',
-  'package.json',
-);
+//
+// Checked as a candidate list because the umbrella's position relative to this repo
+// is not fixed. The canonical dev-box layout is
+//   ~/000-projects/{claude-code-plugins,intent-eval-platform}/
+// so the umbrella is ONE level up from REPO_ROOT, not two. The original single
+// hardcoded `../../intent-eval-platform` resolved to ~/intent-eval-platform, which
+// does not exist — so K never resolved locally and the C≤K + staleness legs were
+// silently skipped on every local run.
+const KERNEL_REPO_PKG_CANDIDATES = [
+  // ~/000-projects/intent-eval-platform/intent-eval-core (canonical dev-box layout)
+  resolve(REPO_ROOT, '..', 'intent-eval-platform', 'intent-eval-core', 'package.json'),
+  // one level higher, if this repo is nested deeper than the umbrella
+  resolve(REPO_ROOT, '..', '..', 'intent-eval-platform', 'intent-eval-core', 'package.json'),
+  // kernel checked out as a direct sibling of this repo
+  resolve(REPO_ROOT, '..', 'intent-eval-core', 'package.json'),
+];
 
 // V source #1 (preferred once it exists): the CCPI-side vendored snapshot index.
 const VENDOR_INDEX = join(REPO_ROOT, '.kernel-vendor', 'authoring', 'v1', 'index.json');
@@ -208,19 +220,19 @@ function resolveKernelLatest(args) {
       source: '--kernel-latest',
     };
   }
-  if (existsSync(KERNEL_REPO_PKG)) {
-    const v = readPkgVersion(KERNEL_REPO_PKG);
-    if (v) {
-      let ageDays = ageFromIso(args.kernelPublished);
-      if (ageDays === null) {
-        try {
-          ageDays = Math.floor((Date.now() - statSync(KERNEL_REPO_PKG).mtimeMs) / MS_PER_DAY);
-        } catch {
-          ageDays = null;
-        }
+  for (const pkgPath of KERNEL_REPO_PKG_CANDIDATES) {
+    if (!existsSync(pkgPath)) continue;
+    const v = readPkgVersion(pkgPath);
+    if (!v) continue;
+    let ageDays = ageFromIso(args.kernelPublished);
+    if (ageDays === null) {
+      try {
+        ageDays = Math.floor((Date.now() - statSync(pkgPath).mtimeMs) / MS_PER_DAY);
+      } catch {
+        ageDays = null;
       }
-      return { version: v, ageDays, source: 'intent-eval-core/package.json (read-only sibling)' };
     }
+    return { version: v, ageDays, source: `${pkgPath} (read-only kernel checkout)` };
   }
   return { version: null, ageDays: null, source: null };
 }
@@ -363,7 +375,16 @@ function main() {
     violations,
     warnings,
     advisory: !args.strict,
-    soak: 'DR-049 shadow soak — kernel pin tracks latest published (0.9.0); this check stays ADVISORY.',
+    // Derived, never hardcoded. The previous literal asserted the pin "tracks latest
+    // published (0.9.0)" — a claim that silently went false the moment a newer kernel
+    // shipped, turning the footer into misinformation printed under a green check.
+    soak: (() => {
+      const base = 'DR-049 shadow soak — this check stays ADVISORY.';
+      if (!C || !K) return `${base} Kernel currency UNKNOWN (C or K unresolved).`;
+      if (semverCompare(C, K) === 0) return `${base} Kernel pin ${C} matches latest published.`;
+      const age = kernel.ageDays != null ? `, published ${kernel.ageDays}d ago` : '';
+      return `${base} Kernel pin ${C} LAGS latest published ${K}${age}.`;
+    })(),
   };
 
   // Persist a CI artifact alongside the shadow report.
@@ -401,6 +422,31 @@ function readCcpSchemaVersion() {
   }
 }
 
+/**
+ * Pure verdict for a coupling report — 'violation' | 'inconclusive' | 'pass'.
+ *
+ * Lives HERE rather than inside printHuman so the presentation layer cannot fork
+ * from what the test corpus asserts (the same no-logic-fork rule that keeps
+ * `evaluateCoupling` pure).
+ *
+ * 'inconclusive' is the load-bearing case: a green check is only honest when every
+ * leg actually ran. If any of V/C/K was unresolved, the ordering and staleness legs
+ * were SKIPPED, not passed. The previous wording — "✅ ordering + staleness OK (or
+ * skipped where inputs absent)" — printed a checkmark for a check that never
+ * executed, which is how a real 17-day staleness breach read as clean on every
+ * local run while CI (which passes --kernel-latest) correctly reported it.
+ */
+export function verdictFor(report) {
+  if (report.violations.length > 0) return { kind: 'violation', missing: [] };
+  const missing = [
+    !report.identities.V_vendored.version && 'V',
+    !report.identities.C_ccpDeclaredKernel.version && 'C',
+    !report.identities.K_kernelLatest.version && 'K',
+  ].filter(Boolean);
+  if (missing.length > 0) return { kind: 'inconclusive', missing };
+  return { kind: 'pass', missing: [] };
+}
+
 function printHuman(r) {
   const line = (s) => process.stdout.write(s + '\n');
   line('');
@@ -423,8 +469,15 @@ function printHuman(r) {
   line('');
   for (const w of r.warnings) line(`  ⚠️  WARN: ${w}`);
   for (const v of r.violations) line(`  ❌ VIOLATION: ${v}`);
-  if (r.violations.length === 0)
-    line('  ✅ ordering + staleness OK (or skipped where inputs absent)');
+  const verdict = verdictFor(r);
+  if (verdict.kind === 'inconclusive') {
+    line(
+      `  ⚠️  INCONCLUSIVE: no violation found, but ${verdict.missing.join('/')} unresolved so ` +
+        'the dependent legs were SKIPPED. This is NOT a pass — see WARN above.',
+    );
+  } else if (verdict.kind === 'pass') {
+    line('  ✅ ordering + staleness OK (all legs evaluated)');
+  }
   line('');
   line(`  mode: ${r.advisory ? 'ADVISORY (exit 0 regardless)' : 'STRICT (exit 1 on violation)'}`);
   line(`  ${r.soak}`);
