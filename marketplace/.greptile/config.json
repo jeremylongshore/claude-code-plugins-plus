@@ -1,0 +1,22 @@
+{
+  "rules": [
+    {
+      "id": "marketplace-build-has-one-way-data-flow",
+      "severity": "high",
+      "scope": ["**"],
+      "rule": "Marketplace data flows from authoritative catalog/plugin sources through the documented seven-step build into generated indexes, search data, cowork manifests/zips, and Astro output. Do not make generated data a competing source, commit downloads/dist, wire the slow cowork build into fast sync-marketplace, or remove the wipe+orphan validation that makes deploy `rsync --delete` safe."
+    },
+    {
+      "id": "marketplace-visible-claims-have-provenance",
+      "severity": "high",
+      "scope": ["src/**", "scripts/**", "*.md"],
+      "rule": "Visible counts, grades, verification badges, download statistics, pricing, and freshness timestamps must come from their named source and remain consistent across JSON, cards, README blocks, and detail pages. Preserve missing/no-data as missing instead of inventing zero, carry-forward, or a badge. Never present advisory, stale, or absent evidence as verified ground truth."
+    },
+    {
+      "id": "marketplace-client-actions-fire-once",
+      "severity": "medium",
+      "scope": ["src/**"],
+      "rule": "Navigation, install/copy/download actions, analytics, and redirects must fire once per user action across Chromium/WebKit and hydration boundaries. Flag double handlers, competing native+script navigation, non-idempotent mount effects, lost keyboard behavior, or optimistic UI that reports success before the underlying action succeeds."
+    }
+  ]
+}

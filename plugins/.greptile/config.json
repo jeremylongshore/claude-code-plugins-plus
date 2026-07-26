@@ -1,0 +1,40 @@
+{
+  "rules": [
+    {
+      "id": "skill-instructions-are-executable-supply-chain",
+      "severity": "high",
+      "scope": ["**/SKILL.md", "**/agents/*.md", "**/commands/*.md", "**/hooks/**", "**/.mcp.json", "**/scripts/**"],
+      "rule": "Treat skill, agent, command, hook, and MCP text as executable supply-chain behavior, not inert documentation. Review the body and code blocks for credential reads, data exfiltration, hidden network sinks, destructive defaults, permission bypass, prompt injection, untrusted pipe-to-shell, and instructions that contradict declared tool limits. A benign frontmatter score does not make malicious or unsafe body instructions acceptable."
+    },
+    {
+      "id": "declared-tools-match-observed-behavior",
+      "severity": "high",
+      "scope": ["**/SKILL.md", "**/agents/*.md", "**/commands/*.md"],
+      "rule": "Tool permissions must be least-privilege and behaviorally coherent. Every fully-qualified MCP tool invoked by an agent body must be in its `tools`; skills use `allowed-tools` plus optional `disallowed-tools`. Flag wildcard or Bash scope expansion that is unnecessary for the documented workflow, a network/filesystem action absent from the declarations, or a denylist that overlaps the allowlist. Do not demand a tool merely because it appears in a quoted counterexample or fenced output sample."
+    },
+    {
+      "id": "external-mirror-authority-is-upstream",
+      "severity": "high",
+      "scope": ["community/**"],
+      "rule": "A plugin containing `.source.json` is sync-owned. Pure mirrors are changed upstream and then re-synced; do not locally harden or repair mirrored files unless the corresponding `sources.yaml` entry is deliberately `curated: true`, which freezes further sync writes. A PR must not edit engine-owned mirror files without the source/lock/provenance changes that explain how the edit survives the next sync."
+    },
+    {
+      "id": "plugin-layout-and-launch-are-relocatable",
+      "severity": "high",
+      "scope": ["**/.claude-plugin/plugin.json", "**/.mcp.json", "**/mcp/*.json", "**/hooks/**", "**/package.json"],
+      "rule": "An installed plugin must work outside the contributor's checkout. Its manifest lives at `.claude-plugin/plugin.json`; commands, hooks, MCP server launchers, and file references use plugin-relative or package-resolved paths, never `/absolute/path`, a developer home directory, or an unexpanded placeholder. Declared components must exist in the shipped plugin and executable entrypoints must retain their shebang/mode."
+    },
+    {
+      "id": "examples-and-claims-must-be-semantically-complete",
+      "severity": "medium",
+      "scope": ["**/*.md", "**/*.ts", "**/*.js", "**/*.py"],
+      "rule": "Code examples and operational claims are part of the product because agents copy and execute them. When a PR adds a plan/tier/enum/table/flag, verify every switch, union, formula, fallback, and mirrored explanation covers the same case. Do not invent pricing, verification badges, performance claims, partner names, or success evidence; claims must be supported by a cited authoritative source or recorded proof."
+    },
+    {
+      "id": "new-plugin-submission-proof",
+      "severity": "medium",
+      "scope": ["**/.claude-plugin/plugin.json", "**/docs/**"],
+      "rule": "A new authored plugin follows the tiered submission standard and links its submission issue: micro requires PRD; standard requires PRD+ADR; a pack/featured/paid surface requires PRD+ADR+ONE-PAGER, plus CFO-ONE-PAGER when money is the pitch. External `.source.json` mirrors are exempt because their documents live upstream. Review semantic completeness and value claims; CI already checks deterministic file presence."
+    }
+  ]
+}

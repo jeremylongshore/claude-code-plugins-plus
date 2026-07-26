@@ -1,0 +1,45 @@
+{
+  "rules": [
+    {
+      "id": "catalog-checks-cover-every-version-surface",
+      "severity": "high",
+      "scope": ["**"],
+      "rule": "`.claude-plugin/marketplace.extended.json` is the source for catalog/display identity. Sync, bump, and reconstruction tooling must keep plugin.json, every sibling SKILL.md version, the tracked marketplace.json, generated package metadata, and README blocks coherent. A `--check` command must inspect every surface it claims and report missing layouts instead of silently skipping them. Version reconstruction must never move a public version backward; compare all authoritative pre-existing surfaces before choosing a floor."
+    },
+    {
+      "id": "external-sync-is-least-privilege-per-source",
+      "severity": "high",
+      "scope": [
+        "sync-external.mjs",
+        "sync-lockfile.mjs",
+        "sync-lint-ignores.mjs",
+        "scan-synced-content.mjs",
+        "scan-allowlist.txt"
+      ],
+      "rule": "External sync is mirror-by-default, per-source, and fail-closed. Include patterns are root-anchored unless recursive breadth is explicit; matching must preserve anchor semantics. Drift, errors, REFUSE findings, lock updates, quarantine, and orphan pruning are attributed to the affected source rather than aborting or approving unrelated sources. `curated: true` is a hard freeze: no clone, write, or prune even under force. Only files recorded as engine-owned may be deleted."
+    },
+    {
+      "id": "scanner-grade-semantics-are-stable",
+      "severity": "high",
+      "scope": ["scan-synced-content.mjs", "scan-synced-content.test.mjs", "scan-allowlist.txt"],
+      "rule": "The security scanner's grade ladder is a contract: REFUSE is unwaivable and reserved for high-confidence theft/execution shapes; CHALLENGE requires a path/finding-scoped human rationale; FLAG is advisory. Keep foreign credential stores, wholesale environment harvest, obfuscation, and pipe-to-shell fail-closed without misclassifying a named credential sent to its own service as theft. Documentation examples are not executable code, while SKILL.md instructions are executable behavior. Any matcher/grade change needs adversarial fixtures for both the malicious and legitimate neighboring cases."
+    },
+    {
+      "id": "validator-executes-against-intended-tree",
+      "severity": "high",
+      "scope": [
+        "validate-skills-schema.py",
+        "pr-prescreen/**",
+        "kernel-shadow-validation.mjs",
+        "validate-mcp-config.mjs"
+      ],
+      "rule": "`validate-skills-schema.py` is the sole production prose validator and anchors its repository root to its own path. Callers must prove which tree is being graded; never assume cwd changes the scan root. Secondary validators delegate or remain explicitly advisory. Kernel reads are shadow observations, not authority. A validator wrapper must fail visibly on zero/invalid results and needs a regression fixture that demonstrates the intended base-vs-PR tree."
+    },
+    {
+      "id": "generators-fix-authoritative-inputs",
+      "severity": "medium",
+      "scope": ["**"],
+      "rule": "When generated catalogs, README blocks, promoted skills, stats, zips, or manifests are wrong, fix the authoritative input or generator and regenerate. Never patch a derived mirror to hide source drift. Generation must be deterministic and check mode must compare the full promised output without mutating the tree."
+    }
+  ]
+}

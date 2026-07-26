@@ -1,0 +1,22 @@
+{
+  "rules": [
+    {
+      "id": "public-cli-contract-and-identifiers",
+      "severity": "high",
+      "scope": ["cli/**", "**/package.json"],
+      "rule": "CLI commands, flags, output/exit behavior, install coordinates, and catalog identifiers are public contracts. Preserve the canonical GitHub repo, `claude-code-plugins-plus` catalog id, and legacy public install slug. Flag silent breaking changes, wrong generated catalog selection, or a rename/migration without compatibility handling and user-facing release notes."
+    },
+    {
+      "id": "published-package-errors-are-honest",
+      "severity": "high",
+      "scope": ["**/src/**"],
+      "rule": "Published packages validate external inputs, distinguish missing/invalid/transport/internal errors, and never convert an exception or absent datum into a successful empty result. Keep side effects behind explicit commands and make retries/idempotency safe for package consumers. Behavior changes require focused regression tests at the public boundary."
+    },
+    {
+      "id": "intent-eval-pins-remain-compatible",
+      "severity": "high",
+      "scope": ["**/package.json", "**/src/**"],
+      "rule": "When packages consume Intent Eval contracts, reuse `@intentsolutions/core` rather than re-declaring schemas or predicate URIs. Exact core/j-rig pins and their peer ranges must resolve coherently; a pin update is allowed, but an authoring authority flip, Evidence Bundle shape change, or rollout/eval semantic change must be coordinated with the relevant Intent Eval context repository and its versioned contract."
+    }
+  ]
+}

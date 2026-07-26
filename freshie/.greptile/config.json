@@ -1,0 +1,22 @@
+{
+  "rules": [
+    {
+      "id": "freshie-dolt-is-one-way-and-complete",
+      "severity": "high",
+      "scope": ["**"],
+      "rule": "`freshie/inventory.sqlite` is the untracked local runtime store; Dolt is versioned by the local exporter and pushed one-way to DoltHub. Never web-edit/merge remote Dolt data back, export an incomplete discovery run, hide a failed Dolt push, or let a live sql-server race the exporter. Public export is table-allowlisted and must not leak evaluator scratch/run tables."
+    },
+    {
+      "id": "freshie-proof-backed-status-only",
+      "severity": "high",
+      "scope": ["**"],
+      "rule": "Grades, JRig columns, curated promotion, run deltas, and verification badges require current recorded evidence. Missing local DB data must preserve the last committed proof artifact rather than erase it, while stale/ghost rows and stub badges must not be presented as current success. A discovery/remediation command must propagate child failures and stamp the run/commit it actually evaluated."
+    },
+    {
+      "id": "curated-skills-are-regenerated-mirrors",
+      "severity": "medium",
+      "scope": ["scripts/**", "grades.csv", "grade-histogram.json"],
+      "rule": "`skills/.curated` is regenerated from tracked grades and plugin sources, copies only tracked files, excludes external mirrors, and re-grades candidates before promotion. Fix source skills or promotion logic, not the mirror. Preserve manifest completeness and drop stale entries when their source no longer qualifies."
+    }
+  ]
+}

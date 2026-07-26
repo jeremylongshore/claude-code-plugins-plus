@@ -190,6 +190,11 @@ jobs:
       - name: Validate design-token discipline (DESIGN.md color rules)
         run: node scripts/lint-design-tokens.mjs
 
+      - name: Validate cascading Greptile configuration
+        run: |
+          node --test scripts/validate-greptile-config.test.mjs
+          pnpm run validate:greptile
+
       - name: Check plugin structure
         run: |
           echo "Checking plugin structure..."

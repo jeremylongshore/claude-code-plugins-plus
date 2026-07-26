@@ -9,7 +9,7 @@ This repo is the **Tons of Skills** marketplace for Claude Code plugins and skil
 ## Architecture you must respect
 
 - **Two-catalog system.** `.claude-plugin/marketplace.extended.json` is the **source of truth** (edit this). `.claude-plugin/marketplace.json` is **auto-generated** by `pnpm run sync-marketplace` — never hand-edit it; CI's drift gate rejects divergence. The same step generates plugin `package.json`s and the README AUTO-TOC block.
-- **The prose-spec validator is authoritative.** `scripts/validate-skills-schema.py` is the canonical gate. The `@intentsolutions/core` kernel is the SSoT being migrated to, currently in an **advisory soak** — do not promote the kernel CI lanes from advisory to blocking, and do not bump the frozen kernel pin.
+- **The prose-spec validator is authoritative.** `scripts/validate-skills-schema.py` is the canonical gate. The `@intentsolutions/core` kernel is the SSoT being migrated to, currently in an **advisory soak**. Keep its pin exact and current, but do not treat a pin bump as an authority flip or promote the kernel CI lanes from advisory to blocking before the documented cutover gates pass.
 - **External-sync pipeline.** `sources.yaml` + `scripts/sync-external.mjs` mirror external plugin repos into `plugins/`; synced plugins carry a `.source.json` marker.
 - **Package managers:** pnpm everywhere **except `marketplace/` (npm)**, CI-enforced. Node >= 20 (Node 18 breaks workspace resolution).
 
@@ -29,7 +29,16 @@ This repo is the **Tons of Skills** marketplace for Claude Code plugins and skil
 
 ## Related repos (multi-repo context)
 
-This repo depends on **`@intentsolutions/core`** (the authoring-schema kernel SSoT — a separate package/repo) and follows the deployment authority in **`intent-solutions-io/intent-os/ops/deploy`**. Greptile's current config schema does not expose a multi-repo `patternRepositories` key, so these are noted here for reviewer context rather than wired into `config.json`.
+The root config attaches the six-repository Intent Eval Platform cluster as read-only context:
+
+- `intent-eval-core` owns shared authoring contracts, schemas, validators, and Evidence Bundle shapes.
+- `intent-eval-lab` owns methodology, Blueprints, binding Decision Records, and governance rationale.
+- `intent-audit-harness` owns deterministic gates and their Evidence Bundle emission.
+- `j-rig-skill-binary-eval` owns behavioral evaluation, judge independence, and rollout decision logic.
+- `intent-rollout-gate` is the thin GitHub Action shell consuming the published decision package.
+- `intent-eval-dashboard` verifies and renders signed evidence.
+
+Use those repos when a CCPI change crosses one of those contracts. Do not demand cross-repo changes for ordinary catalog or marketplace work, and do not copy a kernel-owned schema or predicate into CCPI merely because the related repo is available as context.
 
 ## Reviewing a `sources.yaml` entry
 
