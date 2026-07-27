@@ -1,11 +1,12 @@
 ---
+import { iconFor } from '../lib/icons';
 // CompareBar - Sticky comparison bar for selecting plugins to compare
 ---
 
 <div id="compare-bar" class="compare-bar hidden">
   <div class="compare-content">
     <div class="compare-header">
-      <span class="compare-icon">⚖️</span>
+      <span class="compare-icon" set:html={iconFor('scale')} />
       <span class="compare-title">Compare Plugins</span>
       <span id="compare-count" class="compare-count">0 selected</span>
     </div>
