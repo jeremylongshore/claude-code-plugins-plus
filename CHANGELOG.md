@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-07-26 kernel-vendor-hash fail-open)
+
+- **`kernel-vendor-hash` fail-open — the drift-watch was blind locally and printed a
+  green check for a check that never ran.** Two defects, one symptom:
+  1. **Wrong kernel path.** `KERNEL_REPO_PKG` resolved `REPO_ROOT/../../intent-eval-platform/...`
+     → `~/intent-eval-platform/`, which does not exist. The canonical layout is
+     `~/000-projects/{claude-code-plugins,intent-eval-platform}/` — the umbrella is **one**
+     level up, not two. `K` therefore never resolved on a local run, so the `C ≤ K` and
+     staleness legs were silently skipped. Replaced with a candidate list covering all
+     three plausible layouts.
+  2. **Dishonest verdict.** With `K` unresolved and no violations recorded, the CLI printed
+     `✅ ordering + staleness OK (or skipped where inputs absent)` — a checkmark for a
+     skipped check. Skipped legs now report `⚠️ INCONCLUSIVE … This is NOT a pass`, naming
+     which of V/C/K was unresolved. The decision moved out of `printHuman` into an exported
+     pure `verdictFor()` so presentation cannot fork from what the corpus asserts (the same
+     no-logic-fork rule that keeps `evaluateCoupling` pure), with 5 new tests —
+     **mutation-verified**: restoring the fail-open turns exactly 2 of them red.
+
+  Consequence: a **real 17-day staleness breach** was reading as clean on every local run.
+  CI was unaffected (it passes `--kernel-latest` explicitly) and had been correctly
+  reporting `❌ VIOLATION: STALENESS` on the daily sweep since ~2026-07-16 — advisory,
+  exit 0, so nobody saw it.
+
+- **Stale hardcoded kernel-currency claims.** The report footer asserted
+  `kernel pin tracks latest published (0.9.0)` as a string literal; that went false the
+  moment `0.10.0` shipped, printing misinformation under a green check. It is now derived
+  from live `C`/`K` state each run. The same false claim was corrected in the script's
+  header docblock and in two places in `CLAUDE.md`, which now records that the pin is
+  **behind** (`0.9.0` vs `0.10.0`, published 2026-07-09) and that catching up is a
+  **lockstep** bump with `@intentsolutions/jrig-cli` (`0.1.2` → `0.2.0`), since jrig-cli
+  pins `core` exactly and the two must stay hoisted to one copy.
+
+  Not done here on purpose: **the pin itself is unchanged.** Bumping it re-baselines the
+  DR-049 shadow-soak agreement numbers and is the owner's call, separate from this fix.
+
 ### Added
 
 - **Required `skill-conform` gate** (`.github/workflows/skill-conform.yml`) — own

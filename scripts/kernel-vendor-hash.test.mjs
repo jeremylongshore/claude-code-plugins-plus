@@ -26,7 +26,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { evaluateCoupling, semverCompare } from './kernel-vendor-hash.mjs';
+import { evaluateCoupling, semverCompare, verdictFor } from './kernel-vendor-hash.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLI = join(__dirname, 'kernel-vendor-hash.mjs');
@@ -293,4 +293,55 @@ test('CLI --strict: a clean ordering (C=K) EXITS 0', () => {
     new Date().toISOString(),
   ]);
   assert.equal(code, 0, '--strict must exit 0 when the invariant holds');
+});
+
+// ── verdictFor: the fail-open guard ────────────────────────────────────────────
+// A green check is only honest when every leg ran. These pin the distinction
+// between "passed" and "never evaluated" — the bug that let a real 17-day
+// staleness breach print ✅ on every local run.
+
+const idents = ({ V = '0.9.0', C = '0.9.0', K = '0.10.0' } = {}) => ({
+  V_vendored: { version: V },
+  C_ccpDeclaredKernel: { version: C },
+  K_kernelLatest: { version: K },
+});
+
+test('verdictFor: all legs resolved and no violation -> pass', () => {
+  const v = verdictFor({ violations: [], identities: idents() });
+  assert.equal(v.kind, 'pass');
+  assert.deepEqual(v.missing, []);
+});
+
+test('verdictFor: a violation outranks everything -> violation', () => {
+  const v = verdictFor({ violations: ['STALENESS: ...'], identities: idents() });
+  assert.equal(v.kind, 'violation');
+});
+
+test('verdictFor: unresolved K -> INCONCLUSIVE, never pass (the fail-open case)', () => {
+  const v = verdictFor({ violations: [], identities: idents({ K: null }) });
+  assert.equal(v.kind, 'inconclusive');
+  assert.deepEqual(v.missing, ['K']);
+  assert.notEqual(v.kind, 'pass');
+});
+
+test('verdictFor: unresolved V and K -> INCONCLUSIVE naming both legs', () => {
+  const v = verdictFor({ violations: [], identities: idents({ V: null, K: null }) });
+  assert.equal(v.kind, 'inconclusive');
+  assert.deepEqual(v.missing, ['V', 'K']);
+});
+
+test('verdictFor: a violation with an unresolved leg still reports violation, not inconclusive', () => {
+  const v = verdictFor({ violations: ['ORDERING: ...'], identities: idents({ K: null }) });
+  assert.equal(v.kind, 'violation');
+});
+
+test('verdictFor: a report missing identities entirely degrades, never throws', () => {
+  // Regression for the reviewer note on #1129: a crash here would be strictly worse
+  // than the fail-open this function closes.
+  assert.doesNotThrow(() => verdictFor({ violations: [], identities: {} }));
+  const v = verdictFor({ violations: [], identities: {} });
+  assert.equal(v.kind, 'inconclusive');
+  assert.deepEqual(v.missing, ['V', 'C', 'K']);
+  assert.doesNotThrow(() => verdictFor({ violations: [] }));
+  assert.equal(verdictFor({}).kind, 'inconclusive');
 });
