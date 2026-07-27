@@ -1,12 +1,10 @@
 ---
-import { iconFor } from '../lib/icons';
 // CompareBar - Sticky comparison bar for selecting plugins to compare
 ---
 
 <div id="compare-bar" class="compare-bar hidden">
   <div class="compare-content">
     <div class="compare-header">
-      <span class="compare-icon" set:html={iconFor('scale')} />
       <span class="compare-title">Compare Plugins</span>
       <span id="compare-count" class="compare-count">0 selected</span>
     </div>
@@ -63,9 +61,6 @@ import { iconFor } from '../lib/icons';
     flex-shrink: 0;
   }
 
-  .compare-icon {
-    font-size: 1.25rem;
-  }
 
   .compare-title {
     font-weight: 600;
