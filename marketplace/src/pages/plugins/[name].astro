@@ -518,8 +518,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     position: absolute;
     top: 0.65rem;
     right: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: oklch(100.000% 0 0 / 0.1);
+    border: 1px solid oklch(100.000% 0 0 / 0.2);
     border-radius: var(--radius-sm);
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
@@ -530,7 +530,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   }
 
   .copy-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: oklch(100.000% 0 0 / 0.2);
     border-color: var(--primary);
   }
 
