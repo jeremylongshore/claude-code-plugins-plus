@@ -208,7 +208,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     .toc-nav a:hover {
       color: var(--primary);
       border-left-color: var(--primary);
-      background: var(--primary-tint, rgba(217, 119, 87, 0.05));
+      background: var(--primary-tint, oklch(67.242% 0.1308 38.76 / 0.05));
     }
 
     .toc-nav a.active {
@@ -325,7 +325,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
 
     .playbook-content :global(blockquote) {
       border-left: 4px solid var(--primary);
-      background: var(--primary-tint, rgba(217, 119, 87, 0.05));
+      background: var(--primary-tint, oklch(67.242% 0.1308 38.76 / 0.05));
       padding: 1rem 1.5rem;
       margin: 1.5rem 0;
       color: var(--text, var(--brand-dark));

@@ -8,35 +8,36 @@
 
 :root {
   /* ── Canvas + structure (dark, default) ── */
-  --bg:           #0a0a0c;  /* page canvas; near-black */
-  --panel:        #181818;  /* cards, raised surfaces */
-  --panel-2:      #1f1f23;  /* hover/active state on panels */
-  --rule:         #2a2a2e;  /* 1px hairline separators */
-  --rule-bright:  #3a3a3f;  /* hover state on rules */
+  --bg:           oklch(14.574% 0.0043 285.86);  /* page canvas; near-black */
+  --panel:        oklch(20.904% 0 0);  /* cards, raised surfaces */
+  --panel-2:      oklch(24.097% 0.0076 285.82);  /* hover/active state on panels */
+  --rule:         oklch(28.661% 0.0072 285.93);  /* 1px hairline separators */
+  --rule-bright:  oklch(35.035% 0.0086 285.95);  /* hover state on rules */
 
   /* ── Ink scale (text) ── */
-  --ink:    #f4f4f5;  /* primary text */
-  --ink-2:  #a1a1aa;  /* secondary text */
-  --ink-3:  #71717a;  /* tertiary / muted text */
+  --ink:    oklch(96.743% 0.0013 286.38);  /* primary text */
+  --ink-2:  oklch(71.181% 0.0129 286.07);  /* secondary text */
+  --ink-3:  oklch(55.166% 0.0138 285.94);  /* tertiary / muted text */
 
   /* ── Signal accent (THE single primary; used like a highlighter) ── */
-  --signal:       #faff69;
-  --signal-tint:  rgba(250, 255, 105, 0.08);
-  --signal-edge:  rgba(250, 255, 105, 0.25);
-  --signal-deep:  #d6d800;  /* WCAG-AA-compliant variant for use ON light bg */
+  --signal:       oklch(76.542% 0.1509 47.74);
+  --signal-tint:  oklch(76.542% 0.1509 47.74 / 0.08);
+  --signal-edge:  oklch(76.542% 0.1509 47.74 / 0.25);
+  --signal-light: oklch(84.500% 0.0928 47.74);  /* lighter step for hover on the signal CTA */
+  --signal-deep:  oklch(57.031% 0.1566 47.49);  /* AA-compliant variant for use ON light bg (4.54:1) */
 
   /* ── Semantic accents (used sparingly) ── */
-  --alert:    #ff3d6e;  /* errors, destructive — sparing */
-  --positive: #6dffa1;  /* success — sparing */
-  --warning:  #ffb547;
+  --alert:    oklch(66.512% 0.2278 11.90);  /* errors, destructive — sparing */
+  --positive: oklch(89.745% 0.1814 152.59);  /* success — sparing */
+  --warning:  oklch(82.449% 0.1486 73.35);
 
   /* ── Inline-link color (distinct from --signal CTA accent) ── */
-  --ink-link: #7dd3fc;        /* dark theme: light cyan, 9.6:1 on --bg */
-  --ink-link-hover: #bae6fd;
+  --ink-link: oklch(82.759% 0.1013 230.32);        /* dark theme: light cyan, 9.6:1 on --bg */
+  --ink-link-hover: oklch(90.138% 0.0555 230.90);
 
   /* ── Color System aliases (preserved token names; remapped to new family) ── */
 
-  /* Primary — was warm terracotta; now signal yellow */
+  /* Primary — was warm terracotta, then signal yellow; now signal orange (hue 47.6) */
   --primary:        var(--signal);
   --primary-light:  var(--signal-edge);
   --primary-dark:   var(--signal-deep);
@@ -45,17 +46,17 @@
   --primary-tint-border: var(--signal-edge);
 
   /* Neutral — was warm-tinted gray; now neutral zinc */
-  --neutral-50:  #fafaf9;
-  --neutral-100: #f4f4f5;
-  --neutral-200: #e4e4e7;
-  --neutral-300: #d4d4d8;
-  --neutral-400: #a1a1aa;
-  --neutral-500: #71717a;
-  --neutral-600: #52525b;
-  --neutral-700: #3f3f46;
-  --neutral-800: #27272a;
-  --neutral-900: #18181b;
-  --neutral-950: #09090b;
+  --neutral-50:  oklch(98.483% 0.0013 106.42);
+  --neutral-100: oklch(96.743% 0.0013 286.38);
+  --neutral-200: oklch(91.973% 0.0040 286.32);
+  --neutral-300: oklch(87.111% 0.0055 286.29);
+  --neutral-400: oklch(71.181% 0.0129 286.07);
+  --neutral-500: oklch(55.166% 0.0138 285.94);
+  --neutral-600: oklch(44.186% 0.0146 285.79);
+  --neutral-700: oklch(37.032% 0.0119 285.81);
+  --neutral-800: oklch(27.394% 0.0055 286.03);
+  --neutral-900: oklch(21.033% 0.0059 285.89);
+  --neutral-950: oklch(14.077% 0.0044 285.82);
 
   /* Semantic — preserved names */
   --accent:   var(--signal);
@@ -126,7 +127,7 @@
   --card-transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
   --card-hover-lift: translateY(-1px);
   /* Shadow tokens kept for true overlays (modals); cards do NOT use these */
-  --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --card-hover-shadow: 0 8px 24px oklch(0.000% 0 0 / 0.4);
   --card-hover-shadow-accent: 0 0 0 1px var(--signal-edge);
 
   /* ── Typography scale (consistent across all cards) ── */
@@ -143,45 +144,45 @@
 
 /* ══════════════════════════════════════════════════════
    Light theme — high-contrast off-white reskin.
-   Same --signal yellow (decorative-only on light; --signal-deep for text).
+   Same --signal orange (decorative-only on light; --signal-deep for text).
    ══════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  --bg:           #fafaf9;
-  --panel:        #ffffff;
-  --panel-2:      #f5f5f4;
-  --rule:         #e5e5e3;
-  --rule-bright:  #d4d4d2;
+  --bg:           oklch(98.483% 0.0013 106.42);
+  --panel:        oklch(100.000% 0 0);
+  --panel-2:      oklch(96.987% 0.0013 106.42);
+  --rule:         oklch(92.134% 0.0027 106.45);
+  --rule-bright:  oklch(86.937% 0.0027 106.46);
 
-  --ink:    #0a0a0c;
-  --ink-2:  #52525b;
-  --ink-3:  #71717a;
+  --ink:    oklch(14.574% 0.0043 285.86);
+  --ink-2:  oklch(44.186% 0.0146 285.79);
+  --ink-3:  oklch(55.166% 0.0138 285.94);
 
-  /* Signal yellow has insufficient contrast on white for text use; --signal-deep is the
+  /* Signal orange has insufficient contrast on white for text use; --signal-deep is the
      WCAG-AA variant used wherever signal needs to read against light bg */
-  --signal-tint:  rgba(214, 216, 0, 0.12);
-  --signal-edge:  rgba(214, 216, 0, 0.4);
+  --signal-tint:  oklch(57.031% 0.1566 47.49 / 0.12);
+  --signal-edge:  oklch(57.031% 0.1566 47.49 / 0.4);
 
   /* Preserved alias remap */
   --primary:        var(--signal-deep);
   --primary-light:  var(--signal-edge);
-  --primary-dark:   #a3a302;
+  --primary-dark:   oklch(69.260% 0.1506 109.76);
   --primary-border: var(--signal-edge);
   --primary-tint:   var(--signal-tint);
 
   /* Inline-link reads dark cyan on light bg */
-  --ink-link:       #0284c7;
-  --ink-link-hover: #0369a1;
+  --ink-link:       oklch(58.762% 0.1389 241.97);
+  --ink-link-hover: oklch(49.998% 0.1193 242.75);
 
-  --neutral-50:  #fafaf9;
-  --neutral-100: #f5f5f4;
-  --neutral-200: #e7e5e4;
-  --neutral-300: #d6d3d1;
-  --neutral-400: #78716c;
-  --neutral-500: #57534e;
-  --neutral-600: #44403c;
-  --neutral-700: #292524;
-  --neutral-800: #1c1917;
-  --neutral-900: #0c0a09;
+  --neutral-50:  oklch(98.483% 0.0013 106.42);
+  --neutral-100: oklch(96.987% 0.0013 106.42);
+  --neutral-200: oklch(92.318% 0.0026 48.72);
+  --neutral-300: oklch(86.866% 0.0043 56.37);
+  --neutral-400: oklch(55.340% 0.0116 58.07);
+  --neutral-500: oklch(44.442% 0.0096 73.64);
+  --neutral-600: oklch(37.412% 0.0087 67.56);
+  --neutral-700: oklch(26.848% 0.0063 34.30);
+  --neutral-800: oklch(21.612% 0.0061 56.04);
+  --neutral-900: oklch(14.690% 0.0041 49.25);
 }
 
 /* ── Reduced Motion ── */

@@ -152,4 +152,3 @@ A follow up the same day (`ddec6a195`), prompted by an automated reviewer note, 
 ## The rule
 
 Every layer in your deploy must be able to state which commit it is, out loud, without you hashing anything: the checkout, the image, and above all the stateful layer that outlives both. Then verify by asking the layer that cannot be faked. Fetch the page a user would get, and assert on a marker that only the commit you just shipped could have produced. An orchestrator reporting healthy is a claim about the container. The bytes on the wire are the only claim about the deploy.
-

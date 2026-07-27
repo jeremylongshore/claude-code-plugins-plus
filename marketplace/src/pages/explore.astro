@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CompareBar from '../components/CompareBar.astro';
+import CrossProperty from '../components/CrossProperty.astro';
 import PluginCard from '../components/PluginCard.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -967,6 +968,8 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       });
     });
   </script>
+
+  <CrossProperty eyebrow="From the workshop" />
 
   <CompareBar />
 </BaseLayout>

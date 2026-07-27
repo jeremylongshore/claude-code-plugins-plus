@@ -187,6 +187,9 @@ jobs:
             done
           ' sh {} +
 
+      - name: Validate design-token discipline (DESIGN.md color rules)
+        run: node scripts/lint-design-tokens.mjs
+
       - name: Check plugin structure
         run: |
           echo "Checking plugin structure..."

@@ -184,7 +184,7 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
 
     .hero-badge {
       display: inline-block;
-      background: rgba(255, 255, 255, 0.15);
+      background: oklch(100.000% 0 0 / 0.15);
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
@@ -192,7 +192,7 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid oklch(100.000% 0 0 / 0.25);
       margin-bottom: 1.5rem;
       font-family: 'Inter', system-ui, sans-serif;
     }
@@ -208,7 +208,7 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
 
     .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.25rem);
-      color: rgba(255, 255, 255, 0.9);
+      color: oklch(100.000% 0 0 / 0.9);
       margin-bottom: 2.5rem;
       line-height: 1.6;
       max-width: 800px;
@@ -240,7 +240,7 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
 
     .stat-label {
       font-size: 0.875rem;
-      color: rgba(255, 255, 255, 0.8);
+      color: oklch(100.000% 0 0 / 0.8);
       font-weight: 600;
       font-family: 'Inter', system-ui, sans-serif;
     }
@@ -248,7 +248,7 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
     .stat-divider {
       width: 1px;
       height: 3rem;
-      background: rgba(255, 255, 255, 0.3);
+      background: oklch(100.000% 0 0 / 0.3);
     }
 
     /* Domains Section */
@@ -323,15 +323,15 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
     .doc-link {
       display: block;
       padding: 0.75rem 1rem;
-      background: rgba(120, 140, 93, 0.06);
-      border: 1px solid rgba(120, 140, 93, 0.15);
+      background: oklch(61.184% 0.0713 127.12 / 0.06);
+      border: 1px solid oklch(61.184% 0.0713 127.12 / 0.15);
       border-radius: 0.5rem;
       text-decoration: none;
       transition: all 0.2s ease;
     }
 
     .doc-link:hover {
-      background: rgba(120, 140, 93, 0.12);
+      background: oklch(61.184% 0.0713 127.12 / 0.12);
       border-color: var(--brand-green);
       transform: translateX(4px);
     }

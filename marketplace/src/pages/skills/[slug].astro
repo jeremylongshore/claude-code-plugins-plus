@@ -216,7 +216,7 @@ const cleanTools = (tools: string[]) =>
     .install-command {
       margin: 0;
       padding: 1rem 1.25rem;
-      background: rgba(255,255,255,0.08);
+      background: oklch(100.000% 0 0 / 0.08);
       border-radius: var(--radius-md);
       font-size: 0.9rem;
       color: var(--primary-light);
@@ -361,7 +361,7 @@ const cleanTools = (tools: string[]) =>
     }
 
     .skill-content tbody tr:hover {
-      background: var(--surface-2, rgba(0,0,0,0.02));
+      background: var(--surface-2, oklch(0.000% 0 0 / 0.02));
     }
 
     .skill-content hr {

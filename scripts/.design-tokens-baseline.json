@@ -1,0 +1,5 @@
+{
+  "$comment": "Ratchet baseline for lint-design-tokens.mjs. Lower it as files migrate to tokens; it must never be raised except by a hand-edit visible in review.",
+  "maxRawColorLiterals": 168,
+  "filesWithLiterals": 65
+}
