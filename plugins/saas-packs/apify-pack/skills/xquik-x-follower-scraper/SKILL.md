@@ -105,34 +105,60 @@ function requirePositiveCaps(input: FollowerInput): void {
   }
 }
 
-function requirePositiveNumberFlag(flag: string): number {
-  const index = process.argv.indexOf(flag);
-  const raw = index >= 0 ? process.argv[index + 1] : undefined;
-  const value = Number(raw);
-  if (!raw || !Number.isFinite(value) || value <= 0) {
-    throw new Error(`${flag} must be a positive number`);
+function parseArguments(args: string[]): {
+  inputPath: string;
+  maxTotalChargeUsd: number;
+} {
+  let approved = false;
+  let inputPath: string | undefined;
+  let maxTotalChargeUsd: number | undefined;
+
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (argument === '--approve-paid-run') {
+      approved = true;
+      continue;
+    }
+    if (argument === '--max-total-charge-usd') {
+      const raw = args[index + 1];
+      const value = Number(raw);
+      if (!raw || !Number.isFinite(value) || value <= 0) {
+        throw new Error('--max-total-charge-usd must be a positive number');
+      }
+      maxTotalChargeUsd = value;
+      index += 1;
+      continue;
+    }
+    if (argument.startsWith('--')) {
+      throw new Error(`Unknown option: ${argument}`);
+    }
+    if (inputPath) {
+      throw new Error('Only one input path is allowed');
+    }
+    inputPath = argument;
   }
-  return value;
+
+  if (!approved) {
+    throw new Error(
+      'Paid run not approved. Review live pricing, then pass --approve-paid-run.',
+    );
+  }
+  if (!inputPath) {
+    throw new Error('Input path required');
+  }
+  if (maxTotalChargeUsd === undefined) {
+    throw new Error('--max-total-charge-usd is required');
+  }
+  return { inputPath, maxTotalChargeUsd };
 }
 
-if (!process.argv.includes('--approve-paid-run')) {
-  throw new Error(
-    'Paid run not approved. Review live pricing, then pass --approve-paid-run.',
-  );
-}
-
-const inputPath = process.argv[2];
-if (!inputPath) {
-  throw new Error('Input path required');
-}
-
+const { inputPath, maxTotalChargeUsd } = parseArguments(process.argv.slice(2));
 const parsed: unknown = JSON.parse(await readFile(inputPath, 'utf8'));
 if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
   throw new Error('Input must be a JSON object');
 }
 const input = parsed as FollowerInput;
 requirePositiveCaps(input);
-const maxTotalChargeUsd = requirePositiveNumberFlag('--max-total-charge-usd');
 
 const token = process.env.APIFY_TOKEN;
 if (!token) {
