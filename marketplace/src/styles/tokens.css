@@ -20,10 +20,11 @@
   --ink-3:  oklch(55.166% 0.0138 285.94);  /* tertiary / muted text */
 
   /* ── Signal accent (THE single primary; used like a highlighter) ── */
-  --signal:       oklch(96.864% 0.1699 110.97);
-  --signal-tint:  oklch(96.864% 0.1699 110.97 / 0.08);
-  --signal-edge:  oklch(96.864% 0.1699 110.97 / 0.25);
-  --signal-deep:  oklch(85.234% 0.1866 110.45);  /* WCAG-AA-compliant variant for use ON light bg */
+  --signal:       oklch(76.542% 0.1509 47.74);
+  --signal-tint:  oklch(76.542% 0.1509 47.74 / 0.08);
+  --signal-edge:  oklch(76.542% 0.1509 47.74 / 0.25);
+  --signal-light: oklch(84.500% 0.0928 47.74);  /* lighter step for hover on the signal CTA */
+  --signal-deep:  oklch(57.031% 0.1566 47.49);  /* AA-compliant variant for use ON light bg (4.54:1) */
 
   /* ── Semantic accents (used sparingly) ── */
   --alert:    oklch(66.512% 0.2278 11.90);  /* errors, destructive — sparing */
@@ -36,7 +37,7 @@
 
   /* ── Color System aliases (preserved token names; remapped to new family) ── */
 
-  /* Primary — was warm terracotta; now signal yellow */
+  /* Primary — was warm terracotta, then signal yellow; now signal orange (hue 47.6) */
   --primary:        var(--signal);
   --primary-light:  var(--signal-edge);
   --primary-dark:   var(--signal-deep);
@@ -143,7 +144,7 @@
 
 /* ══════════════════════════════════════════════════════
    Light theme — high-contrast off-white reskin.
-   Same --signal yellow (decorative-only on light; --signal-deep for text).
+   Same --signal orange (decorative-only on light; --signal-deep for text).
    ══════════════════════════════════════════════════════ */
 [data-theme="light"] {
   --bg:           oklch(98.483% 0.0013 106.42);
@@ -156,10 +157,10 @@
   --ink-2:  oklch(44.186% 0.0146 285.79);
   --ink-3:  oklch(55.166% 0.0138 285.94);
 
-  /* Signal yellow has insufficient contrast on white for text use; --signal-deep is the
+  /* Signal orange has insufficient contrast on white for text use; --signal-deep is the
      WCAG-AA variant used wherever signal needs to read against light bg */
-  --signal-tint:  oklch(85.234% 0.1866 110.45 / 0.12);
-  --signal-edge:  oklch(85.234% 0.1866 110.45 / 0.4);
+  --signal-tint:  oklch(57.031% 0.1566 47.49 / 0.12);
+  --signal-edge:  oklch(57.031% 0.1566 47.49 / 0.4);
 
   /* Preserved alias remap */
   --primary:        var(--signal-deep);
