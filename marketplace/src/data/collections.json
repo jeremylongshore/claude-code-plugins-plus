@@ -4,7 +4,6 @@
       "id": "devops-essentials",
       "name": "DevOps Essentials",
       "description": "Everything you need for CI/CD, infrastructure, and deployment automation",
-      "icon": "rocket",
       "color": "#4F46E5",
       "plugins": [
         "devops-automation-pack",
@@ -19,7 +18,6 @@
       "id": "security-toolkit",
       "name": "Security Toolkit",
       "description": "Comprehensive security scanning, audit, and compliance tools",
-      "icon": "shield",
       "color": "#DC2626",
       "plugins": [
         "security-pack",
@@ -34,7 +32,6 @@
       "id": "ai-ml-starter",
       "name": "AI/ML Starter",
       "description": "Get started with machine learning, LLMs, and AI development",
-      "icon": "brain",
       "color": "#7C3AED",
       "plugins": [
         "ai-ml-pack",
@@ -49,7 +46,6 @@
       "id": "fullstack-developer",
       "name": "Full-Stack Developer",
       "description": "Frontend, backend, database, and API development essentials",
-      "icon": "code",
       "color": "#059669",
       "plugins": [
         "api-development-pack",
@@ -64,7 +60,6 @@
       "id": "code-quality",
       "name": "Code Quality Suite",
       "description": "Testing, linting, documentation, and code review tools",
-      "icon": "sparkles",
       "color": "#F59E0B",
       "plugins": [
         "test-automation-suite",
@@ -79,7 +74,6 @@
       "id": "data-engineering",
       "name": "Data Engineering",
       "description": "ETL pipelines, data warehousing, and analytics tools",
-      "icon": "database",
       "color": "#0891B2",
       "plugins": [
         "data-pipeline-builder",
@@ -94,7 +88,6 @@
       "id": "legal-compliance",
       "name": "Legal & Compliance",
       "description": "Contract review, document generation, risk analysis, and regulatory compliance across GDPR, CCPA, SOC 2, and more",
-      "icon": "scale",
       "color": "#6366F1",
       "plugins": [
         "general-legal-assistant",
@@ -110,7 +103,6 @@
       "id": "jeremys-picks",
       "name": "Jeremy's Picks",
       "description": "Personal favorites and tools I actually use every day - built by the marketplace creator",
-      "icon": "star",
       "color": "#F97316",
       "plugins": [
         "skill-creator"
