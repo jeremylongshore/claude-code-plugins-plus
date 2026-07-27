@@ -198,9 +198,9 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Advisory lanes (report, never block — never promote into the required set from a side PR):** the two kernel lanes (next section); agent frontmatter (`validate-skills-schema.py --agents-only`, report-only with a tracked `REPORT-ONLY-UNTIL:` marker — corpus unbaselined); `.mcp.json` (`scripts/validate-mcp-config.mjs`, never `--strict` — that promotion belongs to the DR-049 soak checklist); CodeQL (PR trigger scoped to `packages/**` + `marketplace/src/**` so it adds no fan-out to plugin PRs); and the PR pre-screen (below).
 
-### AI review — both dark; CI is the only merge gate
+### AI review — Greptile is active and advisory; CI is the only merge gate
 
-**As of 2026-07-22 no AI reviewer is a reliable merge signal on this repo.** Gemini Code Assist consumer product is **sunset** (bot posts a sunset notice only; `.gemini/config.yaml` has `code_review.disable: true`). Greptile config remains under `.greptile/` but showed **zero activity** on recent IEP/CCPI PRs. Fully removing Apps is a UI/admin action. Optional future path: SHA-pinned MiniMax review (`MINIMAX_API_KEY` + `ENABLE_MINIMAX_REVIEW`) as already patterned in `minimax-review.yml`.
+**As of 2026-07-23 Greptile is active through the GitHub App and has reviewed recent CCPI PRs.** Its version-controlled policy lives under `.greptile/`; treat its findings as advisory semantic-review input, not a merge signal. Gemini Code Assist consumer product is **sunset** (bot posts a sunset notice only; `.gemini/config.yaml` has `code_review.disable: true`). Fully removing Apps is a UI/admin action. Optional future path: SHA-pinned MiniMax review (`MINIMAX_API_KEY` + `ENABLE_MINIMAX_REVIEW`) as already patterned in `minimax-review.yml`.
 
 **Operationally: never block a merge waiting for an AI review.** Required contexts are **`ci-required` + `gitleaks` + `skill-conform`**.
 

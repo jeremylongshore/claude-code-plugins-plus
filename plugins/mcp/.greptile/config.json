@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "id": "mcp-server-startup-is-install-independent",
+      "severity": "high",
+      "scope": ["**/.mcp.json", "**/mcp/*.json", "**/.claude-plugin/plugin.json", "**/package.json", "**/src/**", "**/dist/**"],
+      "rule": "MCP server startup must resolve from the installed plugin/package and succeed over stdio without a developer checkout. Flag absolute paths, placeholders, missing manifest discovery paths, wrong bin targets, absent shebangs, non-executable launch files, stdout logging before protocol startup, and source changes whose required committed dist/bin output is stale."
+    },
+    {
+      "id": "mcp-tool-boundaries-validate-and-fail-closed",
+      "severity": "high",
+      "scope": ["**/src/**", "**/server.*", "**/lib.*"],
+      "rule": "Every MCP tool validates untrusted arguments before filesystem, SQL, shell, or network use; returns structured errors; and fails closed on parse/provider/runtime errors. Never interpolate arguments into shell or SQL strings, silently coerce missing observations into real zero/false values, swallow authorization failures, or advertise success after a partial mutation. Preserve read-only vs mutation classification and explicit confirmation chokepoints."
+    },
+    {
+      "id": "mcp-credentials-stay-service-bound",
+      "severity": "high",
+      "scope": ["**/.mcp.json", "**/mcp/*.json", "**/src/**", "**/server.*", "**/lib.*"],
+      "rule": "MCP plugins consume named environment variables through placeholders/config and send a credential only to its intended service. Never embed real keys, enumerate/serialize the whole environment, read foreign credential stores, echo secrets into protocol errors/logs, or forward user data to an unrelated endpoint. Test fixtures use obvious non-secret values and local stub servers."
+    },
+    {
+      "id": "mcp-mutating-tools-need-auditable-chokepoints",
+      "severity": "high",
+      "scope": ["**/src/**", "**/server.*", "**/lib.*"],
+      "rule": "A tool that can write, delete, push, merge, reset, publish, send, or change external state must be distinguishable from read-only tools, validate its exact target, enforce the repo's approval/recommend-only policy, and return evidence of what changed. Adding a mutation synonym or alternate execution path must pass through the same classifier/authorization/audit chokepoint and needs adversarial regression coverage."
+    }
+  ]
+}

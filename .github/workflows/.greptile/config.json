@@ -1,0 +1,34 @@
+{
+  "rules": [
+    {
+      "id": "ci-required-always-reports",
+      "severity": "high",
+      "scope": ["*.yml", "*.yaml"],
+      "rule": "Branch protection requires exactly the always-reporting `ci-required`, `gitleaks`, and `skill-conform` contexts. `validate-plugins.yml` must run on every pull_request without a paths filter; `ci-required` must use `if: always()` and may depend only on jobs that always report or have an explicitly designed skip. Never add a path-scoped, provider-dependent, secret-dependent, or advisory job to its `needs:`. `skill-conform` remains its own required context; behavioral eval, kernel soak, MCP validation, CodeQL's scoped lane, and AI review remain outside the aggregate unless their documented graduation process is completed."
+    },
+    {
+      "id": "pull-request-target-base-code-only",
+      "severity": "high",
+      "scope": ["*.yml", "*.yaml"],
+      "rule": "A `pull_request_target` job has secrets and MUST NOT execute PR-authored code, scripts, actions, package installs, or workflow commands. Pin the PR checkout by head SHA with credentials disabled and treat it as read-only data. Execute base-authored tooling only. For the pre-screen, preserve the deliberate copy of the base-authored validator into the PR tree: the validator anchors its scan root to its own file location, so running it from the base tree false-PASSes PR changes."
+    },
+    {
+      "id": "automation-must-converge",
+      "severity": "high",
+      "scope": ["*.yml", "*.yaml"],
+      "rule": "Writer workflows and PR bots must converge under synchronize, rerun, and schedule events. Version automation compares the declared value to the PR base and bumps at most once; new plugins and already-ahead manual bumps do not re-bump. PR-existence checks query OPEN PRs only, not merged/closed history. A bot push must not leave a head commit with required contexts that can never report. Flag loops, force-push churn, stale-reader branches, and non-idempotent comment/PR creation."
+    },
+    {
+      "id": "deterministic-verdicts-fail-closed",
+      "severity": "high",
+      "scope": ["*.yml", "*.yaml"],
+      "rule": "A validator crash, empty impossible result set, missing output, malformed JSON, or partial sync must never be classified as PASS. Optional LLM summaries may fail quietly but cannot alter, replace, or paste failure text into the deterministic verdict. Any `|| true` or `continue-on-error` around a verdict producer must preserve and inspect the exit/result explicitly and surface an internal-error state."
+    },
+    {
+      "id": "workflow-command-channel-safety",
+      "severity": "medium",
+      "scope": ["*.yml", "*.yaml"],
+      "rule": "Values derived from PRs, validators, APIs, or generated reports must enter shell through environment variables or files, never direct `${{ }}` interpolation into executable script text. Multiline `$GITHUB_OUTPUT`/`$GITHUB_ENV` writes require a collision-resistant delimiter and a guaranteed newline before the closing delimiter. Preserve `set -euo pipefail` unless a step documents and handles each non-zero exit deliberately."
+    }
+  ]
+}

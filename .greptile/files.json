@@ -10,23 +10,115 @@
     },
     {
       "path": "000-docs/SCHEMA_CHANGELOG.md",
-      "description": "The NON-NEGOTIABLES: the 8-field ALWAYS_REQUIRED set, marketplace-tier error-vs-warning semantics, and which changes are approval-gated."
+      "description": "The NON-NEGOTIABLES: the 8-field ALWAYS_REQUIRED set, marketplace-tier error-vs-warning semantics, and which changes are approval-gated.",
+      "scope": [
+        "scripts/validate-skills-schema.py",
+        "plugins/**/SKILL.md",
+        "plugins/**/agents/*.md",
+        ".github/workflows/kernel-*.yml"
+      ]
     },
     {
       "path": "scripts/validate-skills-schema.py",
-      "description": "The authoritative prose-spec validator — the canonical merge gate for frontmatter and markdown body sections, plus the kernel-strict agent gate."
+      "description": "The authoritative prose-spec validator — the canonical merge gate for frontmatter and markdown body sections, plus the kernel-strict agent gate.",
+      "scope": [
+        "scripts/validate-skills-schema.py",
+        "scripts/pr-prescreen/**",
+        "plugins/**/SKILL.md",
+        "plugins/**/agents/*.md"
+      ]
     },
     {
       "path": ".github/workflows/validate-plugins.yml",
-      "description": "The CI gate definitions: plugin structure, catalog invariants, README-TOC sync, and the lint/test matrix."
+      "description": "The unfiltered required aggregate: plugin structure, catalog invariants, README-TOC sync, and the lint/test matrix.",
+      "scope": [".github/workflows/**", "scripts/ci/**"]
     },
     {
       "path": "marketplace/DESIGN.md",
-      "description": "The marketplace design constitution — OKLCH-only colors, the Data-Dense Pro family, and explicitly rejected UI patterns."
+      "description": "The marketplace design constitution — OKLCH-only colors, the Data-Dense Pro family, and explicitly rejected UI patterns.",
+      "scope": ["marketplace/**"]
     },
     {
       "path": "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
-      "description": "The IS enterprise / marketplace skills standard (v3.x) that the validator enforces."
+      "description": "The IS enterprise / marketplace skills standard (v3.x) that the validator enforces.",
+      "scope": [
+        "plugins/**/SKILL.md",
+        "plugins/**/agents/*.md",
+        "scripts/validate-skills-schema.py"
+      ]
+    },
+    {
+      "path": "000-docs/265-DR-GUID-pr-prescreen-system.md",
+      "description": "Operator contract for the advisory pull_request_target pre-screen, including base-authored execution and deterministic-verdict boundaries.",
+      "scope": [".github/workflows/pr-prescreen.yml", "scripts/pr-prescreen/**"]
+    },
+    {
+      "path": "000-docs/690-AT-APIS-6767h-to-kernel-authoring-v1-mapping-2026-06-11.md",
+      "description": "Field-level prose-validator to kernel authoring/v1 mapping, intentional deviations, and shadow-only migration posture.",
+      "scope": [
+        "scripts/validate-skills-schema.py",
+        "scripts/kernel-shadow-validation.mjs",
+        ".github/workflows/kernel-*.yml",
+        "package.json"
+      ]
+    },
+    {
+      "path": "000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md",
+      "description": "Locked mirror-by-default, upstream-improvements, never-clobber authority model for externally synced plugins.",
+      "scope": [
+        "sources.yaml",
+        "sources.lock.json",
+        "scripts/sync-*.mjs",
+        ".github/workflows/sync-external.yml",
+        "plugins/community/**"
+      ]
+    },
+    {
+      "path": "000-docs/698-TQ-SECU-external-sync-threat-model.md",
+      "description": "Supply-chain threat model for synced instructions, scripts, hooks, MCP servers, lock/quarantine, and REFUSE/CHALLENGE/FLAG semantics.",
+      "scope": [
+        "sources.yaml",
+        "sources.lock.json",
+        "scripts/scan-*.mjs",
+        "scripts/sync-*.mjs",
+        "plugins/community/**",
+        "plugins/mcp/**"
+      ]
+    },
+    {
+      "path": "000-docs/699-DR-GUID-external-source-vetting-playbook.md",
+      "description": "Human vetting and approval procedure that complements deterministic sync and scanner gates.",
+      "scope": [
+        "sources.yaml",
+        "sources.lock.json",
+        "scripts/scan-allowlist.txt",
+        "plugins/community/**"
+      ]
+    },
+    {
+      "path": "000-docs/700-DR-GUID-skill-submission-standard.md",
+      "description": "Issue-before-PR and tiered PRD/ADR/ONE-PAGER proof requirements for new authored plugins.",
+      "scope": ["plugins/**/.claude-plugin/plugin.json", "plugins/**/docs/**"]
+    },
+    {
+      "path": "000-docs/008-TQ-SECU-security.md",
+      "description": "Repository security policy and disclosure boundary for plugin supply-chain findings.",
+      "scope": ["plugins/**", "scripts/**", ".github/workflows/**"]
+    },
+    {
+      "path": "sources.yaml",
+      "description": "External source registry; use it to evaluate verified/curated semantics, anchored include breadth, target ownership, and provenance.",
+      "scope": ["sources.yaml", "sources.lock.json", "scripts/sync-*.mjs", "plugins/community/**"]
+    },
+    {
+      "path": "freshie/README.md",
+      "description": "Freshie SQLite runtime, one-way Dolt history, exporter, proof tables, and restore/operating contract.",
+      "scope": ["freshie/**"]
+    },
+    {
+      "path": "RELEASING.md",
+      "description": "Published package version, tag, release, and automated publish contract.",
+      "scope": ["packages/**", ".github/workflows/publish-*.yml", "package.json"]
     }
   ]
 }

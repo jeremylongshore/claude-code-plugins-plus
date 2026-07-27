@@ -10,6 +10,7 @@
     "test": "pnpm --filter '*' test",
     "lint": "pnpm --filter '*' lint",
     "typecheck": "pnpm --filter '*' typecheck",
+    "validate:greptile": "node scripts/validate-greptile-config.mjs",
     "sync-marketplace": "node scripts/sync-marketplace.cjs && node scripts/generate-plugin-package-jsons.mjs && node scripts/generate-readme-toc.mjs",
     "sync-marketplace:json-only": "node scripts/sync-marketplace.cjs",
     "build-cowork": "node scripts/build-cowork-zips.mjs",

@@ -18,13 +18,26 @@
   ],
   "ignoreKeywords": "[skip greptile]\n[skip ai review]\nDaily npm download stats refresh",
   "fixWithAI": true,
+  "statusCheck": false,
+  "updateExistingSummaryComment": true,
+  "context": {
+    "repos": [
+      "jeremylongshore/intent-audit-harness",
+      "jeremylongshore/intent-eval-core",
+      "jeremylongshore/intent-eval-dashboard",
+      "jeremylongshore/intent-eval-lab",
+      "jeremylongshore/intent-rollout-gate",
+      "jeremylongshore/j-rig-skill-binary-eval"
+    ]
+  },
+  "instructions": "Review this repository as executable agent infrastructure, a public plugin supply chain, and a generated marketplace. Prioritize semantic correctness, security boundaries, authority/source-of-truth violations, fail-open behavior, data-integrity drift, and install/runtime breakage. Do not repeat formatter, linter, typechecker, schema, or generated-drift findings already emitted by required CI unless the diff weakens or bypasses that gate. Use the Intent Eval context repositories when a change touches authoring contracts, Evidence Bundles, deterministic gates, behavioral evaluation, rollout decisions, or dashboard evidence rendering.",
   "confidenceScoreSection": {
     "included": true
   },
   "sequenceDiagramSection": {
-    "included": true
+    "included": false
   },
-  "ignorePatterns": "node_modules/\n.venv/\ndist/\nbuild/\ncoverage/\nmarketplace/dist/\nmarketplace/.astro/\nmarketplace/public/downloads/\npnpm-lock.yaml\npackage-lock.json\n*.min.js\n.claude-plugin/marketplace.json\nfreshie/inventory.sqlite\nmarketplace/src/data/npm-stats.json",
+  "ignorePatterns": "node_modules/\n.venv/\ndist/\nbuild/\ncoverage/\nmarketplace/dist/\nmarketplace/.astro/\nmarketplace/public/downloads/\nskills/.curated/\npnpm-lock.yaml\npackage-lock.json\nyarn.lock\nbun.lock\nbun.lockb\n**/*.min.js\n**/*.map\n**/*.snap\n.claude-plugin/marketplace.json\nfreshie/inventory.sqlite\nmarketplace/src/data/npm-stats.json",
   "rules": [
     {
       "id": "no-gate-weakening",
@@ -51,9 +64,9 @@
       "rule": "The IS 8-field ALWAYS_REQUIRED set (name, description, allowed-tools, version, author, license, compatibility, tags) is authoritative; at marketplace tier a missing required field is an ERROR, not a warning. Do not suggest reducing the required set, demoting marketplace errors to warnings, or realigning to Anthropic's permissive floor. Changes to required-fields / tier model / error-vs-warning semantics are approval-gated (see SCHEMA_CHANGELOG NON-NEGOTIABLES)."
     },
     {
-      "id": "kernel-pin-frozen-during-soak",
+      "id": "kernel-authority-frozen-during-soak",
       "severity": "high",
-      "rule": "The `@intentsolutions/core` kernel pin is frozen at an exact version (no ^/~) during the validator-cutover soak. Do not suggest bumping it, and do not suggest flipping the kernel-shadow or kernel-vendor-hash CI lanes from advisory (continue-on-error) to blocking — that promotion is gated by a separate documented checklist, not a code change."
+      "rule": "Keep the `@intentsolutions/core` pin exact (no ^/~) and current with the published kernel; a routine exact-version bump is allowed and is separate from authority. The prose validator remains authoritative, while kernel-shadow and kernel-vendor-hash stay advisory until every documented soak/cutover condition and governance approval is met. Flag any PR that conflates a pin update with promoting kernel authority, changes the byte-frozen authoring/v1 contract locally, or makes either shadow lane blocking as a side effect."
     },
     {
       "id": "agent-vs-skill-tool-fields",
@@ -91,7 +104,7 @@
     {
       "id": "no-generated-artifacts-committed",
       "severity": "medium",
-      "rule": "Do not commit generated artifacts: marketplace/public/downloads/ (gitignored, rebuilt in CI from the catalog), marketplace/dist/, or the derived .claude-plugin/marketplace.json. CI rebuilds these from source; committing them leaks local state to prod."
+      "rule": "Do not commit ephemeral build artifacts such as marketplace/public/downloads/ or marketplace/dist/. The derived `.claude-plugin/marketplace.json`, generated plugin package.json files, and README AUTO-TOC are tracked outputs: they MUST be regenerated from `.claude-plugin/marketplace.extended.json` with `pnpm run sync-marketplace` and committed when the source changes, but never hand-edited. Fix drift at the authoritative source or generator, not in a derived copy."
     },
     {
       "id": "sources-yaml-is-a-pointer",
