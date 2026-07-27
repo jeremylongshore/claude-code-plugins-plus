@@ -3,11 +3,20 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  /**
+   * Absolute canonical URL for this page. Defaults to the self-referencing
+   * tonsofskills.com URL. Pass an override for SYNDICATED content whose
+   * original lives on another property — e.g. a dual-published blog post whose
+   * canonical home is startaitools.com — so the two properties consolidate
+   * ranking signal instead of competing as duplicate content.
+   */
+  canonical?: string;
 }
 
-const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png" } = Astro.props;
+const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png", canonical } = Astro.props;
 
 const currentPath = Astro.url.pathname;
+const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
 ---
 
 <!DOCTYPE html>
@@ -19,7 +28,9 @@ const currentPath = Astro.url.pathname;
     <meta name="description" content={description}>
     <meta name="author" content="Intent Solutions IO">
     <meta name="theme-color" content="#0a0a0c">
-    <link rel="canonical" content={`https://tonsofskills.com${Astro.url.pathname}`}>
+    <!-- `href`, not `content`: <link> takes href; `content` is a <meta> attribute,
+         so the previous form was invalid HTML and silently ignored by every crawler. -->
+    <link rel="canonical" href={canonicalUrl}>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
     <!-- Theme: prevent FOUC by setting data-theme before first paint -->

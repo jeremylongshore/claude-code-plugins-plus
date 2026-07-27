@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PluginCard from '../../components/PluginCard.astro';
+import CrossProperty from '../../components/CrossProperty.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -422,4 +423,6 @@ const allTools = _rawCatalog.allowedToolsUsed;
       };
     });
   </script>
+
+  <CrossProperty eyebrow="Built while shipping" />
 </BaseLayout>

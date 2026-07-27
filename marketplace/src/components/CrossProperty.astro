@@ -1,0 +1,213 @@
+---
+/**
+ * CrossProperty — outbound cross-links from the marketplace to the other
+ * Intent Solutions properties.
+ *
+ * WHY: /explore/ and /skills/ are the highest-traffic organic entry points in
+ * the portfolio, and before this component neither page linked to
+ * startaitools.com (0 references repo-wide) or intentsolutions.io. The warmest
+ * audience we own had no path to the other properties.
+ *
+ * Posts link to their CANONICAL home on startaitools.com, not to the
+ * dual-published copy at /blog/, so the outbound link reinforces the original
+ * rather than the syndicated duplicate.
+ *
+ * Styling follows marketplace/DESIGN.md: panel background, 1px --rule border,
+ * translateY(-1px) hover, no gradients, no box-shadow lift.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  /** How many recent posts to surface. */
+  limit?: number;
+  /** Optional eyebrow override for page-specific framing. */
+  eyebrow?: string;
+}
+
+const { limit = 3, eyebrow = 'From the workshop' } = Astro.props;
+
+const STARTAITOOLS_POST_BASE = 'https://startaitools.com/posts';
+
+const posts = (await getCollection('blog-posts'))
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+  .slice(0, limit);
+
+const fmtDate = (d: string | Date) =>
+  new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+---
+
+<section class="xprop" aria-labelledby="xprop-heading">
+  <div class="xprop__head">
+    <p class="xprop__eyebrow">{eyebrow}</p>
+    <h2 id="xprop-heading" class="xprop__title">Where these skills come from</h2>
+    <p class="xprop__lede">
+      Every plugin here was built shipping real systems. The engineering write-ups live on
+      <a class="xprop__inline" href="https://startaitools.com/" rel="noopener">startaitools.com</a>;
+      the consulting practice behind them is
+      <a class="xprop__inline" href="https://intentsolutions.io/" rel="noopener">Intent Solutions</a>.
+    </p>
+  </div>
+
+  {posts.length > 0 && (
+    <ul class="xprop__posts">
+      {posts.map((post) => (
+        <li class="xprop__post">
+          <a class="xprop__post-link" href={`${STARTAITOOLS_POST_BASE}/${post.id}/`} rel="noopener">
+            <span class="xprop__post-date">{fmtDate(post.data.date)}</span>
+            <span class="xprop__post-title">{post.data.title}</span>
+            {post.data.description && (
+              <span class="xprop__post-desc">{post.data.description}</span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  <div class="xprop__actions">
+    <a class="xprop__cta" href="https://startaitools.com/posts/" rel="noopener">
+      Read the engineering blog
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <a class="xprop__cta xprop__cta--ghost" href="https://intentsolutions.io/" rel="noopener">
+      Work with Intent Solutions
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  .xprop {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8, 2rem) var(--space-6, 1.5rem);
+    margin: var(--space-10, 2.5rem) 0 var(--space-6, 1.5rem);
+  }
+
+  .xprop__head {
+    max-width: 62ch;
+  }
+
+  .xprop__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin: 0 0 var(--space-2, 0.5rem);
+  }
+
+  .xprop__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 var(--space-3, 0.75rem);
+  }
+
+  .xprop__lede {
+    font-size: var(--text-base);
+    line-height: var(--text-line-height, 1.6);
+    color: var(--ink);
+    opacity: 0.78;
+    margin: 0;
+  }
+
+  .xprop__inline {
+    color: var(--signal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .xprop__inline:hover { text-decoration-thickness: 2px; }
+
+  .xprop__posts {
+    list-style: none;
+    margin: var(--space-6, 1.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3, 0.75rem);
+  }
+
+  .xprop__post-link {
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--space-4, 1rem);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md, 8px);
+    background: var(--bg);
+    text-decoration: none;
+    transition: transform var(--duration-fast, 120ms) var(--ease-out, ease),
+                border-color var(--duration-fast, 120ms) var(--ease-out, ease);
+  }
+
+  /* DESIGN.md: subtle 1px lift, border tints to --signal-edge. Never box-shadow. */
+  .xprop__post-link:hover {
+    transform: translateY(-1px);
+    border-color: var(--signal-edge);
+  }
+
+  .xprop__post-date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--ink);
+    opacity: 0.55;
+  }
+
+  .xprop__post-title {
+    font-weight: 600;
+    font-size: var(--text-base);
+    color: var(--ink);
+  }
+
+  .xprop__post-desc {
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
+  .xprop__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3, 0.75rem);
+    margin-top: var(--space-6, 1.5rem);
+  }
+
+  .xprop__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.15rem;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--signal);
+    background: var(--signal);
+    color: #0a0a0c;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: transform var(--duration-fast, 120ms) var(--ease-out, ease),
+                background-color var(--duration-fast, 120ms) var(--ease-out, ease);
+  }
+  .xprop__cta:hover { transform: translateY(-1px); }
+
+  .xprop__cta--ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+  .xprop__cta--ghost:hover { background: var(--signal-tint); border-color: var(--signal-edge); }
+
+  @media (min-width: 48rem) {
+    .xprop__posts { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .xprop__post-link, .xprop__cta { transition: none; }
+    .xprop__post-link:hover, .xprop__cta:hover { transform: none; }
+  }
+</style>
