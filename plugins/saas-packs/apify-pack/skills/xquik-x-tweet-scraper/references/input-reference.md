@@ -36,7 +36,9 @@ Use `includeSearchTerms` when each row needs its source query.
 ## Limits
 
 - `maxItems` caps the whole run.
-- `maxItemsPerTarget` can balance multi-target workflows.
+- `maxItemsPerTarget` balances explicit multi-target workflows.
+- The guarded runner requires positive safe integers for both item caps.
+- `--max-total-charge-usd` caps the guarded runner's total Actor charge.
 - Start with the smallest cap that answers the request.
 - Never start a paid run without explicit approval.
 

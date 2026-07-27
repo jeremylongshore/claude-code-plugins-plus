@@ -93,15 +93,26 @@ type FollowerInput = Record<string, unknown> & {
 };
 
 function requirePositiveCaps(input: FollowerInput): void {
-  if (!Number.isInteger(input.maxItems) || input.maxItems <= 0) {
-    throw new Error('maxItems must be a positive integer');
+  if (!Number.isSafeInteger(input.maxItems) || input.maxItems <= 0) {
+    throw new Error('maxItems must be a positive safe integer');
   }
   if (
     input.maxItemsPerTarget !== undefined &&
-    (!Number.isInteger(input.maxItemsPerTarget) || input.maxItemsPerTarget <= 0)
+    (!Number.isSafeInteger(input.maxItemsPerTarget) ||
+      input.maxItemsPerTarget <= 0)
   ) {
-    throw new Error('maxItemsPerTarget must be a positive integer');
+    throw new Error('maxItemsPerTarget must be a positive safe integer');
   }
+}
+
+function requirePositiveNumberFlag(flag: string): number {
+  const index = process.argv.indexOf(flag);
+  const raw = index >= 0 ? process.argv[index + 1] : undefined;
+  const value = Number(raw);
+  if (!raw || !Number.isFinite(value) || value <= 0) {
+    throw new Error(`${flag} must be a positive number`);
+  }
+  return value;
 }
 
 if (!process.argv.includes('--approve-paid-run')) {
@@ -115,8 +126,13 @@ if (!inputPath) {
   throw new Error('Input path required');
 }
 
-const input = JSON.parse(await readFile(inputPath, 'utf8')) as FollowerInput;
+const parsed: unknown = JSON.parse(await readFile(inputPath, 'utf8'));
+if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+  throw new Error('Input must be a JSON object');
+}
+const input = parsed as FollowerInput;
 requirePositiveCaps(input);
+const maxTotalChargeUsd = requirePositiveNumberFlag('--max-total-charge-usd');
 
 const token = process.env.APIFY_TOKEN;
 if (!token) {
@@ -124,13 +140,17 @@ if (!token) {
 }
 
 const client = new ApifyClient({ token });
-const run = await client.actor('xquik/x-follower-scraper').call(input);
+const run = await client.actor('xquik/x-follower-scraper').call(input, {
+  maxTotalChargeUsd,
+});
 
 if (run.status !== 'SUCCEEDED') {
   throw new Error(`Actor run ended with ${run.status}: ${run.statusMessage ?? ''}`);
 }
 
-const { items } = await client.dataset(run.defaultDatasetId).listItems();
+const { items } = await client
+  .dataset(run.defaultDatasetId)
+  .listItems({ limit: input.maxItems + 1 });
 if (items.length > input.maxItems) {
   throw new Error('Result count exceeded maxItems');
 }
@@ -139,7 +159,7 @@ await writeFile('xquik-follower-results.json', JSON.stringify(items, null, 2));
 console.log(JSON.stringify({ runId: run.id, itemCount: items.length }));
 ```
 
-This guard rejects unapproved and unbounded runs before creating the client.
+This guard rejects unapproved, unbounded, and budgetless runs.
 
 ### Step 4: Confirm the Paid Run
 
@@ -148,6 +168,7 @@ Repeat these details to the user:
 - Actor ID
 - Every target and relation
 - `maxItems` and `maxItemsPerTarget`
+- `maxTotalChargeUsd`
 - Current billing model and pricing
 - Output and deduplication modes
 
@@ -158,7 +179,9 @@ Wait for explicit approval. Repository work never implies Actor run approval.
 After approval, run:
 
 ```bash
-npx tsx run-xquik-followers.ts input.json --approve-paid-run
+npx tsx run-xquik-followers.ts input.json \
+  --approve-paid-run \
+  --max-total-charge-usd 0.50
 ```
 
 Use Read to inspect the saved array. Separate diagnostic rows from profile rows.
@@ -185,7 +208,9 @@ the run. Review the live Actor listing instead of retrying automatically.
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `Paid run not approved` | Approval flag is absent | Review live pricing and ask for approval |
-| Invalid cap error | A run cap is absent or non-positive | Add small positive caps |
+| `Input must be a JSON object` | The input root is invalid | Save one Actor input object |
+| Invalid cap error | A run cap is absent or invalid | Add small positive safe-integer caps |
+| Invalid `--max-total-charge-usd` | The charge limit is absent or invalid | Add the approved positive limit |
 | `401 Unauthorized` | Token is missing or invalid | Replace the token in the secret store |
 | `402 Payment Required` | Apify rejected current billing | Review the live Actor billing state |
 | Actor status is not `SUCCEEDED` | The run failed or timed out | Inspect `statusMessage` and run logs |

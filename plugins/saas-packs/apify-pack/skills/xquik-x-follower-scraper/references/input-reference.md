@@ -35,6 +35,8 @@ List followers represent public list subscribers.
 
 - `maxItems` caps the whole run.
 - `maxItemsPerTarget` can balance multiple targets.
+- The guarded runner requires positive safe integers for both item caps.
+- `--max-total-charge-usd` caps the guarded runner's total Actor charge.
 - `dedupeMode` accepts `none`, `first`, or `merge`.
 - `overlapMode: true` enables merged overlap analysis.
 - `includeTargetMetadata` preserves source-target context.
