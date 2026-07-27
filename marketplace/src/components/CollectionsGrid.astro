@@ -1,6 +1,5 @@
 ---
 import collections from '../data/collections.json';
-import { iconFor } from '../lib/icons';
 
 interface Props {
   featured?: boolean;
@@ -50,23 +49,6 @@ if (limit) {
     gap: 0.75rem;
   }
 
-  .collection-icon {
-    /* Holds an inline stroke SVG (see src/lib/icons.ts), not a glyph — so it
-       inherits currentColor and follows the theme. Emoji could do neither. */
-    color: var(--ink);
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    background: var(--brand-light);
-  }
-
-  .collection-icon :global(svg) {
-    width: 24px;
-    height: 24px;
-  }
 
   .collection-title {
     font-size: 1.25rem;
@@ -137,7 +119,6 @@ if (limit) {
   {displayCollections.map(collection => (
     <div class="collection-card" data-collection-id={collection.id}>
       <div class="collection-header">
-        <span class="collection-icon" style={`background: ${collection.color}20;`} set:html={iconFor(collection.icon)} />
         <h3 class="collection-title">{collection.name}</h3>
       </div>
 

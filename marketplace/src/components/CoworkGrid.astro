@@ -1,6 +1,5 @@
 ---
 import coworkPacks from '../data/cowork-packs.json';
-import { iconFor } from '../lib/icons';
 
 interface Props {
   featured?: boolean;
@@ -73,21 +72,6 @@ if (manifest?.plugins) {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-  }
-
-  .cowork-icon {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  .cowork-icon :global(svg) {
-    width: 22px;
-    height: 22px;
   }
 
   .cowork-title {
@@ -173,7 +157,6 @@ if (manifest?.plugins) {
     const isSaasPack = pack.isSaasPack;
     const plugin = isSaasPack ? pluginMap.get(pack.packName) : null;
     const bundle = !isSaasPack ? bundleMap.get(pack.category) : null;
-    const iconSvg = iconFor(pack.icon);
 
     // Determine download path and stats
     const downloadPath = isSaasPack
@@ -187,9 +170,6 @@ if (manifest?.plugins) {
     return (
       <div class="cowork-card" data-pack-id={pack.id}>
         <div class="cowork-header">
-          <span class="cowork-icon" style={`background: ${pack.color}15; color: ${pack.color};`}>
-            <Fragment set:html={iconSvg} />
-          </span>
           <h3 class="cowork-title">{pack.name}</h3>
         </div>
 
