@@ -8,7 +8,7 @@ description: |
   Trigger with "apify error", "fix apify", "actor failed",
   "apify not working", "debug apify", "apify 429".
 allowed-tools: Bash(curl:*), Bash(apify:*), Bash(npm:*)
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

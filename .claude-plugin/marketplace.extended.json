@@ -7251,17 +7251,17 @@
     {
       "name": "apify-pack",
       "source": "./plugins/saas-packs/apify-pack",
-      "description": "Claude Code skill pack for Apify (18 skills)",
-      "version": "1.5.0",
+      "description": "Claude Code skill pack for Apify (20 skills)",
+      "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["apify", "saas", "sdk", "integration"],
+      "keywords": ["apify", "x", "twitter", "saas", "sdk", "integration"],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
         "url": "https://github.com/jeremylongshore"
       },
       "components": {
-        "skills": 18
+        "skills": 20
       },
       "verification": {
         "score": 79,

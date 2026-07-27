@@ -6331,11 +6331,13 @@
     {
       "name": "apify-pack",
       "source": "./plugins/saas-packs/apify-pack",
-      "description": "Claude Code skill pack for Apify (18 skills)",
-      "version": "1.5.0",
+      "description": "Claude Code skill pack for Apify (20 skills)",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "apify",
+        "x",
+        "twitter",
         "saas",
         "sdk",
         "integration"
