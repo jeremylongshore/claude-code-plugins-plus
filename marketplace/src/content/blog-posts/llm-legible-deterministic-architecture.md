@@ -140,4 +140,3 @@ The lesson is portable. If you are running agents against a real system, at some
 - [Passing is not validating](/posts/passing-is-not-validating/): why a green test suite cannot close an operational promise.
 - [A green recovery drill can still be lying](/posts/a-green-recovery-drill-can-still-be-lying/): proving a restore actually restored, not just exited zero.
 - [Let the model judge, make the code decide](/posts/let-the-model-judge-make-the-code-decide/): where the deterministic boundary sits between an LLM's opinion and the gate that acts on it.
-

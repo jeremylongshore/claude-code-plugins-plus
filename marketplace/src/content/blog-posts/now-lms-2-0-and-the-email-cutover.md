@@ -43,4 +43,3 @@ On the infrastructure side, the MXroute migration of intentsolutions.io is under
 - [Temporary Is Not a Plan](/posts/temporary-is-not-a-plan/)
 - [Do Not Blindly Restart](/posts/do-not-blindly-restart/)
 - [Wrong Mode: Green Is Not a Gate](/posts/wrong-mode-green-is-not-a-gate/)
-

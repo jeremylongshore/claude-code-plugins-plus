@@ -45,4 +45,3 @@ The pattern across three repos on one day: fork CI (trust boundary), reconciliat
 - [Wrong Mode Green is Not a Gate](/posts/wrong-mode-green-is-not-a-gate/)
 - [Temporary is Not a Plan](/posts/temporary-is-not-a-plan/)
 - [Passing is Not Validating](/posts/passing-is-not-validating/)
-
