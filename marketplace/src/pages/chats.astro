@@ -1,4 +1,5 @@
 ---
+import { iconFor } from '../lib/icons';
 // CCPI Chats - Live Conversation Monitor
 // Mobile-first view for Claude Code Analytics Daemon
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -134,9 +135,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         .empty-state-icon {
-            font-size: 3rem;
+            /* holds an inline stroke SVG (src/lib/icons.ts), not a glyph */
+            color: var(--ink-3, currentColor);
             margin-bottom: 1rem;
         }
+        .empty-state-icon :global(svg) { width: 48px; height: 48px; }
 
         .empty-state-title {
             font-family: 'Inter', system-ui, sans-serif;
@@ -208,8 +211,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         .event-icon {
-            font-size: 1.25rem;
+            display: inline-flex;
+            align-items: center;
         }
+        .event-icon :global(svg) { width: 18px; height: 18px; }
 
         .event-time {
             font-family: 'Lora', Georgia, serif;
@@ -319,7 +324,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <!-- Events stream -->
         <div class="events-container" id="eventsContainer">
             <div class="empty-state">
-                <div class="empty-state-icon">💬</div>
+                <div class="empty-state-icon" set:html={iconFor('message-square')} />
                 <h2 class="empty-state-title">No events yet</h2>
                 <p>Connect to the analytics daemon to see live conversation events</p>
             </div>
@@ -327,6 +332,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <script>
+      import { iconFor } from '../lib/icons';
+
         // WebSocket connection state
         let ws: WebSocket | null = null;
         let isConnected = false;
@@ -376,14 +383,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         // Event type icons and colors
         const EVENT_CONFIG: Record<string, { icon: string; type: string }> = {
-            'server.connected': { icon: '✓', type: 'conversation' },
-            'plugin.activation': { icon: '🔌', type: 'plugin-activation' },
-            'skill.trigger': { icon: '⚡', type: 'skill-trigger' },
-            'llm.call': { icon: '🤖', type: 'llm-call' },
-            'cost.update': { icon: '💰', type: 'llm-call' },
-            'rate_limit.warning': { icon: '⚠️', type: 'conversation' },
-            'conversation.created': { icon: '📝', type: 'conversation' },
-            'conversation.updated': { icon: '💬', type: 'conversation' },
+            'server.connected': { icon: 'check-circle', type: 'conversation' },
+            'plugin.activation': { icon: 'plug', type: 'plugin-activation' },
+            'skill.trigger': { icon: 'zap', type: 'skill-trigger' },
+            'llm.call': { icon: 'bot', type: 'llm-call' },
+            'cost.update': { icon: 'dollar-sign', type: 'llm-call' },
+            'rate_limit.warning': { icon: 'alert-triangle', type: 'conversation' },
+            'conversation.created': { icon: 'file-text', type: 'conversation' },
+            'conversation.updated': { icon: 'message-square', type: 'conversation' },
         };
 
         // Update connection status
@@ -407,7 +414,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         // Create event card HTML
         // All user-controllable data is escaped to prevent XSS
         function createEventCard(event: any): string {
-            const config = EVENT_CONFIG[event.type] || { icon: '📊', type: 'conversation' };
+            const config = EVENT_CONFIG[event.type] || { icon: 'trending-up', type: 'conversation' };
             const time = formatTime(event.timestamp);
             const safeType = escapeHtml(event.type);
 
@@ -549,7 +556,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <div class="event-card ${escapeHtml(config.type)}">
                     <div class="event-header">
                         <div class="event-type">
-                            <span class="event-icon">${config.icon}</span>
+                            <span class="event-icon">${iconFor(config.icon)}</span>
                             ${safeType}
                         </div>
                         <div class="event-time">${escapeHtml(time)}</div>
@@ -586,7 +593,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         function clearEvents() {
             eventsContainer.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">💬</div>
+                    <div class="empty-state-icon" set:html={iconFor('message-square')} />
                     <h2 class="empty-state-title">No events yet</h2>
                     <p>Connect to the analytics daemon to see live conversation events</p>
                 </div>
