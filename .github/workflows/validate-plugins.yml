@@ -190,6 +190,15 @@ jobs:
       - name: Validate design-token discipline (DESIGN.md color rules)
         run: node scripts/lint-design-tokens.mjs
 
+      # Deliberately a step in `validate` (already in ci-required's needs) rather
+      # than a new job: it needs no wiring change to become blocking, and it must
+      # NOT be confused with check-links.yml, which is path-filtered and reports
+      # `fail: false`. Only the DETERMINISTIC half (links to paths inside the repo)
+      # is gated here; external link rot stays with the weekly lychee report,
+      # where a rate-limit false positive costs a glance, not a blocked merge.
+      - name: Validate internal doc links resolve (deterministic half of link-check)
+        run: node scripts/check-internal-doc-links.mjs
+
       - name: Validate cascading Greptile configuration
         run: |
           node --test scripts/validate-greptile-config.test.mjs
