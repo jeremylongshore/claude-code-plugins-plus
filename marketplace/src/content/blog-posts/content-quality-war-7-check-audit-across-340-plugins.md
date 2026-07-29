@@ -4,6 +4,7 @@ description: "A 7-category audit script found boilerplate openings, empty shells
 date: "2026-03-17"
 tags: ["claude-code", "automation", "ci-cd", "architecture", "web-development"]
 featured: false
+canonical: "https://startaitools.com/posts/content-quality-war-7-check-audit-across-340-plugins/"
 ---
 Every plugin had content. Most of it was junk.
 

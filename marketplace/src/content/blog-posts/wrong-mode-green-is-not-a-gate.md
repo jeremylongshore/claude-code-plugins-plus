@@ -4,6 +4,7 @@ description: "A freshness gate that accepts the wrong mode flag and still exits 
 date: "2026-07-22"
 tags: ["testing", "ci-cd", "python", "architecture", "debugging", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/wrong-mode-green-is-not-a-gate/"
 ---
 A green board is not a gate if the checker ran the wrong mode.
 

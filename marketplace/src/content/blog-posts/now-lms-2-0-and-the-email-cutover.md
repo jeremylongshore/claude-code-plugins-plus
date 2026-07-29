@@ -4,6 +4,7 @@ description: "A 2.0.0 that is mostly a careful rename plus security headers is e
 date: "2026-07-25"
 tags: ["release-engineering", "python", "devops", "web-development"]
 featured: false
+canonical: "https://startaitools.com/posts/now-lms-2-0-and-the-email-cutover/"
 ---
 A healthy major version is not always a rewrite. now-lms shipped 2.0.0 yesterday as proof: the release was ninety percent discipline, ten percent new surface area. The breaking changes were documented with exact incompatibility points. A migration guide shipped alongside the code. That is the standard.
 

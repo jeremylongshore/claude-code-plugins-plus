@@ -4,6 +4,7 @@ description: "Documenting the architecture decisions for Resume Realtime - a pla
 date: "2025-12-11"
 tags: ["rust", "leptos", "wasm", "webgpu", "ai", "architecture", "planning"]
 featured: false
+canonical: "https://startaitools.com/posts/designing-a-local-first-resume-parser-architecture-decisions-for-edge-ai/"
 ---
 ## The Problem I Want to Solve
 

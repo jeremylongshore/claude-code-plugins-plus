@@ -4,6 +4,7 @@ description: "Hardening a container hid a permission bug: --cap-drop ALL strippe
 date: "2026-06-12"
 tags: ["docker", "debugging", "ai-agents", "devops", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/cap-drop-all-broke-the-gate-socket/"
 ---
 The dogfood run went green. The gate had governed zero calls.
 

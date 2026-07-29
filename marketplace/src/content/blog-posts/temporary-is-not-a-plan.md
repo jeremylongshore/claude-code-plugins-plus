@@ -4,6 +4,7 @@ description: "Adopting an open source LMS got us live in days. What keeps a fork
 date: "2026-07-21"
 tags: ["architecture", "devops", "docker", "open-source", "debugging"]
 featured: false
+canonical: "https://startaitools.com/posts/temporary-is-not-a-plan/"
 ---
 Calling a patch temporary is not a plan. A retirement condition written into the commit is.
 

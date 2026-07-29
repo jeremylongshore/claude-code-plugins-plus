@@ -4,6 +4,7 @@ description: "Shipping 12 PRs in the Braves broadcast dashboard (strike zone cha
 date: "2026-04-11"
 tags: ["typescript", "react", "full-stack", "claude-code", "debugging", "automation", "ai-agents"]
 featured: false
+canonical: "https://startaitools.com/posts/twelve-prs-security-sprint-pregame-overhaul/"
 ---
 The Braves pregame view was a skeleton. Team names, probable pitchers, a few bullet points from a language model that silently failed half the time. Announcers had to Alt-Tab to MLB.com for anything useful. Meanwhile, a security researcher opened a PR on claude-code-slack-channel showing that the file-upload guard was checking the wrong thing entirely -- blocking uploads from the plugin's own state directory while allowing `~/.ssh/id_rsa` through without complaint.
 

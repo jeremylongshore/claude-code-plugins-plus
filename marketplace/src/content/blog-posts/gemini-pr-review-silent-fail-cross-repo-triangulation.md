@@ -4,6 +4,7 @@ description: "When a Gemini PR review workflow silently fails for four months, y
 date: "2026-04-23"
 tags: ["ai-agents", "debugging", "ci-cd", "claude-code", "github-actions"]
 featured: false
+canonical: "https://startaitools.com/posts/gemini-pr-review-silent-fail-cross-repo-triangulation/"
 ---
 When an integration silently fails for months, your first-principles hypothesis is the suspect — find a working reference implementation in the same ecosystem and triangulate against its actual configuration before committing to a fix.
 

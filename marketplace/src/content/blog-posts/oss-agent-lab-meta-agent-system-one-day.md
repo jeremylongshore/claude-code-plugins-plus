@@ -4,6 +4,7 @@ description: "From first commit to a 9-specialist multi-agent system with capabi
 date: "2026-03-15"
 tags: ["ai-agents", "python", "architecture", "testing", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/oss-agent-lab-meta-agent-system-one-day/"
 ---
 What if the agent routing your requests was itself an agent? Not a switch statement with an LLM wrapper. An actual agent that evaluates other agents, scores their capabilities, remembers what worked, and routes based on evidence.
 

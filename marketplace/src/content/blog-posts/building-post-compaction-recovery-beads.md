@@ -4,6 +4,7 @@ description: "How to solve the context loss problem in AI agent workflows using 
 date: "2025-12-28"
 tags: ["ai-development", "task-tracking", "agent-workflows", "git", "automation", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/building-post-compaction-recovery-for-ai-agent-workflows-with-beads/"
 ---
 When Claude Code compacts (summarizes) conversations, you lose critical context about what you were working on. Here's how I solved that problem with a git-based task persistence system - and the debugging journey that made it work.
 

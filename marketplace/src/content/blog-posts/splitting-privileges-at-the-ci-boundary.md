@@ -4,6 +4,7 @@ description: "Fork CI privilege separation in GitHub Actions prevents secret exf
 date: "2026-07-24"
 tags: ["ci-cd", "devops", "automation", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/splitting-privileges-at-the-ci-boundary/"
 ---
 ## The Fork Privilege Split
 

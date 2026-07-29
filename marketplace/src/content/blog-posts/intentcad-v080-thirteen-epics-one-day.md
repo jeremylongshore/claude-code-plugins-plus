@@ -4,6 +4,7 @@ description: "Thirteen EPICs shipped in a single day. Drawing intelligence, comp
 date: "2026-03-08"
 tags: ["ai-agents", "architecture", "python", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/intentcad-v080-thirteen-epics-one-day/"
 ---
 Thirteen EPICs. One day. The largest single-day feature push in [IntentCAD](https://github.com/jeremylongshore/cad-dxf-agent) history, from EPIC-CAD-19 to EPIC-CAD-30.
 

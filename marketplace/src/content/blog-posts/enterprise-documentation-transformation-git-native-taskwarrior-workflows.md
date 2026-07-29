@@ -4,6 +4,7 @@ description: "How to systematically transform production platforms using git-nat
 date: "2025-09-30"
 tags: ["enterprise-architecture", "documentation", "taskwarrior", "git-workflows", "platform-engineering", "technical-leadership"]
 featured: false
+canonical: "https://startaitools.com/posts/enterprise-documentation-transformation-git-native-taskwarrior-workflows-for-platform-reorganization/"
 ---
 # Enterprise Documentation Transformation: From Chaos to Systematic Excellence
 

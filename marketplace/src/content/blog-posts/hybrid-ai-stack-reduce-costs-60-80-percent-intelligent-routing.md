@@ -4,6 +4,7 @@ description: "Production-ready AI orchestration system that intelligently routes
 date: "2025-10-07"
 tags: ["ai", "cost-optimization", "infrastructure", "cloud-architecture", "llms", "docker", "open-source"]
 featured: false
+canonical: "https://startaitools.com/posts/hybrid-ai-stack-reduce-ai-api-costs-by-60-80-with-intelligent-request-routing/"
 ---
 # Hybrid AI Stack: Reduce AI API Costs by 60-80% with Intelligent Request Routing
 

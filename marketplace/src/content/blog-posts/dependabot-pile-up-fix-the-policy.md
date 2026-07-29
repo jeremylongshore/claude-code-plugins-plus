@@ -4,6 +4,7 @@ description: "15 dependabot PRs piling up? Stop merging individually. Group mino
 date: "2026-07-08"
 tags: ["ci-cd", "devops", "automation", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/dependabot-pile-up-fix-the-policy/"
 ---
 Guidewire's dependabot backlog hit 15 open PRs by late June. tsx 4.21→4.23. undici 6.25→8.3. @opentelemetry/sdk-node. pg 8.20→8.21. GitHub Actions bumps on checkout, upload-artifact, setup-java, gitleaks-action, cache. All of them CI-green. All of them waiting for a human to click merge.
 

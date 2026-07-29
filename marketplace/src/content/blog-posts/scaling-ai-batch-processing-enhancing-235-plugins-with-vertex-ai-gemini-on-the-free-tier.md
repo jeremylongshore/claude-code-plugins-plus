@@ -4,6 +4,7 @@ description: "Building an overnight batch processing system to enhance 235 Claud
 date: "2025-10-19"
 tags: ["vertex-ai", "gemini", "batch-processing", "automation", "rate-limiting", "claude-code", "disaster-recovery", "turso"]
 featured: false
+canonical: "https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/"
 ---
 ## The Problem: 235 Plugins Need Comprehensive Documentation
 

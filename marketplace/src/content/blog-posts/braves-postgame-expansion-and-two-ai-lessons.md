@@ -4,6 +4,7 @@ description: "Two AI product lessons from the Braves dashboard post-game expansi
 date: "2026-04-18"
 tags: ["braves-booth", "llm", "ai-engineering", "product-design", "full-stack", "rss"]
 featured: false
+canonical: "https://startaitools.com/posts/braves-postgame-expansion-and-two-ai-lessons/"
 ---
 A live broadcast tool shouldn't die the moment the final out is recorded. Audiences stick around. They pull up YouTube for the post-game press conference that uploads 20 minutes later. They tune into podcasts, scroll Reddit threads, check what beat reporters and fans are saying on X. Your dashboard should meet them there.
 

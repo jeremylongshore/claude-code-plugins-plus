@@ -4,6 +4,7 @@ description: "A recovery drill that passes green can still be lying. Learn four 
 date: "2026-07-18"
 tags: ["observability", "clickhouse", "disaster-recovery", "backup", "signoz", "testing", "opentelemetry", "restore-verification"]
 featured: false
+canonical: "https://startaitools.com/posts/a-green-recovery-drill-can-still-be-lying/"
 ---
 We had a backup mechanism for a SigNoz staging stack. What we did not have was a *proven* restore. Those are different claims, and the gap between them is where outages become permanent.
 

@@ -4,6 +4,7 @@ description: "Rewrote the universal validator from scratch to match Anthropic's 
 date: "2026-03-21"
 tags: ["claude-code", "architecture", "automation", "release-engineering", "ai-agents", "typescript"]
 featured: false
+canonical: "https://startaitools.com/posts/nuclear-option-day-validator-rewrite-414-plugins/"
 ---
 Some days you file tickets. Some days you refactor a module. March 21st was not one of those days.
 

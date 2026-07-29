@@ -4,6 +4,7 @@ description: "Four PRs, three releases, and a benchmark suite that won't lie to 
 date: "2026-05-17"
 tags: ["typescript", "testing", "architecture", "ci-cd", "ai-agents"]
 featured: false
+canonical: "https://startaitools.com/posts/honest-perf-benchmarks-paid-api-compiler/"
 ---
 `intentional-cognition-os` is a TypeScript "compiler" — markdown sources go in one end, a structured artifact comes out the other, and several of the middle stages call paid Claude APIs to do the cognitive work. Up to today there were zero performance gates on any of it. No baseline, no regression alarm, no "did that refactor make ingest 4× slower" check.
 

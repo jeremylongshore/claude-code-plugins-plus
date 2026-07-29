@@ -4,6 +4,7 @@ description: "How v0.1.0 of guidewire-mcp-for-claude shipped six foundation pack
 date: "2026-05-04"
 tags: ['mcp', 'enterprise-integration', 'guidewire', 'architecture', 'claude-code']
 featured: false
+canonical: "https://startaitools.com/posts/guidewire-mcp-v0-1-0-foundation-ship/"
 ---
 
 [Guidewire MCP for Claude](https://github.com/jeremylongshore/guidewire-mcp-for-claude) v0.1.0 is a carrier-native [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that lets a Claude Code session ask a Guidewire PolicyCenter, BillingCenter, or ClaimCenter tenant questions in the language an underwriter or claims handler would actually use — `find-submissions-waiting-on-me`, `summarize-this-submission`, `did-we-lose-this-account` — instead of the API verbs an integration engineer would reach for. The v0.1.0 cut shipped on 2026-05-04 as 30 merged PRs (+14,521 / -819 lines), comprising six foundation packages, five read-only PolicyCenter tools, a Claude Code plugin manifest, and a live architecture diagram on a custom subdomain. Alongside the code, ~30k words of blueprint documents — business case, PRD, architecture, user journey, technical spec, roadmap — landed in `blueprint/` on the same day. (All 30 merged PRs are visible at [github.com/jeremylongshore/guidewire-mcp-for-claude/pulls?q=is%3Apr+is%3Amerged](https://github.com/jeremylongshore/guidewire-mcp-for-claude/pulls?q=is%3Apr+is%3Amerged).)

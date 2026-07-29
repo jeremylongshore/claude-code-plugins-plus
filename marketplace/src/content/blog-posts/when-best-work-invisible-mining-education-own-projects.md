@@ -4,6 +4,7 @@ description: "The humbling realization that I'd written comprehensive educationa
 date: "2025-10-07"
 tags: ["learning-in-public", "content-strategy", "personal-growth", "career-development"]
 featured: false
+canonical: "https://startaitools.com/posts/when-your-best-work-is-invisible-mining-31kb-of-education-from-my-own-projects/"
 ---
 # When Your Best Work is Invisible
 

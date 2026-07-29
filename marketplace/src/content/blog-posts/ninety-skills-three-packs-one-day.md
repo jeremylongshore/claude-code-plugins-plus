@@ -4,6 +4,7 @@ description: "Building three complete 30-skill SaaS integration packs — Sentry
 date: "2026-03-22"
 tags: ["claude-code", "automation", "architecture", "release-engineering", "ai-agents"]
 featured: false
+canonical: "https://startaitools.com/posts/ninety-skills-three-packs-one-day/"
 ---
 One hundred commits. Three complete SaaS packs. Ninety skills from zero to shipped.
 

@@ -4,6 +4,7 @@ description: "Shipping v1.0.0 of Braves Booth Intelligence — a real-time broad
 date: "2026-04-04"
 tags: ["full-stack", "react", "typescript", "architecture", "debugging", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/braves-booth-v1-release-player-drilldown/"
 ---
 Braves Booth Intelligence is a real-time broadcast operations tool for Atlanta Braves radio. It pulls live game data from MLB's GUMBO API, runs it through narrative generation, and surfaces radio-ready intel — matchup histories, milestone watches, pitching trends, bio nuggets — on a dashboard the broadcast team uses during games.
 

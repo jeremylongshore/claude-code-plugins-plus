@@ -4,6 +4,7 @@ description: "Replacing scattered CSS values with design tokens and realigning t
 date: "2026-03-12"
 tags: ["web-development", "claude-code", "architecture", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/design-tokens-and-validator-parity-marketplace-foundations/"
 ---
 Five commits today. No new features. Just foundations.
 

@@ -4,6 +4,7 @@ description: "Distributed Systems Architecture Patterns Cheat Sheet"
 date: "2025-01-13"
 tags: ["start-ai-tools"]
 featured: false
+canonical: "https://startaitools.com/posts/distributed-systems-architecture-patterns-cheat-sheet/"
 ---
 <p>A quick reference guide for distributed systems architecture patterns, covering when to use each pattern and the classic problems they solve.</p>
 <h2 id="distributed-systems-architecture-patterns-cheat-sheet">

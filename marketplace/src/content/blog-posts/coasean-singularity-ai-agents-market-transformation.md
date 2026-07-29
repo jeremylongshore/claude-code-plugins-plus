@@ -4,6 +4,7 @@ description: "Analysis of groundbreaking NBER research on how autonomous AI agen
 date: "2025-10-24"
 tags: ["ai-agents", "economics", "market-design", "transaction-costs", "nber-research"]
 featured: false
+canonical: "https://startaitools.com/posts/the-coasean-singularity-how-ai-agents-will-transform-digital-markets/"
 ---
 ## Executive Summary
 

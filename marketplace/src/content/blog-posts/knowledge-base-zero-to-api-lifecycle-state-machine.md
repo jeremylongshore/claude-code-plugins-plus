@@ -4,6 +4,7 @@ description: "Building a team knowledge base with lifecycle state machines, poli
 date: "2026-03-18"
 tags: ["typescript", "architecture", "full-stack", "automation", "monorepo"]
 featured: false
+canonical: "https://startaitools.com/posts/knowledge-base-zero-to-api-lifecycle-state-machine/"
 ---
 Most knowledge bases are wikis with a search box. Articles go in, articles rot, nobody notices. The problem isn't storage. It's governance.
 

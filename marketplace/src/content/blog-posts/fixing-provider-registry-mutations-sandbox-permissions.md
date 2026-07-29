@@ -4,6 +4,7 @@ description: "How a mutable global registry caused shared state corruption acros
 date: "2026-02-15"
 tags: ["debugging", "typescript", "zod", "registry-pattern", "sandbox", "git-with-intent"]
 featured: false
+canonical: "https://startaitools.com/posts/fixing-provider-registry-mutations-sandbox-permissions/"
 ---
 ## The Bug: Global State Corruption
 

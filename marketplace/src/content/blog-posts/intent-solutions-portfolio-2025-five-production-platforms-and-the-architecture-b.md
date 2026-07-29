@@ -4,6 +4,7 @@ description: "Intent Solutions Portfolio 2025: Five Production Platforms and the
 date: "2025-10-20"
 tags: ["start-ai-tools"]
 featured: false
+canonical: "https://startaitools.com/posts/intent-solutions-portfolio-2025-five-production-platforms-and-the-architecture-behind-4-day-deployments/"
 ---
 <p>When you see “deploy in days, not months,” it sounds like marketing fluff. This is the technical breakdown of how Intent Solutions actually does it—with five production platforms serving real customers, measurable cost optimization, and architecture patterns you can replicate.</p>
 <h2 id="the-portfolio-five-production-platforms">The Portfolio: Five Production Platforms</h2>

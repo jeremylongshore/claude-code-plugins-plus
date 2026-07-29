@@ -4,6 +4,7 @@ description: "How we systematically applied master directory standards to organi
 date: "2025-10-08"
 tags: ["directory-structure", "organization", "standards", "automation", "taskwarrior", "github-workflows", "qa-testing"]
 featured: false
+canonical: "https://startaitools.com/posts/applying-universal-directory-standards-to-a-prompt-engineering-repository/"
 ---
 ## The Problem: Inconsistent File Naming Across Master Systems
 

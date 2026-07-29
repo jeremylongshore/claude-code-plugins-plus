@@ -4,6 +4,7 @@ description: "A 41-gate anti-slop framework shipped v0.1.0, then found three sil
 date: "2026-05-03"
 tags: ["oss-contribution", "bash", "gh-cli", "yaml", "silent-failures", "release-engineering", "claude-code-skills"]
 featured: false
+canonical: "https://startaitools.com/posts/anti-slop-framework-found-three-bugs-inside-itself/"
 ---
 A framework whose entire purpose is to catch silent failures in AI-generated OSS contributions is the worst possible place to host silent failures. That tension is the spine of this case study. The framework in question is `contributing-clanker`, an installable Claude Code skill that walks an OSS contribution lifecycle through 41 deterministic gates spanning seven phases and 62 enumerated AI-slop failure modes. It shipped at v0.1.0 around 20:20 local time. By the end of the same day it was at v0.1.2 — because the first real qualifying flow against a third-party upstream (`secureblue/secureblue#2138`) surfaced **three categorically named bash/CLI silent-failure modes** inside the framework itself, plus a minor scoping bug already patched in v0.1.1.
 

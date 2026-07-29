@@ -4,6 +4,7 @@ description: "A no-mocks testcontainers policy caught two production-fatal Postg
 date: "2026-05-05"
 tags: ["postgres", "testing", "testcontainers", "architecture", "ci-cd", "authentication", "typescript"]
 featured: false
+canonical: "https://startaitools.com/posts/postgres-approval-sink-bugs-the-tests-caught/"
 ---
 ## Thesis
 

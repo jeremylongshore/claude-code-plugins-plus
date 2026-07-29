@@ -4,6 +4,7 @@ description: "scorecardecho.com shipped the Vite dev server to every visitor. Th
 date: "2026-05-27"
 tags: ["vite", "docker", "production", "diagnostics", "frontend"]
 featured: false
+canonical: "https://startaitools.com/posts/vite-dev-server-in-production-the-871-byte-tell/"
 ---
 
 ## The 871-byte tell

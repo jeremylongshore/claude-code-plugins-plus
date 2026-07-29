@@ -4,6 +4,7 @@ description: "Three quick fixes across three repos — a missing env var that br
 date: "2026-04-12"
 tags: ["devops", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/groq-cloud-run-env-star-refresh/"
 ---
 Production was calling Vertex AI. It was supposed to call Groq.
 

@@ -4,6 +4,7 @@ description: "A tactical breakdown of contributing to Google's agent-starter-pac
 date: "2025-12-11"
 tags: ["adk", "google-cloud", "vertex-ai", "open-source", "agent-development-kit"]
 featured: false
+canonical: "https://startaitools.com/posts/how-to-get-your-adk-agent-into-googles-official-community-showcase/"
 ---
 # How to Get Your ADK Agent into Google's Official Community Showcase
 

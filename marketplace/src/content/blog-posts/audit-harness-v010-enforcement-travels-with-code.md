@@ -4,6 +4,7 @@ description: "Testing policy enforcement that lives in ~/.claude/ cannot travel 
 date: "2026-04-21"
 tags: ["testing", "ci-cd", "architecture", "release-engineering", "devops", "automation", "monorepo", "typescript"]
 featured: false
+canonical: "https://startaitools.com/posts/audit-harness-v010-enforcement-travels-with-code/"
 ---
 Testing policy that lives in `~/.claude/` is testing policy that dies on a fresh clone.
 

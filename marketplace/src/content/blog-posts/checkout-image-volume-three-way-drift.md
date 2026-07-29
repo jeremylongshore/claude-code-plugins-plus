@@ -4,6 +4,7 @@ description: "A rebuild succeeded and nothing changed. How Docker named volumes 
 date: "2026-07-26"
 tags: ["deployment", "docker", "ci", "devops", "named-volumes", "smoke-testing", "verification"]
 featured: false
+canonical: "https://startaitools.com/posts/checkout-image-volume-three-way-drift/"
 ---
 A rebuild succeeded. Docker reported healthy. The site served the same bytes it had been serving for weeks.
 

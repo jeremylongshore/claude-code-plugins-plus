@@ -4,6 +4,7 @@ description: "A real-world walkthrough of diagnosing uncommitted changes, applyi
 date: "2025-10-03"
 tags: ["github", "release-management", "version-control", "git-workflow", "semantic-versioning", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/github-release-workflow-when-yesterdays-updates-arent-public-and-how-we-fixed-it/"
 ---
 ## The Question That Started Everything
 

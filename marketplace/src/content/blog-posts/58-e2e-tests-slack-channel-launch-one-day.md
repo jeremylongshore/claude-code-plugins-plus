@@ -4,6 +4,7 @@ description: "How REST API auth plus IndexedDB injection unlocked 58 production 
 date: "2026-03-20"
 tags: ["testing", "ci-cd", "typescript", "automation", "claude-code", "full-stack"]
 featured: false
+canonical: "https://startaitools.com/posts/58-e2e-tests-slack-channel-launch-one-day/"
 ---
 You cannot run production E2E tests if you cannot log in. That sentence sounds obvious. It took sixteen commits to solve.
 

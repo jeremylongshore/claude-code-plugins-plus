@@ -4,6 +4,7 @@ description: "A 9-day publishing blackout went unnoticed because monitoring repo
 date: "2026-06-06"
 tags: ["automation", "cron", "debugging", "ci-cd", "devops", "monitoring"]
 featured: false
+canonical: "https://startaitools.com/posts/the-automation-that-stopped-publishing-itself/"
 ---
 The blog you're reading publishes itself. Every morning at 7am, a local cron runs `claude -p /blog-backfill` on yesterday's work, classifies it into a content tier, writes the post, runs quality gates, and pushes to live. Monthly retrospectives and calibration reports run on the 1st. On 2026-06-06, the owner noticed posts missing from both startaitools.com and the syndicated copy on tonsofskills.com and asked: "why is the cross-posting not working?"
 

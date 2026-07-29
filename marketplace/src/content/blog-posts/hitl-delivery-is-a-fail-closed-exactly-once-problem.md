@@ -4,6 +4,7 @@ description: "Human-in-the-loop agent delivery is exactly-once, fail-closed. Two
 date: "2026-06-07"
 tags: ["ai-agents", "typescript", "architecture", "slack", "distributed-systems"]
 featured: false
+canonical: "https://startaitools.com/posts/hitl-delivery-is-a-fail-closed-exactly-once-problem/"
 ---
 Two repos. One missing guarantee.
 

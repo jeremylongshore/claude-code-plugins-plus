@@ -4,6 +4,7 @@ description: "Fixing Claude Code Hooks: The New Matcher Format"
 date: "2026-02-04"
 tags: ["claude-code", "debugging", "configuration", "hooks"]
 featured: false
+canonical: "https://startaitools.com/posts/fixing-claude-code-hooks-the-new-matcher-format/"
 ---
 Claude Code recently changed their hooks format, and if you haven't updated your project settings, you'll see this cryptic error:
 

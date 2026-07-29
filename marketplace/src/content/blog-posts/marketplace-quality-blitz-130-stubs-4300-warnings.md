@@ -4,6 +4,7 @@ description: "Replacing 130 empty SKILL.md stubs with real content, fixing 4300+
 date: "2026-03-10"
 tags: ["claude-code", "automation", "ci-cd", "web-development", "ai-agents"]
 featured: false
+canonical: "https://startaitools.com/posts/marketplace-quality-blitz-130-stubs-4300-warnings/"
 ---
 130 plugins had SKILL.md files that said nothing.
 

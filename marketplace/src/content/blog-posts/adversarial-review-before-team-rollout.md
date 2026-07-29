@@ -4,6 +4,7 @@ description: "A six-lens adversarial review checked a team knowledge system agai
 date: "2026-07-09"
 tags: ["ai-agents", "security", "architecture", "authentication", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/adversarial-review-before-team-rollout/"
 ---
 "We shipped the safety work" is a feeling, not a fact. Before you hand a shared, governed system to a team, the only thing that converts that feeling into the truth is a structured adversarial review that verifies claims against live state — not against the design doc, and not against the diff.
 

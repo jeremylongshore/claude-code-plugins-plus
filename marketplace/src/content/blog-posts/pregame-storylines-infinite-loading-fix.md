@@ -4,6 +4,7 @@ description: "The pregame view showed 'Generating storylines...' forever when th
 date: "2026-04-10"
 tags: ["debugging", "typescript", "full-stack", "python"]
 featured: false
+canonical: "https://startaitools.com/posts/pregame-storylines-infinite-loading-fix/"
 ---
 The Braves Booth pregame view had a spinner that never stopped spinning.
 

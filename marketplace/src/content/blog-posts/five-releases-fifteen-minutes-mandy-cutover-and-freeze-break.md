@@ -4,6 +4,7 @@ description: "A mandy dashboard cutover surfaced four cross-layer deploy gotchas
 date: "2026-05-02"
 tags: ["release-engineering", "devops", "systemd", "ci-cd", "monorepo"]
 featured: false
+canonical: "https://startaitools.com/posts/five-releases-fifteen-minutes-mandy-cutover-and-freeze-break/"
 ---
 Two release cadences collided on the same day. One was a thoughtful CI redesign that finally broke a four-month npm publish freeze across 400+ packages — good engineering, well-trodden ground. The other was a fifteen-minute production firefight on `mandy.intentsolutions.io` that surfaced four cross-layer deploy gotchas you would never know to look for until they hit you. Five releases in fifteen minutes, six commits, four production fixes, and a sixth release for the next layer of the system. The firefight is the one worth keeping in your runbook.
 

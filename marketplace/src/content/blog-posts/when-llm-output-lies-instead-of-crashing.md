@@ -4,6 +4,7 @@ description: "An LLM-output parsing bug silently understated a cost report via c
 date: "2026-06-27"
 tags: ["python", "claude-code", "ai-agents", "debugging", "databricks"]
 featured: false
+canonical: "https://startaitools.com/posts/when-llm-output-lies-instead-of-crashing/"
 ---
 Yesterday's post established that the LLM should never do the math—the `databricks-cost-leak-hunter` skill computes confirmed dollars via a SQL join to the customer's billing tables, not estimates. Bulletproof arithmetic.
 

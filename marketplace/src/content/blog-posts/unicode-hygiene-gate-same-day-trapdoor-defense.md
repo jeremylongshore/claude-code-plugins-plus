@@ -4,6 +4,7 @@ description: "Schema validation can't see invisible Unicode. A stdlib-only CI ga
 date: "2026-05-24"
 tags: ["ci-cd", "python", "security", "claude-code", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/unicode-hygiene-gate-same-day-trapdoor-defense/"
 ---
 A schema validator reads parsed structure. It never sees the bytes.
 

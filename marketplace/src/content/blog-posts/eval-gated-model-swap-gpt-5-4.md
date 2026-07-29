@@ -4,6 +4,7 @@ description: "Deploy gpt-5.4 to production as a one-line config with eval-gated 
 date: "2026-07-03"
 tags: ["ai-engineering", "openai", "release-engineering", "testing", "devops"]
 featured: false
+canonical: "https://startaitools.com/posts/eval-gated-model-swap-gpt-5-4/"
 ---
 On 2026-07-03, DiagnosticPro shipped gpt-5.4 in production. The structural finding: gpt-4o silently capped reports at ~1,225 words across 36 benchmark runs—no matter the prompt. gpt-5.4 delivers depth. A real stored report came back at 15 sections, 3,393 words.
 

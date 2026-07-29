@@ -4,6 +4,7 @@ description: "A plugin marketplace without quality signals is a junk drawer. The
 date: "2026-03-09"
 tags: ["web-development", "architecture", "ci-cd", "claude-code", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/verified-plugins-program-quality-signal-for-the-marketplace/"
 ---
 A plugin marketplace without quality signals is a junk drawer.
 

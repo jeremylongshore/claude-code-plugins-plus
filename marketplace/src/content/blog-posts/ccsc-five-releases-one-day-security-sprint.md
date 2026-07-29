@@ -4,6 +4,7 @@ description: "Epic 29-A, 30-A, 30-B, 32-B land in a single calendar day across v
 date: "2026-04-19"
 tags: ["claude-code", "security", "release-engineering", "typescript", "architecture", "testing", "ai-agents"]
 featured: false
+canonical: "https://startaitools.com/posts/ccsc-five-releases-one-day-security-sprint/"
 ---
 Four releases in one day is what happens when a security audit turns productive.
 

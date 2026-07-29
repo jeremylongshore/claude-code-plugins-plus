@@ -4,6 +4,7 @@ description: "Postmortem on a schema validator debacle: when a stricter enterpri
 date: "2026-04-28"
 tags: ["architecture", "claude-code", "release-engineering", "devops", "schema-design"]
 featured: false
+canonical: "https://startaitools.com/posts/schema-debacle-rubric-on-spec-postmortem/"
 ---
 When you author a stricter enterprise rubric on top of a permissive open spec, the rubric must sit additive on top of the spec — not replace its required-field set with the spec's floor. Demoting required-field errors to warnings to "realign with the underlying spec" breaks the marketplace gate it was built to enforce.
 

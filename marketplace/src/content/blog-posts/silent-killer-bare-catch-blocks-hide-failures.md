@@ -4,6 +4,7 @@ description: "A real-world case study from a live AI-powered CAD DXF editor: how
 date: "2026-02-25"
 tags: ["debugging", "javascript", "python", "fastapi", "react", "web-development", "cad", "ai", "error-handling"]
 featured: false
+canonical: "https://startaitools.com/posts/silent-killer-bare-catch-blocks-hide-failures/"
 ---
 There's a category of bug that I find genuinely maddening: the kind where the system *works* — no exceptions thrown, no 500 errors logged, CI is green — but the user never sees the output they're supposed to see.
 

@@ -4,6 +4,7 @@ description: "Phase 2 of the marketplace facelift brings monospace headings and 
 date: "2026-03-14"
 tags: ["web-development", "claude-code", "testing", "css"]
 featured: false
+canonical: "https://startaitools.com/posts/terminal-bold-redesign-and-eval-recall-fix/"
 ---
 Yesterday was OKLCH. Today is what you do with it.
 

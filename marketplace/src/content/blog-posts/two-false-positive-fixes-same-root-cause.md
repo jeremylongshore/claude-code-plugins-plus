@@ -4,6 +4,7 @@ description: "Two separate false-positive alerts, same root cause: monitoring co
 date: "2026-05-11"
 tags: ["docker", "healthchecks", "monitoring", "ci-cd", "observability", "production-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/two-false-positive-fixes-same-root-cause/"
 ---
 Two separate monitoring failures on the same day, same root cause. Both fixed by answering a single question: "Am I testing for health, or am I testing for perfect conditions?" The distinction matters because perfect conditions are temporary, and health is structural. And once you see the pattern once, you see it everywhere.
 

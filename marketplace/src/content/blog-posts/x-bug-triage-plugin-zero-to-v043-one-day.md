@@ -4,6 +4,7 @@ description: "A brand-new MCP plugin that triages X/Twitter bug reports shipped 
 date: "2026-03-23"
 tags: ["ai-agents", "typescript", "testing", "architecture", "claude-code", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/x-bug-triage-plugin-zero-to-v043-one-day/"
 ---
 Thirteen releases. Ten epics. Eighty-nine tests. Four extracted sub-agent skills. One day.
 

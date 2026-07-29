@@ -4,6 +4,7 @@ description: "Pre-warming AI narratives so viewers never see spinners, feeding s
 date: "2026-04-17"
 tags: ["braves-booth", "llm", "claude-code-plugins", "open-source", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/braves-prewarm-narratives-plus-cc-plugins-community-pr/"
 ---
 Two repos, two small wins.
 

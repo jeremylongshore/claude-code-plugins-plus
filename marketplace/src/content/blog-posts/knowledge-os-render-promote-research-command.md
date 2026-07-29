@@ -4,6 +4,7 @@ description: "intentional-cognition-os ships Epics 8 and 9 — a Marp slide deck
 date: "2026-04-08"
 tags: ["ai-agents", "typescript", "testing", "architecture", "release-engineering", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/knowledge-os-render-promote-research-command/"
 ---
 Three days ago ICO was at v0.1.5. Today it's at v0.4.0. Two epics landed, three releases shipped, and the test count nearly tripled.
 

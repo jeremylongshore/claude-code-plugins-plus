@@ -4,6 +4,7 @@ description: "qmd-team-intent-kb ships v0.2.0 and v0.3.0 in one day — freshnes
 date: "2026-03-19"
 tags: ["typescript", "architecture", "release-engineering", "ai-agents", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/governed-knowledge-two-releases-freshness-daemon/"
 ---
 Yesterday we built the knowledge base from zero to API. Today we shipped it twice.
 

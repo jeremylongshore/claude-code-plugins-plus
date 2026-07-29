@@ -4,6 +4,7 @@ description: "Four PRs, 5000+ lines, 1875 tests. How to compare two versions of 
 date: "2026-02-26"
 tags: ["ai-agents", "python", "testing", "architecture", "cad"]
 featured: false
+canonical: "https://startaitools.com/posts/deterministic-dxf-comparison-engine-one-day-build/"
 ---
 How do you compare two versions of an engineering drawing when one has been translated, rotated, or just has slightly different coordinate precision?
 

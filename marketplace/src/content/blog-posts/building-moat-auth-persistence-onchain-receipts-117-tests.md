@@ -4,6 +4,7 @@ description: "How I built a policy-enforced execution layer for AI agents with H
 date: "2026-02-21"
 tags: ["security", "authentication", "testing", "python", "ci-cd", "blockchain", "proxy"]
 featured: false
+canonical: "https://startaitools.com/posts/building-moat-auth-persistence-onchain-receipts-117-tests/"
 ---
 ## What Moat Does
 

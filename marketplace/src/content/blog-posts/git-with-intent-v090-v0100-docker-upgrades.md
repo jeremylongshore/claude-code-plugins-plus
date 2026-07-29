@@ -4,6 +4,7 @@ description: "Two releases in one week: Docker Node 22 LTS upgrades across 7 ser
 date: "2026-02-19"
 tags: ["release-engineering", "docker", "node-22", "documentation", "developer-experience", "git-with-intent"]
 featured: false
+canonical: "https://startaitools.com/posts/git-with-intent-v090-v0100-docker-upgrades/"
 ---
 ## Two Releases in a Week
 

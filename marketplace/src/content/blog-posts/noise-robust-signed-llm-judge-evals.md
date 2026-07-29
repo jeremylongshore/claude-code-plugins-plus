@@ -4,6 +4,7 @@ description: "An un-seeded LLM judge is a coin flip even at temperature 0. How w
 date: "2026-07-07"
 tags: ["ai-agents", "evals", "llm-as-judge", "testing", "provenance", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/noise-robust-signed-llm-judge-evals/"
 ---
 An un-seeded LLM judge is nondeterministic even at temperature 0. So a single-call binary verdict is a coin flip. And when you sign that verdict into a public transparency log, you have cryptographically attested one noisy draw as if it were ground truth.
 

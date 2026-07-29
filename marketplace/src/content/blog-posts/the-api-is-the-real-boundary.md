@@ -4,6 +4,7 @@ description: "Per-user tokens, a server-side write gate, and a separate access l
 date: "2026-06-13"
 tags: ["authentication", "ai-agents", "architecture", "typescript", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/the-api-is-the-real-boundary/"
 ---
 A single shared API key is fine right up until a second person uses it.
 

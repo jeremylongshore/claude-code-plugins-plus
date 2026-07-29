@@ -4,6 +4,7 @@ description: "40+ commits across 4 repos. CAD entity selection gets real boundin
 date: "2026-03-24"
 tags: ["ai-agents", "python", "testing", "architecture", "claude-code", "debugging", "full-stack", "react"]
 featured: false
+canonical: "https://startaitools.com/posts/usable-not-just-functional-four-repos-40-commits/"
 ---
 Functional is table stakes. Usable is the moat.
 

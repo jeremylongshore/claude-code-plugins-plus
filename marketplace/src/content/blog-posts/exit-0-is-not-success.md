@@ -4,6 +4,7 @@ description: "A green exit code can hide a dead job. Intent-OS automation assura
 date: "2026-07-14"
 tags: ["automation", "devops", "observability", "ci-cd", "architecture", "testing"]
 featured: false
+canonical: "https://startaitools.com/posts/exit-0-is-not-success/"
 ---
 A cron that exits zero and produces nothing is not healthy. It is a silent failure wearing a green badge.
 

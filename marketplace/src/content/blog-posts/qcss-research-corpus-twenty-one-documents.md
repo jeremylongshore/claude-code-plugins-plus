@@ -4,6 +4,7 @@ description: "4000+ lines across 21 documents — invention disclosure, 6-paper 
 date: "2026-04-13"
 tags: ["architecture", "ai-engineering", "claude-code", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/qcss-research-corpus-twenty-one-documents/"
 ---
 Every vector search system you have ever used assumes the same thing: that someone already ran every document through an embedding model and stored the results. For most workloads, that assumption is fine. For some, it is fatal.
 

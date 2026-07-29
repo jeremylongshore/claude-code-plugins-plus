@@ -4,6 +4,7 @@ description: "A 5-device parity sweep against kobiton/automate showed iOS screen
 date: "2026-05-11"
 tags: ["claude-code", "mcp", "agents-md", "plugins", "mobile-testing", "kobiton", "parity", "devops", "appium"]
 featured: false
+canonical: "https://startaitools.com/posts/agents-md-cross-tool-plugin-brief/"
 ---
 # AGENTS.md as a Cross-Tool Plugin Brief: A Case Study from kobiton/automate
 

@@ -4,6 +4,7 @@ description: "A retrieval test asserted every relevance score sits in [0,1] — 
 date: "2026-07-05"
 tags: ["testing", "python", "rag", "debugging", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/relevance-score-broke-cite-or-refuse-gate/"
 ---
 A test you write to satisfy an audit can catch a correctness bug that has been silently shipping in production. That's what happened in our local RAG system: a vector-retrieval assertion failed on a live relevance score of -1.83 — and that out-of-range score was silently corrupting the exact cite-or-refuse safety gate the system was built to defend.
 

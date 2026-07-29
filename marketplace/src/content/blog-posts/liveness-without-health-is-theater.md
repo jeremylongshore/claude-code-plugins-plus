@@ -4,6 +4,7 @@ description: "A heartbeat that fires on every run proves a job ran, never that i
 date: "2026-07-10"
 tags: ["monitoring", "reliability", "devops", "observability", "cron"]
 featured: false
+canonical: "https://startaitools.com/posts/liveness-without-health-is-theater/"
 ---
 Every team that runs scheduled work eventually ships the same bug, and it does
 not look like a bug. A cron job, a nightly workflow, a backup timer — something

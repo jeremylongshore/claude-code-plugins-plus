@@ -4,6 +4,7 @@ description: "A domain migration saga with two reverts, a broadcast dashboard hi
 date: "2026-03-03"
 tags: ["devops", "web-development", "ci-cd", "full-stack", "firebase"]
 featured: false
+canonical: "https://startaitools.com/posts/three-projects-two-reverts-one-day/"
 ---
 Nothing teaches you Firebase Hosting like renaming your domain three times before lunch.
 

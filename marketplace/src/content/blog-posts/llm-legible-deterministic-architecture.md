@@ -4,6 +4,7 @@ description: "You can ship a dozen good mechanisms and still have no architectur
 date: "2026-07-23"
 tags: ["architecture", "ai-agents", "claude-code", "devops"]
 featured: false
+canonical: "https://startaitools.com/posts/llm-legible-deterministic-architecture/"
 ---
 You can accumulate a dozen genuinely good mechanisms and still not have an architecture.
 

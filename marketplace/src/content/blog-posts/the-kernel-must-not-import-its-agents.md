@@ -4,6 +4,7 @@ description: "We extracted a stateful watcher agent from a governance kernel and
 date: "2026-07-12"
 tags: ["architecture", "agents", "dependency-management", "governance", "refactoring"]
 featured: false
+canonical: "https://startaitools.com/posts/the-kernel-must-not-import-its-agents/"
 ---
 There is a moment in the life of every framework where an application-shaped thing has grown up inside it. It started as a demo, a reference implementation, a "let's just prove the primitives work" spike. Then it kept running. Now it has cron entries, an operator surface, a test pack, and traceability rows — and it lives in the same repository as the primitives it was only ever meant to exercise.
 

@@ -4,6 +4,7 @@ description: "How we architected and deployed a massive 254-table BigQuery schem
 date: "2025-09-08"
 tags: ["bigquery", "data-architecture", "google-cloud-platform", "python", "data-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/building-a-254-table-bigquery-schema-in-72-hours/"
 ---
 ## The Challenge: Zero to Production in 72 Hours
 

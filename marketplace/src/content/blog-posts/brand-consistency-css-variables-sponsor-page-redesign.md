@@ -4,6 +4,7 @@ description: "How to migrate a sponsor page from inconsistent hardcoded colors t
 date: "2025-12-02"
 tags: ["css", "design-systems", "frontend", "astro", "branding", "web-development"]
 featured: false
+canonical: "https://startaitools.com/posts/implementing-brand-consistency-with-css-variables-a-sponsor-page-redesign/"
 ---
 When your sponsor page looks like it belongs to a different website than your homepage, you have a brand consistency problem. Here's how I fixed it—and what I learned about the iterative process of design system migration.
 

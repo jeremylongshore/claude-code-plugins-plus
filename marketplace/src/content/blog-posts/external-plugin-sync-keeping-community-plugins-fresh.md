@@ -4,6 +4,7 @@ description: "How we built daily automated sync infrastructure to keep community
 date: "2026-01-03"
 tags: ["claude-code", "automation", "github-actions", "open-source", "plugin-marketplace"]
 featured: false
+canonical: "https://startaitools.com/posts/building-external-plugin-sync-how-we-keep-258-community-plugins-fresh/"
 ---
 ## The Problem: Static Forks Go Stale
 
