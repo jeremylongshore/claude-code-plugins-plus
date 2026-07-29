@@ -50,16 +50,27 @@ function trackedFiles() {
 function computeStats(catalog) {
   const plugins = (catalog.plugins || []).length;
   const files = trackedFiles();
-  const skills = files.filter(
-    (f) =>
-      (f.startsWith('plugins/') || f.startsWith('skills/')) &&
-      // skills/.curated/ is a GENERATED mirror of the best plugin skills (for
-      // skills.sh discovery — see freshie/scripts/promote-to-curated.py), not
-      // new skills. Exclude it so the headline count stays honest (a mirror
-      // copy is already counted via its plugins/** source).
-      !f.startsWith('skills/.curated/') &&
-      f.endsWith('/SKILL.md'),
-  ).length;
+  // The skills badge links to https://tonsofskills.com/skills, so it must not
+  // count skills that page cannot show. Counted from plugins/** ONLY:
+  //   - skills/.curated/ is a GENERATED mirror of the best plugin skills
+  //     (freshie/scripts/promote-to-curated.py) — already counted via its
+  //     plugins/** source.
+  //   - skills/NN-*/ is a root curriculum tree (01-devops-basics … 20 dirs,
+  //     500 SKILL.md) the marketplace does NOT index. Verified live:
+  //     /skills/01-devops-basics/ returns 404. Including it overstated the
+  //     badge by 500 against its own link target.
+  //
+  // Deliberately a git-tracked-file count, NOT a read of
+  // marketplace/src/data/unified-search-index.json. That artifact is committed
+  // but regenerated per build, so a --check gate reading it compares a stale
+  // committed value (3,008) against a fresh local one (3,069) and CI disagrees
+  // with the developer — which is exactly how this change first failed CI.
+  // git ls-files is byte-identical in CI and locally.
+  //
+  // Residual: ~110 skills (3.6%) that discovery excludes are still counted.
+  // Closing that would mean replicating discovery's exclusion list in a second
+  // place, which is what let these two counts diverge to begin with.
+  const skills = files.filter((f) => f.startsWith('plugins/') && f.endsWith('/SKILL.md')).length;
   const agents = files.filter(
     (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),
   ).length;
