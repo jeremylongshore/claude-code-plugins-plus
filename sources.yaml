@@ -1745,6 +1745,42 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Cohesivity (Shouryamaan Jain)
+  # https://github.com/cohesivity-org/cohesivity-plugin
+  # Submission: #1143
+  # ============================================================
+
+  - name: cohesivity
+    description: Agent-provisioned backend infrastructure. Postgres, hosting, auth, storage, realtime, email, and AI model APIs over one API. Ephemeral tenants are free and need no signup.
+    repo: cohesivity-org/cohesivity-plugin
+    source_path: .
+    target_path: plugins/devops/cohesivity
+    author:
+      name: Cohesivity
+      github: shouryamaanjain
+      email: smj@cohesivity.ai
+    license: MIT
+    category: devops
+    verified: false
+    keywords:
+      - backend
+      - infrastructure
+      - database
+      - hosting
+      - auth
+    include:
+      - '/.claude-plugin/plugin.json'
+      - '/.claude-plugin/marketplace.json'
+      - '/skills/cohesivity/SKILL.md'
+      - '/skills/cohesivity/references/**'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
