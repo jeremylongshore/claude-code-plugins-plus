@@ -4,6 +4,7 @@ description: "Groq quota died 44 minutes before a live broadcast. The fix was a 
 date: "2026-04-29"
 tags: ["ai-agents", "ai-engineering", "architecture", "claude-code", "devops", "sports"]
 featured: false
+canonical: "https://startaitools.com/posts/broadcast-day-llm-fallback-jchads-challenge/"
 ---
 ## TL;DR
 

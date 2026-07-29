@@ -4,6 +4,7 @@ description: "A complete walkthrough of implementing COPPA-compliant legal frame
 date: "2025-10-08"
 tags: ["compliance", "coppa", "legal", "nextjs", "prisma", "cloud-run", "database-migrations", "production", "deployment"]
 featured: false
+canonical: "https://startaitools.com/posts/making-a-youth-sports-app-coppa-compliant-the-real-process-from-question-to-production/"
 ---
 When you're building an app that tracks data for children under 13, there's a moment where you realize: this needs to be legally bulletproof before it sees a single real user. For Hustle, our youth soccer statistics tracking platform, that moment came today.
 

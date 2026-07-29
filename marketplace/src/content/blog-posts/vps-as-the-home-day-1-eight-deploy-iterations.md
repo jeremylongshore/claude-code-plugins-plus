@@ -4,6 +4,7 @@ description: "8 GitHub Actions iterations to land Tailscale OIDC + a cross-repo 
 date: "2026-05-01"
 tags: ["devops", "ci-cd", "release-engineering", "tailscale", "github-actions", "infrastructure"]
 featured: false
+canonical: "https://startaitools.com/posts/vps-as-the-home-day-1-eight-deploy-iterations/"
 ---
 Day 1 of VPS-as-the-Home was the launch of a 9-priority program: consolidate Intent Solutions hosting onto a single Contabo VPS, execute the GCP exodus, and harden every active repo's deploy posture. The deploy pipeline cost 8 GitHub Actions run iterations across two priorities to land what should have been one. The plan-v4.1 rewrite — adding testing as a first-class requirement after the user surfaced that `cd <random-repo> && git push` should "just work" — was the discipline that survived contact with reality.
 

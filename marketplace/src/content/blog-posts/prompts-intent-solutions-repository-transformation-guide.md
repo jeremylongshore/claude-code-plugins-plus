@@ -4,6 +4,7 @@ description: "Complete transformation guide: How we turned a cluttered prompt co
 date: "2025-10-02"
 tags: ["repository-management", "prompt-engineering", "github-pages", "automation", "ai-development", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/repository-transformation-from-chaos-to-professional-prompt-engineering-toolkit/"
 ---
 ## Executive Summary
 

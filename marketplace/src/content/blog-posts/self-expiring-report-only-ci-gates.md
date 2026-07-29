@@ -4,6 +4,7 @@ description: "How a meta-gate enforces deadline-driven CI hardening without free
 date: "2026-05-23"
 tags: ["ci", "devops", "github-actions", "linting", "code-quality"]
 featured: false
+canonical: "https://startaitools.com/posts/self-expiring-report-only-ci-gates/"
 ---
 Advisory CI gates are where good intentions go to die. A team adds a linter "in warning mode for now," and "for now" becomes forever. The violations scroll past in PR reviews, nobody cleans them, the gate never goes blocking. Six months later the warnings are archaeological noise.
 

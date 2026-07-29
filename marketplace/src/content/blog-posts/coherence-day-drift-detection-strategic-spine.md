@@ -4,6 +4,7 @@ description: "Why scattered Plane issues, beads, docs, and partner portals silen
 date: "2026-05-08"
 tags: ["claude-code", "architecture", "ai-agents", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/coherence-day-drift-detection-strategic-spine/"
 ---
 A sprawling multi-surface engagement (Kobiton partner pilot, 4 months, three deliverable rounds) exposed a silent failure mode: drift doesn't announce itself. A title rename on Plane goes unnoticed when the canonical source doc still has the old framing. A partner-portal deliverable gets updated before the source file does, leaving future sessions reading stale context from what should be source-of-truth.
 

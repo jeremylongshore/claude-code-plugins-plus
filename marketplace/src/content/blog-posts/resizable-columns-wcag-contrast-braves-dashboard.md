@@ -4,6 +4,7 @@ description: "Adding drag-to-resize panels and fixing WCAG AA contrast ratios on
 date: "2026-04-07"
 tags: ["react", "full-stack", "web-development", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/resizable-columns-wcag-contrast-braves-dashboard/"
 ---
 Light day. Two PRs merged on Braves Booth Intelligence, both polish work. No new features, no new endpoints. Just making the existing dashboard better for the people who actually use it during live broadcasts.
 

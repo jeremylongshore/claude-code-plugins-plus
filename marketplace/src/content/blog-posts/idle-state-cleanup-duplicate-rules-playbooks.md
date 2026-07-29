@@ -4,6 +4,7 @@ description: "Maintenance sweep across four repos: braves idle-state trim, claud
 date: "2026-04-22"
 tags: ["typescript", "python", "ci-cd", "claude-code", "devops", "full-stack"]
 featured: false
+canonical: "https://startaitools.com/posts/idle-state-cleanup-duplicate-rules-playbooks/"
 ---
 A maintenance day across four repos — broadcast tooling, policy engine, marketplace, and a renamed agent. Each fix small, together readable in a minute.
 

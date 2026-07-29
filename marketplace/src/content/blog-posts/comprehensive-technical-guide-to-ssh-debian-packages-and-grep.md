@@ -4,6 +4,7 @@ description: "Comprehensive Technical Guide to SSH, Debian Packages, and Grep"
 date: "2025-01-13"
 tags: ["start-ai-tools"]
 featured: false
+canonical: "https://startaitools.com/posts/comprehensive-technical-guide-to-ssh-debian-packages-and-grep/"
 ---
 <p><em>This comprehensive technical guide was developed with assistance from ScholarGPT and GPT-5, providing graduate-level coverage of essential Linux administration tools.</em></p>
 <h2 id="-comprehensive-technical-guide-to-ssh-debian-packages-and-grep">

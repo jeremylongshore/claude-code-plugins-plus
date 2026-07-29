@@ -4,6 +4,7 @@ description: "How a subtle Python import path difference caused isinstance() to 
 date: "2025-12-12"
 tags: ["python", "ci-cd", "debugging", "testing", "devops", "adk", "google-cloud"]
 featured: false
+canonical: "https://startaitools.com/posts/python-class-identity-mismatch-the-ci-bug-that-broke-9-prs/"
 ---
 ## The Problem: CI Failing Everywhere
 

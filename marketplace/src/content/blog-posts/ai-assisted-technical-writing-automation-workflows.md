@@ -4,6 +4,7 @@ description: "How to leverage AI agents for professional technical writing, auto
 date: "2025-09-30"
 tags: ["ai-development", "technical-writing", "blog-automation", "hugo", "netlify", "content-creation", "portfolio-development"]
 featured: false
+canonical: "https://startaitools.com/posts/ai-assisted-technical-writing-from-case-study-to-published-portfolio-in-30-minutes/"
 ---
 *2025-09-30 16:00:00*
 

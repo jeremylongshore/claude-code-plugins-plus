@@ -4,6 +4,7 @@ description: "How I built a complete React Native mobile app with Firebase auth,
 date: "2025-12-13"
 tags: ["react-native", "expo", "firebase", "mobile-development", "typescript", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/building-a-complete-react-native-mobile-app-in-one-session-17620-lines-of-production-code/"
 ---
 ## The Challenge
 

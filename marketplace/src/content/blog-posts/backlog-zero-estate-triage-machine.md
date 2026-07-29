@@ -4,6 +4,7 @@ description: "How a wave-based triage machine burned an estate backlog from 973 
 date: "2026-07-02"
 tags: ["backlog", "triage", "devops", "automation", "process", "backlog-management"]
 featured: false
+canonical: "https://startaitools.com/posts/backlog-zero-estate-triage-machine/"
 ---
 A backlog becomes impossible when you treat every issue as its own transaction. The remedy isn't faster triage — it's a **wave-based triage machine**: batch → gate → manifest → verify → repeat.
 

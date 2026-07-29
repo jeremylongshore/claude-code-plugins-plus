@@ -4,6 +4,7 @@ description: "Comprehensive Terraform learning resource covering core concepts, 
 date: "2025-10-07"
 tags: ["terraform", "infrastructure-as-code", "devops", "cloud", "gcp", "aws", "azure"]
 featured: false
+canonical: "https://startaitools.com/posts/terraform-for-ai-infrastructure-complete-learning-guide-from-zero-to-production/"
 ---
 # Terraform for AI Infrastructure: Complete Learning Guide
 

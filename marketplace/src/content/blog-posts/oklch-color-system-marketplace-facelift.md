@@ -4,6 +4,7 @@ description: "HSL colors look mathematically equal but perceptually wrong. OKLCH
 date: "2026-03-13"
 tags: ["web-development", "architecture", "css"]
 featured: false
+canonical: "https://startaitools.com/posts/oklch-color-system-marketplace-facelift/"
 ---
 Pick two colors in HSL. Same saturation, same lightness, different hues. They should look equally bright. They don't.
 

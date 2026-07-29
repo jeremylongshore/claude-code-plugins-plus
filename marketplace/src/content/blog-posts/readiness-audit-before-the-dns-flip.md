@@ -4,6 +4,7 @@ description: "An adversarial readiness audit found a payment-path bug that would
 date: "2026-07-01"
 tags: ["migration", "self-hosting", "devops", "testing", "stripe", "vps"]
 featured: false
+canonical: "https://startaitools.com/posts/readiness-audit-before-the-dns-flip/"
 ---
 ## The cutover that would have taken the money and then broken
 

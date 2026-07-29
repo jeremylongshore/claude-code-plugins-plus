@@ -4,6 +4,7 @@ description: "Deep dive into fine-tuning a Regional Manager AI agent (IAM1) with
 date: "2025-11-09"
 tags: ["vertex-ai", "multi-agent-systems", "google-adk", "gemini", "agent-orchestration", "iam-architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/fine-tuning-iam1-building-a-hierarchical-multi-agent-system-on-vertex-ai/"
 ---
 ## The Problem: Generic Orchestrator vs Business-Aligned Regional Manager
 

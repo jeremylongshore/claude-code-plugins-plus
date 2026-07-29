@@ -4,6 +4,7 @@ description: "A burn-in watchdog latched on a phantom io spike. The fix: fail-cl
 date: "2026-07-20"
 tags: ["observability", "devops", "automation", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/do-not-blindly-restart/"
 ---
 A self-healing system that restarts blindly is an outage generator with extra steps.
 

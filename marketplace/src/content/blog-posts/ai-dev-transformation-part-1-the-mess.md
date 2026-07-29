@@ -4,6 +4,7 @@ description: "How I turned a haunted repo full of Docker configs, broken YAML, a
 date: "2025-09-17"
 tags: ["ai-development", "documentation", "developer-tools", "claude", "cursor", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/from-chaos-to-one-paste-magic-part-1-the-mess-and-why-it-mattered/"
 ---
 If you've ever inherited a repo that felt like a haunted house — you open a folder and something jumps out at you (Docker configs, half-broken YAML, strange `bmad-output-00.md` files) — then you'll know how I felt walking into my own AI-Dev workspace.
 

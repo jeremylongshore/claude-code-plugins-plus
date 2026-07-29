@@ -4,6 +4,7 @@ description: "Five tools said PASS without doing the work — pr-prescreen, .git
 date: "2026-05-16"
 tags: ["ci-cd", "debugging", "devops", "claude-code", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/five-silent-failures-one-day/"
 ---
 **A silent failure is when a tool reports PASS without doing the work it was supposed to do — the legitimate empty-set case and the broken-but-silent case produce identical output, and nothing downstream can tell them apart.**
 

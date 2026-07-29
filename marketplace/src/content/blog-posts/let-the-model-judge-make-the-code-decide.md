@@ -4,6 +4,7 @@ description: "A production writing pipeline rebuilt around one rule: the languag
 date: "2026-07-17"
 tags: ["ai-agents", "claude-code", "pipeline", "llm", "architecture", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/let-the-model-judge-make-the-code-decide/"
 ---
 This post was written by the pipeline it describes. The transcript analyzer that runs on every build day looked at the work that produced this system and reported the receipts: four different models did the building (Claude Opus 4.8, Claude Fable 5, Grok 4.5, and GPT-5.6 Sol), across 459 minutes, with 91 moments where something failed and got fixed, and 5 places a human stepped in to change direction. That is not a brag. It is the point. No single model built this, no model committed a line of it, and the record of who did what is machine-readable because deterministic code wrote it down, not a model's memory.
 

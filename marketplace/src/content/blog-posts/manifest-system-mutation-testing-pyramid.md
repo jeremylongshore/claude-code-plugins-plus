@@ -4,6 +4,7 @@ description: "Epic 31-B lands the publish side of the bot-manifest protocol in c
 date: "2026-04-20"
 tags: ["typescript", "testing", "ci-cd", "architecture", "monorepo", "claude-code", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/manifest-system-mutation-testing-pyramid/"
 ---
 You can ship a feature that looks tested and isn't. April 20 was two coordinated answers to that problem.
 

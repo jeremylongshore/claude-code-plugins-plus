@@ -4,6 +4,7 @@ description: "Deep dive into Intent Solutions' five production platforms: Diagno
 date: "2025-10-20"
 tags: ["portfolio", "architecture", "deployment", "gcp", "ai-automation", "case-study"]
 featured: false
+canonical: "https://startaitools.com/posts/intent-solutions-portfolio-2025-five-production-platforms-and-the-architecture-behind-4-day-deployments/"
 ---
 When you see "deploy in days, not months," it sounds like marketing fluff. This is the technical breakdown of how Intent Solutions actually does it—with five production platforms serving real customers, measurable cost optimization, and architecture patterns you can replicate.
 

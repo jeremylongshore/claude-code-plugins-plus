@@ -4,6 +4,7 @@ description: "Three CLAUDE.md spec entries hit critical mass on the same day acr
 date: "2026-04-30"
 tags: ["claudecode", "engineering-management", "secrets", "testing", "infrastructure"]
 featured: false
+canonical: "https://startaitools.com/posts/propagation-day-when-the-spec-becomes-the-migration-plan/"
 ---
 On April 30, three patterns that had been written into `~/.claude/CLAUDE.md` weeks or months earlier as "TO-DO: propagate to all repos, then delete this section" all reached critical mass on the same day. The bd-sync three-layer mirror got its first real-world execution against 24 beads at the Braves Booth repo. The SOPS+age secrets standard flipped on in six repos via one idempotent helper script. The marketplace `compatible-with` → `compatibility` rename swept across 2,849 skills in one batch run. The numbers add up to the kind of graph that looks impressive in a screenshot — 3,000+ files changed, 45 PRs merged, 9 repos touched.
 

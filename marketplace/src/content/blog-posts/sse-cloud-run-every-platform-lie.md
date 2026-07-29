@@ -4,6 +4,7 @@ description: "SSE looks simple until you deploy it. Firebase Hosting buffers str
 date: "2026-03-04"
 tags: ["debugging", "devops", "full-stack", "typescript", "architecture", "cloud"]
 featured: false
+canonical: "https://startaitools.com/posts/sse-cloud-run-every-platform-lie/"
 ---
 Server-Sent Events are the simplest real-time protocol on the web. One HTTP connection. Text frames. No WebSocket handshake. Every tutorial makes it look trivial.
 

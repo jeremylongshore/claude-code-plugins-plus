@@ -4,6 +4,7 @@ description: "Fixing overlapping cards at 480px, upgrading all 25 crypto skills 
 date: "2026-03-11"
 tags: ["web-development", "claude-code", "devops", "firebase"]
 featured: false
+canonical: "https://startaitools.com/posts/mobile-fixes-crypto-upgrades-and-killer-skills/"
 ---
 Your marketplace looks great on a 1440px monitor. Nobody uses a 1440px monitor.
 

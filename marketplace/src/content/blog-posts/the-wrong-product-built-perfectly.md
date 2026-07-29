@@ -4,6 +4,7 @@ description: "A new site was scaffolded, deployed, and live with valid TLS in un
 date: "2026-06-05"
 tags: ["architecture", "devops", "claude-code", "hugo", "deployment"]
 featured: false
+canonical: "https://startaitools.com/posts/the-wrong-product-built-perfectly/"
 ---
 A clean pipeline faithfully amplifies a requirements-level error all the way to production. Nothing in a good build process catches a misread spec. The process makes the misread arrive faster, signed, and TLS-valid.
 

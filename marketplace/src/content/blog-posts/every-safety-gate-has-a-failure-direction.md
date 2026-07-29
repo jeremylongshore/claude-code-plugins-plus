@@ -4,6 +4,7 @@ description: "Safety gates fail in opposite directions: one crashed fail-closed,
 date: "2026-07-06"
 tags: ["debugging", "ci-cd", "automation", "observability"]
 featured: false
+canonical: "https://startaitools.com/posts/every-safety-gate-has-a-failure-direction/"
 ---
 A deterministic recap tool ran for the first time on a live system. Within hours, its block-event table showed seventeen consecutive BLOCK events. The natural question: what broke? The answer was worse than expected. Two gates in the same codebase were failing in opposite directions, both invisible for the identical reason.
 

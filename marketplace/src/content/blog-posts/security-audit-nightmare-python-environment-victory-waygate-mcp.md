@@ -4,6 +4,7 @@ description: "A honest look at what happens when a 'quick security audit' turns 
 date: "2025-09-28"
 tags: ["development", "python", "security", "infrastructure", "debugging", "personal-growth", "problem-solving"]
 featured: false
+canonical: "https://startaitools.com/posts/when-a-simple-security-audit-turns-into-a-3-hour-python-environment-battle-and-how-we-won/"
 ---
 Ever have one of those days where you start with a simple task and end up questioning your entire technical setup? That was my Saturday morning when what should have been a "quick security audit" turned into a full-scale infrastructure overhaul.
 

@@ -4,6 +4,7 @@ description: "A candid look at 18 days of engineering output: 255+ commits acros
 date: "2026-02-22"
 tags: ["retrospective", "portfolio", "engineering-velocity", "startup"]
 featured: false
+canonical: "https://startaitools.com/posts/february-2026-state-of-affairs-255-commits-12-projects/"
 ---
 ## The Numbers
 

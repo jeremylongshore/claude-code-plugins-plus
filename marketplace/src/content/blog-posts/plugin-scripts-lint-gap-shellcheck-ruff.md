@@ -4,6 +4,7 @@ description: "Plugin scripts had zero lint coverage. Added shellcheck + ruff to 
 date: "2026-05-26"
 tags: ["ci-cd", "shellcheck", "ruff", "testing", "static-analysis"]
 featured: false
+canonical: "https://startaitools.com/posts/plugin-scripts-lint-gap-shellcheck-ruff/"
 ---
 The CI matrix ran lint-staged and the main workflow against TS/JS/JSON/MD/YAML. Good coverage there. But `plugin/skills/**/*.{sh,py}` — the shell and Python scripts inside plugin archetypes and skill scaffolding — got behavior tests (`test_run_sh.sh`, `test_verify.py`, `test_bank.py`) but nothing ran shellcheck or ruff on them. A quoting bug, an unused import, or a quote-injection footgun could land without signal.
 

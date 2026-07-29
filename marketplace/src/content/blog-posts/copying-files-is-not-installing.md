@@ -4,6 +4,7 @@ description: "A marketplace install copies a plugin's files into place but never
 date: "2026-07-16"
 tags: ["claude-code", "plugins", "mcp", "nodejs", "packaging", "npm", "native-modules"]
 featured: false
+canonical: "https://startaitools.com/posts/copying-files-is-not-installing/"
 ---
 A marketplace install copies your plugin's files into place. It does not run `npm install` in them. Those are two different operations, and the gap between them is where "works on my machine" lives.
 

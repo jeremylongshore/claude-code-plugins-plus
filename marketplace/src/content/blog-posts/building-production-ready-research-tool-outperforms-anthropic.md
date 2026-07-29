@@ -4,6 +4,7 @@ description: "How I Built a Production-Ready Research Tool That Outperforms Anth
 date: "2025-10-20"
 tags: ["typescript", "mcp", "open-source", "product-development", "api-design"]
 featured: false
+canonical: "https://startaitools.com/posts/how-i-built-a-production-ready-research-tool-that-outperforms-anthropics-solution/"
 ---
 On October 20, 2025, Anthropic announced Claude for Life Sciences - a suite of research tools for scientific literature. That same evening, I built something better: a production-ready PubMed research toolkit with 10 MCP tools, comprehensive test coverage, and zero security vulnerabilities.
 

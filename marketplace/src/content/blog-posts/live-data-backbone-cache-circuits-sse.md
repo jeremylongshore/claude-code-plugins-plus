@@ -4,6 +4,7 @@ description: "Wiring MLB Stats API, GUMBO feeds, and Statcast into a fault-toler
 date: "2026-03-02"
 tags: ["full-stack", "architecture", "typescript", "fastapi", "python", "devops"]
 featured: false
+canonical: "https://startaitools.com/posts/live-data-backbone-cache-circuits-sse/"
 ---
 Yesterday was the scaffold. Today the data actually flows.
 

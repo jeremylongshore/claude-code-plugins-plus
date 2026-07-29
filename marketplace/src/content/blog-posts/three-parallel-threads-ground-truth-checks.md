@@ -4,6 +4,7 @@ description: "Three projects, one principle: stop and verify the ground truth be
 date: "2026-04-25"
 tags: ["claude-code", "testing", "ci-cd", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/three-parallel-threads-ground-truth-checks/"
 ---
 Friday stacked three parallel threads across the Braves Booth, CAD agent, and Intent Solutions landing site — three different codebases, three different problems. They had nothing in common except one operating principle that caught them all: ground truth checks before committing.
 

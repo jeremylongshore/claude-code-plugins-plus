@@ -4,6 +4,7 @@ description: "A quality gate only matters if you honor its verdict. How pre-regi
 date: "2026-06-10"
 tags: ["testing", "ci-cd", "ml-engineering", "devops"]
 featured: false
+canonical: "https://startaitools.com/posts/honor-the-gate-when-the-verdict-is-inconvenient/"
 ---
 On June 10, 2026, two completely unrelated systems hit quality gates that came back the wrong way. Neither system rationalized the verdict. Both honored it. That honesty is what makes the gate worth having.
 

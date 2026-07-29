@@ -4,6 +4,7 @@ description: "How we built a professional-grade AI vehicle diagnostics platform 
 date: "2025-09-08"
 tags: ["case-study", "ai", "bigquery", "gcp", "python", "rapid-development"]
 featured: false
+canonical: "https://startaitools.com/posts/building-diagnosticpro-ai-powered-vehicle-diagnostics-platform/"
 ---
 ## Executive Summary
 

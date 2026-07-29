@@ -4,6 +4,7 @@ description: "How Perception moved from mock ingestion to real Firestore trigger
 date: "2026-02-10"
 tags: ["firebase", "firestore", "mcp", "dashboard", "licensing", "full-stack"]
 featured: false
+canonical: "https://startaitools.com/posts/perception-dashboard-real-triggers-topic-watchlists/"
 ---
 ## What Perception Does
 

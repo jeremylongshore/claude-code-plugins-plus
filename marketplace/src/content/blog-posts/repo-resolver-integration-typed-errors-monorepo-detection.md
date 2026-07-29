@@ -4,6 +4,7 @@ description: "A shared repo-resolver package shipped into claude-runtime — ADR
 date: "2026-04-14"
 tags: ["typescript", "architecture", "monorepo", "claude-code", "ai-agents", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/repo-resolver-integration-typed-errors-monorepo-detection/"
 ---
 Three different services in the qmd-team-intent-kb stack all need to answer the same question: "what repo is this?" The edge-daemon needs it at spool time to tag captured memory candidates. The MCP server needs it at query time to scope retrieval. The ingestion pipeline needs it at index time to build canonical tenant partitions. Before April 14, each of them had its own half-answer — `resolveGitContext()` variants with different edge-case handling, different caching strategies, and a long tail of bugs around SSH vs HTTPS remotes and monorepo roots.
 

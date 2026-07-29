@@ -4,6 +4,7 @@ description: "A partner check-in forced a contract re-read, which clarified a co
 date: "2026-05-09"
 tags: ["methodology", "consulting", "partner-engagement", "spec", "mcp", "observability", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/spec-graduation-engagement-architecture-inversion/"
 ---
 The cleanest architectural moves of the last six months didn't come from a whiteboard. They came from a partner email that essentially said: hey, remember what we actually signed.
 

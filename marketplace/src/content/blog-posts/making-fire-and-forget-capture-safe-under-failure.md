@@ -4,6 +4,7 @@ description: "Five properties an unattended capture hook needs before you turn i
 date: "2026-07-11"
 tags: ["architecture", "idempotency", "ai-agents", "claude-code", "distributed-systems"]
 featured: false
+canonical: "https://startaitools.com/posts/making-fire-and-forget-capture-safe-under-failure/"
 ---
 There is a hook that distills a finished Claude Code session into a few durable learnings and proposes them to a shared team brain. It runs on `SessionEnd`. Nobody watches it. That last sentence is the entire problem.
 

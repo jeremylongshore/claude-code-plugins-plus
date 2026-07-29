@@ -4,6 +4,7 @@ description: "Naive local-RAG app became Intent NEXUS: BYOK document-intelligenc
 date: "2026-07-04"
 tags: ["ai-agents", "rag", "python", "security", "architecture", "evals"]
 featured: false
+canonical: "https://startaitools.com/posts/the-moat-is-the-trust-layer-nexus-byok-rag/"
 ---
 The moat of a local-RAG tool is not the chatbot. Anyone can wire Ollama to Chroma and put a Streamlit box on top; there are a hundred "local RAG in 100 lines" tutorials that do exactly that. The moat is the *trust layer* underneath the chat: enforced egress control, code-enforced citations, a tamper-evident audit chain, injection defense, and a self-run eval harness that can actually go red. Those are the things a person has to believe before they hand a tool their private documents.
 

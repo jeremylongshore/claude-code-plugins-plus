@@ -4,6 +4,7 @@ description: "How we built a unified plan enforcement engine that handles duplic
 date: "2025-11-17"
 tags: ["stripe", "firebase", "firestore", "billing", "webhooks", "testing", "typescript", "vitest"]
 featured: false
+canonical: "https://startaitools.com/posts/building-an-idempotent-stripe-billing-enforcement-engine-for-firestore/"
 ---
 When you're building subscription billing with Stripe webhooks, you quickly discover a harsh reality: **webhooks can arrive delayed, duplicated, or out of order**. For a youth sports stats SaaS platform I'm building, this created a critical problem—plan and status updates were scattered across multiple handlers with no guarantee of consistency.
 

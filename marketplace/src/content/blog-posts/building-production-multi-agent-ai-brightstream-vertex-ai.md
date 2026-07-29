@@ -4,6 +4,7 @@ description: "The real journey from concept to production: building BrightStream
 date: "2025-10-30"
 tags: ["vertex-ai", "ai-agents", "google-cloud", "adk", "multi-agent-systems", "cost-optimization", "docker", "infrastructure-as-code"]
 featured: false
+canonical: "https://startaitools.com/posts/building-a-production-multi-agent-ai-system-brightstreams-10-agent-architecture-on-vertex-ai/"
 ---
 # Building a Production Multi-Agent AI System: BrightStream's 10-Agent Architecture on Vertex AI
 

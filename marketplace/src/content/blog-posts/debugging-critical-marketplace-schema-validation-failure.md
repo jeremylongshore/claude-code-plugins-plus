@@ -4,6 +4,7 @@ description: "A critical bug stopped ALL marketplace installations. Here's the c
 date: "2025-10-16"
 tags: ["debugging", "schema-validation", "ci-cd", "marketplace", "claude-code", "github-actions", "legal-compliance"]
 featured: false
+canonical: "https://startaitools.com/posts/debugging-a-critical-marketplace-schema-validation-failure-how-one-invalid-field-blocked-all-installations/"
 ---
 At 10:16 PM ET on October 16th, 2025, a user reported they couldn't install the Claude Code Plugins marketplace. The error message was clear but devastating:
 

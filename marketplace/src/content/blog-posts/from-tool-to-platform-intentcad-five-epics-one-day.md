@@ -4,6 +4,7 @@ description: "cad-dxf-agent becomes IntentCAD. Multi-user auth, intent routing, 
 date: "2026-03-06"
 tags: ["ai-agents", "architecture", "python", "authentication", "full-stack"]
 featured: false
+canonical: "https://startaitools.com/posts/from-tool-to-platform-intentcad-five-epics-one-day/"
 ---
 The DXF comparison tool is dead. Long live IntentCAD.
 

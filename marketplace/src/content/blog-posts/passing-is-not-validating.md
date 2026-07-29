@@ -4,6 +4,7 @@ description: "A JSON Schema validator passed all 19 checks while validating noth
 date: "2026-07-19"
 tags: ["testing", "python", "ci-cd", "architecture", "debugging"]
 featured: false
+canonical: "https://startaitools.com/posts/passing-is-not-validating/"
 ---
 A validator gate returned green on every check. Nineteen rule checks across four rules, all passing. And most of them were exercising nothing at all.
 

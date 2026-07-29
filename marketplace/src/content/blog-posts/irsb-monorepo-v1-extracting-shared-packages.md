@@ -4,6 +4,7 @@ description: "How I extracted @irsb/kms-signer and @irsb/types into shared packa
 date: "2026-02-16"
 tags: ["monorepo", "typescript", "blockchain", "npm-packages", "architecture", "ci-cd"]
 featured: false
+canonical: "https://startaitools.com/posts/irsb-monorepo-v1-extracting-shared-packages/"
 ---
 ## Why a Monorepo
 

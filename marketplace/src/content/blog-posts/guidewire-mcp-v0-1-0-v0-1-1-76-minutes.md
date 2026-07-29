@@ -4,6 +4,7 @@ description: "v0.1.0 shipped at 19:14 Mountain, surfaced an install-path defect 
 date: "2026-05-06"
 tags: ["mcp", "guidewire", "release-engineering", "postgres-audit", "case-study"]
 featured: false
+canonical: "https://startaitools.com/posts/guidewire-mcp-v0-1-0-v0-1-1-76-minutes/"
 ---
 Insurance carriers run on Guidewire InsuranceSuite — PolicyCenter, ClaimCenter, BillingCenter. Underwriters and claims adjusters spend hours navigating the UI to answer questions like *"what submissions are waiting on me?"* or *"why isn't the Acme account active anymore?"*. The Cloud API exists, but it speaks REST verbs (`GET /job/v1/jobs?subtype=Submission&status=Quoted&assignedTo=alice`). LLMs route well on operator language and badly on REST verbs. So the tools are named like the question an operator would actually ask:
 

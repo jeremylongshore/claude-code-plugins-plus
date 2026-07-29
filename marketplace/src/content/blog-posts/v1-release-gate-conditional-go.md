@@ -4,6 +4,7 @@ description: "Why release gates should accept GO with conditions, not binary GO/
 date: "2026-05-18"
 tags: ["release-engineering", "ci-cd", "typescript", "testing", "monorepo"]
 featured: false
+canonical: "https://startaitools.com/posts/v1-release-gate-conditional-go/"
 ---
 Two beads were open at the start of 2026-05-18. E10-B11 was the v1.0 release-readiness gate. E10-B12 was the v1.0 release cut, blocked-by-design on B11. Epic 10 was the last epic in `intentional-cognition-os` (ICO). The release pipeline was wired through `/release`. Everything that mattered had to clear one ritual.
 

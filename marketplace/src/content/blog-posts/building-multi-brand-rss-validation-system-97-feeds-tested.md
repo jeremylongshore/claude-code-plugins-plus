@@ -4,6 +4,7 @@ description: "A complete walkthrough of building and validating an RSS feed dist
 date: "2025-10-03"
 tags: ["rss-feeds", "automation", "data-validation", "bash-scripting", "content-distribution", "n8n", "system-architecture", "problem-solving"]
 featured: false
+canonical: "https://startaitools.com/posts/building-a-multi-brand-rss-validation-system-testing-97-feeds-learning-hard-lessons/"
 ---
 ## The Problem: Building Content Distribution Without Data Validation
 

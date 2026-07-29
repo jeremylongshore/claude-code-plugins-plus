@@ -78,6 +78,11 @@ const blogPostsCollection = defineCollection({
     date: z.string(),
     tags: z.array(z.string()).optional().default([]),
     featured: z.boolean().optional().default(false),
+    // Absolute canonical URL of the ORIGINAL article. These posts are syndicated
+    // copies of startaitools.com pages; without this the dual-published copy
+    // self-canonicalises and the two properties compete for the same keywords.
+    // Absent = the post is native here and self-canonicalises correctly.
+    canonical: z.string().url().optional(),
   }),
 });
 

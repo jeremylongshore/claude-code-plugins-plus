@@ -4,6 +4,7 @@ description: "The oss-agent-lab ships its meta-agent capstone — one agent to o
 date: "2026-03-16"
 tags: ["ai-agents", "claude-code", "python", "web-development", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/meta-agent-orchestration-and-the-ux-of-removing-features/"
 ---
 Nine specialist agents. One meta-agent to rule them.
 

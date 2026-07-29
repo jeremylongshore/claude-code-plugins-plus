@@ -4,6 +4,7 @@ description: "A repo at 69% line coverage scored 24.88% on mutation testing—an
 date: "2026-06-28"
 tags: ["testing", "typescript", "ci-cd", "devops", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/coverage-vs-mutation-testing-rules-engine/"
 ---
 Sunday 2026-06-28. intent-mail repo, fresh Stryker baseline run. The coverage gate reported green: 69.09% line coverage. Three seconds later, mutation testing reported 24.88%. The rules engine—the code that actually mutates user email—reported 0.00%.
 

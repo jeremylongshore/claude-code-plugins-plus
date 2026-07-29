@@ -4,6 +4,7 @@ description: "Shipping two version releases in a single day — 22 commits, 5 EP
 date: "2026-03-07"
 tags: ["ai-agents", "architecture", "python", "release-engineering", "cad"]
 featured: false
+canonical: "https://startaitools.com/posts/two-releases-one-day-intentcad-v060-v070/"
 ---
 You don't ship two releases in one day by working twice as fast. You ship them because the architecture lets you.
 

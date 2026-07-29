@@ -4,6 +4,7 @@ description: "Design a 7-point safety model before writing tools. How server-ops
 date: "2026-05-22"
 tags: ["mcp", "typescript", "claude-code", "devops", "architecture", "ssh", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/server-ops-mcp-safety-before-tools/"
 ---
 The Intent Solutions production stack now lives on a single Contabo VPS after [a multi-week migration](/blog/propagation-day-when-the-spec-becomes-the-migration-plan/). Twenty-four containers across five stacks — Braves, Plane, Twenty, Umami, ntfy — sit behind one Caddy reverse proxy. Every day-to-day operational task touches that box: reload Caddy after a host-block edit, restart a stuck container, pull the last 200 lines of a service log, snapshot an instance before a risky change. Doing those by hand from a shell defeats the point of having Claude Code in the loop. Doing them through [a sloppy MCP server](/blog/guidewire-mcp-v0-1-0-foundation-ship/) is how you brick prod from a chat window.
 

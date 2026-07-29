@@ -4,6 +4,7 @@ description: "A forensic investigation into why Claude Code slash commands were 
 date: "2025-10-03"
 tags: ["claude-code", "debugging", "automation", "slash-commands", "git-workflow", "hugo", "taskwarrior"]
 featured: false
+canonical: "https://startaitools.com/posts/debugging-claude-code-slash-commands-when-your-blog-automation-silently-fails/"
 ---
 ## The Mystery: Content Created, But Never Published
 

@@ -4,6 +4,7 @@ description: "A 12-skill legal toolkit with 5 parallel agents, a 117-bead execut
 date: "2026-04-05"
 tags: ["ai-agents", "claude-code", "ci-cd", "architecture", "testing", "authentication"]
 featured: false
+canonical: "https://startaitools.com/posts/legal-toolkit-epic-planning-canary-ci-three-projects/"
 ---
 Three projects. Eleven commits. Every one of them is about the same thing: building systems that check their own work.
 

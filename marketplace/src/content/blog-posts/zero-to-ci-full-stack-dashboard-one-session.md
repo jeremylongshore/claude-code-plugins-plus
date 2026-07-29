@@ -4,6 +4,7 @@ description: "11 commits from empty repo to green CI. Building the Braves Booth 
 date: "2026-03-01"
 tags: ["full-stack", "react", "typescript", "fastapi", "docker", "ci-cd", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/zero-to-ci-full-stack-dashboard-one-session/"
 ---
 Empty directory at 8 AM. Green CI pipeline by dinner. 30 commits across two projects. Here's how the day went.
 

@@ -4,6 +4,7 @@ description: "When one MCP tool carries every SQL verb, allowlisting tool names 
 date: "2026-06-29"
 tags: ["ai-agents", "claude-code", "security", "mcp", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/gate-the-statement-not-the-tool-name/"
 ---
 The original safety gate on the Dolt-over-MCP plugin tried to keep a Claude Code agent harmless by excluding "history-affecting tools" from its MCP grant. It was the wrong granularity, and it did nothing.
 

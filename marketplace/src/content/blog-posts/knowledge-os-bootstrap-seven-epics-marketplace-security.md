@@ -4,6 +4,7 @@ description: "Bootstrapping a local-first knowledge OS from standards documents 
 date: "2026-04-06"
 tags: ["ai-agents", "typescript", "architecture", "testing", "monorepo", "claude-code", "release-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/knowledge-os-bootstrap-seven-epics-marketplace-security/"
 ---
 Seven epics in one repo. Six releases in one day. A TypeScript monorepo that didn't exist 48 hours ago now has a compiler pipeline, FTS5 search, and citation-verified answers. April 6th was the day intentional-cognition-os went from design documents to a working knowledge operating system.
 

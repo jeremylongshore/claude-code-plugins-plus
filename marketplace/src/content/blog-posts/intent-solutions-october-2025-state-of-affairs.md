@@ -4,6 +4,7 @@ description: "A candid look at Intent Solutions' current projects: DiagnosticPro
 date: "2025-10-20"
 tags: ["career-growth", "startup", "ai-automation", "retrospective", "portfolio"]
 featured: false
+canonical: "https://startaitools.com/posts/october-2025-state-of-affairs-five-production-platforms-and-what-they-taught-me/"
 ---
 ## The Reality Check
 

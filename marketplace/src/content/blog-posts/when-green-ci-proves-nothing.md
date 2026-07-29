@@ -4,6 +4,7 @@ description: "CI dogfood for AI-agent governance went green while gating zero to
 date: "2026-06-11"
 tags: ["ci-cd", "ai-agents", "testing", "claude-code", "docker", "devops"]
 featured: false
+canonical: "https://startaitools.com/posts/when-green-ci-proves-nothing/"
 ---
 Your test passed. It gated zero tool calls. It proved nothing.
 

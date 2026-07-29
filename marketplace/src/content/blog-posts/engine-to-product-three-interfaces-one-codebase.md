@@ -4,6 +4,7 @@ description: "Building CLI, REST API, and frontend wizard interfaces on top of a
 date: "2026-02-28"
 tags: ["ai-agents", "python", "fastapi", "architecture", "full-stack", "cad"]
 featured: false
+canonical: "https://startaitools.com/posts/engine-to-product-three-interfaces-one-codebase/"
 ---
 You built the engine. Four layers of deterministic comparison, 1,875 tests, confidence scoring, alignment ladder. Great. Nobody can use it.
 

@@ -4,6 +4,7 @@ description: "Research & Curriculum"
 date: "2001-01-01"
 tags: ["start-ai-tools"]
 featured: false
+canonical: "https://startaitools.com/posts/research-curriculum/"
 ---
 <h2 id="ai-engineering-curriculum--technical-papers">AI Engineering Curriculum &amp; Technical Papers</h2>
 <p>Welcome to our research collection featuring academic papers, technical studies, and in-depth analysis in AI development and systems architecture.</p>

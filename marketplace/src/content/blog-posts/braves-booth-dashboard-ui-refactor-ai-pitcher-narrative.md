@@ -4,6 +4,7 @@ description: "Refactoring the Braves broadcast dashboard idle view, eliminating 
 date: "2026-04-03"
 tags: ["react", "typescript", "full-stack", "ai-agents", "architecture"]
 featured: false
+canonical: "https://startaitools.com/posts/braves-booth-dashboard-ui-refactor-ai-pitcher-narrative/"
 ---
 Between games, the Braves Booth dashboard used to show a tab bar with RECAP and PREVIEW buttons. Pick one. The problem: announcers don't want to choose. They want the full picture — what just happened and what's coming next — on a single screen with no clicks.
 

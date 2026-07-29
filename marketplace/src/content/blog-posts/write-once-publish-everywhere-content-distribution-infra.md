@@ -4,6 +4,7 @@ description: "Three sites now share content through automated pipelines: Hugo to
 date: "2026-03-25"
 tags: ["automation", "architecture", "ci-cd", "web-development", "claude-code"]
 featured: false
+canonical: "https://startaitools.com/posts/write-once-publish-everywhere-content-distribution-infra/"
 ---
 Three websites. One hundred blog posts. Thirty-one field notes. Four plugin repos. All synced automatically. None of it existed yesterday.
 

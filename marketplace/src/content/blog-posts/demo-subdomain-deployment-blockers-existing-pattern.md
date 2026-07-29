@@ -4,6 +4,7 @@ description: "Hit 5 blockers deploying a demo subdomain. Fixed them all by remem
 date: "2026-04-24"
 tags: ["deployment", "devops", "claude-code", "automation", "infrastructure"]
 featured: false
+canonical: "https://startaitools.com/posts/demo-subdomain-deployment-blockers-existing-pattern/"
 ---
 ## The Problem
 

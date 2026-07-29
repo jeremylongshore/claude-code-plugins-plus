@@ -4,6 +4,7 @@ description: "Why session cookies beat raw ID tokens, how dynamic imports caused
 date: "2026-02-17"
 tags: ["firebase", "authentication", "e2e-testing", "debugging", "session-management"]
 featured: false
+canonical: "https://startaitools.com/posts/session-cookies-forgot-password-flaky-e2e-tests/"
 ---
 ## The Auth Stack Was Wrong
 

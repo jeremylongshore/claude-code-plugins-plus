@@ -4,6 +4,7 @@ description: "How we discovered 31KB of premium educational content buried in pr
 date: "2025-10-07"
 tags: ["content-strategy", "educational-content", "documentation", "open-source", "platform-engineering"]
 featured: false
+canonical: "https://startaitools.com/posts/from-github-repos-to-published-education-transforming-hidden-documentation-into-31kb-of-live-content/"
 ---
 # From GitHub Repos to Published Education: Transforming Hidden Documentation
 

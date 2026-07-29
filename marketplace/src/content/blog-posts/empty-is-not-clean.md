@@ -4,6 +4,7 @@ description: "One fail-open bug, five disguises: empty args, an empty log, a mis
 date: "2026-07-13"
 tags: ["ai-agents", "typescript", "authentication", "architecture", "claude-code", "testing"]
 featured: false
+canonical: "https://startaitools.com/posts/empty-is-not-clean/"
 ---
 A policy said `deny` anything under `/etc`. A Bash call read `/etc/shadow` and came back `{allow, rule: 'trust-bash'}`. No human in the loop. The deny rule was still there, still first in the list, still scoped exactly the way an operator would write it. It just never fired.
 

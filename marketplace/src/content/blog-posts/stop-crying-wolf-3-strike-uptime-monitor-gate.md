@@ -4,6 +4,7 @@ description: "Fix uptime monitor alert fatigue with a 3-strike debounce gate and
 date: "2026-06-08"
 tags: ["devops", "monitoring", "ops", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/stop-crying-wolf-3-strike-uptime-monitor-gate/"
 ---
 The uptime monitor for scorecardecho.com had been screaming since April 30th. **101 state-changes logged. Roughly 70% of them were sub-60-second flaps** — transients that a single TCP probe shouldn't page the on-call for. The on-call had learned to swipe the alert away.
 

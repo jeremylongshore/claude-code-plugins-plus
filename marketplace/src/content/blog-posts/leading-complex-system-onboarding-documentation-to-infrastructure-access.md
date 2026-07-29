@@ -4,6 +4,7 @@ description: "How I approached onboarding a Senior Cybersecurity Engineer to a c
 date: "2025-10-01"
 tags: ["technical-leadership", "devops", "team-building", "problem-solving", "cloud-infrastructure"]
 featured: false
+canonical: "https://startaitools.com/posts/leading-complex-system-onboarding-from-documentation-to-infrastructure-access/"
 ---
 When you're responsible for bringing a new senior team member onto a complex platform spanning multiple GCP projects, hundreds of database tables, and interconnected services, the quality of your onboarding process becomes a direct reflection of your technical leadership capabilities.
 

@@ -4,6 +4,7 @@ description: "Vendor removal isn't one edit. It's a service-layer scrub across h
 date: "2026-04-26"
 tags: ["web-development", "devops", "claude-code", "automation"]
 featured: false
+canonical: "https://startaitools.com/posts/n8n-service-layer-scrub-vendor-removal/"
 ---
 Removing a vendor from your positioning isn't a single find-and-replace. It's a service-layer scrub: hunt every passive mention, rewrite the comparison surface, fix every internal link, and ship it all in one coherent commit so the story stays intact.
 

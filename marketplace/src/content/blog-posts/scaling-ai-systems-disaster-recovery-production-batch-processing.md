@@ -4,6 +4,7 @@ description: "Scaling AI Systems: Production Batch Processing with Built-In Disa
 date: "2025-10-19"
 tags: ["systems-architecture", "ai-engineering", "disaster-recovery", "automation", "production-systems"]
 featured: false
+canonical: "https://startaitools.com/posts/scaling-ai-systems-production-batch-processing-with-built-in-disaster-recovery/"
 ---
 ## The Challenge: Scale AI Documentation Across 235 Production Systems
 

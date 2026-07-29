@@ -4,6 +4,7 @@ description: "A 35x FLOPs correction in pre-filing patent artifacts validated th
 date: "2026-04-15"
 tags: ["architecture", "release-engineering", "code-quality", "ai-agents", "claude-code", "automation", "supply-chain-security"]
 featured: false
+canonical: "https://startaitools.com/posts/flops-correction-unchecked-derivation-peer-review/"
 ---
 Peer review is not paperwork. When a reviewer tells you "unchecked derivations are your highest-risk failure class," they are handing you the exact failure that will bite you if you skip the checklist.
 

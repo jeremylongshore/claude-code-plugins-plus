@@ -4,6 +4,7 @@ description: "Building a test corpus with clean/nasty fixture taxonomy, golden f
 date: "2026-02-27"
 tags: ["testing", "python", "architecture", "ai-agents", "cad"]
 featured: false
+canonical: "https://startaitools.com/posts/golden-tests-fuzz-testing-dxf-revision-corpus/"
 ---
 Yesterday I shipped a [deterministic DXF comparison engine](/blog/deterministic-dxf-comparison-engine-one-day-build/) — canonical models, alignment ladders, confidence scoring, the works. Four PRs, 814 tests, all green.
 

@@ -4,6 +4,7 @@ description: "Sub-pixel noise, color inheritance, and coordinate conventions. Fi
 date: "2026-03-05"
 tags: ["python", "debugging", "architecture", "full-stack", "release-engineering", "cad"]
 featured: false
+canonical: "https://startaitools.com/posts/pdf-extraction-sweep-day-42-commits/"
 ---
 Forty-two commits across six repos in one day. No new features. Just closing loops, killing bugs, and hardening things that almost worked.
 

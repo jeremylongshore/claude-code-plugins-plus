@@ -4,6 +4,7 @@ description: "How I built a local-first desktop application that lets a structur
 date: "2026-02-14"
 tags: ["ai-agents", "cad", "dxf", "architecture", "typescript", "llm-integration"]
 featured: false
+canonical: "https://startaitools.com/posts/building-cad-dxf-agent-from-zero-to-v010/"
 ---
 ## The Problem
 

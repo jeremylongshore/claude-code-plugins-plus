@@ -4,6 +4,7 @@ description: "Free comprehensive AI Engineering curriculum covering prompt engin
 date: "2025-09-13"
 tags: ["ai-engineering", "machine-learning", "career-development", "education", "programming", "curriculum"]
 featured: true
+canonical: "https://startaitools.com/posts/the-complete-ai-engineering-curriculum-from-zero-to-200k-salary/"
 ---
 # The AI Engineering Revolution Is Here - And You're Invited 🎯
 

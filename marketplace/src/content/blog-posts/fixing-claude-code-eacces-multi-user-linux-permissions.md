@@ -4,6 +4,7 @@ description: "Deep dive into debugging and fixing Claude Code EACCES permission 
 date: "2025-10-23"
 tags: ["claude-code", "linux", "permissions", "multi-user", "debugging", "troubleshooting"]
 featured: false
+canonical: "https://startaitools.com/posts/fixing-claude-code-eacces-multi-user-linux-permission-architecture/"
 ---
 When you're running Claude Code across multiple Linux user accounts and hit `EACCES: permission denied`, the solution isn't just `chmod 777`. This is the complete troubleshooting journey from error to production-ready multi-user architecture.
 
