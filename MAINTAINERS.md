@@ -3,7 +3,7 @@
 The live roster for the maintainer ladder. **How the ladder works** (tiers,
 rights, vetting, delegation) is in [`GOVERNANCE.md`](GOVERNANCE.md). This file is
 just _who_ — handles, tiers, and areas. No personal information beyond a public
-GitHub handle; security contact is in [`SECURITY.md`](SECURITY.md).
+GitHub handle; security contact is in [`SECURITY.md`](.github/SECURITY.md).
 
 Tiers: **Contributor · Reviewer · Approver · Maintainer · Lead** (see GOVERNANCE).
 Areas: `ci-infra`, `validator-schema`, `marketplace-site`, `external-sync`,
