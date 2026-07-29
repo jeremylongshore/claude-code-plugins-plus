@@ -305,8 +305,10 @@ function buildReadmeBlock(agg) {
     '',
     '### 📦 Live npm Downloads',
     '',
-    `Across **${agg.publishedCount} published packages** in the `,
-    `[claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.`,
+    // Single entry on purpose: these were two array items joined by "\n", which
+    // left a dangling space at end-of-line and tripped markdownlint MD009 in the
+    // generated README — turning main red on every nightly refresh.
+    `Across **${agg.publishedCount} published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.`,
     '',
     '| Window | All packages | Established (>30d) |',
     '|--------|-------------:|-------------------:|',
