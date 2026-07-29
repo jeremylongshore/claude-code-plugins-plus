@@ -73,7 +73,7 @@ blocks a merge. Promotion to a blocking gate is a separate, later cutover step.
 `pnpm run sync-marketplace` regenerates `marketplace.json`, missing
 `plugins/**/package.json` files, and the README AUTO-TOC block. The pre-commit hook
 runs it automatically when the extended catalog is staged, and CI fails if any
-derived file drifts. Authoring workflow: [CONTRIBUTING.md](CONTRIBUTING.md).
+derived file drifts. Authoring workflow: [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## External plugins: mirror by default
 
@@ -98,5 +98,5 @@ the [decision record](000-docs/694-AT-DECR-external-sync-mirror-by-default-model
 | Required fields, tier model, history | [000-docs/SCHEMA_CHANGELOG.md](000-docs/SCHEMA_CHANGELOG.md)                                                                   |
 | Full skills standard (master spec)   | [000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)               |
 | External-sync policy                 | [000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md](000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md) |
-| Contribution requirements            | [CONTRIBUTING.md](CONTRIBUTING.md)                                                                                             |
-| Security policy                      | [SECURITY.md](SECURITY.md)                                                                                                     |
+| Contribution requirements            | [CONTRIBUTING.md](.github/CONTRIBUTING.md)                                                                                     |
+| Security policy                      | [SECURITY.md](.github/SECURITY.md)                                                                                             |

@@ -331,8 +331,8 @@ Description:
 ## 🔗 Additional Resources
 
 - **Report Security Issues**: [GitHub Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- **Marketplace Security Policy**: [SECURITY.md](../SECURITY.md)
-- **Plugin Developer Guidelines**: [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Marketplace Security Policy**: [SECURITY.md](../.github/SECURITY.md)
+- **Plugin Developer Guidelines**: [CONTRIBUTING.md](../.github/CONTRIBUTING.md)
 - **Claude Code Official Docs**: https://docs.claude.com/en/docs/claude-code/security
 
 ---
