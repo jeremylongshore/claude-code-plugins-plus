@@ -32,6 +32,18 @@ try {
 } catch {
   npmStats = {};
 }
+// skills.sh install count — cumulative and monotonic, unlike npm's rolling
+// 30-day window (which is also inflated by CI, mirrors and registry proxies).
+// Refreshed daily by scripts/fetch-skills-stats.mjs. Same fail-soft shape.
+let skillsStats: { installs?: number; installsDisplay?: string } = {};
+try {
+  skillsStats = (await import('../data/skills-stats.json')).default as typeof skillsStats;
+} catch {
+  skillsStats = {};
+}
+const skillsInstalls = skillsStats.installs ?? 0;
+const skillsInstallsDisplay = skillsStats.installsDisplay ?? '';
+
 const npmPublished = npmStats.publishedCount ?? 0;
 const npmMonth = npmStats.totalMonth ?? 0;
 const npmTop = (npmStats.top ?? []).slice(0, 8);
@@ -1156,8 +1168,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
             <p class="hero-subtitle">
                 Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.
-                {npmMonth > 0 && (
-                    <> {fmtNum(npmMonth)} npm downloads across {npmPublished} packages in the last 30 days.</>
+                {skillsInstalls > 0 && (
+                    <> {skillsInstallsDisplay} total installs.</>
                 )}
             </p>
 
@@ -1237,8 +1249,8 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <span class="hero-stat-label">Plugins</span>
             </div>
             <div class="hero-stat-cell">
-                <span class="hero-stat-number">{fmtNum(npmMonth)}</span>
-                <span class="hero-stat-label">Monthly downloads</span>
+                <span class="hero-stat-number">{skillsInstallsDisplay || fmtNum(skillsInstalls)}</span>
+                <span class="hero-stat-label">Total installs</span>
             </div>
         </aside>
     </section>

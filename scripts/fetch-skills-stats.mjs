@@ -1,0 +1,144 @@
+#!/usr/bin/env node
+/**
+ * fetch-skills-stats.mjs — pull the skills.sh install count for this repo.
+ *
+ * WHY THIS EXISTS
+ * ---------------
+ * The hero previously showed npm downloads. npm's number is a rolling 30-day
+ * window over a registry that is heavily trafficked by CI, mirrors and proxies,
+ * so it (a) overstates human usage and (b) can DROP for reasons the page cannot
+ * explain — it fell 52,520 -> 33,555 in eleven days purely because a spike aged
+ * out of the window, while the daily rate held and the package count grew.
+ *
+ * skills.sh reports "total installs": cumulative, monotonic, and tied to an
+ * actual `npx skills add` action rather than a registry fetch. That is a far
+ * better credibility signal on a page whose job is discovery.
+ *
+ * SOURCE OF TRUTH
+ * ---------------
+ * The public badge endpoint, which is a maintained embed contract:
+ *   https://skills.sh/b/<owner>/<repo>   ->  SVG containing "Skills: 49.9K"
+ *
+ * Chosen over scraping https://skills.sh/<owner>/<repo> because that page is a
+ * ~2MB Next.js document whose markup is not a contract; the badge is small,
+ * versioned for embedding, and already trusted enough to sit in our README.
+ *
+ * FAILS SOFT ON PURPOSE
+ * ---------------------
+ * A network blip must never break the site build. On any failure this leaves the
+ * existing data file untouched and exits 0 — the hero renders the last known
+ * good value, or omits the stat entirely if there has never been one.
+ */
+
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = join(__dirname, '..');
+const OUT = join(REPO_ROOT, 'marketplace', 'src', 'data', 'skills-stats.json');
+
+const OWNER = 'jeremylongshore';
+const REPO = 'claude-code-plugins-plus-skills';
+const BADGE = `https://skills.sh/b/${OWNER}/${REPO}`;
+const PAGE = `https://skills.sh/${OWNER}/${REPO}`;
+
+/** "49.9K" | "1.2M" | "820" -> 49900 | 1200000 | 820 */
+function parseCompact(s) {
+  const m = /^([\d.]+)\s*([KkMm])?$/.exec(s.trim());
+  if (!m) return null;
+  const n = Number.parseFloat(m[1]);
+  if (!Number.isFinite(n)) return null;
+  const mult = { k: 1_000, m: 1_000_000 }[(m[2] || '').toLowerCase()] ?? 1;
+  return Math.round(n * mult);
+}
+
+async function fetchText(url, ms = 20_000) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+  try {
+    const r = await fetch(url, { signal: ac.signal, headers: { 'user-agent': 'ccpi-stats/1.0' } });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.text();
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+/** Badge is the primary source: small, and a maintained embed contract. */
+function fromBadge(svg) {
+  // The badge renders "Skills" and the value as separate text nodes, plus an
+  // accessible "Skills: 49.9K" title. Match the title first, then any node.
+  const title = /Skills:\s*([\d.]+\s*[KkMm]?)/.exec(svg);
+  if (title) return { display: title[1].trim(), installs: parseCompact(title[1]) };
+  for (const m of svg.matchAll(/>([\d.]+\s*[KkMm]?)</g)) {
+    const v = parseCompact(m[1]);
+    if (v !== null) return { display: m[1].trim(), installs: v };
+  }
+  return null;
+}
+
+/** Page fallback: only used if the badge shape changes. */
+function fromPage(html) {
+  const m = /([\d.]+\s*[KkMm]?)\s*total installs/i.exec(html.replace(/<[^>]+>/g, ' '));
+  return m ? { display: m[1].trim(), installs: parseCompact(m[1]) } : null;
+}
+
+async function main() {
+  let stats = null;
+  try {
+    stats = fromBadge(await fetchText(BADGE));
+  } catch (e) {
+    console.error(`  badge fetch failed: ${e.message}`);
+  }
+  if (!stats?.installs) {
+    try {
+      stats = fromPage(await fetchText(PAGE, 30_000));
+    } catch (e) {
+      console.error(`  page fallback failed: ${e.message}`);
+    }
+  }
+
+  if (!stats?.installs) {
+    console.error('  could not resolve an install count — leaving existing data untouched');
+    if (existsSync(OUT)) console.error(`  keeping ${OUT}`);
+    process.exit(0); // fail soft: never break the build
+  }
+
+  // Monotonic guard: total installs is cumulative, so a DROP means a bad parse,
+  // not a real decline. Refuse to regress the number on a suspicious read.
+  if (existsSync(OUT)) {
+    try {
+      const prev = JSON.parse(readFileSync(OUT, 'utf8'));
+      if (typeof prev.installs === 'number' && stats.installs < prev.installs * 0.9) {
+        console.error(
+          `  refusing update: ${prev.installs} -> ${stats.installs} is a >10% DROP in a ` +
+            `cumulative metric, which indicates a parse error rather than reality.`,
+        );
+        process.exit(0);
+      }
+    } catch {
+      /* unreadable previous file is not a reason to fail */
+    }
+  }
+
+  mkdirSync(dirname(OUT), { recursive: true });
+  writeFileSync(
+    OUT,
+    JSON.stringify(
+      {
+        $comment:
+          'Generated by scripts/fetch-skills-stats.mjs. Cumulative install count from skills.sh — monotonic, unlike npm rolling-window downloads.',
+        source: BADGE,
+        generatedAt: new Date().toISOString(),
+        installs: stats.installs,
+        installsDisplay: stats.display,
+      },
+      null,
+      2,
+    ) + '\n',
+  );
+  console.log(`  skills.sh installs: ${stats.display} (${stats.installs}) -> ${OUT}`);
+}
+
+await main();
