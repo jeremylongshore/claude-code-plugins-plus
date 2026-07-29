@@ -109,7 +109,7 @@ Those relevance scores used to be fake. The old code assigned a positional place
 
 ### 3. The tamper-evident ledger: provenance you can verify
 
-A privacy receipt you can edit is a receipt for nothing. P4a added an append-only SQLite audit chain — the same [hash-chained pattern](https://www.schneier.com/academic/archives/1998/01/cryptographic_suppor.html) used across [Intent Solutions](/about/) ledgers — so every operation links to the one before it and the chain can be walked and verified.
+A privacy receipt you can edit is a receipt for nothing. P4a added an append-only SQLite audit chain — the same [hash-chained pattern](https://www.schneier.com/academic/archives/1998/01/cryptographic_suppor.html) used across [Intent Solutions](https://startaitools.com/about/) ledgers — so every operation links to the one before it and the chain can be walked and verified.
 
 The subtle part is not "hash each row." It is *how* you serialize a row into the bytes you hash. The first cut used a bare `"|".join(...)` of the fields, and adversarial review flagged it as a re-attribution attack:
 
@@ -190,7 +190,7 @@ for case in applicable:
 
 Once the corpus exceeds `k` and the answer is placed at position > k with topical distractors around it, `recall` can only reach `1.0` if the retriever *ranks* the relevant doc into the top three. A broken retriever now scores below `1.0`. The metric became a measurement the moment the corpus stopped being small enough to make it trivial.
 
-**groundedness turned a fully-broken pipeline into a PASS.** It skipped-on-error — an exception during evaluation counted as success. So a pipeline that crashed on every case scored a clean groundedness pass. The fix inverts the default: exceptions now score `0.0`; only a genuinely-empty applicable set is allowed to pass. Skip-on-error is the single most common way [an eval lies instead of crashing](/when-llm-output-lies-instead-of-crashing/), because failure and "nothing to evaluate" look identical if you are not careful, and the lazy default treats both as fine.
+**groundedness turned a fully-broken pipeline into a PASS.** It skipped-on-error — an exception during evaluation counted as success. So a pipeline that crashed on every case scored a clean groundedness pass. The fix inverts the default: exceptions now score `0.0`; only a genuinely-empty applicable set is allowed to pass. Skip-on-error is the single most common way [an eval lies instead of crashing](/blog/when-llm-output-lies-instead-of-crashing/), because failure and "nothing to evaluate" look identical if you are not careful, and the lazy default treats both as fine.
 
 **the injection scrubber was corrupting legitimate document prose.** The scrubber that is supposed to strip injection payloads was matching benign phrases — "reply with", "you are now a…" — with greedy end-of-line tails, mangling real retrieved text. In one case it consumed an adjacent secret while chewing through a normal sentence. The fix: match *only* the imperative override phrase, no EOL consumption, and gate the role/word variants on specific cues. A benign-prose regression test now guards against the scrubber deciding that ordinary writing is an attack.
 
@@ -260,6 +260,6 @@ Two secondary repos had minor activity on 2026-07-04. `intent-os` took a beads-b
 
 ## Related posts
 
-- [BM25 Before Vectors: An Eval-Gated Retrieval ADR](/bm25-before-vectors-retrieval-backend-adr/) — the deeper dive on NEXUS's P3 retrieval decision, including why the hybrid `qmd` backend exists and how the eval gate drove the call.
-- [When LLM Output Lies Instead of Crashing](/when-llm-output-lies-instead-of-crashing/) — the exact failure mode the code-enforced refusal and the groundedness gate exist to catch: output that looks fine while the pipeline underneath is broken.
-- [Shipping gpt-5.4 as One Config Line](/eval-gated-model-swap-gpt-5-4/) — the same eval-gated-change discipline applied to a model swap, where the gate is what lets a provider change be a one-line diff instead of a leap of faith.
+- [BM25 Before Vectors: An Eval-Gated Retrieval ADR](https://startaitools.com/posts/bm25-before-vectors-retrieval-backend-adr/) — the deeper dive on NEXUS's P3 retrieval decision, including why the hybrid `qmd` backend exists and how the eval gate drove the call.
+- [When LLM Output Lies Instead of Crashing](/blog/when-llm-output-lies-instead-of-crashing/) — the exact failure mode the code-enforced refusal and the groundedness gate exist to catch: output that looks fine while the pipeline underneath is broken.
+- [Shipping gpt-5.4 as One Config Line](/blog/eval-gated-model-swap-gpt-5-4/) — the same eval-gated-change discipline applied to a model swap, where the gate is what lets a provider change be a one-line diff instead of a leap of faith.

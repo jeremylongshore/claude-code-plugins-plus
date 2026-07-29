@@ -77,7 +77,7 @@ Then Stryker hit a wall: v9 cannot instrument this Bun/TS codebase. The babel in
 
 That left exactly three options for the new "Mutation testing" CI check:
 
-1. Leave it **permanently red**—every PR shows a failing check that means nothing. The team learns to ignore red checks. This is exactly [alert fatigue](/posts/stop-crying-wolf-3-strike-uptime-monitor-gate/), and it kills every gate downstream.
+1. Leave it **permanently red**—every PR shows a failing check that means nothing. The team learns to ignore red checks. This is exactly [alert fatigue](/blog/stop-crying-wolf-3-strike-uptime-monitor-gate/), and it kills every gate downstream.
 2. Make it **fake-green**—`continue-on-error: true` or a script that always exits 0. A green checkmark that lies. The label says "Mutation testing passed" when mutation testing never ran.
 3. **Remove the check**—keep the stryker.config.json and mutation-gate.sh as hash-pinned scaffolding, document the toolchain block in tests/TESTING.md, and file a tracked bead to re-wire it when a Bun-compatible runner exists.
 
@@ -87,7 +87,7 @@ The commit message: *"A permanently-red OR fake-green 'Mutation testing' check b
 
 The actual deliverable—the BDD acceptance layer—shipped unaffected. All the real hard gates passed: typecheck, biome lint, coverage-gate at 91.43%, claim-scan, doc-drift audit, harness verify, escape-scan (REFUSE=0, CHALLENGE=0).
 
-The transferable point: a green checkmark is a claim. "Mutation testing passed" has to *mean* [mutation testing](/posts/manifest-system-mutation-testing-pyramid/) ran. If a tool can't run against your codebase, a check that always passes is worse than no check. It launders trust. Removing it (with scaffolding retained and a tracked bead filed) is the honest move, not a regression.
+The transferable point: a green checkmark is a claim. "Mutation testing passed" has to *mean* [mutation testing](/blog/manifest-system-mutation-testing-pyramid/) ran. If a tool can't run against your codebase, a check that always passes is worse than no check. It launders trust. Removing it (with scaffolding retained and a tracked bead filed) is the honest move, not a regression.
 
 ## The Parallel
 
@@ -125,9 +125,9 @@ The semantic-flux gate cost ~$4 and saved a possible $2–5K of motivated spendi
 
 ## Related Posts
 
-- [The Wrong Product, Built Perfectly](/posts/the-wrong-product-built-perfectly/)
-- [Honest Perf Benchmarks for a Paid-API Compiler](/posts/honest-perf-benchmarks-paid-api-compiler/)
-- [Manifest System + Mutation Testing: Two Ways to Find Out What Actually Works](/posts/manifest-system-mutation-testing-pyramid/)
+- [The Wrong Product, Built Perfectly](/blog/the-wrong-product-built-perfectly/)
+- [Honest Perf Benchmarks for a Paid-API Compiler](/blog/honest-perf-benchmarks-paid-api-compiler/)
+- [Manifest System + Mutation Testing: Two Ways to Find Out What Actually Works](/blog/manifest-system-mutation-testing-pyramid/)
 
 <script type="application/ld+json">
 {

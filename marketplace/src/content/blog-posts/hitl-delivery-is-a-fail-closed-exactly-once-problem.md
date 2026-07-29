@@ -177,7 +177,7 @@ Move 4 is the non-negotiable one. Anything that gates an action must treat the a
 
 The convergence is the evidence. When two systems built for mirror-image roles — one delivering replies out, one receiving approvals in — arrive at the same discipline, and one explicitly cites the other, that is not a local trick. It is the shape of the problem. And the discipline it demands is non-negotiable: an agent you can't trust to fail safely is an agent you can't deploy.
 
-Both shipped clean. CCSC's `slack-delivery.ts` hit 100% line coverage; the test suite grew from 1127 to 1133 tests across the three PRs with all nine gates green each time, and the durable path was extracted to `executeReplyDurablePath` to keep `executeReply` under CRAP 30. AGP landed at 88.89% function / 91.43% line coverage — over the repo's configured floor — with typecheck, Biome, claim-scan, harness verify, and escape-scan all green. The PR sequencing in CCSC is itself the lesson: #228 wired the poller into the runtime without touching the reply tool path ([machinery live but dormant](/posts/ship-dormant-wire-later-multi-agent-slack/)), #229 added the tested building block plus the ADR (design-first), #230 flipped `executeReply` to route through it. The security-sensitive change got its own isolated PR. Ship dormant, wire later.
+Both shipped clean. CCSC's `slack-delivery.ts` hit 100% line coverage; the test suite grew from 1127 to 1133 tests across the three PRs with all nine gates green each time, and the durable path was extracted to `executeReplyDurablePath` to keep `executeReply` under CRAP 30. AGP landed at 88.89% function / 91.43% line coverage — over the repo's configured floor — with typecheck, Biome, claim-scan, harness verify, and escape-scan all green. The PR sequencing in CCSC is itself the lesson: #228 wired the poller into the runtime without touching the reply tool path ([machinery live but dormant](https://startaitools.com/posts/ship-dormant-wire-later-multi-agent-slack/)), #229 added the tested building block plus the ADR (design-first), #230 flipped `executeReply` to route through it. The security-sensitive change got its own isolated PR. Ship dormant, wire later.
 
 ## Also shipped
 
@@ -185,9 +185,9 @@ The same day, `claude-code-plugins` landed a deterministic-CI grading track: a `
 
 ## Related Posts
 
-- [Ship Dormant, Wire Later — A Multi-Agent Slack Production Day](/posts/ship-dormant-wire-later-multi-agent-slack/)
-- [Making Agents Reliable on Real-Device Clouds](/posts/making-agents-reliable-on-real-device-clouds/)
-- [Safety Model First: 16-Tool Ops MCP, One Day](/posts/server-ops-mcp-safety-before-tools/)
+- [Ship Dormant, Wire Later — A Multi-Agent Slack Production Day](https://startaitools.com/posts/ship-dormant-wire-later-multi-agent-slack/)
+- [Making Agents Reliable on Real-Device Clouds](https://startaitools.com/posts/making-agents-reliable-on-real-device-clouds/)
+- [Safety Model First: 16-Tool Ops MCP, One Day](/blog/server-ops-mcp-safety-before-tools/)
 
 <script type="application/ld+json">
 {

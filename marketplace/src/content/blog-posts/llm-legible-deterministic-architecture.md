@@ -22,7 +22,7 @@ Decision log entry 033 ratified that doctrine. It did not add machinery. It adde
 
 The load-bearing rule is D88: deterministic backpressure at every trust boundary. Invalid data, missing authority, an illegal state transition, incomplete required evidence, and ambiguous ownership all get rejected before they become durable state. Partial external failure preserves the partial truth it does have and reports itself as degraded. It never invents completeness.
 
-Read that last sentence twice, because it is the operator's version of a health inspection. A kitchen that is missing half its prep does not open and hope. It reports "not ready" loudly. A collector that reached three of five sources does not write a number as if it saw all five. It records what it saw, marks the rest unknown, and says so. The opposite move, a check that reports success in [the wrong mode](/posts/wrong-mode-green-is-not-a-gate/), is worse than no check at all.
+Read that last sentence twice, because it is the operator's version of a health inspection. A kitchen that is missing half its prep does not open and hope. It reports "not ready" loudly. A collector that reached three of five sources does not write a number as if it saw all five. It records what it saw, marks the rest unknown, and says so. The opposite move, a check that reports success in [the wrong mode](/blog/wrong-mode-green-is-not-a-gate/), is worse than no check at all.
 
 The doctrine spells out the boundary response as a table, and the table is the useful part:
 
@@ -137,7 +137,7 @@ The lesson is portable. If you are running agents against a real system, at some
 
 ## Related Posts
 
-- [Wrong mode green is not a gate](/posts/wrong-mode-green-is-not-a-gate/): when a check reports success in the wrong mode, it is worse than no check.
-- [Passing is not validating](/posts/passing-is-not-validating/): why a green test suite cannot close an operational promise.
-- [A green recovery drill can still be lying](/posts/a-green-recovery-drill-can-still-be-lying/): proving a restore actually restored, not just exited zero.
-- [Let the model judge, make the code decide](/posts/let-the-model-judge-make-the-code-decide/): where the deterministic boundary sits between an LLM's opinion and the gate that acts on it.
+- [Wrong mode green is not a gate](/blog/wrong-mode-green-is-not-a-gate/): when a check reports success in the wrong mode, it is worse than no check.
+- [Passing is not validating](/blog/passing-is-not-validating/): why a green test suite cannot close an operational promise.
+- [A green recovery drill can still be lying](/blog/a-green-recovery-drill-can-still-be-lying/): proving a restore actually restored, not just exited zero.
+- [Let the model judge, make the code decide](/blog/let-the-model-judge-make-the-code-decide/): where the deterministic boundary sits between an LLM's opinion and the gate that acts on it.

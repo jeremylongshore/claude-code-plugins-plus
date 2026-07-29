@@ -24,7 +24,7 @@ NOW-LMS (`bmosoluciones/now-lms`, Apache-2.0, Flask and Babel) ships all of it. 
 
 The record also names the costs honestly, because "adopt" is not free:
 
-- You inherit someone else's architecture and someone else's bugs, which is [the supply chain problem](/posts/software-supply-chain-security/) wearing a different hat. Seven deployment bugs surfaced getting it live.
+- You inherit someone else's architecture and someone else's bugs, which is [the supply chain problem](https://startaitools.com/posts/software-supply-chain-security/) wearing a different hat. Seven deployment bugs surfaced getting it live.
 - NOW-LMS is Spanish-first. The English catalog is empty.
 - Single-maintainer bus factor.
 - Customization discipline is mandatory, because deep custom behavior is a merge tax forever.
@@ -33,7 +33,7 @@ The bugs are the visible cost. They are not the real risk. The real risk is that
 
 ## Seven bugs, none of them fork-local
 
-Between 10:43 and 12:46 the deployment bugs got root-caused, five of the seven paired with a named regression test. The test is not ceremony. It is what makes the fix legible to a maintainer who has no reason to trust a stranger's diff, and it is the difference between a fix and [a green check that gates nothing](/posts/when-green-ci-proves-nothing/):
+Between 10:43 and 12:46 the deployment bugs got root-caused, five of the seven paired with a named regression test. The test is not ceremony. It is what makes the fix legible to a maintainer who has no reason to trust a stranger's diff, and it is the difference between a fix and [a green check that gates nothing](/blog/when-green-ci-proves-nothing/):
 
 | Fix | Root cause |
 |---|---|
@@ -198,6 +198,6 @@ Classify it when it is small, or accept that you now own an LMS.
 
 ## Related Posts
 
-- [Copying Files Is Not Installing](/posts/copying-files-is-not-installing/)
-- [Passing Is Not Validating: A Green Check With No Teeth](/posts/passing-is-not-validating/)
-- [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
+- [Copying Files Is Not Installing](/blog/copying-files-is-not-installing/)
+- [Passing Is Not Validating: A Green Check With No Teeth](/blog/passing-is-not-validating/)
+- [Every Safety Gate Has a Failure Direction](/blog/every-safety-gate-has-a-failure-direction/)

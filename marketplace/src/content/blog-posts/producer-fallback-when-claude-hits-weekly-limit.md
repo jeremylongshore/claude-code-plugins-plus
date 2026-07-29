@@ -60,7 +60,7 @@ Env knobs:
 
 While Claude was dark, the 2026-07-14 post was produced manually under the same land contract:
 
-- [Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes](/posts/exit-0-is-not-success/)
+- [Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes](/blog/exit-0-is-not-success/)
 - Voice lint PASS, Hugo PASS, dual-publish to tonsofskills + field-notes, live liveness OK
 - Ezekiel packet re-sent with real social copy after the first send degraded (voice-gen still hits Claude)
 
@@ -84,6 +84,6 @@ Tomorrow's 04:00 run can try Claude, fall back to Grok, and still land. That is 
 
 ## Related Posts
 
-- [Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes](/posts/exit-0-is-not-success/)
-- [Liveness Without Health Is Theater](/posts/liveness-without-health-is-theater/)
-- [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/posts/empty-is-not-clean/)
+- [Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes](/blog/exit-0-is-not-success/)
+- [Liveness Without Health Is Theater](/blog/liveness-without-health-is-theater/)
+- [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/blog/empty-is-not-clean/)

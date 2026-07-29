@@ -112,9 +112,9 @@ So gate the statement. Enumerate the safe verbs, default-deny everything you can
 
 ## Related posts
 
-- [The LLM Should Never Do the Math](/posts/llm-never-does-the-math/)
-- [When LLM Output Lies Instead of Crashing](/posts/when-llm-output-lies-instead-of-crashing/)
-- [Coverage vs Mutation Testing](/posts/coverage-vs-mutation-testing-rules-engine/)
+- [The LLM Should Never Do the Math](https://startaitools.com/posts/llm-never-does-the-math/)
+- [When LLM Output Lies Instead of Crashing](/blog/when-llm-output-lies-instead-of-crashing/)
+- [Coverage vs Mutation Testing](/blog/coverage-vs-mutation-testing-rules-engine/)
 
 <script type="application/ld+json">
 {
