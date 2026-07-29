@@ -1015,6 +1015,64 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 padding: 0.375rem;
             }
         }
+    
+        /* ── Home zone rhythm ────────────────────────────────────────────────
+           The landing page stacked seven card-grid sections at identical visual
+           weight — five of them on the same --surface tone, two with no rule at
+           all, and padding drifting between 3rem and 4rem. Nothing signalled
+           where one zone ended and the next began, so the whole page read as a
+           single undifferentiated scroll no matter how much padding was added.
+
+           Fix is separation BETWEEN zones, not sparsity within them: this is a
+           directory and 3,000+ skills need density. So grid contents are
+           untouched; only the band each grid sits in changes.
+
+             tone      alternates --surface / --surface-1 (both existing OKLCH
+                       tokens; a tone change reads as "new zone" instantly and
+                       does the work margin alone cannot)
+             rhythm    one padding value everywhere, so the eye can tell
+                       "same group" from "new group" purely from the ratio of
+                       card-gap : zone-padding
+
+           Deliberately NOT done here: merging the seven zones down to three.
+           That restructures content and can cost click-through paths, so it is
+           a separate, reviewable change.
+           ------------------------------------------------------------------ */
+        .killer-skills-section,
+        .stash-section,
+        .saas-packs-section,
+        .features {
+            background: var(--surface);
+        }
+
+        .heat-check-section,
+        .cowork-home-section,
+        .level-up-section {
+            background: var(--surface-1);
+        }
+
+        .killer-skills-section,
+        .heat-check-section,
+        .stash-section,
+        .cowork-home-section,
+        .saas-packs-section,
+        .level-up-section,
+        .features {
+            padding: var(--space-10) var(--space-6);
+        }
+
+        @media (max-width: 48rem) {
+            .killer-skills-section,
+            .heat-check-section,
+            .stash-section,
+            .cowork-home-section,
+            .saas-packs-section,
+            .level-up-section,
+            .features {
+                padding: var(--space-8) var(--space-4);
+            }
+        }
+
     </style>
 
     <!-- Schema.org Structured Data -->
