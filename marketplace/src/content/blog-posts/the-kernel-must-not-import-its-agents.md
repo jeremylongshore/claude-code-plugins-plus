@@ -36,7 +36,7 @@ Before the extraction, the watcher lived inside AGP. After it, AGP has zero know
 
 The boundary has two halves, and they are not the same rule. The headline half is the thesis: **the kernel imports nothing from the leaf** — it does not know the agents that compose it exist. The mirror half constrains the leaf: **the leaf may import only the kernel's frozen contracts, never the daemon's internals** — where "the daemon" is the kernel's live governance loop (`runMediated()`) and the machinery around it. The composed agent composes the contracts the kernel publishes; it never reaches past them into implementation.
 
-Put together, the two halves define one edge: it runs from agent (leaf) to kernel, touches only the published surface, and never runs the other way. A governance kernel that imports the agents it governs breaks the acyclic-dependency rule — it is a governance kernel you cannot reason about. You can no longer point at it and say "this small thing decides and records; here is its trust boundary" — because its [trust boundary](/posts/govern-at-merge-untrusted-union/) now includes every agent that ever leaked into it.
+Put together, the two halves define one edge: it runs from agent (leaf) to kernel, touches only the published surface, and never runs the other way. A governance kernel that imports the agents it governs breaks the acyclic-dependency rule — it is a governance kernel you cannot reason about. You can no longer point at it and say "this small thing decides and records; here is its trust boundary" — because its [trust boundary](https://startaitools.com/posts/govern-at-merge-untrusted-union/) now includes every agent that ever leaked into it.
 
 So the extraction had two acceptance tests, both structural:
 
@@ -122,7 +122,7 @@ You cannot smuggle a change like this through as a patch. The whole value of the
 
 Here is the detail worth teaching, because it is the one that bites. The watcher was not a dormant module. It was **running in production** on a cron: `~/bin/intendants-release-watch.sh`, firing on a schedule, in a governed loop, on a real repo.
 
-Extracting a *running* component is a live-migration problem, not a code move. If you merge the kernel PR that removes `agp watch` while production cron still calls `agp watch`, you have — for however long it takes to notice — a production job pointed at [a command that no longer exists](/posts/every-safety-gate-has-a-failure-direction/).
+Extracting a *running* component is a live-migration problem, not a code move. If you merge the kernel PR that removes `agp watch` while production cron still calls `agp watch`, you have — for however long it takes to notice — a production job pointed at [a command that no longer exists](/blog/every-safety-gate-has-a-failure-direction/).
 
 So the order was inverted deliberately:
 

@@ -298,9 +298,9 @@ The meta-lesson is the method itself. Six independent lenses, each forced to **v
 
 ## Related Posts
 
-- [The Moat Is the Trust Layer: Turning a Local-RAG App into a BYOK Document-Intelligence Platform](/posts/the-moat-is-the-trust-layer-nexus-byok-rag/) — where adversarially reviewing the *graders* caught the eval suite lying green.
-- [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/) — why one gate crashes fail-closed on bad data while a swallowed error lets another pass fail-open.
-- [Noise-Robust LLM-Judge Evals: Don't Sign a Coin Flip](/posts/noise-robust-signed-llm-judge-evals/) — on not trusting a measurement you haven't proven can go red.
+- [The Moat Is the Trust Layer: Turning a Local-RAG App into a BYOK Document-Intelligence Platform](/blog/the-moat-is-the-trust-layer-nexus-byok-rag/) — where adversarially reviewing the *graders* caught the eval suite lying green.
+- [Every Safety Gate Has a Failure Direction](/blog/every-safety-gate-has-a-failure-direction/) — why one gate crashes fail-closed on bad data while a swallowed error lets another pass fail-open.
+- [Noise-Robust LLM-Judge Evals: Don't Sign a Coin Flip](/blog/noise-robust-signed-llm-judge-evals/) — on not trusting a measurement you haven't proven can go red.
 
 <script type="application/ld+json">
 {

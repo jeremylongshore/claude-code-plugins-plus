@@ -84,7 +84,7 @@ The fix was dropping `| urlencode` from the address while keeping it on the subj
 
 First, identity. `docker compose exec -T app cat /app/BUILD_SHA` must equal `git rev-parse HEAD` on the checkout. If the file is absent at all, it fails with "image predates the provable deploy work" rather than skipping the check.
 
-Second, liveness. The container health status must be `healthy`. That check is necessary and nowhere near sufficient, for [the reason a health endpoint is not a correctness signal](/posts/liveness-without-health-is-theater/): this container was healthy the entire time it served the wrong files.
+Second, liveness. The container health status must be `healthy`. That check is necessary and nowhere near sufficient, for [the reason a health endpoint is not a correctness signal](/blog/liveness-without-health-is-theater/): this container was healthy the entire time it served the wrong files.
 
 Third, and this is the one that changes how the whole thing behaves: the served page must carry markers that only the current commit can produce. It is fetched through the same loopback and header path that Caddy uses, so the assertion runs against the real request path:
 
@@ -99,7 +99,7 @@ Four assertions on that response body:
 3. The Credly badge iframe marker `embedded_badge` is present. This one specifically proves the volume refresh landed, because the stale volume copy predates the badge entirely.
 4. Neither `unpkg.com` nor `cdn.jsdelivr.net` appears anywhere in the response.
 
-The first two checks, identity and liveness, are about the container. This third check, the four assertions above, is about the bytes on the wire. A deploy check that only asks the orchestrator whether it is happy cannot detect a volume shadowing an image, because from the orchestrator's point of view nothing is wrong. You have to assert on what the user receives, and the assertion has to name a marker that only the new commit can produce. "The page returned 200" would have passed happily for the entire period the site was stale. A check that runs is not the same thing as a check that [validates something](/posts/passing-is-not-validating/).
+The first two checks, identity and liveness, are about the container. This third check, the four assertions above, is about the bytes on the wire. A deploy check that only asks the orchestrator whether it is happy cannot detect a volume shadowing an image, because from the orchestrator's point of view nothing is wrong. You have to assert on what the user receives, and the assertion has to name a marker that only the new commit can produce. "The page returned 200" would have passed happily for the entire period the site was stale. A check that runs is not the same thing as a check that [validates something](/blog/passing-is-not-validating/).
 
 ## The gate that failed its own first run
 

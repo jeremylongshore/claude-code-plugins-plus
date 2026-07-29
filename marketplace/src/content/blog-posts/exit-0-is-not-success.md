@@ -21,7 +21,7 @@ They are bad at the question operators actually care about:
 - Did the export write the expected tables, not an empty stub?
 - Did the watchdog that was supposed to catch all of the above still run?
 
-If your only gate is the process exit code, every one of those can fail while the dashboard stays green. We already ship that lesson in other forms ([empty data that passed as clean](/posts/empty-is-not-clean/), [liveness without health](/posts/liveness-without-health-is-theater/), [gates that fail open](/posts/every-safety-gate-has-a-failure-direction/)). Automation was the next place the same shape showed up.
+If your only gate is the process exit code, every one of those can fail while the dashboard stays green. We already ship that lesson in other forms ([empty data that passed as clean](/blog/empty-is-not-clean/), [liveness without health](/blog/liveness-without-health-is-theater/), [gates that fail open](/blog/every-safety-gate-has-a-failure-direction/)). Automation was the next place the same shape showed up.
 
 ## What we shipped: independent outcome verification
 
@@ -96,6 +96,6 @@ Exit 0 means the process finished. Outcome verification means the work finished.
 
 ## Related Posts
 
-- [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/posts/empty-is-not-clean/)
-- [Liveness Without Health Is Theater](/posts/liveness-without-health-is-theater/)
-- [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
+- [Empty Is Not Clean: Five Fail-Open Bugs in an AI Agent](/blog/empty-is-not-clean/)
+- [Liveness Without Health Is Theater](/blog/liveness-without-health-is-theater/)
+- [Every Safety Gate Has a Failure Direction](/blog/every-safety-gate-has-a-failure-direction/)

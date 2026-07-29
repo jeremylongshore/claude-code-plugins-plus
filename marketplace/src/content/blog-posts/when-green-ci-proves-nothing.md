@@ -87,13 +87,13 @@ jobs:
 
 **The transferable lesson:** an integration test that exercises zero of the thing under test is worse than a red one, because that fake-green reads as "covered" when it covered nothing. The fix is not "trust the green." It is to assert that the test did the work. For a governance gate, that assertion is `gated_count > 0`. A green check is a claim. The evidence bundle is the proof. This generalizes everywhere: any test whose green can be reached without exercising the property it claims should fail closed when the property was not exercised.
 
-Also shipped: the sprite→intendant rename (ADR 038). Fly.io ships "Sprites" at sprites.dev—stateful sandboxes for AI agents with Claude Code as an explicit use case. A direct product/lane collision. "Intendant" is the agent-noun of Latin *intendere*, the root of *intent*, "one who executes on behalf of an authority." And the cross-repo echo: CCSC (AGP's substrate) shipped a "footgun-inversion" regression-test epic the same week, pinning fail-closed defaults (session isolation, "every policy decision is journaled—no gaps"). The same move as the no-fake-green guard: prove the safety property holds rather than trust it. This echoes the principle we follow in [honoring the gate when the verdict is inconvenient](/posts/honor-the-gate-when-the-verdict-is-inconvenient/) — the gate is only as good as your commitment to enforcing it even when it blocks your path.
+Also shipped: the sprite→intendant rename (ADR 038). Fly.io ships "Sprites" at sprites.dev—stateful sandboxes for AI agents with Claude Code as an explicit use case. A direct product/lane collision. "Intendant" is the agent-noun of Latin *intendere*, the root of *intent*, "one who executes on behalf of an authority." And the cross-repo echo: CCSC (AGP's substrate) shipped a "footgun-inversion" regression-test epic the same week, pinning fail-closed defaults (session isolation, "every policy decision is journaled—no gaps"). The same move as the no-fake-green guard: prove the safety property holds rather than trust it. This echoes the principle we follow in [honoring the gate when the verdict is inconvenient](/blog/honor-the-gate-when-the-verdict-is-inconvenient/) — the gate is only as good as your commitment to enforcing it even when it blocks your path.
 
 **Related Posts:**
 
-- [Honor the Gate When the Verdict Is Inconvenient](/posts/honor-the-gate-when-the-verdict-is-inconvenient/)
-- [The Two Postgres Bugs the Tests Caught: A Real-DB Integration Test Case Study](/posts/postgres-approval-sink-bugs-the-tests-caught/)
-- [Human-in-the-Loop Is a Delivery Guarantee, Not a UI Feature](/posts/hitl-delivery-is-a-fail-closed-exactly-once-problem/)
+- [Honor the Gate When the Verdict Is Inconvenient](/blog/honor-the-gate-when-the-verdict-is-inconvenient/)
+- [The Two Postgres Bugs the Tests Caught: A Real-DB Integration Test Case Study](/blog/postgres-approval-sink-bugs-the-tests-caught/)
+- [Human-in-the-Loop Is a Delivery Guarantee, Not a UI Feature](/blog/hitl-delivery-is-a-fail-closed-exactly-once-problem/)
 
 <script type="application/ld+json">
 {

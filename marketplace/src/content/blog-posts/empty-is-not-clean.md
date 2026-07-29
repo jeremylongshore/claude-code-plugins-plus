@@ -165,6 +165,6 @@ That's the throughline for all of it. Guardrails for an AI agent are not feature
 
 ## Related posts
 
-- [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/) — the underlying principle: every gate fails in *some* direction, and you have to choose it on purpose.
-- [Adversarial Review Before Team Rollout](/posts/adversarial-review-before-team-rollout/) — all five of these bugs came from pointing hostile reviewers at the core before anyone depended on it.
-- [When a Relevance Score Broke the Cite-or-Refuse Gate](/posts/relevance-score-broke-cite-or-refuse-gate/) — another fail-open gate, another case of absence quietly reading as permission.
+- [Every Safety Gate Has a Failure Direction](/blog/every-safety-gate-has-a-failure-direction/) — the underlying principle: every gate fails in *some* direction, and you have to choose it on purpose.
+- [Adversarial Review Before Team Rollout](/blog/adversarial-review-before-team-rollout/) — all five of these bugs came from pointing hostile reviewers at the core before anyone depended on it.
+- [When a Relevance Score Broke the Cite-or-Refuse Gate](/blog/relevance-score-broke-cite-or-refuse-gate/) — another fail-open gate, another case of absence quietly reading as permission.

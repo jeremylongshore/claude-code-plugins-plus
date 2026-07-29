@@ -275,4 +275,4 @@ Issue tracker, blueprint set, and roadmap are all in the repo. The next cut is E
 
 - [Claude Code Plugin Marketplace Launch](/blog/claude-code-plugin-marketplace-launch/) — the marketplace this plugin and its sister-pack ship through
 - [Building a Production-Ready Research Tool That Outperforms Anthropic's](/blog/building-production-ready-research-tool-outperforms-anthropic/) — another MCP-fronted system, different domain
-- [IRSB Ecosystem](/irsb-ecosystem/) — companion ecosystem hub for the broader Intent Solutions integration story
+- [IRSB Ecosystem](https://startaitools.com/irsb-ecosystem/) — companion ecosystem hub for the broader Intent Solutions integration story

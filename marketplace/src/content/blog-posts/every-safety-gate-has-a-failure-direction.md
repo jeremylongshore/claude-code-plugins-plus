@@ -136,9 +136,9 @@ In parallel, a control-bypass after-action was filed in the `intent-os` governan
 
 ## Related Reading
 
-- [The Relevance Score That Broke Our Cite-or-Refuse Gate](/posts/relevance-score-broke-cite-or-refuse-gate/)
-- [Gate the Statement, Not the Tool Name](/posts/gate-the-statement-not-the-tool-name/)
-- [Human-in-the-Loop Is a Delivery Guarantee, Not a UI Feature](/posts/hitl-delivery-is-a-fail-closed-exactly-once-problem/)
+- [The Relevance Score That Broke Our Cite-or-Refuse Gate](/blog/relevance-score-broke-cite-or-refuse-gate/)
+- [Gate the Statement, Not the Tool Name](/blog/gate-the-statement-not-the-tool-name/)
+- [Human-in-the-Loop Is a Delivery Guarantee, Not a UI Feature](/blog/hitl-delivery-is-a-fail-closed-exactly-once-problem/)
 
 <script type="application/ld+json">
 {

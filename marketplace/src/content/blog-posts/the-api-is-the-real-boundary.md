@@ -107,7 +107,7 @@ A member can bypass the client gate by hand-crafting an HTTP request. They canno
 
 This is the obvious approach, and it's worth naming exactly why it's wrong rather than waving at it. If you only gate the MCP client — register write tools for admins, hide them from members — you've shipped a system where security depends on every member using the official install and never reaching past it. The model is constrained, sure. But the model is not the attacker. The user behind the model is, and the user can talk to the API any way they like.
 
-The MCP client is not the security boundary. The API is. Every credential the client holds, the user holds. Every endpoint the client calls, the user can call. The instant you treat "the tool isn't registered" as an access control, you've moved the enforcement to the one layer the user fully controls. Client gating with no server gate is theater. Server gating with no client gate works but shows members dead buttons. You want both, and you have to know which one is [load-bearing](/posts/honor-the-gate-when-the-verdict-is-inconvenient/).
+The MCP client is not the security boundary. The API is. Every credential the client holds, the user holds. Every endpoint the client calls, the user can call. The instant you treat "the tool isn't registered" as an access control, you've moved the enforcement to the one layer the user fully controls. Client gating with no server gate is theater. Server gating with no client gate works but shows members dead buttons. You want both, and you have to know which one is [load-bearing](/blog/honor-the-gate-when-the-verdict-is-inconvenient/).
 
 ## Audit: the access log is not the governance trail
 
@@ -155,6 +155,6 @@ The legacy single-key fallback stays for back-compat: an existing `TEAMKB_API_KE
 
 **Related posts:**
 
-- [Green CI Proves Nothing: Why Your Tests Gate Zero Calls](/posts/when-green-ci-proves-nothing/)
-- [Honor the Gate When the Verdict Is Inconvenient](/posts/honor-the-gate-when-the-verdict-is-inconvenient/)
-- [When --cap-drop ALL Broke the Gate Socket](/posts/cap-drop-all-broke-the-gate-socket/)
+- [Green CI Proves Nothing: Why Your Tests Gate Zero Calls](/blog/when-green-ci-proves-nothing/)
+- [Honor the Gate When the Verdict Is Inconvenient](/blog/honor-the-gate-when-the-verdict-is-inconvenient/)
+- [When --cap-drop ALL Broke the Gate Socket](/blog/cap-drop-all-broke-the-gate-socket/)

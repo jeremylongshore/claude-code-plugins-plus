@@ -38,7 +38,7 @@ A *mutant* is a one-character change: `===` becomes `!==`, `&&` becomes `||`, a 
 
 The 301 mutants in the engine were all no-coverage. Stryker never even got to run them against a test, because there was no unit test visiting that file.
 
-Meanwhile, the repo's overall line coverage sat at 69.09%—and the engine's lines were executed via the E2E path, counting toward that number. Coverage says "this line ran." Mutation testing says "this line's behavior is pinned down by assertions"—call it assertion coverage. They are not the same metric, and a [green CI run](/posts/when-green-ci-proves-nothing/) only tells you about the first.
+Meanwhile, the repo's overall line coverage sat at 69.09%—and the engine's lines were executed via the E2E path, counting toward that number. Coverage says "this line ran." Mutation testing says "this line's behavior is pinned down by assertions"—call it assertion coverage. They are not the same metric, and a [green CI run](/blog/when-green-ci-proves-nothing/) only tells you about the first.
 
 ## The Stryker Setup
 
@@ -64,7 +64,7 @@ Meanwhile, the repo's overall line coverage sat at 69.09%—and the engine's lin
 
 The `mutate` array targets four high-value pure-logic files. Stryker baseline runs in ~30 seconds. The `break: null` is deliberate: report the score, but do not fail CI. Establish a baseline first. Ratchet later.
 
-This is the inverse of the "fail immediately on every finding" instinct. A fresh gate that blocks on day one gets disabled by the next engineer. Report-only first. Let the team see the numbers. Then make it enforceable—and [honor the gate](/posts/honor-the-gate-when-the-verdict-is-inconvenient/) when its verdict is inconvenient.
+This is the inverse of the "fail immediately on every finding" instinct. A fresh gate that blocks on day one gets disabled by the next engineer. Report-only first. Let the team see the numbers. Then make it enforceable—and [honor the gate](/blog/honor-the-gate-when-the-verdict-is-inconvenient/) when its verdict is inconvenient.
 
 ## Why E2E Wasn't Enough
 
@@ -131,9 +131,9 @@ Coverage measures attendance. Mutation testing measures whether anyone was payin
 
 ## Related Posts
 
-- [Green CI Proves Nothing: Why Your Tests Gate Zero Calls](/posts/when-green-ci-proves-nothing/) — a passing test suite that asserts on nothing.
-- [Honor the Gate When the Verdict Is Inconvenient](/posts/honor-the-gate-when-the-verdict-is-inconvenient/) — the discipline of trusting the gate's verdict.
-- [When LLM Output Lies Instead of Crashing](/posts/when-llm-output-lies-instead-of-crashing/) — the same intent-mail codebase: "it ran without erroring" is not "it's correct."
+- [Green CI Proves Nothing: Why Your Tests Gate Zero Calls](/blog/when-green-ci-proves-nothing/) — a passing test suite that asserts on nothing.
+- [Honor the Gate When the Verdict Is Inconvenient](/blog/honor-the-gate-when-the-verdict-is-inconvenient/) — the discipline of trusting the gate's verdict.
+- [When LLM Output Lies Instead of Crashing](/blog/when-llm-output-lies-instead-of-crashing/) — the same intent-mail codebase: "it ran without erroring" is not "it's correct."
 
 <script type="application/ld+json">
 {

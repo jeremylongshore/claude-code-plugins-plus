@@ -105,7 +105,7 @@ s.add(
 
 The bug is pinned where members would feel it, not where the code happens to be convenient to test.
 
-And it was [mutation-checked](/posts/coverage-vs-mutation-testing-rules-engine/), which is the part most teams skip. Restore the pre-fix `db/tools.py`, run the pin test: it fails exactly the way members experienced it, link count zero, enroll button present. Restore the fix: green. A test that has never failed for the right reason is not yet a test.
+And it was [mutation-checked](/blog/coverage-vs-mutation-testing-rules-engine/), which is the part most teams skip. Restore the pre-fix `db/tools.py`, run the pin test: it fails exactly the way members experienced it, link count zero, enroll button present. Restore the fix: green. A test that has never failed for the right reason is not yet a test.
 
 Deps live in `e2e/requirements.txt` outside the hash-pinned `test.lock`, because playwright wheels are platform-variant. The job shipped advisory, labelled that way in the workflow, which mattered a few hours later.
 
@@ -147,7 +147,7 @@ This is adjacent work that shipped the same day, and the sequencing decision is 
 
 The best of the four: the intake's rate-limit bucket sweep ran on every request and walked every bucket while holding the lock. An attacker holding N live buckets (one IPv6 /64 is enough) made every later POST an O(N) critical section. The anti-spam control becomes the amplifier. Now it sweeps on a 60 second interval with a hard 10k-bucket cap and oldest-first eviction.
 
-Also shipped in that commit: an https scheme check before `urlopen` (the `# nosec B310` there was suppressing exactly the check that would catch a misconfigured `file://` webhook), gitleaks pinned to a digest and the review action pinned to a commit SHA (that action receives a secret and holds `pull-requests: write`, so a moved tag is the worst case), and `deploy-smoke.sh` dropped its 404 arm, because a missing course 302s identically, so a 404 could only mean the blueprint stopped registering, which is the exact regression the smoke exists to catch and the arm was swallowing. That last one belongs with the lockout: [a check that accepted the failure it was written to detect](/posts/every-safety-gate-has-a-failure-direction/).
+Also shipped in that commit: an https scheme check before `urlopen` (the `# nosec B310` there was suppressing exactly the check that would catch a misconfigured `file://` webhook), gitleaks pinned to a digest and the review action pinned to a commit SHA (that action receives a secret and holds `pull-requests: write`, so a moved tag is the worst case), and `deploy-smoke.sh` dropped its 404 arm, because a missing course 302s identically, so a 404 could only mean the blueprint stopped registering, which is the exact regression the smoke exists to catch and the arm was swallowing. That last one belongs with the lockout: [a check that accepted the failure it was written to detect](/blog/every-safety-gate-has-a-failure-direction/).
 
 ## Three failures, one shape: surfaces the checks could not see
 
@@ -163,6 +163,6 @@ The transferable lesson sits in one place: the lockout, the compose regression, 
 
 ## Related Posts
 
-- [When LLM Output Lies Instead of Crashing](/posts/when-llm-output-lies-instead-of-crashing/) : another failure class that returns success while being wrong
-- [Two False-Positive Fixes, Same Root Cause](/posts/two-false-positive-fixes-same-root-cause/) : checks that pass for the wrong reason
-- [Verify the System Map Against Live Infra](/posts/verify-system-map-against-live-infra/) : measuring reality instead of trusting the document
+- [When LLM Output Lies Instead of Crashing](/blog/when-llm-output-lies-instead-of-crashing/) : another failure class that returns success while being wrong
+- [Two False-Positive Fixes, Same Root Cause](/blog/two-false-positive-fixes-same-root-cause/) : checks that pass for the wrong reason
+- [Verify the System Map Against Live Infra](https://startaitools.com/posts/verify-system-map-against-live-infra/) : measuring reality instead of trusting the document
