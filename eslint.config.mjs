@@ -75,6 +75,9 @@ export default [
         URL: 'readonly',
         URLSearchParams: 'readonly',
         fetch: 'readonly',
+        // Web-standard, available as a Node global since 16 — same class as `fetch`
+        // above. Needed by scripts/fetch-skills-stats.mjs for a request timeout.
+        AbortController: 'readonly',
         setTimeout: 'readonly',
         setInterval: 'readonly',
         clearTimeout: 'readonly',
