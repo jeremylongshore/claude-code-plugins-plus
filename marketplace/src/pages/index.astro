@@ -1072,7 +1072,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <section class="hero">
         <div class="hero-inner">
             <h1><span class="hero-text-muted">TONS OF</span><br/><span class="hero-text-primary">SKILLS</span></h1>
-            <p class="hero-byline">by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a></p>
+            <p class="hero-byline">by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a> &middot; <a href="https://intentsolutions.io" target="_blank" rel="noopener">intent solutions io</a></p>
 
             {npmPublished > 0 && (
                 <div class="hero-sponsor-marquee hero-stats-marquee">
@@ -1098,6 +1098,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
             <p class="hero-subtitle">
                 Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.
+                {npmMonth > 0 && (
+                    <> {fmtNum(npmMonth)} npm downloads across {npmPublished} packages in the last 30 days.</>
+                )}
             </p>
 
             <!-- Hero Search Bar -->
