@@ -112,9 +112,12 @@ closure note about stale-branch pollution.
 
 ### 6.2 Anchor `sources.yaml` `include` patterns with a leading `/`
 
-The source-intake check rejects unanchored patterns outright, and the sync matcher
-expands unanchored patterns to match at any depth (which can admit nested files
-from inside a plugin's sparse-checkout subtree).
+The source-intake check rejects unanchored patterns outright. The sync matcher
+also matches unanchored patterns at any depth (because the matcher auto-prefixes
+`**/` to any pattern that doesn't start with `/` or `**`); this can admit nested
+files from inside a plugin's sparse-checkout subtree. See
+`scripts/sync-lint-ignores.mjs` and the `--check-source-anchoring` mode for the
+exact behavior in this version.
 
 **Wrong:**
 
@@ -158,19 +161,21 @@ The marketplace-tier validator checks both directions of the `allowed-tools` fie
   `validate-skills-schema.py --marketplace` which empty/short form is accepted
   (the project's exact empty-string semantics in this field are validator-specific
   and may change; do not codify them in your head and skip the validator).
-- **Last verified against the validator:** this guidance is process advice, not
-  a normative rule. Run the validator locally and treat its output as the
-  source of truth.
+
+Run the validator locally and treat its output as the source of truth.
 
 ### 6.4 SKILL.md body sections for marketplace tier
 
 The marketplace-tier validator checks that the SKILL.md body contains a set of
-top-level sections that a Claude Code reader can navigate. The canonical names
-vary by validator version; the table below is the synonym list a contributor
-should recognize. **The structural rule is: use these as top-level `##` headings
-so the validator's section-name matcher can find them in order.** A "Phase 0 /
-Phase 1 / ..." workflow is valid content but the *outer* headings should be
-recognized names with the phase breakdown nested underneath.
+top-level sections that a Claude Code reader can navigate.
+
+**Snapshot — confirm each row against the validator version you run; the
+validator is the source of truth.** The canonical names vary by validator
+version; the table below is the synonym list a contributor should recognize.
+**The structural rule is: use these as top-level `##` headings so the
+validator's section-name matcher can find them in order.** A "Phase 0 / Phase 1
+/ ..." workflow is valid content but the *outer* headings should be recognized
+names with the phase breakdown nested underneath.
 
 | Required heading | Accepted synonyms (verify against the validator you run) |
 |------------------|----------------------------------------------------------|
@@ -182,9 +187,9 @@ recognized names with the phase breakdown nested underneath.
 | `## Examples` | `## Example`, `## Sample`, `## Samples`, `## Usage examples`, `## Example usage` |
 | `## Resources` | `## References`, `## See also`, `## Links`, `## Further reading`, `## Related`, `## Additional resources` |
 
-**Last verified against the validator:** if the synonym list drifts, the
-validator output is the source of truth. Reference: D-grade pre-screen on
-#1070 demonstrated what the section-name mismatch costs.
+If the synonym list drifts, the validator output is the source of truth.
+Reference: D-grade pre-screen on #1070 demonstrated what the section-name
+mismatch costs.
 
 ### 6.5 Don't hand-edit generated catalog artifacts
 
@@ -193,8 +198,9 @@ validator output is the source of truth. Reference: D-grade pre-screen on
 will be overwritten by the next sync and will be flagged on the next review.
 
 Two exceptions:
-- External contributors may submit a single-entry edit to `marketplace.extended.json`
-  directly (the source of truth); the maintainer will run `sync-marketplace` after merge.
+- External contributors should typically submit via the normal intake; if a direct
+  edit to `marketplace.extended.json` is acceptable for your submission, the
+  maintainer will run `sync-marketplace` after merge.
 - `sources.yaml` is itself a source-of-truth file (Path B). Edit it directly.
 
 ### 6.6 External mirrors: register both files, not one
@@ -222,19 +228,16 @@ treats them as separate concerns; see
 
 ### 6.7 `entry` field in `plugin.json`
 
-The `plugin.json` schema is enforced by the marketplace validator and the
-plugin loader. A top-level `entry: "src/index.js"` is not a recognized field
-under the schema versions this doc has been verified against; consumers will
-ignore it. If the entry point matters for a plugin you ship, the supported
-locations are:
+**Snapshot of the field list as of this PR; open the schema your validator runs
+against before relying on this list.** The `plugin.json` schema is enforced by
+the marketplace validator and the plugin loader. A top-level `entry: "src/index.js"`
+is not a recognized field under the schema versions this doc has been verified
+against; consumers will ignore it. If the entry point matters for a plugin you
+ship, the supported locations are:
 
 - For an MCP server: `mcpServers.<name>.args` (relative or absolute path).
 - For a CLI runner: `commands[].path` or a `package.json` `bin` entry that
   `npx -y <package>` resolves.
-
-**Last verified against the schema:** the recognized field list evolves with
-the validator. Open the schema file your validator runs against before
-relying on this list.
 
 ### 6.8 Don't bump versions you didn't change
 
