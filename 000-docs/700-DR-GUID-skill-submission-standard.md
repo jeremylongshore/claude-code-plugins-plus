@@ -144,28 +144,36 @@ include:
 
 Reference: review notes on #1083 and #1103.
 
-### 6.3 `allowed-tools` must be scoped and matched by the body
+### 6.3 `allowed-tools` scoping and accuracy
 
-The marketplace-tier validator rules:
+The marketplace-tier validator checks both directions of the `allowed-tools` field:
 
-- **Unscoped `Bash` is not allowed.** Use `Bash(git:*)`, `Bash(npm:*)`, `Bash(curl:*)`
-  etc. and add a `## Safety Justification` section explaining the scope.
-- **Every tool declared in `allowed-tools` must actually appear in the body**
-  (otherwise the validator's `allowed-tools-accuracy` tier-2 check warns).
-- **Pure-reasoning skills still need the field** — use `allowed-tools: ""` (empty
-  string) or `allowed-tools: Read` if the skill reads user pastes from the
-  conversation.
+- **Don't over-declare.** Every tool declared in `allowed-tools` must actually
+  appear in the body. Declaring tools the skill never uses flags the
+  `allowed-tools-accuracy` tier-2 check as a warning.
+- **Don't under-declare.** If the body uses `curl` or `Bash`, the frontmatter
+  must declare it; bare `Bash` in the body with `allowed-tools: Read, WebFetch`
+  in the frontmatter will trip the validator.
+- **Pure-reasoning skills still need the field.** Confirm with
+  `validate-skills-schema.py --marketplace` which empty/short form is accepted
+  (the project's exact empty-string semantics in this field are validator-specific
+  and may change; do not codify them in your head and skip the validator).
+- **Last verified against the validator:** this guidance is process advice, not
+  a normative rule. Run the validator locally and treat its output as the
+  source of truth.
 
-The same applies if the body uses `curl`/`Bash` but the frontmatter doesn't declare
-it — the validator will warn.
+### 6.4 SKILL.md body sections for marketplace tier
 
-### 6.4 SKILL.md body sections must match the marketplace-tier taxonomy
+The marketplace-tier validator checks that the SKILL.md body contains a set of
+top-level sections that a Claude Code reader can navigate. The canonical names
+vary by validator version; the table below is the synonym list a contributor
+should recognize. **The structural rule is: use these as top-level `##` headings
+so the validator's section-name matcher can find them in order.** A "Phase 0 /
+Phase 1 / ..." workflow is valid content but the *outer* headings should be
+recognized names with the phase breakdown nested underneath.
 
-The tier-2 marketplace validator looks for the canonical section names (or their
-accepted synonyms):
-
-| Required heading | Accepted synonyms |
-|------------------|-------------------|
+| Required heading | Accepted synonyms (verify against the validator you run) |
+|------------------|----------------------------------------------------------|
 | `## Overview` | `## Summary`, `## About`, `## What it does`, `## Introduction`, `## Purpose`, `## Capabilities` |
 | `## Prerequisites` | `## Requirements`, `## Setup`, `## Dependencies`, `## Installation` |
 | `## Instructions` | `## Usage`, `## How to use`, `## How it works`, `## Steps`, `## Workflow`, `## Guide`, `## Getting started` |
@@ -174,11 +182,9 @@ accepted synonyms):
 | `## Examples` | `## Example`, `## Sample`, `## Samples`, `## Usage examples`, `## Example usage` |
 | `## Resources` | `## References`, `## See also`, `## Links`, `## Further reading`, `## Related`, `## Additional resources` |
 
-A "Phase 0 / Phase 1 / ..." workflow is valid content but must be nested *under*
-`## Instructions` (not used as the top-level heading). The validator looks at the
-top-level `##` headings, not the entire outline.
-
-Reference: D-grade pre-screen on #1070.
+**Last verified against the validator:** if the synonym list drifts, the
+validator output is the source of truth. Reference: D-grade pre-screen on
+#1070 demonstrated what the section-name mismatch costs.
 
 ### 6.5 Don't hand-edit generated catalog artifacts
 
@@ -191,21 +197,44 @@ Two exceptions:
   directly (the source of truth); the maintainer will run `sync-marketplace` after merge.
 - `sources.yaml` is itself a source-of-truth file (Path B). Edit it directly.
 
-### 6.6 Use `sources.yaml`, not `.source.json`
+### 6.6 External mirrors: register both files, not one
 
-The repo's load format for Path B sync is `sources.yaml`. A `.source.json` marker
-inside a plugin directory will be ignored by `sync-external.mjs`. If you want
-auto-sync to keep your plugin current against the upstream, add a `sources.yaml`
-entry. If you don't, drop the `.source.json` marker — it's dead weight.
+Path B mirrors use **two files** that work together. Do not collapse them into one:
 
-### 6.7 `entry` is not a standard `plugin.json` field
+- **`sources.yaml`** is the catalog-level registry. It tells the sync engine
+  *which* upstream repos to clone, *where* in `plugins/` to mirror them, and
+  governs the per-source metadata (category, verified, curated, license).
+  Omitting this means the sync engine will never pick up your mirror.
+- **`.source.json`** is the per-plugin marker that the supply-chain guardrail
+  keys on. It tells the next maintainer (and the audit pipeline) that *this
+  directory* is a mirror of an external repo, records the upstream path/branch,
+  and is what triggers the orphan-prune + ownership semantics in
+  `[698] external-sync threat model`. Omitting this means future edits land
+  without the "this is a mirror" warning, and the engine can no longer
+  distinguish locally-hardened code from upstream code.
 
-`plugin.json` is consumed by the marketplace catalog and the plugin loader. The
-recognized fields are name, version, description, author, license, repository, and
-(optionally) keywords, components, hooks. A top-level `entry: "src/index.js"` is
-ignored and may mislead readers. If the entry point matters, put it inside
-`mcpServers.<name>.args` as the resolved path (or use `npx -y <package>` for
-cross-platform reproducibility).
+If you want your plugin to be auto-synced from upstream, **add both**: a
+`sources.yaml` entry that drives the sync, plus the `.source.json` marker that
+marks the mirror. If you only want the marker (no auto-sync), keep the
+`.source.json` so the supply-chain guardrail still works. The review process
+treats them as separate concerns; see
+`[709] reviewing external PRs` for the lane definitions.
+
+### 6.7 `entry` field in `plugin.json`
+
+The `plugin.json` schema is enforced by the marketplace validator and the
+plugin loader. A top-level `entry: "src/index.js"` is not a recognized field
+under the schema versions this doc has been verified against; consumers will
+ignore it. If the entry point matters for a plugin you ship, the supported
+locations are:
+
+- For an MCP server: `mcpServers.<name>.args` (relative or absolute path).
+- For a CLI runner: `commands[].path` or a `package.json` `bin` entry that
+  `npx -y <package>` resolves.
+
+**Last verified against the schema:** the recognized field list evolves with
+the validator. Open the schema file your validator runs against before
+relying on this list.
 
 ### 6.8 Don't bump versions you didn't change
 
