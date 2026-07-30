@@ -13,9 +13,21 @@ of this initiative.
 
 ## Section A — Gate architecture
 
-**A1.** **Two:** `ci-required` and `gitleaks` (plus one approving code-owner
-review, which is a review requirement, not a status check). Naming both status
-contexts is the must-get.
+**A1.** **Three:** `ci-required`, `gitleaks`, and `skill-conform` (plus one
+approving code-owner review, which is a review requirement, not a status check).
+
+`skill-conform` (added 2026-07-23) runs `audit-harness conform --strict` over the
+whole marketplace corpus from its **own** workflow, `skill-conform.yml`.
+
+**The follow-up is the real test.** `skill-conform` is deliberately NOT in
+`ci-required`'s `needs:` list. Per `000-docs/110` § 5, a skippable or path-scoped
+job must never be able to green the aggregate — inside `needs:` a `skipped`
+result counts as a pass (see A2), so folding it in would let a skipped
+conformance run silently satisfy the gate. It therefore always-reports as its own
+required context.
+
+Naming all three contexts is the must-get; explaining why the third stands alone
+is what separates a Reviewer answer from an Approver answer.
 
 **A2.** `ci-required` is the final aggregate job in `validate-plugins.yml`
 (`if: always()`, `needs:` all the real gate jobs). It reads the `needs` results
@@ -42,8 +54,8 @@ recreates the stuck-PR class.
 
 ## Section B — Advisory vs. blocking
 
-**A6.** **Yes, it can merge.** The deterministic gate is `ci-required` + `gitleaks`
-+ code-owner approval. Greptile is advisory — read it and address real findings,
+**A6.** **Yes, it can merge.** The deterministic gate is `ci-required` +
+`gitleaks` + `skill-conform` + code-owner approval. Greptile is advisory — read it and address real findings,
 but an AI reviewer's opinion is never the thing that blocks or merges code.
 (Full credit requires the principle: deterministic CI is the gate, AI review is
 advice.)
