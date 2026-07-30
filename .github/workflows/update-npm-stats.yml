@@ -92,10 +92,13 @@ jobs:
 
           git push --force-with-lease origin "$BRANCH"
 
-          # `gh pr view <branch>` also matches MERGED/CLOSED PRs, so after the
-          # first PR (#786) merged this check always "succeeded" and no new PR
-          # was ever opened — main's npm-stats.json silently froze for 6 weeks
-          # (estate audit finding F5). Only an OPEN PR counts.
+          # Detect the existing PR by listing only OPEN PRs (estate audit
+          # finding F5). The previous `gh pr view <branch>` approach matched
+          # MERGED/CLOSED PRs too, so after the first PR (#786) merged this
+          # check always returned success and no new PR was opened —
+          # marketplace/src/data/npm-stats.json silently froze for 6 weeks.
+          # Fix landed by switching to `gh pr list --state open`. Keep this
+          # gate OPEN-only; do not revert to `gh pr view`.
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create \
               --title "📦 Daily npm download stats refresh" \
