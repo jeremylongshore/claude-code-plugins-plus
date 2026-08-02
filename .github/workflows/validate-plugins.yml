@@ -199,6 +199,13 @@ jobs:
       - name: Validate internal doc links resolve (deterministic half of link-check)
         run: node scripts/check-internal-doc-links.mjs
 
+      # Same placement rationale as the doc-links step above: a step in `validate`,
+      # which is already in ci-required's needs, so it is blocking with no change
+      # to branch protection. Scans untracked files too, so a scratch note that
+      # never gets committed still trips it locally before it can reach a diff.
+      - name: Validate design-reference anonymity (name-leak gate)
+        run: bash scripts/name-leak-gate.sh
+
       - name: Validate cascading Greptile configuration
         run: |
           node --test scripts/validate-greptile-config.test.mjs

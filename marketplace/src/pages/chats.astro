@@ -33,7 +33,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         .header-title {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
@@ -76,9 +76,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         .btn {
             padding: 0.5rem 1rem;
-            border-radius: 6px;
+            border-radius: 0;
             border: none;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
@@ -114,7 +114,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .input-group input {
             flex: 1;
             padding: 0.5rem;
-            border-radius: 6px;
+            border-radius: 0;
             border: 1px solid var(--brand-light-gray);
             background: var(--brand-light);
             color: var(--brand-dark);
@@ -142,7 +142,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         .empty-state-icon :global(svg) { width: 48px; height: 48px; }
 
         .empty-state-title {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
@@ -151,7 +151,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         .event-card {
             background: var(--card);
-            border-radius: 8px;
+            border-radius: 0;
             padding: 1rem;
             margin-bottom: 1rem;
             
@@ -201,7 +201,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         .event-type {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-size: 0.875rem;
             font-weight: 600;
             color: var(--brand-dark);

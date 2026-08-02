@@ -32,7 +32,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 800;
       margin: 0 0 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       line-height: 1.2;
     }
 
@@ -60,7 +60,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: 2rem;
       font-weight: 800;
       display: block;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .cowork-hero-stat .stat-label {
@@ -72,7 +72,7 @@ const allPlugins = manifest?.plugins || [];
     .mega-banner {
       background: var(--card);
       border: 3px solid var(--brand-blue, #6a9bcc);
-      border-radius: 16px;
+      border-radius: 0;
       padding: 2rem;
       max-width: 800px;
       margin: -2rem auto 0;
@@ -89,7 +89,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: 1.5rem;
       font-weight: 800;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .mega-info p {
@@ -110,7 +110,7 @@ const allPlugins = manifest?.plugins || [];
       border-radius: var(--radius-sm);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       color: var(--ink-2, var(--brand-mid-gray));
     }
 
@@ -122,13 +122,13 @@ const allPlugins = manifest?.plugins || [];
       background: var(--brand-blue, #6a9bcc);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 0;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -149,7 +149,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: 1.75rem;
       font-weight: 800;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .cowork-section-subtitle {
@@ -162,7 +162,7 @@ const allPlugins = manifest?.plugins || [];
     .security-banner {
       background: var(--panel, var(--surface-2));
       border: 1px solid var(--rule, var(--brand-light-gray));
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem 2rem;
       margin: 2rem auto;
       max-width: 1200px;
@@ -172,7 +172,7 @@ const allPlugins = manifest?.plugins || [];
       color: var(--ink, var(--brand-dark));
       font-size: 1.1rem;
       margin: 0 0 0.75rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .security-list {
@@ -192,7 +192,7 @@ const allPlugins = manifest?.plugins || [];
     /* Setup guide */
     .setup-guide {
       background: var(--brand-light, #f8f9fa);
-      border-radius: 16px;
+      border-radius: 0;
       padding: 2.5rem;
       margin-top: 2rem;
     }
@@ -208,7 +208,7 @@ const allPlugins = manifest?.plugins || [];
       text-align: center;
       padding: 1.5rem;
       background: var(--card);
-      border-radius: 12px;
+      border-radius: 0;
       border: 1px solid var(--brand-light-gray, #e5e7eb);
     }
 
@@ -217,14 +217,14 @@ const allPlugins = manifest?.plugins || [];
       font-weight: 500;
       font-size: 1.1rem;
       margin-bottom: 0.75rem;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .setup-step h4 {
       font-size: 1rem;
       font-weight: 700;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .setup-step p {
@@ -237,7 +237,7 @@ const allPlugins = manifest?.plugins || [];
     /* Learning path */
     .learning-path {
       background: var(--signal-tint);
-      border-radius: 16px;
+      border-radius: 0;
       padding: 2.5rem;
       margin-top: 2rem;
     }
@@ -246,7 +246,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: 1.3rem;
       font-weight: 800;
       margin: 0 0 0.75rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .learning-path p {
@@ -268,12 +268,12 @@ const allPlugins = manifest?.plugins || [];
       background: var(--card);
       color: #92400e;
       border: 2px solid #f59e0b;
-      border-radius: 8px;
+      border-radius: 0;
       text-decoration: none;
       font-weight: 600;
       font-size: 0.9rem;
       transition: all 0.2s;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .learning-link:hover {
@@ -291,7 +291,7 @@ const allPlugins = manifest?.plugins || [];
       max-width: 500px;
       padding: 0.75rem 1rem 0.75rem 2.5rem;
       border: 2px solid var(--brand-light-gray, #e5e7eb);
-      border-radius: 10px;
+      border-radius: 0;
       font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
@@ -318,7 +318,7 @@ const allPlugins = manifest?.plugins || [];
       padding: 0.75rem 1rem;
       background: var(--card);
       border: 1px solid var(--brand-light-gray, #e5e7eb);
-      border-radius: 8px;
+      border-radius: 0;
       gap: 0.5rem;
     }
 
@@ -345,7 +345,7 @@ const allPlugins = manifest?.plugins || [];
       background: var(--brand-blue, #6a9bcc);
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 0;
       font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
@@ -441,7 +441,7 @@ const allPlugins = manifest?.plugins || [];
     .official-resources {
       background: var(--surface-2);
       border: 2px solid #cbd5e1;
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.75rem 2rem;
       max-width: 1200px;
       margin: 2rem auto;
@@ -451,7 +451,7 @@ const allPlugins = manifest?.plugins || [];
       font-size: 1.35rem;
       font-weight: 800;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .official-resources > p {

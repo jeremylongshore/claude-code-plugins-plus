@@ -51,7 +51,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .hero-title {
-    font-family: 'Inter Tight', sans-serif;
+    font-family: var(--font-display);
     font-size: var(--text-3xl);
     font-weight: 800;
     letter-spacing: -0.025em;
@@ -65,7 +65,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .hero-subtitle {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     font-size: var(--text-lg);
     color: var(--ink-2);
     margin-bottom: 2.5rem;
@@ -145,7 +145,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .install-note,
   .intent-note {
     margin-top: 1rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.875rem;
     color: var(--ink-2);
     line-height: 1.55;

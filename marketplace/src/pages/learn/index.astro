@@ -74,7 +74,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
       color: var(--ink-2);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .tier-description {
@@ -91,7 +91,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
     .vendor-card {
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem;
       transition: all 0.2s ease;
       text-decoration: none;
@@ -147,7 +147,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
       text-align: center;
       padding: 2rem;
       background: var(--brand-light-gray);
-      border-radius: 12px;
+      border-radius: 0;
       color: var(--brand-mid-gray);
     }
 

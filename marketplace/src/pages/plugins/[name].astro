@@ -370,7 +370,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     text-decoration: none;
     margin-bottom: 2rem;
     font-size: 0.95rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: opacity var(--duration-fast) var(--ease-out);
   }
 
@@ -387,7 +387,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text, var(--brand-dark));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .meta {
@@ -396,7 +396,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     gap: 0.75rem;
     align-items: center;
     font-size: 0.9rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .meta-item {
@@ -407,7 +407,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     background: var(--surface-2, var(--brand-light-gray));
     border: 1px solid var(--border, var(--brand-mid-gray));
     padding: 0.25rem 0.75rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text, var(--brand-dark));
@@ -447,7 +447,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
     overflow-x: auto;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   .stat-item {
@@ -490,7 +490,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text, var(--brand-dark));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .section-hint {
@@ -526,7 +526,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: white;
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .copy-btn:hover {
@@ -572,7 +572,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     background: none;
     border: none;
     color: var(--primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -604,8 +604,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   .readme-content :global(code) {
     background: var(--surface-3, var(--brand-light-gray));
     padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    border-radius: 0;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
   }
 
@@ -667,7 +667,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-size: 0.85rem;
     color: var(--text-2, var(--brand-mid-gray));
     font-weight: 500;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .info-value {
@@ -689,7 +689,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-sm);
     font-size: 11px;
     font-weight: 500;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   /* Skill Gist Explorer */
@@ -717,7 +717,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 500;
     color: var(--text-2, var(--brand-mid-gray));
     cursor: pointer;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: all var(--duration-fast) var(--ease-out);
   }
 
@@ -778,7 +778,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   }
 
   .gist-filename {
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--primary);
@@ -793,7 +793,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: var(--text-3, var(--brand-mid-gray));
     text-decoration: none;
     white-space: nowrap;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: color var(--duration-fast) var(--ease-out);
   }
 
@@ -825,7 +825,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   }
 
   .tool-pill {
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     padding: 2px 8px;
     border-radius: var(--radius-sm);
@@ -850,8 +850,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   .gist-content-inner :global(code) {
     background: var(--surface-3, var(--brand-light-gray));
     padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    border-radius: 0;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
   }
 
@@ -888,7 +888,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-3, var(--brand-mid-gray));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .tags-list {
@@ -903,7 +903,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-sm);
     font-size: 11px;
     color: var(--text-2, var(--brand-mid-gray));
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   .repo-link {
@@ -913,7 +913,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: var(--primary);
     text-decoration: none;
     font-size: 0.95rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-weight: 500;
   }
 

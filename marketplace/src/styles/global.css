@@ -96,7 +96,7 @@ code {
   background: var(--panel-2);
   color: var(--ink);
   padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  border-radius: 0;
   font-size: 0.875em;
   border: 1px solid var(--rule);
 }
@@ -104,7 +104,7 @@ code {
 pre {
   background: var(--panel);
   border: 1px solid var(--rule);
-  border-radius: 0.5rem;
+  border-radius: 0;
   padding: 1rem;
   overflow-x: auto;
   margin: 1rem 0;
@@ -165,7 +165,7 @@ pre code {
 
 ::-webkit-scrollbar-thumb {
   background: var(--rule);
-  border-radius: 5px;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {

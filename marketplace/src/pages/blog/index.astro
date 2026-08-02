@@ -73,7 +73,7 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
   }
   .blog-hero-inner { max-width: 42rem; margin: 0 auto; }
   .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--primary);
     text-transform: uppercase;
@@ -107,7 +107,7 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
     display: block;
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 2rem;
     text-decoration: none;
     transition: border-color 0.2s, transform 0.2s;
@@ -125,24 +125,24 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
     flex-wrap: wrap;
   }
   time {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--text-3);
   }
   .featured-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     padding: 0.2rem 0.6rem;
     background: oklch(54.489% 0.2115 16.96 / 0.15);
     color: var(--red);
-    border-radius: 4px;
+    border-radius: 0;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .post-card h2 {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text);
@@ -162,12 +162,12 @@ const description = "Technical deep-dives, AI development patterns, and lessons 
     flex-wrap: wrap;
   }
   .tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
     background: var(--surface-3);
     color: var(--text-3);
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   @media (max-width: 768px) {

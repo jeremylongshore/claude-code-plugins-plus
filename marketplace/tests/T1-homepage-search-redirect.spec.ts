@@ -1,86 +1,54 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * T1: Homepage Search Redirect Test
+ * T1: Homepage → search entry point
  *
- * Tests that the homepage search control navigates to /explore
- * when interacted with and that the search is functional.
+ * REWRITTEN 2026-08-02 (neobrutalist pass). The homepage used to carry a hero
+ * search input (`#hero-search-input`) plus All/Plugins/Skills toggle buttons
+ * whose only job was to bounce the visitor to /explore with a type filter. The
+ * homepage is now a single action — the install block — and search is reached
+ * through the nav.
+ *
+ * The redirect-on-focus behaviour is genuinely gone, so those three cases could
+ * not be "fixed", only re-pointed at what replaced them. What is covered now:
+ * the homepage still offers a path to search, and the search that path leads to
+ * still works — which is the user-facing guarantee those tests actually existed
+ * to protect. The /explore-side coverage (last case) is unchanged.
  */
 
-test.describe('Homepage Search Redirect', () => {
-  test('should navigate to /explore when search input is focused (desktop)', async ({ page }) => {
-    // Load homepage
+test.describe('Homepage search entry point', () => {
+  test('homepage exposes a route to explore', async ({ page }) => {
     await page.goto('/');
+    await expect(page).toHaveTitle(/Tons of Skills/);
 
-    // Verify homepage loaded
-    await expect(page).toHaveTitle(/Skills Hub/);
+    // At least one link to /explore must exist in the document. On mobile the
+    // nav is collapsed behind a toggle, so this asserts presence in the DOM
+    // rather than visibility — the mobile-nav interaction is T3's job.
+    const exploreLinks = page.locator('a[href*="/explore"]');
+    expect(await exploreLinks.count()).toBeGreaterThan(0);
 
-    // Find the search input on homepage
-    const searchInput = page.locator('#hero-search-input');
-    await expect(searchInput).toBeVisible();
-
-    // Redirect happens on focus/click
-    await Promise.all([
-      page.waitForURL(/\/explore/),
-      searchInput.click({ force: true }),
-    ]);
-
-    await expect(page).toHaveURL(/\/explore/);
-
-    // Take screenshot of homepage search (viewport only to avoid >32767px limit)
-    await page.screenshot({
-      path: 'test-results/screenshots/T1-homepage-search.png'
-    });
+    await page.screenshot({ path: 'test-results/screenshots/T1-homepage-search.png' });
   });
 
-  test('should navigate to /explore when search input is tapped (mobile viewport)', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-
+  test('homepage no longer carries its own search input', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Skills Hub/);
 
-    const searchInput = page.locator('#hero-search-input');
-    await expect(searchInput).toBeVisible();
-
-    // Use click instead of tap - tap requires hasTouch context which desktop Chrome lacks
-    await Promise.all([
-      page.waitForURL(/\/explore/),
-      searchInput.click({ force: true }),
-    ]);
-
-    await expect(page).toHaveURL(/\/explore/);
-  });
-
-  // Skip on webkit and mobile - toggle buttons have visibility/rendering issues
-  test('should navigate to /explore with type filter when toggle is clicked', async ({ page, browserName }, testInfo) => {
-    test.skip(browserName === 'webkit', 'Toggle buttons have visibility issues on webkit');
-    test.skip(testInfo.project.name.includes('mobile'), 'Toggle buttons have visibility issues on mobile viewports');
-
-    await page.goto('/');
-    await expect(page).toHaveTitle(/Skills Hub/);
-
-    const pluginsToggle = page.locator('button.toggle-btn[data-type="plugin"]');
-    await expect(pluginsToggle).toBeVisible();
-
-    await Promise.all([
-      page.waitForURL(/\/explore\?type=plugin/),
-      pluginsToggle.click({ force: true }),
-    ]);
-
-    await expect(page).toHaveURL(/\/explore\?type=plugin/);
+    // Guards the design decision rather than merely tolerating it: if a hero
+    // search is ever re-added to the homepage, this fails and forces the
+    // "one action per page" call to be made deliberately, not by drift.
+    await expect(page.locator('#hero-search-input')).toHaveCount(0);
+    await expect(page.locator('button.toggle-btn')).toHaveCount(0);
   });
 
   test('should have navigation link to explore or skills', async ({ page }) => {
-    // Load homepage
     await page.goto('/');
 
-    // Find any visible link that goes to explore or skills (exclude hidden nav on mobile)
     const links = page.locator('a[href*="/explore"], a[href*="/skills"]');
     const count = await links.count();
     expect(count).toBeGreaterThan(0);
 
     // Find the first visible link and navigate to its href
-    let href = null;
+    let href: string | null = null;
     for (let i = 0; i < count; i++) {
       if (await links.nth(i).isVisible()) {
         href = await links.nth(i).getAttribute('href');
@@ -97,10 +65,7 @@ test.describe('Homepage Search Redirect', () => {
 
     await expect(page).toHaveURL(/\/explore|\/skills/);
 
-    // Take screenshot
-    await page.screenshot({
-      path: 'test-results/screenshots/T1-skills-page.png'
-    });
+    await page.screenshot({ path: 'test-results/screenshots/T1-skills-page.png' });
   });
 
   test('should navigate to /explore and verify search input is focusable', async ({ page }) => {
@@ -123,8 +88,6 @@ test.describe('Homepage Search Redirect', () => {
     await expect(exploreSearchInput).toHaveValue('test search');
 
     // Take screenshot of /explore page (viewport only to avoid >32767px limit)
-    await page.screenshot({
-      path: 'test-results/screenshots/T1-explore-page.png'
-    });
+    await page.screenshot({ path: 'test-results/screenshots/T1-explore-page.png' });
   });
 });

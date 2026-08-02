@@ -73,13 +73,13 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
       color: var(--ink-2);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       margin-top: 0.5rem;
     }
 
     .install-section {
       background: var(--panel); border: 1px solid var(--rule);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem;
       margin-top: 2rem;
     }
@@ -95,7 +95,7 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
       font-size: 1rem;
       background: var(--bg); border: 1px solid var(--rule);
       padding: 0.75rem 1rem;
-      border-radius: 8px;
+      border-radius: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -106,7 +106,7 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
       color: var(--brand-dark);
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 0;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.85rem;
@@ -140,7 +140,7 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
       border: 1px solid var(--rule);
       color: var(--brand-mid-gray);
       font-size: 11px;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       padding: 2px 8px;
       border-radius: var(--radius-sm);
     }
@@ -154,7 +154,7 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
     .skill-card {
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 10px;
+      border-radius: 0;
       padding: 1rem;
       transition: all 0.2s ease;
     }
@@ -192,7 +192,7 @@ const tierBadgeClass = vendor.tier === 'flagship+' ? 'tier-badge flagship-plus' 
     .link-card {
       background: var(--card);
       padding: 1.5rem;
-      border-radius: 10px;
+      border-radius: 0;
       flex: 1;
       min-width: 250px;
       text-decoration: none;
