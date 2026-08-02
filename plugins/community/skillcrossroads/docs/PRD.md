@@ -42,6 +42,14 @@ it by hand.
   surface it to the user.
 - **FR-4:** Offer an embeddable SVG badge (`--badge`) once the final grade is reported.
 
+## Package naming
+
+The upstream CLI is the un-scoped `skillcrossroads` npm package, maintained at
+[github.com/sgharlow/skillcrossroads](https://github.com/sgharlow/skillcrossroads). The
+`package.json` in this plugin directory is the marketplace's generated tracking/proof
+artifact and follows the repo-wide convention of publishing catalog plugins under the
+`@intentsolutionsio` npm scope; it is not the CLI and not an ownership claim over it.
+
 ## Out of scope
 
 - Grading artifacts other than by delegating to the CLI (no hand-rolled rubric in the skill).

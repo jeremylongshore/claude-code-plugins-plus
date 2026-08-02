@@ -123,6 +123,8 @@ acknowledged by the user as intentional), and the before → after grades are re
 
 ## Resources
 
+- [references/rubric-categories.md](references/rubric-categories.md) — the six rubric categories, their weights, and keyless vs. LLM-upgraded coverage.
+- [references/flags-quick-reference.md](references/flags-quick-reference.md) — `--markdown` / `--suggest` / `--badge` / `--min-grade` at a glance.
 - [skillcrossroads on npm](https://www.npmjs.com/package/skillcrossroads) — the CLI this skill runs (pinned to 0.11.3).
 - [skillcrossroads.com](https://skillcrossroads.com) — hosted scans, badges, and per-check fix documentation.
 - [Check reference](https://skillcrossroads.com/docs/checks) — what every rubric check measures and how to fix it.
