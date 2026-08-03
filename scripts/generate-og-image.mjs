@@ -67,7 +67,9 @@ try {
 }
 
 const fmt = (n) => (typeof n === 'number' ? n.toLocaleString('en-US') : null);
-const headline = fmt(skills) ? `${fmt(skills)} SKILLS FOR<br/>CLAUDE CODE.` : 'SKILLS FOR<br/>CLAUDE CODE.';
+const headline = fmt(skills)
+  ? `${fmt(skills)} SKILLS FOR<br/>CLAUDE CODE.`
+  : 'SKILLS FOR<br/>CLAUDE CODE.';
 const sub = fmt(plugins)
   ? `${fmt(plugins)} plugins · agents · skills — free and open source`
   : 'plugins · agents · skills — free and open source';
@@ -116,7 +118,10 @@ try {
   ({ chromium } = await import('playwright'));
 }
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({
+  viewport: { width: 1200, height: 630 },
+  deviceScaleFactor: 1,
+});
 await page.setContent(HTML, { waitUntil: 'networkidle' });
 // Give the webfont a beat to swap in; otherwise the card can render in the
 // fallback monospace, which is legible but off-brand.
