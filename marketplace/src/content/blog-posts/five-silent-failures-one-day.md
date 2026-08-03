@@ -291,6 +291,6 @@ Silent failures don't get worse over time. They get more confident. Each green c
 
 ## Related Posts
 
-- [Deterministic-first, LLM-advisory CI](/blog/deterministic-first-llm-advisory-ci/) — the broader argument for keeping reject/accept decisions in code that can be reasoned about, with model output as advisory signal
-- [Three guards against shipping slop](/blog/three-guards-against-shipping-slop/) — earlier examples of the same assert-the-work pattern in plugin merges
+- [Deterministic-first, LLM-advisory CI](https://startaitools.com/posts/deterministic-first-llm-advisory-ci/) — the broader argument for keeping reject/accept decisions in code that can be reasoned about, with model output as advisory signal
+- [Three guards against shipping slop](https://startaitools.com/posts/three-guards-against-shipping-slop/) — earlier examples of the same assert-the-work pattern in plugin merges
 - [Two false-positive fixes, same root cause](/blog/two-false-positive-fixes-same-root-cause/) — when two unrelated bugs share an underlying shape

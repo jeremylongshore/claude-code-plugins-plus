@@ -87,4 +87,4 @@ R2 follow-up email sent (closing the credibility gap from a May 5 commitment). O
 
 - [Enforcement travels with the code: audit-harness v0.1.0](/blog/audit-harness-v010-enforcement-travels-with-code/)
 - [Building an AI-friendly codebase: real-time CLAUDE.md creation](/blog/building-ai-friendly-codebase-documentation-real-time-claude-md-creation-journey/)
-- [Wild deep dive #2: CLAUDE.md as a resume-from-cold tool](/blog/wild-deep-dive-2-claude-md/)
+- [Wild deep dive #2: CLAUDE.md as a resume-from-cold tool](https://startaitools.com/posts/wild-deep-dive-2-claude-md/)

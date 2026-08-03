@@ -118,6 +118,6 @@ Two PRs. About 15 files changed. 614 insertions. The viewer went from "demo-qual
 
 ### Related Posts
 
-- [IntentCAD: Entity Selection + Diff Detection UX](/blog/intentcad-entity-selection-diff-detection-ux) — the PR that built the selection system this work extends
-- [IntentCAD: Pascal Editor, Cached Index & Tool Narrowing](/blog/intentcad-pascal-editor-cached-index-tool-narrowing) — performance work on the backend that pairs with these frontend improvements
+- [IntentCAD: Entity Selection + Diff Detection UX](https://startaitools.com/posts/intentcad-entity-selection-diff-detection-ux/) — the PR that built the selection system this work extends
+- [IntentCAD: Pascal Editor, Cached Index & Tool Narrowing](https://startaitools.com/posts/intentcad-pascal-editor-cached-index-tool-narrowing/) — performance work on the backend that pairs with these frontend improvements
 - [Write Once, Publish Everywhere — Content Distribution Infra](/blog/write-once-publish-everywhere-content-distribution-infra) — the pipeline that publishes these posts

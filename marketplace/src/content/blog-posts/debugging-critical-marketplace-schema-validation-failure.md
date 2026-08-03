@@ -340,7 +340,7 @@ https://claudecodeplugins.io/
 
 ## Related Reading
 
-- [Building Production Testing Suite with Playwright and GitHub Actions](/blog/building-production-testing-suite-playwright-github-actions-survey-automation/) - More CI/CD automation patterns
+- [Building Production Testing Suite with Playwright and GitHub Actions](https://startaitools.com/posts/building-production-testing-suite-playwright-github-actions-survey-automation/) - More CI/CD automation patterns
 - [Deploying Next.js 15 to Google Cloud Run with Custom Domains](/blog/deploying-nextjs-15-google-cloud-run-custom-domain-ssl/) - Production deployment best practices
 - [Master Directory Standards Prompt for Repository Organization](/blog/master-directory-standards-prompt-repository-organization/) - Keeping codebases organized
 

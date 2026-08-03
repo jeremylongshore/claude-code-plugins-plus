@@ -426,7 +426,7 @@ When designing multi-agent systems, be mindful of:
 - **Rate limits.** Multiple agents running in parallel consume API tokens faster. Consider using the `maxTurns` field to cap each agent's iteration count.
 - **Ordering.** Some agents may depend on the output of others. Structure your orchestration to respect these dependencies.
 
-For production multi-agent patterns, see the [Multi-Agent Rate Limits playbook](/playbooks/multi-agent-rate-limits).
+For production multi-agent patterns, see the [Multi-Agent Rate Limits playbook](/playbooks/01-multi-agent-rate-limits/).
 
 ## Quality Standards
 

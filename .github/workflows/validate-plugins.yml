@@ -206,6 +206,14 @@ jobs:
       - name: Validate design-reference anonymity (name-leak gate)
         run: bash scripts/name-leak-gate.sh
 
+      # BaseLayout emits og:image -> /og-image.png on every page. That file had
+      # NEVER been committed, so 3,830 built pages advertised an image that
+      # returned 404 and every link preview of the site rendered blank — for the
+      # life of the site, with nothing failing to signal it. This asserts the
+      # file exists; regenerate with `node scripts/generate-og-image.mjs`.
+      - name: Validate social-card image exists (og:image)
+        run: node scripts/generate-og-image.mjs --check
+
       - name: Validate cascading Greptile configuration
         run: |
           node --test scripts/validate-greptile-config.test.mjs
