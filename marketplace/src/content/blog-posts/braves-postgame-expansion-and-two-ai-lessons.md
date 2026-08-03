@@ -88,7 +88,7 @@ Respond with ONLY valid JSON (no markdown, no explanation):
 ${JSON.stringify(exampleSchema)}`;
 ```
 
-No preamble. No prose. Just JSON. The LLM returns a schema-compliant blob reliably on the first try. The same structured-output discipline shows up in other contexts too — see [AI code review without context: a blind test](/blog/ai-code-review-without-context-blind-test/) for the same "schema in, schema out" pattern applied to PR review.
+No preamble. No prose. Just JSON. The LLM returns a schema-compliant blob reliably on the first try. The same structured-output discipline shows up in other contexts too — see [AI code review without context: a blind test](https://startaitools.com/posts/ai-code-review-without-context-blind-test/) for the same "schema in, schema out" pattern applied to PR review.
 
 The frontend (`RedditConsensusCard`) renders a border colored by tone: elation → green, anger → red. MOST-DISCUSSED pills show the top mentions. Two-column layout for PRAISE / COMPLAINTS. A quote block for the CONTRARIAN TAKE. No "AI-generated" label. No asterisks.
 
@@ -110,7 +110,7 @@ The label was noise. Worse, it was a liability signal. In 2026, "AI" is still ad
 
 The viewer doesn't care whether the headline came from an LLM or a human intern. They care if it's accurate. If the Reddit Consensus headline is correct, the AI label is unnecessary. If it's wrong, the AI label is an excuse. Either way, remove it.
 
-This is a small product move but a large product lesson. Your AI features should disappear into the experience. If they're labeled, you've admitted they're not good enough yet. The same instinct shows up in how roadmap decisions get made too — see the [collaboratively-shaped roadmap](/blog/collaboratively-shaped-roadmap/) for how feature framing gets shaped by the same discipline.
+This is a small product move but a large product lesson. Your AI features should disappear into the experience. If they're labeled, you've admitted they're not good enough yet. The same instinct shows up in how roadmap decisions get made too — see the [collaboratively-shaped roadmap](https://startaitools.com/posts/collaboratively-shaped-roadmap/) for how feature framing gets shaped by the same discipline.
 
 ## Why Not the Obvious Approaches?
 
@@ -122,8 +122,8 @@ This is a small product move but a large product lesson. Your AI features should
 
 ## Related Posts
 
-- [Collaboratively-Shaped Roadmap: Product Decisions at the Intersection of Engineering Clarity and Business Pressure](/blog/collaboratively-shaped-roadmap/)
-- [AI Code Review Without Context: The Blind Test](/blog/ai-code-review-without-context-blind-test/)
+- [Collaboratively-Shaped Roadmap: Product Decisions at the Intersection of Engineering Clarity and Business Pressure](https://startaitools.com/posts/collaboratively-shaped-roadmap/)
+- [AI Code Review Without Context: The Blind Test](https://startaitools.com/posts/ai-code-review-without-context-blind-test/)
 - [AI-Assisted Technical Writing: Automation Workflows That Respect the Author](/blog/ai-assisted-technical-writing-automation-workflows/)
 
 <script type="application/ld+json">

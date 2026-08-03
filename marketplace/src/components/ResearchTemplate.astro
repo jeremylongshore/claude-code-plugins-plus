@@ -7,6 +7,11 @@ interface Props {
   wordCount: number;
 }
 
+// Bundled by Astro and emitted as a hashed /_astro/ asset — replaces the
+// `<link href="/styles/global.css">` that 404'd, since src/styles is a source
+// directory and was never copied to public/.
+import '../styles/global.css';
+
 const { title, description, domain, domainSlug, wordCount } = Astro.props;
 const readTime = Math.round(wordCount / 200);
 const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
@@ -19,7 +24,25 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} | Research | Claude Code Plugins</title>
   <meta name="description" content={description}>
-  <link rel="stylesheet" href="/styles/global.css">
+
+  <!-- This template does NOT use BaseLayout, so everything below has to be
+       declared here. Three things were missing, all found by auditing the built
+       output on 2026-08-03:
+
+       1. It linked `/styles/global.css` — a SOURCE path that is never published,
+          so all six /research/ pages fired a 404 for their stylesheet on every
+          visit and rendered without the global styles they were written against.
+          Astro bundles the import below instead, which cannot 404.
+       2. No webfont, so these pages rendered in a system font while the rest of
+          the site is JetBrains Mono (DESIGN.md § 3).
+       3. No analytics tag, so /research/ traffic was invisible in Umami — these
+          pages were absent from the numbers any traffic decision was based on. -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="0cee47ed-bee5-48da-8fed-46b3d8a2ddd3" data-domains="tonsofskills.com,www.tonsofskills.com"></script>
 </head>
 <body>
   <div class="research-page">

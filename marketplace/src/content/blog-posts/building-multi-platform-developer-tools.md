@@ -197,6 +197,6 @@ This project demonstrates capabilities employers value:
 ## Related Work
 
 - [Automating Developer Workflows with Custom AI Commands](/blog/automating-developer-workflows-custom-ai-commands/) - Original command implementation
-- [Building the World's First Universal AI Diagnostic Platform](/blog/building-worlds-first-universal-ai-diagnostic-platform/) - Large-scale platform architecture
+- [Building the World's First Universal AI Diagnostic Platform](https://startaitools.com/posts/building-worlds-first-universal-ai-diagnostic-platform/) - Large-scale platform architecture
 
 ---
