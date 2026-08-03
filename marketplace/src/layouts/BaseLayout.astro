@@ -13,15 +13,24 @@ interface Props {
   canonical?: string;
 }
 
-const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png", canonical } = Astro.props;
+// The fallback description carries NO counts, deliberately. It used to say
+// "244 searchable agent skills and 259 plugins" — stale by an order of
+// magnitude (actual: 3,000+ / 470+). It happens to render on zero pages today
+// because every page passes its own description, which is exactly why nobody
+// noticed it rotting. A number in an unmaintained fallback is a landmine: the
+// next page added without a description would have shipped that claim to
+// search engines. Pages that want counts pass a description with live
+// build-time values, as the homepage does.
+const { title, description = "Browse agent skills and plugins for Claude Code. Fuzzy search, interactive tutorials, and production-ready tools.", image = "/og-image.png", canonical } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
-// The partner badge is a homepage-only footer element. Matching both forms
-// because Astro emits `/` in dev and `/` with a trailing slash in the built
-// output depending on trailingSlash config — checking one would silently drop
-// the badge in whichever mode did not match.
-const isHome = currentPath === '/' || currentPath === '';
+// The partner badge is a homepage-only footer element.
+// `Astro.url.pathname` always begins with '/', so a `=== ''` branch would be
+// unreachable — an earlier version of this line had one, with a comment about
+// trailingSlash that did not describe what it actually guarded against.
+// Removed rather than left as harmless-but-misleading.
+const isHome = currentPath === '/';
 ---
 
 <!DOCTYPE html>
@@ -787,8 +796,8 @@ const isHome = currentPath === '/' || currentPath === '';
                         />
                     </a>
                     <span class="footer-badge-text">
-                        Built by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a><br />
-                        <a href="https://intentsolutions.io" target="_blank" rel="noopener">intent solutions io</a>
+                        Built by <a href="https://jeremylongshore.com" target="_blank" rel="noopener noreferrer">Jeremy Longshore</a><br />
+                        <a href="https://intentsolutions.io" target="_blank" rel="noopener noreferrer">intent solutions io</a>
                     </span>
                 </div>
             )}
