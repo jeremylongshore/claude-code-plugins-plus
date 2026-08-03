@@ -167,7 +167,20 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             {installsDisplay && (<><span class="home-meta-sep">·</span> {installsDisplay} installs</>)}
         </p>
 
+        <!-- Browse is FIRST and is the only on-site action in this row.
+             Before 2026-08-03 both buttons here pointed off-site (GitHub,
+             Sponsor), so a visitor who did not copy the install command had no
+             route deeper into the site except the nav. Umami for the week to
+             2026-08-03: `/` took 324 entries and 225 exits — a 69% exit rate —
+             and `/explore/` recorded MORE exits (224) than entries (191),
+             meaning it is where sessions end rather than a waypoint. Giving the
+             homepage an explicit in-body handoff is the cheapest repair.
+             The install block remains the single hard-shadowed CTA; this is a
+             secondary action and is styled as one. -->
         <div class="home-actions">
+            <a class="btn btn-browse" href="/explore/">
+                Browse {fmt(totalSkills)} skills &rarr;
+            </a>
             <a
                 class="btn"
                 href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills"
@@ -375,6 +388,19 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         .btn:hover {
             border-color: var(--signal);
             background: var(--signal-tint);
+        }
+
+        /* The on-site action gets the signal border at rest so it reads as the
+           default next step among three otherwise-identical buttons. It stays a
+           bordered button, NOT a filled one — DESIGN.md § 4 allows one primary
+           CTA per page and the install block is already it. */
+        .btn-browse {
+            border-color: var(--signal-edge);
+        }
+
+        .btn-browse:hover {
+            background: var(--signal-tint);
+            border-color: var(--signal);
         }
 
         /* Focus must stay obvious now that nothing is rounded — a square outline
