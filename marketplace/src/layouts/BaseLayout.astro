@@ -539,20 +539,27 @@ const isHome = currentPath === '/';
             border-bottom-color: var(--signal);
         }
 
+        /* Unchanged from before the badge row was introduced. An earlier
+           revision of this PR also added `margin-top: var(--space-5)` here; it
+           was removed because `.footer-columns` already carries
+           `margin-bottom: var(--space-6)` (32px) directly above, and adjacent
+           vertical margins collapse — the 24px was absorbed and did nothing on
+           every non-homepage page. Measured: the columns-to-footer-bottom gap is
+           32px with or without it. Keeping it would have been an unexplained
+           no-op in the diff. */
         .footer-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: var(--space-5);
-            /* The badge row above already draws the separating rule when it is
-               present, so drawing a second one here would double it on the
-               homepage. */
             border-top: 1px solid var(--border);
             flex-wrap: wrap;
             gap: var(--space-3);
-            margin-top: var(--space-5);
         }
 
+        /* Homepage only. The badge row above already draws the separating rule,
+           so this drops the second one rather than doubling it, and supplies its
+           own spacing since there is no collapsing margin to inherit here. */
         .footer-badge-row + .footer-bottom {
             border-top: 0;
             padding-top: 0;
