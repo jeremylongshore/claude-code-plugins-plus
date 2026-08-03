@@ -17,6 +17,11 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
 const currentPath = Astro.url.pathname;
 const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
+// The partner badge is a homepage-only footer element. Matching both forms
+// because Astro emits `/` in dev and `/` with a trailing slash in the built
+// output depending on trailingSlash config — checking one would silently drop
+// the badge in whichever mode did not match.
+const isHome = currentPath === '/' || currentPath === '';
 ---
 
 <!DOCTYPE html>
@@ -480,14 +485,64 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             color: var(--text);
         }
 
+        /* Badge + byline row, sitting above the legal line inside the footer. */
+        .footer-badge-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        .footer-badge-link {
+            display: inline-block;
+            flex-shrink: 0;
+            /* Same hard offset as the install block — DESIGN.md § 6. The badge
+               reads as part of the page's language, not a pasted-on widget. */
+            box-shadow: var(--shadow-hard);
+            border: 1px solid var(--ink);
+            background: var(--panel);
+            padding: var(--space-2);
+            line-height: 0;
+        }
+
+        .footer-badge-img {
+            display: block;
+            width: 64px;
+            height: 64px;
+        }
+
+        .footer-badge-text a {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .footer-badge-text a:hover {
+            border-bottom-color: var(--signal);
+        }
+
         .footer-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: var(--space-5);
+            /* The badge row above already draws the separating rule when it is
+               present, so drawing a second one here would double it on the
+               homepage. */
             border-top: 1px solid var(--border);
             flex-wrap: wrap;
             gap: var(--space-3);
+            margin-top: var(--space-5);
+        }
+
+        .footer-badge-row + .footer-bottom {
+            border-top: 0;
+            padding-top: 0;
+            margin-top: var(--space-4);
         }
 
         .footer-blurb {
@@ -572,7 +627,21 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
 
             .footer-columns {
                 grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-5);
+                gap: var(--space-5) var(--space-4);
+            }
+
+            /* Touch targets: DESIGN.md § 9 and the 44px floor. Footer links were
+               ~20px tall, well under it. Making them 44px costs height per row,
+               which is affordable ONLY because the grid stays 2-up below —
+               6 rows x 44px in the tallest column beats 18 rows stacked. */
+            .footer-col a {
+                display: flex;
+                align-items: center;
+                min-height: 44px;
+            }
+
+            .footer-col li {
+                margin-bottom: 0;
             }
 
             .footer-bottom {
@@ -583,13 +652,20 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             .footer-blurb {
                 max-width: 100%;
             }
-        }
 
-        @media (max-width: 480px) {
-            .footer-columns {
-                grid-template-columns: 1fr;
+            .footer-badge-row {
+                justify-content: center;
+                text-align: left;
             }
         }
+
+        /* NOTE: there is deliberately NO 1-column collapse below 480px.
+           A `@media (max-width: 480px) { .footer-columns { grid-template-columns: 1fr } }`
+           rule used to live here, and it is what turned the phone footer into a
+           single ~18-row list you had to scroll through (reported 2026-08-03).
+           Four short link groups fit 2-up at 375px with room to spare; stacking
+           them buys nothing and costs a screen and a half of scrolling.
+           Do not reintroduce it. */
 
         /* Prevent body scroll when mobile menu is open */
         body.menu-open {
@@ -686,6 +762,36 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
                     </ul>
                 </div>
             </div>
+
+            <!-- Partner badge + byline. Lives INSIDE the real footer rather than
+                 as a separate block above it — the homepage used to end with its
+                 own mini-footer and then the site footer, which read as two
+                 footers stacked. Homepage only, per the rebrand decision; flip
+                 `isHome` to `true` to show it site-wide. -->
+            {isHome && (
+                <div class="footer-badge-row">
+                    <a
+                        class="footer-badge-link"
+                        href="https://www.credly.com/badges/ddf22fb4-0aa6-46b3-a93b-0b45b509e471/public_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            class="footer-badge-img"
+                            src="/claude-partner-badge.png"
+                            width="64"
+                            height="64"
+                            loading="lazy"
+                            decoding="async"
+                            alt="Claude Partner Badge — Claude Code, issued by Anthropic to Jeremy Longshore."
+                        />
+                    </a>
+                    <span class="footer-badge-text">
+                        Built by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a><br />
+                        <a href="https://intentsolutions.io" target="_blank" rel="noopener">intent solutions io</a>
+                    </span>
+                </div>
+            )}
 
             <div class="footer-bottom">
                 <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect.</p>
