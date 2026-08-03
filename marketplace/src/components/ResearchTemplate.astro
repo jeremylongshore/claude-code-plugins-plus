@@ -7,9 +7,20 @@ interface Props {
   wordCount: number;
 }
 
-// Bundled by Astro and emitted as a hashed /_astro/ asset — replaces the
-// `<link href="/styles/global.css">` that 404'd, since src/styles is a source
-// directory and was never copied to public/.
+// tokens.css FIRST, then global.css. Both are bundled by Astro into a hashed
+// /_astro/ asset, replacing the `<link href="/styles/global.css">` that 404'd
+// (src/styles is a source directory and was never copied to public/).
+//
+// tokens.css is not optional here and its absence is not cosmetic. Verified on
+// the deployed page: with only global.css, `--font-sans`, `--bg` and `--ink`
+// all resolved to (UNDEFINED) — global.css and this component's own styles are
+// written entirely in `var(--*)`, so EVERY one of those declarations was
+// invalid. The six /research/ pages rendered with no design system at all:
+// Times New Roman on a transparent background.
+//
+// BaseLayout gets these via `@import '../styles/tokens.css'` inside its
+// <style>; this template does not use BaseLayout, so it has to ask for them.
+import '../styles/tokens.css';
 import '../styles/global.css';
 
 const { title, description, domain, domainSlug, wordCount } = Astro.props;
