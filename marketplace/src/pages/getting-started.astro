@@ -134,38 +134,38 @@ const description = 'New to Claude Code plugins? Learn what plugins and skills a
 
 /* Cards */
 .gs-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
-.gs-card{background:var(--brand-light-gray);border:1px solid var(--brand-light-gray);border-radius:.5rem;padding:2rem;text-align:center}
+.gs-card{background:var(--brand-light-gray);border:1px solid var(--brand-light-gray);border-radius:0;padding:2rem;text-align:center}
 .gs-card h3{font-size:1.1rem;color:var(--brand-dark);margin-bottom:.5rem}
 .gs-card p{font-size:.9rem;color:var(--brand-mid-gray);line-height:1.6}
-.gs-card code{background:oklch(67.242% 0.1308 38.76 / .1);padding:.15rem .4rem;border-radius:4px;font-size:.85em;color:var(--primary-dark)}
+.gs-card code{background:oklch(67.242% 0.1308 38.76 / .1);padding:.15rem .4rem;border-radius:0;font-size:.85em;color:var(--primary-dark)}
 
 /* Install paths */
 .gs-install-paths{display:grid;gap:1.5rem}
-.gs-install-path{background:var(--brand-dark);border-radius:.75rem;padding:1.5rem 2rem}
+.gs-install-path{background:var(--brand-dark);border-radius:0;padding:1.5rem 2rem}
 .gs-path-label{font-family:'JetBrains Mono','SF Mono',monospace;font-size:11px;font-weight:500;color:var(--primary);margin-bottom:.75rem}
-.gs-code-block{background:oklch(100.000% 0 0 / .08);border:1px solid oklch(100.000% 0 0 / .15);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.gs-code-block{background:oklch(100.000% 0 0 / .08);border:1px solid oklch(100.000% 0 0 / .15);border-radius:0;padding:.75rem 1rem;margin-bottom:.5rem}
 .gs-code-block code{font-family:'SF Mono','Fira Code',monospace;font-size:.95rem;color:var(--brand-light)}
 .gs-note{font-size:.8rem;color:var(--brand-mid-gray);margin:0}
-.gs-note code{background:oklch(100.000% 0 0 / .1);padding:.1rem .3rem;border-radius:3px;font-size:.85em;color:var(--brand-light-gray)}
+.gs-note code{background:oklch(100.000% 0 0 / .1);padding:.1rem .3rem;border-radius:0;font-size:.85em;color:var(--brand-light-gray)}
 
 /* Steps */
 .gs-steps{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;justify-content:center}
-.gs-step{flex:1;min-width:200px;background:var(--brand-light-gray);border-radius:.5rem;padding:1.5rem;text-align:center}
+.gs-step{flex:1;min-width:200px;background:var(--brand-light-gray);border-radius:0;padding:1.5rem;text-align:center}
 .gs-step-number{color:var(--brand-mid-gray);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono','SF Mono',monospace;font-weight:500;font-size:1.1rem;margin-bottom:.75rem}
 .gs-step-content h3{font-size:1rem;color:var(--brand-dark);margin-bottom:.5rem}
 .gs-step-content p{font-size:.85rem;color:var(--brand-mid-gray);line-height:1.6}
 
 /* Explore grid */
 .gs-explore-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
-.gs-explore-link{display:block;background:var(--brand-light-gray);border:1px solid var(--brand-light-gray);border-radius:.5rem;padding:1.25rem;text-decoration:none;transition:border-color .3s}
+.gs-explore-link{display:block;background:var(--brand-light-gray);border:1px solid var(--brand-light-gray);border-radius:0;padding:1.25rem;text-decoration:none;transition:border-color .3s}
 .gs-explore-link:hover{border-color:var(--primary)}
-.gs-explore-link strong{display:block;font-family:'Inter', system-ui, sans-serif;font-size:.95rem;color:var(--brand-dark);margin-bottom:.25rem}
+.gs-explore-link strong{display:block;font-family:var(--font-body);font-size:.95rem;color:var(--brand-dark);margin-bottom:.25rem}
 .gs-explore-link span{font-size:.85rem;color:var(--brand-mid-gray)}
 
 /* Help */
-.gs-help{text-align:center;padding:2rem;background:var(--brand-light-gray);border-radius:.5rem}
+.gs-help{text-align:center;padding:2rem;background:var(--brand-light-gray);border-radius:0}
 .gs-help p{color:var(--brand-mid-gray);margin-bottom:1rem}
-.gs-help-link{display:inline-block;padding:.75rem 1.5rem;background:var(--primary);color:#0a0a0c;text-decoration:none;border-radius:.375rem;font-family:'Inter', system-ui, sans-serif;font-weight:600;font-size:.9rem}
+.gs-help-link{display:inline-block;padding:.75rem 1.5rem;background:var(--primary);color:#0a0a0c;text-decoration:none;border-radius:0;font-family:var(--font-body);font-weight:600;font-size:.9rem}
 .gs-help-link:hover{background:var(--primary-dark)}
 
 @media(max-width:768px){

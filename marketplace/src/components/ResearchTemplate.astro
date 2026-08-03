@@ -116,7 +116,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-size: 0.875rem;
       margin-bottom: 2rem;
       color: var(--brand-mid-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .breadcrumbs a {
@@ -150,7 +150,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 500;
       border: 1px solid var(--rule);
       margin-bottom: 1rem;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .research-title {
@@ -159,7 +159,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       color: var(--brand-dark);
       margin-bottom: 1rem;
       line-height: 1.1;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-description {
@@ -175,7 +175,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       gap: 0.75rem;
       font-size: 0.875rem;
       color: var(--brand-mid-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .meta-divider {
@@ -210,7 +210,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       color: var(--brand-mid-gray);
       margin-bottom: 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .toc-nav {
@@ -256,7 +256,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid var(--brand-light-gray);
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(h3) {
@@ -266,7 +266,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       margin-top: 2rem;
       margin-bottom: 1rem;
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(h4) {
@@ -276,7 +276,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(p) {
@@ -303,7 +303,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       border-collapse: collapse;
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
       overflow: hidden;
     }
 
@@ -314,7 +314,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       text-align: left;
       padding: 0.75rem 1rem;
       border-bottom: 2px solid var(--brand-light-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(td) {
@@ -330,7 +330,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .research-content :global(pre) {
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
       padding: 1.5rem;
       overflow-x: auto;
       margin: 1.5rem 0;
@@ -362,7 +362,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .research-content :global(.data-point) {
       background: oklch(61.184% 0.0713 127.12 / 0.08);
       border: 1px solid oklch(61.184% 0.0713 127.12 / 0.2);
-      border-radius: 2px;
+      border-radius: 0;
       padding: 1.25rem 1.5rem;
       margin: 1.5rem 0;
     }
@@ -377,7 +377,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       padding: 1.5rem;
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
     }
 
     .cite-title {
@@ -385,7 +385,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       color: var(--brand-mid-gray);
       margin-bottom: 0.75rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .cite-text code {
@@ -416,7 +416,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       transition: color 0.2s ease;
       text-decoration: none;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .back-link:hover {

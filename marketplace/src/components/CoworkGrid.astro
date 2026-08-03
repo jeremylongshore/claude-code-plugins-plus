@@ -52,7 +52,7 @@ if (manifest?.plugins) {
   .cowork-card {
     background: var(--card);
     border: 2px solid var(--brand-light-gray, #e5e7eb);
-    border-radius: 2px;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
@@ -78,7 +78,7 @@ if (manifest?.plugins) {
     font-size: 1.1rem;
     font-weight: 700;
     margin: 0;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .cowork-description {
@@ -98,7 +98,7 @@ if (manifest?.plugins) {
   .cowork-stat {
     background: var(--brand-light, #f8f9fa);
     padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 0;
     font-size: 0.78rem;
     font-weight: 600;
     color: var(--brand-mid-gray, #6b7280);
@@ -121,13 +121,13 @@ if (manifest?.plugins) {
     background: var(--primary);
     color: #0a0a0c;
     border: none;
-    border-radius: 6px;
+    border-radius: 0;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s, transform 0.1s;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .download-btn:hover {
@@ -218,7 +218,7 @@ if (manifest?.plugins) {
 
     const toast = document.createElement('div');
     toast.textContent = 'Downloading ' + category + ' pack...';
-    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius: 2px;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius: 0;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
     document.body.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 2500);
 

@@ -27,7 +27,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       font-size: clamp(1.75rem, 4vw, 2.5rem);
       font-weight: 700;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .page-description {
@@ -40,7 +40,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       text-align: center;
       padding: 4rem 2rem;
       background: var(--brand-light);
-      border-radius: 16px;
+      border-radius: 0;
       margin: 2rem 0;
     }
 
@@ -48,7 +48,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       font-size: 1.5rem;
       font-weight: 600;
       margin: 0 0 0.5rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .empty-text {
@@ -64,9 +64,9 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       background: var(--primary);
       color: #0a0a0c;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 0;
       font-weight: 600;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       transition: background 0.2s;
     }
 
@@ -85,7 +85,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       min-width: 600px;
       border-collapse: collapse;
       background: var(--card);
-      border-radius: 12px;
+      border-radius: 0;
       overflow: hidden;
       
     }
@@ -102,7 +102,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       font-weight: 600;
       font-size: 0.9rem;
       color: var(--brand-mid-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       white-space: nowrap;
     }
 
@@ -147,7 +147,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       color: var(--ink-2, var(--brand-mid-gray));
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .plugin-name {
@@ -165,7 +165,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       background: none;
       border: 1px solid var(--brand-light-gray);
       padding: 0.3rem 0.6rem;
-      border-radius: 4px;
+      border-radius: 0;
       font-size: 0.75rem;
       cursor: pointer;
       color: var(--brand-mid-gray);
@@ -184,7 +184,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       border: 1px solid var(--rule);
       border-radius: var(--radius-sm);
       font-size: 11px;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       color: var(--ink-2, var(--brand-mid-gray));
       text-transform: capitalize;
     }
@@ -221,7 +221,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       background: #1a1a1a;
       color: #22c55e;
       padding: 0.5rem 0.75rem;
-      border-radius: 6px;
+      border-radius: 0;
       font-size: 0.8rem;
       font-family: 'Monaco', 'Menlo', monospace;
       white-space: nowrap;
@@ -236,7 +236,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       background: var(--primary);
       color: #0a0a0c;
       border: none;
-      border-radius: 4px;
+      border-radius: 0;
       font-size: 0.75rem;
       cursor: pointer;
       transition: background 0.2s;
@@ -277,7 +277,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       padding: 1rem;
       background: var(--brand-light);
       border: 2px dashed var(--brand-light-gray);
-      border-radius: 8px;
+      border-radius: 0;
       color: var(--brand-mid-gray);
       text-decoration: none;
       transition: all 0.2s;
@@ -310,13 +310,13 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: 0;
       font-weight: 600;
       font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.2s;
       text-decoration: none;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .action-btn.primary {
@@ -636,7 +636,7 @@ const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, it
         background: #1a1a1a;
         color: white;
         padding: 0.75rem 1.25rem;
-        border-radius: 8px;
+        border-radius: 0;
         font-size: 0.9rem;
         z-index: 1001;
         animation: fadeInOut 2s ease-in-out forwards;

@@ -316,7 +316,7 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       color: var(--brand-mid-gray);
       border: 1px solid var(--brand-light-gray);
       padding: 0.625rem 1.25rem;
-      border-radius: 0.5rem;
+      border-radius: 0;
       font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
@@ -363,7 +363,7 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
     .playbook-card {
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 0.75rem;
+      border-radius: 0;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -398,7 +398,7 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       border-radius: var(--radius-sm);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       border: 1px solid var(--rule);
     }
 

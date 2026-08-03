@@ -80,11 +80,14 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
     <!-- Unified Analytics Helper -->
     <script is:inline src="/scripts/analytics.js"></script>
 
-    <!-- Fonts: Inter Tight (display), Inter (body, with tnum), JetBrains Mono (mono).
-         Family: Data-Dense Pro. See marketplace/DESIGN.md § Typography. -->
+    <!-- Fonts: JetBrains Mono only — display, body and code all resolve to it.
+         See marketplace/DESIGN.md § 3 Typography. Weights 400/500 carry running
+         text, 700/800 carry display. Dropping the two Inter families makes this
+         a strictly SMALLER request than before despite the two added weights,
+         which is why the perf budget improves rather than tightens. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         @import '../styles/tokens.css';
@@ -184,7 +187,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-weight: var(--body-weight, 400);
             background-color: var(--surface-1);
             color: var(--text);
@@ -192,13 +195,13 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         h1, h2 {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 700;
             letter-spacing: -0.02em;
         }
 
         h3, h4, h5, h6 {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 600;
         }
 
@@ -233,11 +236,11 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             letter-spacing: -0.02em;
             color: var(--text);
             text-decoration: none;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
         }
 
         .logo-title {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 700;
             font-size: 1.2rem;
             letter-spacing: -0.01em;
@@ -249,7 +252,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             gap: 2rem;
             list-style: none;
             align-items: center;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
         }
 
         .nav-links a {
@@ -271,11 +274,21 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         /* nav-cta is the canonical primary CTA — signal yellow on near-black */
-        .nav-cta {
+        /* Selector is `.nav-links a.nav-cta`, not `.nav-cta`, deliberately.
+           `.nav-links a` above is (0,1,1) and was out-specifying the bare
+           `.nav-cta` (0,1,0), so this button's `color` silently lost to
+           `var(--text-2)` — light grey on signal orange in dark theme, measured
+           at roughly 1.1:1. That is a WCAG failure on the most prominent CTA on
+           the site, and it was invisible in review because the LIGHT theme
+           resolves --text-2 to a dark grey that happens to read fine.
+           Pre-existing; found by contrast-checking the rebrand and fixed here
+           rather than left, since it is a one-selector fix. DESIGN.md § 4 sets
+           near-black as the primary-button ink in BOTH themes. */
+        .nav-links a.nav-cta {
             background: var(--signal);
             color: #0a0a0c;
             padding: 0.5rem 1.25rem;
-            border-radius: 6px;
+            border-radius: 0;
             font-weight: 600;
             min-height: 44px;
             display: inline-flex;
@@ -283,7 +296,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             transition: all var(--duration-fast) var(--ease-out);
         }
 
-        .nav-cta:hover {
+        .nav-links a.nav-cta:hover {
             background: var(--signal-light);
             color: #0a0a0c;
             transform: translateY(-1px);
@@ -303,7 +316,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             justify-content: center;
             width: 36px;
             height: 36px;
-            border-radius: 8px;
+            border-radius: 0;
             border: 1px solid var(--border);
             background: transparent;
             color: var(--text-2);
@@ -373,7 +386,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             margin-bottom: 0.75rem;
         }
 
@@ -389,10 +402,10 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             padding: 0.6rem 0.75rem;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 0;
             color: var(--text);
             font-size: 0.85rem;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             outline: none;
             transition: border-color var(--duration-fast);
         }
@@ -411,7 +424,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             font-size: 0.85rem;
             min-height: 44px;
             cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             transition: border-color var(--duration-fast);
             white-space: nowrap;
         }
@@ -425,7 +438,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             margin-top: 0.5rem;
             font-size: 0.7rem;
             color: var(--text-3);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             text-align: center;
         }
 
@@ -437,7 +450,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         .footer-col h5 {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;

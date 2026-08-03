@@ -67,7 +67,7 @@ const grouped = sections.map(section => ({
 
   .sidebar-home {
     display: block;
-    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 700;
     color: var(--primary);
@@ -93,7 +93,7 @@ const grouped = sections.map(section => ({
     color: var(--text-3);
     margin-bottom: 0.5rem;
     padding-left: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
   }
 
   .sidebar-list {
@@ -109,7 +109,7 @@ const grouped = sections.map(section => ({
     text-decoration: none;
     padding: 0.35rem 0.75rem;
     border-left: 2px solid transparent;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0;
     transition: all 0.15s ease;
     line-height: 1.4;
   }

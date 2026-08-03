@@ -9,56 +9,50 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Cowork Integration', () => {
 
-  test.describe('Homepage Cowork Section', () => {
-    test('should display cowork section with title', async ({ page }) => {
+  // REWRITTEN 2026-08-02 (neobrutalist pass). The homepage used to embed a
+  // featured CoworkGrid (`.cowork-home-section` / `.cowork-home-title` /
+  // `.cowork-home-button`, limit 6). The homepage is now a single action and
+  // Cowork is reached through the nav. Nothing was deleted — /cowork keeps its
+  // route and its own full grid, covered in depth by T8.
+  //
+  // What these cases protect is unchanged in substance: a visitor landing on the
+  // homepage can still get to Cowork, and the destination still works.
+  test.describe('Homepage → Cowork route', () => {
+    test('homepage links to /cowork', async ({ page }) => {
       await page.goto('/');
 
-      const section = page.locator('.cowork-home-section');
-      await expect(section).toBeVisible();
-
-      // Eyebrow `.cowork-home-badge` was removed in the homepage simplification;
-      // section + title are the load-bearing affordances.
-      const title = page.locator('.cowork-home-title');
-      await expect(title).toBeVisible();
-      await expect(title).toContainText('Download Plugin Packs');
+      // DOM presence, not visibility: the nav collapses behind a toggle on
+      // mobile, and the visible-nav case is asserted separately below.
+      const coworkLinks = page.locator('a[href="/cowork"]');
+      expect(await coworkLinks.count()).toBeGreaterThan(0);
 
       await page.screenshot({
         path: 'test-results/screenshots/T9-homepage-cowork-section.png'
       });
     });
 
-    test('should show featured CoworkGrid cards (max 6)', async ({ page }) => {
+    test('homepage no longer embeds the cowork grid', async ({ page }) => {
       await page.goto('/');
 
-      const section = page.locator('.cowork-home-section');
-      await expect(section).toBeVisible();
-
-      // CoworkGrid renders cards within the section
-      const cards = section.locator('.cowork-card, .pack-card, [class*="card"]');
-      const count = await cards.count();
-
-      // Should render between 1 and 6 featured cards (limit={6} in index.astro)
-      expect(count).toBeGreaterThanOrEqual(1);
-      expect(count).toBeLessThanOrEqual(6);
+      // Guards the decision rather than merely tolerating it: if the grid is
+      // ever re-embedded, this fails and forces the "one action per page" call
+      // to be made deliberately instead of by drift.
+      await expect(page.locator('.cowork-home-section')).toHaveCount(0);
     });
 
-    test('should navigate to /cowork from CTA button', async ({ page }) => {
+    test('following the homepage link reaches a working /cowork grid', async ({ page }) => {
       await page.goto('/');
 
-      const ctaButton = page.locator('.cowork-home-button');
-      await expect(ctaButton).toBeVisible();
-
-      // Verify href
-      const href = await ctaButton.getAttribute('href');
+      const href = await page.locator('a[href="/cowork"]').first().getAttribute('href');
       expect(href).toBe('/cowork');
 
-      // Click and verify navigation
-      await Promise.all([
-        page.waitForURL(/\/cowork/),
-        ctaButton.click(),
-      ]);
-
+      await page.goto('/cowork');
       await expect(page).toHaveURL(/\/cowork/);
+
+      // The destination must actually render packs — a link to an empty page is
+      // the failure mode this replaces the old "max 6 cards" assertion with.
+      const cards = page.locator('.cowork-card, .pack-card, [class*="card"]');
+      expect(await cards.count()).toBeGreaterThanOrEqual(1);
     });
   });
 

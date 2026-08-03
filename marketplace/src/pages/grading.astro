@@ -507,12 +507,12 @@ You can configure it with various options.`}</code></pre>
     width: 1.75rem;
     text-align: center;
     padding: 0.15rem 0;
-    border-radius: 4px;
+    border-radius: 0;
     border: 1px solid var(--rule);
     color: var(--ink);
     font-weight: 500;
     font-size: 11px;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
   }
   .grading__cat {
     margin: 2rem 0 2.5rem;
@@ -529,7 +529,7 @@ You can configure it with various options.`}</code></pre>
     font-size: 1.25rem;
   }
   .grading__cat-max {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     color: var(--signal, var(--green-400));
     font-size: 0.9rem;
   }
@@ -541,7 +541,7 @@ You can configure it with various options.`}</code></pre>
   .grading__code {
     background: var(--panel, var(--slate-900));
     border: 1px solid var(--rule, var(--slate-700));
-    border-radius: 6px;
+    border-radius: 0;
     padding: 1rem 1.25rem;
     overflow-x: auto;
     font-size: 0.85rem;
@@ -550,7 +550,7 @@ You can configure it with various options.`}</code></pre>
     margin: 1rem 0;
   }
   .grading__code code {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     white-space: pre;
   }
   .grading__delta {
@@ -594,7 +594,7 @@ You can configure it with various options.`}</code></pre>
     display: inline-block;
     padding: 0.55rem 1rem;
     border: 1px solid var(--rule, var(--slate-600));
-    border-radius: 4px;
+    border-radius: 0;
     color: var(--ink, var(--slate-100));
     text-decoration: none;
     font-size: 0.9rem;
@@ -609,10 +609,10 @@ You can configure it with various options.`}</code></pre>
     border-color: var(--signal, var(--green-400));
   }
   code {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.9em;
     background: var(--panel, var(--slate-900));
     padding: 0.1em 0.35em;
-    border-radius: 3px;
+    border-radius: 0;
   }
 </style>
