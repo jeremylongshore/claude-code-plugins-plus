@@ -182,40 +182,17 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             >Sponsor</a>
         </div>
 
-        <hr class="home-rule" />
+        <!-- The partner badge + byline used to live HERE, as a block above the
+             site footer — which rendered as two footers stacked. They now sit
+             inside the real footer in BaseLayout (`.footer-badge-row`), so the
+             page ends once. Self-hosted from public/ rather than embedded via
+             Credly's script — no third-party request, no tracking vector, no
+             rounded-corner widget fighting the design, and it survives any
+             change to their embed.
 
-        <!-- Byline + partner badge. The badge carries the SAME --shadow-hard as
-             the install block, deliberately: it reads as part of the page's
-             language instead of a pasted-on third-party widget. Self-hosted from
-             public/ rather than embedded via Credly's script — no third-party
-             request, no tracking vector, no rounded-corner widget fighting the
-             design, and it survives any change to their embed.
-
-             This badge is the ONLY partner reference on the site. No partner
-             wording appears in the headline, subhead, meta description or og:
+             That badge remains the ONLY partner reference on the site: no
+             partner wording in the headline, subhead, meta description or og:
              tags, and it does not propagate to the README or the catalog. -->
-        <footer class="home-byline">
-            <a
-                class="badge-link"
-                href="https://www.credly.com/badges/ddf22fb4-0aa6-46b3-a93b-0b45b509e471/public_url"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                <img
-                    class="badge-img"
-                    src="/claude-partner-badge.png"
-                    width="72"
-                    height="72"
-                    loading="lazy"
-                    decoding="async"
-                    alt="Claude Partner Badge — Claude Code, issued by Anthropic to Jeremy Longshore."
-                />
-            </a>
-            <span class="byline-text">
-                Built by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a><br />
-                <a href="https://intentsolutions.io" target="_blank" rel="noopener">intent solutions io</a>
-            </span>
-        </footer>
     </main>
 
     <style>
@@ -400,49 +377,6 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             background: var(--signal-tint);
         }
 
-        .home-rule {
-            border: 0;
-            border-top: 1px solid var(--rule);
-            margin: var(--space-10) 0 var(--space-6);
-        }
-
-        /* ── Byline + partner badge ── */
-        .home-byline {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-            font-size: var(--text-sm);
-            color: var(--ink-2);
-            line-height: 1.5;
-        }
-
-        .badge-link {
-            display: inline-block;
-            flex-shrink: 0;
-            /* Same elevation device as the install block, on purpose. */
-            box-shadow: var(--shadow-hard);
-            border: 1px solid var(--ink);
-            background: var(--panel);
-            padding: var(--space-2);
-            line-height: 0;
-        }
-
-        .badge-img {
-            display: block;
-            width: 72px;
-            height: 72px;
-        }
-
-        .byline-text a {
-            color: var(--ink);
-            text-decoration: none;
-            border-bottom: 1px solid var(--rule);
-        }
-
-        .byline-text a:hover {
-            border-bottom-color: var(--signal);
-        }
-
         /* Focus must stay obvious now that nothing is rounded — a square outline
            on a square element is easy to lose, so it is offset and uses the
            signal accent rather than the UA default. */
@@ -463,10 +397,6 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
             .install-cmd {
                 font-size: var(--text-sm);
-            }
-
-            .home-byline {
-                align-items: flex-start;
             }
         }
     </style>
