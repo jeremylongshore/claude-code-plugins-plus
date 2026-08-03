@@ -10,7 +10,7 @@
 // The single hard-shadowed element on this page is the install block. That is
 // the whole design: one action, one shadow, everything else flat.
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { dirname, join, parse } from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import searchIndex from '../data/unified-search-index.json';
 
@@ -39,15 +39,51 @@ const installsDisplay = skillsStats.installsDisplay ?? '';
 const starsDisplay = githubStats.starsDisplay ?? '';
 
 // Marketplace version, read from the REPO ROOT package.json at build time so
-// the printed version can never drift from the released one. Read rather than
-// imported: the root manifest is outside the Astro project root, and a plain
-// file read has no bundler-resolution edge cases.
+// the printed version can never drift from the released one.
 //
-// Four levels up, not three: src/pages/ -> src/ -> marketplace/ -> repo root.
-// Three lands on marketplace/package.json, which carries its own independent
-// version (4.19.x) and is NOT the released marketplace version.
-const pkgPath = fileURLToPath(new URL('../../../../package.json', import.meta.url));
-const siteVersion = JSON.parse(readFileSync(pkgPath, 'utf8')).version as string;
+// SEARCH UPWARD BY NAME — do not count directory levels. The first cut of this
+// resolved a fixed `../../../../package.json` against `import.meta.url`, which
+// worked on a dev box and BROKE THE VPS DEPLOY (run 30776649017): during an
+// Astro build `import.meta.url` is a bundler-transformed module path, not the
+// source file's path, so its depth differs per environment. Four levels landed
+// on the repo root at `/home/jeremy/000-projects/claude-code-plugins` and on
+// nothing at `/srv/tonsofskills/build`, where readFileSync threw and took the
+// whole build down.
+//
+// Walking up until the manifest identifies ITSELF as the monorepo root is
+// depth-independent, so it cannot break again when a checkout path changes.
+// `marketplace/package.json` is correctly skipped: it carries its own
+// independent version (4.19.x) and a different name.
+const ROOT_PKG_NAME = 'claude-code-plugins-monorepo';
+
+function findRepoVersion(): string | null {
+  // process.cwd() is the Astro project dir during a build; the loop climbs out
+  // of it. Starting from cwd rather than import.meta.url is deliberate — cwd is
+  // a real filesystem location, not a bundler artefact.
+  let dir = process.cwd();
+  const { root } = parse(dir);
+  for (let i = 0; i < 12; i++) {
+    try {
+      const pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8'));
+      if (pkg?.name === ROOT_PKG_NAME && typeof pkg.version === 'string') return pkg.version;
+    } catch {
+      /* no manifest here, or unreadable — keep climbing */
+    }
+    if (dir === root) break;
+    dir = dirname(dir);
+  }
+  return null;
+}
+
+// Fail soft, like every other data read on this page. A version line is nice to
+// have; it is NOT worth failing a production deploy over, which is exactly the
+// mistake this replaces. Null simply omits the line.
+let siteVersion: string | null = null;
+try {
+  siteVersion = findRepoVersion();
+} catch {
+  siteVersion = null;
+}
 
 // The Claude-Code-native slash command, and the reason this block leads with it
 // rather than a shell command: `/plugin marketplace add …` runs INSIDE Claude
@@ -81,8 +117,12 @@ const fmt = (n: number) => n.toLocaleString('en-US');
              build-time. Neither is a heading; they frame the headline. -->
         <div class="home-meta">
             <span class="home-meta-left">
-                <span class="home-version">v{siteVersion}</span>
-                <span class="home-meta-sep">·</span>
+                {siteVersion && (
+                    <>
+                        <span class="home-version">v{siteVersion}</span>
+                        <span class="home-meta-sep">·</span>
+                    </>
+                )}
                 <a href="/changelog">what&rsquo;s new &rarr;</a>
             </span>
             {starsDisplay && (
