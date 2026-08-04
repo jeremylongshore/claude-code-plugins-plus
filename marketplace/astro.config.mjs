@@ -23,6 +23,17 @@ export default defineConfig({
   // and pass link equity correctly.
   //
   // If you need a new redirect, add it to the Caddy file — NOT here.
+
+  // EXCEPTION — these three predate the 2026-08-03 404-repair work and stay in
+  // Astro. scripts/check-routes.mjs treats them as real routes and asserts the
+  // built files exist, so moving them to Caddy breaks that gate. Three redirect
+  // pages is also not the doorway-page pattern the move was about; eighty-one
+  // was. Keeping them here means one source of truth per redirect.
+  redirects: {
+    '/learning/built-system-summary': '/learning/',
+    '/learning/getting-started': '/learning/overview/',
+    '/spotlight': '/community#hall-of-fame',
+  },
   build: {
     assets: '_astro',
     inlineStylesheets: 'auto'
