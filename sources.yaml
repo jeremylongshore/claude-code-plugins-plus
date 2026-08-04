@@ -1745,6 +1745,43 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Shopify App Review Brief (alfredtech2026)
+  # https://github.com/alfredtech2026/shopify-app-review-brief
+  # Submission: #1160
+  # Surface tier: markdown-only — the include glob admits exactly one
+  # prose file. No scripts, hooks, MCP config, or network endpoints.
+  # ============================================================
+
+  - name: shopify-review-triage
+    description: Triage public Shopify App Store review rows into a P0-P3 brief with source links and first-pass vs human-checked labels
+    repo: alfredtech2026/shopify-app-review-brief
+    source_path: docs/skills/shopify-review-triage
+    target_path: plugins/community/shopify-review-triage
+    author:
+      name: alfredtech2026
+      github: alfredtech2026
+      email: alfred.tech.2026@gmail.com
+    license: MIT
+    category: community
+    verified: false
+    keywords:
+      - shopify
+      - app-store-reviews
+      - triage
+      - product-management
+      - customer-support
+    # Least-privilege, root-anchored: the upstream skill directory also holds a
+    # published HTML page, which the mirror does not need and does not take.
+    # README.md / plugin.json are synthesized by the sync engine (skill-only
+    # upstream), so nothing here is a dead glob.
+    include:
+      - '/SKILL.md'
+    exclude:
+      - '/index.html'
+      - '/.git/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
