@@ -284,3 +284,10 @@ plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/security-te
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:hook-definition  skill body discusses hooks as a validation surface; no hooks.json shipped
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:allowed-tools-network  documentation of how to detect over-broad allowed-tools (mentions WebFetch as a pattern to flag), not granting network tools
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/references/schema-reminder-frontmatter.md:hook-definition  extracted schema field docs mentioning hooks as a frontmatter topic — not an executable hooks.json
+
+# ── shopify-review-triage intake (PR #1161 / submission #1160) — ONE-SHOT sign-off. ──
+# Per the one-shot rule above, this line is honored only in the PR whose diff adds
+# it; it goes inert the moment that PR lands. Contributor-side evidence for 699
+# playbook steps 1-8 is in #1160 — step 9 (verified: true) is deliberately NOT
+# taken here and remains a maintainer action.
+sources.yaml:sources-change-unscanned  shopify-review-triage intake vetted contributor-side per the 699 playbook @ alfredtech2026/shopify-app-review-brief 30dd28c9fd01 (2026-08-04): markdown-only tier — the root-anchored include '/SKILL.md' admits exactly 1 upstream file (dry-run matched 1 file, no unsupported-glob warning) and the sources.yaml include-anchoring intake ratchet passes; scanner over the materialized mirror is 0 REFUSE / 0 CHALLENGE / 0 FLAG across all 4 files (upstream SKILL.md plus the engine-synthesized README.md / plugin.json); no scripts, hooks, MCP config, or network endpoints in the admitted surface; one new source added — nothing repointed or removed — and it pins in sources.lock.json at resolved_ref 30dd28c9fd01c1a697af361749439ea990360b94 (SKILL.md sha256:8b575a0905cfb68263b6883f4cc78b55ab13978724f9880761264142ee0e8dba) on the next sync; entry ships verified: false with no curated: key, so a maintainer's own vet is still what grants trust
