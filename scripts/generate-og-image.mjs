@@ -167,7 +167,7 @@ const HTML = `<!doctype html><html><head><meta charset="utf-8">
     <div class="sub">${sub}</div>
   </div>
   <div class="cmd"><span class="prompt">&gt;</span><span>/plugin marketplace add jeremylongshore/claude-code-plugins</span></div>
-  <div class="foot"><span>Claude Code · Codex · Cursor</span><span>Intent Solutions</span></div>
+  <div class="foot"><span>Open source · MIT</span><span>Intent Solutions</span></div>
 </body></html>`;
 
 // Playwright is a devDependency of the `marketplace` workspace, not the root,
