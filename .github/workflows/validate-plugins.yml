@@ -214,6 +214,13 @@ jobs:
       - name: Validate social-card image exists (og:image)
         run: node scripts/generate-og-image.mjs --check
 
+      # /changelog had 3 entries (newest v4.16.0, 2026-03-07) while the site ran
+      # v4.33.0 — 17 tagged releases shipped undocumented and nothing failed,
+      # while the homepage linked "what's new →" straight at it. Ratchets from a
+      # pinned floor (v4.14.0); older tags are grandfathered.
+      - name: Validate every released tag has release notes
+        run: node scripts/check-changelog-coverage.mjs
+
       - name: Validate cascading Greptile configuration
         run: |
           node --test scripts/validate-greptile-config.test.mjs
