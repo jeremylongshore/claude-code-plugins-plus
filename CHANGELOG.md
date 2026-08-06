@@ -7,6 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-03/06 — site correctness gates)
+
+- **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`
+  had emitted `og:image` → `/og-image.png` on 3,830 pages since **2026-03-09**; the file was
+  never committed, so every link preview of the site rendered imageless for five months.
+  `--check` validates PNG signature, IHDR dimensions and minimum size — an earlier
+  existence-only version was correctly flagged in review as reproducing the original failure
+  one level up. ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156))
+- **`scripts/check-security-headers.mjs`** — asserts the LIVE response carries the security
+  headers. Not wired as a blocking gate: the headers are set in Caddy on the VPS, and a gate
+  nobody in this repo can fix is a gate that gets disabled.
+- **`scripts/check-changelog-coverage.mjs`** — every released tag at or above a pinned floor
+  (v4.14.0) must have release notes. `/changelog` had 3 entries, newest v4.16.0, while the
+  site ran v4.33.0. ([#1162](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162))
+- **`scripts/name-leak-gate.sh`** — anonymity gate for the rebrand's design reference,
+  ported from the sibling blog repo; base64 patterns, scans untracked files.
+
+### Changed (2026-08-02/04 — neobrutalist rebrand)
+
+- **Marketplace visual system rebranded.** `--radius-*` → `0`; JetBrains Mono as the single
+  typeface (Inter and Inter Tight removed, a strictly smaller font request); `--shadow-hard`
+  as the only elevation device, rationed to one element per page. 373 hardcoded radius
+  declarations flattened and 261 font references tokenised across 82 files; 9 genuine
+  circles preserved after individual audit. `marketplace/DESIGN.md` §§ 1/3/4/6/8 amended
+  first — § 8 previously banned the very device being adopted.
+  ([#1152](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1152))
+- **Homepage cut to a single action.** 1,742 lines → ~9 elements, leading with the
+  Claude-Code-native `/plugin marketplace add …`. Nothing deleted: Killer Skill of the Week,
+  Jeremy's Stash and the Stack Builder moved to `/collections`, the partner bar to
+  `/community`.
+- **Site chrome made model-agnostic** — third-party tool names dropped from the footer, hero
+  subhead, meta description and social card. `Claude Code` retained only where it is the
+  literal mechanism. ([#1159](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1159))
+- **Retired URLs now served as real HTTP 301s** from Caddy rather than Astro `redirects`,
+  which emit one thin meta-refresh page per entry (3 → 85 in one deploy). Three pre-existing
+  entries stay in Astro because `check-routes.mjs` asserts those files exist.
+  ([#1158](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1158))
+
+### Fixed (2026-08-03/04 — defects found by probing the deployed site)
+
+- **Security headers were inert.** `X-Frame-Options` and `X-Content-Type-Options` were
+  declared as `<meta http-equiv>`, which browsers ignore outright — the site had no
+  clickjacking or MIME-sniffing protection since **2025-12-24** while appearing to have both.
+  Only `<meta name="referrer">` is a valid HTML form; the real headers now come from Caddy.
+- **`/research/` had no design system.** It linked `/styles/global.css`, a source path never
+  published (404 since **2026-03-04**), and lacked `tokens.css` entirely — so every
+  `var(--*)` was undefined and six pages rendered as browser-default serif on a transparent
+  background while loading a webfont they never applied. Also had no analytics tag, so that
+  traffic was invisible in Umami.
+  ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156),
+  [#1157](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1157))
+- **104 dead URLs**, 177 pageviews/week, the 404 page the 3rd most-served on the site — 76%
+  under `/skills/` from rewritten SaaS packs. 81 now redirect to their vendor pack page.
+- **42 dead in-content blog links** across 29 posts, each verified 200 at its new target
+  before rewriting.
+- **Homepage version resolution** walked a fixed `../../../../` from `import.meta.url`, which
+  is a bundler path during an Astro build — it broke the VPS deploy. Now searches upward for
+  the manifest that names itself the monorepo root, and fails soft.
+  ([#1153](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1153))
+- **Mobile footer collapsed to one 17-link column** below 480px; now 2-up with 44px touch
+  targets, 1291px → 979px.
+  ([#1154](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1154))
+- **Stale fallback meta description** claiming "244 searchable agent skills and 259 plugins"
+  against an actual 3,000+/470+. Rendered on zero pages, which is why it rotted unnoticed.
+
+### Infrastructure (2026-08-03/04 — VPS, recorded in intent-os)
+
+- **Security headers added to 8 of 16 hosts** that never imported the existing
+  `(security-headers)` Caddy snippet, including the authenticated `erp.intentsolutions.io`
+  and `mandy.intentsolutions.io`.
+- **VPS build log made legible on failure.** `pnpm … | tail -3/-5` discarded the error, which
+  a failing build reports early; now captured to a log, tailed on success and dumped in full
+  on failure, with `CI=true` to stop pnpm's interactive prompt overwriting output.
+
 ### Fixed (2026-07-26 kernel-vendor-hash fail-open)
 
 - **`kernel-vendor-hash` fail-open — the drift-watch was blind locally and printed a
