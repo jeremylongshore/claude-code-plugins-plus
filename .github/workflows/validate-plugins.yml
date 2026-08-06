@@ -31,6 +31,13 @@ jobs:
         # depth=1 doesn't include any history to compare against either.
         with:
           fetch-depth: 2
+          # fetch-tags is REQUIRED by check-changelog-coverage.mjs below.
+          # actions/checkout does not fetch tags by default, so `git tag --list`
+          # returned EMPTY and that gate silently exited 0 — it never fired in
+          # CI at all. Verified by cloning --depth 2 --no-tags and deleting every
+          # release note: still exit 0. fetch-depth stays 2 (the catalog format
+          # guard needs the merge base); fetch-tags is the surgical addition.
+          fetch-tags: true
           persist-credentials: true
 
       - name: Setup pnpm

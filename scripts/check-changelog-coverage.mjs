@@ -54,22 +54,35 @@ try {
   })
     .split('\n')
     .map((t) => t.trim())
-    .filter(Boolean);
+    // `git tag --list` takes a GLOB, not a regex: `v[0-9]*.[0-9]*.[0-9]*` has a
+    // literal dot and zero-or-more wildcards, so it admits shapes it looks like
+    // it excludes. Filter strictly here instead of trusting the glob.
+    .filter((t) => /^v\d+\.\d+\.\d+$/.test(t));
 } catch {
   console.log('changelog-coverage: git tags unavailable — skipping');
   process.exit(0);
 }
 
 if (tags.length === 0) {
-  console.log('changelog-coverage: no version tags visible (shallow clone?) — skipping');
+  // Loud, not silent. A gate that quietly no-ops is indistinguishable from a
+  // passing one — which is precisely how this script shipped inert.
+  console.log(
+    '::warning title=changelog-coverage::No version tags visible — the gate did NOT run. If this is CI, the checkout needs fetch-tags: true.',
+  );
+  console.log('changelog-coverage: no version tags visible — SKIPPED (not a pass)');
   process.exit(0);
 }
 
 // Versions that have a release-notes file, read from frontmatter rather than
 // the filename so a rename cannot silently break coverage.
 const documented = new Set();
-for (const f of readdirSync(NOTES_DIR).filter((f) => f.endsWith('.md'))) {
-  const m = readFileSync(join(NOTES_DIR, f), 'utf8').match(/^version:\s*"?([0-9][^"\s]*)"?/m);
+// Recursive: a flat directory today, but an Astro subdirectory grouping
+// (blog/2026/…) would otherwise silently stop counting posts and weaken the gate.
+for (const f of readdirSync(NOTES_DIR, { recursive: true })) {
+  if (!String(f).endsWith('.md')) continue;
+  const m = readFileSync(join(NOTES_DIR, String(f)), 'utf8').match(
+    /^version:\s*"?([0-9][^"\s]*)"?/m,
+  );
   if (m) documented.add(m[1]);
 }
 
@@ -89,7 +102,6 @@ const cmp = (a, b) => {
 // Lowering this requires backfilling the releases below it first, as a visible
 // edit in review — the same contract as scripts/.design-tokens-baseline.json.
 const FLOOR = '4.14.0';
-const floor = FLOOR;
 if (!documented.has(FLOOR)) {
   console.error(
     `The pinned floor v${FLOOR} has no release notes. Either restore them, or\n` +
@@ -98,12 +110,12 @@ if (!documented.has(FLOOR)) {
   process.exit(WARN_ONLY ? 0 : 1);
 }
 const versions = tags.map((t) => t.replace(/^v/, ''));
-const inScope = versions.filter((v) => cmp(v, floor) >= 0);
+const inScope = versions.filter((v) => cmp(v, FLOOR) >= 0);
 const grandfathered = versions.length - inScope.length;
 const missing = inScope.filter((v) => !documented.has(v));
 
 console.log(
-  `changelog-coverage: floor v${floor} — ${inScope.length} in scope, ` +
+  `changelog-coverage: floor v${FLOOR} — ${inScope.length} in scope, ` +
     `${inScope.length - missing.length} documented, ${missing.length} missing ` +
     `(${grandfathered} older tags grandfathered)`,
 );
