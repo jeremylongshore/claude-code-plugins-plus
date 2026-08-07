@@ -1745,6 +1745,38 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # QAIA (Cédric Moretti)
+  # https://github.com/QAIA-Project/QAIA
+  # ============================================================
+
+  - name: qaia-core
+    description: Turn a user story into a traceable Gherkin test book -- stable scenario IDs, an acceptance-criterion coverage matrix, and ambiguities surfaced as questions instead of silently resolved.
+    repo: QAIA-Project/QAIA
+    source_path: plugins/qaia-core
+    target_path: plugins/testing/qaia-core
+    author:
+      name: Cedric Moretti
+      github: Opaland
+      email: ced.moretti@gmail.com
+    license: MIT
+    category: testing
+    verified: false
+    keywords:
+      - testing
+      - qa
+      - gherkin
+      - istqb
+      - test-generation
+    include:
+      - '/README.md'
+      - '/skills/**'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
