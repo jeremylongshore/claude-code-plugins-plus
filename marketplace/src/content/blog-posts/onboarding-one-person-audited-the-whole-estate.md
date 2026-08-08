@@ -74,7 +74,7 @@ that day, so it needs rotating.
 ## The grants we could not have taken back
 
 Two of the new lead's accounts, the partner-portal basicauth login and the NOW-LMS admin account, were provisioned
-against `cgray@asqi.org`. That is his own company's domain. Intent Solutions does not control it.
+against an address on a domain his own company controls, not one Intent Solutions controls.
 
 Password resets, account recovery, and eventual offboarding would all have terminated at a mailbox we cannot
 revoke. **Anything Intent Solutions grants must be revocable by Intent Solutions.** That is sharpest on the
