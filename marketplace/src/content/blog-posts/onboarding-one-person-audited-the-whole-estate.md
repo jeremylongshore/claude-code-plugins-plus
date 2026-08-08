@@ -7,7 +7,7 @@ featured: false
 canonical: "https://startaitools.com/posts/onboarding-one-person-audited-the-whole-estate/"
 ---
 A new lead software tech starts, and the first deliverable is not code. It is a list of every system he needs
-to reach and the exact mechanism by which he reaches it. Carter Gray is taking the Buzz estate (our fork of
+to reach and the exact mechanism by which he reaches it. The new lead is taking the Buzz estate (our fork of
 Block's open-source Buzz, on its own production VPS host) plus operator reach into intent-os, the control
 plane the estate runs from. Writing that list meant enumerating every access grant, one at a time, and then
 actually exercising each one.
@@ -31,7 +31,7 @@ course correction.
 
 ## Two grants that look like access and are not
 
-Plane is the self-hosted project tracker. Carter was invited at role Member, and the invitation is genuinely
+Plane is the self-hosted project tracker. The new lead was invited at role Member, and the invitation is genuinely
 there in the API: role 15, `accepted: false`. By every check a checklist would normally run, that grant is
 done.
 
@@ -46,7 +46,7 @@ that looks like access and is not one. That grant is now labelled in the checkli
 by a human, precisely so nobody automates it into something plausible and dead.
 
 Bob's Big Brain, the governed knowledge layer the estate searches before re-deriving anything, was the grant
-that worked as designed. Token minted, actor `carter`, role `member`, matching another teammate, because
+that worked as designed. Token minted, actor `newlead`, role `member`, matching another teammate, because
 promote and govern stay with two people. The value was not the mint but the three warnings documented next to
 it, chosen because they are the three that bite. `tenantId` is required, and omitting it returns **empty
 results with a valid token**, which reads exactly like a broken brain and is a config error. The plugin
@@ -61,8 +61,8 @@ None of that is inferable from a token, so it was exercised against the live API
 curl -s -o /dev/null -w '%{http_code}\n' "$BRAIN_API/search?q=backup"                              # 401
 curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer nope" "$BRAIN_API/search?q=x"   # 401
 
-# Carter's token WITH the tenant scope (drop tenantId and this is 200 with zero hits)
-curl -s -H "Authorization: Bearer $CARTER_TOKEN" \
+# the new lead's token WITH the tenant scope (drop tenantId and this is 200 with zero hits)
+curl -s -H "Authorization: Bearer $NEWLEAD_TOKEN" \
   "$BRAIN_API/search?q=backup&tenantId=$TENANT" | jq '.results | length'                           # 6
 ```
 
@@ -73,7 +73,7 @@ that day, so it needs rotating.
 
 ## The grants we could not have taken back
 
-Two of Carter's accounts, the partner-portal basicauth login and the NOW-LMS admin account, were provisioned
+Two of the new lead's accounts, the partner-portal basicauth login and the NOW-LMS admin account, were provisioned
 against `cgray@asqi.org`. That is his own company's domain. Intent Solutions does not control it.
 
 Password resets, account recovery, and eventual offboarding would all have terminated at a mailbox we cannot
@@ -82,12 +82,12 @@ LMS account, which is admin on a members-facing production service holding 47 re
 Exactly the grant you must be able to withdraw unilaterally.
 
 How it happened is the boring part and the important part. The address came out of the CRM record and got
-used as given. `carter@intentsolutions.io` **already existed**, one of the 65 mailboxes standing on the
+used as given. `newlead@intentsolutions.io` **already existed**, one of the 65 mailboxes standing on the
 domain since the MXroute cutover, and nobody checked. The roster is one authenticated GET away:
 
 ```text
 GET /email-accounts                       -> 404   (no such endpoint; the flat path does not exist)
-GET /domains/{domain}/email-accounts      -> 200   (65 accounts, carter@ among them)
+GET /domains/{domain}/email-accounts      -> 200   (65 accounts, the new lead's address among them)
 ```
 
 That 404 is why an earlier probe read as an empty roster rather than a missing endpoint. A 404 on a collection
@@ -96,7 +96,7 @@ required no further work.
 
 The rule went into the guide as the same principle already stated twice in it: section 5's identity rule
 (never take a copy of anyone's private key) and, in the operator-access section 6, the address rule (a grant
-must be revocable by you alone). A third instance landed later that day. Carter has to generate his **own**
+must be revocable by you alone). A third instance landed later that day. The new lead has to generate his **own**
 `PLANE_API_KEY` rather than reuse the one in the estate's MCP config, because a Plane token carries the
 permissions of whoever minted it, so a shared key destroys attribution on every write and cannot be revoked
 without breaking the other holder. Three rules, one invariant: a grant you cannot withdraw alone is not a
@@ -110,9 +110,9 @@ address, done in a second, no tooling involved.
 That was rejected. `usuario` is the login key that `estudiante_curso` enrollment rows reference, so a hand
 UPDATE risks orphaning enrollments against a key that no longer exists, and it bypasses the contract of the
 tool that created the account. The provisioner has its own undo. `--rollback` refuses any user with recorded
-activity, Carter had none, so the cheap and safe path was available: roll back, then re-provision clean. It
+activity, the new lead had none, so the cheap and safe path was available: roll back, then re-provision clean. It
 reported `deleted`, the database confirmed 0 rows for the old address, and after a dry run the live
-re-provision put `usuario` and `correo_electronico` both at `carter@intentsolutions.io`, admins 6 to 7,
+re-provision put `usuario` and `correo_electronico` both at `newlead@intentsolutions.io`, admins 6 to 7,
 students unchanged at 47.
 
 Passwords were deliberately not rotated. Only the usernames moved. Rotating would have meant re-delivering
@@ -124,7 +124,7 @@ exact-occurrence-count guard that refuses on anything except a single match. Bac
 clean, reload rather than restart. Live afterward: the new username returns 200 on the section and the PDF,
 the old one returns 401, and isolation still holds (401 against both the kobiton and scott-porter sections).
 
-The part doing real work is what came next. Carter's LMS role is admin, and withholding it would have been
+The part doing real work is what came next. The new lead's LMS role is admin, and withholding it would have been
 the easy-looking call. Section 6, the same section carrying that address rule, already grants full operator
 parity: SSH to the host and SOPS decrypt of production secrets. Anyone holding those reaches the LMS database
 directly, so withholding the app-level role is a control on paper and not in fact. What it earned instead is
@@ -212,7 +212,7 @@ were byte-identical. The guard was then re-proven rather than assumed: the valid
 clean **and** both self-test fixtures still correctly reject (the drift fixture and the secret-laden one). An
 enum widening that also widened what the guard accepts would have been worse than the missing row.
 
-That distinction is the day's second through-line and it runs the other direction too. Carter's onboarding
+That distinction is the day's second through-line and it runs the other direction too. The new lead's onboarding
 guide is not a file he opens. It is a partner-portal site regenerated from the intent-os sources, and it took
 five PRs on the partner-portals repo (#7 through #11) to move both onboarding parts and their PDFs from
 source to something he can read, each one carrying a secret scan verifying that none of his three credentials
