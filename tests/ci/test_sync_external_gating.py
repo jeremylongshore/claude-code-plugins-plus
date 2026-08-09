@@ -39,11 +39,81 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "sync-external.yml"
 ENGINE = REPO_ROOT / "scripts" / "sync-external.mjs"
 
-# Calls that put bytes on disk. `fs.rmSync` is included because the pruning of
-# orphaned files is equally a mutation of the working tree.
-RE_WRITE_CALL = re.compile(
-    r"\b(?:fs\.(?:writeFileSync|copyFileSync|cpSync|mkdirSync|rmSync|renameSync)|writeFileSync\()"
+# Calls that mutate the filesystem. Deletions and permission changes count:
+# pruning an orphaned file is as much a working-tree mutation as writing one.
+#
+# The first version of this pattern listed six sync APIs and missed
+# `fs.appendFileSync` — which the engine uses TEN times, more than any other
+# write call — along with every `fs.promises.*` async form. A detector that
+# cannot see the most common write in the file it guards is not a guard, which
+# is the same "gate that gates nothing" defect this whole PR exists to fix.
+# Caught in review of #1165.
+#
+# Enumerated deliberately rather than inferred: an allowlist of read-only APIs
+# would silently pass any newly-introduced mutator, whereas a missing entry here
+# is caught by test_write_detector_recognizes_known_write_forms below.
+_MUTATORS = (
+    "writeFile|appendFile|copyFile|cp|mkdir|mkdtemp|rm|rmdir|unlink|rename|"
+    "chmod|chown|truncate|symlink|link|utimes|writev|open"
 )
+RE_WRITE_CALL = re.compile(
+    # fs.writeFileSync(...) / fs.appendFileSync(...) / fs.rmSync(...)
+    rf"\bfs\.(?:{_MUTATORS})Sync\s*\("
+    # fs.promises.writeFile(...) / fsp.copyFile(...) / fs.promises.rm(...)
+    rf"|\bfs(?:\.promises|p)?\.(?:{_MUTATORS})\s*\("
+    # createWriteStream in either form
+    r"|\bfs(?:\.promises|p)?\.createWriteStream\s*\("
+    # bare destructured imports: writeFileSync(...), appendFileSync(...)
+    rf"|(?<![.\w])(?:{_MUTATORS})Sync\s*\("
+)
+
+# Write forms that MUST be detectable. If someone narrows RE_WRITE_CALL, this
+# fails immediately rather than the narrowing going unnoticed until a real
+# regression slips past the drift guard.
+KNOWN_WRITE_FORMS = [
+    "fs.writeFileSync(target, body)",
+    "fs.appendFileSync(logPath, line)",
+    "fs.copyFileSync(src, dest)",
+    "fs.cpSync(src, dest, { recursive: true })",
+    "fs.mkdirSync(dir, { recursive: true })",
+    "fs.mkdtempSync(prefix)",
+    "fs.rmSync(dir, { recursive: true, force: true })",
+    "fs.renameSync(a, b)",
+    "fs.chmodSync(p, 0o755)",
+    "await fs.promises.writeFile(target, body)",
+    "await fs.promises.copyFile(src, dest)",
+    "await fs.promises.rm(dir, { recursive: true })",
+    "await fsp.appendFile(logPath, line)",
+    "const out = fs.createWriteStream(target)",
+    "writeFileSync(target, body)",
+]
+
+# Read-only calls that must NOT trip the detector, or the test becomes noise
+# and gets deleted.
+KNOWN_SAFE_FORMS = [
+    "fs.existsSync(p)",
+    "fs.readFileSync(p, 'utf8')",
+    "fs.statSync(p)",
+    "fs.readdirSync(dir)",
+    "const changes = [];",
+    "log('nothing mirrored this run')",
+]
+
+
+def test_write_detector_recognizes_known_write_forms() -> None:
+    """The detector must actually detect. A guard is only as good as its pattern."""
+    missed = [f for f in KNOWN_WRITE_FORMS if not RE_WRITE_CALL.search(f)]
+    assert not missed, (
+        "RE_WRITE_CALL no longer matches these filesystem writes, so "
+        "test_drift_short_circuit_returns_before_any_write would not catch them "
+        f"inside the quarantine branch: {missed}"
+    )
+
+    false_positives = [f for f in KNOWN_SAFE_FORMS if RE_WRITE_CALL.search(f)]
+    assert not false_positives, (
+        f"RE_WRITE_CALL matches read-only calls, which makes the guard noisy "
+        f"and likely to be disabled: {false_positives}"
+    )
 
 
 def _engine_source() -> str:

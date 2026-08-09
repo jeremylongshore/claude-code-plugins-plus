@@ -418,6 +418,12 @@ jobs:
           QUARANTINED_SOURCES: ${{ steps.sync.outputs.quarantined_sources }}
           REFUSED_SOURCES: ${{ steps.sync.outputs.refused_sources }}
         run: |
+          # Strict shell, matching the other multi-command steps in this file.
+          # Without -o pipefail a failure inside the PAYLOAD=$(python3 ...)
+          # substitution would be swallowed and curl would post a malformed
+          # body, turning a failed alert into a silently successful step —
+          # the precise class of silence this alert exists to end.
+          set -euo pipefail
           if [ -z "$WEBHOOK" ]; then
             echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping alert."
             exit 0
