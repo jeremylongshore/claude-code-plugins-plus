@@ -35,6 +35,11 @@ interface URL becomes a default, no card-named URL is resolved on the card's say
 deliberately **no trust score**, because a single number invites automating the one decision that has
 to stay with an operator.
 
+That rule is enforced on the wire, not only in the report. A first cut audited hostile cards and then
+let the protocol client call them anyway, and attached the operator's credential to whatever host the
+caller named — so the posture held in the output and failed in the socket. Every request now passes
+`servers/net-guard.ts`; see [Auth and the outbound guard](#auth-and-the-outbound-guard--both-fail-closed).
+
 ## Tool surface (7)
 
 | Tool | A2A method | What it does |
@@ -51,20 +56,37 @@ Push-notification config methods (`Create`/`Get`/`List`/`Delete TaskPushNotifica
 `GetExtendedAgentCard` are reachable through the SDK but are not exposed as tools yet: a push
 callback is inbound untrusted traffic that needs a receiving endpoint this server does not own.
 
-## Auth — operator-held, never card-derived
+## Auth and the outbound guard — both fail closed
 
 Credentials belong to the operator and arrive through the environment. They are never read from an
-agent card, never logged, and never echoed in a tool result.
+agent card, never logged, and never echoed in a tool result — **and they are only ever sent to a host
+the operator nominated.** Every request also passes a destination check, so the "report, never adopt"
+rule holds on the wire and not just in the report.
 
 | Env | Effect |
 |---|---|
-| `A2A_BEARER_TOKEN` | Sends `Authorization: Bearer <token>` |
-| `A2A_API_KEY` | Sends the value as-is in the auth header |
+| `A2A_ALLOWED_HOSTS` | Comma-separated hosts a credential may be sent to. **Empty (default) means no credential is ever sent.** |
+| `A2A_BEARER_TOKEN` | Sends `Authorization: Bearer <token>` — to allowlisted hosts only |
+| `A2A_API_KEY` | Sends the value as-is in the auth header — to allowlisted hosts only |
 | `A2A_AUTH_HEADER_NAME` | Overrides the header name (default `Authorization`) |
+| `A2A_ALLOW_PRIVATE_HOSTS` | Set to `1` to permit loopback/private destinations. **Local development only.** |
+
+**Destination check.** Private, loopback, link-local, and carrier-grade-NAT addresses are refused —
+including `169.254.169.254`, the cloud instance-metadata endpoint. Hostnames are resolved and *every*
+returned address is checked, so a public name pointing inward is refused too. This applies to the
+`baseUrl` a caller passes **and** to interface URLs named by a remote agent card, which is the point:
+the audit reports a hostile card, and the guard stops the client acting on it.
+
+**Credential scope.** A token is attached only to a host in `A2A_ALLOWED_HOSTS`. With no allowlist
+configured, no credential leaves the process — nominate where your token may go before it can travel.
 
 There is **no credential discovery and no re-auth negotiation**: a `401`/`403` is surfaced to the
 operator rather than answered with a guessed second credential. An agent's declared `securitySchemes`
 tell you which credential to set; they never cause one to be fetched.
+
+*Residual risk, stated rather than papered over:* the address check runs before the request, so a name
+whose resolution changes between check and connect (DNS rebinding) is not covered. Closing that needs
+a pinned-IP dialer the SDK's `fetch` seam does not expose.
 
 ## Install
 
@@ -83,15 +105,18 @@ tell you which credential to set; they never cause one to be fetched.
     "a2a-client": {
       "command": "node",
       "args": ["/abs/path/to/plugins/mcp/a2a-client/dist/servers/a2a-client.js"],
-      "env": { "A2A_BEARER_TOKEN": "…" }
+      "env": {
+        "A2A_ALLOWED_HOSTS": "agents.partner.example.com",
+        "A2A_BEARER_TOKEN": "…"
+      }
     }
   }
 }
 ```
 
 The in-plugin config uses `${CLAUDE_PLUGIN_ROOT}` so no absolute path is needed when installed as a
-plugin. Run `pnpm install && pnpm build` once in the plugin directory to produce `dist/` — `dist/` is
-gitignored repo-wide, the same as every other MCP plugin here.
+plugin. `dist/` is gitignored repo-wide (same as every other MCP plugin here), so the package carries
+a `prepare` script — `pnpm install` in the plugin directory builds the entrypoint automatically.
 
 ## Pairs with
 
@@ -103,18 +128,22 @@ The [`agent-comms`](../../agent-comms/agent-comms) pack is the skill layer over 
 ## Develop
 
 ```bash
-npm install
-npm run typecheck     # tsc --noEmit
-npm run test:ci       # vitest run — 29 tests over the pure card-audit module
-npm run lint
-npm run build         # tsc → dist/ (committed)
+pnpm install          # the `prepare` script builds dist/ automatically
+pnpm typecheck        # tsc --noEmit
+pnpm test:ci          # vitest run — 67 tests (card audit + network guard)
+pnpm lint
+pnpm build            # tsc → dist/
 ```
 
-**Verified end-to-end** against a reference A2A agent built on the official `@a2a-js/sdk` server
+**Exercised end-to-end** against a reference A2A agent built on the official `@a2a-js/sdk` server
 module: card fetch and audit, a `SendMessage` round-trip returning a task, a streamed call emitting
 `task → statusUpdate → artifactUpdate → statusUpdate`, `GetTask` reaching a terminal `COMPLETED`
 state with artifacts, a `CancelTask` on a still-live task returning `CANCELED`, and an unknown task
-id surfacing `Task not found` verbatim rather than a fake success — 22 of 22 assertions.
+id surfacing `Task not found` verbatim rather than a fake success — 22 of 22 assertions, run with
+`A2A_ALLOW_PRIVATE_HOSTS=1` because the reference agent is on loopback.
+
+Separately, the guard was exercised with the default (fail-closed) configuration: `127.0.0.1`,
+`localhost`, and `169.254.169.254` were each refused before any request left the process.
 
 ## License
 

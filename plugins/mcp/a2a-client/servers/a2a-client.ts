@@ -21,38 +21,24 @@ import {
   DefaultAgentCardResolver,
   JsonRpcTransportFactory,
   RestTransportFactory,
-  createAuthenticatingFetchWithRetry,
-  type AuthenticationHandler,
   type Client,
-  type HttpHeaders,
 } from '@a2a-js/sdk/client';
 import { Role, type AgentCard, type Message, type Part } from '@a2a-js/sdk';
 import { auditCard, claimsOf } from './card-audit.js';
+import { configFromEnv, createGuardedFetch } from './net-guard.js';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 
-// ── Auth ────────────────────────────────────────────────────────────────────────
-// Credentials belong to the operator and arrive through the environment. They are
-// never read from an agent card, never logged, and never echoed in a tool result.
+// ── Auth + outbound guard ───────────────────────────────────────────────────────
+// Credentials belong to the operator and arrive through the environment. They are never
+// read from an agent card, never logged, and never echoed in a tool result — AND they are
+// only ever sent to a host the operator nominated in A2A_ALLOWED_HOSTS. With no allowlist
+// configured, no credential leaves this process at all. Every request also passes a
+// destination check that refuses loopback/private/link-local targets, whether they came
+// from the caller or from a remote agent card. See servers/net-guard.ts for the rationale.
 
-const AUTH_HEADER_NAME = process.env.A2A_AUTH_HEADER_NAME ?? 'Authorization';
-const BEARER_TOKEN = process.env.A2A_BEARER_TOKEN ?? '';
-const API_KEY = process.env.A2A_API_KEY ?? '';
-
-function operatorHeaders(): HttpHeaders {
-  if (BEARER_TOKEN) return { [AUTH_HEADER_NAME]: `Bearer ${BEARER_TOKEN}` };
-  if (API_KEY) return { [AUTH_HEADER_NAME]: API_KEY };
-  return {};
-}
-
-const authHandler: AuthenticationHandler = {
-  headers: async () => operatorHeaders(),
-  // No credential discovery and no re-auth negotiation: a 401/403 is surfaced to the
-  // operator rather than answered with a guessed second credential.
-  shouldRetryWithHeaders: async () => undefined,
-};
-
-const authenticatingFetch = createAuthenticatingFetchWithRetry(fetch, authHandler);
+const guardConfig = configFromEnv();
+const guardedFetch = createGuardedFetch(guardConfig);
 
 // ── Client construction ─────────────────────────────────────────────────────────
 // A client is built per call from the card at the given base URL. Nothing is cached
@@ -62,10 +48,10 @@ function factory(): ClientFactory {
   return new ClientFactory(
     ClientFactoryOptions.createFrom(ClientFactoryOptions.default, {
       transports: [
-        new JsonRpcTransportFactory({ fetchImpl: authenticatingFetch }),
-        new RestTransportFactory({ fetchImpl: authenticatingFetch }),
+        new JsonRpcTransportFactory({ fetchImpl: guardedFetch }),
+        new RestTransportFactory({ fetchImpl: guardedFetch }),
       ],
-      cardResolver: new DefaultAgentCardResolver({ fetchImpl: authenticatingFetch }),
+      cardResolver: new DefaultAgentCardResolver({ fetchImpl: guardedFetch }),
     }),
   );
 }
@@ -75,7 +61,7 @@ async function clientFor(baseUrl: string, cardPath?: string): Promise<Client> {
 }
 
 async function cardFor(baseUrl: string, cardPath?: string): Promise<AgentCard> {
-  return new DefaultAgentCardResolver({ fetchImpl: authenticatingFetch }).resolve(baseUrl, cardPath);
+  return new DefaultAgentCardResolver({ fetchImpl: guardedFetch }).resolve(baseUrl, cardPath);
 }
 
 function textMessage(text: string, taskId?: string, contextId?: string): Message {
@@ -244,6 +230,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           card: { type: 'object', description: 'An already-fetched card to validate offline' },
         },
         required: [],
+        anyOf: [{ required: ['baseUrl'] }, { required: ['card'] }],
       },
     },
     {

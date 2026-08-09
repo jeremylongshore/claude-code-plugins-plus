@@ -40,11 +40,14 @@ That is a confused-deputy primitive, and the obvious implementation walks straig
    producing a verbatim error rather than a fake success. **Met: 22/22 assertions against a reference
    agent built on the official `@a2a-js/sdk` server module.**
 2. No tool converts a card claim into local configuration, and no output contains a trust score.
-   Asserted by test, not by convention. **Met: 29 unit tests over the pure audit module.**
+   Asserted by test, not by convention. **Met: 67 unit tests over the pure audit and guard modules.**
+   The wire honours the same rule: private, loopback, link-local, and metadata destinations are
+   refused by default whether the caller or a remote card named them.
 3. `.mcp.json` uses `${CLAUDE_PLUGIN_ROOT}`, and the built server completes an MCP handshake and
    lists all seven tools. **Met.**
 4. Credentials are only ever read from the environment — never from a card, never logged, never echoed
-   in a tool result.
+   in a tool result — and are sent only to a host the operator nominated in `A2A_ALLOWED_HOSTS`. With
+   no allowlist configured, no credential leaves the process. **Met, asserted by test.**
 
 ## Functional requirements
 
@@ -58,6 +61,10 @@ That is a confused-deputy primitive, and the obvious implementation walks straig
 - **FR-4:** Stream events with a caller-set cap, reporting truncation explicitly rather than silently.
 - **FR-5:** Get, list, and cancel tasks, with the cancel result stating that a cancel is a request the
   agent may decline.
+- **FR-6:** Refuse every outbound request to a private, loopback, link-local, or carrier-grade-NAT
+  destination unless explicitly opted in, and attach an operator credential only to an allowlisted
+  host — enforced at a single fetch-level choke point so it covers card resolution, protocol calls,
+  and SDK-internal requests alike.
 
 ## Out of scope
 

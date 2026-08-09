@@ -2,8 +2,14 @@
   "mcpServers": {
     "a2a-client": {
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/servers/a2a-client.js"],
-      "env": {}
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/dist/servers/a2a-client.js"
+      ],
+      "env": {
+        "A2A_ALLOWED_HOSTS": "",
+        "A2A_BEARER_TOKEN": "",
+        "A2A_ALLOW_PRIVATE_HOSTS": ""
+      }
     }
   }
 }

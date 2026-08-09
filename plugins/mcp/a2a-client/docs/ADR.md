@@ -45,9 +45,15 @@ Four commitments implement it:
 3. **Three-valued signature status.** `absent`, `unverified`, or `verified against <key>`. Since this
    server obtains no independent key, it never reports the third. Collapsing `unverified` into either
    neighbour manufactures confidence that no verification produced.
-4. **Operator-held credentials only.** Auth comes from `A2A_BEARER_TOKEN` / `A2A_API_KEY` /
-   `A2A_AUTH_HEADER_NAME`. There is no credential discovery and no re-auth negotiation — a `401`/`403`
-   surfaces rather than triggering a guessed retry.
+4. **Operator-held credentials, scoped to nominated hosts.** Auth comes from `A2A_BEARER_TOKEN` /
+   `A2A_API_KEY` / `A2A_AUTH_HEADER_NAME`, and is attached **only** to a host listed in
+   `A2A_ALLOWED_HOSTS`. With no allowlist, no credential ever leaves the process. There is no
+   credential discovery and no re-auth negotiation — a `401`/`403` surfaces rather than triggering a
+   guessed retry.
+5. **A single outbound choke point** (`servers/net-guard.ts`). Every request — card resolution,
+   protocol calls, anything the SDK does internally — passes a destination check that refuses private,
+   loopback, link-local, and carrier-grade-NAT addresses unless `A2A_ALLOW_PRIVATE_HOSTS=1`. Hostnames
+   are resolved and *every* returned address is checked, so a public name pointing inward is refused.
 
 The audit logic lives in a **pure module with no I/O** (`servers/card-audit.ts`), imported by the
 server and exercised directly by tests. Structure without side effects is what makes "no side effects"
@@ -64,17 +70,24 @@ testable.
 | Cache resolved clients per base URL for speed | Turns one accepted card into a persistent default and makes revocation invisible. The per-call cost is a page fetch; the correctness gain is that trust never accumulates silently. |
 | Expose the push-notification config methods now | A callback is inbound untrusted traffic that needs a receiving endpoint this server does not own. Shipping the registration half without the receiving half invites data loss that looks like success. |
 | Follow `documentationUrl` / `iconUrl` to enrich results | An unattended fetch to a host the remote party chose, from inside the caller's network. Reported as strings instead; the auditing agent additionally denies `WebFetch` so it cannot be done at all. |
+| Enforce the trust rule in the audit output only (the first cut) | Review caught this correctly: the audit *reported* a card pointing at `10.0.0.7`, and the protocol client then called it anyway, while the operator's credential went to whatever host the caller named. The posture held in the report and failed in the socket. A guard at the fetch seam is the only placement that covers card resolution, interface calls, and SDK-internal requests together. |
+| Block private hosts with no escape hatch | Makes local development against a reference agent impossible, which is exactly how this plugin is tested. `A2A_ALLOW_PRIVATE_HOSTS=1` is an explicit, documented, off-by-default opt-in. |
+| Attach credentials to any host, and rely on the caller to pass the right `baseUrl` | The caller may be a model acting on injected content. Requiring the operator to nominate destinations moves the decision to the only party that can make it. |
 
 ## Consequences
 
 **Positive:**
 
 - Spec fidelity is inherited from the maintainers, and tracks the spec as the SDK does.
+- The credential-egress and SSRF classes are closed at one auditable place rather than at each call
+  site, and both fail closed: no allowlist means no credential, and private destinations are refused
+  by default.
 - The trust rule is enforced by structure — pure audit module, no caching, no write tools on the
   auditing agent — rather than by instructions a model may not follow.
 - Errors surface verbatim with their codes, so callers can apply the retry policy the spec implies
   (never retry a failed-precondition class unchanged) instead of guessing from prose.
-- Verified end-to-end rather than asserted: 22/22 assertions against a reference agent, 29 unit tests.
+- Exercised end-to-end rather than asserted: 22/22 assertions against a reference agent, 67 unit
+  tests, and a fail-closed guard check refusing `127.0.0.1`, `localhost`, and `169.254.169.254`.
 
 **Negative / accepted tradeoffs:**
 
@@ -85,9 +98,15 @@ testable.
   and a `payload.$case` union on stream events; callers see those shapes, and an SDK major will move
   them.
 - **Four of eleven A2A methods are unexposed**, so push-notification workflows are out of reach today.
-- **`dist/` is gitignored repo-wide**, so installing from a fresh checkout needs a build step. This
-  matches all fifteen MCP plugins here rather than special-casing one, but it does mean the plugin is
-  not runnable straight out of a clone.
+- **`dist/` is gitignored repo-wide**, so a fresh checkout has no entrypoint. Rather than special-case
+  one plugin against the repo convention, the package carries a `prepare` script, so `pnpm install`
+  builds it. A consumer who copies only the launcher without installing still gets `MODULE_NOT_FOUND`.
+- **Fail-closed credentials are a usability cost.** Setting `A2A_BEARER_TOKEN` alone does nothing
+  until `A2A_ALLOWED_HOSTS` names a destination. That will read as a bug to someone who has not read
+  the auth section, and it is the correct default anyway.
+- **DNS rebinding is not covered.** The address check runs before the request; a name whose resolution
+  changes between check and connect defeats it. Closing that needs a pinned-IP dialer the SDK's
+  `fetch` seam does not expose. Stated in the module header and the README rather than left implicit.
 
 ## Tool-permission scope
 
@@ -95,8 +114,9 @@ This is an MCP server rather than a skill, so the relevant scope is what the ser
 
 | Capability | Why it's needed |
 | --- | --- |
-| Outbound HTTPS via the SDK's `fetch` | The only way to reach a remote A2A agent. Wrapped by `createAuthenticatingFetchWithRetry` so operator credentials are injected at one boundary. |
-| Read `A2A_BEARER_TOKEN` / `A2A_API_KEY` / `A2A_AUTH_HEADER_NAME` from the environment | Credentials must come from the operator, never from a card. No other environment access is used. |
+| Outbound HTTPS via the SDK's `fetch` | The only way to reach a remote A2A agent. Wrapped by `createGuardedFetch` so the destination check and credential scoping apply at one boundary. |
+| DNS resolution (`node:dns/promises`) | Needed to refuse a public hostname that resolves to a private address. Read-only. |
+| Read `A2A_ALLOWED_HOSTS` / `A2A_BEARER_TOKEN` / `A2A_API_KEY` / `A2A_AUTH_HEADER_NAME` / `A2A_ALLOW_PRIVATE_HOSTS` from the environment | Credentials and destination policy must come from the operator, never from a card. No other environment access is used. |
 | stdio | The MCP transport. No HTTP listener, so there is no inbound surface. |
 
 Deliberately absent: **no filesystem access, no shell, no card-named URL resolution.** A tool that

@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepare": "tsc"
   },
   "keywords": [
     "claude-code",
