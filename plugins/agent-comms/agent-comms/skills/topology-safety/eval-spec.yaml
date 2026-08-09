@@ -1,0 +1,96 @@
+spec_version: "1.0"
+skill_name: topology-safety
+description: >-
+  Evaluates topology-safety on the structural insight that distinguishes it —
+  a per-pair rate limit cannot see a three-agent ring — plus preferring
+  cycle removal over cost bounding, matching every identity field on
+  self-echo, and refusing to trust peer agents by default.
+
+criteria:
+  - id: triggers-on-loop-safety
+    description: Engages with agent loops, cycles, amplification, or runaway cost
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with multi-agent message loops, communication
+      cycles, amplification between agents, or runaway coordination cost —
+      rather than refusing or answering an unrelated topic? Answer yes or no.
+
+  - id: pairwise-limit-misses-rings
+    description: Recognises that a per-pair limiter cannot see an A-to-B-to-C-to-A ring
+    method: judge
+    blocker: true
+    regression_critical: true
+    judge_prompt: >-
+      Does this output recognise that a rate limit applied per pair of agents
+      cannot detect a loop involving three or more agents — because no single
+      pair exceeds its own budget while the total runs away — and therefore
+      require a second, graph-wide or channel-wide limit? Answer yes or no.
+
+  - id: prefers-breaking-over-bounding
+    description: Removing the cycle beats rate-limiting it
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output treat removing or redirecting the cycle-closing edge as
+      the preferred fix, with rate limiting as a bound for cycles that are
+      genuinely required — rather than presenting a rate limit as the primary
+      solution to a loop? Answer yes or no.
+
+  - id: self-echo-matches-all-identity-fields
+    description: Self-echo filtering covers every identity field the transport populates
+    method: judge
+    judge_prompt: >-
+      When self-echo filtering is in scope, does this output require matching on
+      every sender-identity field the transport can populate, rather than a
+      single field? Answer yes or no.
+
+  - id: peers-not-trusted-by-default
+    description: Cross-agent delivery is opt-in, not inherited
+    method: judge
+    judge_prompt: >-
+      Does this output treat messages from other agents as denied by default,
+      with delivery enabled only by an explicit per-channel opt-in — rather than
+      assuming cooperating agents may message each other freely? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: three-agent-ring
+    description: The structural blind spot of a pairwise limiter must be surfaced
+    tier: core
+    prompt: "I rate-limit each pair of agents to 10 messages a minute, so loops are handled. Agree?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-loop-safety
+      - pairwise-limit-misses-rings
+
+  - id: just-add-a-limit
+    description: A cycle should be broken, not merely bounded
+    tier: core
+    prompt: "My supervisor and worker keep messaging each other in a loop. Add a rate limit to fix it."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-loop-safety
+      - prefers-breaking-over-bounding
+
+  - id: new-bot-in-channel
+    description: A new peer agent must not be trusted by default
+    tier: core
+    prompt: "We're adding a second Claude Code agent to the shared ops channel. Anything to configure?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-loop-safety
+      - peers-not-trusted-by-default
+
+  - id: bill-spiked
+    description: Cost spike triage should reach cycles and edge pruning
+    tier: core
+    prompt: "Our multi-agent pipeline's token bill tripled this week but throughput is flat. Where do I look?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-loop-safety
+      - prefers-breaking-over-bounding

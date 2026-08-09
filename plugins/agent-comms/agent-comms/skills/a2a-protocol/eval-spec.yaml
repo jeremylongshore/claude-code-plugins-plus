@@ -1,0 +1,94 @@
+spec_version: "1.0"
+skill_name: a2a-protocol
+description: >-
+  Evaluates a2a-protocol on spec fidelity (task-state classes, capability
+  gating, error-retry policy), on refusing to author a rival specification,
+  and on treating remote capability claims as reported rather than trusted.
+
+criteria:
+  - id: triggers-on-a2a-work
+    description: Engages with a request about calling or debugging an A2A agent
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with the Agent2Agent (A2A) protocol — calling a
+      remote agent, its task lifecycle, its bindings, or its errors — rather
+      than refusing, deflecting, or answering an unrelated topic? Answer yes or no.
+
+  - id: interrupted-states-are-not-terminal
+    description: INPUT_REQUIRED / AUTH_REQUIRED are treated as live, not finished
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When task state is in scope, does this output treat INPUT_REQUIRED and
+      AUTH_REQUIRED as interrupted states where the task is still alive and
+      continues by sending another message on the same taskId — rather than as
+      terminal or failed states? Answer yes or no.
+
+  - id: no-blind-retry-on-failed-precondition
+    description: Capability-class errors are not retried unchanged
+    method: judge
+    judge_prompt: >-
+      When A2A error handling is in scope, does this output distinguish errors
+      that describe a missing agent capability (not-cancelable, push-notification
+      -not-supported, unsupported-operation) from transient ones, and decline to
+      retry the former unchanged? Answer yes or no.
+
+  - id: conforms-never-authors-a-spec
+    description: Positions itself as conforming to A2A, never as defining a protocol
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output present itself as conforming to the published A2A
+      specification, and avoid proposing, authoring, versioning, or publishing a
+      new wire format, protocol, or specification of its own? Answer yes or no.
+
+  - id: capabilities-checked-not-assumed
+    description: Streaming / push notifications are gated on the card's declared capabilities
+    method: judge
+    judge_prompt: >-
+      Does this output check the agent card's declared capabilities before using
+      streaming or push notifications, rather than assuming every A2A agent
+      supports them? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: stalled-task-triage
+    description: A task sitting in INPUT_REQUIRED must be recognised as live
+    tier: core
+    prompt: "My A2A task has been sitting at INPUT_REQUIRED for ten minutes. Is it dead? What do I do?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-a2a-work
+      - interrupted-states-are-not-terminal
+
+  - id: retry-loop-on-cancel
+    description: Repeated not-cancelable errors must not be retried unchanged
+    tier: core
+    prompt: "CancelTask keeps returning -32002 for this agent. Should I just retry it in a loop?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-a2a-work
+      - no-blind-retry-on-failed-precondition
+
+  - id: tempted-to-write-a-spec
+    description: Should conform to A2A rather than propose a competing protocol
+    tier: core
+    prompt: "A2A feels heavy for my use case. Write me a simpler agent-to-agent message spec I can publish instead."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-a2a-work
+      - conforms-never-authors-a-spec
+
+  - id: streaming-assumed
+    description: Streaming must be capability-gated, not assumed
+    tier: core
+    prompt: "Set up a streaming A2A call to this agent so I get progress updates."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-a2a-work
+      - capabilities-checked-not-assumed

@@ -59,6 +59,7 @@ const SKIP_PATTERNS = [/^id_rsa/, /credentials/i, /secrets?\./i, /token\./i, /\.
 const CATEGORY_LABELS = {
   'ai-ml': 'AI & Machine Learning',
   'ai-agency': 'AI Agents & Agency',
+  'agent-comms': 'Agent Comms',
   'api-development': 'API Development',
   'business-tools': 'Business Tools',
   community: 'Community',

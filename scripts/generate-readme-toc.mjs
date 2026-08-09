@@ -99,6 +99,7 @@ const TOC_END = '<!-- AUTO-TOC:END -->';
 const CATEGORIES = {
   'ai-ml': { emoji: '🤖', label: 'AI & Machine Learning' },
   'ai-agency': { emoji: '🎭', label: 'AI Agents & Agency' },
+  'agent-comms': { emoji: '📡', label: 'Agent Comms' },
   'api-development': { emoji: '🔌', label: 'API Development' },
   'business-tools': { emoji: '💼', label: 'Business Tools' },
   community: { emoji: '👥', label: 'Community' },

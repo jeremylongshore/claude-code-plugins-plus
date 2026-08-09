@@ -1,0 +1,22 @@
+{
+  "name": "agent-comms",
+  "version": "0.1.0",
+  "description": "Make Claude Code a first-class Agent2Agent (A2A) participant and treat coordination topology as the product — six skills covering the A2A wire surface, untrusted agent-card handling, topology selection, cycle/redundancy safety, a zero-infra durable mailbox, and MAST-based multi-agent failure triage.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+  "homepage": "https://tonsofskills.com/plugins/agent-comms",
+  "license": "MIT",
+  "keywords": [
+    "a2a",
+    "agent2agent",
+    "agent-card",
+    "multi-agent",
+    "coordination",
+    "topology",
+    "agent-communication",
+    "mast"
+  ]
+}

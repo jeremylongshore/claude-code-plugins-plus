@@ -4,14 +4,14 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-471-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-3179-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-473-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-3185-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-471 plugins, 3,179 skills, 347 agents, 30 community contributors — validated and ready to install.
+473 plugins, 3,185 skills, 349 agents, 30 community contributors — validated and ready to install.
 
 ## Why this repo
 
@@ -36,17 +36,17 @@ Or use Claude's built-in command:
 
 <!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
 
-> **Killer Skill of the Week** — [no-ai-slop](https://github.com/petergyang/no-ai-slop) by [Peter Yang](https://github.com/petergyang)
+> **Killer Skill of the Week** — [agent-comms](https://tonsofskills.com/plugins/agent-comms) by [Jeremy Longshore](https://github.com/jeremylongshore)
 >
-> **Strip AI slop from any draft — named-pattern edits that keep the writer's real voice**
+> **Speak Agent2Agent from Claude Code — and design the coordination graph that decides whether the system works**
 >
-> no-ai-slop does two jobs and refuses to fake a third. In Edit mode it makes the minimum effective edit — cutting throat-clearing, weak verbs, and abstract nouns while deliberately preserving the writer's cadence, bluntness, humor, and honest admissions, so a rough draft still sounds like the same person afterward. In Detect mode it names each AI-slop pattern it finds, quotes the offending line, and gives the fix in a few words — and pointedly does NOT score the draft or guess whether an AI wrote it. That restraint is the whole point: AI detectors guess; named patterns are evidence the reader can check. MIT-licensed, single focused skill, actively maintained by Peter Yang.
+> agent-comms bets on the thing the research says actually breaks multi-agent systems. A2A won the interoperability question — 25k+ stars, Linux Foundation, seven SDKs, and its predecessor ACP archived and redirecting to it — yet there was no Claude Code layer for it at all. This is that layer: the 11-method A2A service surface, the task-state classes that trip every first integration, and an MCP client verified end-to-end against a reference agent (22/22 assertions — card fetch, round-trip, stream, terminal state, live cancel, verbatim errors). But the wire was the easy half. Published work puts production multi-agent failure at 41-87 percent, 'mostly due to coordination defects rather than base-model capability,' so three of the six skills work the graph instead: choose the cheapest topology that survives the workload, break the cycles that make loops unterminating, and diagnose a failed run against 14 named failure modes. The sharpest detail is one nobody else ships — a per-pair rate limit sized right for two agents never fires on a three-agent ring, because no single pair exceeds its budget while the aggregate runs away; topology-safety ships the two-tier limiter with production defaults either side of that gap. And the security posture is inverted from every competitor: a fetched agent card is untrusted input, so claims are enumerated and reported, private-range and plaintext interface URLs are flagged, an unverifiable signature is reported unverified and never valid, and no trust score is ever emitted. The auditing agent holds no write tools and cannot fetch a card-named URL, so the rule is enforced by capability rather than by instruction. Six skills, all grade A at 100/100, every claim sourced.
 >
-> _"AI detectors guess. Named patterns are evidence the user can check."_ — Peter Yang
+> _"The message format is solved. The failures are in the graph."_ — Jeremy Longshore
 >
-> Grade: A | Week of July 22, 2026 (W30) | [View on GitHub](https://github.com/petergyang/no-ai-slop)
+> Grade: A | Week of August 9, 2026 (W32) | [View on GitHub](https://tonsofskills.com/plugins/agent-comms)
 >
-> Previous picks: [tonone](https://github.com/tonone-ai/tonone), [mnemos](https://github.com/polyxmedia/mnemos), [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [no-ai-slop](https://github.com/petergyang/no-ai-slop), [tonone](https://github.com/tonone-ai/tonone), [mnemos](https://github.com/polyxmedia/mnemos), [databricks-pack](https://tonsofskills.com/plugins/databricks-pack), [kobiton-automate](https://tonsofskills.com/plugins/kobiton-automate), [skyvern](https://github.com/Skyvern-AI/skyvern), [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 <!-- KILLER-SKILL:END -->
 
@@ -117,12 +117,13 @@ Across **454 published packages** in the
 
 ## Browse Plugins by Category
 
-Jump to any of the 19 categories below. Plugin counts are catalog totals — auto-generated from `marketplace.extended.json`.
+Jump to any of the 20 categories below. Plugin counts are catalog totals — auto-generated from `marketplace.extended.json`.
 
 |     | Category                                           | Plugins |
 | --- | -------------------------------------------------- | ------: |
 | 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
+| 📡  | [Agent Comms](#agent-comms)                        |       1 |
 | 🔌  | [API Development](#api-development)                |      26 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
 | 👥  | [Community](#community)                            |      25 |
@@ -131,7 +132,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎨  | [Design](#design)                                  |       8 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
-| 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
+| 🧩  | [MCP Servers](#mcp-servers)                        |      17 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      34 |
@@ -145,44 +146,44 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 🤖 **36 plugins** · category slug: `ai-ml`
 
-| Plugin                         | Description                                                                                                                               |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `ai-ethics-validator`          | AI ethics and fairness validation                                                                                                         |
-| `ai-sdk-agents`                | Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)            |
-| `anomaly-detection-system`     | Detect anomalies and outliers in data                                                                                                     |
-| `automl-pipeline-builder`      | Build AutoML pipelines                                                                                                                    |
-| `classification-model-builder` | Build classification models                                                                                                               |
-| `clustering-algorithm-runner`  | Run clustering algorithms on datasets                                                                                                     |
-| `computer-vision-processor`    | Computer vision image processing and analysis                                                                                             |
-| `data-preprocessing-pipeline`  | Automated data preprocessing and cleaning pipelines                                                                                       |
-| `data-visualization-creator`   | Create data visualizations and plots                                                                                                      |
-| `dataset-splitter`             | Split datasets for training, validation, and testing                                                                                      |
-| `deep-learning-optimizer`      | Deep learning optimization techniques                                                                                                     |
-| `experiment-tracking-setup`    | Set up ML experiment tracking                                                                                                             |
-| `feature-engineering-toolkit`  | Feature creation, selection, and transformation tools                                                                                     |
-| `hyperparameter-tuner`         | Optimize hyperparameters using grid/random/bayesian search                                                                                |
-| `jeremy-adk-orchestrator`      | Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI                                                    |
-| `jeremy-adk-software-engineer` | ADK software engineer for creating production-ready Agent Development Kit agents with clean structure, testability, safe tool usage, and… |
-| `jeremy-gcp-starter-examples`  | Google Cloud starter kits and example code aggregator with ADK samples                                                                    |
-| `jeremy-genkit-pro`            | Firebase Genkit expert for production-ready AI workflows with RAG and tool calling                                                        |
-| `jeremy-google-adk`            | Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration…           |
-| `jeremy-vertex-ai`             | Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal…    |
-| `jeremy-vertex-engine`         | Vertex AI Agent Engine deployment inspector and runtime validator                                                                         |
-| `jeremy-vertex-validator`      | Production readiness validator for Vertex AI deployments and configurations                                                               |
-| `local-tts`                    | Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.                            |
-| `ml-model-trainer`             | Train and optimize machine learning models with automated workflows                                                                       |
-| `model-deployment-helper`      | Deploy ML models to production                                                                                                            |
-| `model-evaluation-suite`       | Comprehensive model evaluation with multiple metrics                                                                                      |
-| `model-explainability-tool`    | Model interpretability and explainability                                                                                                 |
-| `model-versioning-tracker`     | Track and manage model versions                                                                                                           |
-| `neural-network-builder`       | Build and configure neural network architectures                                                                                          |
-| `nlp-text-analyzer`            | Natural language processing and text analysis                                                                                             |
-| `ollama-local-ai`              | Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI…          |
-| `recommendation-engine`        | Build recommendation systems and engines                                                                                                  |
-| `regression-analysis-tool`     | Regression analysis and modeling                                                                                                          |
-| `sentiment-analysis-tool`      | Sentiment analysis on text data                                                                                                           |
-| `time-series-forecaster`       | Time series forecasting and analysis                                                                                                      |
-| `transfer-learning-adapter`    | Transfer learning adaptation                                                                                                              |
+| Plugin                         | Description                                                                                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ai-ethics-validator`          | AI ethics and fairness validation                                                                                                           |
+| `ai-sdk-agents`                | Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)              |
+| `anomaly-detection-system`     | Detect anomalies and outliers in data                                                                                                       |
+| `automl-pipeline-builder`      | Build AutoML pipelines                                                                                                                      |
+| `classification-model-builder` | Build classification models                                                                                                                 |
+| `clustering-algorithm-runner`  | Run clustering algorithms on datasets                                                                                                       |
+| `computer-vision-processor`    | Computer vision image processing and analysis                                                                                               |
+| `data-preprocessing-pipeline`  | Automated data preprocessing and cleaning pipelines                                                                                         |
+| `data-visualization-creator`   | Create data visualizations and plots                                                                                                        |
+| `dataset-splitter`             | Split datasets for training, validation, and testing                                                                                        |
+| `deep-learning-optimizer`      | Deep learning optimization techniques                                                                                                       |
+| `experiment-tracking-setup`    | Set up ML experiment tracking                                                                                                               |
+| `feature-engineering-toolkit`  | Feature creation, selection, and transformation tools                                                                                       |
+| `hyperparameter-tuner`         | Optimize hyperparameters using grid/random/bayesian search                                                                                  |
+| `jeremy-adk-orchestrator`      | LEGACY - superseded by agent-comms. ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI Agent Engine; retained for… |
+| `jeremy-adk-software-engineer` | ADK software engineer for creating production-ready Agent Development Kit agents with clean structure, testability, safe tool usage, and…   |
+| `jeremy-gcp-starter-examples`  | Google Cloud starter kits and example code aggregator with ADK samples                                                                      |
+| `jeremy-genkit-pro`            | Firebase Genkit expert for production-ready AI workflows with RAG and tool calling                                                          |
+| `jeremy-google-adk`            | Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration…             |
+| `jeremy-vertex-ai`             | Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal…      |
+| `jeremy-vertex-engine`         | Vertex AI Agent Engine deployment inspector and runtime validator                                                                           |
+| `jeremy-vertex-validator`      | Production readiness validator for Vertex AI deployments and configurations                                                                 |
+| `local-tts`                    | Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.                              |
+| `ml-model-trainer`             | Train and optimize machine learning models with automated workflows                                                                         |
+| `model-deployment-helper`      | Deploy ML models to production                                                                                                              |
+| `model-evaluation-suite`       | Comprehensive model evaluation with multiple metrics                                                                                        |
+| `model-explainability-tool`    | Model interpretability and explainability                                                                                                   |
+| `model-versioning-tracker`     | Track and manage model versions                                                                                                             |
+| `neural-network-builder`       | Build and configure neural network architectures                                                                                            |
+| `nlp-text-analyzer`            | Natural language processing and text analysis                                                                                               |
+| `ollama-local-ai`              | Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI…            |
+| `recommendation-engine`        | Build recommendation systems and engines                                                                                                    |
+| `regression-analysis-tool`     | Regression analysis and modeling                                                                                                            |
+| `sentiment-analysis-tool`      | Sentiment analysis on text data                                                                                                             |
+| `time-series-forecaster`       | Time series forecasting and analysis                                                                                                        |
+| `transfer-learning-adapter`    | Transfer learning adaptation                                                                                                                |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -202,6 +203,16 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `sow-generator`           | Generate professional Statements of Work for AI projects                                                                                    |
 | `tonone`                  | 23-agent engineering + product team with 125 skills for Claude Code                                                                         |
 | `zapier-zap-builder`      | Create multi-step Zapier Zaps with filters, paths, and formatters                                                                           |
+
+<sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
+
+### Agent Comms
+
+📡 **1 plugins** · category slug: `agent-comms`
+
+| Plugin        | Description                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `agent-comms` | Make Claude Code a first-class Agent2Agent (A2A) participant and treat coordination topology as the product - the A2A wire surface, agent… |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
@@ -453,10 +464,11 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### MCP Servers
 
-🧩 **16 plugins** · category slug: `mcp`
+🧩 **17 plugins** · category slug: `mcp`
 
 | Plugin                        | Description                                                                                                                                 |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `a2a-client`                  | Agent2Agent (A2A) client as an MCP server - fetch and audit agent cards, send and stream messages, and control tasks against any…           |
 | `ai-experiment-logger`        | Track and analyze AI experiments with a web dashboard and MCP tools                                                                         |
 | `beads-dolt`                  | ⚠️ Renamed to dolt-mcp-vcs. Deprecated alias — kept so existing `beads-dolt` installs keep resolving; please install dolt-mcp-vcs instead.… |
 | `conversational-api-debugger` | Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation                                  |
@@ -1076,7 +1088,7 @@ The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-sk
 
 ## FAQ
 
-**What is this?** A Claude Code plugin marketplace: 471 plugins, 3,179 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+**What is this?** A Claude Code plugin marketplace: 473 plugins, 3,185 skills, 349 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
 
 **How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
 

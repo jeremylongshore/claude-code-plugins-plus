@@ -1,0 +1,99 @@
+spec_version: "1.0"
+skill_name: mas-failure-triage
+description: >-
+  Evaluates mas-failure-triage on diagnosing from the first divergence rather
+  than the loudest symptom, routing the fix to the level the failure category
+  names, and recognising that inter-agent failures cannot be fixed by tuning
+  either agent's prompt.
+
+criteria:
+  - id: triggers-on-failure-triage
+    description: Engages with diagnosing a failed multi-agent run
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with diagnosing why a multi-agent run failed —
+      reading a trace, classifying the failure, or locating the defect — rather
+      than refusing or answering an unrelated topic? Answer yes or no.
+
+  - id: diagnoses-at-first-divergence
+    description: The diagnosis is the earliest divergence, not the final symptom
+    method: judge
+    blocker: true
+    regression_critical: true
+    judge_prompt: >-
+      Does this output locate the earliest point where the run left its intended
+      path and treat that as the diagnosis — rather than diagnosing from the
+      final bad output or the loudest symptom? Answer yes or no.
+
+  - id: inter-agent-not-fixed-by-prompts
+    description: Conversation-level failures route to topology, not to agent prompts
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When the failure lives in the exchange between agents — information
+      withholding, ignored input, derailment — does this output route the fix to
+      the handoff, protocol, or topology rather than to tuning either individual
+      agent's prompt? Answer yes or no.
+
+  - id: names-a-specific-mode
+    description: Produces a named failure mode, not a vague description
+    method: judge
+    judge_prompt: >-
+      Does this output name a specific failure mode from the taxonomy, with its
+      identifier or exact name, rather than describing the failure only in
+      general terms such as "coordination problem" or "the agents got confused"?
+      Answer yes or no.
+
+  - id: absent-verification-is-the-finding
+    description: A missing verifier is diagnosed as missing, not as a weak producer
+    method: judge
+    judge_prompt: >-
+      When a run returned an unchecked or partial result confidently, does this
+      output identify the absent or incorrect verification step as the defect —
+      rather than recommending improvements to the agent that produced the
+      output? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: symptom-at-the-end
+    description: The diagnosis must move upstream from the visible symptom
+    tier: core
+    prompt: "My writer agent produced an off-topic section at the end of the run. How do I fix the writer?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-failure-triage
+      - diagnoses-at-first-divergence
+      - inter-agent-not-fixed-by-prompts
+
+  - id: confident-partial-result
+    description: Missing verification should be named as such
+    tier: core
+    prompt: "My agents returned a confident answer using 3 of 12 sources and called it done. What went wrong?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-failure-triage
+      - absent-verification-is-the-finding
+      - names-a-specific-mode
+
+  - id: agents-got-confused
+    description: A vague report should still produce a named mode
+    tier: core
+    prompt: "The agents just got confused halfway through and the output was garbage. Diagnose it."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-failure-triage
+      - names-a-specific-mode
+
+  - id: tune-both-prompts
+    description: A prompt-tuning instinct should be redirected to the handoff
+    tier: core
+    prompt: "Agent A had the constraint but Agent B ignored it. Should I add the constraint to both prompts?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-failure-triage
+      - inter-agent-not-fixed-by-prompts

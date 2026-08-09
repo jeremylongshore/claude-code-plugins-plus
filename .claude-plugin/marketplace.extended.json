@@ -5062,7 +5062,7 @@
     {
       "name": "jeremy-adk-orchestrator",
       "source": "./plugins/ai-ml/jeremy-adk-orchestrator",
-      "description": "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI",
+      "description": "LEGACY - superseded by agent-comms. ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI Agent Engine; retained for reference. For runtime-independent A2A, install agent-comms.",
       "version": "2.29.0",
       "category": "ai-ml",
       "keywords": [
@@ -10769,6 +10769,39 @@
       },
       "repository": "https://github.com/metrox-eth/quit-sponsor",
       "license": "MIT"
+    },
+    {
+      "name": "agent-comms",
+      "source": "./plugins/agent-comms/agent-comms",
+      "description": "Make Claude Code a first-class Agent2Agent (A2A) participant and treat coordination topology as the product - the A2A wire surface, agent cards as untrusted input, topology selection, cycle and redundancy safety, a zero-infra durable mailbox, and MAST-based multi-agent failure triage.",
+      "version": "0.1.0",
+      "category": "agent-comms",
+      "keywords": ["a2a", "agent2agent", "agent-card", "multi-agent", "coordination", "topology", "mast"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "featured": true,
+      "components": {
+        "skills": 6,
+        "commands": 0,
+        "agents": 2,
+        "total": 8
+      }
+    },
+    {
+      "name": "a2a-client",
+      "source": "./plugins/mcp/a2a-client",
+      "description": "Agent2Agent (A2A) client as an MCP server - fetch and audit agent cards, send and stream messages, and control tasks against any conformant A2A agent, with remote capability claims reported rather than trusted.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": ["mcp", "a2a", "agent2agent", "agent-card", "multi-agent", "interoperability"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "featured": true,
+      "mcpTools": 7
     }
   ]
 }

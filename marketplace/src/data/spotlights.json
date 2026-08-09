@@ -1,19 +1,32 @@
 {
-  "week": "2026-W30",
+  "week": "2026-W32",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "no-ai-slop",
-    "headline": "Strip AI slop from any draft — named-pattern edits that keep the writer's real voice",
-    "whyKiller": "no-ai-slop does two jobs and refuses to fake a third. In Edit mode it makes the minimum effective edit — cutting throat-clearing, weak verbs, and abstract nouns while deliberately preserving the writer's cadence, bluntness, humor, and honest admissions, so a rough draft still sounds like the same person afterward. In Detect mode it names each AI-slop pattern it finds, quotes the offending line, and gives the fix in a few words — and pointedly does NOT score the draft or guess whether an AI wrote it. That restraint is the whole point: AI detectors guess; named patterns are evidence the reader can check. MIT-licensed, single focused skill, actively maintained by Peter Yang.",
-    "author": "Peter Yang",
-    "authorGithub": "petergyang",
+    "pluginSlug": "agent-comms",
+    "headline": "Speak Agent2Agent from Claude Code — and design the coordination graph that decides whether the system works",
+    "whyKiller": "agent-comms bets on the thing the research says actually breaks multi-agent systems. A2A won the interoperability question — 25k+ stars, Linux Foundation, seven SDKs, and its predecessor ACP archived and redirecting to it — yet there was no Claude Code layer for it at all. This is that layer: the 11-method A2A service surface, the task-state classes that trip every first integration, and an MCP client verified end-to-end against a reference agent (22/22 assertions — card fetch, round-trip, stream, terminal state, live cancel, verbatim errors). But the wire was the easy half. Published work puts production multi-agent failure at 41-87 percent, 'mostly due to coordination defects rather than base-model capability,' so three of the six skills work the graph instead: choose the cheapest topology that survives the workload, break the cycles that make loops unterminating, and diagnose a failed run against 14 named failure modes. The sharpest detail is one nobody else ships — a per-pair rate limit sized right for two agents never fires on a three-agent ring, because no single pair exceeds its budget while the aggregate runs away; topology-safety ships the two-tier limiter with production defaults either side of that gap. And the security posture is inverted from every competitor: a fetched agent card is untrusted input, so claims are enumerated and reported, private-range and plaintext interface URLs are flagged, an unverifiable signature is reported unverified and never valid, and no trust score is ever emitted. The auditing agent holds no write tools and cannot fetch a card-named URL, so the rule is enforced by capability rather than by instruction. Six skills, all grade A at 100/100, every claim sourced.",
+    "author": "Jeremy Longshore",
+    "authorGithub": "jeremylongshore",
     "grade": "A",
-    "skillCount": 1,
-    "category": "productivity",
-    "link": "https://github.com/petergyang/no-ai-slop",
-    "quote": "AI detectors guess. Named patterns are evidence the user can check."
+    "skillCount": 6,
+    "category": "agent-comms",
+    "link": "https://tonsofskills.com/plugins/agent-comms",
+    "quote": "The message format is solved. The failures are in the graph."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W30",
+      "pluginSlug": "no-ai-slop",
+      "headline": "Strip AI slop from any draft — named-pattern edits that keep the writer's real voice",
+      "whyKiller": "no-ai-slop does two jobs and refuses to fake a third. In Edit mode it makes the minimum effective edit — cutting throat-clearing, weak verbs, and abstract nouns while deliberately preserving the writer's cadence, bluntness, humor, and honest admissions, so a rough draft still sounds like the same person afterward. In Detect mode it names each AI-slop pattern it finds, quotes the offending line, and gives the fix in a few words — and pointedly does NOT score the draft or guess whether an AI wrote it. That restraint is the whole point: AI detectors guess; named patterns are evidence the reader can check. MIT-licensed, single focused skill, actively maintained by Peter Yang.",
+      "author": "Peter Yang",
+      "authorGithub": "petergyang",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "productivity",
+      "link": "https://github.com/petergyang/no-ai-slop",
+      "quote": "AI detectors guess. Named patterns are evidence the user can check."
+    },
     {
       "week": "2026-W28",
       "pluginSlug": "tonone",
@@ -165,8 +178,8 @@
     }
   ],
   "meta": {
-    "version": "2.8.0",
-    "lastUpdated": "2026-07-22",
+    "version": "2.9.0",
+    "lastUpdated": "2026-08-09",
     "curatedBy": "Jeremy Longshore"
   }
 }

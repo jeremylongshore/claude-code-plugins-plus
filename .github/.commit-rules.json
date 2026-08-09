@@ -31,6 +31,7 @@
     "content"
   ],
   "allowedScopes": [
+    "agent-comms",
     "ci-infra",
     "validator-schema",
     "marketplace-site",

@@ -1,5 +1,19 @@
 # Jeremy ADK Orchestrator
 
+> ## ⚠️ Legacy — superseded by [`agent-comms`](../../agent-comms/agent-comms)
+>
+> This plugin's A2A support is bound to **Vertex AI Agent Engine**, and that estate was torn down on
+> 2026-07-09. It is retained for reference and for anyone still running ADK agents on Agent Engine;
+> it is not the current answer for agent-to-agent work.
+>
+> **For A2A today, install [`agent-comms`](../../agent-comms/agent-comms)** — runtime-independent
+> conformance to the published Agent2Agent specification (the 11-method service surface, agent cards
+> treated as untrusted input, coordination-topology design, cycle and redundancy safety, and
+> multi-agent failure triage), plus the [`a2a-client`](../../mcp/a2a-client) MCP server for live
+> calls against any conformant agent — no Vertex AI, no cloud dependency.
+>
+> `agents/a2a-protocol-manager.md` below remains the source material this pack's A2A skills grew from.
+
 **🎯 VERTEX AI AGENT ENGINE + ADK DEPLOYMENT ONLY**
 
 Expert Agent-to-Agent (A2A) protocol manager for communicating with **Vertex AI Agent Development Kit (ADK)** agents deployed on **Agent Engine**.

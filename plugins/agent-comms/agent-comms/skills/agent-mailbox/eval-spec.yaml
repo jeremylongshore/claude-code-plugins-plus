@@ -1,0 +1,98 @@
+spec_version: "1.0"
+skill_name: agent-mailbox
+description: >-
+  Evaluates agent-mailbox on honest delivery semantics (at-least-once, never
+  exactly-once), atomic write and claim discipline, naming itself an
+  implementation rather than a specification, and refusing to be stretched
+  across a trust boundary or into fan-out.
+
+criteria:
+  - id: triggers-on-durable-handoff
+    description: Engages with durable asynchronous handoff between agents
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with passing work between agents durably or
+      asynchronously — a mailbox, inbox, file-based handoff, or queue-without-a-
+      broker — rather than refusing or answering an unrelated topic?
+      Answer yes or no.
+
+  - id: at-least-once-not-exactly-once
+    description: Delivery is stated as at-least-once, with idempotency required
+    method: judge
+    blocker: true
+    regression_critical: true
+    judge_prompt: >-
+      Does this output state that delivery is at-least-once and that handlers
+      must therefore be idempotent — rather than claiming or implying
+      exactly-once delivery? Answer yes or no.
+
+  - id: atomic-write-and-claim
+    description: Writes land via rename; claiming uses rename as the lock
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When the mechanism is described, does this output write messages to a
+      temporary name and then rename into place (never writing directly into the
+      inbox), and use an atomic rename as the mutual-exclusion primitive when a
+      reader claims a message? Answer yes or no.
+
+  - id: implementation-not-specification
+    description: Frames the mailbox as an implementation, never a spec to adopt
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output present the mailbox as one local implementation, and
+      avoid presenting it as a specification, standard, protocol version, or
+      format for other parties to adopt or conform to? Answer yes or no.
+
+  - id: refuses-wrong-shapes
+    description: Names fan-out and cross-trust-boundary as cases to use something else
+    method: judge
+    judge_prompt: >-
+      When the described need involves multiple consumers of the same message,
+      or a counterparty outside the caller's trust boundary, does this output
+      direct the user to a bus or a real agent-to-agent protocol instead of
+      stretching the mailbox to cover it? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: exactly-once-request
+    description: A request for exactly-once must be answered honestly
+    tier: core
+    prompt: "Set up a mailbox between my two agents that guarantees each message is processed exactly once."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-durable-handoff
+      - at-least-once-not-exactly-once
+
+  - id: build-the-mailbox
+    description: The mechanism must use atomic rename in both places
+    tier: core
+    prompt: "Show me how to build a file-based inbox so my writer agent can hand off to my reader agent."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-durable-handoff
+      - atomic-write-and-claim
+
+  - id: publish-the-format
+    description: Should decline to turn the layout into a published spec
+    tier: core
+    prompt: "This mailbox format is good — write it up as a v1 spec so other teams can implement against it."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-durable-handoff
+      - implementation-not-specification
+
+  - id: partner-shared-volume
+    description: Cross-org use must be redirected to a protocol
+    tier: core
+    prompt: "Can I mount this mailbox directory on our partner's server so their agent can read from it?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-durable-handoff
+      - refuses-wrong-shapes

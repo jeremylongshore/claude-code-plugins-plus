@@ -1,4 +1,10 @@
 3bb38cf7d231a25eeb5587e33142c07653be4400dcae204ebe43011f0f0b9e2c  .harness-hash-extra-patterns
+7552489dbb1595e3c53aef47c7ad493607c5d127e1d9ce288af253b0de85402a  plugins/agent-comms/agent-comms/skills/a2a-agent-card/eval-spec.yaml
+9c68faa93fd7974c7b2f478004640a2c430c9b21e807e7e701b3544b637db900  plugins/agent-comms/agent-comms/skills/a2a-protocol/eval-spec.yaml
+0ccadb52b15b6ac0eb2f2a3d771f83f7e60bc8a07d713b69130999cd9ead720b  plugins/agent-comms/agent-comms/skills/agent-mailbox/eval-spec.yaml
+45bba8648246e72641feb892685c984cfb2212e2084cc33d93f241bb683308f8  plugins/agent-comms/agent-comms/skills/comms-topology/eval-spec.yaml
+6f13f0347e1041eaedf0d6a7f523d73c95a74080bd3030dc53ea509ad77c4fd7  plugins/agent-comms/agent-comms/skills/mas-failure-triage/eval-spec.yaml
+b5930f8547ce39589e509174eb39328b4b1732b847b9a16a6ca8ae69cc851253  plugins/agent-comms/agent-comms/skills/topology-safety/eval-spec.yaml
 903555ec7e0e7d80db9f18076b50b8b9184a2f0a2b438859d15c9f8757428220  plugins/productivity/intent-labs-pack/skills/audit-tests/eval-spec.yaml
 b91ee2d8ee323ac9591cdad232d31dbf639d7d4b2d32cc105dfa4bb05ab83ec8  plugins/productivity/intent-labs-pack/skills/validate-skillmd/eval-spec.yaml
 69f664a9b33c63c9012e95765d8b674a1d368dd6738c12c031bf6e1c2ec378e7  plugins/saas-packs/coreweave-pack/skills/coreweave-fabric-diagnostics/eval-spec.yaml

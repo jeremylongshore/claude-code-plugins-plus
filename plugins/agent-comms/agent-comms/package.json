@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/agent-comms",
+  "version": "0.1.0",
+  "description": "A2A-conformant agent-to-agent coordination skills for Claude Code: protocol surface, untrusted agent cards, topology selection, cycle/redundancy safety, durable mailbox, MAST failure triage",
+  "keywords": [
+    "a2a",
+    "agent2agent",
+    "agent-card",
+    "multi-agent",
+    "coordination",
+    "topology",
+    "claude-code",
+    "claude-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/agent-comms/agent-comms"
+  },
+  "homepage": "https://tonsofskills.com/plugins/agent-comms",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "docs"
+  ]
+}

@@ -1,0 +1,99 @@
+spec_version: "1.0"
+skill_name: comms-topology
+description: >-
+  Evaluates comms-topology on committing to the cheapest surviving shape,
+  refusing to default unstated axes, pricing designs in edges, and keeping
+  the trust boundary as the rule that forces a protocol.
+
+criteria:
+  - id: triggers-on-topology-design
+    description: Engages with choosing or reviewing a multi-agent coordination shape
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with how multiple agents should be wired
+      together — topology, coordination shape, or whether a bus/mailbox/direct
+      call is right — rather than refusing or answering an unrelated topic?
+      Answer yes or no.
+
+  - id: cheapest-surviving-shape
+    description: Recommends the leftmost topology that survives the workload
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output recommend the simplest coordination shape that meets the
+      stated requirements, and justify it by ruling out cheaper options — rather
+      than recommending a message bus or full protocol for flexibility,
+      future-proofing, or general good practice? Answer yes or no.
+
+  - id: trust-boundary-forces-protocol
+    description: A participant outside the organization forces a real protocol
+    method: judge
+    judge_prompt: >-
+      When a participant sits outside the caller's trust boundary (another
+      company, a partner, a third party), does this output require a real
+      agent-to-agent protocol with discovery, authentication, and a versioned
+      contract at that seam, rather than extending an internal bus or direct
+      call across it? Answer yes or no.
+
+  - id: does-not-assume-unstated-axes
+    description: Unstated durability or fan-out requirements are asked about, not defaulted
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      When the workload description leaves durability, fan-out, or ordering
+      requirements unstated, does this output ask for them or explicitly mark
+      them unknown with the consequence — rather than silently assuming a value
+      and designing on it? Answer yes or no.
+
+  - id: prices-the-design-in-edges
+    description: The recommendation carries an edge count
+    method: judge
+    judge_prompt: >-
+      Does this output state how many communication edges the recommended shape
+      has, or otherwise treat edge count as a cost and safety metric rather than
+      an afterthought? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: two-agents-wants-kafka
+    description: A trivial workload must not get a broker
+    tier: core
+    prompt: "I have a research agent and a writer agent in one process. Should I put Kafka between them?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-topology-design
+      - cheapest-surviving-shape
+      - prices-the-design-in-edges
+
+  - id: partner-agent-on-the-bus
+    description: A cross-org participant must force a protocol at the seam
+    tier: core
+    prompt: "Our partner's agent needs to consume our internal event bus. Just give them a subscriber, right?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-topology-design
+      - trust-boundary-forces-protocol
+
+  - id: vague-workload
+    description: Unstated durability must be asked about rather than assumed
+    tier: core
+    prompt: "Design the comms layer for my multi-agent system. There are about five agents."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-topology-design
+      - does-not-assume-unstated-axes
+
+  - id: mesh-by-default
+    description: An all-to-all design should be priced and pruned
+    tier: core
+    prompt: "I want every agent to be able to message every other agent so nothing is blocked. Six agents."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-topology-design
+      - prices-the-design-in-edges
+      - cheapest-surviving-shape
