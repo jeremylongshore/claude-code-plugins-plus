@@ -5063,7 +5063,7 @@
       "name": "jeremy-adk-orchestrator",
       "source": "./plugins/ai-ml/jeremy-adk-orchestrator",
       "description": "LEGACY - superseded by agent-comms. ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI Agent Engine; retained for reference. For runtime-independent A2A, install agent-comms.",
-      "version": "2.29.0",
+      "version": "2.30.0",
       "category": "ai-ml",
       "keywords": [
         "vertex-ai",

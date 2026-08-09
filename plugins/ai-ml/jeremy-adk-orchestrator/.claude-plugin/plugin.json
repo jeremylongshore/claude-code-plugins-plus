@@ -1,6 +1,6 @@
 {
   "name": "jeremy-adk-orchestrator",
-  "version": "2.29.0",
+  "version": "2.30.0",
   "description": "LEGACY - superseded by agent-comms. ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI Agent Engine; retained for reference. For runtime-independent A2A, install agent-comms.",
   "author": {
     "name": "Jeremy Longshore",
