@@ -144,7 +144,7 @@ jobs:
       # rides along in the same auto-PR. (Skipped on dry-run and on a partial
       # sync, matching the commit/PR gating downstream.)
       - name: Sync lint-ignore exclusions
-        if: inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
+        if: inputs.dry_run != true && steps.sync.outputs.errors == '0'
         run: node scripts/sync-lint-ignores.mjs
 
       # Supply-chain gate on the freshly-mirrored content BEFORE it is committed
@@ -172,7 +172,7 @@ jobs:
           fi
 
       - name: Sync marketplace catalog
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         # Use --no-frozen-lockfile here intentionally: the sync step above can
         # overwrite synced plugins' package.json from upstream, which legitimately
         # diverges from the committed pnpm-lock.yaml. The auto-PR this workflow
@@ -199,7 +199,7 @@ jobs:
         # earlier shared-branch clobber, 000-docs/691-AT-AUDT); this step only
         # prunes the pileup that model produced. See 000-docs AT-DECR
         # (mirror-by-default external-plugin sync model).
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -215,7 +215,7 @@ jobs:
             done
 
       - name: Create Pull Request
-        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0' && steps.sync.outputs.quarantined == '0'
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true && steps.sync.outputs.errors == '0'
         # Hand-rolled commit + push + PR-create instead of peter-evans/create-pull-request.
         #
         # Why: sync diffs are large (hundreds of files / 100K+ lines from upstream
@@ -288,35 +288,77 @@ jobs:
       # partial run visibly RED and names the failed sources so a human can act.
       - name: Flag partial sync
         if: steps.sync.outputs.errors != '0' && steps.sync.outputs.errors != ''
+        # Source-name outputs go through env:, never ${{ }} inside run:. They
+        # are built from the `name:` fields in sources.yaml, which external
+        # contributors submit PRs against, so a name containing a quote or
+        # backtick would be executed rather than echoed. Same class as
+        # f-ccp-workflows-1; pinned by tests/ci/test_workflow_injection_hygiene.py.
+        env:
+          ERRORS: ${{ steps.sync.outputs.errors }}
+          FAILED_SOURCES: ${{ steps.sync.outputs.failed_sources }}
         run: |
           {
             echo "## ⚠️ Partial external sync — needs human"
             echo ""
-            echo "${{ steps.sync.outputs.errors }} source(s) errored; no PR was opened."
-            echo "Failed: ${{ steps.sync.outputs.failed_sources }}"
+            echo "$ERRORS source(s) errored; no PR was opened."
+            echo "Failed: $FAILED_SOURCES"
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::Partial external sync (${{ steps.sync.outputs.failed_sources }}) — investigate before re-running."
+          echo "::error::Partial external sync ($FAILED_SOURCES) — investigate before re-running."
           exit 1
 
       # A locked source whose upstream content drifted from the committed
       # sources.lock.json baseline was QUARANTINED by the sync engine (nothing
-      # of it mirrored). Like the partial-sync path above, the commit + PR
-      # steps are gated on `quarantined == '0'`, so drifted content can never
-      # ride into the routine auto-PR. This step makes the run visibly RED and
-      # names the drifted sources; a human reviews each upstream diff, then
-      # approves via workflow_dispatch with relock=<names> (or relock=all).
+      # of it mirrored). The load-bearing invariant for the gating below is that
+      # a drifted source writes NOTHING — in scripts/sync-external.mjs, the
+      # guard
+      #
+      #     if (lockDiff.status === 'drifted' && !relockRequested) { ... return
+      #     { source, changes: [], lockStatus: 'quarantined', ... } }
+      #
+      # short-circuits unconditionally at the TOP of the per-source body, before
+      # any copy/write call, so drifted bytes never reach the working tree.
+      # tests/ci/test_sync_external_gating.py pins this — if someone ever moves
+      # a write above that early return, the test fails rather than this
+      # workflow silently shipping drifted content.
+      #
+      # Drift therefore quarantines ONLY the drifted source, exactly like the
+      # REFUSE path below: the clean co-synced sources still ship their PR, and
+      # this step runs AFTER it to make the run visibly RED and name the drifted
+      # sources. A human reviews each upstream diff, then approves via
+      # workflow_dispatch with relock=<names> (or relock=all).
+      #
+      # The commit/PR steps were previously ALSO gated on `quarantined == '0'`.
+      # That gate protected nothing — the drifted files were never written, so
+      # they could not ride into the PR — while blocking every OTHER source's
+      # legitimately-mirrored content. One drifted source halted all 63.
+      #
+      # It did exactly that: `slack-channel` drifted and the sync failed on
+      # EVERY run from 2026-07-20 to 2026-08-09 — seven consecutive runs, all
+      # failing at "Flag quarantined drift", with the last success on
+      # 2026-07-17. Nothing mirrored for 23 days. The UIZZE plugin (#1104) was accepted on 2026-07-25 and still did
+      # not exist on the site when the outage was found — the contributor saw
+      # their submission merged and then vanish. The failure was loud in the
+      # Actions tab and observed by nobody, which is the actual lesson.
+      # See #1164.
       - name: Flag quarantined drift
         if: steps.sync.outputs.quarantined != '0' && steps.sync.outputs.quarantined != ''
+        # Source names via env: — see the note on "Flag partial sync" above.
+        env:
+          QUARANTINED: ${{ steps.sync.outputs.quarantined }}
+          QUARANTINED_SOURCES: ${{ steps.sync.outputs.quarantined_sources }}
         run: |
           {
             echo "## 🔒 Upstream drift quarantined — needs human review"
             echo ""
-            echo "${{ steps.sync.outputs.quarantined }} source(s) drifted from their sources.lock.json baseline; no PR was opened."
-            echo "Drifted: ${{ steps.sync.outputs.quarantined_sources }}"
+            echo "$QUARANTINED source(s) drifted from their sources.lock.json baseline. NOTHING of theirs was mirrored."
+            echo "Drifted: $QUARANTINED_SOURCES"
+            echo ""
+            echo "The clean co-synced sources shipped their PR normally — only the drifted source(s) above are held back."
             echo ""
             echo "Review each upstream diff, then re-run this workflow (workflow_dispatch) with \`relock\` set to the approved source names (comma-separated) or \`all\`."
+            echo "Until then those source(s) stay frozen at their locked baseline and every run will red-fail here."
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::Drift quarantined (${{ steps.sync.outputs.quarantined_sources }}) — review upstream diffs, then approve via the relock input."
+          echo "::error::Drift quarantined ($QUARANTINED_SOURCES) — review upstream diffs, then approve via the relock input."
           exit 1
 
       # A source was REFUSED by the sync-time supply-chain scanner (blocker
@@ -329,16 +371,20 @@ jobs:
       # security review (the excluded source, not the clean PR, is the concern).
       - name: Flag REFUSED sources (supply-chain security event)
         if: steps.sync.outputs.refused != '0' && steps.sync.outputs.refused != ''
+        # Source names via env: — see the note on "Flag partial sync" above.
+        env:
+          REFUSED: ${{ steps.sync.outputs.refused }}
+          REFUSED_SOURCES: ${{ steps.sync.outputs.refused_sources }}
         run: |
           {
             echo "## ⛔ Source REFUSED — malicious content quarantined (security review)"
             echo ""
-            echo "${{ steps.sync.outputs.refused }} source(s) tripped a REFUSE grade in the sync-time payload scanner; NONE of their content was mirrored."
-            echo "Refused: ${{ steps.sync.outputs.refused_sources }}"
+            echo "$REFUSED source(s) tripped a REFUSE grade in the sync-time payload scanner; NONE of their content was mirrored."
+            echo "Refused: $REFUSED_SOURCES"
             echo ""
             echo "Clean co-synced sources shipped their PR normally. Investigate each refused upstream (a pipe-to-shell / reverse-shell / exfil pattern in an auto-executing file) before re-enabling it."
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::Source REFUSED (${{ steps.sync.outputs.refused_sources }}) — malicious content excluded from the mirror; review the upstream."
+          echo "::error::Source REFUSED ($REFUSED_SOURCES) — malicious content excluded from the mirror; review the upstream."
           exit 1
 
       - name: Summary
@@ -350,3 +396,58 @@ jobs:
           else
             echo "✓ All sources are up to date" >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      # ── Failure alerting (Slack-only, per the /slack skill convention) ────────
+      # This workflow had NO failure alerting, which is why a drift quarantine
+      # could red-fail every run from 2026-07-20 to 2026-08-09 (23 days) while
+      # 63 sources silently stopped mirroring. The run was loud in the Actions
+      # tab the whole time; nobody reads the Actions tab of a weekly cron.
+      #
+      # A scheduled job with no alert on failure is indistinguishable from one
+      # that is not running at all. Modeled on promote-curated.yml. See #1164.
+      - name: Alert Slack on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          # Passed through the environment, NOT interpolated into the run:
+          # script. `${{ }}` expands before bash parses the line, so a source
+          # name containing a quote or backtick would be executed rather than
+          # quoted — the standard GitHub Actions script-injection vector. These
+          # values originate in sources.yaml, which external contributors submit
+          # PRs against, so they are attacker-influenced by design.
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          QUARANTINED_SOURCES: ${{ steps.sync.outputs.quarantined_sources }}
+          REFUSED_SOURCES: ${{ steps.sync.outputs.refused_sources }}
+        run: |
+          # Strict shell, matching the other multi-command steps in this file.
+          # Without -o pipefail a failure inside the PAYLOAD=$(python3 ...)
+          # substitution would be swallowed and curl would post a malformed
+          # body, turning a failed alert into a silently successful step —
+          # the precise class of silence this alert exists to end.
+          set -euo pipefail
+          if [ -z "$WEBHOOK" ]; then
+            echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping alert."
+            exit 0
+          fi
+          PAYLOAD=$(python3 - "$RUN_URL" "$QUARANTINED_SOURCES" "$REFUSED_SOURCES" <<'PY'
+          import json, sys
+          run_url, quarantined, refused = sys.argv[1], sys.argv[2], sys.argv[3]
+          detail = ""
+          if quarantined:
+              detail += f"\n• Drift quarantined: `{quarantined}` — review the upstream diff, then re-run with `relock` set."
+          if refused:
+              detail += f"\n• *REFUSED (supply-chain)*: `{refused}` — malicious content excluded; investigate the upstream."
+          if not detail:
+              detail = "\n• No source was quarantined or refused — the job failed for another reason."
+          text = (
+              "⚠️ *sync-external.yml failed* — external plugin mirroring did not "
+              f"complete.{detail} <@U099CBRE7CL> <{run_url}|View run>"
+          )
+          print(json.dumps({"text": text}))
+          PY
+          )
+          curl --silent --show-error --fail \
+            --header "Content-Type: application/json" \
+            --data "$PAYLOAD" \
+            -- "$WEBHOOK" > /dev/null
+          echo "✓ Slack failure alert posted."
