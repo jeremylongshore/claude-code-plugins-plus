@@ -333,8 +333,9 @@ jobs:
       # legitimately-mirrored content. One drifted source halted all 63.
       #
       # It did exactly that: `slack-channel` drifted and the sync failed on
-      # EVERY run from 2026-07-27 to 2026-08-09, so nothing mirrored for two
-      # weeks. The UIZZE plugin (#1104) was accepted on 2026-07-25 and still did
+      # EVERY run from 2026-07-20 to 2026-08-09 — seven consecutive runs, all
+      # failing at "Flag quarantined drift", with the last success on
+      # 2026-07-17. Nothing mirrored for 23 days. The UIZZE plugin (#1104) was accepted on 2026-07-25 and still did
       # not exist on the site when the outage was found — the contributor saw
       # their submission merged and then vanish. The failure was loud in the
       # Actions tab and observed by nobody, which is the actual lesson.
@@ -398,7 +399,7 @@ jobs:
 
       # ── Failure alerting (Slack-only, per the /slack skill convention) ────────
       # This workflow had NO failure alerting, which is why a drift quarantine
-      # could red-fail every scheduled run from 2026-07-27 to 2026-08-09 while
+      # could red-fail every run from 2026-07-20 to 2026-08-09 (23 days) while
       # 63 sources silently stopped mirroring. The run was loud in the Actions
       # tab the whole time; nobody reads the Actions tab of a weekly cron.
       #
