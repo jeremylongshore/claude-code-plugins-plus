@@ -191,7 +191,7 @@ I did not classify all 71 of the day's failure-to-fix moments, so I cannot say w
 Two human course-corrections that day carried the right instinct:
 
 > hold on check bobs big brain imbrella and make sure we are all aligned etc etc
-
+>
 > i dont see that api key anywhere this machine has ssh access see intent os for instructions
 
 Both are the same move. Before trusting your read of shared state, go check whether it already changed, or already exists.
