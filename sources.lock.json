@@ -834,8 +834,8 @@
     },
     "slack-channel": {
       "repo": "jeremylongshore/claude-code-slack-channel",
-      "resolved_ref": "f1ddf6de66170797f264c1c4264d15b620eb3250",
-      "locked_at": "2026-07-13T17:26:51.112Z",
+      "resolved_ref": "282c49ad174546959099386851b28190e7417679",
+      "locked_at": "2026-08-09T19:22:06.218Z",
       "files": {
         ".audit-harness/LICENSE": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
         ".audit-harness/README.md": "sha256:8507591290f7c9028d57e062d77d5f9364e8b8ee115515dbe9e6c40caa7947a9",
@@ -872,20 +872,20 @@
         "features/steps/sendable.ts": "sha256:fc950da2ebb2917bf70627db27cff06effe3c5d05a9a6f270640dcbdacc3927c",
         "features/steps/tier-shadow.ts": "sha256:b8fd012d869949ba76e16d4fd03e2ace740328e709174a615344730d1cc5000e",
         "features/tier-shadow.feature": "sha256:34616840c857fcfd79b8d25cb80560ea49c27d8ca7027649697183d6085ca003",
-        "journal.ts": "sha256:f760831b9273207b1c1779b068d203069012d38327147bd74284b6b976ecac66",
-        "lib.ts": "sha256:2a2b1bd814d27728d8ed248c37d5223b726d898b951ec2291a35d4490e5b998a",
+        "journal.ts": "sha256:f1fffa9af297896a7454df02a5138ff86a2af209dac0b6cf3426822a55bdff45",
+        "lib.ts": "sha256:261f8b9788e2e5f218578441ab79b9d427f078bfa75d5187ee919f8ab941bb96",
         "manifest.ts": "sha256:b8201ba7587a938ff20d7b505640ad318615546ca2897772549f732163bc4eaf",
         "mute-store.ts": "sha256:3a6ac49a9bec51c07c7a116e555e8f2a827528b81844c1ebadb3d9ab22145d3a",
         "nonce-hitl.ts": "sha256:292d8e50c0a25d719703b986d864b0e6da0cdd859f420cc8b6107fa6bafc7747",
-        "package.json": "sha256:1a9718f0b48cdfe43a57460e48e2708e5fe140df38df56682772f32709654466",
+        "package.json": "sha256:8d99ab7ed2e3456fc8c0b49b9be78798f4bb9797557e984c255f934a8597422b",
         "peer-bot-rate-limit.ts": "sha256:9b82bc99b2321b5b44b1413ef51f064044f5bdae07e64f5dd2a79c6856de0894",
         "policy-dispatch.ts": "sha256:149382616b76ccc8ed5729654b2aba37e00941f545b146fc31f669ac60be32fd",
-        "policy.ts": "sha256:9636086bd6c2797602c05673151da88dd082b67c699f08cdb5cde5903a18a570",
+        "policy.ts": "sha256:0174c59d2a2630ed49709823d0c2f1292cc983a33fea840c26e4e60be99835a7",
         "scripts/audit-key.ts": "sha256:45775f72921c87735aa6c3425d568d4306c0a3a681b812a6002ebf0c1f3ce87d",
         "scripts/crap-score.ts": "sha256:8ef7d004e7a34f2cf127cc32142b7027de463ab02cc5b4748e74654a78716fe4",
         "scripts/policy-validate.ts": "sha256:bb88951de3fcd90ded74f6c1c39fe5d7bdaac3613f939972d4c3c479b311dc08",
-        "server.test.ts": "sha256:ea4d301bbd3a3ad91b6653dea31c08805469ab6904d62f7d6f923f470fbcc167",
-        "server.ts": "sha256:19ee6d766b68be5672b304ac42e63092c4076d338d0d307657ac564bf2610a8e",
+        "server.test.ts": "sha256:454db07d04c2c79d8d95f4b0a5dae5b8c90ba91a3798d3ceccc9ee8cb8998a66",
+        "server.ts": "sha256:b1913c895a597fbbea36809ffcaa0ab8de45acc0d59cbf45ff35c1e3cf135994",
         "skills/access/SKILL.md": "sha256:46ba2f1877f20f056e8fb34f5d9316cfe57b9dafd0121d78a0b63e47c532c578",
         "skills/configure/SKILL.md": "sha256:9739a22739429c129161a046d52ca2f988d0bf7c1152fffee2f46e90ca82de79",
         "skills/install/SKILL.md": "sha256:6768ed54b3e6d3dcda4efbe6de40dfb9fbfb74da98d57a5240b02ac0ff2190d5",
@@ -893,9 +893,9 @@
         "skills/install/references/slack-app-setup.md": "sha256:d8bc97d41138877cac218409739e4c1446450b32d1594a2009ccef622bf97638",
         "skills/install/references/troubleshooting.md": "sha256:97f20ce5154a8618755b9c27426812e59b8772f64e23be1a047b24d92e27ff00",
         "skills/policy/SKILL.md": "sha256:5a0f330c15a1241e79ee6b3503c0a1a02e1a3291d1d6d0993bfebd4df356624a",
-        "slack-delivery.ts": "sha256:9f7007c6c8d4e6cbdfc39425ed76079b6b0d1f41dc763ea5e7356ecfefb21895",
+        "slack-delivery.ts": "sha256:6c4f81bd210c1859d42bb65850408760c2335403521f29e6ec75c31c902bb06a",
         "stream-reply.ts": "sha256:d960577726a9a93ae29a28a497e010e819cdbac164507d1dcdb73de8e5dcad5d",
-        "supervisor.ts": "sha256:226536a1e4ddebc9ef54c0277accac596b602f972d5a206a362f9853492db2cc",
+        "supervisor.ts": "sha256:9f81f3f4c63f2880d342bc4c651e4e5b705fd96e60c19588835c37e895957b64",
         "tsconfig.json": "sha256:9eb79f19ab00ac9067823104374477122933e95c6da69f586fb6eec32442f891"
       }
     },
@@ -1411,6 +1411,18 @@
         "skills/warden-threat/.claude-plugin/plugin.json": "sha256:e01fd453fd53267f97e37f252047d66158ad773554fe911b73e3faaeadb7dff3",
         "skills/warden-threat/SKILL.md": "sha256:b735e167d7b2bb448991319424c092602ca2bf785ada13a00a49926d8df591c7",
         "skills/warden/SKILL.md": "sha256:dff6fff04b1b273322ae19ef93148ce8f6d71388c449a077d9d5c4e01ca9f0b2"
+      }
+    },
+    "uizze": {
+      "repo": "uizze/uizze",
+      "resolved_ref": "d2cacfdcbe25d506820fa74bae4b7678e1c05de5",
+      "locked_at": "2026-08-09T19:22:35.928Z",
+      "files": {
+        ".claude-plugin/marketplace.json": "sha256:9afc5f1b067e697b0f3db5486f4e7f11150cb33261a01340fd0891997a9b8ded",
+        ".claude-plugin/plugin.json": "sha256:f6d2665fff126d0831f33651adcc99ae02bc8de713526f9c014519b9e9c6d477",
+        "LICENSE": "sha256:4a58e8025fdccc01f07a63fdec54f37ae1174e362200049e304f7841d41fb73c",
+        "README.md": "sha256:fe5b7017f05168d2cebf5fe59814c05a4c282413edf7a3762ef24ff588b500c4",
+        "skills/anti-ui-slop/SKILL.md": "sha256:5c05c4664843438dbc399e4d8fbc4bacb161db3a95f5b269a7412843362861b7"
       }
     },
     "walkie-talkie": {
