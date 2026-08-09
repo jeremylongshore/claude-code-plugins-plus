@@ -56,6 +56,29 @@ body and let the receiver fetch the secret through a path it is separately autho
 If the infrastructure exists, is monitored, and the team knows it, the mailbox's main advantage — no
 infrastructure — is already paid for. **Use what is running.**
 
+### A purpose-built agent store or inbox already covers it
+
+This mailbox is a directory and a rename. That is its whole claim, and the field is not empty:
+
+| Prior art | What it is | Prefer it when |
+| --- | --- | --- |
+| **Turso AgentFS** (`tursodatabase/agentfs`, ~3.3k stars, Rust) | "The filesystem for agents" — filesystem ops, key-value storage, and automatic tool-call tracking in a single database file; part of Turso's database-per-agent model with optional sync | State outgrows message-passing — durable agent memory, queryable history, or a store that syncs beyond one host. A rename-based directory has no query layer and no sync |
+| **AgentMail** (YC S25) | API-first email inboxes for agents; API-key auth rather than OAuth, so an agent operates without a human behind the mailbox | The counterparty is outside the org, needs a **routable address**, or a human may have to read the thread. Email is the one transport that already routes everywhere |
+
+Taking each seriously:
+
+- **AgentFS solves durability better than this does.** If the handoff is really shared state rather than
+  a message, a purpose-built embedded store beats a hand-rolled directory — it has a query layer, a
+  sync story, and someone else maintains the atomicity.
+- **AgentMail solves addressing, which this does not attempt.** A filesystem mailbox has no address a
+  stranger can reach. That is the trust-boundary rule from another angle: cross-org handoff needs
+  either a real protocol (A2A) or a routable transport (email), not a shared volume.
+
+What is left for this mailbox after both: **zero dependencies, zero accounts, zero network, and `ls`
+as the debugger.** Inside one trust boundary, on one filesystem, when adding a dependency is the cost
+you are trying to avoid — that is the niche, and it is narrower than "durable agent messaging."
+
+
 ## Honest comparison
 
 | | Direct | Mailbox | Bus | Protocol |
