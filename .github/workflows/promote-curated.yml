@@ -148,7 +148,7 @@ jobs:
 
           if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
             gh pr create \
-              --title "🏅 Refresh curated skills mirror ($COUNT A/B skills)" \
+              --title "chore(catalog): refresh curated skills mirror ($COUNT A/B skills)" \
               --head "$BRANCH" \
               --base main \
               --label "automated" \

@@ -103,7 +103,7 @@ jobs:
           # (estate audit finding F5). Only an OPEN PR counts.
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
             gh pr create \
-              --title "📦 Daily npm download stats refresh" \
+              --title "chore(marketplace-site): refresh daily npm download stats" \
               --head "$BRANCH" \
               --base main \
               --label "automated,stats" \

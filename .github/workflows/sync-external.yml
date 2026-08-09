@@ -262,7 +262,7 @@ jobs:
           # shared branch and silently skipped creation, stranding the sync).
           if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
             gh pr create \
-              --title "🔄 Sync external plugins" \
+              --title "chore(external-sync): mirror upstream external plugins" \
               --head "$BRANCH" \
               --base main \
               --label "automated,sync,external-plugins" \
