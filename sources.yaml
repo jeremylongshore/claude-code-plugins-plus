@@ -1745,6 +1745,37 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # TranscriptAPI YouTube Skills (Zero Point Studio)
+  # https://github.com/ZeroPointRepo/youtube-skills
+  # ============================================================
+
+  - name: youtube-skills
+    description: YouTube transcripts, video and channel search, channel browsing, and playlist extraction for AI agents — 12 installable skills backed by the TranscriptAPI REST API, no Google API quotas or OAuth.
+    repo: ZeroPointRepo/youtube-skills
+    source_path: .
+    target_path: plugins/community/youtube-skills
+    author:
+      name: Zero Point Studio
+      github: ZeroPointRepo
+    license: MIT
+    category: community
+    verified: false
+    keywords:
+      - youtube
+      - transcripts
+      - video-search
+      - channels
+      - playlists
+    include:
+      - 'skills/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
