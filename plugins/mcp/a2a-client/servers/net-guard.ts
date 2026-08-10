@@ -138,10 +138,29 @@ export function shouldSendCredential(url: URL, cfg: GuardConfig): boolean {
   return cfg.allowedHosts.has(url.hostname.toLowerCase());
 }
 
+/** Redirect hops followed before the request is refused. */
+export const MAX_REDIRECTS = 5;
+
+function isRedirectStatus(status: number): boolean {
+  return status === 301 || status === 302 || status === 303 || status === 307 || status === 308;
+}
+
 /**
  * Wrap `fetch` so every outbound request — card resolution, protocol calls, and anything
  * the SDK does internally — passes the destination check, and carries a credential only
  * when the destination is nominated.
+ *
+ * Redirects are followed MANUALLY (`redirect: 'manual'`) rather than by the runtime, because
+ * a runtime-followed redirect never re-enters this function. Without that, a permitted public
+ * host answering `302 -> http://169.254.169.254/latest/meta-data/` walks straight around
+ * `assertDestinationAllowed` — `isPrivateAddress` blocks link-local on the pre-flight URL and
+ * never sees the hop. The credential is likewise re-evaluated per hop, so a redirect to a host
+ * the operator did not nominate cannot carry it off-site.
+ *
+ * Residual, deliberately not claimed as closed: a DNS rebind between `assertDestinationAllowed`
+ * resolving a host and the runtime re-resolving it to connect. Closing it requires dialling a
+ * pinned address through a custom dispatcher; until then this is a narrowed window, not a
+ * sealed one.
  */
 export function createGuardedFetch(
   cfg: GuardConfig,
@@ -156,17 +175,52 @@ export function createGuardedFetch(
         : input instanceof URL
           ? input.href
           : (input as { url: string }).url;
-    const url = new URL(raw);
 
-    await assertDestinationAllowed(url, cfg, resolver);
+    let url = new URL(raw);
+    let requestInit: RequestInit = { ...init };
+    let target: FetchInput = input;
 
-    if (!shouldSendCredential(url, cfg)) {
-      return fetchImpl(input, init);
+    for (let hop = 0; ; hop++) {
+      await assertDestinationAllowed(url, cfg, resolver);
+
+      const headers = new Headers(
+        requestInit.headers ??
+          (typeof target === 'object' && target !== null && 'headers' in target
+            ? (target as { headers: ConstructorParameters<typeof Headers>[0] }).headers
+            : undefined),
+      );
+      // Drop first, then re-add only if THIS hop's host is nominated.
+      headers.delete(cfg.authHeaderName);
+      if (shouldSendCredential(url, cfg)) {
+        headers.set(cfg.authHeaderName, cfg.authHeaderValue);
+      }
+
+      const res = await fetchImpl(hop === 0 ? target : url.href, {
+        ...requestInit,
+        headers,
+        redirect: 'manual',
+      });
+
+      const location = res.headers.get('location');
+      if (!isRedirectStatus(res.status) || !location) return res;
+
+      if (hop >= MAX_REDIRECTS) {
+        throw new BlockedDestinationError(url.hostname, `exceeded ${MAX_REDIRECTS} redirects`);
+      }
+
+      const next = new URL(location, url);
+      if (next.protocol !== 'http:' && next.protocol !== 'https:') {
+        throw new BlockedDestinationError(next.protocol, 'non-HTTP redirect scheme');
+      }
+
+      // Match fetch semantics: 303, and 301/302 on POST, degrade to a bodyless GET.
+      const method = (requestInit.method ?? 'GET').toUpperCase();
+      if (res.status === 303 || ((res.status === 301 || res.status === 302) && method === 'POST')) {
+        requestInit = { ...requestInit, method: 'GET', body: undefined };
+      }
+
+      url = next;
+      target = url.href;
     }
-    const headers = new Headers(
-      init?.headers ?? (typeof input === 'object' && 'headers' in input ? input.headers : undefined),
-    );
-    headers.set(cfg.authHeaderName, cfg.authHeaderValue);
-    return fetchImpl(input, { ...init, headers });
   } as typeof fetch;
 }

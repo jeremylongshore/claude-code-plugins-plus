@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   BlockedDestinationError,
+  MAX_REDIRECTS,
   assertDestinationAllowed,
   configFromEnv,
   createGuardedFetch,
@@ -173,9 +174,7 @@ describe('createGuardedFetch', () => {
     await g('https://attacker.example.com/a2a');
     expect(inner).toHaveBeenCalledOnce();
     const [, init] = inner.mock.calls[0] as unknown as FetchArgs;
-    const sent = JSON.stringify(init ?? {});
-    expect(sent).not.toContain('secret');
-    expect(init?.headers).toBeUndefined();
+    expect(new Headers(init!.headers).get('Authorization')).toBeNull();
   });
 
   it('attaches the credential to a nominated host', async () => {
@@ -204,6 +203,133 @@ describe('createGuardedFetch', () => {
     await g('https://partner.example.com/a2a');
     const [, init] = inner.mock.calls[0] as unknown as FetchArgs;
     expect(new Headers(init!.headers).get('X-Api-Key')).toBe('k123');
+  });
+
+  // --- Redirect handling. Each of these fails if `redirect: 'manual'` and the
+  // per-hop re-check are removed, which is exactly what they exist to pin.
+  const redirectTo = (loc: string, status = 302) =>
+    new Response(null, { status, headers: { location: loc } });
+
+  it("never lets the runtime follow redirects — always requests redirect: 'manual'", async () => {
+    const inner = vi.fn(ok);
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    await g('https://partner.example.com/a2a');
+    const [, init] = inner.mock.calls[0] as unknown as FetchArgs;
+    expect(init?.redirect).toBe('manual');
+  });
+
+  it('refuses a redirect into cloud instance metadata (the 169.254.169.254 bypass)', async () => {
+    const inner = vi
+      .fn()
+      .mockResolvedValueOnce(redirectTo('http://169.254.169.254/latest/meta-data/'))
+      .mockResolvedValue(ok());
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    await expect(g('https://partner.example.com/a2a')).rejects.toBeInstanceOf(
+      BlockedDestinationError,
+    );
+    // The hop was refused by the guard, never handed to fetch.
+    expect(inner).toHaveBeenCalledOnce();
+  });
+
+  it('refuses a redirect to a host that resolves privately', async () => {
+    const inner = vi
+      .fn()
+      .mockResolvedValueOnce(redirectTo('https://rebind.example.com/x'))
+      .mockResolvedValue(ok());
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({
+        'partner.example.com': ['93.184.216.34'],
+        'rebind.example.com': ['10.0.0.9'],
+      }),
+    );
+    await expect(g('https://partner.example.com/a2a')).rejects.toBeInstanceOf(
+      BlockedDestinationError,
+    );
+  });
+
+  it('drops the credential when a nominated host redirects to a non-nominated one', async () => {
+    const inner = vi
+      .fn()
+      .mockResolvedValueOnce(redirectTo('https://attacker.example.com/steal'))
+      .mockResolvedValue(ok());
+    const g = createGuardedFetch(
+      cfg({ authHeaderValue: 'Bearer secret', allowedHosts: new Set(['partner.example.com']) }),
+      inner as unknown as typeof fetch,
+      resolves({
+        'partner.example.com': ['93.184.216.34'],
+        'attacker.example.com': ['93.184.216.35'],
+      }),
+    );
+    await g('https://partner.example.com/a2a');
+    expect(inner).toHaveBeenCalledTimes(2);
+    const [, first] = inner.mock.calls[0] as unknown as FetchArgs;
+    const [, second] = inner.mock.calls[1] as unknown as FetchArgs;
+    expect(new Headers(first!.headers).get('Authorization')).toBe('Bearer secret');
+    expect(new Headers(second!.headers).get('Authorization')).toBeNull();
+  });
+
+  it('refuses a non-HTTP redirect scheme', async () => {
+    const inner = vi.fn().mockResolvedValueOnce(redirectTo('file:///etc/passwd'));
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    await expect(g('https://partner.example.com/a2a')).rejects.toBeInstanceOf(
+      BlockedDestinationError,
+    );
+  });
+
+  it('caps redirect chains instead of looping forever', async () => {
+    const inner = vi.fn(() => redirectTo('https://partner.example.com/next'));
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    await expect(g('https://partner.example.com/a2a')).rejects.toThrow(/exceeded \d+ redirects/);
+    expect(inner.mock.calls.length).toBeLessThanOrEqual(MAX_REDIRECTS + 1);
+  });
+
+  it('follows a permitted redirect and returns the final response', async () => {
+    const inner = vi
+      .fn()
+      .mockResolvedValueOnce(redirectTo('https://partner.example.com/moved'))
+      .mockResolvedValue(new Response('{"ok":true}', { status: 200 }));
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    const res = await g('https://partner.example.com/a2a');
+    expect(res.status).toBe(200);
+    expect(inner).toHaveBeenCalledTimes(2);
+  });
+
+  it('degrades 303 to a bodyless GET', async () => {
+    const inner = vi
+      .fn()
+      .mockResolvedValueOnce(redirectTo('https://partner.example.com/result', 303))
+      .mockResolvedValue(ok());
+    const g = createGuardedFetch(
+      cfg(),
+      inner as unknown as typeof fetch,
+      resolves({ 'partner.example.com': ['93.184.216.34'] }),
+    );
+    await g('https://partner.example.com/a2a', { method: 'POST', body: '{"a":1}' });
+    const [, second] = inner.mock.calls[1] as unknown as FetchArgs;
+    expect(second?.method).toBe('GET');
+    expect(second?.body).toBeUndefined();
   });
 });
 
