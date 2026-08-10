@@ -118,12 +118,15 @@ The in-plugin config uses `${CLAUDE_PLUGIN_ROOT}` so no absolute path is needed 
 plugin. `dist/` is gitignored repo-wide (same as every other MCP plugin here), so the package carries
 a `prepare` script — `pnpm install` in the plugin directory builds the entrypoint automatically.
 
-## Pairs with
+## Skill layer
 
-The [`agent-comms`](../../agent-comms/agent-comms) pack is the skill layer over this server:
-`a2a-protocol` (the wire surface), `a2a-agent-card` (authoring and auditing cards, plus the
-`a2a-card-auditor` agent), `comms-topology`, `topology-safety`, `agent-mailbox`, and
-`mas-failure-triage`. The server is the hands; the pack is the judgment.
+There isn't one yet, deliberately. A companion `agent-comms` skill pack was drafted and closed
+unmerged (PR #1169) after review concluded its centrepiece — a filesystem-backed mailbox — repeats a
+design the most-used project in this space publicly abandoned. The strategy question behind that
+pack is open and demand-gated; see `000-docs/713-AT-DECR` § 5.
+
+This server does not depend on that question. It is the hands; whatever judgment layer eventually
+arrives will sit on top without changing anything here.
 
 ## Develop
 
