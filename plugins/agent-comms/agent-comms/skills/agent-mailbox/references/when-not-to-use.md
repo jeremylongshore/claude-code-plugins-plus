@@ -78,7 +78,6 @@ What is left for this mailbox after both: **zero dependencies, zero accounts, ze
 as the debugger.** Inside one trust boundary, on one filesystem, when adding a dependency is the cost
 you are trying to avoid — that is the niche, and it is narrower than "durable agent messaging."
 
-
 ## Honest comparison
 
 | | Direct | Mailbox | Bus | Protocol |
