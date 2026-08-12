@@ -1385,6 +1385,25 @@ jobs:
       - name: Verify CODEOWNERS per-plugin block is in sync
         run: node scripts/generate-codeowners.mjs --check
 
+  doc-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      # 000-docs ignore-policy invariant (ownership + filing-ledger model —
+      # 000-docs/.gitignore header; Mission 01 bead claude-5awj.6) plus the
+      # citation gate: no governance-scope file may cite an untracked doc.
+      - name: Check 000-docs ignore policy fixtures
+        run: node scripts/check-docs-ignore-policy.mjs
+
+      - name: Check doc citations resolve to tracked files
+        run: node scripts/check-doc-citations.mjs
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1422,6 +1441,7 @@ jobs:
       - check-submission-docs
       - commit-scope-check
       - codeowners-drift
+      - doc-governance
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:

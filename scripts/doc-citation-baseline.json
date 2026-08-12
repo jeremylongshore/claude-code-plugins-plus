@@ -1,0 +1,24 @@
+{
+  "$comment": "Pre-existing dead 000-docs citations, pinned 2026-08-12 (bead claude-5awj.6). Shrink by filing the cited doc or fixing the citation — NEVER add entries to silence the gate.",
+  "baseline": [
+    "000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md",
+    "000-docs/004-RA-REVW-engineering-panel-review.md",
+    "000-docs/011-DR-PAIN-catalog-master.md",
+    "000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md",
+    "000-docs/014-DR-DRFT-cost-leak-cfo-output-spec.md",
+    "000-docs/014-spec.md",
+    "000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md",
+    "000-docs/032-RL-REPT-claude-code-plugins-release-v4.31.0.md",
+    "000-docs/045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md",
+    "000-docs/087-RA-SUMM-jeremy-plugins-comprehensive-audit.md",
+    "000-docs/088-RA-SUMM-jeremy-plugins-audit-detailed-findings.md",
+    "000-docs/089-RA-SUMM-jeremy-plugins-action-plan.md",
+    "000-docs/104-RR-LAND-xquik-external-author-dogfood-initiative-2026-06-30.md",
+    "000-docs/118-AA-REPT-phase-5-aar.md",
+    "000-docs/120-RA-PH6A-state-snapshot.md",
+    "000-docs/121-AA-REPT-phase-6-aar.md",
+    "000-docs/123-SR-STAT-session-accomplishments.md",
+    "000-docs/270-AT-AACR-2026-05-22-to-24-ci-hardening-9pr-arc.md",
+    "000-docs/706-AT-DECR-neobrutalist-rebrand-anonymity-preamble.md"
+  ]
+}

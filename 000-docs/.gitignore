@@ -1,0 +1,25 @@
+# ── 000-docs ignore policy — owned HERE, not in the root .gitignore ──────────
+# Model: LOCAL BY DEFAULT. Filing a document public = append one negation line
+# to the PUBLIC FILING LEDGER below, then `git add` it (no -f needed).
+# A plain `git add` on an unledgered doc ERRORS loudly — that is the design
+# working. Never bulk-add this directory with -A or globs.
+# DO NOT SORT THIS FILE — the blanket must stay first; ledger lines append.
+# Why this file exists: the root allowlist was order-dead (negations sorted
+# above the blanket; last-match-wins killed every re-include) and silently kept
+# ~200 filed docs local — Mission 01, docs 720/726, bead claude-5awj.6.
+*
+!*/
+!.gitignore
+!000-INDEX.md
+!000-*.md
+!agentskills-spec-snapshot.md
+!anthropic-skills-spec-snapshot.md
+
+# Permanent CI test fixtures (hypothetical paths asserted by
+# scripts/check-docs-ignore-policy.mjs — do not remove):
+!999-ZZ-TEST-ledger-fixture.md
+!999-ZZ-cluster-test/999-ZZ-TEST-nested-fixture.md
+
+# ── PUBLIC FILING LEDGER — append one line per doc filed public (2026-08-12 →) ──
+# Docs tracked before this date are grandfathered (tracked files stay tracked
+# regardless of ignore rules).
