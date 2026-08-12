@@ -40,7 +40,11 @@ const INCLUDE = (f) =>
 const EXCLUDE = (f) =>
   f.startsWith('tests/fixtures/') ||
   f.startsWith('tests/pr-classifier/fixtures/') ||
-  f === '000-docs/257-AA-AACR-doc-filing-cleanup.md';
+  f === '000-docs/257-AA-AACR-doc-filing-cleanup.md' ||
+  // hypothetical fixture paths, not citations (review finding F1):
+  f === 'scripts/check-docs-ignore-policy.mjs' ||
+  // the baseline must not keep its own entries "alive" (review finding F2):
+  f === BASELINE_PATH;
 
 const BUF = { maxBuffer: 64 * 1024 * 1024 };
 const tracked = new Set(execFileSync('git', ['ls-files'], BUF).toString().trim().split('\n'));
