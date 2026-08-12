@@ -1,0 +1,37 @@
+{
+  "mission": "01-repository-cleanup-state-and-governance-baseline",
+  "deliverable": 1,
+  "bead": "claude-co8a.1",
+  "captured_at": "2026-08-11T18:59:32-06:00",
+  "head": "4358a65a382d136a70f6ccde51f545b77ec5e9d4",
+  "branch": "main",
+  "working_tree_dirty_entries": 0,
+  "tracked_files": 22963,
+  "worktree_size_du": "3.2G",
+  "git_dir_size_du": "439M",
+  "tracked_bytes_stat_sum": 267860729,
+  "tracked_bytes_note": "stat -c %s sum over git ls-files = 255.5 MiB / 267.9 MB decimal. The plan's '306 M' figure used a different basis (du block-allocation); both recorded, stat-sum is the reproducible metric.",
+  "submodules": 0,
+  "lfs": false,
+  "remote": "git@github.com:jeremylongshore/claude-code-plugins-plus-skills.git",
+  "local_branches": 15,
+  "stashes": 0,
+  "docs": {
+    "highest_number": 715,
+    "next_number": 716,
+    "top_level_entries_on_disk": 329,
+    "files_on_disk_recursive": 343,
+    "files_tracked": 143,
+    "files_untracked_gitignored": 200,
+    "index_000_exists": false,
+    "index_000_note": "000-docs/000-INDEX.md missing — live violation of doc-filing v4.4 (mandatory at this scale)"
+  },
+  "reproduce": [
+    "git rev-parse HEAD",
+    "git status --porcelain | wc -l",
+    "git ls-files | wc -l",
+    "du -sh --exclude=.git . && du -sh .git",
+    "git ls-files -z | xargs -0 stat -c %s | awk '{s+=$1} END{print s}'",
+    "git ls-files 000-docs | wc -l; find 000-docs -type f | wc -l"
+  ]
+}

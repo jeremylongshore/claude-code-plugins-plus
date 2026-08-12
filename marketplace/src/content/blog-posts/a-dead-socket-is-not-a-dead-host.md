@@ -94,6 +94,7 @@ A skipped tick costs nothing here. The next poll arrives in at most 5 seconds, a
 The health endpoint exposed a single boolean: `isStuck`, which only fires when `gameStatus === "In Progress"`. Between games, the poller could fail every single poll and health would still report ok. The signal was so under-specified that it could not represent the truth even in principle.
 
 We rewired health to expose:
+
 - `consecutivePollFailures` (number)
 - `lastPollError` (string or null)
 - `healthy` (boolean)
