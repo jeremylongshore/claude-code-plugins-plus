@@ -1,0 +1,29 @@
+{
+  "mission": "01-repository-cleanup-state-and-governance-baseline",
+  "deliverable": 2,
+  "bead": "claude-co8a.2",
+  "captured_at": "2026-08-11T19:00:14-06:00",
+  "head": "4358a65a3",
+  "areas": {
+    "plugin_dirs": { "count": 474, "glob": "plugins/*/*/", "authority": ".claude-plugin/marketplace.extended.json + CLAUDE.md § Plugin Structure" },
+    "plugin_manifests": { "count": 621, "glob": "plugins/*/*/.claude-plugin/plugin.json", "note": "exceeds plugin_dirs because .codex/ shadow copies also carry manifests" },
+    "skills_in_plugins": { "count": 3179, "glob": "plugins/**/SKILL.md", "authority": "validate-skills-schema.py (prose-spec, authoritative)" },
+    "skills_curated_mirror": { "count": 1921, "glob": "skills/.curated/**/SKILL.md", "authority": "GENERATED mirror — promote-to-curated.py; gate promote-curated-check (in ci-required)" },
+    "skills_root_other": { "count": 500, "glob": "skills/** minus .curated", "authority": "unresolved — classify in M1.5" },
+    "commands": { "count": 379, "glob": "plugins/**/commands/*.md" },
+    "agents": { "count": 347, "glob": "plugins/**/agents/*.md", "authority": "kernel-strict agent gate (schema 3.10.0), advisory lane; baseline 253 errors recorded in M1.4" },
+    "mcp_plugins": { "count": 15, "glob": "plugins/mcp/*/" },
+    "hooks_files": { "count": 306, "glob": "plugins/**/*hooks*" },
+    "npm_packages": { "count": 4, "list": ["analytics-daemon", "analytics-dashboard", "cli", "plugin-validator"], "note": "analytics-daemon test stubs exit 0; analytics-dashboard has no test script" },
+    "catalog_entries_extended": { "count": 471, "file": ".claude-plugin/marketplace.extended.json", "authority": "SOURCE OF TRUTH" },
+    "catalog_entries_derived": { "count": 471, "file": ".claude-plugin/marketplace.json", "authority": "GENERATED (Tier A) — sync-marketplace" },
+    "external_mirrors": { "count": 63, "glob": "**/.source.json", "authority": "sources.yaml + sync-external.mjs (mirror-by-default; curated:true = frozen)" },
+    "workflows": { "count": 31, "glob": ".github/workflows/*.yml", "authority": "CLAUDE.md § CI gate architecture; required = ci-required + gitleaks + skill-conform" },
+    "root_tests_mjs": { "count": 9, "glob": "*.test.mjs" },
+    "tests_dir_files": { "count": 408, "glob": "tests/*" },
+    "python_test_files": { "count": 39, "glob": "**/test_*.py", "note": "no runner config — recorded gap, not built" },
+    "freshie_tracked": { "count": 66, "glob": "freshie/*", "authority": "freshie/README.md; Dolt is versioned SoR; inventory.sqlite untracked" },
+    "scripts": { "count": 86, "glob": "scripts/*" },
+    "docs_tracked": { "count": 143, "glob": "000-docs (recursive)", "note": "343 on disk; 200 gitignored-untracked — headline M1.10 finding" }
+  }
+}
