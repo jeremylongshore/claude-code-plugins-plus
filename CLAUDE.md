@@ -10,7 +10,7 @@ Tons of Skills — Claude Code plugins marketplace. Live at https://tonsofskills
 
 **Package manager:** `pnpm` everywhere **except** `marketplace/` which uses `npm` (CI-enforced).
 
-**Session protocol lives in `AGENTS.md`** — post-compaction recovery, end-of-session push checklist, and beads workflow. Read it before starting work.
+**Contributor guidelines live in `AGENTS.md`** — project structure, build/test/dev commands, style and naming, test conventions, commit/PR expectations, and the merge gates. Read it before starting work. (Session protocol — post-compaction recovery, beads workflow, end-of-session push — lives in this file's Beads and Session Completion sections.)
 
 ## Cross-session coordination — another Claude session may be in this repo
 
@@ -166,7 +166,7 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Agents use `disallowedTools` (camelCase denylist).** Skills use `allowed-tools` (allowlist) AND optionally `disallowed-tools` (kebab-case denylist, schema 3.7.0+). The two field names are intentionally different — do NOT use camelCase on skills or kebab-case on agents; the validator rejects either mismatch. Agent-only fields: `effort`, `maxTurns`.
 
-**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. All 317 in-repo agents are at **A-grade** (least-privilege `tools`, Trigger-bearing descriptions, real tags). **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
+**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. **Corpus status (measured 2026-08-11, doc 721):** the advisory `--agents-only` lane recorded a baseline of **253 errors** across the agent corpus — the earlier "all agents A-grade" claim is retired until the lane is re-baselined clean; treat A-grade as the bar, not the current state. **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
 
 ### Optional frontmatter (schema 3.5.0 / 3.6.0 / 3.7.0 — all default to off)
 
