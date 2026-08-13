@@ -10,7 +10,7 @@ Tons of Skills — Claude Code plugins marketplace. Live at https://tonsofskills
 
 **Package manager:** `pnpm` everywhere **except** `marketplace/` which uses `npm` (CI-enforced).
 
-**Contributor guidelines live in `AGENTS.md`** — project structure, build/test/dev commands, style and naming, test conventions, commit/PR expectations, and the merge gates. Read it before starting work. (Session protocol — post-compaction recovery, beads workflow, end-of-session push — lives in this file's Beads and Session Completion sections.)
+**Contributor guidelines live in `AGENTS.md`** — project structure, build/test/dev commands, style and naming, test conventions, commit/PR expectations, and the merge gates. Read it before starting work. (Session protocol lives in this file: the beads workflow in § Beads Issue Tracker — where `bd prime` is also the post-compaction context-recovery step — and the end-of-session push checklist in § Session Completion.)
 
 ## Cross-session coordination — another Claude session may be in this repo
 
