@@ -66,6 +66,21 @@ const FIXTURES = [
   ['000-docs/scratch.tmp', true, 'runtime/temp files stay local'],
   ['plugins/other-pack/000-docs/private-notes.md', true, 'nested per-pack private docs stay local'],
   ['scripts/.kernel-shadow/report.json', true, 'generated CI artifacts stay local'],
+  // Learning Lab: published teaching material linked from README L917/925/926 and
+  // the four /learning/* site pages. Wiped once already (CRITICAL RECOVERY
+  // da09e99d7, 2025-12-21) — these assertions keep the ignore rule from re-hiding it.
+  [
+    'workspace/lab/GUIDE-00-START-HERE.md',
+    false,
+    'published Learning Lab guide must stay trackable',
+  ],
+  [
+    'workspace/lab/GUIDE-99-BRAND-NEW.md',
+    false,
+    'a NEW Learning Lab guide must be trackable, not silently ignored',
+  ],
+  ['workspace/scratch-notes.md', true, 'workspace outside lab/ stays a scratch sandbox'],
+  ['workspace/experiments/throwaway.py', true, 'workspace sandbox subdirs stay ignored'],
 ];
 
 let failures = 0;
