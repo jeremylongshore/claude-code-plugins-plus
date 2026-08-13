@@ -174,7 +174,17 @@ test-marketplace/
 test-results/
 tmp/
 website/
-workspace/
+# workspace/ stays a scratch sandbox by default — but NOT as `workspace/`, which
+# excludes the directory itself so git never descends and no `!` rule inside can
+# ever fire. `workspace/*` excludes the CONTENTS, leaving the dir walkable.
+workspace/*
+# ...EXCEPT the Learning Lab, which is published teaching material: root README
+# L917/925/926 and the eight /learning/* site pages link these files on GitHub, so
+# untracking them 404s public links. They were already wiped once by an unrelated
+# sync commit and needed a CRITICAL RECOVERY (da09e99d7, 2025-12-21). Two-part
+# rule because git cannot re-include files inside an excluded directory.
+!workspace/lab/
+!workspace/lab/**
 yarn-error.log
 yarn.lock
 
