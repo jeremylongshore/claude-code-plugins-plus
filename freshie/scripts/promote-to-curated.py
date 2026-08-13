@@ -106,11 +106,14 @@ def is_external_mirror(skill_path: str) -> bool:
     `_plugin_root()` splits on `/skills/`, so a skill vendored at
     `plugins/<cat>/<plugin>/.codex/skills/<name>` yields `.../<plugin>/.codex`, which
     sits BELOW the plugin root where `.source.json` lives. The marker was therefore
-    missed and five mirrored skills were promoted into `skills/.curated/`, republishing
+    missed and six mirrored skills were promoted into `skills/.curated/`, republishing
     other people's work under our name — exactly what this module's header forbids.
     """
     node = Path(skill_path)
-    while node != Path("."):
+    # `node != node.parent` rather than `!= Path(".")`: Path("/").parent is "/",
+    # so the latter never terminates on an absolute path. The sole call site passes
+    # a repo-relative path today, but the loop should not depend on that.
+    while node != node.parent:
         if (ROOT / node / ".source.json").exists():
             return True
         node = node.parent
