@@ -1745,6 +1745,40 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Mnemoverse (agent-memory-discipline)
+  # https://github.com/mnemoverse/agent-memory-discipline
+  # Submission: #1180
+  # ============================================================
+
+  - name: agent-memory-discipline
+    description: Standing rules for when an agent recalls from long-term memory before acting and when it saves durable decisions, corrections and failures afterwards. Backend-neutral.
+    repo: mnemoverse/agent-memory-discipline
+    source_path: .
+    target_path: plugins/community/agent-memory-discipline
+    author:
+      name: Mnemoverse
+      github: mnemoverse
+    license: CC0-1.0
+    category: community
+    verified: false
+    keywords:
+      - agent-memory
+      - long-term-memory
+      - context-engineering
+      - mcp
+      - agent-skills
+    include:
+      - '/.claude-plugin/plugin.json'
+      - '/.claude-plugin/marketplace.json'
+      - '/skills/agent-memory-discipline/SKILL.md'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - '/.git/**'
+      - '**/node_modules/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
