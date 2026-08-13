@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,13 +30,9 @@ run('search:generate', 'node', ['scripts/generate-unified-search.mjs']);
 run('cowork:zips', 'node', [resolve(repoRoot, 'scripts/build-cowork-zips.mjs')]);
 run('cowork:validate', 'node', [resolve(repoRoot, 'scripts/validate-cowork-manifest.mjs')]);
 
-// Copy large data files to public/data/ so they are served as static assets at runtime.
-// Source-of-truth remains in src/data/ for build scripts; public/data/ is the runtime copy.
-const publicDataDir = resolve(__dirname, '..', 'public', 'data');
-mkdirSync(publicDataDir, { recursive: true });
-for (const file of ['unified-search-index.json', 'skills-catalog.json']) {
-  copyFileSync(resolve(__dirname, '..', 'src', 'data', file), resolve(publicDataDir, file));
-  console.log(`[data:copy] Copied ${file} → public/data/${file}`);
-}
+// Project the large generated data files into public/data/ so Astro serves them
+// as static assets at runtime. src/data/ stays canonical; public/data/ is an
+// untracked, deterministically-regenerated projection (see copy-public-data.mjs).
+run('data:copy', 'node', [resolve(__dirname, 'copy-public-data.mjs')]);
 
 run('astro build', 'astro', ['build']);

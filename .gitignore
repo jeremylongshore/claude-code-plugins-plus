@@ -157,6 +157,11 @@ logs/
 marketplace/.firebase/
 marketplace/backup-*/
 marketplace/public/downloads/
+# public/data/*.json is a PROJECTION of the canonical marketplace/src/data/*.json,
+# regenerated on every build (and on `predev`) by scripts/copy-public-data.mjs.
+# Tracking it duplicated ~28.5MB and gave a second, silently-divergeable claimant
+# to a fact src/data/ already owns. Enforced by scripts/check-generated-artifacts.mjs.
+marketplace/public/data/*.json
 marketplace/src/data/cowork-manifest.json
 node_modules/
 npm-debug.log
