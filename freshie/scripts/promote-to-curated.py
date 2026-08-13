@@ -99,6 +99,24 @@ def _plugin_root(skill_path: str) -> str:
     return skill_path.split("/skills/")[0] if "/skills/" in skill_path else skill_path
 
 
+def is_external_mirror(skill_path: str) -> bool:
+    """True when ANY ancestor directory of the skill carries a `.source.json`.
+
+    Walking every ancestor — rather than only `_plugin_root()` — is load-bearing.
+    `_plugin_root()` splits on `/skills/`, so a skill vendored at
+    `plugins/<cat>/<plugin>/.codex/skills/<name>` yields `.../<plugin>/.codex`, which
+    sits BELOW the plugin root where `.source.json` lives. The marker was therefore
+    missed and five mirrored skills were promoted into `skills/.curated/`, republishing
+    other people's work under our name — exactly what this module's header forbids.
+    """
+    node = Path(skill_path)
+    while node != Path("."):
+        if (ROOT / node / ".source.json").exists():
+            return True
+        node = node.parent
+    return False
+
+
 def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
     """A+B plugin skills, our own (no `.source.json`), whose source dir still exists.
 
@@ -117,7 +135,7 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
                 if not sp or not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
                     continue
                 root = _plugin_root(sp)
-                if (ROOT / root / ".source.json").exists():
+                if is_external_mirror(sp):
                     continue  # external mirror — never republish under our name
                 if not (ROOT / sp).is_dir():
                     continue  # source removed / downgraded since the graded run

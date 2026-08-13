@@ -4,7 +4,7 @@
   "run_id": 10,
   "threshold": "AB",
   "validated": true,
-  "count": 1921,
+  "count": 1915,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -6870,26 +6870,6 @@
       ]
     },
     {
-      "curated_name": "drive-automation-session",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/drive-automation-session",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/capabilities.md",
-        "references/endpoint-reference.md",
-        "references/loop-discipline.md",
-        "scripts/__fixtures__/webview-mobile-sample.xml",
-        "scripts/appium.js",
-        "scripts/appium.test.js",
-        "scripts/strip-webview-dom.js",
-        "scripts/strip-webview-dom.test.js"
-      ]
-    },
-    {
       "curated_name": "elevenlabs-ci-integration",
       "source_path": "plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-ci-integration",
       "category": "saas-packs",
@@ -10910,20 +10890,6 @@
         "references/errors.md",
         "references/examples.md",
         "references/implementation.md"
-      ]
-    },
-    {
-      "curated_name": "hermes-tweet",
-      "source_path": "plugins/community/hermes-tweet/hermes_tweet/skills/hermes-tweet",
-      "category": "community",
-      "plugin": "hermes_tweet",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/endpoint-contract.md",
-        "skill-card.md"
       ]
     },
     {
@@ -15117,18 +15083,6 @@
       ]
     },
     {
-      "curated_name": "mnemos",
-      "source_path": "plugins/community/mnemos/.claude/skills/mnemos",
-      "category": "community",
-      "plugin": ".claude",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
       "curated_name": "mocking-apis",
       "source_path": "plugins/api-development/api-mock-server/skills/mocking-apis",
       "category": "api-development",
@@ -19268,18 +19222,6 @@
       ]
     },
     {
-      "curated_name": "pr-to-spec",
-      "source_path": "plugins/mcp/pr-to-spec/.claude/skills/pr-to-spec",
-      "category": "mcp",
-      "plugin": ".claude",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
       "curated_name": "preprocessing-data-with-automated-pipelines",
       "source_path": "plugins/ai-ml/data-preprocessing-pipeline/skills/preprocessing-data-with-automated-pipelines",
       "category": "ai-ml",
@@ -21021,41 +20963,6 @@
         "scripts/quote_fetcher.py",
         "scripts/route_optimizer.py",
         "scripts/split_calculator.py"
-      ]
-    },
-    {
-      "curated_name": "run-automation-suite",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/run-automation-suite",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/capabilities.md",
-        "references/templates/appium.ejs",
-        "scripts/chromeless-launcher-linux.sh",
-        "scripts/chromeless-launcher-mac.sh",
-        "scripts/chromeless-launcher-windows.ps1",
-        "scripts/chromeless-launcher.sh",
-        "scripts/chromeless-launcher.test.js",
-        "scripts/render-capabilities.js",
-        "scripts/render-capabilities.test.js"
-      ]
-    },
-    {
-      "curated_name": "run-interactive-cli-session",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/run-interactive-cli-session",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/response-shapes.md",
-        "scripts/run.sh"
       ]
     },
     {
