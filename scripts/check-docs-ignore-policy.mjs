@@ -67,7 +67,7 @@ const FIXTURES = [
   ['plugins/other-pack/000-docs/private-notes.md', true, 'nested per-pack private docs stay local'],
   ['scripts/.kernel-shadow/report.json', true, 'generated CI artifacts stay local'],
   // Learning Lab: published teaching material linked from README L917/925/926 and
-  // the four /learning/* site pages. Wiped once already (CRITICAL RECOVERY
+  // the eight /learning/* site pages. Wiped once already (CRITICAL RECOVERY
   // da09e99d7, 2025-12-21) — these assertions keep the ignore rule from re-hiding it.
   [
     'workspace/lab/GUIDE-00-START-HERE.md',
