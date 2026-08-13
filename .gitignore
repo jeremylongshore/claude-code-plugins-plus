@@ -1,12 +1,5 @@
 
 !/.npmrc
-!000-docs/*-AA-AACR-*.md
-!000-docs/*-AT-DECR-*.md
-!000-docs/*-RL-REPT-*.md
-!000-docs/000-*.md
-!000-docs/6767*.md
-!000-docs/agentskills-spec-snapshot.md
-!000-docs/anthropic-skills-spec-snapshot.md
 !plugins/**/.mcp.json
 !plugins/mcp/*/.mcp.json
 !plugins/saas-packs/databricks-pack/000-docs/
@@ -138,10 +131,8 @@ scripts/.kernel-shadow/
 # Kernel-vendor version-coupling advisory output (generated; CI artifact, not source)
 scripts/.kernel-vendor-hash/
 
-000-docs/*
-000-docs/**/*
-000-docs/680-AT-DECR-*.md
-000-docs/683-AT-DECR-*.md
+# Root 000-docs ignore policy lives in 000-docs/.gitignore (ownership + filing
+# ledger — see that file's header; Mission 01 docs 720/726, bead claude-5awj.6).
 EXECUTIVE-SUMMARY.md
 MARKETPLACE-READY.md
 PHASE-1-STATUS.md
