@@ -1404,6 +1404,13 @@ jobs:
       - name: Check doc citations resolve to tracked files
         run: node scripts/check-doc-citations.mjs
 
+      # Recurrence prevention for the tracked-generated-artifact class: a
+      # projection that is also committed has two claimants to one fact and
+      # diverges silently (public/data duplicated ~28.5MB of src/data with
+      # identical blob SHAs). Beads claude-5awj.2 / .1.
+      - name: Check generated projections are not tracked
+        run: node scripts/check-generated-artifacts.mjs
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
