@@ -99,6 +99,27 @@ def _plugin_root(skill_path: str) -> str:
     return skill_path.split("/skills/")[0] if "/skills/" in skill_path else skill_path
 
 
+def is_external_mirror(skill_path: str) -> bool:
+    """True when ANY ancestor directory of the skill carries a `.source.json`.
+
+    Walking every ancestor — rather than only `_plugin_root()` — is load-bearing.
+    `_plugin_root()` splits on `/skills/`, so a skill vendored at
+    `plugins/<cat>/<plugin>/.codex/skills/<name>` yields `.../<plugin>/.codex`, which
+    sits BELOW the plugin root where `.source.json` lives. The marker was therefore
+    missed and six mirrored skills were promoted into `skills/.curated/`, republishing
+    other people's work under our name — exactly what this module's header forbids.
+    """
+    node = Path(skill_path)
+    # `node != node.parent` rather than `!= Path(".")`: Path("/").parent is "/",
+    # so the latter never terminates on an absolute path. The sole call site passes
+    # a repo-relative path today, but the loop should not depend on that.
+    while node != node.parent:
+        if (ROOT / node / ".source.json").exists():
+            return True
+        node = node.parent
+    return False
+
+
 def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
     """A+B plugin skills, our own (no `.source.json`), whose source dir still exists.
 
@@ -117,7 +138,7 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
                 if not sp or not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
                     continue
                 root = _plugin_root(sp)
-                if (ROOT / root / ".source.json").exists():
+                if is_external_mirror(sp):
                     continue  # external mirror — never republish under our name
                 if not (ROOT / sp).is_dir():
                     continue  # source removed / downgraded since the graded run
@@ -201,9 +222,27 @@ def assign_curated_names(candidates: List[Dict[str, str]]) -> None:
 
 
 # ── git-tracked file enumeration ─────────────────────────────────────────────
+def _is_binary(path: Path) -> bool:
+    """True when the file contains a NUL byte in its first 8 KiB — the classic text/binary
+    sniff. Deliberately NUL-based, not "has no printable text": empty files (.gitkeep,
+    __init__.py) contain no NUL and must stay mirrorable."""
+    try:
+        with path.open("rb") as fh:
+            return b"\0" in fh.read(8192)
+    except OSError:
+        return False
+
+
 def tracked_files(skill_dir: Path) -> List[str]:
-    """Relative paths of the git-tracked files under a skill dir, sorted. Uses the committed
-    tree so local == CI. Empty list means nothing tracked (skip)."""
+    """Relative paths of the git-tracked, MIRRORABLE files under a skill dir, sorted. Uses the
+    committed tree so local == CI. Empty list means nothing tracked (skip).
+
+    Binary blobs are excluded: skills/.curated/ exists so skills.sh can INDEX skill text, and
+    a compiled executable is not indexable — it only inflates the tracked payload (an 11.5 MB
+    Mach-O had been mirrored this way). The SOURCE plugin keeps its binary and ships it to
+    users unchanged; only the text index drops it. Filtering here rather than at the call
+    sites is load-bearing: both the build copy loop and the drift checker read this function,
+    so they cannot disagree about what the mirror should contain."""
     try:
         out = subprocess.run(
             ["git", "ls-files", "-z", "--", str(skill_dir.relative_to(ROOT))],
@@ -217,7 +256,7 @@ def tracked_files(skill_dir: Path) -> List[str]:
     rel_to_root = [p for p in out.split("\0") if p]
     base = skill_dir.relative_to(ROOT).as_posix()
     files = [p[len(base) + 1 :] for p in rel_to_root if p.startswith(base + "/")]
-    return sorted(files)
+    return sorted(f for f in files if not _is_binary(skill_dir / f))
 
 
 # ── build ────────────────────────────────────────────────────────────────────

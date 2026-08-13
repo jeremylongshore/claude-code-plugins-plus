@@ -191,3 +191,79 @@ class LoadValidatorDegradeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestExternalMirrorDetection(unittest.TestCase):
+    """Pins is_external_mirror() — defect 3, found by review of PR #1182.
+
+    load_candidates() used to test only `_plugin_root(sp)`, which splits on
+    '/skills/'. A skill vendored at `plugins/<cat>/<plugin>/.codex/skills/<name>`
+    therefore resolved to `<plugin>/.codex` — one level BELOW the plugin root where
+    `.source.json` lives — so the mirror marker was never seen and six external
+    plugins were republished under our name in skills/.curated/. Detection must key
+    on "ANY ancestor owns a .source.json", never on directory names.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._orig_root = pc.ROOT
+        pc.ROOT = self.root
+        # an external mirror: marker at the plugin root
+        mirror = self.root / "plugins" / "testing" / "vendor-pack"
+        (mirror / ".codex" / "skills" / "vendored").mkdir(parents=True)
+        (mirror / "skills" / "direct").mkdir(parents=True)
+        (mirror / ".source.json").write_text("{}")
+        # one of ours: no marker anywhere up the chain
+        ours = self.root / "plugins" / "productivity" / "our-pack"
+        (ours / "skills" / "ours").mkdir(parents=True)
+
+    def tearDown(self):
+        pc.ROOT = self._orig_root
+        self._tmp.cleanup()
+
+    def test_vendored_subdir_skill_is_detected(self):
+        """The regression itself: .codex/skills/<name> sits below the marker."""
+        self.assertTrue(
+            pc.is_external_mirror("plugins/testing/vendor-pack/.codex/skills/vendored")
+        )
+
+    def test_direct_mirror_skill_is_detected(self):
+        self.assertTrue(pc.is_external_mirror("plugins/testing/vendor-pack/skills/direct"))
+
+    def test_our_own_skill_is_not_a_mirror(self):
+        self.assertFalse(pc.is_external_mirror("plugins/productivity/our-pack/skills/ours"))
+
+    def test_absolute_path_terminates(self):
+        """`while node != Path('.')` never terminated on an absolute path."""
+        self.assertFalse(pc.is_external_mirror("/nonexistent/skills/x"))
+
+
+class TestBinarySniff(unittest.TestCase):
+    """Pins _is_binary() — the curated mirror indexes skill TEXT, so binary blobs
+    are excluded, but empty files must survive (a 'no printable text' test would
+    wrongly drop .gitkeep and __init__.py, both 0 bytes in the real corpus)."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _write(self, name, data: bytes) -> Path:
+        p = self.dir / name
+        p.write_bytes(data)
+        return p
+
+    def test_nul_byte_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("blob", b"\x7fELF\x00\x01")))
+
+    def test_empty_file_is_not_binary(self):
+        self.assertFalse(pc._is_binary(self._write("__init__.py", b"")))
+
+    def test_utf8_multibyte_is_not_binary(self):
+        self.assertFalse(pc._is_binary(self._write("SKILL.md", "# héllo — ✅\n".encode())))
+
+    def test_missing_file_does_not_raise(self):
+        self.assertFalse(pc._is_binary(self.dir / "absent"))
