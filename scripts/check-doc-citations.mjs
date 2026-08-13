@@ -57,7 +57,10 @@ try {
   if (e.status !== 1) throw e; // 1 = no matches, fine
 }
 
-const dead = new Map(); // citation -> Set(citing files)
+// Keyed by "citer -> citation" PAIR, not by citation alone: a NEW file citing an
+// already-baselined dead target is itself a new dead citation and must fail.
+// (Greptile P1 on PR #1175; independently raised as F3 by the review agent.)
+const dead = new Set();
 for (const line of grep.split('\n')) {
   if (!line) continue;
   const idx = line.indexOf(':');
@@ -67,11 +70,10 @@ for (const line of grep.split('\n')) {
   if (tracked.has(cite)) continue;
   // relative resolution: `000-docs/...` written inside a dir that has its own 000-docs
   if (tracked.has(path.posix.join(path.posix.dirname(file), cite))) continue;
-  if (!dead.has(cite)) dead.set(cite, new Set());
-  dead.get(cite).add(file);
+  dead.add(`${file} -> ${cite}`);
 }
 
-const current = [...dead.keys()].sort();
+const current = [...dead].sort();
 
 if (process.argv.includes('--emit-baseline')) {
   writeFileSync(
@@ -79,7 +81,7 @@ if (process.argv.includes('--emit-baseline')) {
     JSON.stringify(
       {
         $comment:
-          'Pre-existing dead 000-docs citations, pinned 2026-08-12 (bead claude-5awj.6). Shrink by filing the cited doc or fixing the citation — NEVER add entries to silence the gate.',
+          'Pre-existing dead 000-docs citations as "citer -> citation" PAIRS, pinned 2026-08-12 (bead claude-5awj.6). Pair-keyed so a NEW file citing an already-listed dead target still fails the gate. Shrink by filing the cited doc or fixing the citation — NEVER add entries to silence the gate.',
         baseline: current,
       },
       null,
@@ -105,7 +107,7 @@ if (newDead.length) {
   console.error(
     '  Fix: `git add` the cited doc (ledger it in 000-docs/.gitignore) or correct the citation.',
   );
-  for (const c of newDead) console.error(`    ${c}  ← ${[...dead.get(c)].join(', ')}`);
+  for (const c of newDead) console.error(`    ${c}`);
   process.exit(1);
 }
 console.log(`doc-citations: OK (${current.length} pre-existing baselined, 0 new)`);
