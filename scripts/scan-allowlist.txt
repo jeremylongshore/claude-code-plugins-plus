@@ -64,10 +64,12 @@ plugins/community/skills-janitor/scripts/compare.sh:secret-exfil-cooccur  GITHUB
 plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:secret-exfil-cooccur  team-mode TEAMKB_API_TOKEN is sent only to its configured TEAMKB_API_URL service; reviewed upstream bundle 967fb70f
 plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec  AJV schema compiler in the generated bundle compiles fixed plugin schemas, not user-provided source text; reviewed upstream bundle 967fb70f
 
+# ── sources-change-unscanned is a ONE-SHOT waiver (enforced in code by
 # honoredWaivers, blocker 62ye.3 / #985 defect 3): a line is honored ONLY in the
 # PR whose diff adds it, so it can never persistently waive future source-list
 # changes. Do NOT leave a standing line here — after its PR merges it is inert
 # (the diff-added check ignores it) and only misleads. Each sources PR that needs
+# the sign-off adds its own `sources.yaml:sources-change-unscanned  <reason>`.
 # (The spent one-shot lines for skills-janitor / walkie-talkie / localplugins /
 # quit-sponsor were removed 2026-07-14 per this rule — their vet evidence lives
 # in git history and the intake PRs #1020/#1030 that added them.)
@@ -279,4 +281,4 @@ plugins/productivity/intent-labs-pack/skills/audit-tests/shared-refs/security-te
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:hook-definition  skill body discusses hooks as a validation surface; no hooks.json shipped
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/SKILL.md:allowed-tools-network  documentation of how to detect over-broad allowed-tools (mentions WebFetch as a pattern to flag), not granting network tools
 plugins/productivity/intent-labs-pack/skills/validate-skillmd/references/schema-reminder-frontmatter.md:hook-definition  extracted schema field docs mentioning hooks as a frontmatter topic — not an executable hooks.json
-sources.yaml:sources-change-unscanned  two mirroring-scope narrowings, no new sources and no repo/ref changes: kobiton-automate excludes '**/bin/kobiton' (an 11.5MB macOS x86_64 Mach-O pulled twice by the unanchored skills/** include), and tonone excludes '.claude-plugin/CLAUDE.md' (upstream's auto-generated claude-mem activity table). Both upstreams stay pinned in sources.lock.json and still require --relock review to advance; tonone stays curated: true.
+sources.yaml:sources-change-unscanned  tonone excludes '.claude-plugin/CLAUDE.md' — a mirroring-scope narrowing that drops upstream's auto-generated claude-mem activity table. No new source, no repo/ref change; tonone stays curated: true (frozen) and pinned in sources.lock.json, so advancing it still requires a --relock review.
