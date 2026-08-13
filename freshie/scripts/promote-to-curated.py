@@ -201,9 +201,27 @@ def assign_curated_names(candidates: List[Dict[str, str]]) -> None:
 
 
 # ── git-tracked file enumeration ─────────────────────────────────────────────
+def _is_binary(path: Path) -> bool:
+    """True when the file contains a NUL byte in its first 8 KiB — the classic text/binary
+    sniff. Deliberately NUL-based, not "has no printable text": empty files (.gitkeep,
+    __init__.py) contain no NUL and must stay mirrorable."""
+    try:
+        with path.open("rb") as fh:
+            return b"\0" in fh.read(8192)
+    except OSError:
+        return False
+
+
 def tracked_files(skill_dir: Path) -> List[str]:
-    """Relative paths of the git-tracked files under a skill dir, sorted. Uses the committed
-    tree so local == CI. Empty list means nothing tracked (skip)."""
+    """Relative paths of the git-tracked, MIRRORABLE files under a skill dir, sorted. Uses the
+    committed tree so local == CI. Empty list means nothing tracked (skip).
+
+    Binary blobs are excluded: skills/.curated/ exists so skills.sh can INDEX skill text, and
+    a compiled executable is not indexable — it only inflates the tracked payload (an 11.5 MB
+    Mach-O had been mirrored this way). The SOURCE plugin keeps its binary and ships it to
+    users unchanged; only the text index drops it. Filtering here rather than at the call
+    sites is load-bearing: both the build copy loop and the drift checker read this function,
+    so they cannot disagree about what the mirror should contain."""
     try:
         out = subprocess.run(
             ["git", "ls-files", "-z", "--", str(skill_dir.relative_to(ROOT))],
@@ -217,7 +235,7 @@ def tracked_files(skill_dir: Path) -> List[str]:
     rel_to_root = [p for p in out.split("\0") if p]
     base = skill_dir.relative_to(ROOT).as_posix()
     files = [p[len(base) + 1 :] for p in rel_to_root if p.startswith(base + "/")]
-    return sorted(files)
+    return sorted(f for f in files if not _is_binary(skill_dir / f))
 
 
 # ── build ────────────────────────────────────────────────────────────────────

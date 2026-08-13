@@ -21054,7 +21054,6 @@
       "run_id": 10,
       "files": [
         "SKILL.md",
-        "bin/kobiton",
         "references/response-shapes.md",
         "scripts/run.sh"
       ]
