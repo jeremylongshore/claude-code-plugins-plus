@@ -10,7 +10,7 @@ description: 'Deploy Apify Actors and integrate scraping into external applicati
 
   '
 allowed-tools: Read, Write, Edit, Bash(apify:*), Bash(npm:*), Bash(vercel:*), Bash(gcloud:*)
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

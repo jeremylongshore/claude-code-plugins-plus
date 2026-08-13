@@ -5,7 +5,7 @@ description: 'Handle Apify API rate limits with proper backoff and request queui
   rate-aware client wrappers. Trigger with "apify rate limit", "apify throttling",
   "apify 429", "apify retry", "apify backoff", "too many requests apify".'
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

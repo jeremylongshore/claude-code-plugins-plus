@@ -7254,7 +7254,7 @@
       "description": "Claude Code skill pack for Apify (20 skills)",
       "version": "1.6.0",
       "category": "saas-packs",
-      "keywords": ["apify", "x", "twitter", "saas", "sdk", "integration"],
+      "keywords": ["apify", "x", "twitter", "xquik", "saas", "sdk", "integration"],
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",

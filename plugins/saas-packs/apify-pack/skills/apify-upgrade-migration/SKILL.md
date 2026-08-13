@@ -7,7 +7,7 @@ description: |
   Trigger with "upgrade apify", "apify migration", "apify breaking changes",
   "update apify SDK", "crawlee upgrade", "apify v2 to v3".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Grep
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

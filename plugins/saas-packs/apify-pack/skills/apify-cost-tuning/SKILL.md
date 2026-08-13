@@ -6,7 +6,7 @@ description: 'Optimize Apify platform costs through memory tuning, compute unit
   cost", "apify billing", "reduce apify costs", "apify pricing", "apify expensive",
   "apify budget", "compute units".'
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

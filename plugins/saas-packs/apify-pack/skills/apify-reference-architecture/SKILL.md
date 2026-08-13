@@ -7,7 +7,7 @@ description: |
   Trigger with "apify architecture", "apify best practices",
   "apify project structure", "scraping architecture", "apify system design".
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -7,7 +7,7 @@ description: |
   Trigger with "apify security", "apify secrets", "secure apify token",
   "apify API key security", "rotate apify token".
 allowed-tools: Read, Write, Edit, Grep
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

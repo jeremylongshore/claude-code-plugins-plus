@@ -10,7 +10,7 @@ description: 'Production-ready patterns for Apify SDK and apify-client in TypeSc
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.5.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
