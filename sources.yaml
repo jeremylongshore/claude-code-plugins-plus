@@ -956,6 +956,15 @@ sources:
       - 'docs/**'
       - 'templates/**'
       - '.github/**'
+      # Upstream commits its own claude-mem session exhaust at
+      # .claude-plugin/CLAUDE.md — an auto-generated activity table, not plugin
+      # guidance, that tooling walking CLAUDE.md files reads as instructions.
+      # The local copy is deleted in this same PR (which sticks only because
+      # curated: true freezes the write). This exclude is what makes it stick
+      # AFTER the freeze is lifted: dropping curated: is the documented
+      # off-ramp, and without this line the very next sync would restore it via
+      # the '.claude-plugin/**' include.
+      - '.claude-plugin/CLAUDE.md'
 
   # ============================================================
   # Hyperflow (Mohammed Abdelhady)
