@@ -30,7 +30,7 @@ Concretely, that resolves to:
 
 ## 1. CONTEXT — the measured facts that forced this decision
 
-Twelve public agent-skill repositories were reviewed at pinned commits (§ 2). The whole sample contains roughly **741 `SKILL.md`**; the Intent Solutions corpus is **3,179 plugin `SKILL.md`** (re-verified at `HEAD 49210ecb6`). The largest repository in the sample is 10.6% of our size **and is visibly failing at that size**.
+Twelve public agent-skill repositories were reviewed at pinned commits (§ 2). The whole sample contains roughly **741 `SKILL.md`**; the Intent Solutions corpus is **3,179 plugin `SKILL.md`** (re-verified against `origin/main` HEAD `478aaf177`). The largest repository in the sample is 10.6% of our size **and is visibly failing at that size**.
 
 The decisive observation is not any single good pattern. It is that **every vendor examined has exactly one of the three things a marketplace at our scale needs, and none has all three:**
 
@@ -231,7 +231,7 @@ Four reasons, in hierarchy order.
 
 **It makes the honest answer cheap and the dishonest answer expensive.** Evidence classes with retention as a validity condition mean an unbacked badge goes dark automatically rather than requiring someone to notice. A `recall_note` on every score means an **A** cannot silently read as "this works." A ratchet keyed on `(path, rule, field)` means debt can only shrink, and only a bot can write the baseline. A certification that cannot be self-approved and that expires means a claim cannot quietly become historical. Every one of these makes truthfulness the default path rather than a discipline someone has to maintain.
 
-**It is the only design in the sample that can hold a real bar over a real corpus.** Uniform anatomy at 3,179 skills has two outcomes and both are bad. Tier-gating is the mechanism that lets us publish "12 certified, 3,668 pending" — which is a stronger and more defensible public claim than "1,596 A-grade" backed by a rubric that 963 gate-failing artifacts already contradict. And we can back it: Dolt is the append-only public record that **none** of the twelve benchmarked repositories has, and it turns our grade history into exactly the transparency log that NVIDIA's signing story is missing.
+**It is the only design in the sample that can hold a real bar over a real corpus.** Uniform anatomy at 3,179 skills has two outcomes and both are bad. Tier-gating is the mechanism that lets us publish "12 certified, 3,668 pending" — which is a stronger and more defensible public claim than "1,596 A-grade" backed by a rubric that **962 A/B artifacts with errors** already contradict. And we can back it: Dolt is the append-only public record that **none** of the twelve benchmarked repositories has, and it turns our grade history into exactly the transparency log that NVIDIA's signing story is missing.
 
 **Recommended direction: adopt this architecture; execute the blueprint's epics in the order its critical path specifies; and do not begin corpus migration until the compliance ratchet is live and an independent review closes clean.**
 
