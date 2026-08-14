@@ -52,7 +52,7 @@ The design's thesis is therefore **subtractive**: the repo's three named histori
 | `NVIDIA/skills`                                           | `e1b747ed9fc0492342f97cc6ba7ac954279ac48f` | Apache-2.0 + CC-BY-4.0            | 336 skills                              |
 | `NVIDIA/nurec-skills`                                     | `ee377d36e11228ae02496c88f0dd064590419fc5` | Apache-2.0 + CC-BY-4.0            | 6 skills                                |
 | `NVIDIA-Medtech/medical-AI-skills`                        | `7fb72a9e9b69f5db4104c0a14b36d0b5f5f9ba62` | Apache-2.0                        | default branch is **`dev`**, not `main` |
-| `anthropics/skills`                                       | `f6656c1256d5a8adfa37db9110046ef20bac644c` | **none — `license: null`**        | see § 5                                 |
+| `anthropics/skills`                                       | `f6656c1256d5a8adfa37db9110046ef20bac644c` | **none — `license: null`**        | see § 3.1                               |
 | `agentskills/agentskills`                                 | `69ef37e9424c0a7ea9dd2293b559e43ec8176379` | Apache-2.0 + CC-BY-4.0            | spec repo, 0 shipped skills             |
 | `minio/skills`                                            | `32b7d3e3e23de7595bd4c6051941d1215521fe2a` | Apache-2.0                        | 3 skills                                |
 | `openai/skills`                                           | `49f948faa9258a0c61caceaf225e179651397431` | **none at root** (per-skill only) | README self-declares DEPRECATED         |
