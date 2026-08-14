@@ -93,10 +93,26 @@ the [decision record](000-docs/694-AT-DECR-external-sync-mirror-by-default-model
 
 ## Canonical documents
 
-| Topic                                | Document                                                                                                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Required fields, tier model, history | [000-docs/SCHEMA_CHANGELOG.md](000-docs/SCHEMA_CHANGELOG.md)                                                                   |
-| Full skills standard (master spec)   | [000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)               |
-| External-sync policy                 | [000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md](000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md) |
-| Contribution requirements            | [CONTRIBUTING.md](.github/CONTRIBUTING.md)                                                                                     |
-| Security policy                      | [SECURITY.md](.github/SECURITY.md)                                                                                             |
+A document in `000-docs/` may declare itself `AUTHORITATIVE` (or `CANONICAL`) **only if it is
+linked from this table.** That rule is what the table exists for: it is the single public index
+of which document owns which fact class, and it is the reason a document cannot grant itself
+authority by editing its own header.
+
+| Topic                                                                                                                            | Document                                                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Platform master standard** (plugins, CI, release, docs governance, canonical contract, adapters, root README landing contract) | [000-docs/727-AT-ARCH-master-modernization-blueprint.md](000-docs/727-AT-ARCH-master-modernization-blueprint.md)               |
+| Reference-architecture evidence base (12 pinned primary sources)                                                                 | [000-docs/728-RA-DATA-reference-architecture-benchmark.md](000-docs/728-RA-DATA-reference-architecture-benchmark.md)           |
+| Reference-architecture decision (adopt / modify / reject)                                                                        | [000-docs/729-AT-ADEC-reference-architecture-synthesis.md](000-docs/729-AT-ADEC-reference-architecture-synthesis.md)           |
+| Required fields, tier model, history                                                                                             | [000-docs/SCHEMA_CHANGELOG.md](000-docs/SCHEMA_CHANGELOG.md)                                                                   |
+| Full skills standard (master spec)                                                                                               | [000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)               |
+| External-sync policy                                                                                                             | [000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md](000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md) |
+| Skill submission intake standard                                                                                                 | [000-docs/700-DR-GUID-skill-submission-standard.md](000-docs/700-DR-GUID-skill-submission-standard.md)                         |
+| External-PR review standard                                                                                                      | [000-docs/709-DR-GUID-reviewing-external-prs.md](000-docs/709-DR-GUID-reviewing-external-prs.md)                               |
+| Contribution requirements                                                                                                        | [CONTRIBUTING.md](.github/CONTRIBUTING.md)                                                                                     |
+| Security policy                                                                                                                  | [SECURITY.md](.github/SECURITY.md)                                                                                             |
+
+The blueprint (727) is the platform master standard and **supersedes**
+`000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md`, whose section-level disposition
+it records. It does **not** supersede the master spec (6767-b) above, which remains the owner of
+the skill-frontmatter rubric. The blueprint's own authority-graph proof — one owner per fact
+class, with this table as the public index — is its § 11.1.

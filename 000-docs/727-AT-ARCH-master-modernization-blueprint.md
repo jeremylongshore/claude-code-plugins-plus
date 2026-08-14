@@ -2,12 +2,30 @@
 
 # 727 — Master Modernization Blueprint (Platform Master Standard)
 
-**Status:** PROPOSED — becomes AUTHORITATIVE on merge **and** on the `STANDARDS.md § Canonical documents` pointer landing in the same PR (see § 12, gate G4).
+**Status:** PROPOSED — becomes AUTHORITATIVE on merge **and** on the `STANDARDS.md § Canonical documents` pointer landing in the same PR (see § 12, gate G4). **The pointer landed in this PR** (§ 11.1 carries the proof); the condition is satisfied as written, not weakened.
 **Doc class:** `canonical`
 **Date:** 2026-08-13
 **Scope:** the whole platform — corpus, catalog, canonical skill contract, harness adapters, provenance and licensing, evaluation and evidence, CI, release and supply chain, documentation governance, cross-repo authority boundaries, and the ten-epic execution plan.
 **Authority:** Intent Solutions — **tonsofskills.com** (the live property). The dead domain `claudecodeplugins.io` appears in 341 places across 121 files and is retired by Epic 1 outside the frozen `6767-*` set.
 **Repository:** `jeremylongshore/claude-code-plugins-plus-skills` (canonical). Public install slug `jeremylongshore/claude-code-plugins` is a **frozen compatibility contract** — see § 5.6.
+
+---
+
+## 0A. RATIFICATION CORRECTIONS — what changed after conditional ratification
+
+The owner **conditionally ratified** this blueprint on 2026-08-13 and returned nine required corrections. All nine are applied below; this table is the map, so a reader can audit the correction rather than take it on trust. **Nothing was implemented, instantiated, merged, published, or mutated externally to satisfy them** — the corrections are documentation and planning only, and § 20's boundary is unchanged.
+
+| #   | Correction                                          | Where it now lives                                                                               |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1   | The missing root README landing contract            | **§ 6A** (whole section) + § 11 map row + Epic 2 bead 2.13 + `728 § 4 C6` / `729 § 6` cross-refs |
+| 2   | Complete the activation mechanism                   | Status line + **§ 11.1** (one-owner-per-fact-class proof) + `STANDARDS.md § Canonical documents` |
+| 3   | Correct the disputed compliance figures             | **§ 3.1** (re-measurement, embedded) + scorecard rows 4 and 6 + § 1, § 2, § 13 E8, § 14 row 27   |
+| 4   | Repair the benchmark licensing rule                 | `728 § 4` binding preamble + annotations on rows A2, A4, A5, A6, B4, B7, D1                      |
+| 5   | Remove the Mission 01 / Epic 1 ambiguity            | **§ 13 EPIC 1** → "Mission 01 is NOT Epic 1" (delivery table + per-bead disposition)             |
+| 6   | Preserve progressive epic activation                | **§ 13** binding activation rule + **§ 15.1** the one authorized launch sequence                 |
+| 7   | Record the npm-token resolution (do NOT perform it) | **§ 18.9** (+ sequencing note in § 18.4)                                                         |
+| 8   | Preserve honest independent review                  | **§ 18.5** (rewritten) + Epic 10 independence precondition                                       |
+| 9   | Draft contributor wording (do NOT post it)          | `000-docs/709-DR-GUID-reviewing-external-prs.md` § 8 — **drafted, not posted**                   |
 
 ---
 
@@ -57,7 +75,7 @@
 CCPI is a **470-plugin, 3,179-skill, 347-agent** marketplace (471 catalog entries / 467 distinct names; 22,962 tracked files) with genuinely excellent isolated engineering — the cowork packaging subsystem with three hard gates and zero drift, the SQL statement classifier, SOPS `/dev/shm` credential handling, the `sources.lock.json` quarantine, the cosign→Fulcio→production-Rekor evidence chain — surrounded by a governance perimeter that does not close. Four measured facts define the position:
 
 1. **The authoritative gate does not gate.** `--marketplace` appears in exactly **three** workflow locations, all non-blocking: `pr-prescreen.yml:133` (advisory), `promote-curated.yml:90` (`|| true`), `minimax-review.yml:247` (advisory). A pull request adding a `SKILL.md` with **zero of the eight required fields merges clean today.** The 7,687-error baseline is therefore not a legacy pool — it is an **open intake**.
-2. **The quality claim is not a claim.** 963 A/B-graded artifacts still fail that gate, including **132 A-graded files carrying 469 errors**. The 100-point rubric and the pass/fail gate are independent axes that were never reconciled. The single public verification badge is fed by a **171-byte hand-editable committed file** (`marketplace/src/data/jrig-data.json`) that **no `.astro` page imports**, backed by 3 ledger rows whose own evidence text says the primary artifact "was not retained."
+2. **The quality claim is not a claim.** 962 A/B-graded artifacts still fail that gate, including **132 A-graded files carrying 219 errors** (re-measured at this HEAD — § 3.1). The 100-point rubric and the pass/fail gate are independent axes that were never reconciled. The single public verification badge is fed by a **171-byte hand-editable committed file** (`marketplace/src/data/jrig-data.json`) that **no `.astro` page imports**, backed by 3 ledger rows whose own evidence text says the primary artifact "was not retained."
 3. **Publication is ungated and identity is borrowed.** `publish-changed-packages.yml` fires on `push: main` with no dependency on any check, under `enforce_admins:false`. **58 `@intentsolutionsio/*` mirror packages carry `.source.json` and are publishable in that path; 0 are marked `private`** (re-verified). 55 carry third-party work with no consent record; one conveys AGPL-3.0 content with no license text in the tarball.
 4. **Portability is asserted, not built.** 1,454 skills claim Codex/OpenClaw compatibility with zero adapters and zero tests, while the repo's only "adapter" is a **27-file byte-identical fork** that Freshie grades twice.
 
@@ -102,7 +120,7 @@ Every ADOPT/REJECT, every conflict resolution, and every escalation in this blue
 
 ## 2. FORMAL A-GRADE CRITERIA
 
-**A-GRADE ⇔ (all of G1–G10) ∧ (all of E1–E6).** Every row terminates in an exit code, a hash comparison, or a filesystem/schema fact. The words _documented_, _reviewed_, _intended_, and _best-practice_ appear in no criterion. The 100-point Freshie score is retained as an **advisory quality hint only** and is explicitly **not** a certification input — 963 A/B artifacts that fail the gate prove why.
+**A-GRADE ⇔ (all of G1–G10) ∧ (all of E1–E6).** Every row terminates in an exit code, a hash comparison, or a filesystem/schema fact. The words _documented_, _reviewed_, _intended_, and _best-practice_ appear in no criterion. The 100-point Freshie score is retained as an **advisory quality hint only** and is explicitly **not** a certification input — 962 A/B artifacts that fail the gate prove why (§ 3.1).
 
 ### Gate G — structural prerequisites (any failure ⇒ not A; no partial credit)
 
@@ -163,9 +181,9 @@ Measured at `HEAD 49210ecb6` unless a source doc is cited. **⚠ = a number prio
 | 1   | Tracked files / plugin SKILL.md / agent files **[RV]**                             | 22,962 / 3,179 / 347                                                                                                                                                                                                                                                                                                | unchanged; counted by ONE resolver                                                                |
 | 2   | Catalog entries vs distinct names **[RV]**                                         | **471 / 467** (`claudebase`, `geepers-agents` duplicated)                                                                                                                                                                                                                                                           | 467 / 467, uniqueness asserted                                                                    |
 | 3   | Tracked stale catalog shadow **[RV]**                                              | 1 (`.claude-plugin/marketplace.extended.json.backup`, 234 entries, 2025-10-28)                                                                                                                                                                                                                                      | 0                                                                                                 |
-| 4   | Marketplace-tier errors / compliance **[RV]**                                      | **7,687 errors / 26.3%** over 4,406 files                                                                                                                                                                                                                                                                           | ratchet-pinned, monotone ↓, ≤900 after structural classes clear                                   |
+| 4   | Marketplace-tier errors / compliance **[RM]**                                      | **7,687 errors / 26.3%** over 4,406 files — the **terminal `--marketplace` headline** only. It is NOT the SKILL.md total (7,433 over 3,680 rows) and NOT the agent lane (253 over 353 files). Three cohorts, three numbers; never merged — § 3.1                                                                    | ratchet-pinned, monotone ↓, ≤900 after structural classes clear                                   |
 | 5   | Grade distribution **[RV]**                                                        | A 1,596 (43.4%) · B 986 (26.8%) · C 896 (24.3%) · D 193 (5.2%) · F 9 (0.2%); avg 85.1                                                                                                                                                                                                                               | published with cohort + `recall_note`                                                             |
-| 6   | A/B artifacts failing the gate                                                     | **963** (132 A-graded, 469 errors)                                                                                                                                                                                                                                                                                  | 0 among certified; number published                                                               |
+| 6   | A/B artifacts failing the gate **[RM]**                                            | **962** (132 A-graded carrying **219** errors; 830 B-graded carrying 1,936) — § 3.1                                                                                                                                                                                                                                 | 0 among certified; number published                                                               |
 | 7   | Structural error classes                                                           | body sections 6,104 · frontmatter fields 728 = **6,832 (88.9%)**                                                                                                                                                                                                                                                    | 0                                                                                                 |
 | 8   | Safety error classes                                                               | unscoped `Bash` 222 · tier-2 tool-safety 185 · orchestration 30 · link-escape ~50                                                                                                                                                                                                                                   | 0, each by named human decision                                                                   |
 | 9   | Security class (shell substitution in YAML)                                        | **10**                                                                                                                                                                                                                                                                                                              | 0, unwaivable                                                                                     |
@@ -222,6 +240,58 @@ Measured at `HEAD 49210ecb6` unless a source doc is cited. **⚠ = a number prio
 | 60  | Artifacts meeting G1–G10 ∧ E1–E6                                                   | **0**                                                                                                                                                                                                                                                                                                               | a named, signed, defensible cohort ≥1                                                             |
 | 61  | Open GitHub issues labeled `epic`                                                  | **0 of 11** (171 open beads → outsiders see ~6% of live work)                                                                                                                                                                                                                                                       | every open epic cluster projected, never a gate                                                   |
 | 62  | Open launch-blocking legal/provenance items                                        | **3**, none with a recorded disposition                                                                                                                                                                                                                                                                             | 0 open, each owner-signed                                                                         |
+
+### 3.1 Re-measurement of the disputed compliance figures — the correction, with its own proof
+
+Ratification correction 3. Three figures carried into earlier drafts were re-measured from a clean tree at the ratification HEAD; two were wrong. Rows marked **[RM]** above were produced by this run. **The correction is stated with the command that produced it so the reader never has to trust it.**
+
+**HEAD:** `49210ecb6d15ee7412a8cb0e7bcac42faac30119` (`origin/main`) · **measured:** 2026-08-13, clean tree, no local modifications.
+
+```bash
+git rev-parse origin/main                                   # 49210ecb6…
+python3 scripts/validate-skills-schema.py --marketplace --json > measure.json
+python3 scripts/validate-skills-schema.py --marketplace      # terminal headline
+python3 scripts/validate-skills-schema.py --agents-only      # agent lane
+```
+
+`--json` emits one row per SKILL.md (`path, score, grade, errors, warnings`) plus one trailing non-row `kernel_shadow` record, which is excluded from all arithmetic below.
+
+**Cohorts, defined explicitly, then counted.**
+
+| Cohort (explicit definition)                         |     Count |
+| ---------------------------------------------------- | --------: |
+| Graded artifacts = SKILL.md rows emitted by `--json` | **3,680** |
+| A-graded                                             |     1,596 |
+| B-graded                                             |       986 |
+| A/B total                                            |     2,582 |
+| **A/B artifacts with ≥1 ERROR** ("failing the gate") |   **962** |
+| — of which A-graded                                  |   **132** |
+| — of which B-graded                                  |       830 |
+| **Errors carried by the 132 A-graded failures**      |   **219** |
+| Errors carried by the 830 B-graded failures          |     1,936 |
+| Errors carried by all 962 A/B failures               |     2,155 |
+
+**Verdict on each disputed figure.**
+
+| Figure                  | Status                   | Correct value |
+| ----------------------- | ------------------------ | ------------: |
+| 963 A/B failing         | **REFUTED (off by one)** |       **962** |
+| 132 A-graded failing    | **CONFIRMED**            |           132 |
+| 469 errors on those 132 | **REFUTED**              |       **219** |
+
+**469 has no measured source.** Every near-miss was computed and then _excluded rather than substituted_: warnings on the A-graded failures = 1,101; errors + warnings on them = 1,320; errors on all A/B failures = 2,155; whole-corpus SKILL.md errors = 7,433. None is 469. A number with no derivable cohort is deleted, not rounded to the nearest plausible neighbor.
+
+**Three totals that count DIFFERENT things. They are named separately and must never be merged into one headline.**
+
+| Measurement                                 | Scope                             |     Value |
+| ------------------------------------------- | --------------------------------- | --------: |
+| Per-row error sum (`--marketplace --json`)  | 3,680 SKILL.md only               | **7,433** |
+| Agent lane (`--agents-only`, standard tier) | 353 agent files                   |   **253** |
+| Terminal headline (`--marketplace`)         | SKILL.md + agents + `plugin.json` | **7,687** |
+
+7,433 + 253 = 7,686; the headline is 7,687. **The residual 1 is not attributed here.** `--agents-only` grades at _standard_ tier while the marketplace run grades the same agents at _marketplace_ tier, and 621 `plugin.json` files are also scanned. Writing "7,687 = SKILL errors + agent errors" would be false precision, so three distinct measurements over three distinct cohorts are reported as three numbers.
+
+**One open discrepancy, deliberately not silently rewritten.** This run counts **3,680** graded SKILL.md rows; § 8 and Epic 8 still cite **3,678** from an earlier scan. Both are recorded; neither is edited to match the other. Reconciling them is precisely the job of Epic 1 bead 1.0 (the single measurement harness), and doing it by hand here would re-create the defect this section exists to correct.
 
 ---
 
@@ -483,6 +553,87 @@ The IS canonical frontmatter is a **strict superset** of the open Agent Skills s
 
 ---
 
+## 6A. ROOT README AND REPOSITORY LANDING CONTRACT
+
+Ratification correction 1. `728 § 4 C6` and `729 § 6` both **REJECT "README as catalog surface"** and neither names what replaces it. A rejection with no replacement is not a decision — it is a hole, and at 470 plugins the hole is the first thing every visitor, contributor, and partner walks into. **This section is the replacement, and it owns the fact class "root README / repository landing experience" in § 11.**
+
+**The reframe, stated once:** the README stops being a _catalog_ (an enumeration that drifts the moment the corpus moves) and becomes a **governed landing contract** — a small, generated, gate-checked surface whose job is to route a reader to the right place in under a minute, and whose every number carries the cohort and command that produced it. The catalog itself lives where a catalog belongs: `marketplace.extended.json` (source of truth), the website (browse/search), `skills-index.json` (machine), `skills.sh.json` + `llms.txt` (external discovery). **The README points at those. It never becomes one.**
+
+### 6A.1 What the landing surface must say, and what it must never do
+
+**Must say:**
+
+1. **Tons of Skills is a model-agnostic agent-skills platform.** Not "a Claude Code plugin repo." The canonical layer is harness-free by construction (§ 5); Claude Code is the **first and best-supported** harness, not the definition of the product. The one-line identity is a platform statement with a harness list beneath it, never a vendor statement with an asterisk.
+2. **Scale is the strength, and it is stated in the open.** ~470 plugins · ~3,179 skills · ~347 agents is the largest curated agent-skills corpus in the ecosystem, and hiding or shrinking it to look tidy would trade the single most defensible fact about the platform for cosmetics. **The answer to scale is navigation and honest labeling, never reduction.** Every published count appears with its cohort name and the command that produces it (§ 3.1; Epic 1 beads 1.5/1.6) — an unlabeled count is what produced five contradictory answers to "how many skills."
+3. **Five orthogonal ways in, because there are five real questions.** By **harness/model** ("I'm on Codex — what works for me?"), by **application/job** ("I need to review a PR"), by **skill category**, by **plugin**, and by **certification tier** (§ 2's computed tiers — T0…T4 / CERTIFIED / PENDING). Each is a link into a generated surface, not an inline list.
+4. **Four artifact classes, distinguished on sight and never blurred.** This is a rank-3 (truthful provenance) requirement, not a UX nicety:
+
+   | Class                   | What it is                                           | How the reader can tell                                                                             |
+   | ----------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+   | **Canonical skill**     | First-party, harness-free, the source of truth       | No `.source.json`; carries `skill-card.yaml`; certification tier rendered                           |
+   | **Generated adapter**   | A thin, machine-produced harness projection (§ 6)    | Lives under a generated path, carries a "generated — do not edit" header, has no body or references |
+   | **First-party package** | An IS-authored distribution (npm, cowork zip)        | `@intentsolutions*` scope, IS-authored, license is ours                                             |
+   | **Upstream mirror**     | Somebody else's work we host under mirror-by-default | `.source.json` present; upstream author + license + resolved SHA rendered inline (`728 § 4 B3`)     |
+
+5. **Harness support is stated by adapter, not by adjective.** Claude Code, Codex, Gemini CLI, and any future harness appear only where a **declared, generated adapter** exists, with its `unsupported[]` degradations visible. **A copied skill tree is not an adapter and must never be presented as one** — the repo's only "adapter" today is a 27-file byte-identical fork (§ 6), and the README is exactly where that misrepresentation would go public. `1,454` prose portability claims with zero adapter artifacts are withdrawn, not restated.
+6. **tonsofskills.com is the live property.** The dead domain `claudecodeplugins.io` is replaced on this surface (Epic 1 bead 1.13) — **and nowhere inside the frozen `6767-*` set or any mirror-owned file**, where a historical record must stay byte-identical.
+
+**Must never do:** per-skill rows (the drift engine every benchmarked repo fell into — `728 § 4 C6`) · a hand-maintained count · a second metrics writer · a claim with no cohort · a harness name with no adapter · a badge with no retained, hash-matched artifact (§ 2 criterion E3) · a rename of anything in § 6A.3.
+
+### 6A.2 Proposed information architecture
+
+Ordered by what a first-time reader needs, with a hard budget per block. Everything marked _(generated)_ is written by a generator and drift-gated; everything else is short, hand-authored prose that does not contain numbers.
+
+```
+1  Identity            model-agnostic agent-skills platform · one sentence · harness row (adapter-backed only)
+2  Install             the frozen public slug, verbatim, first screen — see 6A.3
+3  Scale, labeled      (generated) counts + cohort names + the command that produced each
+4  Five ways in        (generated links) by harness/model · by application · by category · by plugin · by tier
+5  What the classes    canonical · generated adapter · first-party package · upstream mirror (the 6A.1 table)
+   mean
+6  Certification       what a tier means, what it does NOT mean (the recall_note discipline, 728 § 4 D8),
+                       and the live certified/pending split — published even when certified is near zero
+7  Contribute          intake standard (700) + external-PR review standard (709) + AI-disclosure
+8  Governance          STANDARDS.md · this blueprint · SECURITY.md · LICENSE + NOTICE
+9  Provenance          mirror-by-default in one paragraph, linking 694, with upstream credit stated
+```
+
+**AUTO-TOC's scope is capped, not extended:** counts and category links only. `generate-readme-toc.mjs` gains a byte budget and a "no per-skill rows" assertion (`728 § 4 C6`).
+
+### 6A.3 Frozen on this surface — a rename here is a breaking API change
+
+- **The public install slug `jeremylongshore/claude-code-plugins` is reproduced verbatim** and is a **frozen compatibility contract** (§ 5.6). It is hardcoded in the CLI, the Hero snippet, and hundreds of READMEs; GitHub's 301 to the canonical repo name is load-bearing. **No README redesign may "normalize" it to the canonical repo name.**
+- **`plugins/` and `skills/` keep their meaning and their paths.** `plugins/<category>/<plugin>/skills/<name>/` is the documented layout; root `skills/` remains the curriculum + `.curated` mirror that skills.sh crawls as an external contract. The landing surface **describes** both; it never proposes flattening either.
+- **The canonical repo name and the marketplace catalog id are unchanged**: `jeremylongshore/claude-code-plugins-plus-skills` and `claude-code-plugins-plus`.
+
+### 6A.4 Acceptance criteria — measurable, or it did not land
+
+| #   | Criterion                                                                                             | Verifier                                                                                            |
+| --- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| R1  | Zero per-skill rows in `README.md`                                                                    | A gate asserting the AUTO-TOC block emits category/count rows only; planted row ⇒ red run           |
+| R2  | Byte budget held (README ≤ 25 KB; AUTO-TOC block ≤ 8 KB)                                              | Byte assertion in the same gate; the benchmark's failure mode is a 50,315-byte README               |
+| R3  | Exactly **one** metrics writer feeds the README                                                       | `resolveCorpus()` is the only producer (Epic 1 beads 1.5/1.9); a second writer fails CI             |
+| R4  | Every published number carries a cohort label and a reproducing command                               | Regenerate-and-diff, plus a grep asserting no bare integer outside a labeled generated block        |
+| R5  | Every harness named on the surface has a declared adapter                                             | Cross-check README harness list against the generated `adapters[]` registry; extra name ⇒ red       |
+| R6  | The install slug string appears verbatim and unmodified                                               | String assertion pinned in a test, with the "frozen API" comment naming why                         |
+| R7  | Zero `claudecodeplugins.io` occurrences in `README.md`; frozen `6767-*` and mirror files unchanged    | Domain lint (Epic 1 bead 1.13) + `git diff --stat` showing zero frozen-file changes                 |
+| R8  | Each of the four artifact classes is defined on the surface and machine-derivable                     | Class definition maps 1:1 to a computable predicate (`.source.json` presence, scope, tier)          |
+| R9  | The five navigation entry points resolve to live generated surfaces (no 404, no hand-maintained list) | Link check in CI; every target is a generated artifact with a drift gate                            |
+| R10 | The certified/pending split is rendered from the certification report, including when certified is 0  | Reads `certification-report.json` (Epic 10); absent file ⇒ renders "not yet certified", never blank |
+
+### 6A.5 The proposed bead that implements and verifies this — **PROPOSED ONLY**
+
+> **Epic 2, bead 2.13 — "Rebuild the root README as a governed landing contract with a per-class navigation map and a byte-budget gate."**
+> Type `feature` · P1 · parent: the Epic 2 epic bead.
+> **Acceptance:** R1–R10 above, each with the command that proves it and a linked red run for every new assertion; the install-slug string test pinned; zero frozen-file diffs.
+> **Rollback:** `git revert` the README + gate commit; the observable is the restored byte count and a green `check-generated-artifacts` run.
+> **Prohibited:** renaming the slug, `plugins/`, or `skills/` · editing any file under a `.source.json` ancestor · adding per-skill rows · hand-writing any count · naming a harness that has no generated adapter.
+> **Depends on:** Epic 1 beads 1.5/1.6 (the corpus resolver and cohort labels — otherwise R3/R4 cannot be satisfied) and Epic 2 bead 2.3 (the authority-pointer gate). **Consumed by:** Epic 10's launch gate.
+
+**No bead is instantiated by this document.** `2.13` is a document-local handle for the dependency graph, never a bead ID or a bead title (§ 13).
+
+---
+
 ## 7. PROVENANCE AND LICENSING POLICY
 
 **P1 — Identity is never borrowed.** No artifact bearing the Intent Solutions name, npm scope, package identity, or maintainer record may contain work Intent Solutions did not author, absent written, recorded, per-source consent. Preserving an `author` field is attribution; it is not permission to publish under our name. _(ranks 2, 3)_
@@ -708,7 +859,9 @@ The registry 200-check is retained but is _not_ the safety net: it prevents _dup
 
 ## 11. DOCUMENTATION AUTHORITY MAP
 
-**Structural rule, machine-enforced (gate G4 of the doc-governance job):** _a document may declare `Status: AUTHORITATIVE` (or `CANONICAL`) only if `STANDARDS.md § Canonical documents` links it._ Today **8 declare, 1 is linked** (re-verified). That single rule is what `6767-a/c/d/e/h` violated for eight months.
+**Structural rule, machine-enforced (gate G4 of the doc-governance job):** _a document may declare `Status: AUTHORITATIVE` (or `CANONICAL`) only if `STANDARDS.md § Canonical documents` links it._ At the ratification baseline **8 declared, 1 was linked**. That single rule is what `6767-a/c/d/e/h` violated for eight months.
+
+**Activation status: the pointer landed in this PR.** `STANDARDS.md § Canonical documents` now links 727 (platform master standard), 728 (evidence base), and 729 (decision) — so this document's Status condition is satisfied _by the same PR that files it_, exactly as written, and **not** by weakening the condition. § 11.1 is the proof that the resulting graph has one owner per fact class.
 
 | Fact class                                                       | **Single owner**                                                                       | Executable form / delegate                             | Loser being retired                                                          |
 | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------- |
@@ -720,6 +873,7 @@ The registry 200-check is retained but is _not_ the safety net: it prevents _dup
 | Platform master standard (plugins, CI, release, docs governance) | **this blueprint (727)**                                                               | —                                                      | `000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md`              |
 | CI gate architecture / required contexts                         | **this blueprint (727)**                                                               | `.github/workflows/validate-plugins.yml`               | `CLAUDE.md` (19 vs actual 20) → pointer                                      |
 | Canonical model-agnostic contract + adapter standard             | **this blueprint (727) § 5–6**                                                         | `schemas/canonical/v0/` (interim, `UPSTREAM-PENDING`)  | free-text `compatibility`                                                    |
+| Root README / repository landing experience                      | **this blueprint (727) § 6A**                                                          | `generate-readme-toc.mjs` + the § 6A.4 gates           | `728 § 4 C6` / `729 § 6` rejected the old pattern without naming a successor |
 | Release / versioning / publish                                   | `RELEASING.md`                                                                         | publish workflows                                      | —                                                                            |
 | Doc filing contract                                              | `000-docs/000-DR-STND-document-filing-system.md` (v4.4)                                | —                                                      | —                                                                            |
 | Ignore / ledger model                                            | `000-docs/.gitignore` header                                                           | `scripts/check-docs-ignore-policy.mjs` (21 assertions) | —                                                                            |
@@ -742,6 +896,33 @@ The registry 200-check is retained but is _not_ the safety net: it prevents _dup
 - **`frozen`** — byte-identical to `origin/main` unless the same PR edits the superseding doc. Applies to `6767-a`, `6767-c`, `6767-d`, `6767-e`, `6767-h`.
 
 **Supersession is a record, not a status edit.** One PR must carry: the frozen banner on the old doc · a per-section disposition table in the new doc · the `STANDARDS.md` pointer update · the `doc-class: frozen` marker. **Never delete or renumber a `6767-*` file.**
+
+### 11.1 Activation proof — exactly one owner per fact class
+
+Ratification correction 2. The activation condition in this document's Status line ("authoritative on merge **and** on the `STANDARDS.md` pointer landing in the same PR") is **kept unchanged and satisfied**, not softened. What follows is the proof obligation that condition creates: after the pointer lands, does the authority graph have exactly one owner per fact class, with no fact owned twice and no fact orphaned?
+
+**Test applied to every row of the § 11 map:** (a) exactly one document/artifact is named as owner; (b) every other document that used to state the same fact now points at the owner rather than restating it; (c) the owner is reachable from `STANDARDS.md § Canonical documents` in ≤ 1 hop, either directly or through a document that table links.
+
+| Fact class                                                        | Sole owner                                                  | Reachable from `STANDARDS.md`  | Competing claimant, and its new state                                                            |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Platform master standard (plugins, CI, release, docs governance)  | **727** (this doc)                                          | direct link (added in this PR) | `6767-h` — frozen, superseded, section-level disposition recorded in § 0                         |
+| Skill frontmatter required set / tier model / error-vs-warning    | `SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES                     | direct link                    | `6767-h` § 5 (6 fields), `6767-c/d/e` (CSV-only) — frozen with banners naming the falsehood      |
+| Full skills standard + 100-point rubric                           | `6767-b`                                                    | direct link                    | `6767-h`'s supersession claim — withdrawn in writing (§ 0)                                       |
+| Canonical model-agnostic contract + adapter standard              | **727 § 5–6**                                               | via 727                        | free-text `compatibility` strings — become a generated projection (Epic 3)                       |
+| **Root README / repository landing experience**                   | **727 § 6A** _(new — correction 1)_                         | via 727                        | `728 § 4 C6` and `729 § 6` rejected the old pattern and named no replacement; both now cite § 6A |
+| Reference-architecture evidence base                              | **728**                                                     | direct link (added in this PR) | — (previously unlinked)                                                                          |
+| Reference-architecture decision (adopt/modify/reject + licensing) | **729**                                                     | direct link (added in this PR) | — (previously unlinked)                                                                          |
+| External-sync model                                               | `694` + `sources.yaml`/`sources.lock.json`                  | direct link                    | —                                                                                                |
+| Submission intake standard                                        | `700`                                                       | direct link (added in this PR) | —                                                                                                |
+| External-PR review standard                                       | `709`                                                       | direct link (added in this PR) | —                                                                                                |
+| Public spec posture / upstream floor                              | `STANDARDS.md`                                              | is the table                   | `CLAUDE.md` restatements → links                                                                 |
+| Machine authoring schema                                          | `@intentsolutions/core` `authoring/v1` CHANGELOG (external) | via `STANDARDS.md` § kernel    | cited, never duplicated                                                                          |
+| Task authority                                                    | beads / Dolt                                                | via 727 § 13                   | GitHub Issues + Plane are projections, never authority (§ 13, correction 6)                      |
+
+**Result: no double ownership, no orphan.** Two properties are load-bearing and must not erode:
+
+1. **A fact class gains an owner only by a `STANDARDS.md` row, never by a header edit.** Adding a `Status: AUTHORITATIVE` line to a document that this table does not link is a red run under Epic 2 bead 2.3, not an authority grant.
+2. **727 owning several fact classes is not multi-ownership.** Multi-ownership is _one fact with two claimants_. Each row above names exactly one owner; where that owner is 727, the competing claimant is frozen, withdrawn, or converted to a pointer in the same PR that made the claim.
 
 ---
 
@@ -845,6 +1026,19 @@ intentsolutions.io
 
 **The beads below are PROPOSED and documented here only. Nothing in this document instantiates a bead, opens an issue, or creates a Plane record.** The `N.M` handles are document-local references for the dependency graphs — they are **not** bead IDs and must never appear in a bead title, commit, or issue body (plain-English bead naming rule, in force since 2026-05-22).
 
+#### Progressive epic activation — BINDING (ratification correction 6)
+
+The full ten-epic strategy and the whole work inventory below stay exactly as written. **What is bounded is activation, not ambition.** Six rules, and they are not advisory:
+
+1. **Beads/Dolt is the task authority.** GitHub Issues and Plane are **projections**. A projection is never the record; drift is reconciled toward beads, never away from it.
+2. **Do NOT instantiate all ~151 proposed beads in one uncontrolled batch.** A 151-bead dump is unreviewable, unprioritizable, and destroys the audit value of the record it pretends to create. Beads are hand-rolled, design-first, one epic at a time.
+3. **Instantiate only the owner-authorized execution slice** — the beads the owner has explicitly approved for the slice about to run, and nothing beyond it. Everything else stays a proposal in this document.
+4. **Execute ONE governed slice at a time.** A slice is complete only when its independent review, its AAR, and its evidence capture are all done and the **owner review gate** has passed. Only then may the next slice be activated.
+5. **A P0 containment bead from a later-numbered epic may run first ONLY when § 1's binding decision hierarchy proves it outranks normal sequence** — and the proof is written down, naming the rank and the exposure it closes.
+6. **Any such exception is recorded as an explicit PRE-PROGRAM CONTAINMENT MISSION**, with its own name, its own AAR, and its own boundary. It is **never** silent cross-epic scope drift, and it never entitles the rest of that epic to start early.
+
+**The dependency graphs in this section and in § 15 are DEPENDENCY graphs, not activation schedules.** An arrow means "this cannot be correct before that," not "start both now." § 15's single authorized launch sequence is the only activation order this document states.
+
 **Rules that apply to every epic without restating them ten times:**
 
 - **PROHIBITED everywhere:** editing any file under a `.source.json` ancestor (mirror-by-default; upstream owns it) · changing `ALWAYS_REQUIRED`, the tier model, or error-vs-warning semantics without the `SCHEMA_CHANGELOG.md` approval gate · adding a fourth required status context · adding a `paths:` filter to `validate-plugins.yml` · adding `|| true` / `continue-on-error` to a correctness-bearing step without a `REPORT-ONLY-UNTIL:` marker · hand-lowering a ratchet baseline · flipping kernel authority · renaming the install slug, `plugins/`, or `skills/` · mutating any external registry (npm, DoltHub, GitHub org settings) — those are owner actions.
@@ -857,29 +1051,69 @@ intentsolutions.io
 
 **Objective.** Make every published number reproducible from one command, remove the artifacts that give one fact two claimants, and close the counterfeit-asset class — so that every later epic argues about outcomes instead of arithmetic.
 
+#### Mission 01 is NOT Epic 1 — read this before claiming anything here is already done
+
+Ratification correction 5. The **completed** repository-cleanup **Mission 01** (2026-08-11 → 2026-08-12, PRs **#1174–#1184**, AAR: `000-docs/726-AA-AACR-mission-01-baseline-aar.md`) and **proposed Epic 1** are two different objects that share a subject. **Mission 01 was PRE-PROGRAM FOUNDATION work**: it ran before this blueprint existed, it produced the baseline this document re-measured, and it is closed. Epic 1 is a proposed slice of _this_ program. They are not the same mission, not the same beads, and the completion of one does not close the other. Every disposition below was checked against the tree at the ratification HEAD (`49210ecb6`), which **already contains all of Mission 01** — so nothing here is "pending merge."
+
+**What Mission 01 actually delivered, and where it lands.**
+
+| Mission 01 delivered                                                                                                                    | Evidence                                                               | Lands on                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Baseline docs **716–726** + the mandatory `000-INDEX.md` (absent since doc-filing v4.4 adoption)                                        | doc 726 "What shipped"; PR #1174                                       | Epic 1 bead 1.0 (partially) · Epic 2 bead 2.4 (the index this epic must now _generate_) |
+| Untracked the freshie sqlite archives — **48,848,896 B (31,494,144 + 17,354,752)** — and closed the `.gitignore` gap that admitted them | `git show --stat 84b663672`                                            | No Epic 1 bead. Pre-program cleanup; no proposed work is retired by it                  |
+| Moved `000-docs` ignore ownership to a **per-directory policy + public filing ledger**, with CI gates                                   | PR #1175; `scripts/check-docs-ignore-policy.mjs` (21 assertions)       | Epic 2 (the governance substrate Epic 2 builds on). No Epic 1 bead                      |
+| Rescued the Learning Lab from a `workspace/` ignore rule                                                                                | PR #1177                                                               | No Epic 1 bead                                                                          |
+| Fixed the provenance defect that republished **6 external plugins under Intent Solutions' name** in the curated index                   | PR #1182, commit `47627a690`                                           | Epic 7 § P1 / Epic 8 mirror disposition — **not** Epic 1                                |
+| Removed the **28.5 MB byte-identical `public/data` projection** and gated its return                                                    | PR #1183; `scripts/check-generated-artifacts.mjs` (tracking-only gate) | Epic 1 beads **1.7 and 1.8** — scope reduced, see below                                 |
+| Repaired the RTM's dead ADR citations                                                                                                   | PR #1184; `scripts/check-doc-citations.mjs`                            | Epic 2 (citation integrity). No Epic 1 bead                                             |
+
+**Disposition of every proposed Epic 1 bead against that delivery.**
+
+| Bead | Disposition                             | Basis (measured at `49210ecb6`)                                                                                                                                                                                                                   |
+| ---- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0  | **PARTIALLY SATISFIED**                 | Mission 01 produced the numbers as **12 one-off read-only diagnostics** across docs 716–725, not as one re-runnable command. § 3.1's 3,680-vs-3,678 discrepancy is the direct cost. The harness is still required                                 |
+| 1.1  | **STILL REQUIRED**                      | Scorecard row 3 **[RV]**: `marketplace.extended.json.backup` still tracked                                                                                                                                                                        |
+| 1.2  | **STILL REQUIRED**                      | Row 2 **[RV]**: 471 entries / 467 distinct names                                                                                                                                                                                                  |
+| 1.3  | **STILL REQUIRED**                      | `freshie/scripts/promote-to-curated.py:225` `_is_binary()` is **still the 8 KiB NUL sniff**, verified in-tree. PR #1182 excluded binaries from the mirror; it did not replace the sniff                                                           |
+| 1.4  | **STILL REQUIRED**                      | Row 11 **[RV]**: 12 counterfeit assets remain (8 under `plugins/`, 4 in `skills/.curated/`)                                                                                                                                                       |
+| 1.5  | **STILL REQUIRED**                      | Row 24 **[RV]**: five published answers to "how many skills"                                                                                                                                                                                      |
+| 1.6  | **STILL REQUIRED**                      | Depends on 1.5                                                                                                                                                                                                                                    |
+| 1.7  | **PARTIALLY SATISFIED — scope reduced** | The `marketplace/public/data/*.json` class is **done** (#1183). Row 22 **[RV]** shows the **six `marketplace/src/data/` artifacts still tracked and ungated**. The bead survives against those six only                                           |
+| 1.8  | **PARTIALLY SATISFIED — scope reduced** | `check-generated-artifacts.mjs` exists and is wired into `validate-plugins.yml`, but by its own header it "checks TRACKING, not content." The **regenerate-and-diff** gate this bead specifies is still absent. Reuse the file, do not rewrite it |
+| 1.9  | **STILL REQUIRED**                      | Row 25 **[RV]**: two disagreeing README metric writers                                                                                                                                                                                            |
+| 1.10 | **STILL REQUIRED**                      | Row 26: 3 of 3 stats artifacts rendered past a bound that does not exist                                                                                                                                                                          |
+| 1.11 | **STILL REQUIRED**                      | Row 13: the three malformed-`allowed-tools` measurements are unchanged                                                                                                                                                                            |
+| 1.12 | **STILL REQUIRED**                      | Row 27 **[RV]**: `sources.yaml` 64 keys vs `sources.lock.json` 63 (`uizze` orphaned)                                                                                                                                                              |
+| 1.13 | **STILL REQUIRED**                      | Row 21: 341 dead-domain occurrences across 121 files                                                                                                                                                                                              |
+| 1.14 | **STILL REQUIRED**                      | § 18.7 unchanged; owner-gated                                                                                                                                                                                                                     |
+
+**Measurements that must be re-run before Epic 1 is claimed complete** (all of them by bead 1.0, none by hand): rows 1, 2, 3, 4, 11, 12, 22, 24, 25, 26, 27 — plus the graded-artifact cohort itself (3,680 vs 3,678, § 3.1). Any Epic 1 exit claim that cites a Mission 01 number rather than a harness number is rejected: Mission 01's numbers were correct **for its HEAD**, and the tree has moved twice since.
+
+**Does the proposed bead count change? No — Epic 1 stays at 15.** Two beads (1.7, 1.8) have **narrower scope**, and one (1.0) is partially informed, but **zero are fully satisfied and zero are superseded**, so there is nothing to remove. This is stated explicitly because the opposite error — inventing filler work to preserve a headline count — is the failure mode this correction exists to prevent. The count that _does_ move is Epic 2's, which gains the README landing-contract bead from § 6A (12 → 13); § 17 carries the new totals.
+
 **Measurable outcome.** Catalog entries 471 → 467 with a uniqueness assertion · tracked stale catalog shadow 1 → 0 · counterfeit assets 12 → 0 with a magic-byte gate · tracked generated artifacts without a drift gate 6 → 0 · README metric writers 2 → 1 · published answers to "how many skills" 5 → 1 resolver with 5 named cohorts · `sources.yaml`/lock keys 64/63 → equal · dead-domain occurrences 341 → 0 outside the frozen set.
 
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**
 
-| #    | Bead title (imperative, plain English)                                                                                  | Type · P                | Acceptance (abbreviated)                                                                                                                                                                                                                                     |
-| ---- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1.0  | Build the single measurement harness that emits every number in this blueprint from one command.                        | feature · P1            | One committed script, one output artifact, one command line per scorecard row, re-runnable from a clean checkout.                                                                                                                                            |
-| 1.1  | Delete the tracked stale copy of the plugin catalog and forbid a second catalog-shaped file.                            | task · P1               | `marketplace.extended.json.backup` untracked; `validate-catalog-invariants.py` fails on any second catalog-shaped tracked file; blob SHA recorded in the PR for recoverability.                                                                              |
-| 1.2  | Collapse the four duplicate catalog entries and make catalog-name uniqueness a build failure.                           | bug · P1                | `len(plugins) == len({p.name}) == 467`; keep the entry whose `source` matches the on-disk directory; **never rename a plugin**; uniqueness assertion added.                                                                                                  |
-| 1.3  | Replace the curated-mirror NUL-byte binary test with a magic-byte content-type check that fails on extension mismatch.  | bug · P0                | `promote-to-curated.py:225` `_is_binary()` replaced by a content-type sniff; extension/bytes mismatch **fails non-zero**; unit tests cover the real cases plus a genuine PNG.                                                                                |
-| 1.4  | Remove the counterfeit placeholder assets from the source plugins and regenerate the curated mirror.                    | task · P1               | Every binary-extension file whose content is text deleted or renamed with the referencing body updated; mirror regenerated; grade changes recorded. **Must land after 1.3 or a revert republishes counterfeits.**                                            |
-| 1.5  | Extract one corpus resolver and route every counting surface through it.                                                | feature · P1            | `resolveCorpus(cohort)` returns the file set for `marketplace-visible`, `graded`, `first-party`, `curated-mirror`, `curriculum`; four call sites converted; counts asserted against a fixture tree, not the live corpus.                                     |
-| 1.6  | Label every published count with the cohort it counts.                                                                  | task · P1               | No number published without a cohort. Values do not change in this bead — only their labels.                                                                                                                                                                 |
-| 1.7  | Stop tracking the build-derived marketplace data artifacts that no non-build consumer reads.                            | task · P0               | For each of the six, the PR records whether anything outside the build reads the committed bytes; every "no" is gitignored, matching the `cowork-manifest.json` precedent.                                                                                   |
-| 1.8  | Add regenerate-and-diff drift gates for every generated artifact that must stay tracked.                                | feature · P0            | A `git diff --quiet` check per surviving artifact, as a **job inside `validate-plugins.yml`** listed in `ci-required.needs`; a deliberately-mutated artifact produces a linked red run.                                                                      |
-| 1.9  | Delete the orphaned README metrics writer.                                                                              | task · P2               | `scripts/update-metrics.mjs` removed with its `package.json` entry; PR states the alternative considered (rewrite onto `resolveCorpus`) and why deletion won.                                                                                                |
-| 1.10 | Give the external stats artifacts an explicit freshness bound that fails loudly.                                        | feature · P2            | Each stats artifact declares `max_age_hours`; a breach fails or routes to Slack; the site never renders an out-of-bound number as current.                                                                                                                   |
-| 1.11 | Repair the malformed tool allowlists and make an unparseable allowlist an error.                                        | bug · P0                | Every **first-party** unparseable `allowed-tools` corrected (both CSV and YAML-list forms remain valid); **mirror-owned instances are not edited**, only recorded; validator emits ERROR; post-fix first-party count 0, so the rule adds zero baseline debt. |
-| 1.12 | Remove the registered external source that has no directory, catalog entry, or lock entry, and assert key-set equality. | task · P3               | `uizze` removed; CI asserts `sources.yaml` and `sources.lock.json` key sets are equal; `sync-external.mjs` is not run.                                                                                                                                       |
-| 1.13 | Replace the dead public domain in first-party surfaces and block its reintroduction.                                    | task · P2               | 341 occurrences replaced in **non-frozen first-party** surfaces only; frozen-doc and mirror occurrences left byte-identical and enumerated; a lint rule blocks reintroduction.                                                                               |
-| 1.14 | Move the local MCP server credential out of plaintext.                                                                  | task · P1 (owner-gated) | The working-tree `/.mcp.json` no longer holds a live-shaped key in plaintext `env`; value sourced from SOPS. **Rotation is asked once, never assumed** (see § 18.7).                                                                                         |
+| #    | Bead title (imperative, plain English)                                                                                  | Type · P                | Acceptance (abbreviated)                                                                                                                                                                                                                                                                                                                      |
+| ---- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0  | Build the single measurement harness that emits every number in this blueprint from one command.                        | feature · P1            | One committed script, one output artifact, one command line per scorecard row, re-runnable from a clean checkout.                                                                                                                                                                                                                             |
+| 1.1  | Delete the tracked stale copy of the plugin catalog and forbid a second catalog-shaped file.                            | task · P1               | `marketplace.extended.json.backup` untracked; `validate-catalog-invariants.py` fails on any second catalog-shaped tracked file; blob SHA recorded in the PR for recoverability.                                                                                                                                                               |
+| 1.2  | Collapse the four duplicate catalog entries and make catalog-name uniqueness a build failure.                           | bug · P1                | `len(plugins) == len({p.name}) == 467`; keep the entry whose `source` matches the on-disk directory; **never rename a plugin**; uniqueness assertion added.                                                                                                                                                                                   |
+| 1.3  | Replace the curated-mirror NUL-byte binary test with a magic-byte content-type check that fails on extension mismatch.  | bug · P0                | `promote-to-curated.py:225` `_is_binary()` replaced by a content-type sniff; extension/bytes mismatch **fails non-zero**; unit tests cover the real cases plus a genuine PNG.                                                                                                                                                                 |
+| 1.4  | Remove the counterfeit placeholder assets from the source plugins and regenerate the curated mirror.                    | task · P1               | Every binary-extension file whose content is text deleted or renamed with the referencing body updated; mirror regenerated; grade changes recorded. **Must land after 1.3 or a revert republishes counterfeits.**                                                                                                                             |
+| 1.5  | Extract one corpus resolver and route every counting surface through it.                                                | feature · P1            | `resolveCorpus(cohort)` returns the file set for `marketplace-visible`, `graded`, `first-party`, `curated-mirror`, `curriculum`; four call sites converted; counts asserted against a fixture tree, not the live corpus.                                                                                                                      |
+| 1.6  | Label every published count with the cohort it counts.                                                                  | task · P1               | No number published without a cohort. Values do not change in this bead — only their labels.                                                                                                                                                                                                                                                  |
+| 1.7  | Stop tracking the build-derived marketplace data artifacts that no non-build consumer reads.                            | task · P0               | Scope is the **six under `marketplace/src/data/`** (the `public/data` class was closed pre-program by PR #1183). For each, the PR records whether anything outside the build reads the committed bytes; every "no" is gitignored and added to `check-generated-artifacts.mjs`'s `PROJECTIONS`, matching the `cowork-manifest.json` precedent. |
+| 1.8  | Add regenerate-and-diff drift gates for every generated artifact that must stay tracked.                                | feature · P0            | **Extends `scripts/check-generated-artifacts.mjs` — never replaces it.** That gate checks _tracking_ by design; this bead adds the _content_ check: a `git diff --quiet` per surviving artifact, as a **job inside `validate-plugins.yml`** listed in `ci-required.needs`; a deliberately-mutated artifact produces a linked red run.         |
+| 1.9  | Delete the orphaned README metrics writer.                                                                              | task · P2               | `scripts/update-metrics.mjs` removed with its `package.json` entry; PR states the alternative considered (rewrite onto `resolveCorpus`) and why deletion won.                                                                                                                                                                                 |
+| 1.10 | Give the external stats artifacts an explicit freshness bound that fails loudly.                                        | feature · P2            | Each stats artifact declares `max_age_hours`; a breach fails or routes to Slack; the site never renders an out-of-bound number as current.                                                                                                                                                                                                    |
+| 1.11 | Repair the malformed tool allowlists and make an unparseable allowlist an error.                                        | bug · P0                | Every **first-party** unparseable `allowed-tools` corrected (both CSV and YAML-list forms remain valid); **mirror-owned instances are not edited**, only recorded; validator emits ERROR; post-fix first-party count 0, so the rule adds zero baseline debt.                                                                                  |
+| 1.12 | Remove the registered external source that has no directory, catalog entry, or lock entry, and assert key-set equality. | task · P3               | `uizze` removed; CI asserts `sources.yaml` and `sources.lock.json` key sets are equal; `sync-external.mjs` is not run.                                                                                                                                                                                                                        |
+| 1.13 | Replace the dead public domain in first-party surfaces and block its reintroduction.                                    | task · P2               | 341 occurrences replaced in **non-frozen first-party** surfaces only; frozen-doc and mirror occurrences left byte-identical and enumerated; a lint rule blocks reintroduction.                                                                                                                                                                |
+| 1.14 | Move the local MCP server credential out of plaintext.                                                                  | task · P1 (owner-gated) | The working-tree `/.mcp.json` no longer holds a live-shaped key in plaintext `env`; value sourced from SOPS. **Rotation is asked once, never assumed** (see § 18.7).                                                                                                                                                                          |
 
 **Bead dependency graph.**
 
@@ -927,7 +1161,7 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 
 **Dependencies / entry criteria.** None. **Blocks:** Epic 1 bead 1.13 (dead-domain sweep) and any later epic that edits a `6767-*` file.
 
-**Proposed beads (12).**
+**Proposed beads (13).** _(12 as originally drafted, +1 from ratification correction 1 — the root README landing contract, § 6A.5.)_
 
 | #    | Bead title                                                                                                        | Type · P     | Acceptance (abbreviated)                                                                                                                                                                                                                                                     |
 | ---- | ----------------------------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -943,6 +1177,7 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 | 2.10 | Publish the one-owner-per-fact-class authority map and make every competing document point to it.                 | task · P1    | § 11's map is the single owner list; `CLAUDE.md`, `AGENTS.md`, `STANDARDS.md` replace restatements with links.                                                                                                                                                               |
 | 2.11 | Record the authority boundary between this repo, the kernel, the eval CLI, the eval lab, Intent OS, and the CMDB. | task · P2    | § 4's boundary invariants stated per system, including the pin-axis/authority-axis separation and the ban on `j-rig eval --db freshie/inventory.sqlite`.                                                                                                                     |
 | 2.12 | Make supersession a required record shape with a template and a checklist.                                        | task · P2    | A template requiring, in **one PR**: frozen banner + per-section disposition + `STANDARDS.md` pointer + `doc-class: frozen`. The 6767 reconciliation is the worked example.                                                                                                  |
+| 2.13 | Rebuild the root README as a governed landing contract with a per-class navigation map and a byte-budget gate.    | feature · P1 | Criteria **R1–R10 of § 6A.4**, each with the command that proves it and a linked red run per new assertion; install-slug string test pinned; zero frozen-file diffs; `plugins/`, `skills/`, and the slug unrenamed. **Depends on 1.5/1.6 + 2.3.**                            |
 
 **Bead dependency graph.**
 
@@ -954,18 +1189,19 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 2.6 ──▶ 2.7, 2.8               correct the numbers, then assert them
 2.10, 2.11, 2.12 independent
 2.1 ──▶ (Epic 1) 1.13
+(Epic 1) 1.5, 1.6 ──▶ 2.13 ; 2.3 ──▶ 2.13    cohorts + the pointer gate before the landing contract
 ```
 
 **Risks and mitigations.** _Landing the pointer gate before the banners_ → strict serialization 2.2→2.1→2.3, stated in the beads. _A banner edit that shifts a section anchor_ → banners are additive prepends only; 2.9's checker proves anchors survived. _Correcting a number in the wrong direction_ → 2.6 requires the command output in the PR body for each correction.
 
-**Allowed scope.** `000-docs/`, `STANDARDS.md`, `CLAUDE.md`, `AGENTS.md`, the `doc-governance` job, `scripts/generate-docs-index.mjs`.
-**PROHIBITED scope.** Any content edit below a frozen banner · renumbering or deleting any `6767-*` file · editing `6767-b`'s rubric · changing the validator.
+**Allowed scope.** `000-docs/`, `STANDARDS.md`, `CLAUDE.md`, `AGENTS.md`, `README.md` (bead 2.13 only), the `doc-governance` job, `scripts/generate-docs-index.mjs`, `scripts/generate-readme-toc.mjs`.
+**PROHIBITED scope.** Any content edit below a frozen banner · renumbering or deleting any `6767-*` file · editing `6767-b`'s rubric · changing the validator · renaming the public install slug, `plugins/`, or `skills/` (§ 6A.3) · adding per-skill rows or any hand-written count to `README.md`.
 
 **Claude Code execution prompt.**
 
 > Land 2.2, then 2.1, then 2.3 — in that order, one PR each. The banners are **prepends only**: verify with `git diff --stat` that every frozen file shows additions and zero deletions, and verify with `check-prose-anchors.py` that every section anchor still resolves. When correcting a documented number, paste the command and its output into the PR body; if the code is wrong rather than the doc, stop and file a bead instead of editing the doc to match a bug. Never touch `6767-b`.
 
-**Acceptance criteria.** All 12 beads closed; `node scripts/check-docs-ignore-policy.mjs`, `node scripts/check-doc-citations.mjs`, and the new authority-pointer, doc-class, index-drift, schema-version, ci-count, and prose-anchor checks all green; 8→3 self-declarations, all linked.
+**Acceptance criteria.** All 13 beads closed; `node scripts/check-docs-ignore-policy.mjs`, `node scripts/check-doc-citations.mjs`, and the new authority-pointer, doc-class, index-drift, schema-version, ci-count, prose-anchor, and README landing-contract (§ 6A.4 R1–R10) checks all green; 8→3 self-declarations, all linked.
 
 **Tests and evals.** Fixture-based tests for the authority-pointer gate (a planted `Status: AUTHORITATIVE` doc), the doc-class enforcer (a hand-edited generated doc; an edited frozen doc), the index generator, and the prose-anchor checker. E1 only.
 
@@ -1304,7 +1540,7 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 
 **Objective.** Assign every graded artifact a machine-derived disposition, then execute the mechanical migrations in reviewed batches — so the corpus stops being an undifferentiated 7,687-error mass and becomes a ledger with named buckets.
 
-**Measurable outcome.** Graded artifacts with a machine-assigned disposition 0 → 3,678 · A/B artifacts failing the gate 963 → 0 among certified, with the number published · counterfeit assets 12 → 0 · shell-substitution errors 10 → 0 by hand · mirrors carrying a marketplace grade they did not earn ~313 → 0 (quarantined or CERTIFY-UPSTREAM) · structural error classes 6,832 → 0 in reviewed batches.
+**Measurable outcome.** Graded artifacts with a machine-assigned disposition 0 → 3,678 · A/B artifacts failing the gate 962 → 0 among certified, with the number published · counterfeit assets 12 → 0 · shell-substitution errors 10 → 0 by hand · mirrors carrying a marketplace grade they did not earn ~313 → 0 (quarantined or CERTIFY-UPSTREAM) · structural error classes 6,832 → 0 in reviewed batches.
 
 **Dependencies / entry criteria.** **Cannot start before Epic 6's ratchet is live** (otherwise remediation and intake are indistinguishable), Epic 1's resolver exists, and Epic 5's evidence standard is filed. Longest-running epic; its batches run in the background of everything after E6.
 
@@ -1483,9 +1719,11 @@ E2 freeze ──▶ 1.13             (cross-epic: the frozen set is an input)
 
 **Independent-review gate.** A reviewer who is neither the implementer nor the certifier re-runs the evaluator from a clean checkout, verifies one bundle's signature independently, and confirms the site renders no badge for any uncertified artifact.
 
+**Independence precondition — binding (ratification correction 8).** **This epic may NOT claim independent certification until the machine-enforced no-self-approval condition is real.** Three constraints ride on that: the one-approval policy is the target and is never reduced to zero to make this epic reachable (§ 18.5); the reviewer must be an independent second identity or a qualified human reviewer, and **an alternate identity controlled by the implementer does not count**; and until the review topology is corrected, every admin-bypass merge in this epic's history is disclosed explicitly, and the certification artifact says "self-approved" rather than omitting the fact. A certification claim that outruns the boundary enforcing it is the exact defect this program was convened to end.
+
 **Exit scorecard.** Rows 5, 6, 26, 60, 61, 62 at target.
 
-**AAR + bd memory.** AAR records the first certified cohort, its cost, and every artifact that failed and why. `bd remember "certification: A-grade = G1-G10 ∧ E1-E6; the 100-point Freshie score is advisory only and is not a certification input — 963 A/B artifacts fail the gate"`.
+**AAR + bd memory.** AAR records the first certified cohort, its cost, and every artifact that failed and why. `bd remember "certification: A-grade = G1-G10 ∧ E1-E6; the 100-point Freshie score is advisory only and is not a certification input — 962 A/B artifacts fail the gate"`.
 
 ---
 
@@ -1521,7 +1759,7 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 | 24  | 6767-h claims to supersede 6767-b, which every live pointer treats as master                         | 2         | 2.1, 2.2                                                            | P0  |
 | 25  | 1,454 skills claim untested harness compatibility with zero adapters                                 | 3         | 3.11                                                                | P0  |
 | 26  | The only "adapter" is 27 byte-identical files; Freshie grades both copies                            | 3         | 3.5, 3.6                                                            | P1  |
-| 27  | 963 A/B artifacts fail the gate (132 A-graded, 469 errors)                                           | 8 / 10    | 8.1, 8.8–8.10 / 10.1                                                | P0  |
+| 27  | 962 A/B artifacts fail the gate (132 A-graded carrying 219 errors)                                   | 8 / 10    | 8.1, 8.8–8.10 / 10.1                                                | P0  |
 | 28  | Six tracked generated artifacts with no drift gate; worst 40 days stale                              | 1         | 1.7, 1.8                                                            | P1  |
 | 29  | Two README metric writers disagreeing (471/3,179/347 vs 448/3,008/311)                               | 1 / 10    | 1.9 / 10.10                                                         | P1  |
 | 30  | Four incompatible corpus definitions → 5 published skill counts                                      | 1         | 1.5, 1.6                                                            | P1  |
@@ -1581,11 +1819,15 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 
 ### The true chain
 
+**Read this diagram as a DEPENDENCY graph, not a schedule.** An arrow means "cannot be correct before"; it does **not** authorize starting anything. Activation order is § 15.1 — the single authorized launch sequence — and nothing outside the currently authorized slice starts, no matter what this graph permits (§ 13, progressive epic activation).
+
 ```
                     ┌─────────────────────────────────────────────┐
-  DAY 0 (parallel)  │ E7.1  mirror private:true      [rank 2]     │  ← FIRST BEAD
-                    │ E7.13 AGPL/consent packet (document only)   │
-                    │ E4.14 plaintext credential (owner-gated)    │
+  SLICE 1           │ E7.1  mirror private:true      [rank 2]     │  ← FIRST BEAD
+  (pre-program      │ E7.13 AGPL/consent packet (document only)   │
+   containment)     │ ─────────────────────────────────────────── │
+                    │ E4.14 plaintext credential — NOT in slice 1 │
+                    │       (owner-gated escalation § 18.7)       │
                     └───────────────┬─────────────────────────────┘
                                     │
         ┌───────────────────────────┼──────────────────────────┐
@@ -1636,6 +1878,8 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 
 ### Genuinely parallelizable
 
+**"Parallelizable" means "will not corrupt each other if authorized together" — it is a safety property, not an authorization.** Nothing below starts until § 15.1's slice gate says so.
+
 - **E2 (authority) ∥ E7 (supply chain) ∥ E1 (measurement)** — disjoint file sets, no shared gate.
 - **E4.1 / 4.7 / 4.8 / 4.12 ∥ everything** — the register, the push-leg scan, the MCP deadline, and Slack routing touch nothing else.
 - **E3 ∥ E4** after E1's regeneration — they share only the tool-token vocabulary (owner: E3.3; E4.2 consumes).
@@ -1654,7 +1898,26 @@ Severity: **P0** = safety / legal / false public claim · **P1** = source-of-tru
 4. **It quarantines silently.** It stops future exposure without any public announcement, preserving the owner's freedom to decide the _existing_-artifact remediation (§ 18.1, § 18.2) on his own timeline rather than under pressure created by our own fix.
 5. **It is small enough to finish and prove in one sitting**, which matters: the first bead of a 150-bead program should demonstrate the whole discipline — measure, fix the root cause, add the gate in the same PR, prove the gate bites, close with evidence.
 
-**Start on the same day, in parallel:** E7.13 (the license-defect and consent packet — **document only, no external mutation**), because it is owner-input-gated and has the longest lead time in the program.
+### 15.1 The ONE authorized launch sequence (ratification correction 6)
+
+This subsection **supersedes every other ordering statement in this document** — including the "genuinely parallelizable" list above, which describes what _may_ be parallel once authorized, not what starts. If any diagram, list, or epic body appears to contradict it, this subsection wins.
+
+**Slice 1 — PRE-PROGRAM CONTAINMENT MISSION (the only thing authorized to start).**
+
+| In slice 1                                                                     | Rank / justification                                                                                  |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| **E7.1** — mark every externally mirrored package `private`                    | **rank 2**, live exposure, zero prerequisites, mechanical, revertible in one commit                   |
+| **E7.13** — the AGPL / consent packet, **document only, no external mutation** | **rank 2**, owner-input-gated, longest lead time in the program; produces a document, mutates nothing |
+
+**Why this is an exception and how it is recorded.** E7.1 and E7.13 belong to **Epic 7**, and running them before Epics 1–6 is exactly the "later-numbered P0 containment bead runs first" case that § 13 rule 5 governs. The proof is on the record: rank 2 (legal / licensing / attribution / reputational) outranks rank 4 (SoT integrity, which the ratchet serves) and rank 3, and 58 mirror packages are publishable **right now** through a `push: main` path with no gate. Per § 13 rule 6 this is therefore filed as a named **PRE-PROGRAM CONTAINMENT MISSION** with its own AAR — **not** as "starting Epic 7." Closing E7.1 and E7.13 does **not** activate E7.2, E7.3, or any other Epic 7 bead.
+
+**These two beads run as one slice, not as "parallel epics."** Parallelism _inside_ an authorized slice is fine and expected; what rule 2 forbids is instantiating multiple epics' beads at once. Slice 1 is two beads. Nothing else is instantiated, in bd or anywhere else.
+
+**Explicitly NOT in slice 1:** **E4.14 / E1.14** (the plaintext MCP credential). It is an owner-gated escalation (§ 18.7) — the pre-flight check is delegable, the rotation is not, and no rotation is performed or assumed. The earlier draft's Day-0 diagram listed it beside E7.1; that was a dependency observation, and it is corrected here.
+
+**Slice exit conditions — all four, before anything else is instantiated.** (a) both beads closed with the command output that proves them; (b) independent review by someone who is not the implementer, per § 18.5's honest-review rule; (c) the containment-mission AAR filed; (d) **the owner review gate passed.**
+
+**Slice 2 and beyond — authorized one at a time, never pre-instantiated.** The dependency graph above says the natural next candidates are the Epic 2 authority freeze (strictly serial `2.2 → 2.1 → 2.3`), the Epic 1 measurement harness (`1.0 → 1.5/1.6/1.7/1.8`), and the Epic 7 publish filter — **but which of them runs next is an owner decision made after slice 1's gate, not a schedule this document sets.** Recording a candidate is not authorizing it.
 
 ---
 
@@ -1696,7 +1959,7 @@ What runs forever, and what each thing would catch if it stopped.
 | Epic | Title                                                                | Task beads |
 | ---- | -------------------------------------------------------------------- | ---------: |
 | 1    | Repository cleanup and measurement baseline                          |     **15** |
-| 2    | Documentation authority and source-of-truth consolidation            |         12 |
+| 2    | Documentation authority and source-of-truth consolidation            |     **13** |
 | 3    | Canonical model-agnostic plugin and skill contract                   |         13 |
 | 4    | Runtime safety, permissions, and MCP boundary enforcement            |         14 |
 | 5    | Dolt, Freshie, provenance, and real integration testing              |         13 |
@@ -1705,9 +1968,21 @@ What runs forever, and what each thing would catch if it stopped.
 | 8    | Legacy certification, remediation, quarantine, and archival          |         15 |
 | 9    | Bind Intent Eval Lab and Intent OS across machine-checked boundaries |         14 |
 | 10   | Independent certification, launch readiness, continuous governance   |         14 |
-|      | **Task beads**                                                       |    **140** |
+|      | **Task beads**                                                       |    **141** |
 |      | **Epic beads** (`--type=epic`, one per epic)                         |     **10** |
-|      | **TOTAL**                                                            |    **150** |
+|      | **TOTAL**                                                            |    **151** |
+
+**Count changes from ratification (2026-08-13), stated so the delta is auditable:**
+
+| Change                                                                                                                       | Epic |                                    Δ |
+| ---------------------------------------------------------------------------------------------------------------------------- | ---- | -----------------------------------: |
+| Correction 1 — root README landing contract (bead 2.13, § 6A.5)                                                              | 2    |                               **+1** |
+| Correction 5 — Mission 01 reconciliation: 0 beads satisfied, 0 superseded; 1.7/1.8 narrowed in scope, 1.0 partially informed | 1    |                                **0** |
+|                                                                                                                              |      | **140 → 141 task · 150 → 151 total** |
+
+**Epic 1's count deliberately did not drop.** Two beads were narrowed and one was partially informed by the completed Mission 01, but none was retired, and no filler bead was invented to protect a headline number in either direction (§ 13 EPIC 1, "Mission 01 is NOT Epic 1"). **A count is a consequence of the work, never a target.**
+
+**These 151 beads are a proposal, not a batch to create.** Per § 13's binding progressive-activation rule, only the owner-authorized slice is ever instantiated; § 15.1 names slice 1 as exactly **two** beads.
 
 **Ownership conflicts resolved.** Each duplicate collapses to one owner; the other epic _consumes_. A second implementation is an automatic bead rejection.
 
@@ -1732,7 +2007,7 @@ What runs forever, and what each thing would catch if it stopped.
 
 ## 18. ESCALATIONS — ITEMS EXCEEDING DELEGATED AUTHORITY
 
-Eight items genuinely meet the threshold. Everything else in this blueprint is delegable.
+Nine items genuinely meet the threshold. Everything else in this blueprint is delegable. **None of them is performed by this document** — each is stated with a recommendation, the consequences of acting and of delaying, and the reason it exceeds delegated authority.
 
 **18.1 — AGPL-3.0 content on a live public npm artifact under the Intent Solutions scope. TIME-SENSITIVE.**
 `@intentsolutionsio/skyvern@0.1.5`, published 2026-06-18, ships a 10,889-byte README reproducing an AGPL-3.0 upstream's skill content verbatim, with **zero occurrences of "GNU AFFERO" or "GNU GENERAL PUBLIC"** anywhere in the tarball. AGPL-3.0 § 4 conditions verbatim conveyance on giving every recipient a copy of the License. The counterparty is an actively-maintained commercial AGPL vendor.
@@ -1757,15 +2032,23 @@ One mirrored directory makes three incompatible claims: `SKILL.md` names Jeremy 
 
 **18.4 — Moving `NPM_TOKEN` into a protected GitHub Environment.**
 This is the only publish lock a pull request cannot edit away. Locks 1 and 2 are workflow logic and can be removed in a PR; the Environment cannot, without an admin action.
-**Recommendation:** create the `npm-production` Environment with protection rules and move the secret. Bead 7.3's code half is delegable; this half is not.
+**Recommendation:** create the `npm-production` Environment with protection rules and move the secret. Bead 7.3's code half is delegable; this half is not. **Sequence it with § 18.9** — the secret that moves into the Environment should be the _replacement_ token, so revocation, minimum-scope re-issue, and the Environment move happen once rather than twice.
 **Consequence of acting:** a small one-time UI action; publish thereafter requires satisfying the environment's rules.
 **Consequence of delaying:** the publish path stays defended only by logic a future PR can delete — the pattern that produced defense-by-side-effect in the first place.
 **Why it exceeds authority:** GitHub org/repo admin action; also not revertible by `git revert`.
 
 **18.5 — `enforce_admins` on `main`, and the unsatisfiable branch-protection rule.**
 Branch protection is `enforce_admins: false` with 1 required approving review, which a solo maintainer cannot self-supply — so in practice every merge has used `--admin`. Beads 4.7 and 7.3-lock-2 close the _consequences_ (push-leg content scan, SHA-based preflight) without changing the setting.
-**Recommendation:** **do not flip `enforce_admins` as part of this program**, and decide separately whether the 1-review requirement should become 0 (honest: no reviewer exists) or whether a second reviewer identity is added (honest: review actually happens). Today's configuration asserts a control that has never operated.
-**Consequence of acting:** flipping `enforce_admins` removes your own emergency path; dropping the review requirement removes a claim you are not currently meeting.
+**Recommendation (corrected at ratification — correction 8): _do not flip `enforce_admins` as part of this program, and do not reduce the approval requirement to zero._** The earlier draft offered "drop the requirement to 0" as an equally honest option. It is not, and that option is **withdrawn**. Five rules now bind:
+
+1. **The one-approval policy is the TARGET, and it stays.** Reducing it to zero would make the configuration truthful by lowering the platform's standard rather than by meeting it — precisely the trade this entire program exists to refuse. The gap is closed by supplying review, never by deleting the requirement.
+2. **An independent second reviewer identity, or a qualified human reviewer, must be established.** Which one is the owner's call; that one of them must exist is not.
+3. **An alternate identity controlled by the implementer is NOT independent review.** A second account under the same control satisfies GitHub's counter and nothing else. It is expressly not acceptable as the answer to rule 2.
+4. **Admin-bypass merges remain EXPLICITLY DISCLOSED** — in the PR body and in the epic AAR — for as long as the review topology is uncorrected. An undisclosed `--admin` merge is the failure; a disclosed one is a recorded compromise.
+5. **Epic 10 may not claim independent certification until the machine-enforced no-self-approval condition is real.** Until that boundary exists in the machine, the certification report says "self-approved" in the artifact, or it says nothing at all.
+
+**No branch-protection change is proposed or performed here** — the setting stays an owner decision, and the consequence-closing beads named above touch none of it.
+**Consequence of acting:** flipping `enforce_admins` removes your own emergency path; establishing a real second reviewer costs coordination but is the only path that makes the existing claim true.
 **Consequence of delaying:** an admin merge of a red PR remains possible — but with locks 2 and 3 in place it can no longer reach npm, and with the push-leg scan it can no longer reach prod ungraded.
 **Why it exceeds authority:** altering branch protection is owner-only. Recorded here so the decision is deliberate rather than an omission.
 
@@ -1790,6 +2073,13 @@ A live-shaped API key sits in plaintext `env` in the working-tree `/.mcp.json`. 
 **Consequence of delaying:** launch readiness is computed but never asserted, leaving the strongest artifact in the program — a signed, condition-by-condition GO — unproduced.
 **Why it exceeds authority:** a certification claim requiring personal attestation; an irreversible public commitment.
 
+**18.9 — The npm publish token: treat as potentially LIVE, replace, and move into the protected Environment. OWNER-AUTHORIZED EXTERNAL ACTION — NOT PERFORMED HERE.**
+Ratification correction 7. **The plan must not depend on anyone remembering whether the old token was revoked.** A credential whose disposition is carried in memory is, for planning purposes, live. This item exists so the question is answered by a record rather than by recollection.
+**Recommendation, in this order:** (1) **treat the old npm token as potentially live** and assume it still grants publish on the `@intentsolutions*` scopes; (2) **revoke it**; (3) **create a replacement with the minimum scope the publish workflow actually needs** — publish on the specific scopes, nothing broader, and no read of unrelated org state; (4) **move the replacement into the protected `npm-production` GitHub Environment** (§ 18.4 — the only publish lock a pull request cannot edit away); (5) **record verification without exposing the secret**: `gh secret list` / the Environment's name + `updated_at`, plus one successful gated publish run — **never** the value, never a prefix, never a truncation, in any log, PR body, receipt, or prompt.
+**Consequence of acting:** one short window where publish is unavailable while the secret moves; thereafter every publish must satisfy the Environment's protection rules.
+**Consequence of delaying:** an unrevoked token with unknown scope remains a standing publish path around every lock this program adds — and the 58 non-private mirror packages (§ 18.2) are exactly what such a path reaches.
+**Why it exceeds authority:** npm registry credential lifecycle plus a GitHub org/repo admin action; not revertible by `git revert`. **No revocation, rotation, creation, or Environment change was performed during the ratification-correction mission**, and none may be performed by an executing agent without an explicit owner instruction. _(Unrelated and already settled per standing instruction: the Tailscale/GitHub PAT, the DeepSeek key, and the HuggingFace token — no rotation is proposed for those.)_
+
 **Explicitly NOT escalated,** so the list stays credible: the 61.1% gitleaks blind spot and the open CodeQL alerts are serious engineering risks with **no evidence of an actual leak** — `gitleaks` is green on the required gate, `gate_export_allowlist()` hard-fails before any public DoltHub push, and `run-jrig-eval.sh` handles the provider key correctly. Those are hardening work (beads 4.5, 4.6), not disclosure events. Deleting `marketplace.extended.json.backup` is likewise not an escalation — git history retains it and the three-condition delete rule is satisfied.
 
 ---
@@ -1798,21 +2088,26 @@ A live-shaped API key sits in plaintext `env` in the working-tree `/.mcp.json`. 
 
 Where the source analyses disagreed, the call and the ranking basis. Recorded so the disagreement is not re-litigated silently.
 
-| Conflict                                                                          | Resolution                                                                                                                                                                                                                            | Basis                                              |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| Counterfeit assets: 4 / 14 / 18 / 19                                              | **12** (8 source + 4 curated), by per-extension magic-byte compare over all tracked files. The boycott-filter icons and servicegraph marks are genuine PNGs                                                                           | rank 7 — one method, published with its command    |
-| Malformed `allowed-tools`: 63 / 21 / 10                                           | **All three are real, of three different things.** The deliverable is a parser + vocabulary (E3.3) and a gate (E4.2), not a number                                                                                                    | rank 4                                             |
-| Kernel flip target: v1 or v2                                                      | **v2, and the flip stays frozen.** v1's `existing-PASS/kernel-FAIL: 0` means flipping to it is a pure loss of enforcement                                                                                                             | rank 1 over rank 6                                 |
-| `jrig-data.json`: delete or class-carry                                           | **Delete** the file + build step; correct the badge claim in `CLAUDE.md`. Verified 171 bytes, no `.astro` importer                                                                                                                    | rank 2/3 over rank 9                               |
-| Mirror npm packages: 55 or 58                                                     | **58 exist and all 58 are quarantined** by a uniform machine rule; **55 are third-party** and drive the escalation                                                                                                                    | rank 5 — machine rules do not take judgment inputs |
-| External sources: 63 or 64                                                        | **64 in yaml, 63 in lock**; `uizze` orphaned. Delete + assert key-set equality                                                                                                                                                        | rank 4                                             |
-| Canonical artifact: one `skill.yaml` vs frontmatter + sidecar                     | **Frontmatter + `skill-card.yaml` sidecar** (§ 5.1). Overloading frontmatter spends the description-injection budget that decides whether a skill fires, and the benchmark shows exactly what "one big frontmatter" produces at scale | rank 10 + rank 4                                   |
-| Canonical root: flat `skills/` vs today's `plugins/<cat>/<plugin>/skills/<name>/` | **No rename.** The name is taken, the install slug is a frozen API, and a flat namespace at 3,179 is a collision hazard                                                                                                               | rank 9 over rank 12                                |
-| Uniform anatomy vs tiers                                                          | **Tiers T0–T4, computed not declared.** Uniform anatomy at this scale either sets the bar at the floor or leaves 90% permanently non-compliant                                                                                        | rank 10 + rank 11                                  |
-| Who owns the evidence standard                                                    | **Epic 5 files it**; Epic 9 implements mechanics; Epic 10 consumes                                                                                                                                                                    | rank 4 — one writer per fact class                 |
-| Who owns the ratchet                                                              | **Epic 6.** Epics 4, 8, 10 consume. A second implementation is an automatic bead rejection                                                                                                                                            | rank 11                                            |
-| Epic 1's dead-domain sweep vs Epic 2's freeze                                     | **Epic 2 freezes first**; the frozen set is an input to the sweep                                                                                                                                                                     | rank 10                                            |
-| Baseline commit                                                                   | Analyses baselined at `436a00f80`, then `708692244`; **this document re-measured at `49210ecb6`.** Re-baseline before ratification; the ratchet baseline must be emitted from a quiet tree in CI                                      | rank 7                                             |
+| Conflict                                                                          | Resolution                                                                                                                                                                                                                                                 | Basis                                                 |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Counterfeit assets: 4 / 14 / 18 / 19                                              | **12** (8 source + 4 curated), by per-extension magic-byte compare over all tracked files. The boycott-filter icons and servicegraph marks are genuine PNGs                                                                                                | rank 7 — one method, published with its command       |
+| Malformed `allowed-tools`: 63 / 21 / 10                                           | **All three are real, of three different things.** The deliverable is a parser + vocabulary (E3.3) and a gate (E4.2), not a number                                                                                                                         | rank 4                                                |
+| Kernel flip target: v1 or v2                                                      | **v2, and the flip stays frozen.** v1's `existing-PASS/kernel-FAIL: 0` means flipping to it is a pure loss of enforcement                                                                                                                                  | rank 1 over rank 6                                    |
+| `jrig-data.json`: delete or class-carry                                           | **Delete** the file + build step; correct the badge claim in `CLAUDE.md`. Verified 171 bytes, no `.astro` importer                                                                                                                                         | rank 2/3 over rank 9                                  |
+| Mirror npm packages: 55 or 58                                                     | **58 exist and all 58 are quarantined** by a uniform machine rule; **55 are third-party** and drive the escalation                                                                                                                                         | rank 5 — machine rules do not take judgment inputs    |
+| External sources: 63 or 64                                                        | **64 in yaml, 63 in lock**; `uizze` orphaned. Delete + assert key-set equality                                                                                                                                                                             | rank 4                                                |
+| Canonical artifact: one `skill.yaml` vs frontmatter + sidecar                     | **Frontmatter + `skill-card.yaml` sidecar** (§ 5.1). Overloading frontmatter spends the description-injection budget that decides whether a skill fires, and the benchmark shows exactly what "one big frontmatter" produces at scale                      | rank 10 + rank 4                                      |
+| Canonical root: flat `skills/` vs today's `plugins/<cat>/<plugin>/skills/<name>/` | **No rename.** The name is taken, the install slug is a frozen API, and a flat namespace at 3,179 is a collision hazard                                                                                                                                    | rank 9 over rank 12                                   |
+| Uniform anatomy vs tiers                                                          | **Tiers T0–T4, computed not declared.** Uniform anatomy at this scale either sets the bar at the floor or leaves 90% permanently non-compliant                                                                                                             | rank 10 + rank 11                                     |
+| Who owns the evidence standard                                                    | **Epic 5 files it**; Epic 9 implements mechanics; Epic 10 consumes                                                                                                                                                                                         | rank 4 — one writer per fact class                    |
+| Who owns the ratchet                                                              | **Epic 6.** Epics 4, 8, 10 consume. A second implementation is an automatic bead rejection                                                                                                                                                                 | rank 11                                               |
+| Epic 1's dead-domain sweep vs Epic 2's freeze                                     | **Epic 2 freezes first**; the frozen set is an input to the sweep                                                                                                                                                                                          | rank 10                                               |
+| Baseline commit                                                                   | Analyses baselined at `436a00f80`, then `708692244`; **this document re-measured at `49210ecb6`.** Re-baseline before ratification; the ratchet baseline must be emitted from a quiet tree in CI                                                           | rank 7                                                |
+| A/B artifacts failing the gate: 963 or 962; A-graded error load 469 or 219        | **962 and 219**, from a full re-measurement at `49210ecb6` recorded with its commands in § 3.1. 132 A-graded failing is CONFIRMED. **469 has no measured source** and every near-miss (1,101 / 1,320 / 2,155 / 7,433) was excluded rather than substituted | rank 7 — one method, published with its command       |
+| One error headline or three                                                       | **Three, never merged.** SKILL.md per-row 7,433 (3,680 rows) · agent lane 253 (353 files) · terminal `--marketplace` headline 7,687. The residual 1 is left unattributed rather than explained away                                                        | rank 3 over rank 12 — false precision is a lie        |
+| README as catalog surface: rejected, with what in its place?                      | **Rejected as a catalog; replaced by a governed landing contract (§ 6A)** — model-agnostic identity, scale stated with cohorts, five navigation axes, four artifact classes, adapter-backed harness claims, frozen slug                                    | rank 3 + rank 11                                      |
+| Mission 01 vs Epic 1                                                              | **Different objects.** Mission 01 is closed PRE-PROGRAM FOUNDATION work; Epic 1 is proposed. 0 beads satisfied, 0 superseded, 2 narrowed, 1 partially informed; count stays 15                                                                             | rank 4 — one owner per fact, including "what is done" |
+| The 1-approval branch-protection requirement: meet it or delete it                | **Meet it.** Reducing to zero is withdrawn as an option; an implementer-controlled alternate identity is not independence; admin bypasses stay disclosed until the topology is fixed (§ 18.5)                                                              | rank 3 over rank 11                                   |
 
 ---
 
@@ -1823,7 +2118,7 @@ Stated so the boundary is explicit and no reader infers more authority than was 
 - It **instantiates nothing**: no bead, no GitHub issue, no Plane record, no branch protection change, no registry mutation. Every bead in § 13 is a proposal to be created by a human or an executing agent under the plain-English naming rule.
 - It **changes no production behavior**: no schema, validator, workflow, adapter, marketplace file, README, or catalog entry is modified by this document.
 - It **does not flip kernel authority** and does not move any pin.
-- It **does not resolve the eight escalations** in § 18; it states them, with recommendations, consequences of acting and of delaying, and the reason each exceeds delegated authority.
+- It **does not resolve the nine escalations** in § 18; it states them, with recommendations, consequences of acting and of delaying, and the reason each exceeds delegated authority. In particular it performs **no** credential revocation, rotation, or GitHub Environment change (§ 18.9), and **no** branch-protection change (§ 18.5).
 - Its **numbers are a snapshot at `49210ecb6`** and must be re-measured before ratification. That re-measurement is Epic 1 bead 1.0's entire purpose.
 
 **Companion documents:** `000-docs/728-RA-DATA-reference-architecture-benchmark.md` (the primary-source evidence base for § 4–§ 6 and § 10) and `000-docs/729-AT-ADEC-reference-architecture-synthesis.md` (the decision record: what was adopted, modified, rejected, and the licensing constraints on each).
