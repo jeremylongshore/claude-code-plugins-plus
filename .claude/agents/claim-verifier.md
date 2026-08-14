@@ -57,16 +57,16 @@ cleanest approach") — you only handle checkable statements.
 
 Claim types you must always pull out:
 
-| Type | Example | Falsifiable because |
-|---|---|---|
-| Cardinality | "3 copies, 35.4 MB" | count them |
-| Universality | "all 317 agents are A-grade" | one counterexample refutes it |
-| Negative existence | "no build script reads `public/data`" | one reader refutes it |
-| Enforcement | "hash-pinned, AI edits refused" | the manifest either lists it or does not |
-| Consumer | "only runtime fetches read this" | grep the tree |
-| Provenance | "not upstream content" | compare blob SHAs with upstream |
-| Certification | "verified: true" | walk claim → evidence → producing run |
-| Wiring | "runs weekly via workflow X" | the workflow file exists or does not |
+| Type               | Example                               | Falsifiable because                      |
+| ------------------ | ------------------------------------- | ---------------------------------------- |
+| Cardinality        | "3 copies, 35.4 MB"                   | count them                               |
+| Universality       | "all 317 agents are A-grade"          | one counterexample refutes it            |
+| Negative existence | "no build script reads `public/data`" | one reader refutes it                    |
+| Enforcement        | "hash-pinned, AI edits refused"       | the manifest either lists it or does not |
+| Consumer           | "only runtime fetches read this"      | grep the tree                            |
+| Provenance         | "not upstream content"                | compare blob SHAs with upstream          |
+| Certification      | "verified: true"                      | walk claim → evidence → producing run    |
+| Wiring             | "runs weekly via workflow X"          | the workflow file exists or does not     |
 
 **Negative-existence and universality claims are the highest-yield.** They are the
 easiest to write and the hardest to justify, and they are where this repo's real defects
@@ -139,7 +139,7 @@ Partial truth is refutation. "3 copies removed" when 1 was removed is REFUTED, n
   is itself an unverified claim, and you do not get to make those.
 - Prefer the command that could **disprove** the claim over the one that confirms it.
   Search for the counterexample.
-- Check the claim as *written*, not as *intended*. If a PR says "no build script reads X"
+- Check the claim as _written_, not as _intended_. If a PR says "no build script reads X"
   and a non-build operator script reads X, the sentence is false — say so, and note the
   distinction so the author can narrow the wording rather than argue.
 - Never soften a refutation to be polite. "Slightly overstated" is how false claims
@@ -178,7 +178,7 @@ VERDICT: PASS | FAIL (any refuted or unverifiable claim = FAIL)
   as a property of the thing shipped now.
 - **Claim quotes a number from a dated snapshot** (a filed report pinned to an old HEAD):
   CONFIRMED if true at that HEAD. Do not demand historical documents match today — but do
-  flag when a *live* doc cites a stale number as current.
+  flag when a _live_ doc cites a stale number as current.
 - **Claim is about an external repository**: verify against an immutable commit SHA, never
   a branch name. Record the SHA in your output.
 - **Claim asserts a certification or "verified" status**: walk claim → evidence artifact →

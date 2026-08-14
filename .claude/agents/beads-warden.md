@@ -100,7 +100,7 @@ What IS yours is whether the record those agents read is **trustworthy**, and th
 history question. Beads auto-commits one Dolt commit per operation, so the history is the
 only place a dropped or rewritten write is visible.
 
-**Precondition — the MCP needs a live server.** The Dolt MCP connects to a *running*
+**Precondition — the MCP needs a live server.** The Dolt MCP connects to a _running_
 `dolt sql-server`; it does not start one. If tools error with a connection failure, report
 that as an inconclusive audit rather than a clean one, and say the server must be started
 from the beads Dolt directory. Never start or stop it yourself: the freshie exporter and a
