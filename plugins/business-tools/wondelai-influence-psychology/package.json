@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-influence-psychology",
+  "private": true,
   "version": "1.0.2",
   "description": "Persuasion science framework based on Cialdini's six principles",
   "keywords": [

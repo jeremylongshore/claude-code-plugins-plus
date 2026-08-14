@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/quit-sponsor",
+  "private": true,
   "version": "0.1.0",
   "description": "Turns an AI agent with persistent memory into a quit-smoking sponsor — evidence-based cessation protocols (44 cited sources) plus a sponsor decision tree",
   "keywords": [

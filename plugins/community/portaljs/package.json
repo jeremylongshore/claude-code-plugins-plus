@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/portaljs",
+  "private": true,
   "version": "0.1.0",
   "description": "Agentic skills for building PortalJS data portals — recommend an architecture, scaffold a portal, add datasets, charts, and maps, connect a CKAN backend, deploy, and audit data quality.",
   "keywords": [

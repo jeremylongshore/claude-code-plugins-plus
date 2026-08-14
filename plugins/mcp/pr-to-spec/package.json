@@ -1,5 +1,6 @@
 {
   "name": "pr-to-spec",
+  "private": true,
   "version": "0.8.0",
   "description": "Convert code changes into structured, agent-consumable spec artifacts",
   "type": "module",

@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-storybrand-messaging",
+  "private": true,
   "version": "1.0.2",
   "description": "StoryBrand messaging framework that positions customer as hero",
   "keywords": [

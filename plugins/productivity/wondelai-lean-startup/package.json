@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-lean-startup",
+  "private": true,
   "version": "1.0.3",
   "description": "Lean Startup methodology for validated learning and MVPs",
   "keywords": [

@@ -257,6 +257,14 @@ jobs:
             fi
           done
 
+      # Every package-bearing external mirror is non-publishable. Provenance
+      # comes only from .source.json; this prevents a mirror from entering a
+      # future publish candidate list through a naming or path convention.
+      - name: Enforce private external mirror packages
+        run: |
+          node --test scripts/check-mirror-packages-private.test.mjs
+          node scripts/check-mirror-packages-private.mjs
+
       - name: Validate marketplace catalog
         run: |
           echo "Validating marketplace catalog..."

@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-ios-hig-design",
+  "private": true,
   "version": "1.0.4",
   "description": "Native iOS app design following Apple Human Interface Guidelines",
   "keywords": [

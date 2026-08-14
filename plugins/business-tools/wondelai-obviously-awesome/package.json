@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-obviously-awesome",
+  "private": true,
   "version": "1.0.3",
   "description": "Product positioning framework for competitive differentiation",
   "keywords": [
