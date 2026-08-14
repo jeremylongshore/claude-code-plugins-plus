@@ -23,3 +23,6 @@
 # ── PUBLIC FILING LEDGER — append one line per doc filed public (2026-08-12 →) ──
 # Docs tracked before this date are grandfathered (tracked files stay tracked
 # regardless of ignore rules).
+!727-AT-ARCH-master-modernization-blueprint.md
+!728-RA-DATA-reference-architecture-benchmark.md
+!729-AT-ADEC-reference-architecture-synthesis.md
