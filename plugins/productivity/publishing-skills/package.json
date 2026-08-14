@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/publishing-skills",
+  "private": true,
   "version": "0.1.0",
   "description": "Four composable skills that turn an AI agent into a platform-agnostic long-tail SEO publishing pipeline: topic research, drafting, SVG figures, and an editorial calendar. Ships Ghost, WordPress, and static-site adapters.",
   "keywords": [

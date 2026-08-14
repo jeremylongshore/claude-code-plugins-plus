@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-traction-eos",
+  "private": true,
   "version": "1.0.2",
   "description": "Entrepreneurial Operating System for business execution",
   "keywords": [

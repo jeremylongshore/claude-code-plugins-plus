@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/brand-forge",
+  "private": true,
   "version": "0.5.1",
   "description": "Generate on-brand logos, social templates, and marketing graphics for any brand — vector assets need no accounts or keys; AI imagery is opt-in.",
   "keywords": [

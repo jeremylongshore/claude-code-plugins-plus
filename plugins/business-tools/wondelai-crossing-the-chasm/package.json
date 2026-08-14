@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-crossing-the-chasm",
+  "private": true,
   "version": "1.0.4",
   "description": "Technology adoption and go-to-market strategy for mainstream markets",
   "keywords": [

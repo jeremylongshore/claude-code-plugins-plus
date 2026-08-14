@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-design-everyday-things",
+  "private": true,
   "version": "1.0.2",
   "description": "Fundamental design principles for intuitive interfaces",
   "keywords": [

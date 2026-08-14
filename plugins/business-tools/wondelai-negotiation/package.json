@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-negotiation",
+  "private": true,
   "version": "1.0.2",
   "description": "Tactical negotiation framework based on Chris Voss's techniques",
   "keywords": [
