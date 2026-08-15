@@ -32,6 +32,8 @@ on:
         default: true
 
 permissions:
+  actions: read
+  checks: read
   contents: read
   id-token: write # npm provenance
 
@@ -39,6 +41,8 @@ jobs:
   guard:
     name: Guard — confirm intent
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.resolve.outputs.sha }}
     steps:
       - name: Verify confirmation string
         run: |
@@ -51,15 +55,57 @@ jobs:
           echo "✅ Confirmation verified."
           echo "Dry-run only: ${{ inputs.dry_run_only }}"
 
+      - name: Resolve exact canonical main SHA
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          test "$REPOSITORY" = 'jeremylongshore/claude-code-plugins-plus-skills'
+          SHA=$(gh api "repos/$REPOSITORY/commits/main" --jq '.sha')
+          test -n "$SHA"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Pinned publication SHA: $SHA"
+
+  preflight:
+    name: Exact-SHA required-check preflight
+    runs-on: ubuntu-latest
+    needs: guard
+    steps:
+      - name: Check out trusted preflight implementation
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          sparse-checkout: scripts/npm-publication-preflight.mjs
+
+      - name: Re-query required checks before any credential-capable job
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_SHA: ${{ needs.guard.outputs.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          node scripts/npm-publication-preflight.mjs \
+            --repo "$REPOSITORY" \
+            --sha "$PUBLISH_SHA" \
+            --timeout-seconds 120 \
+            --poll-seconds 5 \
+            --json
+
   enumerate:
     name: Enumerate publishable packages
     runs-on: ubuntu-latest
-    needs: guard
+    needs: [guard, preflight]
     outputs:
       count: ${{ steps.list.outputs.count }}
       packages_json: ${{ steps.list.outputs.packages_json }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          fetch-depth: 0
 
       - name: List @intentsolutionsio packages under plugins/
         id: list
@@ -92,9 +138,12 @@ jobs:
   dry-run:
     name: Phase 1 — dry-run all
     runs-on: ubuntu-latest
-    needs: enumerate
+    needs: [guard, enumerate, preflight]
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: 20
@@ -102,7 +151,6 @@ jobs:
 
       - name: Dry-run publish every package
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           PACKAGES_JSON: ${{ needs.enumerate.outputs.packages_json }}
         run: |
           set -euo pipefail
@@ -132,10 +180,14 @@ jobs:
   publish:
     name: Phase 2 — real publish
     runs-on: ubuntu-latest
-    needs: [enumerate, dry-run]
+    needs: [guard, enumerate, preflight, dry-run]
     if: ${{ inputs.dry_run_only == false }}
+    environment: npm-production
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: 20
@@ -145,8 +197,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           PACKAGES_JSON: ${{ needs.enumerate.outputs.packages_json }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_SHA: ${{ needs.guard.outputs.sha }}
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PUBLISH_SHA"
+          CURRENT_MAIN=$(gh api "repos/${{ github.repository }}/commits/main" --jq '.sha')
+          test "$CURRENT_MAIN" = "$PUBLISH_SHA"
           PUBLISHED=0
           SKIPPED=0
           FAILED=0

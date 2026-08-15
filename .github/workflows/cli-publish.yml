@@ -3,11 +3,13 @@ name: Publish CLI to npm
 on:
   push:
     tags:
-      - 'cli-v*.*.*'  # Triggers on tags like cli-v1.0.0
+      - 'cli-v*.*.*' # Triggers on tags like cli-v1.0.0
 
 permissions:
+  actions: read
+  checks: read
   contents: write
-  id-token: write  # Required for npm provenance
+  id-token: write # Required for npm provenance
 
 jobs:
   # Quality gate: Must pass all tests first
@@ -61,15 +63,45 @@ jobs:
 
           echo "✅ Smoke tests passed"
 
+  preflight:
+    name: Exact-SHA required-check preflight
+    runs-on: ubuntu-latest
+    needs: quality-gate
+    steps:
+      - name: Check out trusted preflight implementation
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          sparse-checkout: scripts/npm-publication-preflight.mjs
+
+      - name: Re-query required checks before any credential-capable job
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          node scripts/npm-publication-preflight.mjs \
+            --repo "$REPOSITORY" \
+            --sha "$PUBLISH_SHA" \
+            --timeout-seconds 120 \
+            --poll-seconds 5 \
+            --json
+
   # Publish to npm
   publish:
     name: Publish to npm Registry
     runs-on: ubuntu-latest
-    needs: quality-gate
+    needs: [quality-gate, preflight]
+    environment: npm-production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
