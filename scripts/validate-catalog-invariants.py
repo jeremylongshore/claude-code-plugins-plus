@@ -78,8 +78,7 @@ def main() -> int:
 
     for shadow in tracked_catalog_shadows():
         errors.append(
-            f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs "
-            f"{sorted(CANONICAL_CATALOGS)}"
+            f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs {sorted(CANONICAL_CATALOGS)}"
         )
 
     for p in plugins:
