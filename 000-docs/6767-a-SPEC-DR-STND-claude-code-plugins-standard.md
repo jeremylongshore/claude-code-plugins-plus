@@ -9,7 +9,6 @@
 **Updated**: 2025-12-07
 
 **Sources**:
-
 - [Official Anthropic Plugins Reference](https://code.claude.com/docs/en/plugins-reference)
 - [Official Marketplace Documentation](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Official Hooks Reference](https://code.claude.com/docs/en/hooks)
@@ -34,14 +33,13 @@ A **Claude Code plugin** is a packaged collection of extensions that enhance Cla
 
 ### Why Use Plugins (vs. Skills or Ad-hoc Prompts)?
 
-| Approach           | Use Case                                                | Distribution                 | Persistence                       |
-| ------------------ | ------------------------------------------------------- | ---------------------------- | --------------------------------- |
-| **Plugins**        | Complete workflows, team tooling, external integrations | Marketplace, Git, local      | Installed globally or per-project |
-| **Skills**         | Domain knowledge, autonomous behavior                   | Within plugins or standalone | Project-scoped                    |
-| **Ad-hoc Prompts** | One-off instructions                                    | None                         | Session-only                      |
+| Approach | Use Case | Distribution | Persistence |
+|----------|----------|--------------|-------------|
+| **Plugins** | Complete workflows, team tooling, external integrations | Marketplace, Git, local | Installed globally or per-project |
+| **Skills** | Domain knowledge, autonomous behavior | Within plugins or standalone | Project-scoped |
+| **Ad-hoc Prompts** | One-off instructions | None | Session-only |
 
 Plugins provide:
-
 - **Composability**: Bundle multiple components into cohesive toolkits
 - **Distribution**: Share via marketplaces or Git repositories
 - **Versioning**: Track changes with semantic versioning
@@ -95,7 +93,6 @@ Plugin = Code + Configuration + Metadata + Assets
 ### Plugin Boundary
 
 **Inside the plugin** (packaged and distributed):
-
 - Plugin manifest (`plugin.json`)
 - Command definitions (`.md` files)
 - Agent/skill definitions (`.md` files with frontmatter)
@@ -105,7 +102,6 @@ Plugin = Code + Configuration + Metadata + Assets
 - Documentation (README, CHANGELOG)
 
 **External to the plugin** (not packaged):
-
 - User settings and preferences
 - API keys and secrets (via environment variables)
 - External services (APIs, databases)
@@ -115,13 +111,13 @@ Plugin = Code + Configuration + Metadata + Assets
 
 Plugins register components through their manifest and directory structure:
 
-| Component       | Registration Method                       | Invocation                           |
-| --------------- | ----------------------------------------- | ------------------------------------ |
-| **Commands**    | `commands/` directory or `commands` field | User types `/command-name`           |
-| **Agents**      | `agents/` directory or `agents` field     | Claude delegates via Task tool       |
-| **Skills**      | `skills/` directory with `SKILL.md`       | Claude auto-invokes based on context |
-| **Hooks**       | `hooks/hooks.json` or `hooks` field       | Automatic on matching events         |
-| **MCP Servers** | `.mcp.json` or `mcpServers` field         | Registered as tools                  |
+| Component | Registration Method | Invocation |
+|-----------|---------------------|------------|
+| **Commands** | `commands/` directory or `commands` field | User types `/command-name` |
+| **Agents** | `agents/` directory or `agents` field | Claude delegates via Task tool |
+| **Skills** | `skills/` directory with `SKILL.md` | Claude auto-invokes based on context |
+| **Hooks** | `hooks/hooks.json` or `hooks` field | Automatic on matching events |
+| **MCP Servers** | `.mcp.json` or `mcpServers` field | Registered as tools |
 
 ---
 
@@ -169,21 +165,20 @@ plugin-name/
 
 ### Naming Conventions
 
-| Element                   | Convention      | Example                      |
-| ------------------------- | --------------- | ---------------------------- |
-| Plugin folder             | `kebab-case`    | `deployment-tools/`          |
-| Plugin name (in manifest) | `kebab-case`    | `"name": "deployment-tools"` |
-| Command files             | `kebab-case.md` | `run-tests.md`               |
-| Agent files               | `kebab-case.md` | `security-reviewer.md`       |
-| Skill directories         | `kebab-case/`   | `code-analysis/`             |
-| Scripts                   | `kebab-case.*`  | `validate-config.sh`         |
+| Element | Convention | Example |
+|---------|------------|---------|
+| Plugin folder | `kebab-case` | `deployment-tools/` |
+| Plugin name (in manifest) | `kebab-case` | `"name": "deployment-tools"` |
+| Command files | `kebab-case.md` | `run-tests.md` |
+| Agent files | `kebab-case.md` | `security-reviewer.md` |
+| Skill directories | `kebab-case/` | `code-analysis/` |
+| Scripts | `kebab-case.*` | `validate-config.sh` |
 
 ### Packaging for Distribution
 
 **Local Development**: Use directory structure as-is
 
 **Git/GitHub Distribution**: Push to repository with standard structure
-
 ```bash
 # Repository structure
 my-plugin/
@@ -195,7 +190,6 @@ my-plugin/
 ```
 
 **Marketplace Distribution**: Reference in `marketplace.json`
-
 ```json
 {
   "plugins": [
@@ -248,33 +242,33 @@ The plugin manifest lives at `.claude-plugin/plugin.json`.
 
 #### Required Fields
 
-| Field  | Type   | Description                                            | Example              |
-| ------ | ------ | ------------------------------------------------------ | -------------------- |
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
 | `name` | string | Unique identifier. Kebab-case, no spaces, max 64 chars | `"deployment-tools"` |
 
 #### Metadata Fields (Recommended)
 
-| Field          | Type   | Description                          | Example                           |
-| -------------- | ------ | ------------------------------------ | --------------------------------- |
-| `version`      | string | Semantic version (MAJOR.MINOR.PATCH) | `"2.1.0"`                         |
-| `description`  | string | Brief explanation of purpose         | `"Deployment automation tools"`   |
-| `author`       | object | Author information                   | `{"name": "Dev Team"}`            |
-| `author.name`  | string | Author/team name                     | `"DevTools Team"`                 |
-| `author.email` | string | Contact email                        | `"team@example.com"`              |
-| `author.url`   | string | Author website/profile               | `"https://github.com/author"`     |
-| `homepage`     | string | Documentation URL                    | `"https://docs.example.com"`      |
-| `repository`   | string | Source code URL                      | `"https://github.com/org/plugin"` |
-| `license`      | string | SPDX license identifier              | `"MIT"`, `"Apache-2.0"`           |
-| `keywords`     | array  | Discovery/categorization tags        | `["testing", "automation"]`       |
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `version` | string | Semantic version (MAJOR.MINOR.PATCH) | `"2.1.0"` |
+| `description` | string | Brief explanation of purpose | `"Deployment automation tools"` |
+| `author` | object | Author information | `{"name": "Dev Team"}` |
+| `author.name` | string | Author/team name | `"DevTools Team"` |
+| `author.email` | string | Contact email | `"team@example.com"` |
+| `author.url` | string | Author website/profile | `"https://github.com/author"` |
+| `homepage` | string | Documentation URL | `"https://docs.example.com"` |
+| `repository` | string | Source code URL | `"https://github.com/org/plugin"` |
+| `license` | string | SPDX license identifier | `"MIT"`, `"Apache-2.0"` |
+| `keywords` | array | Discovery/categorization tags | `["testing", "automation"]` |
 
 #### Component Path Fields (Optional)
 
-| Field        | Type             | Description                | Default            |
-| ------------ | ---------------- | -------------------------- | ------------------ |
-| `commands`   | string \| array  | Additional command paths   | `commands/`        |
-| `agents`     | string \| array  | Additional agent paths     | `agents/`          |
-| `hooks`      | string \| object | Hook config path or inline | `hooks/hooks.json` |
-| `mcpServers` | string \| object | MCP config path or inline  | `.mcp.json`        |
+| Field | Type | Description | Default |
+|-------|------|-------------|---------|
+| `commands` | string \| array | Additional command paths | `commands/` |
+| `agents` | string \| array | Additional agent paths | `agents/` |
+| `hooks` | string \| object | Hook config path or inline | `hooks/hooks.json` |
+| `mcpServers` | string \| object | MCP config path or inline | `.mcp.json` |
 
 **Important**: Custom paths **supplement** default directories—they don't replace them.
 
@@ -320,8 +314,14 @@ Use `${CLAUDE_PLUGIN_ROOT}` for portable paths:
   "repository": "https://github.com/company/enterprise-deployment-plugin",
   "license": "Apache-2.0",
   "keywords": ["deployment", "kubernetes", "ci-cd", "enterprise"],
-  "commands": ["./commands/core/", "./commands/advanced/"],
-  "agents": ["./agents/deployment-strategist.md", "./agents/rollback-specialist.md"],
+  "commands": [
+    "./commands/core/",
+    "./commands/advanced/"
+  ],
+  "agents": [
+    "./agents/deployment-strategist.md",
+    "./agents/rollback-specialist.md"
+  ],
   "hooks": {
     "PostToolUse": [
       {
@@ -356,7 +356,7 @@ Use `${CLAUDE_PLUGIN_ROOT}` for portable paths:
 ```markdown
 ---
 description: Deploy to production environment
-allowed-tools: 'Bash(kubectl:*),Bash(docker:*),Read,Glob'
+allowed-tools: "Bash(kubectl:*),Bash(docker:*),Read,Glob"
 ---
 
 # Production Deployment
@@ -394,7 +394,6 @@ model: sonnet
 # Security Code Review Agent
 
 You are a security-focused code reviewer specializing in:
-
 - OWASP Top 10 vulnerabilities
 - Secure coding practices
 - Dependency vulnerability analysis
@@ -411,7 +410,6 @@ You are a security-focused code reviewer specializing in:
 ## Output Format
 
 Provide findings as:
-
 - CRITICAL: Immediate action required
 - HIGH: Address before merge
 - MEDIUM: Fix in next sprint
@@ -420,14 +418,14 @@ Provide findings as:
 
 **Frontmatter Fields**:
 
-| Field            | Required | Description                                         |
-| ---------------- | -------- | --------------------------------------------------- |
-| `name`           | Yes      | Agent identifier                                    |
-| `description`    | Yes      | When Claude should delegate to this agent           |
-| `tools`          | No       | Comma-separated tool list (inherits all if omitted) |
-| `model`          | No       | `sonnet`, `opus`, `haiku`, or `inherit`             |
-| `permissionMode` | No       | Permission mode for agent execution                 |
-| `skills`         | No       | Skills to auto-load                                 |
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Agent identifier |
+| `description` | Yes | When Claude should delegate to this agent |
+| `tools` | No | Comma-separated tool list (inherits all if omitted) |
+| `model` | No | `sonnet`, `opus`, `haiku`, or `inherit` |
+| `permissionMode` | No | Permission mode for agent execution |
+| `skills` | No | Skills to auto-load |
 
 ### Skills
 
@@ -441,8 +439,8 @@ description: >
   Expert on Kubernetes deployments, configurations, and troubleshooting.
   Use when user works with K8s manifests, pods, services, or cluster issues.
   Trigger with 'kubernetes', 'k8s', 'deploy to cluster', 'pod issues'.
-allowed-tools: 'Read,Glob,Grep,Bash(kubectl:*)'
-version: '1.0.0'
+allowed-tools: "Read,Glob,Grep,Bash(kubectl:*)"
+version: "1.0.0"
 ---
 
 # Kubernetes Expert Skill
@@ -459,14 +457,12 @@ Transform Claude into a Kubernetes specialist for cluster management.
 ## Instructions
 
 ### When Reviewing Manifests
-
 1. Check resource limits
 2. Validate label selectors
 3. Verify security contexts
 4. Suggest best practices
 
 ### When Troubleshooting
-
 1. Check pod status and events
 2. Review container logs
 3. Analyze resource constraints
@@ -524,25 +520,25 @@ Transform Claude into a Kubernetes specialist for cluster management.
 
 **Hook Events**:
 
-| Event               | Matcher Required | Use Case                                         |
-| ------------------- | ---------------- | ------------------------------------------------ |
-| `PreToolUse`        | Yes              | Validate/modify tool inputs, control permissions |
-| `PostToolUse`       | Yes              | Process results, trigger actions                 |
-| `PermissionRequest` | Yes              | Auto-approve/deny permissions                    |
-| `UserPromptSubmit`  | No               | Add context to prompts                           |
-| `Stop`              | No               | Prevent premature stops                          |
-| `SubagentStop`      | No               | Control subagent completion                      |
-| `SessionStart`      | Yes              | Initialize environment                           |
-| `SessionEnd`        | No               | Cleanup operations                               |
-| `PreCompact`        | Yes              | Before context compaction                        |
-| `Notification`      | Optional         | Handle notifications                             |
+| Event | Matcher Required | Use Case |
+|-------|------------------|----------|
+| `PreToolUse` | Yes | Validate/modify tool inputs, control permissions |
+| `PostToolUse` | Yes | Process results, trigger actions |
+| `PermissionRequest` | Yes | Auto-approve/deny permissions |
+| `UserPromptSubmit` | No | Add context to prompts |
+| `Stop` | No | Prevent premature stops |
+| `SubagentStop` | No | Control subagent completion |
+| `SessionStart` | Yes | Initialize environment |
+| `SessionEnd` | No | Cleanup operations |
+| `PreCompact` | Yes | Before context compaction |
+| `Notification` | Optional | Handle notifications |
 
 **Hook Types**:
 
-| Type      | Description          | Example                                                |
-| --------- | -------------------- | ------------------------------------------------------ |
-| `command` | Execute bash command | `{"type": "command", "command": "./script.sh"}`        |
-| `prompt`  | LLM-based evaluation | `{"type": "prompt", "prompt": "Evaluate: $ARGUMENTS"}` |
+| Type | Description | Example |
+|------|-------------|---------|
+| `command` | Execute bash command | `{"type": "command", "command": "./script.sh"}` |
+| `prompt` | LLM-based evaluation | `{"type": "prompt", "prompt": "Evaluate: $ARGUMENTS"}` |
 
 **Hook Output (JSON)**:
 
@@ -616,30 +612,30 @@ Marketplaces are configured via `.claude-plugin/marketplace.json`:
 
 #### Required Fields
 
-| Field     | Type   | Description                         |
-| --------- | ------ | ----------------------------------- |
-| `name`    | string | Marketplace identifier (kebab-case) |
-| `owner`   | object | Marketplace maintainer info         |
-| `plugins` | array  | List of available plugins           |
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Marketplace identifier (kebab-case) |
+| `owner` | object | Marketplace maintainer info |
+| `plugins` | array | List of available plugins |
 
 #### Optional Metadata
 
-| Field                  | Type   | Description                    |
-| ---------------------- | ------ | ------------------------------ |
-| `metadata.description` | string | Marketplace description        |
-| `metadata.version`     | string | Marketplace version            |
-| `metadata.pluginRoot`  | string | Base path for relative sources |
+| Field | Type | Description |
+|-------|------|-------------|
+| `metadata.description` | string | Marketplace description |
+| `metadata.version` | string | Marketplace version |
+| `metadata.pluginRoot` | string | Base path for relative sources |
 
 ### Plugin Entry Schema
 
 Plugin entries inherit from `plugin.json` schema (all fields optional except `name`) plus:
 
-| Field      | Type             | Description                                       |
-| ---------- | ---------------- | ------------------------------------------------- |
-| `source`   | string \| object | **Required**. Where to fetch the plugin           |
-| `category` | string           | Plugin category for organization                  |
-| `tags`     | array            | Additional discovery tags                         |
-| `strict`   | boolean          | Require `plugin.json` in source (default: `true`) |
+| Field | Type | Description |
+|-------|------|-------------|
+| `source` | string \| object | **Required**. Where to fetch the plugin |
+| `category` | string | Plugin category for organization |
+| `tags` | array | Additional discovery tags |
+| `strict` | boolean | Require `plugin.json` in source (default: `true`) |
 
 ### Source Types
 
@@ -746,10 +742,10 @@ Add to `.claude/settings.json` (project) or `~/.claude/settings.json` (user):
 
 ### Strict vs Non-Strict Mode
 
-| Setting                  | Behavior                                                          |
-| ------------------------ | ----------------------------------------------------------------- |
-| `strict: true` (default) | Plugin must have `plugin.json`; marketplace fields supplement     |
-| `strict: false`          | Marketplace entry serves as complete manifest if no `plugin.json` |
+| Setting | Behavior |
+|---------|----------|
+| `strict: true` (default) | Plugin must have `plugin.json`; marketplace fields supplement |
+| `strict: false` | Marketplace entry serves as complete manifest if no `plugin.json` |
 
 ---
 
@@ -834,16 +830,13 @@ claude --debug
 ## [1.2.0] - 2025-12-06
 
 ### Added
-
 - New `/deploy-canary` command
 - Support for blue-green deployments
 
 ### Changed
-
 - Improved rollback speed
 
 ### Fixed
-
 - Fixed timeout in long deployments
 ```
 
@@ -912,7 +905,6 @@ When breaking changes are necessary:
 ```
 
 **Only request tools you need**:
-
 - Read-only operations: `"Read,Glob,Grep"`
 - File modifications: `"Read,Write,Edit,Glob,Grep"`
 - Shell commands: `"Bash(git:*),Bash(npm run:*)"`
@@ -920,7 +912,6 @@ When breaking changes are necessary:
 ### Dangerous Operations
 
 **Avoid**:
-
 - Unrestricted `Bash` access
 - Hardcoded credentials
 - Unvalidated user input to shell
@@ -928,7 +919,6 @@ When breaking changes are necessary:
 - File operations outside project
 
 **Instead**:
-
 - Scope bash: `Bash(git:*)`, `Bash(npm run test:*)`
 - Use environment variables for secrets
 - Sanitize all inputs
@@ -952,13 +942,11 @@ When breaking changes are necessary:
 ```
 
 **Never**:
-
 - Hardcode API keys in plugin files
 - Store secrets in plugin.json
 - Log sensitive data
 
 **Always**:
-
 - Use environment variables
 - Document required env vars in README
 - Provide setup instructions
@@ -980,7 +968,6 @@ Before publishing, verify:
 ### Marketplace Security Warning
 
 From official docs:
-
 > ⚠️ **Trust Warning**: Users must trust plugins before installing. Anthropic does not control MCP servers, files, or included software, and cannot verify intended functionality or future changes.
 
 ---
@@ -997,7 +984,6 @@ MAJOR.MINOR.PATCH
 ```
 
 **Examples**:
-
 - `1.0.0` → `1.0.1`: Bug fix
 - `1.0.1` → `1.1.0`: New command added
 - `1.1.0` → `2.0.0`: Command removed or renamed
@@ -1029,12 +1015,10 @@ Document in README:
 ## Deprecation Notice
 
 ### v1.x (Current)
-
 - Status: Active
 - Support: Full support
 
 ### v0.x (Legacy)
-
 - Status: Deprecated
 - Support: Security fixes only until 2025-06-01
 - Migration: See MIGRATION.md
@@ -1047,7 +1031,6 @@ Document in README:
 ### Pre-Publish Validation
 
 #### Manifest
-
 - [ ] `name` is kebab-case, unique, descriptive
 - [ ] `version` follows semver
 - [ ] `description` clearly explains purpose
@@ -1057,7 +1040,6 @@ Document in README:
 - [ ] `repository` points to source
 
 #### Components
-
 - [ ] All commands documented
 - [ ] Agents have clear descriptions
 - [ ] Skills follow standard schema
@@ -1065,7 +1047,6 @@ Document in README:
 - [ ] MCP servers use `${CLAUDE_PLUGIN_ROOT}`
 
 #### Security
-
 - [ ] No hardcoded secrets
 - [ ] Bash commands appropriately scoped
 - [ ] Inputs validated/sanitized
@@ -1073,7 +1054,6 @@ Document in README:
 - [ ] Paths are relative with `${CLAUDE_PLUGIN_ROOT}`
 
 #### Testing
-
 - [ ] Plugin loads without errors (`claude --debug`)
 - [ ] Commands execute correctly
 - [ ] Agents respond appropriately
@@ -1081,7 +1061,6 @@ Document in README:
 - [ ] MCP servers initialize
 
 #### Documentation
-
 - [ ] README explains installation
 - [ ] README documents usage
 - [ ] README lists requirements
@@ -1089,7 +1068,6 @@ Document in README:
 - [ ] Environment variables documented
 
 #### Marketplace
-
 - [ ] Marketplace entry complete
 - [ ] Source URL accessible
 - [ ] Version matches plugin.json
@@ -1143,7 +1121,7 @@ my-plugin/
 ```markdown
 ---
 description: Example command that demonstrates plugin structure
-allowed-tools: 'Read,Glob,Grep'
+allowed-tools: "Read,Glob,Grep"
 ---
 
 # Example Command
@@ -1194,8 +1172,8 @@ name: example-skill
 description: >
   Example skill demonstrating plugin skill structure.
   Use when demonstrating skills capabilities.
-allowed-tools: 'Read,Glob,Grep'
-version: '1.0.0'
+allowed-tools: "Read,Glob,Grep"
+version: "1.0.0"
 ---
 
 # Example Skill
@@ -1209,11 +1187,9 @@ Provides example functionality for demonstration purposes.
 ## Instructions
 
 ### Step 1: Analyze Context
-
 Review the current context and user request.
 
 ### Step 2: Apply Knowledge
-
 Use skill knowledge to assist.
 
 ## Output
@@ -1267,7 +1243,7 @@ exit 0
 
 ### README.md
 
-````markdown
+```markdown
 # My Plugin
 
 TODO: Describe your plugin.
@@ -1277,7 +1253,6 @@ TODO: Describe your plugin.
 ```bash
 /plugin install my-plugin@marketplace-name
 ```
-````
 
 ## Usage
 
@@ -1291,14 +1266,12 @@ TODO: Describe your plugin.
 ## Configuration
 
 Set these environment variables:
-
 - `TODO_API_KEY` - API key for TODO service
 
 ## License
 
 MIT
-
-````
+```
 
 ---
 
@@ -1357,7 +1330,7 @@ MIT
     }
   ]
 }
-````
+```
 
 ### settings.json Marketplace Configuration
 
