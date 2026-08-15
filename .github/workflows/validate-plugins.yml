@@ -276,6 +276,12 @@ jobs:
           jq -e '[.firstPartyCandidates[] | select(.reasonCode != "FIRST_PARTY_CANDIDATE")] | length == 0' /tmp/e72-publish-report.json
           echo "E7.2 dry-run: $(jq '.firstPartyCandidates | length' /tmp/e72-publish-report.json) first-party candidates; $(jq '.mirrorSkipped | length' /tmp/e72-publish-report.json) provenance candidates skipped; 0 refused candidates."
 
+      # E7.3: deterministic fixture coverage for the workflow_run guard and
+      # exact-SHA required-check preflight. This remains a step in validate,
+      # so ci-required gains no fourth status context.
+      - name: Test npm publication locks
+        run: node --test scripts/npm-publication-lock.test.mjs
+
       - name: Validate marketplace catalog
         run: |
           echo "Validating marketplace catalog..."
