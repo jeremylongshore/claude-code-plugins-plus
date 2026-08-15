@@ -4,7 +4,7 @@
 **Document ID**: 6767-g-AT-ARCH-skill-scaffold-diagrams
 **Title**: Skill Scaffold Diagrams (Enforceable)
 **Version**: 3.0.0
-**Status**: CANONICAL (Enterprise-Only)
+**Status**: REFERENCE (non-authoritative structural diagrams)
 **Date**: 2025-12-20
 **Companion To**: 6767-c (Extensions Standard), 6767-d (Schema), 6767-e (Validation), 6767-f (Plugin Diagrams)
 **Authority**: Intent Solutions (Enterprise Marketplace)
@@ -71,6 +71,7 @@
     - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
 
 **VALIDATION**:
+
 - Validator runs in ENTERPRISE MODE ONLY
 - CRITICAL/HIGH errors BLOCK PR merge
 - Deterministic error codes (6767-d schema)
@@ -83,39 +84,40 @@
 
 ### 1.1 File Structure Rules
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| Skill MUST exist at `skills/<skill-name>/SKILL.md` | Exact path pattern | `SKILL_001` |
-| SKILL.md MUST have valid YAML frontmatter | Parseable YAML between `---` markers | (Parsing check) |
-| SKILL.md MUST have markdown body | After frontmatter | (Content check) |
+| Rule                                               | Constraint                           | Validator Check ID |
+| -------------------------------------------------- | ------------------------------------ | ------------------ |
+| Skill MUST exist at `skills/<skill-name>/SKILL.md` | Exact path pattern                   | `SKILL_001`        |
+| SKILL.md MUST have valid YAML frontmatter          | Parseable YAML between `---` markers | (Parsing check)    |
+| SKILL.md MUST have markdown body                   | After frontmatter                    | (Content check)    |
 
 ### 1.2 Frontmatter Field Rules (name)
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| `name` MUST be kebab-case | Pattern: `^[a-z0-9-]+$` | `SKILL_003` |
-| `name` MUST be ≤64 characters | Max length: 64 | `SKILL_005` |
-| `name` MUST exclude reserved substrings | Ban: "claude", "anthropic" | `SKILL_006` |
+| Rule                                    | Constraint                 | Validator Check ID |
+| --------------------------------------- | -------------------------- | ------------------ |
+| `name` MUST be kebab-case               | Pattern: `^[a-z0-9-]+$`    | `SKILL_003`        |
+| `name` MUST be ≤64 characters           | Max length: 64             | `SKILL_005`        |
+| `name` MUST exclude reserved substrings | Ban: "claude", "anthropic" | `SKILL_006`        |
 
 ### 1.3 Frontmatter Field Rules (description)
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| `description` MUST be ≤1024 characters | Max length: 1024 | `SKILL_013` |
-| `description` MUST be third-person voice | Objective language, no "I..." | `SKILL_014` |
-| `description` MUST include "Use when..." | Pattern: `[Uu]se\s+when` | `SKILL_015` |
-| `description` MUST include trigger phrases | 2-6 quoted phrases recommended | `SKILL_016` |
-| `description` MUST NOT contain XML/angle-tag patterns | No `<...>` tags | (Future check) |
+| Rule                                                  | Constraint                     | Validator Check ID |
+| ----------------------------------------------------- | ------------------------------ | ------------------ |
+| `description` MUST be ≤1024 characters                | Max length: 1024               | `SKILL_013`        |
+| `description` MUST be third-person voice              | Objective language, no "I..."  | `SKILL_014`        |
+| `description` MUST include "Use when..."              | Pattern: `[Uu]se\s+when`       | `SKILL_015`        |
+| `description` MUST include trigger phrases            | 2-6 quoted phrases recommended | `SKILL_016`        |
+| `description` MUST NOT contain XML/angle-tag patterns | No `<...>` tags                | (Future check)     |
 
 ### 1.4 Frontmatter Field Rules (allowed-tools) - CRITICAL
 
-| Rule | Constraint | Validator Check ID |
-|------|------------|-------------------|
-| `allowed-tools` MUST be a **CSV string** | Type: string (NOT array) | `SKILL_022` |
-| `allowed-tools` MUST be comma-separated | Format: "Tool1,Tool2,Tool3" | `SKILL_022` |
-| Bash tool MUST be scoped | Pattern: `Bash(command:*)` NOT just `Bash` | `SKILL_024` |
+| Rule                                     | Constraint                                 | Validator Check ID |
+| ---------------------------------------- | ------------------------------------------ | ------------------ |
+| `allowed-tools` MUST be a **CSV string** | Type: string (NOT array)                   | `SKILL_022`        |
+| `allowed-tools` MUST be comma-separated  | Format: "Tool1,Tool2,Tool3"                | `SKILL_022`        |
+| Bash tool MUST be scoped                 | Pattern: `Bash(command:*)` NOT just `Bash` | `SKILL_024`        |
 
 **CRITICAL RULE**:
+
 ```yaml
 # ❌ WRONG (YAML array)
 allowed-tools:
@@ -128,43 +130,44 @@ allowed-tools: "Read,Write,Grep,Glob,Bash(git:*)"
 
 ### 1.5 Enterprise-Required Frontmatter Fields
 
-| Field | Type | Constraint | Validator Check ID |
-|-------|------|------------|-------------------|
-| `name` | string | (See 1.2) | `SKILL_002-006` |
-| `description` | string | (See 1.3) | `SKILL_011-016` |
-| `allowed-tools` | string | CSV format | `SKILL_021-024` |
-| `version` | string | SemVer `\d+\.\d+\.\d+` | `SKILL_031-032` |
-| `author` | string | "Name <email>" or "Name" | `SKILL_041-043` |
-| `license` | string | SPDX identifier | `SKILL_051-052` |
-| `tags` | array | Min 1 item | `SKILL_061-062` |
+| Field           | Type   | Constraint               | Validator Check ID |
+| --------------- | ------ | ------------------------ | ------------------ |
+| `name`          | string | (See 1.2)                | `SKILL_002-006`    |
+| `description`   | string | (See 1.3)                | `SKILL_011-016`    |
+| `allowed-tools` | string | CSV format               | `SKILL_021-024`    |
+| `version`       | string | SemVer `\d+\.\d+\.\d+`   | `SKILL_031-032`    |
+| `author`        | string | "Name <email>" or "Name" | `SKILL_041-043`    |
+| `license`       | string | SPDX identifier          | `SKILL_051-052`    |
+| `tags`          | array  | Min 1 item               | `SKILL_061-062`    |
 
 ### 1.6 Skill Body Policy Limits
 
-| Limit | Threshold | Validator Check ID | Severity |
-|-------|-----------|-------------------|----------|
-| Max words | 5,000 words | `SKILL_100` | HIGH |
-| Max lines | 500 lines | `SKILL_101` | HIGH |
-| Max tokens (approx) | ~7,500 tokens | `SKILL_102` | MEDIUM |
-| Path format | `{baseDir}/...` (no absolute) | `SKILL_103` | CRITICAL |
-| Reference depth | 1 level (no chains) | `SKILL_104` | MEDIUM |
+| Limit               | Threshold                     | Validator Check ID | Severity |
+| ------------------- | ----------------------------- | ------------------ | -------- |
+| Max words           | 5,000 words                   | `SKILL_100`        | HIGH     |
+| Max lines           | 500 lines                     | `SKILL_101`        | HIGH     |
+| Max tokens (approx) | ~7,500 tokens                 | `SKILL_102`        | MEDIUM   |
+| Path format         | `{baseDir}/...` (no absolute) | `SKILL_103`        | CRITICAL |
+| Reference depth     | 1 level (no chains)           | `SKILL_104`        | MEDIUM   |
 
 **Progressive Disclosure Policy**:
+
 - Heavy content MUST go in `references/` subdirectory
 - References loaded on-demand, not always in context
 - Example: `{baseDir}/skills/my-skill/references/error-codes.md`
 
 ### 1.7 Required Sections in Body
 
-| Section | Required | Min Content | Validator Check ID |
-|---------|----------|-------------|-------------------|
-| **Purpose** | ✅ REQUIRED | 1-2 sentences | (Content check) |
-| **Overview** | ✅ REQUIRED | 3-5 sentences | (Content check) |
-| **Prerequisites** | ✅ REQUIRED | List of requirements | (Content check) |
-| **Instructions** | ✅ REQUIRED | Numbered steps | (Content check) |
-| **Output** | ✅ REQUIRED | Format description | (Content check) |
-| **Error Handling** | ✅ REQUIRED | ≥4 errors with recovery | (Content check: count errors) |
-| **Examples** | ✅ REQUIRED | ≥2 examples with I/O | (Content check: count examples) |
-| **Resources** | ✅ REQUIRED | Links/references | (Content check) |
+| Section            | Required    | Min Content             | Validator Check ID              |
+| ------------------ | ----------- | ----------------------- | ------------------------------- |
+| **Purpose**        | ✅ REQUIRED | 1-2 sentences           | (Content check)                 |
+| **Overview**       | ✅ REQUIRED | 3-5 sentences           | (Content check)                 |
+| **Prerequisites**  | ✅ REQUIRED | List of requirements    | (Content check)                 |
+| **Instructions**   | ✅ REQUIRED | Numbered steps          | (Content check)                 |
+| **Output**         | ✅ REQUIRED | Format description      | (Content check)                 |
+| **Error Handling** | ✅ REQUIRED | ≥4 errors with recovery | (Content check: count errors)   |
+| **Examples**       | ✅ REQUIRED | ≥2 examples with I/O    | (Content check: count examples) |
+| **Resources**      | ✅ REQUIRED | Links/references        | (Content check)                 |
 
 ---
 
@@ -178,6 +181,7 @@ skills/my-skill/
 ```
 
 **SKILL.md Structure**:
+
 ```yaml
 ---
 # Enterprise-required frontmatter
@@ -248,6 +252,7 @@ skills/my-skill/
 ```
 
 **Validator Checks** (if present):
+
 - `scripts/`: `SEC_005` (no absolute paths in scripts)
 - `references/`: (No specific checks; loaded on-demand)
 - `assets/`: (No specific checks; path references only)
@@ -262,15 +267,15 @@ skills/my-skill/
 
 **Diagram Node → Validator Mapping**:
 
-| Node | Type | Validator Checks |
-|------|------|-----------------|
-| **skills/<skill-name>/** | Directory | Skill directory exists |
-| **SKILL.md** | File (REQUIRED) | `SKILL_001`: File exists at correct path |
-| **YAML Frontmatter** | Metadata (REQUIRED) | `SKILL_002-062`: All frontmatter checks |
-| **Markdown Body** | Content (REQUIRED) | `SKILL_100-104`: Body limits, path safety |
-| **scripts/** | Directory (OPTIONAL) | `SEC_005`: No absolute paths in scripts |
-| **references/** | Directory (OPTIONAL) | (No validator checks; on-demand loading) |
-| **assets/** | Directory (OPTIONAL) | (No validator checks; path references only) |
+| Node                     | Type                 | Validator Checks                            |
+| ------------------------ | -------------------- | ------------------------------------------- |
+| **skills/<skill-name>/** | Directory            | Skill directory exists                      |
+| **SKILL.md**             | File (REQUIRED)      | `SKILL_001`: File exists at correct path    |
+| **YAML Frontmatter**     | Metadata (REQUIRED)  | `SKILL_002-062`: All frontmatter checks     |
+| **Markdown Body**        | Content (REQUIRED)   | `SKILL_100-104`: Body limits, path safety   |
+| **scripts/**             | Directory (OPTIONAL) | `SEC_005`: No absolute paths in scripts     |
+| **references/**          | Directory (OPTIONAL) | (No validator checks; on-demand loading)    |
+| **assets/**              | Directory (OPTIONAL) | (No validator checks; path references only) |
 
 ### 3.2 Discovery → Activation State Machine (Progressive Disclosure)
 
@@ -278,14 +283,14 @@ skills/my-skill/
 
 **Diagram State → Validator Mapping**:
 
-| State | Loaded Content | Validator Checks | Check IDs |
-|-------|---------------|-----------------|-----------|
-| **Discovery** | name + description only | Name/description valid, discoverable | `SKILL_002-016` |
-| **Activated** | (No new content) | (Selection logic, not validated) | N/A |
-| **LoadSkillBody** | SKILL.md body | Body ≤5,000 words, ≤500 lines, no absolute paths | `SKILL_100-103` |
-| **DeepDive** | references/* (on-demand) | (No validator checks; runtime behavior) | N/A |
-| **Execute** | scripts/* (if called) | Scripts use `${CLAUDE_PLUGIN_ROOT}`, no absolute paths | `SEC_005` |
-| **Observe** | (Output validation) | (No validator checks; runtime behavior) | N/A |
+| State             | Loaded Content            | Validator Checks                                       | Check IDs       |
+| ----------------- | ------------------------- | ------------------------------------------------------ | --------------- |
+| **Discovery**     | name + description only   | Name/description valid, discoverable                   | `SKILL_002-016` |
+| **Activated**     | (No new content)          | (Selection logic, not validated)                       | N/A             |
+| **LoadSkillBody** | SKILL.md body             | Body ≤5,000 words, ≤500 lines, no absolute paths       | `SKILL_100-103` |
+| **DeepDive**      | references/\* (on-demand) | (No validator checks; runtime behavior)                | N/A             |
+| **Execute**       | scripts/\* (if called)    | Scripts use `${CLAUDE_PLUGIN_ROOT}`, no absolute paths | `SEC_005`       |
+| **Observe**       | (Output validation)       | (No validator checks; runtime behavior)                | N/A             |
 
 ### 3.3 Read → Process → Write Workflow Diagram
 
@@ -293,14 +298,14 @@ skills/my-skill/
 
 **Diagram Step → Validator Mapping**:
 
-| Step | Tool Authorization | Validator Checks | Check IDs |
-|------|-------------------|-----------------|-----------|
-| **Router Selects Skill** | (No tools used) | Description has "Use when" + triggers | `SKILL_015-016` |
-| **Load SKILL.md Body** | (Internal operation) | Body ≤5,000 words, ≤500 lines | `SKILL_100-101` |
-| **Read Input Files** | `Read,Grep` in allowed-tools | allowed-tools is CSV string | `SKILL_022` |
-| **Process Data** | Scripts executed | Paths use `${CLAUDE_PLUGIN_ROOT}` | `SEC_005` |
-| **Write Output** | `Write` in allowed-tools | allowed-tools authorizes Write | `SKILL_022` |
-| **Format Result** | (Internal operation) | (No validator checks) | N/A |
+| Step                     | Tool Authorization           | Validator Checks                      | Check IDs       |
+| ------------------------ | ---------------------------- | ------------------------------------- | --------------- |
+| **Router Selects Skill** | (No tools used)              | Description has "Use when" + triggers | `SKILL_015-016` |
+| **Load SKILL.md Body**   | (Internal operation)         | Body ≤5,000 words, ≤500 lines         | `SKILL_100-101` |
+| **Read Input Files**     | `Read,Grep` in allowed-tools | allowed-tools is CSV string           | `SKILL_022`     |
+| **Process Data**         | Scripts executed             | Paths use `${CLAUDE_PLUGIN_ROOT}`     | `SEC_005`       |
+| **Write Output**         | `Write` in allowed-tools     | allowed-tools authorizes Write        | `SKILL_022`     |
+| **Format Result**        | (Internal operation)         | (No validator checks)                 | N/A             |
 
 ### 3.4 Security Boundary Diagram (Redact/Encrypt Before Durable Store)
 
@@ -308,12 +313,12 @@ skills/my-skill/
 
 **Diagram Step → Validator Mapping (Security Focus)**:
 
-| Step | Security Control | Validator Checks | Check IDs |
-|------|------------------|-----------------|-----------|
-| **Redact Secrets/PII** | Detect and block secrets | `SEC_001-004`: Hardcoded secrets, .env files | `SEC_001-004` |
-| **Encrypt Client-Side** | AES-256-GCM encryption | (Runtime check; env var `LUMERA_MEMORY_KEY`) | N/A |
-| **Persist Durable Storage** | Content-addressed (SHA-256) | (Runtime check; immutable pointers) | N/A |
-| **Decrypt Client-Side** | Verify integrity (GCM tag) | (Runtime check; fails on tamper) | N/A |
+| Step                        | Security Control            | Validator Checks                             | Check IDs     |
+| --------------------------- | --------------------------- | -------------------------------------------- | ------------- |
+| **Redact Secrets/PII**      | Detect and block secrets    | `SEC_001-004`: Hardcoded secrets, .env files | `SEC_001-004` |
+| **Encrypt Client-Side**     | AES-256-GCM encryption      | (Runtime check; env var `LUMERA_MEMORY_KEY`) | N/A           |
+| **Persist Durable Storage** | Content-addressed (SHA-256) | (Runtime check; immutable pointers)          | N/A           |
+| **Decrypt Client-Side**     | Verify integrity (GCM tag)  | (Runtime check; fails on tamper)             | N/A           |
 
 ---
 
@@ -323,49 +328,49 @@ skills/my-skill/
 
 **Check Category**: `SKILL_*`
 
-| Check ID | Severity | Field | Rule | Error Message |
-|----------|----------|-------|------|---------------|
-| `SKILL_002` | CRITICAL | name | Field present | "SKILL.md missing required field: name" |
-| `SKILL_003` | CRITICAL | name | Pattern `^[a-z0-9-]+$` | "name must be kebab-case (lowercase, hyphens only)" |
-| `SKILL_005` | CRITICAL | name | Max 64 characters | "name must be ≤64 characters (found: {actual})" |
-| `SKILL_006` | CRITICAL | name | No reserved words | "name must not contain 'claude' or 'anthropic'" |
-| `SKILL_011` | CRITICAL | description | Field present | "SKILL.md missing required field: description" |
-| `SKILL_013` | HIGH | description | Max 1024 characters | "description must be ≤1024 characters" |
-| `SKILL_014` | MEDIUM | description | Third-person voice | "description should use third-person voice (avoid 'I...')" |
-| `SKILL_015` | HIGH | description | Contains "Use when" | "description must include 'Use when...' clause" |
-| `SKILL_016` | HIGH | description | Contains trigger phrases | "description must include trigger phrases (2-6 recommended)" |
-| `SKILL_021` | CRITICAL | allowed-tools | Field present | "SKILL.md missing required field: allowed-tools" |
-| `SKILL_022` | CRITICAL | allowed-tools | Type is **string** (NOT array) | "allowed-tools must be CSV string, NOT YAML array" |
-| `SKILL_024` | CRITICAL | allowed-tools | Bash scoped | "Bash tool must be scoped: Bash(git:*), NOT just Bash" |
-| `SKILL_031` | CRITICAL | version | Field present | "SKILL.md missing required field: version" |
-| `SKILL_032` | CRITICAL | version | SemVer format | "version must be SemVer MAJOR.MINOR.PATCH" |
-| `SKILL_041` | CRITICAL | author | Field present | "SKILL.md missing required field: author" |
-| `SKILL_043` | CRITICAL | author | Min 1 character | "author must not be empty" |
-| `SKILL_051` | CRITICAL | license | Field present | "SKILL.md missing required field: license" |
-| `SKILL_052` | CRITICAL | license | Min 1 character | "license must not be empty" |
-| `SKILL_061` | CRITICAL | tags | Field present (array) | "SKILL.md missing required field: tags" |
-| `SKILL_062` | CRITICAL | tags | Min 1 item | "tags must have at least 1 item" |
+| Check ID    | Severity | Field         | Rule                           | Error Message                                                |
+| ----------- | -------- | ------------- | ------------------------------ | ------------------------------------------------------------ |
+| `SKILL_002` | CRITICAL | name          | Field present                  | "SKILL.md missing required field: name"                      |
+| `SKILL_003` | CRITICAL | name          | Pattern `^[a-z0-9-]+$`         | "name must be kebab-case (lowercase, hyphens only)"          |
+| `SKILL_005` | CRITICAL | name          | Max 64 characters              | "name must be ≤64 characters (found: {actual})"              |
+| `SKILL_006` | CRITICAL | name          | No reserved words              | "name must not contain 'claude' or 'anthropic'"              |
+| `SKILL_011` | CRITICAL | description   | Field present                  | "SKILL.md missing required field: description"               |
+| `SKILL_013` | HIGH     | description   | Max 1024 characters            | "description must be ≤1024 characters"                       |
+| `SKILL_014` | MEDIUM   | description   | Third-person voice             | "description should use third-person voice (avoid 'I...')"   |
+| `SKILL_015` | HIGH     | description   | Contains "Use when"            | "description must include 'Use when...' clause"              |
+| `SKILL_016` | HIGH     | description   | Contains trigger phrases       | "description must include trigger phrases (2-6 recommended)" |
+| `SKILL_021` | CRITICAL | allowed-tools | Field present                  | "SKILL.md missing required field: allowed-tools"             |
+| `SKILL_022` | CRITICAL | allowed-tools | Type is **string** (NOT array) | "allowed-tools must be CSV string, NOT YAML array"           |
+| `SKILL_024` | CRITICAL | allowed-tools | Bash scoped                    | "Bash tool must be scoped: Bash(git:\*), NOT just Bash"      |
+| `SKILL_031` | CRITICAL | version       | Field present                  | "SKILL.md missing required field: version"                   |
+| `SKILL_032` | CRITICAL | version       | SemVer format                  | "version must be SemVer MAJOR.MINOR.PATCH"                   |
+| `SKILL_041` | CRITICAL | author        | Field present                  | "SKILL.md missing required field: author"                    |
+| `SKILL_043` | CRITICAL | author        | Min 1 character                | "author must not be empty"                                   |
+| `SKILL_051` | CRITICAL | license       | Field present                  | "SKILL.md missing required field: license"                   |
+| `SKILL_052` | CRITICAL | license       | Min 1 character                | "license must not be empty"                                  |
+| `SKILL_061` | CRITICAL | tags          | Field present (array)          | "SKILL.md missing required field: tags"                      |
+| `SKILL_062` | CRITICAL | tags          | Min 1 item                     | "tags must have at least 1 item"                             |
 
 ### 4.2 Body Validation
 
 **Check Category**: `SKILL_*`
 
-| Check ID | Severity | Rule | Threshold | Error Message |
-|----------|----------|------|-----------|---------------|
-| `SKILL_100` | HIGH | Max words | 5,000 words | "SKILL.md body exceeds 5,000 words (found: {actual})" |
-| `SKILL_101` | HIGH | Max lines | 500 lines | "SKILL.md body exceeds 500 lines (found: {actual})" |
-| `SKILL_102` | MEDIUM | Max tokens (approx) | ~7,500 tokens | "SKILL.md body may exceed token budget (~{actual} tokens)" |
-| `SKILL_103` | CRITICAL | No absolute paths | No `/home/...` | "Absolute path detected: {path} (use {baseDir}/...)" |
-| `SKILL_104` | MEDIUM | Reference depth | 1 level | "Reference chain detected (SKILL.md → ref1 → ref2); flatten to 1 level" |
+| Check ID    | Severity | Rule                | Threshold      | Error Message                                                           |
+| ----------- | -------- | ------------------- | -------------- | ----------------------------------------------------------------------- |
+| `SKILL_100` | HIGH     | Max words           | 5,000 words    | "SKILL.md body exceeds 5,000 words (found: {actual})"                   |
+| `SKILL_101` | HIGH     | Max lines           | 500 lines      | "SKILL.md body exceeds 500 lines (found: {actual})"                     |
+| `SKILL_102` | MEDIUM   | Max tokens (approx) | ~7,500 tokens  | "SKILL.md body may exceed token budget (~{actual} tokens)"              |
+| `SKILL_103` | CRITICAL | No absolute paths   | No `/home/...` | "Absolute path detected: {path} (use {baseDir}/...)"                    |
+| `SKILL_104` | MEDIUM   | Reference depth     | 1 level        | "Reference chain detected (SKILL.md → ref1 → ref2); flatten to 1 level" |
 
 ### 4.3 Required Sections Validation
 
 **Check Category**: (Content checks - implemented as heuristics)
 
-| Section | Required | Min Content | Check Method |
-|---------|----------|-------------|--------------|
-| **Error Handling** | ✅ REQUIRED | ≥4 errors | Count error entries (list items, headings) |
-| **Examples** | ✅ REQUIRED | ≥2 examples | Count example sections (H3 "Example N") |
+| Section            | Required    | Min Content | Check Method                               |
+| ------------------ | ----------- | ----------- | ------------------------------------------ |
+| **Error Handling** | ✅ REQUIRED | ≥4 errors   | Count error entries (list items, headings) |
+| **Examples**       | ✅ REQUIRED | ≥2 examples | Count example sections (H3 "Example N")    |
 
 ---
 
@@ -373,7 +378,7 @@ skills/my-skill/
 
 ### 5.1 Good Minimal Compliant Skill (Enterprise)
 
-```yaml
+````yaml
 ---
 name: csv-analysis
 description: "Analyze CSV files with statistical methods, generate visualizations, and export reports. Use when user uploads CSV data or requests statistical summaries, trend analysis, or data visualization. Trigger with 'analyze csv', 'process data file', or 'generate statistics'."
@@ -425,16 +430,19 @@ This skill reads CSV files, validates schema, computes descriptive statistics, g
   "avg_daily_sales": 3456.78,
   "top_product": "Widget A"
 }
-```
+````
 
 ### Example 2: Trend Analysis
+
 **Input**: `user_growth.csv` (columns: month, new_users, total_users)
 **Output**: Line chart showing user growth over time + markdown summary
 
 ## Resources
+
 - `{baseDir}/skills/csv-analysis/references/pandas-api.md`
 - `{baseDir}/skills/csv-analysis/references/error-codes.md`
-```
+
+````
 
 **Validator Result**: ✅ **PASS** (all enterprise requirements met)
 
@@ -464,7 +472,7 @@ allowed-tools:
   - Bash
 version: "1.0"
 author: "Analytics Team"
-```
+````
 
 **Validator Result**: ❌ **FAIL** (9 CRITICAL errors)
 
@@ -478,7 +486,7 @@ author: "Analytics Team"
 2. ❌ `SKILL_006`: name contains reserved word "claude"
    - **Expected**: No "claude" or "anthropic"
    - **Actual**: Starts with "Claude"
-   - **Fix**: Remove "Claude_" prefix
+   - **Fix**: Remove "Claude\_" prefix
 
 3. ❌ `SKILL_013`: description too vague
    - **Expected**: Detailed explanation with scenarios
@@ -532,6 +540,7 @@ author: "Analytics Team"
 ### 6.1 "allowed-tools YAML array error" (Most Common)
 
 **Symptom**:
+
 ```
 [CRITICAL] SKILL_022
   Field: allowed-tools
@@ -543,9 +552,11 @@ author: "Analytics Team"
 **Cause**: Template bug or copy-paste from incorrect example.
 
 **Recovery**:
+
 1. **Open SKILL.md**
 2. **Find frontmatter** (between `---` markers)
 3. **Locate allowed-tools**:
+
    ```yaml
    # ❌ WRONG
    allowed-tools:
@@ -555,9 +566,10 @@ author: "Analytics Team"
    ```
 
 4. **Convert to CSV string**:
+
    ```yaml
    # ✅ CORRECT
-   allowed-tools: "Read,Write,Bash(python:*)"
+   allowed-tools: 'Read,Write,Bash(python:*)'
    ```
 
 5. **Re-validate**:
@@ -572,6 +584,7 @@ author: "Analytics Team"
 ### 6.2 "Unscoped Bash tool" (Security Critical)
 
 **Symptom**:
+
 ```
 [CRITICAL] SKILL_024
   Field: allowed-tools
@@ -585,12 +598,14 @@ author: "Analytics Team"
 **Security Impact**: Allows skill to execute ANY shell command (malicious code injection risk).
 
 **Recovery**:
+
 1. **Identify required commands**:
    - Running git commands? → `Bash(git:*)`
    - Running python scripts? → `Bash(python:*)`
    - Running npm commands? → `Bash(npm:*)`
 
 2. **Update allowed-tools**:
+
    ```yaml
    # ❌ WRONG (unscoped)
    allowed-tools: "Read,Write,Bash"
@@ -615,27 +630,33 @@ author: "Analytics Team"
 **Cause**: Description lacks "Use when" clause and trigger phrases.
 
 **Bad Example**:
+
 ```yaml
-description: "Data processing tool"
+description: 'Data processing tool'
 ```
 
 **Why it fails**:
+
 - Too vague (what kind of data? what processing?)
 - No "Use when" scenarios
 - No trigger phrases for router matching
 
 **Recovery**:
+
 1. **Add specific capabilities**:
+
    ```yaml
-   description: "Process CSV files with statistical analysis and generate reports."
+   description: 'Process CSV files with statistical analysis and generate reports.'
    ```
 
 2. **Add "Use when" clause**:
+
    ```yaml
-   description: "Process CSV files with statistical analysis and generate reports. Use when user uploads CSV data or requests statistical summaries, trend analysis, or data visualization."
+   description: 'Process CSV files with statistical analysis and generate reports. Use when user uploads CSV data or requests statistical summaries, trend analysis, or data visualization.'
    ```
 
 3. **Add trigger phrases**:
+
    ```yaml
    description: "Process CSV files with statistical analysis and generate reports. Use when user uploads CSV data or requests statistical summaries, trend analysis, or data visualization. Trigger with 'analyze csv', 'process data file', or 'generate statistics'."
    ```
@@ -652,6 +673,7 @@ description: "Data processing tool"
 ### 6.4 "Body exceeds 5,000 words" (Context bloat)
 
 **Symptom**:
+
 ```
 [HIGH] SKILL_100
   Rule: Max words
@@ -665,12 +687,14 @@ description: "Data processing tool"
 **Impact**: Wastes context tokens, slows down skill loading.
 
 **Recovery**:
+
 1. **Identify heavy content**:
    - API reference tables (>500 lines)
    - Error code listings (>100 entries)
    - Detailed examples (>1000 words)
 
 2. **Move to references/**:
+
    ```bash
    cd skills/my-skill
    mkdir -p references
@@ -680,8 +704,10 @@ description: "Data processing tool"
    ```
 
 3. **Update SKILL.md to reference**:
+
    ```markdown
    ## Resources
+
    - Full API reference: `{baseDir}/skills/my-skill/references/api-reference.md`
    - Error codes: `{baseDir}/skills/my-skill/references/error-codes.md`
    ```
@@ -699,29 +725,29 @@ description: "Data processing tool"
 
 ### 7.1 All Skill Check IDs by Category
 
-| Category | Check ID Range | Count | Severity Range |
-|----------|---------------|-------|----------------|
-| **Name** | `SKILL_001-006` | 5 | CRITICAL |
-| **Description** | `SKILL_010-016` | 6 | CRITICAL - MEDIUM |
-| **allowed-tools** | `SKILL_020-024` | 4 | CRITICAL |
-| **Version** | `SKILL_030-032` | 2 | CRITICAL |
-| **Author** | `SKILL_040-043` | 3 | CRITICAL - HIGH |
-| **License** | `SKILL_050-052` | 2 | CRITICAL |
-| **Tags** | `SKILL_060-062` | 2 | CRITICAL |
-| **Body Constraints** | `SKILL_100-104` | 5 | CRITICAL - MEDIUM |
+| Category             | Check ID Range  | Count | Severity Range    |
+| -------------------- | --------------- | ----- | ----------------- |
+| **Name**             | `SKILL_001-006` | 5     | CRITICAL          |
+| **Description**      | `SKILL_010-016` | 6     | CRITICAL - MEDIUM |
+| **allowed-tools**    | `SKILL_020-024` | 4     | CRITICAL          |
+| **Version**          | `SKILL_030-032` | 2     | CRITICAL          |
+| **Author**           | `SKILL_040-043` | 3     | CRITICAL - HIGH   |
+| **License**          | `SKILL_050-052` | 2     | CRITICAL          |
+| **Tags**             | `SKILL_060-062` | 2     | CRITICAL          |
+| **Body Constraints** | `SKILL_100-104` | 5     | CRITICAL - MEDIUM |
 
 ### 7.2 Critical Path Checks (Must Pass for PR Merge)
 
-| Check ID | Rule | Impact if Failed |
-|----------|------|------------------|
-| `SKILL_003` | name kebab-case | Marketplace rejection |
-| `SKILL_006` | No reserved words | Marketplace rejection |
-| `SKILL_015` | "Use when" clause | Skill won't activate (poor discovery) |
-| `SKILL_022` | allowed-tools CSV string | Tools won't be authorized (CRITICAL) |
-| `SKILL_024` | Bash scoped | Security vulnerability (CRITICAL) |
-| `SKILL_032` | version SemVer | Marketplace rejection |
-| `SKILL_062` | tags present | Poor discoverability |
-| `SKILL_103` | No absolute paths | Portability broken |
+| Check ID    | Rule                     | Impact if Failed                      |
+| ----------- | ------------------------ | ------------------------------------- |
+| `SKILL_003` | name kebab-case          | Marketplace rejection                 |
+| `SKILL_006` | No reserved words        | Marketplace rejection                 |
+| `SKILL_015` | "Use when" clause        | Skill won't activate (poor discovery) |
+| `SKILL_022` | allowed-tools CSV string | Tools won't be authorized (CRITICAL)  |
+| `SKILL_024` | Bash scoped              | Security vulnerability (CRITICAL)     |
+| `SKILL_032` | version SemVer           | Marketplace rejection                 |
+| `SKILL_062` | tags present             | Poor discoverability                  |
+| `SKILL_103` | No absolute paths        | Portability broken                    |
 
 ---
 
