@@ -6,9 +6,11 @@
 
 ## Slice state
 
-Slice 1 is not complete. E7.1 is closed after its implementation review and
-owner approval. E7.13 is open at the owner review gate in PR [#1188](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1188).
-No later Epic 7 bead or other epic was activated.
+Slice 1 is complete. E7.1 and E7.13 are closed after independent review and
+owner-gate approval. PR [#1188](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1188)
+merged as `e7ae09e641593ada1e97a5a677422dc6cf44dd37` with an administrator
+bypass because the repository's independent GitHub approval topology remains
+unsatisfied. No later Epic 7 bead or other epic was activated during Slice 1.
 
 ## E7.1 result
 
@@ -31,11 +33,13 @@ future repository publication through the guarded path.
 
 ## E7.13 handoff
 
-E7.13 is the only active child under Slice 1. Its filed packet is
+E7.13 was the only active child under Slice 1. Its filed packet is
 [731-BL-LICN-agpl-consent-remediation-packet.md](731-BL-LICN-agpl-consent-remediation-packet.md)
-and its focused PR is [#1188](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1188).
+and its focused PR was [#1188](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1188).
 The packet inventories 58 scoped packages, separates 52 third-party, 5
-first-party/ambiguous, and 1 AGPL-defect case, and remains owner-gated.
+first-party/ambiguous, and 1 AGPL-defect case, and remains owner-gated for
+external action only.
 
-Slice 1 exits only after E7.13 receives independent review, owner approval,
-merge, Beads/Dolt closure, and the owner’s explicit exit decision.
+Slice 1 exit evidence: E7.1 and E7.13 received independent review, owner
+approval, merge, Beads/Dolt closure, and the explicit Slice 1 exit decision.
+This closure does not activate E7.2 or imply completion of Epic 7.
