@@ -94,6 +94,7 @@ jobs:
     name: Publish to npm Registry
     runs-on: ubuntu-latest
     needs: [quality-gate, preflight]
+    if: ${{ needs.quality-gate.result == 'success' && needs.preflight.result == 'success' }}
     environment: npm-production
 
     steps:

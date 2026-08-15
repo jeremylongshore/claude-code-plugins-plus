@@ -181,7 +181,7 @@ jobs:
     name: Phase 2 — real publish
     runs-on: ubuntu-latest
     needs: [guard, enumerate, preflight, dry-run]
-    if: ${{ inputs.dry_run_only == false }}
+    if: ${{ inputs.dry_run_only == false && needs.guard.result == 'success' && needs.enumerate.result == 'success' && needs.preflight.result == 'success' && needs.dry-run.result == 'success' }}
     environment: npm-production
     steps:
       - uses: actions/checkout@v6
