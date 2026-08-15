@@ -20,16 +20,28 @@ jq '.plugins | length' .claude-plugin/marketplace.json
 jq '.plugins | length' marketplace/public/downloads/manifest.json
 ```
 
-Counts: 58 scoped packages; 52 clearly third-party; 5 first-party/ownership-ambiguous; 1 AGPL defect. The author field is attribution, not consent.
+### Reconciled populations
+
+The following command-backed measurement was rerun against current `origin/main` `be8dd2e19b76dd1b22a4151694320ea7eb0395f2`:
+
+```bash
+node scripts/check-mirror-packages-private.mjs
+find plugins -type f -name .source.json | wc -l
+jq '[.plugins[] | select(.name | startswith("@intentsolutionsio/"))] | length' .claude-plugin/marketplace.json
+```
+
+Results: 63 provenance-marked package directories; 63 contain `package.json`; 63 carry `"private": true`; 58 are live `@intentsolutionsio/*` npm packages; 52 of those are clearly third-party; Skyvern is one additional clearly third-party package and the AGPL defect; 5 are first-party/ownership-ambiguous. Thus the current clearly third-party total is **53 including Skyvern**, not 52. The five repository mirrors outside the scoped npm inventory are `hyperflow`, `claude-channel-slack`, `cli-power-skills`, `pr-to-spec`, and `x-bug-triage-plugin`. The historical 55 count grouped `brand-forge` and `content-multiplier` as third-party; their `localplugins/plugins` provenance does not establish external ownership, so both are now ambiguous. No count above is interchangeable with another cohort.
+
+The author field is attribution, not consent. A copyright license such as MIT or Apache-2.0 permits only the acts it grants; it does not establish endorsement, trademark permission, consent to use Intent Solutions' package identity, or approval to publish under this npm scope.
 
 ## A. AGPL artifact: `@intentsolutionsio/skyvern@0.1.5`
 
 - Publication: `2026-06-18T01:49:03.906Z`; [npm tarball](https://registry.npmjs.org/@intentsolutionsio/skyvern/-/skyvern-0.1.5.tgz).
-- Upstream: [Skyvern-AI/skyvern](https://github.com/Skyvern-AI), path `skyvern/cli/skills/skyvern`, branch `main`; marker last sync `2026-07-13T17:26:54.366Z`. The marker does not record a resolved commit. The latest path commit returned before that sync by `gh api repos/Skyvern-AI/skyvern/commits?path=skyvern/cli/skills/skyvern&until=2026-07-13T17:26:54Z` was `85f15450fd673433a23abcd172a6730fb0dd72d9`; it is not asserted as the resolved snapshot.
+- Upstream: [Skyvern-AI/skyvern](https://github.com/Skyvern-AI/skyvern), path `skyvern/cli/skills/skyvern`, branch `main`; marker last sync `2026-07-13T17:26:54.366Z`. The marker does not record a resolved commit. The latest path commit returned before that sync by `gh api repos/Skyvern-AI/skyvern/commits?path=skyvern/cli/skills/skyvern&until=2026-07-13T17:26:54Z` was `85f15450fd673433a23abcd172a6730fb0dd72d9`; it is not asserted as the resolved snapshot.
 - License: `AGPL-3.0` in `.source.json`, package.json, and GitHub repository metadata.
 - Exact inspection: `npm view ... dist.tarball`; `curl -fsSL <tarball> -o /tmp/skyvern-0.1.5.tgz`; `tar -tzf /tmp/skyvern-0.1.5.tgz`; `tar -xOzf ... package/package.json`. The tarball contained only `package.json`, `.claude-plugin/plugin.json`, and `README.md`; no `LICENSE`, `COPYING`, or `NOTICE`.
 - Identity/channels: Intent Solutions owns the npm name/scope; the repository mirror is `plugins/productivity/skyvern`; it is in the root index, website data, and cowork/download manifest.
-- PR #1187 containment makes the manifest private and blocks future repository publication. It does not repair the existing tarball, add license text, establish consent, change npm history, or resolve ownership.
+- PR #1187 containment makes the manifest private and adds a tree-wide invariant, protecting the repository's current package boundary. It does not yet provide the independent `.source.json` exclusion inside both publishing workflows; that is E7.2. It does not repair the existing tarball, add license text, establish consent, change npm history, or resolve ownership.
 
 Recommended sequence: (1) prepare a corrected package with complete license and attribution; (2) independently verify its tarball; (3) publish only after owner authorization; (4) deprecate `0.1.5` accurately; (5) determine unpublish eligibility without assuming it; (6) preserve a signed correction record. None was performed.
 
@@ -98,15 +110,29 @@ Disposition rules follow blueprint 727’s hierarchy: retain only with documente
 | `@intentsolutionsio/x-twitter-scraper`               |   0.1.0 | Xquik-dev/x-twitter-scraper           | MIT / MIT / MIT                              | 2026-07-01T15:37:18.559Z | third-party           | quarantine pending consent | R,N,I,C          |
 | `@intentsolutionsio/zai-cli`                         |   1.0.2 | numman-ali/n-skills                   | Apache-2.0 / Apache-2.0 / Apache-2.0         | 2026-06-18T01:47:13.026Z | third-party           | quarantine pending consent | R,N,I,Wc,Ws,Wu,C |
 
-Every row had no written consent record found in repository evidence. The package author and license metadata are retained attribution signals, not permission. Complete license-text carriage is not inferred from metadata; retain decisions require tarball-level verification.
+Every row had no written consent record found in repository evidence. The package author and license metadata are retained attribution signals, not permission. Complete license-text carriage is not inferred from metadata; retain decisions require tarball-level verification. `NOASSERTION`, a 404, missing consent records, and missing repository evidence are unresolved states, not proof of absence.
 
 Primary metadata `NOASSERTION`/404 is not proof of no license, but it blocks a retain recommendation pending evidence. The five ambiguous packages are `box-cloud-filesystem`, `brand-forge`, `content-multiplier`, `dolt-mcp-vcs`, and `governed-second-brain`. The AGPL defect is `skyvern`.
+
+### Tarball-level verification
+
+The exact command used for each selected package was:
+
+```bash
+url=$(npm view "$SPEC" dist.tarball --json | jq -r 'if type=="array" then .[0] else . end')
+curl -fsSL "$url" -o /tmp/package.tgz
+sha256sum /tmp/package.tgz
+tar -tzf /tmp/package.tgz
+tar -xOzf /tmp/package.tgz package/package.json | jq '{name,version,license}'
+```
+
+Required legal rows were inspected: Skyvern (`361157c49c8e47a589fd2768fb021ecbb1e156aaf7899cd199150f49e67a3cb3`, no `LICENSE`, `COPYING`, or `NOTICE`); llm-box (`449b1f1bdbe62f239bf738b6002ad146c0c1ef4388152799e8e56751bdb39acb`, no license file); schedule-after-usage-reset (`fb0767d20f157a0d476ed8d49655991f917d0d7e15d1eb7d82c4fe928d3c709f`, includes `LICENSE`); and sugar (`45bf4ad2c9fd823dd211ea830c6406c9c592b61b21524d0bde1bb56dd4f87146`, includes `LICENSE`). A stratified ordinary-license sample was also checked: aomi MIT with `LICENSE`, gastown Apache-2.0 with `LICENSE`, wondelai-blue-ocean-strategy MIT without a license file, and publishing-skills MIT-0 with `LICENSE`. This sample is not a blanket retention approval; every proposed retention still requires exact tarball evidence.
 
 ## C. Channel-specific exposure
 
 | Channel                          |                                 Current evidence | Treatment                                                                                                             |
 | -------------------------------- | -----------------------------------------------: | --------------------------------------------------------------------------------------------------------------------- |
-| Repository mirror                |                                            58/58 | Keep content unchanged; provenance/private containment is the control.                                                |
+| Repository mirror                |                              58 scoped; 63 total | Keep content unchanged; PR #1187's private boundary protects future repository publication.                           |
 | npm package                      |                                       58/58 live | No current version changes; deprecation, corrected release, or unpublish requires authorization.                      |
 | Tons of Skills marketplace/index |                                            58/58 | Index presence is a separate publication decision.                                                                    |
 | Website projections              | 45 catalog / 39 skills catalog / 43 search index | Projections are inconsistent; do not regenerate until owner dispositions are decided.                                 |
@@ -123,7 +149,7 @@ These are owner-gated and were not sent.
 
 **Corrected attribution notice**
 
-> We identified <project> as the upstream source for `<package>`. We are preparing corrected attribution and license presentation for owner review. Nothing will be published without authorization; your project name, authorship, license, and upstream link will be preserved as confirmed.
+> We identified <project> as the upstream source for `<package>`. We are preparing corrected attribution and license presentation for owner review. No further release, correction, deprecation, or removal action will be taken until the appropriate authorization is recorded; your project name, authorship, license, and upstream link will be preserved as confirmed.
 
 **Deprecation/removal offer**
 
