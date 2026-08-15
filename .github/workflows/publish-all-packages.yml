@@ -1,4 +1,4 @@
-name: "[Manual] Publish All @intentsolutionsio Packages"
+name: '[Manual] Publish All @intentsolutionsio Packages'
 
 # One-shot mass publish. Manual trigger only — never runs on push.
 # Intended to be used once to seed the npm namespace after PR A (scaffolding)
@@ -33,7 +33,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # npm provenance
+  id-token: write # npm provenance
 
 jobs:
   guard:
@@ -65,32 +65,17 @@ jobs:
         id: list
         run: |
           set -euo pipefail
-          python3 <<'PY' > /tmp/packages.json
-          import json, os
-          out = []
-          for root, _, files in os.walk('plugins'):
-              if 'package.json' not in files:
-                  continue
-              if '.claude-plugin' not in os.listdir(root) and not os.path.isfile(os.path.join(root, 'plugin.json')):
-                  continue
-              pkg_path = os.path.join(root, 'package.json')
-              try:
-                  pkg = json.load(open(pkg_path))
-              except Exception:
-                  continue
-              name = pkg.get('name', '')
-              if not name.startswith('@intentsolutionsio/'):
-                  continue
-              if pkg.get('private'):
-                  continue
-              out.append({
-                  'name': name,
-                  'version': pkg.get('version', '0.0.0'),
-                  'dir': root,
-              })
-          out.sort(key=lambda p: p['name'])
-          print(json.dumps(out))
-          PY
+          # The shared resolver is the publisher boundary. It excludes a
+          # candidate with an applicable .source.json before dry-run, build,
+          # version changes, token use, or registry contact.
+          node scripts/publish-candidate-report.mjs \
+            --all \
+            --scope '@intentsolutionsio/' \
+            --json > /tmp/publish-report.json
+          jq -r '.mirrorSkipped[] | "Mirror skipped: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.refused[] | "Refused: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.firstPartyCandidates[] | "First-party candidate: \(.name)@\(.version)"' /tmp/publish-report.json
+          jq -c '.firstPartyCandidates' /tmp/publish-report.json > /tmp/packages.json
 
           COUNT=$(jq length /tmp/packages.json)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"

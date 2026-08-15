@@ -151,6 +151,7 @@ Regenerate: list `git ls-files 000-docs` (excluding this file) in ascending NNN 
 - [730-AA-AACR-pr-1186-ratification.md](730-AA-AACR-pr-1186-ratification.md)
 - [731-BL-LICN-agpl-consent-remediation-packet.md](731-BL-LICN-agpl-consent-remediation-packet.md)
 - [732-AA-AACR-slice-1-containment.md](732-AA-AACR-slice-1-containment.md)
+- [733-AA-AACR-slice-2-publisher-exclusion.md](733-AA-AACR-slice-2-publisher-exclusion.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)
