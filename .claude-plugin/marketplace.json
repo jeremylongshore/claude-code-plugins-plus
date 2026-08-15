@@ -8692,7 +8692,7 @@
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "category": "mcp",
       "keywords": [
         "memory",

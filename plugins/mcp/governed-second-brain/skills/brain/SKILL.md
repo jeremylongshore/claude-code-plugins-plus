@@ -39,8 +39,8 @@ to answer beyond what the citations support.
 - The **bobs-big-brain** / governed-brain plugin is installed (MCP `governed-brain`).
 - **Mode is automatic.** In **local mode** (default) search runs **in-process**
   against your local `~/.teamkb` index — no network, no API key; a compatible **qmd**
-  binary must be available (prefer monorepo pin `@tobilu/qmd` via INTKB / installer).
-  Operators can use `scripts/bbb-qmd` from qmd-team-intent-kb so XDG points at the team
+  binary must be available (prefer monorepo pin `@tobilu/qmd` via the Registrar / installer).
+  Operators can use `scripts/bbb-qmd` from bobs-big-brain-registrar so XDG points at the team
   index, not personal `~/.cache/qmd`. In **team mode** (`TEAMKB_API_URL` set) search
   proxies to the team brain. Every hit is a `qmd://` citation.
 
@@ -138,12 +138,16 @@ Sources:
 - Never invent a qmd:// URI. Cite only URIs returned by `brain_search`.
 - Prefer fewer, well-cited claims over a broad answer that cannot be anchored.
 - Do not conflate this product with IRSB / Moat / Scout (separate stack).
+- **Provenance ≠ truth.** Promotion receipts record each memory's capture channel (or `unattested`)
+  and an origin-token hash — that proves WHERE a capture came from, not that its content is true. An
+  authenticated insider can still have saved poisoned content with a valid origin; weigh cited answers
+  accordingly and rely on govern policy, human review, and supersession as the content-quality gates.
 
 ## Resources
 
 - [Bob's Big Brain umbrella](https://github.com/intent-solutions-io/bobs-big-brain-umbrella) — stack map.
 - [bobs-big-brain-plugin](https://github.com/jeremylongshore/bobs-big-brain-plugin) — this plugin.
-- [qmd-team-intent-kb](https://github.com/jeremylongshore/qmd-team-intent-kb) — govern layer + `bbb-qmd`.
+- [bobs-big-brain-registrar](https://github.com/jeremylongshore/bobs-big-brain-registrar) — govern layer (Bob's Big Brain Registrar) + `bbb-qmd`.
 - [tobi/qmd](https://github.com/tobi/qmd) (npm `@tobilu/qmd`) — retrieve engine (OSS; we pin, we do not fork).
-- [intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) — compile layer (ICO).
+- [bobs-big-brain-compiler](https://github.com/jeremylongshore/bobs-big-brain-compiler) — compile layer (Bob's Big Brain Compiler).
 - The write counterpart: the `/brain-save` skill (governed capture).

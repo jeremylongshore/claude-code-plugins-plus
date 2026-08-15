@@ -19,21 +19,21 @@
 
 | | Repo | What it is |
 |---|---|---|
-| **Landing / thesis** | **[intent-solutions-io/governed-second-brain](https://github.com/intent-solutions-io/governed-second-brain)** | The umbrella — *why* this exists, the competitive teardown, the "Compile, Then Govern" thesis, the receipts argument. Start here for the **story**. |
+| **Landing / thesis** | **[intent-solutions-io/bobs-big-brain-umbrella](https://github.com/intent-solutions-io/bobs-big-brain-umbrella)** | The umbrella — *why* this exists, the competitive teardown, the "Compile, Then Govern" thesis, the receipts argument. Start here for the **story**. |
 | **The plugin** (you are here) | **[jeremylongshore/bobs-big-brain-plugin](https://github.com/jeremylongshore/bobs-big-brain-plugin)** | The installable code — the local stdio MCP server + skills. Start here to **run it**. |
 
 It stacks on three engines:
 
 | Engine | Repo | Layer |
 |---|---|---|
-| **ICO** | [jeremylongshore/intentional-cognition-os](https://github.com/jeremylongshore/intentional-cognition-os) | **Compile** — derive knowledge from a corpus (optional; the only part that egresses) |
-| **INTKB** | [jeremylongshore/qmd-team-intent-kb](https://github.com/jeremylongshore/qmd-team-intent-kb) | **Govern** — deterministic dedupe → policy → promote + the hash-chained audit |
+| **Bob's Big Brain Compiler** | [jeremylongshore/bobs-big-brain-compiler](https://github.com/jeremylongshore/bobs-big-brain-compiler) | **Compile** — derive knowledge from a corpus (optional; the only part that egresses) |
+| **Bob's Big Brain Registrar** | [jeremylongshore/bobs-big-brain-registrar](https://github.com/jeremylongshore/bobs-big-brain-registrar) | **Govern** — deterministic dedupe → policy → promote + the hash-chained audit |
 | **qmd** | [tobi/qmd](https://github.com/tobi/qmd) (`@tobilu/qmd`) | **Retrieve** — on-device search; every hit is a `qmd://` citation |
 
-This plugin **bundles** the compiled INTKB packages, so it runs the govern + retrieve loop fully
+This plugin **bundles** the compiled Registrar packages, so it runs the govern + retrieve loop fully
 in-process — the engines stay independent repos; nothing here forks or privatizes them.
 
-**Powered by [tobi/qmd](https://github.com/tobi/qmd).** We pin `@tobilu/qmd` and ride upstream via Dependabot — we do **not** fork the search engine. For the **team** index (not personal `~/.cache/qmd`), operators on an INTKB checkout use `./scripts/bbb-qmd` and `pnpm search-canary` (see [qmd-team-intent-kb ops runbook](https://github.com/jeremylongshore/qmd-team-intent-kb/blob/main/000-docs/042-OD-OPSM-bbb-qmd-operator-runbook.md)).
+**Powered by [tobi/qmd](https://github.com/tobi/qmd).** We pin `@tobilu/qmd` and ride upstream via Dependabot — we do **not** fork the search engine. For the **team** index (not personal `~/.cache/qmd`), operators on a Registrar checkout use `./scripts/bbb-qmd` and `pnpm search-canary` (see [bobs-big-brain-registrar ops runbook](https://github.com/jeremylongshore/bobs-big-brain-registrar/blob/main/000-docs/042-OD-OPSM-bbb-qmd-operator-runbook.md)).
 
 ## What it does
 
@@ -41,13 +41,13 @@ Most "AI memory" gives an agent better *recall*. This does two things the catego
 **governs** what's allowed to become durable memory (deterministic dedupe / policy / promotion — by
 code, not a model), and it ships a **receipt** — a `qmd://` citation plus a SHA-256 hash-chained audit
 event — for every write. Runs on your machine; your files never leave it (retrieval is local; the
-optional ICO *compile* step is the only thing that egresses, and it's opt-in).
+optional *compile* step (Bob's Big Brain Compiler) is the only thing that egresses, and it's opt-in).
 
 ### Tool surface
 
 | Tool | Kind | What it does |
 |---|---|---|
-| `brain_search` | read | Cited search over your governed memory (`qmd://` receipts), in-process |
+| `brain_search` | read | Cited search over your governed memory (`qmd://` receipts), in-process — native-FTS5 + `qmd` reciprocal-rank fusion, then a freshness/category rerank |
 | `brain_status` | read | Counts by lifecycle state + category |
 | `brain_audit_verify` | read | Verify the audit trail — the SHA-256 hash chain **and** the external anchor log; flags any tamper |
 | `brain_capture` | write | Capture a fact as a governance **proposal** (to the local spool) |
@@ -114,7 +114,7 @@ One command, two modes:
 # A) zero-egress (default for regulated/client data) — nothing leaves the machine
 npx governed-second-brain init <your-folder> --index-only
 
-# B) full compile — ICO derives knowledge (6 passes) before governing; opt-in egress to DeepSeek
+# B) full compile — the Compiler derives knowledge (6 passes) before governing; opt-in egress to DeepSeek
 DEEPSEEK_API_KEY=… npx governed-second-brain init <your-folder>
 ```
 
@@ -129,7 +129,7 @@ After it finishes, start a new Claude Code session — the `governed-brain` tool
 ### Team mode — point it at a shared brain
 
 The **same** plugin runs in **team mode** when `TEAMKB_API_URL` is set: instead of an in-process local
-brain, it proxies to a shared governed-brain HTTP API (INTKB's `apps/api`) over your network — so a
+brain, it proxies to a shared governed-brain HTTP API (the Registrar's `apps/api`) over your network — so a
 whole team queries and contributes to **one** governed brain. Set two environment variables:
 
 - **`TEAMKB_API_URL`** — your team brain's API base (e.g. `http://localhost:3847`)
@@ -181,14 +181,14 @@ receipt. A member token can read + propose; admin actions return a clear 403 oth
 <details><summary><strong>Build from source</strong> (to hack on the runtime)</summary>
 
 ```bash
-pnpm -C ../qmd-team-intent-kb build   # the bundle inlines INTKB's compiled packages (sibling checkout, built)
+pnpm -C ../bobs-big-brain-registrar build   # the bundle inlines the Registrar's compiled packages (sibling checkout, built)
 pnpm install && pnpm build            # esbuild → plugin-runtime/governed-brain.cjs
 node bin/init.mjs init <your-folder> --index-only
 ```
 </details>
 
 **Supply chain (shipped in 0.1.4):** npm **provenance** (via the CI release workflow) and the
-`gsb.lock.json` reproducible pin — the exact ICO × INTKB × qmd × plugin tuple, verified by a
+`gsb.lock.json` reproducible pin — the exact Compiler × Registrar × qmd × plugin tuple, verified by a
 hermetic full-chain CI smoke against the pinned set.
 
 **Coming:** automatic Cowork MCP registration.
@@ -203,5 +203,5 @@ Apache-2.0. The umbrella and both engine repos are Apache-2.0; qmd (upstream) is
 <p align="center">
   Built by <a href="https://github.com/jeremylongshore">Jeremy Longshore</a> ·
   <a href="https://intentsolutions.io/">Intent Solutions</a> ·
-  thesis at <a href="https://github.com/intent-solutions-io/governed-second-brain">intent-solutions-io/governed-second-brain</a>
+  thesis at <a href="https://github.com/intent-solutions-io/bobs-big-brain-umbrella">intent-solutions-io/bobs-big-brain-umbrella</a>
 </p>

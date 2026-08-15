@@ -302,20 +302,20 @@
     },
     "governed-second-brain": {
       "repo": "jeremylongshore/bobs-big-brain-plugin",
-      "resolved_ref": "021b746e4794d73b175e4fc5e3d7dcb5f4ff9f54",
-      "locked_at": "2026-07-16T06:44:55.551Z",
+      "resolved_ref": "f684448aaede54ab9b829a807f1a1cffcc49be17",
+      "locked_at": "2026-08-15T18:14:09.253Z",
       "files": {
-        ".claude-plugin/marketplace.json": "sha256:c260d0aaab5c1cd8687abdd19403d5f6c7964bab4d780455c85d206ba351cda8",
-        ".claude-plugin/plugin.json": "sha256:efae12f80b1a46c2f5bb26eb6b98aa3e4be4b03c8dfdbb68f54a36b32b4864d2",
-        ".mcp.json": "sha256:0a14e10aa5b76c52c3453057195f7dea3386a9f430e2f3cc936e52e68fb8d3a3",
+        ".claude-plugin/marketplace.json": "sha256:d43a649e03f801d60ed382a94cd7b2d03115c66eb13816744960bbc53332ae0e",
+        ".claude-plugin/plugin.json": "sha256:f9ed5a3b5b06f70a42b7e38e3f6951c9e966799c846991fc569cbbb4aaca4ecf",
+        ".mcp.json": "sha256:1bd53541a222be3eba0f4e6029c66a43b2f9fa394fd9bb6f200cdbe06ff99385",
         "LICENSE": "sha256:393f9b0a3ffff1e35d5243049719ec982d0663713542fd417b64a7df4c04a361",
-        "README.md": "sha256:4b904fbdb641e2c060f893bd36fbab7fdb0d2e8197823eedbf23f267e264f731",
-        "plugin-runtime/bootstrap.cjs": "sha256:80c8e9021685ce717aa063e180ba671050f8ee49d5ff5e550963154b9bdd700b",
-        "plugin-runtime/governed-brain.cjs": "sha256:ee4b0eb333fca56b8f8651b18f86b3cf7bc5811053abfa27eee142e1c4dd0b8e",
-        "plugin-runtime/package-lock.json": "sha256:f692d0e4060eae895cf8fd23f2d766060f390a45185b14dfb2f7796fad9ef7d2",
-        "plugin-runtime/package.json": "sha256:00e46e6950f0641bfbee431e017a2f6a5aac07eef8f3ab716867e97bad5e4a46",
-        "skills/brain-save/SKILL.md": "sha256:ddf3bd966ecac662edb092dfb313795cd1f8704fa9ca8c93adae05ed790cc49a",
-        "skills/brain/SKILL.md": "sha256:41f356fee964c49ee4cf476e43260c07423a387a781b5fbc2641104ecb96b874"
+        "README.md": "sha256:f01a0b729433c1d44e2b4b2b3afeaeddc7dd8d30320c527f2626b9dbbbf6c505",
+        "plugin-runtime/bootstrap.cjs": "sha256:f609d7df66fd445049de49f6487b594298f194a628756b9aebf21cd22604b248",
+        "plugin-runtime/governed-brain.cjs": "sha256:4346d2cba90b5d7a1b933367246df1e3d4a35eb4a8a0d7a9ee6cf194bfe2f2c4",
+        "plugin-runtime/package-lock.json": "sha256:20cd0ae1e63b44874dff0e6dd53ce897abc7751253ac7886164588169c81523c",
+        "plugin-runtime/package.json": "sha256:486fdccd22a64b801eaaf799591deb987f76eb45cc41b35090be0d7ed4dfb560",
+        "skills/brain-save/SKILL.md": "sha256:d057781ca2760ac580c97c9cea24175ec63cd454e9801d6126ef540f97ffcd23",
+        "skills/brain/SKILL.md": "sha256:28d40997627151b6e8b52efbe968a00e48d90b6d3520502bf62ed7ca8ce04479"
       }
     },
     "hermes-tweet": {
