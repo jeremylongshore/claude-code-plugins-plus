@@ -27,8 +27,8 @@ on:
       - 'plugins/**'
 
 permissions:
-  contents: write       # tag push + release creation
-  id-token: write       # npm provenance
+  contents: write # tag push + release creation
+  id-token: write # npm provenance
 
 concurrency:
   group: npm-publish-main
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2  # need previous commit to diff against
+          fetch-depth: 2 # need previous commit to diff against
 
       - name: Build change list
         id: build
@@ -59,33 +59,17 @@ jobs:
           sort -u -o /tmp/plugin-dirs.txt /tmp/plugin-dirs.txt
 
           echo "Changed plugin directories:"
-          cat /tmp/plugin-dirs.txt || true
-
-          # Filter to those with a package.json and @intentsolutionsio scope
-          python3 <<'PY' > /tmp/packages.json
-          import json, os
-          dirs = [d.strip() for d in open('/tmp/plugin-dirs.txt') if d.strip()]
-          out = []
-          for d in dirs:
-              pj = os.path.join(d, 'package.json')
-              if not os.path.isfile(pj):
-                  continue
-              try:
-                  pkg = json.load(open(pj))
-              except Exception:
-                  continue
-              name = pkg.get('name', '')
-              if not name.startswith('@intentsolutionsio/'):
-                  continue
-              if pkg.get('private'):
-                  continue
-              out.append({
-                  'name': name,
-                  'version': pkg.get('version', '0.0.0'),
-                  'dir': d,
-              })
-          print(json.dumps(out))
-          PY
+          # The resolver walks actual filesystem ancestry. It is the only
+          # publisher candidate authority: names, folder categories, and
+          # private:false cannot override an upstream source record.
+          node scripts/publish-candidate-report.mjs \
+            --changed-files /tmp/changed.txt \
+            --scope '@intentsolutionsio/' \
+            --json > /tmp/publish-report.json
+          jq -r '.mirrorSkipped[] | "Mirror skipped: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.refused[] | "Refused: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.firstPartyCandidates[] | "First-party candidate: \(.name)@\(.version)"' /tmp/publish-report.json
+          jq -c '.firstPartyCandidates' /tmp/publish-report.json > /tmp/packages.json
 
           COUNT=$(jq length /tmp/packages.json)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
