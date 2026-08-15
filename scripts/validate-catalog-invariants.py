@@ -21,12 +21,17 @@ Exits non-zero on any violation. Used by CI and by `pnpm run sync-marketplace`.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 EXTENDED = ROOT / ".claude-plugin" / "marketplace.extended.json"
 SYNCED = ROOT / ".claude-plugin" / "marketplace.json"
+CANONICAL_CATALOGS = {
+    ".claude-plugin/marketplace.extended.json",
+    ".claude-plugin/marketplace.json",
+}
 
 
 def get_source(plugin: dict) -> str:
@@ -46,12 +51,36 @@ def fs_category(source: str) -> str | None:
     return None
 
 
+def tracked_catalog_shadows(root: Path = ROOT) -> list[str]:
+    """Return tracked root catalog-shaped files other than the two canonical files."""
+    result = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
+        check=True,
+        capture_output=True,
+    )
+    tracked = result.stdout.decode().split("\0")
+    shadows = []
+    for path in tracked:
+        if not path or path in CANONICAL_CATALOGS:
+            continue
+        name = Path(path).name
+        if name.startswith("marketplace") and ".json" in name:
+            shadows.append(path)
+    return sorted(shadows)
+
+
 def main() -> int:
     with EXTENDED.open() as f:
         data = json.load(f)
     plugins = data.get("plugins", [])
 
     errors: list[str] = []
+
+    for shadow in tracked_catalog_shadows():
+        errors.append(
+            f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs "
+            f"{sorted(CANONICAL_CATALOGS)}"
+        )
 
     for p in plugins:
         name = p.get("name", "<unnamed>")
