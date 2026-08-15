@@ -3,7 +3,7 @@
 **Date:** 2026-08-15  
 **Blueprint:** document 727 §15.1, E7.2  
 **Bead:** `claude-s03q.3` — Refuse to publish any plugin directory that carries an upstream source record  
-**Status:** Implementation PR pending independent review; this pre-merge record does not claim completion
+**Status:** Complete after independent review and merge; no registry mutation performed
 
 ## Scope and baseline
 
@@ -73,11 +73,17 @@ while the resolver excludes it. No test contacts npm or any other registry.
 
 ## Review, rollback, and prohibited scope
 
-The focused PR must be reviewed from a clean checkout at its exact head by a
-non-implementing reviewer. The reviewer must discover both publishers, plant a
-mirror fixture, rerun the suite and dry run, and verify zero network mutation,
-zero mirrored-content changes, no name-based list, no fourth status context,
-and an accurate rollback. Rollback is a revert of the resolver, workflow
+The focused PR was reviewed from a clean checkout at exact head
+`dfa23e07e9bb8a895861403bca7da0b805e507d6` by a non-implementing review
+process and returned **PASS**. It discovered both publishers, planted a mirror
+fixture, reran the suite and dry run, and verified zero network mutation, zero
+mirrored-content changes, no name-based list, no fourth status context, and an
+accurate rollback. PR #1190 merged as
+`85dbf9f6e8310a83c25ffa787588c45c3d6728d4` with an administrator bypass
+because the independent GitHub approval topology remains unsatisfied; this is
+not independent certification. Post-merge commands reported 63/63 private,
+395 first-party candidates, 71 provenance-skipped paths, 0 refusals, and all
+six resolver tests passed. Rollback is a revert of the resolver, workflow
 filters, tests, and this record; it does not touch npm.
 
 Prohibited: npm or registry mutation, credentials or Environment changes,
