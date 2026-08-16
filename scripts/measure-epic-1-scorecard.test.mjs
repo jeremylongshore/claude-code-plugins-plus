@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -25,6 +25,12 @@ function fixture() {
     '.github/workflows/publish-changed-packages.yml': `on:\n  workflow_run:\n    workflows: ['Validate Plugins']\njobs:\n  preflight:\n    steps:\n      - run: node scripts/npm-publication-preflight.mjs\n  publish:\n    environment: npm-production\n    steps:\n      - run: node scripts/publish-candidate-report.mjs && npm publish\n`,
     '.github/workflows/validate-plugins.yml': `on:\n  pull_request:\n  push:\n    branches: [main]\njobs:\n  validate:\n    steps:\n      - run: python3 scripts/validate-skills-schema.py --marketplace\n      - run: python3 -m unittest tests.test_prose_anchors\n  ci-required:\n    needs:\n      - validate\n`,
     '.gitleaks.toml': "[allowlist]\npaths = ['''(?i).*/README\\.md$''']\nregexes = []\n",
+    '.claude-plugin/marketplace.extended.json': JSON.stringify({
+      plugins: [
+        { name: 'example', source: './plugins/example' },
+        { name: 'local', source: './plugins/local' },
+      ],
+    }),
     '000-docs/000-INDEX.md': '- [canonical.md](canonical.md)\n',
     '000-docs/canonical.md': '# Canonical\n\n**Status:** AUTHORITATIVE\n',
     'CLAUDE.md': 'Validator (schema 4.0.0 — governed)\n',
@@ -304,5 +310,16 @@ test('rejects path traversal and ignores untracked validator rows', () => {
   assert.throws(
     () => buildExtendedScorecardRows({ ...values, paths: [...base.paths, '../escape'] }),
     /escapes repository/,
+  );
+});
+
+test('scorecard corpus counts reject a supplied SKILL.md symlink', () => {
+  const base = fixture();
+  const linked = 'plugins/local/skills/linked/SKILL.md';
+  mkdirSync(dirname(join(base.root, linked)), { recursive: true });
+  symlinkSync(join(base.root, 'plugins/local/skills/two/SKILL.md'), join(base.root, linked));
+  assert.throws(
+    () => buildExtendedScorecardRows(input({ ...base, paths: [...base.paths, linked] })),
+    /symbolic link is not a corpus authority/,
   );
 });

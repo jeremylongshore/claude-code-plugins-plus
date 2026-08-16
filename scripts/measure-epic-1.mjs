@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
-/** Deterministic measurement harness for blueprint 727, Epic 1. */
+/**
+ * Deterministic measurement harness for blueprint 727, Epic 1.
+ *
+ * The package-level `measure:e1:check` command runs the resolver and harness
+ * fixture suites before invoking this module's artifact drift check.
+ */
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -15,6 +20,8 @@ const SCRIPT_PATH = 'scripts/measure-epic-1.mjs';
 export const MEASUREMENT_INPUT_PATHS = [
   SCRIPT_PATH,
   'scripts/measure-epic-1-scorecard.mjs',
+  'scripts/corpus-resolver.mjs',
+  'scripts/plugin-provenance.mjs',
   'scripts/check-doc-authority.mjs',
 ];
 const SCRIPT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -433,7 +440,7 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
         'tracked_tree',
         {
           plugin_agent_files: pluginAgents,
-          plugin_skill_files: pluginSkills,
+          raw_tracked_plugin_skill_files: pluginSkills,
           tracked_files: paths.length,
         },
         1,

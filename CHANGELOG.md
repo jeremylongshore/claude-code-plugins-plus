@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — canonical skill cohorts)
+
+- **Four binding skill-count surfaces now use one corpus resolver.** README
+  metrics, marketplace discovery, canonical validation, and curated promotion
+  consume sorted tracked paths from the named `marketplace-visible`, `graded`,
+  `first-party`, `curated-mirror`, and `curriculum` cohorts. Fixture-tree tests
+  pin provenance, hidden-path, traversal, and malformed-record behavior without
+  freezing live corpus totals. The README badge now reports the 3,068
+  marketplace-visible skills the site can render; the broader graded and
+  first-party cohorts remain available under their own names. Status-quo
+  compatibility is explicit: an orphan plugin with neither provenance nor a
+  manifest remains first-party rather than being silently reclassified.
+  Scorecard consumers must migrate row 1 from `plugin_skill_files` to the
+  explicit `raw_tracked_plugin_skill_files` key; row 24 owns governed cohort
+  counts. Both direct Git scans and caller-supplied tracked inventories reject
+  `SKILL.md` symlinks before cohort membership is computed.
+
 ### Added (2026-08-16 — Epic 1 measurement harness)
 
 - **All 62 modernization scorecard rows now have one deterministic evidence
