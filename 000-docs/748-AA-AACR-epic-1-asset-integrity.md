@@ -2,6 +2,7 @@
 
 - **Date:** 2026-08-16
 - **Authority:** Blueprint 727, Epic 1 beads 1.3 and 1.4
+- **Filing standard:** [Document Filing Standard v4.4](000-DR-STND-document-filing-system.md)
 - **Beads:** `claude-hz8f.2`, `claude-hz8f.7`
 - **Implementation PR:** [#1216](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1216)
 - **Base:** `90c7034293de859832ceca9514ccb5d61ee32b55`
@@ -34,6 +35,9 @@ branch-protection, billing, or production state changed.
 | Detector fixed probes passing        |        false |          true |
 | Detector misses                      |           11 |             0 |
 | Curated skills                       |        1,915 |         1,915 |
+
+Generated scorecard row 11 is `measured` with 36 candidates and zero mismatches. Row 12 is
+`measured` with strategy `magic_bytes`, every fixed probe passing, and zero misses.
 
 The candidate decrease is exact: eleven mismatched source/generated paths were removed or renamed,
 and the genuine generated
@@ -96,21 +100,23 @@ byte-identical to source, zero row-11 mismatches, zero row-12 misses, and zero c
 provenance. Greptile was checked, but its free trial had expired; its notice contained no review and
 was not counted as evidence.
 
-This v4.4 filing appended document 748 to the public ledger, then regenerated the documentation
-index and scorecard from staged Git bytes. The index now covers 188 tracked documents. Scorecard
-rows 1 and 46 increase by one tracked file, and row 44 increases by one indexed document. Row 46's
-`invisible_files` value also increases by one because filed `000-docs/*.md` paths match an existing
-path expression in `.gitleaks.toml`; it is a measured subset, not the complement of tracked files.
-Its `allowlist_patterns` count measures the 25 `.gitleaks.toml` path expressions, not public-ledger
+This v4.4 filing appended document 748 to the public ledger, then ran
+`node scripts/generate-docs-index.mjs`, staged that output, and ran `pnpm run measure:e1` against the
+staged Git bytes. The index now covers 188 tracked documents. Scorecard rows 1 and 46 increase by one
+tracked file, and row 44 increases by one indexed document. Row 46's `invisible_files` value also
+increases by one because filed `000-docs/*.md` paths match an existing path expression in
+`.gitleaks.toml`; it is a measured subset, not the complement of tracked files. Its
+`allowlist_patterns` count measures the 25 `.gitleaks.toml` path expressions, not public-ledger
 negations in `000-docs/.gitignore`, so that value correctly remains 25. Neither generated projection
-was hand-edited.
+was hand-edited; both check-mode commands reproduced the committed bytes exactly.
 
 ## Merge topology and lesson
 
 GitHub still required one human approval after the executable and independent gates passed. The
-owner authorized an administrator bypass for this merge, and the disclosure was posted before
-merge. This is a temporary review-topology compromise, not independent GitHub certification; no
-branch rule or approval policy changed.
+owner authorized an administrator bypass for this merge, and the
+[disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1216#issuecomment-5309741910)
+was posted before merge. This is a temporary review-topology compromise, not independent GitHub
+certification; no branch rule or approval policy changed.
 
 A binary exclusion rule is trustworthy only when it proves both byte identity and extension
 agreement and reads the entire prospective text stream. Generated projections also need to be
