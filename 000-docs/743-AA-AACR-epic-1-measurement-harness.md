@@ -41,9 +41,10 @@ does not collapse the five historical skill counts into one headline number.
 - Exact-head and post-merge `pnpm run measure:e1:check` exited zero and matched the
   [reviewed-head document 742](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/e8894a4ef8054dc0807b6c9e2d240c827e45722d/000-docs/742-RA-DATA-epic-1-scorecard.json)
   byte-for-byte.
-- This filing added one tracked document. Harness regeneration changed only the expected live-tree
-  values: tracked paths 23,009 → 23,010, indexed documents 182 → 183, and ignore-policy invisible
-  files 15,499 → 15,500; the remaining scorecard values stayed byte-identical.
+- This filing added one tracked document; current `origin/main` concurrently added one unrelated
+  blog path. Harness regeneration changed only the expected live-tree values: tracked paths 23,009 →
+  23,011 (one per change), indexed documents 182 → 183, and ignore-policy invisible files 15,499 →
+  15,500. The remaining scorecard values stayed byte-identical.
 - The focused measurement and authority suite passed 29/29 in the implementation checkout and an
   independent detached checkout.
 - Hostile fixtures refuse ignored or unstaged contamination, changed imported measurement modules,
