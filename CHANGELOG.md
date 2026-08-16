@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   manifests, and bootstrap guidance now describe all three lockfile-pinned native modules accurately.
   ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
 
+### Fixed (2026-08-15 — catalog source-of-truth protection)
+
+- **Tracked catalog shadows are forbidden.** The stale
+  `.claude-plugin/marketplace.extended.json.backup` copy is removed, and the catalog
+  invariant validator now fails closed if either canonical catalog is untracked or any
+  additional tracked `marketplace*.json*` variant appears beside them. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
+
 ### Added (2026-08-03/06 — site correctness gates)
 
 - **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`
