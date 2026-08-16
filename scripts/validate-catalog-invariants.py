@@ -36,6 +36,10 @@ SYNCED = ROOT / ".claude-plugin" / "marketplace.json"
 CANONICAL_CATALOGS = {path.relative_to(ROOT).as_posix() for path in (EXTENDED, SYNCED)}
 
 
+class CatalogInventoryError(RuntimeError):
+    """Raised when Git cannot prove the canonical tracked catalog inventory."""
+
+
 def get_source(plugin: dict) -> str:
     src = plugin.get("source", "")
     if isinstance(src, dict):
@@ -60,15 +64,23 @@ def tracked_catalog_shadows(root: Path | None = None) -> list[str]:
     cannot prove that a shadow is absent.
     """
     root = ROOT if root is None else root
-    result = subprocess.run(
-        ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
-        check=True,
-        capture_output=True,
-    )
-    tracked = result.stdout.decode().split("\0")
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
+            check=True,
+            capture_output=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise CatalogInventoryError("cannot enumerate tracked root catalogs with git ls-files") from error
+
+    tracked = {path for path in result.stdout.decode().split("\0") if path}
+    missing = sorted(CANONICAL_CATALOGS - tracked)
+    if missing:
+        raise CatalogInventoryError(f"canonical root catalogs are not tracked: {missing}")
+
     shadows = []
     for path in tracked:
-        if not path or path in CANONICAL_CATALOGS:
+        if path in CANONICAL_CATALOGS:
             continue
         name = Path(path).name
         if name.startswith("marketplace") and ".json" in name:
@@ -83,10 +95,13 @@ def main() -> int:
 
     errors: list[str] = []
 
-    for shadow in tracked_catalog_shadows():
-        errors.append(
-            f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs {sorted(CANONICAL_CATALOGS)}"
-        )
+    try:
+        for shadow in tracked_catalog_shadows():
+            errors.append(
+                f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs {sorted(CANONICAL_CATALOGS)}"
+            )
+    except CatalogInventoryError as error:
+        errors.append(str(error))
 
     for p in plugins:
         name = p.get("name", "<unnamed>")

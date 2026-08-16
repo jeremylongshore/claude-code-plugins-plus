@@ -42,7 +42,8 @@ class CatalogInvariantTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / ".claude-plugin").mkdir()
-            (root / ".claude-plugin" / "marketplace.extended.json").write_text("{}")
+            for name in ("marketplace.extended.json", "marketplace.json"):
+                (root / ".claude-plugin" / name).write_text("{}")
             backup = root / ".claude-plugin" / "marketplace.extended.json.backup"
             backup.write_text("{}")
             subprocess.run(["git", "init", "-q", str(root)], check=True)
@@ -58,11 +59,24 @@ class CatalogInvariantTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / ".claude-plugin").mkdir()
-            (root / ".claude-plugin" / "plugin-metadata.json").write_text("{}")
+            for name in ("marketplace.extended.json", "marketplace.json", "plugin-metadata.json"):
+                (root / ".claude-plugin" / name).write_text("{}")
             subprocess.run(["git", "init", "-q", str(root)], check=True)
             subprocess.run(["git", "-C", str(root), "add", "."], check=True)
 
             self.assertEqual(validator.tracked_catalog_shadows(root), [])
+
+    def test_missing_canonical_catalog_fails_closed(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".claude-plugin").mkdir()
+            (root / ".claude-plugin" / "plugin-metadata.json").write_text("{}")
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+
+            with self.assertRaisesRegex(validator.CatalogInventoryError, "canonical root catalogs are not tracked"):
+                validator.tracked_catalog_shadows(root)
 
     def test_main_refuses_tracked_catalog_shadow(self):
         validator = load_validator()
@@ -81,6 +95,7 @@ class CatalogInvariantTests(unittest.TestCase):
             validator.ROOT = root
             validator.EXTENDED = extended
             validator.SYNCED = synced
+            validator.CANONICAL_CATALOGS = {path.relative_to(root).as_posix() for path in (extended, synced)}
             output = io.StringIO()
             with contextlib.redirect_stdout(output):
                 result = validator.main()

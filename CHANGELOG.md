@@ -27,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Tracked catalog shadows are forbidden.** The stale
   `.claude-plugin/marketplace.extended.json.backup` copy is removed, and the catalog
-  invariant validator now fails closed if any additional tracked `marketplace*.json*`
-  variant appears beside the two canonical catalogs. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
+  invariant validator now fails closed if either canonical catalog is untracked or any
+  additional tracked `marketplace*.json*` variant appears beside them. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
 
 ### Added (2026-08-03/06 — site correctness gates)
 
