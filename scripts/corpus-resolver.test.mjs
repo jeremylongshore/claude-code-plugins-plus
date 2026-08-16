@@ -227,7 +227,8 @@ test('curated files without a tracked manifest fail closed', () => {
 
 test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
   const root = fixture();
-  const external = path.join(os.tmpdir(), `corpus-resolver-external-${process.pid}.md`);
+  const externalDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'corpus-resolver-external-'));
+  const external = path.join(externalDirectory, 'SKILL.md');
   fs.writeFileSync(external, '# external\n');
   const skill = path.join(root, 'plugins', 'core', 'owned', 'skills', 'linked', 'SKILL.md');
   fs.mkdirSync(path.dirname(skill), { recursive: true });
@@ -238,6 +239,6 @@ test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
   try {
     assert.throws(() => resolveCorpus('marketplace-visible', { root }), /symbolic link/);
   } finally {
-    fs.rmSync(external, { force: true });
+    fs.rmSync(externalDirectory, { force: true, recursive: true });
   }
 });
