@@ -15,6 +15,8 @@ const SCRIPT_PATH = 'scripts/measure-epic-1.mjs';
 export const MEASUREMENT_INPUT_PATHS = [
   SCRIPT_PATH,
   'scripts/measure-epic-1-scorecard.mjs',
+  'scripts/corpus-resolver.mjs',
+  'scripts/plugin-provenance.mjs',
   'scripts/check-doc-authority.mjs',
 ];
 const SCRIPT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');

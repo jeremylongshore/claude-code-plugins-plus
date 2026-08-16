@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — canonical skill cohorts)
+
+- **Every binding skill-count surface now uses one corpus resolver.** README
+  metrics, marketplace discovery, canonical validation, and curated promotion
+  consume sorted tracked paths from the named `marketplace-visible`, `graded`,
+  `first-party`, `curated-mirror`, and `curriculum` cohorts. Fixture-tree tests
+  pin provenance, hidden-path, traversal, and malformed-record behavior without
+  freezing live corpus totals.
+
 ### Added (2026-08-16 — Epic 1 measurement harness)
 
 - **All 62 modernization scorecard rows now have one deterministic evidence

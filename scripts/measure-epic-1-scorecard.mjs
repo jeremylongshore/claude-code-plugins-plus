@@ -11,6 +11,7 @@ import { dirname, extname, isAbsolute, normalize, relative, resolve, sep } from 
 import yaml from 'js-yaml';
 
 import { canonicalDocumentLinks, inspectAuthorityMetadata } from './check-doc-authority.mjs';
+import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
 
 const UNRESOLVED_ROWS = new Map([
   [
@@ -359,7 +360,7 @@ function makeReader(root, paths) {
     }
   }
 
-  return { json, paths: normalized, pathSet, text };
+  return { json, paths: normalized, pathSet, root: repository, text };
 }
 
 function baseRow(number, status, cohort, source, values, extra = {}) {
@@ -686,24 +687,10 @@ function readmeMetricWriters(reader) {
 }
 
 function publicSkillAnswers(reader) {
-  const pluginSkillFiles = reader.paths.filter((path) => /^plugins\/.+\/SKILL\.md$/.test(path));
-  const answers = [{ cohort: 'tracked_plugin_skill_files', value: pluginSkillFiles.length }];
-  const candidates = [
-    ['freshie/grade-histogram.json', 'freshie_grade_export', ['total']],
-    ['marketplace/src/data/skills-index.json', 'skills_index', ['count']],
-    [
-      'marketplace/src/data/unified-search-index.json',
-      'unified_search_index',
-      ['stats', 'totalSkills'],
-    ],
-    ['skills/.curated/MANIFEST.json', 'curated_manifest', ['count']],
-  ];
-  for (const [path, cohort, keys] of candidates) {
-    let value = reader.json(path);
-    for (const key of keys) value = value?.[key];
-    if (finiteCount(value) !== null) answers.push({ cohort, value });
-  }
-  return answers.sort((a, b) => compareText(a.cohort, b.cohort));
+  return CORPUS_COHORTS.map((cohort) => ({
+    cohort,
+    value: resolveCorpus(cohort, { root: reader.root, paths: reader.paths }).length,
+  })).sort((a, b) => compareText(a.cohort, b.cohort));
 }
 
 function publicStats(reader) {
@@ -1133,12 +1120,11 @@ export function buildExtendedScorecardRows({
   output[24] = baseRow(
     24,
     'measured',
-    'named committed skill-count surfaces',
+    'five named skill cohorts from the canonical corpus resolver',
     rowSources(
-      'freshie/grade-histogram.json',
-      'marketplace/src/data/skills-index.json',
-      'marketplace/src/data/unified-search-index.json',
-      'skills/.curated/MANIFEST.json',
+      'scripts/corpus-resolver.mjs',
+      '.claude-plugin/marketplace.extended.json',
+      'scripts/plugin-provenance.mjs',
     ).filter((path) => reader.pathSet.has(path)),
     {
       answers,

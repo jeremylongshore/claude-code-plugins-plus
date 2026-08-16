@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "plugin_skill_files": 3179,
-        "tracked_files": 23011
+        "tracked_files": 23013
       }
     },
     "2": {
@@ -1418,37 +1418,36 @@
       "values": null
     },
     "24": {
-      "cohort": "named committed skill-count surfaces",
+      "cohort": "five named skill cohorts from the canonical corpus resolver",
       "dimension": "Published answers to how many skills",
       "reproduce": "pnpm run measure:e1 --row=24 --stdout",
       "source": [
-        "freshie/grade-histogram.json",
-        "marketplace/src/data/skills-index.json",
-        "marketplace/src/data/unified-search-index.json",
-        "skills/.curated/MANIFEST.json"
+        ".claude-plugin/marketplace.extended.json",
+        "scripts/corpus-resolver.mjs",
+        "scripts/plugin-provenance.mjs"
       ],
       "status": "measured",
       "values": {
         "answers": [
           {
-            "cohort": "curated_manifest",
+            "cohort": "curated-mirror",
             "value": 1915
           },
           {
-            "cohort": "freshie_grade_export",
-            "value": 3678
+            "cohort": "curriculum",
+            "value": 500
           },
           {
-            "cohort": "skills_index",
-            "value": 3051
+            "cohort": "first-party",
+            "value": 2802
           },
           {
-            "cohort": "tracked_plugin_skill_files",
-            "value": 3179
+            "cohort": "graded",
+            "value": 3679
           },
           {
-            "cohort": "unified_search_index",
-            "value": 3008
+            "cohort": "marketplace-visible",
+            "value": 3068
           }
         ],
         "distinct_numeric_answers": 5,
@@ -2276,9 +2275,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15500,
+        "invisible_files": 15501,
         "target_invisible_files": 0,
-        "tracked_files": 23011
+        "tracked_files": 23013
       }
     },
     "47": {

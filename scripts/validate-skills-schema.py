@@ -49,6 +49,7 @@ import difflib
 import json as json_module
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional
@@ -2212,85 +2213,24 @@ def validate_agent(path: Path) -> Dict[str, Any]:
 
 
 def find_skill_files(root: Path) -> List[Path]:
-    """Find all SKILL.md files in plugins/ and skills/ directories."""
-    excluded_dirs = {
-        "archive",
-        "backups",
-        "backup",
-        ".git",
-        "node_modules",
-        "__pycache__",
-        ".venv",
-        "010-archive",
-        "000-docs",
-        "002-workspaces",
-        # skills/.curated/ is a GENERATED mirror of the best plugin skills for
-        # skills.sh discovery (freshie/scripts/promote-to-curated.py). Its copies
-        # are byte-identical to their plugins/** sources, which are already graded
-        # here — so scanning them would double-count every promoted skill in
-        # skill_compliance and bloat the tracked grades.csv / grade-histogram.json
-        # exports with mirror rows. Exclude them; the source of truth stays the
-        # plugin skill.
-        ".curated",
-    }
-    results = []
-
-    # Search in plugins directory
-    plugins_dir = root / "plugins"
-    if plugins_dir.exists():
-        seen: set = set()
-        # Layout 1: plugins/<cat>/<plugin>/skills/<name>/SKILL.md (legacy)
-        for p in plugins_dir.rglob("skills/*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                if any(part.startswith("skills-backup-") for part in parts):
-                    continue
-                abs_p = p.resolve()
-                if abs_p in seen:
-                    continue
-                seen.add(abs_p)
-                results.append(p)
-        # Layout 2: plugins/<cat>/<plugin>/SKILL.md (Anthropic-spec / Wondelai-style)
-        # SKILL.md sits at plugin root alongside .claude-plugin/plugin.json — no skills/<name>/ subdir.
-        for plugin_json in plugins_dir.rglob(".claude-plugin/plugin.json"):
-            plugin_root = plugin_json.parent.parent
-            skill_md = plugin_root / "SKILL.md"
-            if not skill_md.is_file():
-                continue
-            parts = skill_md.relative_to(root).parts
-            if any(part in excluded_dirs for part in parts):
-                continue
-            if any(part.startswith("skills-backup-") for part in parts):
-                continue
-            abs_p = skill_md.resolve()
-            if abs_p in seen:
-                continue
-            seen.add(abs_p)
-            results.append(skill_md)
-
-    # Search in standalone skills directory
-    skills_dir = root / "skills"
-    if skills_dir.exists():
-        for p in skills_dir.rglob("*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                results.append(p)
-
-    # Legacy client-repo layout: search in 003-skills directory
-    legacy_skills = root / "003-skills"
-    if legacy_skills.exists():
-        for p in legacy_skills.rglob("*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                results.append(p)
-
-    return results
+    """Return the canonical graded cohort from the shared resolver."""
+    resolver = Path(__file__).resolve().parent / "corpus-resolver.mjs"
+    result = subprocess.run(
+        ["node", str(resolver), "--cohort", "graded", "--root", str(root), "--json"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"corpus resolver failed: {result.stderr.strip()}")
+    try:
+        payload = json_module.loads(result.stdout)
+        files = payload["files"]
+    except (json_module.JSONDecodeError, KeyError, TypeError) as exc:
+        raise RuntimeError(f"corpus resolver returned invalid JSON: {exc}") from exc
+    if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
+        raise RuntimeError("corpus resolver returned an invalid file list")
+    return [root / value for value in files]
 
 
 def parse_frontmatter(content: str) -> Tuple[dict, str]:

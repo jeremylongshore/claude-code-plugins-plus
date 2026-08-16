@@ -23,6 +23,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import prettier from 'prettier';
+import { resolveCorpus } from './corpus-resolver.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
@@ -50,8 +51,8 @@ function trackedFiles() {
 function computeStats(catalog) {
   const plugins = (catalog.plugins || []).length;
   const files = trackedFiles();
-  // The skills badge links to https://tonsofskills.com/skills, so it must not
-  // count skills that page cannot show. Counted from plugins/** ONLY:
+  // The skills badge links to https://tonsofskills.com/skills, so it uses the
+  // canonical marketplace-visible cohort rather than a second local walker:
   //   - skills/.curated/ is a GENERATED mirror of the best plugin skills
   //     (freshie/scripts/promote-to-curated.py) — already counted via its
   //     plugins/** source.
@@ -67,10 +68,7 @@ function computeStats(catalog) {
   // with the developer — which is exactly how this change first failed CI.
   // git ls-files is byte-identical in CI and locally.
   //
-  // Residual: ~110 skills (3.6%) that discovery excludes are still counted.
-  // Closing that would mean replicating discovery's exclusion list in a second
-  // place, which is what let these two counts diverge to begin with.
-  const skills = files.filter((f) => f.startsWith('plugins/') && f.endsWith('/SKILL.md')).length;
+  const skills = resolveCorpus('marketplace-visible', { root: ROOT, paths: files }).length;
   const agents = files.filter(
     (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),
   ).length;

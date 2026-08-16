@@ -84,6 +84,7 @@ GRADES_CSV = ROOT / "freshie" / "grades.csv"
 CURATED_DIR = ROOT / "skills" / ".curated"
 MANIFEST = CURATED_DIR / "MANIFEST.json"
 VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
+CORPUS_RESOLVER = Path(__file__).resolve().parents[2] / "scripts" / "corpus-resolver.mjs"
 
 PROMOTE_GRADES = {"A", "B"}
 
@@ -97,6 +98,26 @@ SHRINK_FLOOR_RATIO = 0.5
 def _plugin_root(skill_path: str) -> str:
     """The plugin dir that owns a skill: everything before `/skills/`."""
     return skill_path.split("/skills/")[0] if "/skills/" in skill_path else skill_path
+
+
+def resolve_corpus(cohort: str) -> set[str]:
+    """Read one named cohort from the repository's canonical resolver."""
+    result = subprocess.run(
+        ["node", str(CORPUS_RESOLVER), "--cohort", cohort, "--root", str(ROOT), "--json"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"corpus resolver failed for {cohort}: {result.stderr.strip()}")
+    try:
+        payload = json.loads(result.stdout)
+        files = payload["files"]
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise RuntimeError(f"corpus resolver returned invalid JSON for {cohort}: {exc}") from exc
+    if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
+        raise RuntimeError(f"corpus resolver returned an invalid file list for {cohort}")
+    return set(files)
 
 
 def is_external_mirror(skill_path: str) -> bool:
@@ -131,6 +152,8 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
             f"(rebuild-inventory.py → validate --populate-db → dolt-sync.py)."
         )
     out: List[Dict[str, str]] = []
+    graded = resolve_corpus("graded")
+    first_party = resolve_corpus("first-party")
     try:
         with grades_csv.open(newline="") as fh:
             for row in csv.DictReader(fh):
@@ -138,8 +161,9 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
                 if not sp or not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
                     continue
                 root = _plugin_root(sp)
-                if is_external_mirror(sp):
-                    continue  # external mirror — never republish under our name
+                skill_file = f"{sp}/SKILL.md"
+                if skill_file not in graded or skill_file not in first_party:
+                    continue  # outside the canonical graded/first-party intersection
                 if not (ROOT / sp).is_dir():
                     continue  # source removed / downgraded since the graded run
                 parts = sp.split("/")  # plugins/<category>/<plugin>/skills/<name>  (or shorter)

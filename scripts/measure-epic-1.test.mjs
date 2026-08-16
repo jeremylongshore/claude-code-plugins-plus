@@ -42,7 +42,11 @@ function fixture() {
   const files = {
     '.gitignore': 'plugins/mirror/\n',
     '.claude-plugin/marketplace.extended.json': JSON.stringify({
-      plugins: [{ name: 'alpha' }, { name: 'alpha' }, { name: 'beta' }],
+      plugins: [
+        { name: 'alpha', source: './plugins/example' },
+        { name: 'alpha', source: './plugins/example' },
+        { name: 'beta', source: './plugins/beta' },
+      ],
     }),
     '.claude-plugin/marketplace.json': '{}',
     '000-docs/canonical.md': '# Canonical\n\n**Status:** AUTHORITATIVE\n',
@@ -62,6 +66,8 @@ function fixture() {
     'plugins/example/assets/good.png': Buffer.from('89504e470d0a1a0a00000000', 'hex'),
     'plugins/example/SKILL.md': '# skill\n',
     'scripts/generate-readme-toc.mjs': 'const README = "README.md"; const skills = 1;',
+    'scripts/corpus-resolver.mjs': 'export function resolveCorpus() {}\n',
+    'scripts/plugin-provenance.mjs': 'export function resolvePluginProvenance() {}\n',
     'scripts/update-metrics.mjs': 'const README = "README.md"; const skillCount = 1;',
     'skills/.curated/MANIFEST.json': JSON.stringify({ count: 6 }),
     'skills/.curated/example-1/SKILL.md': '# curated skill\n',
