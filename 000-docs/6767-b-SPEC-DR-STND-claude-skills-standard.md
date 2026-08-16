@@ -1,10 +1,10 @@
 # Global Master Standard – Claude Skills Specification
 
-> ⚠️ **CURRENT SCHEMA: 3.15.2** (`scripts/validate-skills-schema.py` `SCHEMA_VERSION`). This document is the
+> ⚠️ **CURRENT SCHEMA: 4.0.0** (`scripts/validate-skills-schema.py` `SCHEMA_VERSION`). This document is the
 > **v3.6.0 baseline** of the standard — the 8-field required set, tier model, and 100-point rubric below are
-> still authoritative and unchanged, but nine schema versions of additional enforced rules postdate it
+> still authoritative and unchanged, but subsequent schema releases add enforced rules that postdate it
 > (3.7.0 `disallowed-tools` + overlap ERROR, 3.10.0/3.11.0 kernel-strict agent gates, 3.12.0/3.13.0
-> `plugin.json` field rules, 3.15.x body-section fairness, among others). **Read
+> `plugin.json` field rules, 3.15.x body-section fairness, and 4.0.0 malformed-allowlist errors, among others). **Read
 > [`SCHEMA_CHANGELOG.md`](SCHEMA_CHANGELOG.md) for every change since this doc's 3.6.0 baseline** — the
 > changelog, not this file, is where post-3.6.0 rules are specified.
 
@@ -12,9 +12,9 @@
 **Version**: 3.6.0
 **Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; self-improving-skills series complete 2026-05-14: progressive disclosure + conditional visibility + self-declared config)
 **Created**: 2025-12-06
-**Updated**: 2026-05-14
+**Updated**: 2026-08-16
 **Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
-**Changelog**: 3.6.0 adds the self-declared config surface — `required_environment_variables` (top-level list of objects with name+prompt+help+required*for) and `metadata.intent-solutions.config` (nested list of objects with key+description+default+prompt). Installer / runtime helpers prompt the user on first run instead of letting skills throw on unset secrets. Cross-field consistency with `requires_env` (3.5.0) emits a warning when a visibility-gated var has no installer-prompt description. Full reference: `000-docs/264-DR-GUID-skill-config-pattern.md`. Prior: 3.5.0 (conditional visibility — 4 `requires*_`/`fallback*for*_` fields), 3.4.0 (progressive-disclosure catalog protocol), 3.3.2 (agent-field bug fixes), 3.3.0 (restored 8-field enterprise required set).
+**Changelog**: 2026-08-16 updates the current-schema banner to 4.0.0 for malformed-allowlist fail-closed enforcement; see `SCHEMA_CHANGELOG.md` 4.0.0. The v3.6.0 baseline adds the self-declared config surface — `required_environment_variables` (top-level list of objects with name+prompt+help+required*for) and `metadata.intent-solutions.config` (nested list of objects with key+description+default+prompt). Installer / runtime helpers prompt the user on first run instead of letting skills throw on unset secrets. Cross-field consistency with `requires_env` (3.5.0) emits a warning when a visibility-gated var has no installer-prompt description. Full reference: `000-docs/264-DR-GUID-skill-config-pattern.md`. Prior: 3.5.0 (conditional visibility — 4 `requires*_`/`fallback*for*_` fields), 3.4.0 (progressive-disclosure catalog protocol), 3.3.2 (agent-field bug fixes), 3.3.0 (restored 8-field enterprise required set).
 
 **Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
 

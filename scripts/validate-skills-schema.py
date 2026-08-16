@@ -200,8 +200,12 @@ except ImportError:
 # 3.16.1 (2026-07-23) — security lane (advisory only): load-time shell
 #                       substitution (!`cmd` / ```!) + disallowed-tools entry
 #                       validation (mirrors allowed-tools). Residual of closed #1113.
+# 4.0.0 (2026-08-16)  — malformed allowed-tools entries fail closed as ERRORS
+#                       at every tier; unknown but well-formed names remain
+#                       advisory. Approved by ratified blueprint 727 E1.11 and
+#                       the owner's written execution directive.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.16.1"
+SCHEMA_VERSION = "4.0.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -2379,11 +2383,8 @@ def validate_tool_permission(tool: str) -> Tuple[bool, str]:
                        Caller surfaces msg as a WARNING.
       - (False, msg) — malformed entry (unbalanced parentheses, empty scope,
                        illegal characters in the tool name). Caller surfaces
-                       msg as a WARNING at every tier: escalating malformed
-                       entries to a marketplace-tier ERROR would change
-                       error-vs-warning semantics, which is architectural per
-                       SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and needs prior
-                       approval.
+                       msg as an ERROR at every tier under blueprint 727 E1.11
+                       and the owner's written approval.
 
     Note: the old `cmd:*`-format advisory was dropped — Anthropic's canonical
     example is the space form `Bash(git add *)` (code.claude.com/docs/en/skills),
@@ -2629,8 +2630,30 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     if "allowed-tools" in fm:
         raw_tools = fm["allowed-tools"]
         tools_type_error = False
-        if isinstance(raw_tools, (str, list)):
-            tools: List[str] = parse_allowed_tools(raw_tools)
+        if isinstance(raw_tools, list):
+            valid_list_items: List[str] = []
+            for index, item in enumerate(raw_tools, start=1):
+                if not isinstance(item, str):
+                    errors.append(
+                        f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string, "
+                        f"got: {type(item).__name__}"
+                    )
+                elif not item.strip():
+                    errors.append(f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string")
+                else:
+                    valid_list_items.append(item)
+            tools = parse_allowed_tools(valid_list_items)
+        elif isinstance(raw_tools, str):
+            if "," in raw_tools:
+                empty_positions = [
+                    str(index) for index, item in enumerate(raw_tools.split(","), start=1) if not item.strip()
+                ]
+                if empty_positions:
+                    errors.append(
+                        "[frontmatter] 'allowed-tools' comma-separated form contains empty "
+                        f"entry at position(s): {', '.join(empty_positions)}"
+                    )
+            tools = parse_allowed_tools(raw_tools)
         else:
             errors.append(
                 f"[frontmatter] 'allowed-tools' must be a string or YAML list, got: {type(raw_tools).__name__}"
@@ -2645,12 +2668,10 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
             valid, msg = validate_tool_permission(tool)
             if not valid:
                 # Malformed entry (unbalanced parens, empty scope, illegal
-                # characters in the tool name). WARNING at every tier —
-                # escalating malformed entries to a marketplace-tier ERROR
-                # would change error-vs-warning semantics, which is
-                # architectural per SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and
-                # needs prior written approval.
-                warnings.append(f"[frontmatter] allowed-tools: {msg}")
+                # characters in the tool name). Ratified blueprint 727 E1.11
+                # and the owner's written approval make these fail closed at
+                # every tier. Well-formed unknown names remain advisory below.
+                errors.append(f"[frontmatter] allowed-tools: {msg}")
             elif msg:
                 # Well-formed but unrecognized base tool name (e.g. a
                 # misspelling like 'Reads') — advisory.

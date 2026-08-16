@@ -37,7 +37,7 @@ pnpm test && pnpm typecheck
 pnpm lint
 pnpm run verify                   # Full pipeline — what CI's `verify` job runs
 
-# Validator (schema 3.15.2 — see 000-docs/SCHEMA_CHANGELOG.md)
+# Validator (schema 4.0.0 — see 000-docs/SCHEMA_CHANGELOG.md)
 python3 scripts/validate-skills-schema.py --verbose
 python3 scripts/validate-skills-schema.py --marketplace --verbose
 python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite

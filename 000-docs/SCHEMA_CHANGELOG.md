@@ -146,6 +146,41 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [4.0.0] — 2026-08-16 — Malformed `allowed-tools` entries fail closed
+
+**Breaking error-vs-warning correction — NON-NEGOTIABLE #7. APPROVED by the
+ratified modernization blueprint 727 E1.11 and Jeremy Longshore's written
+execution directive.** The major version follows this changelog's rule for a
+change to rejected/accepted validator semantics.
+
+### Changed
+
+- Structurally malformed `allowed-tools` entries now produce an **ERROR** at
+  standard, marketplace, and enterprise tiers. This covers unbalanced
+  parentheses, empty scopes, missing tool names, and illegal base identifiers.
+- Well-formed but unknown tool names remain **WARNING**-level advisories; E1.11
+  does not introduce or change the tool-token vocabulary.
+- CSV, space-separated string, YAML-list, and folded-scalar forms remain
+  accepted when their parsed entries are structurally valid.
+- The schema 3.0.0 migration note's planned removal of the deprecated
+  `compatible-with` alias in 4.0.0 is **superseded and deferred**. This focused
+  release does not remove that compatibility surface; removal requires its own
+  measured, owner-approved migration slice.
+
+### Corpus and authority evidence
+
+- All 2,802 first-party tracked skills were remeasured: 2,801 declare
+  `allowed-tools`, with zero malformed declarations, so the new error adds no
+  first-party baseline debt.
+- The 377 mirror-owned skills were recorded but not edited. The ten Kobiton
+  folded-scalar files (five canonical / `.codex` byte-identical pairs) remain
+  parseable and valid.
+- The kernel v1 shape check does not encode this entry grammar. That advisory
+  semantic delta remains outside E1.11; the repository validator retains
+  authority under `CLAUDE.md` until the separately governed kernel cutover.
+
+---
+
 ## [3.16.1] — 2026-07-23 — Security lane: load-time shell + disallowed-tools entry validation (advisory)
 
 **Additive advisory-only surface — no change to `ALWAYS_REQUIRED`, tiers, or
@@ -1102,7 +1137,7 @@ this schema previously was not.
 | **3,385 public-repo SKILL.md files** under `plugins/` | Zero errors (warnings about `compatible-with` deprecation are expected and OK). Bulk migration tracked in a separate follow-up issue. Not done in this release. |
 | **45 personal skills under `~/.claude/skills/`** | Migrated 2026-04-28 alongside this release. ~20 had `compatible-with`; rest unaffected. |
 | **CI configs that pass `--enterprise`** | Continue to work. Validator emits a deprecation warning suggesting the rename to `--marketplace`. Removal targeted for the next minor version. |
-| **Skills authored after this release** | Should use `compatibility` (free-text per AgentSkills.io). The `compatible-with` field will be removed entirely in schema v4.0.0. |
+| **Skills authored after this release** | Should use `compatibility` (free-text per AgentSkills.io). Removal of the deprecated `compatible-with` alias was originally targeted for schema v4.0.0; that target is superseded and deferred by the 4.0.0 entry above. |
 
 ### Backward compatibility guarantee
 
