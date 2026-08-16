@@ -6,19 +6,21 @@
 - **Implementation PR:** [#1208](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208)
 - **Reviewed head:** `e8894a4ef8054dc0807b6c9e2d240c827e45722d`
 - **Merge commit:** `fae9b3e787f7735df38880b227da81af1b766872`
-- **Status:** Implementation merged and verified; Bead closure follows this filing transaction
+- **Status:** Implementation merged; [independent reviewer PASS recorded on PR #1208](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306812695); Bead closure follows this filing transaction
 
 ## Outcome
 
 Epic 1 measurements now come from one deterministic command over an immutable Git-index snapshot.
-`pnpm run measure:e1` emits a stable, committed 62-row scorecard plus the graded-artifact cohort;
+`pnpm run measure:e1` emits a stable, committed
+[62-row scorecard plus the graded-artifact cohort](742-RA-DATA-epic-1-scorecard.json);
 `pnpm run measure:e1:check` fails when executable inputs or the artifact drift. Facts without
 committed evidence remain null with explicit `not_reproducible` or `partial` reason codes.
 
-The harness keeps unlike populations separate. At the reviewed head it measured 23,009 tracked
-paths, 3,179 plugin skills, 347 plugin-agent files, and 3,679 graded skill rows. The graded cohort
-contains 962 failing A/B artifacts, 2,155 A/B errors, and 7,433 total row errors. The separate
-marketplace-terminal cohort reports 7,687 findings over 4,405 skill, command, and agent files.
+The [committed scorecard](742-RA-DATA-epic-1-scorecard.json) keeps unlike populations separate. At
+the reviewed head it measured 23,009 tracked paths, 3,179 plugin skills, 347 plugin-agent files, and
+3,679 graded skill rows. The graded cohort contains 962 failing A/B artifacts, 2,155 A/B errors, and
+7,433 total row errors. The separate marketplace-terminal cohort reports 7,687 findings over 4,405
+skill, command, and agent files.
 
 ## Before and after
 
@@ -36,8 +38,8 @@ does not collapse the five historical skill counts into one headline number.
 
 ## Verification and red proofs
 
-- Exact-head and post-merge `pnpm run measure:e1:check` exited zero and matched document 742
-  byte-for-byte.
+- Exact-head and post-merge `pnpm run measure:e1:check` exited zero and matched
+  [document 742](742-RA-DATA-epic-1-scorecard.json) byte-for-byte.
 - The focused measurement and authority suite passed 29/29 in the implementation checkout and an
   independent detached checkout.
 - Hostile fixtures refuse ignored or unstaged contamination, changed imported measurement modules,
@@ -54,15 +56,16 @@ The first candidate head `5b90e37f55bc4cb3d9e98aa43e870ac2e47811a8` was returned
 correction. It mixed a working-tree mirror into clean counts, emitted only part of the scorecard,
 used invalid per-row commands, and had fail-open registries and terminal parsing. Those defects were
 corrected without rewriting history. The final independent reviewer inspected all ten changed
-files, reran the evidence, planted its own input-drift cases, and returned PASS.
+files, reran the evidence, planted its own input-drift cases, and returned
+[PASS](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306812695).
 
 ## Bot review and merge topology
 
 Two exact-head MiniMax lanes passed. A later manual rerun incorrectly reported the 130,996-byte
 scorecard as absent because its review input was capped at 100,000 characters; Git, GitHub's PR-files
-API, and the passing exact-head drift gate disproved the finding. Greptile was manually triggered at
-the reviewed SHA, but its only response was an expired-trial notice, so it supplied no findings and
-is not review evidence.
+API, and the [exact-head evidence record](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306753677)
+disproved the finding. Greptile was manually triggered at the reviewed SHA, but its only response was
+an expired-trial notice, so it supplied no findings and is not review evidence.
 
 GitHub still required a human approval after executable and independent review passed. The platform
 owner authorized an administrator bypass for that review-topology gap. The bypass was disclosed on
