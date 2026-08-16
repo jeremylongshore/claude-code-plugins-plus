@@ -1429,6 +1429,13 @@ jobs:
       - name: Check doc citations resolve to tracked files
         run: node scripts/check-doc-citations.mjs
 
+      # A document cannot grant itself authority by editing its own header.
+      # STANDARDS.md § Canonical documents is the sole public authority index.
+      - name: Check document authority claims have canonical pointers
+        run: |
+          node --test scripts/check-doc-authority.test.mjs
+          node scripts/check-doc-authority.mjs
+
       # Recurrence prevention for the tracked-generated-artifact class: a
       # projection that is also committed has two claimants to one fact and
       # diverges silently (public/data duplicated ~28.5MB of src/data with
