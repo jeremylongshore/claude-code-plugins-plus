@@ -34,7 +34,7 @@ api-template/
 │     "author": "Claude Code Plugin",
 │     "license": "MIT"
 │   }
-│   ```
+│```
 │
 ├── server.js
 │   ```javascript
@@ -85,7 +85,7 @@ api-template/
 │       console.error('MongoDB connection error:', err);
 │   });
 │
-│   ```
+│```
 │
 ├── routes.js
 │   ```javascript
@@ -140,7 +140,7 @@ api-template/
 │   // Add more routes here
 │
 │   module.exports = router;
-│   ```
+│```
 │
 ├── controllers
 │   └── exampleController.js
@@ -175,7 +175,7 @@ api-template/
 │       };
 │
 │       // Add more controller functions here
-│       ```
+│```
 │
 ├── models
 │   └── Example.js
@@ -197,7 +197,7 @@ api-template/
 │       });
 │
 │       module.exports = mongoose.model('Example', ExampleSchema);
-│       ```
+│```
 │
 ├── middleware
 │   └── auth.js
@@ -220,14 +220,14 @@ api-template/
 │       }
 │
 │       module.exports = auth;
-│       ```
+│```
 │
 ├── .env.example
 │   ```
 │   PORT=3000
 │   MONGODB_URI=mongodb://localhost:27017/your_database_name
 │   API_KEY=your_secret_api_key
-│   ```
+│ ```
 │
 ├── swagger.js
 │   ```javascript
@@ -248,7 +248,7 @@ api-template/
 │   const swaggerSpec = swaggerJsdoc(options);
 │
 │   module.exports = swaggerSpec;
-│   ```
+│```
 │
 └── README.md
     ```markdown
