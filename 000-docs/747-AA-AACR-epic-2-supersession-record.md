@@ -50,9 +50,10 @@ Post-merge verification on `53bcfc889505028f75bca7a6a41fdc5a55387d53` passed:
 
 - `node scripts/check-supersession-template.mjs --all` reported one completed record in one tracked
   document.
-- The combined supersession, document-authority, and index suite passed 19/19 post-merge. The final
-  implementation-head review additionally ran 11/11 focused supersession tests, 26/26 combined
-  governance tests, and 36/36 Epic 1 measurement tests plus the exact scorecard-artifact check.
+- The combined supersession, document-authority, and generated-index suite passed 26/26 post-merge
+  (11 supersession, 8 authority, and 7 index tests). The final implementation-head review also ran
+  26/26 combined governance tests and 36/36 Epic 1 measurement tests plus the exact
+  scorecard-artifact check.
 - `node scripts/check-doc-authority.mjs`, `node scripts/generate-docs-index.mjs --check`, and
   `node scripts/measure-epic-1-scorecard.mjs --check 000-docs/742-RA-DATA-epic-1-scorecard.json`
   passed.
