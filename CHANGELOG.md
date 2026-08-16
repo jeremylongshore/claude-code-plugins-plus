@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-15 — documentation authority consolidation)
+
+- **Superseded standards are explicitly frozen.** Documents 6767-a/c/d/e/h now identify
+  their known-false authority or schema rules with evidence from the ratified modernization
+  blueprint, while scaffold diagrams 6767-f/g are reference-only and the canonical 6767-b
+  skill rubric remains untouched. ([#1197](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1197))
+
 ### Added (2026-08-03/06 — site correctness gates)
 
 - **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`

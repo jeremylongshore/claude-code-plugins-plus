@@ -1,4 +1,4 @@
-> **SUPERSEDED–FROZEN (Epic 2 bead 2.1; 2026-08-15).** This historical schema is retained for citation and anchor compatibility; it is not authoritative. The governing platform schema and validation rules are defined by [727](727-AT-ARCH-master-modernization-blueprint.md) and current executable validators. Do not edit below this banner; preserve the body and section anchors byte-for-byte.
+> **SUPERSEDED–FROZEN (Epic 2 bead 2.1; 2026-08-15).** This historical schema is retained for citation and anchor compatibility; it is not authoritative. The governing platform standard is [727](727-AT-ARCH-master-modernization-blueprint.md). Its known-false rules are that `allowed-tools` must be CSV rather than a valid YAML list ([727:38](727-AT-ARCH-master-modernization-blueprint.md#L38)) and that this unlinked document may self-declare `CANONICAL` ([727:862](727-AT-ARCH-master-modernization-blueprint.md#L862)). Do not edit below this banner; preserve the body and section anchors byte-for-byte.
 
 # 6767-d-AT-APIS-at-stnd-claude-code-extensions.md
 
