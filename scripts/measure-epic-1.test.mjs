@@ -51,7 +51,28 @@ function fixture() {
     '.claude-plugin/marketplace.json': '{}',
     '000-docs/canonical.md': '# Canonical\n\n**Status:** AUTHORITATIVE\n',
     'freshie/grade-histogram.json': JSON.stringify({ total: 7 }),
-    'freshie/scripts/promote-to-curated.py': 'return b"\\0" in fh.read(8192)\n',
+    'freshie/scripts/promote-to-curated.py': `
+from pathlib import Path
+CONTENT_TYPE_STRATEGY = "magic_bytes"
+_INSPECTION_CHUNK_BYTES = 65536
+class ContentInspectionError(Exception): pass
+class ContentTypeMismatchError(ContentInspectionError): pass
+class UnknownBinaryContentError(ContentInspectionError): pass
+def _is_binary(path: Path):
+    data = path.read_bytes()
+    suffix = path.suffix.lower()
+    if data.startswith(bytes.fromhex("89504e470d0a1a0a")):
+        if suffix != ".png": raise ContentTypeMismatchError()
+        return True
+    if data.startswith(bytes.fromhex("7f454c46")):
+        if suffix not in ("", ".elf"): raise ContentTypeMismatchError()
+        return True
+    if suffix == ".png": raise ContentTypeMismatchError()
+    if b"\\0" in data: raise UnknownBinaryContentError()
+    try: data.decode("utf-8")
+    except UnicodeDecodeError as exc: raise UnknownBinaryContentError() from exc
+    return False
+`,
     'marketplace/src/data/catalog.json': '{}',
     'marketplace/src/data/github-stats.json': JSON.stringify({ generatedAt: 'historical' }),
     'marketplace/src/data/jrig-data.json': '{}',
@@ -100,7 +121,10 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
   assert.equal(report.rows[5].values.rows, 2);
   assert.equal(report.rows[11].values.candidate_count, 2);
   assert.deepEqual(report.rows[11].values.mismatch_paths, ['plugins/example/assets/bad.png']);
-  assert.equal(report.rows[12].values.missed_count, 1);
+  assert.equal(report.rows[12].values.detector, 'magic_bytes');
+  assert.equal(report.rows[12].values.fixture_passed, true);
+  assert.equal(report.rows[12].values.missed_count, 0);
+  assert.equal(report.rows[12].values.refused_count, 1);
   assert.equal(report.rows[22].values.count_without_content_drift_gate, 0);
   assert.equal(report.rows[24].values.named_cohorts, 5);
   assert.deepEqual(report.rows[25].values, {
@@ -264,7 +288,7 @@ test('grade arithmetic derives a 3679 cohort rather than preserving historical 3
 test('signature registry accepts genuine bytes, exposes counterfeits, and refuses unknown types', () => {
   assert.equal(matchesSignature('.png', Buffer.from('89504e470d0a1a0a', 'hex')), true);
   assert.equal(matchesSignature('.zip', Buffer.from('504b0304', 'hex')), true);
-  assert.equal(matchesSignature('.ttf', Buffer.from('typ1')), false);
+  assert.equal(matchesSignature('.ttf', Buffer.from('typ1')), true);
   assert.equal(matchesSignature('.pdf', Buffer.from('plain text')), false);
   assert.throws(
     () => matchesSignature('.exe', Buffer.alloc(4)),
@@ -289,6 +313,21 @@ test('Git, catalog, source, and detector contradictions fail closed', () => {
     () => buildReport(unknownDetector, evidence()),
     /unknown promotion binary-detector shape/,
   );
+
+  const oldDetector = fixture();
+  put(
+    oldDetector,
+    'freshie/scripts/promote-to-curated.py',
+    `def _is_binary(path):
+    with path.open("rb") as fh:
+        return b"\\0" in fh.read(8192)
+`,
+  );
+  const oldReport = buildReport(oldDetector, evidence());
+  assert.equal(oldReport.rows[12].target_status, 'fail');
+  assert.equal(oldReport.rows[12].values.detector, 'nul_prefix');
+  assert.equal(oldReport.rows[12].values.fixture_passed, false);
+  assert.equal(oldReport.rows[12].values.missed_count, 1);
 });
 
 test('stable output excludes runtime metadata and byte comparison catches one-value drift', () => {

@@ -1,8 +1,8 @@
-(Binary file content for model_architecture.png - A placeholder image representing a typical deep learning model architecture suitable for transfer learning.  This could be a simplified ResNet, VGG, or similar. The image should visually depict layers, connections, and the concept of freezing layers for transfer learning.)
+# Transfer-learning model architecture brief
 
-(Image data would go here.  A real PNG file would contain binary data defining the image.)
+This brief describes a future image representing a typical deep-learning architecture suitable
+for transfer learning, such as a simplified ResNet, VGG, or MobileNet.
 
-<!--
 Instructions for replacing this placeholder:
 
 1.  This file is a placeholder for a visual representation of a common deep learning model architecture.
@@ -16,7 +16,7 @@ Instructions for replacing this placeholder:
 4.  Highlight the layers that are typically frozen during transfer learning (e.g., the earlier convolutional layers).  Use color or shading to differentiate these layers.
 5.  Label the layers clearly.
 6.  Save the diagram as a PNG file.
-7.  Replace the placeholder binary data in this file with the actual PNG data. You can do this by opening the PNG file in a binary editor and copying the data, or by using a scripting language to read and write the binary data.
+7.  Add the finished image as a separate, genuine PNG file.
 
 Example Architecture Considerations:
 
@@ -25,4 +25,3 @@ Example Architecture Considerations:
 *   MobileNet:  Focuses on efficient architectures.
 
 The goal is to provide a visual aid to users understanding how transfer learning can be applied.
--->

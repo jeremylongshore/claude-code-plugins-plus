@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23033
+        "tracked_files": 23031
       }
     },
     "2": {
@@ -230,50 +230,38 @@
       "reproduce": "pnpm run measure:e1 --row=11 --stdout",
       "source": "Git tree bytes matched against the per-extension signature registry",
       "status": "measured",
-      "target_status": "fail",
+      "target_status": "pass",
       "values": {
-        "candidate_count": 48,
-        "mismatch_count": 11,
-        "mismatch_paths": [
-          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
-          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
-          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
-          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
-          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
-          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
-          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
-          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
-          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
-          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
-          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
-        ]
+        "candidate_count": 36,
+        "mismatch_count": 0,
+        "mismatch_paths": []
       }
     },
     "12": {
-      "cohort": "row 11 mismatches evaluated by promote-to-curated semantics",
+      "cohort": "row 11 mismatches plus fixed genuine, counterfeit, late-NUL, and invalid-UTF-8 probes",
       "dimension": "Binary detector in the promotion path",
       "reproduce": "pnpm run measure:e1 --row=12 --stdout",
-      "source": "freshie/scripts/promote-to-curated.py detector semantics applied to row 11 mismatches",
+      "source": "executed freshie/scripts/promote-to-curated.py predicate over row 11 and fixed red probes",
       "status": "measured",
-      "target_status": "fail",
+      "target_status": "pass",
       "values": {
-        "detector": "nul_prefix",
+        "detector": "magic_bytes",
         "excluded_count": 0,
-        "missed_count": 11,
-        "missed_paths": [
-          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
-          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
-          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
-          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
-          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
-          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
-          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
-          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
-          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
-          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
-          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
-        ],
-        "prefix_bytes": 8192
+        "fixture_checks": {
+          "counterfeit_png": "refused",
+          "extensionless_elf": "excluded",
+          "genuine_png": "excluded",
+          "invalid_utf8": "refused",
+          "late_nul": "refused",
+          "utf8_text": "mirrorable",
+          "wrong_extension": "refused"
+        },
+        "fixture_passed": true,
+        "missed_count": 0,
+        "missed_paths": [],
+        "prefix_bytes": 65536,
+        "refused_count": 0,
+        "refused_paths": []
       }
     },
     "13": {
@@ -2276,9 +2264,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15521,
+        "invisible_files": 15520,
         "target_invisible_files": 0,
-        "tracked_files": 23033
+        "tracked_files": 23031
       }
     },
     "47": {

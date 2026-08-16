@@ -1,4 +1,4 @@
-## Project: Example E-commerce API
+# Example e-commerce API requirements
 
 ### Document Version: 1.0
 

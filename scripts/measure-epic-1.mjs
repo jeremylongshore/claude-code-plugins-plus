@@ -34,7 +34,7 @@ const CATALOGS = new Set([
 const SIGNATURES = {
   '.pdf': [Buffer.from('%PDF-')],
   '.png': [Buffer.from('89504e470d0a1a0a', 'hex')],
-  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true')],
+  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true'), Buffer.from('typ1')],
   '.zip': [
     Buffer.from('504b0304', 'hex'),
     Buffer.from('504b0506', 'hex'),
@@ -317,18 +317,105 @@ function binaryAssets(root, paths) {
 function promotionDetector(root, mismatches) {
   const sourcePath = 'freshie/scripts/promote-to-curated.py';
   const source = text(root, sourcePath);
-  // Pin the exact detector semantics. Any refactor must deliberately update this
-  // measurement instead of silently changing what row 12 counts.
-  if (!/b["']\\0["']\s+in\s+fh\.read\(8192\)/.test(source)) {
-    fail('unknown promotion binary-detector shape');
+  const declaredMagic = /CONTENT_TYPE_STRATEGY\s*=\s*["']magic_bytes["']/.test(source);
+  const legacyNul = /b["']\\0["']\s+in\s+fh\.read\(8192\)/.test(source);
+  if (!declaredMagic && !legacyNul) fail('unknown promotion binary-detector shape');
+
+  // Execute the indexed detector rather than inferring enforcement from source
+  // tokens. The fixed probes catch dead-code markers and the original prefix-only
+  // failure mode even when the live corpus has already been corrected to zero
+  // extension mismatches.
+  const probe = String.raw`
+import importlib.util
+import json
+from pathlib import Path
+import sys
+import tempfile
+
+module_path = Path(sys.argv[1])
+repository = Path(sys.argv[2])
+mismatches = json.loads(sys.argv[3])
+spec = importlib.util.spec_from_file_location("curated_promotion_probe", module_path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+content_error = getattr(module, "ContentInspectionError", None)
+content_errors = (content_error,) if isinstance(content_error, type) else ()
+
+def outcome(path):
+    try:
+        value = module._is_binary(path)
+    except content_errors:
+        return "refused"
+    except Exception as exc:
+        return "error:" + type(exc).__name__
+    return "excluded" if value else "mirrorable"
+
+observed = {"excluded": [], "missed": [], "refused": []}
+for relative_path in mismatches:
+    result = outcome(repository / relative_path)
+    if result == "excluded":
+        observed["excluded"].append(relative_path)
+    elif result == "refused":
+        observed["refused"].append(relative_path)
+    else:
+        observed["missed"].append(relative_path)
+
+with tempfile.TemporaryDirectory(prefix="epic-1-content-probe-") as directory:
+    root = Path(directory)
+    def fixture(name, data):
+        target = root / name
+        target.write_bytes(data)
+        return target
+
+    checks = {
+        "genuine_png": outcome(fixture("genuine.png", bytes.fromhex("89504e470d0a1a0a") + b"fixture")),
+        "counterfeit_png": outcome(fixture("counterfeit.png", b"plain text placeholder\n")),
+        "invalid_utf8": outcome(fixture("invalid.dat", b"plain-prefix\xff\xfe")),
+        "late_nul": outcome(fixture("late.dat", b"a" * (64 * 1024) + b"\x00")),
+        "wrong_extension": outcome(fixture("image.bin", bytes.fromhex("89504e470d0a1a0a") + b"fixture")),
+        "extensionless_elf": outcome(fixture("tool", bytes.fromhex("7f454c46") + b"fixture")),
+        "utf8_text": outcome(fixture("notes.md", "# héllo — ✅\n".encode("utf-8"))),
+    }
+
+payload = {
+    **observed,
+    "fixture_checks": checks,
+    "prefix_bytes": getattr(module, "_INSPECTION_CHUNK_BYTES", 8192),
+    "strategy": getattr(module, "CONTENT_TYPE_STRATEGY", "nul_prefix"),
+}
+print(json.dumps(payload, sort_keys=True))
+`;
+  const result = run(root, 'python3', [
+    '-c',
+    probe,
+    file(root, sourcePath),
+    root,
+    JSON.stringify(mismatches),
+  ]);
+  if (result.status !== 0) {
+    fail(`promotion detector probe failed: ${(result.stderr || result.stdout).trim()}`);
   }
-  const excluded = [];
-  const missed = [];
-  for (const path of mismatches) {
-    const prefix = readFileSync(file(root, path)).subarray(0, 8192);
-    (prefix.includes(0) ? excluded : missed).push(path);
+  let observed;
+  try {
+    observed = JSON.parse(result.stdout);
+  } catch (error) {
+    fail(`promotion detector emitted malformed JSON: ${error.message}`);
   }
-  return { excluded, missed, prefix_bytes: 8192, strategy: 'nul_prefix' };
+  const expectedChecks = {
+    counterfeit_png: 'refused',
+    extensionless_elf: 'excluded',
+    genuine_png: 'excluded',
+    invalid_utf8: 'refused',
+    late_nul: 'refused',
+    utf8_text: 'mirrorable',
+    wrong_extension: 'refused',
+  };
+  return {
+    ...observed,
+    fixture_passed:
+      stableJson(observed.fixture_checks) === stableJson(expectedChecks) &&
+      observed.strategy === (declaredMagic ? 'magic_bytes' : 'nul_prefix'),
+  };
 }
 
 function catalogMeasurement(root, paths) {
@@ -360,7 +447,7 @@ const ROW_SOURCES = {
   3: 'git tree inventory under .claude-plugin/',
   4: 'scripts/validate-skills-schema.py JSON and terminal protocols',
   11: 'Git tree bytes matched against the per-extension signature registry',
-  12: 'freshie/scripts/promote-to-curated.py detector semantics applied to row 11 mismatches',
+  12: 'executed freshie/scripts/promote-to-curated.py predicate over row 11 and fixed red probes',
 };
 
 function row(dimension, cohort, values, id, targetStatus = 'informational') {
@@ -505,16 +592,25 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
       ),
       12: row(
         'Binary detector in the promotion path',
-        'row 11 mismatches evaluated by promote-to-curated semantics',
+        'row 11 mismatches plus fixed genuine, counterfeit, late-NUL, and invalid-UTF-8 probes',
         {
           detector: detector.strategy,
           excluded_count: detector.excluded.length,
+          fixture_checks: detector.fixture_checks,
+          fixture_passed: detector.fixture_passed,
           missed_count: detector.missed.length,
           missed_paths: detector.missed,
           prefix_bytes: detector.prefix_bytes,
+          refused_count: detector.refused.length,
+          refused_paths: detector.refused,
         },
         12,
-        detector.strategy === 'magic_bytes' ? 'pass' : 'fail',
+        detector.strategy === 'magic_bytes' &&
+          detector.fixture_passed &&
+          detector.missed.length === 0 &&
+          detector.refused.length === assets.mismatches.length
+          ? 'pass'
+          : 'fail',
       ),
       ...extendedRows,
     },

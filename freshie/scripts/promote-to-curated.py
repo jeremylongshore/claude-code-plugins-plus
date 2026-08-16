@@ -71,6 +71,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import codecs
 import csv
 import importlib.util
 import json
@@ -78,7 +79,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 GRADES_CSV = ROOT / "freshie" / "grades.csv"
@@ -93,6 +94,67 @@ PROMOTE_GRADES = {"A", "B"}
 # smaller than this fraction of the committed MANIFEST count. Overridable with
 # --allow-shrink for a legitimate large drop (e.g. a deliberate threshold change).
 SHRINK_FLOOR_RATIO = 0.5
+
+# Machine-readable strategy marker consumed by the Epic 1 measurement harness.
+# Changing this value requires updating the harness and its independent fixtures.
+CONTENT_TYPE_STRATEGY = "magic_bytes"
+
+
+class ContentInspectionError(RuntimeError):
+    """A file cannot be classified safely enough for curated promotion."""
+
+
+class ContentTypeMismatchError(ContentInspectionError):
+    """The file's extension contradicts its recognized or required content type."""
+
+
+class UnknownBinaryContentError(ContentInspectionError):
+    """Binary-looking bytes have no registered, reviewable content type."""
+
+
+# The curated mirror is a text index. Recognized binary files are deliberately
+# omitted, while misleading extensions and unknown binary bytes abort both build
+# and --check. The registry covers the formats currently present in plugin skill
+# trees plus common executable payloads that previously reached the mirror.
+_MAGIC_SIGNATURES: Tuple[Tuple[str, Tuple[bytes, ...], frozenset[str]], ...] = (
+    ("png", (bytes.fromhex("89504e470d0a1a0a"),), frozenset({".png"})),
+    ("jpeg", (bytes.fromhex("ffd8ff"),), frozenset({".jpg", ".jpeg"})),
+    ("gif", (b"GIF87a", b"GIF89a"), frozenset({".gif"})),
+    ("pdf", (b"%PDF-",), frozenset({".pdf"})),
+    (
+        "zip",
+        (bytes.fromhex("504b0304"), bytes.fromhex("504b0506"), bytes.fromhex("504b0708")),
+        frozenset({".zip", ".jar", ".docx", ".xlsx", ".pptx", ".whl"}),
+    ),
+    ("truetype", (bytes.fromhex("00010000"), b"true", b"typ1"), frozenset({".ttf"})),
+    ("opentype", (b"OTTO",), frozenset({".otf"})),
+    ("woff", (b"wOFF",), frozenset({".woff"})),
+    ("woff2", (b"wOF2",), frozenset({".woff2"})),
+    ("gzip", (bytes.fromhex("1f8b"),), frozenset({".gz", ".tgz"})),
+    ("bzip2", (b"BZh",), frozenset({".bz2", ".tbz2"})),
+    ("xz", (bytes.fromhex("fd377a585a00"),), frozenset({".xz", ".txz"})),
+    ("7zip", (bytes.fromhex("377abcaf271c"),), frozenset({".7z"})),
+    ("elf", (bytes.fromhex("7f454c46"),), frozenset({".elf", ".so", ".node"})),
+    ("wasm", (bytes.fromhex("0061736d"),), frozenset({".wasm"})),
+    (
+        "mach-o",
+        (
+            bytes.fromhex("feedface"),
+            bytes.fromhex("feedfacf"),
+            bytes.fromhex("cefaedfe"),
+            bytes.fromhex("cffaedfe"),
+            bytes.fromhex("cafebabe"),
+            bytes.fromhex("bebafeca"),
+        ),
+        frozenset({".dylib", ".node"}),
+    ),
+)
+
+_BINARY_EXTENSIONS = frozenset(
+    extension for _kind, _signatures, extensions in _MAGIC_SIGNATURES for extension in extensions
+) | frozenset({".dll", ".exe", ".webp"})
+_EXTENSION_OPTIONAL_BINARY_TYPES = frozenset({"elf", "mach-o"})
+_INSPECTION_CHUNK_BYTES = 64 * 1024
 
 
 # ── selection ────────────────────────────────────────────────────────────────
@@ -272,27 +334,90 @@ def assign_curated_names(candidates: List[Dict[str, str]]) -> None:
 
 
 # ── git-tracked file enumeration ─────────────────────────────────────────────
+def _detect_magic_type(prefix: bytes) -> Optional[Tuple[str, frozenset[str]]]:
+    """Return a recognized binary content type and its valid extensions."""
+    if len(prefix) >= 12 and prefix.startswith(b"RIFF") and prefix[8:12] == b"WEBP":
+        return "webp", frozenset({".webp"})
+    if prefix.startswith(b"MZ") and len(prefix) >= 64:
+        pe_offset = int.from_bytes(prefix[0x3C:0x40], "little")
+        if pe_offset + 4 <= len(prefix) and prefix[pe_offset : pe_offset + 4] == b"PE\0\0":
+            return "portable-executable", frozenset({".exe", ".dll", ".node"})
+    for kind, signatures, extensions in _MAGIC_SIGNATURES:
+        if any(prefix.startswith(signature) for signature in signatures):
+            return kind, extensions
+    return None
+
+
 def _is_binary(path: Path) -> bool:
-    """True when the file contains a NUL byte in its first 8 KiB — the classic text/binary
-    sniff. Deliberately NUL-based, not "has no printable text": empty files (.gitkeep,
-    __init__.py) contain no NUL and must stay mirrorable."""
+    """Classify a file for the curated text mirror, failing closed on ambiguity.
+
+    A recognized binary is omitted. Text and empty files remain mirrorable. A
+    binary extension carrying text, binary bytes hidden behind a text extension,
+    unknown binary bytes, a symlink, or an unreadable path is an error: neither
+    build nor drift-check may silently normalize contradictory content.
+    """
+    if path.is_symlink():
+        raise ContentInspectionError(f"refusing symlink during content inspection: {path}")
     try:
         with path.open("rb") as fh:
-            return b"\0" in fh.read(8192)
-    except OSError:
-        return False
+            prefix = fh.read(_INSPECTION_CHUNK_BYTES)
+
+            suffix = path.suffix.lower()
+            detected = _detect_magic_type(prefix)
+            if detected is not None:
+                kind, valid_extensions = detected
+                extension_is_valid = suffix in valid_extensions or (
+                    not suffix and kind in _EXTENSION_OPTIONAL_BINARY_TYPES
+                )
+                if not extension_is_valid:
+                    expected = ", ".join(sorted(valid_extensions))
+                    if kind in _EXTENSION_OPTIONAL_BINARY_TYPES:
+                        expected = f"{expected}, or no extension"
+                    raise ContentTypeMismatchError(
+                        f"{path} contains {kind} bytes but uses {suffix or 'no extension'}; expected {expected}"
+                    )
+                return True
+
+            if suffix in _BINARY_EXTENSIONS:
+                raise ContentTypeMismatchError(
+                    f"{path} uses governed binary extension {suffix} but has no matching magic bytes"
+                )
+
+            decoder = codecs.getincrementaldecoder("utf-8")("strict")
+            chunk = prefix
+            while chunk:
+                if b"\0" in chunk:
+                    raise UnknownBinaryContentError(
+                        f"{path} contains NUL-bearing binary data with no registered content type"
+                    )
+                try:
+                    decoder.decode(chunk, final=False)
+                except UnicodeDecodeError as exc:
+                    raise UnknownBinaryContentError(
+                        f"{path} is not valid UTF-8 text and has no registered content type"
+                    ) from exc
+                chunk = fh.read(_INSPECTION_CHUNK_BYTES)
+            try:
+                decoder.decode(b"", final=True)
+            except UnicodeDecodeError as exc:
+                raise UnknownBinaryContentError(
+                    f"{path} ends with invalid UTF-8 and has no registered content type"
+                ) from exc
+    except OSError as exc:
+        raise ContentInspectionError(f"cannot inspect {path}: {exc}") from exc
+    return False
 
 
 def tracked_files(skill_dir: Path) -> List[str]:
     """Relative paths of the git-tracked, MIRRORABLE files under a skill dir, sorted. Uses the
     committed tree so local == CI. Empty list means nothing tracked (skip).
 
-    Binary blobs are excluded: skills/.curated/ exists so skills.sh can INDEX skill text, and
-    a compiled executable is not indexable — it only inflates the tracked payload (an 11.5 MB
-    Mach-O had been mirrored this way). The SOURCE plugin keeps its binary and ships it to
-    users unchanged; only the text index drops it. Filtering here rather than at the call
-    sites is load-bearing: both the build copy loop and the drift checker read this function,
-    so they cannot disagree about what the mirror should contain."""
+    Recognized binary blobs are excluded: skills/.curated/ exists so skills.sh can INDEX skill
+    text, and a compiled executable is not indexable. Contradictory extensions, unreadable
+    paths, and unknown binary bytes fail closed rather than being silently copied or skipped.
+    The SOURCE plugin remains unchanged; only the generated text index omits valid binaries.
+    Filtering here rather than at the call sites is load-bearing: both the build copy loop and
+    the drift checker read this function, so they cannot disagree about mirror eligibility."""
     try:
         out = subprocess.run(
             ["git", "ls-files", "-z", "--", str(skill_dir.relative_to(ROOT))],
@@ -301,8 +426,8 @@ def tracked_files(skill_dir: Path) -> List[str]:
             text=True,
             check=True,
         ).stdout
-    except subprocess.CalledProcessError:
-        return []
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ContentInspectionError(f"cannot enumerate tracked files below {skill_dir}: {exc}") from exc
     rel_to_root = [p for p in out.split("\0") if p]
     base = skill_dir.relative_to(ROOT).as_posix()
     files = [p[len(base) + 1 :] for p in rel_to_root if p.startswith(base + "/")]
@@ -535,4 +660,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except ContentInspectionError as exc:
+        print(f"error: curated content-type gate refused the corpus: {exc}", file=sys.stderr)
+        sys.exit(2)

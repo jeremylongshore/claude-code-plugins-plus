@@ -25,6 +25,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 SCRIPT = Path(__file__).resolve().parents[1] / "freshie" / "scripts" / "promote-to-curated.py"
 _spec = importlib.util.spec_from_file_location("promote_to_curated", SCRIPT)
@@ -240,9 +241,7 @@ class TestExternalMirrorDetection(unittest.TestCase):
 
 
 class TestBinarySniff(unittest.TestCase):
-    """Pins _is_binary() — the curated mirror indexes skill TEXT, so binary blobs
-    are excluded, but empty files must survive (a 'no printable text' test would
-    wrongly drop .gitkeep and __init__.py, both 0 bytes in the real corpus)."""
+    """Pins the fail-closed content-type boundary used by both mirror modes."""
 
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -256,8 +255,51 @@ class TestBinarySniff(unittest.TestCase):
         p.write_bytes(data)
         return p
 
-    def test_nul_byte_is_binary(self):
-        self.assertTrue(pc._is_binary(self._write("blob", b"\x7fELF\x00\x01")))
+    def test_genuine_png_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("diagram.png", bytes.fromhex("89504e470d0a1a0a") + b"fixture")))
+
+    def test_current_font_signature_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("font.ttf", b"\x00\x01\x00\x00fixture")))
+
+    def test_executable_signature_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("tool", b"\x7fELF\x02\x01fixture")))
+
+    def test_text_disguised_as_png_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("diagram.png", b"plain text placeholder\n"))
+
+    def test_text_disguised_as_special_case_binary_extension_fails_closed(self):
+        for name in ("diagram.webp", "tool.exe", "library.dll"):
+            with self.subTest(name=name):
+                with self.assertRaises(pc.ContentTypeMismatchError):
+                    pc._is_binary(self._write(name, b"plain text placeholder\n"))
+
+    def test_binary_disguised_as_markdown_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("notes.md", bytes.fromhex("89504e470d0a1a0a") + b"fixture"))
+
+    def test_binary_content_with_wrong_binary_extension_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("diagram.pdf", bytes.fromhex("89504e470d0a1a0a") + b"fixture"))
+
+    def test_recognized_binary_with_unrelated_or_missing_extension_fails_closed(self):
+        png = bytes.fromhex("89504e470d0a1a0a") + b"fixture"
+        for name in ("diagram.bin", "diagram"):
+            with self.subTest(name=name):
+                with self.assertRaises(pc.ContentTypeMismatchError):
+                    pc._is_binary(self._write(name, png))
+
+    def test_unknown_nul_bearing_content_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("blob.bin", b"unregistered\x00binary"))
+
+    def test_unknown_nul_after_initial_chunk_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("late-binary.dat", b"a" * pc._INSPECTION_CHUNK_BYTES + b"\x00"))
+
+    def test_invalid_utf8_without_nul_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("unknown.dat", b"plain-prefix\xff\xfe"))
 
     def test_empty_file_is_not_binary(self):
         self.assertFalse(pc._is_binary(self._write("__init__.py", b"")))
@@ -265,5 +307,24 @@ class TestBinarySniff(unittest.TestCase):
     def test_utf8_multibyte_is_not_binary(self):
         self.assertFalse(pc._is_binary(self._write("SKILL.md", "# héllo — ✅\n".encode())))
 
-    def test_missing_file_does_not_raise(self):
-        self.assertFalse(pc._is_binary(self.dir / "absent"))
+    def test_unreadable_file_fails_closed(self):
+        with self.assertRaises(pc.ContentInspectionError):
+            pc._is_binary(self.dir / "absent")
+
+    def test_symlink_fails_closed(self):
+        source = self._write("source.md", b"text")
+        link = self.dir / "link.md"
+        link.symlink_to(source)
+        with self.assertRaises(pc.ContentInspectionError):
+            pc._is_binary(link)
+
+    def test_git_enumeration_failure_fails_closed(self):
+        skill_dir = self.dir / "skill"
+        skill_dir.mkdir()
+        failure = pc.subprocess.CalledProcessError(1, ["git", "ls-files"])
+        with (
+            mock.patch.object(pc, "ROOT", self.dir),
+            mock.patch.object(pc.subprocess, "run", side_effect=failure),
+            self.assertRaises(pc.ContentInspectionError),
+        ):
+            pc.tracked_files(skill_dir)

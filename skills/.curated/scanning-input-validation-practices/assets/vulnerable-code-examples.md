@@ -1,4 +1,10 @@
-Archive:  example_code_with_vulnerabilities.zip
+# Vulnerable code examples
+
+The inventory below describes the example snippets included in this Markdown document; it is not
+a ZIP archive.
+
+```text
+Archive: vulnerable-code-examples.md
   Length      Date    Time    Name
 ---------  ---------- -----   ----
       376  2024-02-29 14:23   php/sqli.php
@@ -9,9 +15,9 @@ Archive:  example_code_with_vulnerabilities.zip
      1391                     4 files
 ```
 
-```
 # README.txt
-This zip file contains example code snippets with common input validation vulnerabilities.  These examples are for demonstration purposes only and should NOT be used in production code.
+This document contains example code snippets with common input-validation vulnerabilities. These
+examples are for demonstration purposes only and must not be used in production code.
 
 Each directory (php, python, java) contains a file demonstrating a specific vulnerability.
 
@@ -24,8 +30,6 @@ Review these examples carefully to understand the risks associated with improper
 # Placeholders:
 * REPLACE_WITH_USER_INPUT:  Indicates a place where user input is directly used without validation.
 * REPLACE_WITH_DATABASE_CREDENTIALS: Placeholder for actual database credentials. DO NOT commit real credentials.
-```
-
 ```php
 <?php
 // php/sqli.php
@@ -109,3 +113,4 @@ public class CommandInjection {
         // Consider using a library or API specifically designed for the task instead of executing shell commands.
     }
 }
+```

@@ -1,4 +1,8 @@
-api_template.zip
+# REST API template outline
+
+The following tree documents the intended template contents; it is not a ZIP archive.
+
+api-template/
 ├── package.json
 │   ```json
 │   {
