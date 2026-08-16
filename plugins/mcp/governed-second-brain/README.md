@@ -103,10 +103,10 @@ history-rewrite failure. Run the verifier's own tests with `npm run verify-ancho
 
 ## Install
 
-Local-mode marketplace installs provision two lockfile-pinned native modules (`better-sqlite3` and
-`fs-ext`) inside the plugin on first start. That one-time step uses npm; after it completes, local
-capture, governance, audit, and retrieval run in-process without a service daemon. Team mode does not
-load or install those local-store modules.
+Local-mode marketplace installs provision three lockfile-pinned native modules (`better-sqlite3`,
+`fs-ext`, and `sqlite-vec`) inside the plugin on first start. That one-time step uses npm; after it
+completes, local capture, governance, audit, and retrieval run in-process without a service daemon.
+Team mode does not load or install those local-store modules.
 
 One command, two modes:
 

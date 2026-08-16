@@ -23,7 +23,7 @@
   "mcpServers": {
     "governed-brain": {
       "name": "governed-brain",
-      "description": "Bob's Big Brain \u2014 ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb); first start provisions two lockfile-pinned native modules, then runtime is local. Team (set TEAMKB_API_URL): a dependency-free remote proxy to your team's single governed brain over the tailnet, with a per-user token.",
+      "description": "Bob's Big Brain \u2014 ONE plugin, two modes. Local (default): an in-process governed brain over your own files (~/.teamkb); first start provisions three lockfile-pinned native modules, then runtime is local. Team (set TEAMKB_API_URL): a dependency-free remote proxy to your team's single governed brain over the tailnet, with a per-user token.",
       "version": "1.2.0",
       "enabled": true,
       "transport": "stdio",
