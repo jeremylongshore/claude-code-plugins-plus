@@ -63,7 +63,8 @@ mirror-content diffs were zero.
   `.source.json`-owned mirror writers remain excluded and row 25 stays one of one. The verdict was
   `PASS`; its exact-head evidence is in the
   [review and merge disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307886819).
-- Greptile was triggered at the reviewed head, but its free-review trial had expired. The
+- Greptile was triggered at the initial implementation head `d8918dce`, but its free-review trial
+  had expired. No Greptile review exists for the corrected reviewed head `c9d95218`. The
   [response](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#pullrequestreview-4946327658)
   was inspected and was not counted as evidence.
 
