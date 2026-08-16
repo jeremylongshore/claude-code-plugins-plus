@@ -5,7 +5,7 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
-Covers the **tracked** documentation estate (186 files). Local-only working
+Covers the **tracked** documentation estate (187 files). Local-only working
 documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
 index and `000-docs/.gitignore`.
 
@@ -168,6 +168,7 @@ index and `000-docs/.gitignore`.
 - [744-AA-AACR-epic-1-corpus-resolver.md](744-AA-AACR-epic-1-corpus-resolver.md)
 - [745-AA-AACR-epic-1-readme-writer.md](745-AA-AACR-epic-1-readme-writer.md)
 - [746-DR-TMPL-document-supersession.md](746-DR-TMPL-document-supersession.md)
+- [747-AA-AACR-epic-2-supersession-record.md](747-AA-AACR-epic-2-supersession-record.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)
