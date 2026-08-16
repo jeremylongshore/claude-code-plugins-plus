@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-15 — document authority gate)
+
+- **Documents can no longer self-grant canonical authority.** The existing
+  `doc-governance` job now rejects an effective `AUTHORITATIVE` or `CANONICAL`
+  declaration unless `STANDARDS.md` § Canonical documents links the claimant. The gate's first
+  live run also demoted the subordinate schema 3.6.0 configuration guide from self-declared
+  authority to a reference that points at its existing schema owners.
+
 ### Changed (2026-08-15 — documentation authority consolidation)
 
 - **Superseded standards are explicitly frozen.** Documents 6767-a/c/d/e/h now identify
