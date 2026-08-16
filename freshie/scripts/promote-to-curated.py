@@ -62,6 +62,7 @@ Modes
 
 Usage
 -----
+  Requires the repository Node 20+ runtime on PATH for canonical cohort resolution.
   python3 freshie/scripts/promote-to-curated.py            # rebuild skills/.curated/
   python3 freshie/scripts/promote-to-curated.py --check    # CI: exit 1 if stale vs source
   python3 freshie/scripts/promote-to-curated.py --no-validate   # skip the in-process regrade
@@ -102,12 +103,15 @@ def _plugin_root(skill_path: str) -> str:
 
 def resolve_corpus(cohort: str) -> set[str]:
     """Read one named cohort from the repository's canonical resolver."""
-    result = subprocess.run(
-        ["node", str(CORPUS_RESOLVER), "--cohort", cohort, "--root", str(ROOT), "--json"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            ["node", str(CORPUS_RESOLVER), "--cohort", cohort, "--root", str(ROOT), "--json"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("corpus resolver requires Node 20+ on PATH") from exc
     if result.returncode != 0:
         raise RuntimeError(f"corpus resolver failed for {cohort}: {result.stderr.strip()}")
     try:

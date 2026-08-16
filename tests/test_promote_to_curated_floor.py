@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
 
 class TestExternalMirrorDetection(unittest.TestCase):
-    """Pins is_external_mirror() — defect 3, found by review of PR #1182.
+    """Pins the retained compatibility helper — defect 3 from review of PR #1182.
 
     load_candidates() used to test only `_plugin_root(sp)`, which splits on
     '/skills/'. A skill vendored at `plugins/<cat>/<plugin>/.codex/skills/<name>`

@@ -229,16 +229,17 @@ test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
   const root = fixture();
   const externalDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'corpus-resolver-external-'));
   const external = path.join(externalDirectory, 'SKILL.md');
-  fs.writeFileSync(external, '# external\n');
-  const skill = path.join(root, 'plugins', 'core', 'owned', 'skills', 'linked', 'SKILL.md');
-  fs.mkdirSync(path.dirname(skill), { recursive: true });
-  fs.symlinkSync(external, skill);
-  execFileSync('git', ['init', '-q'], { cwd: root });
-  execFileSync('git', ['add', '.'], { cwd: root });
 
   try {
+    fs.writeFileSync(external, '# external\n');
+    const skill = path.join(root, 'plugins', 'core', 'owned', 'skills', 'linked', 'SKILL.md');
+    fs.mkdirSync(path.dirname(skill), { recursive: true });
+    fs.symlinkSync(external, skill);
+    execFileSync('git', ['init', '-q'], { cwd: root });
+    execFileSync('git', ['add', '.'], { cwd: root });
     assert.throws(() => resolveCorpus('marketplace-visible', { root }), /symbolic link/);
   } finally {
     fs.rmSync(externalDirectory, { force: true, recursive: true });
+    fs.rmSync(root, { force: true, recursive: true });
   }
 });

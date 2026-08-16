@@ -191,6 +191,8 @@ function marketplacePluginName(entry, root) {
       const relative = toPosix(path.relative(root, current));
       const parts = relative.split('/');
       const skillsIndex = parts.indexOf('skills');
+      // A manifest at a plugin root (or directly below a bare skills/ tree)
+      // owns the plugin identity; manifests nested inside a skill do not.
       if (skillsIndex < 0 || skillsIndex === parts.length - 1) {
         let value;
         try {
@@ -208,6 +210,7 @@ function marketplacePluginName(entry, root) {
     if (current === root) break;
     current = path.dirname(current);
   }
+  // Manifest-free fixtures and legacy roots encode the plugin in their path.
   const skillsIndex = segments.indexOf('skills');
   if (skillsIndex >= 2) return segments[skillsIndex - 1];
   return segments.length >= 3 ? segments[2] : null;
