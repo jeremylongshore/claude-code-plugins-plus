@@ -20,6 +20,8 @@ The binding Epic 1 measurement gate now refuses any other production executable 
 executable tree rather than a fixed list of script directories. Explicit exclusions preserve test
 and spec sources, measurement instrumentation, and content beneath a tracked `.source.json`
 ancestor. Regenerating scorecard 742 cannot convert a duplicate writer into an accepted state.
+Under the repository's v4.4 filing mechanics, `000-docs/.gitignore` is the public filing ledger; the
+filing PR appends document 745 there before generating the index and scorecard.
 
 ## Decision and before/after evidence
 
@@ -40,19 +42,29 @@ mirror-content diffs were zero.
 - Exact-head `pnpm run measure:e1:check` passed 36/36 deterministic tests and reported scorecard 742
   in sync. ESLint, typecheck, formatting, repository verification, CLI smoke, Python, MCP,
   validation-script, documentation-governance, link, security, and kernel-advisory checks passed.
-- Required contexts `ci-required`, `gitleaks`, and `skill-conform` completed successfully at the
-  reviewed head. MiniMax normal review said “Ship it,” and its adversarial lane returned `lgtm`.
+- Required contexts completed successfully at the reviewed head in the
+  [Validate Plugins](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31951432381),
+  [gitleaks](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31951432348),
+  and [skill-conform](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31951432357)
+  runs. MiniMax normal review said
+  [“Ship it”](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307733820),
+  and its adversarial lane returned
+  [`lgtm`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307734608).
 - The first independent review returned the initial head for correction after a package-level writer
-  escaped a detector limited to three script roots. The implementation then widened discovery to
-  the tracked executable tree and moved the committed red fixture under `packages/`.
+  escaped a detector limited to three script roots. The
+  [correction record](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307804891)
+  identifies the returned and corrected heads. The implementation then widened discovery to the
+  tracked executable tree and moved the committed red fixture under `packages/`.
 - A later review attempt was interrupted before its decisive command completed and correctly
   returned `BLOCK` on incomplete evidence. It was not used as approval.
 - The final fresh reviewer planted writers under `packages/`, a first-party plugin, and
   `marketplace/src/lib/`. `pnpm --silent run measure:e1` refused all three plus the canonical writer
   and left scorecard 742 unchanged. A separate probe proved `.test.mjs`, `.spec.ts`, and
   `.source.json`-owned mirror writers remain excluded and row 25 stays one of one. The verdict was
-  `PASS`.
-- Greptile was triggered at the reviewed head, but its free-review trial had expired. The response
+  `PASS`; its exact-head evidence is in the
+  [review and merge disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307886819).
+- Greptile was triggered at the reviewed head, but its free-review trial had expired. The
+  [response](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#pullrequestreview-4946327658)
   was inspected and was not counted as evidence.
 
 Scorecard row 46's `allowlist_patterns` remains 25 because it counts path regexes in
@@ -64,14 +76,15 @@ different.
 The broad local `pnpm test` command exposed an unchanged dependency-baseline defect: Vitest 2.1.9
 resolves Vite 7.3.3 through the root `vite >=6.4.2` override and the CLI suite fails before test
 collection. GitHub's authoritative CLI smoke and widened MCP/Python/validation suites passed. The
-dependency mismatch was recorded for a separate isolated correction and was not mixed into E1.9.
+command output and unchanged-lockfile comparison are retained in Bead `claude-hz8f.6`; the
+dependency mismatch requires a separate isolated correction and was not mixed into E1.9.
 
 ## Merge topology, scope, and rollback
 
 GitHub required one human approval after every executable, bot, and independent gate passed. The
 platform owner authorized a one-time administrator bypass for the known second-identity topology;
-the disclosure was recorded on PR #1212 before merge. No branch-protection rule, required status,
-or approval policy changed.
+the [disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1212#issuecomment-5307886819)
+was recorded before merge. No branch-protection rule, required status, or approval policy changed.
 
 This slice changed the measurement implementation and fixtures, generated scorecard 742,
 `CHANGELOG.md`, and the package script inventory. It performed no registry, credential,
