@@ -14,6 +14,9 @@ Invariants:
 4. marketplace.extended.json and marketplace.json report the same plugin count.
 5. Every plugin directory in the catalog has a sibling `package.json`. Lets
    the npm tracking/publish workflow enumerate a complete set of packages.
+6. The two catalogs named by STANDARDS.md are the only tracked
+   `.claude-plugin/marketplace*.json*` files; every additional variant is a
+   forbidden shadow, regardless of backup/staging suffix.
 
 Exits non-zero on any violation. Used by CI and by `pnpm run sync-marketplace`.
 """
@@ -21,12 +24,20 @@ Exits non-zero on any violation. Used by CI and by `pnpm run sync-marketplace`.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 EXTENDED = ROOT / ".claude-plugin" / "marketplace.extended.json"
 SYNCED = ROOT / ".claude-plugin" / "marketplace.json"
+# Reuse the validator's pre-existing operational paths instead of copying the
+# STANDARDS.md canonical pair into a second literal list.
+CANONICAL_CATALOGS = {path.relative_to(ROOT).as_posix() for path in (EXTENDED, SYNCED)}
+
+
+class CatalogInventoryError(RuntimeError):
+    """Raised when Git cannot prove the canonical tracked catalog inventory."""
 
 
 def get_source(plugin: dict) -> str:
@@ -46,12 +57,51 @@ def fs_category(source: str) -> str | None:
     return None
 
 
+def tracked_catalog_shadows(root: Path | None = None) -> list[str]:
+    """Return tracked catalog-shaped files under `.claude-plugin/` except the canonical pair.
+
+    Git failure is deliberately fatal: without the tracked-file set this invariant
+    cannot prove that a shadow is absent.
+    """
+    root = ROOT if root is None else root
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
+            check=True,
+            capture_output=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise CatalogInventoryError("cannot enumerate tracked root catalogs with git ls-files") from error
+
+    tracked = {path for path in result.stdout.decode().split("\0") if path}
+    missing = sorted(CANONICAL_CATALOGS - tracked)
+    if missing:
+        raise CatalogInventoryError(f"canonical root catalogs are not tracked: {missing}")
+
+    shadows = []
+    for path in tracked:
+        if path in CANONICAL_CATALOGS:
+            continue
+        name = Path(path).name
+        if name.startswith("marketplace") and ".json" in name:
+            shadows.append(path)
+    return sorted(shadows)
+
+
 def main() -> int:
     with EXTENDED.open() as f:
         data = json.load(f)
     plugins = data.get("plugins", [])
 
     errors: list[str] = []
+
+    try:
+        for shadow in tracked_catalog_shadows():
+            errors.append(
+                f"tracked catalog shadow `{shadow}`; keep only the canonical root catalogs {sorted(CANONICAL_CATALOGS)}"
+            )
+    except CatalogInventoryError as error:
+        errors.append(str(error))
 
     for p in plugins:
         name = p.get("name", "<unnamed>")
