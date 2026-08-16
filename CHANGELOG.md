@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-16 — required supersession records)
+
+- **Document supersession now has one reviewable record shape.** A filed template binds the frozen
+  class marker, `SUPERSEDED–FROZEN` banner, per-section disposition, and `STANDARDS.md` canonical
+  pointer into one pull request. A fixture-driven checker rejects missing components, placeholders,
+  and fenced or commented decoys inside the existing documentation-governance gate. The same gate
+  discovers every tracked completed record or malformed attempt; the five-document 6767 to 727
+  reconciliation is the worked example. The corpus gate fails closed if no completed record remains,
+  so removing that example requires filing a replacement record in the same change.
+
 ### Changed (2026-08-16 — single README metrics writer)
 
 - **README counts now have one enforced writer.** The orphaned
