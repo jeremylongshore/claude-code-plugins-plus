@@ -40,6 +40,18 @@ and the genuine generated
 `skills/.curated/optimizing-cloud-costs/assets/cost_report_template.pdf` was omitted because the
 projection is text-only. Thus 48 minus 12 equals 36; the genuine source PDF remains untouched.
 
+The seven corrected first-party source artifacts were:
+
+- `versioning_diagram.png` → `versioning-diagram-brief.md`
+- `model_architecture.png` → `model-architecture-brief.md`
+- `owasp_logo.png` → removed in favor of the existing OWASP source link
+- `api_template.zip` → `api-template-outline.md`
+- `example_code_with_vulnerabilities.zip` → `vulnerable-code-examples.md`
+- `requirements.pdf` → `ecommerce-api-requirements-example.md`
+- `test_environment_diagram.png` → `test-environment-diagram-brief.md`
+
+Four applicable generated curated copies accounted for the other four mismatches.
+
 The final font correction follows the primary format distinction: `.ttf` accepts the TrueType
 sfnt values `0x00010000` and `true`, while `typ1` is rejected because it identifies legacy
 PostScript in an sfnt wrapper. The scorecard probe directly requires the production inspection
@@ -48,18 +60,18 @@ window constant, so a renamed or removed contract fails loudly instead of fallin
 
 ## Evidence bundle
 
-| Evidence item           | Result | Reproducing evidence                                                                                                                                                                                                                              |
-| ----------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Execution               | PASS   | Post-merge `pnpm run measure:e1:check` ran 36 tests and reported document 742 byte-exact; `python3 freshie/scripts/promote-to-curated.py --check` reported 1,915 skills in sync.                                                                  |
-| Happy path              | PASS   | Genuine PNG, ZIP, TrueType, executable, UTF-8, and empty-file fixtures pass through the production predicate with the expected include/exclude result.                                                                                            |
-| Failure path            | PASS   | The committed legacy-detector fixture stays red; wrong extensions, `typ1` under `.ttf`, invalid UTF-8, a NUL after 64 KiB, symlinks, unreadable files, and failed Git enumeration are refused. The independent reviewer ran 35/35 hostile probes. |
-| Rollback                | PASS   | Revert this AAR merge first, then revert implementation merge `5910711bf64eb50a8c1bbe62996d850c1752cf43`; rerun the measurement and curated checks. No external rollback is required.                                                             |
-| Durable receipt         | PASS   | PR #1216, merge commit, scorecard 742, this AAR, Bead notes, and the independent-review digest form the governed receipt set.                                                                                                                     |
-| Docs versus reality     | PASS   | `CHANGELOG.md` records full-stream validation, fail-closed Git enumeration, the seven first-party corrections, and the measured 11-to-zero result. The PR diff and post-merge commands agree.                                                     |
-| Blueprint versus actual | PASS   | E1.3 and E1.4 landed as one explicitly coupled slice because the new gate correctly rejected the old corpus. Scope and acceptance behavior match blueprint 727; no later bead was activated.                                                      |
-| Reproduction first      | PASS   | Before correction, the strict gate exited nonzero on `model_architecture.png`; the legacy 8 KiB detector fixture remains an executable red proof.                                                                                                 |
-| Vertical slice          | PASS   | Production classifier, build/check callers, corpus correction, generated mirror, measurement harness, scorecard, tests, and changelog landed together.                                                                                            |
-| Observed versus claimed | PASS   | Every numeric claim above was rerun after merge; no PR table or bot prose was accepted as evidence.                                                                                                                                               |
+| Evidence item           | Result | Reproducing evidence                                                                                                                                                                                                                                                                     |
+| ----------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Execution               | PASS   | Post-merge `pnpm run measure:e1:check` ran 36 tests and reported document 742 byte-exact; `python3 freshie/scripts/promote-to-curated.py --check` reported 1,915 skills in sync.                                                                                                         |
+| Happy path              | PASS   | Genuine PNG, ZIP, TrueType, executable, UTF-8, and empty-file fixtures pass through the production predicate with the expected include/exclude result.                                                                                                                                   |
+| Failure path            | PASS   | The committed legacy-detector fixture stays red; wrong extensions, `typ1` under `.ttf`, invalid UTF-8, a NUL after 64 KiB, symlinks, unreadable files, and failed Git enumeration are refused. The independent reviewer ran 35/35 hostile probes.                                        |
+| Rollback                | PASS   | In a disposable worktree at the merge, `git revert -m 1 --no-commit 5910711bf64eb50a8c1bbe62996d850c1752cf43` produced a staged tree byte-identical to base `90c7034293de859832ceca9514ccb5d61ee32b55`; the rehearsal was aborted and removed. Revert this AAR first in a real rollback. |
+| Durable receipt         | PASS   | PR #1216, merge commit, scorecard 742, this AAR, Bead notes, and the independent-review digest form the governed receipt set.                                                                                                                                                            |
+| Docs versus reality     | PASS   | `CHANGELOG.md` records full-stream validation, fail-closed Git enumeration, the seven first-party corrections, and the measured 11-to-zero result. The PR diff and post-merge commands agree.                                                                                            |
+| Blueprint versus actual | PASS   | E1.3 and E1.4 landed as one explicitly coupled slice because the new gate correctly rejected the old corpus. Scope and acceptance behavior match blueprint 727; no later bead was activated.                                                                                             |
+| Reproduction first      | PASS   | Before correction, the strict gate exited nonzero on `model_architecture.png`; the legacy 8 KiB detector fixture remains an executable red proof.                                                                                                                                        |
+| Vertical slice          | PASS   | Production classifier, build/check callers, corpus correction, generated mirror, measurement harness, scorecard, tests, and changelog landed together.                                                                                                                                   |
+| Observed versus claimed | PASS   | Every numeric claim above was rerun after merge; no PR table or bot prose was accepted as evidence.                                                                                                                                                                                      |
 
 ## Validation and independent review
 
@@ -78,10 +90,12 @@ was not counted as evidence.
 
 This v4.4 filing appended document 748 to the public ledger, then regenerated the documentation
 index and scorecard from staged Git bytes. The index now covers 188 tracked documents. Scorecard
-rows 1 and 47 increase by one tracked file, and row 46 increases by one indexed document. The
+rows 1 and 46 increase by one tracked file, and row 44 increases by one indexed document. Row 46's
 `invisible_files` value also increases by one because filed `000-docs/*.md` paths match an existing
-gitleaks allowlist pattern; it is a measured subset, not the complement of tracked files. The
-allowlist-pattern count remains 25. Neither generated projection was hand-edited.
+path expression in `.gitleaks.toml`; it is a measured subset, not the complement of tracked files.
+Its `allowlist_patterns` count measures the 25 `.gitleaks.toml` path expressions, not public-ledger
+negations in `000-docs/.gitignore`, so that value correctly remains 25. Neither generated projection
+was hand-edited.
 
 ## Merge topology and lesson
 
