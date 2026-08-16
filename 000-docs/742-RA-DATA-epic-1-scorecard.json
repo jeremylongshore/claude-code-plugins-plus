@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23014
+        "tracked_files": 23013
       }
     },
     "2": {
@@ -1462,12 +1462,12 @@
         "static discovery requires both a README write and a metric signal; runtime-computed output aliases require an explicit contract to become fully measured"
       ],
       "reproduce": "pnpm run measure:e1 --row=25 --stdout",
-      "source": ["scripts/generate-readme-toc.mjs", "scripts/update-metrics.mjs"],
+      "source": ["scripts/generate-readme-toc.mjs"],
       "status": "partial",
       "values": {
-        "count": 2,
+        "count": 1,
         "target": 1,
-        "writers": ["scripts/generate-readme-toc.mjs", "scripts/update-metrics.mjs"]
+        "writers": ["scripts/generate-readme-toc.mjs"]
       }
     },
     "26": {
@@ -2278,7 +2278,7 @@
         "invalid_patterns": 0,
         "invisible_files": 15502,
         "target_invisible_files": 0,
-        "tracked_files": 23014
+        "tracked_files": 23013
       }
     },
     "47": {

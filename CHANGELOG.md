@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — single README metrics writer)
+
+- **README counts now have one enforced writer.** The orphaned
+  `scripts/update-metrics.mjs` command was removed, leaving
+  `scripts/generate-readme-toc.mjs` as the only governed writer for catalog,
+  skill, and agent counts. The Epic 1 measurement gate fails closed if another
+  tracked executable writer appears, and a planted-writer regression proves the
+  duplicate path cannot return silently.
+
 ### Changed (2026-08-16 — canonical skill cohorts)
 
 - **Four binding skill-count surfaces now use one corpus resolver.** README
