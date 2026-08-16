@@ -41,7 +41,7 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "plugin_skill_files": 3179,
+        "raw_tracked_plugin_skill_files": 3179,
         "tracked_files": 23013
       }
     },

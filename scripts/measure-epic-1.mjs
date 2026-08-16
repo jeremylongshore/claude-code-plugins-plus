@@ -440,7 +440,7 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
         'tracked_tree',
         {
           plugin_agent_files: pluginAgents,
-          plugin_skill_files: pluginSkills,
+          raw_tracked_plugin_skill_files: pluginSkills,
           tracked_files: paths.length,
         },
         1,

@@ -92,7 +92,7 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
     Object.keys(report.rows),
     Array.from({ length: 62 }, (_, index) => String(index + 1)),
   );
-  assert.equal(report.rows[1].values.plugin_skill_files, 1);
+  assert.equal(report.rows[1].values.raw_tracked_plugin_skill_files, 1);
   assert.equal(report.rows[1].values.plugin_agent_files, 1);
   assert.deepEqual(report.rows[2].values.duplicate_names, [{ count: 2, name: 'alpha' }]);
   assert.equal(report.rows[3].values.count, 0);

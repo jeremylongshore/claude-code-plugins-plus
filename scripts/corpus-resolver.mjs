@@ -185,6 +185,8 @@ function isGradedSkill(entry) {
 function marketplacePluginName(entry, root) {
   const segments = entry.split('/');
   let current = path.dirname(path.join(root, entry));
+  // The bound is defensive; declared plugin roots are no more than four
+  // levels deep today, while malformed ancestry must never walk indefinitely.
   for (let depth = 0; depth < 10 && current.startsWith(root); depth += 1) {
     const manifest = path.join(current, '.claude-plugin', 'plugin.json');
     if (fs.existsSync(manifest)) {
@@ -233,6 +235,8 @@ function marketplaceVisible(entries, root) {
 
 function firstParty(entries, root) {
   const output = [];
+  // Provenance is intentionally resolved per skill so nested markers cannot be
+  // missed; this is the slowest cohort, but correctness outranks scan speed.
   for (const entry of entries.filter(isPluginSkill)) {
     const result = resolvePluginProvenance(path.posix.dirname(entry), { root });
     if (result.status === 'refused') {
