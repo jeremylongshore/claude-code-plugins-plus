@@ -11,7 +11,7 @@ description: 'Manage Firebase/Firestore operations including CRUD, queries, batc
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 2.20.0
+version: 2.21.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

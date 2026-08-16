@@ -14,7 +14,7 @@ description: 'Build detailed step-by-step YouTube video outlines with demo prep,
 
   '
 allowed-tools: WebSearch, Read, Write
-version: 1.10.0
+version: 1.11.0
 author: Claude Code Plugins <plugins@tonsofskills.com>
 license: MIT
 tags:

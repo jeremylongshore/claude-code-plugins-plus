@@ -238,7 +238,7 @@
       "name": "ai-ml-engineering-pack",
       "source": "./plugins/packages/ai-ml-engineering-pack",
       "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
-      "version": "1.30.0",
+      "version": "1.31.0",
       "category": "packages",
       "keywords": [
         "ai",
@@ -915,7 +915,7 @@
       "name": "calendar-to-workflow",
       "source": "./plugins/skill-enhancers/calendar-to-workflow",
       "description": "Enhances calendar Skills by automating meeting prep and workflow triggers",
-      "version": "0.14.0",
+      "version": "0.15.0",
       "category": "skill-enhancers",
       "keywords": [
         "calendar",
@@ -1925,7 +1925,7 @@
       "name": "devops-automation-pack",
       "source": "./plugins/packages/devops-automation-pack",
       "description": "Complete DevOps automation suite with 25 plugins covering Git workflows, CI/CD pipelines, Docker optimization, Kubernetes management, Terraform IaC, and deployment strategies",
-      "version": "1.30.0",
+      "version": "1.31.0",
       "category": "packages",
       "keywords": [
         "devops",
@@ -2171,7 +2171,7 @@
       "name": "excel-analyst-pro",
       "source": "./plugins/business-tools/excel-analyst-pro",
       "description": "Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.",
-      "version": "1.21.0",
+      "version": "1.22.0",
       "category": "business-tools",
       "keywords": [
         "excel",
@@ -2237,7 +2237,7 @@
       "name": "fairdb-operations-kit",
       "source": "./plugins/devops/fairdb-operations-kit",
       "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
-      "version": "1.26.0",
+      "version": "1.27.0",
       "category": "devops",
       "keywords": [
         "fairdb",
@@ -2298,7 +2298,7 @@
       "name": "file-to-code",
       "source": "./plugins/skill-enhancers/file-to-code",
       "description": "Converts file references into executable code implementations",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "category": "skill-enhancers",
       "keywords": [
         "files",
@@ -2367,7 +2367,7 @@
       "name": "fullstack-starter-pack",
       "source": "./plugins/packages/fullstack-starter-pack",
       "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
-      "version": "1.21.0",
+      "version": "1.22.0",
       "category": "packages",
       "keywords": [
         "fullstack",
@@ -3247,7 +3247,7 @@
       "name": "openbb-terminal",
       "source": "./plugins/business-tools/openbb-terminal",
       "description": "Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "business-tools",
       "keywords": [
         "finance",
@@ -3639,7 +3639,7 @@
       "name": "research-to-deploy",
       "source": "./plugins/skill-enhancers/research-to-deploy",
       "description": "Transforms research findings into deployed solutions automatically",
-      "version": "0.14.0",
+      "version": "0.15.0",
       "category": "skill-enhancers",
       "keywords": [
         "research",
@@ -3725,7 +3725,7 @@
       "name": "search-to-slack",
       "source": "./plugins/skill-enhancers/search-to-slack",
       "description": "Automatically posts search results to Slack channels",
-      "version": "0.14.0",
+      "version": "0.15.0",
       "category": "skill-enhancers",
       "keywords": [
         "search",
@@ -3827,7 +3827,7 @@
       "name": "security-headers-analyzer",
       "source": "./plugins/security/security-headers-analyzer",
       "description": "Analyze HTTP security headers",
-      "version": "1.28.0",
+      "version": "1.29.0",
       "category": "security",
       "keywords": [
         "security",
@@ -3875,7 +3875,7 @@
       "name": "security-pro-pack",
       "source": "./plugins/packages/security-pro-pack",
       "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
-      "version": "1.31.0",
+      "version": "1.32.0",
       "category": "packages",
       "keywords": [
         "security",
@@ -3968,7 +3968,7 @@
       "name": "jeremy-plugin-tool",
       "source": "./plugins/examples/jeremy-plugin-tool",
       "description": "Production-grade plugin creator with marketplace-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
-      "version": "2.19.0",
+      "version": "2.20.0",
       "category": "examples",
       "keywords": [
         "skills",
@@ -4165,7 +4165,7 @@
       "name": "jeremy-firestore",
       "source": "./plugins/community/jeremy-firestore",
       "description": "Firestore database specialist for schema design, queries, and real-time sync",
-      "version": "2.20.0",
+      "version": "2.21.0",
       "category": "community",
       "keywords": [
         "firebase",
@@ -4749,7 +4749,7 @@
       "name": "jeremy-google-adk",
       "source": "./plugins/ai-ml/jeremy-google-adk",
       "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "category": "ai-ml",
       "keywords": [
         "google",
@@ -4770,7 +4770,7 @@
       "name": "jeremy-vertex-ai",
       "source": "./plugins/ai-ml/jeremy-vertex-ai",
       "description": "Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal extraction, evaluation, and Agent Engine deployment with operational guardrails.",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "category": "ai-ml",
       "keywords": [
         "vertex-ai",
@@ -4911,7 +4911,7 @@
       "name": "prettier-markdown-hook",
       "source": "./plugins/productivity/prettier-markdown-hook",
       "description": "Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "category": "productivity",
       "keywords": [
         "prettier",
@@ -5115,7 +5115,7 @@
       "name": "jeremy-firebase",
       "source": "./plugins/community/jeremy-firebase",
       "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
-      "version": "2.23.0",
+      "version": "2.24.0",
       "category": "community",
       "keywords": [
         "firebase",
@@ -5160,7 +5160,7 @@
       "name": "mattyp-changelog",
       "source": "./plugins/devops/mattyp-changelog",
       "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "category": "devops",
       "keywords": [
         "changelog",
@@ -6227,7 +6227,7 @@
       "name": "youtube-strategy",
       "source": "./plugins/productivity/youtube-strategy",
       "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
-      "version": "1.10.0",
+      "version": "1.11.0",
       "category": "productivity",
       "keywords": [
         "youtube",
@@ -8343,7 +8343,7 @@
       "name": "web-analytics",
       "source": "./plugins/analytics/web-analytics",
       "description": "Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "category": "analytics",
       "keywords": [
         "analytics",

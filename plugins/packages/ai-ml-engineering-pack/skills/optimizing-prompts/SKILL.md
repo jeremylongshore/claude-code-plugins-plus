@@ -8,7 +8,7 @@ description: 'Execute this skill optimizes prompts for large language models (ll
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.30.0
+version: 1.31.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

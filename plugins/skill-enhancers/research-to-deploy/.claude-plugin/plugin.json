@@ -1,6 +1,6 @@
 {
   "name": "research-to-deploy",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Enhances web_search Skill by researching best practices and deploying infrastructure automatically",
   "author": {
     "name": "Claude Code Plugins Team",

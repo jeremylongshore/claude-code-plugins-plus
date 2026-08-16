@@ -1,6 +1,6 @@
 {
   "name": "openbb-terminal",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Open-source investment research terminal integration - equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
   "author": {
     "name": "Jeremy Longshore",

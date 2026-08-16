@@ -8,7 +8,7 @@ description: 'Analyze code, infrastructure, and configurations by conducting com
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.31.0
+version: 1.32.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

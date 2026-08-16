@@ -16,7 +16,7 @@ description: 'Push-based web analytics intelligence for your entire site portfol
 
   '
 allowed-tools: Read,Glob,Grep,Bash(date:*),Bash(node:*),Bash(curl:*),Bash(python3:*),Bash(source:*),Task,AskUserQuestion
-version: 1.4.0
+version: 1.5.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

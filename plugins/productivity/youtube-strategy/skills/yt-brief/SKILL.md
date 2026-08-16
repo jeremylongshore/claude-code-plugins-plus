@@ -14,7 +14,7 @@ description: 'Refine a YouTube video idea into a structured production brief wit
 
   '
 allowed-tools: WebSearch, Read, Write
-version: 1.10.0
+version: 1.11.0
 author: Claude Code Plugins <plugins@tonsofskills.com>
 license: MIT
 tags:
