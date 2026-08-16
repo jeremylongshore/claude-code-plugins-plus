@@ -60,7 +60,7 @@ and cross-linked to the
 
 No registry, credential, contributor, Plane, branch-protection, package publication, or production
 mutation occurred. Duplicate catalog-entry remediation and every other Epic 1 bead remained out of
-scope. Rollback is `git revert 94e84d4c989fb1b9e214a6df2e00225bde557b92`, followed by the targeted
+scope. Rollback is `git revert -m 1 94e84d4c989fb1b9e214a6df2e00225bde557b92`, followed by the targeted
 test and live validator; that intentionally restores the prior backup and removes the gate.
 
 ## Lessons and next gate
