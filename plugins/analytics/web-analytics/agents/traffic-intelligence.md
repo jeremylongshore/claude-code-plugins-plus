@@ -69,7 +69,7 @@ From the data-collector's referrer metrics, categorize and analyze:
 | GitHub | github.com (repos, issues, discussions, profile) |
 | Syndication | dev.to, hashnode, medium |
 | Direct | (no referrer) |
-| Redirect Domains | claudecodeplugins.io, claudecodeskills.io, claudecoworkskills.io (via UTM) |
+| Redirect Domains | claudecodeskills.io, claudecoworkskills.io (via UTM) |
 | Other | everything else |
 
 For each channel:
@@ -105,7 +105,7 @@ This is a strategic signal — AI recommending your tools is high-intent traffic
 
 ### Step 5: Redirect Domain Attribution
 
-For the 3 redirect domains, use UTM source filtering:
+For the 2 active redirect domains, use UTM source filtering:
 
 - Volume per redirect domain
 - Which redirect domain drives the most engaged traffic (lowest bounce)?

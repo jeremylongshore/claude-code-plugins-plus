@@ -126,7 +126,7 @@ marketplace/src/content/plugins/
 
 ## GitHub Pages Verification
 
-**URL:** https://claudecodeplugins.io/
+**URL:** https://tonsofskills.com/
 
 ### Sections Present:
 -  Hero Section
@@ -228,7 +228,7 @@ marketplace/src/content/plugins/
 -  Mobile Responsive: Yes
 
 ### Repository Settings
--  Homepage URL: https://claudecodeplugins.io
+-  Homepage URL: https://tonsofskills.com
 -  Description: Comprehensive marketplace for Claude Code plugins
 -  Topics: None configured (OPPORTUNITY)
 

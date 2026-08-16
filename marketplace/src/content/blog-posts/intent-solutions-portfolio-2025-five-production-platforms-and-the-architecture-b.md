@@ -42,7 +42,7 @@ canonical: "https://startaitools.com/posts/intent-solutions-portfolio-2025-five-
 <td>68% cost savings vs AWS</td>
 </tr>
 <tr>
-<td><strong><a href="https://claudecodeplugins.io">ClaudeCodePlugins</a></strong></td>
+<td><strong><a href="https://tonsofskills.com">ClaudeCodePlugins</a></strong></td>
 <td>Plugin marketplace</td>
 <td>Next.js 15, Cloud Run</td>
 <td>Live</td>

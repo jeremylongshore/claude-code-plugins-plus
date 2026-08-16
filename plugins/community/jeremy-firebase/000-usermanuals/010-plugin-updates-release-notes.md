@@ -559,7 +559,7 @@ Before release, verify:
 **Target Channels:**
 
 - GitHub Discussions
-- claudecodeplugins.io blog
+- tonsofskills.com blog
 - Plugin marketplace release notes
 - User manual index update
 

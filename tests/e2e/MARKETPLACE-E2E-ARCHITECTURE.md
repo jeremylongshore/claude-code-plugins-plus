@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-This document outlines the E2E test architecture for the Claude Code Plugins marketplace (https://claudecodeplugins.io/). The architecture integrates with existing Playwright infrastructure while adding comprehensive coverage for critical user journeys, conversation view features, mobile responsiveness, performance, and accessibility.
+This document outlines the E2E test architecture for the Claude Code Plugins marketplace (https://tonsofskills.com/). The architecture integrates with existing Playwright infrastructure while adding comprehensive coverage for critical user journeys, conversation view features, mobile responsiveness, performance, and accessibility.
 
 ## Current State Analysis
 

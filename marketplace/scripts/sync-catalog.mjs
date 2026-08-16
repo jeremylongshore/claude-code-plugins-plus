@@ -17,6 +17,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { normalizeDeadDomainValue } from '../../scripts/dead-domain-policy.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -154,7 +156,7 @@ function main() {
     const name = entry?.name;
     if (!name || !extendedNameSet.has(name) || seen.has(name)) continue;
     const best = bestExistingByName.get(name) || entry;
-    ordered.push(best);
+    ordered.push(normalizeDeadDomainValue(best));
     seen.add(name);
   }
 

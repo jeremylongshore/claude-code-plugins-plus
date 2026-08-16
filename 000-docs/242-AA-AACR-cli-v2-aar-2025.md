@@ -73,7 +73,7 @@ All 7 tasks complete:
 | Agent Skills  | 241                     |
 | CLI Version   | 2.0.0                   |
 | npm Package   | @intentsolutionsio/ccpi |
-| Website       | claudecodeplugins.io    |
+| Website       | tonsofskills.com    |
 
 ---
 

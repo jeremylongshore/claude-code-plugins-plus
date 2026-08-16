@@ -311,9 +311,9 @@ npx zcf@latest i
 - [ZCF Repository](https://github.com/UfoMiao/zcf)
 - BMAD Method
 - CCR (Claude Code Router)
-- [Claude Code Plugins Marketplace](https://claudecodeplugins.io/)
+- [Claude Code Plugins Marketplace](https://tonsofskills.com/)
 - [MCP Registry](https://registry.modelcontextprotocol.io)
 
 ---
 
-_Part of Claude Code Plugins Marketplace - https://claudecodeplugins.io/_
+_Part of Claude Code Plugins Marketplace - https://tonsofskills.com/_

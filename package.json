@@ -16,6 +16,7 @@
     "build-cowork": "node scripts/build-cowork-zips.mjs",
     "measure:e1": "node scripts/measure-epic-1.mjs",
     "measure:e1:check": "node --test scripts/corpus-resolver.test.mjs scripts/measure-epic-1.test.mjs scripts/measure-epic-1-scorecard.test.mjs && node scripts/measure-epic-1.mjs --check",
+    "validate:dead-domain": "node --test scripts/dead-domain-policy.test.mjs scripts/generated-artifact-registry.test.mjs scripts/normalize-retired-domain-projections.test.mjs && node scripts/check-dead-domain.mjs",
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
     "lint:design": "node scripts/lint-design-tells.mjs",

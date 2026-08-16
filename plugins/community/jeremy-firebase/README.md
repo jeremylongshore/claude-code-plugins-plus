@@ -293,7 +293,7 @@ MIT License - See LICENSE file
 Jeremy Longshore
 
 - GitHub: https://github.com/jeremylongshore
-- Plugin Marketplace: https://claudecodeplugins.io
+- Plugin Marketplace: https://tonsofskills.com
 
 ## Support
 

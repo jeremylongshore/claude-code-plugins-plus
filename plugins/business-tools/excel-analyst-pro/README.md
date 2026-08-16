@@ -872,7 +872,7 @@ MIT License - see LICENSE file for details.
 
 - **Issues**: https://github.com/jeremylongshore/claude-code-plugins/issues
 - **Discussions**: https://github.com/jeremylongshore/claude-code-plugins/discussions
-- **Website**: https://claudecodeplugins.io
+- **Website**: https://tonsofskills.com
 
 ---
 

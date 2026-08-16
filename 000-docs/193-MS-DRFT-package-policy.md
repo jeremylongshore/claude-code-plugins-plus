@@ -110,7 +110,7 @@ The marketplace deploys to GitHub Pages via `.github/workflows/deploy-marketplac
 - Uses `pnpm install --frozen-lockfile`
 - Builds with `pnpm -C marketplace build`
 - Deploys `marketplace/dist/` to `gh-pages` branch
-- Custom domain: `claudecodeplugins.io` (configured in GitHub UI)
+- Custom domain: `tonsofskills.com` (configured in GitHub UI)
 
 ## Publishing: npm Registry
 

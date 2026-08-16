@@ -159,7 +159,7 @@ test('malformed and contradictory provenance fail closed', () => {
   }
 });
 
-test('nested provenance excludes descendants and unreadable provenance fails closed', () => {
+test('nested provenance excludes descendants and non-regular provenance fails closed', () => {
   const { root, paths } = corpusFixture();
   source(root, 'plugins/core/owned/skills');
   assert.ok(
@@ -172,7 +172,7 @@ test('nested provenance excludes descendants and unreadable provenance fails clo
   fs.mkdirSync(path.join(second.root, 'plugins/core/owned/.source.json'));
   assert.throws(
     () => resolveCorpus('first-party', { root: second.root, paths: second.paths }),
-    /MALFORMED_SOURCE_RECORD/,
+    /SOURCE_RECORD_NOT_REGULAR/,
   );
 });
 

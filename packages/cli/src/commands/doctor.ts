@@ -328,7 +328,7 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
 
       // Fetch the latest catalog from GitHub Pages
       try {
-        const catalogUrl = 'https://claudecodeplugins.io/catalog.json';
+        const catalogUrl = 'https://tonsofskills.com/catalog.json';
         const { stdout: catalogJson } = await execAsync(`curl -sL "${catalogUrl}"`, {
           timeout: 15000,
         });
@@ -343,7 +343,7 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
           name: 'Marketplace Catalog',
           status: 'fixed',
           message: `Installed at ${marketplacePath}`,
-          details: 'Fetched latest catalog from claudecodeplugins.io',
+          details: 'Fetched latest catalog from tonsofskills.com',
         });
       } catch (fetchError) {
         checks.push({
@@ -415,7 +415,7 @@ async function checkMarketplaceIntegrity(
       if (fixMode) {
         try {
           const { stdout: freshCatalog } = await execAsync(
-            'curl -sL "https://claudecodeplugins.io/catalog.json"',
+            'curl -sL "https://tonsofskills.com/catalog.json"',
             { timeout: 15000 },
           );
           catalog = JSON.parse(freshCatalog);
@@ -423,7 +423,7 @@ async function checkMarketplaceIntegrity(
           checks.push({
             name: 'Catalog Structure',
             status: 'fixed',
-            message: 'Re-downloaded marketplace.json from claudecodeplugins.io',
+            message: 'Re-downloaded marketplace.json from tonsofskills.com',
           });
         } catch {
           checks.push({
@@ -494,7 +494,7 @@ async function checkMarketplaceIntegrity(
         // Try to refresh the catalog
         try {
           const { stdout: freshCatalog } = await execAsync(
-            'curl -sL "https://claudecodeplugins.io/catalog.json"',
+            'curl -sL "https://tonsofskills.com/catalog.json"',
             { timeout: 15000 },
           );
           const freshData = JSON.parse(freshCatalog);
@@ -505,7 +505,7 @@ async function checkMarketplaceIntegrity(
               name: 'Catalog Size',
               status: 'fixed',
               message: `Updated from ${catalogCount} to ${freshCount} plugins`,
-              details: 'Refreshed catalog from claudecodeplugins.io',
+              details: 'Refreshed catalog from tonsofskills.com',
             });
           } else {
             checks.push({

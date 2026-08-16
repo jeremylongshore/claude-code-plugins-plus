@@ -5,7 +5,7 @@
 ### Dynamic Sitemap Generation
 - **Location**: `src/pages/sitemap.xml.ts`
 - **Build Output**: `dist/sitemap.xml`
-- **URL**: https://claudecodeplugins.io/sitemap.xml
+- **URL**: https://tonsofskills.com/sitemap.xml
 
 ### Features
 - ✅ Auto-generated from marketplace catalog (258 plugins)
@@ -44,13 +44,13 @@ Added to homepage `<head>`:
 1. **Verify Domain Ownership**
    ```
    URL: https://search.google.com/search-console
-   Domain: claudecodeplugins.io
+   Domain: tonsofskills.com
    Method: DNS verification (TXT record)
    ```
 
 2. **Submit Sitemap**
    ```
-   URL: https://claudecodeplugins.io/sitemap.xml
+   URL: https://tonsofskills.com/sitemap.xml
    Location: Search Console → Sitemaps → Add new sitemap
    ```
 
@@ -87,10 +87,10 @@ https://validator.schema.org
 ### Test Sitemap
 ```bash
 # Check sitemap format
-curl https://claudecodeplugins.io/sitemap.xml | xmllint --format -
+curl https://tonsofskills.com/sitemap.xml | xmllint --format -
 
 # Verify in browser
-open https://claudecodeplugins.io/sitemap.xml
+open https://tonsofskills.com/sitemap.xml
 ```
 
 ## SEO Metrics to Monitor

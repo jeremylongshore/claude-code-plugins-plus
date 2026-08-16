@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — retired public-domain containment)
+
+- **First-party and generated surfaces now use only the live Tons of Skills domain.** A
+  case-insensitive, fail-closed policy classifies every tracked occurrence before allowing it:
+  editable sources and registered generated projections must be clean, while frozen standards,
+  provenance-owned mirrors, and registered point-in-time exports remain byte-identical. The exact
+  base contained 356 occurrences across 125 files: 293 actionable and 63 retained by policy.
+  The existing documentation-governance job now runs the fixture-backed lint so mixed case,
+  symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
+
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 
 - **Curated promotion now validates file content instead of relying on a NUL-byte prefix.**
@@ -1614,7 +1624,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
   - **Infrastructure**: cross-chain-bridge-monitor, wallet-security-auditor
-- Firebase Hosting deployment workflow for claudecodeplugins.io
+- Firebase Hosting deployment workflow for tonsofskills.com
 - Firebase Analytics integration with measurement ID tracking
 - Google Secret Manager integration for secure Firebase config
 
@@ -1680,7 +1690,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
-- Learn pages for all Batch 3 vendors on claudecodeplugins.io
+- Learn pages for all Batch 3 vendors on tonsofskills.com
 
 ### Changed
 

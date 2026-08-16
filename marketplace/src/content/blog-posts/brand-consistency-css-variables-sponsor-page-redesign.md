@@ -293,10 +293,10 @@ cd marketplace && npm run dev
 
 # Production deployment
 git push origin main
-# GitHub Actions auto-deploys to https://claudecodeplugins.io/sponsor/
+# GitHub Actions auto-deploys to https://tonsofskills.com/sponsor/
 
 # Verify deployment
-curl -I https://claudecodeplugins.io/sponsor/
+curl -I https://tonsofskills.com/sponsor/
 # HTTP/2 200 - deployed successfully
 ```
 

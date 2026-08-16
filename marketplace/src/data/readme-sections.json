@@ -1383,7 +1383,7 @@
     "usage": "<pre><code>\n/track-wallet 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1\n\nScanning wallet across all chains:\n- Total Value: $125,432\n- Tokens: 45 different assets\n- DeFi Positions: 8 protocols\n- NFTs: 12 collections\n</code></pre>"
   },
   "web-to-github-issue": {
-    "overview": "<p>> <strong>Skill Enhancer Plugin</strong>: Converts Claude's web research into actionable GitHub issues</p>\n<p><a href=\"https://img.shields.io/badge/category-skill--enhancers-blueviolet\">![Category</a>](https://claudecodeplugins.io)</p>\n<p><a href=\"https://img.shields.io/badge/enhances-web__search-blue\">![Enhances</a>](https://docs.anthropic.com/claude/docs/skills)</p>\n<p><a href=\"https://img.shields.io/badge/license-MIT-green\">![License</a>](LICENSE)</p>"
+    "overview": "<p>> <strong>Skill Enhancer Plugin</strong>: Converts Claude's web research into actionable GitHub issues</p>\n<p><a href=\"https://img.shields.io/badge/category-skill--enhancers-blueviolet\">![Category</a>](https://tonsofskills.com)</p>\n<p><a href=\"https://img.shields.io/badge/enhances-web__search-blue\">![Enhances</a>](https://docs.anthropic.com/claude/docs/skills)</p>\n<p><a href=\"https://img.shields.io/badge/license-MIT-green\">![License</a>](LICENSE)</p>"
   },
   "webhook-handler-creator": {
     "overview": "<p>Create secure webhook endpoints with signature verification, idempotency, and retry logic.</p>",

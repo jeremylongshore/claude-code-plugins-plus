@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { buildPublishCandidateReport } from './publish-candidate-report.mjs';
-import { resolvePluginProvenance } from './plugin-provenance.mjs';
+import { parseSourceRecord, resolvePluginProvenance } from './plugin-provenance.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'plugin-provenance-'));
@@ -101,8 +101,24 @@ test('malformed, unreadable, and contradictory provenance fail closed', () => {
   const report = buildPublishCandidateReport({ root, all: true, scope: '@intentsolutionsio/' });
   assert.deepEqual(
     report.refused.map((row) => row.reasonCode),
-    ['MALFORMED_SOURCE_RECORD', 'CONTRADICTORY_SOURCE_RECORD', 'MALFORMED_SOURCE_RECORD'],
+    ['MALFORMED_SOURCE_RECORD', 'CONTRADICTORY_SOURCE_RECORD', 'SOURCE_RECORD_NOT_REGULAR'],
   );
+});
+
+test('unreadable and symlink source records have stable fail-closed reasons', () => {
+  const root = fixture();
+  const unreadable = parseSourceRecord(path.join(root, '.source.json'), {
+    lstat: () => ({ isFile: () => true, isSymbolicLink: () => false }),
+    readFile: () => {
+      throw new Error('fixture EACCES');
+    },
+  });
+  assert.equal(unreadable.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+
+  fs.writeFileSync(path.join(root, 'target.json'), '{}');
+  fs.symlinkSync('target.json', path.join(root, '.source.json'));
+  const symlink = resolvePluginProvenance('.', { root });
+  assert.equal(symlink.reasonCode, 'SOURCE_RECORD_SYMLINK');
 });
 
 test('red proof: legacy publisher admits a mirror, enforced publisher skips it', () => {

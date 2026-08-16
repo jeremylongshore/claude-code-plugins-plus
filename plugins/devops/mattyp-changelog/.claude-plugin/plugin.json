@@ -4,7 +4,7 @@
   "description": "Automate changelog generation: fetch recent changes, synthesize release notes, run quality gates, and prepare a PR.",
   "author": {
     "name": "Mattyp",
-    "email": "mattyp@claudecodeplugins.io"
+    "email": "mattyp@tonsofskills.com"
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
   "license": "MIT",

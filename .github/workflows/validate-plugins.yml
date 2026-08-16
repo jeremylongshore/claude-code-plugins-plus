@@ -1472,6 +1472,13 @@ jobs:
           node --test scripts/measure-epic-1.test.mjs scripts/measure-epic-1-scorecard.test.mjs
           pnpm run measure:e1:check
 
+      # The live property is tonsofskills.com. Preserve frozen 6767 records and
+      # provenance-owned mirrors byte-for-byte, but refuse the retired domain on
+      # every first-party source or generated projection. This remains inside
+      # doc-governance, so it adds no required status context.
+      - name: Reject the retired domain on actionable surfaces
+        run: pnpm run validate:dead-domain
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

@@ -1,4 +1,4 @@
-# Quick Deploy Guide - claudecodeplugins.io
+# Quick Deploy Guide - tonsofskills.com
 
 **Last Updated:** 2025-10-16
 **Time to Deploy:** 3-5 minutes (after initial setup)
@@ -21,7 +21,7 @@ git push origin main
 ### Step 2: Enable GitHub Pages
 1. Visit:
 2. Source: **GitHub Actions**
-3. Custom domain: `claudecodeplugins.io`
+3. Custom domain: `tonsofskills.com`
 4. Enable: **Enforce HTTPS**
 5. Click **Save**
 
@@ -42,10 +42,10 @@ Type: A    Name: @    Value: 185.199.111.153
 
 ```bash
 # Check if site is live
-curl -I https://claudecodeplugins.io
+curl -I https://tonsofskills.com
 
 # Check DNS
-dig claudecodeplugins.io A +short
+dig tonsofskills.com A +short
 
 # View GitHub Actions
 # Visit: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -72,7 +72,7 @@ git push origin main  # Auto-deploys via GitHub Actions
 ```
 
 ### Verification
-- **Site:** https://claudecodeplugins.io
+- **Site:** https://tonsofskills.com
 - **Actions:** https://github.com/jeremylongshore/claude-code-plugins/actions
 - **Settings:**
 
@@ -96,10 +96,10 @@ npm run build  # Test locally first
 
 ### DNS not working?
 ```bash
-dig claudecodeplugins.io A +short
+dig tonsofskills.com A +short
 # Should show 4 GitHub Pages IPs
 # Wait 24-48 hours for DNS propagation
-# Check: https://www.whatsmydns.net/#A/claudecodeplugins.io
+# Check: https://www.whatsmydns.net/#A/tonsofskills.com
 ```
 
 ---

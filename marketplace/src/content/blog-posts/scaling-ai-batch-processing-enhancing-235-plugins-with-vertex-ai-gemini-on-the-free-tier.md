@@ -438,6 +438,6 @@ The overnight batch will complete around 2:30 AM with 100% success rate, entirel
 
 Not bad for free.
 
-**Want to see the results?** Check out [claudecodeplugins.io](https://claudecodeplugins.io/) to see the enhanced plugins in action, or explore the [complete source code](https://github.com/jeremylongshore/claude-code-plugins) on GitHub.
+**Want to see the results?** Check out [tonsofskills.com](https://tonsofskills.com/) to see the enhanced plugins in action, or explore the [complete source code](https://github.com/jeremylongshore/claude-code-plugins) on GitHub.
 
 **Have questions about batch processing with Vertex AI?** Drop a comment or find me on X [@AsphaltCowb0y](https://twitter.com/AsphaltCowb0y).

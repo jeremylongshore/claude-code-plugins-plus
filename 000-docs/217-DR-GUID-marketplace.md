@@ -1,9 +1,9 @@
 # Claude Code Skills Hub - Marketplace Website
 
 [![Version](https://img.shields.io/badge/version-3.0.0-brightgreen)](247-OD-CHNG-changelog.md)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-244%20Skills-orange?logo=sparkles)](https://claudecodeplugins.io/skills/)
-[![Plugins](https://img.shields.io/badge/Total%20Plugins-259-blue)](https://claudecodeplugins.io/)
-[![Live Routes](https://img.shields.io/badge/Live%20Routes-521-success)](https://claudecodeplugins.io/)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-244%20Skills-orange?logo=sparkles)](https://tonsofskills.com/skills/)
+[![Plugins](https://img.shields.io/badge/Total%20Plugins-259-blue)](https://tonsofskills.com/)
+[![Live Routes](https://img.shields.io/badge/Live%20Routes-521-success)](https://tonsofskills.com/)
 [![Astro](https://img.shields.io/badge/Built%20with-Astro%205.16-FF5D01?logo=astro)](https://astro.build)
 [![Tailwind CSS](https://img.shields.io/badge/Styled%20with-Tailwind%204.1-38B2AC?logo=tailwind-css)](https://tailwindcss.com)
 
@@ -15,7 +15,7 @@
 
 ---
 
-**Live Site:** [claudecodeplugins.io](https://claudecodeplugins.io)
+**Live Site:** [tonsofskills.com](https://tonsofskills.com)
 
 Static site generator for the Claude Code plugins marketplace. Built with Astro 5.16, Tailwind CSS 4.1, and Fuse.js for instant search.
 

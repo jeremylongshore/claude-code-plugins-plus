@@ -6,16 +6,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('P3: Domain Redirects', () => {
   // These tests use direct fetch (no browser rendering) to check redirect headers
-  test('claudecodeplugins.io redirects to tonsofskills.com', async ({ request }) => {
-    const response = await request.get('https://claudecodeplugins.io', {
-      maxRedirects: 0,
-      failOnStatusCode: false,
-    });
-    expect(response.status()).toBe(301);
-    const location = response.headers()['location'];
-    expect(location).toContain('tonsofskills.com');
-  });
-
   test('claudecodeskills.io redirects to tonsofskills.com', async ({ request }) => {
     const response = await request.get('https://claudecodeskills.io', {
       maxRedirects: 0,

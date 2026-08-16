@@ -1,9 +1,9 @@
 {
-  "$schema": "https://claudecodeplugins.io/schemas/mcp-presets.schema.json",
+  "$schema": "https://tonsofskills.com/schemas/mcp-presets.schema.json",
   "name": "claude-code-plugins-plus",
   "description": "MCP server presets from Claude Code Plugins Marketplace",
   "version": "1.0.0",
-  "homepage": "https://claudecodeplugins.io/",
+  "homepage": "https://tonsofskills.com/",
   "presets": {
     "project-health-auditor": {
       "name": "Project Health Auditor",

@@ -115,7 +115,7 @@ Professional financial modeling toolkit for Claude Code with auto-invoked Skills
 - Pivot Wizard - Natural language pivot tables
 
 ### Links
-- 📚 Marketplace: https://claudecodeplugins.io
+- 📚 Marketplace: https://tonsofskills.com
 - 💻 Repository: https://github.com/jeremylongshore/claude-code-plugins
 - 🐛 Issues: https://github.com/jeremylongshore/claude-code-plugins/issues
 "
@@ -190,7 +190,7 @@ Professional financial modeling toolkit for Claude Code with auto-invoked Skills
 ### Website
 
 ```
-https://claudecodeplugins.io
+https://tonsofskills.com
 ```
 
 ---

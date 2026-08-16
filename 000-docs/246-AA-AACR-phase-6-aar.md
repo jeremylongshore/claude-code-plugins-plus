@@ -98,41 +98,41 @@ Status: Clean
 ### CLI Command on Homepage
 
 ```bash
-curl -s https://claudecodeplugins.io/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
+curl -s https://tonsofskills.com/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
 # Output: pnpm add -g @intentsolutionsio/ccpi
 ```
 
 ### Search Redirect JavaScript
 
 ```bash
-curl -s https://claudecodeplugins.io/ | grep -o "redirectToExplore"
+curl -s https://tonsofskills.com/ | grep -o "redirectToExplore"
 # Output: redirectToExplore
 
-curl -s https://claudecodeplugins.io/ | grep -o "searchContainer.addEventListener"
+curl -s https://tonsofskills.com/ | grep -o "searchContainer.addEventListener"
 # Output: searchContainer.addEventListener
 ```
 
 ### Explore Page URL Params
 
 ```bash
-curl -s https://claudecodeplugins.io/explore/ | grep -o "DOMContentLoaded"
+curl -s https://tonsofskills.com/explore/ | grep -o "DOMContentLoaded"
 # Output: DOMContentLoaded
 ```
 
 ### Skills Index "Provided by" Labels
 
 ```bash
-curl -s https://claudecodeplugins.io/skills/ | grep -o "Provided by" | head -3
+curl -s https://tonsofskills.com/skills/ | grep -o "Provided by" | head -3
 # Output: Provided by (x3)
 ```
 
 ### Skill Detail Page Styling
 
 ```bash
-curl -s https://claudecodeplugins.io/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
+curl -s https://tonsofskills.com/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
 # Output: <h2 class="section-title">Provided by Plugin</h2>
 
-curl -s https://claudecodeplugins.io/skills/adk-deployment-specialist/ | grep "skill-detail"
+curl -s https://tonsofskills.com/skills/adk-deployment-specialist/ | grep "skill-detail"
 # Output: skill-detail (class present)
 ```
 
@@ -180,7 +180,7 @@ git push origin main --force-with-lease
 
 - PR #205: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/205
 - Deploy Run: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/20516632044
-- Production Site: https://claudecodeplugins.io/
+- Production Site: https://tonsofskills.com/
 
 ---
 

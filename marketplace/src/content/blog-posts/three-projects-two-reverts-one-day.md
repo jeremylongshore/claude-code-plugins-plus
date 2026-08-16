@@ -12,19 +12,19 @@ March 3rd was a heavy day. Three projects, dozens of commits, and a domain migra
 
 ## The Domain Migration Saga
 
-The claude-code-plugins marketplace needed a new home. `claudecodeplugins.io` was fine for a developer tool, but `tonsofskills.com` was the brand direction. Simple domain swap. Should take 20 minutes.
+The claude-code-plugins marketplace needed a new home. The retired legacy domain was fine for a developer tool, but `tonsofskills.com` was the brand direction. Simple domain swap. Should take 20 minutes.
 
 It took six commits and two reverts.
 
 ### The Timeline
 
-Here's the actual commit sequence. Read it slowly.
+Here's the actual commit sequence, with the retired domain redacted so it is not republished. Read it slowly.
 
-1. `feat: migrate domain from claudecodeplugins.io to tonsofskills.com`
-2. `feat: add tonsofskills.com Firebase hosting and claudecodeplugins.io redirect`
+1. `feat: migrate domain from [retired legacy domain] to tonsofskills.com`
+2. `feat: add tonsofskills.com Firebase hosting and [retired legacy domain] redirect`
 3. `Revert "feat: add tonsofskills.com Firebase hosting..."`
-4. `Revert "feat: migrate domain from claudecodeplugins.io to tonsofskills.com"`
-5. `feat: add tonsofskills.com 301 redirect to claudecodeplugins.io`
+4. `Revert "feat: migrate domain from [retired legacy domain] to tonsofskills.com"`
+5. `feat: add tonsofskills.com 301 redirect to [retired legacy domain]`
 6. `feat: migrate primary domain to tonsofskills.com`
 
 Commits 3 and 4 are the reverts. Two of them. Back to back. In production.
@@ -35,7 +35,7 @@ The first attempt (commits 1-2) seemed correct. Update `firebase.json` with both
 
 Except Firebase Hosting doesn't work the way you think it does.
 
-When you configure two custom domains on a single Firebase Hosting site, the **order of hosting targets in `firebase.json` determines the canonical domain**. I had `tonsofskills.com` first and `claudecodeplugins.io` second. Firebase treated `tonsofskills.com` as primary — good — but the redirect from `claudecodeplugins.io` wasn't a redirect at all. It was serving the same site on both domains. No 301. No canonical signal. Just two identical sites competing for search ranking.
+When you configure two custom domains on a single Firebase Hosting site, the **order of hosting targets in `firebase.json` determines the canonical domain**. I had the retired legacy domain first and `tonsofskills.com` second. Firebase treated `tonsofskills.com` as primary — good — but the legacy-domain redirect wasn't a redirect at all. It was serving the same site on both domains. No 301. No canonical signal. Just two identical sites competing for search ranking.
 
 DNS propagation made this worse. The new domain was live but not fully propagated. Some users hit the old domain and got the site. Others hit the new domain and got a certificate error because the SSL cert hadn't provisioned yet. For about 15 minutes, neither domain worked reliably.
 

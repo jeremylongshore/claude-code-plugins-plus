@@ -11,10 +11,43 @@ function inside(root, candidate) {
   );
 }
 
-function parseSourceRecord(recordPath) {
+export function parseSourceRecord(
+  recordPath,
+  { lstat = fs.lstatSync, readFile = fs.readFileSync } = {},
+) {
+  let metadata;
+  try {
+    metadata = lstat(recordPath);
+  } catch (error) {
+    return {
+      status: 'refused',
+      reasonCode: 'UNREADABLE_SOURCE_RECORD',
+      markerPath: recordPath,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+  if (metadata.isSymbolicLink()) {
+    return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
+  }
+  if (!metadata.isFile()) {
+    return { status: 'refused', reasonCode: 'SOURCE_RECORD_NOT_REGULAR', markerPath: recordPath };
+  }
+
+  let raw;
+  try {
+    raw = readFile(recordPath, 'utf8');
+  } catch (error) {
+    return {
+      status: 'refused',
+      reasonCode: 'UNREADABLE_SOURCE_RECORD',
+      markerPath: recordPath,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+
   let value;
   try {
-    value = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
+    value = JSON.parse(raw);
   } catch (error) {
     return {
       status: 'refused',

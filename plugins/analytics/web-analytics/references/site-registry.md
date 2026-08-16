@@ -95,7 +95,6 @@ These domains 301-redirect to tonsofskills.com with UTM params (verified 2026-05
 
 | Domain | Destination | UTM Source | Purpose |
 |--------|-------------|-----------|---------|
-| claudecodeplugins.io | `tonsofskills.com/?utm_source=claudecodeplugins.io&utm_medium=redirect` | `claudecodeplugins.io` | Brand redirect |
 | claudecodeskills.io | `tonsofskills.com/?utm_source=claudecodeskills.io&utm_medium=redirect` | `claudecodeskills.io` | Brand redirect |
 | claudecoworkskills.io | `tonsofskills.com/cowork?utm_source=claudecoworkskills.io&utm_medium=redirect` | `claudecoworkskills.io` | Cowork-specific brand redirect |
 

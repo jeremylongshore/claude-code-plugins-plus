@@ -1,4 +1,4 @@
-# Deployment Status - claudecodeplugins.io
+# Deployment Status - tonsofskills.com
 
 **Generated:** 2025-10-16
 **Status:** ✅ Ready for Deployment
@@ -12,7 +12,7 @@
 
 ```javascript
 {
-  site: 'https://claudecodeplugins.io',
+  site: 'https://tonsofskills.com',
   base: '/',
   output: 'static',
   compressHTML: true
@@ -26,7 +26,7 @@
 ### CNAME File
 **File:** `
 
-**Content:** `claudecodeplugins.io`
+**Content:** `tonsofskills.com`
 
 ✅ **Status:** Present and correct (copied to dist/ during build)
 
@@ -84,7 +84,7 @@
 
 **Required Configuration:**
 - [ ] Source: **GitHub Actions** (not Deploy from a branch)
-- [ ] Custom domain: `claudecodeplugins.io`
+- [ ] Custom domain: `tonsofskills.com`
 - [ ] Enforce HTTPS: ✅ Enabled
 
 ### 2. DNS Configuration
@@ -105,7 +105,7 @@ Type: CNAME, Name: www, Value: jeremylongshore.github.io
 
 **Verification:**
 ```bash
-dig claudecodeplugins.io A +short
+dig tonsofskills.com A +short
 # Should return the 4 GitHub Pages IP addresses above
 ```
 
@@ -131,10 +131,10 @@ git push origin main
 After deployment completes:
 
 ### Immediate Checks (within 5 minutes)
-- [ ] Visit https://claudecodeplugins.io
+- [ ] Visit https://tonsofskills.com
 - [ ] Verify HTTPS works (green padlock)
 - [ ] Check homepage loads correctly
-- [ ] Test spotlight page: https://claudecodeplugins.io/spotlight
+- [ ] Test spotlight page: https://tonsofskills.com/spotlight
 - [ ] Verify plugin count shows "227 plugins"
 
 ### Content Checks
@@ -153,7 +153,7 @@ After deployment completes:
 ### SEO Checks
 - [ ] Page title: "Claude Code Plugins Marketplace - 227 Plugins"
 - [ ] Meta description present
-- [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://claudecodeplugins.io
+- [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://tonsofskills.com
 - [ ] Favicon displays
 
 ---
@@ -194,9 +194,9 @@ cat dist/CNAME
 ### Custom Domain Issues
 ```bash
 # Check DNS propagation
-dig claudecodeplugins.io A +short
+dig tonsofskills.com A +short
 
-# Check worldwide DNS: https://www.whatsmydns.net/#A/claudecodeplugins.io
+# Check worldwide DNS: https://www.whatsmydns.net/#A/tonsofskills.com
 
 # Verify CNAME in dist
 cat
@@ -242,7 +242,7 @@ cat
 3. **Enable GitHub Pages:**
    - Visit repository settings
    - Configure GitHub Pages source as "GitHub Actions"
-   - Add custom domain: claudecodeplugins.io
+   - Add custom domain: tonsofskills.com
 
 4. **Configure DNS:**
    - Add A records at your domain registrar

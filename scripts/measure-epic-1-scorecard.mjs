@@ -12,6 +12,7 @@ import yaml from 'js-yaml';
 
 import { canonicalDocumentLinks, inspectAuthorityMetadata } from './check-doc-authority.mjs';
 import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
+import { scanDeadDomainPolicy } from './dead-domain-policy.mjs';
 
 const UNRESOLVED_ROWS = new Map([
   [
@@ -237,7 +238,7 @@ const DIMENSIONS = {
   18: 'Prose and comparison model references',
   19: 'Bead-ID false positives in model-ID scans',
   20: 'docs.anthropic.com occurrences',
-  21: 'Dead claudecodeplugins.io domain',
+  21: 'Retired public domain',
   22: 'Tracked generated artifacts with no drift gate',
   23: 'Worst generated-artifact staleness',
   24: 'Published answers to how many skills',
@@ -1093,18 +1094,13 @@ export function buildExtendedScorecardRows({
       measured_proxy: anthropicLinks,
     },
   );
-  const deadAll = literalCensus(reader, 'claudecodeplugins.io', debtSurface);
-  const deadActionable = literalCensus(
-    reader,
-    'claudecodeplugins.io',
-    (path) => debtSurface(path) && !/^000-docs\/6767-/.test(path),
-  );
+  const deadDomain = scanDeadDomainPolicy({ root: reader.root, paths: reader.paths });
   output[21] = baseRow(
     21,
-    'measured',
-    'literal dead-domain occurrences in tracked text, excluding frozen 000-docs/6767-* records',
-    deadAll.paths,
-    { actionable: deadActionable, all_tracked: deadAll, target_actionable_occurrences: 0 },
+    deadDomain.refused.length === 0 ? 'measured' : 'undefined',
+    'tracked retired-domain references classified by first-party, generated, frozen, and provenance-owned policy',
+    deadDomain.all_policy_surface.paths,
+    deadDomain,
   );
   output[22] = baseRow(
     22,

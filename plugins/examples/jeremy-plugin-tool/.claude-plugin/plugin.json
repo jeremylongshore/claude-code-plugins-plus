@@ -4,8 +4,8 @@
   "description": "Ultimate plugin management toolkit with 4 auto-invoked Skills for creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
   "author": {
     "name": "Claude Code Plugins",
-    "email": "plugins@claudecodeplugins.io",
-    "url": "https://claudecodeplugins.io"
+    "email": "plugins@tonsofskills.com",
+    "url": "https://tonsofskills.com"
   },
   "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
