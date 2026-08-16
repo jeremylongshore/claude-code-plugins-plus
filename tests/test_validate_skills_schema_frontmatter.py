@@ -193,6 +193,23 @@ def test_clean_allowed_tools_produce_no_tool_diagnostics():
             assert not any("allowed-tools" in e for e in errors), (tier, allowed_tools, errors)
 
 
+def test_folded_scalar_allowed_tools_parse_cleanly():
+    frontmatter, _body = validator.parse_frontmatter(
+        """---
+name: my-skill
+description: Validate folded scalar permission syntax without changing its semantics.
+allowed-tools: >-
+  Read Write Bash(git status *)
+---
+
+Validate the repository.
+"""
+    )
+    errors, warnings, _infos = _frontmatter(frontmatter, validator.TIER_STANDARD)
+    assert not any("allowed-tools" in error for error in errors), errors
+    assert not any("allowed-tools" in warning for warning in warnings), warnings
+
+
 def _tracked_skill_paths() -> list[Path]:
     repo_root = VALIDATOR_PATH.parent.parent
     result = subprocess.run(
@@ -202,7 +219,9 @@ def _tracked_skill_paths() -> list[Path]:
         capture_output=True,
         text=True,
     )
-    return [repo_root / line for line in result.stdout.splitlines() if line]
+    paths = [repo_root / line for line in result.stdout.splitlines() if line]
+    assert paths, "no tracked plugins/**/SKILL.md files found; corpus regression is vacuous"
+    return paths
 
 
 def _source_ancestor(path: Path) -> Path | None:
@@ -215,18 +234,21 @@ def _source_ancestor(path: Path) -> Path | None:
     return None
 
 
-def test_first_party_corpus_has_zero_malformed_allowed_tools():
+def test_tracked_corpus_has_zero_malformed_allowed_tools_by_provenance():
     repo_root = VALIDATOR_PATH.parent.parent
-    malformed: list[str] = []
+    malformed: dict[str, list[str]] = {"first-party": [], "mirror": []}
+    declarations = {"first-party": 0, "mirror": 0}
     for path in _tracked_skill_paths():
-        if _source_ancestor(path) is not None:
-            continue
+        cohort = "mirror" if _source_ancestor(path) is not None else "first-party"
         frontmatter, _body = validator.parse_frontmatter(path.read_text(encoding="utf-8"))
         if "allowed-tools" not in frontmatter:
             continue
+        declarations[cohort] += 1
         raw_tools = frontmatter["allowed-tools"]
         if not isinstance(raw_tools, (str, list)):
-            malformed.append(f"{path.relative_to(repo_root)}: wrong type {type(raw_tools).__name__}")
+            malformed[cohort].append(
+                f"{path.relative_to(repo_root)}: wrong type {type(raw_tools).__name__}"
+            )
             continue
         if isinstance(raw_tools, list):
             invalid_items = [
@@ -235,7 +257,7 @@ def test_first_party_corpus_has_zero_malformed_allowed_tools():
                 if not isinstance(item, str) or not item.strip()
             ]
             if invalid_items:
-                malformed.append(
+                malformed[cohort].append(
                     f"{path.relative_to(repo_root)}: invalid YAML-list item(s) {invalid_items}"
                 )
                 continue
@@ -246,40 +268,42 @@ def test_first_party_corpus_has_zero_malformed_allowed_tools():
                 if not item.strip()
             ]
             if empty_items:
-                malformed.append(
+                malformed[cohort].append(
                     f"{path.relative_to(repo_root)}: empty CSV item(s) {empty_items}"
                 )
                 continue
         tools = validator.parse_allowed_tools(raw_tools)
         if not tools:
-            malformed.append(f"{path.relative_to(repo_root)}: empty allowed-tools")
+            malformed[cohort].append(f"{path.relative_to(repo_root)}: empty allowed-tools")
             continue
         for tool in tools:
             valid, message = validator.validate_tool_permission(tool)
             if not valid:
-                malformed.append(f"{path.relative_to(repo_root)}: {message}")
+                malformed[cohort].append(f"{path.relative_to(repo_root)}: {message}")
 
-    assert malformed == []
+    assert all(count > 0 for count in declarations.values()), declarations
+    assert malformed == {"first-party": [], "mirror": []}
 
 
 def test_mirror_owned_folded_scalars_are_parseable_and_byte_identical():
-    repo_root = VALIDATOR_PATH.parent.parent
-    mirror_root = repo_root / "plugins" / "testing" / "kobiton-automate"
     folded_paths = []
+    mirror_roots: set[Path] = set()
     for path in _tracked_skill_paths():
-        if not path.is_relative_to(mirror_root):
-            continue
         frontmatter_text = path.read_text(encoding="utf-8")
         if "allowed-tools: >-" not in frontmatter_text:
             continue
+        mirror_root = _source_ancestor(path)
+        assert mirror_root is not None, f"folded scalar is not provenance-marked: {path}"
         folded_paths.append(path)
-        assert _source_ancestor(path) == mirror_root
+        mirror_roots.add(mirror_root)
         frontmatter, _body = validator.parse_frontmatter(frontmatter_text)
         tools = validator.parse_allowed_tools(frontmatter["allowed-tools"])
         assert tools
         assert all(validator.validate_tool_permission(tool)[0] for tool in tools)
 
     assert len(folded_paths) == 10
+    assert len(mirror_roots) == 1
+    mirror_root = mirror_roots.pop()
     canonical_paths = [path for path in folded_paths if ".codex" not in path.parts]
     assert len(canonical_paths) == 5
     for canonical in canonical_paths:
