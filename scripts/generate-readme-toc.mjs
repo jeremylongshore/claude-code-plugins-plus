@@ -68,7 +68,7 @@ function computeStats(catalog) {
   // with the developer — which is exactly how this change first failed CI.
   // git ls-files is byte-identical in CI and locally.
   //
-  const skills = resolveCorpus('marketplace-visible', { root: ROOT, paths: files }).length;
+  const skills = resolveCorpus('marketplace-visible', { root: ROOT }).length;
   const agents = files.filter(
     (f) => f.startsWith('plugins/') && f.includes('/agents/') && f.endsWith('.md'),
   ).length;

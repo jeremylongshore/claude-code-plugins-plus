@@ -121,6 +121,35 @@ function skillPaths(paths) {
   );
 }
 
+function assertSuppliedSkillPaths(root, entries) {
+  const inspected = new Map();
+  for (const entry of entries) {
+    let candidate = root;
+    const segments = entry.split('/');
+    for (const [index, segment] of segments.entries()) {
+      candidate = path.join(candidate, segment);
+      let metadata = inspected.get(candidate);
+      if (!metadata) {
+        try {
+          metadata = fs.lstatSync(candidate);
+        } catch (error) {
+          fail(
+            `cannot inspect supplied path ${entry}: ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
+        inspected.set(candidate, metadata);
+      }
+      if (metadata.isSymbolicLink()) {
+        fail(`symbolic link is not a corpus authority: ${entry}`);
+      }
+      const finalSegment = index === segments.length - 1;
+      if ((finalSegment && !metadata.isFile()) || (!finalSegment && !metadata.isDirectory())) {
+        fail(`supplied path is not a regular repository file: ${entry}`);
+      }
+    }
+  }
+}
+
 function readCatalog(root) {
   const catalogPath = path.join(root, '.claude-plugin', 'marketplace.extended.json');
   let catalog;
@@ -297,6 +326,7 @@ export function resolveCorpus(cohort, { root = process.cwd(), paths } = {}) {
   }
   const inventory = (paths ?? trackedPaths(rootPath)).map(normalizePath);
   const entries = skillPaths(inventory);
+  if (paths !== undefined) assertSuppliedSkillPaths(rootPath, entries);
 
   switch (cohort) {
     case 'marketplace-visible':

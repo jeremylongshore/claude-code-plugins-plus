@@ -239,6 +239,14 @@ test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
     execFileSync('git', ['init', '-q'], { cwd: root });
     execFileSync('git', ['add', '.'], { cwd: root });
     assert.throws(() => resolveCorpus('marketplace-visible', { root }), /symbolic link/);
+    assert.throws(
+      () =>
+        resolveCorpus('marketplace-visible', {
+          root,
+          paths: ['plugins/core/owned/skills/linked/SKILL.md'],
+        }),
+      /symbolic link/,
+    );
   } finally {
     fs.rmSync(externalDirectory, { force: true, recursive: true });
     fs.rmSync(root, { force: true, recursive: true });

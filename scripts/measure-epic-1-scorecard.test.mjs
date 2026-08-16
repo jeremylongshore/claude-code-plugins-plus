@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -310,5 +310,16 @@ test('rejects path traversal and ignores untracked validator rows', () => {
   assert.throws(
     () => buildExtendedScorecardRows({ ...values, paths: [...base.paths, '../escape'] }),
     /escapes repository/,
+  );
+});
+
+test('scorecard corpus counts reject a supplied SKILL.md symlink', () => {
+  const base = fixture();
+  const linked = 'plugins/local/skills/linked/SKILL.md';
+  mkdirSync(dirname(join(base.root, linked)), { recursive: true });
+  symlinkSync(join(base.root, 'plugins/local/skills/two/SKILL.md'), join(base.root, linked));
+  assert.throws(
+    () => buildExtendedScorecardRows(input({ ...base, paths: [...base.paths, linked] })),
+    /symbolic link is not a corpus authority/,
   );
 });
