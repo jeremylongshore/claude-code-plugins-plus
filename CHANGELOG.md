@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-16 — Epic 1 measurement harness)
+
+- **Every Epic 1 baseline is now reproducible from one deterministic command.**
+  `pnpm run measure:e1` emits a cohort-labeled machine-readable scorecard for
+  blueprint rows 1, 2, 3, 4, 11, 12, 22, 24, 25, 26, and 27 without collapsing
+  the distinct plugin, validator, Freshie, generated-index, or terminal
+  populations. `pnpm run measure:e1:check` detects artifact drift, and fixture
+  tests fail closed on malformed evidence, contradictory counts, bad signatures,
+  missing Git inventory, and nondeterministic output.
+
 ### Fixed (2026-08-16 — malformed tool-allowlist enforcement)
 
 - **Structurally malformed `allowed-tools` entries now fail closed.** Validator

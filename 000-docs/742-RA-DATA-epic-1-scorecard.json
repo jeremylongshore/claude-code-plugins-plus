@@ -1,0 +1,263 @@
+{
+  "blueprint": "727",
+  "cohorts": {
+    "agent_files_plugin_surface": "tracked Markdown files directly beneath plugins/**/agents/",
+    "agent_lane_validator": "files reported by validate-skills-schema.py --agents-only",
+    "graded_artifacts": "path-bearing SKILL.md rows from --marketplace --skills-only --json",
+    "marketplace_terminal": "SKILL.md, command, agent, and plugin.json surfaces in --marketplace terminal summary",
+    "plugin_skills": "tracked plugins/**/SKILL.md files",
+    "tracked_tree": "git ls-files at the measured checkout"
+  },
+  "graded_artifact_cohort": {
+    "cohort": "graded_artifacts",
+    "reproduce": "pnpm run measure:e1 -- --row=graded_artifact_cohort --stdout",
+    "values": {
+      "a_error_total": 219,
+      "a_failing": 132,
+      "ab_error_total": 2155,
+      "ab_failing": 962,
+      "b_failing": 830,
+      "error_files": 2037,
+      "error_total": 7433,
+      "grade_distribution": {
+        "A": 1597,
+        "B": 985,
+        "C": 896,
+        "D": 193,
+        "F": 9
+      },
+      "rows": 3680
+    }
+  },
+  "rows": {
+    "1": {
+      "cohort": "tracked_tree",
+      "dimension": "Tracked files, plugin SKILL.md, and plugin agent files",
+      "reproduce": "pnpm run measure:e1 -- --row=1 --stdout",
+      "values": {
+        "plugin_agent_files": 347,
+        "plugin_skill_files": 3179,
+        "tracked_files": 23007
+      }
+    },
+    "2": {
+      "cohort": "canonical extended catalog",
+      "dimension": "Catalog entries versus distinct names",
+      "reproduce": "pnpm run measure:e1 -- --row=2 --stdout",
+      "values": {
+        "distinct_names": 467,
+        "duplicate_names": [
+          {
+            "count": 4,
+            "name": "claudebase"
+          },
+          {
+            "count": 2,
+            "name": "geepers-agents"
+          }
+        ],
+        "entries": 471
+      }
+    },
+    "3": {
+      "cohort": "tracked .claude-plugin catalog-shaped files",
+      "dimension": "Tracked stale catalog shadows",
+      "reproduce": "pnpm run measure:e1 -- --row=3 --stdout",
+      "values": {
+        "count": 0,
+        "paths": []
+      }
+    },
+    "4": {
+      "cohort": "three named validator cohorts; never interchangeable",
+      "dimension": "Marketplace-tier errors and compliance",
+      "reproduce": "pnpm run measure:e1 -- --row=4 --stdout",
+      "values": {
+        "agent_lane": {
+          "agents": 353,
+          "compliance_percent": 224.1,
+          "errors": 253,
+          "total_files": 353
+        },
+        "marketplace_terminal": {
+          "agents": 353,
+          "commands": 373,
+          "compliance_percent": 26.3,
+          "errors": 7687,
+          "fully_compliant": 1158,
+          "skills": 3680,
+          "total_files": 4406
+        },
+        "skill_rows": {
+          "a_error_total": 219,
+          "a_failing": 132,
+          "ab_error_total": 2155,
+          "ab_failing": 962,
+          "b_failing": 830,
+          "error_files": 2037,
+          "error_total": 7433,
+          "grade_distribution": {
+            "A": 1597,
+            "B": 985,
+            "C": 896,
+            "D": 193,
+            "F": 9
+          },
+          "rows": 3680
+        }
+      }
+    },
+    "11": {
+      "cohort": "tracked .png/.pdf/.zip/.ttf files",
+      "dimension": "Binary-extension assets versus magic bytes",
+      "reproduce": "pnpm run measure:e1 -- --row=11 --stdout",
+      "values": {
+        "candidate_count": 48,
+        "mismatch_count": 11,
+        "mismatch_paths": [
+          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
+          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
+          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
+          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
+          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
+          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
+          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
+        ]
+      }
+    },
+    "12": {
+      "cohort": "row 11 mismatches evaluated by promote-to-curated semantics",
+      "dimension": "Binary detector in the promotion path",
+      "reproduce": "pnpm run measure:e1 -- --row=12 --stdout",
+      "values": {
+        "detector": "nul_prefix",
+        "excluded_count": 0,
+        "missed_count": 11,
+        "missed_paths": [
+          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
+          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
+          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
+          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
+          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
+          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
+          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
+        ],
+        "prefix_bytes": 8192
+      }
+    },
+    "22": {
+      "cohort": "six marketplace/src/data artifacts named by blueprint 727",
+      "dimension": "Tracked generated artifacts without content drift gates",
+      "reproduce": "pnpm run measure:e1 -- --row=22 --stdout",
+      "values": {
+        "artifacts": [
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/catalog.json",
+            "tracked": true
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/jrig-data.json",
+            "tracked": true
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/readme-sections.json",
+            "tracked": true
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/skills-catalog.json",
+            "tracked": true
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/skills-index.json",
+            "tracked": true
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/unified-search-index.json",
+            "tracked": true
+          }
+        ],
+        "count": 6
+      }
+    },
+    "24": {
+      "cohort": "five separately named publication surfaces",
+      "dimension": "Published answers to how many skills",
+      "reproduce": "pnpm run measure:e1 -- --row=24 --stdout",
+      "values": {
+        "curated_manifest": 1915,
+        "freshie_export": 3678,
+        "plugin_source": 3179,
+        "skills_index": 3051,
+        "unified_search_index": 3008
+      }
+    },
+    "25": {
+      "cohort": "tracked scripts that rewrite README skill/plugin/agent counts",
+      "dimension": "README metric writers",
+      "reproduce": "pnpm run measure:e1 -- --row=25 --stdout",
+      "values": {
+        "count": 2,
+        "writers": [
+          {
+            "path": "scripts/generate-readme-toc.mjs",
+            "tracked": true,
+            "writes_readme_counts": true
+          },
+          {
+            "path": "scripts/update-metrics.mjs",
+            "tracked": true,
+            "writes_readme_counts": true
+          }
+        ]
+      }
+    },
+    "26": {
+      "cohort": "three rendered marketplace stats artifacts",
+      "dimension": "Public stats without a freshness bound",
+      "reproduce": "pnpm run measure:e1 -- --row=26 --stdout",
+      "values": {
+        "artifacts": [
+          {
+            "has_max_age_hours": false,
+            "path": "marketplace/src/data/github-stats.json"
+          },
+          {
+            "has_max_age_hours": false,
+            "path": "marketplace/src/data/npm-stats.json"
+          },
+          {
+            "has_max_age_hours": false,
+            "path": "marketplace/src/data/skills-stats.json"
+          }
+        ],
+        "count": 3
+      }
+    },
+    "27": {
+      "cohort": "source names versus lock object keys",
+      "dimension": "sources.yaml versus sources.lock.json keys",
+      "reproduce": "pnpm run measure:e1 -- --row=27 --stdout",
+      "values": {
+        "lock_keys": 63,
+        "lock_only": [],
+        "yaml_keys": 64,
+        "yaml_only": ["uizze"]
+      }
+    }
+  },
+  "schema_version": 1
+}
