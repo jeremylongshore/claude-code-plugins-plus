@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-16 — malformed tool-allowlist enforcement)
+
+- **Structurally malformed `allowed-tools` entries now fail closed.** Validator
+  schema 4.0.0 reports malformed entries as errors at every tier while keeping
+  well-formed unknown tool names advisory. Empty CSV fields and non-string or
+  blank YAML-list members can no longer be normalized away. Corpus regression
+  coverage proves zero first-party baseline debt and preserves the ten parseable
+  mirror-owned Kobiton folded-scalar copies without editing mirrored content.
+
 ### Added (2026-08-15 — frozen prose-anchor gate)
 
 - **Frozen 6767-h section anchors are now regression-gated.** The existing `doc-governance` job

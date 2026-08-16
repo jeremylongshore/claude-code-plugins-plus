@@ -89,7 +89,7 @@
 | REQ-034 | MCP plugin `package.json` declares the published name in the `@intentsolutionsio/*` scope | MUST   | `CLAUDE.md` § "npm Publish Pipeline"                             | `publish-changed-packages.yml` (publishes only `@intentsolutionsio/*`) | covered |
 | REQ-035 | `npm audit --production` runs over MCP plugin dependencies                                | SHOULD | `validate-plugins.yml` "Security scan - MCP plugin dependencies" | `validate` job (informational, non-blocking)                           | partial |
 
-## Validators (universal validator v7.0 / schema 3.x)
+## Validators (universal validator v7.0 / schema 4.x)
 
 | ID      | Requirement                                                                                | MoSCoW | Source                                                             | Tests / Checks                                                                            | Status    |
 | ------- | ------------------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | --------- | ---------------- | ------- |
