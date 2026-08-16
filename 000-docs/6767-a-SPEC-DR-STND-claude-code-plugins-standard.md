@@ -1,3 +1,5 @@
+> **SUPERSEDED–FROZEN (Epic 2 bead 2.1; 2026-08-15).** This historical standard is retained for citation and anchor compatibility; it is not authoritative. The governing platform standard is [727](727-AT-ARCH-master-modernization-blueprint.md). Its known-false rule is its self-declared canonical authority: 727 records this document as superseded ([727:65](727-AT-ARCH-master-modernization-blueprint.md#L65)) and records why an unlinked `CANONICAL` declaration is invalid ([727:862](727-AT-ARCH-master-modernization-blueprint.md#L862)). Its legacy examples do not establish the current schema. Do not edit below this banner; preserve the body and section anchors byte-for-byte.
+
 # Global Master Standard – Claude Code Plugins & Marketplace Specification
 
 **Document ID**: 6767-a-SPEC-MASTER-claude-code-plugins-standard
