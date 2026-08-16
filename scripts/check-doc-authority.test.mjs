@@ -193,6 +193,7 @@ test('Topic-column and later prose links cannot grant authority', () => {
 test('live repository has only linked effective claimants', () => {
   const result = scanRepository(repositoryRoot);
   deepEqual(result.findings, []);
+  equal(result.canonicalLinks.size, 10);
   deepEqual(result.claimants.map((item) => item.path).sort(), [
     '000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md',
     '000-docs/727-AT-ARCH-master-modernization-blueprint.md',
