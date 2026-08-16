@@ -1,6 +1,6 @@
 {
   "name": "devops-automation-pack",
-  "version": "1.31.0",
+  "version": "1.30.0",
   "description": "25 professional DevOps plugins for CI/CD, deployment, Docker, Kubernetes, and infrastructure automation. Save 20+ hours of manual work.",
   "author": {
     "name": "Jeremy Longshore",

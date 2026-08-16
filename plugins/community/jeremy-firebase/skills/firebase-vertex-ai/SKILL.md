@@ -7,7 +7,7 @@ description: 'Execute firebase platform expert with Vertex AI Gemini integration
 
   '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 2.24.0
+version: 2.23.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:

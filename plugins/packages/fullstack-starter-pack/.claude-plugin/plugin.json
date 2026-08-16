@@ -1,6 +1,6 @@
 {
   "name": "fullstack-starter-pack",
-  "version": "1.22.0",
+  "version": "1.21.0",
   "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
   "author": {
     "name": "Jeremy Longshore",

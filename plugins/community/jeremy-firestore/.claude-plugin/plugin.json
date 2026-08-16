@@ -1,6 +1,6 @@
 {
   "name": "jeremy-firestore",
-  "version": "2.21.0",
+  "version": "2.20.0",
   "description": "Firestore database specialist for schema design, queries, and real-time sync",
   "author": {
     "name": "Jeremy Longshore",

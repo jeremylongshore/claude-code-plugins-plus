@@ -1,6 +1,6 @@
 {
   "name": "jeremy-firebase",
-  "version": "2.24.0",
+  "version": "2.23.0",
   "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
   "author": {
     "name": "Jeremy Longshore",

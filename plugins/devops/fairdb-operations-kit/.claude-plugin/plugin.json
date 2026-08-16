@@ -1,6 +1,6 @@
 {
   "name": "fairdb-operations-kit",
-  "version": "1.27.0",
+  "version": "1.26.0",
   "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
   "author": {
     "name": "Jeremy Longshore",

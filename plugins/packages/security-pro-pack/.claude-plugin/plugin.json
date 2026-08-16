@@ -1,6 +1,6 @@
 {
   "name": "security-pro-pack",
-  "version": "1.32.0",
+  "version": "1.31.0",
   "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
   "author": {
     "name": "Jeremy Longshore",

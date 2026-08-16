@@ -13,7 +13,7 @@ description: 'Takes web search results and formats them as polished Slack messag
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Glob, Grep, WebSearch, WebFetch
-version: 0.15.0
+version: 0.14.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 tags:
