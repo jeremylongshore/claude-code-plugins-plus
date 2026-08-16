@@ -1319,10 +1319,7 @@
         "scripts/fetch-github-stats.mjs",
         "scripts/fetch-npm-stats.mjs",
         "scripts/fetch-skills-stats.mjs",
-        "scripts/generate-og-image.mjs",
-        "scripts/generate-readme-toc.mjs",
-        "scripts/promote-spotlight.mjs",
-        "scripts/render-spotlight.mjs"
+        "scripts/promote-spotlight.mjs"
       ],
       "status": "partial",
       "values": {
@@ -1379,19 +1376,19 @@
             "wired_checkers": []
           },
           {
-            "content_drift_gate": true,
+            "content_drift_gate": false,
             "path": "marketplace/src/data/spotlights.json",
             "producers": ["scripts/promote-spotlight.mjs"],
-            "wired_checkers": ["scripts/render-spotlight.mjs"]
+            "wired_checkers": []
           },
           {
-            "content_drift_gate": true,
+            "content_drift_gate": false,
             "path": "marketplace/src/data/unified-search-index.json",
             "producers": ["marketplace/scripts/generate-unified-search.mjs"],
-            "wired_checkers": ["scripts/generate-og-image.mjs", "scripts/generate-readme-toc.mjs"]
+            "wired_checkers": []
           }
         ],
-        "count_without_content_drift_gate": 8,
+        "count_without_content_drift_gate": 10,
         "target_without_content_drift_gate": 0
       }
     },

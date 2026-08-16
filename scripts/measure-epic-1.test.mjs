@@ -7,6 +7,7 @@ import test from 'node:test';
 
 import {
   artifactMatches,
+  assertMeasurementInputsIndexed,
   buildReport,
   matchesSignature,
   parseSkillRows,
@@ -201,6 +202,20 @@ test('Git-index snapshots expose the staged artifact rather than a matching work
       '{"state":"stale"}\n',
     );
   });
+});
+
+test('every executable measurement input must match its indexed bytes', () => {
+  const worktree = mkdtempSync(join(tmpdir(), 'epic-1-worktree-inputs-'));
+  const snapshot = mkdtempSync(join(tmpdir(), 'epic-1-snapshot-inputs-'));
+  const path = 'scripts/imported-measurement.mjs';
+  put(worktree, path, 'export const value = 1;\n');
+  put(snapshot, path, 'export const value = 1;\n');
+  assert.doesNotThrow(() => assertMeasurementInputsIndexed(worktree, snapshot, [path]));
+  put(worktree, path, 'export const value = 2;\n');
+  assert.throws(
+    () => assertMeasurementInputsIndexed(worktree, snapshot, [path]),
+    /differs from the Git index/,
+  );
 });
 
 test('grade arithmetic derives a 3679 cohort rather than preserving historical 3678', () => {

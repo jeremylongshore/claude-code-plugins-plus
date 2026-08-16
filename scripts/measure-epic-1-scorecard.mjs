@@ -604,12 +604,32 @@ function writeTargetEvidence(source) {
   return targets;
 }
 
+function readTargetEvidence(source) {
+  const targets = [];
+  const calls = /(?:\b(?:fs\.)?(?:readFileSync|readFile))\s*\(\s*([^,\n]+)/g;
+  for (const match of source.matchAll(calls)) {
+    const expression = match[1].trim();
+    let evidence = expression;
+    const identifier = expression.match(/^[A-Za-z_$][\w$]*$/)?.[0];
+    if (identifier) {
+      const escaped = identifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      evidence = `${expression}\n${
+        source.match(new RegExp(`\\b(?:const|let|var)\\s+${escaped}\\s*=\\s*([\\s\\S]*?);`))?.[1] ??
+        ''
+      }`;
+    }
+    targets.push(evidence);
+  }
+  return targets;
+}
+
 function targetNamesFile(target, basename) {
   return target.includes(basename);
 }
 
 function generatedArtifacts(reader) {
   const sources = productionExecutableSources(reader);
+  const workflows = reader.paths.filter((path) => path.startsWith('.github/workflows/'));
   const candidates = reader.paths.filter((path) => /^marketplace\/src\/data\/.*\.json$/.test(path));
   const artifacts = [];
   for (const path of candidates) {
@@ -619,21 +639,22 @@ function generatedArtifacts(reader) {
       return writeTargetEvidence(source).some((target) => targetNamesFile(target, basename));
     });
     if (producers.length === 0) continue;
-    const checkers = sources.filter((sourcePath) => {
-      if (producers.includes(sourcePath)) return false;
-      const source = reader.text(sourcePath) ?? '';
-      return (
-        source.includes(basename) &&
-        /(?:--check|byte[- ]?(?:compare|identical)|drift|regenerate.{0,40}(?:compare|diff))/is.test(
+    const wiredCheckers = producers.filter((producer) => {
+      const source = reader.text(producer) ?? '';
+      if (
+        !source.includes('--check') ||
+        !readTargetEvidence(source).some((target) => targetNamesFile(target, basename)) ||
+        !/(?:!==|Buffer\.compare|\.equals\s*\(|\bdiff\b)/.test(source) ||
+        !/(?:process\.exitCode\s*=\s*1|process\.exit\s*\(\s*1\s*\)|throw\s+new\s+Error)/.test(
           source,
         )
+      )
+        return false;
+      const producerName = producer.slice(producer.lastIndexOf('/') + 1);
+      const invocation = new RegExp(
+        `${producerName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\n]*--check`,
       );
-    });
-    const wiredCheckers = checkers.filter((checker) => {
-      const checkerName = checker.slice(checker.lastIndexOf('/') + 1);
-      return reader.paths
-        .filter((candidate) => candidate.startsWith('.github/workflows/'))
-        .some((workflow) => (reader.text(workflow) ?? '').includes(checkerName));
+      return workflows.some((workflow) => invocation.test(reader.text(workflow) ?? ''));
     });
     artifacts.push({
       content_drift_gate: wiredCheckers.length > 0,

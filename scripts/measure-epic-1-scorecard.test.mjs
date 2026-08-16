@@ -157,6 +157,39 @@ test('requires call-bound production evidence and excludes measurement instrumen
   assert.deepEqual(rows[25].values.writers, ['scripts/readme-metrics.mjs']);
 });
 
+test('counts only producer-integrated workflow checks as artifact drift gates', () => {
+  const base = fixture();
+  put(
+    base.root,
+    'scripts/consumer-check.mjs',
+    "const input = 'alpha.json'; const check = process.argv.includes('--check'); console.log(input, check, 'drift');\n",
+  );
+  put(
+    base.root,
+    '.github/workflows/consumer-check.yml',
+    'jobs:\n  check:\n    steps:\n      - run: node scripts/consumer-check.mjs --check\n',
+  );
+  base.paths.push('scripts/consumer-check.mjs', '.github/workflows/consumer-check.yml');
+  let artifact = buildExtendedScorecardRows(input(base))[22].values.artifacts[0];
+  assert.equal(artifact.content_drift_gate, false);
+  assert.deepEqual(artifact.wired_checkers, []);
+
+  put(
+    base.root,
+    'marketplace/scripts/generate-alpha.mjs',
+    "const target = 'marketplace/src/data/alpha.json'; const check = process.argv.includes('--check'); const current = readFileSync(target, 'utf8'); const rendered = '{}'; if (check && current !== rendered) process.exit(1); writeFileSync(target, rendered);\n",
+  );
+  put(
+    base.root,
+    '.github/workflows/alpha-check.yml',
+    'jobs:\n  check:\n    steps:\n      - run: node marketplace/scripts/generate-alpha.mjs --check\n',
+  );
+  base.paths.push('.github/workflows/alpha-check.yml');
+  artifact = buildExtendedScorecardRows(input(base))[22].values.artifacts[0];
+  assert.equal(artifact.content_drift_gate, true);
+  assert.deepEqual(artifact.wired_checkers, ['marketplace/scripts/generate-alpha.mjs']);
+});
+
 test('normalizes absolute validator paths into the tracked Git cohort', () => {
   const base = fixture();
   const values = input(base);

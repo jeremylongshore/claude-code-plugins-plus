@@ -12,6 +12,11 @@ import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
 
 export const ARTIFACT_PATH = '000-docs/742-RA-DATA-epic-1-scorecard.json';
 const SCRIPT_PATH = 'scripts/measure-epic-1.mjs';
+export const MEASUREMENT_INPUT_PATHS = [
+  SCRIPT_PATH,
+  'scripts/measure-epic-1-scorecard.mjs',
+  'scripts/check-doc-authority.mjs',
+];
 const SCRIPT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const GRADES = new Set(['A', 'B', 'C', 'D', 'F']);
 const CATALOGS = new Set([
@@ -553,6 +558,18 @@ export function artifactMatches(actual, expected) {
   return actual === expected;
 }
 
+export function assertMeasurementInputsIndexed(
+  worktreeRoot,
+  snapshotRoot,
+  paths = MEASUREMENT_INPUT_PATHS,
+) {
+  for (const path of paths) {
+    if (text(snapshotRoot, path) !== text(worktreeRoot, path)) {
+      fail(`${path} differs from the Git index; stage or restore it before measuring`);
+    }
+  }
+}
+
 function parseArgs(argv) {
   const options = { check: false, root: SCRIPT_ROOT, row: null, stdout: false };
   for (const arg of argv) {
@@ -578,12 +595,7 @@ function parseArgs(argv) {
 function main() {
   const options = parseArgs(process.argv.slice(2));
   const indexed = withIndexSnapshot(options.root, (snapshot) => {
-    if (
-      readFileSync(file(snapshot.root, SCRIPT_PATH), 'utf8') !==
-      readFileSync(file(options.root, SCRIPT_PATH), 'utf8')
-    ) {
-      fail(`${SCRIPT_PATH} differs from the Git index; stage or restore it before measuring`);
-    }
+    assertMeasurementInputsIndexed(options.root, snapshot.root);
     return {
       artifact: existsSync(file(snapshot.root, ARTIFACT_PATH))
         ? readFileSync(file(snapshot.root, ARTIFACT_PATH), 'utf8')
