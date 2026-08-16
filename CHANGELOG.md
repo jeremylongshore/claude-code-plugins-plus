@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-15 — frozen prose-anchor gate)
+
+- **Frozen 6767-h section anchors are now regression-gated.** The existing `doc-governance` job
+  verifies the exact 21-section manifest, exercises valid and invalid citation fixtures, and proves
+  that renaming a cited heading fails closed before schema references can silently drift.
+
 ### Added (2026-08-15 — generated documentation index)
 
 - **The documentation estate index is now generated and drift-gated.** A deterministic generator

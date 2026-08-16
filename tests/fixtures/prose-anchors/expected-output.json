@@ -1,5 +1,36 @@
 {
-  "_description": "Expected check-prose-anchors.py output (--json mode) for the two fixture schemas. Run against the live 6767-h index produced by parse-prose-anchors.py. The 'parsed_at' and 'doc_sha256' fields in the parser output are not captured here — only the check results are normalized.",
+  "_description": "Expected 6767-h anchor manifest and check-prose-anchors.py output (--json mode) for the two fixture schemas. The transient 'parsed_at' and whole-document 'doc_sha256' fields are intentionally not frozen.",
+  "anchor_manifest": [
+    {
+      "id": "0.1",
+      "title": "Global Master Standard – Claude Code Extensions (Plugins + Skills) Specification",
+      "level": 1
+    },
+    { "id": "0.0.1", "title": "Executive Summary", "level": 2 },
+    { "id": "0.0.0.1", "title": "What Is a Claude Code Extension?", "level": 3 },
+    { "id": "0.0.0.2", "title": "What Is a Skill?", "level": 3 },
+    { "id": "0.0.0.3", "title": "Non‑Negotiable Invariants (Enterprise Mode)", "level": 3 },
+    { "id": "1", "title": "Canonical Directory Structure", "level": 2 },
+    { "id": "1.1", "title": "Plugin Root Anatomy (Repository Standard)", "level": 3 },
+    { "id": "1.2", "title": "Skill Folder Anatomy", "level": 3 },
+    { "id": "2", "title": "Plugin Manifest: .claude-plugin/plugin.json", "level": 2 },
+    { "id": "2.1", "title": "Required Fields (Enterprise Marketplace)", "level": 3 },
+    { "id": "2.2", "title": "Path Resolution", "level": 3 },
+    { "id": "3", "title": "Skill Definition: skills/<skill-name>/SKILL.md", "level": 2 },
+    { "id": "3.1", "title": "YAML Frontmatter (Required)", "level": 3 },
+    { "id": "3.2", "title": "Instruction Body (Required Sections)", "level": 3 },
+    { "id": "3.3", "title": "{baseDir} and Bundled Files (References/Assets/Scripts)", "level": 3 },
+    {
+      "id": "4",
+      "title": "Marketplace & Website (claudecodeplugins.io) Safety Contract",
+      "level": 2
+    },
+    { "id": "4.1", "title": "Source of Truth for Published Plugins", "level": 3 },
+    { "id": "4.2", "title": "Skills/Explore Index Generation", "level": 3 },
+    { "id": "4.3", "title": "Required Website Gates (Zero Warnings Policy)", "level": 3 },
+    { "id": "5", "title": "Compliance Checklist (PASS/FAIL)", "level": 2 },
+    { "id": "A", "title": "In-Repo Canonical References", "level": 2 }
+  ],
   "valid_schema": {
     "input": "tests/fixtures/prose-anchors/valid-schema.json",
     "expected_exit_code": 0,
