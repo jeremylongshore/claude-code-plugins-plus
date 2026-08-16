@@ -1431,6 +1431,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install validator dependencies
+        run: pip install pyyaml
+
       # 000-docs ignore-policy invariant (ownership + filing-ledger model —
       # 000-docs/.gitignore header; Mission 01 bead claude-5awj.6) plus the
       # citation gate: no governance-scope file may cite an untracked doc.
