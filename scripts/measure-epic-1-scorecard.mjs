@@ -405,13 +405,7 @@ function textPaths(reader) {
 }
 
 function executableSources(reader) {
-  return reader.paths.filter(
-    (path) =>
-      EXECUTABLE_SOURCE.test(path) &&
-      (path.startsWith('scripts/') ||
-        path.startsWith('marketplace/scripts/') ||
-        path.startsWith('freshie/scripts/')),
-  );
+  return reader.paths.filter((path) => EXECUTABLE_SOURCE.test(path));
 }
 
 function isMeasurementInstrumentation(path) {
@@ -421,9 +415,27 @@ function isMeasurementInstrumentation(path) {
   );
 }
 
+function isTestSource(path) {
+  return /(?:^|\/)(?:__tests__|tests?)(?:\/|$)/.test(path) || /\.(?:spec|test)\.[^/]+$/.test(path);
+}
+
+function hasTrackedSourceAncestor(reader, path) {
+  let parent = dirname(path);
+  while (parent !== '.') {
+    if (reader.pathSet.has(`${parent}/.source.json`)) return true;
+    const next = dirname(parent);
+    if (next === parent) break;
+    parent = next;
+  }
+  return false;
+}
+
 function productionExecutableSources(reader) {
   return executableSources(reader).filter(
-    (path) => !isMeasurementInstrumentation(path) && !/(?:^|\/)tests?(?:\/|\.)/.test(path),
+    (path) =>
+      !isMeasurementInstrumentation(path) &&
+      !isTestSource(path) &&
+      !hasTrackedSourceAncestor(reader, path),
   );
 }
 

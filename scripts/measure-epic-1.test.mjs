@@ -123,14 +123,14 @@ test('refuses a planted second README metrics writer even when it is indexed', (
   const root = fixture();
   put(
     root,
-    'scripts/planted-readme-metrics-writer.mjs',
+    'packages/planted-readme-metrics/writer.mjs',
     "const catalog = '.claude-plugin/marketplace.extended.json'; const skills = 1; const agents = 1; writeFileSync('README.md', String(catalog) + skills + agents);\n",
   );
-  execFileSync('git', ['add', 'scripts/planted-readme-metrics-writer.mjs'], { cwd: root });
+  execFileSync('git', ['add', 'packages/planted-readme-metrics/writer.mjs'], { cwd: root });
 
   assert.throws(
     () => buildReport(root, evidence()),
-    /README metric writer contract requires only scripts\/generate-readme-toc\.mjs; observed scripts\/generate-readme-toc\.mjs, scripts\/planted-readme-metrics-writer\.mjs/,
+    /README metric writer contract requires only scripts\/generate-readme-toc\.mjs; observed packages\/planted-readme-metrics\/writer\.mjs, scripts\/generate-readme-toc\.mjs/,
   );
 });
 
