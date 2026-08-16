@@ -1436,6 +1436,13 @@ jobs:
           node --test scripts/check-doc-authority.test.mjs
           node scripts/check-doc-authority.mjs
 
+      # The documentation estate index is a generated projection of Git's
+      # tracked inventory; hand-edited counts or rows must never drift.
+      - name: Check generated documentation index is current
+        run: |
+          node --test scripts/generate-docs-index.test.mjs
+          node scripts/generate-docs-index.mjs --check
+
       # Recurrence prevention for the tracked-generated-artifact class: a
       # projection that is also committed has two claimants to one fact and
       # diverges silently (public/data duplicated ~28.5MB of src/data with
