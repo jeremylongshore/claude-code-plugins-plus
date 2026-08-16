@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-16 — Epic 1 measurement harness)
+
+- **All 62 modernization scorecard rows now have one deterministic evidence
+  command.** `pnpm run measure:e1` measures the exact staged Git tree, preserves
+  distinct plugin, validator, Freshie, generated-index, and terminal cohorts,
+  and records explicit `not_reproducible` reason codes instead of copying stale
+  numbers where the repository lacks committed evidence. Per-row commands are
+  valid, `pnpm run measure:e1:check` is enforced inside the existing required
+  validation aggregate, and fixtures prove ignored mirrors, unstaged edits,
+  malformed protocols, bad signatures, missing inputs, and one-value drift fail
+  closed.
+
 ### Fixed (2026-08-16 — malformed tool-allowlist enforcement)
 
 - **Structurally malformed `allowed-tools` entries now fail closed.** Validator

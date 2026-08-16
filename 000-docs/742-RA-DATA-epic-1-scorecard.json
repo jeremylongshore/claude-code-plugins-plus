@@ -1,0 +1,2529 @@
+{
+  "blueprint": "727",
+  "cohorts": {
+    "agent_files_plugin_surface": "tracked Markdown files directly beneath plugins/**/agents/",
+    "agent_lane_validator": "files reported by validate-skills-schema.py --standard --agents-only",
+    "graded_artifacts": "unique SKILL.md rows from --marketplace --skills-only --json in the exact Git index tree",
+    "marketplace_terminal": "errors and fully-compliant counts may include plugin manifests; Total files excludes them and equals skills + commands + agents",
+    "plugin_skills": "tracked plugins/**/SKILL.md files",
+    "tracked_tree": "git ls-tree over one immutable git write-tree object"
+  },
+  "graded_artifact_cohort": {
+    "cohort": "graded_artifacts",
+    "reproduce": "pnpm run measure:e1 --row=graded_artifact_cohort --stdout",
+    "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
+    "status": "measured",
+    "values": {
+      "a_error_total": 219,
+      "a_failing": 132,
+      "ab_error_total": 2155,
+      "ab_failing": 962,
+      "b_failing": 830,
+      "error_files": 2037,
+      "error_total": 7433,
+      "grade_distribution": {
+        "A": 1596,
+        "B": 985,
+        "C": 896,
+        "D": 193,
+        "F": 9
+      },
+      "rows": 3679
+    }
+  },
+  "rows": {
+    "1": {
+      "cohort": "tracked_tree",
+      "dimension": "Tracked files, plugin SKILL.md, and plugin agent files",
+      "reproduce": "pnpm run measure:e1 --row=1 --stdout",
+      "source": "git write-tree + git ls-tree over the exact index tree",
+      "status": "measured",
+      "target_status": "informational",
+      "values": {
+        "plugin_agent_files": 347,
+        "plugin_skill_files": 3179,
+        "tracked_files": 23009
+      }
+    },
+    "2": {
+      "cohort": "canonical extended catalog",
+      "dimension": "Catalog entries versus distinct names",
+      "reproduce": "pnpm run measure:e1 --row=2 --stdout",
+      "source": ".claude-plugin/marketplace.extended.json",
+      "status": "measured",
+      "target_status": "fail",
+      "values": {
+        "distinct_names": 467,
+        "duplicate_names": [
+          {
+            "count": 4,
+            "name": "claudebase"
+          },
+          {
+            "count": 2,
+            "name": "geepers-agents"
+          }
+        ],
+        "entries": 471
+      }
+    },
+    "3": {
+      "cohort": "tracked .claude-plugin catalog-shaped files",
+      "dimension": "Tracked stale catalog shadows",
+      "reproduce": "pnpm run measure:e1 --row=3 --stdout",
+      "source": "git tree inventory under .claude-plugin/",
+      "status": "measured",
+      "target_status": "pass",
+      "values": {
+        "count": 0,
+        "paths": []
+      }
+    },
+    "4": {
+      "cohort": "three named validator cohorts; never interchangeable",
+      "dimension": "Marketplace-tier errors and compliance",
+      "reproduce": "pnpm run measure:e1 --row=4 --stdout",
+      "source": "scripts/validate-skills-schema.py JSON and terminal protocols",
+      "status": "measured",
+      "target_status": "informational",
+      "values": {
+        "agent_lane": {
+          "error_total_all_validated_surfaces": 253,
+          "fully_compliant_surfaces": 791,
+          "terminal_denominator": {
+            "agents": 353,
+            "files": 353,
+            "label": "agents_excluding_plugin_manifests"
+          },
+          "validator_reported_mixed_denominator_percent": 224.1
+        },
+        "marketplace_terminal": {
+          "error_total_all_validated_surfaces": 7687,
+          "fully_compliant_surfaces": 1158,
+          "terminal_denominator": {
+            "agents": 353,
+            "commands": 373,
+            "files": 4405,
+            "label": "skills_plus_commands_plus_agents_excluding_plugin_manifests",
+            "skills": 3679
+          },
+          "validated_plugin_manifests": 629,
+          "validator_reported_mixed_denominator_percent": 26.3
+        },
+        "skill_rows": {
+          "a_error_total": 219,
+          "a_failing": 132,
+          "ab_error_total": 2155,
+          "ab_failing": 962,
+          "b_failing": 830,
+          "error_files": 2037,
+          "error_total": 7433,
+          "grade_distribution": {
+            "A": 1596,
+            "B": 985,
+            "C": 896,
+            "D": 193,
+            "F": 9
+          },
+          "rows": 3679
+        }
+      }
+    },
+    "5": {
+      "cohort": "tracked path-bearing SKILL.md rows emitted by the canonical marketplace validator",
+      "dimension": "Grade distribution",
+      "reproduce": "pnpm run measure:e1 --row=5 --stdout",
+      "source": ["scripts/validate-skills-schema.py"],
+      "status": "measured",
+      "values": {
+        "average_score": 85.1,
+        "grade_distribution": {
+          "A": 1596,
+          "B": 985,
+          "C": 896,
+          "D": 193,
+          "F": 9
+        },
+        "grade_percentages": {
+          "A": 43.4,
+          "B": 26.8,
+          "C": 24.4,
+          "D": 5.2,
+          "F": 0.2
+        },
+        "rows": 3679
+      }
+    },
+    "6": {
+      "cohort": "tracked A- and B-grade SKILL.md validator rows with one or more errors",
+      "dimension": "A/B artifacts failing the gate",
+      "reproduce": "pnpm run measure:e1 --row=6 --stdout",
+      "source": ["scripts/validate-skills-schema.py"],
+      "status": "measured",
+      "values": {
+        "a_error_total": 219,
+        "a_failing": 132,
+        "ab_error_total": 2155,
+        "ab_failing": 962,
+        "b_error_total": 1936,
+        "b_failing": 830,
+        "certified_target": 0,
+        "skill_summary_rows": 3679
+      }
+    },
+    "7": {
+      "cohort": "canonical validator diagnostics",
+      "dimension": "Structural error classes",
+      "reason_code": "MISSING_STABLE_DIAGNOSTIC_CLASS_IDS",
+      "reproduce": "pnpm run measure:e1 --row=7 --stdout",
+      "required_inputs": [
+        "validator JSON records with stable body-section and frontmatter diagnostic IDs"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "8": {
+      "cohort": "canonical validator diagnostics",
+      "dimension": "Safety error classes",
+      "reason_code": "MISSING_SAFETY_DIAGNOSTIC_CLASS_IDS",
+      "reproduce": "pnpm run measure:e1 --row=8 --stdout",
+      "required_inputs": [
+        "registered diagnostic IDs for unscoped Bash, tier-2 tool safety, orchestration, and link escape"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "9": {
+      "cohort": "canonical validator diagnostics",
+      "dimension": "Security class (shell substitution in YAML)",
+      "reason_code": "MISSING_SECURITY_DIAGNOSTIC_RECORDS",
+      "reproduce": "pnpm run measure:e1 --row=9 --stdout",
+      "required_inputs": [
+        "path-bearing shell-substitution diagnostic records from the canonical validator"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "10": {
+      "cohort": "agent validator terminal summary; reported compliance may use a mixed numerator",
+      "dimension": "Agent errors and reported compliance rate",
+      "limitations": [
+        "the canonical terminal reporter can include plugin-manifest outcomes in its numerator"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=10 --stdout",
+      "source": ["scripts/validate-skills-schema.py"],
+      "status": "partial",
+      "values": {
+        "agent_errors": 253,
+        "agent_files": 353,
+        "reported_compliance_percent": 224.1,
+        "target_errors": 0,
+        "target_percent_max": 100
+      }
+    },
+    "11": {
+      "cohort": "tracked .png/.pdf/.zip/.ttf files",
+      "dimension": "Binary-extension assets versus magic bytes",
+      "reproduce": "pnpm run measure:e1 --row=11 --stdout",
+      "source": "Git tree bytes matched against the per-extension signature registry",
+      "status": "measured",
+      "target_status": "fail",
+      "values": {
+        "candidate_count": 48,
+        "mismatch_count": 11,
+        "mismatch_paths": [
+          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
+          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
+          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
+          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
+          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
+          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
+          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
+        ]
+      }
+    },
+    "12": {
+      "cohort": "row 11 mismatches evaluated by promote-to-curated semantics",
+      "dimension": "Binary detector in the promotion path",
+      "reproduce": "pnpm run measure:e1 --row=12 --stdout",
+      "source": "freshie/scripts/promote-to-curated.py detector semantics applied to row 11 mismatches",
+      "status": "measured",
+      "target_status": "fail",
+      "values": {
+        "detector": "nul_prefix",
+        "excluded_count": 0,
+        "missed_count": 11,
+        "missed_paths": [
+          "plugins/ai-ml/model-versioning-tracker/skills/tracking-model-versions/assets/versioning_diagram.png",
+          "plugins/ai-ml/transfer-learning-adapter/skills/adapting-transfer-learning-models/assets/model_architecture.png",
+          "plugins/api-development/api-security-scanner/skills/skill-adapter/assets/owasp_logo.png",
+          "plugins/api-development/rest-api-generator/skills/skill-adapter/assets/api_template.zip",
+          "plugins/security/input-validation-scanner/skills/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "plugins/skill-enhancers/file-to-code/skills/skill-adapter/assets/examples/requirements.pdf",
+          "plugins/testing/test-environment-manager/skills/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/adapting-transfer-learning-models/assets/model_architecture.png",
+          "skills/.curated/managing-test-environments/assets/test_environment_diagram.png",
+          "skills/.curated/scanning-input-validation-practices/assets/example_code_with_vulnerabilities.zip",
+          "skills/.curated/tracking-model-versions/assets/versioning_diagram.png"
+        ],
+        "prefix_bytes": 8192
+      }
+    },
+    "13": {
+      "cohort": "tracked validator SKILL.md rows parsed as YAML frontmatter",
+      "dimension": "Malformed allowed-tools",
+      "limitations": [
+        "unknown-tool vocabulary advisories are not exposed in the supplied validator rows"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=13 --stdout",
+      "source": [
+        "scripts/validate-skills-schema.py",
+        "tests/test_validate_skills_schema_frontmatter.py"
+      ],
+      "status": "partial",
+      "values": {
+        "declared": 3638,
+        "folded_scalar": 10,
+        "malformed_frontmatter": 0,
+        "malformed_shape": 0,
+        "missing": 41,
+        "rows": 3679,
+        "target_malformed": 0
+      }
+    },
+    "14": {
+      "cohort": "nonempty compatibility strings in tracked validator SKILL.md rows",
+      "dimension": "Distinct free-text compatibility values",
+      "reproduce": "pnpm run measure:e1 --row=14 --stdout",
+      "source": ["scripts/validate-skills-schema.py"],
+      "status": "measured",
+      "values": {
+        "distinct_values": 44,
+        "invalid_or_empty": 0,
+        "target_free_text_values": 0,
+        "values": [
+          {
+            "count": 1,
+            "value": "Claude Code native workflows; Codex/OpenCode/Grok portable adapter"
+          },
+          {
+            "count": 12,
+            "value": "Claude Code with PortalJS portals (Next.js 14, React 18, Node 18+). Runs from any project via the plugin, a personal ~/.claude/commands install, or a portaljs clone."
+          },
+          {
+            "count": 1,
+            "value": "Claude Code with PortalJS portals (Next.js 14, React 18/19, Node 18+). Requires native GDAL, tippecanoe, and duckdb on the user's machine (macOS or Linux/WSL). Runs from any project via the plugin, a personal ~/.claude/commands install, or a portaljs clone."
+          },
+          {
+            "count": 1,
+            "value": "Claude Code with PortalJS portals (Next.js 14, React 18/19, Node 18+). Requires native GDAL, tippecanoe, duckdb, and jq on the operator's machine (macOS or Linux/WSL). Runs from any project via the plugin, a personal install, or a portaljs clone."
+          },
+          {
+            "count": 1,
+            "value": "Claude Code, Codex, OpenCode, Antigravity (needs gh CLI + git remote); Desktop/web via pasted diff (lossy)"
+          },
+          {
+            "count": 1,
+            "value": "Claude Code, Codex, OpenCode, Antigravity (needs gh CLI + git remote); Desktop/web via pasted issue text (lossy)"
+          },
+          {
+            "count": 2,
+            "value": "Compatible with any MCP-aware AI coding assistant. Requires Node.js >= 18 and Appium 2.x. Test scripts must use Appium WebDriver protocol."
+          },
+          {
+            "count": 2,
+            "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18 and an authenticated Kobiton MCP connection (or, as a fallback, ~/.kobiton/.credentials written by /automate:setup)."
+          },
+          {
+            "count": 1885,
+            "value": "Designed for Claude Code"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code · Output works in any surface that loads CLAUDE.md"
+          },
+          {
+            "count": 45,
+            "value": "Designed for Claude Code, also compatible with Codex"
+          },
+          {
+            "count": 1409,
+            "value": "Designed for Claude Code, also compatible with Codex and OpenClaw"
+          },
+          {
+            "count": 2,
+            "value": "Designed for Claude Code, also compatible with Cursor"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code, also compatible with Cursor, Windsurf, Aider and Continue"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. Requires bash 3.2+ (macOS default works). Modifies only user/project/codex-scope skill files, never plugin content."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. Requires bash 3.2+ (macOS default works). Reads local Claude Code data only (~/.claude/skills, ~/.claude/agents, installed plugin metadata)."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. Requires bash 3.2+ (macOS default works). Reads local Claude Code data only (~/.claude/skills, ~/.claude/agents, session history)."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. Requires bash 3.2+, curl, and network access to the GitHub API (anonymous works; GITHUB_TOKEN raises rate limits)."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. Requires bd >= 1.0.4 with a Dolt-backed workspace; the dolt-mcp-server binary on PATH enables the SQL-capable agents."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code. The TUI itself requires an interactive terminal (the user runs it with the '!' prefix); requires bash 3.2+ and a terminal of at least 50x22."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; also usable from Codex/Gemini/Copilot/Cursor sessions that can read and write files"
+          },
+          {
+            "count": 4,
+            "value": "Designed for Claude Code; internal agent-loaded skill (not user-invocable)"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; portable to Codex/OpenCode/Antigravity"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; requires Python 3, optionally JRig CLI for Tier 3"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; requires gh CLI and jq on PATH"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; requires mcp__plane MCP server configured (PLANE_API_KEY, PLANE_WORKSPACE_SLUG, PLANE_API_HOST_URL env vars)"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; requires the Notion MCP server (@notionhq/notion-mcp-server) and a Notion workspace with a Tasks database"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; ships with the bobs-big-brain (governed-brain) plugin, which auto-wires the governed-brain MCP server. Works in both modes: local (in-process, needs qmd on PATH) and team (proxies to your team brain when TEAMKB_API_URL is set). Same brain_search either way."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; ships with the governed-second-brain plugin. Single-user local — you own the brain. Requires qmd on PATH for the index refresh after govern."
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; the refine subcommands wrap the published @intentsolutions/jrig-cli binary and run anywhere that CLI installs"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code; the same MCP server also works in Claude Desktop, Cursor, Windsurf, and OpenAI Codex CLI. Requires the mnemos binary on PATH — run mnemos init to wire the MCP server and mnemos doctor to verify."
+          },
+          {
+            "count": 1,
+            "value": "Portable doctrine — Claude Code, Codex App/CLI, OpenCode, Antigravity, Cursor, Grok"
+          },
+          {
+            "count": 1,
+            "value": "Requires Claude Code >= v2.1.80 with a claude.ai login (Channels research preview rejects API-key-only auth), Bun >= 1.0 (Node.js fallback supported), and a Slack workspace where you can create apps. Doctor mode additionally shells out to curl and jq."
+          },
+          {
+            "count": 1,
+            "value": "Requires Claude Code with the slack-channel plugin and a Slack app that already exists (tokens come from api.slack.com/apps); POSIX shell for chmod/mkdir."
+          },
+          {
+            "count": 1,
+            "value": "Requires Claude Code with the slack-channel plugin installed (state under ~/.claude/channels/slack/); pairing confirmations additionally need the MCP server running."
+          },
+          {
+            "count": 1,
+            "value": "Requires Claude Code with the slack-channel plugin installed and paired (state under ~/.claude/channels/slack/), plus Bun to run the in-repo policy validator script."
+          },
+          {
+            "count": 2,
+            "value": "Requires Hermes Agent plugin support and Xquik API access."
+          },
+          {
+            "count": 1,
+            "value": "Requires internet access to call the first-party Xquik REST API."
+          },
+          {
+            "count": 2,
+            "value": "Requires the bundled Kobiton CLI binary, which targets macOS. On other platforms, use run-automation-suite or the Kobiton MCP tools directly. Run /automate:setup once before first use to install the CLI wrapper symlink and write credentials."
+          },
+          {
+            "count": 4,
+            "value": "Requires the ejentum-mcp MCP server installed and EJENTUM_API_KEY env var set. Free and paid tiers at ejentum.com."
+          },
+          {
+            "count": 1,
+            "value": "Requires the pr-to-spec CLI on PATH (Node.js 18+; ships with this plugin) and a git repository to analyze. Runs in Claude Code or any agent runtime with shell access."
+          },
+          {
+            "count": 2,
+            "value": "Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin)."
+          },
+          {
+            "count": 2,
+            "value": "Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+; reads ~/.kobiton/.credentials, same file /automate:setup writes) which polls run state over REST and emits only on change. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
+          },
+          {
+            "count": 1,
+            "value": "Verified against @aomi-labs/client v0.1.42 and the current aomi-widget/packages/client TypeScript CLI. Install globally via npm install -g @aomi-labs/client@latest, or run on demand via npx @aomi-labs/client@latest. The CLI defaults to https://api.aomi.dev; pass --backend-url https://api-staging.aomi.dev when explicitly targeting staging. viem and Solana signing dependencies are bundled by the package. Designed for claude-code; also works with Cursor, Codex CLI, Gemini, and any agent runtime that supports the Anthropic skill spec."
+          }
+        ]
+      }
+    },
+    "15": {
+      "cohort": "tracked plugin and adapter artifacts",
+      "dimension": "Multi-harness claims with zero adapter artifact",
+      "reason_code": "MISSING_MULTI_HARNESS_CLAIM_CLASSIFIER",
+      "reproduce": "pnpm run measure:e1 --row=15 --stdout",
+      "required_inputs": [
+        "machine-readable harness-claim vocabulary",
+        "registered adapter artifact contract"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "16": {
+      "cohort": "tracked plugin and adapter artifacts",
+      "dimension": "Adapter files byte-identical to canonical",
+      "reason_code": "MISSING_ADAPTER_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=16 --stdout",
+      "required_inputs": [
+        "canonical-to-adapter path registry",
+        "adapter thinness and byte-divergence contract"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "17": {
+      "cohort": "tracked textual files",
+      "dimension": "Functional Claude model-ID lines and files",
+      "reason_code": "MISSING_FUNCTIONAL_MODEL_ID_CLASSIFIER",
+      "reproduce": "pnpm run measure:e1 --row=17 --stdout",
+      "required_inputs": [
+        "classifier separating executable model configuration from prose and generated mirrors"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "18": {
+      "cohort": "tracked textual files",
+      "dimension": "Prose and comparison model references",
+      "reason_code": "MISSING_PROSE_MODEL_REFERENCE_CLASSIFIER",
+      "reproduce": "pnpm run measure:e1 --row=18 --stdout",
+      "required_inputs": [
+        "classifier separating preserved prose comparisons from executable model configuration"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "19": {
+      "cohort": "tracked textual files",
+      "dimension": "Bead-ID false positives in model-ID scans",
+      "reason_code": "MISSING_MODEL_ID_EXCLUSION_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=19 --stdout",
+      "required_inputs": [
+        "model-ID grammar",
+        "Bead-ID exclusion registry",
+        "classifier regression fixtures"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "20": {
+      "cohort": "literal docs.anthropic.com occurrences in tracked text-like files",
+      "dimension": "docs.anthropic.com occurrences",
+      "measured_proxy": {
+        "files": 172,
+        "occurrences": 433,
+        "paths": [
+          "000-docs/198-DR-SOPS-03-mcp-reliability.md",
+          "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
+          "000-docs/719-RA-REPT-cleanup-candidate-register.json",
+          "000-docs/719-RA-REPT-cleanup-candidate-register.md",
+          "000-docs/725-RA-DATA-legacy-migration-inventory.md",
+          "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+          "marketplace/src/content/blog-posts/noise-robust-signed-llm-judge-evals.md",
+          "marketplace/src/content/docs/concepts/agents.md",
+          "marketplace/src/content/docs/concepts/commands-and-hooks.md",
+          "marketplace/src/content/docs/concepts/mcp-servers.md",
+          "marketplace/src/content/docs/concepts/plugins.md",
+          "marketplace/src/content/docs/concepts/skills.md",
+          "marketplace/src/content/docs/ecosystem/community-resources.md",
+          "marketplace/src/content/docs/ecosystem/faq.md",
+          "marketplace/src/content/docs/ecosystem/marketplace-overview.md",
+          "marketplace/src/content/docs/ecosystem/official-anthropic-docs.md",
+          "marketplace/src/content/docs/getting-started/cli-reference.md",
+          "marketplace/src/content/docs/getting-started/first-plugin.md",
+          "marketplace/src/content/docs/getting-started/first-skill.md",
+          "marketplace/src/content/docs/getting-started/installation.md",
+          "marketplace/src/content/docs/guides/build-a-plugin.md",
+          "marketplace/src/content/docs/guides/create-an-agent.md",
+          "marketplace/src/content/docs/guides/mcp-server-plugin.md",
+          "marketplace/src/content/docs/guides/publish-to-marketplace.md",
+          "marketplace/src/content/docs/guides/saas-skill-packs.md",
+          "marketplace/src/content/docs/guides/write-a-skill.md",
+          "marketplace/src/content/docs/reference/allowed-tools.md",
+          "marketplace/src/content/docs/reference/cli-commands.md",
+          "marketplace/src/content/docs/reference/plugin-categories.md",
+          "marketplace/src/content/docs/reference/plugin-json-schema.md",
+          "marketplace/src/content/docs/reference/skill-frontmatter.md",
+          "marketplace/src/content/playbooks/03-mcp-reliability.md",
+          "marketplace/src/content/playbooks/12-beginner-onboarding.md",
+          "marketplace/src/data/readme-sections.json",
+          "marketplace/src/data/skills-catalog.json",
+          "plugins/ai-agency/tonone/README.md",
+          "plugins/ai-ml/ai-sdk-agents/README.md",
+          "plugins/devops/engineer-design-diagram/skills/engineer-design-diagram/references/docs-layout.md",
+          "plugins/productivity/agent-context-manager/skills/agent-context-loader/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/README.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-advanced-troubleshooting/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-architecture-variants/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-ci-integration/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-common-errors/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-core-workflow-a/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-core-workflow-b/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-cost-tuning/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-debug-bundle/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-deploy-integration/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-enterprise-rbac/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-hello-world/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-incident-runbook/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-install-auth/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-known-pitfalls/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-load-scale/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-local-dev-loop/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-migration-deep-dive/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-multi-env-setup/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-observability/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-performance-tuning/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-policy-guardrails/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-prod-checklist/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-rate-limits/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-reference-architecture/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-reliability-patterns/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-sdk-patterns/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-security-basics/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-upgrade-migration/SKILL.md",
+          "plugins/saas-packs/anthropic-pack/skills/anth-webhooks-events/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-advanced-troubleshooting/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-architecture-variants/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-common-errors/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-core-workflow-a/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-core-workflow-b/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-cost-tuning/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-data-handling/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-debug-bundle/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-deploy-integration/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-embeddings-search/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-hello-world/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-install-auth/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-known-pitfalls/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-load-scale/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-local-dev-loop/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-migration-deep-dive/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-model-inference/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-observability/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-performance-tuning/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-policy-guardrails/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-prod-checklist/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-rate-limits/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-reference-architecture/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-reliability-patterns/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-sdk-patterns/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-security-basics/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-upgrade-migration/SKILL.md",
+          "plugins/saas-packs/claude-pack/skills/clade-webhooks-events/SKILL.md",
+          "plugins/saas-packs/cursor-pack/skills/cursor-api-key-management/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/references/multimodal-composition.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/references/thinking-blocks.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-cost-tuning/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/references/claude-prompt-conventions.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-rate-limits/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-rate-limits/references/provider-tier-matrix.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-security-basics/SKILL.md",
+          "plugins/saas-packs/langchain-py-pack/skills/langchain-security-basics/references/prompt-injection-defenses.md",
+          "plugins/saas-packs/vendors/anthropic.yaml",
+          "plugins/security/agent-safety-preflight/skills/agent-safety-preflight/SKILL.md",
+          "plugins/security/severity1-marketplace/skills/prompt-improver/SKILL.md",
+          "plugins/skill-enhancers/web-to-github-issue/README.md",
+          "plugins/testing/kobiton-automate/README.md",
+          "skills/.curated/agent-context-loader/SKILL.md",
+          "skills/.curated/agent-safety-preflight/SKILL.md",
+          "skills/.curated/anth-ci-integration/SKILL.md",
+          "skills/.curated/anth-core-workflow-a/SKILL.md",
+          "skills/.curated/anth-cost-tuning/SKILL.md",
+          "skills/.curated/anth-deploy-integration/SKILL.md",
+          "skills/.curated/anth-hello-world/SKILL.md",
+          "skills/.curated/anth-install-auth/SKILL.md",
+          "skills/.curated/anth-load-scale/SKILL.md",
+          "skills/.curated/anth-local-dev-loop/SKILL.md",
+          "skills/.curated/anth-multi-env-setup/SKILL.md",
+          "skills/.curated/anth-prod-checklist/SKILL.md",
+          "skills/.curated/anth-security-basics/SKILL.md",
+          "skills/.curated/anth-webhooks-events/SKILL.md",
+          "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
+          "skills/.curated/clade-architecture-variants/SKILL.md",
+          "skills/.curated/clade-common-errors/SKILL.md",
+          "skills/.curated/clade-core-workflow-a/SKILL.md",
+          "skills/.curated/clade-core-workflow-b/SKILL.md",
+          "skills/.curated/clade-cost-tuning/SKILL.md",
+          "skills/.curated/clade-data-handling/SKILL.md",
+          "skills/.curated/clade-debug-bundle/SKILL.md",
+          "skills/.curated/clade-deploy-integration/SKILL.md",
+          "skills/.curated/clade-embeddings-search/SKILL.md",
+          "skills/.curated/clade-hello-world/SKILL.md",
+          "skills/.curated/clade-install-auth/SKILL.md",
+          "skills/.curated/clade-known-pitfalls/SKILL.md",
+          "skills/.curated/clade-load-scale/SKILL.md",
+          "skills/.curated/clade-local-dev-loop/SKILL.md",
+          "skills/.curated/clade-migration-deep-dive/SKILL.md",
+          "skills/.curated/clade-model-inference/SKILL.md",
+          "skills/.curated/clade-observability/SKILL.md",
+          "skills/.curated/clade-performance-tuning/SKILL.md",
+          "skills/.curated/clade-policy-guardrails/SKILL.md",
+          "skills/.curated/clade-prod-checklist/SKILL.md",
+          "skills/.curated/clade-rate-limits/SKILL.md",
+          "skills/.curated/clade-reference-architecture/SKILL.md",
+          "skills/.curated/clade-reliability-patterns/SKILL.md",
+          "skills/.curated/clade-sdk-patterns/SKILL.md",
+          "skills/.curated/clade-security-basics/SKILL.md",
+          "skills/.curated/clade-upgrade-migration/SKILL.md",
+          "skills/.curated/clade-webhooks-events/SKILL.md",
+          "skills/.curated/cursor-api-key-management/SKILL.md",
+          "skills/.curated/engineer-design-diagram/references/docs-layout.md",
+          "skills/.curated/langchain-content-blocks/SKILL.md",
+          "skills/.curated/langchain-content-blocks/references/multimodal-composition.md",
+          "skills/.curated/langchain-content-blocks/references/thinking-blocks.md",
+          "skills/.curated/langchain-cost-tuning/SKILL.md",
+          "skills/.curated/langchain-prompt-engineering/SKILL.md",
+          "skills/.curated/langchain-prompt-engineering/references/claude-prompt-conventions.md",
+          "skills/.curated/langchain-rate-limits/SKILL.md",
+          "skills/.curated/langchain-rate-limits/references/provider-tier-matrix.md",
+          "skills/.curated/langchain-security-basics/SKILL.md",
+          "skills/.curated/langchain-security-basics/references/prompt-injection-defenses.md",
+          "skills/.curated/prompt-improver/SKILL.md",
+          "tests/fixtures/skill-frontmatter/17a1bc46/input.md",
+          "tests/fixtures/skill-frontmatter/2b9b4960/input.md",
+          "tests/fixtures/skill-frontmatter/d15c47d9/input.md",
+          "tests/test_grading_page_in_sync.py"
+        ]
+      },
+      "reason_code": "MISSING_GENERATED_ARTIFACT_CLASSIFIER",
+      "reproduce": "pnpm run measure:e1 --row=20 --stdout",
+      "required_inputs": [
+        "machine-readable generated-artifact registry for source versus projection split"
+      ],
+      "source": [
+        "000-docs/198-DR-SOPS-03-mcp-reliability.md",
+        "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
+        "000-docs/719-RA-REPT-cleanup-candidate-register.json",
+        "000-docs/719-RA-REPT-cleanup-candidate-register.md",
+        "000-docs/725-RA-DATA-legacy-migration-inventory.md",
+        "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+        "marketplace/src/content/blog-posts/noise-robust-signed-llm-judge-evals.md",
+        "marketplace/src/content/docs/concepts/agents.md",
+        "marketplace/src/content/docs/concepts/commands-and-hooks.md",
+        "marketplace/src/content/docs/concepts/mcp-servers.md",
+        "marketplace/src/content/docs/concepts/plugins.md",
+        "marketplace/src/content/docs/concepts/skills.md",
+        "marketplace/src/content/docs/ecosystem/community-resources.md",
+        "marketplace/src/content/docs/ecosystem/faq.md",
+        "marketplace/src/content/docs/ecosystem/marketplace-overview.md",
+        "marketplace/src/content/docs/ecosystem/official-anthropic-docs.md",
+        "marketplace/src/content/docs/getting-started/cli-reference.md",
+        "marketplace/src/content/docs/getting-started/first-plugin.md",
+        "marketplace/src/content/docs/getting-started/first-skill.md",
+        "marketplace/src/content/docs/getting-started/installation.md",
+        "marketplace/src/content/docs/guides/build-a-plugin.md",
+        "marketplace/src/content/docs/guides/create-an-agent.md",
+        "marketplace/src/content/docs/guides/mcp-server-plugin.md",
+        "marketplace/src/content/docs/guides/publish-to-marketplace.md",
+        "marketplace/src/content/docs/guides/saas-skill-packs.md",
+        "marketplace/src/content/docs/guides/write-a-skill.md",
+        "marketplace/src/content/docs/reference/allowed-tools.md",
+        "marketplace/src/content/docs/reference/cli-commands.md",
+        "marketplace/src/content/docs/reference/plugin-categories.md",
+        "marketplace/src/content/docs/reference/plugin-json-schema.md",
+        "marketplace/src/content/docs/reference/skill-frontmatter.md",
+        "marketplace/src/content/playbooks/03-mcp-reliability.md",
+        "marketplace/src/content/playbooks/12-beginner-onboarding.md",
+        "marketplace/src/data/readme-sections.json",
+        "marketplace/src/data/skills-catalog.json",
+        "plugins/ai-agency/tonone/README.md",
+        "plugins/ai-ml/ai-sdk-agents/README.md",
+        "plugins/devops/engineer-design-diagram/skills/engineer-design-diagram/references/docs-layout.md",
+        "plugins/productivity/agent-context-manager/skills/agent-context-loader/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/README.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-advanced-troubleshooting/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-architecture-variants/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-ci-integration/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-common-errors/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-core-workflow-a/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-core-workflow-b/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-cost-tuning/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-debug-bundle/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-deploy-integration/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-enterprise-rbac/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-hello-world/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-incident-runbook/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-install-auth/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-known-pitfalls/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-load-scale/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-local-dev-loop/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-migration-deep-dive/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-multi-env-setup/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-observability/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-performance-tuning/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-policy-guardrails/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-prod-checklist/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-rate-limits/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-reference-architecture/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-reliability-patterns/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-sdk-patterns/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-security-basics/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-upgrade-migration/SKILL.md",
+        "plugins/saas-packs/anthropic-pack/skills/anth-webhooks-events/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-advanced-troubleshooting/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-architecture-variants/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-common-errors/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-core-workflow-a/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-core-workflow-b/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-cost-tuning/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-data-handling/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-debug-bundle/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-deploy-integration/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-embeddings-search/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-hello-world/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-install-auth/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-known-pitfalls/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-load-scale/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-local-dev-loop/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-migration-deep-dive/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-model-inference/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-observability/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-performance-tuning/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-policy-guardrails/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-prod-checklist/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-rate-limits/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-reference-architecture/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-reliability-patterns/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-sdk-patterns/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-security-basics/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-upgrade-migration/SKILL.md",
+        "plugins/saas-packs/claude-pack/skills/clade-webhooks-events/SKILL.md",
+        "plugins/saas-packs/cursor-pack/skills/cursor-api-key-management/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/references/multimodal-composition.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-content-blocks/references/thinking-blocks.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-cost-tuning/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-prompt-engineering/references/claude-prompt-conventions.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-rate-limits/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-rate-limits/references/provider-tier-matrix.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-security-basics/SKILL.md",
+        "plugins/saas-packs/langchain-py-pack/skills/langchain-security-basics/references/prompt-injection-defenses.md",
+        "plugins/saas-packs/vendors/anthropic.yaml",
+        "plugins/security/agent-safety-preflight/skills/agent-safety-preflight/SKILL.md",
+        "plugins/security/severity1-marketplace/skills/prompt-improver/SKILL.md",
+        "plugins/skill-enhancers/web-to-github-issue/README.md",
+        "plugins/testing/kobiton-automate/README.md",
+        "skills/.curated/agent-context-loader/SKILL.md",
+        "skills/.curated/agent-safety-preflight/SKILL.md",
+        "skills/.curated/anth-ci-integration/SKILL.md",
+        "skills/.curated/anth-core-workflow-a/SKILL.md",
+        "skills/.curated/anth-cost-tuning/SKILL.md",
+        "skills/.curated/anth-deploy-integration/SKILL.md",
+        "skills/.curated/anth-hello-world/SKILL.md",
+        "skills/.curated/anth-install-auth/SKILL.md",
+        "skills/.curated/anth-load-scale/SKILL.md",
+        "skills/.curated/anth-local-dev-loop/SKILL.md",
+        "skills/.curated/anth-multi-env-setup/SKILL.md",
+        "skills/.curated/anth-prod-checklist/SKILL.md",
+        "skills/.curated/anth-security-basics/SKILL.md",
+        "skills/.curated/anth-webhooks-events/SKILL.md",
+        "skills/.curated/clade-advanced-troubleshooting/SKILL.md",
+        "skills/.curated/clade-architecture-variants/SKILL.md",
+        "skills/.curated/clade-common-errors/SKILL.md",
+        "skills/.curated/clade-core-workflow-a/SKILL.md",
+        "skills/.curated/clade-core-workflow-b/SKILL.md",
+        "skills/.curated/clade-cost-tuning/SKILL.md",
+        "skills/.curated/clade-data-handling/SKILL.md",
+        "skills/.curated/clade-debug-bundle/SKILL.md",
+        "skills/.curated/clade-deploy-integration/SKILL.md",
+        "skills/.curated/clade-embeddings-search/SKILL.md",
+        "skills/.curated/clade-hello-world/SKILL.md",
+        "skills/.curated/clade-install-auth/SKILL.md",
+        "skills/.curated/clade-known-pitfalls/SKILL.md",
+        "skills/.curated/clade-load-scale/SKILL.md",
+        "skills/.curated/clade-local-dev-loop/SKILL.md",
+        "skills/.curated/clade-migration-deep-dive/SKILL.md",
+        "skills/.curated/clade-model-inference/SKILL.md",
+        "skills/.curated/clade-observability/SKILL.md",
+        "skills/.curated/clade-performance-tuning/SKILL.md",
+        "skills/.curated/clade-policy-guardrails/SKILL.md",
+        "skills/.curated/clade-prod-checklist/SKILL.md",
+        "skills/.curated/clade-rate-limits/SKILL.md",
+        "skills/.curated/clade-reference-architecture/SKILL.md",
+        "skills/.curated/clade-reliability-patterns/SKILL.md",
+        "skills/.curated/clade-sdk-patterns/SKILL.md",
+        "skills/.curated/clade-security-basics/SKILL.md",
+        "skills/.curated/clade-upgrade-migration/SKILL.md",
+        "skills/.curated/clade-webhooks-events/SKILL.md",
+        "skills/.curated/cursor-api-key-management/SKILL.md",
+        "skills/.curated/engineer-design-diagram/references/docs-layout.md",
+        "skills/.curated/langchain-content-blocks/SKILL.md",
+        "skills/.curated/langchain-content-blocks/references/multimodal-composition.md",
+        "skills/.curated/langchain-content-blocks/references/thinking-blocks.md",
+        "skills/.curated/langchain-cost-tuning/SKILL.md",
+        "skills/.curated/langchain-prompt-engineering/SKILL.md",
+        "skills/.curated/langchain-prompt-engineering/references/claude-prompt-conventions.md",
+        "skills/.curated/langchain-rate-limits/SKILL.md",
+        "skills/.curated/langchain-rate-limits/references/provider-tier-matrix.md",
+        "skills/.curated/langchain-security-basics/SKILL.md",
+        "skills/.curated/langchain-security-basics/references/prompt-injection-defenses.md",
+        "skills/.curated/prompt-improver/SKILL.md",
+        "tests/fixtures/skill-frontmatter/17a1bc46/input.md",
+        "tests/fixtures/skill-frontmatter/2b9b4960/input.md",
+        "tests/fixtures/skill-frontmatter/d15c47d9/input.md",
+        "tests/test_grading_page_in_sync.py"
+      ],
+      "status": "partial",
+      "values": null
+    },
+    "21": {
+      "cohort": "literal dead-domain occurrences in tracked text, excluding frozen 000-docs/6767-* records",
+      "dimension": "Dead claudecodeplugins.io domain",
+      "reproduce": "pnpm run measure:e1 --row=21 --stdout",
+      "source": [
+        ".claude-plugin/mcp-presets.json",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        "000-docs/018-DR-GUID-marketplace-deployment.md",
+        "000-docs/019-MS-DRFT-redesign.md",
+        "000-docs/024-LS-STAT-marketplace-deployment-status.md",
+        "000-docs/025-RA-REPT-marketplace-deployment.md",
+        "000-docs/026-DR-GUID-marketplace-deployment.md",
+        "000-docs/027-DR-GUID-marketplace-theme.md",
+        "000-docs/192-DR-GUID-marketplace-seo.md",
+        "000-docs/193-MS-DRFT-package-policy.md",
+        "000-docs/206-DR-SOPS-readme.md",
+        "000-docs/208-AA-AACR-beads-aar-2025-12.md",
+        "000-docs/214-MS-DRFT-skills-pages-implementation.md",
+        "000-docs/217-DR-GUID-marketplace.md",
+        "000-docs/219-RA-REPT-p0-implementation.md",
+        "000-docs/228-RA-REPT-proof-gate-evidence.md",
+        "000-docs/242-AA-AACR-cli-v2-aar-2025.md",
+        "000-docs/246-AA-AACR-phase-6-aar.md",
+        "000-docs/247-OD-CHNG-changelog.md",
+        "000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md",
+        "000-docs/678-AA-AACR-session-2026-05-20-to-2026-05-21.md",
+        "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+        "000-docs/_archive/ms-oldv/020-MS-OLDV-release.md",
+        "000-docs/_archive/ms-oldv/021-MS-OLDV-marketplace-audit.md",
+        "000-docs/_archive/ms-oldv/022-MS-OLDV-first-mover.md",
+        "000-docs/_archive/ms-oldv/023-MS-OLDV-plugin-repo.md",
+        "CHANGELOG.md",
+        "docs/zcf-integration.md",
+        "freshie/exports/run-1/csv-exports/field_registry.csv",
+        "freshie/exports/run-1/csv-exports/frontmatter_fields.csv",
+        "freshie/exports/run-1/csv-exports/frontmatter_values.csv",
+        "freshie/exports/run-1/csv-exports/plugin_fields.csv",
+        "freshie/exports/run-1/csv-exports/plugin_values.csv",
+        "freshie/exports/run-1/frontmatter_fields.json",
+        "freshie/exports/run-1/frontmatter_values.json",
+        "freshie/exports/run-1/plugin_fields.json",
+        "freshie/exports/run-1/plugin_values.json",
+        "marketplace/src/content/blog-posts/brand-consistency-css-variables-sponsor-page-redesign.md",
+        "marketplace/src/content/blog-posts/debugging-critical-marketplace-schema-validation-failure.md",
+        "marketplace/src/content/blog-posts/deploying-nextjs-15-google-cloud-run-custom-domain-ssl.md",
+        "marketplace/src/content/blog-posts/external-plugin-sync-keeping-community-plugins-fresh.md",
+        "marketplace/src/content/blog-posts/intent-solutions-october-2025-state-of-affairs.md",
+        "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-five-production-platforms-and-the-architecture-b.md",
+        "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-production-deployment-velocity.md",
+        "marketplace/src/content/blog-posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier.md",
+        "marketplace/src/content/blog-posts/scaling-ai-systems-disaster-recovery-production-batch-processing.md",
+        "marketplace/src/content/blog-posts/three-projects-two-reverts-one-day.md",
+        "marketplace/src/content/plugins/excel-analyst-pro.json",
+        "marketplace/src/data/catalog.json",
+        "marketplace/src/data/readme-sections.json",
+        "marketplace/src/data/skills-catalog.json",
+        "marketplace/src/data/unified-search-index.json",
+        "marketplace/tests/production/P3-redirects.spec.ts",
+        "marketplace/tests/production/P8-seo-meta.spec.ts",
+        "packages/cli/src/commands/doctor.ts",
+        "packages/plugin-validator/README.md",
+        "packages/plugin-validator/package.json",
+        "plugins/README_JEREMY_PLUGINS.md",
+        "plugins/ai-ml/jeremy-google-adk/.claude-plugin/plugin.json",
+        "plugins/ai-ml/jeremy-google-adk/package.json",
+        "plugins/ai-ml/jeremy-google-adk/plugin.json",
+        "plugins/ai-ml/jeremy-vertex-ai/.claude-plugin/plugin.json",
+        "plugins/ai-ml/jeremy-vertex-ai/package.json",
+        "plugins/ai-ml/jeremy-vertex-ai/plugin.json",
+        "plugins/analytics/web-analytics/agents/traffic-intelligence.md",
+        "plugins/analytics/web-analytics/references/site-registry.md",
+        "plugins/business-tools/excel-analyst-pro/.claude-plugin/plugin.json",
+        "plugins/business-tools/excel-analyst-pro/DEMO_VIDEO_SCRIPT.md",
+        "plugins/business-tools/excel-analyst-pro/GITHUB_DEPLOYMENT.md",
+        "plugins/business-tools/excel-analyst-pro/PRODUCTION_SUMMARY.md",
+        "plugins/business-tools/excel-analyst-pro/README.md",
+        "plugins/business-tools/excel-analyst-pro/package.json",
+        "plugins/business-tools/openbb-terminal/.claude-plugin/plugin.json",
+        "plugins/business-tools/openbb-terminal/package.json",
+        "plugins/community/jeremy-firebase/000-usermanuals/010-plugin-updates-release-notes.md",
+        "plugins/community/jeremy-firebase/README.md",
+        "plugins/community/jeremy-firestore/README.md",
+        "plugins/devops/fairdb-operations-kit/README.md",
+        "plugins/devops/mattyp-changelog/.claude-plugin/plugin.json",
+        "plugins/devops/mattyp-changelog/package.json",
+        "plugins/devops/mattyp-changelog/skills/changelog-orchestrator/SKILL.md",
+        "plugins/examples/jeremy-plugin-tool/.claude-plugin/plugin.json",
+        "plugins/examples/jeremy-plugin-tool/package.json",
+        "plugins/mcp/ai-experiment-logger/server.json",
+        "plugins/mcp/conversational-api-debugger/server.json",
+        "plugins/mcp/design-to-code/server.json",
+        "plugins/mcp/domain-memory-agent/server.json",
+        "plugins/mcp/lumera-agent-memory/server.json",
+        "plugins/mcp/project-health-auditor/server.json",
+        "plugins/mcp/workflow-orchestrator/server.json",
+        "plugins/packages/ai-ml-engineering-pack/.claude-plugin/plugin.json",
+        "plugins/packages/devops-automation-pack/.claude-plugin/plugin.json",
+        "plugins/packages/fullstack-starter-pack/.claude-plugin/plugin.json",
+        "plugins/packages/security-pro-pack/.claude-plugin/plugin.json",
+        "plugins/productivity/prettier-markdown-hook/README.md",
+        "plugins/productivity/youtube-strategy/skills/yt-brief/SKILL.md",
+        "plugins/productivity/youtube-strategy/skills/yt-ideation/SKILL.md",
+        "plugins/productivity/youtube-strategy/skills/yt-outline/SKILL.md",
+        "plugins/productivity/youtube-strategy/skills/yt-packaging/SKILL.md",
+        "plugins/productivity/youtube-strategy/skills/yt-research/SKILL.md",
+        "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/SKILL.md",
+        "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/references/examples.md",
+        "plugins/skill-enhancers/SEO_META_TAGS.md",
+        "plugins/skill-enhancers/calendar-to-workflow/README.md",
+        "plugins/skill-enhancers/file-to-code/README.md",
+        "plugins/skill-enhancers/research-to-deploy/README.md",
+        "plugins/skill-enhancers/search-to-slack/README.md",
+        "plugins/skill-enhancers/web-to-github-issue/.claude-plugin/plugin.json",
+        "plugins/skill-enhancers/web-to-github-issue/README.md",
+        "plugins/skill-enhancers/web-to-github-issue/SEO_META_TAGS.md",
+        "plugins/skill-enhancers/web-to-github-issue/src/formatter.js",
+        "plugins/skill-enhancers/web-to-github-issue/tests/formatter.test.js",
+        "skills/.curated/analyzing-security-headers/SKILL.md",
+        "skills/.curated/analyzing-security-headers/references/examples.md",
+        "skills/.curated/changelog-orchestrator/SKILL.md",
+        "skills/.curated/yt-brief/SKILL.md",
+        "skills/.curated/yt-ideation/SKILL.md",
+        "skills/.curated/yt-outline/SKILL.md",
+        "skills/.curated/yt-packaging/SKILL.md",
+        "skills/.curated/yt-research/SKILL.md",
+        "tests/e2e/MARKETPLACE-E2E-ARCHITECTURE.md",
+        "tests/fixtures/prose-anchors/expected-output.json"
+      ],
+      "status": "measured",
+      "values": {
+        "actionable": {
+          "files": 121,
+          "occurrences": 344,
+          "paths": [
+            ".claude-plugin/mcp-presets.json",
+            ".github/ISSUE_TEMPLATE/config.yml",
+            "000-docs/018-DR-GUID-marketplace-deployment.md",
+            "000-docs/019-MS-DRFT-redesign.md",
+            "000-docs/024-LS-STAT-marketplace-deployment-status.md",
+            "000-docs/025-RA-REPT-marketplace-deployment.md",
+            "000-docs/026-DR-GUID-marketplace-deployment.md",
+            "000-docs/027-DR-GUID-marketplace-theme.md",
+            "000-docs/192-DR-GUID-marketplace-seo.md",
+            "000-docs/193-MS-DRFT-package-policy.md",
+            "000-docs/206-DR-SOPS-readme.md",
+            "000-docs/208-AA-AACR-beads-aar-2025-12.md",
+            "000-docs/214-MS-DRFT-skills-pages-implementation.md",
+            "000-docs/217-DR-GUID-marketplace.md",
+            "000-docs/219-RA-REPT-p0-implementation.md",
+            "000-docs/228-RA-REPT-proof-gate-evidence.md",
+            "000-docs/242-AA-AACR-cli-v2-aar-2025.md",
+            "000-docs/246-AA-AACR-phase-6-aar.md",
+            "000-docs/247-OD-CHNG-changelog.md",
+            "000-docs/678-AA-AACR-session-2026-05-20-to-2026-05-21.md",
+            "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+            "000-docs/_archive/ms-oldv/020-MS-OLDV-release.md",
+            "000-docs/_archive/ms-oldv/021-MS-OLDV-marketplace-audit.md",
+            "000-docs/_archive/ms-oldv/022-MS-OLDV-first-mover.md",
+            "000-docs/_archive/ms-oldv/023-MS-OLDV-plugin-repo.md",
+            "CHANGELOG.md",
+            "docs/zcf-integration.md",
+            "freshie/exports/run-1/csv-exports/field_registry.csv",
+            "freshie/exports/run-1/csv-exports/frontmatter_fields.csv",
+            "freshie/exports/run-1/csv-exports/frontmatter_values.csv",
+            "freshie/exports/run-1/csv-exports/plugin_fields.csv",
+            "freshie/exports/run-1/csv-exports/plugin_values.csv",
+            "freshie/exports/run-1/frontmatter_fields.json",
+            "freshie/exports/run-1/frontmatter_values.json",
+            "freshie/exports/run-1/plugin_fields.json",
+            "freshie/exports/run-1/plugin_values.json",
+            "marketplace/src/content/blog-posts/brand-consistency-css-variables-sponsor-page-redesign.md",
+            "marketplace/src/content/blog-posts/debugging-critical-marketplace-schema-validation-failure.md",
+            "marketplace/src/content/blog-posts/deploying-nextjs-15-google-cloud-run-custom-domain-ssl.md",
+            "marketplace/src/content/blog-posts/external-plugin-sync-keeping-community-plugins-fresh.md",
+            "marketplace/src/content/blog-posts/intent-solutions-october-2025-state-of-affairs.md",
+            "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-five-production-platforms-and-the-architecture-b.md",
+            "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-production-deployment-velocity.md",
+            "marketplace/src/content/blog-posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier.md",
+            "marketplace/src/content/blog-posts/scaling-ai-systems-disaster-recovery-production-batch-processing.md",
+            "marketplace/src/content/blog-posts/three-projects-two-reverts-one-day.md",
+            "marketplace/src/content/plugins/excel-analyst-pro.json",
+            "marketplace/src/data/catalog.json",
+            "marketplace/src/data/readme-sections.json",
+            "marketplace/src/data/skills-catalog.json",
+            "marketplace/src/data/unified-search-index.json",
+            "marketplace/tests/production/P3-redirects.spec.ts",
+            "marketplace/tests/production/P8-seo-meta.spec.ts",
+            "packages/cli/src/commands/doctor.ts",
+            "packages/plugin-validator/README.md",
+            "packages/plugin-validator/package.json",
+            "plugins/README_JEREMY_PLUGINS.md",
+            "plugins/ai-ml/jeremy-google-adk/.claude-plugin/plugin.json",
+            "plugins/ai-ml/jeremy-google-adk/package.json",
+            "plugins/ai-ml/jeremy-google-adk/plugin.json",
+            "plugins/ai-ml/jeremy-vertex-ai/.claude-plugin/plugin.json",
+            "plugins/ai-ml/jeremy-vertex-ai/package.json",
+            "plugins/ai-ml/jeremy-vertex-ai/plugin.json",
+            "plugins/analytics/web-analytics/agents/traffic-intelligence.md",
+            "plugins/analytics/web-analytics/references/site-registry.md",
+            "plugins/business-tools/excel-analyst-pro/.claude-plugin/plugin.json",
+            "plugins/business-tools/excel-analyst-pro/DEMO_VIDEO_SCRIPT.md",
+            "plugins/business-tools/excel-analyst-pro/GITHUB_DEPLOYMENT.md",
+            "plugins/business-tools/excel-analyst-pro/PRODUCTION_SUMMARY.md",
+            "plugins/business-tools/excel-analyst-pro/README.md",
+            "plugins/business-tools/excel-analyst-pro/package.json",
+            "plugins/business-tools/openbb-terminal/.claude-plugin/plugin.json",
+            "plugins/business-tools/openbb-terminal/package.json",
+            "plugins/community/jeremy-firebase/000-usermanuals/010-plugin-updates-release-notes.md",
+            "plugins/community/jeremy-firebase/README.md",
+            "plugins/community/jeremy-firestore/README.md",
+            "plugins/devops/fairdb-operations-kit/README.md",
+            "plugins/devops/mattyp-changelog/.claude-plugin/plugin.json",
+            "plugins/devops/mattyp-changelog/package.json",
+            "plugins/devops/mattyp-changelog/skills/changelog-orchestrator/SKILL.md",
+            "plugins/examples/jeremy-plugin-tool/.claude-plugin/plugin.json",
+            "plugins/examples/jeremy-plugin-tool/package.json",
+            "plugins/mcp/ai-experiment-logger/server.json",
+            "plugins/mcp/conversational-api-debugger/server.json",
+            "plugins/mcp/design-to-code/server.json",
+            "plugins/mcp/domain-memory-agent/server.json",
+            "plugins/mcp/lumera-agent-memory/server.json",
+            "plugins/mcp/project-health-auditor/server.json",
+            "plugins/mcp/workflow-orchestrator/server.json",
+            "plugins/packages/ai-ml-engineering-pack/.claude-plugin/plugin.json",
+            "plugins/packages/devops-automation-pack/.claude-plugin/plugin.json",
+            "plugins/packages/fullstack-starter-pack/.claude-plugin/plugin.json",
+            "plugins/packages/security-pro-pack/.claude-plugin/plugin.json",
+            "plugins/productivity/prettier-markdown-hook/README.md",
+            "plugins/productivity/youtube-strategy/skills/yt-brief/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-ideation/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-outline/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-packaging/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-research/SKILL.md",
+            "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/SKILL.md",
+            "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/references/examples.md",
+            "plugins/skill-enhancers/SEO_META_TAGS.md",
+            "plugins/skill-enhancers/calendar-to-workflow/README.md",
+            "plugins/skill-enhancers/file-to-code/README.md",
+            "plugins/skill-enhancers/research-to-deploy/README.md",
+            "plugins/skill-enhancers/search-to-slack/README.md",
+            "plugins/skill-enhancers/web-to-github-issue/.claude-plugin/plugin.json",
+            "plugins/skill-enhancers/web-to-github-issue/README.md",
+            "plugins/skill-enhancers/web-to-github-issue/SEO_META_TAGS.md",
+            "plugins/skill-enhancers/web-to-github-issue/src/formatter.js",
+            "plugins/skill-enhancers/web-to-github-issue/tests/formatter.test.js",
+            "skills/.curated/analyzing-security-headers/SKILL.md",
+            "skills/.curated/analyzing-security-headers/references/examples.md",
+            "skills/.curated/changelog-orchestrator/SKILL.md",
+            "skills/.curated/yt-brief/SKILL.md",
+            "skills/.curated/yt-ideation/SKILL.md",
+            "skills/.curated/yt-outline/SKILL.md",
+            "skills/.curated/yt-packaging/SKILL.md",
+            "skills/.curated/yt-research/SKILL.md",
+            "tests/e2e/MARKETPLACE-E2E-ARCHITECTURE.md",
+            "tests/fixtures/prose-anchors/expected-output.json"
+          ]
+        },
+        "all_tracked": {
+          "files": 122,
+          "occurrences": 347,
+          "paths": [
+            ".claude-plugin/mcp-presets.json",
+            ".github/ISSUE_TEMPLATE/config.yml",
+            "000-docs/018-DR-GUID-marketplace-deployment.md",
+            "000-docs/019-MS-DRFT-redesign.md",
+            "000-docs/024-LS-STAT-marketplace-deployment-status.md",
+            "000-docs/025-RA-REPT-marketplace-deployment.md",
+            "000-docs/026-DR-GUID-marketplace-deployment.md",
+            "000-docs/027-DR-GUID-marketplace-theme.md",
+            "000-docs/192-DR-GUID-marketplace-seo.md",
+            "000-docs/193-MS-DRFT-package-policy.md",
+            "000-docs/206-DR-SOPS-readme.md",
+            "000-docs/208-AA-AACR-beads-aar-2025-12.md",
+            "000-docs/214-MS-DRFT-skills-pages-implementation.md",
+            "000-docs/217-DR-GUID-marketplace.md",
+            "000-docs/219-RA-REPT-p0-implementation.md",
+            "000-docs/228-RA-REPT-proof-gate-evidence.md",
+            "000-docs/242-AA-AACR-cli-v2-aar-2025.md",
+            "000-docs/246-AA-AACR-phase-6-aar.md",
+            "000-docs/247-OD-CHNG-changelog.md",
+            "000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md",
+            "000-docs/678-AA-AACR-session-2026-05-20-to-2026-05-21.md",
+            "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+            "000-docs/_archive/ms-oldv/020-MS-OLDV-release.md",
+            "000-docs/_archive/ms-oldv/021-MS-OLDV-marketplace-audit.md",
+            "000-docs/_archive/ms-oldv/022-MS-OLDV-first-mover.md",
+            "000-docs/_archive/ms-oldv/023-MS-OLDV-plugin-repo.md",
+            "CHANGELOG.md",
+            "docs/zcf-integration.md",
+            "freshie/exports/run-1/csv-exports/field_registry.csv",
+            "freshie/exports/run-1/csv-exports/frontmatter_fields.csv",
+            "freshie/exports/run-1/csv-exports/frontmatter_values.csv",
+            "freshie/exports/run-1/csv-exports/plugin_fields.csv",
+            "freshie/exports/run-1/csv-exports/plugin_values.csv",
+            "freshie/exports/run-1/frontmatter_fields.json",
+            "freshie/exports/run-1/frontmatter_values.json",
+            "freshie/exports/run-1/plugin_fields.json",
+            "freshie/exports/run-1/plugin_values.json",
+            "marketplace/src/content/blog-posts/brand-consistency-css-variables-sponsor-page-redesign.md",
+            "marketplace/src/content/blog-posts/debugging-critical-marketplace-schema-validation-failure.md",
+            "marketplace/src/content/blog-posts/deploying-nextjs-15-google-cloud-run-custom-domain-ssl.md",
+            "marketplace/src/content/blog-posts/external-plugin-sync-keeping-community-plugins-fresh.md",
+            "marketplace/src/content/blog-posts/intent-solutions-october-2025-state-of-affairs.md",
+            "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-five-production-platforms-and-the-architecture-b.md",
+            "marketplace/src/content/blog-posts/intent-solutions-portfolio-2025-production-deployment-velocity.md",
+            "marketplace/src/content/blog-posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier.md",
+            "marketplace/src/content/blog-posts/scaling-ai-systems-disaster-recovery-production-batch-processing.md",
+            "marketplace/src/content/blog-posts/three-projects-two-reverts-one-day.md",
+            "marketplace/src/content/plugins/excel-analyst-pro.json",
+            "marketplace/src/data/catalog.json",
+            "marketplace/src/data/readme-sections.json",
+            "marketplace/src/data/skills-catalog.json",
+            "marketplace/src/data/unified-search-index.json",
+            "marketplace/tests/production/P3-redirects.spec.ts",
+            "marketplace/tests/production/P8-seo-meta.spec.ts",
+            "packages/cli/src/commands/doctor.ts",
+            "packages/plugin-validator/README.md",
+            "packages/plugin-validator/package.json",
+            "plugins/README_JEREMY_PLUGINS.md",
+            "plugins/ai-ml/jeremy-google-adk/.claude-plugin/plugin.json",
+            "plugins/ai-ml/jeremy-google-adk/package.json",
+            "plugins/ai-ml/jeremy-google-adk/plugin.json",
+            "plugins/ai-ml/jeremy-vertex-ai/.claude-plugin/plugin.json",
+            "plugins/ai-ml/jeremy-vertex-ai/package.json",
+            "plugins/ai-ml/jeremy-vertex-ai/plugin.json",
+            "plugins/analytics/web-analytics/agents/traffic-intelligence.md",
+            "plugins/analytics/web-analytics/references/site-registry.md",
+            "plugins/business-tools/excel-analyst-pro/.claude-plugin/plugin.json",
+            "plugins/business-tools/excel-analyst-pro/DEMO_VIDEO_SCRIPT.md",
+            "plugins/business-tools/excel-analyst-pro/GITHUB_DEPLOYMENT.md",
+            "plugins/business-tools/excel-analyst-pro/PRODUCTION_SUMMARY.md",
+            "plugins/business-tools/excel-analyst-pro/README.md",
+            "plugins/business-tools/excel-analyst-pro/package.json",
+            "plugins/business-tools/openbb-terminal/.claude-plugin/plugin.json",
+            "plugins/business-tools/openbb-terminal/package.json",
+            "plugins/community/jeremy-firebase/000-usermanuals/010-plugin-updates-release-notes.md",
+            "plugins/community/jeremy-firebase/README.md",
+            "plugins/community/jeremy-firestore/README.md",
+            "plugins/devops/fairdb-operations-kit/README.md",
+            "plugins/devops/mattyp-changelog/.claude-plugin/plugin.json",
+            "plugins/devops/mattyp-changelog/package.json",
+            "plugins/devops/mattyp-changelog/skills/changelog-orchestrator/SKILL.md",
+            "plugins/examples/jeremy-plugin-tool/.claude-plugin/plugin.json",
+            "plugins/examples/jeremy-plugin-tool/package.json",
+            "plugins/mcp/ai-experiment-logger/server.json",
+            "plugins/mcp/conversational-api-debugger/server.json",
+            "plugins/mcp/design-to-code/server.json",
+            "plugins/mcp/domain-memory-agent/server.json",
+            "plugins/mcp/lumera-agent-memory/server.json",
+            "plugins/mcp/project-health-auditor/server.json",
+            "plugins/mcp/workflow-orchestrator/server.json",
+            "plugins/packages/ai-ml-engineering-pack/.claude-plugin/plugin.json",
+            "plugins/packages/devops-automation-pack/.claude-plugin/plugin.json",
+            "plugins/packages/fullstack-starter-pack/.claude-plugin/plugin.json",
+            "plugins/packages/security-pro-pack/.claude-plugin/plugin.json",
+            "plugins/productivity/prettier-markdown-hook/README.md",
+            "plugins/productivity/youtube-strategy/skills/yt-brief/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-ideation/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-outline/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-packaging/SKILL.md",
+            "plugins/productivity/youtube-strategy/skills/yt-research/SKILL.md",
+            "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/SKILL.md",
+            "plugins/security/security-headers-analyzer/skills/analyzing-security-headers/references/examples.md",
+            "plugins/skill-enhancers/SEO_META_TAGS.md",
+            "plugins/skill-enhancers/calendar-to-workflow/README.md",
+            "plugins/skill-enhancers/file-to-code/README.md",
+            "plugins/skill-enhancers/research-to-deploy/README.md",
+            "plugins/skill-enhancers/search-to-slack/README.md",
+            "plugins/skill-enhancers/web-to-github-issue/.claude-plugin/plugin.json",
+            "plugins/skill-enhancers/web-to-github-issue/README.md",
+            "plugins/skill-enhancers/web-to-github-issue/SEO_META_TAGS.md",
+            "plugins/skill-enhancers/web-to-github-issue/src/formatter.js",
+            "plugins/skill-enhancers/web-to-github-issue/tests/formatter.test.js",
+            "skills/.curated/analyzing-security-headers/SKILL.md",
+            "skills/.curated/analyzing-security-headers/references/examples.md",
+            "skills/.curated/changelog-orchestrator/SKILL.md",
+            "skills/.curated/yt-brief/SKILL.md",
+            "skills/.curated/yt-ideation/SKILL.md",
+            "skills/.curated/yt-outline/SKILL.md",
+            "skills/.curated/yt-packaging/SKILL.md",
+            "skills/.curated/yt-research/SKILL.md",
+            "tests/e2e/MARKETPLACE-E2E-ARCHITECTURE.md",
+            "tests/fixtures/prose-anchors/expected-output.json"
+          ]
+        },
+        "target_actionable_occurrences": 0
+      }
+    },
+    "22": {
+      "cohort": "tracked marketplace/src/data JSON outputs discovered from tracked executable writers",
+      "dimension": "Tracked generated artifacts with no drift gate",
+      "limitations": [
+        "writer and drift-gate discovery is conservative static analysis; indirect runtime paths remain visible as a limitation, not silently inferred"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=22 --stdout",
+      "source": [
+        "marketplace/scripts/discover-skills.mjs",
+        "marketplace/scripts/enrich-jrig-data.mjs",
+        "marketplace/scripts/extract-readme-sections.mjs",
+        "marketplace/scripts/generate-unified-search.mjs",
+        "marketplace/scripts/sync-catalog.mjs",
+        "scripts/fetch-github-stats.mjs",
+        "scripts/fetch-npm-stats.mjs",
+        "scripts/fetch-skills-stats.mjs",
+        "scripts/promote-spotlight.mjs"
+      ],
+      "status": "partial",
+      "values": {
+        "artifacts": [
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/catalog.json",
+            "producers": [
+              "marketplace/scripts/discover-skills.mjs",
+              "marketplace/scripts/sync-catalog.mjs"
+            ],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/github-stats.json",
+            "producers": ["scripts/fetch-github-stats.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/jrig-data.json",
+            "producers": ["marketplace/scripts/enrich-jrig-data.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/npm-stats.json",
+            "producers": ["scripts/fetch-npm-stats.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/readme-sections.json",
+            "producers": ["marketplace/scripts/extract-readme-sections.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/skills-catalog.json",
+            "producers": ["marketplace/scripts/discover-skills.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/skills-index.json",
+            "producers": ["marketplace/scripts/discover-skills.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/skills-stats.json",
+            "producers": ["scripts/fetch-skills-stats.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/spotlights.json",
+            "producers": ["scripts/promote-spotlight.mjs"],
+            "wired_checkers": []
+          },
+          {
+            "content_drift_gate": false,
+            "path": "marketplace/src/data/unified-search-index.json",
+            "producers": ["marketplace/scripts/generate-unified-search.mjs"],
+            "wired_checkers": []
+          }
+        ],
+        "count_without_content_drift_gate": 10,
+        "target_without_content_drift_gate": 0
+      }
+    },
+    "23": {
+      "cohort": "tracked generated marketplace artifacts",
+      "dimension": "Worst generated-artifact staleness",
+      "reason_code": "MISSING_COMMITTED_ARTIFACT_HISTORY",
+      "reproduce": "pnpm run measure:e1 --row=23 --stdout",
+      "required_inputs": [
+        "artifact generation commit",
+        "catalog-entry introduction commit",
+        "complete Git history"
+      ],
+      "source": [
+        "marketplace/src/data/catalog.json",
+        "marketplace/src/data/github-stats.json",
+        "marketplace/src/data/jrig-data.json",
+        "marketplace/src/data/npm-stats.json",
+        "marketplace/src/data/readme-sections.json",
+        "marketplace/src/data/skills-catalog.json",
+        "marketplace/src/data/skills-index.json",
+        "marketplace/src/data/skills-stats.json",
+        "marketplace/src/data/spotlights.json",
+        "marketplace/src/data/unified-search-index.json"
+      ],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "24": {
+      "cohort": "named committed skill-count surfaces",
+      "dimension": "Published answers to how many skills",
+      "reproduce": "pnpm run measure:e1 --row=24 --stdout",
+      "source": [
+        "freshie/grade-histogram.json",
+        "marketplace/src/data/skills-index.json",
+        "marketplace/src/data/unified-search-index.json",
+        "skills/.curated/MANIFEST.json"
+      ],
+      "status": "measured",
+      "values": {
+        "answers": [
+          {
+            "cohort": "curated_manifest",
+            "value": 1915
+          },
+          {
+            "cohort": "freshie_grade_export",
+            "value": 3678
+          },
+          {
+            "cohort": "skills_index",
+            "value": 3051
+          },
+          {
+            "cohort": "tracked_plugin_skill_files",
+            "value": 3179
+          },
+          {
+            "cohort": "unified_search_index",
+            "value": 3008
+          }
+        ],
+        "distinct_numeric_answers": 5,
+        "named_cohorts": 5
+      }
+    },
+    "25": {
+      "cohort": "tracked executable sources that write README.md and reference count-bearing marketplace facts",
+      "dimension": "README metric writers",
+      "limitations": [
+        "static discovery requires both a README write and a metric signal; runtime-computed output aliases require an explicit contract to become fully measured"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=25 --stdout",
+      "source": ["scripts/generate-readme-toc.mjs", "scripts/update-metrics.mjs"],
+      "status": "partial",
+      "values": {
+        "count": 2,
+        "target": 1,
+        "writers": ["scripts/generate-readme-toc.mjs", "scripts/update-metrics.mjs"]
+      }
+    },
+    "26": {
+      "cohort": "tracked marketplace data files whose names identify public stats projections",
+      "dimension": "Public stats without an enforceable freshness bound",
+      "limitations": [
+        "no wall clock is consulted, so this row reports enforceable bounds rather than current age"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=26 --stdout",
+      "source": [
+        "marketplace/src/data/github-stats.json",
+        "marketplace/src/data/npm-stats.json",
+        "marketplace/src/data/skills-stats.json"
+      ],
+      "status": "partial",
+      "values": {
+        "sources": [
+          {
+            "has_valid_max_age_hours": false,
+            "path": "marketplace/src/data/github-stats.json"
+          },
+          {
+            "has_valid_max_age_hours": false,
+            "path": "marketplace/src/data/npm-stats.json"
+          },
+          {
+            "has_valid_max_age_hours": false,
+            "path": "marketplace/src/data/skills-stats.json"
+          }
+        ],
+        "target_without_valid_bound": 0,
+        "without_valid_bound": 3
+      }
+    },
+    "27": {
+      "cohort": "tracked source names and lock keys",
+      "dimension": "sources.yaml versus sources.lock.json keys",
+      "reproduce": "pnpm run measure:e1 --row=27 --stdout",
+      "source": ["sources.lock.json", "sources.yaml"],
+      "status": "measured",
+      "values": {
+        "lock_keys": 63,
+        "lock_only": [],
+        "target_equal": true,
+        "yaml_keys": 64,
+        "yaml_only": ["uizze"]
+      }
+    },
+    "28": {
+      "cohort": "directories identified only by a tracked .source.json marker",
+      "dimension": "Mirrors shipping license text",
+      "reproduce": "pnpm run measure:e1 --row=28 --stdout",
+      "source": [
+        "plugins/ai-agency/hyperflow/.source.json",
+        "plugins/ai-agency/tonone/.source.json",
+        "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
+        "plugins/business-tools/wondelai-contagious/.source.json",
+        "plugins/business-tools/wondelai-cro-methodology/.source.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
+        "plugins/business-tools/wondelai-drive-motivation/.source.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
+        "plugins/business-tools/wondelai-influence-psychology/.source.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
+        "plugins/business-tools/wondelai-made-to-stick/.source.json",
+        "plugins/business-tools/wondelai-negotiation/.source.json",
+        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
+        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
+        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
+        "plugins/business-tools/wondelai-traction-eos/.source.json",
+        "plugins/community/ejentum-anti-deception/.source.json",
+        "plugins/community/ejentum-code/.source.json",
+        "plugins/community/ejentum-memory/.source.json",
+        "plugins/community/ejentum-reasoning/.source.json",
+        "plugins/community/gastown/.source.json",
+        "plugins/community/hermes-tweet/.source.json",
+        "plugins/community/llm-box/.source.json",
+        "plugins/community/mnemos/.source.json",
+        "plugins/community/portaljs/.source.json",
+        "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/skills-janitor/.source.json",
+        "plugins/community/walkie-talkie/.source.json",
+        "plugins/community/zai-cli/.source.json",
+        "plugins/crypto/aomi/.source.json",
+        "plugins/design/brand-forge/.source.json",
+        "plugins/design/wondelai-design-everyday-things/.source.json",
+        "plugins/design/wondelai-hooked-ux/.source.json",
+        "plugins/design/wondelai-ios-hig-design/.source.json",
+        "plugins/design/wondelai-refactoring-ui/.source.json",
+        "plugins/design/wondelai-top-design/.source.json",
+        "plugins/design/wondelai-ux-heuristics/.source.json",
+        "plugins/design/wondelai-web-typography/.source.json",
+        "plugins/devops/sugar/.source.json",
+        "plugins/mcp/dolt-mcp-vcs/.source.json",
+        "plugins/mcp/governed-second-brain/.source.json",
+        "plugins/mcp/pr-to-spec/.source.json",
+        "plugins/mcp/servicegraph/.source.json",
+        "plugins/mcp/slack-channel/.source.json",
+        "plugins/mcp/x-bug-triage/.source.json",
+        "plugins/productivity/box-cloud-filesystem/.source.json",
+        "plugins/productivity/claude-workflow-skills/.source.json",
+        "plugins/productivity/claudebase/.source.json",
+        "plugins/productivity/cli-power-skills/.source.json",
+        "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/obsidian-project-documentation/.source.json",
+        "plugins/productivity/over-50s-health/.source.json",
+        "plugins/productivity/pair-programmer/.source.json",
+        "plugins/productivity/publishing-skills/.source.json",
+        "plugins/productivity/schedule-after-usage-reset/.source.json",
+        "plugins/productivity/skyvern/.source.json",
+        "plugins/productivity/wondelai-design-sprint/.source.json",
+        "plugins/productivity/wondelai-lean-startup/.source.json",
+        "plugins/testing/cli-ux-tester/.source.json",
+        "plugins/testing/kobiton-automate/.source.json"
+      ],
+      "status": "measured",
+      "values": {
+        "mirrors_shipping_license_text": 30,
+        "missing_license_text": [
+          "plugins/api-development/x-twitter-scraper",
+          "plugins/business-tools/wondelai-blue-ocean-strategy",
+          "plugins/business-tools/wondelai-contagious",
+          "plugins/business-tools/wondelai-cro-methodology",
+          "plugins/business-tools/wondelai-crossing-the-chasm",
+          "plugins/business-tools/wondelai-drive-motivation",
+          "plugins/business-tools/wondelai-hundred-million-offers",
+          "plugins/business-tools/wondelai-influence-psychology",
+          "plugins/business-tools/wondelai-jobs-to-be-done",
+          "plugins/business-tools/wondelai-made-to-stick",
+          "plugins/business-tools/wondelai-negotiation",
+          "plugins/business-tools/wondelai-obviously-awesome",
+          "plugins/business-tools/wondelai-one-page-marketing",
+          "plugins/business-tools/wondelai-predictable-revenue",
+          "plugins/business-tools/wondelai-scorecard-marketing",
+          "plugins/business-tools/wondelai-storybrand-messaging",
+          "plugins/business-tools/wondelai-traction-eos",
+          "plugins/community/ejentum-anti-deception",
+          "plugins/community/ejentum-code",
+          "plugins/community/ejentum-memory",
+          "plugins/community/ejentum-reasoning",
+          "plugins/community/llm-box",
+          "plugins/design/wondelai-design-everyday-things",
+          "plugins/design/wondelai-hooked-ux",
+          "plugins/design/wondelai-ios-hig-design",
+          "plugins/design/wondelai-refactoring-ui",
+          "plugins/design/wondelai-top-design",
+          "plugins/design/wondelai-ux-heuristics",
+          "plugins/design/wondelai-web-typography",
+          "plugins/productivity/content-multiplier",
+          "plugins/productivity/skyvern",
+          "plugins/productivity/wondelai-design-sprint",
+          "plugins/productivity/wondelai-lean-startup"
+        ],
+        "provenance_marked_mirrors": 63,
+        "target_shipping_license_text": 63
+      }
+    },
+    "29": {
+      "cohort": "provenance-marked mirrors",
+      "dimension": "Mirror SKILL.md contradicting upstream license",
+      "measured_proxy": {
+        "local_source_records_with_parseable_json": 63
+      },
+      "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
+      "reproduce": "pnpm run measure:e1 --row=29 --stdout",
+      "required_inputs": [
+        "resolved upstream commit per mirror",
+        "retained primary upstream license text"
+      ],
+      "source": [
+        "plugins/ai-agency/hyperflow/.source.json",
+        "plugins/ai-agency/tonone/.source.json",
+        "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
+        "plugins/business-tools/wondelai-contagious/.source.json",
+        "plugins/business-tools/wondelai-cro-methodology/.source.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
+        "plugins/business-tools/wondelai-drive-motivation/.source.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
+        "plugins/business-tools/wondelai-influence-psychology/.source.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
+        "plugins/business-tools/wondelai-made-to-stick/.source.json",
+        "plugins/business-tools/wondelai-negotiation/.source.json",
+        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
+        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
+        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
+        "plugins/business-tools/wondelai-traction-eos/.source.json",
+        "plugins/community/ejentum-anti-deception/.source.json",
+        "plugins/community/ejentum-code/.source.json",
+        "plugins/community/ejentum-memory/.source.json",
+        "plugins/community/ejentum-reasoning/.source.json",
+        "plugins/community/gastown/.source.json",
+        "plugins/community/hermes-tweet/.source.json",
+        "plugins/community/llm-box/.source.json",
+        "plugins/community/mnemos/.source.json",
+        "plugins/community/portaljs/.source.json",
+        "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/skills-janitor/.source.json",
+        "plugins/community/walkie-talkie/.source.json",
+        "plugins/community/zai-cli/.source.json",
+        "plugins/crypto/aomi/.source.json",
+        "plugins/design/brand-forge/.source.json",
+        "plugins/design/wondelai-design-everyday-things/.source.json",
+        "plugins/design/wondelai-hooked-ux/.source.json",
+        "plugins/design/wondelai-ios-hig-design/.source.json",
+        "plugins/design/wondelai-refactoring-ui/.source.json",
+        "plugins/design/wondelai-top-design/.source.json",
+        "plugins/design/wondelai-ux-heuristics/.source.json",
+        "plugins/design/wondelai-web-typography/.source.json",
+        "plugins/devops/sugar/.source.json",
+        "plugins/mcp/dolt-mcp-vcs/.source.json",
+        "plugins/mcp/governed-second-brain/.source.json",
+        "plugins/mcp/pr-to-spec/.source.json",
+        "plugins/mcp/servicegraph/.source.json",
+        "plugins/mcp/slack-channel/.source.json",
+        "plugins/mcp/x-bug-triage/.source.json",
+        "plugins/productivity/box-cloud-filesystem/.source.json",
+        "plugins/productivity/claude-workflow-skills/.source.json",
+        "plugins/productivity/claudebase/.source.json",
+        "plugins/productivity/cli-power-skills/.source.json",
+        "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/obsidian-project-documentation/.source.json",
+        "plugins/productivity/over-50s-health/.source.json",
+        "plugins/productivity/pair-programmer/.source.json",
+        "plugins/productivity/publishing-skills/.source.json",
+        "plugins/productivity/schedule-after-usage-reset/.source.json",
+        "plugins/productivity/skyvern/.source.json",
+        "plugins/productivity/wondelai-design-sprint/.source.json",
+        "plugins/productivity/wondelai-lean-startup/.source.json",
+        "plugins/testing/cli-ux-tester/.source.json",
+        "plugins/testing/kobiton-automate/.source.json"
+      ],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "30": {
+      "cohort": "package.json at each directory carrying a tracked .source.json marker",
+      "dimension": "Provenance-marked mirror packages",
+      "limitations": [
+        "live npm publication and ownership classification are external state and are not inferred from names"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=30 --stdout",
+      "source": [
+        "plugins/ai-agency/hyperflow/.source.json",
+        "plugins/ai-agency/hyperflow/package.json",
+        "plugins/ai-agency/tonone/.source.json",
+        "plugins/ai-agency/tonone/package.json",
+        "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/api-development/x-twitter-scraper/package.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
+        "plugins/business-tools/wondelai-contagious/.source.json",
+        "plugins/business-tools/wondelai-contagious/package.json",
+        "plugins/business-tools/wondelai-cro-methodology/.source.json",
+        "plugins/business-tools/wondelai-cro-methodology/package.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
+        "plugins/business-tools/wondelai-drive-motivation/.source.json",
+        "plugins/business-tools/wondelai-drive-motivation/package.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
+        "plugins/business-tools/wondelai-influence-psychology/.source.json",
+        "plugins/business-tools/wondelai-influence-psychology/package.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
+        "plugins/business-tools/wondelai-made-to-stick/.source.json",
+        "plugins/business-tools/wondelai-made-to-stick/package.json",
+        "plugins/business-tools/wondelai-negotiation/.source.json",
+        "plugins/business-tools/wondelai-negotiation/package.json",
+        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
+        "plugins/business-tools/wondelai-obviously-awesome/package.json",
+        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
+        "plugins/business-tools/wondelai-one-page-marketing/package.json",
+        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
+        "plugins/business-tools/wondelai-predictable-revenue/package.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
+        "plugins/business-tools/wondelai-traction-eos/.source.json",
+        "plugins/business-tools/wondelai-traction-eos/package.json",
+        "plugins/community/ejentum-anti-deception/.source.json",
+        "plugins/community/ejentum-anti-deception/package.json",
+        "plugins/community/ejentum-code/.source.json",
+        "plugins/community/ejentum-code/package.json",
+        "plugins/community/ejentum-memory/.source.json",
+        "plugins/community/ejentum-memory/package.json",
+        "plugins/community/ejentum-reasoning/.source.json",
+        "plugins/community/ejentum-reasoning/package.json",
+        "plugins/community/gastown/.source.json",
+        "plugins/community/gastown/package.json",
+        "plugins/community/hermes-tweet/.source.json",
+        "plugins/community/hermes-tweet/package.json",
+        "plugins/community/llm-box/.source.json",
+        "plugins/community/llm-box/package.json",
+        "plugins/community/mnemos/.source.json",
+        "plugins/community/mnemos/package.json",
+        "plugins/community/portaljs/.source.json",
+        "plugins/community/portaljs/package.json",
+        "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/quit-sponsor/package.json",
+        "plugins/community/skills-janitor/.source.json",
+        "plugins/community/skills-janitor/package.json",
+        "plugins/community/walkie-talkie/.source.json",
+        "plugins/community/walkie-talkie/package.json",
+        "plugins/community/zai-cli/.source.json",
+        "plugins/community/zai-cli/package.json",
+        "plugins/crypto/aomi/.source.json",
+        "plugins/crypto/aomi/package.json",
+        "plugins/design/brand-forge/.source.json",
+        "plugins/design/brand-forge/package.json",
+        "plugins/design/wondelai-design-everyday-things/.source.json",
+        "plugins/design/wondelai-design-everyday-things/package.json",
+        "plugins/design/wondelai-hooked-ux/.source.json",
+        "plugins/design/wondelai-hooked-ux/package.json",
+        "plugins/design/wondelai-ios-hig-design/.source.json",
+        "plugins/design/wondelai-ios-hig-design/package.json",
+        "plugins/design/wondelai-refactoring-ui/.source.json",
+        "plugins/design/wondelai-refactoring-ui/package.json",
+        "plugins/design/wondelai-top-design/.source.json",
+        "plugins/design/wondelai-top-design/package.json",
+        "plugins/design/wondelai-ux-heuristics/.source.json",
+        "plugins/design/wondelai-ux-heuristics/package.json",
+        "plugins/design/wondelai-web-typography/.source.json",
+        "plugins/design/wondelai-web-typography/package.json",
+        "plugins/devops/sugar/.source.json",
+        "plugins/devops/sugar/package.json",
+        "plugins/mcp/dolt-mcp-vcs/.source.json",
+        "plugins/mcp/dolt-mcp-vcs/package.json",
+        "plugins/mcp/governed-second-brain/.source.json",
+        "plugins/mcp/governed-second-brain/package.json",
+        "plugins/mcp/pr-to-spec/.source.json",
+        "plugins/mcp/pr-to-spec/package.json",
+        "plugins/mcp/servicegraph/.source.json",
+        "plugins/mcp/servicegraph/package.json",
+        "plugins/mcp/slack-channel/.source.json",
+        "plugins/mcp/slack-channel/package.json",
+        "plugins/mcp/x-bug-triage/.source.json",
+        "plugins/mcp/x-bug-triage/package.json",
+        "plugins/productivity/box-cloud-filesystem/.source.json",
+        "plugins/productivity/box-cloud-filesystem/package.json",
+        "plugins/productivity/claude-workflow-skills/.source.json",
+        "plugins/productivity/claude-workflow-skills/package.json",
+        "plugins/productivity/claudebase/.source.json",
+        "plugins/productivity/claudebase/package.json",
+        "plugins/productivity/cli-power-skills/.source.json",
+        "plugins/productivity/cli-power-skills/package.json",
+        "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/content-multiplier/package.json",
+        "plugins/productivity/obsidian-project-documentation/.source.json",
+        "plugins/productivity/obsidian-project-documentation/package.json",
+        "plugins/productivity/over-50s-health/.source.json",
+        "plugins/productivity/over-50s-health/package.json",
+        "plugins/productivity/pair-programmer/.source.json",
+        "plugins/productivity/pair-programmer/package.json",
+        "plugins/productivity/publishing-skills/.source.json",
+        "plugins/productivity/publishing-skills/package.json",
+        "plugins/productivity/schedule-after-usage-reset/.source.json",
+        "plugins/productivity/schedule-after-usage-reset/package.json",
+        "plugins/productivity/skyvern/.source.json",
+        "plugins/productivity/skyvern/package.json",
+        "plugins/productivity/wondelai-design-sprint/.source.json",
+        "plugins/productivity/wondelai-design-sprint/package.json",
+        "plugins/productivity/wondelai-lean-startup/.source.json",
+        "plugins/productivity/wondelai-lean-startup/package.json",
+        "plugins/testing/cli-ux-tester/.source.json",
+        "plugins/testing/cli-ux-tester/package.json",
+        "plugins/testing/kobiton-automate/.source.json",
+        "plugins/testing/kobiton-automate/package.json"
+      ],
+      "status": "partial",
+      "values": {
+        "non_private": [],
+        "private_packages": 63,
+        "repository_package_mirrors": 63,
+        "scoped_packages": 58,
+        "target_publishable": 0
+      }
+    },
+    "31": {
+      "cohort": "local repository publication boundaries for provenance-marked package mirrors",
+      "dimension": "Independent boundaries preventing mirror publication",
+      "reproduce": "pnpm run measure:e1 --row=31 --stdout",
+      "source": [
+        ".github/workflows/cli-publish.yml",
+        ".github/workflows/publish-all-packages.yml",
+        ".github/workflows/publish-changed-packages.yml",
+        "plugins/ai-agency/hyperflow/.source.json",
+        "plugins/ai-agency/hyperflow/package.json",
+        "plugins/ai-agency/tonone/.source.json",
+        "plugins/ai-agency/tonone/package.json",
+        "plugins/api-development/x-twitter-scraper/.source.json",
+        "plugins/api-development/x-twitter-scraper/package.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
+        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
+        "plugins/business-tools/wondelai-contagious/.source.json",
+        "plugins/business-tools/wondelai-contagious/package.json",
+        "plugins/business-tools/wondelai-cro-methodology/.source.json",
+        "plugins/business-tools/wondelai-cro-methodology/package.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
+        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
+        "plugins/business-tools/wondelai-drive-motivation/.source.json",
+        "plugins/business-tools/wondelai-drive-motivation/package.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
+        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
+        "plugins/business-tools/wondelai-influence-psychology/.source.json",
+        "plugins/business-tools/wondelai-influence-psychology/package.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
+        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
+        "plugins/business-tools/wondelai-made-to-stick/.source.json",
+        "plugins/business-tools/wondelai-made-to-stick/package.json",
+        "plugins/business-tools/wondelai-negotiation/.source.json",
+        "plugins/business-tools/wondelai-negotiation/package.json",
+        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
+        "plugins/business-tools/wondelai-obviously-awesome/package.json",
+        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
+        "plugins/business-tools/wondelai-one-page-marketing/package.json",
+        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
+        "plugins/business-tools/wondelai-predictable-revenue/package.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
+        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
+        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
+        "plugins/business-tools/wondelai-traction-eos/.source.json",
+        "plugins/business-tools/wondelai-traction-eos/package.json",
+        "plugins/community/ejentum-anti-deception/.source.json",
+        "plugins/community/ejentum-anti-deception/package.json",
+        "plugins/community/ejentum-code/.source.json",
+        "plugins/community/ejentum-code/package.json",
+        "plugins/community/ejentum-memory/.source.json",
+        "plugins/community/ejentum-memory/package.json",
+        "plugins/community/ejentum-reasoning/.source.json",
+        "plugins/community/ejentum-reasoning/package.json",
+        "plugins/community/gastown/.source.json",
+        "plugins/community/gastown/package.json",
+        "plugins/community/hermes-tweet/.source.json",
+        "plugins/community/hermes-tweet/package.json",
+        "plugins/community/llm-box/.source.json",
+        "plugins/community/llm-box/package.json",
+        "plugins/community/mnemos/.source.json",
+        "plugins/community/mnemos/package.json",
+        "plugins/community/portaljs/.source.json",
+        "plugins/community/portaljs/package.json",
+        "plugins/community/quit-sponsor/.source.json",
+        "plugins/community/quit-sponsor/package.json",
+        "plugins/community/skills-janitor/.source.json",
+        "plugins/community/skills-janitor/package.json",
+        "plugins/community/walkie-talkie/.source.json",
+        "plugins/community/walkie-talkie/package.json",
+        "plugins/community/zai-cli/.source.json",
+        "plugins/community/zai-cli/package.json",
+        "plugins/crypto/aomi/.source.json",
+        "plugins/crypto/aomi/package.json",
+        "plugins/design/brand-forge/.source.json",
+        "plugins/design/brand-forge/package.json",
+        "plugins/design/wondelai-design-everyday-things/.source.json",
+        "plugins/design/wondelai-design-everyday-things/package.json",
+        "plugins/design/wondelai-hooked-ux/.source.json",
+        "plugins/design/wondelai-hooked-ux/package.json",
+        "plugins/design/wondelai-ios-hig-design/.source.json",
+        "plugins/design/wondelai-ios-hig-design/package.json",
+        "plugins/design/wondelai-refactoring-ui/.source.json",
+        "plugins/design/wondelai-refactoring-ui/package.json",
+        "plugins/design/wondelai-top-design/.source.json",
+        "plugins/design/wondelai-top-design/package.json",
+        "plugins/design/wondelai-ux-heuristics/.source.json",
+        "plugins/design/wondelai-ux-heuristics/package.json",
+        "plugins/design/wondelai-web-typography/.source.json",
+        "plugins/design/wondelai-web-typography/package.json",
+        "plugins/devops/sugar/.source.json",
+        "plugins/devops/sugar/package.json",
+        "plugins/mcp/dolt-mcp-vcs/.source.json",
+        "plugins/mcp/dolt-mcp-vcs/package.json",
+        "plugins/mcp/governed-second-brain/.source.json",
+        "plugins/mcp/governed-second-brain/package.json",
+        "plugins/mcp/pr-to-spec/.source.json",
+        "plugins/mcp/pr-to-spec/package.json",
+        "plugins/mcp/servicegraph/.source.json",
+        "plugins/mcp/servicegraph/package.json",
+        "plugins/mcp/slack-channel/.source.json",
+        "plugins/mcp/slack-channel/package.json",
+        "plugins/mcp/x-bug-triage/.source.json",
+        "plugins/mcp/x-bug-triage/package.json",
+        "plugins/productivity/box-cloud-filesystem/.source.json",
+        "plugins/productivity/box-cloud-filesystem/package.json",
+        "plugins/productivity/claude-workflow-skills/.source.json",
+        "plugins/productivity/claude-workflow-skills/package.json",
+        "plugins/productivity/claudebase/.source.json",
+        "plugins/productivity/claudebase/package.json",
+        "plugins/productivity/cli-power-skills/.source.json",
+        "plugins/productivity/cli-power-skills/package.json",
+        "plugins/productivity/content-multiplier/.source.json",
+        "plugins/productivity/content-multiplier/package.json",
+        "plugins/productivity/obsidian-project-documentation/.source.json",
+        "plugins/productivity/obsidian-project-documentation/package.json",
+        "plugins/productivity/over-50s-health/.source.json",
+        "plugins/productivity/over-50s-health/package.json",
+        "plugins/productivity/pair-programmer/.source.json",
+        "plugins/productivity/pair-programmer/package.json",
+        "plugins/productivity/publishing-skills/.source.json",
+        "plugins/productivity/publishing-skills/package.json",
+        "plugins/productivity/schedule-after-usage-reset/.source.json",
+        "plugins/productivity/schedule-after-usage-reset/package.json",
+        "plugins/productivity/skyvern/.source.json",
+        "plugins/productivity/skyvern/package.json",
+        "plugins/productivity/wondelai-design-sprint/.source.json",
+        "plugins/productivity/wondelai-design-sprint/package.json",
+        "plugins/productivity/wondelai-lean-startup/.source.json",
+        "plugins/productivity/wondelai-lean-startup/package.json",
+        "plugins/testing/cli-ux-tester/.source.json",
+        "plugins/testing/cli-ux-tester/package.json",
+        "plugins/testing/kobiton-automate/.source.json",
+        "plugins/testing/kobiton-automate/package.json",
+        "scripts/plugin-provenance.mjs",
+        "scripts/publish-candidate-report.mjs"
+      ],
+      "status": "measured",
+      "values": {
+        "boundaries_live": 2,
+        "mirror_capable_publishers": [
+          ".github/workflows/publish-all-packages.yml",
+          ".github/workflows/publish-changed-packages.yml"
+        ],
+        "package_private_boundary": true,
+        "publisher_provenance_boundary": true,
+        "target_boundaries": 2
+      }
+    },
+    "32": {
+      "cohort": "tracked npm publishing workflows",
+      "dimension": "Gate dependencies on the publish path",
+      "limitations": [
+        "GitHub Environment reviewer, bypass, and secret settings are not committed repository state"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=32 --stdout",
+      "source": [
+        ".github/workflows/cli-publish.yml",
+        ".github/workflows/publish-all-packages.yml",
+        ".github/workflows/publish-changed-packages.yml"
+      ],
+      "status": "partial",
+      "values": {
+        "changed_publisher_workflow_run": true,
+        "exact_sha_preflight_all_publishers": true,
+        "npm_production_declared_all_publishers": true,
+        "publishers": 3,
+        "required_locks": 3
+      }
+    },
+    "33": {
+      "cohort": "tag and GitHub-release operations after npm publication in the changed-package publisher",
+      "dimension": "Release-path failures swallowed as warnings",
+      "reproduce": "pnpm run measure:e1 --row=33 --stdout",
+      "source": [".github/workflows/publish-changed-packages.yml"],
+      "status": "measured",
+      "values": {
+        "swallowed_operations": ["tag_create", "tag_push", "github_release"],
+        "swallowed_total": 3,
+        "target": 0
+      }
+    },
+    "34": {
+      "cohort": "tracked release workflow inputs and validation conditions",
+      "dimension": "release.yml skip_tests bypass",
+      "reproduce": "pnpm run measure:e1 --row=34 --stdout",
+      "source": [".github/workflows/release.yml"],
+      "status": "measured",
+      "values": {
+        "skip_tests_bypass_present": true,
+        "target_present": false
+      }
+    },
+    "35": {
+      "cohort": "tracked SPDX/CycloneDX or explicitly named SBOM files",
+      "dimension": "Software bills of materials",
+      "reproduce": "pnpm run measure:e1 --row=35 --stdout",
+      "source": [],
+      "status": "measured",
+      "values": {
+        "sboms": 0,
+        "target_minimum": 15
+      }
+    },
+    "36": {
+      "cohort": "tracked privileged workflows",
+      "dimension": "Third-party actions on mutable tags in privileged workflows",
+      "reason_code": "MISSING_PRIVILEGED_WORKFLOW_POLICY",
+      "reproduce": "pnpm run measure:e1 --row=36 --stdout",
+      "required_inputs": [
+        "machine-readable privileged-workflow definition",
+        "trusted-action pin policy"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "37": {
+      "cohort": "tracked .github Dependabot configuration",
+      "dimension": "Dependabot configuration",
+      "reproduce": "pnpm run measure:e1 --row=37 --stdout",
+      "source": [],
+      "status": "measured",
+      "values": {
+        "present": false,
+        "target_present": true
+      }
+    },
+    "38": {
+      "cohort": "locally pinned root package dependencies",
+      "dimension": "Kernel, eval CLI, and harness pins",
+      "limitations": [
+        "local exactness is measured; latest versions and staleness are not inferred without a registry or clock"
+      ],
+      "reason_code": "EXTERNAL_PACKAGE_REGISTRY_STATE_NOT_COMMITTED",
+      "reproduce": "pnpm run measure:e1 --row=38 --stdout",
+      "required_inputs": ["versioned package-registry metadata snapshot"],
+      "source": ["package.json"],
+      "status": "partial",
+      "values": {
+        "pins": {
+          "@intentsolutions/audit-harness": {
+            "exact": false,
+            "version": "^1.3.1"
+          },
+          "@intentsolutions/core": {
+            "exact": true,
+            "version": "0.9.0"
+          },
+          "@intentsolutions/jrig-cli": {
+            "exact": true,
+            "version": "0.1.2"
+          }
+        },
+        "published_latest_versions": null
+      }
+    },
+    "39": {
+      "cohort": "kernel shadow output",
+      "dimension": "Kernel shadow report",
+      "reason_code": "KERNEL_SHADOW_REPORT_NOT_TRACKED",
+      "reproduce": "pnpm run measure:e1 --row=39 --stdout",
+      "required_inputs": [
+        "deterministic tracked shadow report generated at the current kernel pin"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "40": {
+      "cohort": "tracked workflow command lines invoking the canonical validator with --marketplace",
+      "dimension": "Marketplace-tier validator runs that block a merge",
+      "limitations": ["static workflow analysis does not execute GitHub expression control flow"],
+      "reproduce": "pnpm run measure:e1 --row=40 --stdout",
+      "source": [".github/workflows/minimax-review.yml", ".github/workflows/promote-curated.yml"],
+      "status": "partial",
+      "values": {
+        "blocking_candidates": 0,
+        "invocations": [
+          {
+            "blocking_candidate": false,
+            "line": 247,
+            "path": ".github/workflows/minimax-review.yml"
+          },
+          {
+            "blocking_candidate": false,
+            "line": 90,
+            "path": ".github/workflows/promote-curated.yml"
+          }
+        ],
+        "target_blocking": 1
+      }
+    },
+    "41": {
+      "cohort": "ci-required needs list in validate-plugins.yml",
+      "dimension": "ci-required needs documented versus actual",
+      "reason_code": "MISSING_MACHINE_READABLE_DOCUMENTED_NEEDS_LIST",
+      "reproduce": "pnpm run measure:e1 --row=41 --stdout",
+      "required_inputs": ["one machine-readable documented ci-required needs list"],
+      "source": [".github/workflows/validate-plugins.yml"],
+      "status": "partial",
+      "values": {
+        "actual_needs": [
+          "validate",
+          "verify",
+          "test",
+          "check-package-manager",
+          "marketplace-validation",
+          "cli-smoke-tests",
+          "shellcheck-skills",
+          "skill-codeblock-syntax",
+          "typescript-coverage-audit",
+          "eslint-check",
+          "format-check",
+          "ruff-check",
+          "ruff-format-check",
+          "markdownlint",
+          "scan-synced-content",
+          "promote-curated-check",
+          "check-submission-docs",
+          "commit-scope-check",
+          "codeowners-drift",
+          "doc-governance"
+        ],
+        "actual_needs_count": 20,
+        "documented_needs": null
+      }
+    },
+    "42": {
+      "cohort": "runtime schema constant and active schema banners",
+      "dimension": "Documented schema version",
+      "reproduce": "pnpm run measure:e1 --row=42 --stdout",
+      "source": [
+        "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
+        "CLAUDE.md",
+        "scripts/validate-skills-schema.py"
+      ],
+      "status": "measured",
+      "values": {
+        "all_equal": true,
+        "documented": [
+          {
+            "path": "CLAUDE.md",
+            "version": "4.0.0"
+          },
+          {
+            "path": "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
+            "version": "4.0.0"
+          }
+        ],
+        "runtime": "4.0.0"
+      }
+    },
+    "43": {
+      "cohort": "effective top-level authority declarations in tracked 000-docs Markdown and STANDARDS links",
+      "dimension": "Canonical document authority links",
+      "reproduce": "pnpm run measure:e1 --row=43 --stdout",
+      "source": [
+        ".github/CONTRIBUTING.md",
+        ".github/SECURITY.md",
+        "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
+        "000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md",
+        "000-docs/700-DR-GUID-skill-submission-standard.md",
+        "000-docs/709-DR-GUID-reviewing-external-prs.md",
+        "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+        "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
+        "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+        "000-docs/SCHEMA_CHANGELOG.md",
+        "STANDARDS.md"
+      ],
+      "status": "measured",
+      "values": {
+        "authority_links": [
+          ".github/CONTRIBUTING.md",
+          ".github/SECURITY.md",
+          "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
+          "000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md",
+          "000-docs/700-DR-GUID-skill-submission-standard.md",
+          "000-docs/709-DR-GUID-reviewing-external-prs.md",
+          "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
+          "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
+          "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+          "000-docs/SCHEMA_CHANGELOG.md"
+        ],
+        "canonical_table_links": 10,
+        "declared": 2,
+        "linked_declared": 2,
+        "target_unlinked": 0,
+        "unlinked": []
+      }
+    },
+    "44": {
+      "cohort": "tracked 000-docs estate excluding the generated index and filing ignore ledger",
+      "dimension": "Documentation index entries versus tracked documents",
+      "reproduce": "pnpm run measure:e1 --row=44 --stdout",
+      "source": ["000-docs/000-INDEX.md"],
+      "status": "measured",
+      "values": {
+        "index_entries": 182,
+        "missing_from_index": [],
+        "target_equal": true,
+        "tracked_documents": 182,
+        "untracked_index_entries": []
+      }
+    },
+    "45": {
+      "cohort": "tracked workflows invoking the prose-anchor checker or its regression suite",
+      "dimension": "Prose-anchor checker in CI",
+      "reproduce": "pnpm run measure:e1 --row=45 --stdout",
+      "source": [".github/workflows/validate-plugins.yml"],
+      "status": "measured",
+      "values": {
+        "target_workflows": 1,
+        "workflows": 1
+      }
+    },
+    "46": {
+      "cohort": "tracked paths matching the gitleaks path allowlist",
+      "dimension": "Tracked files invisible to gitleaks",
+      "reproduce": "pnpm run measure:e1 --row=46 --stdout",
+      "source": [".gitleaks.toml"],
+      "status": "measured",
+      "values": {
+        "allowlist_patterns": 25,
+        "invalid_patterns": 0,
+        "invisible_files": 15499,
+        "target_invisible_files": 0,
+        "tracked_files": 23009
+      }
+    },
+    "47": {
+      "cohort": "tracked workflows invoking TruffleHog",
+      "dimension": "Blocking pull-request scan for unverifiable secrets",
+      "limitations": [
+        "required-status topology is external; this scan proves only committed trigger and flag configuration"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=47 --stdout",
+      "source": [".github/workflows/secret-scan.yml", ".github/workflows/validate-plugins.yml"],
+      "status": "partial",
+      "values": {
+        "blocking_unverifiable_pr_scans": 1,
+        "invocations": [
+          {
+            "only_verified": true,
+            "path": ".github/workflows/secret-scan.yml",
+            "pull_request": true
+          },
+          {
+            "only_verified": false,
+            "path": ".github/workflows/validate-plugins.yml",
+            "pull_request": true
+          }
+        ],
+        "target_blocking": 1
+      }
+    },
+    "48": {
+      "cohort": "supply-chain scanner configuration in the canonical validation workflow",
+      "dimension": "Supply-chain scan coverage on push to main",
+      "limitations": [
+        "static workflow evidence cannot prove runtime scanner coverage without a registered scanner job contract"
+      ],
+      "reproduce": "pnpm run measure:e1 --row=48 --stdout",
+      "source": [".github/workflows/validate-plugins.yml"],
+      "status": "partial",
+      "values": {
+        "push_trigger_present": true,
+        "scanner_mentions": 4,
+        "scanner_pr_only_guard_present": true
+      }
+    },
+    "49": {
+      "cohort": null,
+      "dimension": "MCP destructive policy and refusal tests",
+      "reason_code": "MISSING_MCP_DESTRUCTIVE_POLICY_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=49 --stdout",
+      "required_inputs": [
+        "MCP plugin inventory",
+        "destructive-operation policy field",
+        "refusal-test registry"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "50": {
+      "cohort": null,
+      "dimension": "Unbounded correctness swallows",
+      "reason_code": "MISSING_CORRECTNESS_CRITICAL_COMMAND_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=50 --stdout",
+      "required_inputs": [
+        "registry distinguishing bounded cleanup from correctness-critical failure swallowing"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "51": {
+      "cohort": null,
+      "dimension": "Safety claims mapped to an enforcement boundary",
+      "reason_code": "MISSING_SAFETY_CLAIM_BOUNDARY_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=51 --stdout",
+      "required_inputs": ["stable safety claim IDs", "claim-to-enforcement-boundary relationships"],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "52": {
+      "cohort": null,
+      "dimension": "Inventory header versus rows",
+      "reason_code": "MISSING_COMMITTED_INVENTORY_RUN_ROWS",
+      "reproduce": "pnpm run measure:e1 --row=52 --stdout",
+      "required_inputs": [
+        "versioned discovery-run headers and row aggregates from the same database snapshot"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "53": {
+      "cohort": null,
+      "dimension": "Tracked export lag",
+      "reason_code": "MISSING_COMMITTED_LIVE_INVENTORY_HEAD",
+      "reproduce": "pnpm run measure:e1 --row=53 --stdout",
+      "required_inputs": ["versioned latest database run ID", "versioned latest export run ID"],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "54": {
+      "cohort": null,
+      "dimension": "Forge proofs",
+      "reason_code": "MISSING_COMMITTED_FORGE_PROOF_LEDGER",
+      "reproduce": "pnpm run measure:e1 --row=54 --stdout",
+      "required_inputs": [
+        "versioned forge_proofs rows",
+        "proof schema with class, hash, and foreign key"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "55": {
+      "cohort": null,
+      "dimension": "Retained primary evaluation artifacts",
+      "reason_code": "MISSING_RETAINED_PRIMARY_EVAL_ARTIFACTS",
+      "reproduce": "pnpm run measure:e1 --row=55 --stdout",
+      "required_inputs": [
+        "versioned E2/E3 proof denominator",
+        "hash-linked retained primary artifacts"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "56": {
+      "cohort": "verified:true fields in tracked public marketplace data",
+      "dimension": "Public verified claims with backing",
+      "limitations": [
+        "a boolean verified field is not evidence that a retained backing artifact exists"
+      ],
+      "reason_code": "MISSING_HASH_LINKED_PUBLIC_CLAIM_CONTRACT",
+      "reproduce": "pnpm run measure:e1 --row=56 --stdout",
+      "required_inputs": ["claim-to-primary-artifact hash field", "consumer-page registry"],
+      "source": ["marketplace/src/data/jrig-data.json"],
+      "status": "partial",
+      "values": {
+        "backing_verified": null,
+        "public_verified_claims": 1
+      }
+    },
+    "57": {
+      "cohort": "tracked plugin eval-spec.yaml files divided by tracked plugin SKILL.md validator rows",
+      "dimension": "eval-spec.yaml source adoption",
+      "reproduce": "pnpm run measure:e1 --row=57 --stdout",
+      "source": [
+        "plugins/productivity/intent-labs-pack/skills/audit-tests/eval-spec.yaml",
+        "plugins/productivity/intent-labs-pack/skills/validate-skillmd/eval-spec.yaml",
+        "plugins/saas-packs/coreweave-pack/skills/coreweave-fabric-diagnostics/eval-spec.yaml",
+        "plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-cost-leak-hunter/eval-spec.yaml",
+        "plugins/saas-packs/coreweave-pack/skills/coreweave-gpu-node-forensics/eval-spec.yaml",
+        "plugins/saas-packs/databricks-pack/skills/databricks-bundle-medic/eval-spec.yaml",
+        "plugins/saas-packs/databricks-pack/skills/databricks-cluster-forensics/eval-spec.yaml",
+        "plugins/saas-packs/databricks-pack/skills/databricks-cost-leak-hunter/eval-spec.yaml",
+        "plugins/saas-packs/databricks-pack/skills/databricks-streaming-guardian/eval-spec.yaml",
+        "plugins/saas-packs/databricks-pack/skills/databricks-uc-migration-pilot/eval-spec.yaml",
+        "plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/eval-spec.yaml",
+        "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
+        "plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml",
+        "plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml",
+        "skills/.curated/coreweave-fabric-diagnostics/eval-spec.yaml",
+        "skills/.curated/coreweave-gpu-cost-leak-hunter/eval-spec.yaml",
+        "skills/.curated/coreweave-gpu-node-forensics/eval-spec.yaml",
+        "skills/.curated/databricks-bundle-medic/eval-spec.yaml",
+        "skills/.curated/databricks-cluster-forensics/eval-spec.yaml",
+        "skills/.curated/databricks-cost-leak-hunter/eval-spec.yaml",
+        "skills/.curated/databricks-streaming-guardian/eval-spec.yaml",
+        "skills/.curated/databricks-uc-migration-pilot/eval-spec.yaml",
+        "skills/.curated/hubspot-warehouse-sync/eval-spec.yaml",
+        "skills/.curated/sentry-data-handling/eval-spec.yaml",
+        "skills/.curated/skill-creator/eval-spec.yaml",
+        "skills/.curated/supabase-known-pitfalls/eval-spec.yaml"
+      ],
+      "status": "measured",
+      "values": {
+        "adoption_percent": 0.44,
+        "curated_copies": 12,
+        "plugin_skill_rows": 3179,
+        "source_eval_specs": 14,
+        "tracked_eval_specs": 26
+      }
+    },
+    "58": {
+      "cohort": "tracked Freshie tests",
+      "dimension": "Freshie test shape",
+      "reason_code": "MISSING_HERMETIC_E2E_TEST_CONTRACT",
+      "reproduce": "pnpm run measure:e1 --row=58 --stdout",
+      "required_inputs": [
+        "registered scratch-database end-to-end scenario and its expected lifecycle assertions"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "59": {
+      "cohort": "tracked Dolt sync writer and its focused tests",
+      "dimension": "Single-writer enforcement on Dolt",
+      "reproduce": "pnpm run measure:e1 --row=59 --stdout",
+      "source": ["freshie/scripts/dolt-sync.py", "tests/test_dolt_sync.py"],
+      "status": "measured",
+      "values": {
+        "nonblocking_flock": true,
+        "refusal_tests": 1,
+        "server_lock_refusal": true,
+        "target_mechanical_refusal": true
+      }
+    },
+    "60": {
+      "cohort": null,
+      "dimension": "Artifacts meeting G1-G10 and E1-E6",
+      "reason_code": "MISSING_CERTIFICATION_RECORD_SCHEMA",
+      "reproduce": "pnpm run measure:e1 --row=60 --stdout",
+      "required_inputs": [
+        "G1-G10 and E1-E6 certification schema",
+        "signed artifact evidence records"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "61": {
+      "cohort": null,
+      "dimension": "Open GitHub issues labeled epic",
+      "reason_code": "EXTERNAL_GITHUB_STATE_NOT_COMMITTED",
+      "reproduce": "pnpm run measure:e1 --row=61 --stdout",
+      "required_inputs": [
+        "versioned GitHub epic projection snapshot",
+        "open Bead epic-cluster denominator"
+      ],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    },
+    "62": {
+      "cohort": null,
+      "dimension": "Open launch-blocking legal and provenance items",
+      "reason_code": "MISSING_COMMITTED_DISPOSITION_REGISTRY",
+      "reproduce": "pnpm run measure:e1 --row=62 --stdout",
+      "required_inputs": ["launch-blocker registry", "owner identity", "signed disposition state"],
+      "source": [],
+      "status": "not_reproducible",
+      "values": null
+    }
+  },
+  "schema_version": 2
+}

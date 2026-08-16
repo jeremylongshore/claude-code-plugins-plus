@@ -14,6 +14,8 @@
     "sync-marketplace": "node scripts/sync-marketplace.cjs && node scripts/generate-plugin-package-jsons.mjs && node scripts/generate-readme-toc.mjs",
     "sync-marketplace:json-only": "node scripts/sync-marketplace.cjs",
     "build-cowork": "node scripts/build-cowork-zips.mjs",
+    "measure:e1": "node scripts/measure-epic-1.mjs",
+    "measure:e1:check": "node scripts/measure-epic-1.mjs --check",
     "update-metrics": "node scripts/update-metrics.mjs",
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
