@@ -16,11 +16,11 @@ Epic 1 measurements now come from one deterministic command over an immutable Gi
 `pnpm run measure:e1:check` fails when executable inputs or the artifact drift. Facts without
 committed evidence remain null with explicit `not_reproducible` or `partial` reason codes.
 
-The [committed scorecard](742-RA-DATA-epic-1-scorecard.json) keeps unlike populations separate. At
-the reviewed head it measured 23,009 tracked paths, 3,179 plugin skills, 347 plugin-agent files, and
-3,679 graded skill rows. The graded cohort contains 962 failing A/B artifacts, 2,155 A/B errors, and
-7,433 total row errors. The separate marketplace-terminal cohort reports 7,687 findings over 4,405
-skill, command, and agent files.
+The [reviewed-head scorecard](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/e8894a4ef8054dc0807b6c9e2d240c827e45722d/000-docs/742-RA-DATA-epic-1-scorecard.json)
+keeps unlike populations separate. At that head it measured 23,009 tracked paths, 3,179 plugin
+skills, 347 plugin-agent files, and 3,679 graded skill rows. The graded cohort contains 962 failing
+A/B artifacts, 2,155 A/B errors, and 7,433 total row errors. The separate marketplace-terminal
+cohort reports 7,687 findings over 4,405 skill, command, and agent files.
 
 ## Before and after
 
@@ -38,8 +38,12 @@ does not collapse the five historical skill counts into one headline number.
 
 ## Verification and red proofs
 
-- Exact-head and post-merge `pnpm run measure:e1:check` exited zero and matched
-  [document 742](742-RA-DATA-epic-1-scorecard.json) byte-for-byte.
+- Exact-head and post-merge `pnpm run measure:e1:check` exited zero and matched the
+  [reviewed-head document 742](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/e8894a4ef8054dc0807b6c9e2d240c827e45722d/000-docs/742-RA-DATA-epic-1-scorecard.json)
+  byte-for-byte.
+- This filing added one tracked document. Harness regeneration changed only the expected live-tree
+  values: tracked paths 23,009 → 23,010, indexed documents 182 → 183, and ignore-policy invisible
+  files 15,499 → 15,500; the remaining scorecard values stayed byte-identical.
 - The focused measurement and authority suite passed 29/29 in the implementation checkout and an
   independent detached checkout.
 - Hostile fixtures refuse ignored or unstaged contamination, changed imported measurement modules,
@@ -62,8 +66,9 @@ files, reran the evidence, planted its own input-drift cases, and returned
 ## Bot review and merge topology
 
 Two exact-head MiniMax lanes passed. A later manual rerun incorrectly reported the 130,996-byte
-scorecard as absent because its review input was capped at 100,000 characters; Git, GitHub's PR-files
-API, and the [exact-head evidence record](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306753677)
+scorecard as absent. GitHub's PR-files response omitted the file's patch, and the action drops files
+without patches before applying its 100,000-character cap. Git's blob, GitHub's file inventory, and
+the [exact-head evidence record](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306753677)
 disproved the finding. Greptile was manually triggered at the reviewed SHA, but its only response was
 an expired-trial notice, so it supplied no findings and is not review evidence.
 
