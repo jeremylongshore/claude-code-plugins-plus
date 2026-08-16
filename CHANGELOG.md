@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-15 — generated documentation index)
+
+- **The documentation estate index is now generated and drift-gated.** A deterministic generator
+  builds `000-docs/000-INDEX.md` from Git's tracked documentation inventory, preserves archived and
+  non-Markdown artifacts, and fails the existing `doc-governance` job when any count, row, order, or
+  generator-owned reference text is stale.
+
 ### Added (2026-08-15 — document authority gate)
 
 - **Documents can no longer self-grant canonical authority.** The existing
