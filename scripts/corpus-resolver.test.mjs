@@ -247,6 +247,16 @@ test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
         }),
       /symbolic link/,
     );
+    const redirected = path.join(root, 'plugins', 'core', 'owned', 'skills', 'redirected');
+    fs.symlinkSync(externalDirectory, redirected);
+    assert.throws(
+      () =>
+        resolveCorpus('marketplace-visible', {
+          root,
+          paths: ['plugins/core/owned/skills/redirected/SKILL.md'],
+        }),
+      /symbolic link/,
+    );
   } finally {
     fs.rmSync(externalDirectory, { force: true, recursive: true });
     fs.rmSync(root, { force: true, recursive: true });
