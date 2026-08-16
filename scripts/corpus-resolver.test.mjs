@@ -45,9 +45,15 @@ function corpusFixture() {
     'plugins/community/orphan/skills/orphan/SKILL.md',
     'skills/01-foundations/alpha/SKILL.md',
     'skills/.curated/alpha/SKILL.md',
+    'skills/.curated/MANIFEST.json',
     'skills/.experimental/lab/SKILL.md',
   ];
-  for (const entry of paths) write(root, entry);
+  for (const entry of paths.filter((entry) => !entry.endsWith('MANIFEST.json'))) write(root, entry);
+  write(
+    root,
+    'skills/.curated/MANIFEST.json',
+    JSON.stringify({ count: 1, skills: [{ curated_name: 'alpha' }] }),
+  );
   source(root, 'plugins/community/mirror');
   return { root, paths };
 }
@@ -163,7 +169,7 @@ test('curated manifest drift fails closed', () => {
     () =>
       resolveCorpus('curated-mirror', {
         root,
-        paths: [...paths, 'skills/.curated/MANIFEST.json'],
+        paths,
       }),
     /manifest membership contradicts/,
   );
@@ -184,8 +190,20 @@ test('duplicate curated manifest rows cannot mask an omitted skill', () => {
     () =>
       resolveCorpus('curated-mirror', {
         root,
-        paths: [...paths, 'skills/.curated/beta/SKILL.md', 'skills/.curated/MANIFEST.json'],
+        paths: [...paths, 'skills/.curated/beta/SKILL.md'],
       }),
     /manifest membership contradicts/,
+  );
+});
+
+test('curated files without a tracked manifest fail closed', () => {
+  const { root, paths } = corpusFixture();
+  assert.throws(
+    () =>
+      resolveCorpus('curated-mirror', {
+        root,
+        paths: paths.filter((entry) => entry !== 'skills/.curated/MANIFEST.json'),
+      }),
+    /without a tracked MANIFEST/,
   );
 });

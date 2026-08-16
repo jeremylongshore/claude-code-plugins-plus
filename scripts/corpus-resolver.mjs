@@ -215,7 +215,10 @@ function firstParty(entries, root) {
 
 function curatedMirror(entries, root, inventory) {
   const files = entries.filter((entry) => entry.startsWith('skills/.curated/'));
-  if (!inventory.includes('skills/.curated/MANIFEST.json')) return files;
+  if (!inventory.includes('skills/.curated/MANIFEST.json')) {
+    if (files.length > 0) fail('curated-mirror files exist without a tracked MANIFEST.json');
+    return files;
+  }
 
   let manifest;
   try {
