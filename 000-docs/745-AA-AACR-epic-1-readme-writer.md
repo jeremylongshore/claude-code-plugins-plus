@@ -74,6 +74,12 @@ rises by one because the existing `^000-docs/.*\.md$` gitleaks pattern matches t
 AAR. The scorecard values were mechanically regenerated; these two populations are intentionally
 different.
 
+Generated-artifact receipt: after staging the filing-ledger entry and document 745,
+`node scripts/generate-docs-index.mjs` produced `000-docs/000-INDEX.md`, and
+`pnpm --silent run measure:e1` produced `000-docs/742-RA-DATA-epic-1-scorecard.json`. The committed
+bytes then passed `node scripts/generate-docs-index.mjs --check` and
+`pnpm --silent run measure:e1:check`; neither generated file was hand-edited.
+
 The broad local `pnpm test` command exposed an unchanged dependency-baseline defect: Vitest 2.1.9
 resolves Vite 7.3.3 through the root `vite >=6.4.2` override and the CLI suite fails before test
 collection. GitHub's authoritative CLI smoke and widened MCP/Python/validation suites passed. The
@@ -101,6 +107,4 @@ gate. No external rollback is required.
 ## Lesson and next gate
 
 A single-writer assertion is only as strong as its discovery denominator. Security and authority
-gates must search the complete governed population, then name narrow exclusions explicitly. Epic 1
-remains open; this AAR activates no later bead. The next Epic 1–3 slice must be re-ranked from the
-current merged `main` after `claude-hz8f.6` closes.
+gates must search the complete governed population, then name narrow exclusions explicitly.
