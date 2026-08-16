@@ -1450,6 +1450,13 @@ jobs:
           node --test scripts/check-doc-authority.test.mjs
           node scripts/check-doc-authority.mjs
 
+      # Supersession is one atomic record, not a status-only edit. Keep the
+      # frozen header, per-section disposition, and canonical pointer together.
+      - name: Check document supersession record template
+        run: |
+          node --test scripts/check-supersession-template.test.mjs
+          node scripts/check-supersession-template.mjs --all
+
       # The documentation estate index is a generated projection of Git's
       # tracked inventory; hand-edited counts or rows must never drift.
       - name: Check generated documentation index is current
