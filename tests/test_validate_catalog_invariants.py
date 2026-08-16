@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import subprocess
 import tempfile
 import unittest
@@ -61,6 +63,30 @@ class CatalogInvariantTests(unittest.TestCase):
             subprocess.run(["git", "-C", str(root), "add", "."], check=True)
 
             self.assertEqual(validator.tracked_catalog_shadows(root), [])
+
+    def test_main_refuses_tracked_catalog_shadow(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            catalog_dir = root / ".claude-plugin"
+            catalog_dir.mkdir()
+            extended = catalog_dir / "marketplace.extended.json"
+            synced = catalog_dir / "marketplace.json"
+            extended.write_text('{"plugins": []}')
+            synced.write_text('{"plugins": []}')
+            (catalog_dir / "marketplace.extended.json.backup").write_text("{}")
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+
+            validator.ROOT = root
+            validator.EXTENDED = extended
+            validator.SYNCED = synced
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                result = validator.main()
+
+            self.assertEqual(result, 1)
+            self.assertIn("tracked catalog shadow", output.getvalue())
 
 
 if __name__ == "__main__":

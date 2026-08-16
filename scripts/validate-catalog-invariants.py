@@ -31,11 +31,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 EXTENDED = ROOT / ".claude-plugin" / "marketplace.extended.json"
 SYNCED = ROOT / ".claude-plugin" / "marketplace.json"
-# STANDARDS.md § "The catalog: two files, one source of truth" owns this pair.
-CANONICAL_CATALOGS = {
-    ".claude-plugin/marketplace.extended.json",
-    ".claude-plugin/marketplace.json",
-}
+# Reuse the validator's pre-existing operational paths instead of copying the
+# STANDARDS.md canonical pair into a second literal list.
+CANONICAL_CATALOGS = {path.relative_to(ROOT).as_posix() for path in (EXTENDED, SYNCED)}
 
 
 def get_source(plugin: dict) -> str:
@@ -55,12 +53,13 @@ def fs_category(source: str) -> str | None:
     return None
 
 
-def tracked_catalog_shadows(root: Path = ROOT) -> list[str]:
+def tracked_catalog_shadows(root: Path | None = None) -> list[str]:
     """Return tracked catalog-shaped files under `.claude-plugin/` except the canonical pair.
 
     Git failure is deliberately fatal: without the tracked-file set this invariant
     cannot prove that a shadow is absent.
     """
+    root = ROOT if root is None else root
     result = subprocess.run(
         ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
         check=True,
