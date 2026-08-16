@@ -16,8 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (2026-08-15 — governed-brain MCP startup)
 
-- **`governed-second-brain` now completes a real MCP initialize handshake from a cold
-  local install.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
+- **`governed-second-brain` now provisions and probes all three pinned native modules before
+  MCP initialization.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
   lockfile, and native-dependency readiness probe so partial dependency sets cannot skip
   provisioning and fail before the initialize response. Its install guide, plugin and marketplace
   manifests, and bootstrap guidance now describe all three lockfile-pinned native modules accurately.
