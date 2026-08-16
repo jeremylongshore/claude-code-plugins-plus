@@ -2213,7 +2213,7 @@ def validate_agent(path: Path) -> Dict[str, Any]:
 
 
 def find_skill_files(root: Path) -> List[Path]:
-    """Return the canonical graded cohort from the shared resolver."""
+    """Return the canonical graded cohort; requires repository Node 20+ on PATH."""
     resolver = Path(__file__).resolve().parent / "corpus-resolver.mjs"
     result = subprocess.run(
         ["node", str(resolver), "--cohort", "graded", "--root", str(root), "--json"],

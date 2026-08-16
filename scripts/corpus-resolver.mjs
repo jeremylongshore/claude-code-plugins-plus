@@ -167,6 +167,9 @@ function isLegacySkill(entry) {
   return entry.startsWith('003-skills/') && entry.endsWith('/SKILL.md');
 }
 
+// Grading intentionally includes hidden harness adapter trees such as .codex/.
+// Visibility is a separate marketplace cohort rule; promotion remains safe by
+// intersecting graded paths with the provenance-derived first-party cohort.
 function isGradedSkill(entry) {
   if (!isPluginSkill(entry) && !isCurriculumSkill(entry) && !isLegacySkill(entry)) return false;
   const segments = entry.split('/');

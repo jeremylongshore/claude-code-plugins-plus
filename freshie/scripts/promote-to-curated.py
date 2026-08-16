@@ -123,6 +123,9 @@ def resolve_corpus(cohort: str) -> set[str]:
 def is_external_mirror(skill_path: str) -> bool:
     """True when ANY ancestor directory of the skill carries a `.source.json`.
 
+    Retained as a compatibility and regression-test helper after production
+    selection moved to the shared graded/first-party corpus intersection.
+
     Walking every ancestor — rather than only `_plugin_root()` — is load-bearing.
     `_plugin_root()` splits on `/skills/`, so a skill vendored at
     `plugins/<cat>/<plugin>/.codex/skills/<name>` yields `.../<plugin>/.codex`, which

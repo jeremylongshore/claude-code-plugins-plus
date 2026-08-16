@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
-/** Deterministic measurement harness for blueprint 727, Epic 1. */
+/**
+ * Deterministic measurement harness for blueprint 727, Epic 1.
+ *
+ * The package-level `measure:e1:check` command runs the resolver and harness
+ * fixture suites before invoking this module's artifact drift check.
+ */
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
