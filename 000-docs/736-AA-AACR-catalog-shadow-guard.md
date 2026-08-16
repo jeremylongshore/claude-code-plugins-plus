@@ -50,7 +50,9 @@ but no genuine independent second GitHub identity was available to submit it. Pl
 explicitly authorized an administrator bypass for PR #1196 after all executable and independent-review
 gates passed. The bypass was disclosed in the PR record; no branch rule or required status context was
 changed. This is a temporary review-topology compromise, not a substitute for the independent identity
-and machine-enforced no-self-approval work governed by Epic 10.
+and machine-enforced no-self-approval work governed by Epic 10. The owner authorization is also stored
+in the authoritative `claude-hz8f.1` Bead and cross-linked to the
+[PR disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196#issuecomment-5305161057).
 
 ## Scope and rollback
 
