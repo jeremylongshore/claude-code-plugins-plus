@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-15 — governed-brain MCP startup)
+
+- **`governed-second-brain` now completes a real MCP initialize handshake from a cold
+  local install.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
+  lockfile, and native-dependency readiness probe so partial dependency sets cannot skip
+  provisioning and fail before the initialize response. ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
 ### Added (2026-08-03/06 — site correctness gates)
 
 - **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`
