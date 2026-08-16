@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-08-15 — governed-brain v1.2.0)
+
+- **The governed-brain mirror now documents hybrid local search and provenance limits.**
+  Upstream v1.2.0 describes native FTS5 plus `qmd` reciprocal-rank fusion with a
+  freshness/category rerank, and makes explicit that authenticated origin proves where a
+  capture came from—not that its content is true. ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
+### Fixed (2026-08-15 — governed-brain MCP startup)
+
+- **`governed-second-brain` now provisions and probes all three pinned native modules before
+  MCP initialization.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
+  lockfile, and native-dependency readiness probe so partial dependency sets cannot skip
+  provisioning and fail before the initialize response. Its install guide, plugin and marketplace
+  manifests, and bootstrap guidance now describe all three lockfile-pinned native modules accurately.
+  ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
 ### Fixed (2026-08-15 — catalog source-of-truth protection)
 
 - **Tracked catalog shadows are forbidden.** The stale
