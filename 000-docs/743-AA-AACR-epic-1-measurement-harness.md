@@ -18,9 +18,10 @@ committed evidence remain null with explicit `not_reproducible` or `partial` rea
 
 The [reviewed-head scorecard](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/blob/e8894a4ef8054dc0807b6c9e2d240c827e45722d/000-docs/742-RA-DATA-epic-1-scorecard.json)
 keeps unlike populations separate. At that head it measured 23,009 tracked paths, 3,179 plugin
-skills, 347 plugin-agent files, and 3,679 graded skill rows. The graded cohort contains 962 failing
-A/B artifacts, 2,155 A/B errors, and 7,433 total row errors. The separate marketplace-terminal
-cohort reports 7,687 findings over 4,405 skill, command, and agent files.
+skills, and 347 plugin-agent files (row 1). Row 4's `skill_rows` and the
+`graded_artifact_cohort` report 3,679 graded rows, 962 failing A/B artifacts, 2,155 A/B errors, and
+7,433 total row errors. Row 4's separate `marketplace_terminal` cohort reports 7,687 findings over
+4,405 skill, command, and agent files.
 
 ## Before and after
 
@@ -66,16 +67,20 @@ files, reran the evidence, planted its own input-drift cases, and returned
 
 ## Bot review and merge topology
 
-Two exact-head MiniMax lanes passed. A later manual rerun incorrectly reported the 130,996-byte
+The [exact-head MiniMax review](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306380614)
+and [adversarial lane](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306374033)
+passed. A later manual rerun incorrectly reported the 130,996-byte
 scorecard as absent. GitHub's PR-files response omitted the file's patch, and the action drops files
 without patches before applying its 100,000-character cap. Git's blob, GitHub's file inventory, and
 the [exact-head evidence record](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306753677)
-disproved the finding. Greptile was manually triggered at the reviewed SHA, but its only response was
-an expired-trial notice, so it supplied no findings and is not review evidence.
+disproved the finding. [Greptile was manually triggered at the reviewed SHA](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#pullrequestreview-4945869399),
+but its only response was an expired-trial notice, so it supplied no findings and is not review
+evidence.
 
 GitHub still required a human approval after executable and independent review passed. The platform
-owner authorized an administrator bypass for that review-topology gap. The bypass was disclosed on
-PR #1208 and changed no branch rule, required context, workflow gate, or reviewer policy.
+owner authorized an administrator bypass for that review-topology gap. The
+[one-time bypass was disclosed on PR #1208](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1208#issuecomment-5306812695);
+it modified no standing branch rule, required context, workflow gate, or review rule.
 
 ## Scope and rollback
 
