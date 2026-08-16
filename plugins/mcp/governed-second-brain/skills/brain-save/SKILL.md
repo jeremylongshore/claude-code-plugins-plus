@@ -140,6 +140,12 @@ you need to prove the record wasn't altered.
 
 ## Guardrails
 
+- **Origin tokens prove WHERE a capture came from — not that it is true.** Captures carry an HMAC
+  origin token bound to (candidate id, tenant, capture time) under the installation secret, and govern
+  rejects a forged claim before promotion (`origin_token_invalid`, receipted). But an AUTHENTICATED
+  insider — anyone holding a valid team token and/or the origin secret — can still save poisoned
+  content with a perfectly valid origin. The mitigations for content poisoning are the deterministic
+  govern policy, human review of the inbox/quarantine queues, and supersession — not the token.
 - Never save content containing secrets, tokens, or credentials.
 - `reason` on a retire must be a real, human-readable justification — it lands in the permanent audit
   trail.
