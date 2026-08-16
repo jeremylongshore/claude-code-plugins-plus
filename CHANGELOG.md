@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-15 — catalog source-of-truth protection)
+
+- **Tracked catalog shadows are forbidden.** The stale
+  `.claude-plugin/marketplace.extended.json.backup` copy is removed, and the catalog
+  invariant validator now fails closed if any additional tracked `marketplace*.json*`
+  variant appears beside the two canonical catalogs. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
+
 ### Added (2026-08-03/06 — site correctness gates)
 
 - **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`

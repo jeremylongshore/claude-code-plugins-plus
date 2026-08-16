@@ -51,6 +51,17 @@ class CatalogInvariantTests(unittest.TestCase):
                 [".claude-plugin/marketplace.extended.json.backup"],
             )
 
+    def test_unrelated_json_is_not_a_catalog_shadow(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".claude-plugin").mkdir()
+            (root / ".claude-plugin" / "plugin-metadata.json").write_text("{}")
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+
+            self.assertEqual(validator.tracked_catalog_shadows(root), [])
+
 
 if __name__ == "__main__":
     unittest.main()

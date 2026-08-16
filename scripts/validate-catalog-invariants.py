@@ -14,6 +14,9 @@ Invariants:
 4. marketplace.extended.json and marketplace.json report the same plugin count.
 5. Every plugin directory in the catalog has a sibling `package.json`. Lets
    the npm tracking/publish workflow enumerate a complete set of packages.
+6. The two catalogs named by STANDARDS.md are the only tracked
+   `.claude-plugin/marketplace*.json*` files; every additional variant is a
+   forbidden shadow, regardless of backup/staging suffix.
 
 Exits non-zero on any violation. Used by CI and by `pnpm run sync-marketplace`.
 """
@@ -28,6 +31,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 EXTENDED = ROOT / ".claude-plugin" / "marketplace.extended.json"
 SYNCED = ROOT / ".claude-plugin" / "marketplace.json"
+# STANDARDS.md § "The catalog: two files, one source of truth" owns this pair.
 CANONICAL_CATALOGS = {
     ".claude-plugin/marketplace.extended.json",
     ".claude-plugin/marketplace.json",
@@ -52,7 +56,11 @@ def fs_category(source: str) -> str | None:
 
 
 def tracked_catalog_shadows(root: Path = ROOT) -> list[str]:
-    """Return tracked root catalog-shaped files other than the two canonical files."""
+    """Return tracked catalog-shaped files under `.claude-plugin/` except the canonical pair.
+
+    Git failure is deliberately fatal: without the tracked-file set this invariant
+    cannot prove that a shadow is absent.
+    """
     result = subprocess.run(
         ["git", "-C", str(root), "ls-files", "-z", "--", ".claude-plugin"],
         check=True,
