@@ -59,6 +59,15 @@ ancestor directories.
 - No workflow, mirrored `SKILL.md`, `.source.json`, curated mirror, or provenance implementation
   bytes changed.
 
+The filing transaction followed the v4.4 mechanics rather than hand-editing derived values. After
+document 744 and its curated public-ledger entry were staged,
+`node scripts/generate-docs-index.mjs` generated the 184-document index and `pnpm run measure:e1`
+generated scorecard 742. The scorecard's `invisible_files` value is a subset of tracked paths that
+match existing gitleaks allowlist patterns, not the complement of `tracked_files`; the new
+`000-docs/*.md` record therefore increases both values by one while `allowlist_patterns` correctly
+remains 25. `000-docs/.gitignore` is the curated filing ledger checked by
+`check-docs-ignore-policy.mjs`, not an output of the index generator.
+
 The first independent review found that callers supplying a precomputed path inventory bypassed the
 Git-index mode check. That head was returned for correction. The resolver now validates every
 filesystem ancestor for supplied skill paths, README metrics use direct Git inventory, and the
