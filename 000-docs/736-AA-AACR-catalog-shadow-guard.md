@@ -1,12 +1,12 @@
 # Catalog Shadow Guard — After-Action Review
 
-**Date:** 2026-08-15  
-**Authority:** Blueprint 727, Epic 1 bead 1.1  
-**Bead:** `claude-hz8f.1`  
-**Implementation PR:** [#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196)  
-**Reviewed head:** `ed18ed4a0fa065f7ec5ae6aa86cb9f48f330ae78`  
-**Merge commit:** `94e84d4c989fb1b9e214a6df2e00225bde557b92`  
-**Status:** Complete
+- **Date:** 2026-08-15
+- **Authority:** Blueprint 727, Epic 1 bead 1.1
+- **Bead:** `claude-hz8f.1`
+- **Implementation PR:** [#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196)
+- **Reviewed head:** `ed18ed4a0fa065f7ec5ae6aa86cb9f48f330ae78`
+- **Merge commit:** `94e84d4c989fb1b9e214a6df2e00225bde557b92`
+- **Status:** Complete
 
 ## Outcome
 
