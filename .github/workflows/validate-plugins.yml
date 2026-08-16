@@ -1415,10 +1415,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '20'
+
+      - name: Install root measurement dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -1447,6 +1453,14 @@ jobs:
         run: |
           node --test scripts/generate-docs-index.test.mjs
           node scripts/generate-docs-index.mjs --check
+
+      # Blueprint 727 Epic 1 uses one cohort-labelled scorecard for every
+      # before/after claim. Recompute it from the exact Git index and reject
+      # stale or hand-edited evidence in the same required aggregate context.
+      - name: Check Epic 1 measurement scorecard is current
+        run: |
+          node --test scripts/measure-epic-1.test.mjs scripts/measure-epic-1-scorecard.test.mjs
+          pnpm run measure:e1:check
 
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.

@@ -3,36 +3,25 @@
 /** Deterministic measurement harness for blueprint 727, Epic 1. */
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
+
+import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
 
 export const ARTIFACT_PATH = '000-docs/742-RA-DATA-epic-1-scorecard.json';
+const SCRIPT_PATH = 'scripts/measure-epic-1.mjs';
 const SCRIPT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const GRADES = new Set(['A', 'B', 'C', 'D', 'F']);
 const CATALOGS = new Set([
   '.claude-plugin/marketplace.extended.json',
   '.claude-plugin/marketplace.json',
 ]);
-const GOVERNED_GENERATED = [
-  'marketplace/src/data/catalog.json',
-  'marketplace/src/data/jrig-data.json',
-  'marketplace/src/data/readme-sections.json',
-  'marketplace/src/data/skills-catalog.json',
-  'marketplace/src/data/skills-index.json',
-  'marketplace/src/data/unified-search-index.json',
-];
-const README_COUNT_WRITERS = ['scripts/generate-readme-toc.mjs', 'scripts/update-metrics.mjs'];
-const PUBLIC_STATS = [
-  'marketplace/src/data/github-stats.json',
-  'marketplace/src/data/npm-stats.json',
-  'marketplace/src/data/skills-stats.json',
-];
 const SIGNATURES = {
   '.pdf': [Buffer.from('%PDF-')],
   '.png': [Buffer.from('89504e470d0a1a0a', 'hex')],
-  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true'), Buffer.from('typ1')],
+  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true')],
   '.zip': [
     Buffer.from('504b0304', 'hex'),
     Buffer.from('504b0506', 'hex'),
@@ -83,8 +72,12 @@ function run(root, command, args) {
 }
 
 export function trackedPaths(root) {
-  const result = run(root, 'git', ['ls-files', '-z']);
-  if (result.status !== 0) fail(`git inventory failed: ${result.stderr.trim()}`);
+  const treeResult = run(root, 'git', ['write-tree']);
+  if (treeResult.status !== 0) fail(`git write-tree failed: ${treeResult.stderr.trim()}`);
+  const tree = treeResult.stdout.trim();
+  if (!/^[0-9a-f]{40,64}$/.test(tree)) fail('git write-tree returned an invalid object id');
+  const result = run(root, 'git', ['ls-tree', '-r', '-z', '--name-only', tree]);
+  if (result.status !== 0) fail(`git tree inventory failed: ${result.stderr.trim()}`);
   const paths = result.stdout.split('\0').filter(Boolean).map(posix).sort();
   if (paths.length === 0) fail('git inventory is empty');
   return paths;
@@ -96,10 +89,23 @@ export function matchesSignature(extension, bytes) {
   return signatures.some((signature) => bytes.subarray(0, signature.length).equals(signature));
 }
 
-export function parseSkillRows(value) {
+export function parseSkillRows(value, options = {}) {
   if (!Array.isArray(value)) fail('validator JSON must be an array');
   const rows = value.filter((entry) => entry && typeof entry.path === 'string');
+  const advisories = value.filter((entry) => !entry || typeof entry.path !== 'string');
+  if (options.requireKernelShadow) {
+    if (
+      advisories.length !== 1 ||
+      !advisories[0]?.kernel_shadow ||
+      typeof advisories[0].kernel_shadow !== 'object'
+    ) {
+      fail('validator JSON must end with exactly one kernel_shadow advisory');
+    }
+  } else if (advisories.some((entry) => !entry?.kernel_shadow)) {
+    fail('validator JSON contains an unknown non-row record');
+  }
   if (rows.length === 0) fail('validator JSON contains no SKILL.md rows');
+  const seen = new Set();
   const grades = Object.fromEntries([...GRADES].map((grade) => [grade, 0]));
   let errors = 0;
   let errorFiles = 0;
@@ -109,9 +115,16 @@ export function parseSkillRows(value) {
   let aErrors = 0;
   let abErrors = 0;
   for (const row of rows) {
-    if (!GRADES.has(row.grade) || !Number.isInteger(row.errors) || row.errors < 0) {
+    if (
+      !row.path.endsWith('/SKILL.md') ||
+      seen.has(row.path) ||
+      !GRADES.has(row.grade) ||
+      !Number.isSafeInteger(row.errors) ||
+      row.errors < 0
+    ) {
       fail(`invalid validator row: ${row.path}`);
     }
+    seen.add(row.path);
     grades[row.grade] += 1;
     errors += row.errors;
     if (row.errors > 0) errorFiles += 1;
@@ -142,38 +155,73 @@ export function parseSkillRows(value) {
   };
 }
 
-function requiredNumber(output, pattern, label) {
-  const match = output.match(pattern);
-  if (!match) fail(`validator summary missing ${label}`);
-  return Number(match[1]);
+function summaryValue(output, label, valuePattern = '(\\d+)') {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const matches = [
+    ...output.matchAll(new RegExp(`^[^\\n]*${escaped}:\\s*${valuePattern}\\s*$`, 'gm')),
+  ];
+  if (matches.length !== 1) fail(`validator summary requires exactly one ${label}`);
+  return Number(matches[0][1]);
 }
 
-export function parseTerminalSummary(output, lane) {
+export function parseTerminalSummary(evidence, lane) {
+  const output = typeof evidence === 'string' ? evidence : evidence?.output;
+  const status = typeof evidence === 'string' ? undefined : evidence?.status;
   if (typeof output !== 'string') fail(`missing ${lane} terminal summary`);
-  const totalFiles = requiredNumber(output, /Total files:\s*(\d+)/, 'total files');
-  const errors = requiredNumber(output, /Validation FAILED with\s+(\d+) errors/, 'error total');
+  const totalFiles = summaryValue(output, 'Total files');
+  const verdicts = [
+    ...output.matchAll(/^.*Validation FAILED with\s+(\d+) errors .*$/gm),
+    ...output.matchAll(/^.*Validation PASSED with\s+(\d+) warnings .*$/gm),
+    ...output.matchAll(/^.*All skills fully compliant! .*$/gm),
+  ];
+  if (verdicts.length !== 1) fail('validator summary requires exactly one terminal result');
+  const failure = output.match(/^.*Validation FAILED with\s+(\d+) errors .*$/m);
+  const errors = failure ? Number(failure[1]) : 0;
+  if (failure && errors === 0) fail('validator cannot fail with zero errors');
+  const expectedStatus = failure ? 1 : 0;
+  if (status !== undefined && status !== expectedStatus) {
+    fail(`validator ${lane} exit ${status} contradicts its terminal result`);
+  }
   if (lane === 'marketplace') {
+    const skills = summaryValue(output, 'Skills validated');
+    const commands = summaryValue(output, 'Commands validated');
+    const agents = summaryValue(output, 'Agents validated');
+    if (skills + commands + agents !== totalFiles) {
+      fail('marketplace terminal denominator arithmetic is inconsistent');
+    }
     return {
-      agents: requiredNumber(output, /Agents validated:\s*(\d+)/, 'agents'),
-      commands: requiredNumber(output, /Commands validated:\s*(\d+)/, 'commands'),
-      compliance_percent: Number(
-        output.match(/Compliance rate:\s*([\d.]+)%/)?.[1] ??
-          fail('validator summary missing compliance'),
+      error_total_all_validated_surfaces: errors,
+      fully_compliant_surfaces: summaryValue(output, 'Fully compliant'),
+      terminal_denominator: {
+        agents,
+        commands,
+        files: totalFiles,
+        label: 'skills_plus_commands_plus_agents_excluding_plugin_manifests',
+        skills,
+      },
+      validator_reported_mixed_denominator_percent: summaryValue(
+        output,
+        'Compliance rate',
+        '([\\d.]+)%',
       ),
-      errors,
-      fully_compliant: requiredNumber(output, /Fully compliant:\s*(\d+)/, 'fully compliant'),
-      skills: requiredNumber(output, /Skills validated:\s*(\d+)/, 'skills'),
-      total_files: totalFiles,
     };
   }
+  if (lane !== 'agents') fail(`unknown terminal lane: ${lane}`);
+  const agents = summaryValue(output, 'Agents validated');
+  if (agents !== totalFiles) fail('agent terminal denominator arithmetic is inconsistent');
   return {
-    agents: requiredNumber(output, /Agents validated:\s*(\d+)/, 'agents'),
-    compliance_percent: Number(
-      output.match(/Compliance rate:\s*([\d.]+)%/)?.[1] ??
-        fail('validator summary missing compliance'),
+    error_total_all_validated_surfaces: errors,
+    fully_compliant_surfaces: summaryValue(output, 'Fully compliant'),
+    terminal_denominator: {
+      agents,
+      files: totalFiles,
+      label: 'agents_excluding_plugin_manifests',
+    },
+    validator_reported_mixed_denominator_percent: summaryValue(
+      output,
+      'Compliance rate',
+      '([\\d.]+)%',
     ),
-    errors,
-    total_files: totalFiles,
   };
 }
 
@@ -181,24 +229,61 @@ function validatorEvidence(root) {
   const invocations = [
     ['skills', ['scripts/validate-skills-schema.py', '--marketplace', '--skills-only', '--json']],
     ['marketplace', ['scripts/validate-skills-schema.py', '--marketplace']],
-    ['agents', ['scripts/validate-skills-schema.py', '--agents-only']],
+    ['agents', ['scripts/validate-skills-schema.py', '--standard', '--agents-only']],
   ];
   const evidence = {};
   for (const [name, args] of invocations) {
     const result = run(root, 'python3', args);
     if (![0, 1].includes(result.status)) fail(`validator ${name} exited ${result.status}`);
-    const output = `${result.stdout}${result.stderr}`;
+    if (/VALIDATION SUMMARY|Validation (?:FAILED|PASSED)/.test(result.stderr)) {
+      fail(`validator ${name} emitted protocol text on stderr`);
+    }
     if (name === 'skills') {
       try {
         evidence.skills = JSON.parse(result.stdout);
+        evidence.skillsStatus = result.status;
+        evidence.requireKernelShadow = true;
       } catch (error) {
         fail(`malformed validator JSON: ${error.message}`);
       }
     } else {
-      evidence[name] = output;
+      evidence[name] = { output: result.stdout, status: result.status };
     }
   }
   return evidence;
+}
+
+export function withIndexSnapshot(root, callback) {
+  const repository = resolve(root);
+  const snapshot = mkdtempSync(join(tmpdir(), 'epic-1-measurement-index-'));
+  const archive = `${snapshot}.tar`;
+  try {
+    const treeResult = run(repository, 'git', ['write-tree']);
+    if (treeResult.status !== 0) fail(`git write-tree failed: ${treeResult.stderr.trim()}`);
+    const tree = treeResult.stdout.trim();
+    if (!/^[0-9a-f]{40,64}$/.test(tree)) fail('git write-tree returned an invalid object id');
+
+    const inventoryResult = run(repository, 'git', ['ls-tree', '-r', '-z', '--name-only', tree]);
+    if (inventoryResult.status !== 0) {
+      fail(`git tree inventory failed: ${inventoryResult.stderr.trim()}`);
+    }
+    const paths = inventoryResult.stdout.split('\0').filter(Boolean).map(posix).sort();
+    if (paths.length === 0) fail('git tree inventory is empty');
+
+    const archiveResult = run(repository, 'git', [
+      'archive',
+      '--format=tar',
+      `--output=${archive}`,
+      tree,
+    ]);
+    if (archiveResult.status !== 0) fail(`cannot archive Git tree: ${archiveResult.stderr.trim()}`);
+    const extractResult = run(repository, 'tar', ['-xf', archive, '-C', snapshot]);
+    if (extractResult.status !== 0) fail(`cannot extract Git tree: ${extractResult.stderr.trim()}`);
+    return callback({ paths, root: snapshot, tree });
+  } finally {
+    rmSync(archive, { force: true });
+    rmSync(snapshot, { force: true, recursive: true });
+  }
 }
 
 function binaryAssets(root, paths) {
@@ -219,6 +304,8 @@ function binaryAssets(root, paths) {
 function promotionDetector(root, mismatches) {
   const sourcePath = 'freshie/scripts/promote-to-curated.py';
   const source = text(root, sourcePath);
+  // Pin the exact detector semantics. Any refactor must deliberately update this
+  // measurement instead of silently changing what row 12 counts.
   if (!/b["']\\0["']\s+in\s+fh\.read\(8192\)/.test(source)) {
     fail('unknown promotion binary-detector shape');
   }
@@ -254,102 +341,85 @@ function catalogMeasurement(root, paths) {
   return { duplicateNames, entries: names.length, names: counts.size, shadows };
 }
 
-function sourceMeasurement(root) {
-  let document;
-  try {
-    document = yaml.load(text(root, 'sources.yaml'));
-  } catch (error) {
-    fail(`malformed YAML in sources.yaml: ${error.message}`);
-  }
-  if (!document || !Array.isArray(document.sources)) fail('sources.yaml sources must be an array');
-  const names = document.sources.map((source, index) => {
-    if (!source || typeof source.name !== 'string' || !source.name)
-      fail(`source ${index} lacks name`);
-    return source.name;
-  });
-  if (new Set(names).size !== names.length) fail('sources.yaml contains duplicate source names');
-  const lock = json(root, 'sources.lock.json');
-  if (!lock.sources || Array.isArray(lock.sources) || typeof lock.sources !== 'object') {
-    fail('sources.lock.json sources must be an object');
-  }
-  const yamlKeys = [...names].sort();
-  const lockKeys = Object.keys(lock.sources).sort();
-  return {
-    lock_keys: lockKeys.length,
-    lock_only: lockKeys.filter((name) => !names.includes(name)),
-    yaml_keys: yamlKeys.length,
-    yaml_only: yamlKeys.filter((name) => !lockKeys.includes(name)),
-  };
-}
+const ROW_SOURCES = {
+  1: 'git write-tree + git ls-tree over the exact index tree',
+  2: '.claude-plugin/marketplace.extended.json',
+  3: 'git tree inventory under .claude-plugin/',
+  4: 'scripts/validate-skills-schema.py JSON and terminal protocols',
+  11: 'Git tree bytes matched against the per-extension signature registry',
+  12: 'freshie/scripts/promote-to-curated.py detector semantics applied to row 11 mismatches',
+};
 
-function countValue(value, label) {
-  if (!Number.isInteger(value) || value < 0) fail(`invalid count in ${label}`);
-  return value;
-}
-
-function row(dimension, cohort, values, id) {
+function row(dimension, cohort, values, id, targetStatus = 'informational') {
+  const source = ROW_SOURCES[id];
+  if (!source) fail(`row ${id} lacks a source identifier`);
   return {
     cohort,
     dimension,
-    reproduce: `pnpm run measure:e1 -- --row=${id} --stdout`,
+    reproduce: `pnpm run measure:e1 --row=${id} --stdout`,
+    source,
+    status: 'measured',
+    target_status: targetStatus,
     values,
   };
 }
 
-export function buildReport(root, suppliedEvidence) {
+export function buildReport(root, suppliedEvidence, suppliedPaths) {
   const repository = resolve(root);
-  const paths = trackedPaths(repository);
+  const paths = suppliedPaths ?? trackedPaths(repository);
   const evidence = suppliedEvidence ?? validatorEvidence(repository);
-  const skills = parseSkillRows(evidence.skills);
+  const skills = parseSkillRows(evidence.skills, {
+    requireKernelShadow: evidence.requireKernelShadow === true,
+  });
+  if (evidence.skillsStatus !== undefined && evidence.skillsStatus !== 0) {
+    fail(`validator skills JSON exited ${evidence.skillsStatus}`);
+  }
   const marketplace = parseTerminalSummary(evidence.marketplace, 'marketplace');
   const agents = parseTerminalSummary(evidence.agents, 'agents');
-  if (marketplace.skills !== skills.rows) fail('marketplace and SKILL-row counts disagree');
+  if (marketplace.terminal_denominator.skills !== skills.rows) {
+    fail('marketplace and SKILL-row counts disagree');
+  }
+  marketplace.validated_plugin_manifests = paths.filter((path) =>
+    /\/\.claude-plugin\/plugin\.json$/.test(path),
+  ).length;
 
   const pluginSkills = paths.filter((path) => /^plugins\/.+\/SKILL\.md$/.test(path)).length;
   const pluginAgents = paths.filter((path) => /^plugins\/.+\/agents\/[^/]+\.md$/.test(path)).length;
   const catalog = catalogMeasurement(repository, paths);
   const assets = binaryAssets(repository, paths);
   const detector = promotionDetector(repository, assets.mismatches);
-  const generated = GOVERNED_GENERATED.map((path) => ({
-    content_drift_gate: false,
-    path,
-    tracked: paths.includes(path),
-  }));
-  const freshie = json(repository, 'freshie/grade-histogram.json');
-  const skillsIndex = json(repository, 'marketplace/src/data/skills-index.json');
-  const unified = json(repository, 'marketplace/src/data/unified-search-index.json');
-  const curated = json(repository, 'skills/.curated/MANIFEST.json');
-  const writerDetails = README_COUNT_WRITERS.map((path) => {
-    const source = text(repository, path);
-    return {
-      path,
-      tracked: paths.includes(path),
-      writes_readme_counts: /README/i.test(source) && /skill/i.test(source),
-    };
+  const extendedRows = buildExtendedScorecardRows({
+    agentSummary: {
+      agents: agents.terminal_denominator.agents,
+      compliance_percent: agents.validator_reported_mixed_denominator_percent,
+      errors: agents.error_total_all_validated_surfaces,
+    },
+    marketplaceSummary: {
+      errors: marketplace.error_total_all_validated_surfaces,
+    },
+    paths,
+    root: repository,
+    skillRows: evidence.skills.filter((entry) => entry && typeof entry.path === 'string'),
+    skillSummary: skills,
   });
-  if (writerDetails.some((entry) => !entry.tracked || !entry.writes_readme_counts)) {
-    fail('README count-writer registry is stale');
-  }
-  const stats = PUBLIC_STATS.map((path) => {
-    const value = json(repository, path);
-    return { has_max_age_hours: Number.isFinite(value.max_age_hours), path };
-  });
-  const sources = sourceMeasurement(repository);
 
   return {
     blueprint: '727',
     cohorts: {
       agent_files_plugin_surface: 'tracked Markdown files directly beneath plugins/**/agents/',
-      agent_lane_validator: 'files reported by validate-skills-schema.py --agents-only',
-      graded_artifacts: 'path-bearing SKILL.md rows from --marketplace --skills-only --json',
+      agent_lane_validator: 'files reported by validate-skills-schema.py --standard --agents-only',
+      graded_artifacts:
+        'unique SKILL.md rows from --marketplace --skills-only --json in the exact Git index tree',
       marketplace_terminal:
-        'SKILL.md, command, agent, and plugin.json surfaces in --marketplace terminal summary',
+        'errors and fully-compliant counts may include plugin manifests; Total files excludes them and equals skills + commands + agents',
       plugin_skills: 'tracked plugins/**/SKILL.md files',
-      tracked_tree: 'git ls-files at the measured checkout',
+      tracked_tree: 'git ls-tree over one immutable git write-tree object',
     },
     graded_artifact_cohort: {
       cohort: 'graded_artifacts',
-      reproduce: 'pnpm run measure:e1 -- --row=graded_artifact_cohort --stdout',
+      reproduce: 'pnpm run measure:e1 --row=graded_artifact_cohort --stdout',
+      source: 'scripts/validate-skills-schema.py --marketplace --skills-only --json',
+      status: 'measured',
       values: skills,
     },
     rows: {
@@ -372,6 +442,7 @@ export function buildReport(root, suppliedEvidence) {
           distinct_names: catalog.names,
         },
         2,
+        catalog.entries === catalog.names ? 'pass' : 'fail',
       ),
       3: row(
         'Tracked stale catalog shadows',
@@ -381,6 +452,7 @@ export function buildReport(root, suppliedEvidence) {
           paths: catalog.shadows,
         },
         3,
+        catalog.shadows.length === 0 ? 'pass' : 'fail',
       ),
       4: row(
         'Marketplace-tier errors and compliance',
@@ -401,6 +473,7 @@ export function buildReport(root, suppliedEvidence) {
           mismatch_paths: assets.mismatches,
         },
         11,
+        assets.mismatches.length === 0 ? 'pass' : 'fail',
       ),
       12: row(
         'Binary detector in the promotion path',
@@ -413,70 +486,63 @@ export function buildReport(root, suppliedEvidence) {
           prefix_bytes: detector.prefix_bytes,
         },
         12,
+        detector.strategy === 'magic_bytes' ? 'pass' : 'fail',
       ),
-      22: row(
-        'Tracked generated artifacts without content drift gates',
-        'six marketplace/src/data artifacts named by blueprint 727',
-        {
-          artifacts: generated,
-          count: generated.filter((entry) => entry.tracked && !entry.content_drift_gate).length,
-        },
-        22,
-      ),
-      24: row(
-        'Published answers to how many skills',
-        'five separately named publication surfaces',
-        {
-          curated_manifest: countValue(curated.count ?? curated.skills?.length, 'curated manifest'),
-          freshie_export: countValue(freshie.total, 'Freshie export'),
-          plugin_source: pluginSkills,
-          skills_index: countValue(skillsIndex.count ?? skillsIndex.skills?.length, 'skills index'),
-          unified_search_index: countValue(unified.stats?.totalSkills, 'unified search index'),
-        },
-        24,
-      ),
-      25: row(
-        'README metric writers',
-        'tracked scripts that rewrite README skill/plugin/agent counts',
-        {
-          count: writerDetails.length,
-          writers: writerDetails,
-        },
-        25,
-      ),
-      26: row(
-        'Public stats without a freshness bound',
-        'three rendered marketplace stats artifacts',
-        {
-          artifacts: stats,
-          count: stats.filter((entry) => !entry.has_max_age_hours).length,
-        },
-        26,
-      ),
-      27: row(
-        'sources.yaml versus sources.lock.json keys',
-        'source names versus lock object keys',
-        sources,
-        27,
-      ),
+      ...extendedRows,
     },
-    schema_version: 1,
+    schema_version: 2,
   };
 }
 
 export function stableJson(value) {
+  const seen = new WeakSet();
   function sort(item) {
-    if (Array.isArray(item)) return item.map(sort);
+    if (typeof item === 'number' && !Number.isFinite(item)) fail('non-finite number in output');
+    if (['undefined', 'function', 'symbol', 'bigint'].includes(typeof item)) {
+      fail(`unsupported ${typeof item} in output`);
+    }
+    if (Array.isArray(item)) {
+      if (Object.keys(item).length !== item.length) fail('sparse array in output');
+      if (seen.has(item)) fail('cycle in output');
+      seen.add(item);
+      const result = item.map(sort);
+      seen.delete(item);
+      return result;
+    }
     if (item && typeof item === 'object') {
-      return Object.fromEntries(
+      if (
+        Object.getPrototypeOf(item) !== Object.prototype &&
+        Object.getPrototypeOf(item) !== null
+      ) {
+        fail('non-plain object in output');
+      }
+      if (seen.has(item)) fail('cycle in output');
+      seen.add(item);
+      const result = Object.fromEntries(
         Object.keys(item)
-          .sort()
+          .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
           .map((key) => [key, sort(item[key])]),
       );
+      seen.delete(item);
+      return result;
     }
     return item;
   }
-  const rendered = `${JSON.stringify(sort(value), null, 2)}\n`;
+  const raw = `${JSON.stringify(sort(value), null, 2)}\n`;
+  const formatted = spawnSync(
+    join(SCRIPT_ROOT, 'node_modules/.bin/prettier'),
+    ['--parser', 'json'],
+    {
+      cwd: SCRIPT_ROOT,
+      encoding: 'utf8',
+      input: raw,
+      maxBuffer: 64 * 1024 * 1024,
+    },
+  );
+  if (formatted.error || formatted.status !== 0) {
+    fail(`Prettier JSON formatting failed: ${formatted.error?.message ?? formatted.stderr.trim()}`);
+  }
+  const rendered = formatted.stdout;
   if (/"(?:captured_at|generated_at|hostname|cwd|head)"\s*:/.test(rendered)) {
     fail('nondeterministic metadata entered output');
   }
@@ -492,9 +558,17 @@ function parseArgs(argv) {
   for (const arg of argv) {
     if (arg === '--check') options.check = true;
     else if (arg === '--stdout') options.stdout = true;
-    else if (arg.startsWith('--row=')) options.row = arg.slice(6);
-    else if (arg.startsWith('--root=')) options.root = resolve(arg.slice(7));
-    else fail(`unknown argument: ${arg}`);
+    else if (arg.startsWith('--row=')) {
+      const value = arg.slice(6);
+      if (value !== 'graded_artifact_cohort' && !/^(?:[1-9]|[1-5]\d|6[0-2])$/.test(value)) {
+        fail(`unknown row: ${value || '(empty)'}`);
+      }
+      options.row = value;
+    } else if (arg.startsWith('--root=')) {
+      const value = arg.slice(7);
+      if (!value) fail('--root requires a path');
+      options.root = resolve(value);
+    } else fail(`unknown argument: ${arg}`);
   }
   if (options.row && !options.stdout) fail('--row requires --stdout');
   if (options.check && options.stdout) fail('--check and --stdout are mutually exclusive');
@@ -503,7 +577,21 @@ function parseArgs(argv) {
 
 function main() {
   const options = parseArgs(process.argv.slice(2));
-  const report = buildReport(options.root);
+  const indexed = withIndexSnapshot(options.root, (snapshot) => {
+    if (
+      readFileSync(file(snapshot.root, SCRIPT_PATH), 'utf8') !==
+      readFileSync(file(options.root, SCRIPT_PATH), 'utf8')
+    ) {
+      fail(`${SCRIPT_PATH} differs from the Git index; stage or restore it before measuring`);
+    }
+    return {
+      artifact: existsSync(file(snapshot.root, ARTIFACT_PATH))
+        ? readFileSync(file(snapshot.root, ARTIFACT_PATH), 'utf8')
+        : null,
+      report: buildReport(snapshot.root, undefined, snapshot.paths),
+    };
+  });
+  const report = indexed.report;
   let selected = report;
   if (options.row) {
     selected =
@@ -519,7 +607,7 @@ function main() {
   }
   const artifact = file(options.root, ARTIFACT_PATH);
   if (options.check) {
-    if (!existsSync(artifact) || !artifactMatches(readFileSync(artifact, 'utf8'), rendered)) {
+    if (indexed.artifact === null || !artifactMatches(indexed.artifact, rendered)) {
       console.error(`epic-1-measurement: DRIFT (${ARTIFACT_PATH})`);
       process.exitCode = 1;
       return;
