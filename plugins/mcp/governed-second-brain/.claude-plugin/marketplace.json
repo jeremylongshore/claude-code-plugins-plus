@@ -12,7 +12,7 @@
     {
       "name": "governed-second-brain",
       "source": ".",
-      "description": "Bob's Big Brain \u2014 the governed team brain: cited recall, hash-chained receipts. ONE plugin, two modes. Local provisions two pinned native modules once, then runs in-process; team queries your shared governed brain over the tailnet.",
+      "description": "Bob's Big Brain \u2014 the governed team brain: cited recall, hash-chained receipts. ONE plugin, two modes. Local provisions three pinned native modules once, then runs in-process; team queries your shared governed brain over the tailnet.",
       "version": "1.2.0",
       "category": "productivity",
       "keywords": [

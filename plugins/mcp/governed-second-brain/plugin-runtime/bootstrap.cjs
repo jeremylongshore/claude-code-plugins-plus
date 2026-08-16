@@ -5,7 +5,7 @@
  * Marketplace-safe launcher for the committed MCP bundle.
  *
  * Claude/Codex plugin installs copy files but do not run this repository's npm
- * installer. Team mode is dependency-free, while local mode needs the two
+ * installer. Team mode is dependency-free, while local mode needs the three
  * native modules externalized by build.mjs. Provision those exact, lockfile-
  * pinned modules on first local start, then execute the bundled server.
  */
