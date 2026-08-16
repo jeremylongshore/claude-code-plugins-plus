@@ -39,13 +39,18 @@ The deleted backup's blob was `c9bb532a6c5a28d162f718961a05c1041090dbe2`.
   `ci-required`, `gitleaks`, and `skill-conform` passed at the reviewed head.
 - The complete PR diff touched only the deleted backup, validator, regression test, and
   `CHANGELOG.md`. No mirrored content changed.
+- The index header's prior 169-file snapshot came from `aff01bf72d`. Documents 730–735 were
+  subsequently filed and already indexed; this filing adds document 736. A tracked-path versus
+  index-link comparison now reports 176/176 with zero missing or untracked links.
 
 ## Review and merge topology
 
-The independent clean-checkout reviewer returned **PASS**. The repository's one-approval topology
-still lacked a second GitHub approval identity. Platform owner Jeremy explicitly authorized an
-administrator bypass after all executable and independent-review gates passed. The bypass was
-disclosed in the PR record; no branch rule or required status context was changed.
+The independent clean-checkout reviewer returned **PASS**. Branch protection requires one approval,
+but no genuine independent second GitHub identity was available to submit it. Platform owner Jeremy
+explicitly authorized an administrator bypass for PR #1196 after all executable and independent-review
+gates passed. The bypass was disclosed in the PR record; no branch rule or required status context was
+changed. This is a temporary review-topology compromise, not a substitute for the independent identity
+and machine-enforced no-self-approval work governed by Epic 10.
 
 ## Scope and rollback
 
@@ -58,4 +63,6 @@ test and live validator; that intentionally restores the prior backup and remove
 
 An absence claim is only valid when the inventory source is itself proven complete. Treating an
 empty successful Git query as “no shadows” would have left the source-of-truth boundary fail-open.
-The next Epic 1 slice must be activated separately in Beads/Dolt after this bead closes.
+Administrator bypass is an explicit owner exception while the review-topology control gap remains,
+not the accepted steady state. The next Epic 1 slice must be activated separately in Beads/Dolt after
+this bead closes.
