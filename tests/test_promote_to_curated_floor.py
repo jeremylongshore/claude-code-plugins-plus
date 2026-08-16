@@ -259,9 +259,13 @@ class TestBinarySniff(unittest.TestCase):
         self.assertTrue(pc._is_binary(self._write("diagram.png", bytes.fromhex("89504e470d0a1a0a") + b"fixture")))
 
     def test_current_font_signature_is_binary(self):
-        for signature in (b"\x00\x01\x00\x00", b"true", b"typ1"):
+        for signature in (b"\x00\x01\x00\x00", b"true"):
             with self.subTest(signature=signature):
                 self.assertTrue(pc._is_binary(self._write("font.ttf", signature + b"fixture")))
+
+    def test_legacy_postscript_sfnt_is_not_ttf(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("font.ttf", b"typ1fixture"))
 
     def test_executable_signature_is_binary(self):
         self.assertTrue(pc._is_binary(self._write("tool", b"\x7fELF\x02\x01fixture")))

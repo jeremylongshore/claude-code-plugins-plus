@@ -126,7 +126,7 @@ _MAGIC_SIGNATURES: Tuple[Tuple[str, Tuple[bytes, ...], frozenset[str]], ...] = (
         (bytes.fromhex("504b0304"), bytes.fromhex("504b0506"), bytes.fromhex("504b0708")),
         frozenset({".zip", ".jar", ".docx", ".xlsx", ".pptx", ".whl"}),
     ),
-    ("truetype", (bytes.fromhex("00010000"), b"true", b"typ1"), frozenset({".ttf"})),
+    ("truetype", (bytes.fromhex("00010000"), b"true"), frozenset({".ttf"})),
     ("opentype", (b"OTTO",), frozenset({".otf"})),
     ("woff", (b"wOFF",), frozenset({".woff"})),
     ("woff2", (b"wOF2",), frozenset({".woff2"})),

@@ -288,7 +288,8 @@ test('grade arithmetic derives a 3679 cohort rather than preserving historical 3
 test('signature registry accepts genuine bytes, exposes counterfeits, and refuses unknown types', () => {
   assert.equal(matchesSignature('.png', Buffer.from('89504e470d0a1a0a', 'hex')), true);
   assert.equal(matchesSignature('.zip', Buffer.from('504b0304', 'hex')), true);
-  assert.equal(matchesSignature('.ttf', Buffer.from('typ1')), true);
+  assert.equal(matchesSignature('.ttf', Buffer.from('true')), true);
+  assert.equal(matchesSignature('.ttf', Buffer.from('typ1')), false);
   assert.equal(matchesSignature('.pdf', Buffer.from('plain text')), false);
   assert.throws(
     () => matchesSignature('.exe', Buffer.alloc(4)),
@@ -318,7 +319,9 @@ test('Git, catalog, source, and detector contradictions fail closed', () => {
   put(
     oldDetector,
     'freshie/scripts/promote-to-curated.py',
-    `def _is_binary(path):
+    `_INSPECTION_CHUNK_BYTES = 8192
+
+def _is_binary(path):
     with path.open("rb") as fh:
         return b"\\0" in fh.read(8192)
 `,

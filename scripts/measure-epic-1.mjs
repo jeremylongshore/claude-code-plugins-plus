@@ -34,7 +34,7 @@ const CATALOGS = new Set([
 const SIGNATURES = {
   '.pdf': [Buffer.from('%PDF-')],
   '.png': [Buffer.from('89504e470d0a1a0a', 'hex')],
-  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true'), Buffer.from('typ1')],
+  '.ttf': [Buffer.from('00010000', 'hex'), Buffer.from('true')],
   '.zip': [
     Buffer.from('504b0304', 'hex'),
     Buffer.from('504b0506', 'hex'),
@@ -380,7 +380,7 @@ with tempfile.TemporaryDirectory(prefix="epic-1-content-probe-") as directory:
 payload = {
     **observed,
     "fixture_checks": checks,
-    "prefix_bytes": getattr(module, "_INSPECTION_CHUNK_BYTES", 8192),
+    "prefix_bytes": module._INSPECTION_CHUNK_BYTES,
     "strategy": getattr(module, "CONTENT_TYPE_STRATEGY", "nul_prefix"),
 }
 print(json.dumps(payload, sort_keys=True))
