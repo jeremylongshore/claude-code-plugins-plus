@@ -2639,18 +2639,14 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                         f"got: {type(item).__name__}"
                     )
                 elif not item.strip():
-                    errors.append(
-                        f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string"
-                    )
+                    errors.append(f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string")
                 else:
                     valid_list_items.append(item)
             tools = parse_allowed_tools(valid_list_items)
         elif isinstance(raw_tools, str):
             if "," in raw_tools:
                 empty_positions = [
-                    str(index)
-                    for index, item in enumerate(raw_tools.split(","), start=1)
-                    if not item.strip()
+                    str(index) for index, item in enumerate(raw_tools.split(","), start=1) if not item.strip()
                 ]
                 if empty_positions:
                     errors.append(
