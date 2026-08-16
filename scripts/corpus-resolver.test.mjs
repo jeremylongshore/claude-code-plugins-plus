@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -131,6 +132,22 @@ test('unknown cohorts and path traversal fail closed', () => {
     () => resolveCorpus('graded', { root, paths: [...paths, '../outside/SKILL.md'] }),
     /path escapes repository/,
   );
+  assert.throws(
+    () => resolveCorpus('graded', { root, paths: [...paths, 'C:/outside/SKILL.md'] }),
+    /path escapes repository/,
+  );
+});
+
+test('marketplace membership follows catalog source roots, never matching names', () => {
+  const { root, paths } = corpusFixture();
+  const collision = 'plugins/other/owned/skills/collision/SKILL.md';
+  write(root, collision);
+  write(root, 'plugins/other/owned/.claude-plugin/plugin.json', JSON.stringify({ name: 'owned' }));
+  assert.ok(
+    !resolveCorpus('marketplace-visible', { root, paths: [...paths, collision] }).includes(
+      collision,
+    ),
+  );
 });
 
 test('malformed and contradictory provenance fail closed', () => {
@@ -206,4 +223,21 @@ test('curated files without a tracked manifest fail closed', () => {
       }),
     /without a tracked MANIFEST/,
   );
+});
+
+test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
+  const root = fixture();
+  const external = path.join(os.tmpdir(), `corpus-resolver-external-${process.pid}.md`);
+  fs.writeFileSync(external, '# external\n');
+  const skill = path.join(root, 'plugins', 'core', 'owned', 'skills', 'linked', 'SKILL.md');
+  fs.mkdirSync(path.dirname(skill), { recursive: true });
+  fs.symlinkSync(external, skill);
+  execFileSync('git', ['init', '-q'], { cwd: root });
+  execFileSync('git', ['add', '.'], { cwd: root });
+
+  try {
+    assert.throws(() => resolveCorpus('marketplace-visible', { root }), /symbolic link/);
+  } finally {
+    fs.rmSync(external, { force: true });
+  }
 });

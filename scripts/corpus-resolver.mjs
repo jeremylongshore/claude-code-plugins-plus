@@ -51,7 +51,12 @@ function normalizePath(value) {
     fail('path inventory contains an invalid entry');
   }
   const normalized = path.posix.normalize(value.replaceAll('\\', '/').replace(/^\.\//, ''));
-  if (normalized === '..' || normalized.startsWith('../') || path.posix.isAbsolute(normalized)) {
+  if (
+    normalized === '..' ||
+    normalized.startsWith('../') ||
+    path.posix.isAbsolute(normalized) ||
+    /^[A-Za-z]:\//.test(normalized)
+  ) {
     fail(`path escapes repository: ${value}`);
   }
   return normalized;
@@ -60,14 +65,28 @@ function normalizePath(value) {
 function trackedPaths(root) {
   if (!fs.existsSync(path.join(root, '.git'))) return filesystemPaths(root);
   try {
-    return execFileSync('git', ['ls-files', '-z'], {
+    return execFileSync('git', ['ls-files', '--stage', '-z'], {
       cwd: root,
       encoding: 'utf8',
       maxBuffer: 128 * 1024 * 1024,
     })
       .split('\0')
-      .filter(Boolean);
+      .filter(Boolean)
+      .map((record) => {
+        const separator = record.indexOf('\t');
+        if (separator < 0) fail('cannot parse tracked tree entry');
+        const metadata = record.slice(0, separator).split(' ');
+        const entry = record.slice(separator + 1);
+        if (metadata.length !== 3 || metadata[2] !== '0') {
+          fail(`tracked tree has an unresolved index entry: ${entry}`);
+        }
+        if (metadata[0] === '120000' && entry.endsWith('/SKILL.md')) {
+          fail(`symbolic link is not a corpus authority: ${entry}`);
+        }
+        return entry;
+      });
   } catch (error) {
+    if (error instanceof Error && error.message.startsWith('corpus-resolver:')) throw error;
     fail(`cannot read tracked tree: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -126,7 +145,8 @@ function readCatalog(root) {
     if (!source.startsWith('plugins/')) {
       fail(`catalog plugin ${index} source is outside plugins/: ${plugin.source}`);
     }
-    roots.add(source.replace(/\/$/, ''));
+    const pluginRoot = source.replace(/\/$/, '');
+    roots.add(pluginRoot);
   }
   return { names, roots };
 }
@@ -196,6 +216,10 @@ function marketplaceVisible(entries, root) {
     if (!isPluginSkill(entry)) return false;
     const segments = entry.split('/');
     if (segments.some((segment) => segment.startsWith('.'))) return false;
+    const withinCatalogSource = [...catalog.roots].some(
+      (pluginRoot) => entry === `${pluginRoot}/SKILL.md` || entry.startsWith(`${pluginRoot}/`),
+    );
+    if (!withinCatalogSource) return false;
     const pluginName = marketplacePluginName(entry, root);
     return pluginName !== null && catalog.names.has(pluginName);
   });

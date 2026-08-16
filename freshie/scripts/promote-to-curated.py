@@ -142,9 +142,11 @@ def is_external_mirror(skill_path: str) -> bool:
 
 
 def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
-    """A+B plugin skills, our own (no `.source.json`), whose source dir still exists.
+    """Select curated candidates from the resolved graded/first-party intersection.
 
-    Sorted by skill_path for deterministic output.
+    The shared corpus resolver excludes mirrors, hidden paths, and untracked files;
+    this caller then keeps A/B rows whose source directory still exists. Results
+    are sorted by skill_path for deterministic output.
     """
     if not grades_csv.exists():
         sys.exit(
