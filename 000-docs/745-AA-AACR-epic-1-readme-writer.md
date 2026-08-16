@@ -55,6 +55,12 @@ mirror-content diffs were zero.
 - Greptile was triggered at the reviewed head, but its free-review trial had expired. The response
   was inspected and was not counted as evidence.
 
+Scorecard row 46's `allowlist_patterns` remains 25 because it counts path regexes in
+`.gitleaks.toml`, not public-filing negations in `000-docs/.gitignore`. Its `invisible_files` value
+rises by one because the existing `^000-docs/.*\.md$` gitleaks pattern matches the newly tracked
+AAR. The scorecard values were mechanically regenerated; these two populations are intentionally
+different.
+
 The broad local `pnpm test` command exposed an unchanged dependency-baseline defect: Vitest 2.1.9
 resolves Vite 7.3.3 through the root `vite >=6.4.2` override and the CLI suite fails before test
 collection. GitHub's authoritative CLI smoke and widened MCP/Python/validation suites passed. The
