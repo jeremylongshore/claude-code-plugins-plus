@@ -69,7 +69,10 @@ function fixture() {
     'scripts/corpus-resolver.mjs': 'export function resolveCorpus() {}\n',
     'scripts/plugin-provenance.mjs': 'export function resolvePluginProvenance() {}\n',
     'scripts/update-metrics.mjs': 'const README = "README.md"; const skillCount = 1;',
-    'skills/.curated/MANIFEST.json': JSON.stringify({ count: 6 }),
+    'skills/.curated/MANIFEST.json': JSON.stringify({
+      count: 1,
+      skills: [{ curated_name: 'example-1' }],
+    }),
     'skills/.curated/example-1/SKILL.md': '# curated skill\n',
     'sources.lock.json': JSON.stringify({ sources: { alpha: {} } }),
     'sources.yaml': 'sources:\n  - name: alpha\n',
