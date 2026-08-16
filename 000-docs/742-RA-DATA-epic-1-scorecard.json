@@ -1424,7 +1424,8 @@
       "source": [
         ".claude-plugin/marketplace.extended.json",
         "scripts/corpus-resolver.mjs",
-        "scripts/plugin-provenance.mjs"
+        "scripts/plugin-provenance.mjs",
+        "skills/.curated/MANIFEST.json"
       ],
       "status": "measured",
       "values": {

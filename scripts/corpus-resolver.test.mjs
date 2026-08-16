@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
 
@@ -242,4 +243,19 @@ test('tracked SKILL.md symlinks fail closed from the real Git index', () => {
     fs.rmSync(externalDirectory, { force: true, recursive: true });
     fs.rmSync(root, { force: true, recursive: true });
   }
+});
+
+test('CLI batches multiple named cohorts in one resolver process', () => {
+  const { root } = corpusFixture();
+  const resolver = path.join(path.dirname(fileURLToPath(import.meta.url)), 'corpus-resolver.mjs');
+  const payload = JSON.parse(
+    execFileSync(
+      process.execPath,
+      [resolver, '--root', root, '--cohort', 'graded', '--cohort', 'first-party', '--json'],
+      { encoding: 'utf8' },
+    ),
+  );
+  assert.deepEqual(Object.keys(payload.cohorts), ['graded', 'first-party']);
+  assert.equal(payload.cohorts.graded.count, 6);
+  assert.equal(payload.cohorts['first-party'].count, 4);
 });

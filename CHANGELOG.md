@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   first-party cohorts remain available under their own names. Status-quo
   compatibility is explicit: an orphan plugin with neither provenance nor a
   manifest remains first-party rather than being silently reclassified.
+  Scorecard consumers must migrate row 1 from `plugin_skill_files` to the
+  explicit `raw_tracked_plugin_skill_files` key; row 24 owns governed cohort
+  counts.
 
 ### Added (2026-08-16 — Epic 1 measurement harness)
 

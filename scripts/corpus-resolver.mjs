@@ -315,16 +315,22 @@ export function resolveCorpus(cohort, { root = process.cwd(), paths } = {}) {
 }
 
 function parseCli(argv) {
-  const options = { cohort: null, root: process.cwd() };
+  const options = { cohorts: [], root: process.cwd() };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
-    if (argument === '--cohort') options.cohort = argv[++index];
-    else if (argument.startsWith('--cohort=')) options.cohort = argument.slice('--cohort='.length);
+    if (argument === '--cohort') options.cohorts.push(argv[++index]);
+    else if (argument.startsWith('--cohort='))
+      options.cohorts.push(argument.slice('--cohort='.length));
     else if (argument === '--root') options.root = argv[++index];
     else if (argument.startsWith('--root=')) options.root = argument.slice('--root='.length);
     else if (argument !== '--json') fail(`unknown argument ${argument}`);
   }
-  if (!options.cohort) fail('--cohort is required');
+  if (options.cohorts.length === 0 || options.cohorts.some((cohort) => !cohort)) {
+    fail('--cohort is required');
+  }
+  if (new Set(options.cohorts).size !== options.cohorts.length) {
+    fail('duplicate --cohort values are not allowed');
+  }
   return options;
 }
 
@@ -332,10 +338,15 @@ const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : null;
 if (invokedPath === fileURLToPath(import.meta.url)) {
   try {
     const options = parseCli(process.argv.slice(2));
-    const files = resolveCorpus(options.cohort, { root: options.root });
-    process.stdout.write(
-      `${JSON.stringify({ cohort: options.cohort, count: files.length, files })}\n`,
-    );
+    const resolved = options.cohorts.map((cohort) => {
+      const files = resolveCorpus(cohort, { root: options.root });
+      return { cohort, count: files.length, files };
+    });
+    const payload =
+      resolved.length === 1
+        ? resolved[0]
+        : { cohorts: Object.fromEntries(resolved.map((entry) => [entry.cohort, entry])) };
+    process.stdout.write(`${JSON.stringify(payload)}\n`);
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;

@@ -2215,12 +2215,15 @@ def validate_agent(path: Path) -> Dict[str, Any]:
 def find_skill_files(root: Path) -> List[Path]:
     """Return the canonical graded cohort; requires repository Node 20+ on PATH."""
     resolver = Path(__file__).resolve().parent / "corpus-resolver.mjs"
-    result = subprocess.run(
-        ["node", str(resolver), "--cohort", "graded", "--root", str(root), "--json"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            ["node", str(resolver), "--cohort", "graded", "--root", str(root), "--json"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("corpus resolver requires Node 20+ on PATH") from exc
     if result.returncode != 0:
         raise RuntimeError(f"corpus resolver failed: {result.stderr.strip()}")
     try:

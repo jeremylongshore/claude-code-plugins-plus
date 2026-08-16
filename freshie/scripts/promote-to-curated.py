@@ -101,11 +101,14 @@ def _plugin_root(skill_path: str) -> str:
     return skill_path.split("/skills/")[0] if "/skills/" in skill_path else skill_path
 
 
-def resolve_corpus(cohort: str) -> set[str]:
-    """Read one named cohort from the repository's canonical resolver."""
+def resolve_corpora(*cohorts: str) -> Dict[str, set[str]]:
+    """Read named cohorts in one canonical resolver process."""
+    arguments = ["node", str(CORPUS_RESOLVER), "--root", str(ROOT), "--json"]
+    for cohort in cohorts:
+        arguments.extend(["--cohort", cohort])
     try:
         result = subprocess.run(
-            ["node", str(CORPUS_RESOLVER), "--cohort", cohort, "--root", str(ROOT), "--json"],
+            arguments,
             capture_output=True,
             text=True,
             check=False,
@@ -113,15 +116,28 @@ def resolve_corpus(cohort: str) -> set[str]:
     except FileNotFoundError as exc:
         raise RuntimeError("corpus resolver requires Node 20+ on PATH") from exc
     if result.returncode != 0:
-        raise RuntimeError(f"corpus resolver failed for {cohort}: {result.stderr.strip()}")
+        raise RuntimeError(f"corpus resolver failed for {', '.join(cohorts)}: {result.stderr.strip()}")
     try:
         payload = json.loads(result.stdout)
-        files = payload["files"]
+        resolved = (
+            {cohorts[0]: payload}
+            if len(cohorts) == 1
+            else payload["cohorts"]
+        )
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
-        raise RuntimeError(f"corpus resolver returned invalid JSON for {cohort}: {exc}") from exc
-    if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
-        raise RuntimeError(f"corpus resolver returned an invalid file list for {cohort}")
-    return set(files)
+        raise RuntimeError(f"corpus resolver returned invalid JSON: {exc}") from exc
+    output: Dict[str, set[str]] = {}
+    for cohort in cohorts:
+        files = resolved.get(cohort, {}).get("files")
+        if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
+            raise RuntimeError(f"corpus resolver returned an invalid file list for {cohort}")
+        output[cohort] = set(files)
+    return output
+
+
+def resolve_corpus(cohort: str) -> set[str]:
+    """Compatibility wrapper for one named cohort."""
+    return resolve_corpora(cohort)[cohort]
 
 
 def is_external_mirror(skill_path: str) -> bool:
@@ -161,8 +177,9 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
             f"(rebuild-inventory.py → validate --populate-db → dolt-sync.py)."
         )
     out: List[Dict[str, str]] = []
-    graded = resolve_corpus("graded")
-    first_party = resolve_corpus("first-party")
+    cohorts = resolve_corpora("graded", "first-party")
+    graded = cohorts["graded"]
+    first_party = cohorts["first-party"]
     try:
         with grades_csv.open(newline="") as fh:
             for row in csv.DictReader(fh):

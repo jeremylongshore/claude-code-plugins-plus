@@ -1125,6 +1125,7 @@ export function buildExtendedScorecardRows({
       'scripts/corpus-resolver.mjs',
       '.claude-plugin/marketplace.extended.json',
       'scripts/plugin-provenance.mjs',
+      'skills/.curated/MANIFEST.json',
     ).filter((path) => reader.pathSet.has(path)),
     {
       answers,
