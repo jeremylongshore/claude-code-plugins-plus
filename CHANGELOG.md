@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Curated promotion now validates file content instead of relying on a NUL-byte prefix.**
   Recognized image, archive, document, font, and executable signatures are omitted from the
   text-only `skills/.curated/` projection, while misleading extensions, unreadable paths,
-  symlinks, NUL-bearing data, and non-UTF-8 payloads fail closed in both build and drift-check modes. The
+  symlinks, NUL-bearing data, non-UTF-8 payloads, and failed `git ls-files` enumeration fail
+  closed in both build and drift-check modes instead of silently producing an empty mirror. The
   paired corpus correction replaces seven first-party text placeholders that masqueraded as
   `.png`, `.pdf`, or `.zip` files with truthful Markdown briefs or removes them, then rebuilds
   all 1,915 curated skills. The pre-change scorecard found 11 extension/byte mismatches: seven

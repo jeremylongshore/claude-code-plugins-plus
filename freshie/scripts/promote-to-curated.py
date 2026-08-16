@@ -153,6 +153,8 @@ _MAGIC_SIGNATURES: Tuple[Tuple[str, Tuple[bytes, ...], frozenset[str]], ...] = (
 _BINARY_EXTENSIONS = frozenset(
     extension for _kind, _signatures, extensions in _MAGIC_SIGNATURES for extension in extensions
 ) | frozenset({".dll", ".exe", ".webp"})
+# Unix executables commonly have no suffix; data formats and Windows PE files
+# must retain one of their registered extensions.
 _EXTENSION_OPTIONAL_BINARY_TYPES = frozenset({"elf", "mach-o"})
 _INSPECTION_CHUNK_BYTES = 64 * 1024
 
@@ -339,6 +341,7 @@ def _detect_magic_type(prefix: bytes) -> Optional[Tuple[str, frozenset[str]]]:
     if len(prefix) >= 12 and prefix.startswith(b"RIFF") and prefix[8:12] == b"WEBP":
         return "webp", frozenset({".webp"})
     if prefix.startswith(b"MZ") and len(prefix) >= 64:
+        # The DOS header stores the PE signature offset at bytes 0x3C-0x40.
         pe_offset = int.from_bytes(prefix[0x3C:0x40], "little")
         if pe_offset + 4 <= len(prefix) and prefix[pe_offset : pe_offset + 4] == b"PE\0\0":
             return "portable-executable", frozenset({".exe", ".dll", ".node"})
@@ -386,6 +389,8 @@ def _is_binary(path: Path) -> bool:
             decoder = codecs.getincrementaldecoder("utf-8")("strict")
             chunk = prefix
             while chunk:
+                # NUL is valid UTF-8, so the decoder alone cannot distinguish
+                # NUL-bearing binary payloads from curated text.
                 if b"\0" in chunk:
                     raise UnknownBinaryContentError(
                         f"{path} contains NUL-bearing binary data with no registered content type"
