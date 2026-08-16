@@ -65,10 +65,10 @@ function fixture() {
     'plugins/example/assets/bad.png': 'plain text placeholder',
     'plugins/example/assets/good.png': Buffer.from('89504e470d0a1a0a00000000', 'hex'),
     'plugins/example/SKILL.md': '# skill\n',
-    'scripts/generate-readme-toc.mjs': 'const README = "README.md"; const skills = 1;',
+    'scripts/generate-readme-toc.mjs':
+      "const catalog = '.claude-plugin/marketplace.extended.json'; const skillCount = 1; const agentCount = 1; writeFileSync('README.md', String(catalog) + skillCount + agentCount);\n",
     'scripts/corpus-resolver.mjs': 'export function resolveCorpus() {}\n',
     'scripts/plugin-provenance.mjs': 'export function resolvePluginProvenance() {}\n',
-    'scripts/update-metrics.mjs': 'const README = "README.md"; const skillCount = 1;',
     'skills/.curated/MANIFEST.json': JSON.stringify({
       count: 1,
       skills: [{ curated_name: 'example-1' }],
@@ -103,7 +103,11 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
   assert.equal(report.rows[12].values.missed_count, 1);
   assert.equal(report.rows[22].values.count_without_content_drift_gate, 0);
   assert.equal(report.rows[24].values.named_cohorts, 5);
-  assert.equal(report.rows[25].values.count, 0);
+  assert.deepEqual(report.rows[25].values, {
+    count: 1,
+    target: 1,
+    writers: ['scripts/generate-readme-toc.mjs'],
+  });
   assert.equal(report.rows[26].values.without_valid_bound, 3);
   assert.equal(report.rows[1].reproduce, 'pnpm run measure:e1 --row=1 --stdout');
   assert.deepEqual(report.rows[27].values, {
@@ -113,6 +117,21 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
     yaml_only: [],
     target_equal: true,
   });
+});
+
+test('refuses a planted second README metrics writer even when it is indexed', () => {
+  const root = fixture();
+  put(
+    root,
+    'packages/planted-readme-metrics/writer.mjs',
+    "const catalog = '.claude-plugin/marketplace.extended.json'; const skills = 1; const agents = 1; writeFileSync('README.md', String(catalog) + skills + agents);\n",
+  );
+  execFileSync('git', ['add', 'packages/planted-readme-metrics/writer.mjs'], { cwd: root });
+
+  assert.throws(
+    () => buildReport(root, evidence()),
+    /README metric writer contract requires only scripts\/generate-readme-toc\.mjs; observed packages\/planted-readme-metrics\/writer\.mjs, scripts\/generate-readme-toc\.mjs/,
+  );
 });
 
 test('validator parsers fail closed on malformed evidence and missing summaries', () => {

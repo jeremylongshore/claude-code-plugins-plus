@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
 
 export const ARTIFACT_PATH = '000-docs/742-RA-DATA-epic-1-scorecard.json';
+export const REQUIRED_README_METRIC_WRITER = 'scripts/generate-readme-toc.mjs';
 const SCRIPT_PATH = 'scripts/measure-epic-1.mjs';
 export const MEASUREMENT_INPUT_PATHS = [
   SCRIPT_PATH,
@@ -376,6 +377,20 @@ function row(dimension, cohort, values, id, targetStatus = 'informational') {
   };
 }
 
+export function assertReadmeMetricWriterContract(readmeWriterRow) {
+  const writers = readmeWriterRow?.values?.writers;
+  if (
+    !Array.isArray(writers) ||
+    writers.length !== 1 ||
+    writers[0] !== REQUIRED_README_METRIC_WRITER
+  ) {
+    const observed = Array.isArray(writers) ? writers.join(', ') || '(none)' : '(malformed)';
+    fail(
+      `README metric writer contract requires only ${REQUIRED_README_METRIC_WRITER}; observed ${observed}`,
+    );
+  }
+}
+
 export function buildReport(root, suppliedEvidence, suppliedPaths) {
   const repository = resolve(root);
   const paths = suppliedPaths ?? trackedPaths(repository);
@@ -414,6 +429,7 @@ export function buildReport(root, suppliedEvidence, suppliedPaths) {
     skillRows: evidence.skills.filter((entry) => entry && typeof entry.path === 'string'),
     skillSummary: skills,
   });
+  assertReadmeMetricWriterContract(extendedRows[25]);
 
   return {
     blueprint: '727',

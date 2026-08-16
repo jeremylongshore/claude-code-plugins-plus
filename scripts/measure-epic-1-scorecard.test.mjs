@@ -154,7 +154,24 @@ test('requires call-bound production evidence and excludes measurement instrumen
     'scripts/unrelated-writer.mjs',
     "const mentioned = 'alpha.json'; writeFileSync('README.md', mentioned);\n",
   );
-  base.paths.push('scripts/measure-epic-1-scorecard.mjs', 'scripts/unrelated-writer.mjs');
+  put(
+    base.root,
+    'packages/example/readme-writer.test.mjs',
+    "const catalog = 'marketplace.extended.json'; const skills = 1; const agents = 1; writeFileSync('README.md', String(catalog) + skills + agents);\n",
+  );
+  put(base.root, 'plugins/mirrored/.source.json', '{"source":"upstream"}\n');
+  put(
+    base.root,
+    'plugins/mirrored/readme-writer.mjs',
+    "const catalog = 'marketplace.extended.json'; const skills = 1; const agents = 1; writeFileSync('README.md', String(catalog) + skills + agents);\n",
+  );
+  base.paths.push(
+    'packages/example/readme-writer.test.mjs',
+    'plugins/mirrored/.source.json',
+    'plugins/mirrored/readme-writer.mjs',
+    'scripts/measure-epic-1-scorecard.mjs',
+    'scripts/unrelated-writer.mjs',
+  );
 
   const rows = buildExtendedScorecardRows(input(base));
   assert.deepEqual(rows[22].values.artifacts[0].producers, [
