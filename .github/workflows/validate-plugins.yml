@@ -1450,6 +1450,12 @@ jobs:
           node --test scripts/check-doc-authority.test.mjs
           node scripts/check-doc-authority.mjs
 
+      # j-rig owns eval execution but never writes its runtime tables into the
+      # Freshie inventory. First-party operator surfaces must use the scratch-DB
+      # wrapper and repository-owned recorder described by blueprint 727 §4.
+      - name: Check JRig never receives the Freshie inventory database
+        run: pnpm run validate:jrig-db-boundary
+
       # Supersession is one atomic record, not a status-only edit. Keep the
       # frozen header, per-section disposition, and canonical pointer together.
       - name: Check document supersession record template
