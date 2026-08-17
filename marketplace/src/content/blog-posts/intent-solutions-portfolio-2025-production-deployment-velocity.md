@@ -17,7 +17,7 @@ When you see "deploy in days, not months," it sounds like marketing fluff. This 
 | **[DiagnosticPro](https://diagnosticpro.io)** | AI vehicle diagnostics | React 18, Firebase, Vertex AI | Production | 96.4% gross margin |
 | **[Hustle](https://hustlestats.io)** | Youth sports recruiting stats | Next.js 15, PostgreSQL, Cloud Run | Live beta | COPPA-compliant auth |
 | **[CostPlusDB](https://costplusdb.dev)** | Transparent database hosting | PostgreSQL 16, AWS, pgBackRest | Production | 68% cost savings vs AWS |
-| **ClaudeCodePlugins** (retired legacy public domain) | Plugin marketplace | Next.js 15, Cloud Run | Live | 236 production plugins |
+| **ClaudeCodePlugins** (retired legacy public domain; [current Tons of Skills platform](https://tonsofskills.com/)) | Plugin marketplace | Next.js 15, Cloud Run | Live | 236 production plugins |
 | **Intent Solutions** | Company landing | Astro 5, Tailwind CSS 4 | Production | 4-day concept→deploy |
 
 **Combined infrastructure:** Google Cloud Platform (primary), AWS (secondary), Netlify (static sites), Firebase (customer platforms).

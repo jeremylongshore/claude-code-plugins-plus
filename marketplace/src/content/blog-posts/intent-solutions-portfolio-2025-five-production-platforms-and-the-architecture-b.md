@@ -42,7 +42,7 @@ canonical: "https://startaitools.com/posts/intent-solutions-portfolio-2025-five-
 <td>68% cost savings vs AWS</td>
 </tr>
 <tr>
-<td><strong><a href="[retired legacy public domain]">ClaudeCodePlugins</a></strong></td>
+<td><strong>ClaudeCodePlugins</strong> (retired legacy public domain; <a href="https://tonsofskills.com/">current Tons of Skills platform</a>)</td>
 <td>Plugin marketplace</td>
 <td>Next.js 15, Cloud Run</td>
 <td>Live</td>
