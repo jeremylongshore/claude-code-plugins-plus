@@ -1445,8 +1445,9 @@ jobs:
 
       - name: Check deterministic marketplace projections
         run: |
-          node --test scripts/generated-content-ci.test.mjs
+          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs
           node marketplace/scripts/discover-skills.mjs --level=full --check
+          node marketplace/scripts/sync-catalog.mjs --check
 
   doc-governance:
     runs-on: ubuntu-latest
