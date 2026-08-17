@@ -544,8 +544,8 @@
       "cohort": "literal docs.anthropic.com occurrences in tracked text-like files",
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
-        "files": 172,
-        "occurrences": 433,
+        "files": 171,
+        "occurrences": 431,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -580,7 +580,6 @@
           "marketplace/src/content/docs/reference/skill-frontmatter.md",
           "marketplace/src/content/playbooks/03-mcp-reliability.md",
           "marketplace/src/content/playbooks/12-beginner-onboarding.md",
-          "marketplace/src/data/readme-sections.json",
           "marketplace/src/data/skills-catalog.json",
           "plugins/ai-agency/tonone/README.md",
           "plugins/ai-ml/ai-sdk-agents/README.md",
@@ -760,7 +759,6 @@
         "marketplace/src/content/docs/reference/skill-frontmatter.md",
         "marketplace/src/content/playbooks/03-mcp-reliability.md",
         "marketplace/src/content/playbooks/12-beginner-onboarding.md",
-        "marketplace/src/data/readme-sections.json",
         "marketplace/src/data/skills-catalog.json",
         "plugins/ai-agency/tonone/README.md",
         "plugins/ai-ml/ai-sdk-agents/README.md",
@@ -1052,8 +1050,6 @@
       "reproduce": "pnpm run measure:e1 --row=22 --stdout",
       "source": [
         "marketplace/scripts/discover-skills.mjs",
-        "marketplace/scripts/enrich-jrig-data.mjs",
-        "marketplace/scripts/extract-readme-sections.mjs",
         "marketplace/scripts/generate-unified-search.mjs",
         "marketplace/scripts/sync-catalog.mjs",
         "scripts/fetch-github-stats.mjs",
@@ -1081,20 +1077,8 @@
           },
           {
             "content_drift_gate": false,
-            "path": "marketplace/src/data/jrig-data.json",
-            "producers": ["marketplace/scripts/enrich-jrig-data.mjs"],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
             "path": "marketplace/src/data/npm-stats.json",
             "producers": ["scripts/fetch-npm-stats.mjs"],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
-            "path": "marketplace/src/data/readme-sections.json",
-            "producers": ["marketplace/scripts/extract-readme-sections.mjs"],
             "wired_checkers": []
           },
           {
@@ -1128,7 +1112,7 @@
             "wired_checkers": []
           }
         ],
-        "count_without_content_drift_gate": 10,
+        "count_without_content_drift_gate": 8,
         "target_without_content_drift_gate": 0
       }
     },
@@ -1145,9 +1129,7 @@
       "source": [
         "marketplace/src/data/catalog.json",
         "marketplace/src/data/github-stats.json",
-        "marketplace/src/data/jrig-data.json",
         "marketplace/src/data/npm-stats.json",
-        "marketplace/src/data/readme-sections.json",
         "marketplace/src/data/skills-catalog.json",
         "marketplace/src/data/skills-index.json",
         "marketplace/src/data/skills-stats.json",
@@ -2155,11 +2137,11 @@
       "reason_code": "MISSING_HASH_LINKED_PUBLIC_CLAIM_CONTRACT",
       "reproduce": "pnpm run measure:e1 --row=56 --stdout",
       "required_inputs": ["claim-to-primary-artifact hash field", "consumer-page registry"],
-      "source": ["marketplace/src/data/jrig-data.json"],
+      "source": [],
       "status": "partial",
       "values": {
         "backing_verified": null,
-        "public_verified_claims": 1
+        "public_verified_claims": 0
       }
     },
     "57": {
