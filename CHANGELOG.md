@@ -14,8 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `scripts/run-jrig-eval.sh`, which evaluates against a `/dev/shm` scratch database and delegates
   the governed `forge_proofs` write to the repository recorder. A provenance-aware, fail-closed
   check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
-  directives across active first-party operator surfaces; mirrors remain upstream-owned. The check
-  runs inside the existing documentation-governance job and adds no required status context.
+  directives across active first-party operator surfaces, including `npx` invocations and folded
+  YAML commands; mirrors remain upstream-owned. The check runs inside the existing
+  documentation-governance job and adds no required status context.
 
 ### Changed (2026-08-16 — build-derived marketplace data ownership)
 

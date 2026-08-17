@@ -11,6 +11,8 @@ const ACTIVE_ROOTS = ['.github/', 'plugins/', 'scripts/'];
 const ACTIVE_EXTENSIONS = new Set(['.md', '.sh', '.yaml', '.yml']);
 const DIRECT_REASON = 'DIRECT_JRIG_FRESHIE_DB';
 const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
+const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
+const FRESHIE_DB_FLAG_RE = /[`'"]?--db[`'"]?(?:\s*=\s*|\s+)[`'"]?\S*freshie\/inventory\.sqlite\b/i;
 
 function lineNumber(text, offset) {
   return text.slice(0, offset).split('\n').length;
@@ -23,7 +25,7 @@ function commandBlocks(text) {
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (/\b(?:pnpm\s+exec\s+)?j-rig\s+eval\b/.test(line)) {
+    if (JRIG_EVAL_RE.test(line)) {
       const start = offset;
       const commandLines = [line];
       let cursor = index;
@@ -38,21 +40,67 @@ function commandBlocks(text) {
   return blocks;
 }
 
+// YAML folds `run: >` lines into one shell command. A line-oriented scan would
+// otherwise miss a forbidden --db flag placed on the next indented line.
+function foldedRunBlocks(text) {
+  const lines = text.split('\n');
+  const blocks = [];
+  let offset = 0;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const match = /^(\s*)(?:-\s*)?run:\s*>[-+]?\s*(?:#.*)?$/.exec(line);
+    if (!match) {
+      offset += line.length + 1;
+      continue;
+    }
+
+    const parentIndent = match[1].length;
+    const content = [];
+    let firstOffset = null;
+    let cursor = index + 1;
+    let cursorOffset = offset + line.length + 1;
+    while (cursor < lines.length) {
+      const candidate = lines[cursor];
+      if (candidate.trim() === '') {
+        content.push('');
+      } else {
+        const indent = candidate.match(/^\s*/)[0].length;
+        if (indent <= parentIndent) break;
+        if (firstOffset === null) firstOffset = cursorOffset;
+        content.push(candidate.trim());
+      }
+      cursorOffset += candidate.length + 1;
+      cursor += 1;
+    }
+    const folded = content.join(' ');
+    if (firstOffset !== null && JRIG_EVAL_RE.test(folded)) {
+      blocks.push({ text: folded, offset: firstOffset });
+    }
+    offset += line.length + 1;
+  }
+  return blocks;
+}
+
 export function inspectJrigDbBoundary(text, filePath) {
   const findings = [];
-  for (const command of commandBlocks(text)) {
+  const seen = new Set();
+  for (const command of [...commandBlocks(text), ...foldedRunBlocks(text)]) {
     const normalized = command.text.replace(/\\\s*\n\s*/g, ' ');
-    if (/--db(?:=|\s+)\S*freshie\/inventory\.sqlite\b/i.test(normalized)) {
-      findings.push({
+    if (FRESHIE_DB_FLAG_RE.test(normalized)) {
+      const finding = {
         path: filePath,
         line: lineNumber(text, command.offset),
         reasonCode: DIRECT_REASON,
-      });
+      };
+      const key = `${finding.line}:${finding.reasonCode}`;
+      if (!seen.has(key)) findings.push(finding);
+      seen.add(key);
     }
   }
 
   const directive =
-    /\b(?:point|pass|set)\s+`?--db`?\s+(?:at|to)\s+`?[^`\n]*freshie\/inventory\.sqlite\b/gi;
+    /\b(?:point|pass|set|use|give|feed|supply|target)\b[^\n]{0,120}?`?--db`?(?:\s*=\s*|\s+(?:(?:at|to)\s+)?)`?[^`\n]{0,120}?freshie\/inventory\.sqlite\b/gi;
   for (const match of text.matchAll(directive)) {
     findings.push({
       path: filePath,

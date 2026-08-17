@@ -26,7 +26,7 @@ Never pass the tracked inventory as j-rig's --db value.
   assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), []);
 });
 
-test('red proof: direct single-line and continued j-rig writes to Freshie are refused', () => {
+test('red proof: direct, continued, npx, quoted, and folded-YAML writes are refused', () => {
   const text = `
 j-rig eval skills/plain --db freshie/inventory.sqlite --json
 \`\`\`bash
@@ -38,6 +38,11 @@ j-rig eval skills/three \\
   --db \\
   freshie/inventory.sqlite
 \`\`\`
+npx j-rig eval skills/four '--db=freshie/inventory.sqlite'
+run: >-
+  j-rig eval skills/five
+  --models fast,slow
+  --db freshie/inventory.sqlite
 `;
   assert.deepEqual(
     inspectJrigDbBoundary(text, 'plugins/example/README.md').map((row) => row.reasonCode),
@@ -46,18 +51,35 @@ j-rig eval skills/three \\
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
     ],
   );
 });
 
-test('prose directing operators to point --db at Freshie is refused', () => {
+test('prose directives using distinct operator verbs are refused', () => {
   const findings = inspectJrigDbBoundary(
-    'To persist results, point `--db` at `freshie/inventory.sqlite`.',
+    [
+      'To persist results, point `--db` at `freshie/inventory.sqlite`.',
+      'Use `--db freshie/inventory.sqlite` for the durable run.',
+      'Feed `--db=freshie/inventory.sqlite` into j-rig.',
+    ].join('\n'),
     'plugins/example/README.md',
   );
   assert.deepEqual(
     findings.map((row) => row.reasonCode),
-    ['JRIG_FRESHIE_DB_DIRECTIVE'],
+    ['JRIG_FRESHIE_DB_DIRECTIVE', 'JRIG_FRESHIE_DB_DIRECTIVE', 'JRIG_FRESHIE_DB_DIRECTIVE'],
+  );
+});
+
+test('copyable forbidden commands remain refused even when labeled as negative examples', () => {
+  const findings = inspectJrigDbBoundary(
+    'Do not run `j-rig eval skills/example --db freshie/inventory.sqlite`.',
+    'plugins/example/README.md',
+  );
+  assert.deepEqual(
+    findings.map((row) => row.reasonCode),
+    ['DIRECT_JRIG_FRESHIE_DB'],
   );
 });
 

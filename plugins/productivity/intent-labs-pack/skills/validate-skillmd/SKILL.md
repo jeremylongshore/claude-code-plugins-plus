@@ -9,7 +9,7 @@ description: |
   for marketplace submission, running deep quality analysis, or gating a skill for
   production. Trigger with "validate this skill", "grade my skill", "deep eval",
   "check SKILL.md", "validate thorough", "/validate-skillmd".
-allowed-tools: "Read,Edit,Write,Bash(python3:*),Bash(j-rig:*),Bash(node:*),Glob,Grep,AskUserQuestion"
+allowed-tools: "Read,Edit,Write,Bash(python3:*),Bash(j-rig:*),Bash(node:*),Bash(scripts/run-jrig-eval.sh:*),Glob,Grep,AskUserQuestion"
 version: 5.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
