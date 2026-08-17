@@ -554,7 +554,7 @@ function main() {
   const indexGeneratedAt = CHECK
     ? preservedGeneratedAt(INDEX_FILE, 'skills index')
     : generatedAt;
-  const catalogGeneratedAt = CHECK
+  const catalogGeneratedAt = CHECK && !metadataOnly
     ? preservedGeneratedAt(OUTPUT_FILE, 'skills catalog')
     : generatedAt;
   const categories = [...new Set(skills.map(s => s.parentPlugin.category))].sort();
