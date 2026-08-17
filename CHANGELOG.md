@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — JRig/Freshie authority boundary)
+
+- **First-party operator guidance can no longer send JRig's runtime tables into the Freshie
+  inventory.** The public validation skill and Plane evidence note now use
+  `scripts/run-jrig-eval.sh`, which evaluates against a `/dev/shm` scratch database and delegates
+  the governed `forge_proofs` write to the repository recorder. A provenance-aware, fail-closed
+  check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
+  directives across active first-party operator surfaces, including `npx` invocations, folded
+  and flow-style YAML commands, shell-escaped executable and flag spellings, statically resolvable
+  executable/verb/flag/value indirection, ad hoc shell-function aliases, command substitution,
+  parameter assignment, brace expansion, parsed YAML tags/keys/anchors, and active filesystem-glob
+  path spellings. Command state follows shell ordering while assignments isolated by subshells,
+  pipelines, background jobs, or skipped `&&`/`||` branches cannot overwrite parent state; quoted
+  or escaped literal glob characters remain literal, and mirrors remain upstream-owned.
+  The check runs inside the existing
+  documentation-governance job and adds no required status context.
+
 ### Changed (2026-08-16 — build-derived marketplace data ownership)
 
 - **Two build-only marketplace JSON projections no longer have a second committed claimant.**
