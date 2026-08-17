@@ -286,6 +286,14 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
       'DB=$(printf "freshie/%s" inventory.sqlite)\nj-rig eval x --db "$DB"',
     ],
     [
+      'multi-placeholder command substitution cannot hide the database path',
+      'DB=$(printf "%s/%s" freshie inventory.sqlite)\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'embedded-placeholder command substitution cannot hide the database path',
+      'DB=$(printf "fresh%s/inventory.%s" ie sqlite)\nj-rig eval x --db "$DB"',
+    ],
+    [
       'conditional assignment remains a possible state',
       'if test -n "${FLAG:-}"; then DB=freshie/inventory.sqlite; fi\nj-rig eval x --db "$DB"',
     ],
@@ -364,6 +372,10 @@ j-rig eval x --db "$DB"`,
     [
       'negative JRig prose is not an operator directive',
       'JRig must never use --db freshie/inventory.sqlite.',
+    ],
+    [
+      'non-colon assignment preserves an existing empty value',
+      'DB=\n: "${DB=freshie/inventory.sqlite}"\nj-rig eval x --db "$DB"',
     ],
   ];
   for (const [name, text] of safe) {

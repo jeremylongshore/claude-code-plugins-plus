@@ -23,6 +23,71 @@ function shellLiteralView(text) {
     .replace(/\\([^\n])/g, '$1');
 }
 
+function staticShellWords(text) {
+  const words = [];
+  let word = '';
+  let quote = null;
+  let active = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (quote) {
+      if (character === quote) quote = null;
+      else if (character === '\\' && quote === '"' && index + 1 < text.length)
+        word += text[(index += 1)];
+      else word += character;
+      active = true;
+      continue;
+    }
+    if (character === "'" || character === '"') {
+      quote = character;
+      active = true;
+      continue;
+    }
+    if (character === '\\' && index + 1 < text.length) {
+      word += text[(index += 1)];
+      active = true;
+      continue;
+    }
+    if (/\s/.test(character)) {
+      if (active) words.push(word);
+      word = '';
+      active = false;
+      continue;
+    }
+    if (/[`$;&|<>]/.test(character)) return null;
+    word += character;
+    active = true;
+  }
+  if (quote) return null;
+  if (active) words.push(word);
+  return words;
+}
+
+function evaluateStaticPrintf(body) {
+  const words = staticShellWords(body);
+  if (!words || words.shift() !== 'printf') return null;
+  if (words[0] === '--') words.shift();
+  const format = words.shift();
+  if (format === undefined || /%(?![%s])/.test(format)) return null;
+  let argument = 0;
+  let output = '';
+  for (let index = 0; index < format.length; index += 1) {
+    if (format[index] !== '%') {
+      output += format[index];
+      continue;
+    }
+    const directive = format[(index += 1)];
+    if (directive === '%') output += '%';
+    else if (directive === 's') output += words[argument++] ?? '';
+    else return null;
+  }
+  return argument === words.length ? output : null;
+}
+
+function resolveStaticCommandSubstitutions(value) {
+  return value.replace(/\$\(([^()]*)\)/g, (token, body) => evaluateStaticPrintf(body) ?? token);
+}
+
 function functionAliases(text) {
   const aliases = new Set();
   const functions =
@@ -57,7 +122,7 @@ function collectAssignments(text) {
 
   // Match every assignment token, not only the first token in declarations
   // such as `local -r SAFE=x DB=...`.
-  const assignment = /(?:^|[;\n]|\s)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\$\([^)]*\)|[^\s;\n]+)/g;
+  const assignment = /(?:^|[;\n]|\s)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\$\([^)]*\)|[^\s;\n]*)/g;
   for (const match of text.matchAll(assignment)) {
     record(match.index, match[1], match[2]);
   }
@@ -106,7 +171,8 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
     return expandKnownVariables(assignments.get(name), assignments, nestedStack);
   };
 
-  const githubEnv = value.replace(
+  const staticCommands = resolveStaticCommandSubstitutions(value);
+  const githubEnv = staticCommands.replace(
     /\$\{\{\s*env\.([A-Za-z_][A-Za-z0-9_]*)\s*\}\}/g,
     (token, name) => resolve(name) ?? token,
   );
@@ -376,7 +442,7 @@ function splitShellStatements(text) {
 function assignmentOnly(text) {
   const stripped = text
     .replace(/^\s*(?:(?:export|readonly|local|declare|typeset)\s+(?:-[A-Za-z]+\s+)*)?/, '')
-    .replace(/(?:^|\s)[A-Za-z_][A-Za-z0-9_]*\s*=\s*(?:\$\([^)]*\)|[^\s;]+)/g, '')
+    .replace(/(?:^|\s)[A-Za-z_][A-Za-z0-9_]*\s*=\s*(?:\$\([^)]*\)|[^\s;]*)/g, '')
     .trim();
   return stripped === '';
 }
