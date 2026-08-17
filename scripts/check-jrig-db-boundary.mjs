@@ -41,6 +41,7 @@ function containsJrigEval(text, aliases = new Set()) {
   const literal = shellLiteralView(text);
   if (JRIG_EVAL_RE.test(literal)) return true;
   if (/\bj-rig\b[\s)]*eval\b/.test(literal)) return true;
+  if (/\bj-rig\b/.test(literal) && /\$\([^)]*\beval\b[^)]*\)/.test(literal)) return true;
   for (const alias of aliases) {
     const escaped = alias.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
     if (new RegExp(`\\b${escaped}\\s+eval\\b`).test(literal)) return true;
@@ -110,7 +111,7 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
     (token, name) => resolve(name) ?? token,
   );
   const variable =
-    /\$\{!([A-Za-z_][A-Za-z0-9_]*)\}|\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|:=|:\+|:)([^}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)/g;
+    /\$\{!([A-Za-z_][A-Za-z0-9_]*)\}|\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|:=|:\+|:|-|=|\+)([^}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)/g;
   return githubEnv.replace(
     variable,
     (token, indirectName, bracedName, operator, operand, bareName) => {
@@ -124,8 +125,14 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
       if (operator === ':-' || operator === ':=') {
         return resolved ? resolved : expandKnownVariables(operand, assignments, stack);
       }
+      if (operator === '-' || operator === '=') {
+        return resolved !== null ? resolved : expandKnownVariables(operand, assignments, stack);
+      }
       if (operator === ':+') {
         return resolved ? expandKnownVariables(operand, assignments, stack) : '';
+      }
+      if (operator === '+') {
+        return resolved !== null ? expandKnownVariables(operand, assignments, stack) : '';
       }
       if (operator === ':') {
         if (resolved === null || !/^-?\d+$/.test(operand)) return token;
@@ -138,12 +145,13 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
 
 function applyParameterSideEffects(assignments, text) {
   const next = new Map(assignments);
-  const sideEffect = /\$\{([A-Za-z_][A-Za-z0-9_]*):=([^}]*)\}/g;
+  const sideEffect = /\$\{([A-Za-z_][A-Za-z0-9_]*)(:=|=)([^}]*)\}/g;
   for (const match of text.matchAll(sideEffect)) {
     const current = next.has(match[1])
       ? shellLiteralView(expandKnownVariables(next.get(match[1]), next))
       : '';
-    if (!current) next.set(match[1], match[2]);
+    const unset = !next.has(match[1]);
+    if (unset || (match[2] === ':=' && !current)) next.set(match[1], match[3]);
   }
   return next;
 }
@@ -240,15 +248,22 @@ function commandTargetsFreshie(command, assignments, aliases = new Set()) {
     .replace(/\\([A-Za-z-])/g, '$1')
     .replace(/(["'])--db\1/g, '--db')
     .replace(/(["'])--db/g, '--db');
-  if (assignments.has(AMBIGUOUS_STATE) && /--db\b/.test(shellLiteralView(expanded))) return true;
-  for (const match of expanded.matchAll(dbArgument)) {
-    if (isFreshieInventoryPath(match[1])) return true;
-  }
   const literal = shellLiteralView(expanded);
+  const executable = literal
+    .trim()
+    .replace(/^(?:[A-Za-z_][A-Za-z0-9_]*=[^\s]+\s+)*/, '')
+    .replace(/^command\s+/, '');
+  if (/^(?:echo|printf)\b/.test(executable)) return false;
   const invokesJrig =
     /\bj-rig\b/.test(literal) ||
     [...aliases].some((alias) => new RegExp(`\\b${alias}\\b`).test(literal));
+  if (!invokesJrig) return false;
+  if (assignments.has(AMBIGUOUS_STATE) && /--db\b/.test(literal)) return true;
+  for (const match of expanded.matchAll(dbArgument)) {
+    if (isFreshieInventoryPath(match[1])) return true;
+  }
   if (invokesJrig && /\beval\b/.test(literal) && /--db\b/.test(literal)) {
+    if (/\$\([^)]*\bfreshie\/[^)]*\binventory\.sqlite\b[^)]*\)/.test(expanded)) return true;
     const candidates = expanded.match(/[^\s;&|]+/g) ?? [];
     if (
       candidates.some(
@@ -441,9 +456,19 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
       statement.operatorBefore === '|' ||
       statement.operatorAfter === '|' ||
       statement.operatorAfter === '&';
-    const hasParameterSideEffect = /\$\{[A-Za-z_][A-Za-z0-9_]*:=/.test(trimmed);
-    if (executes && (assignmentOnly(trimmed) || hasParameterSideEffect) && !isolated) {
-      states = optional ? uniqueStates([...states, ...appliedStates]) : uniqueStates(appliedStates);
+    const hasParameterSideEffect = /\$\{[A-Za-z_][A-Za-z0-9_]*:?=/.test(trimmed);
+    const controlFlowAssignment =
+      statementAssignments.size > 0 &&
+      /^\s*(?:if|then|elif|else|while|until|for|case|select|do)\b/.test(trimmed);
+    if (
+      executes &&
+      (assignmentOnly(trimmed) || hasParameterSideEffect || controlFlowAssignment) &&
+      !isolated
+    ) {
+      states =
+        optional || controlFlowAssignment
+          ? uniqueStates([...states, ...appliedStates])
+          : uniqueStates(appliedStates);
     }
     if (executes) priorStatus = optional ? null : staticStatus(trimmed);
   }
@@ -602,8 +627,9 @@ export function inspectJrigDbBoundary(text, filePath) {
     // Shell-shaped lines are governed by the execution-aware command scan.
     // Do not reclassify a statically unreachable command as prose.
     if (containsJrigEval(match[0])) continue;
-    if (!/\b(?:j-?rig|evaluat\w*|results?|persist\w*|run|target|destination)\b/i.test(match[0]))
-      continue;
+    const directiveVerb =
+      /(?:^|[,;:]\s*|\b(?:should|must|can)\s+)(?:to\s+)?(?:choose|configure|direct|feed|pass|persist|point|provide|route|select|send|set|supply|target|use|write)\b/i;
+    if (!directiveVerb.test(match[0])) continue;
     const finding = {
       path: filePath,
       line: directiveLine,

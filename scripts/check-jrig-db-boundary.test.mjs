@@ -274,8 +274,20 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
       ': "${DB:=freshie/inventory.sqlite}"\nj-rig eval x --db "$DB"',
     ],
     [
+      'non-colon parameter assignment side effect persists',
+      ': "${DB=freshie/inventory.sqlite}"\nj-rig eval x --db "$DB"',
+    ],
+    [
       'dynamic executable assignment preserves command substitution',
       'EXE=$(printf %s j-rig)\nDB=freshie/inventory.sqlite\n"$EXE" eval x --db "$DB"',
+    ],
+    [
+      'composed command substitution cannot hide the database path',
+      'DB=$(printf "freshie/%s" inventory.sqlite)\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'conditional assignment remains a possible state',
+      'if test -n "${FLAG:-}"; then DB=freshie/inventory.sqlite; fi\nj-rig eval x --db "$DB"',
     ],
     [
       'GitHub env expression resolves parsed YAML env',
@@ -344,6 +356,15 @@ j-rig eval x --db "$DB"`,
       'false && j-rig eval x --db freshie/inventory.sqlite',
     ],
     ['non-JRig utility with db-shaped arguments', 'echo --db freshie/inventory.sqlite'],
+    ['echo of a JRig command is not execution', 'echo j-rig eval x --db freshie/inventory.sqlite'],
+    [
+      'informational JRig prose is not an operator directive',
+      'JRig documentation describes --db and freshie/inventory.sqlite without directing its use.',
+    ],
+    [
+      'negative JRig prose is not an operator directive',
+      'JRig must never use --db freshie/inventory.sqlite.',
+    ],
   ];
   for (const [name, text] of safe) {
     assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
