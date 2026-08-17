@@ -121,6 +121,25 @@ test('unreadable and symlink source records have stable fail-closed reasons', ()
   assert.equal(symlink.reasonCode, 'SOURCE_RECORD_SYMLINK');
 });
 
+test('dangling source record symlinks fail closed instead of appearing absent', () => {
+  const root = fixture();
+  packageFixture(root, 'plugins/dangling-source', {
+    name: '@intentsolutionsio/dangling-source',
+  });
+  fs.symlinkSync('missing-target.json', path.join(root, 'plugins/dangling-source', '.source.json'));
+
+  const provenance = resolvePluginProvenance('plugins/dangling-source', { root });
+  assert.equal(provenance.status, 'refused');
+  assert.equal(provenance.reasonCode, 'SOURCE_RECORD_SYMLINK');
+
+  const report = buildPublishCandidateReport({ root, all: true, scope: '@intentsolutionsio/' });
+  assert.equal(report.firstPartyCandidates.length, 0);
+  assert.deepEqual(
+    report.refused.map((row) => [row.name, row.reasonCode]),
+    [['@intentsolutionsio/dangling-source', 'SOURCE_RECORD_SYMLINK']],
+  );
+});
+
 test('refuses a provenance record whose opened descriptor and path identities differ', () => {
   let readAttempted = false;
   const result = parseSourceRecord('/fixture/.source.json', {

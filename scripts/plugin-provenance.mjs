@@ -19,6 +19,7 @@ export function parseSourceRecord(
     fstat = fs.fstatSync,
     readFile = fs.readFileSync,
     close = fs.closeSync,
+    allowAbsent = false,
   } = {},
 ) {
   let raw;
@@ -41,6 +42,30 @@ export function parseSourceRecord(
   } catch (error) {
     if (error && typeof error === 'object' && error.code === 'ELOOP') {
       return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
+    }
+    if (error && typeof error === 'object' && error.code === 'ENOENT' && allowAbsent) {
+      try {
+        const pathMetadata = lstat(recordPath);
+        if (pathMetadata.isSymbolicLink()) {
+          return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
+        }
+        return {
+          status: 'refused',
+          reasonCode: 'UNREADABLE_SOURCE_RECORD',
+          markerPath: recordPath,
+          error: 'source record appeared after the open attempt',
+        };
+      } catch (metadataError) {
+        if (metadataError && typeof metadataError === 'object' && metadataError.code === 'ENOENT') {
+          return { status: 'absent', reasonCode: 'NO_SOURCE_RECORD_AT_PATH' };
+        }
+        return {
+          status: 'refused',
+          reasonCode: 'UNREADABLE_SOURCE_RECORD',
+          markerPath: recordPath,
+          error: metadataError instanceof Error ? metadataError.message : String(metadataError),
+        };
+      }
     }
     return {
       status: 'refused',
@@ -121,7 +146,11 @@ export function resolvePluginProvenance(candidateDir, { root = process.cwd() } =
   let current = candidatePath;
   while (inside(rootPath, current)) {
     const markerPath = path.join(current, SOURCE_FILE);
-    if (fs.existsSync(markerPath)) return parseSourceRecord(markerPath);
+    // Open first, then distinguish genuine absence from a dangling symlink.
+    // This avoids metadata-check/file-use races while ensuring every
+    // marker-shaped entry reaches fail-closed parsing.
+    const provenance = parseSourceRecord(markerPath, { allowAbsent: true });
+    if (provenance.status !== 'absent') return provenance;
     if (current === rootPath) break;
     const parent = path.dirname(current);
     if (parent === current) break;

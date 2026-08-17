@@ -20,8 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
   rewriting past evidence, unsupported email identities are removed or mapped to the existing
   Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
-  the MCP preset catalog no longer advertises an unserved remote schema URL. Exact-path
-  [exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
+  the MCP preset catalog no longer advertises an unserved remote schema URL.
+  [Exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
   dual-use capabilities whose files have only domain or contact changes in this slice; the
   underlying capabilities and scanner remain unchanged. The catalog schema permits an author
   email to be omitted, so the unsupported Mattyp address is removed while contributor credit is
