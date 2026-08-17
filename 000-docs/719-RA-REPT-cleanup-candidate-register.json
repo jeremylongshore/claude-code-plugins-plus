@@ -1,149 +1,149 @@
 {
-  "mission": "01-repository-cleanup-state-and-governance-baseline",
-  "deliverable": 4,
-  "bead": "claude-co8a.10",
-  "captured_at": "2026-08-11",
-  "head": "4358a65a3",
-  "disposition_vocabulary": [
-    "KEEP",
-    "UNTRACK",
-    "DELETE",
-    "DEDUP",
-    "COMMIT",
-    "REDACT-THEN-COMMIT",
-    "LEAVE-LOCAL",
-    "UNRESOLVED"
-  ],
-  "approved_this_mission": [
-    {
-      "id": 1,
-      "candidate": "freshie/archives/*.sqlite",
-      "files": [
-        "freshie/archives/inventory-run1-baseline.sqlite",
-        "freshie/archives/inventory-v1-2026-03-21.sqlite"
-      ],
-      "bytes": 44040192,
-      "disposition": "UNTRACK",
-      "guard": "git grep -E 'archives/.*\\.sqlite' returns zero consumers (verified 2026-08-11)",
-      "rollback": "git revert",
-      "bytes_raw": 48848896
-    },
-    {
-      "id": 2,
-      "candidate": "000-docs/000-INDEX.md",
-      "disposition": "CREATE",
-      "scope": "tracked files only (deviation-with-reason: untracked filenames include policy-sensitive partner names)",
-      "rollback": "delete file"
-    },
-    {
-      "id": "2b",
-      "candidate": "five cited canonical governance docs",
-      "files": [
-        "000-docs/147-AT-ADEC-adk-plugin-architecture-patterns.md",
-        "000-docs/685-AT-ADEC-security-pack-option-c-scope.md",
-        "000-docs/686-AT-ADEC-security-pack-v1-deprecation-lane.md",
-        "000-docs/687-AT-ADEC-security-pack-mcp-server-boundary.md",
-        "000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md"
-      ],
-      "disposition": "COMMIT",
-      "guard": "sha256 triple-verified (inventory=disk=committed); secret/sensitivity rescan clean; approved decision B 2026-08-11",
-      "rollback": "git revert"
-    }
-  ],
-  "approval_gated": [
-    {
-      "id": 3,
-      "candidate": "kobiton Mach-O binary x3",
-      "bytes": 35371320,
-      "disposition": "DELETE-from-tracking",
-      "blocker": "plugin-owner check + licensing"
-    },
-    {
-      "id": 4,
-      "candidate": "marketplace src/public data byte-dupes (2 files)",
-      "bytes": 28460845,
-      "disposition": "DEDUP",
-      "blocker": "build.mjs path trace"
-    },
-    {
-      "id": 5,
-      "candidate": "4 uncatalogued plugin dirs",
-      "paths": [
-        "plugins/business-tools/general-legal-assistant",
-        "plugins/mcp/a2a-client",
-        "plugins/productivity/claude-memory-kit",
-        "plugins/saas-packs/claude-pack"
-      ],
-      "disposition": "UNRESOLVED"
-    },
-    {
-      "id": 6,
-      "candidate": "loose plugins/ root files",
-      "paths": [
-        "plugins/JEREMY_PLUGINS_SUMMARY.md",
-        "plugins/README_JEREMY_PLUGINS.md",
-        "plugins/install-jeremy-plugins.sh"
-      ],
-      "disposition": "UNRESOLVED"
-    },
-    {
-      "id": 7,
-      "candidate": "tonone auto-gen CLAUDE.md in frozen mirror",
-      "disposition": "DELETE",
-      "blocker": "curated-exception approval"
-    },
-    {
-      "id": 8,
-      "candidate": "200 untracked 000-docs files",
-      "disposition": "per-file \u2014 see m1.13-untracked-docs-inventory.json + recovery plan",
-      "classes": {
-        "historical": 158,
-        "sensitive": 20,
-        "canonical candidate": 9,
-        "superseded": 5,
-        "local runtime evidence": 4,
-        "duplicate": 3,
-        "unresolved": 1
-      }
-    },
-    {
-      "id": 9,
-      "candidate": ".gitignore 000-docs blanket+allowlist design",
-      "disposition": "UNRESOLVED",
-      "blocker": "recovery plan approval first"
-    },
-    {
-      "id": 10,
-      "candidate": "workspace/ ignore-vs-tracked conflict (18 files)",
-      "disposition": "UNRESOLVED"
-    },
-    {
-      "id": 11,
-      "candidate": "tests/RTM.md dead ref",
-      "disposition": "FIX-by-Jeremy-only",
-      "reason": "hash-pinned POLICY zone"
-    },
-    {
-      "id": 12,
-      "candidate": "version drift: intent-labs-pack + unwired reconstruct-versions --check",
-      "disposition": "FIX-bead"
-    },
-    {
-      "id": 13,
-      "candidate": "freshie run-stamp inconsistency",
-      "disposition": "FIX-bead"
-    },
-    {
-      "id": 14,
-      "candidate": "kernel pin 0.9.0 behind 0.10.0",
-      "disposition": "KEEP",
-      "reason": "documented advisory breach; lockstep bump is its own decision"
-    },
-    {
-      "id": 15,
-      "candidate": "legacy surfaces docs.anthropic.com/claude-3/claude-2",
-      "disposition": "KEEP",
-      "reason": "migration epic later; relates #1146; functional not cosmetic"
-    }
-  ]
+ "mission": "01-repository-cleanup-state-and-governance-baseline",
+ "deliverable": 4,
+ "bead": "claude-co8a.10",
+ "captured_at": "2026-08-11",
+ "head": "4358a65a3",
+ "disposition_vocabulary": [
+  "KEEP",
+  "UNTRACK",
+  "DELETE",
+  "DEDUP",
+  "COMMIT",
+  "REDACT-THEN-COMMIT",
+  "LEAVE-LOCAL",
+  "UNRESOLVED"
+ ],
+ "approved_this_mission": [
+  {
+   "id": 1,
+   "candidate": "freshie/archives/*.sqlite",
+   "files": [
+    "freshie/archives/inventory-run1-baseline.sqlite",
+    "freshie/archives/inventory-v1-2026-03-21.sqlite"
+   ],
+   "bytes": 44040192,
+   "disposition": "UNTRACK",
+   "guard": "git grep -E 'archives/.*\\.sqlite' returns zero consumers (verified 2026-08-11)",
+   "rollback": "git revert",
+   "bytes_raw": 48848896
+  },
+  {
+   "id": 2,
+   "candidate": "000-docs/000-INDEX.md",
+   "disposition": "CREATE",
+   "scope": "tracked files only (deviation-with-reason: untracked filenames include policy-sensitive partner names)",
+   "rollback": "delete file"
+  },
+  {
+   "id": "2b",
+   "candidate": "five cited canonical governance docs",
+   "files": [
+    "000-docs/147-AT-ADEC-adk-plugin-architecture-patterns.md",
+    "000-docs/685-AT-ADEC-security-pack-option-c-scope.md",
+    "000-docs/686-AT-ADEC-security-pack-v1-deprecation-lane.md",
+    "000-docs/687-AT-ADEC-security-pack-mcp-server-boundary.md",
+    "000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md"
+   ],
+   "disposition": "COMMIT",
+   "guard": "sha256 triple-verified (inventory=disk=committed); secret/sensitivity rescan clean; approved decision B 2026-08-11",
+   "rollback": "git revert"
+  }
+ ],
+ "approval_gated": [
+  {
+   "id": 3,
+   "candidate": "kobiton Mach-O binary x3",
+   "bytes": 35371320,
+   "disposition": "DELETE-from-tracking",
+   "blocker": "plugin-owner check + licensing"
+  },
+  {
+   "id": 4,
+   "candidate": "marketplace src/public data byte-dupes (2 files)",
+   "bytes": 28460845,
+   "disposition": "DEDUP",
+   "blocker": "build.mjs path trace"
+  },
+  {
+   "id": 5,
+   "candidate": "4 uncatalogued plugin dirs",
+   "paths": [
+    "plugins/business-tools/general-legal-assistant",
+    "plugins/mcp/a2a-client",
+    "plugins/productivity/claude-memory-kit",
+    "plugins/saas-packs/claude-pack"
+   ],
+   "disposition": "UNRESOLVED"
+  },
+  {
+   "id": 6,
+   "candidate": "loose plugins/ root files",
+   "paths": [
+    "plugins/JEREMY_PLUGINS_SUMMARY.md",
+    "plugins/README_JEREMY_PLUGINS.md",
+    "plugins/install-jeremy-plugins.sh"
+   ],
+   "disposition": "UNRESOLVED"
+  },
+  {
+   "id": 7,
+   "candidate": "tonone auto-gen CLAUDE.md in frozen mirror",
+   "disposition": "DELETE",
+   "blocker": "curated-exception approval"
+  },
+  {
+   "id": 8,
+   "candidate": "200 untracked 000-docs files",
+   "disposition": "per-file \u2014 see m1.13-untracked-docs-inventory.json + recovery plan",
+   "classes": {
+    "historical": 158,
+    "sensitive": 20,
+    "canonical candidate": 9,
+    "superseded": 5,
+    "local runtime evidence": 4,
+    "duplicate": 3,
+    "unresolved": 1
+   }
+  },
+  {
+   "id": 9,
+   "candidate": ".gitignore 000-docs blanket+allowlist design",
+   "disposition": "UNRESOLVED",
+   "blocker": "recovery plan approval first"
+  },
+  {
+   "id": 10,
+   "candidate": "workspace/ ignore-vs-tracked conflict (18 files)",
+   "disposition": "UNRESOLVED"
+  },
+  {
+   "id": 11,
+   "candidate": "tests/RTM.md dead ref",
+   "disposition": "FIX-by-Jeremy-only",
+   "reason": "hash-pinned POLICY zone"
+  },
+  {
+   "id": 12,
+   "candidate": "version drift: intent-labs-pack + unwired reconstruct-versions --check",
+   "disposition": "FIX-bead"
+  },
+  {
+   "id": 13,
+   "candidate": "freshie run-stamp inconsistency",
+   "disposition": "FIX-bead"
+  },
+  {
+   "id": 14,
+   "candidate": "kernel pin 0.9.0 behind 0.10.0",
+   "disposition": "KEEP",
+   "reason": "documented advisory breach; lockstep bump is its own decision"
+  },
+  {
+   "id": 15,
+   "candidate": "legacy surfaces docs.anthropic.com/claude-3/claude-2",
+   "disposition": "KEEP",
+   "reason": "migration epic later; relates #1146; functional not cosmetic"
+  }
+ ]
 }

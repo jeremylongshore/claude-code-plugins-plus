@@ -19,12 +19,12 @@ Top-level frontmatter field. List of objects. Each entry describes one env var.
 
 ### Schema
 
-| Key            | Required | Type                      | Purpose                                            |
-| -------------- | -------- | ------------------------- | -------------------------------------------------- |
-| `name`         | yes      | string (UPPER_SNAKE_CASE) | Env var name as read at runtime                    |
-| `prompt`       | yes      | string                    | First-run installer prompt shown to user           |
-| `help`         | no       | string                    | Extra context (URLs, scopes, format examples)      |
-| `required_for` | no       | string                    | What the var unlocks (used by partial-mode skills) |
+| Key | Required | Type | Purpose |
+|---|---|---|---|
+| `name` | yes | string (UPPER_SNAKE_CASE) | Env var name as read at runtime |
+| `prompt` | yes | string | First-run installer prompt shown to user |
+| `help` | no | string | Extra context (URLs, scopes, format examples) |
+| `required_for` | no | string | What the var unlocks (used by partial-mode skills) |
 
 ### Example
 
@@ -35,12 +35,12 @@ description: Run a multi-AI PR review against a GitHub repo
 allowed-tools: Bash(gh:*), Read
 required_environment_variables:
   - name: GITHUB_TOKEN
-    prompt: 'Personal access token (repo + write:packages scopes)'
-    help: 'Create at https://github.com/settings/tokens'
-    required_for: 'PR comment + release operations'
+    prompt: "Personal access token (repo + write:packages scopes)"
+    help: "Create at https://github.com/settings/tokens"
+    required_for: "PR comment + release operations"
   - name: ANTHROPIC_API_KEY
-    prompt: 'Anthropic API key'
-    help: 'From console.anthropic.com → API keys'
+    prompt: "Anthropic API key"
+    help: "From console.anthropic.com → API keys"
 ---
 ```
 
@@ -52,7 +52,7 @@ required_environment_variables:
 
 ### Cross-field consistency with `requires_env` (schema 3.5.0)
 
-If a skill declares `requires_env: [GITHUB_TOKEN]` for visibility gating (schema 3.5.0) but does NOT have a matching `required_environment_variables` entry with `name: GITHUB_TOKEN`, the validator emits a WARNING. Reason: a user installing the skill needs to know _what_ `GITHUB_TOKEN` should contain, not just that it must be set. Adding the prompt/help description closes that gap.
+If a skill declares `requires_env: [GITHUB_TOKEN]` for visibility gating (schema 3.5.0) but does NOT have a matching `required_environment_variables` entry with `name: GITHUB_TOKEN`, the validator emits a WARNING. Reason: a user installing the skill needs to know *what* `GITHUB_TOKEN` should contain, not just that it must be set. Adding the prompt/help description closes that gap.
 
 The warning is non-blocking — `requires_env` alone is still useful for gating, and not every skill author needs to ship installer copy.
 
@@ -64,12 +64,12 @@ Nested under the existing `metadata` top-level. List of objects. Each entry desc
 
 ### Schema
 
-| Key           | Required | Type   | Purpose                                                 |
-| ------------- | -------- | ------ | ------------------------------------------------------- |
-| `key`         | yes      | string | Config key the skill reads at runtime                   |
-| `description` | yes      | string | What the key controls                                   |
-| `default`     | yes      | any    | Default value if user accepts the prompt as-is          |
-| `prompt`      | no       | string | First-run installer prompt (defaults to "Set `<key>`?") |
+| Key | Required | Type | Purpose |
+|---|---|---|---|
+| `key` | yes | string | Config key the skill reads at runtime |
+| `description` | yes | string | What the key controls |
+| `default` | yes | any | Default value if user accepts the prompt as-is |
+| `prompt` | no | string | First-run installer prompt (defaults to "Set `<key>`?") |
 
 ### Example
 
@@ -82,9 +82,9 @@ metadata:
   intent-solutions:
     config:
       - key: default_branch
-        description: 'Branch to target for new PRs'
+        description: "Branch to target for new PRs"
         default: main
-        prompt: 'What branch should PRs target?'
+        prompt: "What branch should PRs target?"
       - key: auto_label
         description: "Add 'ai-authored' label to every PR"
         default: true
@@ -114,11 +114,11 @@ Skills read this file at runtime through whatever loader they're built with. The
 
 ## Why this pattern (vs. hardcoded env reads)
 
-| Without self-declaration                                                                 | With self-declaration                                                                                                                               |
-| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Without self-declaration | With self-declaration |
+|---|---|
 | Skill reads `os.environ['GITHUB_TOKEN']`. If unset, the user hits a `KeyError` mid-task. | Installer reads the frontmatter, prompts the user, and writes the env to `~/.claude/skill-config/<name>.yaml`. The skill never sees an unset state. |
-| New users don't know which secrets the skill needs until they fail.                      | First-run prompts list every required var with a link to where to generate it.                                                                      |
-| Audit tooling can't tell which skills consume secrets vs. which are pure local.          | The marketplace UI can group skills by env-var dependency; security review can scan declarations directly.                                          |
+| New users don't know which secrets the skill needs until they fail. | First-run prompts list every required var with a link to where to generate it. |
+| Audit tooling can't tell which skills consume secrets vs. which are pure local. | The marketplace UI can group skills by env-var dependency; security review can scan declarations directly. |
 
 The pattern is the open-standard convention (agentskills.io) for skill installers. Adopting it lets the IS marketplace prompt cleanly without each skill author writing a custom first-run UX.
 

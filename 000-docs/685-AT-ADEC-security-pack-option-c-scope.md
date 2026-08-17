@@ -43,7 +43,7 @@ Promote the 3 HEAVY plugins (`penetration-tester`, `dependency-checker`, `authen
 
 **Why chosen:**
 
-1. **Leverages existing substance.** The 3 HEAVY plugins already have 6,254 LOC of working Python. Heavy-hitter promotion is _scaffolding + skill expansion_, not a rewrite.
+1. **Leverages existing substance.** The 3 HEAVY plugins already have 6,254 LOC of working Python. Heavy-hitter promotion is *scaffolding + skill expansion*, not a rewrite.
 2. **One shared MCP server, one shared research catalog.** The 3 HEAVY plugins and the umbrella all wire to a single MCP at `plugins/packages/security-pro-pack/mcp/`. Pain catalog lives once at the umbrella level and is referenced by all four.
 3. **Discoverability preserved.** Users who currently install `penetration-tester` keep installing `penetration-tester`. The umbrella adds a single-package install path for users who want the whole stack.
 4. **Matches LangChain pattern.** LangChain's 33-skill pack is itself a heavy-hitter, AND specific high-value skills inside it (LCEL, agents, retrievers) are individually identifiable. Same here: penetration-tester is the LCEL of this pack.

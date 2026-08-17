@@ -31,11 +31,9 @@ below). These rules are NOT to be relaxed without explicit written approval
 from Jeremy Longshore in the issue/PR thread BEFORE the change lands.
 
 1. **`ALWAYS_REQUIRED` is the IS enterprise 8-field set:**
-
    ```
    {name, description, allowed-tools, version, author, license, compatibility, tags}
    ```
-
    This is intentionally stricter than Anthropic's published spec. Do not
    reduce it. Do not reframe it as "marketplace polish" or "tracking
    recommendations." It's the canonical IS rubric.
@@ -110,7 +108,7 @@ a day of churn and four schema versions.
 **Why it was wrong**: the IS enterprise rubric is intentionally stricter than
 Anthropic's spec. That's the value-add. Reducing it to match the spec floor
 deletes the value. Anthropic's spec being permissive is not a bug we need
-to fix in our rubric; it's a feature of the _open_ spec that the _enterprise_
+to fix in our rubric; it's a feature of the *open* spec that the *enterprise*
 layer sits on top of.
 
 **Process failure**: I worked off summaries of the Anthropic spec instead of
@@ -234,7 +232,7 @@ correct modern names and adds an explicit legacy-alias warning for `Task`.
 
 ### Evidence
 
-Pre-fix: declaring `Agent` in `allowed-tools` produced _Unknown tool 'Agent'_.
+Pre-fix: declaring `Agent` in `allowed-tools` produced *Unknown tool 'Agent'*.
 Post-fix: clean. Declaring `Task` produces the legacy-alias warning instead of
 passing silently as a first-class tool.
 
@@ -250,7 +248,7 @@ IEP plan `golden-imagining-planet` Phase A; resumes Claude sessions
 **Additive spec-compliance implementation — no change to `ALWAYS_REQUIRED`, the
 tier model, or error-vs-warning semantics.** Autonomous-OK class per
 NON-NEGOTIABLE #6 (implements already-documented behavior; not architectural).
-`disallowed-tools` has been _recognized_ since 3.7.0, but its two documented
+`disallowed-tools` has been *recognized* since 3.7.0, but its two documented
 rules (repo CLAUDE.md § Optional frontmatter 3.7.0, `000-docs/681`) were never
 actually checked — the field parsed clean regardless of content.
 
@@ -258,13 +256,13 @@ actually checked — the field parsed clean regardless of content.
 
 - **Shape guard:** `disallowed-tools` must be a string or a YAML list (same
   shapes as `allowed-tools`). A non-string/non-list value (e.g. an int) is now
-  an ERROR: _"'disallowed-tools' must be a list of strings or a space/comma-
-  separated string"_.
+  an ERROR: *"'disallowed-tools' must be a list of strings or a space/comma-
+  separated string"*.
 - **Cross-field overlap rule:** a tool pattern MUST NOT appear in both
   `allowed-tools` and `disallowed-tools` — declaring a tool simultaneously
   permitted and denied is contradictory and almost always a mis-scoped list.
-  Now an ERROR at **every tier**: _"contradictory tool declaration: […] appears
-  in both allowed-tools and disallowed-tools"_. This mirrors the existing 3.5.0
+  Now an ERROR at **every tier**: *"contradictory tool declaration: […] appears
+  in both allowed-tools and disallowed-tools"*. This mirrors the existing 3.5.0
   `requires_*` / `fallback_for_*` visibility-overlap rule; both lists normalize
   through the shared `parse_allowed_tools()` so `Bash(rm:*)` matches whether it
   was written CSV, space-separated, or as a YAML list.
@@ -309,8 +307,8 @@ governance rule (validator changes wait for Jeremy).
   so real-world fully-qualified refs like `mcp__semantic-scholar__paper_search`
   (kebab) and `mcp__plugin_automate_kobiton__getApp` (snake) never matched at
   all. A declared-and-used tool with such a server name was therefore invisible
-  to the body scan and falsely warned as _"declares MCP tool … but the body never
-  references it — over-declared privilege"_. New pattern:
+  to the body scan and falsely warned as *"declares MCP tool … but the body never
+  references it — over-declared privilege"*. New pattern:
   `mcp__[a-zA-Z0-9]+(?:[-_][a-zA-Z0-9]+)*__[a-zA-Z0-9_]+`.
 - **Separator-ambiguity choice (deliberate):** the server segment is alnum runs
   joined by a SINGLE `-`/`_`, and each joiner must be followed by an alnum char —
@@ -418,7 +416,7 @@ in two ways:
    warnings, not errors** — "a plugin with only unrecognized-field warnings still
    passes validation and loads at runtime" (plugins-reference § "Unrecognized
    fields", verified live 2026-06-28). Only `--strict` promotes them to errors;
-   wrong-_type_ fields still fail.
+   wrong-*type* fields still fail.
 2. **This validator already warns (never errors) on unknown SKILL.md fields
    (`validate_frontmatter`, "UNKNOWN FIELDS") and unknown agent fields
    (`validate_agent`).** The plugin.json path erroring was the lone outlier.
@@ -436,7 +434,7 @@ Changes:
 
 **Unchanged:** every required-fields set (SKILL `ALWAYS_REQUIRED`, agent floor),
 tier model, and the missing-required-field-is-an-ERROR rule (NON-NEGOTIABLES
-#1, #2). This change is strictly about _unrecognized_ fields, not _required_ ones.
+#1, #2). This change is strictly about *unrecognized* fields, not *required* ones.
 
 ---
 
@@ -452,15 +450,15 @@ spec` (an ERROR), which is no longer true for these fields.
 Added to `PLUGIN_JSON_FIELDS` (all optional; `name` remains the only required
 field, unchanged):
 
-| Field            | Type    | Status                     | Note                                                  |
-| ---------------- | ------- | -------------------------- | ----------------------------------------------------- |
-| `displayName`    | string  | GA (Claude Code v2.1.143+) | human-readable name in the `/plugin` picker           |
-| `defaultEnabled` | boolean | GA (v2.1.154+)             | enabled by default absent a user preference           |
-| `dependencies`   | array   | GA                         | required plugins w/ optional semver constraints       |
-| `userConfig`     | object  | GA                         | user-configurable values prompted at enable time      |
-| `channels`       | array   | GA                         | message-channel declarations bound to MCP servers     |
-| `$schema`        | string  | GA (metadata only)         | JSON Schema URL; ignored at load time                 |
-| `experimental`   | object  | experimental               | holds `experimental.themes` / `experimental.monitors` |
+| Field | Type | Status | Note |
+|---|---|---|---|
+| `displayName` | string | GA (Claude Code v2.1.143+) | human-readable name in the `/plugin` picker |
+| `defaultEnabled` | boolean | GA (v2.1.154+) | enabled by default absent a user preference |
+| `dependencies` | array | GA | required plugins w/ optional semver constraints |
+| `userConfig` | object | GA | user-configurable values prompted at enable time |
+| `channels` | array | GA | message-channel declarations bound to MCP servers |
+| `$schema` | string | GA (metadata only) | JSON Schema URL; ignored at load time |
+| `experimental` | object | experimental | holds `experimental.themes` / `experimental.monitors` |
 
 `TYPE_MAP` in `validate_plugin_json()` gained `boolean` (for `defaultEnabled`).
 
@@ -469,7 +467,7 @@ field, unchanged):
 ("adding missing documented fields" — explicitly autonomous-OK).
 
 **Explicitly NOT changed here (NON-NEGOTIABLE #7 — needs sign-off):** the
-unknown-field handling for _genuinely_ unknown fields remains an ERROR. Anthropic's
+unknown-field handling for *genuinely* unknown fields remains an ERROR. Anthropic's
 own `claude plugin validate` treats unrecognized fields as **warnings** (errors
 only under `--strict`); aligning the IS validator to that warn-not-error policy is
 an error-vs-warning-semantics change and is **deferred pending explicit approval**.
@@ -533,7 +531,7 @@ zone and moves only on its own explicit sign-off.)
 tier-gated like skills):**
 
 - **(a) Kernel floor (8):** `name, description, tools, model, color, version,
-author, tags` — the kernel `agent-definition` effective-required set.
+  author, tags` — the kernel `agent-definition` effective-required set.
 - **(b) Enterprise live set on top of the floor** — "flesh out the entire spec,
   empties and all," so every authored agent carries the full supported surface and
   the upgrade levers are always visible:
@@ -544,7 +542,7 @@ author, tags` — the kernel `agent-definition` effective-required set.
     required** (those three are configured at the plugin level and runtime-ignored
     on a plugin agent, so requiring them there would be noise + a warning).
   - The five fields with **no valid empty value** — `effort, maxTurns, memory,
-isolation, initialPrompt` — are carried as a commented **"upgrade levers"** block
+    isolation, initialPrompt` — are carried as a commented **"upgrade levers"** block
     in the agent body template (visible standing menu, not parser-required).
 
 Rationale: `/validate-agent` and the marketplace validator had drifted ~6 months and
@@ -679,7 +677,7 @@ fail validation (unless `--fail-on-warn`) and do not affect rubric grades.
 
 ## [3.7.0] — 2026-05-28 — Recognize `disallowed-tools` (Claude Code v2.1.152, additive)
 
-Adds the `disallowed-tools` field to the schema registry. Source: Claude Code v2.1.152 changelog (released 2026-05-27) — _"Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active."_ **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched; `disallowed-tools` is recognized as an Anthropic-spec optional field with the same string|array shape as `allowed-tools`.
+Adds the `disallowed-tools` field to the schema registry. Source: Claude Code v2.1.152 changelog (released 2026-05-27) — *"Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active."* **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched; `disallowed-tools` is recognized as an Anthropic-spec optional field with the same string|array shape as `allowed-tools`.
 
 ### Added — `disallowed-tools` (top-level, string or array)
 
@@ -699,7 +697,7 @@ Shape: identical to `allowed-tools` (`string|array` with the same parser). Sourc
 
 `disallowed-tools` is recognized but NOT added to `MARKETPLACE_TRACKING_FIELDS`. Rationale: it is optional security polish (lets a skill self-disable risky tools), not a marketplace-required tracking field. Skills are free to omit it; including it is encouraged for security-sensitive skills. The `ALWAYS_REQUIRED` 8-field IS marketplace set (`name, description, allowed-tools, version, author, license, compatibility, tags`) is untouched.
 
-Per SAK plan 031 § 14.10 (NON-NEGOTIABLES item 3: _"The IS rubric SITS ON TOP of Anthropic's spec"_): this addition lands at the IS marketplace tier in the canonical validator. Future kernel `intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json` will mirror this placement under `$defs.openStandardCompliant` (since 2.1.152 is a Claude Code extension, not agentskills.io spec) AND `$defs.isMarketplace` (so IS-tier consumers recognize it).
+Per SAK plan 031 § 14.10 (NON-NEGOTIABLES item 3: *"The IS rubric SITS ON TOP of Anthropic's spec"*): this addition lands at the IS marketplace tier in the canonical validator. Future kernel `intent-eval-core/schemas/authoring/v1/skill-frontmatter.schema.json` will mirror this placement under `$defs.openStandardCompliant` (since 2.1.152 is a Claude Code extension, not agentskills.io spec) AND `$defs.isMarketplace` (so IS-tier consumers recognize it).
 
 ### Snapshot anchor
 
@@ -735,9 +733,9 @@ Adds two optional frontmatter blocks so skills self-describe the secrets and con
 ```yaml
 required_environment_variables:
   - name: GITHUB_TOKEN
-    prompt: 'Personal access token (repo + write:packages scopes)'
-    help: 'Create at https://github.com/settings/tokens'
-    required_for: 'PR comment + release operations'
+    prompt: "Personal access token (repo + write:packages scopes)"
+    help: "Create at https://github.com/settings/tokens"
+    required_for: "PR comment + release operations"
 ```
 
 Shape: each entry must be a mapping with at least `name` + `prompt`. Missing either is an ERROR. `help` and `required_for` are optional.
@@ -749,16 +747,16 @@ metadata:
   intent-solutions:
     config:
       - key: default_branch
-        description: 'Branch to target for new PRs'
+        description: "Branch to target for new PRs"
         default: main
-        prompt: 'What branch should PRs target?'
+        prompt: "What branch should PRs target?"
 ```
 
 Shape: each entry must be a mapping with at least `key` + `description` + `default`. Missing any is an ERROR. `prompt` is optional (helper falls back to "Set `<key>`?").
 
 ### Added — cross-field consistency with `requires_env` (schema 3.5.0)
 
-If a skill declares `requires_env: [X]` for visibility gating but doesn't have a matching `required_environment_variables` entry with `name: X`, the validator emits a WARNING. Reason: the user installing the skill needs to know _what_ X should contain, not just that it must be set. Non-blocking — declaration alone is still useful for visibility, not every skill needs installer copy.
+If a skill declares `requires_env: [X]` for visibility gating but doesn't have a matching `required_environment_variables` entry with `name: X`, the validator emits a WARNING. Reason: the user installing the skill needs to know *what* X should contain, not just that it must be set. Non-blocking — declaration alone is still useful for visibility, not every skill needs installer copy.
 
 ### Storage convention
 
@@ -808,11 +806,11 @@ fallback_for_tools: [rg]
 
 All four accept three input forms (the parser normalizes):
 
-| Form         | Example                                                       |
-| ------------ | ------------------------------------------------------------- |
-| Block list   | `requires_env:`<br>`  - GITHUB_TOKEN`<br>`  - OPENAI_API_KEY` |
-| Inline array | `requires_env: [GITHUB_TOKEN, OPENAI_API_KEY]`                |
-| CSV string   | `requires_env: GITHUB_TOKEN, OPENAI_API_KEY`                  |
+| Form | Example |
+|---|---|
+| Block list | `requires_env:`<br>`  - GITHUB_TOKEN`<br>`  - OPENAI_API_KEY` |
+| Inline array | `requires_env: [GITHUB_TOKEN, OPENAI_API_KEY]` |
+| CSV string | `requires_env: GITHUB_TOKEN, OPENAI_API_KEY` |
 
 ### Concrete examples from our catalog (illustrative — not auto-populated)
 
@@ -822,7 +820,7 @@ All four accept three input forms (the parser normalizes):
 
 ### Added — cross-field visibility-rule validation
 
-`validate-skills-schema.py` now rejects skills where the same identifier appears in both `requires_{scope}` and `fallback_for_{scope}` (per scope: env vs tools). A skill cannot simultaneously _require_ X to be set AND be the _fallback_ for X being absent — that's a contradiction. Validated as an ERROR (not warning) since it produces undefined visibility behavior.
+`validate-skills-schema.py` now rejects skills where the same identifier appears in both `requires_{scope}` and `fallback_for_{scope}` (per scope: env vs tools). A skill cannot simultaneously *require* X to be set AND be the *fallback* for X being absent — that's a contradiction. Validated as an ERROR (not warning) since it produces undefined visibility behavior.
 
 ### Added — generalized YAML block-list parsing
 
@@ -851,7 +849,6 @@ Adds a load-tier contract for the skills catalog. The validator and required-fie
 ### Added
 
 - **L0 metadata index** at `marketplace/src/data/skills-index.json`. Schema:
-
   ```json
   {
     "schemaVersion": "3.4.0",
@@ -862,7 +859,6 @@ Adds a load-tier contract for the skills catalog. The validator and required-fie
     "categories": [...]
   }
   ```
-
   Always emitted by `discover-skills.mjs`. ~150 bytes per skill — for the current 2770-skill catalog, the artifact is 817 KB raw / **97 KB gzipped**, vs the existing L1 catalog at 23 MB raw / 5.5 MB gzipped. 56× reduction for trigger-match / browse-list use cases.
 
 - **`--level=metadata|full|file`** CLI flag on `marketplace/scripts/discover-skills.mjs`:
@@ -890,13 +886,13 @@ Discovered while triaging two external-contributor PRs (#679 from `CeciliaZ030` 
 
 ### Fixed
 
-- **`color` (agent frontmatter) is a documented Anthropic field, not deprecated.** Per [code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents): _"Display color for the subagent in the task list and transcript. Accepts `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan`."_ Old validator placed `color` in `DEPRECATED_AGENT_FIELDS` and emitted _"Non-standard field. Not in Anthropic spec. Will be removed in future validation."_ That message was wrong. Moved to `AGENT_FIELDS` with valid-color enum; agents using any of the eight allowed values now validate cleanly.
-- **`initialPrompt` (agent frontmatter) is a documented Anthropic field, not unknown.** Per the same source: _"Auto-submitted as the first user turn when this agent runs as the main session agent (via `--agent` or the `agent` setting)."_ Old validator treated it as an unknown field and emitted _"Unknown field: 'initialPrompt'"_. Added to `AGENT_FIELDS` with `'string'` type. Agents using it now validate cleanly.
+- **`color` (agent frontmatter) is a documented Anthropic field, not deprecated.** Per [code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents): *"Display color for the subagent in the task list and transcript. Accepts `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan`."* Old validator placed `color` in `DEPRECATED_AGENT_FIELDS` and emitted *"Non-standard field. Not in Anthropic spec. Will be removed in future validation."* That message was wrong. Moved to `AGENT_FIELDS` with valid-color enum; agents using any of the eight allowed values now validate cleanly.
+- **`initialPrompt` (agent frontmatter) is a documented Anthropic field, not unknown.** Per the same source: *"Auto-submitted as the first user turn when this agent runs as the main session agent (via `--agent` or the `agent` setting)."* Old validator treated it as an unknown field and emitted *"Unknown field: 'initialPrompt'"*. Added to `AGENT_FIELDS` with `'string'` type. Agents using it now validate cleanly.
 - **`permissionMode: 'auto'` added to valid values.** Anthropic's documented set now includes `auto` (was previously missing). Validator's `valid` enum now: `['default', 'acceptEdits', 'auto', 'dontAsk', 'bypassPermissions', 'plan']`.
 
 ### Authorization
 
-Per `SCHEMA_CHANGELOG.md` NON-NEGOTIABLE #6: _"Bug fixes that bring the validator into spec compliance are always OK to apply autonomously. Examples: accepting YAML lists for `allowed-tools`, fixing conditional-field rules to match documented defaults, adding missing documented fields like `arguments` / `paths` / `shell`. These are technical-correctness fixes — not 'spec realignment.'"_ This release adds two more such fields to the registry and adds one more permissionMode value. No architectural changes; the IS 8-field enterprise required set remains unchanged.
+Per `SCHEMA_CHANGELOG.md` NON-NEGOTIABLE #6: *"Bug fixes that bring the validator into spec compliance are always OK to apply autonomously. Examples: accepting YAML lists for `allowed-tools`, fixing conditional-field rules to match documented defaults, adding missing documented fields like `arguments` / `paths` / `shell`. These are technical-correctness fixes — not 'spec realignment.'"* This release adds two more such fields to the registry and adds one more permissionMode value. No architectural changes; the IS 8-field enterprise required set remains unchanged.
 
 ### Backward compatibility
 
@@ -926,9 +922,9 @@ After the 3.3.0 restoration, a careful re-read of [code.claude.com/docs/en/skill
 
 ### Fixed
 
-- **`allowed-tools` YAML list form accepted.** Anthropic doc: _"Accepts a space-separated string or a YAML list."_ Validator was rejecting YAML lists with the message _"must be a comma-separated string (CSV), not a YAML array"_. Now accepts both forms; YAML list, space-separated string, comma-separated string, and mixed forms all parse correctly.
+- **`allowed-tools` YAML list form accepted.** Anthropic doc: *"Accepts a space-separated string or a YAML list."* Validator was rejecting YAML lists with the message *"must be a comma-separated string (CSV), not a YAML array"*. Now accepts both forms; YAML list, space-separated string, comma-separated string, and mixed forms all parse correctly.
 - **`allowed-tools` space-separated parsing.** Anthropic's canonical example uses space-separated form: `Bash(git add *) Bash(git commit *) Bash(git status *)`. Old parser only split on commas, which would treat the whole string as one tool. New parser is paren-depth-aware so multi-word tools like `Bash(git add *)` stay as one token in space-separated form.
-- **`agent` field no longer warns "missing" when defaulting to general-purpose.** Anthropic doc: _"If omitted, uses general-purpose."_ Old `CONDITIONAL_FIELDS` rule warned that `agent` was missing whenever `context: fork` was set. Removed.
+- **`agent` field no longer warns "missing" when defaulting to general-purpose.** Anthropic doc: *"If omitted, uses general-purpose."* Old `CONDITIONAL_FIELDS` rule warned that `agent` was missing whenever `context: fork` was set. Removed.
 - **`argument-hint` conditional rule.** Was: `user-invocable=true AND disable-model-invocation=false`. Anthropic doc: `disable-model-invocation: true` only blocks Claude's auto-invocation; the user can still invoke via `/`. So argument-hint is still relevant when `disable-model-invocation: true`. Fixed to: `user-invocable=true` only.
 
 ### Added
@@ -960,7 +956,7 @@ The 3.0.0–3.2.0 experiments tried to relax the IS enterprise rubric toward an 
 - **`effort: xhigh`** added to valid values (from 3.1.0) per Anthropic's documented `low/medium/high/xhigh/max`.
 - **1,536-char combined cap** validation for `description` + `when_to_use` per Anthropic's documented limit.
 - **`scripts/batch-remediate.py --migrate-compatible-with`** tool (from 3.0.0) for bulk migrations.
-- **`Skill()` permission rule documentation** in skill-creator references (Skill(name) exact / Skill(name \*) prefix).
+- **`Skill()` permission rule documentation** in skill-creator references (Skill(name) exact / Skill(name *) prefix).
 
 ### What's reverted
 
@@ -976,20 +972,20 @@ The 3.0.0–3.2.0 experiments tried to relax the IS enterprise rubric toward an 
 
 The validator now enforces the original IS enterprise standard exactly, with these technical corrections layered in:
 
-| Field                         | Status in 3.3.0                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------ |
-| `name`                        | Required (unchanged)                                                                 |
-| `description`                 | Required (unchanged)                                                                 |
-| `allowed-tools`               | Required (unchanged)                                                                 |
-| `version`                     | Required (unchanged)                                                                 |
-| `author`                      | Required (unchanged)                                                                 |
-| `license`                     | Required (unchanged)                                                                 |
-| `tags`                        | Required (unchanged)                                                                 |
-| `compatibility`               | Required (replaces `compatible-with`)                                                |
-| `compatible-with`             | **Deprecated alias** — still parsed, warns + suggests migration                      |
-| `when_to_use`                 | Documented Anthropic optional (was wrongly flagged deprecated in earlier IS rubrics) |
-| `arguments`, `paths`, `shell` | Documented Anthropic optional (newly added to schema registry)                       |
-| `effort` valid values         | `low / medium / high / xhigh / max` (added xhigh)                                    |
+| Field | Status in 3.3.0 |
+|---|---|
+| `name` | Required (unchanged) |
+| `description` | Required (unchanged) |
+| `allowed-tools` | Required (unchanged) |
+| `version` | Required (unchanged) |
+| `author` | Required (unchanged) |
+| `license` | Required (unchanged) |
+| `tags` | Required (unchanged) |
+| `compatibility` | Required (replaces `compatible-with`) |
+| `compatible-with` | **Deprecated alias** — still parsed, warns + suggests migration |
+| `when_to_use` | Documented Anthropic optional (was wrongly flagged deprecated in earlier IS rubrics) |
+| `arguments`, `paths`, `shell` | Documented Anthropic optional (newly added to schema registry) |
+| `effort` valid values | `low / medium / high / xhigh / max` (added xhigh) |
 
 ---
 
@@ -999,7 +995,7 @@ The validator now enforces the original IS enterprise standard exactly, with the
 
 Two related framing problems in 3.1.0:
 
-1. **Tier model was apologetic.** `version`, `author`, `tags` were classified as `source: 'intent-solutions'` and described as "marketplace polish" — as if tracking metadata were a quirky IS extension instead of how every package manager (npm, PyPI, Cargo, Homebrew) operates. Anthropic's own reference repo _chooses_ not to use them, but they're tolerated by the spec and they're how serious skill marketplaces function.
+1. **Tier model was apologetic.** `version`, `author`, `tags` were classified as `source: 'intent-solutions'` and described as "marketplace polish" — as if tracking metadata were a quirky IS extension instead of how every package manager (npm, PyPI, Cargo, Homebrew) operates. Anthropic's own reference repo *chooses* not to use them, but they're tolerated by the spec and they're how serious skill marketplaces function.
 2. **Templates and docs led with the minimal form.** Following Anthropic's reference-repo style of `name + description + license`, the IS template encouraged minimalism. That contradicts what a marketplace operator actually needs — full tracking metadata for every shipped skill.
 
 ### Changed
@@ -1007,13 +1003,13 @@ Two related framing problems in 3.1.0:
 - **Validator design principle now stated explicitly**: "maximum capability by default; users customize down." Every documented Anthropic field is first-class, every AgentSkills.io optional is first-class, every tracking field is first-class. Validator only enforces (a) required-field presence (b) type/value validity (c) security constraints.
 - **`version`, `author`, `tags` reclassified** from `source: 'intent-solutions'` → `source: 'tracking'`. Description updated in `SKILL_FIELDS` schema registry to reflect that top-level tracking metadata is the dominant convention across language-ecosystem package managers and that Anthropic doesn't reject it.
 - **`MARKETPLACE_RECOMMENDED` renamed to `MARKETPLACE_TRACKING_FIELDS`** (old name kept as alias). The new name reflects what the fields actually are: tracking + governance metadata, not aesthetic "polish."
-- **Per-field warning messages** at marketplace tier now surface the _reason_ each field matters: `author` → maintainership/contact, `version` → downstream pinning, `license` → legal clarity, `allowed-tools` → security, `tags` → discovery, `compatibility` → runtime requirements. Engineers see the actual cost of omitting each field.
+- **Per-field warning messages** at marketplace tier now surface the *reason* each field matters: `author` → maintainership/contact, `version` → downstream pinning, `license` → legal clarity, `allowed-tools` → security, `tags` → discovery, `compatibility` → runtime requirements. Engineers see the actual cost of omitting each field.
 - **`templates/skill-template.md` rewritten as the supreme canonical form** — every documented field present and configured with placeholders. The minimal form (name + description only) is documented as a fallback, not the default.
 - **`frontmatter-spec.md` section 5 ("Recommended Field Order") rebuilt as the supreme form** with explicit "customize down, never up" guidance.
 
 ### Added
 
-- "Minimal form (only when you genuinely have nothing to add)" subsection clarifying that the Anthropic reference-repo style is _valid_ but not the IS standard.
+- "Minimal form (only when you genuinely have nothing to add)" subsection clarifying that the Anthropic reference-repo style is *valid* but not the IS standard.
 
 ### Backward compatibility
 
@@ -1043,13 +1039,13 @@ That's the full first-class set. Customize down by deleting what doesn't apply.
 
 Schema 3.0.0 (earlier the same day) was published before fully reading the Claude Code skills frontmatter reference at [`code.claude.com/docs/en/skills#frontmatter-reference`](https://code.claude.com/docs/en/skills#frontmatter-reference). Several documented optional fields were missing or misclassified:
 
-| Issue                 | Pre-3.1.0                  | Anthropic doc says                                                                                                                                                                                                          | Fix                                                                                  |
-| --------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `when_to_use`         | Marked DEPRECATED          | Documented optional: _"Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to `description` in the skill listing and counts toward the 1,536-character cap."_ | Restored to `SKILL_FIELDS` as documented optional. Removed from `DEPRECATED_FIELDS`. |
-| `arguments`           | Missing                    | Documented: _"Named positional arguments for `$name` substitution in the skill content. Accepts a space-separated string or a YAML list."_                                                                                  | Added to `SKILL_FIELDS`. Validated as `string\|array`.                               |
-| `paths`               | Missing                    | Documented: _"Glob patterns that limit when this skill is activated. Accepts a comma-separated string or a YAML list."_                                                                                                     | Added to `SKILL_FIELDS`. Validated as `string\|array`.                               |
-| `shell`               | Missing                    | Documented: _"Shell to use for `` !`command` `` and ` ```! ` blocks. Accepts `bash` (default) or `powershell`."_                                                                                                            | Added to `SKILL_FIELDS` with valid values `[bash, powershell]`.                      |
-| `effort` valid values | `[low, medium, high, max]` | `low`, `medium`, `high`, **`xhigh`**, `max`                                                                                                                                                                                 | Added `xhigh` to valid values.                                                       |
+| Issue | Pre-3.1.0 | Anthropic doc says | Fix |
+|---|---|---|---|
+| `when_to_use` | Marked DEPRECATED | Documented optional: *"Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to `description` in the skill listing and counts toward the 1,536-character cap."* | Restored to `SKILL_FIELDS` as documented optional. Removed from `DEPRECATED_FIELDS`. |
+| `arguments` | Missing | Documented: *"Named positional arguments for `$name` substitution in the skill content. Accepts a space-separated string or a YAML list."* | Added to `SKILL_FIELDS`. Validated as `string\|array`. |
+| `paths` | Missing | Documented: *"Glob patterns that limit when this skill is activated. Accepts a comma-separated string or a YAML list."* | Added to `SKILL_FIELDS`. Validated as `string\|array`. |
+| `shell` | Missing | Documented: *"Shell to use for `` !`command` `` and ` ```! ` blocks. Accepts `bash` (default) or `powershell`."* | Added to `SKILL_FIELDS` with valid values `[bash, powershell]`. |
+| `effort` valid values | `[low, medium, high, max]` | `low`, `medium`, `high`, **`xhigh`**, `max` | Added `xhigh` to valid values. |
 
 ### Added
 
@@ -1058,7 +1054,7 @@ Schema 3.0.0 (earlier the same day) was published before fully reading the Claud
 - **`paths` field** added to schema registry. Type: `string|array`. Glob patterns limiting auto-activation per file context.
 - **`shell` field** added to schema registry. Valid values: `bash` (default), `powershell`. PowerShell on Windows requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`.
 - **`effort: xhigh`** added to valid values for the `effort` field. Higher than `high`, distinct from `max`.
-- **Cross-surface alignment note**: `code.claude.com/docs/en/skills` documents _"All fields are optional. Only `description` is recommended."_ — this is more permissive than `platform.claude.com` (API surface) which requires `name` and `description`. The IS validator follows the API + AgentSkills.io stance (name + description required) for marketplace consistency, with `name` accepting the directory-name fallback per Claude Code semantics.
+- **Cross-surface alignment note**: `code.claude.com/docs/en/skills` documents *"All fields are optional. Only `description` is recommended."* — this is more permissive than `platform.claude.com` (API surface) which requires `name` and `description`. The IS validator follows the API + AgentSkills.io stance (name + description required) for marketplace consistency, with `name` accepting the directory-name fallback per Claude Code semantics.
 
 ### Changed
 
@@ -1086,15 +1082,15 @@ this schema previously was not.
 
 ### Verified across seven authoritative sources (2026-04-28)
 
-| Source                           | URL                                                                               | Required fields                                                                                        |
-| -------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Anthropic platform overview      | `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview`              | `name`, `description` only                                                                             |
-| Anthropic best practices         | `platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices`        | `name`, `description` only                                                                             |
-| Claude Code skills doc           | `code.claude.com/docs/en/skills`                                                  | None required (`description` recommended)                                                              |
-| Anthropic plugins reference      | `code.claude.com/docs/en/plugins-reference`                                       | No SKILL.md fields beyond skills doc                                                                   |
-| Anthropic engineering blog       | `anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills` | `name`, `description` only                                                                             |
-| AgentSkills.io open standard     | `agentskills.io/specification`                                                    | `name`, `description` only; `license`, `compatibility`, `metadata`, `allowed-tools` listed as optional |
-| anthropics/skills reference impl | `github.com/anthropics/skills`                                                    | `name`, `description` only                                                                             |
+| Source | URL | Required fields |
+|---|---|---|
+| Anthropic platform overview | `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview` | `name`, `description` only |
+| Anthropic best practices | `platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices` | `name`, `description` only |
+| Claude Code skills doc | `code.claude.com/docs/en/skills` | None required (`description` recommended) |
+| Anthropic plugins reference | `code.claude.com/docs/en/plugins-reference` | No SKILL.md fields beyond skills doc |
+| Anthropic engineering blog | `anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills` | `name`, `description` only |
+| AgentSkills.io open standard | `agentskills.io/specification` | `name`, `description` only; `license`, `compatibility`, `metadata`, `allowed-tools` listed as optional |
+| anthropics/skills reference impl | `github.com/anthropics/skills` | `name`, `description` only |
 
 ### Changed
 
@@ -1118,12 +1114,12 @@ this schema previously was not.
 - **`compatible-with` reclassified from REQUIRED → DEPRECATED**. Validator continues to parse this field for backward compatibility (3,385 existing public-repo SKILL.md files keep passing immediately) and emits a deprecation warning with a per-file migration suggestion that quotes the user's actual value. Migration tooling: `scripts/batch-remediate.py --migrate-compatible-with`.
 - **`scripts/batch-remediate.py`** — new bulk-fix script. The `--migrate-compatible-with` flag implements the translation table:
 
-  | Input                                           | Output                                                                             |
-  | ----------------------------------------------- | ---------------------------------------------------------------------------------- |
-  | `compatible-with: claude-code`                  | `compatibility: Designed for Claude Code`                                          |
+  | Input | Output |
+  |---|---|
+  | `compatible-with: claude-code` | `compatibility: Designed for Claude Code` |
   | `compatible-with: claude-code, codex, openclaw` | `compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw` |
-  | `compatible-with: ["claude-code"]`              | `compatibility: Designed for Claude Code`                                          |
-  | (empty `compatible-with`)                       | field removed                                                                      |
+  | `compatible-with: ["claude-code"]` | `compatibility: Designed for Claude Code` |
+  | (empty `compatible-with`) | field removed |
 
   Idempotent: running twice on the same file is safe.
 
@@ -1136,12 +1132,12 @@ this schema previously was not.
 
 ### Migration impact
 
-| Surface                                               | Impact                                                                                                                                                                                                                   |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **3,385 public-repo SKILL.md files** under `plugins/` | Zero errors (warnings about `compatible-with` deprecation are expected and OK). Bulk migration tracked in a separate follow-up issue. Not done in this release.                                                          |
-| **45 personal skills under `~/.claude/skills/`**      | Migrated 2026-04-28 alongside this release. ~20 had `compatible-with`; rest unaffected.                                                                                                                                  |
-| **CI configs that pass `--enterprise`**               | Continue to work. Validator emits a deprecation warning suggesting the rename to `--marketplace`. Removal targeted for the next minor version.                                                                           |
-| **Skills authored after this release**                | Should use `compatibility` (free-text per AgentSkills.io). Removal of the deprecated `compatible-with` alias was originally targeted for schema v4.0.0; that target is superseded and deferred by the 4.0.0 entry above. |
+| Surface | Impact |
+|---|---|
+| **3,385 public-repo SKILL.md files** under `plugins/` | Zero errors (warnings about `compatible-with` deprecation are expected and OK). Bulk migration tracked in a separate follow-up issue. Not done in this release. |
+| **45 personal skills under `~/.claude/skills/`** | Migrated 2026-04-28 alongside this release. ~20 had `compatible-with`; rest unaffected. |
+| **CI configs that pass `--enterprise`** | Continue to work. Validator emits a deprecation warning suggesting the rename to `--marketplace`. Removal targeted for the next minor version. |
+| **Skills authored after this release** | Should use `compatibility` (free-text per AgentSkills.io). Removal of the deprecated `compatible-with` alias was originally targeted for schema v4.0.0; that target is superseded and deferred by the 4.0.0 entry above. |
 
 ### Backward compatibility guarantee
 
@@ -1162,11 +1158,11 @@ need changes. Deprecation warnings are emitted but do not fail CI by default
 
 ### Tier model
 
-| Tier                              | Hard requirements                           | Warnings                                                                                         | Audience                                                  |
-| --------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
-| **Standard** (default)            | `name`, `description`                       | none                                                                                             | All skills, all authors. Mirrors Anthropic spec verbatim. |
-| **Marketplace** (`--marketplace`) | `name`, `description`                       | Missing polish fields (`allowed-tools`, `version`, `author`, `license`, `tags`, `compatibility`) | IS marketplace submissions. Adds 100-point rubric.        |
-| **Deep** (`--deep`)               | (delegates to standard or marketplace tier) | (deep-eval engine specific)                                                                      | Quality analysis, Elo ranking, optional LLM judge.        |
+| Tier | Hard requirements | Warnings | Audience |
+|---|---|---|---|
+| **Standard** (default) | `name`, `description` | none | All skills, all authors. Mirrors Anthropic spec verbatim. |
+| **Marketplace** (`--marketplace`) | `name`, `description` | Missing polish fields (`allowed-tools`, `version`, `author`, `license`, `tags`, `compatibility`) | IS marketplace submissions. Adds 100-point rubric. |
+| **Deep** (`--deep`) | (delegates to standard or marketplace tier) | (deep-eval engine specific) | Quality analysis, Elo ranking, optional LLM judge. |
 
 ### Authors
 

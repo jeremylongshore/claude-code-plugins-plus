@@ -74,7 +74,6 @@
     - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
 
 **VALIDATION**:
-
 - Validator runs in ENTERPRISE MODE ONLY
 - CRITICAL/HIGH errors BLOCK PR merge
 - Deterministic error codes (6767-d schema)
@@ -86,7 +85,6 @@
 ## 1. Purpose
 
 This specification defines **enforcement mechanisms** for Claude Code extensions:
-
 - Validator implementation requirements
 - CI/CD pipeline gates and workflows
 - Auto-fix policies
@@ -103,13 +101,11 @@ All rules herein operate in **ENTERPRISE MODE ONLY**. There is no Anthropic-mini
 #### 2.1.1 Enterprise Mode (ONLY MODE)
 
 **Command**:
-
 ```bash
 python validate_standards.py --plugin-root /path/to/plugin
 ```
 
 **Behavior**:
-
 - Enforce ALL enterprise requirements from 6767-c and 6767-d
 - No "Anthropic-minimum" fallback
 - All fields marked "REQUIRED" in 6767-c are REQUIRED
@@ -118,7 +114,6 @@ python validate_standards.py --plugin-root /path/to/plugin
 - Exit code 0 on success
 
 **Flags**:
-
 - `--plugin-root PATH`: Plugin root directory (REQUIRED)
 - `--verbose`: Detailed output
 - `--json`: JSON report output
@@ -126,15 +121,15 @@ python validate_standards.py --plugin-root /path/to/plugin
 
 ### 2.2 Validation Categories
 
-| Category      | Checks                                                   | Severity Range  |
-| ------------- | -------------------------------------------------------- | --------------- |
-| **Manifest**  | plugin.json schema, required fields, name/version format | CRITICAL        |
-| **Directory** | .claude-plugin/ ONLY plugin.json, components at root     | CRITICAL        |
-| **Skills**    | Frontmatter, CSV allowed-tools, body limits              | CRITICAL - HIGH |
-| **Agents**    | Frontmatter, required fields                             | CRITICAL - HIGH |
-| **Security**  | Secrets, .env files, paths, Bash scoping                 | CRITICAL        |
-| **Naming**    | Kebab-case, reserved words, max length                   | CRITICAL - HIGH |
-| **Context**   | Body size limits, progressive disclosure                 | HIGH - MEDIUM   |
+| Category | Checks | Severity Range |
+|----------|--------|----------------|
+| **Manifest** | plugin.json schema, required fields, name/version format | CRITICAL |
+| **Directory** | .claude-plugin/ ONLY plugin.json, components at root | CRITICAL |
+| **Skills** | Frontmatter, CSV allowed-tools, body limits | CRITICAL - HIGH |
+| **Agents** | Frontmatter, required fields | CRITICAL - HIGH |
+| **Security** | Secrets, .env files, paths, Bash scoping | CRITICAL |
+| **Naming** | Kebab-case, reserved words, max length | CRITICAL - HIGH |
+| **Context** | Body size limits, progressive disclosure | HIGH - MEDIUM |
 
 ### 2.3 Required Checks (Comprehensive List)
 
@@ -221,7 +216,6 @@ python validate_standards.py --plugin-root /path/to/plugin
 **Purpose**: Block non-compliant code from merging
 
 **Steps**:
-
 ```yaml
 name: PR Validation
 
@@ -250,7 +244,7 @@ jobs:
         run: |
           cd plugins/my-plugin
           python scripts/validate_standards.py --plugin-root . --verbose
-        continue-on-error: false # ← BLOCKING GATE
+        continue-on-error: false       # ← BLOCKING GATE
 
       - name: Run security tests
         run: |
@@ -271,14 +265,12 @@ jobs:
 ```
 
 **Blocking Behavior**:
-
 - Validator runs FIRST (fail-fast)
 - If validator exits with code 1 (CRITICAL/HIGH errors), PR is BLOCKED
 - All other steps run only if validation passes
 - Developer must fix errors locally and push again
 
 **Expected Output (Success)**:
-
 ```
 ✓ Checkout code
 ✓ Set up Python 3.10
@@ -291,7 +283,6 @@ jobs:
 ```
 
 **Expected Output (Failure)**:
-
 ```
 ✓ Checkout code
 ✓ Set up Python 3.10
@@ -317,7 +308,6 @@ jobs:
 **Purpose**: Comprehensive validation + reporting
 
 **Steps**:
-
 ```yaml
 name: Main Branch CI
 
@@ -373,7 +363,6 @@ jobs:
 ```
 
 **Purpose**:
-
 - Comprehensive validation (same rigor as PR)
 - Generate coverage reports
 - Archive validation artifacts
@@ -441,7 +430,6 @@ jobs:
 ### 4.3 Auto-Fix Reporting
 
 **Output Format**:
-
 ```
 Running validator with --fix enabled...
 
@@ -577,7 +565,6 @@ Summary: 40 passed, 2 failed (1 CRITICAL, 1 HIGH)
 **Applies to**: Plugins with `000-docs/` directory
 
 **Checks**:
-
 - [ ] `000-docs/` is flat (no subdirectories)
 - [ ] All filenames match pattern: `NNN-CC-ABCD-short-description.ext`
 - [ ] NNN are unique (no duplicates unless valid suffix: `005a`, `006-1`)
@@ -586,7 +573,6 @@ Summary: 40 passed, 2 failed (1 CRITICAL, 1 HIGH)
 - [ ] Short descriptions 1-4 words, kebab-case
 
 **Error Codes**:
-
 - `DOC_001`: 000-docs/ is not flat (has subdirectories)
 - `DOC_002`: Invalid filename pattern
 - `DOC_003`: Duplicate NNN
@@ -599,7 +585,6 @@ Summary: 40 passed, 2 failed (1 CRITICAL, 1 HIGH)
 ### 6.2 Example Validation
 
 **Good**:
-
 ```
 000-docs/
 ├── 001-DR-STND-document-filing-system.md      ✓
@@ -608,7 +593,6 @@ Summary: 40 passed, 2 failed (1 CRITICAL, 1 HIGH)
 ```
 
 **Bad**:
-
 ```
 000-docs/
 ├── planned-plugins/                            ✗ Subdirectory not allowed
@@ -644,7 +628,6 @@ exit 0
 ```
 
 **Installation**:
-
 ```bash
 chmod +x .git/hooks/pre-commit
 ```
@@ -796,7 +779,6 @@ def test_allowed_tools_yaml_array_fails():
 ### 10.1 Legacy Validators (Deprecated)
 
 **Deprecated**:
-
 - Any validator that supports "Anthropic-minimum" mode
 - Any validator that treats `allowed-tools` YAML array as valid
 - Any validator that doesn't enforce enterprise fields
@@ -806,7 +788,6 @@ def test_allowed_tools_yaml_array_fails():
 ### 10.2 Migration Path
 
 **For existing plugins**:
-
 1. Run new validator to identify violations
 2. Fix CRITICAL errors first (blocking)
 3. Fix HIGH errors next (important)

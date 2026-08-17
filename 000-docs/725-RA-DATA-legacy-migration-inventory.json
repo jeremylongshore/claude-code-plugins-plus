@@ -1,22 +1,22 @@
 {
-  "mission": "01",
-  "deliverable": 10,
-  "bead": "claude-co8a.8",
-  "captured_at": "2026-08-11",
-  "head": "4358a65a3",
-  "docs_anthropic_com": {
-    "files": 169,
-    "lines": 412,
-    "occurrences": 500,
-    "occurrences_in_generated_byte_dupes": 150,
-    "commands": [
-      "git grep -l 'docs\\.anthropic\\.com' | wc -l",
-      "git grep -c 'docs\\.anthropic\\.com' | awk -F: '{s+=$2} END{print s}'",
-      "git grep -o 'docs\\.anthropic\\.com' | wc -l"
-    ]
-  },
-  "claude_3_files": 248,
-  "claude_2_files_unbounded": 19,
-  "claude_2_files_word_boundary": 11,
-  "relates": "GH #1146"
+ "mission": "01",
+ "deliverable": 10,
+ "bead": "claude-co8a.8",
+ "captured_at": "2026-08-11",
+ "head": "4358a65a3",
+ "docs_anthropic_com": {
+  "files": 169,
+  "lines": 412,
+  "occurrences": 500,
+  "occurrences_in_generated_byte_dupes": 150,
+  "commands": [
+   "git grep -l 'docs\\.anthropic\\.com' | wc -l",
+   "git grep -c 'docs\\.anthropic\\.com' | awk -F: '{s+=$2} END{print s}'",
+   "git grep -o 'docs\\.anthropic\\.com' | wc -l"
+  ]
+ },
+ "claude_3_files": 248,
+ "claude_2_files_unbounded": 19,
+ "claude_2_files_word_boundary": 11,
+ "relates": "GH #1146"
 }

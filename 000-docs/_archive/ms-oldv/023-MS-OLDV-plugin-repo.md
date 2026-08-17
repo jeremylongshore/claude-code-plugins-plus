@@ -9,7 +9,6 @@ Location: `
 ## 1. Repository Structure
 
 ### Compact Tree (Depth 4)
-
 ```
 claude-code-plugins/
 ├── .claude-plugin/
@@ -39,7 +38,6 @@ claude-code-plugins/
 ```
 
 ### Plugin Packages Structure
-
 ```
 packages/
 ├── ai-ml-engineering-pack/    # 12 AI/ML plugins
@@ -49,7 +47,6 @@ packages/
 ```
 
 ### MCP Plugins
-
 ```
 mcp/
 ├── conversational-api-debugger/
@@ -64,25 +61,23 @@ mcp/
 ## 2. Plugin Metadata
 
 ### Main Marketplace Configuration
-
-| Field         | Value                             |
-| ------------- | --------------------------------- |
-| Name          | claude-code-plugins               |
-| Owner         | Jeremy Longshore                  |
-| Version       | 1.1.0                             |
-| Homepage      | [retired legacy public domain]/   |
+| Field | Value |
+|-------|-------|
+| Name | claude-code-plugins |
+| Owner | Jeremy Longshore |
+| Version | 1.1.0 |
+| Homepage | [retired legacy public domain]/ |
 | Plugins Count | 20 registered in marketplace.json |
 
 ### Sample Plugin Pack Metadata (DevOps Automation)
-
-| Field       | Value                                                                       |
-| ----------- | --------------------------------------------------------------------------- |
-| Name        | devops-automation-pack                                                      |
-| Version     | 1.0.0                                                                       |
+| Field | Value |
+|-------|-------|
+| Name | devops-automation-pack |
+| Version | 1.0.0 |
 | Description | 25 professional DevOps plugins for CI/CD, deployment, Docker, Kubernetes... |
-| Author      | Jeremy Longshore <jeremy@intentsolutions.ai>                                |
-| License     | MIT                                                                         |
-| Keywords    | devops, ci-cd, docker, kubernetes, terraform, deployment                    |
+| Author | Jeremy Longshore <jeremy@intentsolutions.ai> |
+| License | MIT |
+| Keywords | devops, ci-cd, docker, kubernetes, terraform, deployment |
 
 ---
 
@@ -90,16 +85,15 @@ mcp/
 
 ### Discovered MCP Servers (5 total)
 
-| Plugin                      | MCP Config | Server Name  | Type |
-| --------------------------- | ---------- | ------------ | ---- |
-| project-health-auditor      | .mcp.json  | code-metrics | node |
-| conversational-api-debugger | .mcp.json  | (present)    | node |
-| domain-memory-agent         | .mcp.json  | (present)    | node |
-| design-to-code              | .mcp.json  | (present)    | node |
-| workflow-orchestrator       | .mcp.json  | (present)    | node |
+| Plugin | MCP Config | Server Name | Type |
+|--------|------------|-------------|------|
+| project-health-auditor | .mcp.json | code-metrics | node |
+| conversational-api-debugger | .mcp.json | (present) | node |
+| domain-memory-agent | .mcp.json | (present) | node |
+| design-to-code | .mcp.json | (present) | node |
+| workflow-orchestrator | .mcp.json | (present) | node |
 
 ### MCP Server Configuration Example
-
 ```json
 {
   "mcpServers": {
@@ -120,16 +114,15 @@ mcp/
 
 ### Example Commands Found
 
-| Plugin                 | Command        | Description                             |
-| ---------------------- | -------------- | --------------------------------------- |
-| project-health-auditor | /analyze       | Trigger full repository health analysis |
-| git-commit-smart       | (in commands/) | AI-powered commit messages              |
-| n8n-workflow-designer  | (in commands/) | Design n8n workflows                    |
-| make-scenario-builder  | (in commands/) | Build Make.com scenarios                |
-| zapier-zap-builder     | (in commands/) | Create Zapier Zaps                      |
+| Plugin | Command | Description |
+|--------|---------|-------------|
+| project-health-auditor | /analyze | Trigger full repository health analysis |
+| git-commit-smart | (in commands/) | AI-powered commit messages |
+| n8n-workflow-designer | (in commands/) | Design n8n workflows |
+| make-scenario-builder | (in commands/) | Build Make.com scenarios |
+| zapier-zap-builder | (in commands/) | Create Zapier Zaps |
 
 ### Command Structure Example (project-health-auditor/analyze.md)
-
 - **Name**: Repository Health Analysis
 - **MCP Calls**: `list_repo_files`, `file_metrics`, `git_churn`, `map_tests`
 - **Workflow**:
@@ -145,18 +138,17 @@ mcp/
 
 ### Discovered Agents (Sample)
 
-| Pack              | Agent                  | Purpose                               |
-| ----------------- | ---------------------- | ------------------------------------- |
-| ai-ml-engineering | prompt-optimizer       | Optimize prompts for efficiency       |
-| ai-ml-engineering | llm-integration-expert | Multi-provider LLM integration        |
-| ai-ml-engineering | rag-architect          | Design RAG systems                    |
-| security-pro      | compliance-checker     | Check HIPAA, GDPR, PCI DSS compliance |
-| security-pro      | crypto-expert          | Cryptography auditing                 |
-| devops-automation | ci-cd-expert           | CI/CD pipeline optimization           |
-| fullstack-starter | frontend-architect     | React/Vue component design            |
+| Pack | Agent | Purpose |
+|------|-------|---------|
+| ai-ml-engineering | prompt-optimizer | Optimize prompts for efficiency |
+| ai-ml-engineering | llm-integration-expert | Multi-provider LLM integration |
+| ai-ml-engineering | rag-architect | Design RAG systems |
+| security-pro | compliance-checker | Check HIPAA, GDPR, PCI DSS compliance |
+| security-pro | crypto-expert | Cryptography auditing |
+| devops-automation | ci-cd-expert | CI/CD pipeline optimization |
+| fullstack-starter | frontend-architect | React/Vue component design |
 
 ### Agent Count by Pack
-
 - **AI/ML Engineering**: 8 agents
 - **Security Pro**: 5 agents
 - **DevOps Automation**: 5 agents
@@ -168,26 +160,21 @@ mcp/
 
 ### Discovered Hook Implementations
 
-| Plugin    | Trigger                   | Action    | File Modified                |
-| --------- | ------------------------- | --------- | ---------------------------- |
+| Plugin | Trigger | Action | File Modified |
+|--------|---------|--------|---------------|
 | formatter | PostToolUse (Write\|Edit) | format.sh | Formats written/edited files |
 
 ### Hook Structure Example
-
 ```json
 {
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh"
-          }
-        ]
-      }
-    ]
+    "PostToolUse": [{
+      "matcher": "Write|Edit",
+      "hooks": [{
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh"
+      }]
+    }]
   }
 }
 ```
@@ -199,7 +186,6 @@ mcp/
 ### Workflow Files
 
 #### validate-plugins.yml
-
 - **Triggers**: Pull requests (plugins/**, .claude-plugin/**), Push to main
 - **Main Steps**:
   - Checkout code
@@ -209,7 +195,6 @@ mcp/
 - **Env/Secrets**: None required
 
 #### release.yml
-
 - **Triggers**: Manual dispatch, tags
 - **Main Steps**:
   - Build release artifacts
@@ -218,7 +203,6 @@ mcp/
 - **Env/Secrets**: GITHUB_TOKEN
 
 #### deploy-marketplace.yml
-
 - **Triggers**: Push to main (marketplace changes)
 - **Main Steps**:
   - Build Astro site
@@ -230,20 +214,17 @@ mcp/
 ## 8. Quick Lint
 
 ### JSON Syntax Check
-
-- marketplace.json: Valid
-- plugin.json files: Valid (sampled)
-- hooks.json files: Valid
-- .mcp.json files: Valid
+-  marketplace.json: Valid
+-  plugin.json files: Valid (sampled)
+-  hooks.json files: Valid
+-  .mcp.json files: Valid
 
 ### Command File Validation
-
 - ️ Command files should have H1 matching slash command name
-- Commands reference existing MCP tools (where applicable)
+-  Commands reference existing MCP tools (where applicable)
 
 ### Script Permissions
-
-- Shell scripts in examples/formatter/scripts/ are present
+-  Shell scripts in examples/formatter/scripts/ are present
 - ️ Need to verify all .sh files have execute permissions
 
 ---
@@ -344,7 +325,6 @@ EOF
 ## Summary
 
 **Repository Stats:**
-
 - Total Plugins: 20 in marketplace
 - Plugin Packs: 4 (62 total components)
 - MCP Servers: 5 (with compiled TypeScript)
@@ -353,15 +333,14 @@ EOF
 - GitHub Workflows: 3
 
 **Key Features:**
-
 - Comprehensive marketplace with installation system
 - Professional plugin packs for different domains
 - MCP server integration for external tools
 - Automated validation and release workflows
 - Active development with clear structure
 
-**Repository Health:** Well-organized, actively maintained, ready for community contributions
+**Repository Health:**  Well-organized, actively maintained, ready for community contributions
 
 ---
 
-_Report generated using Claude Code analysis tools_
+*Report generated using Claude Code analysis tools*

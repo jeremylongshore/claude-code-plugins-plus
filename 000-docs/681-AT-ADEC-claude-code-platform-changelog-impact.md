@@ -27,11 +27,9 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 1 — Skills + slash commands accept `disallowed-tools` frontmatter
 
 **Source:** Claude Code 2.1.152 (2026-05-27).
-
 > Skills and slash commands can now set `disallowed-tools` in frontmatter to remove tools from the model while the skill is active.
 
 **Validator impact:**
-
 - `scripts/validate-skills-schema.py` must add `disallowed-tools` to the recognized OPTIONAL frontmatter fields for both skills and slash commands. Currently the validator's `ALWAYS_REQUIRED` set is 8 fields (locked per `SCHEMA_CHANGELOG.md` NON-NEGOTIABLES); `disallowed-tools` is OPTIONAL and goes in the "Optional frontmatter (schema 3.5.0+)" section per repo CLAUDE.md.
 - Validation rule: must be a non-empty string OR a YAML list of strings, matching the existing `allowed-tools` shape.
 - Cross-field rule: same tool name appearing in BOTH `allowed-tools` AND `disallowed-tools` is an ERROR (mirrors the existing 3.5.0 visibility-gating overlap rule).
@@ -47,11 +45,9 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 2 — Hook `if:` conditional matcher (permission-rule syntax)
 
 **Source:** Claude Code 2.1.85 (2026-03-26).
-
 > Added conditional `if` field for hooks using permission rule syntax (e.g., `Bash(git *)`) to filter when they run, reducing process spawning overhead.
 
 **Validator impact:**
-
 - `.claude/skills/validate-hook/` needs schema update to recognize the optional `if:` field on every hook handler. Value type: a permission-rule string identical to the `permissions.allow`/`deny` syntax.
 - New validation: if `if:` is present, validate the rule string with the same parser used for `permissions.*` validation. Surface bad rules with the same actionable error message style.
 
@@ -64,11 +60,9 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 3 — Hook `args: string[]` exec form + `continueOnBlock` for PostToolUse
 
 **Source:** Claude Code 2.1.139 (2026-05-11).
-
 > Added hook `args: string[]` field (exec form) that spawns the command directly without a shell, so path placeholders never need quoting. Added hook `continueOnBlock` config option for `PostToolUse` — set to `true` to feed the hook's rejection reason back to Claude and continue the turn.
 
 **Validator impact:** `.claude/skills/validate-hook/` schema additions:
-
 - `args: string[]` is a valid alternative to `command: string`. Validator must accept either-or, not both.
 - `continueOnBlock: boolean` is valid only on `PostToolUse` handlers. Reject on PreToolUse / SessionStart / etc. with a clear error.
 
@@ -81,7 +75,6 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 4 — `defer` permission decision in PreToolUse hooks
 
 **Source:** Claude Code 2.1.89 (2026-04-01).
-
 > Added `"defer"` permission decision to `PreToolUse` hooks — headless sessions can pause at a tool call and resume with `-p --resume` to have the hook re-evaluate.
 
 **Validator impact:** `.claude/skills/validate-hook/`: the documented set of valid `permissionDecision` values must add `"defer"` alongside `"allow"`, `"deny"`, `"ask"`. Currently the validator may treat `"defer"` as unknown.
@@ -95,7 +88,6 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 5 — MCP tool result `_meta["anthropic/maxResultSizeChars"]` annotation
 
 **Source:** Claude Code 2.1.91 (2026-04-02).
-
 > Added MCP tool result persistence override via `_meta["anthropic/maxResultSizeChars"]` annotation (up to 500K), allowing larger results like DB schemas to pass through without truncation.
 
 **Validator impact:** `.claude/skills/validate-mcp/`: the spec snapshot for MCP tool result format must document `_meta` as a valid optional field. The annotation key `anthropic/maxResultSizeChars` is reserved and must be a number 0 ≤ N ≤ 500000.
@@ -109,7 +101,6 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 6 — `SessionStart` hook can set session title + `reloadSkills`
 
 **Source:** Claude Code 2.1.152 (2026-05-27).
-
 > `SessionStart` hooks can now set the session title via `hookSpecificOutput.sessionTitle` on startup and resume. `SessionStart` hooks can now return `reloadSkills: true` to re-scan skill directories, making skills installed by the hook available in the same session.
 
 **Validator impact:** `.claude/skills/validate-hook/`: the `hookSpecificOutput` shape for `SessionStart` handlers must include the optional `sessionTitle: string` and `reloadSkills: boolean` fields.
@@ -125,7 +116,6 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 7 — `MessageDisplay` hook event
 
 **Source:** Claude Code 2.1.152 (2026-05-27).
-
 > Added a `MessageDisplay` hook event that lets hooks transform or hide assistant message text as it is displayed.
 
 **Validator impact:** `.claude/skills/validate-hook/`: `MessageDisplay` must be added to the recognized hook event allowlist (currently ~30 events per the validate-hook skill's reference).
@@ -139,7 +129,6 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 ### Change 8 — `pluginSuggestionMarketplaces` managed setting
 
 **Source:** Claude Code 2.1.152 (2026-05-27).
-
 > Added `pluginSuggestionMarketplaces` managed setting: admins can allowlist org marketplaces whose plugins may be suggested via context-aware tips.
 
 **Validator impact:** No direct validator change (this is a Claude Code user-side setting, not a plugin-side declaration). BUT the marketplace.json validator may want to document the field so that enterprise consumers know how to allowlist Tons of Skills if they want to.
@@ -156,21 +145,21 @@ The doc is repo-wide. Downstream consumers (the databricks-pack v2 rebuild at `p
 
 **Validator impact:** Already in place since 3.6.0. No change needed; just elevated visibility.
 
-**Documentation impact:** The skill-creator interactive flow should prompt for `required_environment_variables` and `metadata.intent-solutions.config` whenever a skill's allowed-tools includes patterns that suggest external system integration (Bash(databricks:_), Bash(aws:_), Bash(gh:\*), MCP server invocations, etc.).
+**Documentation impact:** The skill-creator interactive flow should prompt for `required_environment_variables` and `metadata.intent-solutions.config` whenever a skill's allowed-tools includes patterns that suggest external system integration (Bash(databricks:*), Bash(aws:*), Bash(gh:*), MCP server invocations, etc.).
 
 ## Concrete script + skill changes needed
 
-| Artifact                                                                                                                 | Change                                                                                                                                                                                                                                                                          | Owner                          | Blocking?                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
-| `scripts/validate-skills-schema.py`                                                                                      | Add `disallowed-tools` as optional skill+command field. Reject `disallowedTools` (camelCase) on skills; keep accepting on agents. Cross-field overlap check with `allowed-tools`. Bump SCHEMA_VERSION to 3.7.0.                                                                 | repo maintainer                | YES — blocks Change 1 across the marketplace                                        |
-| `000-docs/SCHEMA_CHANGELOG.md`                                                                                           | New section: "3.7.0 (2026-05-27) — disallowed-tools field on skills + commands; hook if/args/continueOnBlock/defer additions; MCP \_meta annotation; SessionStart sessionTitle + reloadSkills; MessageDisplay event." Preserve the NON-NEGOTIABLES section at the top.          | repo maintainer                | YES — paper-trail requirement per CLAUDE.md                                         |
-| `.claude/skills/validate-hook/references/anthropic-hooks-reference.md` (or wherever the canonical hooks-reference lives) | Add `if:`, `args[]`, `continueOnBlock`, `defer`, `MessageDisplay`, `SessionStart.sessionTitle`, `SessionStart.reloadSkills` to the spec snapshot. Update validator logic to match.                                                                                              | validate-hook skill maintainer | NO — additive validator capability, current validator doesn't crash on these fields |
-| `.claude/skills/validate-mcp/references/`                                                                                | Add `_meta["anthropic/maxResultSizeChars"]` annotation to MCP tool result spec snapshot.                                                                                                                                                                                        | validate-mcp skill maintainer  | NO — additive                                                                       |
-| `.claude/skills/skill-creator/` interactive flow                                                                         | Offer `disallowed-tools` as an optional frontmatter field. Forge mode templates default-include conservative disallow list.                                                                                                                                                     | skill-creator maintainer       | NO — improves new skills, doesn't break existing                                    |
-| `.claude/skills/agent-creator/`                                                                                          | No change to camelCase `disallowedTools` field. Add documentation note in the agent-vs-skill comparison about the parallel kebab-case `disallowed-tools` on skills.                                                                                                             | agent-creator maintainer       | NO                                                                                  |
-| `.claude/skills/validate-plugin/` end-to-end runner                                                                      | Pick up the validate-skills-schema.py update transparently. No direct change needed.                                                                                                                                                                                            | n/a                            | n/a                                                                                 |
-| Repo-level CLAUDE.md (`)                                                                                                 | Update the SKILL.md frontmatter spec section to mention `disallowed-tools` as schema 3.7.0+ optional field. Update the "Agents use disallowedTools (denylist); skills use allowed-tools (allowlist)" note to reflect that skills now ALSO support disallowed-tools in parallel. | repo maintainer                | YES — repo-level spec is the canonical source for plugin authors                    |
-| `freshie/inventory.sqlite` schema                                                                                        | If the validator now produces a `disallowed_tools_count` or `disallowed_tools_present` column on `skill_compliance`, add it. Otherwise no change.                                                                                                                               | freshie maintainer             | NO — optional analytic column                                                       |
+| Artifact | Change | Owner | Blocking? |
+|---|---|---|---|
+| `scripts/validate-skills-schema.py` | Add `disallowed-tools` as optional skill+command field. Reject `disallowedTools` (camelCase) on skills; keep accepting on agents. Cross-field overlap check with `allowed-tools`. Bump SCHEMA_VERSION to 3.7.0. | repo maintainer | YES — blocks Change 1 across the marketplace |
+| `000-docs/SCHEMA_CHANGELOG.md` | New section: "3.7.0 (2026-05-27) — disallowed-tools field on skills + commands; hook if/args/continueOnBlock/defer additions; MCP _meta annotation; SessionStart sessionTitle + reloadSkills; MessageDisplay event." Preserve the NON-NEGOTIABLES section at the top. | repo maintainer | YES — paper-trail requirement per CLAUDE.md |
+| `.claude/skills/validate-hook/references/anthropic-hooks-reference.md` (or wherever the canonical hooks-reference lives) | Add `if:`, `args[]`, `continueOnBlock`, `defer`, `MessageDisplay`, `SessionStart.sessionTitle`, `SessionStart.reloadSkills` to the spec snapshot. Update validator logic to match. | validate-hook skill maintainer | NO — additive validator capability, current validator doesn't crash on these fields |
+| `.claude/skills/validate-mcp/references/` | Add `_meta["anthropic/maxResultSizeChars"]` annotation to MCP tool result spec snapshot. | validate-mcp skill maintainer | NO — additive |
+| `.claude/skills/skill-creator/` interactive flow | Offer `disallowed-tools` as an optional frontmatter field. Forge mode templates default-include conservative disallow list. | skill-creator maintainer | NO — improves new skills, doesn't break existing |
+| `.claude/skills/agent-creator/` | No change to camelCase `disallowedTools` field. Add documentation note in the agent-vs-skill comparison about the parallel kebab-case `disallowed-tools` on skills. | agent-creator maintainer | NO |
+| `.claude/skills/validate-plugin/` end-to-end runner | Pick up the validate-skills-schema.py update transparently. No direct change needed. | n/a | n/a |
+| Repo-level CLAUDE.md (`) | Update the SKILL.md frontmatter spec section to mention `disallowed-tools` as schema 3.7.0+ optional field. Update the "Agents use disallowedTools (denylist); skills use allowed-tools (allowlist)" note to reflect that skills now ALSO support disallowed-tools in parallel. | repo maintainer | YES — repo-level spec is the canonical source for plugin authors |
+| `freshie/inventory.sqlite` schema | If the validator now produces a `disallowed_tools_count` or `disallowed_tools_present` column on `skill_compliance`, add it. Otherwise no change. | freshie maintainer | NO — optional analytic column |
 
 ## Order of operations
 
@@ -206,4 +195,4 @@ This Decision Record is referenced from:
 I, Claude (designated acting head of board by Jeremy Longshore on 2026-05-27), file this repo-wide Decision Record cataloging the Claude Code platform changelog impact on the entire Tons of Skills marketplace ecosystem. The catalog is implementation-guidance for repo maintainers + a canonical pointer for downstream consumers (databricks-pack rebuild, future partnerships, new skill authors). Specific code/schema changes follow this file as discrete PRs against `validate-skills-schema.py`, `SCHEMA_CHANGELOG.md`, the validator skills, and the creator skills.
 
 - Jeremy Longshore
-  intentsolutions.io
+intentsolutions.io

@@ -6,17 +6,17 @@
 
 ## Snapshot
 
-| Metric                   | Value                     | Command                                                                |
-| ------------------------ | ------------------------- | ---------------------------------------------------------------------- |
-| HEAD                     | `4358a65a3`               | `git rev-parse HEAD`                                                   |
-| Working tree             | clean (0 entries)         | `git status --porcelain \| wc -l`                                      |
-| Tracked files            | 22,963                    | `git ls-files \| wc -l`                                                |
-| Worktree size            | 3.2 G                     | `du -sh --exclude=.git .`                                              |
-| `.git` size              | 439 M                     | `du -sh .git`                                                          |
+| Metric | Value | Command |
+| --- | --- | --- |
+| HEAD | `4358a65a3` | `git rev-parse HEAD` |
+| Working tree | clean (0 entries) | `git status --porcelain \| wc -l` |
+| Tracked files | 22,963 | `git ls-files \| wc -l` |
+| Worktree size | 3.2 G | `du -sh --exclude=.git .` |
+| `.git` size | 439 M | `du -sh .git` |
 | Tracked bytes (stat-sum) | 267,860,729 B (255.5 MiB) | `git ls-files -z \| xargs -0 stat -c %s \| awk '{s+=$1} END{print s}'` |
-| Submodules               | 0                         | `git submodule status`                                                 |
-| LFS                      | none                      | no lfs entries in `.gitattributes`                                     |
-| Local branches / stashes | 15 / 0                    | `git branch` / `git stash list`                                        |
+| Submodules | 0 | `git submodule status` |
+| LFS | none | no lfs entries in `.gitattributes` |
+| Local branches / stashes | 15 / 0 | `git branch` / `git stash list` |
 
 **Measurement-basis note:** earlier discovery quoted "~306 M tracked" from `du` block-allocation;
 the reproducible metric is the stat-sum above. Both bases are recorded so future runs diff

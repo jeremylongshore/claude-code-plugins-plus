@@ -5,126 +5,26 @@
   "captured_at": "2026-08-11T19:01:48-06:00",
   "head": "4358a65a3",
   "tree_mutation_during_run": false,
-  "required_checks": [
-    "ci-required (aggregates 19 jobs; skipped counts as PASS)",
-    "gitleaks",
-    "skill-conform"
-  ],
+  "required_checks": ["ci-required (aggregates 19 jobs; skipped counts as PASS)", "gitleaks", "skill-conform"],
   "diagnostics": [
-    {
-      "id": "validate-marketplace",
-      "cmd": "python3 scripts/validate-skills-schema.py --marketplace",
-      "exit": 1,
-      "runtime_s": 79.3,
-      "baseline": "7687 errors (known ~7.6k corpus baseline); grades: A+B 2582 (70.2%), C 896, D 193, F 9",
-      "status": "BASELINE-RECORDED"
-    },
-    {
-      "id": "agents-only",
-      "cmd": "python3 scripts/validate-skills-schema.py --agents-only",
-      "exit": 1,
-      "runtime_s": 2.1,
-      "baseline": "253 errors, standard tier; grade distribution all-zero. Advisory lane, corpus previously unbaselined — this IS the baseline number. Note: CLAUDE.md claims 'all 317 in-repo agents at A-grade' — contradicted by this run; crosswalk item for M1.10",
-      "status": "BASELINE-RECORDED"
-    },
-    {
-      "id": "unicode-hygiene",
-      "cmd": "python3 scripts/validate-unicode-hygiene.py",
-      "exit": 0,
-      "runtime_s": 15.7,
-      "baseline": "PASS in default mode; zero-width U+200B MAJOR advisories present (contributing-clanker draft-writer.md) — would block only under --strict",
-      "status": "PASS"
-    },
-    {
-      "id": "catalog-format",
-      "cmd": "python3 scripts/check-catalog-format.py origin/main",
-      "exit": 0,
-      "runtime_s": 0.1,
-      "baseline": "catalog unchanged — OK",
-      "status": "PASS"
-    },
-    {
-      "id": "doc-links",
-      "cmd": "node scripts/check-internal-doc-links.mjs",
-      "exit": 0,
-      "runtime_s": 0.8,
-      "baseline": "1 unresolved — matches known baseline of exactly 1",
-      "status": "PASS-AT-BASELINE"
-    },
-    {
-      "id": "scan-synced",
-      "cmd": "node scripts/scan-synced-content.mjs",
-      "exit": 1,
-      "runtime_s": 1.0,
-      "baseline": "0 REFUSE / 63 CHALLENGE / 27 FLAG / 34 waived. CHALLENGE requires human sign-off by design — exit 1 is the designed full-corpus posture, not a regression",
-      "status": "BASELINE-RECORDED"
-    },
-    {
-      "id": "submission-docs",
-      "cmd": "node scripts/check-submission-docs.mjs",
-      "exit": 0,
-      "runtime_s": 0.6,
-      "baseline": "no new plugin dirs in diff — designed skip",
-      "status": "PASS"
-    },
-    {
-      "id": "verify-dryrun",
-      "cmd": "node scripts/run-verification-pipeline.mjs --dry-run",
-      "exit": 0,
-      "runtime_s": 40.0,
-      "baseline": "dry-run confirmed no files modified; average score 0.0/100 in dry-run mode (does not compute scores) — the mutating 'pnpm run verify' was deliberately NOT run",
-      "status": "PASS"
-    },
-    {
-      "id": "cli-test",
-      "cmd": "cd packages/cli && pnpm test",
-      "exit": 1,
-      "runtime_s": 2.5,
-      "baseline": "vitest 2.1.9 collection failure: ReferenceError __vite_ssr_exportName__ is not defined at src/program.ts:1 — LOCAL-ENV divergence (stale vite transform cache or vite/vitest skew); CI green on main, so not a code defect. Recorded, not fixed (read-only mission)",
-      "status": "LOCAL-ENV-FAIL"
-    },
-    {
-      "id": "root-test",
-      "cmd": "pnpm test",
-      "exit": 1,
-      "runtime_s": 2.6,
-      "baseline": "recursive run first-fails at packages/cli (same __vite_ssr_exportName__ root cause); ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL — downstream suites (e.g. lumera-agent-memory pytest) not reached",
-      "status": "LOCAL-ENV-FAIL"
-    },
-    {
-      "id": "unittest-dolt",
-      "cmd": "python3 -m unittest tests.test_dolt_sync",
-      "exit": 0,
-      "runtime_s": 0.2,
-      "baseline": "42 tests OK",
-      "status": "PASS"
-    },
-    {
-      "id": "unittest-unicode",
-      "cmd": "python3 -m unittest tests.test_validate_unicode_hygiene",
-      "exit": 0,
-      "runtime_s": 0.8,
-      "baseline": "8 tests OK",
-      "status": "PASS"
-    }
+    { "id": "validate-marketplace", "cmd": "python3 scripts/validate-skills-schema.py --marketplace", "exit": 1, "runtime_s": 79.3, "baseline": "7687 errors (known ~7.6k corpus baseline); grades: A+B 2582 (70.2%), C 896, D 193, F 9", "status": "BASELINE-RECORDED" },
+    { "id": "agents-only", "cmd": "python3 scripts/validate-skills-schema.py --agents-only", "exit": 1, "runtime_s": 2.1, "baseline": "253 errors, standard tier; grade distribution all-zero. Advisory lane, corpus previously unbaselined — this IS the baseline number. Note: CLAUDE.md claims 'all 317 in-repo agents at A-grade' — contradicted by this run; crosswalk item for M1.10", "status": "BASELINE-RECORDED" },
+    { "id": "unicode-hygiene", "cmd": "python3 scripts/validate-unicode-hygiene.py", "exit": 0, "runtime_s": 15.7, "baseline": "PASS in default mode; zero-width U+200B MAJOR advisories present (contributing-clanker draft-writer.md) — would block only under --strict", "status": "PASS" },
+    { "id": "catalog-format", "cmd": "python3 scripts/check-catalog-format.py origin/main", "exit": 0, "runtime_s": 0.1, "baseline": "catalog unchanged — OK", "status": "PASS" },
+    { "id": "doc-links", "cmd": "node scripts/check-internal-doc-links.mjs", "exit": 0, "runtime_s": 0.8, "baseline": "1 unresolved — matches known baseline of exactly 1", "status": "PASS-AT-BASELINE" },
+    { "id": "scan-synced", "cmd": "node scripts/scan-synced-content.mjs", "exit": 1, "runtime_s": 1.0, "baseline": "0 REFUSE / 63 CHALLENGE / 27 FLAG / 34 waived. CHALLENGE requires human sign-off by design — exit 1 is the designed full-corpus posture, not a regression", "status": "BASELINE-RECORDED" },
+    { "id": "submission-docs", "cmd": "node scripts/check-submission-docs.mjs", "exit": 0, "runtime_s": 0.6, "baseline": "no new plugin dirs in diff — designed skip", "status": "PASS" },
+    { "id": "verify-dryrun", "cmd": "node scripts/run-verification-pipeline.mjs --dry-run", "exit": 0, "runtime_s": 40.0, "baseline": "dry-run confirmed no files modified; average score 0.0/100 in dry-run mode (does not compute scores) — the mutating 'pnpm run verify' was deliberately NOT run", "status": "PASS" },
+    { "id": "cli-test", "cmd": "cd packages/cli && pnpm test", "exit": 1, "runtime_s": 2.5, "baseline": "vitest 2.1.9 collection failure: ReferenceError __vite_ssr_exportName__ is not defined at src/program.ts:1 — LOCAL-ENV divergence (stale vite transform cache or vite/vitest skew); CI green on main, so not a code defect. Recorded, not fixed (read-only mission)", "status": "LOCAL-ENV-FAIL" },
+    { "id": "root-test", "cmd": "pnpm test", "exit": 1, "runtime_s": 2.6, "baseline": "recursive run first-fails at packages/cli (same __vite_ssr_exportName__ root cause); ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL — downstream suites (e.g. lumera-agent-memory pytest) not reached", "status": "LOCAL-ENV-FAIL" },
+    { "id": "unittest-dolt", "cmd": "python3 -m unittest tests.test_dolt_sync", "exit": 0, "runtime_s": 0.2, "baseline": "42 tests OK", "status": "PASS" },
+    { "id": "unittest-unicode", "cmd": "python3 -m unittest tests.test_validate_unicode_hygiene", "exit": 0, "runtime_s": 0.8, "baseline": "8 tests OK", "status": "PASS" }
   ],
   "recorded_gaps_not_run": [
-    {
-      "what": "Python test suite (39 test files)",
-      "why": "no runner config (mixed unittest/pytest); decision locked: record, do not build a runner"
-    },
+    { "what": "Python test suite (39 test files)", "why": "no runner config (mixed unittest/pytest); decision locked: record, do not build a runner" },
     { "what": "actionlint", "why": "network-bound" },
-    {
-      "what": "marketplace production playwright",
-      "why": "network-bound; webkit also cannot run on this box"
-    },
-    {
-      "what": "pnpm run verify",
-      "why": "MUTATES (regenerates catalog) — --dry-run form used instead"
-    },
-    {
-      "what": "analytics-daemon / analytics-dashboard tests",
-      "why": "daemon stubs exit 0; dashboard has no test script — they would test nothing"
-    }
+    { "what": "marketplace production playwright", "why": "network-bound; webkit also cannot run on this box" },
+    { "what": "pnpm run verify", "why": "MUTATES (regenerates catalog) — --dry-run form used instead" },
+    { "what": "analytics-daemon / analytics-dashboard tests", "why": "daemon stubs exit 0; dashboard has no test script — they would test nothing" }
   ]
 }

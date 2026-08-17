@@ -17,15 +17,15 @@ intended and is out of scope for any "fix".
 
 ## Classification of the local-only corpus (per-file detail: local register)
 
-| Class                        | Count | Recovery posture                                                                                                                             |
-| ---------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| historical                   | 158   | leave local; optional future archive cluster (v4.4 nesting) — own bead                                                                       |
-| sensitive                    | 20    | never committed without explicit review; subset governed by standing policy                                                                  |
-| canonical candidate          | 9     | **5 committed by this PR** (147, 685, 686, 687, 691 — cited + clean); 2 need sanitized versions (bead claude-co8a.15); 2 optional-historical |
-| superseded                   | 5     | stale MS-INDX indexes + filing-standard v2 — leave local                                                                                     |
-| local runtime evidence       | 4     | leave local                                                                                                                                  |
-| duplicate (number collision) | 3     | renumber-on-commit proposal only; numbers 256/264/265 have tracked and local claimants                                                       |
-| unresolved                   | 1     | non-conforming filename — own decision                                                                                                       |
+| Class | Count | Recovery posture |
+| --- | --- | --- |
+| historical | 158 | leave local; optional future archive cluster (v4.4 nesting) — own bead |
+| sensitive | 20 | never committed without explicit review; subset governed by standing policy |
+| canonical candidate | 9 | **5 committed by this PR** (147, 685, 686, 687, 691 — cited + clean); 2 need sanitized versions (bead claude-co8a.15); 2 optional-historical |
+| superseded | 5 | stale MS-INDX indexes + filing-standard v2 — leave local |
+| local runtime evidence | 4 | leave local |
+| duplicate (number collision) | 3 | renumber-on-commit proposal only; numbers 256/264/265 have tracked and local claimants |
+| unresolved | 1 | non-conforming filename — own decision |
 
 ## Citations repaired vs deferred
 

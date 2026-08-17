@@ -5,11 +5,11 @@ acting_head_of_board: Jeremy Longshore
 status: locked
 scope: plugins/packages/security-pro-pack/mcp/ (shared MCP server for security pack v2)
 inputs:
-  - 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md
-  - 000-docs/685-AT-ADEC-security-pack-option-c-scope.md
-  - Reference: plugins/saas-packs/langchain-py-pack/ (shared MCP at pack level)
-  - Reference: plugins/saas-packs/databricks-pack/ (planned shared MCP per pack v2 research docs 002-RL-RSRC through 006-RL-RSRC)
-  - MCP spec: 000-docs/anthropic-skills-spec-snapshot.md, validate-mcp skill references
+ - 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md
+ - 000-docs/685-AT-ADEC-security-pack-option-c-scope.md
+ - Reference: plugins/saas-packs/langchain-py-pack/ (shared MCP at pack level)
+ - Reference: plugins/saas-packs/databricks-pack/ (planned shared MCP per pack v2 research docs 002-RL-RSRC through 006-RL-RSRC)
+ - MCP spec: 000-docs/anthropic-skills-spec-snapshot.md, validate-mcp skill references
 affects: 3 HEAVY plugins + umbrella + 4 SUBSTANTIAL plugins (all wire to one shared MCP server), Phase 2.3 implementation bead claude-md8s
 ---
 
@@ -106,24 +106,20 @@ Build via `pnpm build` to produce `dist/index.js` per the repo MCP plugin conven
 
 ## External-API dependencies
 
-| External source | API                                                                                 | Auth                                   | Caching strategy                                                          |
-| --------------- | ----------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
-| NVD CVE feed    | https://services.nvd.nist.gov/rest/json/cves/2.0                                    | optional API key (rate limit increase) | 24h TTL per CVE, persistent on-disk under ~/.cache/security-pro-pack/nvd/ |
-| OWASP Top 10    | https://owasp.org/Top10/ (static JSON snapshots per year)                           | none                                   | shipped statically with the server; updated on minor version bumps        |
-| Mitre ATT&CK    | <id>                                                                                | none                                   | 7d TTL persistent                                                         |
-| CISA KEV        | https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | none                                   | 6h TTL persistent (high churn)                                            |
+| External source | API | Auth | Caching strategy |
+|---|---|---|---|
+| NVD CVE feed | https://services.nvd.nist.gov/rest/json/cves/2.0 | optional API key (rate limit increase) | 24h TTL per CVE, persistent on-disk under ~/.cache/security-pro-pack/nvd/ |
+| OWASP Top 10 | https://owasp.org/Top10/ (static JSON snapshots per year) | none | shipped statically with the server; updated on minor version bumps |
+| Mitre ATT&CK | <id> | none | 7d TTL persistent |
+| CISA KEV | https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json | none | 6h TTL persistent (high churn) |
 
 NVD API key (optional but recommended) is a config field, not a hardcoded secret. Per `plugin.json` `requiredEnvironmentVariables`:
 
 ```json
 {
-  "requiredEnvironmentVariables": [
-    {
-      "name": "NVD_API_KEY",
-      "prompt": "Optional NVD API key (https://nvd.nist.gov/developers/request-an-api-key). Increases rate limit from 5/30s to 50/30s.",
-      "optional": true
-    }
-  ]
+ "requiredEnvironmentVariables": [
+ { "name": "NVD_API_KEY", "prompt": "Optional NVD API key (https://nvd.nist.gov/developers/request-an-api-key). Increases rate limit from 5/30s to 50/30s.", "optional": true }
+ ]
 }
 ```
 

@@ -3,13 +3,11 @@
 ## Sitemap Configuration
 
 ### Dynamic Sitemap Generation
-
 - **Location**: `src/pages/sitemap.xml.ts`
 - **Build Output**: `dist/sitemap.xml`
 - **URL**: [retired legacy public domain]/sitemap.xml
 
 ### Features
-
 - ✅ Auto-generated from marketplace catalog (258 plugins)
 - ✅ Includes all static pages (homepage, sponsor, privacy, etc.)
 - ✅ Updates automatically when plugins added/removed
@@ -17,7 +15,6 @@
 - ✅ Referenced in `robots.txt`
 
 ### Sitemap Structure
-
 - **Homepage**: Priority 1.0, Daily
 - **Category Pages**: Priority 0.8, Weekly
 - **Plugin Pages**: Priority 0.6, Weekly
@@ -26,17 +23,13 @@
 ## Schema.org Structured Data
 
 ### WebSite Schema
-
 Added to homepage `<head>`:
-
 - Site name and description
 - SearchAction for site search
 - Publisher organization info
 
 ### SoftwareApplication Schema
-
 Added to homepage `<head>`:
-
 - Application details (258 plugins, 241 skills)
 - Pricing (free)
 - Aggregate rating (4.8/5)
@@ -49,7 +42,6 @@ Added to homepage `<head>`:
 ### Manual Steps Required
 
 1. **Verify Domain Ownership**
-
    ```
    URL: https://search.google.com/search-console
    Domain: [retired legacy public domain]
@@ -57,14 +49,12 @@ Added to homepage `<head>`:
    ```
 
 2. **Submit Sitemap**
-
    ```
    URL: [retired legacy public domain]/sitemap.xml
    Location: Search Console → Sitemaps → Add new sitemap
    ```
 
 3. **Request Indexing**
-
    ```
    Submit homepage for indexing
    Submit key category pages
@@ -79,7 +69,6 @@ Added to homepage `<head>`:
    ```
 
 ### Expected Timeline
-
 - Sitemap processing: 1-3 days
 - Initial indexing: 1-2 weeks
 - Full coverage: 4-6 weeks
@@ -87,7 +76,6 @@ Added to homepage `<head>`:
 ## Validation
 
 ### Test Structured Data
-
 ```bash
 # Google Rich Results Test
 https://search.google.com/test/rich-results
@@ -97,7 +85,6 @@ https://validator.schema.org
 ```
 
 ### Test Sitemap
-
 ```bash
 # Check sitemap format
 curl https://retired-domain.invalid/sitemap.xml | xmllint --format -
@@ -111,7 +98,6 @@ open https://retired-domain.invalid/sitemap.xml
 ## SEO Metrics to Monitor
 
 ### Search Console
-
 - Total impressions
 - Click-through rate (CTR)
 - Average position
@@ -119,7 +105,6 @@ open https://retired-domain.invalid/sitemap.xml
 - Mobile usability
 
 ### Key Pages to Track
-
 1. Homepage (/)
 2. Skill Enhancers (/skill-enhancers)
 3. Sponsor Page (/sponsor)
@@ -128,19 +113,16 @@ open https://retired-domain.invalid/sitemap.xml
 ## Ongoing Maintenance
 
 ### Weekly
-
 - Check Search Console for errors
 - Monitor coverage reports
 - Review sitemap status
 
 ### Monthly
-
 - Analyze search performance
 - Update meta descriptions if CTR low
 - Check for crawl errors
 
 ### After Plugin Updates
-
 - Sitemap auto-updates on build
 - No manual action required
 - Google recrawls automatically
@@ -148,7 +130,6 @@ open https://retired-domain.invalid/sitemap.xml
 ## Additional SEO Enhancements
 
 ### Implemented ✅
-
 - Dynamic sitemap with all pages
 - Schema.org structured data (WebSite + SoftwareApplication)
 - robots.txt with sitemap reference
@@ -159,7 +140,6 @@ open https://retired-domain.invalid/sitemap.xml
 - Fuzzy search functionality
 
 ### Future Enhancements 🚧
-
 - Individual plugin page schemas
 - Breadcrumb navigation schema
 - FAQ schema for common questions

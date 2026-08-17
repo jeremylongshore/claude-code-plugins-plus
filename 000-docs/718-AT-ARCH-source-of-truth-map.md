@@ -4,22 +4,22 @@
 
 ## Tier A — derived + gated (safe GENERATED label; drift caught by CI)
 
-| Artifact                                        | Generator                                          | Gate                                       |
-| ----------------------------------------------- | -------------------------------------------------- | ------------------------------------------ |
-| `.claude-plugin/marketplace.json` (471 entries) | `pnpm run sync-marketplace`                        | `validate` job: regenerate-then-diff       |
-| README `AUTO-TOC` + `KILLER-SKILL` blocks       | `generate-readme-toc.mjs` / `render-spotlight.mjs` | gated `--check`                            |
-| `skills/.curated/**` (1,921 SKILL.md)           | `promote-to-curated.py`                            | `promote-curated-check` (in `ci-required`) |
-| `.github/CODEOWNERS` generated block            | generator                                          | `codeowners-drift`                         |
+| Artifact | Generator | Gate |
+| --- | --- | --- |
+| `.claude-plugin/marketplace.json` (471 entries) | `pnpm run sync-marketplace` | `validate` job: regenerate-then-diff |
+| README `AUTO-TOC` + `KILLER-SKILL` blocks | `generate-readme-toc.mjs` / `render-spotlight.mjs` | gated `--check` |
+| `skills/.curated/**` (1,921 SKILL.md) | `promote-to-curated.py` | `promote-curated-check` (in `ci-required`) |
+| `.github/CODEOWNERS` generated block | generator | `codeowners-drift` |
 
 ## Tier B — derived but UNGATED (~31 M; drift invisible to CI)
 
-| Artifact                                                   | Size   | Note                                                  |
-| ---------------------------------------------------------- | ------ | ----------------------------------------------------- |
-| `marketplace/src/data/skills-catalog.json`                 | 25.6 M | byte-identical twin in `public/data` (`cmp`-verified) |
-| `marketplace/src/data/unified-search-index.json`           | 2.9 M  | byte-identical twin in `public/data` (`cmp`-verified) |
-| other `marketplace/src/data/*.json`                        | —      | no drift gate except the cowork manifest              |
-| `npm/github/skills-stats.json` + README `NPM-STATS`        | —      | ungated                                               |
-| freshie `grades.csv` / `grade-histogram.json` / `reports/` | —      | run-stamp inconsistency recorded in doc 723           |
+| Artifact | Size | Note |
+| --- | --- | --- |
+| `marketplace/src/data/skills-catalog.json` | 25.6 M | byte-identical twin in `public/data` (`cmp`-verified) |
+| `marketplace/src/data/unified-search-index.json` | 2.9 M | byte-identical twin in `public/data` (`cmp`-verified) |
+| other `marketplace/src/data/*.json` | — | no drift gate except the cowork manifest |
+| `npm/github/skills-stats.json` + README `NPM-STATS` | — | ungated |
+| freshie `grades.csv` / `grade-histogram.json` / `reports/` | — | run-stamp inconsistency recorded in doc 723 |
 
 Duplicated bytes across the two `src`↔`public` twins: **28,460,845 B** — exactly these 2 files;
 no other data file has a twin (doc 722).
