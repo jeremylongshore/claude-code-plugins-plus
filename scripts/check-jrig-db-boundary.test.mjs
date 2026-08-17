@@ -236,6 +236,10 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
       'DB=freshie/inventory.sqlite\n( DB=/dev/shm/safe.sqlite )\nj-rig eval x --db "$DB"',
     ],
     [
+      'current-shell group can set Freshie assignment',
+      'DB=/dev/shm/safe.sqlite\n{ DB=freshie/inventory.sqlite; }\nj-rig eval x --db "$DB"',
+    ],
+    [
       'pipeline cannot overwrite parent Freshie assignment',
       'DB=freshie/inventory.sqlite\nDB=/dev/shm/safe.sqlite | cat\nj-rig eval x --db "$DB"',
     ],
@@ -290,6 +294,10 @@ j-rig eval x --db "$DB"`,
     [
       'subshell cannot overwrite parent scratch assignment',
       'DB=/dev/shm/safe.sqlite\n( DB=freshie/inventory.sqlite )\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'current-shell group can set scratch assignment',
+      'DB=freshie/inventory.sqlite\n{ DB=/dev/shm/safe.sqlite; }\nj-rig eval x --db "$DB"',
     ],
     [
       'pipeline cannot overwrite parent scratch assignment',

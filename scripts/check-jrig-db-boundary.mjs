@@ -355,7 +355,11 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
   let states = [new Map(initialAssignments)];
   let priorStatus = null;
   for (const statement of splitShellStatements(text)) {
-    const trimmed = statement.text.trim();
+    const trimmed = statement.text
+      .replace(/^\s*\{\s*/, '')
+      .replace(/(^|[;\s])\}\s*$/, '$1')
+      .trim();
+    if (!trimmed) continue;
     const subshell = /^\(([\s\S]*)\)$/.exec(trimmed);
     if (subshell) {
       for (const state of states) {
@@ -375,18 +379,16 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
     const executes =
       condition === '&&' ? priorStatus !== false : condition === '||' ? priorStatus !== true : true;
     const optional = (condition === '&&' || condition === '||') && priorStatus === null;
-    const statementAssignments = collectAssignments(statement.text);
+    const statementAssignments = collectAssignments(trimmed);
     const appliedStates = states.map((state) => mergeAssignments(state, statementAssignments));
-    const expandedCommands = appliedStates.map((state) =>
-      expandKnownVariables(statement.text, state),
-    );
+    const expandedCommands = appliedStates.map((state) => expandKnownVariables(trimmed, state));
     if (
       expandedCommands.some((expanded) => containsJrigEval(expanded, aliases)) ||
-      (containsJrigEval(statement.text, aliases) && appliedStates.length > 0)
+      (containsJrigEval(trimmed, aliases) && appliedStates.length > 0)
     ) {
       for (const assignments of appliedStates) {
         blocks.push({
-          text: statement.text,
+          text: trimmed,
           offset: baseOffset + statement.offset,
           assignments,
           aliases,
@@ -398,10 +400,10 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
       statement.operatorBefore === '|' ||
       statement.operatorAfter === '|' ||
       statement.operatorAfter === '&';
-    if (executes && assignmentOnly(statement.text) && !isolated) {
+    if (executes && assignmentOnly(trimmed) && !isolated) {
       states = optional ? uniqueStates([...states, ...appliedStates]) : uniqueStates(appliedStates);
     }
-    if (executes) priorStatus = optional ? null : staticStatus(statement.text);
+    if (executes) priorStatus = optional ? null : staticStatus(trimmed);
   }
   return blocks;
 }
