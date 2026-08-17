@@ -276,6 +276,14 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
   const rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[20].measured_proxy.occurrences, 1);
   assert.equal(rows[21].values.actionable.occurrences, 3);
+  assert.equal(
+    rows[21].values.baseline_receipt.head_sha,
+    '3543d5d167bd4e8d27666c8893080bca3bd72950',
+  );
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.actionable, {
+    files: 115,
+    occurrences: 293,
+  });
   assert.equal(rows[20].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), false);
   assert.equal(rows[21].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), true);
 });

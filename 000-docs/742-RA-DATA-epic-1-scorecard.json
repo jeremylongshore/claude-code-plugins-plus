@@ -942,6 +942,46 @@
             "freshie/exports/run-1/plugin_values.json"
           ]
         },
+        "baseline_receipt": {
+          "cohort": "case-insensitive tracked retired-domain references classified by the E1.13 policy scanner",
+          "command": "git worktree add --detach <base-checkout> 3543d5d167bd4e8d27666c8893080bca3bd72950 && node scripts/check-dead-domain.mjs --json --root <base-checkout>",
+          "counts": {
+            "actionable": {
+              "files": 115,
+              "occurrences": 293
+            },
+            "all": {
+              "files": 125,
+              "occurrences": 356
+            },
+            "first_party_source": {
+              "files": 95,
+              "occurrences": 261
+            },
+            "frozen_record": {
+              "files": 1,
+              "occurrences": 3
+            },
+            "generated_projection": {
+              "files": 20,
+              "occurrences": 32
+            },
+            "historical_snapshot": {
+              "files": 9,
+              "occurrences": 60
+            },
+            "provenance_mirror": {
+              "files": 0,
+              "occurrences": 0
+            },
+            "refused": 0,
+            "retained": {
+              "files": 10,
+              "occurrences": 63
+            }
+          },
+          "head_sha": "3543d5d167bd4e8d27666c8893080bca3bd72950"
+        },
         "first_party_source": {
           "files": 0,
           "occurrences": 0,

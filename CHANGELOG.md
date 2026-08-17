@@ -29,7 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
   runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
   Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026
-  toolchain when a transitive native dependency has no prebuilt binary.
+  toolchain when a transitive native dependency has no prebuilt binary. The production redirect
+  assertion for the retired external domain is removed intentionally: the dead property is no
+  longer an owned compatibility surface, while `tonsofskills.com` remains the governed live site.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 

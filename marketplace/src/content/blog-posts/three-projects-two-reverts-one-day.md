@@ -35,7 +35,7 @@ The first attempt (commits 1-2) seemed correct. Update `firebase.json` with both
 
 Except Firebase Hosting doesn't work the way you think it does.
 
-When you configure two custom domains on a single Firebase Hosting site, the **order of hosting targets in `firebase.json` determines the canonical domain**. I had the retired legacy domain first and `tonsofskills.com` second. Firebase treated `tonsofskills.com` as primary — good — but the legacy-domain redirect wasn't a redirect at all. It was serving the same site on both domains. No 301. No canonical signal. Just two identical sites competing for search ranking.
+When you configure two custom domains on a single Firebase Hosting site, the **order of hosting targets in `firebase.json` determines the canonical domain**. I had `tonsofskills.com` first and [retired legacy public domain] second. Firebase treated `tonsofskills.com` as primary — good — but the legacy-domain redirect wasn't a redirect at all. It was serving the same site on both domains. No 301. No canonical signal. Just two identical sites competing for search ranking.
 
 DNS propagation made this worse. The new domain was live but not fully propagated. Some users hit the old domain and got the site. Others hit the new domain and got a certificate error because the SSL cert hadn't provisioned yet. For about 15 minutes, neither domain worked reliably.
 

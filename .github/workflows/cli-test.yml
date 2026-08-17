@@ -48,6 +48,9 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      # The workspace root currently pulls better-sqlite3 12.11.1, which has no
+      # Node 20 Windows prebuild. Pin the last Node-20-compatible node-gyp line
+      # that recognizes hosted Visual Studio 2026 (major 18); do not skip scripts.
       - name: Use Visual Studio 2026-aware node-gyp on Windows
         if: runner.os == 'Windows'
         shell: pwsh

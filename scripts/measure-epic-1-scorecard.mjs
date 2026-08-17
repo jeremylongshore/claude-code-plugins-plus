@@ -14,6 +14,25 @@ import { canonicalDocumentLinks, inspectAuthorityMetadata } from './check-doc-au
 import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
 import { scanDeadDomainPolicy } from './dead-domain-policy.mjs';
 
+const DEAD_DOMAIN_BASELINE_RECEIPT = Object.freeze({
+  head_sha: '3543d5d167bd4e8d27666c8893080bca3bd72950',
+  command:
+    'git worktree add --detach <base-checkout> 3543d5d167bd4e8d27666c8893080bca3bd72950 && node scripts/check-dead-domain.mjs --json --root <base-checkout>',
+  cohort:
+    'case-insensitive tracked retired-domain references classified by the E1.13 policy scanner',
+  counts: {
+    all: { files: 125, occurrences: 356 },
+    actionable: { files: 115, occurrences: 293 },
+    first_party_source: { files: 95, occurrences: 261 },
+    generated_projection: { files: 20, occurrences: 32 },
+    retained: { files: 10, occurrences: 63 },
+    frozen_record: { files: 1, occurrences: 3 },
+    historical_snapshot: { files: 9, occurrences: 60 },
+    provenance_mirror: { files: 0, occurrences: 0 },
+    refused: 0,
+  },
+});
+
 const UNRESOLVED_ROWS = new Map([
   [
     7,
@@ -1094,7 +1113,10 @@ export function buildExtendedScorecardRows({
       measured_proxy: anthropicLinks,
     },
   );
-  const deadDomain = scanDeadDomainPolicy({ root: reader.root, paths: reader.paths });
+  const deadDomain = {
+    ...scanDeadDomainPolicy({ root: reader.root, paths: reader.paths }),
+    baseline_receipt: DEAD_DOMAIN_BASELINE_RECEIPT,
+  };
   output[21] = baseRow(
     21,
     deadDomain.refused.length === 0 ? 'measured' : 'undefined',
