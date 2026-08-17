@@ -25,7 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   only domain or contact changes in this slice; the underlying capabilities and scanner remain
   unchanged. Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
   no-follow semantics where available, closing metadata-check/file-use races without weakening
-  refusal behavior.
+  refusal behavior. Cross-platform CLI validation now installs only the CLI package and its
+  dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
+  runtime, package-manager, and operating-system assertion.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 

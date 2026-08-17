@@ -54,8 +54,8 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install dependencies (workspace)
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies (CLI and dependencies)
+        run: pnpm install --frozen-lockfile --filter '@intentsolutionsio/ccpi...'
 
       - name: Build CLI
         run: pnpm -C packages/cli build
@@ -148,7 +148,7 @@ jobs:
           deno-version: ${{ matrix.deno-version }}
 
       - name: Install dependencies and build
-        run: pnpm install --frozen-lockfile && pnpm -C packages/cli build
+        run: pnpm install --frozen-lockfile --filter '@intentsolutionsio/ccpi...' && pnpm -C packages/cli build
 
       - name: Test with Deno
         working-directory: packages/cli
