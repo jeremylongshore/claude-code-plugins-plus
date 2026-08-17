@@ -76,9 +76,10 @@ the badge returned HTTP 200, while the live homepage and unchanged source still 
 #1218. This is an existing site/test contract mismatch, is not represented as a green E1.13 check,
 and was not scope-crept into this filing.
 
-The automatic changed-package publisher for the merge remains pending at the protected
-`npm-production` environment with no job execution. No environment approval was granted, no
-credential was exposed, and no registry contact or package mutation occurred.
+The automatic [changed-package publisher run](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31989312597)
+for the merge completed as cancelled without creating any jobs or pending deployments. No
+environment approval was granted, no credential was exposed, and no registry contact or package
+mutation occurred.
 
 The independent reviewer returned PASS at exact head
 `5b3ceda9647ee50ec473e8b26c31f4cbc6e59836` with non-binary diff SHA-256
