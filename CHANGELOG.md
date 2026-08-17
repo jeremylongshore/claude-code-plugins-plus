@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — blog Markdown validation)
+
+- **The newly published failure-diagnostics article now preserves blank-line boundaries around its
+  numbered list.** This restores the repository-wide blocking Markdownlint gate without changing
+  article wording or weakening MD032.
+
 ### Fixed (2026-08-17 — Actionlint bootstrap availability)
 
 - **Actionlint now downloads its pinned release archive directly and verifies the upstream

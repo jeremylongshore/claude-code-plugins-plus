@@ -33,6 +33,7 @@ The cron script captured only stderr (which was empty), got no JSON from what it
 The fix, commit 15212612: make the failure path name its own cause.
 
 Three changes:
+
 1. `generate_voice` now captures the exit code and classifies failures into named branches: timeout at 124, NOT AUTHENTICATED matched by regex against that banner, empty stdout, non-zero exit with no JSON, exit 0 with no JSON object. Each branch logs the reason plus the first 500 bytes of raw stdout.
 2. That reason rides into the degraded packet's own note AND into the email, so the person on the CC line who can act on it sees it.
 3. A CI test (test_no_vibe_derived_text_in_the_repo) flagging vendored product names in published copy went red. Reworded the affected post; the claim still holds.
