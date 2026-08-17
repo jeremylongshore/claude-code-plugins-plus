@@ -89,10 +89,13 @@ scripts/measure-epic-1.mjs` reproduced the PR bytes exactly. The index SHA-256 w
 generated files were not hand-edited.
 
 The scorecard's `invisible_files` field rose from 15,530 to 15,531 by design. Row 46 defines that
-cohort as tracked paths matched by the Gitleaks path allowlist, not files hidden by `.gitignore`;
-the newly tracked Markdown AAR is one additional Gitleaks-allowlisted path. The filing ledger is
-the `PUBLIC FILING LEDGER` section in `000-docs/.gitignore`, where the document-752 negation was
-appended before the generated index and scorecard were rebuilt.
+cohort as tracked paths matched by the Gitleaks path allowlist, not files hidden by `.gitignore`.
+The existing `.gitleaks.toml` path expression `^000-docs/.*\.md$` matches every filed Markdown
+document, and `gitleaksVisibility()` in `scripts/measure-epic-1-scorecard.mjs` counts tracked paths
+matching any existing expression. The expression count therefore remains 25 while the newly
+tracked AAR adds one matched path. The filing ledger is the `PUBLIC FILING LEDGER` section in
+`000-docs/.gitignore`, where the document-752 negation was appended before the generated index and
+scorecard were rebuilt.
 
 [Greptile review `4951326422`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162#pullrequestreview-4951326422)
 was requested at the exact head. The free trial had ended, so Greptile is recorded as unavailable
