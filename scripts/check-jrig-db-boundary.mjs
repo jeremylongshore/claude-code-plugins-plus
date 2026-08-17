@@ -12,7 +12,67 @@ const ACTIVE_EXTENSIONS = new Set(['.md', '.sh', '.yaml', '.yml']);
 const DIRECT_REASON = 'DIRECT_JRIG_FRESHIE_DB';
 const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
-const FRESHIE_DB_FLAG_RE = /[`'"]?--db[`'"]?(?:\s*=\s*|\s+)[`'"]?\S*freshie\/inventory\.sqlite\b/i;
+
+function shellLiteralView(text) {
+  return text.replace(/[`'"]/g, '');
+}
+
+function containsJrigEval(text) {
+  return JRIG_EVAL_RE.test(shellLiteralView(text));
+}
+
+function collectAssignments(text) {
+  const assignments = new Map();
+  const assignment =
+    /(?:^|[;\n])\s*(?:(?:export|local|readonly)\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("(?:\\.|[^"\n])*"|'(?:\\.|[^'\n])*'|[^\s;\n]+)/g;
+  for (const match of text.matchAll(assignment)) {
+    const values = assignments.get(match[1]) ?? [];
+    values.push(shellLiteralView(match[2]));
+    assignments.set(match[1], values);
+  }
+  const yamlScalar = /^\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([`'"]?[^#\n]+?[`'"]?)\s*$/gm;
+  for (const match of text.matchAll(yamlScalar)) {
+    const values = assignments.get(match[1]) ?? [];
+    values.push(shellLiteralView(match[2].trim()));
+    assignments.set(match[1], values);
+  }
+  return assignments;
+}
+
+function expandKnownVariables(value, assignments, seen = new Set()) {
+  const variable = /\$(?:\{([A-Za-z_][A-Za-z0-9_]*)\}|([A-Za-z_][A-Za-z0-9_]*))/.exec(value);
+  if (!variable) return [value];
+  const name = variable[1] ?? variable[2];
+  const replacements = assignments.get(name);
+  if (!replacements || seen.has(name) || seen.size >= 16) return [value];
+
+  const nextSeen = new Set(seen).add(name);
+  return replacements.flatMap((replacement) =>
+    expandKnownVariables(
+      `${value.slice(0, variable.index)}${replacement}${value.slice(variable.index + variable[0].length)}`,
+      assignments,
+      nextSeen,
+    ),
+  );
+}
+
+function isFreshieInventoryPath(value) {
+  const cleaned = value.replace(/[),.;]+$/, '');
+  const normalized = path.posix.normalize(cleaned);
+  return (
+    normalized === 'freshie/inventory.sqlite' || normalized.endsWith('/freshie/inventory.sqlite')
+  );
+}
+
+function commandTargetsFreshie(command, assignments) {
+  const normalized = shellLiteralView(command.replace(/\\\s*\n\s*/g, ' '));
+  const dbArgument = /(?:^|\s)--db(?:\s*=\s*|\s+)([^\s;&|]+)/g;
+  for (const match of normalized.matchAll(dbArgument)) {
+    const candidates = expandKnownVariables(match[1], assignments);
+    if (candidates.some(isFreshieInventoryPath)) return true;
+  }
+  return false;
+}
 
 function lineNumber(text, offset) {
   return text.slice(0, offset).split('\n').length;
@@ -25,7 +85,7 @@ function commandBlocks(text) {
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (JRIG_EVAL_RE.test(line)) {
+    if (containsJrigEval(line)) {
       const start = offset;
       const commandLines = [line];
       let cursor = index;
@@ -49,7 +109,7 @@ function foldedRunBlocks(text) {
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    const match = /^(\s*)(?:-\s*)?run:\s*>[-+]?\s*(?:#.*)?$/.exec(line);
+    const match = /^(\s*)(?:-\s*)?[`'"]?run[`'"]?\s*:\s*>[-+]?\s*(?:#.*)?$/.exec(line);
     if (!match) {
       offset += line.length + 1;
       continue;
@@ -74,7 +134,7 @@ function foldedRunBlocks(text) {
       cursor += 1;
     }
     const folded = content.join(' ');
-    if (firstOffset !== null && JRIG_EVAL_RE.test(folded)) {
+    if (firstOffset !== null && containsJrigEval(folded)) {
       blocks.push({ text: folded, offset: firstOffset });
     }
     offset += line.length + 1;
@@ -86,8 +146,8 @@ export function inspectJrigDbBoundary(text, filePath) {
   const findings = [];
   const seen = new Set();
   for (const command of [...commandBlocks(text), ...foldedRunBlocks(text)]) {
-    const normalized = command.text.replace(/\\\s*\n\s*/g, ' ');
-    if (FRESHIE_DB_FLAG_RE.test(normalized)) {
+    const assignments = collectAssignments(`${text.slice(0, command.offset)}\n${command.text}`);
+    if (commandTargetsFreshie(command.text, assignments)) {
       const finding = {
         path: filePath,
         line: lineNumber(text, command.offset),
@@ -99,14 +159,31 @@ export function inspectJrigDbBoundary(text, filePath) {
     }
   }
 
-  const directive =
-    /\b(?:point|pass|set|use|give|feed|supply|target)\b[^\n]{0,120}?`?--db`?(?:\s*=\s*|\s+(?:(?:at|to)\s+)?)`?[^`\n]{0,120}?freshie\/inventory\.sqlite\b/gi;
-  for (const match of text.matchAll(directive)) {
-    findings.push({
-      path: filePath,
-      line: lineNumber(text, match.index),
-      reasonCode: DIRECTIVE_REASON,
-    });
+  const prose = shellLiteralView(text)
+    .replace(/\/{2,}/g, '/')
+    .replace(/\/\.\//g, '/');
+  const verbs = '(?:point|pass|set|use|give|feed|supply|target)';
+  const directives = [
+    new RegExp(
+      `\\b${verbs}\\b[^\\n]{0,160}?--db(?:\\s*=\\s*|\\s+(?:(?:at|to)\\s+)?)?[^\\n]{0,160}?freshie/inventory\\.sqlite\\b`,
+      'gi',
+    ),
+    new RegExp(
+      `\\b${verbs}\\b[^\\n]{0,160}?freshie/inventory\\.sqlite\\b[^\\n]{0,160}?--db\\b`,
+      'gi',
+    ),
+  ];
+  for (const directive of directives) {
+    for (const match of prose.matchAll(directive)) {
+      const finding = {
+        path: filePath,
+        line: lineNumber(prose, match.index),
+        reasonCode: DIRECTIVE_REASON,
+      };
+      const key = `${finding.line}:${finding.reasonCode}`;
+      if (!seen.has(key)) findings.push(finding);
+      seen.add(key);
+    }
   }
   return findings;
 }

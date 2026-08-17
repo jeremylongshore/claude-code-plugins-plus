@@ -26,7 +26,7 @@ Never pass the tracked inventory as j-rig's --db value.
   assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), []);
 });
 
-test('red proof: direct, continued, npx, quoted, and folded-YAML writes are refused', () => {
+test('red proof: direct, continued, quoted, variable, and folded-YAML writes are refused', () => {
   const text = `
 j-rig eval skills/plain --db freshie/inventory.sqlite --json
 \`\`\`bash
@@ -43,10 +43,31 @@ run: >-
   j-rig eval skills/five
   --models fast,slow
   --db freshie/inventory.sqlite
+"j-rig" eval skills/six --db "freshie"/inventory.sqlite
+j-rig eval skills/seven --db freshie//inventory.sqlite
+j-rig eval skills/eight --db freshie/./inventory.sqlite
+db_path=freshie/inventory.sqlite
+j-rig eval skills/nine --db "$db_path"
+run : >-
+  "j-rig" eval skills/ten
+  --db freshie/../freshie/inventory.sqlite
+readonly inventory_path="freshie/inventory.sqlite"
+j-rig eval skills/eleven --db "\${inventory_path}"
+env:
+  JRIG_DB: freshie/inventory.sqlite
+run : >
+  j-rig eval skills/twelve --db "$JRIG_DB"
 `;
   assert.deepEqual(
     inspectJrigDbBoundary(text, 'plugins/example/README.md').map((row) => row.reasonCode),
     [
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
@@ -63,12 +84,18 @@ test('prose directives using distinct operator verbs are refused', () => {
       'To persist results, point `--db` at `freshie/inventory.sqlite`.',
       'Use `--db freshie/inventory.sqlite` for the durable run.',
       'Feed `--db=freshie/inventory.sqlite` into j-rig.',
+      'Supply `freshie/./inventory.sqlite` to `--db` for persistence.',
     ].join('\n'),
     'plugins/example/README.md',
   );
   assert.deepEqual(
     findings.map((row) => row.reasonCode),
-    ['JRIG_FRESHIE_DB_DIRECTIVE', 'JRIG_FRESHIE_DB_DIRECTIVE', 'JRIG_FRESHIE_DB_DIRECTIVE'],
+    [
+      'JRIG_FRESHIE_DB_DIRECTIVE',
+      'JRIG_FRESHIE_DB_DIRECTIVE',
+      'JRIG_FRESHIE_DB_DIRECTIVE',
+      'JRIG_FRESHIE_DB_DIRECTIVE',
+    ],
   );
 });
 
