@@ -88,6 +88,12 @@ scripts/measure-epic-1.mjs` reproduced the PR bytes exactly. The index SHA-256 w
 `59181615f73ba087754efa20d94cd2d58eec5a0a9520855ec3fff2b80a3c823d`. This receipt proves the
 generated files were not hand-edited.
 
+The scorecard's `invisible_files` field rose from 15,530 to 15,531 by design. Row 46 defines that
+cohort as tracked paths matched by the Gitleaks path allowlist, not files hidden by `.gitignore`;
+the newly tracked Markdown AAR is one additional Gitleaks-allowlisted path. The filing ledger is
+the `PUBLIC FILING LEDGER` section in `000-docs/.gitignore`, where the document-752 negation was
+appended before the generated index and scorecard were rebuilt.
+
 [Greptile review `4951326422`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162#pullrequestreview-4951326422)
 was requested at the exact head. The free trial had ended, so Greptile is recorded as unavailable
 rather than PASS. The receipt requirement is therefore met without fabricating a Greptile verdict;
