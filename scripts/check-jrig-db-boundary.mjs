@@ -14,7 +14,7 @@ const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
 
 function shellLiteralView(text) {
-  return text.replace(/[`'"]/g, '').replace(/\\([/.-])/g, '$1');
+  return text.replace(/[`'"]/g, '').replace(/\\([^\n])/g, '$1');
 }
 
 function containsJrigEval(text) {
@@ -24,7 +24,7 @@ function containsJrigEval(text) {
 function collectAssignments(text) {
   const assignments = new Map();
   const assignment =
-    /(?:^|[;\n])\s*(?:(?:export|local|readonly)\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("(?:\\.|[^"\n])*"|'(?:\\.|[^'\n])*'|[^\s;\n]+)/g;
+    /(?:^|[;\n])\s*(?:(?:export|local|readonly|declare|typeset)(?:(?:\s+-[A-Za-z]+|\s+--))*\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("(?:\\.|[^"\n])*"|'(?:\\.|[^'\n])*'|[^\s;\n]+)/g;
   for (const match of text.matchAll(assignment)) {
     const values = assignments.get(match[1]) ?? [];
     values.push(shellLiteralView(match[2]));
@@ -35,6 +35,16 @@ function collectAssignments(text) {
     const values = assignments.get(match[1]) ?? [];
     values.push(shellLiteralView(match[2].trim()));
     assignments.set(match[1], values);
+  }
+  const yamlFlowEnv = /^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm;
+  for (const flow of text.matchAll(yamlFlowEnv)) {
+    const entry =
+      /(?:^|,)\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}]+)/g;
+    for (const match of flow[1].matchAll(entry)) {
+      const values = assignments.get(match[1]) ?? [];
+      values.push(shellLiteralView(match[2].trim()));
+      assignments.set(match[1], values);
+    }
   }
   return assignments;
 }
@@ -114,7 +124,8 @@ function foldedRunBlocks(text) {
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    const match = /^(\s*)(?:-\s*)?[`'"]?run[`'"]?\s*:\s*>[-+]?\s*(?:#.*)?$/.exec(line);
+    const match =
+      /^(\s*)(?:-\s*)?[`'"]?run[`'"]?\s*:\s*>(?:[1-9][+-]?|[+-][1-9]?)?\s*(?:#.*)?$/.exec(line);
     if (!match) {
       offset += line.length + 1;
       continue;
@@ -167,7 +178,7 @@ export function inspectJrigDbBoundary(text, filePath) {
   const prose = shellLiteralView(text)
     .replace(/\/{2,}/g, '/')
     .replace(/\/\.\//g, '/');
-  const verbs = '(?:point|pass|set|use|give|feed|supply|target)';
+  const verbs = '(?:point|pass|set|use|give|feed|supply|target|configure)';
   const directives = [
     new RegExp(
       `\\b${verbs}\\b[^\\n]{0,160}?--db(?:\\s*=\\s*|\\s+(?:(?:at|to)\\s+)?)?[^\\n]{0,160}?freshie/inventory\\.sqlite\\b`,

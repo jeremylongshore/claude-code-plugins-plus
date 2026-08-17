@@ -60,10 +60,27 @@ run : >
 j\\-rig \\
   eval skills/thirteen \\
   --db freshie/inventory.sqlite
+j-rig ev\\al skills/fourteen --db freshie/inventory.sqlite
+j-rig eval skills/fifteen --d\\b freshie/inventory.sqlite
+local -r local_db=freshie/inventory.sqlite
+j-rig eval skills/sixteen --db "$local_db"
+declare -r declared_db=freshie/inventory.sqlite
+j-rig eval skills/seventeen --db "$declared_db"
+typeset typed_db=freshie/inventory.sqlite
+j-rig eval skills/eighteen --db "$typed_db"
+env: { FLOW_DB: freshie/inventory.sqlite }
+run: >2-
+  j-rig eval skills/nineteen --db "$FLOW_DB"
 `;
   assert.deepEqual(
     inspectJrigDbBoundary(text, 'plugins/example/README.md').map((row) => row.reasonCode),
     [
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
+      'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
@@ -89,12 +106,14 @@ test('prose directives using distinct operator verbs are refused', () => {
       'Use `--db freshie/inventory.sqlite` for the durable run.',
       'Feed `--db=freshie/inventory.sqlite` into j-rig.',
       'Supply `freshie/./inventory.sqlite` to `--db` for persistence.',
+      'Configure `freshie/inventory.sqlite` as the `--db` target.',
     ].join('\n'),
     'plugins/example/README.md',
   );
   assert.deepEqual(
     findings.map((row) => row.reasonCode),
     [
+      'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',
