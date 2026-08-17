@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — README star-history chart)
+
+- **The README star-history chart now uses the working `star-history.dera.page` mirror.** The
+  image and its destination no longer depend on the broken tokenless upstream endpoint.
+
 ### Fixed (2026-08-17 — blog Markdown validation)
 
 - **The newly published failure-diagnostics article now preserves blank-line boundaries around its
