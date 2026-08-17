@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { compareSkillNamesOrdinal } from '../marketplace/scripts/discover-skills.mjs';
+
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const WORKFLOW = readFileSync(`${ROOT}/.github/workflows/validate-plugins.yml`, 'utf8');
 
@@ -42,4 +44,9 @@ test('Validate Plugins remains an every-PR workflow with no path filter', () => 
   const trigger = WORKFLOW.slice(0, WORKFLOW.indexOf('\njobs:'));
   assert.match(trigger, /^ {2}pull_request:$/m);
   assert.doesNotMatch(trigger, /\b(?:paths|paths-ignore):/);
+});
+
+test('skill projection ordering is locale-independent for non-ASCII names', () => {
+  const names = ['éclair', 'Zulu', 'ångström', 'alpha'];
+  assert.deepEqual(names.sort(compareSkillNamesOrdinal), ['Zulu', 'alpha', 'ångström', 'éclair']);
 });

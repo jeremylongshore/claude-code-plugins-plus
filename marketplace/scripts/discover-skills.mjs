@@ -49,7 +49,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import {
   assertGeneratedContentCurrent,
   readIndexedArtifact,
@@ -79,6 +79,10 @@ const CHECK = process.argv.includes('--check');
 for (const arg of process.argv.slice(2)) {
   const m = arg.match(/^--level=(.+)$/);
   if (m) LEVEL = m[1];
+}
+
+export function compareSkillNamesOrdinal(left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
 }
 
 function preservedGeneratedAt(path, label) {
@@ -523,7 +527,7 @@ function main() {
   }
 
   // Sort skills by name
-  skills.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  skills.sort((a, b) => compareSkillNamesOrdinal(a.name, b.name));
 
   // Check for duplicate slugs
   const slugCounts = {};
@@ -630,4 +634,4 @@ function main() {
   process.exit(0);
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

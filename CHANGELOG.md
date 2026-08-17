@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The marketplace L0 skill index now has a fail-closed regenerate-and-diff gate.** A dedicated,
   unconditional `Validate Plugins` job renders `skills-index.json` in memory and byte-compares it
   with the Git index without touching the working tree, receiving no credentials and performing no
-  network calls. Fixtures refuse mutated, missing, untracked, symlinked, duplicate, and path-escaping
-  candidates. The generated-artifact registry now separates four deterministic local
+  network calls. Fixtures refuse mutated, untracked, symlinked, duplicate, and path-escaping
+  candidates. Skill names now use a fixture-pinned ordinal sort instead of host-locale ordering, and
+  any unreadable source aborts generation rather than emitting a partial artifact. The
+  generated-artifact registry now separates four deterministic local
   projections from three external-stat snapshots and editorial marketplace data; this first E1.8
   slice gates one of four and leaves the full skill catalog, plugin catalog, and unified search
   projection explicitly pending rather than treating unlike populations as interchangeable.
