@@ -1,6 +1,5 @@
 {
   "name": "cli-power-skills",
-  "private": true,
   "version": "1.0.0",
   "description": "Agentic CLI tool skills for Claude — data processing, security scanning, API testing, web crawling, research, Python tooling, and CI automation",
   "claude": {

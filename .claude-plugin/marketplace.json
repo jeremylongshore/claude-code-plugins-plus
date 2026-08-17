@@ -9190,6 +9190,50 @@
       },
       "repository": "https://github.com/metrox-eth/quit-sponsor",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "./plugins/productivity/claudebase",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "github",
+        "sync",
+        "backup",
+        "config",
+        "profiles",
+        "settings"
+      ],
+      "author": {
+        "name": "Rohit Hazra",
+        "url": "https://github.com/rohithzr"
+      },
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "repository": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
+    },
+    {
+      "name": "uizze",
+      "source": "./plugins/design/uizze",
+      "description": "STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.",
+      "version": "1.2.11",
+      "category": "design",
+      "keywords": [
+        "ui",
+        "design",
+        "frontend",
+        "anti-slop",
+        "agent-skill"
+      ],
+      "author": {
+        "name": "UIZZE",
+        "url": "https://uizze.com",
+        "email": "business@uizze.com"
+      },
+      "homepage": "https://uizze.com",
+      "repository": "https://github.com/uizze/uizze",
+      "license": "MIT"
     }
   ]
 }
