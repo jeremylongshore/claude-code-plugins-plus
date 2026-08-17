@@ -281,8 +281,16 @@ test('link instrumentation stays excluded while domain instrumentation cannot by
     '3543d5d167bd4e8d27666c8893080bca3bd72950',
   );
   assert.deepEqual(rows[21].values.baseline_receipt.counts.actionable, {
-    files: 115,
-    occurrences: 293,
+    files: 114,
+    occurrences: 292,
+  });
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.retained, {
+    files: 11,
+    occurrences: 64,
+  });
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.frozen_record, {
+    files: 2,
+    occurrences: 4,
   });
   assert.equal(rows[20].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), false);
   assert.equal(rows[21].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), true);

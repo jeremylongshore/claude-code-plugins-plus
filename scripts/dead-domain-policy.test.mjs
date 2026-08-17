@@ -90,6 +90,31 @@ test('frozen records and valid provenance mirrors are retained and enumerated', 
   assert.equal(domainPolicyAllows(report), true);
 });
 
+test('the byte-pinned 6767 anchor manifest remains a frozen projection', () => {
+  const root = fixture();
+  const path = 'tests/fixtures/prose-anchors/expected-output.json';
+  const content = JSON.stringify({ title: `Marketplace (${DEAD_DOMAIN}) Safety Contract` });
+  put(root, path, content);
+
+  let report = scanDeadDomainPolicy({
+    root,
+    paths: [path],
+    retainedEvidence: evidence(path, content),
+  });
+  assert.deepEqual(report.frozen_record.paths, [path]);
+  assert.equal(report.frozen_record.occurrences, 1);
+  assert.equal(domainPolicyAllows(report), true);
+
+  put(root, path, `${content}\n`);
+  report = scanDeadDomainPolicy({
+    root,
+    paths: [path],
+    retainedEvidence: evidence(path, content),
+  });
+  assert.equal(report.refused[0].reasonCode, 'FROZEN_RECORD_BYTE_DRIFT');
+  assert.equal(domainPolicyAllows(report), false);
+});
+
 test('a new 6767-shaped file cannot self-register as frozen', () => {
   const root = fixture();
   const injected = ['000-docs/6767-z-', 'injected.md'].join('');

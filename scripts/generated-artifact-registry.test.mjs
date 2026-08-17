@@ -16,6 +16,7 @@ const EXAMPLES = new Map([
   ['marketplace-public-data', 'marketplace/public/data/catalog.json'],
   ['cowork-downloads', 'marketplace/public/downloads/example.zip'],
   ['freshie-run-snapshots', 'freshie/exports/run-1/plugin_values.json'],
+  ['frozen-prose-anchor-manifest', 'tests/fixtures/prose-anchors/expected-output.json'],
 ]);
 
 test('every registry entry owns exactly one representative path', () => {

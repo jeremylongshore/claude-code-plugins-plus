@@ -85,6 +85,15 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     regenerate: null,
     why: 'point-in-time discovery evidence; preserve observed values byte-for-byte',
   },
+  {
+    id: 'frozen-prose-anchor-manifest',
+    kind: 'frozen_projection',
+    tracking: 'tracked',
+    pattern: /^tests\/fixtures\/prose-anchors\/expected-output\.json$/,
+    canonical: '000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md',
+    regenerate: null,
+    why: 'exact expected heading manifest for the byte-frozen 6767-h document',
+  },
 ];
 
 export function artifactRegistration(candidate) {

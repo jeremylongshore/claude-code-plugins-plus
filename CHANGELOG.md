@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   case-insensitive, fail-closed policy classifies every tracked occurrence before allowing it:
   editable sources and registered generated projections must be clean, while frozen standards,
   provenance-owned mirrors, and registered point-in-time exports remain byte-identical. The exact
-  base contained 356 occurrences across 125 files: 293 actionable and 63 retained by policy.
+  base contained 356 occurrences across 125 files: 292 actionable and 64 retained by policy.
   The existing documentation-governance job now runs the fixture-backed lint so mixed case,
   symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
   Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor

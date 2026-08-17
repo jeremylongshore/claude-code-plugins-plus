@@ -93,6 +93,10 @@ export const RETAINED_DOMAIN_EVIDENCE = new Map([
     'd84ef7449d6d852c9b9506fc2bd649bbc15e59a050606ede341d40da866df36e',
   ],
   [
+    'tests/fixtures/prose-anchors/expected-output.json',
+    '1e8d83065d3767b83850eeaa739c4c25d54a108fe2994c584f7b43123a49ee78',
+  ],
+  [
     'freshie/exports/run-1/csv-exports/field_registry.csv',
     '91d49c058b1cc8ab9702da57060252c7927a5222e0ad640615875c5ef609e9bc',
   ],
@@ -175,6 +179,11 @@ export function isFrozenDomainRecord(candidate) {
   return FROZEN_DOMAIN_RECORDS.has(normalizeDomainPath(candidate));
 }
 
+function isFrozenDomainEvidence(candidate) {
+  const path = normalizeDomainPath(candidate);
+  return isFrozenDomainRecord(path) || artifactRegistration(path)?.kind === 'frozen_projection';
+}
+
 export function isGeneratedDomainProjection(candidate) {
   return artifactRegistration(normalizeDomainPath(candidate))?.kind === 'generated_projection';
 }
@@ -223,6 +232,31 @@ export function classifyDomainPath(
     return { category: 'frozen_record', path, reasonCode: 'FROZEN_6767_RECORD' };
   }
 
+  const registration = artifactRegistration(path);
+  if (registration?.kind === 'frozen_projection') {
+    let projectionContent = content;
+    try {
+      projectionContent ??= readRegularFileSync(resolve(root, path));
+    } catch (error) {
+      return {
+        category: 'refused',
+        path,
+        reasonCode: 'UNREADABLE_FROZEN_PROJECTION',
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
+    const expected = retainedEvidence.get(path);
+    if (!expected || contentSha256(projectionContent) !== expected) {
+      return { category: 'refused', path, reasonCode: 'FROZEN_RECORD_BYTE_DRIFT' };
+    }
+    return {
+      category: 'frozen_record',
+      path,
+      reasonCode: 'FROZEN_6767_PROJECTION',
+      registrationId: registration.id,
+    };
+  }
+
   const provenance = resolvePluginProvenance(dirname(path), { root });
   if (provenance.status === 'refused') {
     return {
@@ -242,7 +276,6 @@ export function classifyDomainPath(
     };
   }
 
-  const registration = artifactRegistration(path);
   if (registration?.kind === 'historical_snapshot') {
     const expected = retainedEvidence.get(path);
     if (!expected) {
@@ -359,7 +392,7 @@ export function scanDeadDomainPolicy({
       if (contentSha256(readRegularFileSync(target)) !== expectedHash) {
         refused.push({
           path,
-          reasonCode: isFrozenDomainRecord(path)
+          reasonCode: isFrozenDomainEvidence(path)
             ? 'FROZEN_RECORD_BYTE_DRIFT'
             : 'HISTORICAL_SNAPSHOT_BYTE_DRIFT',
         });

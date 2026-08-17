@@ -917,7 +917,8 @@
         "freshie/exports/run-1/frontmatter_fields.json",
         "freshie/exports/run-1/frontmatter_values.json",
         "freshie/exports/run-1/plugin_fields.json",
-        "freshie/exports/run-1/plugin_values.json"
+        "freshie/exports/run-1/plugin_values.json",
+        "tests/fixtures/prose-anchors/expected-output.json"
       ],
       "status": "measured",
       "values": {
@@ -927,8 +928,8 @@
           "paths": []
         },
         "all_policy_surface": {
-          "files": 10,
-          "occurrences": 63,
+          "files": 11,
+          "occurrences": 64,
           "paths": [
             "000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md",
             "freshie/exports/run-1/csv-exports/field_registry.csv",
@@ -939,7 +940,8 @@
             "freshie/exports/run-1/frontmatter_fields.json",
             "freshie/exports/run-1/frontmatter_values.json",
             "freshie/exports/run-1/plugin_fields.json",
-            "freshie/exports/run-1/plugin_values.json"
+            "freshie/exports/run-1/plugin_values.json",
+            "tests/fixtures/prose-anchors/expected-output.json"
           ]
         },
         "baseline_receipt": {
@@ -947,20 +949,20 @@
           "command": "git worktree add --detach <base-checkout> 3543d5d167bd4e8d27666c8893080bca3bd72950 && node scripts/check-dead-domain.mjs --json --root <base-checkout>",
           "counts": {
             "actionable": {
-              "files": 115,
-              "occurrences": 293
+              "files": 114,
+              "occurrences": 292
             },
             "all": {
               "files": 125,
               "occurrences": 356
             },
             "first_party_source": {
-              "files": 95,
-              "occurrences": 261
+              "files": 94,
+              "occurrences": 260
             },
             "frozen_record": {
-              "files": 1,
-              "occurrences": 3
+              "files": 2,
+              "occurrences": 4
             },
             "generated_projection": {
               "files": 20,
@@ -976,8 +978,8 @@
             },
             "refused": 0,
             "retained": {
-              "files": 10,
-              "occurrences": 63
+              "files": 11,
+              "occurrences": 64
             }
           },
           "head_sha": "3543d5d167bd4e8d27666c8893080bca3bd72950"
@@ -988,9 +990,12 @@
           "paths": []
         },
         "frozen_record": {
-          "files": 1,
-          "occurrences": 3,
-          "paths": ["000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md"]
+          "files": 2,
+          "occurrences": 4,
+          "paths": [
+            "000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md",
+            "tests/fixtures/prose-anchors/expected-output.json"
+          ]
         },
         "generated_projection": {
           "files": 0,
@@ -1019,8 +1024,8 @@
         },
         "refused": [],
         "retained": {
-          "files": 10,
-          "occurrences": 63,
+          "files": 11,
+          "occurrences": 64,
           "paths": [
             "000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md",
             "freshie/exports/run-1/csv-exports/field_registry.csv",
@@ -1031,7 +1036,8 @@
             "freshie/exports/run-1/frontmatter_fields.json",
             "freshie/exports/run-1/frontmatter_values.json",
             "freshie/exports/run-1/plugin_fields.json",
-            "freshie/exports/run-1/plugin_values.json"
+            "freshie/exports/run-1/plugin_values.json",
+            "tests/fixtures/prose-anchors/expected-output.json"
           ]
         },
         "target_actionable_occurrences": 0
