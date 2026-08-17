@@ -1443,10 +1443,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install marketplace generator dependencies
-        working-directory: marketplace
-        run: npm ci --ignore-scripts
-
       - name: Check deterministic marketplace projections
         run: |
           node --test scripts/generated-content-ci.test.mjs
