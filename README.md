@@ -4,14 +4,14 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-471-blue)](https://tonsofskills.com/explore)
+[![Plugins](https://img.shields.io/badge/plugins-467-blue)](https://tonsofskills.com/explore)
 [![Skills](https://img.shields.io/badge/skills-3068-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-471 plugins, 3,068 skills, 347 agents, 30 community contributors — validated and ready to install.
+467 plugins, 3,068 skills, 347 agents, 30 community contributors — validated and ready to install.
 
 ## Why this repo
 
@@ -125,7 +125,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |      10 |
 | 🔌  | [API Development](#api-development)                |      26 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
-| 👥  | [Community](#community)                            |      25 |
+| 👥  | [Community](#community)                            |      24 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       8 |
@@ -134,7 +134,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      34 |
+| ✅  | [Productivity](#productivity)                      |      31 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      27 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
@@ -272,7 +272,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Community
 
-👥 **25 plugins** · category slug: `community`
+👥 **24 plugins** · category slug: `community`
 
 | Plugin                   | Description                                                                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -289,7 +289,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `framecraft`             | Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos…  |
 | `gastown`                | Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software…         |
 | `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and…      |
-| `geepers-agents`         | Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built… |
 | `hermes-tweet`           | Hermes Agent X/Twitter research, monitoring, drafts, exports, and approved actions                                                          |
 | `jeremy-firebase`        | Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration                                                          |
 | `jeremy-firestore`       | Firestore database specialist for schema design, queries, and real-time sync                                                                |
@@ -526,7 +525,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **34 plugins** · category slug: `productivity`
+✅ **31 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -538,9 +537,6 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
 | `claude-workflow-skills`                   | Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage                                            |
-| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
-| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
-| `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `claudebase`                               | Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles                                             |
 | `cli-power-skills`                         | Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools                                                                     |
 | `content-multiplier`                       | Turn one idea, post, or transcript into on-brand, multi-channel, multi-language content in a single command.                                |
@@ -1076,7 +1072,7 @@ The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-sk
 
 ## FAQ
 
-**What is this?** A Claude Code plugin marketplace: 471 plugins, 3,068 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+**What is this?** A Claude Code plugin marketplace: 467 plugins, 3,068 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
 
 **How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
 

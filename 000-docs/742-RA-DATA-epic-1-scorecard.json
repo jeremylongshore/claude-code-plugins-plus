@@ -51,20 +51,11 @@
       "reproduce": "pnpm run measure:e1 --row=2 --stdout",
       "source": ".claude-plugin/marketplace.extended.json",
       "status": "measured",
-      "target_status": "fail",
+      "target_status": "pass",
       "values": {
         "distinct_names": 467,
-        "duplicate_names": [
-          {
-            "count": 4,
-            "name": "claudebase"
-          },
-          {
-            "count": 2,
-            "name": "geepers-agents"
-          }
-        ],
-        "entries": 471
+        "duplicate_names": [],
+        "entries": 467
       }
     },
     "3": {

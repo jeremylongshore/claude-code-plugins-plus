@@ -5017,7 +5017,9 @@
       "author": {
         "name": "Luke Steuber",
         "url": "https://github.com/lukeslp"
-      }
+      },
+      "homepage": "https://dr.eamer.dev/geepers/",
+      "repository": "https://github.com/lukeslp/geepers"
     },
     {
       "name": "sprint",
@@ -5088,28 +5090,6 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       }
-    },
-    {
-      "name": "geepers-agents",
-      "source": "./plugins/community/geepers-agents",
-      "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built with MCP tools and Claude Code plugin agents.",
-      "version": "1.13.0",
-      "category": "community",
-      "keywords": [
-        "mcp",
-        "orchestration",
-        "multi-agent",
-        "development-workflow",
-        "code-quality",
-        "deployment",
-        "geepers",
-        "claude-code"
-      ],
-      "author": {
-        "name": "Luke Steuber"
-      },
-      "homepage": "https://dr.eamer.dev/geepers/",
-      "repository": "https://github.com/lukeslp/geepers"
     },
     {
       "name": "jeremy-firebase",
@@ -8711,28 +8691,6 @@
       "license": "Apache-2.0"
     },
     {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
-      "license": "MIT"
-    },
-    {
       "name": "databricks-workspace-mcp",
       "source": "./plugins/mcp/databricks-workspace-mcp",
       "description": "MCP server for the Databricks control plane — 8 read-only tools for cluster forensics, instance pools, DLT pipeline event logs, and Unity Catalog external locations / storage credentials. The endpoint families no managed Databricks MCP exposes; pairs with the managed SQL MCP for system.* reads.",
@@ -8921,28 +8879,6 @@
       "license": "MIT"
     },
     {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
-      "license": "MIT"
-    },
-    {
       "name": "mnemos",
       "source": "./plugins/community/mnemos",
       "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
@@ -9074,28 +9010,6 @@
       },
       "homepage": "https://github.com/el-zachariah/ai-agent-safety-starter-pack#readme",
       "repository": "https://github.com/el-zachariah/ai-agent-safety-starter-pack",
-      "license": "MIT"
-    },
-    {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
       "license": "MIT"
     },
     {
