@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — canonical catalog name uniqueness)
+
+- **The editable plugin catalog now contains 467 rows with 467 unique names.** Three redundant
+  `claudebase` rows and one duplicate `geepers-agents` row were collapsed without renaming either
+  plugin; the retained Geepers record preserves its richer component metadata and upstream links.
+  The existing catalog invariant validator now fails closed on exact or normalization-equivalent
+  duplicates, empty names, and non-string names, while `marketplace.json` and the README catalog
+  navigation are regenerated from the corrected source.
+
 ### Fixed (2026-08-17 — README star-history chart)
 
 - **The README star-history chart now uses the working `star-history.dera.page` mirror.** The

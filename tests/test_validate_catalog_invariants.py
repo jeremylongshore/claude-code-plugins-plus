@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import json
 import subprocess
 import tempfile
 import unittest
@@ -25,6 +26,62 @@ def load_validator():
 
 
 class CatalogInvariantTests(unittest.TestCase):
+    def test_name_validation_normalizes_case_and_surrounding_whitespace(self):
+        validator = load_validator()
+
+        self.assertEqual(
+            validator.catalog_name_errors([{"name": "alpha"}, {"name": " Alpha "}, {"name": "ALPHA"}]),
+            ["duplicate plugin identity `alpha` appears 3 times after trimming and case-folding; names must be unique"],
+        )
+
+    def test_name_validation_fails_closed_on_invalid_rows(self):
+        validator = load_validator()
+
+        self.assertEqual(
+            validator.catalog_name_errors([{}, {"name": ""}, {"name": 7}, "not-an-object"]),
+            [
+                "catalog row 0: `name` must be a non-empty string",
+                "catalog row 1: `name` must be a non-empty string",
+                "catalog row 2: `name` must be a non-empty string",
+                "catalog row 3: expected an object",
+            ],
+        )
+
+    def test_main_refuses_duplicate_plugin_names(self):
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            catalog_dir = root / ".claude-plugin"
+            plugin_dir = root / "plugins" / "community" / "alpha"
+            catalog_dir.mkdir()
+            plugin_dir.mkdir(parents=True)
+            (plugin_dir / "package.json").write_text("{}")
+            duplicate_plugins = [
+                {"name": "alpha", "source": "./plugins/community/alpha", "category": "community"},
+                {"name": "alpha", "source": "./plugins/community/alpha", "category": "community"},
+            ]
+            extended = catalog_dir / "marketplace.extended.json"
+            synced = catalog_dir / "marketplace.json"
+            payload = json.dumps({"plugins": duplicate_plugins})
+            extended.write_text(payload)
+            synced.write_text(payload)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+
+            validator.ROOT = root
+            validator.EXTENDED = extended
+            validator.SYNCED = synced
+            validator.CANONICAL_CATALOGS = {path.relative_to(root).as_posix() for path in (extended, synced)}
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                result = validator.main()
+
+            self.assertEqual(result, 1)
+            self.assertIn(
+                "duplicate plugin identity `alpha` appears 2 times after trimming and case-folding",
+                output.getvalue(),
+            )
+
     def test_canonical_catalogs_are_not_shadows(self):
         validator = load_validator()
         with tempfile.TemporaryDirectory() as directory:

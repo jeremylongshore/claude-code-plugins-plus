@@ -1087,6 +1087,16 @@ Ratification correction 5. The **completed** repository-cleanup **Mission 01** (
 | 1.13 | **STILL REQUIRED**                      | Row 21 correction: 356 case-insensitive occurrences across 125 files at `3543d5d167bd4e8d27666c8893080bca3bd72950`; 292 actionable and 64 retained by machine-readable class                                                                      |
 | 1.14 | **STILL REQUIRED**                      | § 18.7 unchanged; owner-gated                                                                                                                                                                                                                     |
 
+**E1.2 implementation measurement (2026-08-17).** At exact base
+`48894e82d31f8bc160d3157d299e675c538ca0a7`,
+`jq '{rows:(.plugins|length), names:([.plugins[].name]|unique|length), duplicates:([.plugins[].name]|group_by(.)|map(select(length>1)|{name:.[0],count:length}))}' .claude-plugin/marketplace.extended.json`
+reported 471 rows, 467 names, `claudebase` ×4, and `geepers-agents` ×2. E1.2 retains
+one on-disk-source-matching row for each name, merges the non-conflicting Geepers upstream links
+into its richer record, regenerates the two source-owned public catalog surfaces, and adds
+duplicate-name refusal to `scripts/validate-catalog-invariants.py`. The same command then reports
+467 rows, 467 names, and no duplicates. This correction belongs to E1.2; E1.8 consumes the clean
+source but does not claim or duplicate this work.
+
 **Measurements that must be re-run before Epic 1 is claimed complete** (all of them by bead 1.0, none by hand): rows 1, 2, 3, 4, 11, 12, 22, 24, 25, 26, 27 — plus the graded-artifact cohort itself (3,679 vs 3,678, § 3.1). Any Epic 1 exit claim that cites a Mission 01 number rather than a harness number is rejected: Mission 01's numbers were correct **for its HEAD**, and the tree has moved twice since.
 
 **Does the proposed bead count change? No — Epic 1 stays at 15.** Two beads (1.7, 1.8) have **narrower scope**, and one (1.0) is partially informed, but **zero are fully satisfied and zero are superseded**, so there is nothing to remove. This is stated explicitly because the opposite error — inventing filler work to preserve a headline count — is the failure mode this correction exists to prevent. The count that _does_ move is Epic 2's, which gains the README landing-contract bead from § 6A (12 → 13); § 17 carries the new totals.
