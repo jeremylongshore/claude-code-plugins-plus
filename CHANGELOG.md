@@ -21,9 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rewriting past evidence, unsupported email identities are removed or mapped to the existing
   Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
   the MCP preset catalog no longer advertises an unserved remote schema URL. Exact-path
-  supply-chain waivers record review of seven pre-existing dual-use capabilities whose files have
-  only domain or contact changes in this slice; the underlying capabilities and scanner remain
-  unchanged. Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
+  [exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
+  dual-use capabilities whose files have only domain or contact changes in this slice; the
+  underlying capabilities and scanner remain unchanged. The catalog schema permits an author
+  email to be omitted, so the unsupported Mattyp address is removed while contributor credit is
+  retained; the first-party Excel listing uses the matching Intent Solutions identity and contact.
+  Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
   no-follow semantics where available, closing metadata-check/file-use races without weakening
   refusal behavior. Cross-platform CLI validation now installs only the CLI package and its
   dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
