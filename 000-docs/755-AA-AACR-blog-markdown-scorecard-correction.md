@@ -28,15 +28,15 @@ credential, registry, contributor, Plane-authority, branch-policy, package, or p
 
 ## Evidence bundle
 
-| Evidence item | Result   | Reproducing evidence                                                                                                                                                                                                                                                 |
-| ------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Failure path  | PASS     | [Validate Plugins run 32045714543](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/32045714543), a PR #1231 synthetic merge incorporating exact base `2979bd5b`, reported MD032 at article line 36 and rejected the stale scorecard. |
-| Happy path    | PASS     | Exact-head [Validate Plugins run 32047053268](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/32047053268) passed Markdownlint, document governance, and the aggregate `ci-required` context.                                        |
-| Semantic fix  | PASS     | `git diff 2979bd5b...6d24466 -- marketplace/src/content/blog-posts/the-failure-that-knew-its-own-name.md` shows one blank-line insertion before the list and no wording change.                                                                                      |
-| Scorecard     | PASS     | `pnpm run measure:e1:check` passed 37/37 tests and reported byte-current generated output; rows 1 and 46 contain `tracked_files: 23051`.                                                                                                                             |
-| Scope         | PASS     | `git diff --name-status 2979bd5b...6d24466` lists only the article, `CHANGELOG.md`, and scorecard 742.                                                                                                                                                               |
-| Rollback      | PASS     | Revert squash merge `c0f87ad5a`; the original MD032 and scorecard failures are the expected rollback signals.                                                                                                                                                        |
-| Bypass record | RECORDED | The owner-authorized [administrator-bypass disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1232#issuecomment-5317958235) is an exception receipt, not a passing review.                                                          |
+| Evidence item | Evidence status | Reproducing evidence                                                                                                                                                                                                                                                 |
+| ------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Failure path  | REPRODUCED      | [Validate Plugins run 32045714543](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/32045714543), a PR #1231 synthetic merge incorporating exact base `2979bd5b`, reported MD032 at article line 36 and rejected the stale scorecard. |
+| Happy path    | PASS            | Exact-head [Validate Plugins run 32047053268](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/32047053268) passed Markdownlint, document governance, and the aggregate `ci-required` context.                                        |
+| Semantic fix  | VERIFIED        | `git diff 2979bd5b...6d24466 -- marketplace/src/content/blog-posts/the-failure-that-knew-its-own-name.md` shows one blank-line insertion before the list and no wording change.                                                                                      |
+| Scorecard     | PASS            | `pnpm run measure:e1:check` passed 37/37 tests and reported byte-current generated output; rows 1 and 46 contain `tracked_files: 23051`.                                                                                                                             |
+| Scope         | RECORDED        | `git diff --name-status 2979bd5b...6d24466` lists only the article, `CHANGELOG.md`, and scorecard 742.                                                                                                                                                               |
+| Rollback      | VERIFIED        | Revert squash merge `c0f87ad5a`; the original MD032 and scorecard failures are the expected rollback signals.                                                                                                                                                        |
+| Bypass record | RECORDED        | The owner-authorized [administrator-bypass disclosure](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1232#issuecomment-5317958235) is an exception receipt, not a passing review.                                                          |
 
 ## Validation and review
 
@@ -76,9 +76,11 @@ Document 755 was staged before running `node scripts/generate-docs-index.mjs` an
 `TMPDIR=/dev/shm node scripts/measure-epic-1.mjs`. Those generators produced the committed index and
 scorecard bytes. Their check modes then reported 195 tracked documents and a byte-current scorecard,
 and `pnpm run measure:e1:check` passed all 37 tests. The committed generated bytes match both
-generators. Because document 755 matches the explicit `^000-docs/.*\.md$` Gitleaks path allowlist, this filing increases
-both the tracked-file and Gitleaks-invisible-file measurements by one; it does not change the
-implementation PR's historical 23,051-file receipt.
+generators. The count sequence is explicit: implementation PR #1232 ended at 23,051 tracked files;
+the later actionlint AAR filing added document 754 and moved the current-main baseline to 23,052; this
+filing adds document 755 and moves it to 23,053. Because document 755 matches the explicit
+`^000-docs/.*\.md$` Gitleaks path allowlist, it also increases the Gitleaks-invisible-file measurement
+by one. These three populations are chronological states, not interchangeable headlines.
 
 ## Lessons and follow-up
 
@@ -87,4 +89,6 @@ New content must pass the same blocking Markdownlint command before merge, and e
 addition must regenerate scorecard 742 in the same transaction. The Slack journal boundary-test
 timeout observed later is tracked separately as `claude-2uge`; it is not attributed to this fix.
 PR #1229 must rebase onto the current main and rerun every exact-head gate. This operational repair
-does not satisfy or close E1.8.
+does not satisfy or close E1.8. At filing time, `bd show claude-2uge`,
+`bd show claude-hz8f.11`, and the live [PR #1229](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1229)
+independently confirmed those three cross-references.
