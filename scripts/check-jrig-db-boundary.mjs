@@ -40,6 +40,7 @@ function functionAliases(text) {
 function containsJrigEval(text, aliases = new Set()) {
   const literal = shellLiteralView(text);
   if (JRIG_EVAL_RE.test(literal)) return true;
+  if (/\bj-rig\b[\s)]*eval\b/.test(literal)) return true;
   for (const alias of aliases) {
     const escaped = alias.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
     if (new RegExp(`\\b${escaped}\\s+eval\\b`).test(literal)) return true;
@@ -55,7 +56,7 @@ function collectAssignments(text) {
 
   // Match every assignment token, not only the first token in declarations
   // such as `local -r SAFE=x DB=...`.
-  const assignment = /(?:^|[;\n]|\s)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^\s;\n]+)/g;
+  const assignment = /(?:^|[;\n]|\s)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(\$\([^)]*\)|[^\s;\n]+)/g;
   for (const match of text.matchAll(assignment)) {
     record(match.index, match[1], match[2]);
   }
@@ -104,28 +105,47 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
     return expandKnownVariables(assignments.get(name), assignments, nestedStack);
   };
 
+  const githubEnv = value.replace(
+    /\$\{\{\s*env\.([A-Za-z_][A-Za-z0-9_]*)\s*\}\}/g,
+    (token, name) => resolve(name) ?? token,
+  );
   const variable =
     /\$\{!([A-Za-z_][A-Za-z0-9_]*)\}|\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|:=|:\+|:)([^}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)/g;
-  return value.replace(variable, (token, indirectName, bracedName, operator, operand, bareName) => {
-    if (indirectName) {
-      const pointer = resolve(indirectName);
-      return pointer === null ? token : (resolve(shellLiteralView(pointer)) ?? token);
-    }
+  return githubEnv.replace(
+    variable,
+    (token, indirectName, bracedName, operator, operand, bareName) => {
+      if (indirectName) {
+        const pointer = resolve(indirectName);
+        return pointer === null ? token : (resolve(shellLiteralView(pointer)) ?? token);
+      }
 
-    const name = bracedName ?? bareName;
-    const resolved = resolve(name);
-    if (operator === ':-' || operator === ':=') {
-      return resolved ? resolved : expandKnownVariables(operand, assignments, stack);
-    }
-    if (operator === ':+') {
-      return resolved ? expandKnownVariables(operand, assignments, stack) : '';
-    }
-    if (operator === ':') {
-      if (resolved === null || !/^-?\d+$/.test(operand)) return token;
-      return resolved.slice(Number.parseInt(operand, 10));
-    }
-    return resolved ?? token;
-  });
+      const name = bracedName ?? bareName;
+      const resolved = resolve(name);
+      if (operator === ':-' || operator === ':=') {
+        return resolved ? resolved : expandKnownVariables(operand, assignments, stack);
+      }
+      if (operator === ':+') {
+        return resolved ? expandKnownVariables(operand, assignments, stack) : '';
+      }
+      if (operator === ':') {
+        if (resolved === null || !/^-?\d+$/.test(operand)) return token;
+        return resolved.slice(Number.parseInt(operand, 10));
+      }
+      return resolved ?? token;
+    },
+  );
+}
+
+function applyParameterSideEffects(assignments, text) {
+  const next = new Map(assignments);
+  const sideEffect = /\$\{([A-Za-z_][A-Za-z0-9_]*):=([^}]*)\}/g;
+  for (const match of text.matchAll(sideEffect)) {
+    const current = next.has(match[1])
+      ? shellLiteralView(expandKnownVariables(next.get(match[1]), next))
+      : '';
+    if (!current) next.set(match[1], match[2]);
+  }
+  return next;
 }
 
 function shellWordPattern(value) {
@@ -266,7 +286,13 @@ function splitShellStatements(text) {
       if (character === quote) quote = null;
       continue;
     }
-    if (character === "'" || character === '"' || character === '`') {
+    // A possessive apostrophe in Markdown prose (for example, "platform's")
+    // is not a shell quote and must not absorb later, unrelated lines.
+    if (
+      character === '"' ||
+      character === '`' ||
+      (character === "'" && (index === 0 || !/[A-Za-z0-9_]/.test(text[index - 1])))
+    ) {
       quote = character;
       continue;
     }
@@ -305,8 +331,20 @@ function splitShellStatements(text) {
     }
     if (character === '#' && (index === 0 || /\s/.test(text[index - 1]))) {
       const statement = text.slice(start, index).trim();
-      if (statement) statements.push({ text: statement, offset: start });
-      return statements;
+      if (statement) {
+        statements.push({
+          text: statement,
+          offset: start,
+          operatorBefore: pendingOperator,
+          operatorAfter: '\n',
+        });
+      }
+      const newline = text.indexOf('\n', index);
+      if (newline < 0) return statements;
+      pendingOperator = '\n';
+      start = newline + 1;
+      index = newline;
+      continue;
     }
   }
   const statement = text.slice(start).trim();
@@ -323,7 +361,7 @@ function splitShellStatements(text) {
 function assignmentOnly(text) {
   const stripped = text
     .replace(/^\s*(?:(?:export|readonly|local|declare|typeset)\s+(?:-[A-Za-z]+\s+)*)?/, '')
-    .replace(/(?:^|\s)[A-Za-z_][A-Za-z0-9_]*\s*=\s*[^\s;]+/g, '')
+    .replace(/(?:^|\s)[A-Za-z_][A-Za-z0-9_]*\s*=\s*(?:\$\([^)]*\)|[^\s;]+)/g, '')
     .trim();
   return stripped === '';
 }
@@ -380,11 +418,14 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
       condition === '&&' ? priorStatus !== false : condition === '||' ? priorStatus !== true : true;
     const optional = (condition === '&&' || condition === '||') && priorStatus === null;
     const statementAssignments = collectAssignments(trimmed);
-    const appliedStates = states.map((state) => mergeAssignments(state, statementAssignments));
+    const appliedStates = states.map((state) =>
+      applyParameterSideEffects(mergeAssignments(state, statementAssignments), trimmed),
+    );
     const expandedCommands = appliedStates.map((state) => expandKnownVariables(trimmed, state));
     if (
-      expandedCommands.some((expanded) => containsJrigEval(expanded, aliases)) ||
-      (containsJrigEval(trimmed, aliases) && appliedStates.length > 0)
+      executes &&
+      (expandedCommands.some((expanded) => containsJrigEval(expanded, aliases)) ||
+        (containsJrigEval(trimmed, aliases) && appliedStates.length > 0))
     ) {
       for (const assignments of appliedStates) {
         blocks.push({
@@ -400,7 +441,8 @@ function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
       statement.operatorBefore === '|' ||
       statement.operatorAfter === '|' ||
       statement.operatorAfter === '&';
-    if (executes && assignmentOnly(trimmed) && !isolated) {
+    const hasParameterSideEffect = /\$\{[A-Za-z_][A-Za-z0-9_]*:=/.test(trimmed);
+    if (executes && (assignmentOnly(trimmed) || hasParameterSideEffect) && !isolated) {
       states = optional ? uniqueStates([...states, ...appliedStates]) : uniqueStates(appliedStates);
     }
     if (executes) priorStatus = optional ? null : staticStatus(trimmed);
@@ -556,6 +598,12 @@ export function inspectJrigDbBoundary(text, filePath) {
       .replace(/--db\b/gi, '')
       .replace(/\S*\bfreshie(?:'s)?\b[^\n]{0,80}?inventory\.sqlite\b\S*/gi, '');
     if (!/[A-Za-z]{3}/.test(residue)) continue;
+    if (/^\s*(?:echo|printf)\b/i.test(match[0])) continue;
+    // Shell-shaped lines are governed by the execution-aware command scan.
+    // Do not reclassify a statically unreachable command as prose.
+    if (containsJrigEval(match[0])) continue;
+    if (!/\b(?:j-?rig|evaluat\w*|results?|persist\w*|run|target|destination)\b/i.test(match[0]))
+      continue;
     const finding = {
       path: filePath,
       line: directiveLine,

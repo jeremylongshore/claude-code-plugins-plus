@@ -257,6 +257,30 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
     ],
     ['function alias invocation', 'jr() { j-rig "$@"; }\njr eval x --db freshie/inventory.sqlite'],
     ['ambiguous branch state fails closed', branchExplosion],
+    [
+      'comment does not discard later assignments',
+      '# heading\nDB=freshie/inventory.sqlite\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'inline comment preserves the preceding assignment',
+      'DB=freshie/inventory.sqlite # governed path\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'Markdown possessive does not absorb later shell',
+      'This platform\'s integration is documented.\nDB=freshie/inventory.sqlite\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'parameter assignment side effect persists',
+      ': "${DB:=freshie/inventory.sqlite}"\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'dynamic executable assignment preserves command substitution',
+      'EXE=$(printf %s j-rig)\nDB=freshie/inventory.sqlite\n"$EXE" eval x --db "$DB"',
+    ],
+    [
+      'GitHub env expression resolves parsed YAML env',
+      'env:\n  DB: freshie/inventory.sqlite\nrun: j-rig eval x --db "${{ env.DB }}"',
+    ],
   ];
   for (const [name, text] of dangerous) {
     const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
@@ -315,6 +339,11 @@ j-rig eval x --db "$DB"`,
       'skipped or-branch cannot overwrite parent scratch assignment',
       'DB=/dev/shm/safe.sqlite\ntrue || DB=freshie/inventory.sqlite\nj-rig eval x --db "$DB"',
     ],
+    [
+      'statically skipped direct command is unreachable',
+      'false && j-rig eval x --db freshie/inventory.sqlite',
+    ],
+    ['non-JRig utility with db-shaped arguments', 'echo --db freshie/inventory.sqlite'],
   ];
   for (const [name, text] of safe) {
     assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
