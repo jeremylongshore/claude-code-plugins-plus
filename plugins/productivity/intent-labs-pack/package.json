@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/intent-labs-pack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Labs skills for Intent Eval Platform dogfood: audit-tests + validate-skillmd",
   "keywords": [
     "audit-tests",

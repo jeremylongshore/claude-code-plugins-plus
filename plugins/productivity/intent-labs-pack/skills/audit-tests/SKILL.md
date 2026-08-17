@@ -9,7 +9,7 @@ description: "Diagnostic-only test suite auditor. Classifies repo type, maps aga
   \ finding test gaps, or running the full 7-layer sweep. Trigger with \"audit tests\"\
   , \"find gaps\", \"test audit\", \"check test quality\", \"full sweep\", \"7-layer\
   \ audit\", \"rtm check\"."
-version: 7.2.0
+version: 0.2.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 model: inherit
