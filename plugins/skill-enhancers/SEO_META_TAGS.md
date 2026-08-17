@@ -2,7 +2,7 @@
 
 **Last Updated:** 2025-10-16
 
-## Page: /categories/skill-enhancers (or /skill-enhancers)
+## Page: /skill-enhancers
 
 ### Title Tag (59 chars)
 
@@ -19,7 +19,7 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 ### Canonical URL
 
 ```html
-<link rel="canonical" href="https://tonsofskills.com/categories/skill-enhancers" />
+<link rel="canonical" href="https://tonsofskills.com/skill-enhancers" />
 ```
 
 ### Open Graph Tags
@@ -27,10 +27,10 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 ```html
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://tonsofskills.com/categories/skill-enhancers" />
+<meta property="og:url" content="https://tonsofskills.com/skill-enhancers" />
 <meta property="og:title" content="Skill Enhancers - AI Automation Plugins for Claude Code Tools" />
 <meta property="og:description" content="Discover Skill Enhancer plugins that extend Claude's AI capabilities with automation. Convert research to GitHub issues, Slack digests, and production code." />
-<meta property="og:image" content="https://tonsofskills.com/images/skill-enhancers-og-image.png" />
+<meta property="og:image" content="https://tonsofskills.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:site_name" content="Claude Code Plugins" />
@@ -44,10 +44,10 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@jeremylongshore" />
 <meta name="twitter:creator" content="@jeremylongshore" />
-<meta name="twitter:url" content="https://tonsofskills.com/categories/skill-enhancers" />
+<meta name="twitter:url" content="https://tonsofskills.com/skill-enhancers" />
 <meta name="twitter:title" content="Skill Enhancers - AI Automation Plugins for Claude Code" />
 <meta name="twitter:description" content="Extend Claude's AI capabilities with Skill Enhancer automation plugins. Research to GitHub, Slack digests, production code generation." />
-<meta name="twitter:image" content="https://tonsofskills.com/images/skill-enhancers-twitter-card.png" />
+<meta name="twitter:image" content="https://tonsofskills.com/og-image.png" />
 <meta name="twitter:image:alt" content="Claude Code Skill Enhancers - AI automation plugins for developer workflows" />
 ```
 
@@ -61,7 +61,7 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
 <meta name="theme-color" content="#8b5cf6" />
 
 <!-- Language -->
-<link rel="alternate" hreflang="en" href="https://tonsofskills.com/categories/skill-enhancers" />
+<link rel="alternate" hreflang="en" href="https://tonsofskills.com/skill-enhancers" />
 
 <!-- Breadcrumb -->
 <script type="application/ld+json">
@@ -79,13 +79,13 @@ Discover Skill Enhancer plugins that extend Claude's AI capabilities with automa
       "@type": "ListItem",
       "position": 2,
       "name": "Categories",
-      "item": "https://tonsofskills.com/categories"
+      "item": "https://tonsofskills.com/plugins"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": "Skill Enhancers",
-      "item": "https://tonsofskills.com/categories/skill-enhancers"
+      "item": "https://tonsofskills.com/skill-enhancers"
     }
   ]
 }
@@ -101,10 +101,10 @@ import Layout from '../../layouts/Layout.astro';
 const seo = {
   title: "Skill Enhancers - AI Automation Plugins for Claude Code Tools",
   description: "Discover Skill Enhancer plugins that extend Claude's AI capabilities with automation. Convert research to GitHub issues, Slack digests, and production code.",
-  canonical: "https://tonsofskills.com/categories/skill-enhancers",
+  canonical: "https://tonsofskills.com/skill-enhancers",
   keywords: "Claude Skill Enhancers, AI automation plugins, Claude Code extensions, web search to GitHub, research automation, AI developer tools, Claude AI plugins, workflow automation",
-  ogImage: "https://tonsofskills.com/images/skill-enhancers-og-image.png",
-  twitterImage: "https://tonsofskills.com/images/skill-enhancers-twitter-card.png",
+  ogImage: "https://tonsofskills.com/og-image.png",
+  twitterImage: "https://tonsofskills.com/og-image.png",
   twitterCard: "summary_large_image",
   author: "Jeremy Longshore",
   type: "website",
@@ -123,7 +123,7 @@ const seo = {
   "@type": "CollectionPage",
   "name": "Skill Enhancers - Claude Code Plugins",
   "description": "AI automation plugins that extend Claude's Skills with workflow automation. Convert research to actionable outputs like GitHub issues, Slack digests, and production code.",
-  "url": "https://tonsofskills.com/categories/skill-enhancers",
+  "url": "https://tonsofskills.com/skill-enhancers",
   "mainEntity": {
     "@type": "ItemList",
     "name": "Skill Enhancer Plugins",

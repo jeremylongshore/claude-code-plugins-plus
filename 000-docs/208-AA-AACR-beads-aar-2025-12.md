@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-The claude-code-plugins project is on a strong trajectory toward establishing tonsofskills.com as the production-grade platform for Claude Code operations. The project is 71% complete overall (132 closed / 187 total beads tasks), with 4 major epics at or near completion and 5 critical epics requiring immediate focus.
+The claude-code-plugins project is on a strong trajectory toward establishing [retired legacy public domain] as the production-grade platform for Claude Code operations. The project is 71% complete overall (132 closed / 187 total beads tasks), with 4 major epics at or near completion and 5 critical epics requiring immediate focus.
 
 **Current Momentum:**
 

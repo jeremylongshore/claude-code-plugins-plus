@@ -316,4 +316,4 @@ npx zcf@latest i
 
 ---
 
-_Part of Claude Code Plugins Marketplace - https://tonsofskills.com/_
+_Part of the [Tons of Skills marketplace](https://tonsofskills.com/)._

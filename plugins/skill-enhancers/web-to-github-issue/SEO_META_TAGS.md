@@ -30,7 +30,7 @@ Free Claude Code plugin that converts AI research into formatted GitHub issues a
 <meta property="og:url" content="https://tonsofskills.com/plugins/web-to-github-issue" />
 <meta property="og:title" content="Web to GitHub Issue - Claude AI Research Automation Plugin" />
 <meta property="og:description" content="Free Claude Code plugin that converts AI research into formatted GitHub issues automatically. Save 95% time creating tickets with sources and action items." />
-<meta property="og:image" content="https://tonsofskills.com/images/plugins/web-to-github-issue-og.png" />
+<meta property="og:image" content="https://tonsofskills.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:site_name" content="Claude Code Plugins" />
@@ -54,7 +54,7 @@ Free Claude Code plugin that converts AI research into formatted GitHub issues a
 <meta name="twitter:url" content="https://tonsofskills.com/plugins/web-to-github-issue" />
 <meta name="twitter:title" content="Web to GitHub Issue - Claude AI Research Automation" />
 <meta name="twitter:description" content="Free plugin: Claude research → GitHub issues automatically. Save 15 min per ticket with formatted sources and action items." />
-<meta name="twitter:image" content="https://tonsofskills.com/images/plugins/web-to-github-issue-twitter.png" />
+<meta name="twitter:image" content="https://tonsofskills.com/og-image.png" />
 <meta name="twitter:image:alt" content="Web to GitHub Issue plugin demo showing Claude research converted to formatted GitHub issue" />
 ```
 
@@ -91,8 +91,8 @@ const seo = {
   description: "Free Claude Code plugin that converts AI research into formatted GitHub issues automatically. Save 95% time creating tickets with sources and action items.",
   canonical: "https://tonsofskills.com/plugins/web-to-github-issue",
   keywords: "Claude GitHub automation, AI research to GitHub, automated GitHub issues, Claude Code plugin, web search to ticket, research automation, developer productivity, GitHub issue creator",
-  ogImage: "https://tonsofskills.com/images/plugins/web-to-github-issue-og.png",
-  twitterImage: "https://tonsofskills.com/images/plugins/web-to-github-issue-twitter.png",
+  ogImage: "https://tonsofskills.com/og-image.png",
+  twitterImage: "https://tonsofskills.com/og-image.png",
   twitterCard: "summary_large_image",
   author: "Jeremy Longshore",
   type: "article",
@@ -151,7 +151,6 @@ const plugin = {
     "bestRating": "5",
     "worstRating": "1"
   },
-  "screenshot": "https://tonsofskills.com/images/plugins/web-to-github-issue-screenshot.png",
   "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers/web-to-github-issue",
   "installUrl": "claudecode://install/web-to-github-issue@claude-code-plugins-plus",
   "featureList": [
@@ -168,7 +167,7 @@ const plugin = {
   "requirements": "Claude Code CLI, GitHub Personal Access Token with repo scope, Node.js 18+",
   "softwareHelp": {
     "@type": "WebPage",
-    "url": "https://tonsofskills.com/docs/web-to-github-issue"
+    "url": "https://tonsofskills.com/plugins/web-to-github-issue"
   },
   "applicationSubCategory": "Automation, Productivity, Research Tools",
   "keywords": "GitHub automation, Claude AI, research to issue, developer productivity, ticket automation, web search automation",
@@ -185,7 +184,6 @@ const plugin = {
   "@type": "HowTo",
   "name": "How to Install Web to GitHub Issue Plugin",
   "description": "Step-by-step guide to install and configure the Web to GitHub Issue Claude Code plugin",
-  "image": "https://tonsofskills.com/images/plugins/web-to-github-issue-install.png",
   "estimatedCost": {
     "@type": "MonetaryAmount",
     "currency": "USD",
@@ -343,7 +341,7 @@ const plugin = {
       "@type": "ListItem",
       "position": 3,
       "name": "Skill Enhancers",
-      "item": "https://tonsofskills.com/categories/skill-enhancers"
+      "item": "https://tonsofskills.com/skill-enhancers"
     },
     {
       "@type": "ListItem",

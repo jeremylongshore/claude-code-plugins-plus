@@ -391,7 +391,7 @@ class HybridAgent(ReactAgent):
 
 - **GitHub Issues:**
 - **Documentation:**
-- **Email:** jeremy@tonsofskills.com
+- **Email:** jeremy@intentsolutions.io
 
 ## 📄 License
 

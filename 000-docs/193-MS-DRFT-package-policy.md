@@ -110,7 +110,7 @@ The marketplace deploys to GitHub Pages via `.github/workflows/deploy-marketplac
 - Uses `pnpm install --frozen-lockfile`
 - Builds with `pnpm -C marketplace build`
 - Deploys `marketplace/dist/` to `gh-pages` branch
-- Custom domain: `tonsofskills.com` (configured in GitHub UI)
+- Custom domain: `[retired legacy public domain]` (configured in GitHub UI)
 
 ## Publishing: npm Registry
 
@@ -151,6 +151,7 @@ node scripts/check-package-manager.mjs
 ```
 
 Exit codes:
+
 - `0` = All checks passed
 - `1` = Policy violations found
 

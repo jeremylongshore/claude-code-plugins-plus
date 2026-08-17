@@ -20,11 +20,11 @@ It took six commits and two reverts.
 
 Here's the actual commit sequence, with the retired domain redacted so it is not republished. Read it slowly.
 
-1. `feat: migrate domain from [retired legacy domain] to tonsofskills.com`
-2. `feat: add tonsofskills.com Firebase hosting and [retired legacy domain] redirect`
+1. `feat: migrate domain from [retired legacy public domain] to tonsofskills.com`
+2. `feat: add tonsofskills.com Firebase hosting and [retired legacy public domain] redirect`
 3. `Revert "feat: add tonsofskills.com Firebase hosting..."`
-4. `Revert "feat: migrate domain from [retired legacy domain] to tonsofskills.com"`
-5. `feat: add tonsofskills.com 301 redirect to [retired legacy domain]`
+4. `Revert "feat: migrate domain from [retired legacy public domain] to tonsofskills.com"`
+5. `feat: add tonsofskills.com 301 redirect to [retired legacy public domain]`
 6. `feat: migrate primary domain to tonsofskills.com`
 
 Commits 3 and 4 are the reverts. Two of them. Back to back. In production.

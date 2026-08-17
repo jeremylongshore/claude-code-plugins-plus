@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -7,6 +8,7 @@ import test from 'node:test';
 import {
   DEAD_DOMAIN,
   LIVE_DOMAIN,
+  VERIFIED_CONTACT_EMAIL,
   classifyDomainPath,
   domainPolicyAllows,
   normalizeDeadDomainValue,
@@ -30,6 +32,10 @@ function sourceRecord() {
 
 function frozenRecord() {
   return `<!-- doc-class: frozen -->\n\n> **SUPERSEDED–FROZEN (fixture).** Retained.\n\n${DEAD_DOMAIN}\n`;
+}
+
+function evidence(path, content) {
+  return new Map([[path, createHash('sha256').update(content).digest('hex')]]);
 }
 
 test('red proof: an actionable first-party reference is refused until replaced', () => {
@@ -56,23 +62,27 @@ test('mixed-case retired-domain content cannot bypass the policy', () => {
 test('generator normalization replaces every casing in nested string values', () => {
   const value = normalizeDeadDomainValue({
     url: `https://${['ClaudeCode', 'Plugins.IO'].join('')}`,
-    nested: [`mail@${DEAD_DOMAIN}`, 7],
+    nested: [`plugins@${DEAD_DOMAIN}`, `Mattyp <mattyp@${DEAD_DOMAIN}>`, 7],
+    author: { name: 'Mattyp', email: `mattyp@${DEAD_DOMAIN}` },
   });
   assert.deepEqual(value, {
     url: `https://${LIVE_DOMAIN}`,
-    nested: [`mail@${LIVE_DOMAIN}`, 7],
+    nested: [VERIFIED_CONTACT_EMAIL, 'Mattyp', 7],
+    author: { name: 'Mattyp' },
   });
 });
 
 test('frozen records and valid provenance mirrors are retained and enumerated', () => {
   const root = fixture();
   const frozenPath = '000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md';
-  put(root, frozenPath, frozenRecord());
+  const frozen = frozenRecord();
+  put(root, frozenPath, frozen);
   put(root, 'plugins/mirror/.source.json', sourceRecord());
   put(root, 'plugins/mirror/README.md', DEAD_DOMAIN);
   const report = scanDeadDomainPolicy({
     root,
     paths: [frozenPath, 'plugins/mirror/.source.json', 'plugins/mirror/README.md'],
+    retainedEvidence: evidence(frozenPath, frozen),
   });
   assert.deepEqual(report.frozen_record.paths, [frozenPath]);
   assert.deepEqual(report.provenance_mirror.paths, ['plugins/mirror/README.md']);
@@ -92,8 +102,13 @@ test('a new 6767-shaped file cannot self-register as frozen', () => {
 test('an exact frozen path without its governed marker fails closed', () => {
   const root = fixture();
   const path = '000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md';
-  put(root, path, DEAD_DOMAIN);
-  const report = scanDeadDomainPolicy({ root, paths: [path] });
+  const content = DEAD_DOMAIN;
+  put(root, path, content);
+  const report = scanDeadDomainPolicy({
+    root,
+    paths: [path],
+    retainedEvidence: evidence(path, content),
+  });
   assert.equal(report.refused[0].reasonCode, 'INVALID_FROZEN_RECORD_MARKER');
 });
 
@@ -119,14 +134,50 @@ test('generated projections remain actionable but are classified separately', ()
 
 test('point-in-time Freshie exports are retained as historical evidence', () => {
   const root = fixture();
-  put(root, 'freshie/exports/run-1/plugin_values.json', JSON.stringify({ value: DEAD_DOMAIN }));
+  const path = 'freshie/exports/run-1/plugin_values.json';
+  const content = JSON.stringify({ value: DEAD_DOMAIN });
+  put(root, path, content);
   const report = scanDeadDomainPolicy({
     root,
-    paths: ['freshie/exports/run-1/plugin_values.json'],
+    paths: [path],
+    retainedEvidence: evidence(path, content),
   });
   assert.equal(report.historical_snapshot.occurrences, 1);
   assert.equal(report.actionable.occurrences, 0);
   assert.equal(domainPolicyAllows(report), true);
+});
+
+test('new snapshots and modified frozen evidence fail closed', () => {
+  const root = fixture();
+  const frozenPath = '000-docs/6767-h-SPEC-DR-STND-claude-code-extensions-master.md';
+  const original = frozenRecord();
+  put(root, frozenPath, `${original}modified\n`);
+  const injected = 'freshie/exports/run-999/plugin_values.json';
+  put(root, injected, JSON.stringify({ value: DEAD_DOMAIN }));
+
+  const report = scanDeadDomainPolicy({
+    root,
+    paths: [frozenPath, injected],
+    retainedEvidence: evidence(frozenPath, original),
+  });
+  assert.deepEqual(
+    report.refused.map((row) => row.reasonCode),
+    ['FROZEN_RECORD_BYTE_DRIFT', 'UNREGISTERED_HISTORICAL_SNAPSHOT'],
+  );
+  assert.equal(domainPolicyAllows(report), false);
+});
+
+test('byte-pinned retained evidence is checked even without the retired domain', () => {
+  const root = fixture();
+  const path = 'freshie/exports/run-1/plugin_fields.json';
+  put(root, path, '{"state":"changed"}');
+  const report = scanDeadDomainPolicy({
+    root,
+    paths: [path],
+    retainedEvidence: evidence(path, '{"state":"original"}'),
+  });
+  assert.equal(report.refused[0].reasonCode, 'HISTORICAL_SNAPSHOT_BYTE_DRIFT');
+  assert.equal(domainPolicyAllows(report), false);
 });
 
 test('nested provenance applies, while a sibling marker creates no false positive', () => {

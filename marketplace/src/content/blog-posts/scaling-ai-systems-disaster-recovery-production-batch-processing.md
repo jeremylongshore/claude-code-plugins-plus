@@ -409,4 +409,4 @@ By 2:30 AM tonight, this system will have generated 2.3MB of high-quality docume
 
 **Interested in AI engineering, systems architecture, or production operations?** Connect with me on LinkedIn or check out more case studies on [my portfolio](https://jeremylongshore.com/).
 
-**See the results:** Visit [tonsofskills.com](https://tonsofskills.com/) to explore the enhanced plugin marketplace.
+**Historical result:** The enhanced plugin marketplace was hosted at the [retired legacy public domain].

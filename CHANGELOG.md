@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   base contained 356 occurrences across 125 files: 293 actionable and 63 retained by policy.
   The existing documentation-governance job now runs the fixture-backed lint so mixed case,
   symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
+  Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor
+  skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
+  rewriting past evidence, unsupported email identities are removed or mapped to the existing
+  Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
+  the MCP preset catalog no longer advertises an unserved remote schema URL.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 

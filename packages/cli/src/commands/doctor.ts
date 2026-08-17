@@ -4,6 +4,7 @@ import * as os from 'node:os';
 import { promises as fs } from 'node:fs';
 import { existsSync } from 'node:fs';
 import { detectClaudePaths, isMarketplaceInstalled, type ClaudePaths } from '../utils/paths.js';
+import { CATALOG_URL } from '../utils/constants.js';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
@@ -326,10 +327,9 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
 
       await fs.mkdir(claudePluginDir, { recursive: true });
 
-      // Fetch the latest catalog from GitHub Pages
+      // Fetch the latest catalog from the canonical repository.
       try {
-        const catalogUrl = 'https://tonsofskills.com/catalog.json';
-        const { stdout: catalogJson } = await execAsync(`curl -sL "${catalogUrl}"`, {
+        const { stdout: catalogJson } = await execAsync(`curl -fsSL "${CATALOG_URL}"`, {
           timeout: 15000,
         });
 
@@ -343,7 +343,7 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
           name: 'Marketplace Catalog',
           status: 'fixed',
           message: `Installed at ${marketplacePath}`,
-          details: 'Fetched latest catalog from tonsofskills.com',
+          details: 'Fetched latest catalog from the canonical repository',
         });
       } catch (fetchError) {
         checks.push({
@@ -414,16 +414,15 @@ async function checkMarketplaceIntegrity(
     } catch (error) {
       if (fixMode) {
         try {
-          const { stdout: freshCatalog } = await execAsync(
-            'curl -sL "https://tonsofskills.com/catalog.json"',
-            { timeout: 15000 },
-          );
+          const { stdout: freshCatalog } = await execAsync(`curl -fsSL "${CATALOG_URL}"`, {
+            timeout: 15000,
+          });
           catalog = JSON.parse(freshCatalog);
           await fs.writeFile(catalogPath, freshCatalog);
           checks.push({
             name: 'Catalog Structure',
             status: 'fixed',
-            message: 'Re-downloaded marketplace.json from tonsofskills.com',
+            message: 'Re-downloaded marketplace.json from the canonical repository',
           });
         } catch {
           checks.push({
@@ -493,10 +492,9 @@ async function checkMarketplaceIntegrity(
       if (catalogCount < 200 && fixMode) {
         // Try to refresh the catalog
         try {
-          const { stdout: freshCatalog } = await execAsync(
-            'curl -sL "https://tonsofskills.com/catalog.json"',
-            { timeout: 15000 },
-          );
+          const { stdout: freshCatalog } = await execAsync(`curl -fsSL "${CATALOG_URL}"`, {
+            timeout: 15000,
+          });
           const freshData = JSON.parse(freshCatalog);
           const freshCount = freshData.plugins?.length || 0;
           if (freshCount > catalogCount) {
@@ -505,7 +503,7 @@ async function checkMarketplaceIntegrity(
               name: 'Catalog Size',
               status: 'fixed',
               message: `Updated from ${catalogCount} to ${freshCount} plugins`,
-              details: 'Refreshed catalog from tonsofskills.com',
+              details: 'Refreshed catalog from the canonical repository',
             });
           } else {
             checks.push({

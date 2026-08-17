@@ -67,13 +67,13 @@ All 7 tasks complete:
 
 ## KEY METRICS
 
-| Metric        | Value                   |
-| ------------- | ----------------------- |
-| Total Plugins | 259                     |
-| Agent Skills  | 241                     |
-| CLI Version   | 2.0.0                   |
-| npm Package   | @intentsolutionsio/ccpi |
-| Website       | tonsofskills.com    |
+| Metric        | Value                          |
+| ------------- | ------------------------------ |
+| Total Plugins | 259                            |
+| Agent Skills  | 241                            |
+| CLI Version   | 2.0.0                          |
+| npm Package   | @intentsolutionsio/ccpi        |
+| Website       | [retired legacy public domain] |
 
 ---
 

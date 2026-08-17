@@ -12,6 +12,7 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     pattern: /^000-docs\/742-RA-DATA-epic-1-scorecard\.json$/,
     canonical: 'scripts/measure-epic-1.mjs',
     regenerate: 'pnpm run measure:e1',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
     why: 'governed Epic 1 measurement output',
   },
   {
@@ -21,6 +22,7 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     pattern: /^marketplace\/src\/data\/.*\.json$/,
     canonical: 'marketplace build inputs and scripts',
     regenerate: 'cd marketplace && npm run build',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
     why: 'tracked website build data pending the Epic 1 generated-artifact disposition',
   },
   {
@@ -30,6 +32,7 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     pattern: /^marketplace\/src\/content\/plugins\/.*\.json$/,
     canonical: '.claude-plugin/marketplace.extended.json and plugin source files',
     regenerate: 'cd marketplace && node generate-content.js',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
     why: 'Astro plugin content generated from repository plugin metadata',
   },
   {
@@ -39,6 +42,7 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     pattern: /^plugins\/[^/]+\/[^/]+\/package\.json$/,
     canonical: 'plugin.json and repository package policy',
     regenerate: 'node scripts/generate-plugin-package-jsons.mjs',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
     why: 'package tracking manifests generated from plugin metadata',
   },
   {

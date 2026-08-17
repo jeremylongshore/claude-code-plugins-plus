@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tonsofskills.com/schemas/mcp-presets.schema.json",
   "name": "claude-code-plugins-plus",
   "description": "MCP server presets from Claude Code Plugins Marketplace",
   "version": "1.0.0",

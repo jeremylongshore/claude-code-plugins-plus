@@ -3896,7 +3896,7 @@
       "isNew": true,
       "author": {
         "name": "ClaudeCodePlugins",
-        "email": "plugins@tonsofskills.com"
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     },
@@ -8821,7 +8821,6 @@
       "isNew": true,
       "author": {
         "name": "Mattyp",
-        "email": "mattyp@tonsofskills.com",
         "url": "https://tonsofskills.com"
       },
       "type": "instruction-plugin"

@@ -23,15 +23,37 @@ function put(root, path, value) {
 
 test('normalizes only registered generated JSON containing the retired domain', () => {
   const root = fixture();
-  const generated = 'marketplace/src/data/catalog.json';
+  const generated = [
+    '000-docs/742-RA-DATA-epic-1-scorecard.json',
+    'marketplace/src/content/plugins/example.json',
+    'marketplace/src/data/catalog.json',
+    'marketplace/src/data/readme-sections.json',
+    'marketplace/src/data/skills-catalog.json',
+    'marketplace/src/data/unified-search-index.json',
+    'plugins/example/example/package.json',
+  ];
   const clean = 'marketplace/src/data/clean.json';
   const source = 'docs/source.json';
-  put(root, generated, JSON.stringify({ url: `https://${DEAD_DOMAIN}` }));
+  const mirror = 'plugins/community/mirror/package.json';
+  for (const path of generated) {
+    put(root, path, JSON.stringify({ url: `https://${DEAD_DOMAIN}` }));
+  }
   put(root, clean, '{"stable":true}');
   put(root, source, JSON.stringify({ url: `https://${DEAD_DOMAIN}` }));
+  put(
+    root,
+    'plugins/community/mirror/.source.json',
+    JSON.stringify({
+      synced_from: { repo: 'upstream/mirror', path: '/' },
+    }),
+  );
+  put(root, mirror, JSON.stringify({ homepage: `https://${DEAD_DOMAIN}` }));
 
-  assert.deepEqual(normalizeRetiredDomainProjections({ root }), [generated]);
-  assert.equal(JSON.parse(readFileSync(join(root, generated))).url, `https://${LIVE_DOMAIN}`);
+  assert.deepEqual(normalizeRetiredDomainProjections({ root }), generated);
+  for (const path of generated) {
+    assert.equal(JSON.parse(readFileSync(join(root, path))).url, `https://${LIVE_DOMAIN}`);
+  }
   assert.equal(readFileSync(join(root, clean), 'utf8'), '{"stable":true}');
   assert.match(readFileSync(join(root, source), 'utf8'), new RegExp(DEAD_DOMAIN));
+  assert.match(readFileSync(join(root, mirror), 'utf8'), new RegExp(DEAD_DOMAIN));
 });

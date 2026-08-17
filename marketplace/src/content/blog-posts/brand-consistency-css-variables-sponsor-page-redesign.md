@@ -293,10 +293,10 @@ cd marketplace && npm run dev
 
 # Production deployment
 git push origin main
-# GitHub Actions auto-deploys to https://tonsofskills.com/sponsor/
+# GitHub Actions auto-deploys to [retired legacy public domain]/sponsor/
 
 # Verify deployment
-curl -I https://tonsofskills.com/sponsor/
+curl -I [retired legacy public domain]/sponsor/
 # HTTP/2 200 - deployed successfully
 ```
 

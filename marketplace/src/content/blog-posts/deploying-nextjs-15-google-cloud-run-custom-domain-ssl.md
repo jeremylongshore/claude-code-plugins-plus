@@ -5,13 +5,13 @@ date: "2025-10-11"
 tags: ["google-cloud-run", "nextjs-15", "docker-deployment", "ssl-certificates", "load-balancer", "cloud-infrastructure", "devops", "production-deployment"]
 featured: false
 ---
-I originally deployed the marketplace now known as [Tons of Skills](https://tonsofskills.com) from scratch to production on Google Cloud Run with custom domain and SSL. The commands below use the current live domain while preserving the original deployment lessons.
+I originally deployed the marketplace now known as Tons of Skills from scratch to production on Google Cloud Run with custom domain and SSL. The commands below preserve the original deployment lessons while redacting the retired host.
 
 ## The Goal
 
 Deploy a Next.js 15 application to Google Cloud Run with:
 
-- Custom domain (www.tonsofskills.com)
+- Custom domain ([retired legacy public domain])
 - Google-managed SSL certificate
 - Global load balancer with HTTP/2
 - Serverless auto-scaling (0-10 instances)
@@ -302,7 +302,7 @@ This gave me: `35.201.66.187`
 
 ```bash
 gcloud compute ssl-certificates create claudecodeplugins-cert \
-  --domains=www.tonsofskills.com \
+  --domains=[retired legacy public domain] \
   --global
 ```
 
@@ -378,7 +378,7 @@ TTL: 3600
 Verified DNS propagation:
 
 ```bash
-dig +short www.tonsofskills.com @8.8.8.8
+dig +short [retired legacy public domain] @8.8.8.8
 # Returns: 35.201.66.187
 ```
 
@@ -403,7 +403,7 @@ After about 30 minutes, the certificate became active.
 ## Part 8: Testing the Live Site
 
 ```bash
-curl -I https://www.tonsofskills.com
+curl -I [retired legacy public domain]
 ```
 
 ```
@@ -551,7 +551,7 @@ gcloud run deploy claudecodeplugins-web \
 # 8. Wait for SSL certificate provisioning (15-60 minutes)
 
 # 9. Test
-curl -I https://www.tonsofskills.com
+curl -I [retired legacy public domain]
 ```
 
 ## Conclusion
@@ -572,7 +572,7 @@ The full runbook and all configuration files are in the project repository. Futu
 
 ## Links
 
-- **Live Site:** [www.tonsofskills.com](https://www.tonsofskills.com)
+- **Historical live site:** [retired legacy public domain]
 - **Architecture:** Global Load Balancer → Serverless NEG → Cloud Run
 - **Response Time:** 75ms average
 - **Stack:** Next.js 15 + Docker + Google Cloud Run

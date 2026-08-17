@@ -394,7 +394,7 @@ We handle the sync, you keep coding.
 
 ## Resources
 
-- **Marketplace**: https://tonsofskills.com/
+- **Marketplace**: [retired legacy public domain]/
 - **Sync Infrastructure**: [Commit 4c006c58](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/commit/4c006c58)
 - **Numman's n-skills**: https://github.com/numman-ali/n-skills
 - **Request Sync**: [Open an issue](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues)

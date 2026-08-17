@@ -42,3 +42,16 @@ test('tracking indexes partition the registry without loss', () => {
     GENERATED_ARTIFACT_REGISTRY.map((entry) => entry.id).sort(),
   );
 });
+
+test('every tracked generated JSON class declares the retired-domain postprocessor', () => {
+  const trackedJsonExamples = [...EXAMPLES].filter(
+    ([id, path]) =>
+      path.endsWith('.json') &&
+      GENERATED_ARTIFACT_REGISTRY.find((entry) => entry.id === id)?.tracking === 'tracked' &&
+      GENERATED_ARTIFACT_REGISTRY.find((entry) => entry.id === id)?.kind === 'generated_projection',
+  );
+  for (const [id] of trackedJsonExamples) {
+    const entry = GENERATED_ARTIFACT_REGISTRY.find((candidate) => candidate.id === id);
+    assert.equal(entry?.postprocess, 'pnpm run normalize:dead-domain-projections', id);
+  }
+});

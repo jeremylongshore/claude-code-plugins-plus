@@ -336,7 +336,7 @@ MIT License - see [LICENSE](LICENSE)
 ## 🔗 Links
 
 - **Marketplace**: https://tonsofskills.com
-- **Documentation**: https://tonsofskills.com/docs/web-to-github-issue
+- **Documentation**: https://tonsofskills.com/plugins/web-to-github-issue
 - **Issues**: https://github.com/jeremylongshore/claude-code-plugins/issues
 - **Discussions**: https://github.com/jeremylongshore/claude-code-plugins/discussions
 
