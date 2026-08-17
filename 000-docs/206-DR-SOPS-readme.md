@@ -58,21 +58,18 @@ Team standardization and collaboration. Plugin bundles, workflow templates, auto
 ## 🎯 Use Cases
 
 ### For Plugin Developers
-
 - Learn production patterns for MCP servers
 - Implement cost controls and monitoring
 - Build self-hosted AI infrastructure
 - Create team-ready plugin bundles
 
 ### For Engineering Teams
-
 - Standardize Claude Code workflows
 - Control AI spending with budget systems
 - Deploy compliant self-hosted stacks
 - Respond to production incidents
 
 ### For Technical Leaders
-
 - Understand total cost of ownership
 - Plan migration to self-hosted LLMs
 - Meet compliance requirements (SOC 2, GDPR, HIPAA)
@@ -92,41 +89,31 @@ All playbooks use production-grade tools and frameworks:
 ## 📖 Reading Guide
 
 ### New to Claude Code Plugins?
-
 Start with:
-
 1. **Team Presets** (08) - Understand collaboration patterns
 2. **MCP Reliability** (03) - Core plugin architecture
 3. **Progressive Enhancement** (10) - Safe rollout strategies
 
 ### Building Large-Scale Agent Systems?
-
 Essential path:
-
 1. **Advanced Tool Use** (11) - Dynamic discovery, programmatic orchestration ⭐ NEW
 2. **Multi-Agent Rate Limits** (01) - Prevent API throttling
 3. **Cost Attribution** (09) - Track usage across features
 
 ### Building Production Systems?
-
 Focus on:
-
 1. **Self-Hosted Stack** (06) - Infrastructure foundation
 2. **Cost Attribution** (09) - Financial visibility
 3. **Incident Debugging** (05) - Operations readiness
 
 ### Enterprise Compliance?
-
 Essential reads:
-
 1. **Compliance & Audit** (07) - Regulatory requirements
 2. **Cost Caps** (02) - Budget governance
 3. **Team Presets** (08) - Access controls
 
 ### Migrating from Cloud to Self-Hosted?
-
 Migration path:
-
 1. **Ollama Migration** (04) - Local LLM setup
 2. **Self-Hosted Stack** (06) - Full infrastructure
 3. **Cost Attribution** (09) - Compare cloud vs self-hosted costs

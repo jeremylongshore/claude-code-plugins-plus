@@ -8,7 +8,6 @@
 [![Tailwind CSS](https://img.shields.io/badge/Styled%20with-Tailwind%204.1-38B2AC?logo=tailwind-css)](https://tailwindcss.com)
 
 ### Technology Partners
-
 [![Powered by Anthropic](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-5436DA?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://www.anthropic.com/)
 [![Built on Google Cloud](https://img.shields.io/badge/Built%20on-Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/)
 [![Ollama Compatible](https://img.shields.io/badge/Ollama-Compatible-000000?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://ollama.com/)
@@ -103,14 +102,14 @@ marketplace/
 
 ## Development Commands
 
-| Command                   | Action                                 |
-| :------------------------ | :------------------------------------- |
-| `npm install`             | Install dependencies                   |
-| `npm run dev`             | Start dev server at `localhost:4321`   |
-| `npm run skills:generate` | Regenerate skills catalog from plugins |
-| `npm run build`           | Build production site to `./dist/`     |
-| `npm run preview`         | Preview production build locally       |
-| `npm run astro ...`       | Run Astro CLI commands                 |
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Install dependencies                             |
+| `npm run dev`             | Start dev server at `localhost:4321`             |
+| `npm run skills:generate` | Regenerate skills catalog from plugins           |
+| `npm run build`           | Build production site to `./dist/`               |
+| `npm run preview`         | Preview production build locally                 |
+| `npm run astro ...`       | Run Astro CLI commands                           |
 
 ## Technology Stack
 
@@ -124,7 +123,6 @@ marketplace/
 ## Design System
 
 **Brand Colors:**
-
 - Dark: `#141413`
 - Light: `#faf9f5`
 - Mid Gray: `#b0aea5`
@@ -133,7 +131,6 @@ marketplace/
 - Green: `#788c5d`
 
 **Typography:**
-
 - Headings: Poppins (sans-serif)
 - Body: Lora (serif)
 - Monospace: System default

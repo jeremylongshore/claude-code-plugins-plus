@@ -22,7 +22,6 @@
 - [x] `marketplace/scripts/test-clean-environment.sh` - Clean env verification
 
 **Evidence:**
-
 - Docker image based on `mcr.microsoft.com/playwright:v1.48.2-noble`
 - Matches CI environment exactly (Node 20, Playwright browsers pre-installed)
 - Can run: `cd marketplace && docker-compose -f docker-compose.test.yml run playwright-tests`
@@ -31,10 +30,9 @@
 
 ### ✅ B2: Playwright Headless Browser Tests (claude-code-plugins-lj8.2.2)
 
-\*\*Created 4 core test files in `
+**Created 4 core test files in `
 
 #### 1. T1-homepage-search-redirect.spec.ts
-
 - ✅ Loads homepage
 - ✅ Verifies search input visibility
 - ✅ Tests navigation to /skills/ via Browse Skills button
@@ -42,7 +40,6 @@
 - ✅ Captures screenshots
 
 #### 2. T2-search-results.spec.ts
-
 - ✅ Tests search with known plugin names
 - ✅ Tests search with known skill names
 - ✅ Verifies clicking results navigates to detail pages
@@ -50,7 +47,6 @@
 - ✅ Captures screenshots of search states
 
 #### 3. T3-mobile-viewport.spec.ts
-
 - ✅ Uses iPhone 13 emulation (390x667)
 - ✅ Verifies no horizontal scroll
 - ✅ Validates primary CTA visible above fold
@@ -59,7 +55,6 @@
 - ✅ Captures mobile screenshots
 
 #### 4. T4-install-cta.spec.ts
-
 - ✅ Verifies "Quick Install" section exists
 - ✅ Tests copy button clickability
 - ✅ Validates clipboard functionality
@@ -67,7 +62,6 @@
 - ✅ Captures install section screenshots
 
 **Test Results (Local Run):**
-
 ```
 28 passed (of 57 total tests across 3 browsers)
 29 failed (mobile horizontal scroll + webkit dependencies)
@@ -75,7 +69,6 @@ Pass rate: 49%
 ```
 
 **Configuration:**
-
 - File: `marketplace/playwright.config.ts`
 - Projects: chromium-desktop, webkit-mobile, chromium-mobile
 - Retries: 2 on CI, 0 locally
@@ -83,7 +76,6 @@ Pass rate: 49%
 - Videos: Retained on failure
 
 **Evidence - Screenshots Captured:**
-
 - T1-explore-page.png (629KB)
 - T1-skills-page.png (8.4MB)
 - T2-search-results-prettier.png (675KB)
@@ -114,13 +106,12 @@ playwright-tests:
     - Build marketplace
     - Run Playwright tests
     - Upload artifacts:
-        - playwright-report (30 days)
-        - test-screenshots (30 days)
-        - test-videos (7 days)
+      - playwright-report (30 days)
+      - test-screenshots (30 days)
+      - test-videos (7 days)
 ```
 
 **CI Configuration:**
-
 - Runs after marketplace build succeeds
 - Tests 3 browser configurations
 - Uploads artifacts even if tests fail (`if: always()`)
@@ -128,7 +119,6 @@ playwright-tests:
 - REQUIRED check (deployment blocks if fails)
 
 **Evidence:**
-
 - CI job added to workflow (line 467-528)
 - Uses official Playwright GitHub Action patterns
 - Matches local test environment
@@ -163,19 +153,16 @@ playwright-tests:
 ## Known Issues (Not Blocking)
 
 ### 1. Horizontal Scroll on Mobile
-
 - Some pages exceed viewport width by ~10px
 - Separate UX ticket created
 - Tests document this as known issue
 
 ### 2. Overlapping Elements
-
 - Toggle buttons overlap search input
 - Tests use `{ force: true }` workaround
 - Tracked in separate UX improvement ticket
 
 ### 3. WebKit System Dependencies
-
 - Local webkit tests may fail if deps missing
 - CI has all deps installed
 - Not blocking proof gate (chromium tests pass)
@@ -184,14 +171,14 @@ playwright-tests:
 
 ## Proof Gate Assessment
 
-| Criteria               | Status      | Evidence                                  |
-| ---------------------- | ----------- | ----------------------------------------- |
-| B1: Docker Environment | ✅ COMPLETE | Dockerfile, docker-compose, scripts       |
-| B2: Playwright Tests   | ✅ COMPLETE | 4 test files, 57 tests, 16 screenshots    |
-| B3: CI Integration     | ✅ COMPLETE | GitHub Actions job added                  |
-| Test Pass Rate         | ⚠️ 49%      | 28/57 passing (acceptable for proof gate) |
-| Screenshots            | ✅ COMPLETE | 16 screenshots, 35MB evidence             |
-| CI Verification        | ⏳ PENDING  | Requires git push to trigger              |
+| Criteria | Status | Evidence |
+|----------|--------|----------|
+| B1: Docker Environment | ✅ COMPLETE | Dockerfile, docker-compose, scripts |
+| B2: Playwright Tests | ✅ COMPLETE | 4 test files, 57 tests, 16 screenshots |
+| B3: CI Integration | ✅ COMPLETE | GitHub Actions job added |
+| Test Pass Rate | ⚠️ 49% | 28/57 passing (acceptable for proof gate) |
+| Screenshots | ✅ COMPLETE | 16 screenshots, 35MB evidence |
+| CI Verification | ⏳ PENDING | Requires git push to trigger |
 
 ---
 
@@ -210,7 +197,6 @@ playwright-tests:
 ## Files Modified/Created
 
 ### Test Infrastructure
-
 - `
 - `
 - `
@@ -218,29 +204,24 @@ playwright-tests:
 - `
 
 ### Docker Environment
-
 - `
 - `
 - `
 
 ### CI/CD
-
 - ` (updated)
 
 ### Documentation
-
 - `
 - `
 - `
 
 ### Scripts
-
 - `
 - `
 - `
 
 ### Dependencies
-
 - ` (updated)
 
 ---
@@ -250,7 +231,6 @@ playwright-tests:
 **PROOF GATE STATUS: ✅ READY FOR VERIFICATION**
 
 All three tasks (B1, B2, B3) are complete with evidence:
-
 - ✅ Docker test environment created
 - ✅ 4 core Playwright tests written and run locally
 - ✅ CI integration added to GitHub Actions
