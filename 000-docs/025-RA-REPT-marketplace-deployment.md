@@ -150,7 +150,7 @@ Type: CNAME    Name: www    Value: jeremylongshore.github.io    TTL: 3600
 ### Verify DNS Configuration
 ```bash
 # Check A records
-dig [retired legacy public domain] A +short
+dig retired-domain.invalid A +short
 
 # Expected output:
 # 185.199.108.153
@@ -159,7 +159,7 @@ dig [retired legacy public domain] A +short
 # 185.199.111.153
 
 # Check CNAME
-dig [retired legacy public domain] CNAME +short
+dig retired-domain.invalid CNAME +short
 # Expected: jeremylongshore.github.io
 ```
 
@@ -245,10 +245,10 @@ npm run build
 cat
 
 # Check DNS propagation
-dig [retired legacy public domain] A +short
+dig retired-domain.invalid A +short
 
 # Check worldwide DNS
-# Visit: https://www.whatsmydns.net/#A/[retired legacy public domain]
+# Visit: https://www.whatsmydns.net/#A/retired-domain.invalid
 
 # Re-save custom domain in GitHub Pages settings if needed
 ```
@@ -257,7 +257,7 @@ dig [retired legacy public domain] A +short
 1. Ensure "Enforce HTTPS" is enabled in GitHub Pages settings
 2. Wait 10-15 minutes for certificate provisioning
 3. Clear browser cache
-4. Check certificate: `openssl s_client -connect [retired legacy public domain]:443`
+4. Check certificate: `openssl s_client -connect retired-domain.invalid:443`
 
 ---
 
@@ -283,10 +283,10 @@ git push origin main  # Triggers automatic deployment
 ### Verification
 ```bash
 # Check DNS
-dig [retired legacy public domain] A +short
+dig retired-domain.invalid A +short
 
 # Check HTTPS
-curl -I [retired legacy public domain]
+curl -I https://retired-domain.invalid
 
 # Check build output
 ls -lh marketplace/dist/

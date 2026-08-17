@@ -87,10 +87,10 @@ https://validator.schema.org
 ### Test Sitemap
 ```bash
 # Check sitemap format
-curl [retired legacy public domain]/sitemap.xml | xmllint --format -
+curl https://retired-domain.invalid/sitemap.xml | xmllint --format -
 
 # Verify in browser
-open [retired legacy public domain]/sitemap.xml
+open https://retired-domain.invalid/sitemap.xml
 ```
 
 ## SEO Metrics to Monitor

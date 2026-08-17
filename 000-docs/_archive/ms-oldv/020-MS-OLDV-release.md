@@ -373,7 +373,7 @@ git push origin v1.1.0
 # Wait for GitHub Actions to complete (2-3 minutes)
 
 # Verify marketplace is live
-curl -I [retired legacy public domain]/
+curl -I https://retired-domain.invalid/
 
 # Test installation
 # In Claude Code:

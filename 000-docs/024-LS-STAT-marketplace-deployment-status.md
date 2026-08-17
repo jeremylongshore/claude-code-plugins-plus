@@ -105,7 +105,7 @@ Type: CNAME, Name: www, Value: jeremylongshore.github.io
 
 **Verification:**
 ```bash
-dig [retired legacy public domain] A +short
+dig retired-domain.invalid A +short
 # Should return the 4 GitHub Pages IP addresses above
 ```
 
@@ -153,7 +153,7 @@ After deployment completes:
 ### SEO Checks
 - [ ] Page title: "Claude Code Plugins Marketplace - 227 Plugins"
 - [ ] Meta description present
-- [ ] Open Graph tags: https://www.opengraph.xyz/?url=[retired legacy public domain]
+- [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://retired-domain.invalid
 - [ ] Favicon displays
 
 ---
@@ -194,9 +194,9 @@ cat dist/CNAME
 ### Custom Domain Issues
 ```bash
 # Check DNS propagation
-dig [retired legacy public domain] A +short
+dig retired-domain.invalid A +short
 
-# Check worldwide DNS: https://www.whatsmydns.net/#A/[retired legacy public domain]
+# Check worldwide DNS: https://www.whatsmydns.net/#A/retired-domain.invalid
 
 # Verify CNAME in dist
 cat
