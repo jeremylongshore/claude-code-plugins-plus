@@ -181,6 +181,32 @@ test('requires call-bound production evidence and excludes measurement instrumen
   assert.deepEqual(rows[25].values.writers, ['scripts/readme-metrics.mjs']);
 });
 
+test('writer discovery matches exact basenames instead of catalog suffixes', () => {
+  const base = fixture();
+  put(base.root, 'marketplace/src/data/catalog.json', '{}');
+  put(base.root, 'marketplace/src/data/skills-catalog.json', '{}');
+  put(
+    base.root,
+    'marketplace/scripts/generate-skills-catalog.mjs',
+    "const output = 'marketplace/src/data/skills-catalog.json'; writeFileSync(output, '{}');\n",
+  );
+  base.paths.push(
+    'marketplace/src/data/catalog.json',
+    'marketplace/src/data/skills-catalog.json',
+    'marketplace/scripts/generate-skills-catalog.mjs',
+  );
+
+  const artifacts = buildExtendedScorecardRows(input(base))[22].values.artifacts;
+  assert.equal(
+    artifacts.some((entry) => entry.path === 'marketplace/src/data/catalog.json'),
+    false,
+  );
+  assert.deepEqual(
+    artifacts.find((entry) => entry.path === 'marketplace/src/data/skills-catalog.json')?.producers,
+    ['marketplace/scripts/generate-skills-catalog.mjs'],
+  );
+});
+
 test('counts only producer-integrated workflow checks as artifact drift gates', () => {
   const base = fixture();
   put(

@@ -13,6 +13,7 @@ import yaml from 'js-yaml';
 import { canonicalDocumentLinks, inspectAuthorityMetadata } from './check-doc-authority.mjs';
 import { CORPUS_COHORTS, resolveCorpus } from './corpus-resolver.mjs';
 import { scanDeadDomainPolicy } from './dead-domain-policy.mjs';
+import { artifactRegistration } from './generated-artifact-registry.mjs';
 
 const DEAD_DOMAIN_BASELINE_RECEIPT = Object.freeze({
   head_sha: '3543d5d167bd4e8d27666c8893080bca3bd72950',
@@ -657,7 +658,8 @@ function readTargetEvidence(source) {
 }
 
 function targetNamesFile(target, basename) {
-  return target.includes(basename);
+  const escaped = basename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?:^|[^A-Za-z0-9_-])${escaped}(?:$|[^A-Za-z0-9_.-])`).test(target);
 }
 
 function generatedArtifacts(reader) {
@@ -666,13 +668,20 @@ function generatedArtifacts(reader) {
   const candidates = reader.paths.filter((path) => /^marketplace\/src\/data\/.*\.json$/.test(path));
   const artifacts = [];
   for (const path of candidates) {
+    const registration = artifactRegistration(path);
+    if (
+      registration &&
+      (registration.kind !== 'generated_projection' || registration.tracking !== 'tracked')
+    ) {
+      continue;
+    }
     const basename = path.slice(path.lastIndexOf('/') + 1);
     const producers = sources.filter((sourcePath) => {
       const source = reader.text(sourcePath) ?? '';
       return writeTargetEvidence(source).some((target) => targetNamesFile(target, basename));
     });
     if (producers.length === 0) continue;
-    const wiredCheckers = producers.filter((producer) => {
+    const legacyWiredCheckers = producers.filter((producer) => {
       const source = reader.text(producer) ?? '';
       if (
         !source.includes('--check') ||
@@ -689,6 +698,16 @@ function generatedArtifacts(reader) {
       );
       return workflows.some((workflow) => invocation.test(reader.text(workflow) ?? ''));
     });
+    const registeredContentCheck =
+      registration?.contentCheck === true &&
+      typeof registration.regenerate === 'string' &&
+      producers.some((producer) =>
+        (reader.text(producer) ?? '').includes('check-generated-artifacts.mjs'),
+      ) &&
+      workflows.some((workflow) => (reader.text(workflow) ?? '').includes(registration.regenerate));
+    const wiredCheckers = registeredContentCheck
+      ? [...new Set([...legacyWiredCheckers, ...producers])]
+      : legacyWiredCheckers;
     artifacts.push({
       content_drift_gate: wiredCheckers.length > 0,
       path,
@@ -1127,7 +1146,7 @@ export function buildExtendedScorecardRows({
   output[22] = baseRow(
     22,
     'partial',
-    'tracked marketplace/src/data JSON outputs discovered from tracked executable writers',
+    'deterministic tracked marketplace projections classified by the artifact authority registry and executable writers',
     generated.flatMap((entry) => [...entry.producers, ...entry.wired_checkers]),
     {
       artifacts: generated,
@@ -1137,7 +1156,7 @@ export function buildExtendedScorecardRows({
     },
     {
       limitations: [
-        'writer and drift-gate discovery is conservative static analysis; indirect runtime paths remain visible as a limitation, not silently inferred',
+        'writer and drift-gate discovery is conservative static analysis; unregistered writer-backed JSON stays in the cohort and indirect runtime paths remain visible as a limitation',
       ],
     },
   );
