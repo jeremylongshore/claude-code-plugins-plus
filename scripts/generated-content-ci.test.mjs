@@ -26,7 +26,12 @@ test('generated content drift job is unconditional, credential-free, and exact',
   assert.match(block, /persist-credentials: false/);
   assert.match(block, /timeout-minutes: 10/);
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:ci|install)/);
+  assert.match(
+    block,
+    /node --test scripts\/generated-content-ci\.test\.mjs marketplace\/scripts\/sync-catalog\.test\.mjs/,
+  );
   assert.match(block, /node marketplace\/scripts\/discover-skills\.mjs --level=full --check/);
+  assert.match(block, /node marketplace\/scripts\/sync-catalog\.mjs --check/);
   assert.doesNotMatch(block, /--level=metadata/);
   assert.doesNotMatch(block, /(?:npm|pnpm)\s+(?:publish|pack)|git\s+(?:tag|push)/);
 });

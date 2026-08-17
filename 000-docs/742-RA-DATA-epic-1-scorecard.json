@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23055
+        "tracked_files": 23056
       }
     },
     "2": {
@@ -1048,10 +1048,10 @@
       "values": {
         "artifacts": [
           {
-            "content_drift_gate": false,
+            "content_drift_gate": true,
             "path": "marketplace/src/data/catalog.json",
             "producers": ["marketplace/scripts/sync-catalog.mjs"],
-            "wired_checkers": []
+            "wired_checkers": ["marketplace/scripts/sync-catalog.mjs"]
           },
           {
             "content_drift_gate": true,
@@ -1072,7 +1072,7 @@
             "wired_checkers": []
           }
         ],
-        "count_without_content_drift_gate": 2,
+        "count_without_content_drift_gate": 1,
         "target_without_content_drift_gate": 0
       }
     },
@@ -1955,9 +1955,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15537,
+        "invisible_files": 15538,
         "target_invisible_files": 0,
-        "tracked_files": 23055
+        "tracked_files": 23056
       }
     },
     "47": {

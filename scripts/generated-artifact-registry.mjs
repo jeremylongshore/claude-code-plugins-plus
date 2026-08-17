@@ -23,10 +23,8 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     canonical: '.claude-plugin/marketplace.extended.json and skills-catalog.json',
     regenerate: 'node marketplace/scripts/sync-catalog.mjs --check',
     postprocess: 'pnpm run normalize:dead-domain-projections',
-    contentCheck: false,
-    followup:
-      'catalog self-reference and source duplicates must be removed before this gate can activate',
-    why: 'website catalog projection retained by E1.7; E1.8 still owns removing its output self-reference before content gating',
+    contentCheck: true,
+    why: 'deterministic website plugin projection rendered only from canonical catalog and full skill projection inputs; E1.8 removed output self-reference and runtime timestamps before activating the content gate',
   },
   {
     id: 'marketplace-skills-catalog-projection',

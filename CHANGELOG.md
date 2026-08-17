@@ -57,6 +57,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   content-drift coverage is now two of four. Plugin catalog and unified search remain separate
   follow-up slices.
 
+- **The website plugin catalog is now a deterministic projection instead of its own historical
+  input.** Its renderer no longer preserves stale rows or flags from `catalog.json`, emits runtime
+  timestamps, or silently ignores malformed skill data. It derives 467 plugins in canonical
+  catalog order and 3,068 distinct skill paths from the extended catalog plus the full skill
+  projection; aliases that share one source receive the same source-derived count without
+  double-counting the global total. The projection preserves the legacy default author for the two
+  canonical rows without one and applies the governed retired-domain normalization to every output
+  field. Fixture tests reject duplicate identities and paths, contradictory ancestry, traversal,
+  malformed inputs, and staged drift. The unconditional
+  generated-content job now byte-checks three of four deterministic marketplace projections with
+  no new required context; unified search remains the final E1.8 slice.
+
 ### Fixed (2026-08-17 — release-note coverage evidence)
 
 - **Release-note coverage now fails closed when Git tag evidence is absent or incomplete.** The

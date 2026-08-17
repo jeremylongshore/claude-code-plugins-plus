@@ -1121,7 +1121,20 @@ ancestor; the slice changes only the generated projection and edits zero mirrore
 files. The second slice gates that updated full catalog through
 `node marketplace/scripts/discover-skills.mjs --level=full --check`. `catalog.json` and
 `unified-search-index.json` remain E1.8 work, so two of four deterministic projections are gated and
-this bead remains open.
+this bead remains open. The third slice, measured from exact base
+`98f652ff5ba00181b76d1aae9e6698741b69c132`, replaces `sync-catalog.mjs`'s output-as-input merge and
+runtime timestamps with one strict renderer whose only inputs are the 467-row canonical extended
+catalog and the 3,068-row full skill projection. `node marketplace/scripts/sync-catalog.mjs`
+moves the stale tracked output from 450 plugins / 3,022 skills / 81 commands to 467 plugins / 3,068
+distinct skill paths / 80 commands. Skills join to normalized `parentPlugin.path` and canonical
+plugin `source`; the two intentional source-alias pairs receive equal per-plugin counts while the
+global total counts each `filePath` once (3,068, not the alias-summed 3,074). Canonical plugin order
+is preserved, the legacy default author remains on the two canonical rows without one, the governed
+retired-domain normalizer applies to the complete rendered value, timestamps and output-owned flags
+are omitted, malformed or contradictory inputs fail closed, and
+`node marketplace/scripts/sync-catalog.mjs --check` compares rendered bytes with the stage-0 Git
+index without mutating the worktree. `unified-search-index.json` remains the final
+E1.8 slice, so three of four deterministic projections are gated and this bead remains open.
 
 **E1.13 measurement correction (2026-08-16).** The earlier 341/121 headline used a case-sensitive grep and treated all non-6767 files as one population. At exact base `3543d5d167bd4e8d27666c8893080bca3bd72950`, `git grep -I -i -o "$(printf '%s%s' claudecode plugins.io)" <SHA> -- | wc -l` reports 356 occurrences and the corresponding `-l` command reports 125 files. Running `node scripts/check-dead-domain.mjs --json --root <clean-checkout-of-SHA>` separates 292 actionable occurrences (260 editable first-party + 32 registered generated projections) from 64 retained occurrences (3 in frozen 6767-h + 1 in its byte-pinned anchor manifest + 60 in the registered Freshie run-1 snapshot + 0 provenance mirrors). The 292/64 correction supersedes the earlier 293/63 partition, which incorrectly treated the frozen anchor manifest as editable. These populations are not interchangeable. The gate targets zero actionable occurrences and requires every retained class to remain byte-identical.
 
