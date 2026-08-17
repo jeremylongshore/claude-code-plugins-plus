@@ -24,6 +24,14 @@ moved from one public verified claim to zero because the unconsumed JRig project
 stale measurement input after its UI was removed. The temporary untracked JRig generator is not a
 final endorsement: blueprint bead E9.2 still owns deleting that projection and build step.
 
+The filing transaction also regenerated scorecard row 46 rather than hand-editing its counters.
+That row's `allowlist_patterns` value remains 25 because
+`scripts/measure-epic-1-scorecard.mjs` counts path expressions in `.gitleaks.toml`, not filing-ledger
+negations in `000-docs/.gitignore`. Its `invisible_files` value rises by one because the existing
+`^000-docs/.*\\.md$` gitleaks expression matches this newly tracked AAR. It is a subset of tracked
+paths hidden from ordinary gitleaks scanning, not the complement of `tracked_files`; the two
+tracked-file counters therefore rise together by one.
+
 No plugin, skill, `.source.json`, provenance-owned mirror, package version, registry artifact,
 credential, contributor record, Plane record, branch rule, or release was changed. Open automation
 PR #1149 touches README and three external-stat files, none of this bead's six paths; it remained
@@ -70,7 +78,7 @@ open and unmodified.
 
 ## Validation and review
 
-The exact head passed [Validate Plugins](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247580), including `ci-required`; [Secret Scan](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247554), including `gitleaks`; [Skill Conform](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247572); [CodeQL](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247625); [Actionlint](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247560); [link checking](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247600); [PR Pre-screen](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247547); both rounds of [MiniMax review](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994562661); and the kernel advisory checks. MiniMax's evidence questions were resolved with exact-base and exact-head commands; its current verdict is LGTM.
+The exact head passed [Validate Plugins](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247580), including `ci-required`; [Secret Scan](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247554), including `gitleaks`; [Skill Conform](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247572); [CodeQL](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247625); [Actionlint](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247560); [link checking](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247600); [PR Pre-screen](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994247547); both rounds of [MiniMax review](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31994562661); and the kernel advisory checks. MiniMax's evidence questions were resolved with exact-base and exact-head commands; its [final disposition](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1220#issuecomment-5311806628) is LGTM.
 
 Local focused checks passed: generated-artifact tests 9/9, Epic 1 measurement tests 36/36,
 dead-domain tests 19/19, actionlint, formatting, lint, typecheck, verification pipeline, catalog sync,
@@ -83,9 +91,10 @@ this bead did not lower or relabel that baseline.
 The independent reviewer returned PASS at the exact head from a detached clean worktree. It
 re-derived all six decisions, checked registry overlap across 23,043 paths, planted a tracked
 projection, passed the focused suite, scorecard check, full actionlint, clean build, predev,
-gitleaks, mirror-path check, and reverse rollback, and ended with a clean tree. Greptile review
-`4948421619` was requested at the exact head; the free trial had ended, so it is recorded as
-unavailable rather than PASS.
+gitleaks, mirror-path check, and reverse rollback, and ended with a clean tree. [Greptile review
+`4948421619`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1220#pullrequestreview-4948421619)
+was requested at the exact head; the free trial had ended, so it is recorded as unavailable rather
+than PASS.
 
 ## Merge topology and external effects
 
