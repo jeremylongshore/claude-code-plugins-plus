@@ -99,6 +99,87 @@ run: >2-
   );
 });
 
+test('hostile shell and YAML aliases resolve to the forbidden argv', () => {
+  const cases = [
+    [
+      'multiple local assignments',
+      `f(){
+ local -r SAFE=x DB=freshie/inventory.sqlite
+ j-rig eval skills/x --db "$DB"
+}`,
+    ],
+    [
+      'quote-concatenated assignment',
+      `DB="freshie"/inventory.sqlite
+j-rig eval skills/x --db "$DB"`,
+    ],
+    ['ANSI-C quoted path', "j-rig eval skills/x --db $'freshie/inventory.sqlite'"],
+    [
+      'static executable variable',
+      `JRIG=j-rig
+"$JRIG" eval skills/x --db freshie/inventory.sqlite`,
+    ],
+    [
+      'static verb variable',
+      `VERB=eval
+j-rig "$VERB" skills/x --db freshie/inventory.sqlite`,
+    ],
+    [
+      'static flag variable',
+      `FLAG=--db
+j-rig eval skills/x "$FLAG" freshie/inventory.sqlite`,
+    ],
+    [
+      'indirect static variable',
+      `DB=freshie/inventory.sqlite
+NAME=DB
+j-rig eval skills/x --db "\${!NAME}"`,
+    ],
+    [
+      'quoted flow YAML key',
+      `env: { "DB": freshie/inventory.sqlite }
+run: >
+  j-rig eval skills/x --db "$DB"`,
+    ],
+    [
+      'quoted block YAML key',
+      `env:
+  "DB": freshie/inventory.sqlite
+run: >
+  j-rig eval skills/x --db "$DB"`,
+    ],
+    [
+      'YAML anchor alias',
+      `x-db: &freshie_db freshie/inventory.sqlite
+env:
+  DB: *freshie_db
+run: >
+  j-rig eval skills/x --db "$DB"`,
+    ],
+    [
+      'anchored YAML run with indentation and chomping indicators',
+      `env: { DB: freshie/inventory.sqlite }
+run: &command >2-
+  j-rig eval skills/x --db "$DB"`,
+    ],
+    [
+      'folded YAML with static executable split from the flag',
+      `env: { JRIG: j-rig }
+run: >
+  "$JRIG" eval skills/x
+  --db freshie/inventory.sqlite`,
+    ],
+    ['route prose alias', 'Route `--db` to `freshie/inventory.sqlite` for persistence.'],
+    ['persist prose alias', 'Persist JRig results with `--db freshie/inventory.sqlite`.'],
+    ['glob-expanded path', 'j-rig eval skills/x --db freshie/inventory.sqli?e'],
+  ];
+
+  for (const [name, text] of cases) {
+    const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
+    assert.equal(findings.length, 1, name);
+  }
+});
+
 test('prose directives using distinct operator verbs are refused', () => {
   const findings = inspectJrigDbBoundary(
     [

@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import yaml from 'js-yaml';
 import { resolvePluginProvenance } from './plugin-provenance.mjs';
 
 const ROOT_FILES = new Set(['AGENTS.md', 'CLAUDE.md', 'README.md', 'STANDARDS.md']);
@@ -14,7 +15,10 @@ const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
 
 function shellLiteralView(text) {
-  return text.replace(/[`'"]/g, '').replace(/\\([^\n])/g, '$1');
+  return text
+    .replace(/\$(['"])/g, '$1')
+    .replace(/[`'"]/g, '')
+    .replace(/\\([^\n])/g, '$1');
 }
 
 function containsJrigEval(text) {
@@ -23,63 +27,116 @@ function containsJrigEval(text) {
 
 function collectAssignments(text) {
   const assignments = new Map();
-  const assignment =
-    /(?:^|[;\n])\s*(?:(?:export|local|readonly|declare|typeset)(?:(?:\s+-[A-Za-z]+|\s+--))*\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*("(?:\\.|[^"\n])*"|'(?:\\.|[^'\n])*'|[^\s;\n]+)/g;
+  const record = (name, rawValue) => {
+    const values = assignments.get(name) ?? [];
+    values.push(shellLiteralView(rawValue.trim()));
+    assignments.set(name, values);
+  };
+
+  // Match every assignment token, not only the first token in declarations
+  // such as `local -r SAFE=x DB=...`.
+  const assignment = /(?:^|[;\n]|\s)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^\s;\n]+)/g;
   for (const match of text.matchAll(assignment)) {
-    const values = assignments.get(match[1]) ?? [];
-    values.push(shellLiteralView(match[2]));
-    assignments.set(match[1], values);
+    record(match[1], match[2]);
   }
-  const yamlScalar = /^\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([`'"]?[^#\n]+?[`'"]?)\s*$/gm;
+
+  const anchors = new Map();
+  const yamlAnchor = /^\s*[^#\n:]+:\s*&([A-Za-z_][A-Za-z0-9_]*)\s+([^#\n]+?)\s*$/gm;
+  for (const match of text.matchAll(yamlAnchor)) {
+    anchors.set(match[1], shellLiteralView(match[2].trim()));
+  }
+
+  const yamlScalar = /^\s+[`'"]?([A-Za-z_][A-Za-z0-9_]*)[`'"]?\s*:\s*([`'"]?[^#\n]+?[`'"]?)\s*$/gm;
   for (const match of text.matchAll(yamlScalar)) {
-    const values = assignments.get(match[1]) ?? [];
-    values.push(shellLiteralView(match[2].trim()));
-    assignments.set(match[1], values);
+    const rawValue = match[2].trim();
+    const alias = /^\*([A-Za-z_][A-Za-z0-9_]*)$/.exec(rawValue);
+    record(match[1], alias && anchors.has(alias[1]) ? anchors.get(alias[1]) : rawValue);
   }
   const yamlFlowEnv = /^\s*env\s*:\s*\{([^}\n]*)\}\s*(?:#.*)?$/gm;
   for (const flow of text.matchAll(yamlFlowEnv)) {
     const entry =
-      /(?:^|,)\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}]+)/g;
+      /(?:^|,)\s*[`'"]?([A-Za-z_][A-Za-z0-9_]*)[`'"]?\s*:\s*("(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,}]+)/g;
     for (const match of flow[1].matchAll(entry)) {
-      const values = assignments.get(match[1]) ?? [];
-      values.push(shellLiteralView(match[2].trim()));
-      assignments.set(match[1], values);
+      record(match[1], match[2]);
+    }
+  }
+
+  const yamlSources = /^\s*env\s*:/m.test(text) ? [text] : [];
+  for (const fence of text.matchAll(/```ya?ml\s*\n([\s\S]*?)```/gi)) {
+    if (/^\s*env\s*:/m.test(fence[1])) yamlSources.push(fence[1]);
+  }
+  for (const source of yamlSources) {
+    try {
+      yaml.loadAll(source, (document) => {
+        const visited = new WeakSet();
+        const visit = (value) => {
+          if (!value || typeof value !== 'object') return;
+          if (visited.has(value)) return;
+          visited.add(value);
+          if (!Array.isArray(value) && value.env && typeof value.env === 'object') {
+            for (const [name, envValue] of Object.entries(value.env)) {
+              if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(name) && typeof envValue === 'string') {
+                record(name, envValue);
+              }
+            }
+          }
+          for (const child of Object.values(value)) visit(child);
+        };
+        visit(document);
+      });
+    } catch {
+      // Markdown and shell surfaces are not YAML documents. The deterministic
+      // token scanners above remain authoritative for those mixed surfaces.
     }
   }
   return assignments;
 }
 
 function expandKnownVariables(value, assignments, seen = new Set()) {
-  const variable = /\$(?:\{([A-Za-z_][A-Za-z0-9_]*)\}|([A-Za-z_][A-Za-z0-9_]*))/.exec(value);
+  const variable = /\$\{(!?)([A-Za-z_][A-Za-z0-9_]*)\}|\$([A-Za-z_][A-Za-z0-9_]*)/.exec(value);
   if (!variable) return [value];
-  const name = variable[1] ?? variable[2];
-  const replacements = assignments.get(name);
+  const name = variable[2] ?? variable[3];
+  const indirect = variable[1] === '!';
+  const replacements = indirect
+    ? (assignments.get(name) ?? []).flatMap(
+        (pointer) => assignments.get(shellLiteralView(pointer)) ?? [],
+      )
+    : assignments.get(name);
   if (!replacements || seen.has(name) || seen.size >= 16) return [value];
 
   const nextSeen = new Set(seen).add(name);
-  return replacements.flatMap((replacement) =>
-    expandKnownVariables(
-      `${value.slice(0, variable.index)}${replacement}${value.slice(variable.index + variable[0].length)}`,
-      assignments,
-      nextSeen,
-    ),
-  );
+  return replacements
+    .flatMap((replacement) =>
+      expandKnownVariables(
+        `${value.slice(0, variable.index)}${replacement}${value.slice(variable.index + variable[0].length)}`,
+        assignments,
+        nextSeen,
+      ),
+    )
+    .slice(0, 64);
 }
 
 function isFreshieInventoryPath(value) {
   const cleaned = value.replace(/[),.;]+$/, '');
   const normalized = path.posix.normalize(cleaned);
-  return (
-    normalized === 'freshie/inventory.sqlite' || normalized.endsWith('/freshie/inventory.sqlite')
-  );
+  const suffix = normalized.split('/').slice(-2).join('/');
+  let pattern = '^';
+  for (const character of suffix) {
+    if (character === '*') pattern += '.*';
+    else if (character === '?') pattern += '.';
+    else pattern += character.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+  }
+  pattern += '$';
+  return new RegExp(pattern).test('freshie/inventory.sqlite');
 }
 
 function commandTargetsFreshie(command, assignments) {
-  const normalized = shellLiteralView(command.replace(/\\\s*\n\s*/g, ' '));
   const dbArgument = /(?:^|\s)--db(?:\s*=\s*|\s+)([^\s;&|]+)/g;
-  for (const match of normalized.matchAll(dbArgument)) {
-    const candidates = expandKnownVariables(match[1], assignments);
-    if (candidates.some(isFreshieInventoryPath)) return true;
+  for (const expanded of expandKnownVariables(command, assignments)) {
+    const normalized = shellLiteralView(expanded.replace(/\\\s*\n\s*/g, ' '));
+    for (const match of normalized.matchAll(dbArgument)) {
+      if (isFreshieInventoryPath(match[1])) return true;
+    }
   }
   return false;
 }
@@ -88,7 +145,7 @@ function lineNumber(text, offset) {
   return text.slice(0, offset).split('\n').length;
 }
 
-function commandBlocks(text) {
+function commandBlocks(text, assignments) {
   const lines = text.split('\n');
   const blocks = [];
   const offsets = [];
@@ -107,7 +164,11 @@ function commandBlocks(text) {
       commandLines.push(lines[cursor]);
     }
     const logicalCommand = commandLines.join('\n');
-    if (containsJrigEval(logicalCommand.replace(/\\\s*\n\s*/g, ' '))) {
+    const expandedCommands = expandKnownVariables(
+      logicalCommand.replace(/\\\s*\n\s*/g, ' '),
+      assignments,
+    );
+    if (expandedCommands.some(containsJrigEval)) {
       blocks.push({ text: logicalCommand, offset: offsets[index] });
     }
     index = cursor + 1;
@@ -117,7 +178,7 @@ function commandBlocks(text) {
 
 // YAML folds `run: >` lines into one shell command. A line-oriented scan would
 // otherwise miss a forbidden --db flag placed on the next indented line.
-function foldedRunBlocks(text) {
+function foldedRunBlocks(text, assignments) {
   const lines = text.split('\n');
   const blocks = [];
   let offset = 0;
@@ -125,7 +186,9 @@ function foldedRunBlocks(text) {
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
     const match =
-      /^(\s*)(?:-\s*)?[`'"]?run[`'"]?\s*:\s*>(?:[1-9][+-]?|[+-][1-9]?)?\s*(?:#.*)?$/.exec(line);
+      /^(\s*)(?:-\s*)?[`'"]?run[`'"]?\s*:\s*(?:&[A-Za-z_][A-Za-z0-9_]*\s+)?>(?:[1-9][+-]?|[+-][1-9]?)?\s*(?:#.*)?$/.exec(
+        line,
+      );
     if (!match) {
       offset += line.length + 1;
       continue;
@@ -150,7 +213,7 @@ function foldedRunBlocks(text) {
       cursor += 1;
     }
     const folded = content.join(' ');
-    if (firstOffset !== null && containsJrigEval(folded)) {
+    if (firstOffset !== null && expandKnownVariables(folded, assignments).some(containsJrigEval)) {
       blocks.push({ text: folded, offset: firstOffset });
     }
     offset += line.length + 1;
@@ -161,8 +224,11 @@ function foldedRunBlocks(text) {
 export function inspectJrigDbBoundary(text, filePath) {
   const findings = [];
   const seen = new Set();
-  for (const command of [...commandBlocks(text), ...foldedRunBlocks(text)]) {
-    const assignments = collectAssignments(`${text.slice(0, command.offset)}\n${command.text}`);
+  const assignments = collectAssignments(text);
+  for (const command of [
+    ...commandBlocks(text, assignments),
+    ...foldedRunBlocks(text, assignments),
+  ]) {
     if (commandTargetsFreshie(command.text, assignments)) {
       const finding = {
         path: filePath,
@@ -178,7 +244,7 @@ export function inspectJrigDbBoundary(text, filePath) {
   const prose = shellLiteralView(text)
     .replace(/\/{2,}/g, '/')
     .replace(/\/\.\//g, '/');
-  const verbs = '(?:point|pass|set|use|give|feed|supply|target|configure)';
+  const verbs = '(?:point|pass|set|use|give|feed|supply|target|configure|route|persist)';
   const directives = [
     new RegExp(
       `\\b${verbs}\\b[^\\n]{0,160}?--db(?:\\s*=\\s*|\\s+(?:(?:at|to)\\s+)?)?[^\\n]{0,160}?freshie/inventory\\.sqlite\\b`,
