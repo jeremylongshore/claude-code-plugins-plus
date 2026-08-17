@@ -13,6 +13,7 @@ const ACTIVE_EXTENSIONS = new Set(['.md', '.sh', '.yaml', '.yml']);
 const DIRECT_REASON = 'DIRECT_JRIG_FRESHIE_DB';
 const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
 const AMBIGUOUS_STATE = '__JRIG_AMBIGUOUS_SHELL_STATE__';
+const LITERAL_DOLLAR = '__JRIG_LITERAL_DOLLAR_7F8C2A__';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
 
 function shellLiteralView(text) {
@@ -111,6 +112,27 @@ function resolveStaticCommandSubstitutions(value) {
   return value.replace(/\$\(([^()]*)\)/g, (token, body) => evaluateStaticPrintf(body) ?? token);
 }
 
+function maskLiteralShellDollars(value) {
+  let output = '';
+  let quote = null;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (character === '\\' && quote !== "'" && index + 1 < value.length) {
+      const next = value[(index += 1)];
+      output += next === '$' ? LITERAL_DOLLAR : `\\${next}`;
+      continue;
+    }
+    if (quote) {
+      if (character === quote) quote = null;
+      output += quote === "'" && character === '$' ? LITERAL_DOLLAR : character;
+      continue;
+    }
+    if (character === "'" || character === '"') quote = character;
+    output += character;
+  }
+  return output;
+}
+
 function functionAliases(text) {
   const aliases = new Set();
   const functions =
@@ -194,7 +216,7 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
     return expandKnownVariables(assignments.get(name), assignments, nestedStack);
   };
 
-  const staticCommands = resolveStaticCommandSubstitutions(value);
+  const staticCommands = resolveStaticCommandSubstitutions(maskLiteralShellDollars(value));
   const githubEnv = staticCommands.replace(
     /\$\{\{\s*env\.([A-Za-z_][A-Za-z0-9_]*)\s*\}\}/g,
     (token, name) => resolve(name) ?? token,

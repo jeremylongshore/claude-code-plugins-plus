@@ -392,6 +392,14 @@ j-rig eval x --db "$DB"`,
     ],
     ['single-quoted dollar text is literal', "j-rig eval x --db '$RUNTIME_DB'"],
     ['escaped dollar text is literal', 'j-rig eval x --db "\\$RUNTIME_DB"'],
+    [
+      'single-quoted known variable remains literal',
+      "RUNTIME_DB=freshie/inventory.sqlite\nj-rig eval x --db '$RUNTIME_DB'",
+    ],
+    [
+      'escaped known variable remains literal',
+      'RUNTIME_DB=freshie/inventory.sqlite\nj-rig eval x --db "\\$RUNTIME_DB"',
+    ],
   ];
   for (const [name, text] of safe) {
     assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
