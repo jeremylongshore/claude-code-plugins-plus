@@ -226,7 +226,7 @@ jobs:
       # while the homepage linked "what's new →" straight at it. Ratchets from a
       # pinned floor (v4.14.0); older tags are grandfathered.
       - name: Validate every released tag has release notes
-        run: node scripts/check-changelog-coverage.mjs
+        run: pnpm run validate:changelog-coverage
 
       - name: Validate cascading Greptile configuration
         run: |

@@ -1,133 +1,152 @@
 #!/usr/bin/env node
 /**
- * check-changelog-coverage.mjs — every released tag must have release notes.
- *
- * WHY THIS EXISTS
- * ---------------
- * On 2026-08-06 `/changelog` was found with THREE entries, newest v4.16.0 dated
- * 2026-03-07, while the site ran v4.33.0. Seventeen tagged releases — 556
- * commits across March to May — had shipped with no notes at all, and nothing
- * anywhere failed. The homepage even linked "what's new →" at that page.
- *
- * A changelog rots for the same reason the missing og:image survived five
- * months: nothing in the build depends on it being right. This makes something
- * depend on it.
- *
- * THE INVARIANT
- * -------------
- * For every `vX.Y.Z` git tag there is a matching entry in
- * marketplace/src/content/blog/ carrying that `version:` in its frontmatter.
- *
- * Deliberately NOT checked: entry quality, or whether unreleased work has notes.
- * A gate that demands prose nobody has written yet gets disabled. This asserts
- * only the mechanical fact that a shipped version is documented.
- *
- * FLOOR — why this does not demand notes for every tag ever cut.
- * 46 tags predate the changelog entirely (v1.0.0 through v4.13.0, back to the
- * repo's first release). Requiring notes for those would fail the gate on day
- * one and it would be switched off within a week — the same reason one generic
- * pattern is excluded from scripts/name-leak-gate.sh. The floor is the OLDEST
- * release that actually has notes, so coverage can only ever ratchet forward:
- * everything from the floor up must be documented, everything below is
- * grandfathered. Backfilling history lowers the floor automatically.
- *
- * USAGE
- *   node scripts/check-changelog-coverage.mjs
- *   node scripts/check-changelog-coverage.mjs --warn-only
+ * Fail closed unless every released version at or above the pinned floor has
+ * exactly one release-note entry.
  */
 
-import { readdirSync, readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import { lstatSync, readdirSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
+export const FLOOR = '4.14.0';
+const VERSION = /^\d+\.\d+\.\d+$/;
+const TAG = /^v(\d+\.\d+\.\d+)$/;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const NOTES_DIR = join(ROOT, 'marketplace', 'src', 'content', 'blog');
-const WARN_ONLY = process.argv.includes('--warn-only');
 
-// Tags only — a shallow CI clone may have none, which is not a failure.
-let tags = [];
-try {
-  tags = execFileSync('git', ['tag', '--list', 'v[0-9]*.[0-9]*.[0-9]*'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  })
-    .split('\n')
-    .map((t) => t.trim())
-    // `git tag --list` takes a GLOB, not a regex: `v[0-9]*.[0-9]*.[0-9]*` has a
-    // literal dot and zero-or-more wildcards, so it admits shapes it looks like
-    // it excludes. Filter strictly here instead of trusting the glob.
-    .filter((t) => /^v\d+\.\d+\.\d+$/.test(t));
-} catch {
-  console.log('changelog-coverage: git tags unavailable — skipping');
-  process.exit(0);
-}
-
-if (tags.length === 0) {
-  // Loud, not silent. A gate that quietly no-ops is indistinguishable from a
-  // passing one — which is precisely how this script shipped inert.
-  console.log(
-    '::warning title=changelog-coverage::No version tags visible — the gate did NOT run. If this is CI, the checkout needs fetch-tags: true.',
-  );
-  console.log('changelog-coverage: no version tags visible — SKIPPED (not a pass)');
-  process.exit(0);
-}
-
-// Versions that have a release-notes file, read from frontmatter rather than
-// the filename so a rename cannot silently break coverage.
-const documented = new Set();
-// Recursive: a flat directory today, but an Astro subdirectory grouping
-// (blog/2026/…) would otherwise silently stop counting posts and weaken the gate.
-for (const f of readdirSync(NOTES_DIR, { recursive: true })) {
-  if (!String(f).endsWith('.md')) continue;
-  const m = readFileSync(join(NOTES_DIR, String(f)), 'utf8').match(
-    /^version:\s*"?([0-9][^"\s]*)"?/m,
-  );
-  if (m) documented.add(m[1]);
-}
-
-const cmp = (a, b) => {
-  const pa = a.split('.').map(Number);
-  const pb = b.split('.').map(Number);
-  for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+function compareVersions(a, b) {
+  const left = a.split('.').map(Number);
+  const right = b.split('.').map(Number);
+  for (let index = 0; index < 3; index += 1) {
+    if (left[index] !== right[index]) return left[index] - right[index];
+  }
   return 0;
-};
-
-// PINNED, not derived. Deriving it from the oldest documented entry looked
-// tidier and was wrong: deleting that entry silently RAISED the floor and the
-// gate went green with one fewer release covered. Verified by removing
-// v4.14.0's notes — the floor moved to v4.15.0 and reported "0 missing".
-// A ratchet that a file deletion can loosen is not a ratchet.
-//
-// Lowering this requires backfilling the releases below it first, as a visible
-// edit in review — the same contract as scripts/.design-tokens-baseline.json.
-const FLOOR = '4.14.0';
-if (!documented.has(FLOOR)) {
-  console.error(
-    `The pinned floor v${FLOOR} has no release notes. Either restore them, or\n` +
-      `lower FLOOR in this script deliberately — do not let it drift.`,
-  );
-  process.exit(WARN_ONLY ? 0 : 1);
 }
-const versions = tags.map((t) => t.replace(/^v/, ''));
-const inScope = versions.filter((v) => cmp(v, FLOOR) >= 0);
-const grandfathered = versions.length - inScope.length;
-const missing = inScope.filter((v) => !documented.has(v));
 
-console.log(
-  `changelog-coverage: floor v${FLOOR} — ${inScope.length} in scope, ` +
-    `${inScope.length - missing.length} documented, ${missing.length} missing ` +
-    `(${grandfathered} older tags grandfathered)`,
-);
+function parseFrontmatterVersion(text, relativePath) {
+  const normalized = text.replaceAll('\r\n', '\n');
+  if (!normalized.startsWith('---\n')) return null;
+  const closing = normalized.indexOf('\n---\n', 4);
+  if (closing < 0) throw new Error(`${relativePath}: unterminated frontmatter`);
 
-if (missing.length) {
-  console.error(
-    `\n${missing.length} released version(s) have no release notes:\n` +
-      missing.map((v) => `  v${v}`).join('\n') +
-      `\n\nAdd a file to marketplace/src/content/blog/ with \`version: "X.Y.Z"\` in\n` +
-      `its frontmatter. /changelog renders that collection, and the homepage links\n` +
-      `to it — an undocumented release makes that link lie.`,
-  );
-  process.exit(WARN_ONLY ? 0 : 1);
+  const versionLines = normalized
+    .slice(4, closing)
+    .split('\n')
+    .filter((line) => /^version\s*:/.test(line));
+  if (versionLines.length > 1) {
+    throw new Error(`${relativePath}: duplicate version fields`);
+  }
+  if (versionLines.length === 0) return null;
+
+  const match = versionLines[0].match(/^version\s*:\s*(?:"([^"]+)"|'([^']+)'|([^\s#]+))\s*$/);
+  const version = match?.[1] ?? match?.[2] ?? match?.[3];
+  if (!version || !VERSION.test(version)) {
+    throw new Error(`${relativePath}: malformed release-note version`);
+  }
+  return version;
 }
-console.log('changelog-coverage: every released tag has notes');
+
+function defaultTagReader(root) {
+  return execFileSync('git', ['tag', '--list', 'v[0-9]*.[0-9]*.[0-9]*'], {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+export function checkChangelogCoverage({ root = ROOT, readTags = defaultTagReader } = {}) {
+  let rawTags;
+  try {
+    rawTags = readTags(root);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Git tag enumeration failed: ${detail}`);
+  }
+
+  const tags = String(rawTags)
+    .split('\n')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  const versions = [...new Set(tags.map((tag) => tag.match(TAG)?.[1]).filter(Boolean))].sort(
+    compareVersions,
+  );
+  if (versions.length === 0) {
+    throw new Error('no strict vX.Y.Z tags are visible; fetch complete tag evidence');
+  }
+  if (!versions.includes(FLOOR)) {
+    throw new Error(`pinned floor tag v${FLOOR} is not visible; tag evidence is incomplete`);
+  }
+
+  const notesDirectory = join(root, 'marketplace', 'src', 'content', 'blog');
+  let entries;
+  try {
+    entries = readdirSync(notesDirectory, { recursive: true });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`release-note enumeration failed: ${detail}`);
+  }
+
+  const documentedByVersion = new Map();
+  for (const entry of entries) {
+    const relativePath = String(entry);
+    if (!relativePath.endsWith('.md')) continue;
+    const absolutePath = join(notesDirectory, relativePath);
+    let fileType;
+    try {
+      fileType = lstatSync(absolutePath);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`${relativePath}: release-note metadata unavailable: ${detail}`);
+    }
+    if (!fileType.isFile()) {
+      throw new Error(`${relativePath}: release-note path is not a regular file`);
+    }
+    const version = parseFrontmatterVersion(readFileSync(absolutePath, 'utf8'), relativePath);
+    if (!version) continue;
+    const previous = documentedByVersion.get(version);
+    if (previous) {
+      throw new Error(`v${version} has duplicate release notes: ${previous}, ${relativePath}`);
+    }
+    documentedByVersion.set(version, relativePath);
+  }
+
+  if (!documentedByVersion.has(FLOOR)) {
+    throw new Error(`pinned floor v${FLOOR} has no release notes`);
+  }
+
+  const inScope = versions.filter((version) => compareVersions(version, FLOOR) >= 0);
+  const missing = inScope.filter((version) => !documentedByVersion.has(version));
+  if (missing.length > 0) {
+    throw new Error(
+      `${missing.length} released version(s) have no release notes: ${missing
+        .map((version) => `v${version}`)
+        .join(', ')}`,
+    );
+  }
+
+  return {
+    documented: inScope.length,
+    floor: FLOOR,
+    grandfathered: versions.length - inScope.length,
+    inScope: inScope.length,
+    missing: [],
+    tags: versions.length,
+  };
+}
+
+export function main() {
+  try {
+    const result = checkChangelogCoverage();
+    console.log(
+      `changelog-coverage: floor v${result.floor} — ${result.inScope} in scope, ` +
+        `${result.documented} documented, 0 missing (${result.grandfathered} older tags grandfathered)`,
+    );
+    console.log('changelog-coverage: every released tag has exactly one release-note entry');
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error(`changelog-coverage: REFUSED — ${detail}`);
+    process.exitCode = 1;
+  }
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
