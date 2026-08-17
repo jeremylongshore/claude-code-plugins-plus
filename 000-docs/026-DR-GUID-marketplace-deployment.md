@@ -8,7 +8,6 @@
 ## 🚀 Deploy Now (3 Steps)
 
 ### Step 1: Commit Workflow Fix
-
 ```bash
 cd
 git add .github/workflows/deploy-marketplace.yml
@@ -20,7 +19,6 @@ git push origin main
 ```
 
 ### Step 2: Enable GitHub Pages
-
 1. Visit:
 2. Source: **GitHub Actions**
 3. Custom domain: `[retired legacy public domain]`
@@ -28,9 +26,7 @@ git push origin main
 5. Click **Save**
 
 ### Step 3: Configure DNS (at domain registrar)
-
 Add these 4 A records:
-
 ```
 Type: A    Name: @    Value: 185.199.108.153
 Type: A    Name: @    Value: 185.199.109.153
@@ -46,10 +42,10 @@ Type: A    Name: @    Value: 185.199.111.153
 
 ```bash
 # Check if site is live
-curl -I https://retired-domain.invalid
+curl -I [retired legacy public domain]
 
 # Check DNS
-dig retired-domain.invalid A +short
+dig [retired legacy public domain] A +short
 
 # View GitHub Actions
 # Visit: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -60,7 +56,6 @@ dig retired-domain.invalid A +short
 ## 📝 Quick Reference
 
 ### Local Commands
-
 ```bash
 cd
 npm run dev      # Start dev server
@@ -69,7 +64,6 @@ npm run preview  # Preview build
 ```
 
 ### Deploy Commands
-
 ```bash
 cd
 git add marketplace/
@@ -78,7 +72,6 @@ git push origin main  # Auto-deploys via GitHub Actions
 ```
 
 ### Verification
-
 - **Site:** [retired legacy public domain]
 - **Actions:** https://github.com/jeremylongshore/claude-code-plugins/actions
 - **Settings:**
@@ -88,7 +81,6 @@ git push origin main  # Auto-deploys via GitHub Actions
 ## 🆘 Quick Troubleshooting
 
 ### Site not updating?
-
 ```bash
 # Clear cache: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 # Check Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -96,7 +88,6 @@ git push origin main  # Auto-deploys via GitHub Actions
 ```
 
 ### Build failing?
-
 ```bash
 cd
 npm run build  # Test locally first
@@ -104,12 +95,11 @@ npm run build  # Test locally first
 ```
 
 ### DNS not working?
-
 ```bash
-dig retired-domain.invalid A +short
+dig [retired legacy public domain] A +short
 # Should show 4 GitHub Pages IPs
 # Wait 24-48 hours for DNS propagation
-# Check: https://www.whatsmydns.net/#A/retired-domain.invalid
+# Check: https://www.whatsmydns.net/#A/[retired legacy public domain]
 ```
 
 ---
@@ -117,7 +107,6 @@ dig retired-domain.invalid A +short
 ## 📚 Full Documentation
 
 For detailed guides, see:
-
 - **Comprehensive Checklist:** `
 - **Deployment Status:** `
 - **Deployment Summary:** `

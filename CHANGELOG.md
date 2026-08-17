@@ -18,9 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
   Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor
   skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
-  rewriting past evidence; command and URL examples use the reserved non-resolving
-  `retired-domain.invalid` host so they remain syntactically clear without reviving the dead
-  property. Unsupported email identities are removed or mapped to the existing
+  rewriting past evidence, unsupported email identities are removed or mapped to the existing
   Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
   the MCP preset catalog no longer advertises an unserved remote schema URL.
   [Exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing

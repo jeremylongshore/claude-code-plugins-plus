@@ -301,9 +301,8 @@ This gave me: `35.201.66.187`
 **Step 6: Create SSL Certificate**
 
 ```bash
-# Historical command shape; the reserved host intentionally does not resolve.
 gcloud compute ssl-certificates create claudecodeplugins-cert \
-  --domains=retired-domain.invalid \
+  --domains=[retired legacy public domain] \
   --global
 ```
 
@@ -379,8 +378,7 @@ TTL: 3600
 Verified DNS propagation:
 
 ```bash
-# Historical verification shape; the reserved host intentionally does not resolve.
-dig +short retired-domain.invalid @8.8.8.8
+dig +short [retired legacy public domain] @8.8.8.8
 # Returns: 35.201.66.187
 ```
 
@@ -405,7 +403,7 @@ After about 30 minutes, the certificate became active.
 ## Part 8: Testing the Live Site
 
 ```bash
-curl -I https://retired-domain.invalid
+curl -I [retired legacy public domain]
 ```
 
 ```
@@ -553,7 +551,7 @@ gcloud run deploy claudecodeplugins-web \
 # 8. Wait for SSL certificate provisioning (15-60 minutes)
 
 # 9. Test
-curl -I https://retired-domain.invalid
+curl -I [retired legacy public domain]
 ```
 
 ## Conclusion
