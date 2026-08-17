@@ -1,4 +1,4 @@
-# Deployment Summary - claudecodeplugins.io
+# Deployment Summary - [retired legacy public domain]
 
 **Date:** 2025-10-16
 **Status:** ✅ READY FOR DEPLOYMENT
@@ -45,7 +45,7 @@
 ### Astro Config (`marketplace/astro.config.mjs`)
 ```javascript
 {
-  site: 'https://claudecodeplugins.io',
+  site: '[retired legacy public domain]',
   base: '/',
   output: 'static',
   compressHTML: true,
@@ -58,7 +58,7 @@
 
 ### CNAME File (`marketplace/public/CNAME`)
 ```
-claudecodeplugins.io
+[retired legacy public domain]
 ```
 
 ### Build Output (`marketplace/dist/`)
@@ -118,7 +118,7 @@ git push origin main
 **Configuration:**
 ```
 Source: GitHub Actions (not "Deploy from a branch")
-Custom Domain: claudecodeplugins.io
+Custom Domain: [retired legacy public domain]
 Enforce HTTPS: ✅ Enabled
 ```
 
@@ -150,17 +150,17 @@ Type: CNAME    Name: www    Value: jeremylongshore.github.io    TTL: 3600
 ### Verify DNS Configuration
 ```bash
 # Check A records
-dig claudecodeplugins.io A +short
+dig retired-domain.invalid A +short
 
-# Expected output:
+# Historical output from the retired deployment; the reserved host no longer reproduces it:
 # 185.199.108.153
 # 185.199.109.153
 # 185.199.110.153
 # 185.199.111.153
 
 # Check CNAME
-dig www.claudecodeplugins.io CNAME +short
-# Expected: jeremylongshore.github.io
+dig retired-domain.invalid CNAME +short
+# Historical output: jeremylongshore.github.io
 ```
 
 ---
@@ -168,12 +168,12 @@ dig www.claudecodeplugins.io CNAME +short
 ## Post-Deployment Verification
 
 ### Immediate Checks (5 minutes after deployment)
-- [ ] Visit https://claudecodeplugins.io
+- [ ] Visit [retired legacy public domain]
 - [ ] Verify HTTPS works (green padlock in browser)
 - [ ] Check homepage loads correctly
-- [ ] Test spotlight page: https://claudecodeplugins.io/spotlight
-- [ ] Test sponsor page: https://claudecodeplugins.io/sponsor
-- [ ] Test skill enhancers page: https://claudecodeplugins.io/skill-enhancers
+- [ ] Test spotlight page: [retired legacy public domain]/spotlight
+- [ ] Test sponsor page: [retired legacy public domain]/sponsor
+- [ ] Test skill enhancers page: [retired legacy public domain]/skill-enhancers
 
 ### Content Verification
 - [ ] All plugin cards display
@@ -200,7 +200,7 @@ dig www.claudecodeplugins.io CNAME +short
 - [ ] Meta description present
 - [ ] Open Graph tags present
 - [ ] Twitter card tags present
-- [ ] Canonical URL: https://claudecodeplugins.io/
+- [ ] Canonical URL: [retired legacy public domain]/
 - [ ] Favicon displays
 
 ---
@@ -245,10 +245,11 @@ npm run build
 cat
 
 # Check DNS propagation
-dig claudecodeplugins.io A +short
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # Check worldwide DNS
-# Visit: https://www.whatsmydns.net/#A/claudecodeplugins.io
+# Visit: https://www.whatsmydns.net/#A/retired-domain.invalid
 
 # Re-save custom domain in GitHub Pages settings if needed
 ```
@@ -257,7 +258,7 @@ dig claudecodeplugins.io A +short
 1. Ensure "Enforce HTTPS" is enabled in GitHub Pages settings
 2. Wait 10-15 minutes for certificate provisioning
 3. Clear browser cache
-4. Check certificate: `openssl s_client -connect claudecodeplugins.io:443`
+4. Historical command shape: `openssl s_client -connect retired-domain.invalid:443` (the reserved host intentionally does not resolve)
 
 ---
 
@@ -283,10 +284,12 @@ git push origin main  # Triggers automatic deployment
 ### Verification
 ```bash
 # Check DNS
-dig claudecodeplugins.io A +short
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # Check HTTPS
-curl -I https://claudecodeplugins.io
+curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Check build output
 ls -lh marketplace/dist/
@@ -337,7 +340,7 @@ git push origin main
 ### 2. Enable GitHub Pages
 1. Visit:
 2. Source: Select "GitHub Actions"
-3. Custom domain: Enter `claudecodeplugins.io`
+3. Custom domain: Enter `[retired legacy public domain]`
 4. Enable "Enforce HTTPS"
 5. Save changes
 
@@ -350,7 +353,7 @@ git push origin main
 ### 4. Monitor Deployment
 1. Watch GitHub Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
 2. Check for green checkmark (build successful)
-3. Visit https://claudecodeplugins.io (may take time for DNS)
+3. Visit [retired legacy public domain] (may take time for DNS)
 
 ### 5. Verify Deployment
 - Run through Post-Deployment Verification checklist

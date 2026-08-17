@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { buildPublishCandidateReport } from './publish-candidate-report.mjs';
-import { resolvePluginProvenance } from './plugin-provenance.mjs';
+import { parseSourceRecord, resolvePluginProvenance } from './plugin-provenance.mjs';
 
 function fixture() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'plugin-provenance-'));
@@ -101,8 +101,78 @@ test('malformed, unreadable, and contradictory provenance fail closed', () => {
   const report = buildPublishCandidateReport({ root, all: true, scope: '@intentsolutionsio/' });
   assert.deepEqual(
     report.refused.map((row) => row.reasonCode),
-    ['MALFORMED_SOURCE_RECORD', 'CONTRADICTORY_SOURCE_RECORD', 'MALFORMED_SOURCE_RECORD'],
+    ['MALFORMED_SOURCE_RECORD', 'CONTRADICTORY_SOURCE_RECORD', 'SOURCE_RECORD_NOT_REGULAR'],
   );
+});
+
+test('unreadable and symlink source records have stable fail-closed reasons', () => {
+  const root = fixture();
+  const unreadable = parseSourceRecord(path.join(root, '.source.json'), {
+    lstat: () => ({ isFile: () => true, isSymbolicLink: () => false }),
+    readFile: () => {
+      throw new Error('fixture EACCES');
+    },
+  });
+  assert.equal(unreadable.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+
+  fs.writeFileSync(path.join(root, 'target.json'), '{}');
+  fs.symlinkSync('target.json', path.join(root, '.source.json'));
+  const symlink = resolvePluginProvenance('.', { root });
+  assert.equal(symlink.reasonCode, 'SOURCE_RECORD_SYMLINK');
+});
+
+test('dangling source record symlinks fail closed instead of appearing absent', () => {
+  const root = fixture();
+  packageFixture(root, 'plugins/dangling-source', {
+    name: '@intentsolutionsio/dangling-source',
+  });
+  fs.symlinkSync('missing-target.json', path.join(root, 'plugins/dangling-source', '.source.json'));
+
+  const provenance = resolvePluginProvenance('plugins/dangling-source', { root });
+  assert.equal(provenance.status, 'refused');
+  assert.equal(provenance.reasonCode, 'SOURCE_RECORD_SYMLINK');
+
+  const report = buildPublishCandidateReport({ root, all: true, scope: '@intentsolutionsio/' });
+  assert.equal(report.firstPartyCandidates.length, 0);
+  assert.deepEqual(
+    report.refused.map((row) => [row.name, row.reasonCode]),
+    [['@intentsolutionsio/dangling-source', 'SOURCE_RECORD_SYMLINK']],
+  );
+});
+
+test('refuses a provenance record whose opened descriptor and path identities differ', () => {
+  let readAttempted = false;
+  const result = parseSourceRecord('/fixture/.source.json', {
+    open: () => 42,
+    fstat: () => ({ dev: 1, ino: 10, isFile: () => true }),
+    lstat: () => ({ dev: 1, ino: 11, isFile: () => true, isSymbolicLink: () => false }),
+    readFile: () => {
+      readAttempted = true;
+      return '{}';
+    },
+    close: () => {},
+  });
+  assert.equal(result.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+  assert.equal(readAttempted, false);
+});
+
+test('refuses an open-then-unlinked provenance record instead of treating it as absent', () => {
+  let descriptorCloseCount = 0;
+  const missing = Object.assign(new Error('fixture ENOENT after open'), { code: 'ENOENT' });
+  const result = parseSourceRecord('/fixture/.source.json', {
+    open: () => 42,
+    fstat: () => ({ dev: 1, ino: 10, isFile: () => true }),
+    lstat: () => {
+      throw missing;
+    },
+    close: () => {
+      descriptorCloseCount += 1;
+    },
+    allowAbsent: true,
+  });
+  assert.equal(result.status, 'refused');
+  assert.equal(result.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+  assert.equal(descriptorCloseCount, 1);
 });
 
 test('red proof: legacy publisher admits a mirror, enforced publisher skips it', () => {

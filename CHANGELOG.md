@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — retired public-domain containment)
+
+- **First-party and generated surfaces now use only the live Tons of Skills domain.** A
+  case-insensitive, fail-closed policy classifies every tracked occurrence before allowing it:
+  editable sources and registered generated projections must be clean, while frozen standards,
+  provenance-owned mirrors, and registered point-in-time exports remain byte-identical. The exact
+  base contained 356 occurrences across 125 files: 292 actionable and 64 retained by policy.
+  The existing documentation-governance job now runs the fixture-backed lint so mixed case,
+  symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
+  Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor
+  skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
+  rewriting past evidence; command and URL examples use the reserved non-resolving
+  `retired-domain.invalid` host so they remain syntactically clear without reviving the dead
+  property. Unsupported email identities are removed or mapped to the existing
+  Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
+  the MCP preset catalog no longer advertises an unserved remote schema URL.
+  [Exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
+  dual-use capabilities whose files have only domain or contact changes in this slice; the
+  underlying capabilities and scanner remain unchanged. The catalog schema permits an author
+  email and author URL to be omitted, so the unsupported Mattyp address and marketplace attribution
+  URL are removed while contributor credit is retained; the first-party Excel listing uses the
+  matching Intent Solutions identity and contact.
+  Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
+  no-follow semantics where available, closing metadata-check/file-use races without weakening
+  refusal behavior. Provenance absence is accepted only when the initial descriptor open reports
+  no path; disappearance after a successful open is refused as a concurrent mutation.
+  Cross-platform CLI validation now installs only the CLI package and its
+  dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
+  runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
+  Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026
+  toolchain when a transitive native dependency has no prebuilt binary. The production redirect
+  assertion for the retired external domain is removed intentionally: the dead property is no
+  longer an owned compatibility surface, while `tonsofskills.com` remains the governed live site.
+
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 
 - **Curated promotion now validates file content instead of relying on a NUL-byte prefix.**
@@ -1614,7 +1648,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
   - **Infrastructure**: cross-chain-bridge-monitor, wallet-security-auditor
-- Firebase Hosting deployment workflow for claudecodeplugins.io
+- Firebase Hosting deployment workflow for [retired legacy public domain]
 - Firebase Analytics integration with measurement ID tracking
 - Google Secret Manager integration for secure Firebase config
 
@@ -1680,7 +1714,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
-- Learn pages for all Batch 3 vendors on claudecodeplugins.io
+- Learn pages for all Batch 3 vendors on [retired legacy public domain]
 
 ### Changed
 

@@ -190,7 +190,7 @@ marketplace/
 ### Skills Index Page
 - Title: "Agent Skills Directory - Claude Code Plugins"
 - Description: "Browse all 244 agent skills across 16 categories"
-- Canonical URL: https://claudecodeplugins.io/skills/
+- Canonical URL: [retired legacy public domain]/skills/
 - Open Graph tags for social sharing
 
 ### Individual Skill Pages
@@ -233,7 +233,7 @@ marketplace/
 
 1. **Deploy to Production**
    - Push changes to main branch
-   - GitHub Actions will auto-deploy to claudecodeplugins.io
+   - GitHub Actions will auto-deploy to [retired legacy public domain]
    - Verify /skills/ route live
 
 2. **Homepage Integration**

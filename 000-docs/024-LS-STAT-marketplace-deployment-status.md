@@ -1,4 +1,4 @@
-# Deployment Status - claudecodeplugins.io
+# Deployment Status - [retired legacy public domain]
 
 **Generated:** 2025-10-16
 **Status:** ✅ Ready for Deployment
@@ -12,7 +12,7 @@
 
 ```javascript
 {
-  site: 'https://claudecodeplugins.io',
+  site: '[retired legacy public domain]',
   base: '/',
   output: 'static',
   compressHTML: true
@@ -26,7 +26,7 @@
 ### CNAME File
 **File:** `
 
-**Content:** `claudecodeplugins.io`
+**Content:** `[retired legacy public domain]`
 
 ✅ **Status:** Present and correct (copied to dist/ during build)
 
@@ -84,7 +84,7 @@
 
 **Required Configuration:**
 - [ ] Source: **GitHub Actions** (not Deploy from a branch)
-- [ ] Custom domain: `claudecodeplugins.io`
+- [ ] Custom domain: `[retired legacy public domain]`
 - [ ] Enforce HTTPS: ✅ Enabled
 
 ### 2. DNS Configuration
@@ -105,8 +105,8 @@ Type: CNAME, Name: www, Value: jeremylongshore.github.io
 
 **Verification:**
 ```bash
-dig claudecodeplugins.io A +short
-# Should return the 4 GitHub Pages IP addresses above
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 ```
 
 ### 3. Trigger Deployment
@@ -131,10 +131,10 @@ git push origin main
 After deployment completes:
 
 ### Immediate Checks (within 5 minutes)
-- [ ] Visit https://claudecodeplugins.io
+- [ ] Visit [retired legacy public domain]
 - [ ] Verify HTTPS works (green padlock)
 - [ ] Check homepage loads correctly
-- [ ] Test spotlight page: https://claudecodeplugins.io/spotlight
+- [ ] Test spotlight page: [retired legacy public domain]/spotlight
 - [ ] Verify plugin count shows "227 plugins"
 
 ### Content Checks
@@ -153,7 +153,7 @@ After deployment completes:
 ### SEO Checks
 - [ ] Page title: "Claude Code Plugins Marketplace - 227 Plugins"
 - [ ] Meta description present
-- [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://claudecodeplugins.io
+- [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://retired-domain.invalid
 - [ ] Favicon displays
 
 ---
@@ -194,9 +194,10 @@ cat dist/CNAME
 ### Custom Domain Issues
 ```bash
 # Check DNS propagation
-dig claudecodeplugins.io A +short
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
-# Check worldwide DNS: https://www.whatsmydns.net/#A/claudecodeplugins.io
+# Check worldwide DNS: https://www.whatsmydns.net/#A/retired-domain.invalid
 
 # Verify CNAME in dist
 cat
@@ -242,7 +243,7 @@ cat
 3. **Enable GitHub Pages:**
    - Visit repository settings
    - Configure GitHub Pages source as "GitHub Actions"
-   - Add custom domain: claudecodeplugins.io
+   - Add custom domain: [retired legacy public domain]
 
 4. **Configure DNS:**
    - Add A records at your domain registrar

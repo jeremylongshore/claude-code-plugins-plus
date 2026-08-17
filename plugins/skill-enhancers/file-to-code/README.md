@@ -58,4 +58,4 @@ Watch this repo to be notified when this plugin is released:
 ---
 
 **Part of the [Skill Enhancers](../) collection**
-[View all available plugins →](https://claudecodeplugins.io/skill-enhancers)
+[View all available plugins →](https://tonsofskills.com/skill-enhancers)

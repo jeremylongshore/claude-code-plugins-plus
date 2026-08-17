@@ -653,7 +653,7 @@ New iOS development plugin, website improvements with Nixtla partnership showcas
 ### 🐛 Bug Fixes
 - **Fixed horizontal scrolling on mobile website** (#120)
   - Added `overflow-x: hidden` to prevent unwanted horizontal scroll
-  - Improved mobile user experience on claudecodeplugins.io
+  - Improved mobile user experience on [retired legacy public domain]
 
 ### ✨ Website Enhancements
 - **Added Nixtla as featured client** with scrolling logo showcase
@@ -727,7 +727,7 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
 
 ### 🔗 Links
 - [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2)
-- [Live Marketplace](https://claudecodeplugins.io)
+- Live Marketplace: [retired legacy public domain]
 
 ---
 
@@ -768,7 +768,7 @@ Special thanks to **Max Mergenthaler** ([@mergenthaler](https://github.com/merge
 
 ### 🔗 Links
 - [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1)
-- [Live Marketplace](https://claudecodeplugins.io)
+- Live Marketplace: [retired legacy public domain]
 
 ## [1.4.0] - 2025-11-19
 
@@ -2223,7 +2223,7 @@ See `docs/PRIORITY_SKILLS_TODO.md` for detailed action items.
 
 ### 🔗 Links
 
-- **Plugin Catalog:** https://claudecodeplugins.io
+- **Plugin Catalog:** [retired legacy public domain]
 - **GitHub Repository:** https://github.com/jeremylongshore/claude-code-plugins
 - **Technical Blog:** https://startaitools.com
 - **Portfolio Blog:** https://jeremylongshore.com
@@ -2418,13 +2418,13 @@ Special thanks to:
 ### 📚 Learn More
 
 - Agent Skills Documentation
-- [Plugin Catalog](https://claudecodeplugins.io)
+- Plugin Catalog: [retired legacy public domain]
 - Getting Started Guide
 - Skills Generation Audit
 
 ### 🔗 Resources
 
-- [Full Plugin List with Skills](https://claudecodeplugins.io/skills)
+- Full Plugin List with Skills: [retired legacy public domain]/skills
 - Agent Skills Guide
 - API Reference
 
@@ -2542,7 +2542,7 @@ This release resolves a critical schema validation error that prevented ALL user
 - **Critical**: Removed invalid `enhances` field blocking marketplace installations
 - **Legal**: Added 3 legal pages using GetTerms.io (account wH2cn)
 - **CI/CD**: Fixed security scan false positives
-- **Deployment**: All changes live at https://claudecodeplugins.io/
+- **Deployment**: All changes live at [retired legacy public domain]/
 
 ---
 
@@ -2642,7 +2642,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 - Build Time: 9.03s (7 pages)
 - Static Site: 100% pre-rendered
 - Deployment: GitHub Pages (automated)
-- Live URL: https://claudecodeplugins.io/
+- Live URL: [retired legacy public domain]/
 
 ---
 
@@ -2659,7 +2659,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 2. **Deploy Marketplace** ✅ DEPLOYED
    - Builds Astro site (7 pages)
    - Deploys to GitHub Pages
-   - Live at claudecodeplugins.io
+   - Live at [retired legacy public domain]
    - Automated on marketplace/ changes
 
 **Deployment Timeline:**
@@ -2689,7 +2689,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 
 **Deployment:**
 - CI/CD: 100% passing
-- Website: Live at claudecodeplugins.io
+- Website: Live at [retired legacy public domain]
 - Legal Pages: Accessible and mobile-responsive
 
 ---
@@ -2702,10 +2702,10 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 
 ### 🔗 Links
 
-- **Live Site**: https://claudecodeplugins.io/
-- **Terms**: https://claudecodeplugins.io/terms
-- **Privacy**: https://claudecodeplugins.io/privacy
-- **Acceptable Use**: https://claudecodeplugins.io/acceptable-use
+- **Live Site**: [retired legacy public domain]/
+- **Terms**: [retired legacy public domain]/terms
+- **Privacy**: [retired legacy public domain]/privacy
+- **Acceptable Use**: [retired legacy public domain]/acceptable-use
 - **GitHub Issue**: User-reported installation error (Oct 16, 2025 10:16pm ET)
 
 ---
@@ -2736,7 +2736,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 - ✅ Marketplace installation works for all users
 - ✅ Full legal compliance with embedded policies
 - ✅ CI/CD passing without false positives
-- ✅ 7 pages deployed to claudecodeplugins.io
+- ✅ 7 pages deployed to [retired legacy public domain]
 
 **Installation Now Works:**
 ```bash
@@ -2902,7 +2902,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### ⚙️ Deployment Configuration
 
 **GitHub Pages Setup:**
-- **Domain:** claudecodeplugins.io (already configured)
+- **Domain:** [retired legacy public domain] (already configured)
 - **HTTPS:** Enforced with valid SSL certificate (expires 2026-01-13)
 - **Build type:** GitHub Actions workflow
 - **Status:** Ready to deploy

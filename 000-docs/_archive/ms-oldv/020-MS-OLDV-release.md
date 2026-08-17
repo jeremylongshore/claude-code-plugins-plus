@@ -185,7 +185,7 @@ graph TD
 
 **Built**:  `marketplace/dist/` (production build complete)
 **Deployment**: Automated via GitHub Actions
-**URL**: `https://claudecodeplugins.io/`
+**URL**: `[retired legacy public domain]/`
 
 ### Features
 
@@ -373,7 +373,8 @@ git push origin v1.1.0
 # Wait for GitHub Actions to complete (2-3 minutes)
 
 # Verify marketplace is live
-curl -I https://claudecodeplugins.io/
+curl -I https://retired-domain.invalid/
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Test installation
 # In Claude Code:

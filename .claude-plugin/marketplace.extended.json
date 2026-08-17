@@ -2365,8 +2365,8 @@
         "mcp"
       ],
       "author": {
-        "name": "ClaudeCodePlugins",
-        "email": "plugins@tonsofskills.com"
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
       },
       "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins",
@@ -5626,9 +5626,7 @@
       "category": "devops",
       "keywords": ["changelog", "release-notes", "weekly-update", "git", "github", "automation"],
       "author": {
-        "name": "Mattyp",
-        "email": "mattyp@tonsofskills.com",
-        "url": "https://tonsofskills.com"
+        "name": "Mattyp"
       },
       "components": {
         "skills": 1,

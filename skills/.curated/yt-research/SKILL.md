@@ -15,7 +15,7 @@ description: 'Research competitor YouTube channels, niches, and trending topics 
   '
 allowed-tools: WebSearch, Read, Write, Task
 version: 1.10.0
-author: Claude Code Plugins <plugins@claudecodeplugins.io>
+author: Claude Code Plugins <jeremy@intentsolutions.io>
 license: MIT
 tags:
 - productivity

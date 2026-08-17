@@ -5427,7 +5427,7 @@
       ],
       "author": {
         "name": "ClaudeCodePlugins",
-        "email": "plugins@claudecodeplugins.io"
+        "email": "jeremy@intentsolutions.io"
       },
       "authorType": "official",
       "version": "1.0.0",
@@ -10144,9 +10144,7 @@
         "automation"
       ],
       "author": {
-        "name": "Mattyp",
-        "email": "mattyp@claudecodeplugins.io",
-        "url": "https://claudecodeplugins.io"
+        "name": "Mattyp"
       },
       "authorType": "community",
       "version": "0.1.0",

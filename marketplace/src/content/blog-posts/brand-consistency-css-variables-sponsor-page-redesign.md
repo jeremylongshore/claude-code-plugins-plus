@@ -293,11 +293,11 @@ cd marketplace && npm run dev
 
 # Production deployment
 git push origin main
-# GitHub Actions auto-deploys to https://claudecodeplugins.io/sponsor/
+# Historical target; the reserved host below intentionally does not resolve.
 
 # Verify deployment
-curl -I https://claudecodeplugins.io/sponsor/
-# HTTP/2 200 - deployed successfully
+curl -I https://retired-domain.invalid/sponsor/
+# Historical output: HTTP/2 200 - deployed successfully
 ```
 
 **Cache consideration:** GitHub Pages has a 10-minute CDN cache. After deployment, I waited 15 minutes before verifying the live changes to ensure I wasn't seeing stale cached content.

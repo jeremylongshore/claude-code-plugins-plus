@@ -126,7 +126,7 @@ marketplace/src/content/plugins/
 
 ## GitHub Pages Verification
 
-**URL:** https://claudecodeplugins.io/
+**URL:** [retired legacy public domain]/
 
 ### Sections Present:
 -  Hero Section
@@ -228,7 +228,7 @@ marketplace/src/content/plugins/
 -  Mobile Responsive: Yes
 
 ### Repository Settings
--  Homepage URL: https://claudecodeplugins.io
+-  Homepage URL: [retired legacy public domain]
 -  Description: Comprehensive marketplace for Claude Code plugins
 -  Topics: None configured (OPPORTUNITY)
 

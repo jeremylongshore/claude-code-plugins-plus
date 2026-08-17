@@ -619,7 +619,7 @@ exports.onUserCreate = functions.firestore
 
 - [GitHub Repository](https://github.com/jeremylongshore/claude-code-plugins)
 - [Issue Tracker](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- [Marketplace](https://claudecodeplugins.io/)
+- [Marketplace](https://tonsofskills.com/)
 
 ### Community
 

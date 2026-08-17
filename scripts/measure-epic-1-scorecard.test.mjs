@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 
+import { DEAD_DOMAIN } from './dead-domain-policy.mjs';
 import { buildExtendedScorecardRows } from './measure-epic-1-scorecard.mjs';
 
 const EXPECTED_ROWS = [
@@ -56,7 +57,7 @@ function fixture() {
     'plugins/example/LICENSE': 'fixture license\n',
     'plugins/example/package.json': JSON.stringify({ name: '@scope/example', private: true }),
     'plugins/example/skills/one/SKILL.md': `---\nname: one\nallowed-tools: Read\ncompatibility: Harness A\n---\nhttps://docs.anthropic.com\n`,
-    'plugins/local/skills/two/SKILL.md': `---\nname: two\nallowed-tools: >-\n  Read Write\ncompatibility: Harness B\n---\nclaudecodeplugins.io\n`,
+    'plugins/local/skills/two/SKILL.md': `---\nname: two\nallowed-tools: >-\n  Read Write\ncompatibility: Harness B\n---\n${DEAD_DOMAIN}\n`,
     'scripts/npm-publication-preflight.mjs': 'export const required = true;\n',
     'scripts/plugin-provenance.mjs':
       "export const SOURCE_FILE = '.source.json';\nexport function resolvePluginProvenance() {}\n",
@@ -256,17 +257,17 @@ test('fails closed on malformed ci-required needs', () => {
   assert.equal(row.reason_code, 'MALFORMED_CI_REQUIRED_NEEDS');
 });
 
-test('does not let scorecard instrumentation increase link-debt rows', () => {
+test('link instrumentation stays excluded while domain instrumentation cannot bypass policy', () => {
   const base = fixture();
   put(
     base.root,
     '000-docs/742-RA-DATA-epic-1-scorecard.json',
-    JSON.stringify({ dimensions: ['docs.anthropic.com', 'claudecodeplugins.io'] }),
+    JSON.stringify({ dimensions: ['docs.anthropic.com', DEAD_DOMAIN] }),
   );
   put(
     base.root,
     'scripts/measure-epic-1-scorecard.test.mjs',
-    "const fixtures = ['docs.anthropic.com', 'claudecodeplugins.io'];\n",
+    `const fixtures = ['docs.anthropic.com', '${DEAD_DOMAIN}'];\n`,
   );
   base.paths.push(
     '000-docs/742-RA-DATA-epic-1-scorecard.json',
@@ -274,9 +275,25 @@ test('does not let scorecard instrumentation increase link-debt rows', () => {
   );
   const rows = buildExtendedScorecardRows(input(base));
   assert.equal(rows[20].measured_proxy.occurrences, 1);
-  assert.equal(rows[21].values.actionable.occurrences, 1);
+  assert.equal(rows[21].values.actionable.occurrences, 3);
+  assert.equal(
+    rows[21].values.baseline_receipt.head_sha,
+    '3543d5d167bd4e8d27666c8893080bca3bd72950',
+  );
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.actionable, {
+    files: 114,
+    occurrences: 292,
+  });
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.retained, {
+    files: 11,
+    occurrences: 64,
+  });
+  assert.deepEqual(rows[21].values.baseline_receipt.counts.frozen_record, {
+    files: 2,
+    occurrences: 4,
+  });
   assert.equal(rows[20].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), false);
-  assert.equal(rows[21].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), false);
+  assert.equal(rows[21].source.includes('scripts/measure-epic-1-scorecard.test.mjs'), true);
 });
 
 test('unresolved rows fail closed with null values rather than fabricated zeroes', () => {

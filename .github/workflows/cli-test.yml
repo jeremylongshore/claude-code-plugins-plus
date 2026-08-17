@@ -48,14 +48,25 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      # The workspace root currently pulls better-sqlite3 12.11.1, which has no
+      # Node 20 Windows prebuild. Pin the last Node-20-compatible node-gyp line
+      # that recognizes hosted Visual Studio 2026 (major 18); do not skip scripts.
+      - name: Use Visual Studio 2026-aware node-gyp on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          npm install --global node-gyp@12.4.0
+          $nodeGyp = Join-Path (npm root --global) 'node-gyp/bin/node-gyp.js'
+          "npm_config_node_gyp=$nodeGyp" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Install Bun
         if: matrix.package-manager == 'bun'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Install dependencies (workspace)
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies (CLI and dependencies)
+        run: pnpm install --frozen-lockfile --filter '@intentsolutionsio/ccpi...'
 
       - name: Build CLI
         run: pnpm -C packages/cli build
@@ -148,7 +159,7 @@ jobs:
           deno-version: ${{ matrix.deno-version }}
 
       - name: Install dependencies and build
-        run: pnpm install --frozen-lockfile && pnpm -C packages/cli build
+        run: pnpm install --frozen-lockfile --filter '@intentsolutionsio/ccpi...' && pnpm -C packages/cli build
 
       - name: Test with Deno
         working-directory: packages/cli
