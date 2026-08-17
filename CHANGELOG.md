@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (2026-08-17 — release-note coverage evidence)
 
 - **Release-note coverage now fails closed when Git tag evidence is absent or incomplete.** The
-  existing pinned-floor check runs with fetched tags inside `Validate Plugins`, rejects tag
+  newly pinned changelog-coverage check runs with fetched tags inside `Validate Plugins`, rejects tag
   enumeration failures, tagless or floor-incomplete clones, missing or duplicate release notes,
   non-regular note paths, and malformed version metadata, and carries deterministic red fixtures.
   Every release from v4.14.0 onward must have exactly one public changelog entry; older tags remain
