@@ -95,45 +95,48 @@ Status: Clean
 
 ## Production Verification Evidence
 
+The command shapes and output annotations below are retained as historical evidence. The reserved
+host intentionally does not resolve; these are not current verification instructions.
+
 ### CLI Command on Homepage
 
 ```bash
 curl -s https://retired-domain.invalid/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
-# Output: pnpm add -g @intentsolutionsio/ccpi
+# Historical output: pnpm add -g @intentsolutionsio/ccpi
 ```
 
 ### Search Redirect JavaScript
 
 ```bash
 curl -s https://retired-domain.invalid/ | grep -o "redirectToExplore"
-# Output: redirectToExplore
+# Historical output: redirectToExplore
 
 curl -s https://retired-domain.invalid/ | grep -o "searchContainer.addEventListener"
-# Output: searchContainer.addEventListener
+# Historical output: searchContainer.addEventListener
 ```
 
 ### Explore Page URL Params
 
 ```bash
 curl -s https://retired-domain.invalid/explore/ | grep -o "DOMContentLoaded"
-# Output: DOMContentLoaded
+# Historical output: DOMContentLoaded
 ```
 
 ### Skills Index "Provided by" Labels
 
 ```bash
 curl -s https://retired-domain.invalid/skills/ | grep -o "Provided by" | head -3
-# Output: Provided by (x3)
+# Historical output: Provided by (x3)
 ```
 
 ### Skill Detail Page Styling
 
 ```bash
 curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
-# Output: <h2 class="section-title">Provided by Plugin</h2>
+# Historical output: <h2 class="section-title">Provided by Plugin</h2>
 
 curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "skill-detail"
-# Output: skill-detail (class present)
+# Historical output: skill-detail (class present)
 ```
 
 ---

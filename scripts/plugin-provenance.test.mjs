@@ -156,6 +156,25 @@ test('refuses a provenance record whose opened descriptor and path identities di
   assert.equal(readAttempted, false);
 });
 
+test('refuses an open-then-unlinked provenance record instead of treating it as absent', () => {
+  let descriptorCloseCount = 0;
+  const missing = Object.assign(new Error('fixture ENOENT after open'), { code: 'ENOENT' });
+  const result = parseSourceRecord('/fixture/.source.json', {
+    open: () => 42,
+    fstat: () => ({ dev: 1, ino: 10, isFile: () => true }),
+    lstat: () => {
+      throw missing;
+    },
+    close: () => {
+      descriptorCloseCount += 1;
+    },
+    allowAbsent: true,
+  });
+  assert.equal(result.status, 'refused');
+  assert.equal(result.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+  assert.equal(descriptorCloseCount, 1);
+});
+
 test('red proof: legacy publisher admits a mirror, enforced publisher skips it', () => {
   const root = fixture();
   packageFixture(root, 'plugins/legacy-mirror', {

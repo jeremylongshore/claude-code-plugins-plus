@@ -43,7 +43,16 @@ export function parseSourceRecord(
     if (error && typeof error === 'object' && error.code === 'ELOOP') {
       return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
     }
-    if (error && typeof error === 'object' && error.code === 'ENOENT' && allowAbsent) {
+    // Absence is authoritative only when the initial open failed. Once a
+    // descriptor exists, any path lookup/read ENOENT is a concurrent mutation
+    // and must fail closed.
+    if (
+      error &&
+      typeof error === 'object' &&
+      error.code === 'ENOENT' &&
+      allowAbsent &&
+      descriptor === undefined
+    ) {
       try {
         const pathMetadata = lstat(recordPath);
         if (pathMetadata.isSymbolicLink()) {

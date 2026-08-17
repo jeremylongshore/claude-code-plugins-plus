@@ -88,9 +88,11 @@ https://validator.schema.org
 ```bash
 # Check sitemap format
 curl https://retired-domain.invalid/sitemap.xml | xmllint --format -
+# Historical command shape; the reserved host intentionally does not resolve.
 
 # Verify in browser
 open https://retired-domain.invalid/sitemap.xml
+# Historical command shape; the reserved host intentionally does not resolve.
 ```
 
 ## SEO Metrics to Monitor

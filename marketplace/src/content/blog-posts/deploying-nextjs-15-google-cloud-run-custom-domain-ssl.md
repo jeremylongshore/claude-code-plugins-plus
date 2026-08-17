@@ -381,7 +381,7 @@ Verified DNS propagation:
 ```bash
 # Historical verification shape; the reserved host intentionally does not resolve.
 dig +short retired-domain.invalid @8.8.8.8
-# Returns: 35.201.66.187
+# Historical output: 35.201.66.187
 ```
 
 ## Part 7: Waiting for SSL
@@ -407,6 +407,8 @@ After about 30 minutes, the certificate became active.
 ```bash
 curl -I https://retired-domain.invalid
 ```
+
+Historical output (the reserved host no longer reproduces this response):
 
 ```
 HTTP/2 200
@@ -554,6 +556,7 @@ gcloud run deploy claudecodeplugins-web \
 
 # 9. Test
 curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 ```
 
 ## Conclusion

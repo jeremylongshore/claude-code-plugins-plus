@@ -106,7 +106,7 @@ Type: CNAME, Name: www, Value: jeremylongshore.github.io
 **Verification:**
 ```bash
 dig retired-domain.invalid A +short
-# Should return the 4 GitHub Pages IP addresses above
+# Historical verification shape; the reserved host intentionally returns no records.
 ```
 
 ### 3. Trigger Deployment
@@ -195,6 +195,7 @@ cat dist/CNAME
 ```bash
 # Check DNS propagation
 dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # Check worldwide DNS: https://www.whatsmydns.net/#A/retired-domain.invalid
 

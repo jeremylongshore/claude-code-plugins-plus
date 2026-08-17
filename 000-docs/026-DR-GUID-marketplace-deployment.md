@@ -43,9 +43,11 @@ Type: A    Name: @    Value: 185.199.111.153
 ```bash
 # Check if site is live
 curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Check DNS
 dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # View GitHub Actions
 # Visit: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -97,7 +99,7 @@ npm run build  # Test locally first
 ### DNS not working?
 ```bash
 dig retired-domain.invalid A +short
-# Should show 4 GitHub Pages IPs
+# Historical verification shape; the reserved host intentionally returns no records.
 # Wait 24-48 hours for DNS propagation
 # Check: https://www.whatsmydns.net/#A/retired-domain.invalid
 ```

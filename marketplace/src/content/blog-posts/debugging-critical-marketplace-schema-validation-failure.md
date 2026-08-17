@@ -331,7 +331,8 @@ The complete fix is open source:
 git log --oneline fb87448..5865a92
 
 # See the marketplace
-[retired legacy public domain]/
+# Historical command shape; the reserved host intentionally does not resolve.
+# Historical marketplace URL: https://retired-domain.invalid/
 
 # Install plugins
 /plugin marketplace add jeremylongshore/claude-code-plugins

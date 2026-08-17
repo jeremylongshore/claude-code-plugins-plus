@@ -121,7 +121,7 @@ Migration path:
 ## 🔗 Related Resources
 
 - **Learning Lab** - Hands-on tutorials for agent workflow patterns
-- **[Plugin Marketplace](https://tonsofskills.com/)** - 258 plugins across 18 categories
+- **[Plugin Marketplace](https://tonsofskills.com/)** - Browse the live plugin and skill catalog
 - **MCP Plugins** - Production MCP server implementations
 - **Templates** - Starter templates for new plugins
 

@@ -374,6 +374,7 @@ git push origin v1.1.0
 
 # Verify marketplace is live
 curl -I https://retired-domain.invalid/
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Test installation
 # In Claude Code:

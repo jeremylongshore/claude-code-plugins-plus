@@ -31,7 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   matching Intent Solutions identity and contact.
   Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
   no-follow semantics where available, closing metadata-check/file-use races without weakening
-  refusal behavior. Cross-platform CLI validation now installs only the CLI package and its
+  refusal behavior. Provenance absence is accepted only when the initial descriptor open reports
+  no path; disappearance after a successful open is refused as a concurrent mutation.
+  Cross-platform CLI validation now installs only the CLI package and its
   dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
   runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
   Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026

@@ -152,7 +152,7 @@ Type: CNAME    Name: www    Value: jeremylongshore.github.io    TTL: 3600
 # Check A records
 dig retired-domain.invalid A +short
 
-# Expected output:
+# Historical output from the retired deployment; the reserved host no longer reproduces it:
 # 185.199.108.153
 # 185.199.109.153
 # 185.199.110.153
@@ -160,7 +160,7 @@ dig retired-domain.invalid A +short
 
 # Check CNAME
 dig retired-domain.invalid CNAME +short
-# Expected: jeremylongshore.github.io
+# Historical output: jeremylongshore.github.io
 ```
 
 ---
@@ -246,6 +246,7 @@ cat
 
 # Check DNS propagation
 dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # Check worldwide DNS
 # Visit: https://www.whatsmydns.net/#A/retired-domain.invalid
@@ -257,7 +258,7 @@ dig retired-domain.invalid A +short
 1. Ensure "Enforce HTTPS" is enabled in GitHub Pages settings
 2. Wait 10-15 minutes for certificate provisioning
 3. Clear browser cache
-4. Check certificate: `openssl s_client -connect retired-domain.invalid:443`
+4. Historical command shape: `openssl s_client -connect retired-domain.invalid:443` (the reserved host intentionally does not resolve)
 
 ---
 
@@ -284,9 +285,11 @@ git push origin main  # Triggers automatic deployment
 ```bash
 # Check DNS
 dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # Check HTTPS
 curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Check build output
 ls -lh marketplace/dist/

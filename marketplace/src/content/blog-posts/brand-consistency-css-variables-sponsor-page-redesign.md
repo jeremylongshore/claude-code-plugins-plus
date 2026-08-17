@@ -297,7 +297,7 @@ git push origin main
 
 # Verify deployment
 curl -I https://retired-domain.invalid/sponsor/
-# HTTP/2 200 - deployed successfully
+# Historical output: HTTP/2 200 - deployed successfully
 ```
 
 **Cache consideration:** GitHub Pages has a 10-minute CDN cache. After deployment, I waited 15 minutes before verifying the live changes to ensure I wasn't seeing stale cached content.
