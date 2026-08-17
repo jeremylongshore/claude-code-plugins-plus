@@ -72,8 +72,9 @@ env: { FLOW_DB: freshie/inventory.sqlite }
 run: >2-
   j-rig eval skills/nineteen --db "$FLOW_DB"
 `;
+  const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
   assert.deepEqual(
-    inspectJrigDbBoundary(text, 'plugins/example/README.md').map((row) => row.reasonCode),
+    findings.map((row) => row.reasonCode),
     [
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
@@ -96,6 +97,7 @@ run: >2-
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
     ],
+    JSON.stringify(findings),
   );
 });
 
@@ -177,6 +179,73 @@ run: >
   for (const [name, text] of cases) {
     const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
     assert.equal(findings.length, 1, name);
+  }
+});
+
+test('command-scoped state, parameter expansion, and parsed YAML preserve shell semantics', () => {
+  const slash = String.fromCharCode(92);
+  const chain = [
+    'V17=freshie/inventory.sqlite',
+    ...Array.from({ length: 16 }, (_, index) => `V${16 - index}=$V${17 - index}`),
+    'j-rig eval x --db "$V1"',
+  ].join('\n');
+  const latestAssignment = [
+    ...Array.from({ length: 65 }, (_, index) => `DB=/dev/shm/safe-${index}.sqlite`),
+    'DB=freshie/inventory.sqlite',
+    'j-rig eval x --db "$DB"',
+  ].join('\n');
+  const dangerous = [
+    [
+      'token continuations',
+      [`j-${slash}`, `rig ev${slash}`, `al x --d${slash}`, 'b freshie/inventory.sqlite'].join('\n'),
+    ],
+    [
+      'eval-prefixed token continuations',
+      [`eval j-${slash}`, `rig ev${slash}`, `al x --d${slash}`, 'b freshie/inventory.sqlite'].join(
+        '\n',
+      ),
+    ],
+    ['bracket glob', 'j-rig eval x --db freshie/inventory.sqlit[e]'],
+    ['default parameter value', 'unset DB\nj-rig eval x --db "${DB:-freshie/inventory.sqlite}"'],
+    ['alternate parameter value', 'DB=on\nj-rig eval x --db "${DB:+freshie/inventory.sqlite}"'],
+    ['substring parameter value', 'DB=freshie/inventory.sqlite\nj-rig eval x --db "${DB:0}"'],
+    ['seventeen-assignment chain', chain],
+    ['latest of sixty-six assignments', latestAssignment],
+    ['tagged YAML run', 'run: !!str >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
+    ['escaped YAML run key', '"r\\u0075n": >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
+  ];
+  for (const [name, text] of dangerous) {
+    const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
+    assert.equal(findings.length, 1, name);
+  }
+
+  const safe = [
+    ['escaped question mark', `j-rig eval x --db freshie/inventory.sqli${slash}?e`],
+    ['quoted question mark', 'j-rig eval x --db "freshie/inventory.sqli?e"'],
+    ['escaped asterisk', `j-rig eval x --db freshie/inventory.sql${slash}*`],
+    [
+      'later wrapper-only Freshie assignment',
+      `DB=/dev/shm/jrig.sqlite
+j-rig eval x --db "$DB"
+DB=freshie/inventory.sqlite
+scripts/run-jrig-eval.sh --inventory-db "$DB"`,
+    ],
+    [
+      'latest assignment is scratch',
+      `DB=freshie/inventory.sqlite
+DB=/dev/shm/safe.sqlite
+j-rig eval x --db "$DB"`,
+    ],
+    [
+      'blank line separates folded shell commands',
+      `run: >
+  j-rig eval x
+
+  --db freshie/inventory.sqlite`,
+    ],
+  ];
+  for (const [name, text] of safe) {
+    assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
   }
 });
 

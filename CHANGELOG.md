@@ -16,8 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
   directives across active first-party operator surfaces, including `npx` invocations, folded
   and flow-style YAML commands, shell-escaped executable and flag spellings, statically resolvable
-  executable/verb/flag/value indirection through ordinary and declaration assignments, resolved
-  YAML anchors, and filesystem- or glob-equivalent path spellings; mirrors remain upstream-owned.
+  executable/verb/flag/value indirection through command-scoped last assignments and parameter
+  expansion, parsed YAML tags/keys/anchors, and active filesystem-glob path spellings; quoted or
+  escaped literal glob characters remain literal, and mirrors remain upstream-owned.
   The check runs inside the existing
   documentation-governance job and adds no required status context.
 
