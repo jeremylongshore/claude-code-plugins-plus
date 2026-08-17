@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — Actionlint bootstrap availability)
+
+- **Actionlint now downloads its pinned release archive directly and verifies the upstream
+  SHA-256 before extraction.** This removes the executable installer-script dependency on
+  `raw.githubusercontent.com`, which returned HTTP 429 before lint execution in three consecutive
+  PR runs, while preserving the blocking v1.7.4 lint command and fail-closed behavior.
+
 ### Added (2026-08-17 — deterministic generated skill index)
 
 - **The marketplace L0 skill index now has a fail-closed regenerate-and-diff gate.** A dedicated,

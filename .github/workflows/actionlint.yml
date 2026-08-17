@@ -25,18 +25,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # actionlint releases a single-binary executable; the install script is
-      # fetched FROM THE v1.7.4 TAG (not main HEAD) so the script's content is
-      # immutable for this version — supply-chain hardening. Bump the tag in
-      # BOTH places (URL ref + bash arg) explicitly when updating.
+      # Download the immutable release archive directly instead of executing
+      # an installer fetched from raw.githubusercontent.com. Keep the version,
+      # archive name, URL, and upstream checksum synchronized when updating.
       - name: Install actionlint
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/actionlint"
-          curl -sSL \
-            https://raw.githubusercontent.com/rhysd/actionlint/v1.7.4/scripts/download-actionlint.bash \
-            | bash -s -- 1.7.4 "$RUNNER_TEMP/actionlint"
-          "$RUNNER_TEMP/actionlint/actionlint" -version
+          readonly actionlint_version='1.7.4'
+          readonly actionlint_archive="actionlint_${actionlint_version}_linux_amd64.tar.gz"
+          # Source: https://github.com/rhysd/actionlint/releases/download/v1.7.4/actionlint_1.7.4_checksums.txt
+          readonly actionlint_sha256='fc0a6886bbb9a23a39eeec4b176193cadb54ddbe77cdbb19b637933919545395'
+          readonly actionlint_dir="$RUNNER_TEMP/actionlint"
+          readonly actionlint_path="$actionlint_dir/$actionlint_archive"
+
+          mkdir -p "$actionlint_dir"
+          curl --fail --show-error --silent --location \
+            --retry 3 --retry-all-errors \
+            --output "$actionlint_path" \
+            "https://github.com/rhysd/actionlint/releases/download/v${actionlint_version}/${actionlint_archive}"
+          printf '%s  %s\n' "$actionlint_sha256" "$actionlint_path" | sha256sum --check --strict
+          tar --extract --gzip --file "$actionlint_path" --directory "$actionlint_dir" \
+            --no-same-owner actionlint
+          "$actionlint_dir/actionlint" -version
 
       # BLOCKING — no `|| true`. If a workflow YAML doesn't lint cleanly,
       # the PR cannot merge. This gate protects the workflow split from
