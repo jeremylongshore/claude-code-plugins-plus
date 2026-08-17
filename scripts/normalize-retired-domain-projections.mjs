@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { lstatSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  closeSync,
+  constants,
+  fstatSync,
+  ftruncateSync,
+  openSync,
+  readFileSync,
+  writeSync,
+} from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -33,18 +41,32 @@ export function normalizeRetiredDomainProjections({ root = process.cwd() } = {})
     }
     if (provenance.status === 'mirror') continue;
     const target = resolve(repository, path);
-    const metadata = lstatSync(target);
-    if (metadata.isSymbolicLink() || !metadata.isFile()) {
-      throw new Error(`refusing non-regular generated projection: ${path}`);
-    }
-    const current = readFileSync(target, 'utf8');
-    const parsed = JSON.parse(current);
-    const normalized = normalizeDeadDomainValue(parsed);
-    if (JSON.stringify(normalized) === JSON.stringify(parsed)) continue;
-    const next = `${JSON.stringify(normalized, null, 2)}\n`;
-    if (next !== current) {
-      writeFileSync(target, next);
-      changed.push(path);
+    const noFollow = Number.isInteger(constants.O_NOFOLLOW) ? constants.O_NOFOLLOW : 0;
+    let descriptor;
+    try {
+      descriptor = openSync(target, constants.O_RDWR | noFollow);
+      const metadata = fstatSync(descriptor);
+      if (!metadata.isFile()) {
+        throw new Error(`refusing non-regular generated projection: ${path}`);
+      }
+      const current = readFileSync(descriptor, 'utf8');
+      const parsed = JSON.parse(current);
+      const normalized = normalizeDeadDomainValue(parsed);
+      if (JSON.stringify(normalized) === JSON.stringify(parsed)) continue;
+      const next = `${JSON.stringify(normalized, null, 2)}\n`;
+      if (next !== current) {
+        const output = Buffer.from(next, 'utf8');
+        let offset = 0;
+        while (offset < output.length) {
+          const written = writeSync(descriptor, output, offset, output.length - offset, offset);
+          if (written === 0) throw new Error(`short write for generated projection: ${path}`);
+          offset += written;
+        }
+        ftruncateSync(descriptor, output.length);
+        changed.push(path);
+      }
+    } finally {
+      if (descriptor !== undefined) closeSync(descriptor);
     }
   }
   return changed;

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -56,4 +56,17 @@ test('normalizes only registered generated JSON containing the retired domain', 
   assert.equal(readFileSync(join(root, clean), 'utf8'), '{"stable":true}');
   assert.match(readFileSync(join(root, source), 'utf8'), new RegExp(DEAD_DOMAIN));
   assert.match(readFileSync(join(root, mirror), 'utf8'), new RegExp(DEAD_DOMAIN));
+});
+
+test('refuses a symlinked generated projection without modifying its target', () => {
+  const root = fixture();
+  const target = join(root, 'outside.json');
+  const projection = 'marketplace/src/data/catalog.json';
+  writeFileSync(target, JSON.stringify({ url: `https://${DEAD_DOMAIN}` }));
+  mkdirSync(dirname(join(root, projection)), { recursive: true });
+  symlinkSync(target, join(root, projection));
+  execFileSync('git', ['add', '--', projection], { cwd: root });
+
+  assert.throws(() => normalizeRetiredDomainProjections({ root }));
+  assert.equal(JSON.parse(readFileSync(target, 'utf8')).url, `https://${DEAD_DOMAIN}`);
 });

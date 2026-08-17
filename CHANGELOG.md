@@ -23,7 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the MCP preset catalog no longer advertises an unserved remote schema URL. Exact-path
   supply-chain waivers record review of seven pre-existing dual-use capabilities whose files have
   only domain or contact changes in this slice; the underlying capabilities and scanner remain
-  unchanged.
+  unchanged. Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
+  no-follow semantics where available, closing metadata-check/file-use races without weakening
+  refusal behavior.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 

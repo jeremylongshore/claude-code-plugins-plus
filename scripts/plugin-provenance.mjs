@@ -13,7 +13,13 @@ function inside(root, candidate) {
 
 export function parseSourceRecord(
   recordPath,
-  { lstat = fs.lstatSync, readFile = fs.readFileSync } = {},
+  {
+    lstat = fs.lstatSync,
+    open = fs.openSync,
+    fstat = fs.fstatSync,
+    readFile = fs.readFileSync,
+    close = fs.closeSync,
+  } = {},
 ) {
   let metadata;
   try {
@@ -34,8 +40,14 @@ export function parseSourceRecord(
   }
 
   let raw;
+  let descriptor;
   try {
-    raw = readFile(recordPath, 'utf8');
+    const noFollow = Number.isInteger(fs.constants.O_NOFOLLOW) ? fs.constants.O_NOFOLLOW : 0;
+    descriptor = open(recordPath, fs.constants.O_RDONLY | noFollow);
+    if (!fstat(descriptor).isFile()) {
+      return { status: 'refused', reasonCode: 'SOURCE_RECORD_NOT_REGULAR', markerPath: recordPath };
+    }
+    raw = readFile(descriptor, 'utf8');
   } catch (error) {
     return {
       status: 'refused',
@@ -43,6 +55,8 @@ export function parseSourceRecord(
       markerPath: recordPath,
       error: error instanceof Error ? error.message : String(error),
     };
+  } finally {
+    if (descriptor !== undefined) close(descriptor);
   }
 
   let value;

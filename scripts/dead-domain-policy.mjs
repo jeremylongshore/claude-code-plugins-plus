@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { lstatSync, readFileSync, realpathSync } from 'node:fs';
+import { closeSync, constants, fstatSync, openSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 
 import { artifactRegistration } from './generated-artifact-registry.mjs';
@@ -8,6 +8,19 @@ import { resolvePluginProvenance } from './plugin-provenance.mjs';
 
 export const DEAD_DOMAIN = ['claudecode', 'plugins.io'].join('');
 export const LIVE_DOMAIN = 'tonsofskills.com';
+
+function readRegularFileSync(path, encoding = null) {
+  const noFollow = Number.isInteger(constants.O_NOFOLLOW) ? constants.O_NOFOLLOW : 0;
+  let descriptor;
+  try {
+    descriptor = openSync(path, constants.O_RDONLY | noFollow);
+    const metadata = fstatSync(descriptor);
+    if (!metadata.isFile()) throw new Error('path is not a regular file');
+    return readFileSync(descriptor, encoding ?? undefined);
+  } finally {
+    if (descriptor !== undefined) closeSync(descriptor);
+  }
+}
 export const VERIFIED_CONTACT_EMAIL = 'jeremy@intentsolutions.io';
 
 const APPROVED_RETIRED_MAILBOXES = new Set(['hello', 'jeremy', 'plugins']);
@@ -185,7 +198,7 @@ export function classifyDomainPath(
   if (isFrozenDomainRecord(path)) {
     let frozenContent = content;
     try {
-      frozenContent ??= readFileSync(resolve(root, path), 'utf8');
+      frozenContent ??= readRegularFileSync(resolve(root, path), 'utf8');
     } catch (error) {
       return {
         category: 'refused',
@@ -237,7 +250,7 @@ export function classifyDomainPath(
     }
     let historicalContent = content;
     try {
-      historicalContent ??= readFileSync(resolve(root, path));
+      historicalContent ??= readRegularFileSync(resolve(root, path));
     } catch (error) {
       return {
         category: 'refused',
@@ -343,11 +356,7 @@ export function scanDeadDomainPolicy({
     }
     try {
       const target = resolve(repository, path);
-      const metadata = lstatSync(target);
-      if (metadata.isSymbolicLink() || !metadata.isFile()) {
-        throw new Error('retained evidence is not a regular file');
-      }
-      if (contentSha256(readFileSync(target)) !== expectedHash) {
+      if (contentSha256(readRegularFileSync(target)) !== expectedHash) {
         refused.push({
           path,
           reasonCode: isFrozenDomainRecord(path)
@@ -387,15 +396,9 @@ export function scanDeadDomainPolicy({
       refused.push({ path, reasonCode: 'PATH_TRAVERSAL' });
       continue;
     }
-    let metadata;
     let content;
     try {
-      metadata = lstatSync(target);
-      if (metadata.isSymbolicLink() || !metadata.isFile()) {
-        refused.push({ path, reasonCode: 'UNREADABLE_TRACKED_PATH' });
-        continue;
-      }
-      content = readFileSync(target);
+      content = readRegularFileSync(target);
     } catch (error) {
       refused.push({
         path,
