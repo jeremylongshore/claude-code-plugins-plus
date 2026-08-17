@@ -21,34 +21,27 @@ export function parseSourceRecord(
     close = fs.closeSync,
   } = {},
 ) {
-  let metadata;
-  try {
-    metadata = lstat(recordPath);
-  } catch (error) {
-    return {
-      status: 'refused',
-      reasonCode: 'UNREADABLE_SOURCE_RECORD',
-      markerPath: recordPath,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-  if (metadata.isSymbolicLink()) {
-    return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
-  }
-  if (!metadata.isFile()) {
-    return { status: 'refused', reasonCode: 'SOURCE_RECORD_NOT_REGULAR', markerPath: recordPath };
-  }
-
   let raw;
   let descriptor;
   try {
     const noFollow = Number.isInteger(fs.constants.O_NOFOLLOW) ? fs.constants.O_NOFOLLOW : 0;
     descriptor = open(recordPath, fs.constants.O_RDONLY | noFollow);
-    if (!fstat(descriptor).isFile()) {
+    const openedMetadata = fstat(descriptor);
+    const pathMetadata = lstat(recordPath);
+    if (pathMetadata.isSymbolicLink()) {
+      return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
+    }
+    if (!pathMetadata.isFile() || !openedMetadata.isFile()) {
       return { status: 'refused', reasonCode: 'SOURCE_RECORD_NOT_REGULAR', markerPath: recordPath };
+    }
+    if (pathMetadata.dev !== openedMetadata.dev || pathMetadata.ino !== openedMetadata.ino) {
+      throw new Error('source record changed while it was being opened');
     }
     raw = readFile(descriptor, 'utf8');
   } catch (error) {
+    if (error && typeof error === 'object' && error.code === 'ELOOP') {
+      return { status: 'refused', reasonCode: 'SOURCE_RECORD_SYMLINK', markerPath: recordPath };
+    }
     return {
       status: 'refused',
       reasonCode: 'UNREADABLE_SOURCE_RECORD',

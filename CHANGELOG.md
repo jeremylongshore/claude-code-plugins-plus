@@ -27,7 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no-follow semantics where available, closing metadata-check/file-use races without weakening
   refusal behavior. Cross-platform CLI validation now installs only the CLI package and its
   dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
-  runtime, package-manager, and operating-system assertion.
+  runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
+  Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026
+  toolchain when a transitive native dependency has no prebuilt binary.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 

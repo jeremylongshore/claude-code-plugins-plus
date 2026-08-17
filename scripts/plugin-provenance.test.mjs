@@ -121,6 +121,22 @@ test('unreadable and symlink source records have stable fail-closed reasons', ()
   assert.equal(symlink.reasonCode, 'SOURCE_RECORD_SYMLINK');
 });
 
+test('refuses a provenance record whose opened descriptor and path identities differ', () => {
+  let readAttempted = false;
+  const result = parseSourceRecord('/fixture/.source.json', {
+    open: () => 42,
+    fstat: () => ({ dev: 1, ino: 10, isFile: () => true }),
+    lstat: () => ({ dev: 1, ino: 11, isFile: () => true, isSymbolicLink: () => false }),
+    readFile: () => {
+      readAttempted = true;
+      return '{}';
+    },
+    close: () => {},
+  });
+  assert.equal(result.reasonCode, 'UNREADABLE_SOURCE_RECORD');
+  assert.equal(readAttempted, false);
+});
+
 test('red proof: legacy publisher admits a mirror, enforced publisher skips it', () => {
   const root = fixture();
   packageFixture(root, 'plugins/legacy-mirror', {
