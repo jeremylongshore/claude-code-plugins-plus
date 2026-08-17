@@ -14,7 +14,7 @@ const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
 
 function shellLiteralView(text) {
-  return text.replace(/[`'"]/g, '');
+  return text.replace(/[`'"]/g, '').replace(/\\([/.-])/g, '$1');
 }
 
 function containsJrigEval(text) {
@@ -81,21 +81,26 @@ function lineNumber(text, offset) {
 function commandBlocks(text) {
   const lines = text.split('\n');
   const blocks = [];
-  let offset = 0;
+  const offsets = [];
+  let runningOffset = 0;
+  for (const line of lines) {
+    offsets.push(runningOffset);
+    runningOffset += line.length + 1;
+  }
 
-  for (let index = 0; index < lines.length; index += 1) {
+  for (let index = 0; index < lines.length; ) {
     const line = lines[index];
-    if (containsJrigEval(line)) {
-      const start = offset;
-      const commandLines = [line];
-      let cursor = index;
-      while (cursor + 1 < lines.length && commandLines.at(-1).trimEnd().endsWith('\\')) {
-        cursor += 1;
-        commandLines.push(lines[cursor]);
-      }
-      blocks.push({ text: commandLines.join('\n'), offset: start });
+    const commandLines = [line];
+    let cursor = index;
+    while (cursor + 1 < lines.length && commandLines.at(-1).trimEnd().endsWith('\\')) {
+      cursor += 1;
+      commandLines.push(lines[cursor]);
     }
-    offset += line.length + 1;
+    const logicalCommand = commandLines.join('\n');
+    if (containsJrigEval(logicalCommand.replace(/\\\s*\n\s*/g, ' '))) {
+      blocks.push({ text: logicalCommand, offset: offsets[index] });
+    }
+    index = cursor + 1;
   }
   return blocks;
 }

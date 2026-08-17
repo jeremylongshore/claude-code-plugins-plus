@@ -57,10 +57,14 @@ env:
   JRIG_DB: freshie/inventory.sqlite
 run : >
   j-rig eval skills/twelve --db "$JRIG_DB"
+j\\-rig \\
+  eval skills/thirteen \\
+  --db freshie/inventory.sqlite
 `;
   assert.deepEqual(
     inspectJrigDbBoundary(text, 'plugins/example/README.md').map((row) => row.reasonCode),
     [
+      'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
       'DIRECT_JRIG_FRESHIE_DB',
