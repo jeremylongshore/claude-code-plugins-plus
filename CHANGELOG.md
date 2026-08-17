@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `raw.githubusercontent.com`, which returned HTTP 429 before lint execution in three consecutive
   PR runs, while preserving the blocking v1.7.4 lint command and fail-closed behavior.
 
-### Added (2026-08-17 — deterministic generated skill index)
+### Added (2026-08-17 — deterministic generated skill projections)
 
 - **The marketplace L0 skill index now has a fail-closed regenerate-and-diff gate.** A dedicated,
   unconditional `Validate Plugins` job renders `skills-index.json` in memory and byte-compares it
@@ -37,6 +37,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   projections from three external-stat snapshots and editorial marketplace data; this first E1.8
   slice gates one of four and leaves the full skill catalog, plugin catalog, and unified search
   projection explicitly pending rather than treating unlike populations as interchangeable.
+
+- **The full marketplace skill catalog now has the same fail-closed content gate.** The reviewed
+  baseline moves from 3,008 to 3,068 marketplace-visible skills: 96 source paths entered, 36 left,
+  and 2,943 of 2,972 shared records changed as current skill and parent-plugin metadata replaced the
+  stale 2026-06-02 projection. CI renders both skill projections in memory, compares both with
+  stage-0 Git-index bytes, and refuses if either drifts; a matching L0 index cannot hide a stale L1
+  catalog. Of the added and removed paths, 73 and 7 respectively are provenance-marked mirrors;
+  only the generated projection changed, with zero mirrored `SKILL.md` edits. E1.8 deterministic
+  content-drift coverage is now two of four. Plugin catalog and unified search remain separate
+  follow-up slices.
 
 ### Fixed (2026-08-17 — release-note coverage evidence)
 

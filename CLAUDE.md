@@ -100,11 +100,12 @@ CI fails if any derived file is out of sync. Never hand-edit auto-generated file
 
 `discover-skills.mjs` emits two artifacts (schema 3.4.0+): `skills-index.json` (L0, ~97 KB gzipped, metadata only — for trigger-match / browse) and `skills-catalog.json` (L1, ~5.5 MB gzipped, full body HTML). Both carry top-level `schemaVersion` + `level` fields. CLI flag `--level=metadata|full|file` (default `full`).
 
-`pnpm run validate:generated-content` regenerates the L0 index in memory and byte-compares it with
-the Git index. The check is non-mutating and network-free. The L1 catalog, plugin catalog, and
-unified search projection remain tracked but are not yet covered by this command; blueprint E1.8
-owns their separately reviewed baseline and gate expansion. External statistics are E1.10
-snapshots, and `spotlights.json` is canonical editorial data, not deterministic build output.
+`pnpm run validate:generated-content` regenerates the L0 index and L1 full catalog in memory and
+byte-compares both with the Git index. The check is non-mutating and network-free. The plugin
+catalog and unified search projection remain tracked but are not yet covered by this command;
+blueprint E1.8 owns their separately reviewed determinism repairs and gate expansion. External
+statistics are E1.10 snapshots, and `spotlights.json` is canonical editorial data, not
+deterministic build output.
 
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` — iOS Safari fails on lines > 5000 chars. CI enforces this.
 
