@@ -32,6 +32,10 @@ negations in `000-docs/.gitignore`. Its `invisible_files` value rises by one bec
 paths hidden from ordinary gitleaks scanning, not the complement of `tracked_files`; the two
 tracked-file counters therefore rise together by one.
 
+After this AAR and its filing-ledger entry were staged, `node scripts/generate-docs-index.mjs`
+regenerated the 190-document index and `pnpm --silent run measure:e1` regenerated scorecard 742.
+The committed bytes then passed both generators' check modes; neither derived file was hand-edited.
+
 No plugin, skill, `.source.json`, provenance-owned mirror, package version, registry artifact,
 credential, contributor record, Plane record, branch rule, or release was changed. Open automation
 PR #1149 touches README and three external-stat files, none of this bead's six paths; it remained
@@ -89,9 +93,10 @@ and the exact-head CI test matrix and CLI smoke tests passed. `quick-test.sh` al
 this bead did not lower or relabel that baseline.
 
 The independent reviewer returned PASS at the exact head from a detached clean worktree. It
-re-derived all six decisions, checked registry overlap across 23,043 paths, planted a tracked
-projection, passed the focused suite, scorecard check, full actionlint, clean build, predev,
-gitleaks, mirror-path check, and reverse rollback, and ended with a clean tree. [Greptile review
+re-derived all six decisions, checked every registry representative for single ownership and path
+overlap, planted a tracked projection, passed the focused suite, scorecard check, full actionlint,
+clean build, predev, gitleaks, mirror-path check, and reverse rollback, and ended with a clean tree.
+[Greptile review
 `4948421619`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1220#pullrequestreview-4948421619)
 was requested at the exact head; the free trial had ended, so it is recorded as unavailable rather
 than PASS.
