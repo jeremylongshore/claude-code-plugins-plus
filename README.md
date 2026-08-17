@@ -1102,7 +1102,7 @@ Common install + author paths:
 
 ## Star history
 
-[![Star history chart](https://api.star-history.com/svg?repos=jeremylongshore/claude-code-plugins-plus-skills&type=Date)](https://star-history.com/#jeremylongshore/claude-code-plugins-plus-skills&Date)
+[![Star history chart](https://star-history.dera.page/svg?repos=jeremylongshore/claude-code-plugins-plus-skills&type=Date)](https://star-history.dera.page/#jeremylongshore/claude-code-plugins-plus-skills&Date)
 
 ---
 
