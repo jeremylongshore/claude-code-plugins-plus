@@ -68,7 +68,7 @@ function evaluateStaticPrintf(body) {
   if (!words || words.shift() !== 'printf') return null;
   if (words[0] === '--') words.shift();
   const format = words.shift();
-  if (format === undefined || /%(?![%s])/.test(format)) return null;
+  if (format === undefined) return null;
   let argument = 0;
   let output = '';
   for (let index = 0; index < format.length; index += 1) {
@@ -82,6 +82,29 @@ function evaluateStaticPrintf(body) {
     else return null;
   }
   return argument === words.length ? output : null;
+}
+
+function hasActiveShellExpansion(value) {
+  let quote = null;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (character === '\\' && quote !== "'") {
+      index += 1;
+      continue;
+    }
+    if (quote) {
+      if (character === quote) quote = null;
+      else if (quote !== "'" && character === '$' && /[({A-Za-z_]/.test(value[index + 1] ?? ''))
+        return true;
+      continue;
+    }
+    if (character === "'" || character === '"') {
+      quote = character;
+      continue;
+    }
+    if (character === '$' && /[({A-Za-z_]/.test(value[index + 1] ?? '')) return true;
+  }
+  return false;
 }
 
 function resolveStaticCommandSubstitutions(value) {
@@ -326,9 +349,10 @@ function commandTargetsFreshie(command, assignments, aliases = new Set()) {
   if (!invokesJrig) return false;
   if (assignments.has(AMBIGUOUS_STATE) && /--db\b/.test(literal)) return true;
   for (const match of expanded.matchAll(dbArgument)) {
-    // A non-static command substitution can resolve to the tracked database at
-    // runtime. Direct JRig guidance must prove the DB argument is scratch-safe.
-    if (/\$\(/.test(match[1])) return true;
+    // A non-static variable or command substitution can resolve to the tracked
+    // database at runtime. Direct JRig guidance must prove the DB argument is
+    // scratch-safe; literal single-quoted or escaped dollar text is harmless.
+    if (hasActiveShellExpansion(match[1])) return true;
     if (isFreshieInventoryPath(match[1])) return true;
   }
   if (invokesJrig && /\beval\b/.test(literal) && /--db\b/.test(literal)) {

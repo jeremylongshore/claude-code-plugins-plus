@@ -297,6 +297,7 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
       'non-static database substitution fails closed',
       'DB=$(resolve-runtime-db)\nj-rig eval x --db "$DB"',
     ],
+    ['unresolved database variable fails closed', 'j-rig eval x --db "$RUNTIME_DB"'],
     [
       'conditional assignment remains a possible state',
       'if test -n "${FLAG:-}"; then DB=freshie/inventory.sqlite; fi\nj-rig eval x --db "$DB"',
@@ -385,6 +386,12 @@ j-rig eval x --db "$DB"`,
       'statically proven scratch substitution remains allowed',
       'DB=$(printf %s /dev/shm/jrig-safe.sqlite)\nj-rig eval x --db "$DB"',
     ],
+    [
+      'printf percent escape in a scratch path remains allowed',
+      'DB=$(printf \'/dev/shm/safe%%name.sqlite\')\nj-rig eval x --db "$DB"',
+    ],
+    ['single-quoted dollar text is literal', "j-rig eval x --db '$RUNTIME_DB'"],
+    ['escaped dollar text is literal', 'j-rig eval x --db "\\$RUNTIME_DB"'],
   ];
   for (const [name, text] of safe) {
     assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
