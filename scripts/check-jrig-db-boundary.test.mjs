@@ -294,6 +294,10 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
       'DB=$(printf "fresh%s/inventory.%s" ie sqlite)\nj-rig eval x --db "$DB"',
     ],
     [
+      'non-static database substitution fails closed',
+      'DB=$(resolve-runtime-db)\nj-rig eval x --db "$DB"',
+    ],
+    [
       'conditional assignment remains a possible state',
       'if test -n "${FLAG:-}"; then DB=freshie/inventory.sqlite; fi\nj-rig eval x --db "$DB"',
     ],
@@ -376,6 +380,10 @@ j-rig eval x --db "$DB"`,
     [
       'non-colon assignment preserves an existing empty value',
       'DB=\n: "${DB=freshie/inventory.sqlite}"\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'statically proven scratch substitution remains allowed',
+      'DB=$(printf %s /dev/shm/jrig-safe.sqlite)\nj-rig eval x --db "$DB"',
     ],
   ];
   for (const [name, text] of safe) {

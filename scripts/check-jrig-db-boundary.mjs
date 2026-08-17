@@ -326,6 +326,9 @@ function commandTargetsFreshie(command, assignments, aliases = new Set()) {
   if (!invokesJrig) return false;
   if (assignments.has(AMBIGUOUS_STATE) && /--db\b/.test(literal)) return true;
   for (const match of expanded.matchAll(dbArgument)) {
+    // A non-static command substitution can resolve to the tracked database at
+    // runtime. Direct JRig guidance must prove the DB argument is scratch-safe.
+    if (/\$\(/.test(match[1])) return true;
     if (isFreshieInventoryPath(match[1])) return true;
   }
   if (invokesJrig && /\beval\b/.test(literal) && /--db\b/.test(literal)) {
