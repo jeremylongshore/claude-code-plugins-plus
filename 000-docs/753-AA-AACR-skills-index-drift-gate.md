@@ -75,11 +75,24 @@ bypass was disclosed before merge; no branch rule or required context was change
 
 ## Operational notes and follow-up
 
+The generated files were not hand-edited. After staging the filing-ledger entry and document 753,
+the filing transaction ran `node scripts/generate-docs-index.mjs`, staged the resulting index, ran
+`TMPDIR=/dev/shm node scripts/measure-epic-1.mjs`, and staged scorecard 742. Both generators then
+passed their non-writing `--check` modes. The independent reviewer repeated index regeneration
+(7/7 tests, 193 documents) and scorecard regeneration (37/37 tests, byte-current) from the exact
+committed head.
+
+The scorecard's `invisible_files` value rises from 15,532 to 15,533 by design. That field measures
+tracked paths matched by a Gitleaks path allowlist, not paths hidden by Git ignore rules. The
+existing `.gitleaks.toml` expression `^000-docs/.*\.md$` matches every filed Markdown document, so
+tracking document 753 adds one matching path even though its filing-ledger negation also makes it
+public. The allowlist-pattern count remains 25.
+
 One hosted attempt initially failed before executing the gate because the job used `npm ci` while
 `marketplace/package-lock.json` is intentionally untracked. The final job has no install step, and
-an architecture test prevents reintroduction. A local ENOSPC incident was traced to aged,
-prefix-validated test scratch roots and recoverable caches; only those disposable paths were
-removed. No repository or user source data was deleted.
+`scripts/generated-content-ci.test.mjs` prevents reintroduction. A local ENOSPC incident was traced
+to aged, prefix-validated test scratch roots and recoverable caches; only those disposable paths
+were removed. No repository or user source data was deleted.
 
 Continue `claude-hz8f.11` through separately reviewable gates for `catalog.json`,
 `skills-catalog.json`, and `unified-search-index.json`. Keep external snapshots in E1.10 and do not
