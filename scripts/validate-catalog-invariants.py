@@ -72,11 +72,14 @@ def catalog_name_errors(plugins: list[object]) -> list[str]:
         if not isinstance(name, str) or not name.strip():
             errors.append(f"catalog row {index}: `name` must be a non-empty string")
             continue
-        counts[name] += 1
+        counts[name.strip().casefold()] += 1
 
     for name, count in sorted(counts.items()):
         if count > 1:
-            errors.append(f"duplicate plugin name `{name}` appears {count} times; names must be unique")
+            errors.append(
+                f"duplicate plugin identity `{name}` appears {count} times after trimming and case-folding; "
+                "names must be unique"
+            )
     return errors
 
 

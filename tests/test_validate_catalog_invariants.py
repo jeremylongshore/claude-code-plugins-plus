@@ -26,6 +26,14 @@ def load_validator():
 
 
 class CatalogInvariantTests(unittest.TestCase):
+    def test_name_validation_normalizes_case_and_surrounding_whitespace(self):
+        validator = load_validator()
+
+        self.assertEqual(
+            validator.catalog_name_errors([{"name": "alpha"}, {"name": " Alpha "}, {"name": "ALPHA"}]),
+            ["duplicate plugin identity `alpha` appears 3 times after trimming and case-folding; names must be unique"],
+        )
+
     def test_name_validation_fails_closed_on_invalid_rows(self):
         validator = load_validator()
 
@@ -69,7 +77,10 @@ class CatalogInvariantTests(unittest.TestCase):
                 result = validator.main()
 
             self.assertEqual(result, 1)
-            self.assertIn("duplicate plugin name `alpha` appears 2 times", output.getvalue())
+            self.assertIn(
+                "duplicate plugin identity `alpha` appears 2 times after trimming and case-folding",
+                output.getvalue(),
+            )
 
     def test_canonical_catalogs_are_not_shadows(self):
         validator = load_validator()
