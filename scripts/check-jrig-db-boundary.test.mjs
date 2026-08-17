@@ -194,6 +194,11 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
     'DB=freshie/inventory.sqlite',
     'j-rig eval x --db "$DB"',
   ].join('\n');
+  const branchExplosion = [
+    'DB=/dev/shm/safe.sqlite',
+    ...Array.from({ length: 7 }, (_, index) => `unknown_${index} && V${index}=safe-${index}`),
+    'j-rig eval x --db "$DB"',
+  ].join('\n');
   const dangerous = [
     [
       'token continuations',
@@ -221,6 +226,33 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
     ],
     ['tagged YAML run', 'run: !!str >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
     ['escaped YAML run key', '"r\\u0075n": >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
+    ['assignment parameter', 'j-rig eval x --db "${DB:=freshie/inventory.sqlite}"'],
+    ['brace-expanded path', 'j-rig eval x --db freshie/inventory.sql{ite,other}'],
+    ['dynamic eval token', 'j-rig "$(printf eval)" x --db freshie/inventory.sqlite'],
+    ['dynamic db flag', 'j-rig eval x "$(printf -- --db)" freshie/inventory.sqlite'],
+    ['dynamic db path', 'j-rig eval x --db "$(printf %s freshie/inventory.sqlite)"'],
+    [
+      'subshell cannot overwrite parent Freshie assignment',
+      'DB=freshie/inventory.sqlite\n( DB=/dev/shm/safe.sqlite )\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'pipeline cannot overwrite parent Freshie assignment',
+      'DB=freshie/inventory.sqlite\nDB=/dev/shm/safe.sqlite | cat\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'background assignment cannot overwrite parent Freshie assignment',
+      'DB=freshie/inventory.sqlite\nDB=/dev/shm/safe.sqlite &\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'skipped and-branch cannot overwrite parent Freshie assignment',
+      'DB=freshie/inventory.sqlite\nfalse && DB=/dev/shm/safe.sqlite\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'skipped or-branch cannot overwrite parent Freshie assignment',
+      'DB=freshie/inventory.sqlite\ntrue || DB=/dev/shm/safe.sqlite\nj-rig eval x --db "$DB"',
+    ],
+    ['function alias invocation', 'jr() { j-rig "$@"; }\njr eval x --db freshie/inventory.sqlite'],
+    ['ambiguous branch state fails closed', branchExplosion],
   ];
   for (const [name, text] of dangerous) {
     const findings = inspectJrigDbBoundary(text, 'plugins/example/README.md');
@@ -255,6 +287,26 @@ j-rig eval x --db "$DB"`,
 
   --db freshie/inventory.sqlite`,
     ],
+    [
+      'subshell cannot overwrite parent scratch assignment',
+      'DB=/dev/shm/safe.sqlite\n( DB=freshie/inventory.sqlite )\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'pipeline cannot overwrite parent scratch assignment',
+      'DB=/dev/shm/safe.sqlite\nDB=freshie/inventory.sqlite | cat\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'background assignment cannot overwrite parent scratch assignment',
+      'DB=/dev/shm/safe.sqlite\nDB=freshie/inventory.sqlite &\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'skipped and-branch cannot overwrite parent scratch assignment',
+      'DB=/dev/shm/safe.sqlite\nfalse && DB=freshie/inventory.sqlite\nj-rig eval x --db "$DB"',
+    ],
+    [
+      'skipped or-branch cannot overwrite parent scratch assignment',
+      'DB=/dev/shm/safe.sqlite\ntrue || DB=freshie/inventory.sqlite\nj-rig eval x --db "$DB"',
+    ],
   ];
   for (const [name, text] of safe) {
     assert.deepEqual(inspectJrigDbBoundary(text, 'plugins/example/README.md'), [], name);
@@ -269,12 +321,14 @@ test('prose directives using distinct operator verbs are refused', () => {
       'Feed `--db=freshie/inventory.sqlite` into j-rig.',
       'Supply `freshie/./inventory.sqlite` to `--db` for persistence.',
       'Configure `freshie/inventory.sqlite` as the `--db` target.',
+      "Choose Freshie's inventory.sqlite as the --db destination when evaluating with JRig.",
     ].join('\n'),
     'plugins/example/README.md',
   );
   assert.deepEqual(
     findings.map((row) => row.reasonCode),
     [
+      'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',
       'JRIG_FRESHIE_DB_DIRECTIVE',

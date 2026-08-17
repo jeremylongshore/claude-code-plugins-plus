@@ -12,17 +12,39 @@ const ACTIVE_ROOTS = ['.github/', 'plugins/', 'scripts/'];
 const ACTIVE_EXTENSIONS = new Set(['.md', '.sh', '.yaml', '.yml']);
 const DIRECT_REASON = 'DIRECT_JRIG_FRESHIE_DB';
 const DIRECTIVE_REASON = 'JRIG_FRESHIE_DB_DIRECTIVE';
+const AMBIGUOUS_STATE = '__JRIG_AMBIGUOUS_SHELL_STATE__';
 const JRIG_EVAL_RE = /\b(?:(?:pnpm\s+(?:exec|dlx)|npx)\s+)?j-rig\s+eval\b/;
 
 function shellLiteralView(text) {
   return text
+    .replace(/\\\s*\n\s*/g, '')
     .replace(/\$(['"])/g, '$1')
     .replace(/[`'"]/g, '')
     .replace(/\\([^\n])/g, '$1');
 }
 
-function containsJrigEval(text) {
-  return JRIG_EVAL_RE.test(shellLiteralView(text));
+function functionAliases(text) {
+  const aliases = new Set();
+  const functions =
+    /(?:^|[;\n])\s*(?:function\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*(?:\(\s*\))?\s*\{([\s\S]*?)\}/g;
+  for (const match of text.matchAll(functions)) {
+    if (/\bj-rig\b/.test(shellLiteralView(match[2]))) aliases.add(match[1]);
+  }
+  const shellAliases = /(?:^|[;\n])\s*alias\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^\n;]+)/g;
+  for (const match of text.matchAll(shellAliases)) {
+    if (/\bj-rig\b/.test(shellLiteralView(match[2]))) aliases.add(match[1]);
+  }
+  return aliases;
+}
+
+function containsJrigEval(text, aliases = new Set()) {
+  const literal = shellLiteralView(text);
+  if (JRIG_EVAL_RE.test(literal)) return true;
+  for (const alias of aliases) {
+    const escaped = alias.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+    if (new RegExp(`\\b${escaped}\\s+eval\\b`).test(literal)) return true;
+  }
+  return false;
 }
 
 function collectAssignments(text) {
@@ -83,7 +105,7 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
   };
 
   const variable =
-    /\$\{!([A-Za-z_][A-Za-z0-9_]*)\}|\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|:\+|:)([^}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)/g;
+    /\$\{!([A-Za-z_][A-Za-z0-9_]*)\}|\$\{([A-Za-z_][A-Za-z0-9_]*)(?:(:-|:=|:\+|:)([^}]*))?\}|\$([A-Za-z_][A-Za-z0-9_]*)/g;
   return value.replace(variable, (token, indirectName, bracedName, operator, operand, bareName) => {
     if (indirectName) {
       const pointer = resolve(indirectName);
@@ -92,7 +114,7 @@ function expandKnownVariables(value, assignments, stack = new Set()) {
 
     const name = bracedName ?? bareName;
     const resolved = resolve(name);
-    if (operator === ':-') {
+    if (operator === ':-' || operator === ':=') {
       return resolved ? resolved : expandKnownVariables(operand, assignments, stack);
     }
     if (operator === ':+') {
@@ -159,28 +181,63 @@ function shellWordPattern(value) {
 
 function isFreshieInventoryPath(value) {
   const cleaned = value.replace(/[),.;`]+$/, '');
-  const fullPattern = shellWordPattern(cleaned);
-  const fullNormalized = path.posix.normalize(fullPattern.literal);
-  if (
-    fullNormalized === 'freshie/inventory.sqlite' ||
-    fullNormalized.endsWith('/freshie/inventory.sqlite')
-  ) {
-    return true;
+  const candidates = [cleaned];
+  for (let round = 0; round < 4; round += 1) {
+    const next = [];
+    for (const candidate of candidates) {
+      const brace = /\{([^{}]+)\}/.exec(candidate);
+      if (!brace) continue;
+      for (const option of brace[1].split(',')) {
+        next.push(
+          `${candidate.slice(0, brace.index)}${option}${candidate.slice(brace.index + brace[0].length)}`,
+        );
+      }
+    }
+    if (next.length === 0 || candidates.length + next.length > 64) break;
+    candidates.push(...next);
   }
-  const suffix = cleaned.split('/').slice(-2).join('/');
-  const pattern = shellWordPattern(suffix);
-  return pattern.activeGlob && new RegExp(pattern.regex).test('freshie/inventory.sqlite');
+  for (const candidate of candidates) {
+    const fullPattern = shellWordPattern(candidate);
+    const fullNormalized = path.posix.normalize(fullPattern.literal);
+    if (
+      fullNormalized === 'freshie/inventory.sqlite' ||
+      fullNormalized.endsWith('/freshie/inventory.sqlite')
+    ) {
+      return true;
+    }
+    const suffix = candidate.split('/').slice(-2).join('/');
+    const pattern = shellWordPattern(suffix);
+    if (pattern.activeGlob && new RegExp(pattern.regex).test('freshie/inventory.sqlite'))
+      return true;
+  }
+  return false;
 }
 
-function commandTargetsFreshie(command, assignments) {
+function commandTargetsFreshie(command, assignments, aliases = new Set()) {
   const dbArgument = /(?:^|\s)--db(?:\s*=\s*|\s+)([^\s;&|]+)/g;
   const expanded = expandKnownVariables(command, assignments)
     .replace(/\\\s*\n\s*/g, '')
     .replace(/\\([A-Za-z-])/g, '$1')
     .replace(/(["'])--db\1/g, '--db')
     .replace(/(["'])--db/g, '--db');
+  if (assignments.has(AMBIGUOUS_STATE) && /--db\b/.test(shellLiteralView(expanded))) return true;
   for (const match of expanded.matchAll(dbArgument)) {
     if (isFreshieInventoryPath(match[1])) return true;
+  }
+  const literal = shellLiteralView(expanded);
+  const invokesJrig =
+    /\bj-rig\b/.test(literal) ||
+    [...aliases].some((alias) => new RegExp(`\\b${alias}\\b`).test(literal));
+  if (invokesJrig && /\beval\b/.test(literal) && /--db\b/.test(literal)) {
+    const candidates = expanded.match(/[^\s;&|]+/g) ?? [];
+    if (
+      candidates.some(
+        (candidate) =>
+          isFreshieInventoryPath(candidate) ||
+          (/\$\(/.test(expanded) && isFreshieInventoryPath(candidate.replace(/[)"']+$/, ''))),
+      )
+    )
+      return true;
   }
   return false;
 }
@@ -189,36 +246,18 @@ function lineNumber(text, offset) {
   return text.slice(0, offset).split('\n').length;
 }
 
-function logicalShellLines(text) {
-  const lines = text.split('\n');
-  const blocks = [];
-  const offsets = [];
-  let runningOffset = 0;
-  for (const line of lines) {
-    offsets.push(runningOffset);
-    runningOffset += line.length + 1;
-  }
-
-  for (let index = 0; index < lines.length; ) {
-    const line = lines[index];
-    const commandLines = [line];
-    let cursor = index;
-    while (cursor + 1 < lines.length && commandLines.at(-1).trimEnd().endsWith('\\')) {
-      cursor += 1;
-      commandLines.push(lines[cursor]);
-    }
-    blocks.push({ text: commandLines.join('\n'), offset: offsets[index] });
-    index = cursor + 1;
-  }
-  return blocks;
-}
-
 function splitShellStatements(text) {
   const statements = [];
   let start = 0;
   let quote = null;
+  let depth = 0;
+  let pendingOperator = null;
   for (let index = 0; index < text.length; index += 1) {
     const character = text[index];
+    if (!quote && text.startsWith('```', index)) {
+      index += 2;
+      continue;
+    }
     if (character === '\\' && quote !== "'") {
       index += 1;
       continue;
@@ -231,16 +270,35 @@ function splitShellStatements(text) {
       quote = character;
       continue;
     }
+    if (character === '(') {
+      depth += 1;
+      continue;
+    }
+    if (character === ')' && depth > 0) {
+      depth -= 1;
+      continue;
+    }
+    if (depth > 0) continue;
     const operatorLength =
       character === ';' || character === '\n'
         ? 1
         : (character === '&' && text[index + 1] === '&') ||
             (character === '|' && text[index + 1] === '|')
           ? 2
-          : 0;
+          : character === '&' || character === '|'
+            ? 1
+            : 0;
     if (operatorLength > 0) {
       const statement = text.slice(start, index).trim();
-      if (statement) statements.push({ text: statement, offset: start });
+      const operator = text.slice(index, index + operatorLength);
+      if (statement)
+        statements.push({
+          text: statement,
+          offset: start,
+          operatorBefore: pendingOperator,
+          operatorAfter: operator,
+        });
+      pendingOperator = operator;
       index += operatorLength - 1;
       start = index + 1;
       continue;
@@ -252,26 +310,98 @@ function splitShellStatements(text) {
     }
   }
   const statement = text.slice(start).trim();
-  if (statement) statements.push({ text: statement, offset: start });
+  if (statement)
+    statements.push({
+      text: statement,
+      offset: start,
+      operatorBefore: pendingOperator,
+      operatorAfter: null,
+    });
   return statements;
 }
 
-function commandBlocks(text) {
+function assignmentOnly(text) {
+  const stripped = text
+    .replace(/^\s*(?:(?:export|readonly|local|declare|typeset)\s+(?:-[A-Za-z]+\s+)*)?/, '')
+    .replace(/(?:^|\s)[A-Za-z_][A-Za-z0-9_]*\s*=\s*[^\s;]+/g, '')
+    .trim();
+  return stripped === '';
+}
+
+function mapKey(value) {
+  return JSON.stringify([...value.entries()].sort(([left], [right]) => left.localeCompare(right)));
+}
+
+function uniqueStates(states) {
+  const unique = new Map();
+  for (const state of states) unique.set(mapKey(state), state);
+  if (unique.size <= 64) return [...unique.values()];
+  const refused = new Map(unique.values().next().value);
+  refused.set(AMBIGUOUS_STATE, 'true');
+  return [refused];
+}
+
+function staticStatus(text) {
+  const literal = shellLiteralView(text).trim();
+  if (literal === 'true' || literal === ':') return true;
+  if (literal === 'false') return false;
+  if (assignmentOnly(text)) return true;
+  return null;
+}
+
+function commandBlocks(text, initialAssignments = new Map(), baseOffset = 0) {
   const blocks = [];
-  let assignments = new Map();
-  for (const logicalCommand of logicalShellLines(text)) {
-    const joined = logicalCommand.text.replace(/\\\s*\n\s*/g, '');
-    for (const statement of splitShellStatements(joined)) {
-      assignments = mergeAssignments(assignments, collectAssignments(statement.text));
-      const expanded = expandKnownVariables(statement.text, assignments);
-      if (containsJrigEval(expanded)) {
+  const aliases = functionAliases(text);
+  let states = [new Map(initialAssignments)];
+  let priorStatus = null;
+  for (const statement of splitShellStatements(text)) {
+    const trimmed = statement.text.trim();
+    const subshell = /^\(([\s\S]*)\)$/.exec(trimmed);
+    if (subshell) {
+      for (const state of states) {
+        blocks.push(
+          ...commandBlocks(
+            subshell[1],
+            state,
+            baseOffset + statement.offset + trimmed.indexOf('(') + 1,
+          ),
+        );
+      }
+      priorStatus = null;
+      continue;
+    }
+
+    const condition = statement.operatorBefore;
+    const executes =
+      condition === '&&' ? priorStatus !== false : condition === '||' ? priorStatus !== true : true;
+    const optional = (condition === '&&' || condition === '||') && priorStatus === null;
+    const statementAssignments = collectAssignments(statement.text);
+    const appliedStates = states.map((state) => mergeAssignments(state, statementAssignments));
+    const expandedCommands = appliedStates.map((state) =>
+      expandKnownVariables(statement.text, state),
+    );
+    if (
+      expandedCommands.some((expanded) => containsJrigEval(expanded, aliases)) ||
+      (containsJrigEval(statement.text, aliases) && appliedStates.length > 0)
+    ) {
+      for (const assignments of appliedStates) {
         blocks.push({
           text: statement.text,
-          offset: logicalCommand.offset + statement.offset,
-          assignments: new Map(assignments),
+          offset: baseOffset + statement.offset,
+          assignments,
+          aliases,
         });
       }
     }
+
+    const isolated =
+      statement.operatorBefore === '|' ||
+      statement.operatorAfter === '|' ||
+      statement.operatorAfter === '&';
+    if (executes && assignmentOnly(statement.text) && !isolated) {
+      states = optional ? uniqueStates([...states, ...appliedStates]) : uniqueStates(appliedStates);
+    }
+    if (executes) priorStatus = optional ? null : staticStatus(statement.text);
   }
   return blocks;
 }
@@ -316,22 +446,13 @@ function structuredYamlBlocks(text, filePath) {
 
           for (const [key, child] of Object.entries(value)) {
             if (key === 'run' && typeof child === 'string') {
-              let runtimeEnv = new Map(localEnv);
-              for (const logicalCommand of logicalShellLines(child)) {
-                const joined = logicalCommand.text.replace(/\\\s*\n\s*/g, '');
-                for (const command of splitShellStatements(joined)) {
-                  runtimeEnv = mergeAssignments(runtimeEnv, collectAssignments(command.text));
-                  const expanded = expandKnownVariables(command.text, runtimeEnv);
-                  if (containsJrigEval(expanded)) {
-                    const needle = /j-rig|\$[A-Za-z_]/.exec(command.text)?.[0];
-                    const relative = needle ? source.text.indexOf(needle) : 0;
-                    blocks.push({
-                      text: command.text,
-                      offset: source.offset + Math.max(relative, 0),
-                      assignments: new Map(runtimeEnv),
-                    });
-                  }
-                }
+              for (const command of commandBlocks(child, localEnv)) {
+                const needle = /j-rig|\$[A-Za-z_]/.exec(command.text)?.[0];
+                const relative = needle ? source.text.indexOf(needle) : 0;
+                blocks.push({
+                  ...command,
+                  offset: source.offset + Math.max(relative, 0),
+                });
               }
             } else if (key !== 'env') {
               visit(child, localEnv);
@@ -403,8 +524,9 @@ export function inspectJrigDbBoundary(text, filePath) {
   const commands = structured.wholeDocument
     ? structured.blocks
     : [...commandBlocks(text), ...foldedRunBlocks(text), ...structured.blocks];
+  const commandLines = new Set(commands.map((command) => lineNumber(text, command.offset)));
   for (const command of commands) {
-    if (commandTargetsFreshie(command.text, command.assignments)) {
+    if (commandTargetsFreshie(command.text, command.assignments, command.aliases)) {
       const finding = {
         path: filePath,
         line: lineNumber(text, command.offset),
@@ -416,31 +538,30 @@ export function inspectJrigDbBoundary(text, filePath) {
     }
   }
 
-  const prose = shellLiteralView(text)
+  const directLines = new Set(findings.map((finding) => finding.line));
+  const prose = text
+    .replace(/[`"]+/g, '')
+    .replace(/\\([^\n])/g, '$1')
     .replace(/\/{2,}/g, '/')
     .replace(/\/\.\//g, '/');
-  const verbs = '(?:point|pass|set|use|give|feed|supply|target|configure|route|persist)';
-  const directives = [
-    new RegExp(
-      `\\b${verbs}\\b[^\\n]{0,160}?--db(?:\\s*=\\s*|\\s+(?:(?:at|to)\\s+)?)?[^\\n]{0,160}?freshie/inventory\\.sqlite\\b`,
-      'gi',
-    ),
-    new RegExp(
-      `\\b${verbs}\\b[^\\n]{0,160}?freshie/inventory\\.sqlite\\b[^\\n]{0,160}?--db\\b`,
-      'gi',
-    ),
-  ];
-  for (const directive of directives) {
-    for (const match of prose.matchAll(directive)) {
-      const finding = {
-        path: filePath,
-        line: lineNumber(prose, match.index),
-        reasonCode: DIRECTIVE_REASON,
-      };
-      const key = `${finding.line}:${finding.reasonCode}`;
-      if (!seen.has(key)) findings.push(finding);
-      seen.add(key);
-    }
+  const directive =
+    /^(?=[^\n]*--db\b)(?=[^\n]*\bfreshie(?:'s)?\b[^\n]{0,80}?inventory\.sqlite\b)[^\n]+$/gim;
+  for (const match of prose.matchAll(directive)) {
+    const directiveLine = lineNumber(prose, match.index);
+    if (commandLines.has(directiveLine)) continue;
+    if (directLines.has(directiveLine)) continue;
+    const residue = match[0]
+      .replace(/--db\b/gi, '')
+      .replace(/\S*\bfreshie(?:'s)?\b[^\n]{0,80}?inventory\.sqlite\b\S*/gi, '');
+    if (!/[A-Za-z]{3}/.test(residue)) continue;
+    const finding = {
+      path: filePath,
+      line: directiveLine,
+      reasonCode: DIRECTIVE_REASON,
+    };
+    const key = `${finding.line}:${finding.reasonCode}`;
+    if (!seen.has(key)) findings.push(finding);
+    seen.add(key);
   }
   return findings;
 }
