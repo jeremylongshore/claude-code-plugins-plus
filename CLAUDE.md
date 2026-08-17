@@ -100,6 +100,12 @@ CI fails if any derived file is out of sync. Never hand-edit auto-generated file
 
 `discover-skills.mjs` emits two artifacts (schema 3.4.0+): `skills-index.json` (L0, ~97 KB gzipped, metadata only — for trigger-match / browse) and `skills-catalog.json` (L1, ~5.5 MB gzipped, full body HTML). Both carry top-level `schemaVersion` + `level` fields. CLI flag `--level=metadata|full|file` (default `full`).
 
+`pnpm run validate:generated-content` regenerates the L0 index in memory and byte-compares it with
+the Git index. The check is non-mutating and network-free. The L1 catalog, plugin catalog, and
+unified search projection remain tracked but are not yet covered by this command; blueprint E1.8
+owns their separately reviewed baseline and gate expansion. External statistics are E1.10
+snapshots, and `spotlights.json` is canonical editorial data, not deterministic build output.
+
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` — iOS Safari fails on lines > 5000 chars. CI enforces this.
 
 Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s build, 2,800–4,000 routes.
@@ -179,7 +185,7 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Branch protection on `main` requires THREE always-reporting contexts: `ci-required` + `gitleaks` + `skill-conform`** (GitHub Actions app; `strict:false`, `enforce_admins:false`, 1 approving review).
 
-- **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 19 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content, promote-curated-check, check-submission-docs). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
+- **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 21 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content, promote-curated-check, check-submission-docs, commit-scope-check, codeowners-drift, generated-content-drift, doc-governance). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
 - **`gitleaks`** comes from `secret-scan.yml` (also unfiltered).
 - **`skill-conform`** is its **own** workflow (`.github/workflows/skill-conform.yml`) — `pnpm exec audit-harness conform --strict` over the full marketplace corpus. Always-reports (no path filter). **Never** folded into `ci-required`'s `needs:` (doc 110 § 5: a skippable/path-scoped job must not green the aggregate). Baseline after #1108/#1118: thousands PASS / 0 FAIL; remaining ADVISORY is the harness-side missing marketplace schema only.
 - **Advisory (never required):** `.github/workflows/skill-eval-advisory.yml` — j-rig behavioral eval on changed skills that already carry `eval-spec.yaml`. Kill-switch `vars.ENABLE_SKILL_EVAL=true` + same-repo guard + `MINIMAX_API_KEY`. Graduation to required needs Jeremy + ≥4-week clean flap window (doc 110).

@@ -31,6 +31,13 @@ jobs:
         # depth=1 doesn't include any history to compare against either.
         with:
           fetch-depth: 2
+          # fetch-tags is REQUIRED by check-changelog-coverage.mjs below.
+          # actions/checkout does not fetch tags by default, so `git tag --list`
+          # returned EMPTY and that gate silently exited 0 — it never fired in
+          # CI at all. Verified by cloning --depth 2 --no-tags and deleting every
+          # release note: still exit 0. fetch-depth stays 2 (the catalog format
+          # guard needs the merge base); fetch-tags is the surgical addition.
+          fetch-tags: true
           persist-credentials: true
 
       - name: Setup pnpm
@@ -213,6 +220,13 @@ jobs:
       # file exists; regenerate with `node scripts/generate-og-image.mjs`.
       - name: Validate social-card image exists (og:image)
         run: node scripts/generate-og-image.mjs --check
+
+      # /changelog had 3 entries (newest v4.16.0, 2026-03-07) while the site ran
+      # v4.33.0 — 17 tagged releases shipped undocumented and nothing failed,
+      # while the homepage linked "what's new →" straight at it. Ratchets from a
+      # pinned floor (v4.14.0); older tags are grandfathered.
+      - name: Validate every released tag has release notes
+        run: pnpm run validate:changelog-coverage
 
       - name: Validate cascading Greptile configuration
         run: |
@@ -1410,6 +1424,30 @@ jobs:
       - name: Verify CODEOWNERS per-plugin block is in sync
         run: node scripts/generate-codeowners.mjs --check
 
+  # E1.8 deterministic projection gate. This job is unconditional, receives no
+  # secrets, and regenerates into memory before byte-comparing with the Git
+  # index. Network snapshots and editorial data are deliberately outside this
+  # cohort. Keep it in ci-required.needs; do not create a fourth status context.
+  generated-content-drift:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Check deterministic marketplace projections
+        run: |
+          node --test scripts/generated-content-ci.test.mjs
+          node marketplace/scripts/discover-skills.mjs --level=metadata --check
+
   doc-governance:
     runs-on: ubuntu-latest
     steps:
@@ -1449,6 +1487,12 @@ jobs:
         run: |
           node --test scripts/check-doc-authority.test.mjs
           node scripts/check-doc-authority.mjs
+
+      # j-rig owns eval execution but never writes its runtime tables into the
+      # Freshie inventory. First-party operator surfaces must use the scratch-DB
+      # wrapper and repository-owned recorder described by blueprint 727 §4.
+      - name: Check JRig never receives the Freshie inventory database
+        run: pnpm run validate:jrig-db-boundary
 
       # Supersession is one atomic record, not a status-only edit. Keep the
       # frozen header, per-section disposition, and canonical pointer together.
@@ -1529,6 +1573,7 @@ jobs:
       - check-submission-docs
       - commit-scope-check
       - codeowners-drift
+      - generated-content-drift
       - doc-governance
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)

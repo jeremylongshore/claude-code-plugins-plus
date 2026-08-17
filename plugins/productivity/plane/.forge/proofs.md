@@ -69,15 +69,20 @@ Checks executed (per JRig v0.14.0 deterministic registry):
 
 **Status**: **NOT RUN** in this forge cycle.
 
-Reason: behavioral eval across the model matrix (Haiku / Sonnet / Opus) takes ~10–30 minutes per skill and costs ~$2–$5 in API spend per the documented `--thorough` policy in `/validate-skillmd` SKILL.md. As Phase 4's data-flow PRs (#700, #702) are still in the merge pipeline, the JRig-Verified badge surface for this plugin will remain "not yet evaluated" until a maintainer manually runs:
+Reason: behavioral eval across the model matrix (Haiku / Sonnet / Opus) takes ~10–30 minutes per skill and costs ~$2–$5 in API spend per the documented `--thorough` policy in `/validate-skillmd` SKILL.md. No current UI renders a JRig-Verified badge. A maintainer may record governed evidence only through the repository wrapper:
 
 ```bash
-j-rig eval plugins/productivity/plane/skills/plane \
+scripts/run-jrig-eval.sh \
+  --skill-dir plugins/productivity/plane/skills/plane \
+  --plugin plane \
   --models haiku,sonnet,opus \
-  --db ~/000-projects/claude-code-plugins/freshie/inventory.sqlite
+  --inventory-db freshie/inventory.sqlite
 ```
 
-That run posts a `tier3-jrig` row to `forge_proofs`. The marketplace build picks it up on the next site rebuild (`marketplace/scripts/enrich-jrig-data.mjs` → `jrig-data.json` → plugin detail page badge).
+The wrapper gives JRig a scratch database under `/dev/shm`, then the repository-owned recorder posts
+the `tier3-jrig` row to `forge_proofs`. `marketplace/scripts/enrich-jrig-data.mjs` can derive an
+untracked inspection projection from that row, but no live marketplace page consumes it after PR
+#1046 removed the badge UI.
 
 **Forge Gate 7 verdict**: **PASS** — all required gates (Tier 1 Grade A + Tier 2 GREEN + Tier 3A GREEN) cleared. Tier 3B is opt-in per documented policy and does not block the forge run.
 

@@ -9,7 +9,13 @@ import {
 
 const EXAMPLES = new Map([
   ['epic-1-scorecard', '000-docs/742-RA-DATA-epic-1-scorecard.json'],
-  ['marketplace-build-data', 'marketplace/src/data/catalog.json'],
+  ['marketplace-catalog-projection', 'marketplace/src/data/catalog.json'],
+  ['marketplace-skills-catalog-projection', 'marketplace/src/data/skills-catalog.json'],
+  ['marketplace-skills-index-projection', 'marketplace/src/data/skills-index.json'],
+  ['marketplace-search-projection', 'marketplace/src/data/unified-search-index.json'],
+  ['marketplace-external-stats', 'marketplace/src/data/npm-stats.json'],
+  ['marketplace-spotlight-editorial-data', 'marketplace/src/data/spotlights.json'],
+  ['marketplace-canonical-data', 'marketplace/src/data/collections.json'],
   ['marketplace-jrig-build-data', 'marketplace/src/data/jrig-data.json'],
   ['marketplace-readme-sections-build-data', 'marketplace/src/data/readme-sections.json'],
   ['marketplace-plugin-content', 'marketplace/src/content/plugins/example.json'],
@@ -57,4 +63,21 @@ test('every tracked generated JSON class declares the retired-domain postprocess
     const entry = GENERATED_ARTIFACT_REGISTRY.find((candidate) => candidate.id === id);
     assert.equal(entry?.postprocess, 'pnpm run normalize:dead-domain-projections', id);
   }
+});
+
+test('marketplace data authority separates deterministic, network, and editorial populations', () => {
+  assert.equal(artifactRegistration('marketplace/src/data/skills-index.json')?.contentCheck, true);
+  assert.equal(
+    artifactRegistration('marketplace/src/data/skills-catalog.json')?.contentCheck,
+    false,
+  );
+  assert.equal(
+    artifactRegistration('marketplace/src/data/npm-stats.json')?.kind,
+    'external_snapshot',
+  );
+  assert.equal(
+    artifactRegistration('marketplace/src/data/spotlights.json')?.kind,
+    'canonical_data',
+  );
+  assert.equal(artifactRegistration('marketplace/src/data/partners.json')?.kind, 'canonical_data');
 });

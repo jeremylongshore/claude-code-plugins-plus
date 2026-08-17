@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — blog Markdown validation)
+
+- **The newly published failure-diagnostics article now preserves blank-line boundaries around its
+  numbered list.** This restores the repository-wide blocking Markdownlint gate without changing
+  article wording or weakening MD032.
+
+### Fixed (2026-08-17 — Actionlint bootstrap availability)
+
+- **Actionlint now downloads its pinned release archive directly and verifies the upstream
+  SHA-256 before extraction.** This removes the executable installer-script dependency on
+  `raw.githubusercontent.com`, which returned HTTP 429 before lint execution in three consecutive
+  PR runs, while preserving the blocking v1.7.4 lint command and fail-closed behavior.
+
+### Added (2026-08-17 — deterministic generated skill index)
+
+- **The marketplace L0 skill index now has a fail-closed regenerate-and-diff gate.** A dedicated,
+  unconditional `Validate Plugins` job renders `skills-index.json` in memory and byte-compares it
+  with the Git index without touching the working tree, receiving no credentials and performing no
+  network calls. Fixtures refuse mutated, untracked, symlinked, duplicate, and path-escaping
+  candidates. Skill names now use a fixture-pinned ordinal sort instead of host-locale ordering, and
+  any unreadable source aborts generation rather than emitting a partial artifact. The
+  generated-artifact registry now separates four deterministic local
+  projections from three external-stat snapshots and editorial marketplace data; this first E1.8
+  slice gates one of four and leaves the full skill catalog, plugin catalog, and unified search
+  projection explicitly pending rather than treating unlike populations as interchangeable.
+
+### Fixed (2026-08-17 — release-note coverage evidence)
+
+- **Release-note coverage now fails closed when Git tag evidence is absent or incomplete.** The
+  newly pinned changelog-coverage check runs with fetched tags inside `Validate Plugins`, rejects tag
+  enumeration failures, tagless or floor-incomplete clones, missing or duplicate release notes,
+  non-regular note paths, and malformed version metadata, and carries deterministic red fixtures.
+  Every release from v4.14.0 onward must have exactly one public changelog entry; older tags remain
+  explicitly grandfathered.
+
+### Fixed (2026-08-17 — JRig/Freshie authority boundary)
+
+- **First-party operator guidance can no longer send JRig's runtime tables into the Freshie
+  inventory.** The public validation skill and Plane evidence note now use
+  `scripts/run-jrig-eval.sh`, which evaluates against a `/dev/shm` scratch database and delegates
+  the governed `forge_proofs` write to the repository recorder. A provenance-aware, fail-closed
+  check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
+  directives across active first-party operator surfaces, including `npx` invocations, folded
+  and flow-style YAML commands, shell-escaped executable and flag spellings, statically resolvable
+  executable/verb/flag/value indirection, ad hoc shell-function aliases, command substitution,
+  parameter assignment, brace expansion, parsed YAML tags/keys/anchors, and active filesystem-glob
+  path spellings. Command state follows shell ordering while assignments isolated by subshells,
+  pipelines, background jobs, or skipped `&&`/`||` branches cannot overwrite parent state; quoted
+  or escaped literal glob characters remain literal, and mirrors remain upstream-owned.
+  The check runs inside the existing
+  documentation-governance job and adds no required status context.
+
 ### Changed (2026-08-16 — build-derived marketplace data ownership)
 
 - **Two build-only marketplace JSON projections no longer have a second committed claimant.**
