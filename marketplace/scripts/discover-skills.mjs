@@ -627,7 +627,7 @@ function main() {
     ];
     assertGeneratedContentCurrent(candidates, { root: ROOT_DIR });
     console.log(
-      `\n✅ Generated skill projections match the Git index (${candidates.length}/2 checked)`,
+      `\n✅ Generated skill projections match the Git index (${candidates.length} checked${metadataOnly ? '; skills-catalog pending' : ''})`,
     );
   }
 
