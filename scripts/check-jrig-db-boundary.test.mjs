@@ -211,6 +211,14 @@ test('command-scoped state, parameter expansion, and parsed YAML preserve shell 
     ['substring parameter value', 'DB=freshie/inventory.sqlite\nj-rig eval x --db "${DB:0}"'],
     ['seventeen-assignment chain', chain],
     ['latest of sixty-six assignments', latestAssignment],
+    [
+      'same-line dangerous assignment precedes later safe value',
+      'DB=freshie/inventory.sqlite; j-rig eval x --db "$DB"; DB=/dev/shm/safe.sqlite',
+    ],
+    [
+      'and-chained assignment applies before command',
+      'DB=freshie/inventory.sqlite && j-rig eval x --db "$DB"',
+    ],
     ['tagged YAML run', 'run: !!str >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
     ['escaped YAML run key', '"r\\u0075n": >-\n  j-rig eval x\n  --db freshie/inventory.sqlite\n'],
   ];
@@ -235,6 +243,10 @@ scripts/run-jrig-eval.sh --inventory-db "$DB"`,
       `DB=freshie/inventory.sqlite
 DB=/dev/shm/safe.sqlite
 j-rig eval x --db "$DB"`,
+    ],
+    [
+      'same-line later assignment cannot taint earlier command',
+      'DB=/dev/shm/safe.sqlite; j-rig eval x --db "$DB"; DB=freshie/inventory.sqlite',
     ],
     [
       'blank line separates folded shell commands',

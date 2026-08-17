@@ -213,14 +213,64 @@ function logicalShellLines(text) {
   return blocks;
 }
 
+function splitShellStatements(text) {
+  const statements = [];
+  let start = 0;
+  let quote = null;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (character === '\\' && quote !== "'") {
+      index += 1;
+      continue;
+    }
+    if (quote) {
+      if (character === quote) quote = null;
+      continue;
+    }
+    if (character === "'" || character === '"' || character === '`') {
+      quote = character;
+      continue;
+    }
+    const operatorLength =
+      character === ';' || character === '\n'
+        ? 1
+        : (character === '&' && text[index + 1] === '&') ||
+            (character === '|' && text[index + 1] === '|')
+          ? 2
+          : 0;
+    if (operatorLength > 0) {
+      const statement = text.slice(start, index).trim();
+      if (statement) statements.push({ text: statement, offset: start });
+      index += operatorLength - 1;
+      start = index + 1;
+      continue;
+    }
+    if (character === '#' && (index === 0 || /\s/.test(text[index - 1]))) {
+      const statement = text.slice(start, index).trim();
+      if (statement) statements.push({ text: statement, offset: start });
+      return statements;
+    }
+  }
+  const statement = text.slice(start).trim();
+  if (statement) statements.push({ text: statement, offset: start });
+  return statements;
+}
+
 function commandBlocks(text) {
   const blocks = [];
   let assignments = new Map();
-  for (const command of logicalShellLines(text)) {
-    assignments = mergeAssignments(assignments, collectAssignments(command.text));
-    const expanded = expandKnownVariables(command.text.replace(/\\\s*\n\s*/g, ''), assignments);
-    if (containsJrigEval(expanded)) {
-      blocks.push({ ...command, assignments: new Map(assignments) });
+  for (const logicalCommand of logicalShellLines(text)) {
+    const joined = logicalCommand.text.replace(/\\\s*\n\s*/g, '');
+    for (const statement of splitShellStatements(joined)) {
+      assignments = mergeAssignments(assignments, collectAssignments(statement.text));
+      const expanded = expandKnownVariables(statement.text, assignments);
+      if (containsJrigEval(expanded)) {
+        blocks.push({
+          text: statement.text,
+          offset: logicalCommand.offset + statement.offset,
+          assignments: new Map(assignments),
+        });
+      }
     }
   }
   return blocks;
@@ -267,20 +317,20 @@ function structuredYamlBlocks(text, filePath) {
           for (const [key, child] of Object.entries(value)) {
             if (key === 'run' && typeof child === 'string') {
               let runtimeEnv = new Map(localEnv);
-              for (const command of logicalShellLines(child)) {
-                runtimeEnv = mergeAssignments(runtimeEnv, collectAssignments(command.text));
-                const expanded = expandKnownVariables(
-                  command.text.replace(/\\\s*\n\s*/g, ''),
-                  runtimeEnv,
-                );
-                if (containsJrigEval(expanded)) {
-                  const needle = /j-rig|\$[A-Za-z_]/.exec(command.text)?.[0];
-                  const relative = needle ? source.text.indexOf(needle) : 0;
-                  blocks.push({
-                    text: command.text,
-                    offset: source.offset + Math.max(relative, 0),
-                    assignments: new Map(runtimeEnv),
-                  });
+              for (const logicalCommand of logicalShellLines(child)) {
+                const joined = logicalCommand.text.replace(/\\\s*\n\s*/g, '');
+                for (const command of splitShellStatements(joined)) {
+                  runtimeEnv = mergeAssignments(runtimeEnv, collectAssignments(command.text));
+                  const expanded = expandKnownVariables(command.text, runtimeEnv);
+                  if (containsJrigEval(expanded)) {
+                    const needle = /j-rig|\$[A-Za-z_]/.exec(command.text)?.[0];
+                    const relative = needle ? source.text.indexOf(needle) : 0;
+                    blocks.push({
+                      text: command.text,
+                      offset: source.offset + Math.max(relative, 0),
+                      assignments: new Map(runtimeEnv),
+                    });
+                  }
                 }
               }
             } else if (key !== 'env') {
