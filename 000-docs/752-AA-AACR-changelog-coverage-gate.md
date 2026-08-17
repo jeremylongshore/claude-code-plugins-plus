@@ -80,10 +80,20 @@ byte-for-byte, ran independent hostile and reverse-safe fixtures, passed changel
 Epic 1 measurement 36/36, 38 CI routing/injection tests, formatting, ESLint, actionlint, and
 Gitleaks, and reproduced the exact base tree through the reverse patch.
 
+The filing outputs were independently regenerated in a disposable worktree at base
+`bb13f3161a4a99fcd759fdd414117bdcf2be18da`. After applying only the staged ledger and document
+752, `node scripts/generate-docs-index.mjs` and `TMPDIR=/dev/shm node
+scripts/measure-epic-1.mjs` reproduced the PR bytes exactly. The index SHA-256 was
+`5221086f9d46ddd92c8c6daa87569832c9ea5f6f2e799d73f9ddd1b8be9225a2`; the scorecard SHA-256 was
+`59181615f73ba087754efa20d94cd2d58eec5a0a9520855ec3fff2b80a3c823d`. This receipt proves the
+generated files were not hand-edited.
+
 [Greptile review `4951326422`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162#pullrequestreview-4951326422)
 was requested at the exact head. The free trial had ended, so Greptile is recorded as unavailable
-rather than PASS. MiniMax's earlier wording recommendation was applied before the final exact-head
-review: the changelog now calls this a newly pinned gate rather than an existing one.
+rather than PASS. The receipt requirement is therefore met without fabricating a Greptile verdict;
+the administrator bypass below addressed GitHub's separate human-approval topology and was not a
+substitute for Greptile. MiniMax's earlier wording recommendation was applied before the final
+exact-head review: the changelog now calls this a newly pinned gate rather than an existing one.
 
 ## Merge topology and history reconciliation
 
