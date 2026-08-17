@@ -20,7 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
   rewriting past evidence, unsupported email identities are removed or mapped to the existing
   Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
-  the MCP preset catalog no longer advertises an unserved remote schema URL.
+  the MCP preset catalog no longer advertises an unserved remote schema URL. Exact-path
+  supply-chain waivers record review of seven pre-existing dual-use capabilities whose files have
+  only domain or contact changes in this slice; the underlying capabilities and scanner remain
+  unchanged.
 
 ### Fixed (2026-08-16 — curated asset content-type integrity)
 
@@ -1629,7 +1632,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
   - **Infrastructure**: cross-chain-bridge-monitor, wallet-security-auditor
-- Firebase Hosting deployment workflow for tonsofskills.com
+- Firebase Hosting deployment workflow for [retired legacy public domain]
 - Firebase Analytics integration with measurement ID tracking
 - Google Secret Manager integration for secure Firebase config
 
@@ -1695,7 +1698,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
-- Learn pages for all Batch 3 vendors on tonsofskills.com
+- Learn pages for all Batch 3 vendors on [retired legacy public domain]
 
 ### Changed
 

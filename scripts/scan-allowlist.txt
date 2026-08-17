@@ -77,6 +77,18 @@ plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs:dynamic-exec
 # ── hyperflow orchestrator skill: upstream web-research feature. ──
 plugins/ai-agency/hyperflow/skills/hyperflow/SKILL.md:allowed-tools-network  upstream v5.8.x added WebFetch/WebSearch to the orchestrator skill for its web-research feature (skills/hyperflow/web-research.md); mirror content hand-reviewed 2026-07-10 (evidence gate on #1008 + the be6ae2d3->eae6e34c5 delta review) — external mirror, upstream's design, no credential surface
 
+# ── E1.13 retired-domain correction: pre-existing dual-use surfaces, content unchanged. ──
+# The complete PR diff for each path was reviewed at 921f94c0616f71ba1ed404274eec34b687f7a7fc.
+# E1.13 changes only a marketplace URL, author contact, or example target; it does
+# not alter the reviewed hook or network-tool capability that the scanner reports.
+plugins/productivity/prettier-markdown-hook/README.md:hook-definition  E1.13 changes only the retired marketplace URL; the pre-existing documented hook definition is unchanged — reviewed 2026-08-16
+plugins/productivity/youtube-strategy/skills/yt-brief/SKILL.md:allowed-tools-network  E1.13 changes only the author contact; the pre-existing WebSearch capability is unchanged — reviewed 2026-08-16
+plugins/productivity/youtube-strategy/skills/yt-ideation/SKILL.md:allowed-tools-network  E1.13 changes only the author contact; the pre-existing WebSearch capability is unchanged — reviewed 2026-08-16
+plugins/productivity/youtube-strategy/skills/yt-outline/SKILL.md:allowed-tools-network  E1.13 changes only the author contact; the pre-existing WebSearch capability is unchanged — reviewed 2026-08-16
+plugins/productivity/youtube-strategy/skills/yt-packaging/SKILL.md:allowed-tools-network  E1.13 changes only the author contact; the pre-existing WebSearch capability is unchanged — reviewed 2026-08-16
+plugins/productivity/youtube-strategy/skills/yt-research/SKILL.md:allowed-tools-network  E1.13 changes only the author contact; the pre-existing WebSearch capability is unchanged — reviewed 2026-08-16
+plugins/security/security-headers-analyzer/skills/analyzing-security-headers/SKILL.md:allowed-tools-network  E1.13 changes only the example target domain; the pre-existing WebFetch/WebSearch capability is unchanged — reviewed 2026-08-16
+
 # ── UIZZE free catalogue workflow — vetted 2026-07-22 @ upstream c95111fd1517. ──
 plugins/design/uizze/skills/anti-ui-slop/SKILL.md:allowed-tools-network  WebFetch is limited to gathering structural UI evidence from the documented public https://uizze.com catalogue; the complete free workflow requires no account, token, MCP, script, or executable, and the skill forbids copying proprietary assets
 
