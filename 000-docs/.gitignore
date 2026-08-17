@@ -1,0 +1,50 @@
+# ── 000-docs ignore policy — owned HERE, not in the root .gitignore ──────────
+# Model: LOCAL BY DEFAULT. Filing a document public = append one negation line
+# to the PUBLIC FILING LEDGER below, then `git add` it (no -f needed).
+# A plain `git add` on an unledgered doc ERRORS loudly — that is the design
+# working. Never bulk-add this directory with -A or globs.
+# DO NOT SORT THIS FILE — the blanket must stay first; ledger lines append.
+# Why this file exists: the root allowlist was order-dead (negations sorted
+# above the blanket; last-match-wins killed every re-include) and silently kept
+# ~200 filed docs local — Mission 01, docs 720/726, bead claude-5awj.6.
+*
+!*/
+!.gitignore
+!000-INDEX.md
+!000-*.md
+!agentskills-spec-snapshot.md
+!anthropic-skills-spec-snapshot.md
+
+# Permanent CI test fixtures (hypothetical paths asserted by
+# scripts/check-docs-ignore-policy.mjs — do not remove):
+!999-ZZ-TEST-ledger-fixture.md
+!999-ZZ-cluster-test/999-ZZ-TEST-nested-fixture.md
+
+# ── PUBLIC FILING LEDGER — append one line per doc filed public (2026-08-12 →) ──
+# Docs tracked before this date are grandfathered (tracked files stay tracked
+# regardless of ignore rules).
+!727-AT-ARCH-master-modernization-blueprint.md
+!728-RA-DATA-reference-architecture-benchmark.md
+!729-AT-ADEC-reference-architecture-synthesis.md
+!730-AA-AACR-pr-1186-ratification.md
+!731-BL-LICN-agpl-consent-remediation-packet.md
+!732-AA-AACR-slice-1-containment.md
+!733-AA-AACR-slice-2-publisher-exclusion.md
+!734-OD-ENVR-npm-production-owner-action-packet.md
+!735-AA-AACR-slice-3-publication-locks.md
+!736-AA-AACR-catalog-shadow-guard.md
+!737-AA-AACR-standards-freeze.md
+!738-AA-AACR-document-authority-gate.md
+!739-AA-AACR-generated-document-index.md
+!740-AA-AACR-frozen-prose-anchor-gate.md
+!741-AA-AACR-malformed-tool-allowlist-gate.md
+!742-RA-DATA-epic-1-scorecard.json
+!743-AA-AACR-epic-1-measurement-harness.md
+!744-AA-AACR-epic-1-corpus-resolver.md
+!745-AA-AACR-epic-1-readme-writer.md
+!746-DR-TMPL-document-supersession.md
+!747-AA-AACR-epic-2-supersession-record.md
+!748-AA-AACR-epic-1-asset-integrity.md
+!749-AA-AACR-epic-1-domain-retirement.md
+!750-AA-AACR-epic-1-build-data-disposition.md
+!751-AA-AACR-epic-2-cross-system-authority.md

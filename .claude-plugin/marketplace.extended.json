@@ -2365,8 +2365,8 @@
         "mcp"
       ],
       "author": {
-        "name": "ClaudeCodePlugins",
-        "email": "plugins@tonsofskills.com"
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
       },
       "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins",
@@ -5626,9 +5626,7 @@
       "category": "devops",
       "keywords": ["changelog", "release-notes", "weekly-update", "git", "github", "automation"],
       "author": {
-        "name": "Mattyp",
-        "email": "mattyp@tonsofskills.com",
-        "url": "https://tonsofskills.com"
+        "name": "Mattyp"
       },
       "components": {
         "skills": 1,
@@ -10257,7 +10255,7 @@
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "category": "mcp",
       "keywords": [
         "memory",

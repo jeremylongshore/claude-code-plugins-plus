@@ -1,4 +1,4 @@
-# Quick Deploy Guide - claudecodeplugins.io
+# Quick Deploy Guide - [retired legacy public domain]
 
 **Last Updated:** 2025-10-16
 **Time to Deploy:** 3-5 minutes (after initial setup)
@@ -8,6 +8,7 @@
 ## 🚀 Deploy Now (3 Steps)
 
 ### Step 1: Commit Workflow Fix
+
 ```bash
 cd
 git add .github/workflows/deploy-marketplace.yml
@@ -19,14 +20,17 @@ git push origin main
 ```
 
 ### Step 2: Enable GitHub Pages
+
 1. Visit:
 2. Source: **GitHub Actions**
-3. Custom domain: `claudecodeplugins.io`
+3. Custom domain: `[retired legacy public domain]`
 4. Enable: **Enforce HTTPS**
 5. Click **Save**
 
 ### Step 3: Configure DNS (at domain registrar)
+
 Add these 4 A records:
+
 ```
 Type: A    Name: @    Value: 185.199.108.153
 Type: A    Name: @    Value: 185.199.109.153
@@ -42,10 +46,12 @@ Type: A    Name: @    Value: 185.199.111.153
 
 ```bash
 # Check if site is live
-curl -I https://claudecodeplugins.io
+curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 
 # Check DNS
-dig claudecodeplugins.io A +short
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 
 # View GitHub Actions
 # Visit: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -56,6 +62,7 @@ dig claudecodeplugins.io A +short
 ## 📝 Quick Reference
 
 ### Local Commands
+
 ```bash
 cd
 npm run dev      # Start dev server
@@ -64,6 +71,7 @@ npm run preview  # Preview build
 ```
 
 ### Deploy Commands
+
 ```bash
 cd
 git add marketplace/
@@ -72,7 +80,8 @@ git push origin main  # Auto-deploys via GitHub Actions
 ```
 
 ### Verification
-- **Site:** https://claudecodeplugins.io
+
+- **Site:** [retired legacy public domain]
 - **Actions:** https://github.com/jeremylongshore/claude-code-plugins/actions
 - **Settings:**
 
@@ -81,6 +90,7 @@ git push origin main  # Auto-deploys via GitHub Actions
 ## 🆘 Quick Troubleshooting
 
 ### Site not updating?
+
 ```bash
 # Clear cache: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 # Check Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
@@ -88,6 +98,7 @@ git push origin main  # Auto-deploys via GitHub Actions
 ```
 
 ### Build failing?
+
 ```bash
 cd
 npm run build  # Test locally first
@@ -95,11 +106,12 @@ npm run build  # Test locally first
 ```
 
 ### DNS not working?
+
 ```bash
-dig claudecodeplugins.io A +short
-# Should show 4 GitHub Pages IPs
+dig retired-domain.invalid A +short
+# Historical verification shape; the reserved host intentionally returns no records.
 # Wait 24-48 hours for DNS propagation
-# Check: https://www.whatsmydns.net/#A/claudecodeplugins.io
+# Check: https://www.whatsmydns.net/#A/retired-domain.invalid
 ```
 
 ---
@@ -107,6 +119,7 @@ dig claudecodeplugins.io A +short
 ## 📚 Full Documentation
 
 For detailed guides, see:
+
 - **Comprehensive Checklist:** `
 - **Deployment Status:** `
 - **Deployment Summary:** `

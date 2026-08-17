@@ -1,9 +1,0 @@
-{
-  "databricks-pack": {
-    "verified": true,
-    "layers_passed": 11,
-    "total_layers": 11,
-    "baseline_delta": null,
-    "verified_at": "2026-07-13 16:02:05"
-  }
-}

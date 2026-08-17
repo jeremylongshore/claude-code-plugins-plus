@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-hooked-ux",
+  "private": true,
   "version": "1.0.3",
   "description": "Hook Model framework for building habit-forming products",
   "keywords": [

@@ -360,7 +360,7 @@ Excel Analyst Pro
 ↓
 github.com/jeremylongshore/claude-code-plugins
 
-ClaudeCodePlugins.io
+TonsOfSkills.com
 ↓
 Browse 220+ plugins
 ```
@@ -382,7 +382,7 @@ Try Excel Analyst Pro Today
 /plugin install excel-analyst-pro@claude-code-plugins
 
 ⭐ Star on GitHub
-🌐 claudecodeplugins.io
+🌐 tonsofskills.com
 💬 Questions? github.com/issues
 ```
 
@@ -553,9 +553,9 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
    • Pivot Wizard
 
 🔗 LINKS
-📚 Documentation: https://claudecodeplugins.io/plugins/excel-analyst-pro
+📚 Documentation: https://tonsofskills.com/plugins/excel-analyst-pro
 💻 GitHub: https://github.com/jeremylongshore/claude-code-plugins
-🌐 Marketplace: https://claudecodeplugins.io
+🌐 Marketplace: https://tonsofskills.com
 💬 Issues/Support: https://github.com/jeremylongshore/claude-code-plugins/issues
 
 #ClaudeCode #Excel #FinancialModeling #DCF #LBO #InvestmentBanking #PrivateEquity #Automation #OpenSource
@@ -618,7 +618,7 @@ Build DCF models, LBO analysis, variance reports, and pivot tables using natural
 - [ ] Upload to YouTube
 - [ ] Add to GitHub README
 - [ ] Share on LinkedIn, X, Reddit
-- [ ] Embed on claudecodeplugins.io
+- [ ] Embed on tonsofskills.com
 - [ ] Create short clips for social media
 
 ---

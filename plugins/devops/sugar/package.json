@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/sugar",
+  "private": true,
   "version": "2.0.6",
   "description": "Sugar 🍰 - AI-powered autonomous development system for complex, multi-step development tasks",
   "keywords": [

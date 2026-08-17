@@ -5,13 +5,13 @@ date: "2025-10-11"
 tags: ["google-cloud-run", "nextjs-15", "docker-deployment", "ssl-certificates", "load-balancer", "cloud-infrastructure", "devops", "production-deployment"]
 featured: false
 ---
-I just deployed [ClaudeCodePlugins.io](https://www.claudecodeplugins.io) from scratch to production on Google Cloud Run with custom domain and SSL. Here's the complete journey with every error, fix, and lesson learned.
+I originally deployed the marketplace now known as Tons of Skills from scratch to production on Google Cloud Run with custom domain and SSL. The commands below preserve the original deployment lessons while redacting the retired host.
 
 ## The Goal
 
 Deploy a Next.js 15 application to Google Cloud Run with:
 
-- Custom domain (www.claudecodeplugins.io)
+- Custom domain ([retired legacy public domain])
 - Google-managed SSL certificate
 - Global load balancer with HTTP/2
 - Serverless auto-scaling (0-10 instances)
@@ -301,8 +301,9 @@ This gave me: `35.201.66.187`
 **Step 6: Create SSL Certificate**
 
 ```bash
+# Historical command shape; the reserved host intentionally does not resolve.
 gcloud compute ssl-certificates create claudecodeplugins-cert \
-  --domains=www.claudecodeplugins.io \
+  --domains=retired-domain.invalid \
   --global
 ```
 
@@ -378,8 +379,9 @@ TTL: 3600
 Verified DNS propagation:
 
 ```bash
-dig +short www.claudecodeplugins.io @8.8.8.8
-# Returns: 35.201.66.187
+# Historical verification shape; the reserved host intentionally does not resolve.
+dig +short retired-domain.invalid @8.8.8.8
+# Historical output: 35.201.66.187
 ```
 
 ## Part 7: Waiting for SSL
@@ -403,8 +405,10 @@ After about 30 minutes, the certificate became active.
 ## Part 8: Testing the Live Site
 
 ```bash
-curl -I https://www.claudecodeplugins.io
+curl -I https://retired-domain.invalid
 ```
+
+Historical output (the reserved host no longer reproduces this response):
 
 ```
 HTTP/2 200
@@ -551,7 +555,8 @@ gcloud run deploy claudecodeplugins-web \
 # 8. Wait for SSL certificate provisioning (15-60 minutes)
 
 # 9. Test
-curl -I https://www.claudecodeplugins.io
+curl -I https://retired-domain.invalid
+# Historical verification shape; the reserved host intentionally does not resolve.
 ```
 
 ## Conclusion
@@ -572,7 +577,7 @@ The full runbook and all configuration files are in the project repository. Futu
 
 ## Links
 
-- **Live Site:** [www.claudecodeplugins.io](https://www.claudecodeplugins.io)
+- **Historical live site:** [retired legacy public domain]
 - **Architecture:** Global Load Balancer → Serverless NEG → Cloud Run
 - **Response Time:** 75ms average
 - **Stack:** Next.js 15 + Docker + Google Cloud Run

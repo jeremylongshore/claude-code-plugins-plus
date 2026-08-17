@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/skills-janitor",
+  "private": true,
   "version": "0.1.0",
   "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
   "keywords": [

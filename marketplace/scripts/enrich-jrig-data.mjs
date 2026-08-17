@@ -7,11 +7,9 @@
  * it only if that latest eval passed, so a newer failing eval
  * un-verifies — and writes the results to
  * `marketplace/src/data/jrig-data.json` as a flat map keyed by
- * plugin name. The detail-page Astro template
- * (`src/pages/plugins/[name].astro`) overlays this onto the
- * `plugin` prop at render time so the JRig-Verified badge lights
- * up on plugins with passing eval results — without polluting
- * `marketplace.extended.json` with computed eval data.
+ * plugin name. The marketplace stopped rendering JRig badges in PR #1046.
+ * Epic 1.7 makes this a temporary untracked, build-adjacent inspection output;
+ * blueprint bead E9.2 still owns removing the projection and build step.
  *
  * Phase 4 of "Use the Printing Press to Learn" plan, data flow.
  *
@@ -28,9 +26,8 @@
  * }
  * ```
  *
- * If the Freshie DB is missing or the table is empty, writes an empty
- * object to keep the build deterministic. The detail page's optional
- * chaining (`plugin.jrig?.verified`) gracefully handles absence.
+ * If the Freshie DB is missing or the table is empty, writes an empty object
+ * deterministically. No live page consumes this projection.
  */
 
 import { spawnSync } from 'node:child_process';
@@ -47,9 +44,8 @@ const outPath = path.join(__dirname, '..', 'src', 'data', 'jrig-data.json');
  * Emit a loud, CI-visible warning. In GitHub Actions this renders as a
  * `::warning::` annotation on the run summary (not just buried in the step
  * log); locally it prints a plain `[enrich-jrig] WARNING:` line. Used instead
- * of a silent `console.log` in every degradation path: writing `{}` silently
- * blanks every "JRig-Verified" badge with no signal that the data source is
- * missing or empty.
+ * of a silent `console.log` in every degradation path so an empty inspection
+ * projection cannot be mistaken for affirmative evidence.
  */
 function warn(message) {
   const rel = path.relative(repoRoot, outPath);
@@ -62,7 +58,7 @@ function warn(message) {
 /**
  * Run a SQL query via the `sqlite3` CLI. We avoid the better-sqlite3
  * native module to keep this script dependency-free — the marketplace
- * build already has 6 sequential steps and we'd rather not add a
+ * build already has 9 sequential steps and we'd rather not add a
  * native build for a once-per-build read.
  */
 function querySqlite(database, sql) {
@@ -102,29 +98,9 @@ function main() {
   const data = {};
 
   if (!fs.existsSync(dbPath)) {
-    // The Freshie DB is a local runtime artifact (untracked since the Dolt
-    // CMDB migration — the durable record lives on DoltHub at
-    // jeremylongshore/freshie-inventory). CI checkouts never have it, so a
-    // missing DB must PRESERVE the committed jrig-data.json rather than
-    // blanking every JRig-Verified badge with an empty map.
-    if (fs.existsSync(outPath)) {
-      try {
-        const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
-        if (existing && typeof existing === 'object' && Object.keys(existing).length > 0) {
-          console.log(
-            `[enrich-jrig] Freshie DB absent — keeping committed ` +
-              `${path.relative(repoRoot, outPath)} (${Object.keys(existing).length} entries).`,
-          );
-          return;
-        }
-      } catch {
-        // fall through to the empty-map path below
-      }
-    }
     warn(
-      `Freshie DB not found at ${path.relative(repoRoot, dbPath)} and no ` +
-        `committed jrig-data.json to preserve — every JRig-Verified badge ` +
-        `will render "pending". Writing empty map.`,
+      `Freshie DB not found at ${path.relative(repoRoot, dbPath)}. ` +
+        'Writing the untracked JRig projection as an empty map.',
     );
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;
@@ -133,8 +109,7 @@ function main() {
   if (!tableExists(dbPath, 'forge_proofs')) {
     warn(
       'forge_proofs table not present in the Freshie DB — no JRig behavioral ' +
-        'evals have been persisted. Every JRig-Verified badge will render ' +
-        '"pending". Writing empty map.',
+        'evals have been persisted. Writing the inspection projection as an empty map.',
     );
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + '\n');
     return;
@@ -142,18 +117,17 @@ function main() {
 
   // Pick the LATEST tier3-jrig row per plugin FIRST, then read its passed
   // flag. The old query filtered `passed = 1` BEFORE picking latest, so a
-  // newer FAILING eval could never extinguish a stale verified entry — a
-  // regression caught by a re-eval left the badge lit forever. Ordering is
+  // newer FAILING eval could never extinguish a stale verified entry. Ordering is
   // deterministic: verified_at DESC, then run_id DESC (the live DB has three
   // databricks-pack rows sharing one verified_at second), then id DESC.
   //
   // Stub rows are excluded outright: `--stub` runs (evidence JSON
   // {"stub": true}, ground_truth: false) are pipeline plumbing, never
-  // ground truth — a stub row must not light OR extinguish a badge.
+  // ground truth — a stub row must not create or extinguish a passing entry.
   //
   // If a plugin has multiple verification_type rows (tier1, tier2,
-  // tier3-jrig), we surface the JRig behavioral row specifically — the badge
-  // represents JRig verification, not the lighter-weight static tiers.
+  // tier3-jrig), we surface the JRig behavioral row specifically rather than
+  // the lighter-weight static tiers.
   const rows = querySqlite(
     dbPath,
     `SELECT plugin_name,
@@ -197,8 +171,7 @@ function main() {
     if (!row.plugin_name) continue;
     if (row.passed !== 1) {
       // The plugin's LATEST real eval failed/blocked — it gets no entry, so
-      // any previously-committed verified data for it is extinguished on
-      // this rebuild.
+      // any stale passing entry is extinguished in this rebuild.
       unverified += 1;
       continue;
     }
@@ -223,8 +196,8 @@ function main() {
   if (verifiedCount === 0) {
     warn(
       'forge_proofs exists but has zero passing tier3-jrig rows — no plugin ' +
-        'has a completed 7-layer behavioral eval yet, so every JRig-Verified ' +
-        'badge renders "pending". Populate a row with: `scripts/run-jrig-eval.sh ' +
+        'has a completed 7-layer behavioral eval yet. Populate a row with: ' +
+        '`scripts/run-jrig-eval.sh ' +
         '--skill-dir <dir> --plugin <name> --inventory-db freshie/inventory.sqlite` ' +
         '(evals against a /dev/shm scratch DB, then records the verdict via ' +
         'scripts/record-jrig-proofs.mjs — never point j-rig itself at the inventory DB).',
@@ -232,7 +205,7 @@ function main() {
     return;
   }
   console.log(
-    `[enrich-jrig] Wrote ${verifiedCount} JRig-verified plugin entries → ${path.relative(repoRoot, outPath)}`,
+    `[enrich-jrig] Wrote ${verifiedCount} passing JRig inspection entries → ${path.relative(repoRoot, outPath)}`,
   );
 }
 

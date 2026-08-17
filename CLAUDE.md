@@ -10,7 +10,7 @@ Tons of Skills — Claude Code plugins marketplace. Live at https://tonsofskills
 
 **Package manager:** `pnpm` everywhere **except** `marketplace/` which uses `npm` (CI-enforced).
 
-**Session protocol lives in `AGENTS.md`** — post-compaction recovery, end-of-session push checklist, and beads workflow. Read it before starting work.
+**Contributor guidelines live in `AGENTS.md`** — project structure, build/test/dev commands, style and naming, test conventions, commit/PR expectations, and the merge gates. Read it before starting work. (Session protocol lives in this file: the beads workflow in § Beads Issue Tracker — where `bd prime` is also the post-compaction context-recovery step — and the end-of-session push checklist in § Session Completion.)
 
 ## Cross-session coordination — another Claude session may be in this repo
 
@@ -37,7 +37,7 @@ pnpm test && pnpm typecheck
 pnpm lint
 pnpm run verify                   # Full pipeline — what CI's `verify` job runs
 
-# Validator (schema 3.15.2 — see 000-docs/SCHEMA_CHANGELOG.md)
+# Validator (schema 4.0.0 — see 000-docs/SCHEMA_CHANGELOG.md)
 python3 scripts/validate-skills-schema.py --verbose
 python3 scripts/validate-skills-schema.py --marketplace --verbose
 python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite
@@ -96,7 +96,7 @@ CI fails if any derived file is out of sync. Never hand-edit auto-generated file
 
 ## Marketplace Build Pipeline
 
-`npm run build` in `marketplace/` runs 7 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → enrich-jrig-data → generate-unified-search → build-cowork-zips → astro build.
+`npm run build` in `marketplace/` runs 9 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → enrich-jrig-data → generate-unified-search → build-cowork-zips → validate-cowork-manifest → copy-public-data → astro build. `readme-sections.json` and `jrig-data.json` are untracked build projections; `npm run dev` regenerates the README projection before Astro starts. The JRig projection has no live page consumer after PR #1046 removed the badge UI and remains only as a temporary build-adjacent inspection output pending its E9.2 removal.
 
 `discover-skills.mjs` emits two artifacts (schema 3.4.0+): `skills-index.json` (L0, ~97 KB gzipped, metadata only — for trigger-match / browse) and `skills-catalog.json` (L1, ~5.5 MB gzipped, full body HTML). Both carry top-level `schemaVersion` + `level` fields. CLI flag `--level=metadata|full|file` (default `full`).
 
@@ -166,7 +166,7 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Agents use `disallowedTools` (camelCase denylist).** Skills use `allowed-tools` (allowlist) AND optionally `disallowed-tools` (kebab-case denylist, schema 3.7.0+). The two field names are intentionally different — do NOT use camelCase on skills or kebab-case on agents; the validator rejects either mismatch. Agent-only fields: `effort`, `maxTurns`.
 
-**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. All 317 in-repo agents are at **A-grade** (least-privilege `tools`, Trigger-bearing descriptions, real tags). **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
+**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. **Corpus status (measured 2026-08-11, doc 721):** the advisory `--agents-only` lane recorded a baseline of **253 errors** across the agent corpus — the earlier "all agents A-grade" claim is retired until the lane is re-baselined clean; treat A-grade as the bar, not the current state. **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
 
 ### Optional frontmatter (schema 3.5.0 / 3.6.0 / 3.7.0 — all default to off)
 
@@ -359,7 +359,7 @@ DoltHub push exits non-zero on purpose: until pushed, Dolt history is
 single-copy on this box. Exporter unit tests: `python3 -m unittest
 tests.test_dolt_sync`. Full details + restore path: `freshie/README.md`.
 
-Key tables: `skill_compliance` (scores, grades, JRig columns), `forge_proofs` (drives JRig-Verified badges on plugin detail pages — `enrich-jrig-data.mjs` preserves the committed `jrig-data.json` when the local DB is absent, e.g. in CI).
+Key tables: `skill_compliance` (scores, grades, JRig columns) and `forge_proofs` (durable JRig behavioral-evaluation evidence). `enrich-jrig-data.mjs` can render an untracked build projection from `forge_proofs`, but no live marketplace page consumes it after PR #1046 removed the badge UI.
 
 ## npm Publish Pipeline
 

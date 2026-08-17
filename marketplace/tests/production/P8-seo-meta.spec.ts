@@ -76,7 +76,8 @@ test.describe('P8: SEO & Meta', () => {
     expect(response.status()).toBeLessThan(500);
   });
 
-  test('No pages reference old claudecodeplugins.io domain in meta', async ({ page }) => {
+  test('No pages reference the retired legacy domain in meta', async ({ page }) => {
+    const retiredDomain = ['claudecode', 'plugins.io'].join('');
     await page.goto('/');
 
     const allMeta = page.locator('meta');
@@ -85,7 +86,7 @@ test.describe('P8: SEO & Meta', () => {
     for (let i = 0; i < count; i++) {
       const content = await allMeta.nth(i).getAttribute('content');
       if (content) {
-        expect(content).not.toContain('claudecodeplugins.io');
+        expect(content.toLowerCase()).not.toContain(retiredDomain);
       }
     }
 
@@ -95,7 +96,7 @@ test.describe('P8: SEO & Meta', () => {
     for (let i = 0; i < canonicalCount; i++) {
       const href = await canonical.nth(i).getAttribute('href');
       if (href) {
-        expect(href).not.toContain('claudecodeplugins.io');
+        expect(href.toLowerCase()).not.toContain(retiredDomain);
       }
     }
   });

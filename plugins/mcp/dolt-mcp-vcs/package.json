@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/dolt-mcp-vcs",
+  "private": true,
   "version": "0.1.0",
   "description": "Dolt/DoltHub version-control toolkit for Claude Code, via the dolthub/dolt-mcp server. A version-control-surface skill + expert agents over a Dolt backend — diagnosing DoltHub visibility, taming serve",
   "keywords": [

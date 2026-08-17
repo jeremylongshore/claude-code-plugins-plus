@@ -574,7 +574,7 @@ This plugin is **immediately usable** and provides **real value** to:
 
 **Repository:**
 
-**Marketplace:** https://claudecodeplugins.io/plugins/excel-analyst-pro
+**Marketplace:** https://tonsofskills.com/plugins/excel-analyst-pro
 
 **Issues:** https://github.com/jeremylongshore/claude-code-plugins/issues
 

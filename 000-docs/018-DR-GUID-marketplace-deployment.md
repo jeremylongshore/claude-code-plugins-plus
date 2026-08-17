@@ -49,11 +49,13 @@ Total Size: 2.5MB
 The repository is already configured for GitHub Pages deployment.
 
 **Automatic Deployment**:
+
 1. Push changes to `main` branch
 2. GitHub Actions will automatically build and deploy
-3. Site will be live at: `https://claudecodeplugins.io/`
+3. Site will be live at: `[retired legacy public domain]/`
 
 **Manual Deployment**:
+
 ```bash
 # Build
 npm run build
@@ -166,7 +168,9 @@ Edit `src/layouts/Layout.astro` and add before `</head>`:
 <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() {
+    dataLayer.push(arguments);
+  }
   gtag('js', new Date());
   gtag('config', 'GA_MEASUREMENT_ID');
 </script>
@@ -255,6 +259,7 @@ Ensure JavaScript is enabled in browser. Check browser console for errors:
 ### Styles Not Applied
 
 Clear browser cache:
+
 - Chrome: Ctrl+Shift+R (hard refresh)
 - Firefox: Ctrl+Shift+Delete (clear cache)
 - Safari: Cmd+Option+E (clear cache)
@@ -316,7 +321,7 @@ When adding new plugins, update these files:
 ---
 
 **Deployment Status**: READY
-**Live URL**: `https://claudecodeplugins.io/`
+**Live URL**: `[retired legacy public domain]/`
 **Last Build**: 2025-10-11
 **Build Time**: ~1.6s
 **Total Size**: 2.5MB

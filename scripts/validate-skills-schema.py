@@ -49,6 +49,7 @@ import difflib
 import json as json_module
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional
@@ -200,8 +201,12 @@ except ImportError:
 # 3.16.1 (2026-07-23) — security lane (advisory only): load-time shell
 #                       substitution (!`cmd` / ```!) + disallowed-tools entry
 #                       validation (mirrors allowed-tools). Residual of closed #1113.
+# 4.0.0 (2026-08-16)  — malformed allowed-tools entries fail closed as ERRORS
+#                       at every tier; unknown but well-formed names remain
+#                       advisory. Approved by ratified blueprint 727 E1.11 and
+#                       the owner's written execution directive.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "3.16.1"
+SCHEMA_VERSION = "4.0.0"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -2208,85 +2213,27 @@ def validate_agent(path: Path) -> Dict[str, Any]:
 
 
 def find_skill_files(root: Path) -> List[Path]:
-    """Find all SKILL.md files in plugins/ and skills/ directories."""
-    excluded_dirs = {
-        "archive",
-        "backups",
-        "backup",
-        ".git",
-        "node_modules",
-        "__pycache__",
-        ".venv",
-        "010-archive",
-        "000-docs",
-        "002-workspaces",
-        # skills/.curated/ is a GENERATED mirror of the best plugin skills for
-        # skills.sh discovery (freshie/scripts/promote-to-curated.py). Its copies
-        # are byte-identical to their plugins/** sources, which are already graded
-        # here — so scanning them would double-count every promoted skill in
-        # skill_compliance and bloat the tracked grades.csv / grade-histogram.json
-        # exports with mirror rows. Exclude them; the source of truth stays the
-        # plugin skill.
-        ".curated",
-    }
-    results = []
-
-    # Search in plugins directory
-    plugins_dir = root / "plugins"
-    if plugins_dir.exists():
-        seen: set = set()
-        # Layout 1: plugins/<cat>/<plugin>/skills/<name>/SKILL.md (legacy)
-        for p in plugins_dir.rglob("skills/*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                if any(part.startswith("skills-backup-") for part in parts):
-                    continue
-                abs_p = p.resolve()
-                if abs_p in seen:
-                    continue
-                seen.add(abs_p)
-                results.append(p)
-        # Layout 2: plugins/<cat>/<plugin>/SKILL.md (Anthropic-spec / Wondelai-style)
-        # SKILL.md sits at plugin root alongside .claude-plugin/plugin.json — no skills/<name>/ subdir.
-        for plugin_json in plugins_dir.rglob(".claude-plugin/plugin.json"):
-            plugin_root = plugin_json.parent.parent
-            skill_md = plugin_root / "SKILL.md"
-            if not skill_md.is_file():
-                continue
-            parts = skill_md.relative_to(root).parts
-            if any(part in excluded_dirs for part in parts):
-                continue
-            if any(part.startswith("skills-backup-") for part in parts):
-                continue
-            abs_p = skill_md.resolve()
-            if abs_p in seen:
-                continue
-            seen.add(abs_p)
-            results.append(skill_md)
-
-    # Search in standalone skills directory
-    skills_dir = root / "skills"
-    if skills_dir.exists():
-        for p in skills_dir.rglob("*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                results.append(p)
-
-    # Legacy client-repo layout: search in 003-skills directory
-    legacy_skills = root / "003-skills"
-    if legacy_skills.exists():
-        for p in legacy_skills.rglob("*/SKILL.md"):
-            if p.is_file():
-                parts = p.relative_to(root).parts
-                if any(part in excluded_dirs for part in parts):
-                    continue
-                results.append(p)
-
-    return results
+    """Return the canonical graded cohort; requires repository Node 20+ on PATH."""
+    resolver = Path(__file__).resolve().parent / "corpus-resolver.mjs"
+    try:
+        result = subprocess.run(
+            ["node", str(resolver), "--cohort", "graded", "--root", str(root), "--json"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("corpus resolver requires Node 20+ on PATH") from exc
+    if result.returncode != 0:
+        raise RuntimeError(f"corpus resolver failed: {result.stderr.strip()}")
+    try:
+        payload = json_module.loads(result.stdout)
+        files = payload["files"]
+    except (json_module.JSONDecodeError, KeyError, TypeError) as exc:
+        raise RuntimeError(f"corpus resolver returned invalid JSON: {exc}") from exc
+    if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
+        raise RuntimeError("corpus resolver returned an invalid file list")
+    return [root / value for value in files]
 
 
 def parse_frontmatter(content: str) -> Tuple[dict, str]:
@@ -2379,11 +2326,8 @@ def validate_tool_permission(tool: str) -> Tuple[bool, str]:
                        Caller surfaces msg as a WARNING.
       - (False, msg) — malformed entry (unbalanced parentheses, empty scope,
                        illegal characters in the tool name). Caller surfaces
-                       msg as a WARNING at every tier: escalating malformed
-                       entries to a marketplace-tier ERROR would change
-                       error-vs-warning semantics, which is architectural per
-                       SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and needs prior
-                       approval.
+                       msg as an ERROR at every tier under blueprint 727 E1.11
+                       and the owner's written approval.
 
     Note: the old `cmd:*`-format advisory was dropped — Anthropic's canonical
     example is the space form `Bash(git add *)` (code.claude.com/docs/en/skills),
@@ -2629,8 +2573,30 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     if "allowed-tools" in fm:
         raw_tools = fm["allowed-tools"]
         tools_type_error = False
-        if isinstance(raw_tools, (str, list)):
-            tools: List[str] = parse_allowed_tools(raw_tools)
+        if isinstance(raw_tools, list):
+            valid_list_items: List[str] = []
+            for index, item in enumerate(raw_tools, start=1):
+                if not isinstance(item, str):
+                    errors.append(
+                        f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string, "
+                        f"got: {type(item).__name__}"
+                    )
+                elif not item.strip():
+                    errors.append(f"[frontmatter] 'allowed-tools' YAML list item {index} must be a non-empty string")
+                else:
+                    valid_list_items.append(item)
+            tools = parse_allowed_tools(valid_list_items)
+        elif isinstance(raw_tools, str):
+            if "," in raw_tools:
+                empty_positions = [
+                    str(index) for index, item in enumerate(raw_tools.split(","), start=1) if not item.strip()
+                ]
+                if empty_positions:
+                    errors.append(
+                        "[frontmatter] 'allowed-tools' comma-separated form contains empty "
+                        f"entry at position(s): {', '.join(empty_positions)}"
+                    )
+            tools = parse_allowed_tools(raw_tools)
         else:
             errors.append(
                 f"[frontmatter] 'allowed-tools' must be a string or YAML list, got: {type(raw_tools).__name__}"
@@ -2645,12 +2611,10 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
             valid, msg = validate_tool_permission(tool)
             if not valid:
                 # Malformed entry (unbalanced parens, empty scope, illegal
-                # characters in the tool name). WARNING at every tier —
-                # escalating malformed entries to a marketplace-tier ERROR
-                # would change error-vs-warning semantics, which is
-                # architectural per SCHEMA_CHANGELOG NON-NEGOTIABLE #7 and
-                # needs prior written approval.
-                warnings.append(f"[frontmatter] allowed-tools: {msg}")
+                # characters in the tool name). Ratified blueprint 727 E1.11
+                # and the owner's written approval make these fail closed at
+                # every tier. Well-formed unknown names remain advisory below.
+                errors.append(f"[frontmatter] allowed-tools: {msg}")
             elif msg:
                 # Well-formed but unrecognized base tool name (e.g. a
                 # misspelling like 'Reads') — advisory.

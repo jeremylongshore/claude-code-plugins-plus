@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-jobs-to-be-done",
+  "private": true,
   "version": "1.0.2",
   "description": "Strategic product innovation framework using JTBD theory",
   "keywords": [

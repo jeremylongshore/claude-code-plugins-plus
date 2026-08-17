@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/hermes-tweet",
+  "private": true,
   "version": "0.1.6",
   "description": "Native Hermes Agent X/Twitter plugin for Xquik automation with read-first workflows and approval-gated actions.",
   "keywords": [

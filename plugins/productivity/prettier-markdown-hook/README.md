@@ -501,7 +501,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Issues**: [GitHub Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
 
-**Marketplace**: [claudecodeplugins.io](https://claudecodeplugins.io/)
+**Marketplace**: [tonsofskills.com](https://tonsofskills.com/)
 
 ## Changelog
 

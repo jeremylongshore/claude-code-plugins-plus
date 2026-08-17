@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-ux-heuristics",
+  "private": true,
   "version": "1.0.3",
   "description": "Usability heuristics and principles for UX audits",
   "keywords": [

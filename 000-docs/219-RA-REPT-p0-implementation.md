@@ -1,4 +1,5 @@
-# P0 Implementation Report: claudecodeplugins.io
+# P0 Implementation Report: [retired legacy public domain]
+
 ## Complete Website Overhaul & Optimization
 
 **Date**: December 24, 2025
@@ -10,9 +11,10 @@
 
 ## Executive Summary
 
-Successfully implemented all 5 critical P0 requirements for claudecodeplugins.io, plus additional performance optimizations. The marketplace now accurately represents its "skills embedded in plugins" architecture with functional search, consistent counts, and CI validation gates.
+Successfully implemented all 5 critical P0 requirements for [retired legacy public domain], plus additional performance optimizations. The marketplace now accurately represents its "skills embedded in plugins" architecture with functional search, consistent counts, and CI validation gates.
 
 **Key Metrics**:
+
 - **Pages Built**: 517 (optimized from 531)
 - **Total Site Size**: 9.6MB (reduced from 11MB, -12.7%)
 - **Skills Page Size**: 547KB (reduced from ~1.8MB, -60%)
@@ -40,6 +42,7 @@ Successfully implemented all 5 critical P0 requirements for claudecodeplugins.io
 ## Initial Problem Statement
 
 ### Truth Constraint Violation
+
 The website claimed to be a "skills marketplace" but the truth is: **skills are embedded IN plugins**, not a standalone product. This was misleading users and misrepresenting the architecture.
 
 ### Specific Issues Identified
@@ -73,11 +76,13 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 ## P0 Requirements
 
 ### 1. Fix Plugin Routes (Canonical Slugs) ✅
+
 **Status**: Completed in previous commit (`6b902bd0`)
 
 **Problem**: Plugin routes were using `plugin.slug` (short name) instead of `plugin.name` (full name with prefix), causing 404s.
 
 **Solution**:
+
 - Updated route generation to use `plugin.name` from marketplace.extended.json
 - All 258 plugins now have working `/plugins/<canonical-name>/` routes
 - Fixed explore.astro to use plugin.name instead of plugin.slug
@@ -87,9 +92,11 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 ---
 
 ### 2. Homepage Unified Search Bar ✅
+
 **Status**: Completed in commit `388108c5`
 
 **Requirements**:
+
 - Real search bar (not just a claim)
 - Search BOTH plugins AND skills
 - Use unified-search-index.json (502 items)
@@ -97,6 +104,7 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 **Implementation**:
 
 #### Search UI (index.astro)
+
 ```astro
 <!-- Hero Search Bar -->
 <div class="hero-search">
@@ -119,6 +127,7 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 ```
 
 #### Search Functionality
+
 - **Debounce**: 200ms delay to prevent excessive rendering
 - **Min Query Length**: 2 characters
 - **Max Results**: 8 items
@@ -127,6 +136,7 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 - **Click Outside**: Closes dropdown
 
 #### Styling
+
 - Search icon on left
 - Toggle buttons on right
 - Results dropdown below input
@@ -138,9 +148,11 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 ---
 
 ### 3. Reframe /skills Page ✅
+
 **Status**: Completed in commit `388108c5`
 
 **Requirements**:
+
 - Emphasize "embedded in plugins" architecture
 - Show "Provided by <plugin>" for each skill
 - Update title and descriptions
@@ -148,6 +160,7 @@ The website claimed to be a "skills marketplace" but the truth is: **skills are 
 **Changes Made**:
 
 #### Title & Subtitle
+
 ```astro
 // Before
 const pageTitle = 'Agent Skills Directory';
@@ -158,6 +171,7 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 ```
 
 #### Skill Cards - Added "Provided by" Section
+
 ```astro
 <div class="skill-plugin-info">
     <svg width="14" height="14">
@@ -168,18 +182,19 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 ```
 
 #### Styling
+
 ```css
 .skill-plugin-info {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--brand-light-gray);
-    font-size: 0.8125rem;
-    color: var(--brand-mid-gray);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--brand-light-gray);
+  font-size: 0.8125rem;
+  color: var(--brand-mid-gray);
 }
 
 .skill-plugin-info strong {
-    color: var(--brand-blue);
-    font-weight: 600;
+  color: var(--brand-blue);
+  font-weight: 600;
 }
 ```
 
@@ -188,15 +203,18 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 ---
 
 ### 4. Fix Count Inconsistencies ✅
+
 **Status**: Completed in commits `388108c5` and `a824a61b`
 
 **Problem**:
+
 - Homepage had 240, 241, 244 skill counts
 - Stats bar showed 259 plugins (should be 258)
 
 **Solution**: Updated all counts to match build artifacts
 
 #### Locations Updated (9 total)
+
 1. Line 10: Meta description - 244 → 239
 2. Line 604: JSON-LD description - 244 → 239
 3. Line 647: Stats bar - 244 → 239
@@ -208,6 +226,7 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 9. Line 896: Section header - 244 → 239
 
 **Final Counts**:
+
 - **Skills**: 239 (embedded in marketplace plugins)
 - **Plugins**: 258 (in marketplace.extended.json)
 
@@ -216,9 +235,11 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 ---
 
 ### 5. Add CI Validation Gates ✅
+
 **Status**: Completed in commit `388108c5`
 
 **Requirements**:
+
 - Validate all plugin routes exist
 - Validate all skill→plugin links resolve
 - Block deployment if validation fails
@@ -226,6 +247,7 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 **Implementation**:
 
 #### Script 1: validate-routes.mjs
+
 ```javascript
 #!/usr/bin/env node
 /**
@@ -244,8 +266,8 @@ const catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf-8'));
 // Get all generated routes
 const generatedRoutes = new Set(
   readdirSync(DIST_PLUGINS_PATH, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name)
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name),
 );
 
 // Validate each plugin has a route
@@ -260,11 +282,13 @@ if (errors > 0) process.exit(1);
 ```
 
 **Validates**:
+
 - All 258 plugins in catalog have routes in dist/
 - Detects orphan routes (routes without plugins)
 - Exit code 1 blocks CI deployment
 
 #### Script 2: validate-links.mjs
+
 ```javascript
 #!/usr/bin/env node
 /**
@@ -289,7 +313,7 @@ for (const skill of skillsCatalog.skills) {
     brokenLinks.push({
       skill: skill.name,
       parentPlugin: parentPluginName,
-      expectedRoute: `/plugins/${parentPluginName}/`
+      expectedRoute: `/plugins/${parentPluginName}/`,
     });
     errors++;
   }
@@ -299,11 +323,13 @@ if (errors > 0) process.exit(1);
 ```
 
 **Validates**:
+
 - All 239 skills reference valid parent plugins
 - Every "Provided by <plugin>" link resolves
 - Exit code 1 blocks deployment on broken links
 
 #### GitHub Actions Integration
+
 ```yaml
 # .github/workflows/deploy-marketplace.yml
 
@@ -337,6 +363,7 @@ Beyond P0 requirements, implemented significant performance improvements.
 ### 1. Skills Catalog Filtering (discover-skills.mjs)
 
 **Problem**:
+
 - Script discovered ALL skills in plugins/ directory
 - Included 5 skills whose parent plugins weren't in marketplace
 - These would cause broken links in production
@@ -344,11 +371,12 @@ Beyond P0 requirements, implemented significant performance improvements.
 **Solution**: Filter to marketplace plugins only
 
 #### Implementation
+
 ```javascript
 // Load marketplace catalog
 const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
 const marketplaceCatalog = JSON.parse(readFileSync(MARKETPLACE_CATALOG, 'utf-8'));
-const marketplacePluginNames = new Set(marketplaceCatalog.plugins.map(p => p.name));
+const marketplacePluginNames = new Set(marketplaceCatalog.plugins.map((p) => p.name));
 
 // Filter skills
 for (const filePath of skillFiles) {
@@ -360,7 +388,7 @@ for (const filePath of skillFiles) {
     } else {
       orphanedSkills.push({
         skill: skill.name,
-        parentPlugin: skill.parentPlugin.name
+        parentPlugin: skill.parentPlugin.name,
       });
     }
   }
@@ -368,6 +396,7 @@ for (const filePath of skillFiles) {
 ```
 
 **Orphaned Skills Removed (5)**:
+
 1. `adk-agent-builder` (parent: `jeremy-google-adk`)
 2. `adk-engineer` (parent: `jeremy-adk-software-engineer`)
 3. `auditing-wallet-security` (parent: `wallet-security-auditor`)
@@ -375,6 +404,7 @@ for (const filePath of skillFiles) {
 5. `vertex-agent-builder` (parent: `jeremy-vertex-ai`)
 
 **Result**:
+
 - skills-catalog.json: 244 → 239 skills
 - All skills now have valid parent plugin routes
 - Link validation passes 100%
@@ -384,6 +414,7 @@ for (const filePath of skillFiles) {
 ### 2. Skills Page Bundle Size Optimization
 
 **Problem**:
+
 - skills/index.astro embedded FULL skills-catalog.json (1.3MB)
 - Included `content` field (markdown) for all 239 skills
 - Client-side search didn't use `content` field
@@ -392,6 +423,7 @@ for (const filePath of skillFiles) {
 **Solution**: Strip content field before embedding
 
 #### Before
+
 ```astro
 <script define:vars={{ skills: skillsCatalog.skills }}>
   // Embeds 1.3MB including markdown content
@@ -400,6 +432,7 @@ for (const filePath of skillFiles) {
 ```
 
 #### After
+
 ```astro
 ---
 // Server-side: Strip content field
@@ -421,6 +454,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 ```
 
 **Results**:
+
 - **Before**: ~1.8MB (with full markdown content)
 - **After**: 547KB (metadata only)
 - **Reduction**: -60% bundle size
@@ -428,6 +462,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 - **Search**: Still works perfectly (only needs metadata)
 
 **Verification**:
+
 ```bash
 python3 -c "
 import json
@@ -446,12 +481,14 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 ### 3. Route Conflict Resolution
 
 **Problem**:
+
 - Two skills routes: `/skills/index.astro` AND `/skills/[...page].astro`
 - Pagination route conflicted with main index
 - Build warning: "Could not render `/skills` from route..."
 - Generated 9 unnecessary pagination pages (2-10)
 
 **Analysis**:
+
 - Main index has client-side search for all 239 skills
 - Pagination unnecessary with working search
 - Added complexity without value
@@ -459,6 +496,7 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 **Solution**: Delete pagination route
 
 **Results**:
+
 - ✅ Build warning eliminated
 - **Pages**: 526 → 517 (-9 pages)
 - **Build time**: Slightly faster (4.40s)
@@ -468,13 +506,13 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 
 ### Total Performance Impact
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Total Site Size | 11MB | 9.6MB | -12.7% |
-| Skills Page Size | ~1.8MB | 547KB | -60% |
-| Pages Built | 526 | 517 | -9 pages |
-| Build Warnings | 1 | 0 | ✅ |
-| Orphaned Skills | 5 | 0 | ✅ |
+| Metric           | Before | After | Change   |
+| ---------------- | ------ | ----- | -------- |
+| Total Site Size  | 11MB   | 9.6MB | -12.7%   |
+| Skills Page Size | ~1.8MB | 547KB | -60%     |
+| Pages Built      | 526    | 517   | -9 pages |
+| Build Warnings   | 1      | 0     | ✅       |
+| Orphaned Skills  | 5      | 0     | ✅       |
 
 ---
 
@@ -528,7 +566,7 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 │              GitHub Pages Deployment                         │
 │  • 517 static HTML pages                                    │
 │  • 9.6MB total size                                         │
-│  • https://claudecodeplugins.io                             │
+│  • [retired legacy public domain]                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -592,6 +630,7 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 ### Automated Tests (CI)
 
 #### 1. Plugin Route Validation
+
 ```bash
 $ node marketplace/scripts/validate-routes.mjs
 
@@ -605,11 +644,13 @@ $ node marketplace/scripts/validate-routes.mjs
 ```
 
 **Validates**:
+
 - Every plugin in marketplace.extended.json has a route
 - No missing plugin detail pages
 - Exit code 0 (success)
 
 #### 2. Skill→Plugin Link Validation
+
 ```bash
 $ node marketplace/scripts/validate-links.mjs
 
@@ -623,11 +664,13 @@ $ node marketplace/scripts/validate-links.mjs
 ```
 
 **Validates**:
+
 - Every skill references a valid parent plugin
 - All "Provided by <plugin>" links resolve
 - Exit code 0 (success)
 
 #### 3. Build Validation
+
 ```bash
 $ npm run build
 
@@ -637,6 +680,7 @@ $ npm run build
 ```
 
 **Validates**:
+
 - No TypeScript errors
 - No Astro build errors
 - No warnings (route conflicts resolved)
@@ -647,6 +691,7 @@ $ npm run build
 ### Manual Testing
 
 #### Homepage Search
+
 - [x] Search input appears and is functional
 - [x] Type toggle works (All/Plugins/Skills)
 - [x] Fuzzy search matches plugin/skill names
@@ -658,6 +703,7 @@ $ npm run build
 - [x] Empty query hides results
 
 #### Skills Page
+
 - [x] Title shows "Skills (Embedded in Plugins)"
 - [x] Subtitle mentions "embedded in plugins"
 - [x] All 239 skill cards render
@@ -670,6 +716,7 @@ $ npm run build
 - [x] "Clear Filters" button resets all
 
 #### Count Consistency
+
 - [x] Homepage stats bar: 239 skills, 258 plugins
 - [x] Hero section: "Search 239 skills"
 - [x] Features section: "239 Agent Skills"
@@ -678,6 +725,7 @@ $ npm run build
 - [x] No discrepancies found
 
 #### CI Validation
+
 - [x] validate-routes.mjs exits 0 on success
 - [x] validate-routes.mjs exits 1 on missing route
 - [x] validate-links.mjs exits 0 on success
@@ -690,6 +738,7 @@ $ npm run build
 ### Performance Testing
 
 #### Bundle Size Verification
+
 ```bash
 # Before optimization (estimated)
 skills/index.html: ~1.8MB (with full content field)
@@ -702,6 +751,7 @@ $ ls -lh marketplace/dist/skills/index.html
 ```
 
 #### Content Field Removal Verification
+
 ```python
 import json
 with open('marketplace/dist/skills/index.html', 'r') as f:
@@ -715,6 +765,7 @@ with open('marketplace/dist/skills/index.html', 'r') as f:
 ```
 
 #### Total Site Size
+
 ```bash
 $ cd marketplace/dist && du -sh .
 9.6M	.
@@ -731,7 +782,8 @@ $ cd marketplace/dist && du -sh .
 ### Commits: 4 total across 12 unique files
 
 #### Commit 1: `6b902bd0` (Previous Work)
-*Plugin routes + unified layout + deploy reliability*
+
+_Plugin routes + unified layout + deploy reliability_
 
 - `.nvmrc` - Added Node 20 requirement
 - `package.json` - Added engines field
@@ -739,39 +791,34 @@ $ cd marketplace/dist && du -sh .
 - Multiple layout consolidations
 
 #### Commit 2: `388108c5` (P0 Implementation)
-*Homepage search + /skills reframe + CI validation gates*
+
+_Homepage search + /skills reframe + CI validation gates_
 
 **New Files Created**:
+
 1. `marketplace/scripts/validate-routes.mjs` - Plugin route validation
 2. `marketplace/scripts/validate-links.mjs` - Skill→plugin link validation
 
-**Files Modified**:
-3. `.github/workflows/deploy-marketplace.yml` - Added CI validation gates
-4. `marketplace/scripts/discover-skills.mjs` - Added marketplace filtering
-5. `marketplace/src/data/skills-catalog.json` - Regenerated (239 skills)
-6. `marketplace/src/data/unified-search-index.json` - Regenerated
-7. `marketplace/src/pages/index.astro` - Added search UI, updated counts
-8. `marketplace/src/pages/skills/index.astro` - Reframed title, added "Provided by"
+**Files Modified**: 3. `.github/workflows/deploy-marketplace.yml` - Added CI validation gates 4. `marketplace/scripts/discover-skills.mjs` - Added marketplace filtering 5. `marketplace/src/data/skills-catalog.json` - Regenerated (239 skills) 6. `marketplace/src/data/unified-search-index.json` - Regenerated 7. `marketplace/src/pages/index.astro` - Added search UI, updated counts 8. `marketplace/src/pages/skills/index.astro` - Reframed title, added "Provided by"
 
 **Lines Changed**: +539 insertions, -245 deletions
 
 #### Commit 3: `a824a61b` (Performance Optimizations)
-*Bundle size optimization + route conflict fix*
 
-**Files Deleted**:
-9. `marketplace/src/pages/skills/[...page].astro` - Removed pagination route
+_Bundle size optimization + route conflict fix_
 
-**Files Modified**:
-10. `marketplace/src/pages/skills/index.astro` - Added lightweightSkills
-11. `marketplace/src/data/skills-catalog.json` - Regenerated
-12. `marketplace/src/data/unified-search-index.json` - Regenerated
+**Files Deleted**: 9. `marketplace/src/pages/skills/[...page].astro` - Removed pagination route
+
+**Files Modified**: 10. `marketplace/src/pages/skills/index.astro` - Added lightweightSkills 11. `marketplace/src/data/skills-catalog.json` - Regenerated 12. `marketplace/src/data/unified-search-index.json` - Regenerated
 
 **Lines Changed**: +13 insertions, -414 deletions
 
 #### Commit 4: `9abeb656` (Data Sync)
-*Regenerate data files after optimization*
+
+_Regenerate data files after optimization_
 
 **Files Modified**:
+
 - `marketplace/src/data/skills-catalog.json` - Final sync
 - `marketplace/src/data/unified-search-index.json` - Final sync
 
@@ -809,26 +856,26 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 
 ### Development Timeline
 
-| Time | Activity |
-|------|----------|
-| T+0 | Received P0 requirements, analyzed current state |
-| T+30min | Gathered evidence (counts, routes, catalog structure) |
-| T+1h | Implemented homepage search UI |
-| T+1.5h | Reframed /skills page with "Provided by" |
-| T+2h | Created CI validation scripts |
-| T+2.5h | Discovered orphaned skills issue |
-| T+3h | Modified discover-skills.mjs to filter marketplace plugins |
-| T+3.5h | Regenerated catalog, updated all counts |
-| T+4h | Built and validated (first validation FAILED - 5 broken links) |
-| T+4.5h | Fixed orphaned skills, rebuilt (validation PASSED) |
-| T+5h | Committed P0 implementation |
-| T+5.5h | Discovered route conflict warning |
-| T+6h | Removed pagination route |
-| T+6.5h | Discovered bundle size issue (1.8MB page) |
-| T+7h | Implemented lightweight skills optimization |
-| T+7.5h | Rebuilt, verified (-60% bundle size) |
-| T+8h | Committed performance optimizations |
-| T+8.5h | Final validation, created comprehensive report |
+| Time    | Activity                                                       |
+| ------- | -------------------------------------------------------------- |
+| T+0     | Received P0 requirements, analyzed current state               |
+| T+30min | Gathered evidence (counts, routes, catalog structure)          |
+| T+1h    | Implemented homepage search UI                                 |
+| T+1.5h  | Reframed /skills page with "Provided by"                       |
+| T+2h    | Created CI validation scripts                                  |
+| T+2.5h  | Discovered orphaned skills issue                               |
+| T+3h    | Modified discover-skills.mjs to filter marketplace plugins     |
+| T+3.5h  | Regenerated catalog, updated all counts                        |
+| T+4h    | Built and validated (first validation FAILED - 5 broken links) |
+| T+4.5h  | Fixed orphaned skills, rebuilt (validation PASSED)             |
+| T+5h    | Committed P0 implementation                                    |
+| T+5.5h  | Discovered route conflict warning                              |
+| T+6h    | Removed pagination route                                       |
+| T+6.5h  | Discovered bundle size issue (1.8MB page)                      |
+| T+7h    | Implemented lightweight skills optimization                    |
+| T+7.5h  | Rebuilt, verified (-60% bundle size)                           |
+| T+8h    | Committed performance optimizations                            |
+| T+8.5h  | Final validation, created comprehensive report                 |
 
 ---
 
@@ -837,6 +884,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### Homepage
 
 #### Before
+
 ```
 ❌ Hero text: "Search 244 skills" (NO search bar exists)
 ❌ Stats bar: "259" plugins (incorrect count)
@@ -846,6 +894,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ```
 
 #### After
+
 ```
 ✅ Functional search bar in hero section
 ✅ Type toggle: All / Plugins / Skills
@@ -861,6 +910,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### Skills Page (/skills)
 
 #### Before
+
 ```
 ❌ Title: "Agent Skills Directory" (implies standalone product)
 ❌ Subtitle: Generic description
@@ -872,6 +922,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ```
 
 #### After
+
 ```
 ✅ Title: "Skills (Embedded in Plugins)"
 ✅ Subtitle: "Browse 239 agent skills embedded in plugins across 14 categories"
@@ -887,6 +938,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### Skills Catalog Data
 
 #### Before
+
 ```
 ❌ 244 skills total
 ❌ Includes 5 orphaned skills:
@@ -901,6 +953,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ```
 
 #### After
+
 ```
 ✅ 239 skills total (filtered to marketplace plugins)
 ✅ All skills have valid parent plugins
@@ -915,6 +968,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### CI/CD Pipeline
 
 #### Before
+
 ```
 ❌ No route validation
 ❌ No link validation
@@ -925,6 +979,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ```
 
 #### After
+
 ```
 ✅ validate-routes.mjs: Checks all 258 plugin routes
 ✅ validate-links.mjs: Checks all 239 skill→plugin links
@@ -939,6 +994,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### Performance
 
 #### Before
+
 ```
 ❌ Skills page: ~1.8MB (embedded full markdown content)
 ❌ Total site: 11MB
@@ -948,6 +1004,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ```
 
 #### After
+
 ```
 ✅ Skills page: 547KB (metadata only, -60%)
 ✅ Total site: 9.6MB (-1.4MB, -12.7%)
@@ -978,6 +1035,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 ### Deployment Steps
 
 1. **Merge PR #190 to main**
+
    ```bash
    # Review PR: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/190
    # Approve and merge
@@ -996,7 +1054,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
    - ✅ Deploy to GitHub Pages
 
 3. **Production URL**
-   - https://claudecodeplugins.io
+   - [retired legacy public domain]
    - DNS: GitHub Pages
    - SSL: Automatic (GitHub)
 
@@ -1015,6 +1073,7 @@ a824a61b - perf(skills): Bundle size optimization + route conflict fix
 If issues detected after deployment:
 
 1. **Immediate**: Revert main branch to previous commit
+
    ```bash
    git revert HEAD
    git push origin main
@@ -1270,7 +1329,7 @@ console.log('✅ All skill→plugin links validated successfully!');
 // Load marketplace catalog to get valid plugin names
 const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
 const marketplaceCatalog = JSON.parse(readFileSync(MARKETPLACE_CATALOG, 'utf-8'));
-const marketplacePluginNames = new Set(marketplaceCatalog.plugins.map(p => p.name));
+const marketplacePluginNames = new Set(marketplaceCatalog.plugins.map((p) => p.name));
 
 // Process skills
 const skills = [];
@@ -1286,7 +1345,7 @@ for (const filePath of skillFiles) {
       orphanedSkills.push({
         skill: skill.name,
         parentPlugin: skill.parentPlugin.name,
-        filePath: skill.filePath
+        filePath: skill.filePath,
       });
     }
   }
@@ -1341,9 +1400,10 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 
 ## Final Notes
 
-This P0 implementation represents a complete overhaul of claudecodeplugins.io to accurately reflect its architecture and provide a production-quality user experience.
+This P0 implementation represents a complete overhaul of [retired legacy public domain] to accurately reflect its architecture and provide a production-quality user experience.
 
 **Key Achievements**:
+
 - ✅ All 5 P0 requirements met
 - ✅ Performance optimized beyond requirements
 - ✅ CI validation gates protect production
@@ -1356,6 +1416,6 @@ This P0 implementation represents a complete overhaul of claudecodeplugins.io to
 
 ---
 
-*Report generated: December 24, 2025*
-*Author: Claude Sonnet 4.5*
-*Project: claudecodeplugins.io P0 Implementation*
+_Report generated: December 24, 2025_
+_Author: Claude Sonnet 4.5_
+_Project: [retired legacy public domain] P0 Implementation_

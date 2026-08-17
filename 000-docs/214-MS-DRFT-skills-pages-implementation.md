@@ -8,9 +8,11 @@
 ## Deliverables Completed
 
 ### 1. Discovery Script ✅
+
 **File:** `/marketplace/scripts/discover-skills.mjs`
 
 **Features:**
+
 - Recursively scans `plugins/` directory for all SKILL.md files
 - Parses YAML frontmatter (name, description, allowed-tools, version, author, license)
 - Extracts markdown content
@@ -23,15 +25,18 @@
 **Output:** `/marketplace/src/data/skills-catalog.json`
 
 **Statistics:**
+
 - Total skills found: **244**
 - Success rate: **100%** (244/244)
 - Categories: **16**
 - Unique tools: **50**
 
 ### 2. Skills Index Page ✅
+
 **File:** `/marketplace/src/pages/skills/index.astro`
 
 **Features:**
+
 - Lists all 244 skills in responsive grid layout
 - Client-side search using Fuse.js (fuzzy search)
 - Filter by category (16 categories)
@@ -42,15 +47,18 @@
 - SEO metadata with Open Graph tags
 
 **Technologies:**
+
 - Astro 5.16.0 static page
 - Tailwind CSS 4.1.18 for styling
 - Fuse.js 7.1.0 for search (CDN import)
 - Vanilla JavaScript for interactivity
 
 ### 3. Skill Template Component ✅
+
 **File:** `/marketplace/src/components/SkillTemplate.astro`
 
 **Sections:**
+
 - Breadcrumb navigation (Home → Skills → Skill Name)
 - Skill header with name and description
 - Metadata (version, author, license)
@@ -62,15 +70,18 @@
 - File path metadata
 
 **Styling:**
+
 - Custom global styles for markdown rendering
 - Responsive layout
 - Consistent with existing theme
 - No Tailwind @apply (pure CSS for v4 compatibility)
 
 ### 4. Dynamic Skill Routes ✅
+
 **File:** `/marketplace/src/pages/skills/[slug].astro`
 
 **Features:**
+
 - Single file generates all 244 pages via `getStaticPaths()`
 - Reads from skills-catalog.json
 - Uses SkillTemplate component
@@ -80,13 +91,16 @@
 - Breadcrumbs and navigation
 
 **Routes Generated:** 245 total
+
 - `/skills/` (index page)
 - `/skills/{slug}/` (244 individual skill pages)
 
 ### 5. Build Integration ✅
+
 **File:** `/marketplace/package.json`
 
 **Scripts Added:**
+
 ```json
 {
   "skills:generate": "node scripts/discover-skills.mjs",
@@ -95,6 +109,7 @@
 ```
 
 **Build Process:**
+
 1. Run discovery script (find 244 skills)
 2. Generate skills-catalog.json
 3. Astro reads catalog and generates static pages
@@ -103,6 +118,7 @@
 ## Build Verification
 
 ### Build Results
+
 ```
 ✅ Skills discovered: 244
 ✅ Pages generated: 245 (244 skills + 1 index)
@@ -112,6 +128,7 @@
 ```
 
 ### Sample Skills Catalog
+
 ```json
 {
   "skills": [
@@ -144,18 +161,22 @@
 ## Technical Challenges Resolved
 
 ### 1. Tailwind CSS v4 Compatibility
+
 **Issue:** Scoped styles with Tailwind utilities required @reference directive
 **Solution:** Converted to plain CSS with hex colors and standard properties
 
 ### 2. Author Field Normalization
+
 **Issue:** Some skills had author as object `{name, email}`, others as string
 **Solution:** Added normalization logic to convert all to string format
 
 ### 3. Allowed-Tools Array Handling
+
 **Issue:** Some skills had allowed-tools as string or missing
 **Solution:** Ensured all allowedTools normalized to array format
 
 ### 4. Plugin Directory Discovery
+
 **Issue:** Some plugins missing `.claude-plugin/plugin.json`
 **Solution:** Fallback path inference from directory structure
 
@@ -188,12 +209,14 @@ marketplace/
 ## SEO Implementation
 
 ### Skills Index Page
+
 - Title: "Agent Skills Directory - Claude Code Plugins"
 - Description: "Browse all 244 agent skills across 16 categories"
-- Canonical URL: https://claudecodeplugins.io/skills/
+- Canonical URL: [retired legacy public domain]/skills/
 - Open Graph tags for social sharing
 
 ### Individual Skill Pages
+
 - Title: "{skill.name} - Agent Skill"
 - Description: {skill.description}
 - Canonical URL:
@@ -224,6 +247,7 @@ marketplace/
 ## Issues Encountered
 
 ### Pre-existing Build Errors
+
 **Files:** `src/pages/learning/start-here.astro`, `src/pages/playbooks/*.astro`
 **Status:** These errors existed before this implementation
 **Impact:** None on skills pages functionality
@@ -233,7 +257,7 @@ marketplace/
 
 1. **Deploy to Production**
    - Push changes to main branch
-   - GitHub Actions will auto-deploy to claudecodeplugins.io
+   - GitHub Actions will auto-deploy to [retired legacy public domain]
    - Verify /skills/ route live
 
 2. **Homepage Integration**
@@ -254,6 +278,7 @@ marketplace/
 ## Files Created/Modified
 
 ### Created
+
 - `/marketplace/scripts/discover-skills.mjs`
 - `/marketplace/src/components/SkillTemplate.astro`
 - `/marketplace/src/pages/skills/index.astro`
@@ -261,9 +286,11 @@ marketplace/
 - `/marketplace/src/data/skills-catalog.json` (generated)
 
 ### Modified
+
 - `/marketplace/package.json` (added skills:generate script)
 
 ### No Changes Required
+
 - Theme files (maintained existing Tailwind theme)
 - Existing SKILL.md files (read-only approach)
 - Plugin structure (non-invasive discovery)

@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-drive-motivation",
+  "private": true,
   "version": "1.0.2",
   "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose)",
   "keywords": [

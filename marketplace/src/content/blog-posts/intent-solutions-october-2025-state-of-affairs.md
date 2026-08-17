@@ -66,7 +66,7 @@ This isn't a success story. It's a progress report from someone who's learning i
 
 **What it does:** Plugin marketplace and hub for Claude Code extensions.
 
-**Current status:** Live at claudecodeplugins.io with 236 production plugins
+**Current status:** Live at [retired legacy public domain] with 236 production plugins
 
 **Tech stack:** Next.js 15, React 19, Cloud Run, two-catalog architecture
 

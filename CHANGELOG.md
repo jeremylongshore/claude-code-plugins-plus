@@ -7,6 +7,263 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-08-17 — JRig/Freshie authority boundary)
+
+- **First-party operator guidance can no longer send JRig's runtime tables into the Freshie
+  inventory.** The public validation skill and Plane evidence note now use
+  `scripts/run-jrig-eval.sh`, which evaluates against a `/dev/shm` scratch database and delegates
+  the governed `forge_proofs` write to the repository recorder. A provenance-aware, fail-closed
+  check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
+  directives across active first-party operator surfaces, including `npx` invocations, folded
+  and flow-style YAML commands, shell-escaped executable and flag spellings, statically resolvable
+  executable/verb/flag/value indirection, ad hoc shell-function aliases, command substitution,
+  parameter assignment, brace expansion, parsed YAML tags/keys/anchors, and active filesystem-glob
+  path spellings. Command state follows shell ordering while assignments isolated by subshells,
+  pipelines, background jobs, or skipped `&&`/`||` branches cannot overwrite parent state; quoted
+  or escaped literal glob characters remain literal, and mirrors remain upstream-owned.
+  The check runs inside the existing
+  documentation-governance job and adds no required status context.
+
+### Changed (2026-08-16 — build-derived marketplace data ownership)
+
+- **Two build-only marketplace JSON projections no longer have a second committed claimant.**
+  `readme-sections.json` is regenerated before both Astro build and local development, while the
+  now-unconsumed `jrig-data.json` is generated only from local `forge_proofs` evidence and writes a
+  deterministic empty map when that untracked database is absent. The shared generated-artifact
+  registry and fail-closed tracking gate reject either file if it is committed again. Four audited
+  build-derived files remain tracked because supported non-build consumers or prior-state semantics
+  still read their committed bytes; Epic 1.8 owns their regenerate-and-diff controls. The unconsumed
+  JRig projection is temporary: blueprint bead E9.2 still owns deleting it and its build step.
+
+### Changed (2026-08-16 — retired public-domain containment)
+
+- **First-party and generated surfaces now use only the live Tons of Skills domain.** A
+  case-insensitive, fail-closed policy classifies every tracked occurrence before allowing it:
+  editable sources and registered generated projections must be clean, while frozen standards,
+  provenance-owned mirrors, and registered point-in-time exports remain byte-identical. The exact
+  base contained 356 occurrences across 125 files: 292 actionable and 64 retained by policy.
+  The existing documentation-governance job now runs the fixture-backed lint so mixed case,
+  symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
+  Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor
+  skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
+  rewriting past evidence; command and URL examples use the reserved non-resolving
+  `retired-domain.invalid` host so they remain syntactically clear without reviving the dead
+  property. Unsupported email identities are removed or mapped to the existing
+  Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
+  the MCP preset catalog no longer advertises an unserved remote schema URL.
+  [Exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
+  dual-use capabilities whose files have only domain or contact changes in this slice; the
+  underlying capabilities and scanner remain unchanged. The catalog schema permits an author
+  email and author URL to be omitted, so the unsupported Mattyp address and marketplace attribution
+  URL are removed while contributor credit is retained; the first-party Excel listing uses the
+  matching Intent Solutions identity and contact.
+  Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
+  no-follow semantics where available, closing metadata-check/file-use races without weakening
+  refusal behavior. Provenance absence is accepted only when the initial descriptor open reports
+  no path; disappearance after a successful open is refused as a concurrent mutation.
+  Cross-platform CLI validation now installs only the CLI package and its
+  dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
+  runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
+  Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026
+  toolchain when a transitive native dependency has no prebuilt binary. The production redirect
+  assertion for the retired external domain is removed intentionally: the dead property is no
+  longer an owned compatibility surface, while `tonsofskills.com` remains the governed live site.
+
+### Fixed (2026-08-16 — curated asset content-type integrity)
+
+- **Curated promotion now validates file content instead of relying on a NUL-byte prefix.**
+  Recognized image, archive, document, font, and executable signatures are omitted from the
+  text-only `skills/.curated/` projection, while misleading extensions, unreadable paths,
+  symlinks, NUL-bearing data, non-UTF-8 payloads, and failed `git ls-files` enumeration fail
+  closed in both build and drift-check modes instead of silently producing an empty mirror. The
+  paired corpus correction replaces seven first-party text placeholders that masqueraded as
+  `.png`, `.pdf`, or `.zip` files with truthful Markdown briefs or removes them, then rebuilds
+  all 1,915 curated skills. The pre-change scorecard found 11 extension/byte mismatches: seven
+  source artifacts and four generated curated copies; the corrected tree reports zero.
+
+### Added (2026-08-16 — required supersession records)
+
+- **Document supersession now has one reviewable record shape.** A filed template binds the frozen
+  class marker, `SUPERSEDED–FROZEN` banner, per-section disposition, and `STANDARDS.md` canonical
+  pointer into one pull request. A fixture-driven checker rejects missing components, placeholders,
+  and fenced or commented decoys inside the existing documentation-governance gate. The same gate
+  discovers every tracked completed record or malformed attempt; the five-document 6767 to 727
+  reconciliation is the worked example. The corpus gate fails closed if no completed record remains,
+  so removing that example requires filing a replacement record in the same change.
+
+### Changed (2026-08-16 — single README metrics writer)
+
+- **README counts now have one enforced writer.** The orphaned
+  `scripts/update-metrics.mjs` command was removed, leaving
+  `scripts/generate-readme-toc.mjs` as the only governed writer for catalog,
+  skill, and agent counts. The Epic 1 measurement gate searches the full tracked
+  executable tree, excluding explicit test and provenance-owned mirror surfaces,
+  and fails closed if another production writer appears. A package-level planted
+  writer proves the duplicate path cannot return silently.
+
+### Changed (2026-08-16 — canonical skill cohorts)
+
+- **Four binding skill-count surfaces now use one corpus resolver.** README
+  metrics, marketplace discovery, canonical validation, and curated promotion
+  consume sorted tracked paths from the named `marketplace-visible`, `graded`,
+  `first-party`, `curated-mirror`, and `curriculum` cohorts. Fixture-tree tests
+  pin provenance, hidden-path, traversal, and malformed-record behavior without
+  freezing live corpus totals. The README badge now reports the 3,068
+  marketplace-visible skills the site can render; the broader graded and
+  first-party cohorts remain available under their own names. Status-quo
+  compatibility is explicit: an orphan plugin with neither provenance nor a
+  manifest remains first-party rather than being silently reclassified.
+  Scorecard consumers must migrate row 1 from `plugin_skill_files` to the
+  explicit `raw_tracked_plugin_skill_files` key; row 24 owns governed cohort
+  counts. Both direct Git scans and caller-supplied tracked inventories reject
+  `SKILL.md` symlinks before cohort membership is computed.
+
+### Added (2026-08-16 — Epic 1 measurement harness)
+
+- **All 62 modernization scorecard rows now have one deterministic evidence
+  command.** `pnpm run measure:e1` measures the exact staged Git tree, preserves
+  distinct plugin, validator, Freshie, generated-index, and terminal cohorts,
+  and records explicit `not_reproducible` reason codes instead of copying stale
+  numbers where the repository lacks committed evidence. Per-row commands are
+  valid, `pnpm run measure:e1:check` is enforced inside the existing required
+  validation aggregate, and fixtures prove ignored mirrors, unstaged edits,
+  malformed protocols, bad signatures, missing inputs, and one-value drift fail
+  closed.
+
+### Fixed (2026-08-16 — malformed tool-allowlist enforcement)
+
+- **Structurally malformed `allowed-tools` entries now fail closed.** Validator
+  schema 4.0.0 reports malformed entries as errors at every tier while keeping
+  well-formed unknown tool names advisory. Empty CSV fields and non-string or
+  blank YAML-list members can no longer be normalized away. Corpus regression
+  coverage proves zero first-party baseline debt and preserves the ten parseable
+  mirror-owned Kobiton folded-scalar copies without editing mirrored content.
+
+### Added (2026-08-15 — frozen prose-anchor gate)
+
+- **Frozen 6767-h section anchors are now regression-gated.** The existing `doc-governance` job
+  verifies the exact 21-section manifest, exercises valid and invalid citation fixtures, and proves
+  that renaming a cited heading fails closed before schema references can silently drift.
+
+### Added (2026-08-15 — generated documentation index)
+
+- **The documentation estate index is now generated and drift-gated.** A deterministic generator
+  builds `000-docs/000-INDEX.md` from Git's tracked documentation inventory, preserves archived and
+  non-Markdown artifacts, and fails the existing `doc-governance` job when any count, row, order, or
+  generator-owned reference text is stale.
+
+### Added (2026-08-15 — document authority gate)
+
+- **Documents can no longer self-grant canonical authority.** The existing
+  `doc-governance` job now rejects an effective `AUTHORITATIVE` or `CANONICAL`
+  declaration unless `STANDARDS.md` § Canonical documents links the claimant. The gate's first
+  live run also demoted the subordinate schema 3.6.0 configuration guide from self-declared
+  authority to a reference that points at its existing schema owners.
+
+### Changed (2026-08-15 — documentation authority consolidation)
+
+- **Superseded standards are explicitly frozen.** Documents 6767-a/c/d/e/h now identify
+  their known-false authority or schema rules with evidence from the ratified modernization
+  blueprint, while scaffold diagrams 6767-f/g are reference-only and the canonical 6767-b
+  skill rubric remains untouched. ([#1197](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1197))
+
+### Added (2026-08-15 — governed-brain v1.2.0)
+
+- **The governed-brain mirror now documents hybrid local search and provenance limits.**
+  Upstream v1.2.0 describes native FTS5 plus `qmd` reciprocal-rank fusion with a
+  freshness/category rerank, and makes explicit that authenticated origin proves where a
+  capture came from—not that its content is true. ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
+### Fixed (2026-08-15 — governed-brain MCP startup)
+
+- **`governed-second-brain` now provisions and probes all three pinned native modules before
+  MCP initialization.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
+  lockfile, and native-dependency readiness probe so partial dependency sets cannot skip
+  provisioning and fail before the initialize response. Its install guide, plugin and marketplace
+  manifests, and bootstrap guidance now describe all three lockfile-pinned native modules accurately.
+  ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
+### Fixed (2026-08-15 — catalog source-of-truth protection)
+
+- **Tracked catalog shadows are forbidden.** The stale
+  `.claude-plugin/marketplace.extended.json.backup` copy is removed, and the catalog
+  invariant validator now fails closed if either canonical catalog is untracked or any
+  additional tracked `marketplace*.json*` variant appears beside them. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
+
+### Added (2026-08-03/06 — site correctness gates)
+
+- **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`
+  had emitted `og:image` → `/og-image.png` on 3,830 pages since **2026-03-09**; the file was
+  never committed, so every link preview of the site rendered imageless for five months.
+  `--check` validates PNG signature, IHDR dimensions and minimum size — an earlier
+  existence-only version was correctly flagged in review as reproducing the original failure
+  one level up. ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156))
+- **`scripts/check-security-headers.mjs`** — asserts the LIVE response carries the security
+  headers. Not wired as a blocking gate: the headers are set in Caddy on the VPS, and a gate
+  nobody in this repo can fix is a gate that gets disabled.
+- **`scripts/check-changelog-coverage.mjs`** — every released tag at or above a pinned floor
+  (v4.14.0) must have release notes. `/changelog` had 3 entries, newest v4.16.0, while the
+  site ran v4.33.0. ([#1162](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162))
+- **`scripts/name-leak-gate.sh`** — anonymity gate for the rebrand's design reference,
+  ported from the sibling blog repo; base64 patterns, scans untracked files.
+
+### Changed (2026-08-02/04 — neobrutalist rebrand)
+
+- **Marketplace visual system rebranded.** `--radius-*` → `0`; JetBrains Mono as the single
+  typeface (Inter and Inter Tight removed, a strictly smaller font request); `--shadow-hard`
+  as the only elevation device, rationed to one element per page. 373 hardcoded radius
+  declarations flattened and 261 font references tokenised across 82 files; 9 genuine
+  circles preserved after individual audit. `marketplace/DESIGN.md` §§ 1/3/4/6/8 amended
+  first — § 8 previously banned the very device being adopted.
+  ([#1152](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1152))
+- **Homepage cut to a single action.** 1,742 lines → ~9 elements, leading with the
+  Claude-Code-native `/plugin marketplace add …`. Nothing deleted: Killer Skill of the Week,
+  Jeremy's Stash and the Stack Builder moved to `/collections`, the partner bar to
+  `/community`.
+- **Site chrome made model-agnostic** — third-party tool names dropped from the footer, hero
+  subhead, meta description and social card. `Claude Code` retained only where it is the
+  literal mechanism. ([#1159](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1159))
+- **Retired URLs now served as real HTTP 301s** from Caddy rather than Astro `redirects`,
+  which emit one thin meta-refresh page per entry (3 → 85 in one deploy). Three pre-existing
+  entries stay in Astro because `check-routes.mjs` asserts those files exist.
+  ([#1158](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1158))
+
+### Fixed (2026-08-03/04 — defects found by probing the deployed site)
+
+- **Security headers were inert.** `X-Frame-Options` and `X-Content-Type-Options` were
+  declared as `<meta http-equiv>`, which browsers ignore outright — the site had no
+  clickjacking or MIME-sniffing protection since **2025-12-24** while appearing to have both.
+  Only `<meta name="referrer">` is a valid HTML form; the real headers now come from Caddy.
+- **`/research/` had no design system.** It linked `/styles/global.css`, a source path never
+  published (404 since **2026-03-04**), and lacked `tokens.css` entirely — so every
+  `var(--*)` was undefined and six pages rendered as browser-default serif on a transparent
+  background while loading a webfont they never applied. Also had no analytics tag, so that
+  traffic was invisible in Umami.
+  ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156),
+  [#1157](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1157))
+- **104 dead URLs**, 177 pageviews/week, the 404 page the 3rd most-served on the site — 76%
+  under `/skills/` from rewritten SaaS packs. 81 now redirect to their vendor pack page.
+- **42 dead in-content blog links** across 29 posts, each verified 200 at its new target
+  before rewriting.
+- **Homepage version resolution** walked a fixed `../../../../` from `import.meta.url`, which
+  is a bundler path during an Astro build — it broke the VPS deploy. Now searches upward for
+  the manifest that names itself the monorepo root, and fails soft.
+  ([#1153](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1153))
+- **Mobile footer collapsed to one 17-link column** below 480px; now 2-up with 44px touch
+  targets, 1291px → 979px.
+  ([#1154](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1154))
+- **Stale fallback meta description** claiming "244 searchable agent skills and 259 plugins"
+  against an actual 3,000+/470+. Rendered on zero pages, which is why it rotted unnoticed.
+
+### Infrastructure (2026-08-03/04 — VPS, recorded in intent-os)
+
+- **Security headers added to 8 of 16 hosts** that never imported the existing
+  `(security-headers)` Caddy snippet, including the authenticated `erp.intentsolutions.io`
+  and `mandy.intentsolutions.io`.
+- **VPS build log made legible on failure.** `pnpm … | tail -3/-5` discarded the error, which
+  a failing build reports early; now captured to a log, tailed on success and dumped in full
+  on failure, with `CI=true` to stop pnpm's interactive prompt overwriting output.
+
 ### Fixed (2026-07-26 kernel-vendor-hash fail-open)
 
 - **`kernel-vendor-hash` fail-open — the drift-watch was blind locally and printed a
@@ -1419,7 +1676,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
   - **Infrastructure**: cross-chain-bridge-monitor, wallet-security-auditor
-- Firebase Hosting deployment workflow for claudecodeplugins.io
+- Firebase Hosting deployment workflow for [retired legacy public domain]
 - Firebase Analytics integration with measurement ID tracking
 - Google Secret Manager integration for secure Firebase config
 
@@ -1485,7 +1742,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
-- Learn pages for all Batch 3 vendors on claudecodeplugins.io
+- Learn pages for all Batch 3 vendors on [retired legacy public domain]
 
 ### Changed
 

@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/walkie-talkie",
+  "private": true,
   "version": "0.1.0",
   "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
   "keywords": [

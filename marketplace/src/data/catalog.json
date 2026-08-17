@@ -3896,7 +3896,7 @@
       "isNew": true,
       "author": {
         "name": "ClaudeCodePlugins",
-        "email": "plugins@claudecodeplugins.io"
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     },
@@ -8820,9 +8820,7 @@
       "isFeatured": false,
       "isNew": true,
       "author": {
-        "name": "Mattyp",
-        "email": "mattyp@claudecodeplugins.io",
-        "url": "https://claudecodeplugins.io"
+        "name": "Mattyp"
       },
       "type": "instruction-plugin"
     },

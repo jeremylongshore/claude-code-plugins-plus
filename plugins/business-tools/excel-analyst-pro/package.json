@@ -26,9 +26,9 @@
   "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
   "license": "MIT",
   "author": {
-    "name": "ClaudeCodePlugins",
-    "email": "plugins@claudecodeplugins.io",
-    "url": "https://claudecodeplugins.io"
+    "name": "Intent Solutions",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://tonsofskills.com"
   },
   "publishConfig": {
     "access": "public"

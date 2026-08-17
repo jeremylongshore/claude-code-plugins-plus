@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/schedule-after-usage-reset",
+  "private": true,
   "version": "1.0.1",
   "description": "Automatically find the Claude usage reset time and schedule a deferred task to run right after the limit lifts.",
   "keywords": [

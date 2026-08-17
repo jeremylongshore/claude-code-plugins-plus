@@ -25,6 +25,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 SCRIPT = Path(__file__).resolve().parents[1] / "freshie" / "scripts" / "promote-to-curated.py"
 _spec = importlib.util.spec_from_file_location("promote_to_curated", SCRIPT)
@@ -191,3 +192,145 @@ class LoadValidatorDegradeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestExternalMirrorDetection(unittest.TestCase):
+    """Pins the retained compatibility helper — defect 3 from review of PR #1182.
+
+    load_candidates() used to test only `_plugin_root(sp)`, which splits on
+    '/skills/'. A skill vendored at `plugins/<cat>/<plugin>/.codex/skills/<name>`
+    therefore resolved to `<plugin>/.codex` — one level BELOW the plugin root where
+    `.source.json` lives — so the mirror marker was never seen and six external
+    plugins were republished under our name in skills/.curated/. Detection must key
+    on "ANY ancestor owns a .source.json", never on directory names.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._orig_root = pc.ROOT
+        pc.ROOT = self.root
+        # an external mirror: marker at the plugin root
+        mirror = self.root / "plugins" / "testing" / "vendor-pack"
+        (mirror / ".codex" / "skills" / "vendored").mkdir(parents=True)
+        (mirror / "skills" / "direct").mkdir(parents=True)
+        (mirror / ".source.json").write_text("{}")
+        # one of ours: no marker anywhere up the chain
+        ours = self.root / "plugins" / "productivity" / "our-pack"
+        (ours / "skills" / "ours").mkdir(parents=True)
+
+    def tearDown(self):
+        pc.ROOT = self._orig_root
+        self._tmp.cleanup()
+
+    def test_vendored_subdir_skill_is_detected(self):
+        """The regression itself: .codex/skills/<name> sits below the marker."""
+        self.assertTrue(
+            pc.is_external_mirror("plugins/testing/vendor-pack/.codex/skills/vendored")
+        )
+
+    def test_direct_mirror_skill_is_detected(self):
+        self.assertTrue(pc.is_external_mirror("plugins/testing/vendor-pack/skills/direct"))
+
+    def test_our_own_skill_is_not_a_mirror(self):
+        self.assertFalse(pc.is_external_mirror("plugins/productivity/our-pack/skills/ours"))
+
+    def test_absolute_path_terminates(self):
+        """`while node != Path('.')` never terminated on an absolute path."""
+        self.assertFalse(pc.is_external_mirror("/nonexistent/skills/x"))
+
+
+class TestBinarySniff(unittest.TestCase):
+    """Pins the fail-closed content-type boundary used by both mirror modes."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _write(self, name, data: bytes) -> Path:
+        p = self.dir / name
+        p.write_bytes(data)
+        return p
+
+    def test_genuine_png_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("diagram.png", bytes.fromhex("89504e470d0a1a0a") + b"fixture")))
+
+    def test_current_font_signature_is_binary(self):
+        for signature in (b"\x00\x01\x00\x00", b"true"):
+            with self.subTest(signature=signature):
+                self.assertTrue(pc._is_binary(self._write("font.ttf", signature + b"fixture")))
+
+    def test_legacy_postscript_sfnt_is_not_ttf(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("font.ttf", b"typ1fixture"))
+
+    def test_executable_signature_is_binary(self):
+        self.assertTrue(pc._is_binary(self._write("tool", b"\x7fELF\x02\x01fixture")))
+
+    def test_text_disguised_as_png_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("diagram.png", b"plain text placeholder\n"))
+
+    def test_text_disguised_as_special_case_binary_extension_fails_closed(self):
+        for name in ("diagram.webp", "tool.exe", "library.dll"):
+            with self.subTest(name=name):
+                with self.assertRaises(pc.ContentTypeMismatchError):
+                    pc._is_binary(self._write(name, b"plain text placeholder\n"))
+
+    def test_binary_disguised_as_markdown_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("notes.md", bytes.fromhex("89504e470d0a1a0a") + b"fixture"))
+
+    def test_binary_content_with_wrong_binary_extension_fails_closed(self):
+        with self.assertRaises(pc.ContentTypeMismatchError):
+            pc._is_binary(self._write("diagram.pdf", bytes.fromhex("89504e470d0a1a0a") + b"fixture"))
+
+    def test_recognized_binary_with_unrelated_or_missing_extension_fails_closed(self):
+        png = bytes.fromhex("89504e470d0a1a0a") + b"fixture"
+        for name in ("diagram.bin", "diagram"):
+            with self.subTest(name=name):
+                with self.assertRaises(pc.ContentTypeMismatchError):
+                    pc._is_binary(self._write(name, png))
+
+    def test_unknown_nul_bearing_content_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("blob.bin", b"unregistered\x00binary"))
+
+    def test_unknown_nul_after_initial_chunk_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("late-binary.dat", b"a" * pc._INSPECTION_CHUNK_BYTES + b"\x00"))
+
+    def test_invalid_utf8_without_nul_fails_closed(self):
+        with self.assertRaises(pc.UnknownBinaryContentError):
+            pc._is_binary(self._write("unknown.dat", b"plain-prefix\xff\xfe"))
+
+    def test_empty_file_is_not_binary(self):
+        self.assertFalse(pc._is_binary(self._write("__init__.py", b"")))
+
+    def test_utf8_multibyte_is_not_binary(self):
+        self.assertFalse(pc._is_binary(self._write("SKILL.md", "# héllo — ✅\n".encode())))
+
+    def test_unreadable_file_fails_closed(self):
+        with self.assertRaises(pc.ContentInspectionError):
+            pc._is_binary(self.dir / "absent")
+
+    def test_symlink_fails_closed(self):
+        source = self._write("source.md", b"text")
+        link = self.dir / "link.md"
+        link.symlink_to(source)
+        with self.assertRaises(pc.ContentInspectionError):
+            pc._is_binary(link)
+
+    def test_git_enumeration_failure_fails_closed(self):
+        skill_dir = self.dir / "skill"
+        skill_dir.mkdir()
+        failure = pc.subprocess.CalledProcessError(1, ["git", "ls-files"])
+        with (
+            mock.patch.object(pc, "ROOT", self.dir),
+            mock.patch.object(pc.subprocess, "run", side_effect=failure),
+            self.assertRaises(pc.ContentInspectionError),
+        ):
+            pc.tracked_files(skill_dir)

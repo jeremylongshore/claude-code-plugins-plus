@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/x-twitter-scraper",
+  "private": true,
   "version": "0.1.0",
   "description": "X/Twitter REST API and MCP skill for tweet search, profile data, follower exports, media downloads, monitoring, webhooks, and confirmation-gated actions.",
   "keywords": [

@@ -47,9 +47,10 @@
  * .github/workflows/validate-plugins.yml's "Check plugin structure" step.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, relative } from 'path';
 import { fileURLToPath } from 'url';
+import { resolveCorpus } from '../../scripts/corpus-resolver.mjs';
 import { mdToHtml } from './md-to-html.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -241,30 +242,6 @@ function getPluginMetadata(pluginDir) {
     description: '',
     author: ''
   };
-}
-
-/**
- * Recursively find all SKILL.md files
- */
-function findSkillFiles(dir, skillFiles = []) {
-  const entries = readdirSync(dir);
-
-  for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      // Skip node_modules and hidden directories
-      if (entry === 'node_modules' || entry.startsWith('.')) {
-        continue;
-      }
-      findSkillFiles(fullPath, skillFiles);
-    } else if (entry === 'SKILL.md') {
-      skillFiles.push(fullPath);
-    }
-  }
-
-  return skillFiles;
 }
 
 /**
@@ -477,7 +454,9 @@ function main() {
   }
 
   // Find all SKILL.md files
-  const skillFiles = findSkillFiles(PLUGINS_DIR);
+  const skillFiles = resolveCorpus('marketplace-visible', { root: ROOT_DIR }).map((entry) =>
+    join(ROOT_DIR, entry),
+  );
   console.log(`Found ${skillFiles.length} SKILL.md files\n`);
 
   // Process each skill file
@@ -489,7 +468,8 @@ function main() {
   for (const filePath of skillFiles) {
     const skill = processSkillFile(filePath, { metadataOnly });
     if (skill) {
-      // Only include skills whose parent plugin is in the marketplace
+      // Resolver membership is authoritative; keep this assertion as a
+      // defensive check against catalog changes during a long generation run.
       if (marketplacePluginNames.size === 0 || marketplacePluginNames.has(skill.parentPlugin.name)) {
         skills.push(skill);
         successCount++;

@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/servicegraph",
+  "private": true,
   "version": "0.2.1",
   "description": "Drive the ServiceGraph API — metrics-enriched business datasets for founders (agencies, directories, newsletters, and more). Ships a branded `servicegraph` skill that works against any dataset, plus 1",
   "keywords": [

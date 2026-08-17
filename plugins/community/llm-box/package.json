@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/llm-box",
+  "private": true,
   "version": "0.3.0",
   "description": "Terminal-first workflow automation engine. Generate and execute YAML workflows from plain English descriptions. Features 20+ built-in nodes, 15+ LLM providers (Ollama, DeepSeek, OpenAI-compatible), an",
   "keywords": [

@@ -26,12 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Statistics
 
-| Metric | v4.18.0 | v4.19.0 | Change |
-|--------|---------|---------|--------|
-| Plugins | 346 | 346 | — |
-| Skills | 1,916 | 1,916 | — |
-| Validation errors (standard) | 37 | 0 | -37 |
-| Validation errors (enterprise) | 37 | 0 | -37 |
+| Metric                         | v4.18.0 | v4.19.0 | Change |
+| ------------------------------ | ------- | ------- | ------ |
+| Plugins                        | 346     | 346     | —      |
+| Skills                         | 1,916   | 1,916   | —      |
+| Validation errors (standard)   | 37      | 0       | -37    |
+| Validation errors (enterprise) | 37      | 0       | -37    |
 
 ---
 
@@ -65,12 +65,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 📊 Statistics
 
-| Metric | v4.11.0 | v4.12.0 | Change |
-|--------|---------|---------|--------|
-| Plugins | 270 | 275 | +5 |
-| Skills | 739 | 744 | +5 |
-| Files Changed | - | 161 | - |
-| Lines Added | - | +29,994 | - |
+| Metric        | v4.11.0 | v4.12.0 | Change |
+| ------------- | ------- | ------- | ------ |
+| Plugins       | 270     | 275     | +5     |
+| Skills        | 739     | 744     | +5     |
+| Files Changed | -       | 161     | -      |
+| Lines Added   | -       | +29,994 | -      |
 
 ---
 
@@ -98,10 +98,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 📊 Statistics
 
-| Metric | v4.5.0 | v4.6.0 | Change |
-|--------|--------|--------|--------|
-| Plugins | 269 | 270 | +1 |
-| Skills | 739 | 740 | +1 |
+| Metric  | v4.5.0 | v4.6.0 | Change |
+| ------- | ------ | ------ | ------ |
+| Plugins | 269    | 270    | +1     |
+| Skills  | 739    | 740    | +1     |
 
 ---
 
@@ -166,12 +166,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 📈 Statistics
 
-| Metric | v4.4.0 | v4.5.0 | Change |
-|--------|--------|--------|--------|
-| Agent Skills | 244 | 739 | +495 |
-| Plugins | 258 | 260 | +2 |
-| MCP Servers | 5 | 7 | +2 |
-| Skill Databases | 0 | 105 | +105 |
+| Metric          | v4.4.0 | v4.5.0 | Change |
+| --------------- | ------ | ------ | ------ |
+| Agent Skills    | 244    | 739    | +495   |
+| Plugins         | 258    | 260    | +2     |
+| MCP Servers     | 5      | 7      | +2     |
+| Skill Databases | 0      | 105    | +105   |
 
 ---
 
@@ -216,6 +216,7 @@ ccpi validate ./my-plugin   # Validate structure
 ```
 
 **New in v2.0.0:**
+
 - `ccpi validate` command for plugin developers
 - Bulk install: `ccpi install pack1 pack2 pack3`
 - Binary renamed from `ccp` to `ccpi`
@@ -241,13 +242,13 @@ ccpi validate ./my-plugin   # Validate structure
 
 ### 📊 Metrics
 
-| Metric | Previous | Current | Change |
-|--------|----------|---------|--------|
-| Total Plugins | 258 | 264 | +6 |
-| Agent Skills | 241 | 244 | +3 |
-| Commands | 310 | 317 | +7 |
-| Agents | 144 | 147 | +3 |
-| Website Routes | ~400 | 521 | +121 |
+| Metric         | Previous | Current | Change |
+| -------------- | -------- | ------- | ------ |
+| Total Plugins  | 258      | 264     | +6     |
+| Agent Skills   | 241      | 244     | +3     |
+| Commands       | 310      | 317     | +7     |
+| Agents         | 144      | 147     | +3     |
+| Website Routes | ~400     | 521     | +121   |
 
 ### 🎓 Documentation
 
@@ -268,14 +269,16 @@ ccpi validate ./my-plugin   # Validate structure
 **Tom asked for transparency. We delivered.**
 
 His December feedback transformed this marketplace:
-1. *"Which plugins require paid APIs vs free/self-hosted?"* → **v4.1.0** (Make All Plugins Free initiative)
-2. *"Note rate limits and registration requirements. Ideally agents with skills would learn how to be resourceful with a single IP."* → **v4.3.0** (THIS RELEASE)
+
+1. _"Which plugins require paid APIs vs free/self-hosted?"_ → **v4.1.0** (Make All Plugins Free initiative)
+2. _"Note rate limits and registration requirements. Ideally agents with skills would learn how to be resourceful with a single IP."_ → **v4.3.0** (THIS RELEASE)
 
 **Epic claude-code-plugins-1k2: COMPLETED** - All 12 tasks finished. Tom notified on [Discussion #148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148).
 
 ### 📚 Documentation Added (2,400+ Lines)
 
 #### **1. openbb-terminal** (309 lines) - Financial API Limits
+
 - **Alpha Vantage:** 25/day, 5/min (NOT 500/day - corrected misconception!)
 - **Yahoo Finance:** ~2,000/hour soft limit, IP-based bans
 - **SEC EDGAR:** 10/sec with User-Agent requirement
@@ -285,6 +288,7 @@ His December feedback transformed this marketplace:
 - Registration step-by-step guides, fallback chains, multi-agent coordination
 
 #### **2. defi-yield-optimizer** (552 lines) - DeFi Data Sources
+
 - **DefiLlama API:** Unlimited (soft limit: 100/sec)
 - **Ankr Public RPC:** 30 req/sec per chain (Ethereum, Polygon, BSC, etc.)
 - **CoinGecko:** 30-50 req/min
@@ -292,6 +296,7 @@ His December feedback transformed this marketplace:
 - Annual savings: $5,112/year vs paid alternatives
 
 #### **3. n8n-workflow-designer** (515 lines) - Self-Hosted Platform Resources
+
 - Hardware requirements by workload (1 vCPU/2GB to 8+ vCPU/16GB+)
 - Execution throughput: 2.6M-259M executions/month
 - Docker Compose for 5 agents sharing one n8n instance
@@ -299,6 +304,7 @@ His December feedback transformed this marketplace:
 - Annual savings: $228-22,788 vs Zapier/Make
 
 #### **4. ai-sdk-agents** (187 lines) - Multi-Agent LLM Coordination
+
 - Cost multiplication: 5 agents × $0.03/request = $0.15/workflow
 - Provider rate limits divided across agents:
   - OpenAI: 500 RPM → 100 RPM per agent
@@ -308,6 +314,7 @@ His December feedback transformed this marketplace:
 - Rate limit coordinator code examples
 
 #### **5. Standardized Template** (406 lines) - For All Future Plugins
+
 - Reusable template at `templates/rate-limits-documentation/RATE_LIMITS_TEMPLATE.md`
 - 4 multi-agent coordination strategies with working code
 - Registration requirements checklist
@@ -315,17 +322,18 @@ His December feedback transformed this marketplace:
 
 ### 🎯 Tom's Requirements: Addressed
 
-| Requirement | Status | Where |
-|------------|--------|-------|
-| **Rate limits** | ✅ Documented for 15+ services | All 6 plugins |
-| **Registration requirements** | ✅ Clear tables (email, API key, payment) | All 6 plugins |
-| **IP tracking** | ✅ Soft bans and hard limits documented | All 6 plugins |
-| **Multi-agent coordination** | ✅ 4 strategies with code examples | Template + plugins |
-| **Single IP resourcefulness** | ✅ Caching, batching, pooling, queuing | All examples |
+| Requirement                   | Status                                    | Where              |
+| ----------------------------- | ----------------------------------------- | ------------------ |
+| **Rate limits**               | ✅ Documented for 15+ services            | All 6 plugins      |
+| **Registration requirements** | ✅ Clear tables (email, API key, payment) | All 6 plugins      |
+| **IP tracking**               | ✅ Soft bans and hard limits documented   | All 6 plugins      |
+| **Multi-agent coordination**  | ✅ 4 strategies with code examples        | Template + plugins |
+| **Single IP resourcefulness** | ✅ Caching, batching, pooling, queuing    | All examples       |
 
 ### 💰 Cost Savings Documented
 
 **Annual savings by using free alternatives:**
+
 - LLM services: $360-3,600 (Ollama vs OpenAI/Anthropic)
 - Financial APIs: $948-7,188 (free tiers vs premium)
 - Blockchain/DeFi: $588-2,388 (public RPCs vs Alchemy)
@@ -345,11 +353,13 @@ His December feedback transformed this marketplace:
 ### 🙏 Thank You, Tom
 
 **You kept us honest.** Before your feedback:
+
 - We said "free" without explaining signup requirements
 - We didn't document rate limits or IP tracking
 - We had no multi-agent coordination guidance
 
 **Now every major service type has:**
+
 - ✅ Exact rate limits (verified from official docs)
 - ✅ Registration requirements clearly stated
 - ✅ Multi-agent coordination code examples
@@ -363,6 +373,7 @@ His December feedback transformed this marketplace:
 ## [4.2.0] - 2025-12-23
 
 ### 🎉 Highlights
+
 **Rate Limits & Transparency Initiative** - Thanks to community feedback from **@TomLucidor**, we're documenting the REAL constraints of "free" services. Because "free" should mean informed, not surprised.
 
 ### 🌟 Community Contributor Spotlight: @TomLucidor
@@ -371,9 +382,9 @@ His December feedback transformed this marketplace:
 
 - **173 issues/discussions** filed across **148 repositories** on GitHub
 - Zero code commits - but his feedback drives real improvements
-- On December 12, he opened [Discussion #148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148) asking a simple question: *"Which plugins require paid APIs vs free/self-hosted?"*
+- On December 12, he opened [Discussion #148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148) asking a simple question: _"Which plugins require paid APIs vs free/self-hosted?"_
 - That question sparked the entire "Make All Plugins Free" initiative (v4.1.0)
-- His follow-up: *"If there are rate limits and registration requirements like Alpha Vantage, please note them. Ideally agents with skills would learn how to be resourceful with a single IP."*
+- His follow-up: _"If there are rate limits and registration requirements like Alpha Vantage, please note them. Ideally agents with skills would learn how to be resourceful with a single IP."_
 - This feedback is now driving **Epic claude-code-plugins-1k2**: comprehensive rate limit documentation across 12 plugins
 
 **Tom's Pattern:** He doesn't write code, but he keeps projects honest. He asks the questions users are afraid to ask. He catches the gap between marketing ("free!") and reality ("25 requests/day").
@@ -381,6 +392,7 @@ His December feedback transformed this marketplace:
 **Thank you, Tom.** Your feedback made this marketplace significantly better. We're lucky to have contributors like you who keep it real.
 
 ### 📚 Documentation (Tom's Request)
+
 - **ollama-local-ai**: Added 220-line "Rate Limits & Resource Constraints" section
   - Hardware-based limits (RAM/GPU requirements per model)
   - Memory constraints table (7B-70B models, concurrent agents)
@@ -391,6 +403,7 @@ His December feedback transformed this marketplace:
   - Upgrade paths when hardware becomes the bottleneck
 
 ### 🔧 Validator Improvements
+
 - **Fixed critical bug**: `((VAR++))` with `set -e` was causing script to exit early
   - Replaced with `VAR=$((VAR + 1))` throughout
   - Validator now completes all 6 stages successfully
@@ -401,6 +414,7 @@ His December feedback transformed this marketplace:
 - **Added existence check**: Gracefully handles missing check-frontmatter.py
 
 ### 🐛 Bug Fixes
+
 - **22 plugins fixed** (PRs #180, #181): Removed invalid plugin.json fields
   - Invalid fields: dependencies, mcp, category, commands, skills, configuration, installation, agents, requirements, mcp_servers, mcpServers, expectedRelease, status, tier
   - Affected: ai-sdk-agents, design-to-code, workflow-orchestrator, lumera-agent-memory, domain-memory-agent, project-health-auditor, conversational-api-debugger, ai-experiment-logger, dependency-checker, geepers-agents, openbb-terminal, ollama-local-ai, sugar, security-agent, jeremy-genkit, jeremy-google-adk, jeremy-vertex-ai, calendar-to-workflow, file-to-code, research-to-deploy, search-to-slack
@@ -408,6 +422,7 @@ His December feedback transformed this marketplace:
 - **Issue #179 resolved**: User @genesiscz can now install plugins without "Unrecognized key" errors
 
 ### 📊 Metrics
+
 - **Plugins Fixed:** 22
 - **Validator Stages:** 6 (all completing)
 - **Documentation Added:** 220+ lines of rate limit docs
@@ -415,7 +430,9 @@ His December feedback transformed this marketplace:
 - **Epic Created:** claude-code-plugins-1k2 (12 tasks planned)
 
 ### 🔮 In Progress (Epic: claude-code-plugins-1k2)
+
 Rate limit documentation for remaining services:
+
 - Alpha Vantage (25/day, 5/min, email required)
 - Yahoo Finance (~2000/hour, no auth, IP bans)
 - CoinGecko (50/min, optional API key)
@@ -427,9 +444,11 @@ Rate limit documentation for remaining services:
 ## [4.1.0] - 2025-12-22
 
 ### 🎉 Highlights
+
 **"Make All Plugins Free" Initiative Complete!** Comprehensive audit and update of all 259 plugins to provide $0 alternatives, saving users $40K-97K/year. Created new ollama-local-ai plugin and updated 12 plugins with 2,680+ lines of free alternative documentation.
 
 ### 🆕 New Plugins (1)
+
 - **ollama-local-ai** - Complete local LLM deployment system
   - Step-by-step Ollama installation for macOS, Linux, Windows, Docker
   - Model recommendations by use case (coding, general, fast)
@@ -437,16 +456,20 @@ Rate limit documentation for remaining services:
   - Automatic activation skill for "local AI", "free LLM", "self-hosted" mentions
 
 ### ⬆️ Updated Plugins (12)
+
 **LLM Alternatives** (Save $1,200-2,760/year):
+
 - **ai-sdk-agents** (112 lines): Ollama support for multi-agent systems
 - **make-scenario-builder** (192 lines): n8n + Ollama vs Make.com + OpenAI
 - **geepers-agents** (266 lines): Local LLM for 43 specialized agents
 
 **Financial Data** (Save $25K-74K/year):
+
 - **openbb-terminal** (270 lines): Yahoo Finance, Alpha Vantage, FRED vs Bloomberg ($24K/yr)
 - **excel-analyst-pro** (298 lines): SEC EDGAR, free APIs vs Bloomberg/FactSet ($48K/yr)
 
 **Blockchain/DeFi** (Save $15K-20K/year):
+
 - **flash-loan-simulator** (292 lines): Ankr, Infura free tier vs Alchemy ($588-2,388/yr)
 - **crypto-portfolio-tracker** (194 lines): CoinGecko, Binance vs CryptoCompare Pro ($8,856/yr)
 - **market-price-tracker** (195 lines): Multi-asset free APIs vs premium ($2,676/yr)
@@ -454,15 +477,18 @@ Rate limit documentation for remaining services:
 - **defi-yield-optimizer**: Public RPCs, DefiLlama vs Zapper Pro ($3,576/yr)
 
 ### 🐛 Fixes
+
 - **jeremy-github-actions-gcp**: Updated hooks.json to 2.0.0 schema (fixes validation error)
 - **Plugin cache**: Cleared corrupted cached plugin.json files with invalid 'category' field
 - **Badges**: Fixed broken links and formatting issues
 - **Documentation tone**: Removed hype language for factual descriptions
 
 ### 🗑️ Removed
+
 - **001-jeremy-taskwarrior-integration**: Deleted per user request
 
 ### 📊 Metrics
+
 - **Total Plugins:** 259 (was 258: +1 ollama-local-ai, -1 taskwarrior = +0 net, but marketplace shows 259)
 - **Documentation Added:** 2,680+ lines of free alternative guides
 - **Files Changed:** 112
@@ -473,12 +499,14 @@ Rate limit documentation for remaining services:
 - **Annual Savings Documented:** $40,000-$97,000 per user
 
 ### 🌐 Hub Improvements
+
 - **100% Free Ecosystem**: Every plugin now has documented $0 alternatives
 - **Cost Transparency**: Comprehensive cost comparisons (paid vs free)
 - **Migration Guides**: Step-by-step setup instructions for free alternatives
 - **API Key Setup**: Free tier guides for Alpha Vantage, Currency Layer, etc.
 
 ### 📚 Documentation Enhancements
+
 - Created 190-RA-AUDT-190-RA-AUDT-paid-services-audit.md analyzing all 259 plugins
 - Added "FREE Alternative" sections to 12 plugin READMEs
 - Included before/after code examples for migrations
@@ -489,14 +517,18 @@ Rate limit documentation for remaining services:
 ## [3.2.0] - 2025-12-16
 
 ### 🎉 Highlights
+
 **Largest single plugin contribution to date!** @lukeslp (Lucas Steuber) contributes **geepers-agents** with **51 specialized agents** for development workflows, deployment automation, quality audits, research, and game development. Plus critical formatter plugin fixes.
 
 ### 👥 Community Recognition
+
 **Massive thanks to our community contributors:**
+
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🏆 **EPIC CONTRIBUTION:** Created geepers-agents with **51 specialized development agents** across 10 categories - the largest single plugin contribution in repository history! Includes orchestration system for checkpoint management, deployment validation, quality audits, fullstack development, research workflows, game development, and more. ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
 - **[@beepsoft](https://github.com/beepsoft)** - Reported missing validate-format.sh script in formatter plugin, leading to comprehensive plugin enhancements (#147, #149)
 
 ### 🆕 New Plugins (1)
+
 - **geepers-agents** - Multi-agent orchestration system with 51 specialized agents organized into 10 categories:
   - **Master**: conductor_geepers (intelligent routing)
   - **Checkpoint**: 5 agents for session maintenance (scout, repo, status, snippets)
@@ -513,6 +545,7 @@ Rate limit documentation for remaining services:
   - **System**: 3 infrastructure agents (help, onboard, diagnostics)
 
 ### ⬆️ Updated Plugins (1)
+
 - **formatter** (v2.0.0 → v2.0.1)
   - Fixed duplicate hooks loading error by removing redundant hooks reference from plugin.json
   - Added missing validate-format.sh script (155 lines) with comprehensive validation logic
@@ -521,23 +554,27 @@ Rate limit documentation for remaining services:
   - Improved documentation with usage examples and CI/CD integration guides
 
 ### 🐛 Plugin Fixes
+
 - **Fixed #149**: Resolved duplicate hooks loading error in formatter plugin - Claude Code auto-discovers hooks/hooks.json, explicit reference caused duplicate loading
 - **Fixed #147**: Added missing validate-format.sh script to formatter plugin with full validation capabilities
 - **Structural fix**: Reorganized geepers-agents from inline agent definitions to proper `agents/` directory structure for validator compatibility
 
 ### 🌐 Hub Improvements
+
 - Featured @lukeslp prominently in README Contributors section
 - Updated plugin count to 258 (from 257)
 - Enhanced community contribution documentation
 - Improved PR review and structural fix workflow
 
 ### 📚 Documentation
+
 - Created comprehensive audit system for PR validation
 - Enhanced contributor recognition in README
 - Updated formatter plugin README with v2.0.1 changes
 - Added geepers-agents comprehensive documentation with 51 agent descriptions
 
 ### 📊 Metrics
+
 - **Total Plugins:** 258 (+1)
 - **New This Release:** 1 (geepers-agents with 51 agents!)
 - **Updated This Release:** 1 (formatter)
@@ -551,15 +588,19 @@ Rate limit documentation for remaining services:
 ## [1.5.0] - 2025-12-10
 
 ### 🎉 Highlights
+
 Major infrastructure enhancements with comprehensive script implementations, Intent-Solutions standard compliance improvements, and CI/CD test execution. Special thanks to @beepsoft for valuable feedback that inspired these quality improvements.
 
 ### 👥 Community Recognition
+
 **Special thanks to our community contributors:**
+
 - **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem (#134)
 
 ### 🚀 Infrastructure Enhancements
 
 #### Comprehensive Script Implementations
+
 - **Enhanced 555+ executable scripts** across plugin ecosystem
   - Added 451 new implementation scripts with proper shebangs and error handling
   - Enhanced database operations, DevOps automation, security scanning, and performance monitoring
@@ -567,6 +608,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
   - 94.9% script implementation coverage (up from baseline)
 
 #### Intent-Solutions Standard Compliance
+
 - **Enhanced 102 skills** to meet Intent-Solutions quality standards
   - Updated version metadata (version: 1.0.0) for semantic versioning
   - Enhanced descriptions with clear trigger phrases ("Use when...", "Trigger with...")
@@ -576,6 +618,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
   - Reduced validation issues by 43.5% (from 1854 to 1047 errors)
 
 #### CI/CD Quality Improvements
+
 - **Enhanced GitHub Actions workflows** with comprehensive test execution
   - Added parallel test matrices for MCP plugins, Python tests, and validation scripts
   - Implemented test result reporting with success/failure counts
@@ -583,6 +626,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
   - Improved validation pipeline with strict compliance checks
 
 #### MCP Plugin Dependency Updates
+
 - **Updated all 6 MCP plugins** for latest Zod v4 compatibility
   - Fixed `z.record()` usage patterns for type safety
   - Updated `ZodError.errors` to `ZodError.issues` for v4 API
@@ -590,6 +634,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
   - Successful builds for all MCP plugins (project-health-auditor, conversational-api-debugger, domain-memory-agent, design-to-code, workflow-orchestrator, ai-experiment-logger)
 
 ### 📊 Impressive Metrics
+
 - **Total Plugins**: 257
 - **Total Skills**: 240
 - **Executable Scripts**: 555+
@@ -599,6 +644,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
 - **Script Implementation Coverage**: 94.9%
 
 ### 🎯 Quality Improvements
+
 - **Intent-Solutions standard validator** now canonical quality benchmark
   - Zero-tolerance enforcement of skill quality standards
   - Automated validation in CI/CD pipeline
@@ -616,6 +662,7 @@ Major infrastructure enhancements with comprehensive script implementations, Int
   - Comprehensive test coverage across all plugin types
 
 ### 🔧 Technical Enhancements
+
 - Enhanced database plugin scripts with connection pooling and retry logic
 - Improved DevOps automation scripts with better error recovery
 - Updated security scanning scripts with latest vulnerability databases
@@ -623,12 +670,14 @@ Major infrastructure enhancements with comprehensive script implementations, Int
 - Added comprehensive logging and debugging capabilities
 
 ### 📚 Documentation Improvements
+
 - Created comprehensive enhancement reports documenting quality improvements
 - Updated CLAUDE.md with latest repository statistics
 - Enhanced skill documentation with clear trigger phrases and usage examples
 - Improved README examples and getting started guides
 
 ### 🙏 Thank You
+
 Huge thanks to @beepsoft for the detailed feedback that helped us identify opportunities for comprehensive infrastructure improvements. Your engagement helps make the Claude Code plugin ecosystem better for everyone!
 
 ---
@@ -636,14 +685,18 @@ Huge thanks to @beepsoft for the detailed feedback that helped us identify oppor
 ## [1.4.3] - 2025-11-30
 
 ### 🎉 Highlights
+
 New iOS development plugin, website improvements with Nixtla partnership showcase, and critical mobile bug fix.
 
 ### 👥 New Contributors
+
 **Welcome to our newest contributors:**
+
 - **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created the Axiom iOS development plugin with 13 production-ready skills (#121)
 - **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported horizontal scrolling bug on mobile (#120)
 
 ### 🚀 New Plugins
+
 - **Axiom** - Battle-tested Claude Code skills for iOS, iPadOS, watchOS, tvOS development
   - 13 production-ready skills covering debugging, concurrency, persistence, UI, and performance
   - TDD-tested core skills with real-world impact metrics
@@ -651,22 +704,26 @@ New iOS development plugin, website improvements with Nixtla partnership showcas
   - Reduces debugging time from 30+ min to 2-5 min
 
 ### 🐛 Bug Fixes
+
 - **Fixed horizontal scrolling on mobile website** (#120)
   - Added `overflow-x: hidden` to prevent unwanted horizontal scroll
-  - Improved mobile user experience on claudecodeplugins.io
+  - Improved mobile user experience on [retired legacy public domain]
 
 ### ✨ Website Enhancements
+
 - **Added Nixtla as featured client** with scrolling logo showcase
 - **Added Intent Solutions branding** - "by intent solutions io" under main title
 - **Added sponsor link** to navigation (Buy Me a Coffee)
 - **Updated footer** with Intent Solutions website link
 
 ### 📊 Metrics
+
 - **Total Plugins**: 255 (+1)
 - **Plugins with AI Skills**: 198 (+13)
 - **New iOS/Swift skills**: 13 from Axiom plugin
 
 ### 🙏 Thank You
+
 Special thanks to Charles Wiltgen for the comprehensive Axiom plugin submission and to all who reported issues to help improve the marketplace!
 
 ---
@@ -674,15 +731,19 @@ Special thanks to Charles Wiltgen for the comprehensive Axiom plugin submission 
 ## [1.4.2] - 2025-11-29
 
 ### 🎉 Highlights
+
 Community contributions, bug fixes, and comprehensive troubleshooting documentation for WSL2 users.
 
 ### 👥 Contributors
+
 **Huge thanks to our community contributors:**
+
 - **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
 - **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly features ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
 - **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with comprehensive documentation ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
 
 ### 🐛 Bug Fixes
+
 - **Fixed 7 JSON syntax errors** in asset template files ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
   - `api-rate-limiter/assets/error_message_template.json`
   - `api-request-logger/assets/example_log_output.json`
@@ -694,6 +755,7 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
 - Common issue: Missing commas after property values before `_comment` fields
 
 ### ✨ Enhancements
+
 - **Added production CI/CD patterns** to devops-automation-pack ci-cd-expert agent
   - Multi-platform tool detection (Apple Silicon + Intel Homebrew paths)
   - Python virtual environment patterns (local, shared, symlinked venvs)
@@ -701,6 +763,7 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
   - Real-world examples from AlephAuto bugfix session
 
 ### 📚 Documentation
+
 - **Created TROUBLESHOOTING.md** - Comprehensive troubleshooting guide
   - WSL2 path length issues and fixes (#105)
   - Plugin installation and permission errors
@@ -711,43 +774,51 @@ Community contributions, bug fixes, and comprehensive troubleshooting documentat
 - All contributors thanked with personal messages and contact information
 
 ### 🐛 Issues Resolved
+
 - Closed #105 - WSL2 clone checkout failure with documented workarounds
 - Closed [#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117) - JSON syntax errors fixed
 
 ### 🎊 Community Highlights
+
 - Created Contributor Spotlight issue #118 for @aledlie
 - Personal thank-you messages sent to all contributors with apologies for Thanksgiving delay
 - Contact email shared: jeremy@intentsolutions.io
 
 ### 📊 Metrics
+
 - **Total Plugins**: 254
 - **Categories**: 18
 - **New Contributors This Release**: 3
 - **Total Contributors**: Growing community
 
 ### 🔗 Links
+
 - [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2)
-- [Live Marketplace](https://claudecodeplugins.io)
+- Live Marketplace: [retired legacy public domain]
 
 ---
 
 ## [1.4.1] - 2025-11-24
 
 ### 🎉 Highlights
+
 Website accuracy improvements and Enterprise sponsor recognition for Max Mergenthaler @ Nixtla.
 
 ### 👥 Contributors
+
 Special thanks to **Max Mergenthaler** ([@mergenthaler](https://github.com/mergenthaler)) and **Nixtla** ([nixtla.io](https://www.nixtla.io/)) for becoming our first Enterprise supporter at $199/month.
 
 ### 🌐 Website Improvements
 
 #### Sponsor Page Accuracy (`marketplace/src/pages/sponsor.astro`)
+
 - **Corrected plugin count**: Updated from 228 to **254 plugins** (verified from marketplace.extended.json)
 - **Corrected category count**: Updated from 15 to **18 categories**
 - **Added data source documentation**: HTML comment noting plugin count source and date
 - **Added sponsorship disclaimer**: Clarified that sponsorship supports development but is not a formal SLA (except Enterprise tier)
 
 #### Home Page Enterprise Recognition (`marketplace/src/pages/index.astro`)
+
 - **Added Enterprise Supporter section**: Prominently placed after SearchBar
 - **Recognition for Max Mergenthaler @ Nixtla**: CEO & Co-Founder, YC S21
 - **Nixtla description**: TimeGPT (foundation model for forecasting) and Nixtlaverse (open-source time-series libraries)
@@ -759,25 +830,30 @@ Special thanks to **Max Mergenthaler** ([@mergenthaler](https://github.com/merge
 - **Disclaimer included**: Sponsorship reflects support and prioritization, not formal SLA
 
 ### 🐛 Bug Fixes
+
 - **Fixed broken links and outdated references** across repository documentation
 
 ### 📊 Metrics
+
 - **Total Plugins**: 254 (accurate count verified)
 - **Categories**: 18
 - **Contributors**: Growing community + first Enterprise supporter
 
 ### 🔗 Links
+
 - [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1)
-- [Live Marketplace](https://claudecodeplugins.io)
+- Live Marketplace: [retired legacy public domain]
 
 ## [1.4.0] - 2025-11-19
 
 ### 🚀 New Features
 
 #### jeremy-adk-orchestrator - Production ADK Implementation
+
 **New production-ready plugin for Google Agent Development Kit (ADK) orchestration.**
 
 **Features:**
+
 - **Complete ADK Agent Implementation** (`agent/agent.py`)
   - Full LlmAgent with Gemini 2.0 Flash model
   - VertexAiSessionService for session management
@@ -815,7 +891,8 @@ Special thanks to **Max Mergenthaler** ([@mergenthaler](https://github.com/merge
 
 ### 📝 Plugin Updates
 
-#### Plugin Description Clarity (11 jeremy-* plugins)
+#### Plugin Description Clarity (11 jeremy-\* plugins)
+
 Updated all jeremy plugin descriptions to be clear and distinguishable:
 
 - **jeremy-adk-orchestrator**: "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI"
@@ -835,9 +912,11 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 ### 📚 Documentation
 
 #### ADK Architecture Patterns
+
 **New comprehensive documentation**: `000-docs/147-AT-ADEC-adk-plugin-architecture-patterns.md`
 
 **Contents:**
+
 - Migration guide from instruction-based to ADK-compliant plugins
 - Dual memory architecture patterns (Session + Memory Bank)
 - Tool design patterns and best practices
@@ -848,6 +927,7 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 **Impact:** Provides blueprint for transforming all jeremy plugins to production-grade ADK agents.
 
 #### Plugin Audit System
+
 **Created comprehensive audit infrastructure:**
 
 1. **087-RA-SUMM-jeremy-plugins-comprehensive-audit.md**
@@ -871,17 +951,22 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 ### 🐛 Bug Fixes
 
 #### JSON Validation Errors
+
 **Fixed invalid JSON in plugin config templates:**
+
 - `plugins/api-development/api-throttling-manager/skills/skill-adapter/assets/throttling_policy_template.json`
 - `plugins/api-development/api-batch-processor/skills/skill-adapter/assets/job_template.json`
 - `plugins/skill-enhancers/web-to-github-issue/skills/web-to-github-issue/assets/config_template.json`
 
 **Issues Resolved:**
+
 - Missing commas after `error_notification_channel` fields
 - JSON comments within arrays causing parse errors
 
 #### Plugin Placeholder
+
 **jeremy-adk-software-engineer** - Created valid plugin.json placeholder:
+
 - Marked as "to be implemented"
 - Prevents validation errors
 - Maintains marketplace integrity
@@ -889,12 +974,14 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 ### 📊 Plugin Metrics
 
 **Current Statistics:**
+
 - Total Plugins: **254** (+1)
 - Agent Skills: **185** (73% adoption)
 - MCP Servers: **6**
 - 2025 Schema Compliance: **100%**
 
 **Version Files Updated:**
+
 - `VERSION` → 1.4.0
 - `package.json` → 1.4.0
 - `marketplace.extended.json` → 1.4.0
@@ -903,19 +990,23 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 ### 🔗 Files Changed
 
 **New Plugin:**
+
 - `plugins/ai-ml/jeremy-adk-orchestrator/` - Complete ADK implementation
 
 **Documentation:**
+
 - `000-docs/147-AT-ADEC-adk-plugin-architecture-patterns.md` - ADK architecture guide
 - `000-docs/087-RA-SUMM-jeremy-plugins-comprehensive-audit.md` - Audit summary
 - `000-docs/088-RA-SUMM-jeremy-plugins-audit-detailed-findings.md` - Detailed findings
 - `000-docs/089-RA-SUMM-jeremy-plugins-action-plan.md` - Action plan
 
 **Plugin Updates:**
+
 - `.claude-plugin/marketplace.extended.json` - 11 plugin descriptions updated
 - `.claude-plugin/marketplace.json` - Synced from extended catalog
 
 **Bug Fixes:**
+
 - `plugins/api-development/api-throttling-manager/skills/skill-adapter/assets/throttling_policy_template.json`
 - `plugins/api-development/api-batch-processor/skills/skill-adapter/assets/job_template.json`
 - `plugins/skill-enhancers/web-to-github-issue/skills/web-to-github-issue/assets/config_template.json`
@@ -924,12 +1015,14 @@ Updated all jeremy plugin descriptions to be clear and distinguishable:
 ### 👥 Contributors
 
 Special thanks to:
+
 - **Jeremy Longshore** - ADK implementation, plugin updates, documentation
 - **Javier Rubio** - Code review and testing
 
 ### 💡 For Plugin Developers
 
 **ADK Migration Checklist:**
+
 1. Review `147-AT-ADEC-adk-plugin-architecture-patterns.md`
 2. Implement `agent/agent.py` with proper memory architecture
 3. Create FunctionTools in `agent/tools.py`
@@ -938,6 +1031,7 @@ Special thanks to:
 6. Test on Vertex AI Agent Engine
 
 **Validate Your Plugin:**
+
 ```bash
 npx claude-plugin-validator ./your-plugin
 ```
@@ -949,6 +1043,7 @@ npx claude-plugin-validator ./your-plugin
 ### 🐛 Bug Fix
 
 #### MCP Plugin Manifest Errors (CRITICAL)
+
 - **Fixed**: Invalid `mcp` field in plugin.json causing validation errors
 - **Plugins Affected**:
   - conversational-api-debugger
@@ -960,6 +1055,7 @@ npx claude-plugin-validator ./your-plugin
 - **User Report**: `claude doctor` validation errors resolved
 
 **Technical Details:**
+
 - The `mcp` field is not part of Claude Code's plugin.json schema
 - MCP configuration belongs in `.claude-plugin/mcp/server.json` (if needed)
 - Fixed manifests now match the correct schema used by working MCP plugins
@@ -973,6 +1069,7 @@ npx claude-plugin-validator ./your-plugin
 ### 🐛 Critical Fixes
 
 #### fullstack-starter-pack Plugin (CRITICAL)
+
 - **Fixed**: Plugin showed in `/plugin list` but had NO visible components
 - **Root Cause**: All 15 components nested in subdirectories (Claude Code doesn't search recursively)
 - **Solution**: Moved 9 commands + 6 agents to plugin root level
@@ -980,18 +1077,21 @@ npx claude-plugin-validator ./your-plugin
 - **User Report**: Claude Code v2.0.36 compatibility issue resolved
 
 #### LICENSE Coverage (120 plugins)
+
 - **Fixed**: 120 plugins missing LICENSE files (47% of total plugins)
 - **Template**: MIT License with 2025 copyright
 - **Coverage**: 100% achieved (253/253 plugins)
 - **Categories Affected**: api-development (30), crypto (25), ai-ml (23), database (19), devops (15), testing (8)
 
 #### Marketplace Website
+
 - **Fixed**: Skills count display (175 → 185)
 - **Updated**: Homepage announcement banner
 - **Updated**: Spotlight section messaging
 - **Deployed**: GitHub Pages with correct metrics
 
 #### Gemini Asset Generation
+
 - **Fixed**: Model identifier (`gemini-1.5-flash-002` → `gemini-1.5-flash`)
 - **Status**: Script ready for production use
 - **Database**: Asset tracking in `backups/asset_generation.db`
@@ -999,9 +1099,11 @@ npx claude-plugin-validator ./your-plugin
 ### 📦 New Developer Package
 
 #### claude-plugin-validator (v1.0.0)
+
 Comprehensive quality checker for Claude Code plugins.
 
 **Features:**
+
 - Validates required files (README.md, LICENSE, plugin.json)
 - Checks 2025 schema compliance (allowed-tools, version)
 - Security scans (hardcoded secrets, dangerous commands)
@@ -1012,6 +1114,7 @@ Comprehensive quality checker for Claude Code plugins.
 - Grading system (A-F scores)
 
 **Usage:**
+
 ```bash
 npx claude-plugin-validator ./my-plugin
 npx claude-plugin-validator --installed
@@ -1021,6 +1124,7 @@ npx claude-plugin-validator --fix
 **Location:** `packages/plugin-validator/`
 
 **npm Package:**
+
 - **Published**: November 15, 2025
 - **Registry**: https://www.npmjs.com/package/claude-plugin-validator
 - **Install**: `npx claude-plugin-validator`
@@ -1029,6 +1133,7 @@ npx claude-plugin-validator --fix
 ### 📊 Plugin Metrics
 
 **Completeness:**
+
 - Total Plugins: 253
 - Agent Skills: 185 (100% 2025 schema)
 - README Coverage: 253/253 (100%)
@@ -1038,32 +1143,38 @@ npx claude-plugin-validator --fix
 ### 🔗 Files Changed
 
 **Version Updates:**
+
 - `VERSION` → 1.3.2
 - `package.json` → 1.3.2
 - `marketplace.extended.json` → 1.3.2
 
 **Bug Fixes:**
+
 - `plugins/packages/fullstack-starter-pack/` - Restructured
 - `plugins/*/000-docs/001-BL-LICN-license.txt` - 120 files added
 - `marketplace/src/pages/index.astro` - Skills count corrected
 - `scripts/generate-missing-assets.py` - Model name fixed
 
 **New Package:**
+
 - `packages/plugin-validator/` - Complete validator package
 
 ### 💡 For Plugin Developers
 
 **Validate Before Publishing:**
+
 ```bash
 npx claude-plugin-validator ./your-plugin
 ```
 
 **Check Installed Plugins:**
+
 ```bash
 npx claude-plugin-validator --installed
 ```
 
 **Auto-Fix Common Issues:**
+
 ```bash
 npx claude-plugin-validator --fix
 ```
@@ -1081,6 +1192,7 @@ npx claude-plugin-validator --fix
 ### 📊 Release Statistics
 
 **Scope of Changes:**
+
 - **24 commits** across 7 days
 - **8 new plugins** added (Google Cloud, Vertex AI, Firebase ecosystem)
 - **5 plugins updated** (Google AI suite with 3,483 lines added)
@@ -1091,12 +1203,14 @@ npx claude-plugin-validator --fix
 - **2 CI/CD improvements** (workflow validation, plugin fixes)
 
 **Lines Changed:**
+
 - **+3,483 lines** documentation in Google AI plugins
 - **+297 lines** jeremy-firebase README
 - **+800 lines** asset generation system (Python, SQLite)
 - **+2,500 lines** audit reports and analysis
 
 **Quality Improvements:**
+
 - **92% of plugins** identified with incomplete assets (audit)
 - **100% plugin coverage** in CI/CD validation (was ~40%)
 - **Zero** asset generation failures with rate limiting
@@ -1109,6 +1223,7 @@ npx claude-plugin-validator --fix
 ### 🔧 Plugins Updated (5/5 Complete)
 
 #### 1. **jeremy-vertex-engine** (v1.0.0 → v1.0.1)
+
 - **Added**: 403 lines (+113% growth)
 - **New Sections**:
   - Observability & Monitoring (174 lines) - 2025 Agent Engine dashboard, Cloud Trace, custom metrics
@@ -1117,6 +1232,7 @@ npx claude-plugin-validator --fix
 - **Features**: 15+ production code examples, 3 SQL analytics queries, 5 alert policy patterns
 
 #### 2. **jeremy-adk-orchestrator** (v1.0.0 → v1.0.1) - CRITICAL FIX
+
 - **Added**: 695 lines (README created from scratch - was completely missing!)
 - **New Content**:
   - Complete A2A Protocol documentation (AgentCard discovery, task submission, status polling)
@@ -1126,6 +1242,7 @@ npx claude-plugin-validator --fix
 - **Features**: 40+ production Python code examples
 
 #### 3. **jeremy-vertex-validator** (v1.0.0 → v1.0.1)
+
 - **Added**: 662 lines (+2006% growth from 33 lines)
 - **New Sections**:
   - 5-category validation system (470 lines) - Security, Monitoring, Performance, Compliance, Best Practices
@@ -1134,6 +1251,7 @@ npx claude-plugin-validator --fix
 - **Features**: Security checks (IAM, VPC-SC, Model Armor), weighted scoring (0-100%)
 
 #### 4. **jeremy-adk-terraform** (v1.0.0 → v1.0.1)
+
 - **Added**: 827 lines (was 35 lines with wrong content)
 - **Infrastructure Modules**:
   - Core Agent Engine resource (65 lines HCL)
@@ -1145,6 +1263,7 @@ npx claude-plugin-validator --fix
 - **Features**: Complete terraform modules for Agent Engine deployment
 
 #### 5. **jeremy-vertex-terraform** (v1.0.0 → v1.0.1)
+
 - **Added**: 896 lines (was 35 lines with wrong content)
 - **Infrastructure Modules**:
   - Gemini API endpoints (67 lines HCL)
@@ -1168,11 +1287,13 @@ npx claude-plugin-validator --fix
 ### 🎯 Key Improvements Across All Plugins
 
 ✅ **Deployment Target Clarity**
+
 - Prominent 🎯 headers ("VERTEX AI AGENT ENGINE ONLY" vs "MODEL GARDEN & AI INFRASTRUCTURE")
 - Clear ✅ THIS PLUGIN IS FOR / ❌ THIS PLUGIN IS NOT FOR sections
 - Eliminated Cloud Run vs Agent Engine confusion
 
 ✅ **Complete Prerequisites & Dependencies**
+
 - Google Cloud API enablement commands
 - Authentication setup (ADC and service accounts)
 - IAM permissions with specific role names
@@ -1181,6 +1302,7 @@ npx claude-plugin-validator --fix
 - Terraform provider configuration
 
 ✅ **2025 Observability Features** (NEW)
+
 - Agent Engine Observability Dashboard access
 - Cloud Trace integration with OpenTelemetry
 - Cloud Logging structured queries
@@ -1188,6 +1310,7 @@ npx claude-plugin-validator --fix
 - Token usage and cost tracking
 
 ✅ **2025 Storage Integration** (NEW)
+
 - BigQuery connector for agent logs
 - Cloud Storage integration for artifacts
 - Data export patterns (real-time, daily, compliance)
@@ -1199,7 +1322,9 @@ npx claude-plugin-validator --fix
 This release includes 8 brand new plugins spanning Google Cloud operations, Vertex AI tooling, and Firebase development.
 
 #### 1. jeremy-firestore (v1.0.0) - commit 5323f25
+
 **Comprehensive Firestore plugin with A2A/MCP/Cloud Run support**
+
 - **Agent**: `jeremy-firestore:firestore-operations-expert` - Production Firestore data modeling, security rules, and performance optimization
 - **Features**:
   - Advanced data modeling patterns (denormalization, subcollections, composite indexes)
@@ -1214,7 +1339,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Firebase web/mobile apps, real-time dashboards, serverless backends
 
 #### 2. jeremy-github-actions-gcp (v1.0.0) - commit e8d456f
+
 **GitHub Actions with Workload Identity Federation enforcement and Vertex AI validation**
+
 - **Agent**: `jeremy-github-actions-gcp:gh-actions-gcp-expert` - CI/CD pipeline automation for GCP deployments
 - **Skill**: `jeremy-github-actions-gcp:gh-actions-validator` - Validates workflow files for WIF compliance
 - **Features**:
@@ -1229,7 +1356,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Secure GCP deployments, agent CI/CD, multi-stage pipelines
 
 #### 3. jeremy-gcp-starter-examples (v1.0.0) - commit fe8e09b
+
 **Official Google Cloud starter kits, ADK samples, Genkit templates, and Vertex AI examples**
+
 - **Agent**: `jeremy-gcp-starter-examples:gcp-starter-kit-expert` - Official GCP code samples and best practices
 - **Features**:
   - Agent Starter Pack (official Google agent templates)
@@ -1243,7 +1372,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Quick project bootstrapping, reference implementations, learning GCP patterns
 
 #### 4. jeremy-vertex-engine (v1.0.0) - commit 8125c14
+
 **Comprehensive Vertex AI Agent Engine inspector and operations toolkit**
+
 - **Agent**: `jeremy-vertex-engine:vertex-engine-inspector` - Validates Agent Engine deployments and runtime health
 - **Features**:
   - Agent Engine deployment validation
@@ -1257,7 +1388,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Pre-deployment checks, production monitoring, compliance audits
 
 #### 5. overnight-dev (v1.0.0) - commit 78cd711
+
 **Overnight development automation for unattended project work**
+
 - **Agent**: `overnight-dev:overnight-automation` - Automates long-running development tasks
 - **Features**:
   - Unattended code generation and refactoring
@@ -1271,7 +1404,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Large refactoring projects, batch processing, overnight builds
 
 #### 6. jeremy-vertex-search (v1.0.0) - commit 748b3e7
+
 **Vertex AI Search and RAG (Retrieval-Augmented Generation) implementation toolkit**
+
 - **Agent**: `jeremy-vertex-search:vertex-search-expert` - Enterprise search and RAG patterns
 - **Features**:
   - Vertex AI Search configuration and indexing
@@ -1285,7 +1420,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Enterprise search, chatbots with context, document Q&A, semantic search
 
 #### 7. jeremy-vertex-observability (v1.0.0) - commit 748b3e7
+
 **2025 Vertex AI observability and telemetry features**
+
 - **Agent**: `jeremy-vertex-observability:observability-expert` - Monitoring, logging, and tracing for Vertex AI
 - **Features**:
   - Agent Engine Observability Dashboard (2025 feature)
@@ -1299,7 +1436,9 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Use Cases**: Production monitoring, performance optimization, cost management, debugging
 
 #### 8. jeremy-vertex-storage (v1.0.0) - commit 748b3e7
+
 **Vertex AI storage integration - BigQuery connector and Cloud Storage patterns**
+
 - **Agent**: `jeremy-vertex-storage:storage-integration-expert` - Data storage patterns for Vertex AI
 - **Features**:
   - BigQuery connector for agent logs
@@ -1317,6 +1456,7 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 **Major Innovation**: Automated context-aware asset file generation using Vertex AI Gemini.
 
 **Script**: `scripts/generate-missing-assets.py`
+
 - **AI Model**: Gemini 1.5 Flash (gemini-1.5-flash-002) for stable, high-quota generation
 - **Context-Aware**: Reads each plugin's README.md and plugin.json for accurate content generation
 - **Multi-Format Support**: JSON, YAML, Markdown, HTML, Python, Shell scripts
@@ -1326,12 +1466,14 @@ This release includes 8 brand new plugins spanning Google Cloud operations, Vert
 - **Safety**: Validates generated content before writing to disk
 
 **Performance**:
+
 - Generated 261+ assets successfully (as of Nov 15)
 - Target: ~1,500 total assets across 231 plugins
 - Zero failures with rate limiting enabled
 - Average file size: 2,500 bytes (context-rich, production-ready)
 
 **Example Output** (web-to-github-issue plugin):
+
 ```
 assets/
 ├── issue_template.md (2,662 bytes) - GitHub issue format with web research context
@@ -1346,11 +1488,13 @@ assets/
 **Comprehensive Plugin Audit System** identifying incomplete asset directories across the entire marketplace.
 
 **Audit Report**: `asset-audit-report-20251115.txt`
+
 - **Scope**: 252 plugins analyzed
 - **Findings**: 231 plugins (92%) with incomplete asset directories
 - **Impact Analysis**: `ASSET_AUDIT_RESPONSE.md` with root cause and recommendations
 
 **Key Statistics**:
+
 - 76 plugins missing SKILL.md files
 - 230 plugins with incomplete asset directories
 - Most common missing files:
@@ -1362,6 +1506,7 @@ assets/
 **Root Cause**: Automated plugin generation created `assets/README.md` with checklists but never generated the actual files.
 
 **Resolution Strategy**:
+
 - **Short-term**: Gemini-powered automated generation (in progress)
 - **Medium-term**: Template library for common asset types
 - **Long-term**: Enhanced plugin validation in CI/CD
@@ -1375,6 +1520,7 @@ assets/
 **Problem**: Workflow only validated `plugins/community/*` and `plugins/examples/*`, missing 200+ plugins in other categories.
 
 **Solution**: Dynamic plugin discovery using `find` command
+
 ```yaml
 # Before: Hardcoded paths
 for plugin in plugins/community/*/ plugins/examples/*/; do
@@ -1387,6 +1533,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 **Impact**: Now validates all 253 plugins regardless of directory structure.
 
 **Security Checks Added**:
+
 - Hardcoded secrets detection
 - AWS keys detection (blocks CI)
 - Private key detection (blocks CI)
@@ -1398,6 +1545,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 **devops-automation-pack Plugin Fix** - commit 4ff8059
 
 **Problem**: Invalid manifest with non-existent path references
+
 ```json
 "commands": "./plugins/*/commands",  // Invalid wildcard paths
 "agents": "./plugins/*/agents"
@@ -1412,6 +1560,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 **100% README Coverage** - All 253 plugins now have comprehensive documentation.
 
 **Jeremy-Firebase README Created** - commit 57f3523
+
 - **Size**: 297 lines of comprehensive documentation
 - **Content**:
   - Detailed feature overview
@@ -1433,6 +1582,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 **Commits**: 071d2ee, 438f8e0, b3fd9cc, 7278c1b, b2f5efa, 0e6091a, 904f360, f6c190a, 29c5a63
 
 **Improvements**:
+
 - Synchronized `marketplace.extended.json` with `marketplace.json`
 - Updated plugin metadata for new releases
 - Fixed category assignments
@@ -1443,6 +1593,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 **Quality Assurance**: All changes validated by CI/CD pipeline before merge
 
 ✅ **Skills Updated**
+
 - jeremy-adk-orchestrator/adk-deployment-specialist: v1.0.0 → v1.0.1 (A2A protocol focus)
 - jeremy-vertex-validator/validator-expert: v1.0.0 → v1.0.1 (2025 features)
 - jeremy-firestore/firestore-operations-expert: v1.0.0 (NEW)
@@ -1458,12 +1609,13 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 
 **jeremy-adk-terraform vs jeremy-vertex-terraform:**
 
-| Plugin | Focus | Resources |
-|--------|-------|-----------|
-| **jeremy-adk-terraform** | ADK agents on Agent Engine | `google_vertex_ai_reasoning_engine` |
-| **jeremy-vertex-terraform** | Broader Vertex AI ML | Gemini endpoints, Vector Search, Pipelines |
+| Plugin                      | Focus                      | Resources                                  |
+| --------------------------- | -------------------------- | ------------------------------------------ |
+| **jeremy-adk-terraform**    | ADK agents on Agent Engine | `google_vertex_ai_reasoning_engine`        |
+| **jeremy-vertex-terraform** | Broader Vertex AI ML       | Gemini endpoints, Vector Search, Pipelines |
 
 **Both plugins now have:**
+
 - Clear scope definitions
 - Non-overlapping use cases
 - Cross-references to each other
@@ -1472,6 +1624,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 ### 📝 Supporting Documentation
 
 **New Release Notes**: `plugins/community/jeremy-firebase/000-usermanuals/010-plugin-updates-release-notes.md`
+
 - 30KB comprehensive release documentation
 - Breaking changes (none - documentation only)
 - Migration guide
@@ -1482,6 +1635,7 @@ find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while r
 ### 🛠️ Dependencies Added/Updated
 
 **Python Packages:**
+
 ```bash
 google-cloud-aiplatform[agent_engines]>=1.120.0
 google-adk>=1.15.1
@@ -1494,6 +1648,7 @@ pylint>=3.0.0, flake8>=7.0.0, mypy>=1.8.0 (validator)
 ```
 
 **Terraform Requirements:**
+
 ```hcl
 terraform >= 1.5.0
 google provider >= 5.0
@@ -1501,6 +1656,7 @@ google-beta provider >= 5.0
 ```
 
 **Google Cloud APIs:**
+
 - aiplatform.googleapis.com
 - discoveryengine.googleapis.com
 - logging.googleapis.com
@@ -1512,6 +1668,7 @@ google-beta provider >= 5.0
 ### 🚀 Production Features
 
 **Agent Engine Terraform:**
+
 - Code Execution Sandbox (1-14 days TTL validation)
 - Memory Bank (retention policies, max memories)
 - VPC Service Controls perimeter
@@ -1521,6 +1678,7 @@ google-beta provider >= 5.0
 - CMEK encryption
 
 **Vertex AI Terraform:**
+
 - Model Garden deployments (Gemini, PaLM, Claude, Llama)
 - Vector Search with ScaNN algorithm
 - Feature Store for ML features
@@ -1531,6 +1689,7 @@ google-beta provider >= 5.0
 ### 📈 Observability Features (2025)
 
 **Cloud Monitoring Dashboards:**
+
 - Request volume
 - Error rates
 - Latency distribution (p50, p90, p95, p99)
@@ -1540,6 +1699,7 @@ google-beta provider >= 5.0
 - Replica utilization
 
 **Alert Policies:**
+
 - High error rate (>5% for 5 minutes)
 - High latency (p95 > 10s)
 - Token budget exceeded
@@ -1547,6 +1707,7 @@ google-beta provider >= 5.0
 - Code Execution timeout rate
 
 **BigQuery Analytics:**
+
 - Agent query volume and latency trends
 - Memory Bank cache performance
 - Token usage and cost analysis
@@ -1556,6 +1717,7 @@ google-beta provider >= 5.0
 ### 🎓 Use Cases Documented
 
 **Agent Engine:**
+
 - Pre-production validation
 - Post-deployment verification
 - Security audits
@@ -1563,6 +1725,7 @@ google-beta provider >= 5.0
 - A2A protocol communication
 
 **Vertex AI:**
+
 - Gemini API deployment
 - Vector search for RAG
 - Custom model serving
@@ -1591,21 +1754,25 @@ Thanks to @jeremylongshore for the comprehensive Google AI plugin suite overhaul
 ### 🔗 Complete GitHub Commit History (24 commits)
 
 **Nov 15, 2025 - Asset Generation & GitHub Release:**
+
 - **bd57367**: feat: enhance asset generation with rate limiting and retry logic
 - **e72aed1**: feat: add comprehensive asset generation system with Gemini AI
 - **57f3523**: docs: add comprehensive jeremy-firebase README and fix duplicate fairdb directory
 
 **Nov 13, 2025 - CI/CD & Marketplace Fixes:**
+
 - **60ed152**: fix: update GitHub workflow to validate all plugins dynamically
 - **4ff8059**: fix: remove invalid manifest fields from devops-automation-pack
 
 **Nov 13, 2025 - Google AI Plugins Major Update:**
+
 - **7a2c06e**: docs: update CHANGELOG for Google AI plugins v1.0.1
 - **1f76301**: feat: complete jeremy-vertex-terraform with comprehensive Vertex AI infrastructure
 - **528744a**: feat: complete jeremy-adk-terraform with Agent Engine Terraform modules
 - **237400f**: feat: comprehensive update to jeremy-vertex-engine, jeremy-adk-orchestrator, jeremy-vertex-validator
 
 **Nov 13, 2025 - Marketplace Catalog Synchronization:**
+
 - **29c5a63**: chore: sync marketplace catalogs
 - **f6c190a**: chore: sync marketplace catalogs
 - **904f360**: chore: sync marketplace catalogs
@@ -1617,6 +1784,7 @@ Thanks to @jeremylongshore for the comprehensive Google AI plugin suite overhaul
 - **071d2ee**: chore: sync marketplace catalogs
 
 **Nov 10, 2025 - New Plugins Added:**
+
 - **5323f25**: feat(jeremy-firestore): add killer Firestore plugin with A2A/MCP/Cloud Run support
 - **78cd711**: fix(overnight-dev): remove invalid 'featured' field from plugin manifest
 - **e8d456f**: feat: add jeremy-github-actions-gcp plugin with WIF enforcement and Vertex AI validation
@@ -1624,6 +1792,7 @@ Thanks to @jeremylongshore for the comprehensive Google AI plugin suite overhaul
 - **8125c14**: feat: add jeremy-vertex-engine - comprehensive Agent Engine inspector
 
 **Nov 9, 2025 - Asset Audit Infrastructure:**
+
 - **547f2b6**: feat: add comprehensive plugin asset audit system
 
 ---
@@ -1677,6 +1846,7 @@ Massive thanks to @jeremylongshore and the Claude Code team for this industry-le
 ### ✨ Schema Enhancements (All 175 Skills)
 
 **Before v1.3.0:**
+
 ```yaml
 ---
 name: skill-name
@@ -1685,6 +1855,7 @@ description: Basic description
 ```
 
 **After v1.3.0:**
+
 ```yaml
 ---
 name: skill-name
@@ -1692,12 +1863,13 @@ description: |
   What this skill does and when to use it.
   Includes explicit trigger phrases like "analyze performance"
   or "generate tests" so users know when it activates.
-allowed-tools: Read, Grep, Glob, Bash  # NEW - Security & performance
-version: 1.0.0  # NEW - Version tracking
+allowed-tools: Read, Grep, Glob, Bash # NEW - Security & performance
+version: 1.0.0 # NEW - Version tracking
 ---
 ```
 
 **Changes Applied:**
+
 - ✅ 175/175 skills updated to 2025 schema (100%)
 - ✅ 175 skills with `allowed-tools` permissions
 - ✅ 175 skills with version tracking
@@ -1709,6 +1881,7 @@ version: 1.0.0  # NEW - Version tracking
 ### 🗂️ Supporting File Structure
 
 Every skill now includes:
+
 ```
 skills/
 └── skill-name/
@@ -1727,16 +1900,16 @@ skills/
 
 ### 🎯 Competitive Position
 
-| Feature | Our Marketplace | Others |
-|---------|----------------|--------|
-| 2025 Schema Compliance | ✅ 100% | ❌ 0-10% |
-| Tool Permissions | ✅ All 175 skills | ❌ Few/none |
-| Clear Activation Triggers | ✅ All skills | ❌ Inconsistent |
-| Version Tracking | ✅ All skills | ❌ Rare |
-| User Activation Guide | ✅ Comprehensive | ❌ None |
-| Supporting Files | ✅ 525 professional files | ❌ None |
-| Quality Documentation | ✅ 3 major guides | ❌ Minimal |
-| **Industry Position** | **LEADER** | **FOLLOWER** |
+| Feature                   | Our Marketplace           | Others          |
+| ------------------------- | ------------------------- | --------------- |
+| 2025 Schema Compliance    | ✅ 100%                   | ❌ 0-10%        |
+| Tool Permissions          | ✅ All 175 skills         | ❌ Few/none     |
+| Clear Activation Triggers | ✅ All skills             | ❌ Inconsistent |
+| Version Tracking          | ✅ All skills             | ❌ Rare         |
+| User Activation Guide     | ✅ Comprehensive          | ❌ None         |
+| Supporting Files          | ✅ 525 professional files | ❌ None         |
+| Quality Documentation     | ✅ 3 major guides         | ❌ Minimal      |
+| **Industry Position**     | **LEADER**                | **FOLLOWER**    |
 
 ### 📊 Metrics
 
@@ -1753,12 +1926,14 @@ skills/
 ### 🔧 Technical Improvements
 
 **README.md:**
+
 - Added "What's New in v1.3.0" section with 3 featured improvements
 - Updated badges (version, plugin count, schema compliance)
 - Added competitive advantage table
 - Updated migration stats
 
 **CLAUDE.md:**
+
 - Updated to reflect 2025 schema standards
 - Added tool categorization guide
 - Enhanced Agent Skills documentation
@@ -1766,6 +1941,7 @@ skills/
 - Updated plugin count: 236 → 244
 
 **Version Files:**
+
 - VERSION: 1.2.6 → 1.3.0
 - package.json: 1.2.6 → 1.3.0
 - marketplace.extended.json: 1.2.6 → 1.3.0
@@ -1782,6 +1958,7 @@ skills/
 ### 🎖️ Quality Standards Established
 
 Created comprehensive quality framework:
+
 - SKILL.md requirements and best practices
 - Tool permission standards and categories
 - Trigger phrase documentation guidelines
@@ -1793,14 +1970,14 @@ Created comprehensive quality framework:
 
 ### 📈 Improvements Over v1.2.6
 
-| Metric | v1.2.6 | v1.3.0 | Improvement |
-|--------|--------|--------|-------------|
-| Schema Compliance | ~4% | 100% | +96% ✅ |
-| Tool Permissions | 7 | 175 | +2400% ✅ |
-| Supporting Files | 0 | 525 | New Feature ✅ |
-| Quality Guides | 0 | 3 | New Feature ✅ |
-| Validation Tools | 1 | 5 | +400% ✅ |
-| Trigger Clarity | Inconsistent | 100% | Complete ✅ |
+| Metric            | v1.2.6       | v1.3.0 | Improvement    |
+| ----------------- | ------------ | ------ | -------------- |
+| Schema Compliance | ~4%          | 100%   | +96% ✅        |
+| Tool Permissions  | 7            | 175    | +2400% ✅      |
+| Supporting Files  | 0            | 525    | New Feature ✅ |
+| Quality Guides    | 0            | 3      | New Feature ✅ |
+| Validation Tools  | 1            | 5      | +400% ✅       |
+| Trigger Clarity   | Inconsistent | 100%   | Complete ✅    |
 
 ### 🔗 Links
 
@@ -2017,6 +2194,7 @@ Special thanks to **Claude** (noreply@anthropic.com) for co-authoring this plugi
    - Documentation: 43KB across SKILL.md, command, and README
 
 **Naming Convention:**
+
 - Plugins numbered `000-jeremy-*`, `001-jeremy-*` for alphabetical sorting
 - Ensures personal plugins appear at top of marketplace list
 - Spec-compliant hyphen-case names
@@ -2041,34 +2219,38 @@ Built by @jeremylongshore with Claude Code
 ### 🚀 What's New
 
 **Spec Compliance Updates:**
+
 - **164 SKILL.md files updated** to hyphen-case name format
 - **100% compliance** with Anthropic's official Agent Skills Spec v1.0
 - **Name format fixed**: Title Case → hyphen-case (e.g., "Creating GitHub Issues" → "creating-github-issues")
 - **Official spec reference**:
 
 **Required Changes Per Spec:**
+
 - `name` field must be hyphen-case (lowercase alphanumeric + hyphen only)
 - Ensures forward compatibility with future Claude Code releases
 - Aligns with Anthropic's 17 official example skills
 
 **Script Added:**
+
 - `scripts/fix-skill-names.py` - Automated batch conversion tool
 - Converts Title Case to hyphen-case with validation
 - Handles 165 skills with error reporting and statistics
 
 **Documentation Added:**
+
 - `claudes-docs/134-MS-DRFT-anthropic-skills-comparison.md` - Comprehensive comparison report
 - Detailed spec analysis and compliance matrix
 - Quality assessment showing our skills exceed Anthropic's examples in documentation depth
 
 ### 📊 Compliance Status
 
-| Aspect | Status |
-|--------|--------|
+| Aspect                    | Status                                           |
+| ------------------------- | ------------------------------------------------ |
 | Name format (hyphen-case) | ✅ 100% Compliant (164 fixed, 1 already correct) |
-| YAML frontmatter | ✅ Compliant |
-| Required fields | ✅ Compliant |
-| Markdown content | ✅ Exceeds spec |
+| YAML frontmatter          | ✅ Compliant                                     |
+| Required fields           | ✅ Compliant                                     |
+| Markdown content          | ✅ Exceeds spec                                  |
 
 **No Breaking Changes** - Skills continue to work exactly as before. This is a metadata formatting update only.
 
@@ -2089,6 +2271,7 @@ Special thanks to the community for 100+ ⭐ GitHub stars!
 ### 🚀 What's New
 
 **Enhanced Agent Skills System:**
+
 - **159 high-quality SKILL.md files** generated via improved batch processing
 - **231 plugins enhanced** (98% of 236-plugin marketplace)
 - **100% success rate** with zero failures across overnight batch
@@ -2102,6 +2285,7 @@ Special thanks to the community for 100+ ⭐ GitHub stars!
 Agent Skills are automatic capabilities that Claude activates based on your conversation context - no slash commands needed!
 
 **File Structure:**
+
 ```
 your-plugin/
 └── skills/
@@ -2110,12 +2294,14 @@ your-plugin/
 ```
 
 **How It Works:**
+
 1. Install plugin: `/plugin install postgres-backup-pro@claude-code-plugins-plus`
 2. Mention need: "I need to backup my production database"
 3. Claude automatically activates the relevant skill and guides you through the workflow
 4. Get expert help with multi-phase workflows, code examples, and best practices
 
 **Key Difference: Skills vs Commands**
+
 - Commands: Manual activation with `/command-name`
 - Skills: Automatic activation when Claude detects relevant context
 - Result: More natural, conversational development workflow
@@ -2123,6 +2309,7 @@ your-plugin/
 See README for full educational guide with examples.
 
 **Production Infrastructure:**
+
 - Smart rate limiting (45-60s per plugin with 71.6% API quota remaining)
 - SQLite audit trail with complete compliance tracking
 - Automatic backup system with Turso disaster recovery
@@ -2130,6 +2317,7 @@ See README for full educational guide with examples.
 - Real-time observability with unbuffered logging
 
 **Comprehensive Documentation Added:**
+
 - Implementation guide (architecture, rate limiting, quality control)
 - Batch processing metrics with data-driven analysis (26 KB report)
 - Skills generation architecture and system design
@@ -2150,17 +2338,20 @@ See README for full educational guide with examples.
 ### 🎯 Technical Achievements
 
 **Optimization Journey:**
+
 - Started: 90-120s delays (ultra-conservative testing)
 - Data-driven optimization: Cut to 45-60s based on 12 hours of metrics
 - Result: 2x faster processing while maintaining 3x safety margin
 - Completion: 1:30 AM instead of 5:30 AM (4 hours saved)
 
 **Quality Comparison:**
+
 - **Our Agent Skills:** Average 3,210 bytes, up to 8,488 bytes (overnight-dev)
 - **Anthropic's Examples:** ~500 bytes (template-skill)
 - **Improvement:** 17x larger with multi-phase workflows, code examples, error handling
 
 **Coverage by Category:**
+
 - ✅ AI/ML: 27/27 (100%)
 - ✅ Database: 25/25 (100%)
 - ✅ Security: 27/27 (100%)
@@ -2171,10 +2362,12 @@ See README for full educational guide with examples.
 ### 📚 Documentation & Resources
 
 **Technical Deep-Dives:**
+
 - [Scaling AI Batch Processing](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/) - Complete technical implementation
 - Production Systems Architecture - Systems thinking and architecture
 
 **Repository Documentation:**
+
 - `docs/IMPLEMENTATION_GUIDE.md` - Technical architecture and rate limiting
 - `docs/BATCH_PROCESSING_METRICS.md` - Results and performance data
 - `docs/SKILLS_GENERATION_ARCHITECTURE.md` - Agent Skills system design
@@ -2190,6 +2383,7 @@ See README for full educational guide with examples.
 ### 💡 System Design Highlights
 
 **Rate Limiting Strategy:**
+
 ```python
 # Base delay with randomness (prevents API patterns)
 delay = 45.0 + random.uniform(0, 15.0)  # 45-60s
@@ -2200,10 +2394,12 @@ if idx % 10 == 0:
 ```
 
 **Two-Phase AI Processing:**
+
 1. Analysis phase (15-20s) - Understand plugin capabilities
 2. Generation phase (30-40s) - Create comprehensive SKILL.md
 
 **Quality Control:**
+
 - Minimum file size: 8,000 bytes target
 - YAML frontmatter validation
 - Automatic backup before modification
@@ -2213,6 +2409,7 @@ if idx % 10 == 0:
 ### 🎁 What's Next
 
 **Post-Release Roadmap (10 weeks to 95% coverage):**
+
 - Weeks 1-2: High-priority 8 plugins → 71% coverage
 - Weeks 3-4: API Development Wave 1 (10 plugins) → 75%
 - Weeks 5-6: API Development Wave 2 (15 plugins) → 82%
@@ -2223,7 +2420,7 @@ See `docs/PRIORITY_SKILLS_TODO.md` for detailed action items.
 
 ### 🔗 Links
 
-- **Plugin Catalog:** https://claudecodeplugins.io
+- **Plugin Catalog:** [retired legacy public domain]
 - **GitHub Repository:** https://github.com/jeremylongshore/claude-code-plugins
 - **Technical Blog:** https://startaitools.com
 - **Portfolio Blog:** https://jeremylongshore.com
@@ -2237,6 +2434,7 @@ See `docs/PRIORITY_SKILLS_TODO.md` for detailed action items.
 ### 🐛 Bug Fixes
 
 **Fixed Duplicate Plugin Cards on Mobile**
+
 - Resolved JavaScript bug in SearchBar.astro where `querySelector` only targeted the first `.plugins-grid` container
 - Changed to `querySelectorAll` to handle each grid (Featured and All Plugins) independently
 - Fixes issue where plugins appeared duplicated when scrolling on mobile devices
@@ -2245,6 +2443,7 @@ See `docs/PRIORITY_SKILLS_TODO.md` for detailed action items.
 ### 📚 Documentation
 
 **Enhanced CLAUDE.md**
+
 - Added comprehensive Agent Skills generation commands and workflows
 - Added marketplace website development commands
 - Added missing GitHub Actions workflows documentation (daily-skill-generator, security-audit)
@@ -2276,6 +2475,7 @@ This release was made possible by user bug reports and Claude Code assistance.
 Agent Skills are Claude's newest superpower - SKILL.md files that automatically activate when their expertise is needed. No commands to remember, no menus to navigate. Just describe your task and the right plugins activate automatically.
 
 **How It Works:**
+
 1. You mention something in your conversation: "I need to backup my database"
 2. The relevant Agent Skill (like Database Backup Automator) instantly recognizes it
 3. The plugin activates and assists you automatically
@@ -2284,6 +2484,7 @@ Agent Skills are Claude's newest superpower - SKILL.md files that automatically 
 ### 🚀 What's New
 
 **164 Plugins Now Have Agent Skills** across all categories:
+
 - ✅ **30 DevOps plugins** - Infrastructure, CI/CD, monitoring, deployment
 - ✅ **27 AI/ML plugins** - Model training, data pipelines, ML ops
 - ✅ **25 Database plugins** - Schema design, migrations, optimization
@@ -2293,21 +2494,25 @@ Agent Skills are Claude's newest superpower - SKILL.md files that automatically 
 - ✅ **Plus**: API development, crypto, fullstack, and utility plugins
 
 **1 New Plugin Added:**
+
 - **fairdb-operations-kit** - Complete PostgreSQL-as-a-Service operations with VPS provisioning, backup automation, customer onboarding, and incident response
 
 ### 🎯 Key Improvements
 
 **Proactive Assistance:**
+
 - Plugins now activate automatically based on conversation context
 - No need to remember command names or plugin names
 - Expert help appears exactly when you need it
 
 **Intelligent Context Awareness:**
+
 - Agent Skills understand trigger keywords and patterns
 - They recognize when their expertise is relevant
 - Multiple skills can collaborate on complex tasks
 
 **Enhanced Documentation:**
+
 - Every Agent Skill includes clear activation triggers
 - Examples of when and how skills activate
 - Integration with existing plugin commands and agents
@@ -2323,6 +2528,7 @@ Agent Skills are Claude's newest superpower - SKILL.md files that automatically 
 ### 🛠️ Technical Details
 
 **Generation Process:**
+
 - Used Vertex AI Gemini 2.0 Flash Experimental
 - 30-second rate limiting to avoid quota issues
 - 8-point validation for each generated skill
@@ -2330,12 +2536,12 @@ Agent Skills are Claude's newest superpower - SKILL.md files that automatically 
 - Comprehensive safety checks
 
 **Skill Format:**
+
 ```yaml
 ---
 name: Skill Name
 description: What it does AND when to use it
 ---
-
 # Skill Content
 Purpose, activation triggers, capabilities, workflows
 ```
@@ -2343,12 +2549,14 @@ Purpose, activation triggers, capabilities, workflows
 ### 💡 Examples
 
 **Before (v1.0.45):**
+
 ```
 User: "I need to set up backups for my database"
 You: Need to find the right plugin, read docs, run commands
 ```
 
 **After (v1.1.0):**
+
 ```
 User: "I need to set up backups for my database"
 Agent Skill: Database Backup Automator activates automatically!
@@ -2361,24 +2569,28 @@ Agent Skill: Database Backup Automator activates automatically!
 ### 🎁 Featured Plugins with Agent Skills
 
 **DevOps Excellence:**
+
 - backup-strategy-implementor
 - disaster-recovery-planner
 - terraform-module-builder
 - kubernetes-deployment-creator
 
 **Database Mastery:**
+
 - database-backup-automator
 - database-migration-manager
 - query-performance-analyzer
 - database-health-monitor
 
 **Security Automation:**
+
 - vulnerability-scanner
 - compliance-checker
 - secret-scanner
 - security-audit-reporter
 
 **Testing Powerhouse:**
+
 - e2e-test-framework
 - performance-test-suite
 - chaos-engineering-toolkit
@@ -2399,11 +2611,13 @@ Agent Skill: Database Backup Automator activates automatically!
 ### 📈 Impact
 
 **For Users:**
+
 - Zero learning curve - skills activate when needed
 - Faster workflows - no command memorization
 - Better results - expert guidance automatically
 
 **For Plugin Developers:**
+
 - Enhanced discoverability - skills advertise capabilities
 - Automatic activation - users find your plugins naturally
 - Better integration - skills work together seamlessly
@@ -2411,6 +2625,7 @@ Agent Skill: Database Backup Automator activates automatically!
 ### 🙏 Acknowledgments
 
 Special thanks to:
+
 - **Anthropic** for Agent Skills feature in Claude Code
 - **Google Cloud** for Vertex AI Gemini capabilities
 - **Community** for plugin contributions and feedback
@@ -2418,13 +2633,13 @@ Special thanks to:
 ### 📚 Learn More
 
 - Agent Skills Documentation
-- [Plugin Catalog](https://claudecodeplugins.io)
+- Plugin Catalog: [retired legacy public domain]
 - Getting Started Guide
 - Skills Generation Audit
 
 ### 🔗 Resources
 
-- [Full Plugin List with Skills](https://claudecodeplugins.io/skills)
+- Full Plugin List with Skills: [retired legacy public domain]/skills
 - Agent Skills Guide
 - API Reference
 
@@ -2439,6 +2654,7 @@ Special thanks to:
 Renamed for clarity and impact. "PI" is clean, memorable, and people know it's intelligent. "Pathfinder" perfectly describes what it does - finds the path through 229 plugins.
 
 **Updates:**
+
 - Plugin name: `plugin-orchestrator` → `pi-pathfinder`
 - Directory: `plugins/examples/plugin-orchestrator/` → `plugins/examples/pi-pathfinder/`
 - Install command: `/plugin install pi-pathfinder@claude-code-plugins-plus`
@@ -2457,6 +2673,7 @@ Renamed for clarity and impact. "PI" is clean, memorable, and people know it's i
 **FEATURED PLUGIN:** One solution to manage all 229 plugins with intelligent task routing.
 
 **The Problem You Had:**
+
 - 229 plugins installed
 - Which one do you use?
 - Who remembers all the commands?
@@ -2466,6 +2683,7 @@ Renamed for clarity and impact. "PI" is clean, memorable, and people know it's i
 PI Pathfinder automatically picks the best plugin for your task, extracts its skills, and applies them. Zero thinking from you.
 
 **How It Works:**
+
 1. You say what you want in plain English
 2. PI Pathfinder analyzes your task
 3. Searches your installed plugins automatically
@@ -2475,6 +2693,7 @@ PI Pathfinder automatically picks the best plugin for your task, extracts its sk
 7. Done - Easy mode: ON 🎯
 
 **Real Examples:**
+
 ```bash
 "Check my code for security issues"
 → Finds: security-scanner + code-quality
@@ -2496,11 +2715,13 @@ PI Pathfinder automatically picks the best plugin for your task, extracts its sk
 ```
 
 **Installation:**
+
 ```bash
 /plugin install pi-pathfinder@claude-code-plugins-plus
 ```
 
 **Technical Details:**
+
 - **Location**: `plugins/examples/pi-pathfinder/`
 - **Components**: 1 Agent Skill (skill-adapter)
 - **Category**: Example/Productivity
@@ -2511,17 +2732,20 @@ PI Pathfinder automatically picks the best plugin for your task, extracts its sk
 This is the first plugin in our initiative to update all plugins with appropriate Agent Skills for their missions. More skill-enhanced plugins coming soon.
 
 **Files Added:**
+
 - `plugins/examples/pi-pathfinder/.claude-plugin/plugin.json`
 - `plugins/examples/pi-pathfinder/skills/skill-adapter/SKILL.md`
 - `plugins/examples/pi-pathfinder/README.md`
 - `plugins/examples/pi-pathfinder/000-docs/001-BL-LICN-license.txt`
 
 **Marketplace Updates:**
+
 - Added to `marketplace.extended.json` with featured status
 - Added to `marketplace.json` (CLI catalog)
 - Updated README.md with prominent "What's New" announcement
 
 ### 📊 Release Metrics
+
 - **Total Plugins:** 229 (228 → 229)
 - **New This Release:** 1 (PI Pathfinder)
 - **Categories:** 14
@@ -2539,16 +2763,18 @@ This is the first plugin in our initiative to update all plugins with appropriat
 This release resolves a critical schema validation error that prevented ALL users from installing the marketplace (reported Oct 16, 2025 10:16pm ET). The marketplace is now fully operational and legally compliant with embedded Terms of Service, Privacy Policy, and Acceptable Use Policy.
 
 **Key Fixes:**
+
 - **Critical**: Removed invalid `enhances` field blocking marketplace installations
 - **Legal**: Added 3 legal pages using GetTerms.io (account wH2cn)
 - **CI/CD**: Fixed security scan false positives
-- **Deployment**: All changes live at https://claudecodeplugins.io/
+- **Deployment**: All changes live at [retired legacy public domain]/
 
 ---
 
 ### 🔧 Critical Bug Fixes
 
 **Marketplace Installation Blocker (HIGH SEVERITY)**
+
 - **Error**: `Invalid schema: plugins.1: Unrecognized key(s) in object: 'enhances'`
 - **Impact**: NO users could install marketplace via `/plugin marketplace add`
 - **Root Cause**: Invalid `enhances` field in web-to-github-issue plugin entry
@@ -2586,6 +2812,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
    - Enforcement procedures
 
 **Implementation Details:**
+
 - **GetTerms.io Account**: wH2cn
 - **Embed Script**: Dynamically loads legal content
 - **Styling**: Custom CSS with :global() selectors for embedded content
@@ -2628,21 +2855,24 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 **Total Pages: 7** (was 4)
 
 **New Pages (3):**
+
 - /terms - Terms of Service
 - /privacy - Privacy Policy
 - /acceptable-use - Acceptable Use Policy
 
 **Existing Pages (4):**
+
 - / - Homepage
 - /skill-enhancers - Skill Enhancers category
 - /sponsor - GitHub Sponsors page
 - /spotlight - Plugin spotlight
 
 **Build Performance:**
+
 - Build Time: 9.03s (7 pages)
 - Static Site: 100% pre-rendered
 - Deployment: GitHub Pages (automated)
-- Live URL: https://claudecodeplugins.io/
+- Live URL: [retired legacy public domain]/
 
 ---
 
@@ -2659,10 +2889,11 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 2. **Deploy Marketplace** ✅ DEPLOYED
    - Builds Astro site (7 pages)
    - Deploys to GitHub Pages
-   - Live at claudecodeplugins.io
+   - Live at [retired legacy public domain]
    - Automated on marketplace/ changes
 
 **Deployment Timeline:**
+
 - 10:44 PM ET - Initial commit with legal pages (failed: npm cache issue)
 - 10:45 PM ET - Marketplace catalog sync (failed: security scan)
 - 10:46 PM ET - Security scan fix (passed ✅)
@@ -2673,23 +2904,27 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 ### 📊 Release Metrics
 
 **Bug Fixes:**
+
 - Critical marketplace installation blocker (HIGH severity)
 - Security scan false positives (3 files)
 - Marketplace catalog sync issue
 
 **New Features:**
+
 - 3 legal pages with GetTerms.io integration
 - Footer legal section
 - Automated legal content updates
 
 **Files Changed:**
+
 - Modified: 3 files (.claude-plugin catalogs, workflow, layout)
 - Created: 3 files (legal pages)
 - Total: 6 files
 
 **Deployment:**
+
 - CI/CD: 100% passing
-- Website: Live at claudecodeplugins.io
+- Website: Live at [retired legacy public domain]
 - Legal Pages: Accessible and mobile-responsive
 
 ---
@@ -2702,10 +2937,10 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 
 ### 🔗 Links
 
-- **Live Site**: https://claudecodeplugins.io/
-- **Terms**: https://claudecodeplugins.io/terms
-- **Privacy**: https://claudecodeplugins.io/privacy
-- **Acceptable Use**: https://claudecodeplugins.io/acceptable-use
+- **Live Site**: [retired legacy public domain]/
+- **Terms**: [retired legacy public domain]/terms
+- **Privacy**: [retired legacy public domain]/privacy
+- **Acceptable Use**: [retired legacy public domain]/acceptable-use
 - **GitHub Issue**: User-reported installation error (Oct 16, 2025 10:16pm ET)
 
 ---
@@ -2728,17 +2963,20 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 ### ⚠️ User Impact
 
 **BEFORE This Release:**
+
 - ❌ ZERO users could install marketplace
 - ❌ Schema validation error on installation
 - ❌ No legal pages (Terms, Privacy, Acceptable Use)
 
 **AFTER This Release:**
+
 - ✅ Marketplace installation works for all users
 - ✅ Full legal compliance with embedded policies
 - ✅ CI/CD passing without false positives
-- ✅ 7 pages deployed to claudecodeplugins.io
+- ✅ 7 pages deployed to [retired legacy public domain]
 
 **Installation Now Works:**
+
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
 ✅ Success! Marketplace added
@@ -2755,6 +2993,7 @@ All pages use GetTerms.io account `wH2cn` with embedded legal documents:
 This release adds a comprehensive monetization strategy with 3-tier GitHub Sponsors system, enabling sustainable open-source development while providing premium value to sponsors.
 
 **New Sponsor Tiers:**
+
 - 🌟 **Supporter ($5/mo)** - Early access + community perks
 - 💎 **Pro ($19/mo)** - Premium Skill Enhancers + priority support
 - 🏢 **Enterprise ($199/mo)** - Custom development + dedicated support
@@ -2802,6 +3041,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 🔒 Security Improvements
 
 **Critical Security Fixes Applied:**
+
 - Added regex validation for repository format (GitHub API protection)
 - Implemented input sanitization for all user inputs
 - Token exposure prevention in error messages
@@ -2810,6 +3050,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 - GitHub API limits enforced (title 256 chars, labels 50 chars, usernames 39 chars)
 
 **Files Updated:**
+
 - `plugins/skill-enhancers/web-to-github-issue/src/github-client.js` - Complete security overhaul
 - `plugins/skill-enhancers/web-to-github-issue/src/parser.js` - Null safety added
 
@@ -2818,17 +3059,20 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### ✅ Test Suite (100% Coverage)
 
 **Comprehensive Testing Implemented:**
+
 - **118 tests** across 3 test files
 - **100% code coverage** (statements, branches, functions, lines)
 - **Execution time:** ~1.5 seconds
 - **Framework:** Vitest 3.2.4 with V8 coverage provider
 
 **Test Files Created:**
+
 - `github-client.test.js` - 23 tests (token validation, repo format, API error handling)
 - `parser.test.js` - 46 tests (search parsing, null safety, edge cases)
 - `formatter.test.js` - 49 tests (markdown formatting, priority detection, label generation)
 
 **Edge Cases Covered:**
+
 - Invalid/null/undefined inputs
 - Malformed URLs
 - Empty search results
@@ -2858,12 +3102,14 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
    - 5-step installation guide
 
 **Navigation Enhancement:**
+
 - Added animated ❤️ Sponsor link (blue accent #0066CC, heartbeat animation)
 - Added Skill Enhancers category link
 - Mobile-responsive hamburger menu
 - Intent Solutions theme applied (minimalist, blue accent)
 
 **Build Performance:**
+
 - Build time: 6.4 seconds
 - Total size: 2.7MB (4 pages)
 - Static site generation (SSG)
@@ -2874,6 +3120,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 🎨 Design System
 
 **Intent Solutions Theme Applied:**
+
 - Color palette: White (#FFFFFF), dark text (#1a1a1a), blue accent (#0066CC)
 - Typography: System font stack, clear hierarchy
 - Components: Minimalist cards, subtle shadows, smooth transitions
@@ -2885,6 +3132,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 📊 SEO Optimization
 
 **Complete SEO Implementation:**
+
 - **Meta tags:** Title, description, OG, Twitter Cards for 3 pages
 - **Schema markup:** 7 types (Offer, FAQPage, Organization, CollectionPage, SoftwareApplication, HowTo, Breadcrumb)
 - **Sitemap.xml:** All 4 pages indexed
@@ -2892,6 +3140,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 - **Target keywords:** 35-45 top-10 rankings expected
 
 **SEO Documentation Created:**
+
 - `docs/sponsor/SEO_META_TAGS.md` - Sponsor page meta tags
 - `plugins/skill-enhancers/SEO_META_TAGS.md` - Category page meta tags
 - `plugins/skill-enhancers/web-to-github-issue/SEO_META_TAGS.md` - Plugin page meta tags
@@ -2902,17 +3151,20 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### ⚙️ Deployment Configuration
 
 **GitHub Pages Setup:**
-- **Domain:** claudecodeplugins.io (already configured)
+
+- **Domain:** [retired legacy public domain] (already configured)
 - **HTTPS:** Enforced with valid SSL certificate (expires 2026-01-13)
 - **Build type:** GitHub Actions workflow
 - **Status:** Ready to deploy
 
 **GitHub Actions Fix:**
+
 - Fixed workflow from pnpm → npm (critical fix)
 - Added npm caching for faster builds
 - Verified build output (dist/ ready)
 
 **Deployment Guides Created (5 documents):**
+
 - `DEPLOYMENT_CHECKLIST.md` (450+ lines comprehensive guide)
 - `DEPLOYMENT_REPORT.md` (technical details)
 - `marketplace/DEPLOYMENT_STATUS.md` (current status)
@@ -2924,11 +3176,13 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 📚 Documentation
 
 **New Documentation:**
+
 - `docs/sponsor/README.md` - Complete sponsor tiers guide
 - `.github/FUNDING.yml` - GitHub Sponsors configuration
 - Plugin stub READMEs with Pro/Enterprise CTAs
 
 **Updated Documentation:**
+
 - `README.md` - Added sponsor CTA above-the-fold
 - All roadmap plugin stubs with tier pricing
 
@@ -2937,12 +3191,14 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 💰 Sponsor Benefits Overview
 
 #### Supporter Tier ($5/mo)
+
 - Early access to new plugins (1 week advance)
 - Discord community access
 - Name in README.md
 - Monthly newsletter
 
 #### Pro Tier ($19/mo)
+
 - All Supporter benefits +
 - Premium Skill Enhancers (4 planned)
 - Priority support (24h response)
@@ -2950,6 +3206,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 - 1:1 consultation (30min/quarter)
 
 #### Enterprise Tier ($199/mo)
+
 - All Pro benefits +
 - Custom plugin development (1/month)
 - Private plugin hosting
@@ -2963,12 +3220,14 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 🚀 Monetization Strategy
 
 **Revenue Projections (Year 1):**
+
 - 10 Supporters × $5 = $50/mo
 - 5 Pro × $19 = $95/mo
 - 2 Enterprise × $199 = $398/mo
 - **Total: $543/month ($6,516/year)**
 
 **Use of Funds:**
+
 - Premium plugin development (Pro/Enterprise tiers)
 - Community plugin maintenance
 - Documentation improvements
@@ -2980,12 +3239,14 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 🎯 What's Next
 
 **Q1 2025 (Premium Development):**
+
 - Build search-to-slack (Pro tier)
 - Build file-to-code (Pro tier)
 - Build calendar-to-workflow (Pro tier)
 - Build research-to-deploy (Enterprise tier)
 
 **Q2 2025 (Community Growth):**
+
 - Launch Discord community
 - Monthly plugin showcase
 - Community voting on features
@@ -3002,6 +3263,7 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 ### 📊 Release Metrics
 
 **Plugin Statistics:**
+
 - **Total Plugins:** 228
   - 1 live Skill Enhancer (web-to-github-issue)
   - 4 premium roadmap stubs (search-to-slack, file-to-code, calendar-to-workflow, research-to-deploy)
@@ -3010,23 +3272,27 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 - **New This Release:** 4 premium stubs + monetization system
 
 **Code Quality Improvements:**
+
 - Security: 6/10 → 9/10 (+50%)
 - Code Quality: 6/10 → 8.5/10 (+42%)
 - Test Coverage: 0% → 100%
 - Tests: 0 → 118 passing
 
 **Website Updates:**
+
 - New Pages: 2 (sponsor, skill-enhancers)
 - Build Time: 6.4 seconds
 - Total Size: 2.7MB
 - SEO Score: Optimized for +300-400 visits/month
 
 **Documentation:**
+
 - New Docs: 20+ files
 - Lines Added: 12,000+
 - Deployment Guides: 5 comprehensive documents
 
 **Autonomous Development:**
+
 - Time Saved: 16-25 hours (vs manual implementation)
 - Quality: Production-ready (8.5/10)
 - Subagents Used: 8 specialists
@@ -3042,11 +3308,13 @@ This release adds a comprehensive monetization strategy with 3-tier GitHub Spons
 This release introduces **Skill Enhancers**, a new category of plugins that extend Claude's built-in Skills with automation. Anthropic gave Claude the ability to search, read, and analyze - we're giving you the ability to automate what happens next.
 
 **The Pattern:**
+
 ```
 Claude's Skill (Input) → Your Plugin (Action) → Real Result
 ```
 
 **Example:**
+
 ```bash
 claude: "research PostgreSQL indexing and create a ticket"
 
@@ -3090,6 +3358,7 @@ claude: "research PostgreSQL indexing and create a ticket"
 - **Together** = Complete workflow automation
 
 **Use Cases:**
+
 - Research → GitHub tickets (web-to-github-issue)
 - Search → Slack digests (coming soon)
 - Analysis → Infrastructure deployment (coming soon)
@@ -3100,6 +3369,7 @@ claude: "research PostgreSQL indexing and create a ticket"
 ### 📚 New Category: skill-enhancers
 
 Added new plugin category for Skill Enhancers:
+
 - Category added to marketplace website schema
 - Featured in README above-the-fold
 - New directory structure: `plugins/skill-enhancers/`
@@ -3118,10 +3388,12 @@ Added new plugin category for Skill Enhancers:
 ### 📖 Documentation
 
 **New Documentation:**
+
 - `plugins/skill-enhancers/web-to-github-issue/README.md` - Comprehensive plugin guide
 - `plugins/skill-enhancers/web-to-github-issue/commands/research-and-ticket.md` - Command documentation
 
 **Updated Documentation:**
+
 - `README.md` - Added Skill Enhancers section above-the-fold
 - `.claude-plugin/marketplace.extended.json` - Added web-to-github-issue entry
 - `marketplace/src/content/config.ts` - Added skill-enhancers category
@@ -3131,6 +3403,7 @@ Added new plugin category for Skill Enhancers:
 ### 🚀 What's Next
 
 More Skill Enhancers coming soon:
+
 - web-to-slack-digest - Research → Team updates
 - file-to-api-spec - Documentation → OpenAPI specs
 - calendar-to-standup - Schedule → Standup notes
@@ -3148,6 +3421,7 @@ More Skill Enhancers coming soon:
 This release introduces **Skills Powerkit**, the first plugin using Anthropic's new Agent Skills feature (launched October 16, 2025). Skills Powerkit is a revolutionary meta-plugin specifically designed to manage plugins within the claude-code-plugins repository through model-invoked automation.
 
 **What Makes This Special:**
+
 - **First Skills-based plugin** in the marketplace demonstrating model-invoked automation
 - **First meta-plugin** - a plugin that creates, validates, audits, and manages other plugins
 - **Repository-specific intelligence** - understands two-catalog system, validation standards, and marketplace workflow
@@ -3162,6 +3436,7 @@ This release introduces **Skills Powerkit**, the first plugin using Anthropic's 
 🎉 **This release developed entirely by Claude Code (Sonnet 4.5)** as a demonstration of AI-assisted plugin development!
 
 Special recognition to:
+
 - **@jeremylongshore** - Project maintainer, release coordination, repository oversight
 - **Claude Code (Sonnet 4.5)** - Skills Powerkit design, implementation, documentation, and pre-release audit
 
@@ -3226,12 +3501,14 @@ Special recognition to:
 ### 📚 Documentation
 
 **New Documentation:**
+
 - `plugins/examples/skills-powerkit/README.md` - Comprehensive Skills Powerkit guide
 - `plugins/examples/skills-powerkit/commands/demo-skills.md` - Interactive skill demonstration
 - `claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md` - Pre-release content audit (10/10 quality)
 - `claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md` - Final release report
 
 **Updated Documentation:**
+
 - `README.md` - Added Skills Powerkit banner, updated "Understanding Plugin Types" section
 - `CLAUDE.md` - Repository documentation updated with Skills information
 
@@ -3240,11 +3517,13 @@ Special recognition to:
 ### 🌐 Hub Improvements
 
 **Marketplace Updates:**
+
 - Added Skills Powerkit to marketplace.extended.json (featured status)
 - Marketplace website builds successfully (validated)
 - Plugin count updated across all locations: **227 total plugins**
 
 **Content Quality:**
+
 - All customer-facing content audited and verified consistent
 - Meta-plugin positioning clear across 12 different locations
 - Examples updated from generic skills to meta-plugin skills
@@ -3265,12 +3544,14 @@ Special recognition to:
 ### 🚀 What's Next
 
 **Recommended Actions:**
+
 - Install Skills Powerkit to experience model-invoked automation
 - Test natural language plugin management: "create a plugin" or "validate plugin"
 - Provide feedback on Skills trigger keywords
 - Watch for future "Skill Enhancers" category
 
 **Future Enhancements:**
+
 - Usage analytics for skill activation
 - Video walkthrough and demos
 - User testimonials
@@ -3297,6 +3578,7 @@ Special recognition to:
 This release resolves critical dependency management issues that prevented Dependabot from scanning MCP plugin directories, fixes esbuild security vulnerabilities across all MCP plugins, and includes community contributions improving plugin reliability.
 
 **Key Improvements:**
+
 - Fixed Dependabot configuration to properly scan all 9 npm directories (root, marketplace, 6 MCP plugins, sugar MCP server)
 - Resolved esbuild security vulnerability (GHSA-67mh-4wv8-2f99) across all 6 MCP plugins
 - Updated vitest to v3.2.4 for improved testing reliability
@@ -3323,11 +3605,13 @@ This release resolves critical dependency management issues that prevented Depen
 ### 🔧 Infrastructure & Dependencies
 
 **Dependabot Configuration Fix:**
+
 - Added 7 new package-ecosystem entries to `.github/dependabot.yml` for comprehensive dependency scanning
 - Now properly scans: root, marketplace, 6 MCP plugins, sugar MCP server
 - Previously only scanned root directory, missing all MCP plugin vulnerabilities
 
 **Security Updates:**
+
 - Resolved esbuild <=0.24.2 moderate severity vulnerability (GHSA-67mh-4wv8-2f99) in all 6 MCP plugins
 - Updated vitest from v2.1.9 to v3.2.4 across:
   - `plugins/mcp/project-health-auditor/`
@@ -3339,6 +3623,7 @@ This release resolves critical dependency management issues that prevented Depen
 - Updated Express and @types/express in ai-experiment-logger [#32](https://github.com/jeremylongshore/claude-code-plugins/pull/32)
 
 **Dependency Management:**
+
 - Created missing `package-lock.json` files for improved dependency tracking
 - All MCP plugins now report 0 security vulnerabilities
 - Improved audit trail with granular dependency updates
@@ -3358,10 +3643,12 @@ This release resolves critical dependency management issues that prevented Depen
 ### 🔗 Pull Requests
 
 **Merged:**
+
 - [#25](https://github.com/jeremylongshore/claude-code-plugins/pull/25) - fix(commit): update model to specific sonnet 4.5 version (@thetonymaster)
 - [#32](https://github.com/jeremylongshore/claude-code-plugins/pull/32) - chore(deps): bump express and @types/express
 
 **Closed (Deferred):**
+
 - 18 Dependabot PRs for major version updates - deferred for comprehensive review in future release
 
 ---
@@ -3375,6 +3662,7 @@ This release resolves critical dependency management issues that prevented Depen
 Issue #13 showed that our CLI marketplace import failed when extra metadata lived in `.claude-plugin/marketplace.json`. This release restores a frictionless `/plugin marketplace add` experience while keeping the website’s richer data intact.
 
 **What's New:**
+
 - CLI marketplace catalog is now regenerated from an extended source file, stripping unsupported keys (`featured`, `mcpTools`, `pluginCount`, `pricing`, `components`).
 - New `npm run sync-marketplace` command (backed by `scripts/sync-marketplace.cjs`) gives maintainers a one-step workflow to refresh the CLI-safe catalog.
 - CI guard runs the sync script on every PR, failing fast if someone forgets to regenerate the CLI catalog.
@@ -3412,6 +3700,7 @@ Issue #13 showed that our CLI marketplace import failed when extra metadata live
 This release establishes comprehensive security infrastructure and optimizes learning path visibility - addressing the critical needs of a 2-week-old marketplace where users need both safety guidance and clear onboarding.
 
 **What's New:**
+
 - **Comprehensive Security Framework** - Multi-layered defense following npm/PyPI lessons
 - **User Security Guide** - Teach users how to safely evaluate and install plugins
 - **Optimized Learning Path Visibility** - Moved to line 31 for immediate discoverability
@@ -3433,6 +3722,7 @@ This release establishes comprehensive security infrastructure and optimizes lea
 - **Responsible Disclosure** - Clear vulnerability reporting process
 
 **Threats Addressed:**
+
 1. Prompt Injection Attacks (malicious instructions hijacking Claude)
 2. Data Exfiltration (plugins sending user data to external servers)
 3. Destructive Operations (rm -rf, data deletion)
@@ -3445,12 +3735,14 @@ This release establishes comprehensive security infrastructure and optimizes lea
 **4 new automated security steps** in `.github/workflows/validate-plugins.yml`:
 
 **Scan 1 - Hardcoded Secrets Detection:**
+
 - API keys, passwords, tokens (20+ character patterns)
 - AWS keys (AKIA pattern detection)
 - Private keys (BEGIN PRIVATE KEY)
 - **Action**: Fails build if secrets found
 
 **Scan 2 - Dangerous Pattern Detection:**
+
 - Destructive commands (`rm -rf /`)
 - Command injection (`eval()`)
 - Data exfiltration (curl to IP addresses)
@@ -3458,11 +3750,13 @@ This release establishes comprehensive security infrastructure and optimizes lea
 - **Action**: Fails on critical, warns on suspicious
 
 **Scan 3 - Suspicious URL Detection:**
+
 - Non-HTTPS URLs (except localhost)
 - URL shorteners (bit.ly, tinyurl) - phishing risk
 - **Action**: Warns for manual review
 
 **Scan 4 - MCP Dependency Scanning:**
+
 - npm audit for all MCP plugins
 - Production dependency vulnerability checks
 - **Action**: Reports audit results
@@ -3474,12 +3768,14 @@ This release establishes comprehensive security infrastructure and optimizes lea
 **15+ security checks** added to `.github/PULL_REQUEST_TEMPLATE.md`:
 
 **Automated Checks (8)**:
+
 - No hardcoded secrets, AWS keys, private keys
 - No destructive commands, eval(), command injection
 - No base64 obfuscation, suspicious URLs
 - HTTPS enforcement (except localhost)
 
 **Manual Review (7)**:
+
 - Prompt injection protection
 - Data privacy/exfiltration prevention
 - Permission audit (minimal necessary)
@@ -3513,6 +3809,7 @@ This release establishes comprehensive security infrastructure and optimizes lea
 8. **Security Best Practices** (ongoing safety habits)
 
 **Red Flags Documented:**
+
 - ❌ Vague descriptions ("helps with productivity")
 - ❌ Unexplained network calls
 - ❌ Requests to ~/.ssh/, ~/.aws/, .env files
@@ -3520,6 +3817,7 @@ This release establishes comprehensive security infrastructure and optimizes lea
 - ❌ eval() or command injection patterns
 
 **Incident Response:**
+
 - Immediate uninstall steps
 - Damage assessment checklist
 - Credential rotation guide
@@ -3537,12 +3835,14 @@ This release establishes comprehensive security infrastructure and optimizes lea
 **After**: Learning paths at line 31 (immediately after Quick Start)
 
 **Why this matters**:
+
 - Marketplace is only 2 weeks old
 - Most users are completely new to Claude Code plugins
 - New users need learning resources EARLY, not at the bottom
 - Above-the-fold positioning = 10x better discoverability
 
 **New User Journey:**
+
 1. See marketplace intro → 2. Install marketplace (Quick Start) → 3. **SEE LEARNING PATHS immediately** → 4. Browse plugins
 
 #### Table of Contents Added
@@ -3556,18 +3856,22 @@ This release establishes comprehensive security infrastructure and optimizes lea
 5. **Crypto Trader** (5 stages) - Jump to Portfolio, Analytics, Arbitrage
 
 **Anchor Link Format:**
+
 ```markdown
 ## Table of Contents
+
 1. [Section Name](#section-name-duration) (time)
 ```
 
 **Benefits:**
+
 - Users can jump directly to sections they need
 - No endless scrolling through long guides
 - GitHub auto-generates working anchors
 - Consistent navigation across all 7 guides
 
 **All 7 learning path guides now have:**
+
 - ✅ Clickable Table of Contents
 - ✅ Same-page anchor navigation
 - ✅ Time estimates for each section
@@ -3592,6 +3896,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 ---
 
 ## Quick Start
+
 - Install a plugin (2 commands)
 - Browse the catalog (link)
 - Learn to build (link)
@@ -3600,16 +3905,17 @@ Browse 225 plugins • Install instantly • Contribute your own
 
 ## 📚 Essential Documentation
 
-| Document | Purpose |
-|----------|---------|
-| User Security Guide | 🛡️ How to safely evaluate plugins (FIRST!)
-| SECURITY.md | Security policy & vulnerability reporting
-| CHANGELOG.md | Release history
-| CONTRIBUTING.md | How to submit plugins
-| Learning Paths | Structured guides
+| Document            | Purpose                                    |
+| ------------------- | ------------------------------------------ |
+| User Security Guide | 🛡️ How to safely evaluate plugins (FIRST!) |
+| SECURITY.md         | Security policy & vulnerability reporting  |
+| CHANGELOG.md        | Release history                            |
+| CONTRIBUTING.md     | How to submit plugins                      |
+| Learning Paths      | Structured guides                          |
 ```
 
 **Follows Release System Requirements:**
+
 - ✅ Answers: What is this? (marketplace tagline)
 - ✅ Answers: What can I do? (Browse, install, contribute)
 - ✅ Answers: How do I start? (Quick Start - 3 steps)
@@ -3618,6 +3924,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 - ✅ Documentation hierarchy (table-based, scannable)
 
 **Changes:**
+
 - Removed 2 verbose security callout boxes from top
 - Created Essential Documentation table (security #1)
 - Simplified Quick Start to 3 clear actions
@@ -3631,6 +3938,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 #### GitHub Actions
 
 **New Workflows:**
+
 - **CodeQL Analysis** (.github/workflows/codeql.yml)
   - Semantic code analysis for JavaScript, TypeScript, Python
   - Security-extended + security-and-quality queries
@@ -3640,6 +3948,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 #### Security Advisory Setup
 
 **Documentation**: `.github/SECURITY_ADVISORY_SETUP.md`
+
 - Instructions to enable GitHub Security Advisories
 - Private vulnerability reporting setup
 - 2-minute setup process
@@ -3649,6 +3958,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 ### 📊 Release Metrics
 
 #### Documentation Stats
+
 - **User Security Guide**: 443 lines of user protection guidance
 - **SECURITY.md**: 500+ lines comprehensive security policy
 - **Learning Path TOCs**: 5 guides gained navigation (50 new lines)
@@ -3656,12 +3966,14 @@ Browse 225 plugins • Install instantly • Contribute your own
 - **Total Documentation**: ~1,000 lines of new security/UX content
 
 #### Security Coverage
+
 - **Automated Scans**: 4 security scanning steps in CI
 - **Manual Checks**: 15+ security review checklist items
 - **Threat Models**: 6 attack vectors documented and mitigated
 - **Trust Levels**: 3-tier plugin verification system
 
 #### UX Improvements
+
 - **Learning Path Visibility**: Moved from line 408 → line 31 (377 lines earlier!)
 - **Navigation**: 7 guides now have clickable TOCs
 - **Above-the-Fold**: 48 lines cleaner following release system
@@ -3674,12 +3986,14 @@ Browse 225 plugins • Install instantly • Contribute your own
 #### Security-First Culture
 
 **Community-First Defense Model:**
+
 1. **Transparency** - All code open source, all discussions public
 2. **Community** - Multi-reviewer validation, public review periods
 3. **Automation** - Fast automated scanning catches common issues
 4. **Education** - Clear guidelines help developers build secure plugins
 
 **Observable Behavior Tracking:**
+
 - All plugins open source and auditable
 - Public security discussions via GitHub Issues
 - Transparent issue tracking
@@ -3688,17 +4002,20 @@ Browse 225 plugins • Install instantly • Contribute your own
 #### Plugin Trust System
 
 **Level 1 - Community** (⚠️):
+
 - Automated validation only
 - Minimal manual review
 - Use with caution
 
 **Level 2 - Verified** (✅):
+
 - Full security review completed
 - 2+ maintainer approvals
 - 7-day public review period
 - Safe for production
 
 **Level 3 - Featured** (✅✅):
+
 - Level 2 + active maintenance
 - Community adoption (10+ users)
 - Comprehensive tests
@@ -3709,22 +4026,26 @@ Browse 225 plugins • Install instantly • Contribute your own
 ### 🔗 Migration Guide
 
 **For Repository Visitors:**
+
 - **Change**: Learning paths moved from bottom to top
 - **Old location**: Line 408
 - **New location**: Line 31 (right after Quick Start)
 - **Action**: None required - links work automatically
 
 **For Plugin Users:**
+
 - **New feature**: User Security Guide shows how to evaluate plugins safely
 - **New feature**: Trust level badges indicate plugin safety
 - **Action**: Read User Security Guide before installing new plugins
 
 **For Plugin Developers:**
+
 - **New requirement**: All PRs must pass 4 automated security scans
 - **New requirement**: 15+ security checklist items in PR template
 - **Action**: Review SECURITY.md and ensure compliance
 
 **For Maintainers:**
+
 - **New process**: Security scanning runs on every PR automatically
 - **New process**: Use plugin trust levels (Community/Verified/Featured)
 - **Action**: Review security scanning results in CI, use PR checklist
@@ -3734,11 +4055,13 @@ Browse 225 plugins • Install instantly • Contribute your own
 ### 🎯 What's Next
 
 #### Planned Security Enhancements (Optional)
+
 - Snyk integration for deeper dependency scanning (Medium effort)
 - Community trust scores with star ratings (Medium effort)
 - Sandbox testing in Docker containers (High effort - only if 1000+ plugins)
 
 #### Planned Documentation (v1.0.38)
+
 - API Reference documentation
 - Plugin Quality Standards guide
 - Video walkthroughs for learning paths
@@ -3759,11 +4082,13 @@ Browse 225 plugins • Install instantly • Contribute your own
 ### 🙏 Acknowledgments
 
 **Security Framework Inspiration:**
+
 - Lessons learned from npm and PyPI security incidents
 - Anthropic's security-first principles
 - Community feedback on plugin safety
 
 **User Protection:**
+
 - Focus on educating users, not just protecting infrastructure
 - Community-first defense model prioritizes transparency
 - Observable behavior makes malicious plugins visible
@@ -3784,6 +4109,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 ---
 
 **Installation:**
+
 ```bash
 # Users - no action needed
 /plugin marketplace update claude-code-plugins-plus
@@ -3803,6 +4129,7 @@ cat SECURITY.md
 This release introduces a **comprehensive learning path system** - the most significant documentation update to the marketplace. Users now have **7 structured guides** (9,347 words) providing clear, progressive paths from beginner to expert, addressing the critical gap of 225 plugins with no onboarding structure.
 
 **What's New:**
+
 - **3 Main Learning Paths**: Quick Start (15min), Plugin Creator (3hrs), Advanced Developer (1day)
 - **4 Use Case Paths**: DevOps, Security, AI/ML, Crypto - domain-specific journeys
 - **50+ Official Docs Links**: Integrated throughout all guides
@@ -3875,18 +4202,21 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### ✨ Documentation Improvements
 
 #### README Reorganization
+
 - **Above-the-fold optimization**: Removed learning paths from line 31
 - **Focused user experience**: Plugin listings now immediately visible
 - **Compact learning paths section**: Moved to line 408 with concise table format
 - **48 lines removed** from above the fold for better UX
 
 #### Official Documentation Integration
+
 - **50+ links** to Claude Code official docs throughout all guides
 - Links to: Installation, Plugin Reference, CLI Commands, MCP Spec, Use Cases
 - Every guide connects to authoritative sources
 - Progressive depth: basic links in Quick Start, technical links in Advanced
 
 #### Navigation & Links
+
 - **All internal links validated**: 100% working cross-references
 - **GitHub-optimized paths**: Relative links work perfectly on repo
 - **Mermaid diagrams** removed from README (kept in guides)
@@ -3899,6 +4229,7 @@ This release introduces a **comprehensive learning path system** - the most sign
 **Total Plugins: 225** (unchanged)
 
 #### Featured Crypto Plugins (5 added to featured list)
+
 - **whale-alert-monitor** - Production whale tracking (1,148 lines)
 - **on-chain-analytics** - Enterprise blockchain analytics (15+ chains)
 - **crypto-portfolio-tracker** - Professional portfolio tracking (50+ exchanges)
@@ -3912,11 +4243,13 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 🏗️ Infrastructure
 
 #### Git & GitHub
+
 - **FUNDING.yml updates**: Added Buy Me a Coffee sponsorship
 - **Removed GitHub Sponsors** until enrollment complete
 - **Clean funding config**: Only active platforms displayed
 
 #### File Organization
+
 - Learning paths in `docs/learning-paths/`
 - Main paths: `01-quick-start/`, `02-plugin-creator/`, `03-advanced-developer/`
 - Use cases: `use-cases/devops-engineer.md`, etc.
@@ -3926,6 +4259,7 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 📊 Release Metrics
 
 #### Documentation Stats
+
 - **Total Guides**: 7 comprehensive documents
 - **Word Count**: 9,347 words
 - **File Size**: ~80KB of educational content
@@ -3934,6 +4268,7 @@ This release introduces a **comprehensive learning path system** - the most sign
 - **Time Investment**: 15min to 1 day (progressive)
 
 #### Quality Metrics
+
 - **Link Validation**: 100% (zero broken links)
 - **Navigation**: Full cross-reference tree
 - **Accessibility**: GitHub-optimized markdown
@@ -3941,6 +4276,7 @@ This release introduces a **comprehensive learning path system** - the most sign
 - **Mermaid Support**: Diagrams render on GitHub
 
 #### Impact Metrics
+
 - **User Onboarding**: Clear entry points for all skill levels
 - **Contribution Clarity**: Step-by-step plugin creation
 - **Domain Expertise**: Use-case specific journeys
@@ -3951,12 +4287,14 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 🤝 Community & Contributors
 
 #### New Capabilities Enabled
+
 - **First-time users**: Can install and use plugins in 15 minutes
 - **Plugin creators**: Can build and publish plugins in 3 hours
 - **Advanced developers**: Can create MCP servers in 1 day
 - **Domain specialists**: Can find relevant plugins instantly
 
 #### Contributor Experience
+
 - Clear progression paths for learning
 - Comprehensive examples and templates
 - Official documentation integration
@@ -3967,16 +4305,19 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 🔗 Migration Guide
 
 **For Repository Visitors:**
+
 - **Old**: Learning paths immediately visible at line 31
 - **New**: Learning paths at line 408 (compact table format)
 - **Action**: Click learning path links in README or navigate directly
 
 **For Plugin Users:**
+
 - **No changes required** - all existing plugins work
 - **New feature**: Access structured learning paths
 - **Benefit**: Progressive skill development
 
 **For Plugin Creators:**
+
 - **New resource**: Comprehensive plugin creator guide
 - **Templates**: Clear examples for all component types
 - **Publishing**: Step-by-step marketplace submission
@@ -3986,12 +4327,14 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 🎯 What's Next
 
 #### Planned Improvements
+
 - Add video walkthroughs for each learning path
 - Create interactive playground for testing plugins
 - Add plugin difficulty badges to marketplace
 - Expand use case paths (Frontend, Mobile, Data Science)
 
 #### Future Learning Content
+
 - Advanced MCP server patterns
 - Multi-agent system architectures
 - Plugin performance optimization
@@ -4013,11 +4356,13 @@ This release introduces a **comprehensive learning path system** - the most sign
 ### 🙏 Acknowledgments
 
 **Learning Path Contributors:**
+
 - All plugin maintainers whose work is featured in guides
 - Official Claude Code documentation team
 - Community members providing feedback
 
 **Featured Plugin Authors:**
+
 - Crypto plugin ecosystem contributors
 - MCP server plugin developers
 - Plugin pack maintainers
@@ -4061,6 +4406,7 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
    - Complete travel planning in minutes (saves 5+ hours per trip)
 
 #### Featured Plugins
+
 - **ai-sdk-agents**: Advanced multi-agent orchestration
 - **travel-assistant**: Most comprehensive travel plugin (15 components)
 - **ai-commit-gen**: Single-component productivity booster
@@ -4070,12 +4416,14 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 ### ✨ Hub Features
 
 #### Repository Structure Cleanup
+
 - Moved 14 development documents to `archive/development-docs/`
 - Moved 4 plugin pack releases to `archive/releases/`
 - Moved 3 utility scripts to `scripts/utilities/`
 - Cleaner root directory with only essential files
 
 #### Plugin Categories
+
 - **AI/ML**: 26 plugins (was 25)
 - **Productivity**: Updated with advanced automation tools
 - **Packages**: 5 comprehensive plugin packs
@@ -4085,6 +4433,7 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 ### 📚 Documentation
 
 #### New Plugin Documentation
+
 - **ai-sdk-agents**: Comprehensive multi-agent system guide
   - Agent handoffs explained
   - Routing strategies
@@ -4103,6 +4452,7 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
   - Integration with git workflow
 
 #### Repository Documentation
+
 - Cleaned up root directory structure
 - Improved file organization
 - Better archive system
@@ -4121,11 +4471,13 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 ### 🏗️ Infrastructure
 
 #### Build System
+
 - Marketplace website integration for all 3 new plugins
 - JSON schema validation for plugin metadata
 - Automated catalog generation
 
 #### Git Workflow
+
 - Proper commit message formatting
 - Co-authoring with Claude Code
 - Clean git history
@@ -4152,17 +4504,20 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 #### Plugin Highlights
 
 **Most Advanced**: `travel-assistant`
+
 - 15 total components (6 commands, 4 agents, 3 scripts, 2 hooks)
 - Real-time API integrations
 - Multi-city trip planning
 - Budget optimization
 
 **Most Innovative**: `ai-sdk-agents`
+
 - Multi-agent orchestration
 - Cross-provider support (OpenAI, Anthropic, Google)
 - Agent handoffs and routing
 
 **Most Practical**: `ai-commit-gen`
+
 - Single-command productivity
 - Instant conventional commits
 - Zero configuration
@@ -4174,6 +4529,7 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 #### Workflow Combinations
 
 **AI Development Workflow**:
+
 ```bash
 /ai-agents-setup          # Setup multi-agent system
 /ai-agent-create tester   # Create testing agent
@@ -4182,6 +4538,7 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 ```
 
 **Travel Planning Workflow**:
+
 ```bash
 /travel "Tokyo" --days 7 --budget 3000   # Complete plan
 /weather Tokyo --days 14                  # Extended forecast
@@ -4240,7 +4597,9 @@ This is the **largest release in Claude Code Plugin Hub history**, doubling the 
 ### 🆕 New Plugin Categories (110 New Plugins)
 
 #### 🔐 Security & Compliance (25 plugins)
+
 Complete security toolkit for enterprise-grade applications:
+
 - **access-control-auditor** - Audit and validate access control mechanisms
 - **authentication-validator** - Validate authentication implementations
 - **compliance-report-generator** - Generate compliance reports (SOC2, HIPAA, PCI-DSS)
@@ -4268,7 +4627,9 @@ Complete security toolkit for enterprise-grade applications:
 - **xss-vulnerability-scanner** - Cross-site scripting vulnerability detection
 
 #### 📊 Database & Data Management (25 plugins)
+
 Complete database lifecycle management toolkit:
+
 - **data-seeder-generator** - Generate database seed data
 - **data-validation-engine** - Validate data integrity and constraints
 - **database-archival-system** - Archive old database records
@@ -4296,7 +4657,9 @@ Complete database lifecycle management toolkit:
 - **stored-procedure-generator** - Generate stored procedures
 
 #### 🚀 Performance & Monitoring (25 plugins)
+
 Complete observability and performance optimization suite:
+
 - **alerting-rule-creator** - Create alerting rules for monitoring
 - **apm-dashboard-creator** - Build Application Performance Monitoring dashboards
 - **application-profiler** - Profile application performance
@@ -4324,7 +4687,9 @@ Complete observability and performance optimization suite:
 - **throughput-analyzer** - Analyze system throughput
 
 #### 💰 Crypto & DeFi (25 plugins)
+
 Complete cryptocurrency and DeFi development toolkit:
+
 - **arbitrage-opportunity-finder** - Find arbitrage opportunities across exchanges
 - **blockchain-explorer-cli** - CLI blockchain explorer
 - **cross-chain-bridge-monitor** - Monitor cross-chain bridges
@@ -4352,7 +4717,9 @@ Complete cryptocurrency and DeFi development toolkit:
 - **whale-alert-monitor** - Monitor whale transactions
 
 #### 🧪 Testing & Quality Assurance (10 plugins)
+
 Essential testing tools for comprehensive QA:
+
 - **api-test-automation** - Automate API testing
 - **e2e-test-framework** - End-to-end testing framework setup
 - **integration-test-runner** - Run integration tests
@@ -4369,6 +4736,7 @@ Essential testing tools for comprehensive QA:
 ### 📦 Previously Released Categories (Now Complete)
 
 #### From v2.0.0 and earlier (110 plugins):
+
 - **DevOps & CI/CD** (26 plugins) - Complete deployment automation
 - **API Development** (25 plugins) - Full API lifecycle management
 - **AI/ML Engineering** (26 plugins) - Complete AI development toolkit
@@ -4415,12 +4783,14 @@ Essential testing tools for comprehensive QA:
 **Version Bump:** 1.1.0 → 3.0.0 (Major version)
 
 **Why Major Version?**
+
 - **Breaking Scale Change** - 100% increase in plugin count
 - **New Categories** - 5 entirely new plugin categories
 - **Marketplace Structure** - Significant marketplace organization changes
 - **Architecture** - Enhanced plugin discovery and organization
 
 **Plugin Count by Category:**
+
 ```
 DevOps:        26 plugins
 AI/ML:         26 plugins
@@ -4444,17 +4814,20 @@ TOTAL:        220 plugins
 ### 🎯 Migration Guide
 
 **For Plugin Users:**
+
 - No breaking changes to existing plugins
 - All 110 v2.0.0 plugins remain unchanged
 - New plugins available immediately
 - Use `/plugin install <name>` to install any plugin
 
 **For Plugin Developers:**
+
 - Marketplace structure unchanged
 - Continue using same plugin.json format
 - New categories available for submission
 
 **Marketplace Updates:**
+
 ```bash
 # Update your local marketplace reference
 /plugin marketplace update claude-code-plugins-plus
@@ -4471,6 +4844,7 @@ TOTAL:        220 plugins
 ### 🙏 Contributors
 
 This massive release was made possible by systematic plugin development across all categories. Special recognition for completing the "200 Plugin Mission" with comprehensive coverage of:
+
 - Enterprise security and compliance
 - Database management lifecycle
 - Performance monitoring and observability
@@ -4502,6 +4876,7 @@ This massive release was made possible by systematic plugin development across a
 ---
 
 **This is the Claude Code Plugin Hub's most significant release to date. We've doubled our plugin count and established comprehensive coverage across all major development domains. Welcome to v3.0.0! 🎉**
+
 # Changelog
 
 All notable changes to the Claude Code Plugins Marketplace will be documented in this file.
@@ -4513,13 +4888,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - 2025-10-10
 
-###  MCP Server Plugins Release
+### MCP Server Plugins Release
 
 This release adds **5 production-ready MCP (Model Context Protocol) plugins** with **21 total MCP tools**, establishing this marketplace as the premier destination for advanced Claude Code plugins.
 
 ### Added
 
-####  MCP Plugins (5 new plugins, 21 tools)
+#### MCP Plugins (5 new plugins, 21 tools)
 
 - **project-health-auditor** - Multi-dimensional code health analysis
   - 4 MCP tools: `list_repo_files`, `file_metrics`, `git_churn`, `map_tests`
@@ -4566,7 +4941,7 @@ This release adds **5 production-ready MCP (Model Context Protocol) plugins** wi
   - Real-time status monitoring
   - Perfect for CI/CD pipelines and ETL workflows
 
-####  Additional Plugins
+#### Additional Plugins
 
 - **overnight-dev** - Autonomous overnight development with TDD enforcement
   - Run Claude autonomously for 6-8 hours overnight
@@ -4604,7 +4979,7 @@ This release adds **5 production-ready MCP (Model Context Protocol) plugins** wi
   - Build verification on push
   - Node.js 22 + pnpm setup
 
-####  Documentation
+#### Documentation
 
 - **MCP-SERVERS-STATUS.md** - Complete MCP server configuration reference
   - All 5 server configurations documented
@@ -4668,13 +5043,14 @@ This release represents a major expansion of the marketplace with production-rea
 
 ## [1.0.0] - 2025-10-10
 
-###  Initial Open-Source Release
+### Initial Open-Source Release
 
 **BREAKING CHANGE**: Complete repository restructure from commercial Gumroad model to open-source GitHub marketplace.
 
 ### Added
 
-####  Production Plugin
+#### Production Plugin
+
 - **git-commit-smart** - AI-powered conventional commit message generator
   - Analyzes staged changes and generates contextual commit messages
   - Supports conventional commits standard (feat, fix, docs, etc.)
@@ -4683,30 +5059,35 @@ This release represents a major expansion of the marketplace with production-rea
   - `/gc` shortcut for fast workflow
   - 1,500+ words of comprehensive documentation
 
-####  Example Plugins (Educational)
+#### Example Plugins (Educational)
+
 - **hello-world** - Basic slash command demonstration
 - **formatter** - PostToolUse hooks demonstration
 - **security-agent** - Specialized AI subagent demonstration
 
-####  Plugin Templates
+#### Plugin Templates
+
 - **minimal-plugin** - Bare minimum plugin structure
 - **command-plugin** - Plugin with slash commands
 - **agent-plugin** - Plugin with AI subagent
 - **full-plugin** - Complete plugin with commands, agents, and hooks
 
-####  Quality Assurance Tools
+#### Quality Assurance Tools
+
 - `check-frontmatter.py` - Python YAML frontmatter validator
 - `validate-all.sh` - Comprehensive plugin validation (JSON, frontmatter, shortcuts, permissions)
 - `test-installation.sh` - Plugin installation testing in isolated environment
 
-####  Documentation
+#### Documentation
+
 - Comprehensive README.md with installation and usage
 - CONTRIBUTING.md with community guidelines
 - Detailed plugin development guide
 - Security best practices
 - Monetization alternatives guide
 
-####  GitHub Integration
+#### GitHub Integration
+
 - GitHub Actions workflow for plugin validation
 - Issue templates (plugin submission, bug report)
 - Pull request template
@@ -4764,6 +5145,7 @@ All quality work (validation systems, templates, production plugin) was preserve
 **Repository**: https://github.com/jeremylongshore/claude-code-plugins
 **Installation**: `/plugin marketplace add jeremylongshore/claude-code-plugins`
 **Flagship Plugin**: `/plugin install git-commit-smart@claude-code-plugins-plus`
+
 ## [1.0.38] - 2025-10-15
 
 ### 🎯 Release Highlights
@@ -4771,18 +5153,22 @@ All quality work (validation systems, templates, production plugin) was preserve
 First external contributor spotlight. Welcoming @cdnsteve to the Claude Code Plugins Hub and featuring Sugar — an autonomous AI development plugin with task orchestration, hooks, and MCP tools.
 
 ### 🔌 Plugin Ecosystem
+
 - New Plugin: **sugar** (devops) — Autonomous AI development workflow with MCP server and quality hooks
 - Plugin Count: +1 (featured)
 
 ### 📚 Documentation
+
 - README: Added “Contributor Spotlight” with links to PR #8 and Sugar repo
 - New: `CONTRIBUTORS.md` listing @cdnsteve as First External Contributor
 
 ### 🧭 Website
+
 - Marketplace: Added featured card for Sugar (`marketplace/src/content/plugins/sugar.json`)
 - Homepage: New “Contributor Spotlight” section celebrating @cdnsteve
 
 ### 🤝 Contributor Spotlight
+
 - First external contributor: **@cdnsteve** — leading the Sugar launch
 
 ---

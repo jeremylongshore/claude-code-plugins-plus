@@ -30,7 +30,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CATALOG = ROOT / "marketplace" / "public" / "data" / "skills-catalog.json"
+CATALOG = ROOT / "marketplace" / "src" / "data" / "skills-catalog.json"
 INDEX = ROOT / "marketplace" / "src" / "data" / "skills-index.json"
 DB = ROOT / "freshie" / "inventory.sqlite"
 OUT_DIR = ROOT / "freshie" / "hf-dataset"

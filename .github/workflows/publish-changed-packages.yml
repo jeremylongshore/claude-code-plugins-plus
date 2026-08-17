@@ -1,6 +1,7 @@
 name: Publish changed @intentsolutionsio packages
 
-# Runs on every push to main that touches a plugin directory. For each
+# Runs after the canonical Validate Plugins workflow completes successfully on
+# a push to main. For each
 # changed plugin whose package.json `version` is not yet on npm:
 #   1. Publishes to npm with provenance.
 #   2. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
@@ -9,8 +10,8 @@ name: Publish changed @intentsolutionsio packages
 # The version-bump trigger is provided by `auto-bump-on-pr.yml` — it runs on
 # every PR, detects which plugins' source files changed, bumps each plugin's
 # patch version, and commits back to the PR branch. So the loop is:
-#   PR opened → CI auto-bumps changed plugins → merge to main → this
-#   workflow publishes + tags + releases.
+#   PR opened → CI auto-bumps changed plugins → merge to main → Validate Plugins
+#   completes → this workflow publishes + tags + releases.
 #
 # For intentional minor / major bumps, a human edits the version manually
 # in the PR; the auto-bump bumper is idempotent (it skips PRs where only
@@ -21,37 +22,104 @@ name: Publish changed @intentsolutionsio packages
 # tag-based publish) are ignored here.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'plugins/**'
+  workflow_run:
+    workflows: ['Validate Plugins']
+    types: [completed]
 
 permissions:
-  contents: write       # tag push + release creation
-  id-token: write       # npm provenance
+  actions: read
+  checks: read
+  contents: write # tag push + release creation
+  id-token: write # npm provenance
 
 concurrency:
   group: npm-publish-main
   cancel-in-progress: false
 
 jobs:
+  guard:
+    name: Guard — trusted Validate Plugins completion
+    runs-on: ubuntu-latest
+    outputs:
+      eligible: ${{ steps.guard.outputs.eligible }}
+      sha: ${{ steps.guard.outputs.sha }}
+    steps:
+      - name: Check out trusted default-branch guard
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          sparse-checkout: scripts/publication-trigger-guard.mjs
+
+      - name: Validate triggering workflow run
+        id: guard
+        env:
+          EVENT_PATH: ${{ github.event_path }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          node scripts/publication-trigger-guard.mjs "$EVENT_PATH" "$REPOSITORY" > /tmp/trigger-guard.json
+          cat /tmp/trigger-guard.json
+          ELIGIBLE=$(jq -r '.eligible' /tmp/trigger-guard.json)
+          SHA=$(jq -r '.headSha // empty' /tmp/trigger-guard.json)
+          echo "eligible=$ELIGIBLE" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+  preflight:
+    name: Exact-SHA required-check preflight
+    runs-on: ubuntu-latest
+    needs: guard
+    if: ${{ needs.guard.outputs.eligible == 'true' }}
+    steps:
+      - name: Check out trusted preflight implementation
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+          sparse-checkout: scripts/npm-publication-preflight.mjs
+
+      - name: Re-query required checks before any credential-capable job
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_SHA: ${{ needs.guard.outputs.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          node scripts/npm-publication-preflight.mjs \
+            --repo "$REPOSITORY" \
+            --sha "$PUBLISH_SHA" \
+            --timeout-seconds 120 \
+            --poll-seconds 5 \
+            --json
+
   detect:
     name: Detect changed plugin packages
     runs-on: ubuntu-latest
+    needs: guard
+    if: ${{ needs.guard.outputs.eligible == 'true' }}
     outputs:
       count: ${{ steps.build.outputs.count }}
       packages_json: ${{ steps.build.outputs.packages_json }}
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2  # need previous commit to diff against
+          ref: ${{ needs.guard.outputs.sha }}
+          fetch-depth: 0
 
       - name: Build change list
         id: build
         run: |
           set -euo pipefail
-          # Changed files in this push
-          git diff --name-only HEAD~1 HEAD > /tmp/changed.txt || git diff --name-only HEAD > /tmp/changed.txt
+          PUBLISH_SHA='${{ needs.guard.outputs.sha }}'
+          test "$(git rev-parse HEAD)" = "$PUBLISH_SHA"
+          # Compare the exact published commit with its first parent. This
+          # preserves files introduced by a merge commit and never resolves a
+          # moving main branch.
+          if git rev-parse "$PUBLISH_SHA^1" >/dev/null 2>&1; then
+            git diff --name-only "$PUBLISH_SHA^1" "$PUBLISH_SHA" > /tmp/changed.txt
+          else
+            git diff-tree --root --no-commit-id --name-only -r "$PUBLISH_SHA" > /tmp/changed.txt
+          fi
           # Map to plugin directories (plugins/<category>/<slug>/...)
           awk -F/ '/^plugins\// && NF>=3 {print $1"/"$2"/"$3}' /tmp/changed.txt | sort -u > /tmp/plugin-dirs.txt
           # Some plugin dirs are nested deeper (saas-packs/skill-databases/*) — handle
@@ -59,33 +127,17 @@ jobs:
           sort -u -o /tmp/plugin-dirs.txt /tmp/plugin-dirs.txt
 
           echo "Changed plugin directories:"
-          cat /tmp/plugin-dirs.txt || true
-
-          # Filter to those with a package.json and @intentsolutionsio scope
-          python3 <<'PY' > /tmp/packages.json
-          import json, os
-          dirs = [d.strip() for d in open('/tmp/plugin-dirs.txt') if d.strip()]
-          out = []
-          for d in dirs:
-              pj = os.path.join(d, 'package.json')
-              if not os.path.isfile(pj):
-                  continue
-              try:
-                  pkg = json.load(open(pj))
-              except Exception:
-                  continue
-              name = pkg.get('name', '')
-              if not name.startswith('@intentsolutionsio/'):
-                  continue
-              if pkg.get('private'):
-                  continue
-              out.append({
-                  'name': name,
-                  'version': pkg.get('version', '0.0.0'),
-                  'dir': d,
-              })
-          print(json.dumps(out))
-          PY
+          # The resolver walks actual filesystem ancestry. It is the only
+          # publisher candidate authority: names, folder categories, and
+          # private:false cannot override an upstream source record.
+          node scripts/publish-candidate-report.mjs \
+            --changed-files /tmp/changed.txt \
+            --scope '@intentsolutionsio/' \
+            --json > /tmp/publish-report.json
+          jq -r '.mirrorSkipped[] | "Mirror skipped: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.refused[] | "Refused: \(.name) [\(.reasonCode)]"' /tmp/publish-report.json
+          jq -r '.firstPartyCandidates[] | "First-party candidate: \(.name)@\(.version)"' /tmp/publish-report.json
+          jq -c '.firstPartyCandidates' /tmp/publish-report.json > /tmp/packages.json
 
           COUNT=$(jq length /tmp/packages.json)
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
@@ -96,10 +148,14 @@ jobs:
   publish:
     name: Publish candidates (skip if version already on npm)
     runs-on: ubuntu-latest
-    needs: detect
-    if: ${{ needs.detect.outputs.count != '0' }}
+    needs: [guard, preflight, detect]
+    if: ${{ needs.guard.outputs.eligible == 'true' && needs.preflight.result == 'success' && needs.detect.outputs.count != '0' }}
+    environment: npm-production
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.guard.outputs.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: 20
@@ -115,8 +171,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGES_JSON: ${{ needs.detect.outputs.packages_json }}
+          PUBLISH_SHA: ${{ needs.guard.outputs.sha }}
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$PUBLISH_SHA"
           PUBLISHED=0; SKIPPED=0; FAILED=0
           PUBLISHED_LIST=""
 
