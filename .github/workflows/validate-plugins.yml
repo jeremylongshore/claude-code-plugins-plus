@@ -1490,7 +1490,7 @@ jobs:
       # diverges silently (public/data duplicated ~28.5MB of src/data with
       # identical blob SHAs). Beads claude-5awj.2 / .1.
       - name: Check generated projections are not tracked
-        run: node scripts/check-generated-artifacts.mjs
+        run: pnpm run validate:generated-artifacts
 
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in

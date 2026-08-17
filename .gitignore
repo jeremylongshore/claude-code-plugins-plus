@@ -162,6 +162,12 @@ marketplace/public/downloads/
 # Tracking it duplicated ~28.5MB and gave a second, silently-divergeable claimant
 # to a fact src/data/ already owns. Enforced by scripts/check-generated-artifacts.mjs.
 marketplace/public/data/*.json
+# Epic 1.7: these build-only projections have no supported checkout-level
+# consumer. The marketplace build regenerates both; `npm run dev` regenerates
+# readme-sections before Astro starts. Tracking is rejected by
+# scripts/check-generated-artifacts.mjs.
+marketplace/src/data/jrig-data.json
+marketplace/src/data/readme-sections.json
 marketplace/src/data/cowork-manifest.json
 node_modules/
 npm-debug.log

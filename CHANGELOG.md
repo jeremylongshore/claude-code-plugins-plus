@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-16 — build-derived marketplace data ownership)
+
+- **Two build-only marketplace JSON projections no longer have a second committed claimant.**
+  `readme-sections.json` is regenerated before both Astro build and local development, while the
+  now-unconsumed `jrig-data.json` is generated only from local `forge_proofs` evidence and writes a
+  deterministic empty map when that untracked database is absent. The shared generated-artifact
+  registry and fail-closed tracking gate reject either file if it is committed again. Four audited
+  build-derived files remain tracked because supported non-build consumers or prior-state semantics
+  still read their committed bytes; Epic 1.8 owns their regenerate-and-diff controls. The unconsumed
+  JRig projection is temporary: blueprint bead E9.2 still owns deleting it and its build step.
+
 ### Changed (2026-08-16 — retired public-domain containment)
 
 - **First-party and generated surfaces now use only the live Tons of Skills domain.** A

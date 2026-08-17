@@ -3,7 +3,7 @@
   "type": "module",
   "version": "4.19.0",
   "scripts": {
-    "predev": "node scripts/copy-public-data.mjs",
+    "predev": "node scripts/extract-readme-sections.mjs && node scripts/copy-public-data.mjs",
     "dev": "astro dev",
     "build": "node scripts/build.mjs",
     "preview": "astro preview",

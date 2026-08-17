@@ -31,8 +31,11 @@ for (const p of PROJECTIONS) {
   let tracked = '';
   try {
     tracked = execFileSync('git', ['ls-files', '--', p.pathspec], BUF).toString().trim();
-  } catch {
-    tracked = '';
+  } catch (error) {
+    console.error(`\n✗ unable to enumerate tracked files matching ${p.glob}.`);
+    console.error(`    generated-artifacts refuses to pass without Git evidence.`);
+    console.error(`    ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
   }
   const files = tracked ? tracked.split('\n') : [];
   if (files.length) {

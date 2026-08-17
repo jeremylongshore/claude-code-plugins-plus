@@ -10,6 +10,8 @@ import {
 const EXAMPLES = new Map([
   ['epic-1-scorecard', '000-docs/742-RA-DATA-epic-1-scorecard.json'],
   ['marketplace-build-data', 'marketplace/src/data/catalog.json'],
+  ['marketplace-jrig-build-data', 'marketplace/src/data/jrig-data.json'],
+  ['marketplace-readme-sections-build-data', 'marketplace/src/data/readme-sections.json'],
   ['marketplace-plugin-content', 'marketplace/src/content/plugins/example.json'],
   ['plugin-package-manifests', 'plugins/example/example/package.json'],
   ['curated-skill-mirror', 'skills/.curated/example/SKILL.md'],
