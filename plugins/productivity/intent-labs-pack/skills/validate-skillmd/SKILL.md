@@ -10,7 +10,7 @@ description: |
   production. Trigger with "validate this skill", "grade my skill", "deep eval",
   "check SKILL.md", "validate thorough", "/validate-skillmd".
 allowed-tools: "Read,Edit,Write,Bash(python3:*),Bash(j-rig:*),Bash(node:*),Glob,Grep,AskUserQuestion"
-version: 0.2.0
+version: 5.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatibility: Designed for Claude Code; requires Python 3, optionally JRig CLI for Tier 3
