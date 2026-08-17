@@ -1424,6 +1424,30 @@ jobs:
       - name: Verify CODEOWNERS per-plugin block is in sync
         run: node scripts/generate-codeowners.mjs --check
 
+  # E1.8 deterministic projection gate. This job is unconditional, receives no
+  # secrets, and regenerates into memory before byte-comparing with the Git
+  # index. Network snapshots and editorial data are deliberately outside this
+  # cohort. Keep it in ci-required.needs; do not create a fourth status context.
+  generated-content-drift:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Check deterministic marketplace projections
+        run: |
+          node --test scripts/generated-content-ci.test.mjs
+          node marketplace/scripts/discover-skills.mjs --level=metadata --check
+
   doc-governance:
     runs-on: ubuntu-latest
     steps:
@@ -1549,6 +1573,7 @@ jobs:
       - check-submission-docs
       - commit-scope-check
       - codeowners-drift
+      - generated-content-drift
       - doc-governance
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)

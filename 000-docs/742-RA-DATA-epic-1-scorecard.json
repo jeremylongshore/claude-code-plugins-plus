@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23048
+        "tracked_files": 23049
       }
     },
     "2": {
@@ -1042,20 +1042,16 @@
       }
     },
     "22": {
-      "cohort": "tracked marketplace/src/data JSON outputs discovered from tracked executable writers",
+      "cohort": "deterministic tracked marketplace projections classified by the artifact authority registry and executable writers",
       "dimension": "Tracked generated artifacts with no drift gate",
       "limitations": [
-        "writer and drift-gate discovery is conservative static analysis; indirect runtime paths remain visible as a limitation, not silently inferred"
+        "writer and drift-gate discovery is conservative static analysis; unregistered writer-backed JSON stays in the cohort and indirect runtime paths remain visible as a limitation"
       ],
       "reproduce": "pnpm run measure:e1 --row=22 --stdout",
       "source": [
         "marketplace/scripts/discover-skills.mjs",
         "marketplace/scripts/generate-unified-search.mjs",
-        "marketplace/scripts/sync-catalog.mjs",
-        "scripts/fetch-github-stats.mjs",
-        "scripts/fetch-npm-stats.mjs",
-        "scripts/fetch-skills-stats.mjs",
-        "scripts/promote-spotlight.mjs"
+        "marketplace/scripts/sync-catalog.mjs"
       ],
       "status": "partial",
       "values": {
@@ -1063,22 +1059,7 @@
           {
             "content_drift_gate": false,
             "path": "marketplace/src/data/catalog.json",
-            "producers": [
-              "marketplace/scripts/discover-skills.mjs",
-              "marketplace/scripts/sync-catalog.mjs"
-            ],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
-            "path": "marketplace/src/data/github-stats.json",
-            "producers": ["scripts/fetch-github-stats.mjs"],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
-            "path": "marketplace/src/data/npm-stats.json",
-            "producers": ["scripts/fetch-npm-stats.mjs"],
+            "producers": ["marketplace/scripts/sync-catalog.mjs"],
             "wired_checkers": []
           },
           {
@@ -1088,22 +1069,10 @@
             "wired_checkers": []
           },
           {
-            "content_drift_gate": false,
+            "content_drift_gate": true,
             "path": "marketplace/src/data/skills-index.json",
             "producers": ["marketplace/scripts/discover-skills.mjs"],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
-            "path": "marketplace/src/data/skills-stats.json",
-            "producers": ["scripts/fetch-skills-stats.mjs"],
-            "wired_checkers": []
-          },
-          {
-            "content_drift_gate": false,
-            "path": "marketplace/src/data/spotlights.json",
-            "producers": ["scripts/promote-spotlight.mjs"],
-            "wired_checkers": []
+            "wired_checkers": ["marketplace/scripts/discover-skills.mjs"]
           },
           {
             "content_drift_gate": false,
@@ -1112,7 +1081,7 @@
             "wired_checkers": []
           }
         ],
-        "count_without_content_drift_gate": 8,
+        "count_without_content_drift_gate": 3,
         "target_without_content_drift_gate": 0
       }
     },
@@ -1128,12 +1097,8 @@
       ],
       "source": [
         "marketplace/src/data/catalog.json",
-        "marketplace/src/data/github-stats.json",
-        "marketplace/src/data/npm-stats.json",
         "marketplace/src/data/skills-catalog.json",
         "marketplace/src/data/skills-index.json",
-        "marketplace/src/data/skills-stats.json",
-        "marketplace/src/data/spotlights.json",
         "marketplace/src/data/unified-search-index.json"
       ],
       "status": "not_reproducible",
@@ -1895,9 +1860,10 @@
           "check-submission-docs",
           "commit-scope-check",
           "codeowners-drift",
+          "generated-content-drift",
           "doc-governance"
         ],
-        "actual_needs_count": 20,
+        "actual_needs_count": 21,
         "documented_needs": null
       }
     },
@@ -1998,9 +1964,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15531,
+        "invisible_files": 15532,
         "target_invisible_files": 0,
-        "tracked_files": 23048
+        "tracked_files": 23049
       }
     },
     "47": {
