@@ -1446,7 +1446,7 @@ jobs:
       - name: Check deterministic marketplace projections
         run: |
           node --test scripts/generated-content-ci.test.mjs
-          node marketplace/scripts/discover-skills.mjs --level=metadata --check
+          node marketplace/scripts/discover-skills.mjs --level=full --check
 
   doc-governance:
     runs-on: ubuntu-latest

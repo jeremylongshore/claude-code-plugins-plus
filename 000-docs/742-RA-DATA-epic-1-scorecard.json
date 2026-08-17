@@ -545,7 +545,7 @@
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
         "files": 171,
-        "occurrences": 431,
+        "occurrences": 432,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -1063,10 +1063,10 @@
             "wired_checkers": []
           },
           {
-            "content_drift_gate": false,
+            "content_drift_gate": true,
             "path": "marketplace/src/data/skills-catalog.json",
             "producers": ["marketplace/scripts/discover-skills.mjs"],
-            "wired_checkers": []
+            "wired_checkers": ["marketplace/scripts/discover-skills.mjs"]
           },
           {
             "content_drift_gate": true,
@@ -1081,7 +1081,7 @@
             "wired_checkers": []
           }
         ],
-        "count_without_content_drift_gate": 3,
+        "count_without_content_drift_gate": 2,
         "target_without_content_drift_gate": 0
       }
     },

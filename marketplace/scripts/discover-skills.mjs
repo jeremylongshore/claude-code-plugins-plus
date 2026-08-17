@@ -594,7 +594,9 @@ function main() {
     };
     catalogBytes = JSON.stringify(catalog, null, 2);
     if (!CHECK) writeFileSync(OUTPUT_FILE, catalogBytes);
-    console.log(`✅ L1 catalog generated: ${OUTPUT_FILE}  (${skills.length} skills with body HTML)`);
+    console.log(
+      `✅ L1 catalog ${CHECK ? 'rendered for check' : 'generated'}: ${OUTPUT_FILE}  (${skills.length} skills with body HTML)`,
+    );
   } else {
     console.log(`ℹ️  L1 catalog skipped (level=metadata — re-run without --level to emit it).`);
   }

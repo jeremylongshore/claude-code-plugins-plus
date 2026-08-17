@@ -66,11 +66,11 @@ test('every tracked generated JSON class declares the retired-domain postprocess
 });
 
 test('marketplace data authority separates deterministic, network, and editorial populations', () => {
-  assert.equal(artifactRegistration('marketplace/src/data/skills-index.json')?.contentCheck, true);
-  assert.equal(
-    artifactRegistration('marketplace/src/data/skills-catalog.json')?.contentCheck,
-    false,
-  );
+  const index = artifactRegistration('marketplace/src/data/skills-index.json');
+  const catalog = artifactRegistration('marketplace/src/data/skills-catalog.json');
+  assert.equal(index?.contentCheck, true);
+  assert.equal(catalog?.contentCheck, true);
+  assert.equal(index?.regenerate, catalog?.regenerate);
   assert.equal(
     artifactRegistration('marketplace/src/data/npm-stats.json')?.kind,
     'external_snapshot',
