@@ -9,7 +9,7 @@
 - **Reviewed head:** `5b3ceda9647ee50ec473e8b26c31f4cbc6e59836`
 - **Merge commit:** `e3a9d72037232cdec665a1d7480251b2b68ad1e7`
 - **Merge method:** merge commit with disclosed, owner-authorized administrator bypass
-- **Status:** Implementation merged and post-merge verification passed; Bead closure follows this filing transaction
+- **Status:** E1.13 controls verified; an unrelated post-deploy site-test mismatch is disclosed below; Bead closure follows this filing transaction
 
 ## Outcome
 
@@ -64,6 +64,21 @@ or production settings changed.
 ## Validation and review
 
 The reviewed head passed [Validate Plugins](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418020), including `ci-required` and its `verify` job; [Secret Scan](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418086), including `gitleaks`; [Skill Conform](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418118); [CLI Cross-Platform Testing](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418177); [CodeQL](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418126); [Actionlint](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418182); [link checking](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418158); [Playwright E2E](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988418037); PR Pre-screen; kernel advisory checks; and all [MiniMax review](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31988448450) jobs. The separate `prescreen-grade` status was advisory; the authoritative PR Pre-screen workflow succeeded.
+
+The merge also triggered the repository's existing deployment automation. The
+[site deployment](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31989033215)
+completed successfully without changing deployment settings. Its subsequent
+[production E2E run](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/31989329105)
+reported 123 passes and seven failures: six assertions expected the absent legacy
+`#hero-search-input`, and one badge-image assertion raced the deployment. A later direct request to
+the badge returned HTTP 200, while the live homepage and unchanged source still contain no
+`#hero-search-input`. Neither the homepage, badge, nor affected production tests changed in PR
+#1218. This is an existing site/test contract mismatch, is not represented as a green E1.13 check,
+and was not scope-crept into this filing.
+
+The automatic changed-package publisher for the merge remains pending at the protected
+`npm-production` environment with no job execution. No environment approval was granted, no
+credential was exposed, and no registry contact or package mutation occurred.
 
 The independent reviewer returned PASS at exact head
 `5b3ceda9647ee50ec473e8b26c31f4cbc6e59836` with non-binary diff SHA-256
