@@ -293,10 +293,10 @@ cd marketplace && npm run dev
 
 # Production deployment
 git push origin main
-# GitHub Actions auto-deploys to [retired legacy public domain]/sponsor/
+# Historical target; the reserved host below intentionally does not resolve.
 
 # Verify deployment
-curl -I [retired legacy public domain]/sponsor/
+curl -I https://retired-domain.invalid/sponsor/
 # HTTP/2 200 - deployed successfully
 ```
 

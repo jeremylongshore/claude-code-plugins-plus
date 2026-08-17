@@ -98,41 +98,41 @@ Status: Clean
 ### CLI Command on Homepage
 
 ```bash
-curl -s [retired legacy public domain]/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
+curl -s https://retired-domain.invalid/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
 # Output: pnpm add -g @intentsolutionsio/ccpi
 ```
 
 ### Search Redirect JavaScript
 
 ```bash
-curl -s [retired legacy public domain]/ | grep -o "redirectToExplore"
+curl -s https://retired-domain.invalid/ | grep -o "redirectToExplore"
 # Output: redirectToExplore
 
-curl -s [retired legacy public domain]/ | grep -o "searchContainer.addEventListener"
+curl -s https://retired-domain.invalid/ | grep -o "searchContainer.addEventListener"
 # Output: searchContainer.addEventListener
 ```
 
 ### Explore Page URL Params
 
 ```bash
-curl -s [retired legacy public domain]/explore/ | grep -o "DOMContentLoaded"
+curl -s https://retired-domain.invalid/explore/ | grep -o "DOMContentLoaded"
 # Output: DOMContentLoaded
 ```
 
 ### Skills Index "Provided by" Labels
 
 ```bash
-curl -s [retired legacy public domain]/skills/ | grep -o "Provided by" | head -3
+curl -s https://retired-domain.invalid/skills/ | grep -o "Provided by" | head -3
 # Output: Provided by (x3)
 ```
 
 ### Skill Detail Page Styling
 
 ```bash
-curl -s [retired legacy public domain]/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
+curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
 # Output: <h2 class="section-title">Provided by Plugin</h2>
 
-curl -s [retired legacy public domain]/skills/adk-deployment-specialist/ | grep "skill-detail"
+curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "skill-detail"
 # Output: skill-detail (class present)
 ```
 
