@@ -31,6 +31,13 @@ jobs:
         # depth=1 doesn't include any history to compare against either.
         with:
           fetch-depth: 2
+          # fetch-tags is REQUIRED by check-changelog-coverage.mjs below.
+          # actions/checkout does not fetch tags by default, so `git tag --list`
+          # returned EMPTY and that gate silently exited 0 — it never fired in
+          # CI at all. Verified by cloning --depth 2 --no-tags and deleting every
+          # release note: still exit 0. fetch-depth stays 2 (the catalog format
+          # guard needs the merge base); fetch-tags is the surgical addition.
+          fetch-tags: true
           persist-credentials: true
 
       - name: Setup pnpm
@@ -213,6 +220,13 @@ jobs:
       # file exists; regenerate with `node scripts/generate-og-image.mjs`.
       - name: Validate social-card image exists (og:image)
         run: node scripts/generate-og-image.mjs --check
+
+      # /changelog had 3 entries (newest v4.16.0, 2026-03-07) while the site ran
+      # v4.33.0 — 17 tagged releases shipped undocumented and nothing failed,
+      # while the homepage linked "what's new →" straight at it. Ratchets from a
+      # pinned floor (v4.14.0); older tags are grandfathered.
+      - name: Validate every released tag has release notes
+        run: pnpm run validate:changelog-coverage
 
       - name: Validate cascading Greptile configuration
         run: |
