@@ -98,11 +98,12 @@ try {
 const INSTALL_CMD = '/plugin marketplace add jeremylongshore/claude-code-plugins';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
+const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills across ${fmt(totalPlugins)} catalog plugins for AI coding agents. Free and open source.`;
 ---
 
 <BaseLayout
     title="Tons of Skills | Plugins, agents and skills for Claude Code"
-    description={`${fmt(totalSkills)} marketplace-visible agent skills across ${fmt(totalPlugins)} catalog plugins for AI coding agents. Free and open source.`}
+    description={pageDescription}
 >
     <script type="application/ld+json" slot="head" set:html={JSON.stringify({
         "@context": "https://schema.org",

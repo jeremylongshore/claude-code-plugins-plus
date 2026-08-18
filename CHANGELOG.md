@@ -19,8 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
   plus the generated social image remain path-level deferrals; three local/query expressions on
   otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
-  detected expression to its exact normalized registration—including any formatter call—so adding
-  a second count or extending a registered expression cannot bypass cohort governance. Frontmatter,
+  detected expression to its exact normalized registration—including any formatter call. Simple
+  brace/interpolation wrappers normalize; compound outer expressions do not inherit an inner
+  registration. Adding a second count or extending a registered expression therefore cannot bypass cohort governance. Frontmatter,
   script/style bodies, comments, and markup
   attributes are masked for the rendered count/label contract; provenance must be a standalone
   component tag, while self-closing head scripts remain correctly parsed.

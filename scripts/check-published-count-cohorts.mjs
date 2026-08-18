@@ -545,7 +545,7 @@ export function containsPublishedSkillCount(source, discovery) {
 function evidenceMatchesExpression(candidateText, expression) {
   const unwrap = (value) => {
     const trimmed = value.trim();
-    const interpolation = /\$\{([^{}]+)\}/.exec(trimmed);
+    const interpolation = /^\$\{([^{}]+)\}$/.exec(trimmed);
     if (interpolation) return interpolation[1].trim();
     const wrapped = /^\$?\{([\s\S]*)\}$/.exec(trimmed);
     return (wrapped?.[1] ?? trimmed).trim();

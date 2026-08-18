@@ -195,7 +195,7 @@ test('registered pages cannot add a second unregistered count expression', () =>
       '<BaseLayout description={`${fmt(totalSkills)} marketplace-visible skills`} />\n<strong>{fmt(totalSkills)}</strong>',
     ),
   });
-  equal(check(nestedTemplateAttribute).allow, true);
+  equal(findingCode(check(nestedTemplateAttribute)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
 });
 
 test('registered pages may explicitly defer a second owned count expression', () => {
