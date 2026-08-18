@@ -543,16 +543,14 @@ export function containsPublishedSkillCount(source, discovery) {
 }
 
 function evidenceMatchesExpression(candidateText, expression) {
-  let offset = 0;
-  while (offset <= candidateText.length) {
-    const found = candidateText.indexOf(expression, offset);
-    if (found === -1) return false;
-    const before = candidateText[found - 1] ?? '';
-    const after = candidateText[found + expression.length] ?? '';
-    if (!/[A-Za-z0-9_$]/.test(before) && !/[A-Za-z0-9_$]/.test(after)) return true;
-    offset = found + Math.max(expression.length, 1);
-  }
-  return false;
+  const unwrap = (value) => {
+    const trimmed = value.trim();
+    const interpolation = /\$\{([^{}]+)\}/.exec(trimmed);
+    if (interpolation) return interpolation[1].trim();
+    const wrapped = /^\$?\{([\s\S]*)\}$/.exec(trimmed);
+    return (wrapped?.[1] ?? trimmed).trim();
+  };
+  return unwrap(candidateText) === unwrap(expression);
 }
 
 function discoverPublicCountSources(root, registeredPaths, registeredExpressions, discovery, io) {

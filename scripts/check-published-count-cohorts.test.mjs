@@ -163,6 +163,39 @@ test('registered pages cannot add a second unregistered count expression', () =>
     ].join('\n'),
   });
   equal(findingCode(check(identifierPrefix)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+
+  const callExtension = makeFixture({
+    surfaces: [enforcedSurface({ expression: 'stats.totalSkills' })],
+    source: [
+      '---',
+      '---',
+      '<strong>{stats.totalSkills}</strong> marketplace-visible skills',
+      '<strong>{stats.totalSkills.toLocaleString()}</strong> unlabelled skills',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(callExtension)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+
+  const exactFormattingCall = makeFixture({
+    surfaces: [enforcedSurface({ expression: 'stats.totalSkills.toLocaleString()' })],
+    source: [
+      '---',
+      '---',
+      '<strong>{stats.totalSkills.toLocaleString()}</strong> marketplace-visible skills',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(check(exactFormattingCall).allow, true);
+
+  const nestedTemplateAttribute = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong>',
+      '<BaseLayout description={`${fmt(totalSkills)} marketplace-visible skills`} />\n<strong>{fmt(totalSkills)}</strong>',
+    ),
+  });
+  equal(check(nestedTemplateAttribute).allow, true);
 });
 
 test('registered pages may explicitly defer a second owned count expression', () => {

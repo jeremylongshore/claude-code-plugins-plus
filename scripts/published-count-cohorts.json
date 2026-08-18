@@ -70,7 +70,7 @@
       "path": "marketplace/src/pages/compare-marketplaces.astro",
       "classification": "live-global",
       "cohort": "marketplace-visible",
-      "expression": "stats.totalSkills",
+      "expression": "stats.totalSkills.toLocaleString()",
       "label": "marketplace-visible",
       "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
       "status": "enforced"
@@ -79,7 +79,7 @@
       "path": "marketplace/src/pages/sponsor.astro",
       "classification": "live-global",
       "cohort": "marketplace-visible",
-      "expression": "totalSkills.toLocaleString",
+      "expression": "totalSkills.toLocaleString('en-US')",
       "label": "Marketplace-visible",
       "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
       "status": "enforced"

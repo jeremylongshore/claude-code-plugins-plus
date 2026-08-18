@@ -6,7 +6,7 @@ import searchIndex from '../data/unified-search-index.json';
 const stats = searchIndex.stats;
 
 const title = "Claude Code Plugin Marketplaces Compared — Tons of Skills vs Alternatives";
-const description = `Compare Claude Code plugin marketplaces side-by-side. ${stats.totalPlugins} catalog plugins, ${stats.totalSkills} marketplace-visible skills, ${stats.categories.length} categories — all open source. See how Tons of Skills stacks up.`;
+const description = `Compare Claude Code plugin marketplaces side-by-side. ${stats.totalPlugins} catalog plugins, ${stats.totalSkills.toLocaleString()} marketplace-visible skills, ${stats.categories.length} categories — all open source. See how Tons of Skills stacks up.`;
 ---
 
 <BaseLayout title={title} description={description}>

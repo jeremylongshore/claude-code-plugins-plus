@@ -1164,7 +1164,8 @@ point-in-time sources are grouped by exact path as owned deferrals, and
 the generated social image is a forty-seventh path-level deferral. Three local/query expressions
 on otherwise enforced pages are separately registered, producing 50 owned deferral claims in
 total. Discovery binds every detected expression to an exact enforced or deferred registration;
-a second count added to an already registered page therefore fails closed. Unknown cohorts, unsafe
+a second count or unregistered member/call extension added to an already registered page therefore
+fails closed. Unknown cohorts, unsafe
 or unreadable paths, symlinks, comment-only labels, missing provenance, and unregistered new count
 sources or expressions fail closed. Astro frontmatter and script/style bodies cannot satisfy the
 rendered count/label contract, markup attributes cannot impersonate it, and provenance must be a
