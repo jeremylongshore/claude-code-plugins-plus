@@ -13,6 +13,8 @@
 - **fix(learning):** label vendor pack and category counts as
   `vendor-pack-local`, remove unscoped metadata totals, and register all 60
   rendered claims with the fail-closed count contract.
+- **fix(learning):** separate learning-hub aggregate totals from per-pack
+  counts with four exact population-labeled contracts.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.

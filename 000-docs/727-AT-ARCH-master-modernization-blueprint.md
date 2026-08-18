@@ -1195,6 +1195,12 @@ The registry carries 60 exact claims (two per page), and the live checker report
 learning-hub aggregate, stale live copy, research snapshots, README, and mirrored content remain
 separate deferred populations.
 
+**E1.6 learning-hub continuation (2026-08-18).** The learning-hub landing page now separates
+two aggregate vendor-pack totals from two per-pack card/tier counts. Four exact claims are
+registered, and the checker reports `ALLOW cohorts=5 enforced=6 deferred=91 discovered=20`.
+The values remain unchanged; research, stale/live-copy, README, and mirrored populations remain
+deferred.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**

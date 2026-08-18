@@ -1086,3 +1086,22 @@ test('live vendor-pack pages use explicit local claims for pack and category cou
   equal(report.deferred >= 60, true);
   equal(report.findings.length, 0);
 });
+
+test('learning hub separates aggregate and vendor-pack-local claims', () => {
+  const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const registry = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, 'scripts/published-count-cohorts.json'), 'utf8'),
+  );
+  const group = registry.deferredGroups.find(
+    (candidate) => candidate.classification === 'learning-hub-aggregate',
+  );
+  equal(group.paths.length, 0);
+  equal(group.claims.length, 4);
+  equal(new Set(group.claims.map((claim) => claim.expression)).size, 4);
+  equal(
+    group.claims.filter((claim) => claim.classification === 'learning-hub-aggregate').length,
+    2,
+  );
+  equal(group.claims.filter((claim) => claim.classification === 'vendor-pack-local').length, 2);
+  equal(check(repositoryRoot).allow, true);
+});
