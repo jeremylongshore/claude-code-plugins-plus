@@ -375,6 +375,33 @@ Patch version bumps happen automatically on PR (via `auto-bump-on-pr.yml`). For 
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
 
+## Internal governance agents — use them, don't re-derive their checks
+
+This repo ships 347 agents as **product**; these live in `.claude/agents/` and exist to
+work **on this repo**. They are advisory (read-only, no Write/Edit) — a deterministic
+check belongs in a script wired to `ci-required`, not in a prompt.
+
+| Agent            | Reach for it when                                                                                 | Catches                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `claim-verifier` | before merging anything that asserts counts, consumers, enforcement, provenance, or certification | false statements in PR bodies, commits, bead notes and governing docs — the class that shipped six times in one day              |
+| `beads-warden`   | after a batch of `bd` writes, before closing an epic, when a bead premise smells stale            | dropped writes from the bd rapid-write race, closures whose _title_ overstates delivery, undispositioned beads, projection drift |
+| `skill-auditor`  | repairing SKILL.md compliance                                                                     | frontmatter + body-section defects                                                                                               |
+
+**Do NOT duplicate the bead specialists.** `plugins/mcp/dolt-mcp-vcs/agents/` already owns
+the graph: `bead-dependency-mapper` (cycles, bottlenecks, critical path),
+`bead-epic-auditor` (epic closure drift), `bead-recovery-specialist`, `beads-guru` (the
+routing generalist), `dolt-sync-advisor`. `beads-warden` deliberately delegates to them and
+keeps only record-integrity — a second owner of one fact is the anti-pattern.
+
+`claim-verifier` delegates documentation-drift classes to the `/validate-consistency`
+skill; take its **deterministic** findings as evidence and its advisory findings as leads.
+
+**Verification traps these encode** (they have each produced a wrong verdict here):
+`cmd | head; echo $?` reports _head's_ exit code — capture it directly; `git grep` searches
+**tracked files only**, so use `git grep --untracked` (never stage a probe — that mutates
+the caller's index) before concluding a pattern is absent; `grep`→`rg`,
+`find`→`fd`, `cp`→`cp -i` (hangs) — use `/usr/bin/grep`, `command find`, `\cp -f`.
+
 ## Beads Issue Tracker
 
 This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
@@ -423,4 +450,5 @@ bd close <id>         # Complete work
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
+
 <!-- END BEADS INTEGRATION -->
