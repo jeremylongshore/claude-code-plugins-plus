@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23081
+        "tracked_files": 23083
       }
     },
     "2": {
@@ -1164,20 +1164,20 @@
       "values": {
         "sources": [
           {
-            "has_valid_max_age_hours": false,
+            "has_valid_max_age_hours": true,
             "path": "marketplace/src/data/github-stats.json"
           },
           {
-            "has_valid_max_age_hours": false,
+            "has_valid_max_age_hours": true,
             "path": "marketplace/src/data/npm-stats.json"
           },
           {
-            "has_valid_max_age_hours": false,
+            "has_valid_max_age_hours": true,
             "path": "marketplace/src/data/skills-stats.json"
           }
         ],
         "target_without_valid_bound": 0,
-        "without_valid_bound": 3
+        "without_valid_bound": 0
       }
     },
     "27": {
@@ -1958,9 +1958,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15557,
+        "invisible_files": 15558,
         "target_invisible_files": 0,
-        "tracked_files": 23081
+        "tracked_files": 23083
       }
     },
     "47": {
