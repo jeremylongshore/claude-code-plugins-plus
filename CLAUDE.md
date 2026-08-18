@@ -221,6 +221,12 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 ## Validation & the kernel SSoT — CI/CD posture
 
+> **Authority map:** which document owns which fact class is assigned in blueprint
+> `000-docs/727` § 11 (indexed by `STANDARDS.md § Canonical documents`). The sections below are
+> operational guidance that NAMES its authorities — where this file and an owner disagree, the
+> owner wins, and the doc-governance assertions (`validate:doc-fact-assertions`) pin the facts
+> most prone to drift.
+
 Two things grade frontmatter in this repo today, and the relationship between them is the load-bearing context to preserve.
 
 ### The two validators

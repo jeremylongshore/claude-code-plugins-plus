@@ -98,6 +98,15 @@ linked from this table.** That rule is what the table exists for: it is the sing
 of which document owns which fact class, and it is the reason a document cannot grant itself
 authority by editing its own header.
 
+**The one-owner-per-fact-class authority map is
+[blueprint 727 § 11](000-docs/727-AT-ARCH-master-modernization-blueprint.md)** (with its § 11.1
+activation proof). This table is the public index that reaches every owner in ≤ 1 hop; § 11 is
+the per-fact-class assignment. A fact class gains an owner only by a row here plus a § 11 map
+row — never by a header edit, and never by restating the fact in another document. Governing
+files (`CLAUDE.md`, `AGENTS.md`, this file) point at owners rather than duplicating their
+content; where they do describe a fact operationally, the description names its authority and is
+pinned by the doc-governance assertions (`validate:doc-fact-assertions`).
+
 | Topic                                                                                                                            | Document                                                                                                                       |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | **Platform master standard** (plugins, CI, release, docs governance, canonical contract, adapters, root README landing contract) | [000-docs/727-AT-ARCH-master-modernization-blueprint.md](000-docs/727-AT-ARCH-master-modernization-blueprint.md)               |
