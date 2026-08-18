@@ -24,7 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   registration. Adding a second count or extending a registered expression therefore cannot bypass cohort governance. Frontmatter,
   script/style bodies, comments, and markup
   attributes are masked for the rendered count/label contract; provenance must be a standalone
-  component tag, while self-closing head scripts remain correctly parsed.
+  top-level component tag parsed outside quoted attributes and Astro expression strings, while
+  self-closing head scripts remain correctly parsed.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 

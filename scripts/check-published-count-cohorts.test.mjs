@@ -416,6 +416,24 @@ test('markup attributes cannot impersonate rendered count labels or provenance',
     ),
   });
   equal(findingCode(check(attributeProvenance)), 'INVALID_PROVENANCE_COUNT');
+
+  const multilineAttributeProvenance = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      ['<div data-marker="', '<CountProvenance cohort="marketplace-visible" />', '"></div>'].join(
+        '\n',
+      ),
+    ),
+  });
+  equal(findingCode(check(multilineAttributeProvenance)), 'INVALID_PROVENANCE_COUNT');
+
+  const expressionStringProvenance = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      '{`<CountProvenance cohort="marketplace-visible" />`}',
+    ),
+  });
+  equal(findingCode(check(expressionStringProvenance)), 'INVALID_PROVENANCE_COUNT');
 });
 
 test('malformed Astro frontmatter fails closed', () => {

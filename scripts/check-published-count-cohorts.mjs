@@ -76,6 +76,71 @@ function maskMarkupTags(source) {
   return source.replace(/<[^>]*>/g, maskText);
 }
 
+function exactRenderedTagOccurrences(source, expected) {
+  let count = 0;
+  let expressionDepth = 0;
+  let expressionQuote = '';
+  let escaped = false;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (expressionDepth > 0) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (expressionQuote) {
+        if (character === '\\') escaped = true;
+        else if (character === expressionQuote) expressionQuote = '';
+        continue;
+      }
+      if (character === '"' || character === "'" || character === '`') {
+        expressionQuote = character;
+      } else if (character === '{') {
+        expressionDepth += 1;
+      } else if (character === '}') {
+        expressionDepth -= 1;
+      }
+      continue;
+    }
+    if (character === '{') {
+      expressionDepth = 1;
+      continue;
+    }
+    if (character !== '<' || !/[A-Za-z!/]/.test(source[index + 1] ?? '')) continue;
+
+    let tagQuote = '';
+    let tagEscaped = false;
+    let tagBraceDepth = 0;
+    let end = index + 1;
+    for (; end < source.length; end += 1) {
+      const tagCharacter = source[end];
+      if (tagEscaped) {
+        tagEscaped = false;
+        continue;
+      }
+      if (tagQuote) {
+        if (tagCharacter === '\\') tagEscaped = true;
+        else if (tagCharacter === tagQuote) tagQuote = '';
+        continue;
+      }
+      if (tagCharacter === '"' || tagCharacter === "'" || tagCharacter === '`') {
+        tagQuote = tagCharacter;
+      } else if (tagCharacter === '{') {
+        tagBraceDepth += 1;
+      } else if (tagCharacter === '}') {
+        tagBraceDepth = Math.max(0, tagBraceDepth - 1);
+      } else if (tagCharacter === '>' && tagBraceDepth === 0) {
+        break;
+      }
+    }
+    if (end >= source.length) continue;
+    if (source.slice(index, end + 1).trim() === expected) count += 1;
+    index = end;
+  }
+  return count;
+}
+
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?)\b/i;
 
@@ -391,9 +456,7 @@ function validateSurfaces(registry, root, io) {
       }
     }
 
-    const provenanceCount = visibleSource
-      .split(/\r?\n/)
-      .filter((line) => line.trim() === provenance).length;
+    const provenanceCount = exactRenderedTagOccurrences(visibleSource, provenance);
     if (provenanceCount !== 1) {
       refuse(
         'INVALID_PROVENANCE_COUNT',
