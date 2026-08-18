@@ -189,7 +189,7 @@ test('red proof: legacy publisher admits a mirror, enforced publisher skips it',
   assert.equal(report.mirrorSkipped[0].reasonCode, 'UPSTREAM_SOURCE_RECORD');
 });
 
-test('current repository excludes all 63 repository mirrors and 58 live scoped mirrors', () => {
+test('current repository excludes all 64 repository mirrors and 59 live scoped mirrors', () => {
   const root = process.cwd();
   const allReport = buildPublishCandidateReport({ root, all: true });
   const scopedReport = buildPublishCandidateReport({
@@ -218,8 +218,8 @@ test('current repository excludes all 63 repository mirrors and 58 live scoped m
       return false;
     }
   });
-  assert.equal(markerDirs.length, 63);
-  assert.equal(scopedMarkers.length, 58);
+  assert.equal(markerDirs.length, 64);
+  assert.equal(scopedMarkers.length, 59);
   assert.ok(markerDirs.every((directory) => mirrorDirs.has(directory)));
   assert.ok(scopedMarkers.every((directory) => scopedMirrorDirs.has(directory)));
   assert.equal(allReport.firstPartyCandidates.filter((row) => mirrorDirs.has(row.dir)).length, 0);
@@ -228,6 +228,6 @@ test('current repository excludes all 63 repository mirrors and 58 live scoped m
     0,
   );
   console.log(
-    `RED PROOF PASS: legacy private-only publisher would admit a non-private mirror; resolver excludes 63 marker roots and 58 scoped roots (plus nested descendants).`,
+    `RED PROOF PASS: legacy private-only publisher would admit a non-private mirror; resolver excludes 64 marker roots and 59 scoped roots (plus nested descendants).`,
   );
 });
