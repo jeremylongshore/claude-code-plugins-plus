@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-18
+
+- **fix(marketplace):** label generated social-card counts with the
+  `marketplace-visible` cohort, canonical source, and reproducible resolver
+  command; reject unreadable or malformed count inputs.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
