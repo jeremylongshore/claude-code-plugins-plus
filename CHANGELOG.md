@@ -17,6 +17,8 @@
   counts with four exact population-labeled contracts.
 - **docs(research):** mark the research index and published analyses as a
   dated historical snapshot with an exact source-commit evidence boundary.
+- **docs(research):** distinguish the original index analysis claim from the
+  source commit's separately documented evidence-corpus size.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.

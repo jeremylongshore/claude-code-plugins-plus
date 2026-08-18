@@ -14,16 +14,20 @@ snapshot boundary: captured 2026-03-04 from repository commit
 that the figures are historical evidence, not live corpus totals. Existing
 research values remain unchanged and stay in the `research-snapshot` deferred
 population rather than being relabeled as current marketplace counts.
+The index separately labels its original `1,500+` figure as a historical
+analysis claim; it does not present that value as the `1,372`-skill evidence
+corpus documented by the source commit.
 
 ## Evidence
 
-| Gate                    | Result                                                              |
-| ----------------------- | ------------------------------------------------------------------- |
-| Published-count checker | PASS — existing research paths remain explicit deferrals            |
-| Snapshot boundary       | PASS — shared template plus research index                          |
-| Numeric values          | Unchanged; only boundary wording and presentation added             |
-| Mirrored content        | No `.source.json` or mirrored skill content changed                 |
-| External systems        | No registry, credential, contributor, Plane, or production mutation |
+| Gate                    | Result                                                                     |
+| ----------------------- | -------------------------------------------------------------------------- |
+| Published-count checker | PASS — existing research paths remain explicit deferrals                   |
+| Snapshot boundary       | PASS — shared template plus research index                                 |
+| Numeric values          | Unchanged; only boundary wording and presentation added                    |
+| Corpus distinction      | PASS — original `1,500+` claim is not conflated with source `1,372` corpus |
+| Mirrored content        | No `.source.json` or mirrored skill content changed                        |
+| External systems        | No registry, credential, contributor, Plane, or production mutation        |
 
 ## Reproduction
 
