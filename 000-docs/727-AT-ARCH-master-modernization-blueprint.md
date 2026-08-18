@@ -1217,6 +1217,34 @@ discovered numeric surface as one of the five canonical cohorts or an explicit l
 deferred class. Closure evidence is filed in AAR 769; Beads/Dolt remains the authority for the
 final bead state.
 
+**E2.6 documentation-number correction (2026-08-18).** Epic 1 closed the same day (AAR 774), so
+several rows of this blueprint that assert a defect as _current_ now describe a state that no
+longer exists. This correction dispositions them; the original rows remain as the ratified
+baseline record and must be read together with this block. (1) **Schema version**: the
+validator's `SCHEMA_VERSION` is now `4.0.0` (SCHEMA_CHANGELOG entry 2026-08-16); CLAUDE.md and
+6767-b's banner both already state 4.0.0, so rows 42/53 and the § 0 premise ("6767-b documents
+3.15.2 against 3.16.1") are at their target state — bead 2.8's assertion keeps them there. The
+`3.16.1` literals at §§ 0, 3, 8 and the example `schema_version` in § 6 are spent baselines.
+(2) **Catalog identity**: 471/467 with `claudebase`×4 + `geepers-agents`×2 is resolved by E1.2 —
+the measured state is 468 entries / 468 unique names / zero duplicates (scorecard row 2).
+(3) **Source parity**: 64-vs-63 with `uizze` orphaned is resolved by the owner's acceptance of
+the UIZZE mirror (PR #1242) plus E1.12 — 64 == 64 with a bidirectional CI parity gate
+(scorecard row 27); the blueprint's "remove uizze" disposition was reshaped by owner decision,
+recorded in AAR 772. (4) **Docs index**: 166-vs-168 is resolved by E2.4 — the index is generated
+and drift-gated; its count lives in exactly one generated line (214 at this correction).
+(5) **`ci-required`**: the aggregate now needs 21 jobs and the three required contexts are
+`ci-required` + `gitleaks` + `skill-conform`; CLAUDE.md enumerates them and bead 2.7's assertion
+keeps the prose equal to the workflow. (6) **The "all 317 agents A-grade" claim** no longer
+exists in CLAUDE.md — retired for the measured 347-file/253-error framing this blueprint
+demanded. (7) **Skill-count cohorts**: the `3,179 SKILL.md` figure used across §§ 0–11 and docs
+728/729 is a point-in-time file count; the live cohorts are tracked `plugins/**/SKILL.md` files
+(3,181 at this correction) vs marketplace-visible distinct skills (3,069) vs curated mirror
+(1,915), each regenerable via the E1.0 harness — bare re-quotes of 3,179 as a present-tense fact
+are incorrect. (8) **Plugin totals**: "~470"/"470-plugin" reads resolve to the catalog-entry
+cohort, 468 at this correction. Bead 2.6's own target text (§ 13 row 2.6) predates these
+landings; its operative targets are the assertions in beads 2.7/2.8 plus the cohort-label
+discipline of E1.6.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**

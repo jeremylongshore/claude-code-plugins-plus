@@ -248,3 +248,15 @@ Four reasons, in hierarchy order.
 **Rollback.** Every element is additive and revertible except three, which are called out wherever they appear: moving `NPM_TOKEN` into a protected Environment (owner-executed, not `git revert`-able), rotating a credential (irreversible by definition), and any Rekor entry (immutable by design — revocation is a superseding signed event, never a deletion).
 
 **Enforced by.** Nothing in this document is self-enforcing. Each adopted pattern names its gate in `000-docs/727-AT-ARCH-master-modernization-blueprint.md`; anything that lands without a gate is, by our own rank-5 rule, prose — and must be labelled as such.
+
+---
+
+**E2.6 cohort correction (2026-08-18).** This ADR's scale premise ("3,179 plugin `SKILL.md`",
+re-verified at `478aaf177`) was correct at its SHA and remains the decision-time record. Read
+against the live tree it must be cohort-labelled per blueprint 727 row 24: tracked
+`plugins/**/SKILL.md` files (3,181 today) vs marketplace-visible distinct skills (3,069) vs
+curated mirror (1,915) — and derived figures such as the ~$6.3k full-sweep estimate scale with
+the file cohort. "~470 plugins" resolves to the catalog-entry cohort (468 today). The "63-mirror
+pipeline" phrasing conflates two cohorts: external _source_ mirrors number **64**
+(`.source.json` directories, E1.12-gated), while the 63/58 _npm package_ mirror split is a
+different cohort owned by Epic 7's records. Decisions herein are unaffected.

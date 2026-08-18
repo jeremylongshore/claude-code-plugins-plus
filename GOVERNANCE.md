@@ -14,8 +14,9 @@ ladder**; the live roster of people is in [`MAINTAINERS.md`](MAINTAINERS.md).
 
 ## Why a ladder (and why earned-trust)
 
-The repo has 360+ forks and a growing contributor cohort, and it is the flagship
-of a marketplace that holds ~470 plugins to an A-grade bar. One person approving
+The repo has a large fork base and a growing contributor cohort, and it is the
+flagship of a marketplace that holds the full catalog-entry cohort (468 at this
+writing; regenerate via `pnpm run measure:e1`) to an A-grade bar. One person approving
 every merge is a structural bottleneck and a bus-factor risk. But an open-slather
 "anyone can merge" model would sink the quality bar that is the whole product.
 
@@ -56,8 +57,8 @@ per-area, never repo-wide (except the Lead).
 quality read (`/lgtm`), and (2) an **Approver**'s code-owner approval. On a small
 bench these can be the same person; as the bench grows, splitting them is how we
 keep review load off any single approver. The deterministic CI gate
-(`ci-required` + `gitleaks`) is always required on top — human approval never
-substitutes for green checks.
+(`ci-required` + `gitleaks` + `skill-conform`) is always required on top — human
+approval never substitutes for green checks.
 
 ---
 
@@ -146,7 +147,7 @@ sync the README block. Source of truth: `marketplace/src/data/spotlights.json`.
 
 ## Scaling: per-plugin ownership
 
-Enumerating owners for ~470 plugins by hand in `CODEOWNERS` does not scale. Home
+Enumerating owners for every catalog plugin by hand in `CODEOWNERS` does not scale. Home
 Assistant solved this with per-component metadata + a generator, and we do the
 same:
 
@@ -166,8 +167,9 @@ incremental: the field is optional and defaults to the area owner.
 
 ## The rules that keep it honest
 
-- **CI is never bypassed by trust.** `ci-required` + `gitleaks` are the two
-  required contexts; a human approval unlocks merge only _after_ they are green.
+- **CI is never bypassed by trust.** The gate is `ci-required` + `gitleaks` +
+  `skill-conform` — the three required contexts; a human approval unlocks merge
+  only _after_ they are green.
   The maintainer ladder controls _who may approve_, not _whether checks run_.
 - **High-trust areas stay Lead-owned** until an Approver has passed the competency
   gate for that area. Being trusted in `plugins-design` does not grant `ci-infra`.

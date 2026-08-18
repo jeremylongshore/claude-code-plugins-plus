@@ -418,3 +418,12 @@ Facts measured locally during this benchmark, not inferred from the sample:
 Restated here so a later reader does not mistake absence of comment for absence of risk: branch-protection required contexts on all three NVIDIA repositories are **UNVERIFIED** (404, no admin scope); NVIDIA's `SkillSpector`/`SkillEvaluator` source was **not reviewed** (separate repositories); NVIDIA's internal IP review checklist and quality profile are **referenced but not public**; `google/skills`' README generator and authoring specification are **private** (the public repository is a read-only projection); the AWS-OPS tag/release count is **inferred zero from the tree, not API-confirmed**; and the named successor to `openai/skills` was **not reviewed**.
 
 **Companion documents:** `000-docs/727-AT-ARCH-master-modernization-blueprint.md` (the platform master standard this evidence base supports) and `000-docs/729-AT-ADEC-reference-architecture-synthesis.md` (the decision record, including the licensing constraints that limit how these patterns may be adopted).
+
+---
+
+**E2.6 self-reference correction (2026-08-18).** § 0's Intent Solutions self-description
+("3,179 plugin `SKILL.md`"; "NVIDIA/skills at 336 is 10.6% of our size") is the 2026-08-13
+capture. The 12 external-repository rows are SHA-pinned and unaffected. The IS corpus figure is
+the tracked-file cohort and moves with the tree (3,181 at this correction; distinct-skill cohort
+3,069) — regenerate via the Epic 1 measurement harness before re-quoting, and recompute any
+ratio derived from it.

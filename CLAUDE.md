@@ -110,7 +110,7 @@ canonical editorial data, not deterministic build output.
 
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` — iOS Safari fails on lines > 5000 chars. CI enforces this.
 
-Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s build, 2,800–4,000 routes.
+Performance budgets (CI-enforced; authority is `scripts/check-performance.mjs` `BUDGETS`): 48 MB total gzipped, 1 MB largest file, < 30s build, 2,800–4,500 routes.
 
 ## Auto-cowork contract
 
@@ -132,7 +132,7 @@ Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s
 
 Adopted model: **mirror by default · upstream improvements · never clobber.** Decision record: `000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md`; pipeline audit + hardening: `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
 
-**Scale first — external is a minority augment, not the core.** ~470 plugins total (per `marketplace.extended.json`), but only 63 are externally synced (57 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`). The other ~407 (~87%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
+**Scale first — external is a minority augment, not the core.** 468 catalog plugins total (catalog-entry cohort; regenerate via `pnpm run measure:e1`), but only 64 are externally synced (58 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`). The other 404 (~86%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
 
 **How sync works.** `sources.yaml` registers each external source. `.github/workflows/sync-external.yml` runs weekly (Mondays 06:00 UTC) and on demand (`workflow_dispatch` / `repository_dispatch`), invoking `scripts/sync-external.mjs` to mirror a source's files into `plugins/` and open an automated PR. A human reviews every auto-PR — historically ~1 in 10 sync PRs merges. The contributor's own repo is the source of truth; we do NOT locally edit a pure-mirror plugin.
 
@@ -325,7 +325,8 @@ python3 freshie/scripts/batch-remediate.py --dry-run && python3 freshie/scripts/
 
 **skills.sh curated mirror** (`freshie/scripts/promote-to-curated.py`): rebuilds
 `skills/.curated/` as a generated mirror of the repo's best **A+B** plugin skills (our own;
-external `.source.json` mirrors excluded → ~1,881) so skills.sh can index them — it only
+external `.source.json` mirrors excluded — 1,915 at this writing; the promote gate message
+is the live count) so skills.sh can index them — it only
 crawls root `skills/` / `.curated/`, never `plugins/**/skills/`. The plugin skill stays the
 source of truth; the mirror is wipe-and-rebuilt from the tracked `grades.csv` (not the
 git-ignored `inventory.sqlite`, so the CI drift gate is reproducible), copies only
@@ -377,8 +378,9 @@ Patch version bumps happen automatically on PR (via `auto-bump-on-pr.yml`). For 
 
 ## Internal governance agents — use them, don't re-derive their checks
 
-This repo ships 347 agents as **product**; these live in `.claude/agents/` and exist to
-work **on this repo**. They are advisory (read-only, no Write/Edit) — a deterministic
+This repo ships 347 agents as **product** under `plugins/**/agents/`. Separately,
+`.claude/agents/` holds 3 internal governance agents that exist to work **on this
+repo**. The governance agents are advisory (read-only, no Write/Edit) — a deterministic
 check belongs in a script wired to `ci-required`, not in a prompt.
 
 | Agent            | Reach for it when                                                                                 | Catches                                                                                                                          |

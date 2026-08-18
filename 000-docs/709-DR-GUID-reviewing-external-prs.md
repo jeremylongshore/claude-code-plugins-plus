@@ -131,7 +131,7 @@ compatibility, tags`.
 
 A submission can be 100% green and still be a **close**. Ask:
 
-- **Does it duplicate something we already ship?** We have ~470 plugins. Overlap
+- **Does it duplicate something we already ship?** We have 468 catalog plugins (catalog-entry cohort; `pnpm run measure:e1` regenerates the count). Overlap
   fragments the catalog and makes search worse for everyone.
 - **Is the description trigger-bearing?** A skill nobody's Claude will invoke is
   dead weight in the index.
@@ -155,7 +155,7 @@ gh run view <RUN_ID> --repo jeremylongshore/claude-code-plugins-plus-skills --lo
 merged on an empty list broke `main` for every open PR in July 2026. If you see no
 checks, that is a red flag, not a green light.
 
-**`ci-required` absent from the list means the 19 gate jobs are still running.**
+**`ci-required` absent from the list means its gate jobs (21 today; authority is the `needs:` block in `validate-plugins.yml`) are still running.**
 It is the final aggregate job, so it only reports once its `needs:` resolve. Wait
 for it; do not conclude anything from its absence.
 
@@ -169,8 +169,9 @@ which must never be handed to fork code). Neither is a defect.
 
 As of 2026-07-29:
 
-- **Kilo Code Review** — failing on **every** PR: _"could not run — your account
-  is out of credits."_ That is billing, not a finding.
+- **Kilo Code Review** — historical: it posted _"could not run — your account is
+  out of credits"_ on every PR while installed. It has no in-repo configuration
+  or workflow surface; treat any residual Kilo status as noise, not a finding.
 - **Gemini Code Assist** — the consumer product is **sunset**. The bot posts only
   a sunset notice. `.gemini/config.yaml` is retained-but-inert.
 - **Greptile** — active through the GitHub App, advisory, quota-limited (~50/mo).
