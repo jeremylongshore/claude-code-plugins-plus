@@ -2,6 +2,18 @@
 
 ## 2026-08-18
 
+- **docs(governance):** correct every live documented number that disagreed
+  with the code (E2.6): the merge gate is three required contexts, the
+  aggregate needs twenty-one jobs, and ratified records received dated
+  correction appendices instead of rewritten baselines.
+- **feat(governance):** pin the documented `ci-required` contract and schema
+  version to the code with fail-loud prose-anchor assertions (E2.7+E2.8).
+- **docs(governance):** point STANDARDS, CLAUDE, and AGENTS at the blueprint's
+  one-owner-per-fact-class authority map instead of restating ownership
+  (E2.10).
+- **feat(governance):** rebuild the root README as a governed landing contract
+  — category-only TOC, byte budgets, cohort-labeled scale block, certification
+  honesty block, frozen install slug pinned by red-run tests (E2.13).
 - **fix(marketplace):** label search-result and entity-local skill counts with
   their local population and provenance instead of presenting them as global
   marketplace totals.
