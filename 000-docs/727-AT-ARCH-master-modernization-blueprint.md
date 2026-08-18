@@ -1180,7 +1180,9 @@ text elements are parsed with quote- and brace-aware opening tags, so a quoted `
 a script body as self-closing; malformed raw-text elements are refused. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
 are not forced into the marketplace cohort. Entity-local cards are now separately labeled and bound
 to exact deferred claims in `scripts/published-count-cohorts.json`; their local contracts are not
-interchangeable with the marketplace cohort. README work is deferred because its generated count
+interchangeable with the marketplace cohort. Cowork package and bundle surfaces are likewise bound
+to exact `Cowork-package-local` claims; their generated archive population is separate from the
+marketplace cohort. README work is deferred because its generated count
 contract overlaps active PRs; the authoritative local check is
 `node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains
 open until every published count surface is either enforced with its true cohort or governed as an

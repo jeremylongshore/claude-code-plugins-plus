@@ -8,6 +8,8 @@
 - **fix(marketplace):** make spotlight, plugin, community, and plugin-detail
   counts identify their entity-local population with fail-closed registry
   contracts; numeric values are unchanged.
+- **fix(cowork):** label downloadable bundle, package, landing-page, and
+  archive counts as `Cowork-package-local` with exact fail-closed contracts.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.

@@ -164,6 +164,10 @@ if (manifest?.plugins) {
     const downloadPath = downloadRecord.path;
     const downloadName = isSaasPack ? `${pack.packName}.zip` : `${pack.category}.zip`;
     const sizeFormatted = downloadRecord.sizeFormatted;
+    const bundleSkillCount = bundle?.totalSkills;
+    const hasBundleSkills = typeof bundleSkillCount === 'number' && bundleSkillCount > 0;
+    const pluginSkillCount = plugin?.skills;
+    const hasPluginSkills = typeof pluginSkillCount === 'number' && pluginSkillCount > 0;
 
     return (
       <div class="cowork-card" data-pack-id={pack.id}>
@@ -175,15 +179,15 @@ if (manifest?.plugins) {
 
         {bundle && (
           <div class="cowork-stats">
-            <span class="cowork-stat">{bundle.pluginCount} plugins</span>
-            {bundle.totalSkills > 0 && <span class="cowork-stat">{bundle.totalSkills} skills</span>}
+            <span class="cowork-stat" data-count-provenance="cowork-package-local">{bundle.pluginCount.toLocaleString()} Cowork-package-local plugins</span>
+            {hasBundleSkills && <span class="cowork-stat" data-count-provenance="cowork-package-local">{bundleSkillCount.toLocaleString()} Cowork-package-local skills</span>}
           </div>
         )}
 
         {plugin && (
           <div class="cowork-stats">
-            {plugin.skills > 0 && <span class="cowork-stat">{plugin.skills} skills</span>}
-            {plugin.commands > 0 && <span class="cowork-stat">{plugin.commands} commands</span>}
+            {hasPluginSkills && <span class="cowork-stat" data-count-provenance="cowork-package-local">{pluginSkillCount.toLocaleString()} Cowork-package-local skills</span>}
+            {plugin.commands > 0 && <span class="cowork-stat" data-count-provenance="cowork-package-local">{plugin.commands.toLocaleString()} Cowork-package-local commands</span>}
           </div>
         )}
 
