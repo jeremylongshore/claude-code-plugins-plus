@@ -250,6 +250,38 @@ function enclosingHeadingRange(tags, offset) {
   return { start: active.start, end: closing?.start ?? Number.POSITIVE_INFINITY };
 }
 
+function headingCanLabelExternalCount(source, range, noun) {
+  const headingText = maskMarkupTags(source.slice(range.start, range.end));
+  const nounPattern = new RegExp(`\\b${noun}\\b`, 'gi');
+  const modifierSource = headingText.replace(nounPattern, ' ');
+  const modifiers = foldedText(modifierSource)
+    .replace(/[^a-z0-9+-]+/g, ' ')
+    .trim();
+  if (modifiers === '') return true;
+  if (/[a-z0-9]+-[a-z0-9]+/u.test(modifiers)) return true;
+  const allowed = new Set([
+    'agent',
+    'ai',
+    'all',
+    'available',
+    'community',
+    'curated',
+    'curriculum',
+    'first',
+    'graded',
+    'indexed',
+    'maintained',
+    'marketplace',
+    'party',
+    'published',
+    'showing',
+    'total',
+    'verified',
+    'visible',
+  ]);
+  return modifiers.split(/\s+/).every((word) => allowed.has(word));
+}
+
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?|stars?|seconds?|minutes?|hours?|days?|weeks?|months?|years?)\b/i;
 const COUNT_AFTER_SEPARATOR = /^[\s:;=()[\]–—-]*$/u;
@@ -769,6 +801,9 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       (region) => region.start <= found && offset <= region.end,
     );
     const nounHeadingRange = enclosingHeadingRange(renderedMarkupRegions, found);
+    const nounHeadingCanLabelExternalCount =
+      nounHeadingRange === undefined ||
+      headingCanLabelExternalCount(searchable, nounHeadingRange, noun);
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
@@ -785,7 +820,8 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
       const headingExcludesExpression =
         nounHeadingRange !== undefined &&
-        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end);
+        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end) &&
+        !nounHeadingCanLabelExternalCount;
       const incompatibleMarkupAssociation =
         !expressionOwnsNoun &&
         (expressionInMarkup ||
@@ -839,7 +875,8 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
       const headingExcludesExpression =
         nounHeadingRange !== undefined &&
-        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end);
+        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end) &&
+        !nounHeadingCanLabelExternalCount;
       const incompatibleMarkupAssociation =
         !expressionOwnsNoun &&
         (expressionInMarkup ||

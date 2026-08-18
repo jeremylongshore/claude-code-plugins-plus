@@ -289,6 +289,8 @@ test('identifier-independent discovery refuses catalog counts, collection length
     '<strong>{widgetsAvailable}</strong>\n<span>skills</span>\n',
     '<span>Skills</span>\n<strong>{widgetsAvailable}</strong>\n',
     '<h2><strong>{widgetsAvailable}</strong>\nSkills</h2>\n',
+    '<strong>{widgetsAvailable}</strong>\n<h2>Skills</h2>\n',
+    '<strong>{widgetsAvailable}</strong>\n<h2>Community-maintained Skills</h2>\n',
     '<strong>{quantumWidgets}</strong>\n<span>community-maintained skills</span>\n',
     '<span>Skills currently indexed:</span>\n<strong>{quantumWidgets}</strong>\n',
     '<strong>{\n  quantumWidgets\n}</strong>\n<span>skills</span>\n',

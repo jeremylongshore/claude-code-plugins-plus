@@ -30,10 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   self-closing head scripts remain correctly parsed. Quote- and brace-aware raw-text parsing prevents
   a quoted `/>` attribute from exposing paired script content as visible evidence and refuses
   malformed raw-text elements. Fixtures distinguish `/skills/` paths, prose durations, and adjacent
-  time units, stars, notebook/agent populations, structurally separate narrative headings, collection renderers, and
+  time units, stars, notebook/agent populations, narrative heading shapes, collection renderers, and
   unrelated attributes from actual published skill totals without relying on count-like identifier
-  names. Nested object syntax remains part of its enclosing registered expression rather than being
-  misclassified as a second rendered count.
+  names. Plain, canonical, and hyphenated count-label headings remain associated with adjacent
+  counts. Nested object syntax remains part of its enclosing registered expression rather than
+  being misclassified as a second rendered count.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 
