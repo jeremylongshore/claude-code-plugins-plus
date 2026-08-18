@@ -51,6 +51,27 @@ function stripComments(source) {
     .replace(/(?<!:)\/\/.*$/gm, '');
 }
 
+function maskText(value) {
+  return value.replace(/[^\r\n]/g, ' ');
+}
+
+function maskNonRenderedAstroRegions(source) {
+  let visible = source;
+  const opening = /^(?:\uFEFF)?---[ \t]*(?:\r?\n|$)/.exec(visible);
+  if (opening) {
+    const closing = /^---[ \t]*\r?$/gm;
+    closing.lastIndex = opening[0].length;
+    const match = closing.exec(visible);
+    if (!match)
+      refuse('MALFORMED_ASTRO_FRONTMATTER', 'Astro frontmatter lacks a closing delimiter');
+    const end = match.index + match[0].length;
+    visible = `${maskText(visible.slice(0, end))}${visible.slice(end)}`;
+  }
+  return visible
+    .replace(/<script\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/script\s*>/gi, maskText)
+    .replace(/<style\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/style\s*>/gi, maskText);
+}
+
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?)\b/i;
 
@@ -313,7 +334,9 @@ function validateSurfaces(registry, root, io) {
       );
     }
 
-    const source = stripComments(safeRead(root, surfacePath, io));
+    const rawSource = safeRead(root, surfacePath, io);
+    const source = stripComments(rawSource);
+    const visibleSource = stripComments(maskNonRenderedAstroRegions(rawSource));
     const expressions = [expression];
     if (surface.deferredExpressions !== undefined) {
       if (!Array.isArray(surface.deferredExpressions)) {
@@ -345,16 +368,16 @@ function validateSurfaces(registry, root, io) {
       }
     }
     registeredExpressions.set(surfacePath, expressions);
-    const expressionOffsets = literalOccurrences(source, expression);
+    const expressionOffsets = literalOccurrences(visibleSource, expression);
     if (expressionOffsets.length === 0) {
       refuse(
         'MISSING_EXPRESSION',
         `${surfacePath} does not contain expression ${JSON.stringify(expression)}`,
       );
     }
-    const lines = source.split(/\r?\n/);
+    const lines = visibleSource.split(/\r?\n/);
     for (const offset of expressionOffsets) {
-      const line = lineAtOffset(source, offset);
+      const line = lineAtOffset(visibleSource, offset);
       if (!hasLabelNearLine(lines, label, line)) {
         refuse(
           'MISSING_COHORT_LABEL',
@@ -363,7 +386,7 @@ function validateSurfaces(registry, root, io) {
       }
     }
 
-    const provenanceCount = literalOccurrences(source, provenance).length;
+    const provenanceCount = literalOccurrences(visibleSource, provenance).length;
     if (provenanceCount !== 1) {
       refuse(
         'INVALID_PROVENANCE_COUNT',

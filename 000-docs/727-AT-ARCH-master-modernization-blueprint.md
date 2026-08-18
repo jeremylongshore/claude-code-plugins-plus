@@ -1166,7 +1166,8 @@ on otherwise enforced pages are separately registered, producing 50 owned deferr
 total. Discovery binds every detected expression to an exact enforced or deferred registration;
 a second count added to an already registered page therefore fails closed. Unknown cohorts, unsafe
 or unreadable paths, symlinks, comment-only labels, missing provenance, and unregistered new count
-sources or expressions fail closed. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
+sources or expressions fail closed. Astro frontmatter and script/style bodies cannot satisfy the
+visible label or provenance contract. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
 are not forced into the marketplace cohort. README work is deferred because its generated count
 contract overlaps active PRs; the authoritative local check is
 `node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains

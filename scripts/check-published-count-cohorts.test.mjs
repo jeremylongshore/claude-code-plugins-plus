@@ -311,6 +311,61 @@ test('comment-only provenance is refused even when the visible label is valid', 
   equal(findingCode(check(root)), 'INVALID_PROVENANCE_COUNT');
 });
 
+test('frontmatter and script strings cannot satisfy the visible label or provenance contract', () => {
+  const frontmatterOnly = makeFixture({
+    source: [
+      '---',
+      "const label = 'marketplace-visible skills';",
+      'const marker = `<CountProvenance cohort="marketplace-visible" />`;',
+      '---',
+      '<strong>{fmt(totalSkills)}</strong> skills',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(frontmatterOnly)), 'MISSING_COHORT_LABEL');
+
+  const scriptOnly = makeFixture({
+    source: [
+      '---',
+      '---',
+      '<strong>{fmt(totalSkills)}</strong> skills',
+      '<script>',
+      "const label = 'marketplace-visible skills';",
+      'const marker = `<CountProvenance cohort="marketplace-visible" />`;',
+      '</script>',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(scriptOnly)), 'MISSING_COHORT_LABEL');
+
+  const hiddenExpression = makeFixture({
+    source: [
+      '---',
+      'const hidden = fmt(totalSkills);',
+      '---',
+      '<p>marketplace-visible skills</p>',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(hiddenExpression)), 'MISSING_EXPRESSION');
+
+  const selfClosingHeadScript = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong>',
+      '<script type="application/ld+json" set:html={JSON.stringify({})} />\n<strong>{fmt(totalSkills)}</strong>',
+    ),
+  });
+  equal(check(selfClosingHeadScript).allow, true);
+});
+
+test('malformed Astro frontmatter fails closed', () => {
+  const root = makeFixture({
+    source: ['---', '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills'].join('\n'),
+  });
+  equal(findingCode(check(root)), 'MALFORMED_ASTRO_FRONTMATTER');
+});
+
 test('trailing line comments cannot supply the visible label or provenance', () => {
   const labelOnly = makeFixture({
     source: [
