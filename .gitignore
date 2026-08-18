@@ -219,4 +219,7 @@ freshie/hf-dataset/skills.jsonl
 
 # SOPS-encrypted machine-local env (E1.14): ciphertext of live credentials
 # stays off the public remote; scripts/sops-env decrypts it in-process.
+# Named .sops.env so `sops exec-env` infers the dotenv format; the older
+# .env.sops spelling stays ignored for compatibility.
+.sops.env
 .env.sops

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # sops-env — wrapper around SOPS for this repo's .env.sops file.
-# Decrypts to tmpfs, sources into env, executes the command, wipes tmpfs.
-# Plaintext never touches the SSD.
+# Injects decrypted values into the child's environment via `sops exec-env`:
+# no temp file ever exists and values are imported verbatim, never evaluated
+# by a shell. Plaintext never touches any disk.
 #
 # Usage:
 #   scripts/sops-env <command>           # run command with secrets in env
@@ -14,7 +15,15 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-ENV_FILE="${SOPS_ENV_FILE:-$REPO_ROOT/.env.sops}"
+# The encrypted file is named .sops.env (NOT .env.sops): `sops exec-env`
+# infers the dotenv format from a trailing .env and has no --input-type
+# option of its own, so the estate's usual .env.sops name would be parsed
+# as JSON and fail. The .env.sops spelling is still honored as a fallback
+# for decrypt/edit compatibility with older checkouts.
+ENV_FILE="${SOPS_ENV_FILE:-$REPO_ROOT/.sops.env}"
+if [ ! -f "$ENV_FILE" ] && [ -f "$REPO_ROOT/.env.sops" ]; then
+  ENV_FILE="$REPO_ROOT/.env.sops"
+fi
 
 if [ ! -f "$ENV_FILE" ]; then
   echo "sops-env: no encrypted env file at $ENV_FILE" >&2
@@ -39,30 +48,23 @@ edit_in_place() {
 }
 
 exec_with_env() {
-  if [ -d /dev/shm ] && [ -w /dev/shm ]; then
-    TMPFILE=$(mktemp -p /dev/shm sops-env-XXXXXX)
-  else
-    TMPFILE=$(mktemp sops-env-XXXXXX)
-  fi
-  chmod 600 "$TMPFILE"
-  trap 'shred -u "$TMPFILE" 2>/dev/null || rm -f "$TMPFILE"' EXIT
-
-  "$SOPS_BIN" -d --input-type dotenv --output-type dotenv "$ENV_FILE" > "$TMPFILE"
-
-  set -a
-  # shellcheck disable=SC1090
-  source "$TMPFILE"
-  set +a
-
-  shred -u "$TMPFILE" 2>/dev/null || rm -f "$TMPFILE"
-  trap - EXIT
-
+  # `sops exec-env` injects the decrypted pairs straight into the child's
+  # environment: values are set verbatim (a value containing `$(...)`,
+  # backticks, or `$VAR` is data, never code) and no plaintext file is ever
+  # created — which also removes the old non-tmpfs fallback that could land
+  # a decrypted copy on the SSD. Both were review findings on PR #1256.
   if [ "$#" -eq 0 ]; then
-    env
+    exec "$SOPS_BIN" exec-env "$ENV_FILE" 'env'
   elif [ "$#" -eq 1 ]; then
-    bash -c "$1"
+    # Single argument: treated as a shell command line (parity with the
+    # previous `bash -c "$1"` behavior).
+    exec "$SOPS_BIN" exec-env "$ENV_FILE" "$1"
   else
-    "$@"
+    # Multi-argument: re-quote so the argv survives the shell that
+    # exec-env uses to launch the command, argument-for-argument.
+    local quoted
+    quoted=$(printf '%q ' "$@")
+    exec "$SOPS_BIN" exec-env "$ENV_FILE" "$quoted"
   fi
 }
 
