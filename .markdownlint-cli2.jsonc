@@ -148,6 +148,7 @@
     "plugins/community/zai-cli/**",
     "plugins/crypto/aomi/**",
     "plugins/design/brand-forge/**",
+    "plugins/design/uizze/**",
     "plugins/design/wondelai-design-everyday-things/**",
     "plugins/design/wondelai-hooked-ux/**",
     "plugins/design/wondelai-ios-hig-design/**",
