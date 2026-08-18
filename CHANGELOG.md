@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `marketplace-visible` and expose the canonical corpus-resolver command beside the value. A
   machine-readable registry and fixture-driven, fail-closed CI gate discover count expressions by
   meaning rather than one variable name across public Astro pages and components, rejecting any
-  unregistered rendered expression or pre/post-noun literal count, collection length, catalog
-  count, unsafe or unreadable path,
+  unregistered rendered expression—including unfamiliar identifiers split from the `skills` noun
+  by adjacent markup—or pre/post-noun literal count, collection length, catalog count, unsafe or unreadable path,
   comment-only labels, and missing provenance without adding another required status context. The
   first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
   plus the generated social image remain path-level deferrals; three local/query expressions on
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   self-closing head scripts remain correctly parsed. Quote- and brace-aware raw-text parsing prevents
   a quoted `/>` attribute from exposing paired script content as visible evidence and refuses
   malformed raw-text elements. Fixtures distinguish `/skills/` paths, prose durations, and adjacent
-  notebook counts from actual published skill totals.
+  notebook counts from actual published skill totals without relying on count-like identifier names.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 

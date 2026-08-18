@@ -236,7 +236,6 @@ function exactRenderedTagOccurrences(source, expected) {
 
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?)\b/i;
-const CROSS_LINE_COUNT_TERM = /(?:count|length|shown|total|quantity|number|size)/i;
 const COUNT_AFTER_SEPARATOR = /^[\s:;=()[\]–—-]*$/u;
 
 function namesOtherPopulation(intervening) {
@@ -269,6 +268,25 @@ function codeOutsideQuotedStrings(value) {
     }
   }
   return result;
+}
+
+function nounIsInsideUrlToken(source, nounOffset) {
+  let tokenStart = nounOffset - 1;
+  while (tokenStart >= 0 && !/[\s"'`<>{}()[\]=]/u.test(source[tokenStart])) {
+    tokenStart -= 1;
+  }
+  const prefix = source.slice(tokenStart + 1, nounOffset);
+  return prefix.includes('://') || prefix.startsWith('/') || prefix.startsWith('./');
+}
+
+function crossLineGlueAllowsCount(intervening) {
+  const visibleWords = foldedText(maskMarkupTags(intervening))
+    .replace(/[^a-z0-9+]+/g, ' ')
+    .trim();
+  if (visibleWords === '') return true;
+  return /^(?:(?:marketplace visible|first party|curated mirror|curriculum|graded|agent|ai|total|available|published|verified|all|showing|of)(?:\s+|$))+$/u.test(
+    visibleWords,
+  );
 }
 
 function insideTemplateLiteralAt(value, targetOffset) {
@@ -685,6 +703,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
   const frontmatter = astroFrontmatterRegion(searchable);
   const expressionRegions = rawTextElementRegions(searchable);
   if (frontmatter) expressionRegions.push(frontmatter);
+  const renderedMarkupRegions = topLevelMarkupTags(maskNonRenderedAstroRegions(searchable));
   const dynamicExpressions = outerBracedExpressions(searchable, expressionRegions);
   const evidence = [];
   const numericBefore = /\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b[^\n]{0,100}$/i;
@@ -699,7 +718,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const previous = folded[found - 1] ?? '';
     const next = folded[offset] ?? '';
     if (/[a-z0-9_]/i.test(previous) || /[a-z0-9_]/i.test(next)) continue;
-    if (previous === '/' || next === '/') continue;
+    if (previous === '/' || next === '/' || nounIsInsideUrlToken(searchable, found)) continue;
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
@@ -707,14 +726,18 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const afterCandidates = [];
 
     for (const expression of dynamicExpressions) {
+      const expressionInMarkup = renderedMarkupRegions.some(
+        (region) => region.start <= expression.start && expression.end <= region.end,
+      );
+      const expressionOwnsNoun = expression.start < found && expression.end > offset;
       if (
-        expression.start < found &&
-        expression.end > offset &&
+        expressionOwnsNoun &&
         expression.text.includes('${') &&
         insideTemplateLiteralAt(expression.text, found - expression.start)
       ) {
         beforeCandidates.push({
           distance: 0,
+          crossLineGlueAllowed: true,
           interveningOtherPopulation: false,
           kind: 'dynamic',
           line: lineAtOffset(searchable, found),
@@ -728,10 +751,12 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       if (expression.end > found || expression.end < beforeStart) continue;
       const intervening = searchable.slice(expression.end, found);
       beforeCandidates.push({
+        crossLineGlueAllowed: crossLineGlueAllowsCount(intervening),
         distance: found - expression.end,
         // Include the noun itself so modifiers such as "Agent Skills" are
         // treated as one skill label rather than an intervening agent count.
-        interveningOtherPopulation: blocksSkillAssociation(intervening, noun),
+        interveningOtherPopulation:
+          blocksSkillAssociation(intervening, noun) || (expressionInMarkup && !expressionOwnsNoun),
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
@@ -742,10 +767,16 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     }
     for (const expression of dynamicExpressions) {
       if (expression.start < offset || expression.start >= offset + after.length) continue;
+      const expressionInMarkup = renderedMarkupRegions.some(
+        (region) => region.start <= expression.start && expression.end <= region.end,
+      );
+      const expressionOwnsNoun = expression.start < found && expression.end > offset;
       const intervening = searchable.slice(offset, expression.start);
       afterCandidates.push({
+        crossLineGlueAllowed: crossLineGlueAllowsCount(intervening),
         distance: expression.start - offset,
-        interveningOtherPopulation: blocksSkillAssociation(intervening),
+        interveningOtherPopulation:
+          blocksSkillAssociation(intervening) || (expressionInMarkup && !expressionOwnsNoun),
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
@@ -759,6 +790,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       const absolute = beforeStart + numeric.index;
       const intervening = searchable.slice(absolute + numeric[0].length, found);
       beforeCandidates.push({
+        crossLineGlueAllowed: true,
         distance: found - (absolute + numeric[0].length),
         interveningOtherPopulation: blocksSkillAssociation(intervening, noun),
         kind: 'numeric',
@@ -776,6 +808,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         match.index + match[0].length + 48,
       );
       afterCandidates.push({
+        crossLineGlueAllowed: true,
         distance: match.index,
         interveningOtherPopulation:
           blocksSkillAssociation(intervening) ||
@@ -815,7 +848,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       (candidate) =>
         !candidate.interveningOtherPopulation &&
         (candidate.kind === 'numeric' ||
-          (!candidate.text.includes('\n') && CROSS_LINE_COUNT_TERM.test(candidate.text))),
+          (!candidate.text.includes('\n') && candidate.crossLineGlueAllowed)),
     );
     const skillNamed = crossLine.filter((candidate) =>
       /skill/i.test(codeOutsideQuotedStrings(candidate.text)),

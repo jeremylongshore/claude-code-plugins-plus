@@ -274,6 +274,8 @@ test('identifier-independent discovery refuses catalog counts, collection length
     '<strong>{_rawCatalog.count}</strong> skills\n',
     '<strong>{skills.length}</strong> skills\n',
     '<strong>{skillQuantity}</strong> skills\n',
+    '<strong>{widgetsAvailable}</strong>\n<span>skills</span>\n',
+    '<span>Skills</span>\n<strong>{widgetsAvailable}</strong>\n',
     '<p>Research across 1,372 skills.</p>\n',
     '<p>Skills: 9,999</p>\n',
   ]) {
@@ -284,6 +286,9 @@ test('identifier-independent discovery refuses catalog counts, collection length
 
   for (const source of [
     '<a href={`/skills/${item.slug}/`}>Skill detail</a>\n',
+    '<a href="https://github.com/example/plugins-plus-skills">{starsDisplay} stars</a>\n',
+    '<BaseLayout\n  description={pageDescription}\n  title="Skills"\n/>\n',
+    '<p>{eyebrow}</p>\n<h2>Where these skills come from</h2>\n',
     '<p>Learn what plugins and skills are, install in 60 seconds.</p>\n',
     '<h3>Agent Skills (5 notebooks)</h3>\n',
   ]) {

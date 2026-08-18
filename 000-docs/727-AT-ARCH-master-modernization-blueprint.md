@@ -1159,7 +1159,8 @@ cohort definition and exact resolver command next to each, and adds
 `pnpm run validate:published-count-cohorts` to the existing `validate` job. The fixture-driven gate
 recursively discovers count-bearing public Astro pages and components from literals, catalog
 counts, collection lengths, post-noun numeric forms, and identifier-independent rendered
-expressions rather than one identifier. URL path segments, prose durations, and counts of a
+expressions—including expressions split from the `skills` noun by adjacent markup—rather than one
+identifier. URL path segments, prose durations, and counts of a
 different adjacent noun are excluded by fixtures rather than silently treated as skill totals. The first
 inventory finds 51 Astro sources: five global pages are enforced, 46 discovered non-global or
 point-in-time sources are grouped by exact path as owned deferrals, and
