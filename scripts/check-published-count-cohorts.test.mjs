@@ -359,6 +359,32 @@ test('frontmatter and script strings cannot satisfy the visible label or provena
   equal(check(selfClosingHeadScript).allow, true);
 });
 
+test('markup attributes cannot impersonate rendered count labels or provenance', () => {
+  const attributeLabel = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
+      '<strong data-label="marketplace-visible skills">{fmt(totalSkills)}</strong> skills',
+    ),
+  });
+  equal(findingCode(check(attributeLabel)), 'MISSING_COHORT_LABEL');
+
+  const attributeExpression = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
+      '<strong data-count={fmt(totalSkills)}>marketplace-visible skills</strong>',
+    ),
+  });
+  equal(findingCode(check(attributeExpression)), 'MISSING_EXPRESSION');
+
+  const attributeProvenance = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      '<div data-marker=\'<CountProvenance cohort="marketplace-visible" />\'></div>',
+    ),
+  });
+  equal(findingCode(check(attributeProvenance)), 'INVALID_PROVENANCE_COUNT');
+});
+
 test('malformed Astro frontmatter fails closed', () => {
   const root = makeFixture({
     source: ['---', '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills'].join('\n'),

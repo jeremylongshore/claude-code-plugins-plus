@@ -1167,7 +1167,8 @@ total. Discovery binds every detected expression to an exact enforced or deferre
 a second count added to an already registered page therefore fails closed. Unknown cohorts, unsafe
 or unreadable paths, symlinks, comment-only labels, missing provenance, and unregistered new count
 sources or expressions fail closed. Astro frontmatter and script/style bodies cannot satisfy the
-visible label or provenance contract. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
+rendered count/label contract, markup attributes cannot impersonate it, and provenance must be a
+standalone rendered component tag. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
 are not forced into the marketplace cohort. README work is deferred because its generated count
 contract overlaps active PRs; the authoritative local check is
 `node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains

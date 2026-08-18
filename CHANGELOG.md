@@ -20,8 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   plus the generated social image remain path-level deferrals; three local/query expressions on
   otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
   detected expression to its exact registration, so adding a second count to a registered page
-  cannot bypass cohort governance. Frontmatter, script/style bodies, and comments are masked for
-  the visible-label/provenance contract, while self-closing head scripts remain correctly parsed.
+  cannot bypass cohort governance. Frontmatter, script/style bodies, comments, and markup
+  attributes are masked for the rendered count/label contract; provenance must be a standalone
+  component tag, while self-closing head scripts remain correctly parsed.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 

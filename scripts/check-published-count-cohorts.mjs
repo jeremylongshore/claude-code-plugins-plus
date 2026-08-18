@@ -72,6 +72,10 @@ function maskNonRenderedAstroRegions(source) {
     .replace(/<style\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/style\s*>/gi, maskText);
 }
 
+function maskMarkupTags(source) {
+  return source.replace(/<[^>]*>/g, maskText);
+}
+
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?)\b/i;
 
@@ -337,6 +341,7 @@ function validateSurfaces(registry, root, io) {
     const rawSource = safeRead(root, surfacePath, io);
     const source = stripComments(rawSource);
     const visibleSource = stripComments(maskNonRenderedAstroRegions(rawSource));
+    const renderedTextSource = maskMarkupTags(visibleSource);
     const expressions = [expression];
     if (surface.deferredExpressions !== undefined) {
       if (!Array.isArray(surface.deferredExpressions)) {
@@ -368,16 +373,16 @@ function validateSurfaces(registry, root, io) {
       }
     }
     registeredExpressions.set(surfacePath, expressions);
-    const expressionOffsets = literalOccurrences(visibleSource, expression);
+    const expressionOffsets = literalOccurrences(renderedTextSource, expression);
     if (expressionOffsets.length === 0) {
       refuse(
         'MISSING_EXPRESSION',
         `${surfacePath} does not contain expression ${JSON.stringify(expression)}`,
       );
     }
-    const lines = visibleSource.split(/\r?\n/);
+    const lines = renderedTextSource.split(/\r?\n/);
     for (const offset of expressionOffsets) {
-      const line = lineAtOffset(visibleSource, offset);
+      const line = lineAtOffset(renderedTextSource, offset);
       if (!hasLabelNearLine(lines, label, line)) {
         refuse(
           'MISSING_COHORT_LABEL',
@@ -386,7 +391,9 @@ function validateSurfaces(registry, root, io) {
       }
     }
 
-    const provenanceCount = literalOccurrences(visibleSource, provenance).length;
+    const provenanceCount = visibleSource
+      .split(/\r?\n/)
+      .filter((line) => line.trim() === provenance).length;
     if (provenanceCount !== 1) {
       refuse(
         'INVALID_PROVENANCE_COUNT',
