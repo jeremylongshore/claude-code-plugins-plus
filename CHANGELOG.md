@@ -21,6 +21,8 @@
   source commit's separately documented evidence-corpus size.
 - **docs(counts):** mark the documentation CTA's retained totals as historical
   copy and distinguish grading thresholds from corpus counts.
+- **docs(counts):** record the completed E1.6 count-cohort inventory and
+  closure evidence.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.

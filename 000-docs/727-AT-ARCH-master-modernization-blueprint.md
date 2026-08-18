@@ -1212,6 +1212,11 @@ a live total. The grading page now identifies its numeric bands as `quality-rule
 than a corpus count. Both paths remain path-level deferred in the checker because neither is a
 current canonical cohort.
 
+**E1.6 closure candidate (2026-08-18).** The completed count-contract slices now classify every
+discovered numeric surface as one of the five canonical cohorts or an explicit local/historical
+deferred class. Closure evidence is filed in AAR 769; Beads/Dolt remains the authority for the
+final bead state.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**
