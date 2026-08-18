@@ -198,8 +198,12 @@ function buildBlock(catalog) {
   for (const slug of ordered) {
     const meta = metaFor(slug);
     const count = byCategory.get(slug).length;
+    // Deep link to the category's id anchor on /plugins — that page renders a
+    // section per category with id={category}. A query parameter was wrong
+    // here: /plugins never reads one, so every ?category= link showed the
+    // full unfiltered page (review finding on PR #1262).
     lines.push(
-      `| ${meta.emoji} | [${meta.label}](https://tonsofskills.com/plugins?category=${encodeURIComponent(slug)}) | ${count} |`,
+      `| ${meta.emoji} | [${meta.label}](https://tonsofskills.com/plugins#${encodeURIComponent(slug)}) | ${count} |`,
     );
   }
   lines.push('');
@@ -220,7 +224,7 @@ function buildScaleBlock({ plugins, skills, agents }, categoryCount) {
     '| Count | Cohort | Reproduce with |',
     '| ----: | ------ | -------------- |',
     `| ${grouped(plugins)} | catalog plugins (catalog-entry cohort) | \`node scripts/generate-readme-toc.mjs\` over \`marketplace.extended.json\` |`,
-    `| ${grouped(skills)} | marketplace-visible skills (distinct) | \`resolveCorpus('marketplace-visible')\` via \`pnpm run measure:e1\` |`,
+    `| ${grouped(skills)} | marketplace-visible skills (distinct) | \`node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"\` |`,
     `| ${grouped(agents)} | agent definitions in plugins | \`git ls-files 'plugins/**' \\| grep '/agents/.*\\.md'\` |`,
     `| ${categoryCount} | plugin categories | \`ls -d plugins/*/\` |`,
     '',
@@ -232,22 +236,39 @@ function buildScaleBlock({ plugins, skills, agents }, categoryCount) {
 // an absent report renders the honest zero state, never a blank.
 function buildCertBlock() {
   const reportPath = join(ROOT, 'certification-report.json');
-  let body;
+  // Only a genuinely ABSENT report renders the not-yet-certified state. A
+  // present-but-malformed report must fail the generator loudly — treating it
+  // as absent would hide a broken certification pipeline behind an honest-
+  // looking zero state (review finding on PR #1262).
+  let raw;
   try {
-    const report = JSON.parse(readFileSync(reportPath, 'utf-8'));
-    const certified = Number(report?.certified ?? 0);
-    const pending = Number(report?.pending ?? 0);
-    body =
-      `Certification status from \`certification-report.json\`: ` +
-      `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
-      `claim with retained evidence — never a self-approved badge.`;
-  } catch {
-    body =
+    raw = readFileSync(reportPath, 'utf-8');
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+    const body =
       '**Not yet certified.** The certification program (tiers T0–T4 with retained, ' +
       'hash-matched evidence) is a later epic of the platform blueprint; until its report ' +
       'exists, no artifact on this surface claims a tier. This line is rendered from the ' +
       'absence of `certification-report.json` — honestly, not cosmetically.';
+    return [CERT_START, '', body, '', CERT_END].join('\n');
   }
+  let report;
+  try {
+    report = JSON.parse(raw);
+  } catch (err) {
+    throw new Error(`certification-report.json exists but is unparseable: ${err.message}`);
+  }
+  const { certified, pending } = report ?? {};
+  const validCount = (n) => Number.isInteger(n) && n >= 0;
+  if (!validCount(certified) || !validCount(pending)) {
+    throw new Error(
+      'certification-report.json exists but certified/pending are not non-negative integers — refusing to render a coerced number',
+    );
+  }
+  const body =
+    `Certification status from \`certification-report.json\`: ` +
+    `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
+    `claim with retained evidence — never a self-approved badge.`;
   return [CERT_START, '', body, '', CERT_END].join('\n');
 }
 

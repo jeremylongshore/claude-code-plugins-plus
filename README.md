@@ -55,12 +55,12 @@ ccpi install devops-automation-pack
 
 Every number below names the cohort it counts and the command that reproduces it — an unlabeled count is how a corpus ends up with five contradictory answers to "how many skills."
 
-| Count | Cohort                                 | Reproduce with                                                          |
-| ----: | -------------------------------------- | ----------------------------------------------------------------------- |
-|   468 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json` |
-| 3,069 | marketplace-visible skills (distinct)  | `resolveCorpus('marketplace-visible')` via `pnpm run measure:e1`        |
-|   347 | agent definitions in plugins           | `git ls-files 'plugins/**' \| grep '/agents/.*\.md'`                    |
-|    19 | plugin categories                      | `ls -d plugins/*/`                                                      |
+| Count | Cohort                                 | Reproduce with                                                                                                          |
+| ----: | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+|   468 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
+| 3,069 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
+|   347 | agent definitions in plugins           | `git ls-files 'plugins/**' \| grep '/agents/.*\.md'`                                                                    |
+|    19 | plugin categories                      | `ls -d plugins/*/`                                                                                                      |
 
 <!-- SCALE:END -->
 
@@ -113,27 +113,27 @@ Five real questions, five doors — each resolves to a live, generated surface, 
 
 The 19 categories below link into the live marketplace. Plugin counts are the catalog-entry cohort — regenerated from `marketplace.extended.json` by this generator; the catalog itself lives on [tonsofskills.com](https://tonsofskills.com), never in this file (§ 6A of the platform blueprint).
 
-|     | Category                                                                     | Plugins |
-| --- | ---------------------------------------------------------------------------- | ------: |
-| 🤖  | [AI & Machine Learning](https://tonsofskills.com/plugins?category=ai-ml)     |      36 |
-| 🎭  | [AI Agents & Agency](https://tonsofskills.com/plugins?category=ai-agency)    |      10 |
-| 🔌  | [API Development](https://tonsofskills.com/plugins?category=api-development) |      26 |
-| 💼  | [Business Tools](https://tonsofskills.com/plugins?category=business-tools)   |      21 |
-| 👥  | [Community](https://tonsofskills.com/plugins?category=community)             |      24 |
-| ₿   | [Crypto & Web3](https://tonsofskills.com/plugins?category=crypto)            |      27 |
-| 💾  | [Database](https://tonsofskills.com/plugins?category=database)               |      26 |
-| 🎨  | [Design](https://tonsofskills.com/plugins?category=design)                   |       9 |
-| 🔧  | [DevOps & Infrastructure](https://tonsofskills.com/plugins?category=devops)  |      36 |
-| 📚  | [Examples & Templates](https://tonsofskills.com/plugins?category=examples)   |       5 |
-| 🧩  | [MCP Servers](https://tonsofskills.com/plugins?category=mcp)                 |      16 |
-| 📦  | [Packages](https://tonsofskills.com/plugins?category=packages)               |       5 |
-| ⚡  | [Performance](https://tonsofskills.com/plugins?category=performance)         |      25 |
-| ✅  | [Productivity](https://tonsofskills.com/plugins?category=productivity)       |      31 |
-| 🎁  | [SaaS Skill Packs](https://tonsofskills.com/plugins?category=saas-packs)     |     106 |
-| 🔐  | [Security](https://tonsofskills.com/plugins?category=security)               |      27 |
-| ✨  | [Skill Enhancers](https://tonsofskills.com/plugins?category=skill-enhancers) |       9 |
-| 🧪  | [Testing](https://tonsofskills.com/plugins?category=testing)                 |      28 |
-| 📁  | [Analytics](https://tonsofskills.com/plugins?category=analytics)             |       1 |
+|     | Category                                                            | Plugins |
+| --- | ------------------------------------------------------------------- | ------: |
+| 🤖  | [AI & Machine Learning](https://tonsofskills.com/plugins#ai-ml)     |      36 |
+| 🎭  | [AI Agents & Agency](https://tonsofskills.com/plugins#ai-agency)    |      10 |
+| 🔌  | [API Development](https://tonsofskills.com/plugins#api-development) |      26 |
+| 💼  | [Business Tools](https://tonsofskills.com/plugins#business-tools)   |      21 |
+| 👥  | [Community](https://tonsofskills.com/plugins#community)             |      24 |
+| ₿   | [Crypto & Web3](https://tonsofskills.com/plugins#crypto)            |      27 |
+| 💾  | [Database](https://tonsofskills.com/plugins#database)               |      26 |
+| 🎨  | [Design](https://tonsofskills.com/plugins#design)                   |       9 |
+| 🔧  | [DevOps & Infrastructure](https://tonsofskills.com/plugins#devops)  |      36 |
+| 📚  | [Examples & Templates](https://tonsofskills.com/plugins#examples)   |       5 |
+| 🧩  | [MCP Servers](https://tonsofskills.com/plugins#mcp)                 |      16 |
+| 📦  | [Packages](https://tonsofskills.com/plugins#packages)               |       5 |
+| ⚡  | [Performance](https://tonsofskills.com/plugins#performance)         |      25 |
+| ✅  | [Productivity](https://tonsofskills.com/plugins#productivity)       |      31 |
+| 🎁  | [SaaS Skill Packs](https://tonsofskills.com/plugins#saas-packs)     |     106 |
+| 🔐  | [Security](https://tonsofskills.com/plugins#security)               |      27 |
+| ✨  | [Skill Enhancers](https://tonsofskills.com/plugins#skill-enhancers) |       9 |
+| 🧪  | [Testing](https://tonsofskills.com/plugins#testing)                 |      28 |
+| 📁  | [Analytics](https://tonsofskills.com/plugins#analytics)             |       1 |
 
 <!-- AUTO-TOC:END -->
 
