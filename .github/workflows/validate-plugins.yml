@@ -1553,6 +1553,15 @@ jobs:
       - name: Reject the retired domain on actionable surfaces
         run: pnpm run validate:dead-domain
 
+      # External stats artifacts (stars, npm downloads, installs) must declare
+      # their own max_age_hours freshness bound (blueprint 727 E1.10). PR CI
+      # enforces the declaration structurally; age breaches stay advisory here
+      # (time-based, unrelated to PR content) and fail hard in the daily
+      # update-npm-stats workflow instead. The homepage independently refuses
+      # to render an out-of-bound number as current.
+      - name: Check external stats artifacts declare freshness bounds
+        run: pnpm run validate:stats-freshness
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

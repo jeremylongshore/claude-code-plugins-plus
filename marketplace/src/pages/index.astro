@@ -24,20 +24,33 @@ const totalAgents = searchIndex.stats.totalAgents || 0;
 // Install count (skills.sh, cumulative) and star count (GitHub). Both are
 // refreshed daily by .github/workflows/update-npm-stats.yml and both fail soft:
 // if the data file has never been written the line simply does not render.
-let skillsStats: { installs?: number; installsDisplay?: string } = {};
+//
+// E1.10 freshness bound: each artifact declares max_age_hours alongside
+// generatedAt, and an out-of-bound artifact renders exactly like a missing one
+// — the page must never present a stale external number as current. The bound
+// is checked at build time (this is a static build), which is also when the
+// number would otherwise be baked into the page.
+type StatsEnvelope = { generatedAt?: string; max_age_hours?: number };
+function isFresh(stats: StatsEnvelope): boolean {
+  if (typeof stats.generatedAt !== 'string' || typeof stats.max_age_hours !== 'number')
+    return false;
+  const ageMs = Date.now() - Date.parse(stats.generatedAt);
+  return Number.isFinite(ageMs) && ageMs <= stats.max_age_hours * 3_600_000;
+}
+let skillsStats: StatsEnvelope & { installs?: number; installsDisplay?: string } = {};
 try {
   skillsStats = (await import('../data/skills-stats.json')).default as typeof skillsStats;
 } catch {
   skillsStats = {};
 }
-let githubStats: { stars?: number; starsDisplay?: string } = {};
+let githubStats: StatsEnvelope & { stars?: number; starsDisplay?: string } = {};
 try {
   githubStats = (await import('../data/github-stats.json')).default as typeof githubStats;
 } catch {
   githubStats = {};
 }
-const installsDisplay = skillsStats.installsDisplay ?? '';
-const starsDisplay = githubStats.starsDisplay ?? '';
+const installsDisplay = isFresh(skillsStats) ? (skillsStats.installsDisplay ?? '') : '';
+const starsDisplay = isFresh(githubStats) ? (githubStats.starsDisplay ?? '') : '';
 
 // Marketplace version, read from the REPO ROOT package.json at build time so
 // the printed version can never drift from the released one.
