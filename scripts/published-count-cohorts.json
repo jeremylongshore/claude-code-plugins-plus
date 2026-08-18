@@ -56,7 +56,15 @@
       "expression": "_rawStats.totalSkills",
       "label": "marketplace-visible",
       "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
-      "status": "enforced"
+      "status": "enforced",
+      "deferredExpressions": [
+        {
+          "expression": "item.skillCount",
+          "classification": "entity-local",
+          "owner": "E1.6 follow-up",
+          "reason": "This client-rendered value counts skills attached to one search result, not the marketplace-visible corpus; its local-entity label remains a separate contract."
+        }
+      ]
     },
     {
       "path": "marketplace/src/pages/compare-marketplaces.astro",
@@ -83,7 +91,21 @@
       "expression": "_rawCatalog.count",
       "label": "marketplace-visible",
       "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
-      "status": "enforced"
+      "status": "enforced",
+      "deferredExpressions": [
+        {
+          "expression": "${shown}",
+          "classification": "query-result-local",
+          "owner": "E1.6 follow-up",
+          "reason": "This client-rendered value is the current filtered result count, not a stable corpus cohort; its query-local label remains a separate contract."
+        },
+        {
+          "expression": "${total}",
+          "classification": "query-result-local",
+          "owner": "E1.6 follow-up",
+          "reason": "This client-rendered value is the current query total paired with the filtered result count, not an independently governed corpus cohort."
+        }
+      ]
     },
     {
       "path": "scripts/generate-og-image.mjs",

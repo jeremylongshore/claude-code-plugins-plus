@@ -51,6 +51,19 @@ function stripComments(source) {
     .replace(/(?<!:)\/\/.*$/gm, '');
 }
 
+const OTHER_POPULATION_NOUN =
+  /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?)\b/i;
+
+function namesOtherPopulation(intervening) {
+  const skillModifiersRemoved = intervening.replace(/\b(?:agent|plugin)\s+skills\b/gi, 'skills');
+  return OTHER_POPULATION_NOUN.test(skillModifiersRemoved);
+}
+
+function blocksSkillAssociation(intervening, adjacentNoun = '') {
+  const combined = `${intervening}${adjacentNoun}`;
+  return namesOtherPopulation(combined) || /(?:^|\s)(?:const|let|var)\s|[;`]/i.test(intervening);
+}
+
 function validateRepositoryPath(value, field) {
   nonemptyString(value, field);
   if (
@@ -237,6 +250,7 @@ function validateSurfaces(registry, root, io) {
   const exactPaths = new Set();
   const foldedPaths = new Map();
   const registeredPaths = new Set();
+  const registeredExpressions = new Map();
   let enforced = 0;
   let deferred = 0;
 
@@ -272,6 +286,7 @@ function validateSurfaces(registry, root, io) {
         refuse('UNKNOWN_COHORT', `${field}.cohort is unknown: ${JSON.stringify(surface.cohort)}`);
       }
       safeRead(root, surfacePath, io);
+      registeredExpressions.set(surfacePath, null);
       deferred += 1;
       continue;
     }
@@ -299,6 +314,37 @@ function validateSurfaces(registry, root, io) {
     }
 
     const source = stripComments(safeRead(root, surfacePath, io));
+    const expressions = [expression];
+    if (surface.deferredExpressions !== undefined) {
+      if (!Array.isArray(surface.deferredExpressions)) {
+        refuse('INVALID_DEFERRED_EXPRESSION', `${field}.deferredExpressions must be an array`);
+      }
+      for (const [claimIndex, claim] of surface.deferredExpressions.entries()) {
+        const claimField = `${field}.deferredExpressions[${claimIndex}]`;
+        if (!claim || typeof claim !== 'object' || Array.isArray(claim)) {
+          refuse('INVALID_DEFERRED_EXPRESSION', `${claimField} must be an object`);
+        }
+        const claimExpression = nonemptyString(claim.expression, `${claimField}.expression`);
+        nonemptyString(claim.classification, `${claimField}.classification`);
+        nonemptyString(claim.owner, `${claimField}.owner`);
+        nonemptyString(claim.reason, `${claimField}.reason`);
+        if (expressions.includes(claimExpression)) {
+          refuse(
+            'DUPLICATE_SURFACE_EXPRESSION',
+            `${surfacePath} registers expression more than once: ${JSON.stringify(claimExpression)}`,
+          );
+        }
+        if (literalOccurrences(source, claimExpression).length === 0) {
+          refuse(
+            'MISSING_EXPRESSION',
+            `${surfacePath} does not contain deferred expression ${JSON.stringify(claimExpression)}`,
+          );
+        }
+        expressions.push(claimExpression);
+        deferred += 1;
+      }
+    }
+    registeredExpressions.set(surfacePath, expressions);
     const expressionOffsets = literalOccurrences(source, expression);
     if (expressionOffsets.length === 0) {
       refuse(
@@ -345,21 +391,22 @@ function validateSurfaces(registry, root, io) {
       const surfacePath = validateRepositoryPath(candidate, `${field}.paths[${pathIndex}]`);
       registerSurfacePath(surfacePath);
       safeRead(root, surfacePath, io);
+      registeredExpressions.set(surfacePath, null);
       deferred += 1;
     }
   }
 
-  return { enforced, deferred, registeredPaths };
+  return { enforced, deferred, registeredExpressions, registeredPaths };
 }
 
-export function containsPublishedSkillCount(source, discovery) {
+export function findPublishedSkillCountEvidence(source, discovery) {
   let searchable = stripComments(source);
-  for (const phrase of discovery.ignoredPhrases) searchable = searchable.replaceAll(phrase, '');
+  for (const phrase of discovery.ignoredPhrases) {
+    searchable = searchable.replaceAll(phrase, ' '.repeat(phrase.length));
+  }
   const terms = discovery.dynamicTerms.join('|');
-  const dynamicExpression = new RegExp(
-    String.raw`\$?\{[^}\n]{0,200}(?:${terms})[^}\n]{0,200}\}`,
-    'i',
-  );
+  const dynamicExpressionSource = String.raw`\$?\{[^}\n]{0,200}(?:${terms})[^}\n]{0,200}\}`;
+  const evidence = [];
   const numericBefore = /\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b[^\n]{0,100}$/i;
   const folded = searchable.toLocaleLowerCase('en-US');
   const noun = discovery.noun.toLocaleLowerCase('en-US');
@@ -371,20 +418,114 @@ export function containsPublishedSkillCount(source, discovery) {
     const previous = folded[found - 1] ?? '';
     const next = folded[offset] ?? '';
     if (/[a-z0-9_]/i.test(previous) || /[a-z0-9_]/i.test(next)) continue;
-    const before = searchable.slice(Math.max(0, found - 240), found);
+    const beforeStart = Math.max(0, found - 240);
+    const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
-    if (
-      dynamicExpression.test(before) ||
-      dynamicExpression.test(after) ||
-      numericBefore.test(before)
-    ) {
-      return true;
+    const beforeCandidates = [];
+    const afterCandidates = [];
+
+    for (const match of before.matchAll(new RegExp(dynamicExpressionSource, 'gi'))) {
+      const absolute = beforeStart + match.index;
+      const intervening = searchable.slice(absolute + match[0].length, found);
+      beforeCandidates.push({
+        distance: found - (absolute + match[0].length),
+        // Include the noun itself so modifiers such as "Agent Skills" are
+        // treated as one skill label rather than an intervening agent count.
+        interveningOtherPopulation: blocksSkillAssociation(intervening, noun),
+        kind: 'dynamic',
+        line: lineAtOffset(searchable, found),
+        nounOffset: found,
+        offset: absolute,
+        sameLine: !intervening.includes('\n'),
+        text: match[0],
+      });
     }
+    for (const match of after.matchAll(new RegExp(dynamicExpressionSource, 'gi'))) {
+      const intervening = searchable.slice(offset, offset + match.index);
+      afterCandidates.push({
+        distance: match.index,
+        interveningOtherPopulation: blocksSkillAssociation(intervening),
+        kind: 'dynamic',
+        line: lineAtOffset(searchable, found),
+        nounOffset: found,
+        offset: offset + match.index,
+        sameLine: !intervening.includes('\n'),
+        text: match[0],
+      });
+    }
+    const numeric = numericBefore.exec(before);
+    if (numeric) {
+      const absolute = beforeStart + numeric.index;
+      const intervening = searchable.slice(absolute + numeric[0].length, found);
+      beforeCandidates.push({
+        distance: found - (absolute + numeric[0].length),
+        interveningOtherPopulation: blocksSkillAssociation(intervening, noun),
+        kind: 'numeric',
+        line: lineAtOffset(searchable, found),
+        nounOffset: found,
+        offset: absolute,
+        sameLine: !intervening.includes('\n'),
+        text: numeric[0],
+      });
+    }
+
+    beforeCandidates.sort(
+      (left, right) => left.distance - right.distance || left.offset - right.offset,
+    );
+    afterCandidates.sort(
+      (left, right) => left.distance - right.distance || left.offset - right.offset,
+    );
+    const sameLineBefore = beforeCandidates.filter(
+      (candidate) => candidate.sameLine && !candidate.interveningOtherPopulation,
+    );
+    const sameLineAfter = afterCandidates.filter(
+      (candidate) => candidate.sameLine && !candidate.interveningOtherPopulation,
+    );
+    if (sameLineBefore.length > 0) {
+      evidence.push(...sameLineBefore);
+      continue;
+    }
+    if (sameLineAfter.length > 0) {
+      evidence.push(...sameLineAfter);
+      continue;
+    }
+
+    const crossLine = [...beforeCandidates, ...afterCandidates].filter(
+      (candidate) => !candidate.interveningOtherPopulation,
+    );
+    const skillNamed = crossLine.filter((candidate) =>
+      foldedText(candidate.text).includes('skill'),
+    );
+    const nearest =
+      (skillNamed.length === 1 ? skillNamed[0] : undefined) ??
+      crossLine.sort(
+        (left, right) => left.distance - right.distance || left.offset - right.offset,
+      )[0];
+    if (nearest) {
+      evidence.push(nearest);
+    }
+  }
+  return evidence;
+}
+
+export function containsPublishedSkillCount(source, discovery) {
+  return findPublishedSkillCountEvidence(source, discovery).length > 0;
+}
+
+function evidenceMatchesExpression(candidateText, expression) {
+  let offset = 0;
+  while (offset <= candidateText.length) {
+    const found = candidateText.indexOf(expression, offset);
+    if (found === -1) return false;
+    const before = candidateText[found - 1] ?? '';
+    const after = candidateText[found + expression.length] ?? '';
+    if (!/[A-Za-z0-9_$]/.test(before) && !/[A-Za-z0-9_$]/.test(after)) return true;
+    offset = found + Math.max(expression.length, 1);
   }
   return false;
 }
 
-function discoverPublicCountSources(root, registeredPaths, discovery, io) {
+function discoverPublicCountSources(root, registeredPaths, registeredExpressions, discovery, io) {
   let discovered = 0;
   const pending = [...discovery.roots];
 
@@ -415,12 +556,27 @@ function discoverPublicCountSources(root, registeredPaths, discovery, io) {
       }
       if (!entry.name.endsWith(discovery.extension)) continue;
       const source = safeRead(root, relativePath, io);
-      if (!containsPublishedSkillCount(source, discovery)) continue;
+      const countEvidence = findPublishedSkillCountEvidence(source, discovery);
+      if (countEvidence.length === 0) continue;
       discovered += 1;
       if (!registeredPaths.has(relativePath)) {
         refuse(
           'UNREGISTERED_PUBLIC_COUNT',
-          `${relativePath} contains totalSkills but is not registered`,
+          `${relativePath} contains a published skill count but is not registered`,
+        );
+      }
+      const allowedExpressions = registeredExpressions.get(relativePath);
+      if (allowedExpressions === null) continue;
+      const unregistered = countEvidence.find(
+        (candidate) =>
+          !allowedExpressions.some((expression) =>
+            evidenceMatchesExpression(candidate.text, expression),
+          ),
+      );
+      if (unregistered) {
+        refuse(
+          'UNREGISTERED_PUBLIC_COUNT_EXPRESSION',
+          `${relativePath}:${lineAtOffset(source, unregistered.offset)} contains an unregistered published skill-count expression`,
         );
       }
     }
@@ -467,6 +623,7 @@ export function checkPublishedCountCohorts({ root = process.cwd(), io = fs } = {
     report.discovered = discoverPublicCountSources(
       repositoryRoot,
       surfaces.registeredPaths,
+      surfaces.registeredExpressions,
       discovery,
       io,
     );

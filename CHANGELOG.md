@@ -16,8 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   meaning rather than one variable name across public Astro pages and components, rejecting
   unregistered literals, collection lengths, catalog counts, unsafe or unreadable paths,
   comment-only labels, and missing provenance without adding another required status context. The
-  first inventory finds 51 public Astro source files; 46 non-global or point-in-time sources plus
-  the generated social image remain explicit, owned deferrals for later E1.6 slices.
+  first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
+  plus the generated social image remain path-level deferrals; three local/query expressions on
+  otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
+  detected expression to its exact registration, so adding a second count to a registered page
+  cannot bypass cohort governance.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 

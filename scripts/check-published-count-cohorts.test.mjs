@@ -140,6 +140,102 @@ test('nested public count sources are discovered and cannot evade registration',
   equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
 });
 
+test('registered pages cannot add a second unregistered count expression', () => {
+  const dynamic = makeFixture({
+    source: `${validSource()}<div>{catalog.count} unlabelled skills</div>\n`,
+  });
+  equal(findingCode(check(dynamic)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+
+  const numeric = makeFixture({
+    source: `${validSource()}<div>1,372 unlabelled skills</div>\n`,
+  });
+  equal(findingCode(check(numeric)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+
+  const identifierPrefix = makeFixture({
+    surfaces: [enforcedSurface({ expression: 'stats.totalSkills' })],
+    source: [
+      '---',
+      '---',
+      '<strong>{stats.totalSkills}</strong> marketplace-visible skills',
+      '<strong>{stats.totalSkillsOverride}</strong> unlabelled skills',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(identifierPrefix)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+});
+
+test('registered pages may explicitly defer a second owned count expression', () => {
+  const deferredExpression = {
+    expression: 'catalog.count',
+    classification: 'entity-local',
+    owner: 'fixture owner',
+    reason: 'This fixture count is local to one entity.',
+  };
+  const root = makeFixture({
+    surfaces: [enforcedSurface({ deferredExpressions: [deferredExpression] })],
+    source: `${validSource()}<div>{catalog.count} entity-local skills</div>\n`,
+  });
+  equal(check(root).allow, true);
+  equal(check(root).deferred, 1);
+
+  const malformed = makeFixture({
+    surfaces: [enforcedSurface({ deferredExpressions: [{ ...deferredExpression, owner: '' }] })],
+    source: `${validSource()}<div>{catalog.count} entity-local skills</div>\n`,
+  });
+  equal(findingCode(check(malformed)), 'INVALID_REGISTRY');
+});
+
+test('every expression in a combined shown-of-total skill count needs registration', () => {
+  const root = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [
+          {
+            expression: 'total',
+            classification: 'query-result-local',
+            owner: 'fixture owner',
+            reason: 'The total belongs to the query-result cohort.',
+          },
+        ],
+      }),
+    ],
+    source: `${validSource()}<p>Showing \${shown} of \${total} skills</p>\n`,
+  });
+  equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
+});
+
+test('Agent Skills is a skill label, not an intervening agent population', () => {
+  const root = makeFixture({
+    surfaces: [enforcedSurface({ expression: 'stats.totalSkills', label: 'marketplace-visible' })],
+    source: [
+      '---',
+      '---',
+      '<span>{stats.totalSkills}</span>',
+      '<span>marketplace-visible Agent Skills</span>',
+      '<span>{stats.totalAgents}</span>',
+      '<span>Custom Agents</span>',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  const report = check(root);
+  equal(report.allow, true, JSON.stringify(report));
+});
+
+test('a generic Skills title cannot capture a count across a script declaration boundary', () => {
+  const root = makeFixture();
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/explore.astro'),
+    [
+      "const pageTitle = 'Explore Plugins & Skills';",
+      'const pageDescription = `Search all ${stats.totalPlugins} catalog plugins`;',
+      '',
+    ].join('\n'),
+  );
+  equal(check(root).allow, true);
+});
+
 test('identifier-independent discovery refuses catalog counts, collection lengths, and literals', () => {
   for (const source of [
     '<strong>{_rawCatalog.count}</strong> skills\n',
