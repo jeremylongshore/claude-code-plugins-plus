@@ -152,11 +152,92 @@
       "classification": "entity-local",
       "owner": "E1.6 follow-up",
       "reason": "These values count skills attached to one card, spotlight, plugin, or result item; a local-entity labeling contract is still required before E1.6 closes.",
-      "paths": [
-        "marketplace/src/components/KillerSkills.astro",
-        "marketplace/src/components/PluginCard.astro",
-        "marketplace/src/pages/community.astro",
-        "marketplace/src/pages/plugins/[name].astro"
+      "paths": [],
+      "claims": [
+        {
+          "path": "marketplace/src/components/KillerSkills.astro",
+          "expression": "skillCount.toLocaleString()",
+          "classification": "entity-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The spotlight card reports the skill count attached to one highlighted entity.",
+          "label": "entity-local skills",
+          "provenance": "data-count-provenance=\"entity-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "data-count-provenance=\"entity-local\">{skillCount.toLocaleString()} entity-local skills",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/components/PluginCard.astro",
+          "expression": "skillCount.toLocaleString()",
+          "classification": "entity-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The reusable card reports the skill count attached to one plugin or skill entity when supplied.",
+          "label": "entity-local skills",
+          "provenance": "data-count-provenance=\"entity-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "data-count-provenance=\"entity-local\">{skillCount.toLocaleString()} entity-local skills",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/pages/community.astro",
+          "expression": "itemSkillCount.toLocaleString()",
+          "classification": "entity-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The hall-of-fame card reports the skill count attached to one spotlight entity.",
+          "label": "entity-local skills",
+          "provenance": "data-count-provenance=\"entity-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "<span class=\"hof-skills\" data-count-provenance=\"entity-local\">{itemSkillCount.toLocaleString()} entity-local skills",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/pages/community.astro",
+          "expression": "contributorPluginCount.toLocaleString()",
+          "classification": "contributor-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The contributor card reports plugins attributed to one contributor, not a corpus-wide skill cohort.",
+          "label": "contributor-local plugin",
+          "provenance": "data-count-provenance=\"contributor-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "data-count-provenance=\"contributor-local\">{contributorPluginCount.toLocaleString()} contributor-local plugin",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/pages/plugins/[name].astro",
+          "expression": "pluginSkillCount.toLocaleString()",
+          "classification": "plugin-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The plugin detail page reports skills belonging to one plugin, not the marketplace corpus.",
+          "label": "plugin-local skills",
+          "provenance": "data-count-provenance=\"plugin-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "Skills ({pluginSkillCount.toLocaleString()}) <small data-count-provenance=\"plugin-local\">plugin-local skills",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/pages/plugins/[name].astro",
+          "expression": "componentSkillCount.toLocaleString()",
+          "classification": "plugin-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The plugin catalog metadata reports skills attached to one plugin when the detail page has no global skills list for that plugin.",
+          "label": "plugin-local skills",
+          "provenance": "data-count-provenance=\"plugin-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "<span class=\"stat-value\" data-count-provenance=\"plugin-local\">{componentSkillCount.toLocaleString()}</span>\n              <span class=\"stat-label\">plugin-local skills",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        }
       ]
     },
     {

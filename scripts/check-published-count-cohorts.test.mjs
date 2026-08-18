@@ -15,7 +15,7 @@ afterEach(() => {
   for (const root of temporaryRoots.splice(0)) fs.rmSync(root, { recursive: true, force: true });
 });
 
-function registryFor(surfaces) {
+function registryFor(surfaces, deferredGroups = []) {
   return {
     schemaVersion: 1,
     cohorts: Object.fromEntries(
@@ -37,7 +37,7 @@ function registryFor(surfaces) {
       ignoredPhrases: ['Tons of Skills'],
     },
     surfaces,
-    deferredGroups: [],
+    deferredGroups,
   };
 }
 
@@ -65,7 +65,12 @@ function validSource() {
   ].join('\n');
 }
 
-function makeFixture({ surfaces = [enforcedSurface()], source = validSource() } = {}) {
+function makeFixture({
+  surfaces = [enforcedSurface()],
+  source = validSource(),
+  deferredGroups = [],
+  files = {},
+} = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'published-count-cohorts-'));
   temporaryRoots.push(root);
   fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
@@ -73,9 +78,14 @@ function makeFixture({ surfaces = [enforcedSurface()], source = validSource() } 
   fs.mkdirSync(path.join(root, 'marketplace/src/components'), { recursive: true });
   fs.writeFileSync(
     path.join(root, 'scripts/published-count-cohorts.json'),
-    `${JSON.stringify(registryFor(surfaces), null, 2)}\n`,
+    `${JSON.stringify(registryFor(surfaces, deferredGroups), null, 2)}\n`,
   );
   fs.writeFileSync(path.join(root, 'marketplace/src/pages/index.astro'), source);
+  for (const [relativePath, contents] of Object.entries(files)) {
+    const absolutePath = path.join(root, relativePath);
+    fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+    fs.writeFileSync(absolutePath, contents);
+  }
   return root;
 }
 
@@ -902,6 +912,133 @@ test('deferred groups require exact owned paths and share duplicate protection',
   ];
   fs.writeFileSync(missingRegistryPath, JSON.stringify(missingRegistry));
   equal(findingCode(check(missing)), 'INVALID_DEFERRED_GROUP');
+});
+
+test('deferred-group claims enforce exact rendered contracts and fail closed', () => {
+  const claim = {
+    path: 'marketplace/src/pages/group-claim.astro',
+    expression: 'catalog.count',
+    classification: 'local-entity',
+    owner: 'E1.6 follow-up',
+    reason: 'The count belongs to one local entity.',
+    label: 'local-entity skills',
+    provenance: 'data-count-provenance="local-entity"',
+    command: 'node scripts/check-published-count-cohorts.mjs --json',
+    contract:
+      '<span data-count-provenance="local-entity">{catalog.count} local-entity skills</span>',
+    sink: 'metaParts.push',
+    function: 'renderCard',
+    call: 'renderCard',
+  };
+  const group = {
+    classification: 'local-entity',
+    owner: 'E1.6 follow-up',
+    reason: 'Fixture deferred group.',
+    claims: [claim],
+  };
+  const source = validSource();
+  const claimSource =
+    '<span data-count-provenance="local-entity">{catalog.count} local-entity skills</span>\n';
+
+  const valid = makeFixture({
+    deferredGroups: [group],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(check(valid).allow, true);
+  equal(check(valid).deferred, 1);
+  equal(check(valid).discovered, 2);
+
+  const duplicateRenderedExpression = makeFixture({
+    deferredGroups: [group],
+    source,
+    files: {
+      [claim.path]: `${claimSource}<span>{catalog.count} unlabelled skills</span>\n`,
+    },
+  });
+  equal(findingCode(check(duplicateRenderedExpression)), 'AMBIGUOUS_LOCAL_EXPRESSION');
+
+  const missingExpression = makeFixture({
+    deferredGroups: [
+      {
+        ...group,
+        claims: [
+          {
+            ...claim,
+            expression: 'missing.count',
+            contract: claim.contract.replace('catalog.count', 'missing.count'),
+          },
+        ],
+      },
+    ],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(missingExpression)), 'MISSING_EXPRESSION');
+
+  const labelMismatch = makeFixture({
+    deferredGroups: [{ ...group, claims: [{ ...claim, label: 'other skills' }] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(labelMismatch)), 'LOCAL_LABEL_MISMATCH');
+
+  const provenanceMismatch = makeFixture({
+    deferredGroups: [{ ...group, claims: [{ ...claim, provenance: 'other-provenance' }] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(provenanceMismatch)), 'LOCAL_PROVENANCE_MISMATCH');
+
+  const duplicateClaim = makeFixture({
+    deferredGroups: [{ ...group, claims: [claim, { ...claim }] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(duplicateClaim)), 'DUPLICATE_SURFACE_EXPRESSION');
+
+  const deadContract = makeFixture({
+    deferredGroups: [group],
+    source: [
+      validSource().trimEnd(),
+      '<script>',
+      'const dead = `<span data-count-provenance="local-entity">{catalog.count} local-entity skills</span>`;',
+      '</script>',
+      '',
+    ].join('\n'),
+    files: {
+      [claim.path]: [
+        '<script>',
+        'const dead = `<span data-count-provenance="local-entity">{catalog.count} local-entity skills</span>`;',
+        '</script>',
+        '',
+      ].join('\n'),
+    },
+  });
+  equal(findingCode(check(deadContract)), 'INVALID_LOCAL_CONTRACT');
+
+  const malformedClaim = makeFixture({
+    deferredGroups: [{ ...group, claims: [null] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(malformedClaim)), 'INVALID_DEFERRED_GROUP_CLAIM');
+
+  const missingRequiredField = { ...claim };
+  delete missingRequiredField.function;
+  const missingField = makeFixture({
+    deferredGroups: [{ ...group, claims: [missingRequiredField] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(missingField)), 'INVALID_REGISTRY');
+
+  const unsafeClaim = makeFixture({
+    deferredGroups: [{ ...group, claims: [{ ...claim, path: '../group-claim.astro' }] }],
+    source,
+    files: { [claim.path]: claimSource },
+  });
+  equal(findingCode(check(unsafeClaim)), 'UNSAFE_PATH');
 });
 
 test('canonical cohort shape and resolver commands fail closed on contradiction', () => {
