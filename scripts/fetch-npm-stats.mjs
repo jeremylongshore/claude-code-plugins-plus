@@ -384,6 +384,9 @@ async function main() {
 
   const agg = {
     generatedAt: new Date().toISOString(),
+    // Freshness bound consumed by scripts/check-stats-freshness.mjs (see
+    // fetch-github-stats.mjs for the rationale behind 72h).
+    max_age_hours: 72,
     publishedCount: published.length,
     establishedCount: established.length,
     candidateCount: names.length,
