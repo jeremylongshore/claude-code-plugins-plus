@@ -1206,6 +1206,12 @@ research analyses now display a shared 2026-03-04 snapshot boundary tied to repo
 `256db0b3eabc0669ffe75bc16f19053820c3e91c`. Their historical values remain deferred and are not
 presented as current marketplace totals.
 
+**E1.6 live-copy/quality-rule continuation (2026-08-18).** The documentation CTA now identifies
+its retained 418-plugin and 2,834-skill wording as `historical-copy` and explicitly says it is not
+a live total. The grading page now identifies its numeric bands as `quality-rule` policy rather
+than a corpus count. Both paths remain path-level deferred in the checker because neither is a
+current canonical cohort.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**
