@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CompareBar from '../components/CompareBar.astro';
 import CrossProperty from '../components/CrossProperty.astro';
+import CountProvenance from '../components/CountProvenance.astro';
 import PluginCard from '../components/PluginCard.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -19,7 +20,7 @@ const _rawStats = JSON.parse(
 ).stats;
 
 const pageTitle = 'Explore Plugins & Skills';
-const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_rawStats.totalSkills} skills in one place. Find exactly what you need with instant fuzzy search.`;
+const pageDescription = `Search all ${_rawStats.totalPlugins} catalog plugins and ${_rawStats.totalSkills} marketplace-visible skills in one place. Find exactly what you need with instant fuzzy search.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -368,13 +369,15 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       </div>
       <div class="hero-stat">
         <span>{_rawStats.totalSkills}</span>
-        Skills
+        Marketplace-visible skills
       </div>
       <div class="hero-stat">
         <span>{_rawStats.categories.length}</span>
         Categories
       </div>
     </div>
+
+    <CountProvenance cohort="marketplace-visible" />
   </section>
 
   <!-- Filters Bar -->

@@ -170,6 +170,12 @@ jobs:
       - name: Verify README Killer-Skill block is in sync with spotlights.json
         run: node scripts/render-spotlight.mjs --check
 
+      # Epic 1.6: a public skill total is valid only when its cohort and exact
+      # corpus-resolver command travel with it. Keep this inside the existing
+      # validate job so the gate adds no fourth required status context.
+      - name: Validate published count cohort labels
+        run: pnpm run validate:published-count-cohorts
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."

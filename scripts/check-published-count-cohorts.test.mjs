@@ -1,0 +1,331 @@
+import { deepEqual, equal, match } from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterEach, test } from 'node:test';
+import { checkPublishedCountCohorts, parseArguments } from './check-published-count-cohorts.mjs';
+
+const script = fileURLToPath(new URL('./check-published-count-cohorts.mjs', import.meta.url));
+const temporaryRoots = [];
+const cohorts = ['marketplace-visible', 'graded', 'first-party', 'curated-mirror', 'curriculum'];
+
+afterEach(() => {
+  for (const root of temporaryRoots.splice(0)) fs.rmSync(root, { recursive: true, force: true });
+});
+
+function registryFor(surfaces) {
+  return {
+    schemaVersion: 1,
+    cohorts: Object.fromEntries(
+      cohorts.map((cohort) => [
+        cohort,
+        {
+          label: cohort,
+          description: `${cohort} fixture cohort`,
+          command: `node scripts/corpus-resolver.mjs --cohort ${cohort} --json`,
+          resolver: 'scripts/corpus-resolver.mjs',
+        },
+      ]),
+    ),
+    discovery: {
+      root: 'marketplace/src/pages',
+      extension: '.astro',
+      token: 'totalSkills',
+    },
+    surfaces,
+  };
+}
+
+function enforcedSurface(overrides = {}) {
+  return {
+    path: 'marketplace/src/pages/index.astro',
+    classification: 'live-global',
+    cohort: 'marketplace-visible',
+    expression: 'fmt(totalSkills)',
+    label: 'marketplace-visible skills',
+    provenance: '<CountProvenance cohort="marketplace-visible" />',
+    status: 'enforced',
+    ...overrides,
+  };
+}
+
+function validSource() {
+  return [
+    '---',
+    'const totalSkills = 3068;',
+    '---',
+    '<span>marketplace-visible skills</span>',
+    '<strong>{fmt(totalSkills)}</strong>',
+    '<CountProvenance cohort="marketplace-visible" />',
+    '',
+  ].join('\n');
+}
+
+function makeFixture({ surfaces = [enforcedSurface()], source = validSource() } = {}) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'published-count-cohorts-'));
+  temporaryRoots.push(root);
+  fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'marketplace/src/pages'), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, 'scripts/published-count-cohorts.json'),
+    `${JSON.stringify(registryFor(surfaces), null, 2)}\n`,
+  );
+  fs.writeFileSync(path.join(root, 'marketplace/src/pages/index.astro'), source);
+  return root;
+}
+
+function check(root, io) {
+  return checkPublishedCountCohorts({ root, ...(io ? { io } : {}) });
+}
+
+function findingCode(report) {
+  equal(report.allow, false);
+  equal(report.decision, 'REFUSE');
+  equal(report.findings.length, 1);
+  return report.findings[0].code;
+}
+
+test('all enforced surfaces pass with structured counts', () => {
+  const root = makeFixture({
+    surfaces: [
+      enforcedSurface(),
+      {
+        path: 'marketplace/src/pages/deferred.astro',
+        classification: 'research',
+        cohort: 'graded',
+        status: 'deferred',
+        owner: 'E1.10',
+        reason: 'External snapshot requires a separate authority decision.',
+      },
+    ],
+  });
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/deferred.astro'),
+    '<p>Research only</p>\n',
+  );
+
+  deepEqual(check(root), {
+    schemaVersion: 1,
+    cohorts: 5,
+    enforced: 1,
+    deferred: 1,
+    discovered: 1,
+    allow: true,
+    decision: 'ALLOW',
+    findings: [],
+  });
+});
+
+test('red proof: an unlabeled, unregistered live count admitted before this gate is refused', () => {
+  const root = makeFixture();
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/legacy.astro'),
+    '<strong>{totalSkills}</strong>\n',
+  );
+  equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
+});
+
+test('nested public count sources are discovered and cannot evade registration', () => {
+  const root = makeFixture();
+  fs.mkdirSync(path.join(root, 'marketplace/src/pages/nested'), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/nested/legacy.astro'),
+    '<strong>{totalSkills}</strong>\n',
+  );
+  equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
+});
+
+test('symlinked entries inside the discovery tree fail closed', () => {
+  const root = makeFixture();
+  fs.symlinkSync(
+    path.join(root, 'marketplace/src/pages/index.astro'),
+    path.join(root, 'marketplace/src/pages/linked.astro'),
+  );
+  equal(findingCode(check(root)), 'SYMLINK_PATH');
+});
+
+test('missing cohort label near an expression is refused', () => {
+  const root = makeFixture({
+    source: validSource().replace('marketplace-visible skills', 'skills'),
+  });
+  equal(findingCode(check(root)), 'MISSING_COHORT_LABEL');
+});
+
+test('comment-only labels and provenance do not satisfy the visible contract', () => {
+  const root = makeFixture({
+    source: [
+      '---',
+      'const totalSkills = 3068;',
+      '---',
+      '<!-- marketplace-visible skills -->',
+      '<strong>{fmt(totalSkills)}</strong>',
+      '<!-- <CountProvenance cohort="marketplace-visible" /> -->',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(root)), 'MISSING_COHORT_LABEL');
+});
+
+test('missing or duplicated provenance is refused', () => {
+  const missing = makeFixture({
+    source: validSource().replace('<CountProvenance cohort="marketplace-visible" />', ''),
+  });
+  equal(findingCode(check(missing)), 'INVALID_PROVENANCE_COUNT');
+
+  const duplicated = makeFixture({ source: `${validSource()}${validSource().split('\n')[5]}\n` });
+  equal(findingCode(check(duplicated)), 'INVALID_PROVENANCE_COUNT');
+});
+
+test('unknown cohorts fail closed for enforced and deferred surfaces', () => {
+  const enforced = makeFixture({ surfaces: [enforcedSurface({ cohort: 'everything' })] });
+  equal(findingCode(check(enforced)), 'UNKNOWN_COHORT');
+
+  const deferred = makeFixture({
+    surfaces: [
+      {
+        path: 'marketplace/src/pages/index.astro',
+        classification: 'historical',
+        cohort: 'everything',
+        status: 'deferred',
+        owner: 'E1.6',
+        reason: 'Awaiting classification.',
+      },
+    ],
+  });
+  equal(findingCode(check(deferred)), 'UNKNOWN_COHORT');
+});
+
+test('exact duplicate and NFC/casefold-colliding surface paths are refused', () => {
+  const duplicate = makeFixture({ surfaces: [enforcedSurface(), enforcedSurface()] });
+  equal(findingCode(check(duplicate)), 'DUPLICATE_SURFACE_PATH');
+
+  const collision = makeFixture({
+    surfaces: [
+      enforcedSurface({ path: 'marketplace/src/pages/INDEX.astro' }),
+      enforcedSurface({
+        path: 'marketplace/src/pages/index.astro',
+        expression: 'other(totalSkills)',
+      }),
+    ],
+  });
+  fs.copyFileSync(
+    path.join(collision, 'marketplace/src/pages/index.astro'),
+    path.join(collision, 'marketplace/src/pages/INDEX.astro'),
+  );
+  equal(findingCode(check(collision)), 'CASEFOLD_SURFACE_COLLISION');
+
+  const composedPath = 'marketplace/src/pages/caf\u00e9.astro';
+  const decomposedPath = 'marketplace/src/pages/cafe\u0301.astro';
+  const deferred = (surfacePath) => ({
+    path: surfacePath,
+    classification: 'historical',
+    status: 'deferred',
+    owner: 'E1.6',
+    reason: 'Unicode collision fixture.',
+  });
+  const unicode = makeFixture({ surfaces: [deferred(composedPath), deferred(decomposedPath)] });
+  fs.writeFileSync(path.join(unicode, composedPath), '<p>Composed</p>\n');
+  fs.writeFileSync(path.join(unicode, decomposedPath), '<p>Decomposed</p>\n');
+  equal(findingCode(check(unicode)), 'CASEFOLD_SURFACE_COLLISION');
+});
+
+test('malformed registry JSON is refused', () => {
+  const root = makeFixture();
+  fs.writeFileSync(path.join(root, 'scripts/published-count-cohorts.json'), '{ nope');
+  equal(findingCode(check(root)), 'MALFORMED_JSON');
+});
+
+test('absolute paths, traversal, and non-normal paths are refused', () => {
+  for (const unsafePath of [
+    '/tmp/index.astro',
+    '../index.astro',
+    'marketplace/src/pages/../index.astro',
+    'C:\\index.astro',
+  ]) {
+    const root = makeFixture({ surfaces: [enforcedSurface({ path: unsafePath })] });
+    equal(findingCode(check(root)), 'UNSAFE_PATH', unsafePath);
+  }
+});
+
+test('symlinked registry, surface, and surface ancestor are refused', () => {
+  const registryRoot = makeFixture();
+  const externalRegistry = path.join(registryRoot, 'registry-outside.json');
+  fs.renameSync(path.join(registryRoot, 'scripts/published-count-cohorts.json'), externalRegistry);
+  fs.symlinkSync(externalRegistry, path.join(registryRoot, 'scripts/published-count-cohorts.json'));
+  equal(findingCode(check(registryRoot)), 'SYMLINK_PATH');
+
+  const surfaceRoot = makeFixture();
+  const externalSurface = path.join(surfaceRoot, 'surface-outside.astro');
+  fs.renameSync(path.join(surfaceRoot, 'marketplace/src/pages/index.astro'), externalSurface);
+  fs.symlinkSync(externalSurface, path.join(surfaceRoot, 'marketplace/src/pages/index.astro'));
+  equal(findingCode(check(surfaceRoot)), 'SYMLINK_PATH');
+
+  const ancestorRoot = makeFixture();
+  const pages = path.join(ancestorRoot, 'marketplace/src/pages');
+  const externalPages = path.join(ancestorRoot, 'external-pages');
+  fs.renameSync(pages, externalPages);
+  fs.symlinkSync(externalPages, pages, 'dir');
+  equal(findingCode(check(ancestorRoot)), 'SYMLINK_PATH');
+});
+
+test('deterministically injected EACCES refuses an unreadable surface', () => {
+  const root = makeFixture();
+  const blocked = path.join(root, 'marketplace/src/pages/index.astro');
+  const io = {
+    ...fs,
+    readFileSync(candidate, encoding) {
+      if (candidate === blocked) {
+        const error = new Error('injected EACCES');
+        error.code = 'EACCES';
+        throw error;
+      }
+      return fs.readFileSync(candidate, encoding);
+    },
+  };
+  const report = check(root, io);
+  equal(findingCode(report), 'UNREADABLE_FILE');
+  match(report.findings[0].message, /injected EACCES/);
+});
+
+test('deferred surfaces require an owner and reason and never count as enforced', () => {
+  for (const omitted of ['owner', 'reason']) {
+    const deferred = {
+      path: 'marketplace/src/pages/index.astro',
+      classification: 'historical',
+      status: 'deferred',
+      owner: 'E1.6',
+      reason: 'Frozen historical evidence.',
+    };
+    delete deferred[omitted];
+    const root = makeFixture({ surfaces: [deferred], source: '<p>Historical</p>\n' });
+    equal(findingCode(check(root)), 'INVALID_REGISTRY', omitted);
+  }
+});
+
+test('canonical cohort shape and resolver commands fail closed on contradiction', () => {
+  const root = makeFixture();
+  const registryPath = path.join(root, 'scripts/published-count-cohorts.json');
+  const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  registry.cohorts.graded.command =
+    'node scripts/corpus-resolver.mjs --cohort marketplace-visible --json';
+  fs.writeFileSync(registryPath, JSON.stringify(registry));
+  equal(findingCode(check(root)), 'INVALID_COHORT_COMMAND');
+});
+
+test('CLI rejects unknown arguments and emits JSON for a fixture root', () => {
+  const root = makeFixture();
+  const unknown = spawnSync(process.execPath, [script, '--wat'], { encoding: 'utf8' });
+  equal(unknown.status, 1);
+  match(unknown.stderr, /UNKNOWN_ARGUMENT: unknown argument: --wat/);
+
+  const result = spawnSync(process.execPath, [script, '--root', root, '--json'], {
+    encoding: 'utf8',
+  });
+  equal(result.status, 0, result.stderr);
+  const report = JSON.parse(result.stdout);
+  equal(report.decision, 'ALLOW');
+  equal(report.enforced, 1);
+  deepEqual(parseArguments(['--root', root, '--json']), { root, json: true });
+});

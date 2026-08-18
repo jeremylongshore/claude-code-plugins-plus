@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CountProvenance from '../components/CountProvenance.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Live catalog counts — same build-time source the homepage and explore use.
@@ -659,13 +660,14 @@ const seo = {
           </div>
           <div class="stat-item">
             <div class="stat-number">{totalSkills.toLocaleString('en-US')}</div>
-            <div class="stat-label">AI Skills</div>
+            <div class="stat-label">Marketplace-visible AI Skills</div>
           </div>
           <div class="stat-item">
             <div class="stat-number">100%</div>
             <div class="stat-label">Open Source</div>
           </div>
         </div>
+        <CountProvenance cohort="marketplace-visible" />
       </div>
     </section>
 

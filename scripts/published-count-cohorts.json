@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "cohorts": {
+    "marketplace-visible": {
+      "label": "marketplace-visible",
+      "description": "Tracked plugin skills reachable from canonical marketplace catalog source roots; hidden adapter trees, the root curriculum, and the curated mirror are excluded.",
+      "command": "node scripts/corpus-resolver.mjs --cohort marketplace-visible --json",
+      "resolver": "scripts/corpus-resolver.mjs"
+    },
+    "graded": {
+      "label": "graded",
+      "description": "Tracked plugin, curriculum, and legacy skills eligible for the grading harness after governed exclusions.",
+      "command": "node scripts/corpus-resolver.mjs --cohort graded --json",
+      "resolver": "scripts/corpus-resolver.mjs"
+    },
+    "first-party": {
+      "label": "first-party",
+      "description": "Tracked plugin skills whose filesystem ancestry has no applicable upstream source record.",
+      "command": "node scripts/corpus-resolver.mjs --cohort first-party --json",
+      "resolver": "scripts/corpus-resolver.mjs"
+    },
+    "curated-mirror": {
+      "label": "curated-mirror",
+      "description": "Tracked skills in skills/.curated whose membership exactly matches the governed curated manifest.",
+      "command": "node scripts/corpus-resolver.mjs --cohort curated-mirror --json",
+      "resolver": "scripts/corpus-resolver.mjs"
+    },
+    "curriculum": {
+      "label": "curriculum",
+      "description": "Tracked skills in the numbered root curriculum, excluding experimental material.",
+      "command": "node scripts/corpus-resolver.mjs --cohort curriculum --json",
+      "resolver": "scripts/corpus-resolver.mjs"
+    }
+  },
+  "discovery": {
+    "root": "marketplace/src/pages",
+    "extension": ".astro",
+    "token": "totalSkills"
+  },
+  "surfaces": [
+    {
+      "path": "marketplace/src/pages/index.astro",
+      "classification": "live-global",
+      "cohort": "marketplace-visible",
+      "expression": "fmt(totalSkills)",
+      "label": "marketplace-visible",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "status": "enforced"
+    },
+    {
+      "path": "marketplace/src/pages/explore.astro",
+      "classification": "live-global",
+      "cohort": "marketplace-visible",
+      "expression": "_rawStats.totalSkills",
+      "label": "marketplace-visible",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "status": "enforced"
+    },
+    {
+      "path": "marketplace/src/pages/compare-marketplaces.astro",
+      "classification": "live-global",
+      "cohort": "marketplace-visible",
+      "expression": "stats.totalSkills",
+      "label": "marketplace-visible",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "status": "enforced"
+    },
+    {
+      "path": "marketplace/src/pages/sponsor.astro",
+      "classification": "live-global",
+      "cohort": "marketplace-visible",
+      "expression": "totalSkills.toLocaleString",
+      "label": "Marketplace-visible",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "status": "enforced"
+    },
+    {
+      "path": "marketplace/src/pages/cowork.astro",
+      "classification": "packaged",
+      "status": "deferred",
+      "owner": "E1.6 follow-up",
+      "reason": "The Cowork archive count comes from cowork-manifest.json and currently has hard-coded fallbacks; it is not the marketplace-visible cohort."
+    },
+    {
+      "path": "marketplace/src/components/CoworkGrid.astro",
+      "classification": "packaged",
+      "status": "deferred",
+      "owner": "E1.6 follow-up",
+      "reason": "Per-bundle counts are derived from Cowork manifest entries and require a separate packaged-cohort contract."
+    },
+    {
+      "path": "scripts/generate-og-image.mjs",
+      "classification": "social-image",
+      "status": "deferred",
+      "owner": "E1.6 follow-up",
+      "reason": "The generated image must carry a legible cohort and reproduction locator without duplicating the registry wording."
+    }
+  ]
+}
