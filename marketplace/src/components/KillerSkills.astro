@@ -4,6 +4,8 @@ import spotlightData from '../data/spotlights.json';
 const skill = spotlightData.spotlight;
 const week = spotlightData.week;
 const isExternal = skill.link.startsWith('http');
+const skillCount = skill.skillCount;
+const hasSkillCount = typeof skillCount === 'number' && skillCount > 0;
 ---
 
 <div
@@ -14,6 +16,9 @@ const isExternal = skill.link.startsWith('http');
   data-week={week}
   data-external={isExternal ? 'true' : 'false'}
 >
+  {hasSkillCount && (
+    <p class="killer-skills" data-count-provenance="entity-local">{skillCount.toLocaleString()} entity-local skills</p>
+  )}
   <div class="killer-top">
     <span class="killer-category">{skill.category}</span>
   </div>
@@ -42,9 +47,6 @@ const isExternal = skill.link.startsWith('http');
       />
       <span class="killer-author-name">{skill.author}</span>
     </a>
-    {skill.skillCount && (
-      <span class="killer-skills">{skill.skillCount} skills</span>
-    )}
   </div>
 
   <div class="killer-actions">

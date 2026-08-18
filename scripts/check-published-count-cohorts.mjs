@@ -702,10 +702,17 @@ function validateDeferredClaim({
       `${surfacePath} registers expression more than once: ${JSON.stringify(claimExpression)}`,
     );
   }
-  if (literalOccurrences(rawSource, claimExpression).length === 0) {
+  const expressionOccurrences = literalOccurrences(rawSource, claimExpression);
+  if (expressionOccurrences.length === 0) {
     refuse(
       'MISSING_EXPRESSION',
       `${surfacePath} does not contain deferred expression ${JSON.stringify(claimExpression)}`,
+    );
+  }
+  if (expressionOccurrences.length !== 1) {
+    refuse(
+      'AMBIGUOUS_LOCAL_EXPRESSION',
+      `${surfacePath} contains deferred expression ${JSON.stringify(claimExpression)} ${expressionOccurrences.length} times; each claim must bind exactly one rendered occurrence`,
     );
   }
   const contractOccurrences = renderedContractOccurrences(
@@ -981,16 +988,24 @@ function validateSurfaces(registry, root, io) {
       registeredExpressions.set(surfacePath, null);
       deferred += 1;
     }
+    const claimExpressionsByPath = new Map();
     for (const [claimIndex, claim] of claims.entries()) {
       const claimField = `${field}.claims[${claimIndex}]`;
       if (!claim || typeof claim !== 'object' || Array.isArray(claim)) {
         refuse('INVALID_DEFERRED_GROUP_CLAIM', `${claimField} must be an object`);
       }
       const surfacePath = validateRepositoryPath(claim.path, `${claimField}.path`);
-      registerSurfacePath(surfacePath);
+      let expressions = claimExpressionsByPath.get(surfacePath);
+      if (!expressions) {
+        if (exactPaths.has(surfacePath)) {
+          refuse('DUPLICATE_SURFACE_PATH', `duplicate surface path: ${surfacePath}`);
+        }
+        registerSurfacePath(surfacePath);
+        expressions = [];
+        claimExpressionsByPath.set(surfacePath, expressions);
+      }
       const rawSource = safeRead(root, surfacePath, io);
       const visibleSource = stripComments(maskNonRenderedAstroRegions(rawSource));
-      const expressions = [];
       const claimExpression = validateDeferredClaim({
         claim,
         claimField,
@@ -1371,7 +1386,7 @@ function discoverPublicCountSources(root, registeredPaths, registeredExpressions
       if (unregistered) {
         refuse(
           'UNREGISTERED_PUBLIC_COUNT_EXPRESSION',
-          `${relativePath}:${lineAtOffset(source, unregistered.offset)} contains an unregistered published skill-count expression`,
+          `${relativePath}:${lineAtOffset(source, unregistered.offset)} contains an unregistered published skill-count expression ${JSON.stringify(unregistered.text)}`,
         );
       }
     }

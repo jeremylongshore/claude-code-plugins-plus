@@ -949,6 +949,15 @@ test('deferred-group claims enforce exact rendered contracts and fail closed', (
   equal(check(valid).deferred, 1);
   equal(check(valid).discovered, 2);
 
+  const duplicateRenderedExpression = makeFixture({
+    deferredGroups: [group],
+    source,
+    files: {
+      [claim.path]: `${claimSource}<span>{catalog.count} unlabelled skills</span>\n`,
+    },
+  });
+  equal(findingCode(check(duplicateRenderedExpression)), 'AMBIGUOUS_LOCAL_EXPRESSION');
+
   const missingExpression = makeFixture({
     deferredGroups: [
       {
@@ -986,7 +995,7 @@ test('deferred-group claims enforce exact rendered contracts and fail closed', (
     source,
     files: { [claim.path]: claimSource },
   });
-  equal(findingCode(check(duplicateClaim)), 'DUPLICATE_SURFACE_PATH');
+  equal(findingCode(check(duplicateClaim)), 'DUPLICATE_SURFACE_EXPRESSION');
 
   const deadContract = makeFixture({
     deferredGroups: [group],

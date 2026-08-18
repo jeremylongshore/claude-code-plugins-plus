@@ -5,6 +5,9 @@
 - **fix(marketplace):** label search-result and entity-local skill counts with
   their local population and provenance instead of presenting them as global
   marketplace totals.
+- **fix(marketplace):** make spotlight, plugin, community, and plugin-detail
+  counts identify their entity-local population with fail-closed registry
+  contracts; numeric values are unchanged.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.
