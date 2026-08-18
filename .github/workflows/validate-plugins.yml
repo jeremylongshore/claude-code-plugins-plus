@@ -1587,6 +1587,14 @@ jobs:
       - name: Assert documented ci-required contract and schema version equal the code
         run: pnpm run validate:doc-fact-assertions
 
+      # The root README is a governed landing contract (blueprint 727 § 6A):
+      # frozen install slug verbatim, no bare integers outside generated
+      # blocks, four artifact classes defined, five navigation doors live, no
+      # adapterless harness named as supported. R1/R2 (no per-plugin rows,
+      # byte budgets) are enforced inside generate-readme-toc.mjs itself.
+      - name: Check the README landing contract
+        run: pnpm run validate:readme-contract
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid
