@@ -4,14 +4,14 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.33.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-467-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-3068-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-468-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-3069-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-467 plugins, 3,068 skills, 347 agents, 30 community contributors — validated and ready to install.
+468 plugins, 3,069 skills, 347 agents, 30 community contributors — validated and ready to install.
 
 ## Why this repo
 
@@ -127,7 +127,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 | 👥  | [Community](#community)                            |      24 |
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      27 |
 | 💾  | [Database](#database)                              |      26 |
-| 🎨  | [Design](#design)                                  |       8 |
+| 🎨  | [Design](#design)                                  |       9 |
 | 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      16 |
@@ -375,11 +375,12 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### Design
 
-🎨 **8 plugins** · category slug: `design`
+🎨 **9 plugins** · category slug: `design`
 
 | Plugin                            | Description                                                                                                                                 |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `brand-forge`                     | Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is…    |
+| `uizze`                           | STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard…     |
 | `wondelai-design-everyday-things` | Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered…  |
 | `wondelai-hooked-ux`              | Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize…  |
 | `wondelai-ios-hig-design`         | Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and…      |
@@ -1071,7 +1072,7 @@ The [GitHub wiki](https://github.com/jeremylongshore/claude-code-plugins-plus-sk
 
 ## FAQ
 
-**What is this?** A Claude Code plugin marketplace: 467 plugins, 3,068 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
+**What is this?** A Claude Code plugin marketplace: 468 plugins, 3,069 skills, 347 agents, all validated against the [AgentSkills.io](https://agentskills.io/specification) open standard and the [Claude Code skills](https://code.claude.com/docs/en/skills) / [plugins](https://code.claude.com/docs/en/plugins) references.
 
 **How do I install a plugin?** Use the CLI (`ccpi install <name>`) or Claude Code's built-in `/plugin marketplace add jeremylongshore/claude-code-plugins` followed by `/plugin install <name>@claude-code-plugins-plus`. The [Quick Start](#quick-start) covers both paths.
 

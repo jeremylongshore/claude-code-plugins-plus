@@ -51,6 +51,14 @@ jobs:
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
 
+      # Supply-chain parity gate (blueprint 727 E1.12): every source registered
+      # in sources.yaml must have a reviewed sources.lock.json baseline, and no
+      # lock entry may outlive its registration. A registered-but-unlocked
+      # source syncs unpinned (the uizze gap); an orphaned lock entry is a
+      # stale approval. Full-repo and deterministic — runs on every event.
+      - name: Assert sources.yaml and sources.lock.json key parity
+        run: pnpm run validate:sources-lock-parity
+
       # Supply-chain intake gate: sources.yaml include-anchoring ratchet.
       # An include starting with neither '/' nor '**' is silently auto-prefixed
       # '**/' by the sync engine's matcher and matches at ANY depth — the
