@@ -2,34 +2,35 @@
 
 # 718-AT-ARCH — Source-of-Truth Map with GENERATED Tiers (Mission 01)
 
-**Captured:** 2026-08-11 @ `4358a65a3`
+**Captured:** 2026-08-11 @ `4358a65a3` · **Counts refreshed:** 2026-08-18 @ `07eefb5d6` (E2.6)
 
 ## Tier A — derived + gated (safe GENERATED label; drift caught by CI)
 
-| Artifact | Generator | Gate |
-| --- | --- | --- |
-| `.claude-plugin/marketplace.json` (471 entries) | `pnpm run sync-marketplace` | `validate` job: regenerate-then-diff |
-| README `AUTO-TOC` + `KILLER-SKILL` blocks | `generate-readme-toc.mjs` / `render-spotlight.mjs` | gated `--check` |
-| `skills/.curated/**` (1,921 SKILL.md) | `promote-to-curated.py` | `promote-curated-check` (in `ci-required`) |
-| `.github/CODEOWNERS` generated block | generator | `codeowners-drift` |
+| Artifact                                        | Generator                                          | Gate                                       |
+| ----------------------------------------------- | -------------------------------------------------- | ------------------------------------------ |
+| `.claude-plugin/marketplace.json` (468 entries) | `pnpm run sync-marketplace`                        | `validate` job: regenerate-then-diff       |
+| README `AUTO-TOC` + `KILLER-SKILL` blocks       | `generate-readme-toc.mjs` / `render-spotlight.mjs` | gated `--check`                            |
+| `skills/.curated/**` (1,915 SKILL.md)           | `promote-to-curated.py`                            | `promote-curated-check` (in `ci-required`) |
+| `.github/CODEOWNERS` generated block            | generator                                          | `codeowners-drift`                         |
 
 ## Tier B — derived but UNGATED (~31 M; drift invisible to CI)
 
-| Artifact | Size | Note |
-| --- | --- | --- |
-| `marketplace/src/data/skills-catalog.json` | 25.6 M | byte-identical twin in `public/data` (`cmp`-verified) |
-| `marketplace/src/data/unified-search-index.json` | 2.9 M | byte-identical twin in `public/data` (`cmp`-verified) |
-| other `marketplace/src/data/*.json` | — | no drift gate except the cowork manifest |
-| `npm/github/skills-stats.json` + README `NPM-STATS` | — | ungated |
-| freshie `grades.csv` / `grade-histogram.json` / `reports/` | — | run-stamp inconsistency recorded in doc 723 |
+| Artifact                                                   | Size   | Note                                                  |
+| ---------------------------------------------------------- | ------ | ----------------------------------------------------- |
+| `marketplace/src/data/skills-catalog.json`                 | 25.6 M | byte-identical twin in `public/data` (`cmp`-verified) |
+| `marketplace/src/data/unified-search-index.json`           | 2.9 M  | byte-identical twin in `public/data` (`cmp`-verified) |
+| other `marketplace/src/data/*.json`                        | —      | no drift gate except the cowork manifest              |
+| `npm/github/skills-stats.json` + README `NPM-STATS`        | —      | ungated                                               |
+| freshie `grades.csv` / `grade-histogram.json` / `reports/` | —      | run-stamp inconsistency recorded in doc 723           |
 
 Duplicated bytes across the two `src`↔`public` twins: **28,460,845 B** — exactly these 2 files;
 no other data file has a twin (doc 722).
 
 ## Tier C — scaffolded-once then mutated (NOT pure GENERATED)
 
-- `plugins/**/package.json` corpus (621 manifests / 474 dirs): existence-checked only by
-  sync-marketplace; content drifts freely. Count reconciliation in doc 722.
+- `plugins/**/package.json` corpus (488 `package.json` / 622 `.claude-plugin/plugin.json` /
+  476 plugin dirs): existence-checked only by sync-marketplace; content drifts freely. Count
+  reconciliation in doc 722.
 
 ## Enforcement gaps (FIX-bead candidates — recorded, not fixed)
 
