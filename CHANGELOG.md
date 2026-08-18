@@ -1941,3 +1941,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ### Changed
 
 - Skill quality improvements to 99.9% compliance
+
+### Fixed
+
+- **Cowork manifest contract** — require generated manifest totals, use the producer's `skills`/`commands` fields, and verify emitted `checksum` values deterministically instead of inventing fallback totals or silently skipping checksum checks.

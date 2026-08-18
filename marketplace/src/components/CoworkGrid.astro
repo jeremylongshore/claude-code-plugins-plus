@@ -16,12 +16,10 @@ if (limit) {
   displayPacks = displayPacks.slice(0, limit);
 }
 
-// Try to load enriched manifest data (generated at build time)
-let manifest: any = null;
-try {
-  manifest = (await import('../data/cowork-manifest.json')).default;
-} catch {
-  // Manifest not yet generated - will show packs without sizes
+// The page build must generate this projection before the component renders.
+const manifest = (await import('../data/cowork-manifest.json')).default;
+if (!manifest || !Array.isArray(manifest.bundles) || !Array.isArray(manifest.plugins)) {
+  throw new Error('Cowork manifest is missing bundle or plugin data');
 }
 
 // Map bundle data by category for enrichment
@@ -159,13 +157,13 @@ if (manifest?.plugins) {
     const bundle = !isSaasPack ? bundleMap.get(pack.category) : null;
 
     // Determine download path and stats
-    const downloadPath = isSaasPack
-      ? (plugin?.path || `/downloads/plugins/${pack.packName}.zip`)
-      : (bundle?.path || `/downloads/bundles/${pack.category}.zip`);
+    const downloadRecord = isSaasPack ? plugin : bundle;
+    if (!downloadRecord?.path || !downloadRecord.sizeFormatted) {
+      throw new Error(`Cowork manifest has no complete download record for ${pack.id}`);
+    }
+    const downloadPath = downloadRecord.path;
     const downloadName = isSaasPack ? `${pack.packName}.zip` : `${pack.category}.zip`;
-    const sizeFormatted = isSaasPack
-      ? (plugin?.sizeFormatted || 'Loading...')
-      : (bundle?.sizeFormatted || 'Loading...');
+    const sizeFormatted = downloadRecord.sizeFormatted;
 
     return (
       <div class="cowork-card" data-pack-id={pack.id}>
@@ -184,8 +182,8 @@ if (manifest?.plugins) {
 
         {plugin && (
           <div class="cowork-stats">
-            {plugin.skillCount > 0 && <span class="cowork-stat">{plugin.skillCount} skills</span>}
-            {plugin.commandCount > 0 && <span class="cowork-stat">{plugin.commandCount} commands</span>}
+            {plugin.skills > 0 && <span class="cowork-stat">{plugin.skills} skills</span>}
+            {plugin.commands > 0 && <span class="cowork-stat">{plugin.commands} commands</span>}
           </div>
         )}
 

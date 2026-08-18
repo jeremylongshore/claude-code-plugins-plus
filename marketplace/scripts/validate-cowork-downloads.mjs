@@ -17,7 +17,7 @@
 import { readFileSync, existsSync, statSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { createHash } from 'crypto';
+import { verifyCoworkChecksum } from '../../scripts/cowork-manifest-contract.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -204,11 +204,11 @@ if (sizeIssues === 0) {
 }
 
 // ── Check 7: Checksum spot-check ────────────────────────────────────────
-console.log('\n7. Checksum spot-check (up to 10 random plugins)');
+console.log('\n7. Checksum verification (deterministic plugin sample plus all bundles)');
 if (Array.isArray(manifest.plugins)) {
-  const pluginsWithChecksums = manifest.plugins.filter(p => p.sha256 && p.path);
-  const sample = pluginsWithChecksums
-    .sort(() => Math.random() - 0.5)
+  const sample = manifest.plugins
+    .filter(p => p.path)
+    .sort((a, b) => String(a.name).localeCompare(String(b.name)))
     .slice(0, 10);
 
   let checksumFails = 0;
@@ -216,19 +216,49 @@ if (Array.isArray(manifest.plugins)) {
     const zipPath = join(DIST_DIR, plugin.path.replace(/^\//, ''));
     if (!existsSync(zipPath)) continue;
 
-    const content = readFileSync(zipPath);
-    const hash = createHash('sha256').update(content).digest('hex');
-
-    if (hash !== plugin.sha256) {
-      fail(`Checksum mismatch for ${plugin.name}: expected ${plugin.sha256}, got ${hash}`);
+    const result = verifyCoworkChecksum(zipPath, plugin, `plugin ${plugin.name}`);
+    if (!result.ok) {
+      fail(result.reason);
       checksumFails++;
     }
   }
 
   if (checksumFails === 0 && sample.length > 0) {
-    pass(`${sample.length} checksums verified`);
+    pass(`${sample.length} deterministic plugin checksums verified`);
   } else if (sample.length === 0) {
-    pass('No checksums to verify (plugins may not have sha256 field)');
+    fail('No plugin checksums available to verify');
+  }
+}
+
+if (Array.isArray(manifest.bundles)) {
+  let bundleChecksumFails = 0;
+  for (const bundle of manifest.bundles) {
+    if (!bundle.path || typeof bundle.checksum !== 'string' || bundle.checksum.length === 0) {
+      fail(`Missing checksum for bundle ${bundle.category || 'unknown'}`);
+      bundleChecksumFails++;
+      continue;
+    }
+    const bundlePath = join(DIST_DIR, bundle.path.replace(/^\//, ''));
+    if (!existsSync(bundlePath)) continue;
+    const result = verifyCoworkChecksum(
+      bundlePath,
+      bundle,
+      `bundle ${bundle.category || 'unknown'}`,
+    );
+    if (!result.ok) {
+      fail(result.reason);
+      bundleChecksumFails++;
+    }
+  }
+  if (bundleChecksumFails === 0) pass(`${manifest.bundles.length} bundle checksums verified`);
+}
+
+if (manifest.megaZip?.path) {
+  const megaPath = join(DIST_DIR, manifest.megaZip.path.replace(/^\//, ''));
+  if (existsSync(megaPath)) {
+    const result = verifyCoworkChecksum(megaPath, manifest.megaZip, 'mega-zip');
+    if (result.ok) pass('Mega-zip checksum verified');
+    else fail(result.reason);
   }
 }
 
