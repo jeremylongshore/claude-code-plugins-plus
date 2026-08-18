@@ -85,7 +85,10 @@ const jsonLd = {
     <!-- Explore CTA -->
     <section class="hub-footer-cta">
       <div class="hub-container">
-        <p>Ready to explore? <a href="/explore">Browse 418 plugins</a> or <a href="/skills">search 2,834 skills</a>.</p>
+        <p class="hub-count-note">
+          <span data-count-provenance="historical-copy"><a href="/explore">Browse 418 plugins</a> — historical-copy plugins; legacy wording, not a live total.</span>
+          <span data-count-provenance="historical-copy"><a href="/skills">Search 2,834 skills</a> — historical-copy skills; legacy wording, not a live total.</span>
+        </p>
       </div>
     </section>
   </div>
@@ -246,6 +249,10 @@ const jsonLd = {
     .hub-footer-cta p {
       font-size: 1rem;
       color: var(--text-2);
+    }
+
+    .hub-count-note span {
+      display: block;
     }
 
     .hub-footer-cta a {

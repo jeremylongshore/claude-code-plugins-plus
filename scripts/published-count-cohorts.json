@@ -1283,7 +1283,7 @@
     {
       "classification": "live-copy-or-quality-rule",
       "owner": "E1.6 follow-up",
-      "reason": "These active pages contain a stale global literal or a skill-quality threshold that the conservative discovery pass cannot safely classify as a canonical corpus cohort without a focused copy decision.",
+      "reason": "These active pages now identify their distinct surfaces: the docs CTA marks legacy historical-copy wording and the grading page marks quality-rule thresholds. Both remain path-level deferred because neither is a current canonical corpus cohort.",
       "paths": ["marketplace/src/pages/docs/index.astro", "marketplace/src/pages/grading.astro"]
     },
     {
