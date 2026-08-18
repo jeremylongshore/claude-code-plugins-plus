@@ -31,7 +31,8 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
 
     <div class="categories">
       {Object.entries(byCategory).map(([category, plugins]: [string, any]) => (
-        <div class="category-section">
+        <div class="category-section" id={category}>
+          {/* the id anchors the README's per-category deep links (blueprint § 6A R9) */}
           <h2>{category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h2>
           <div class="plugins-grid">
             {plugins.map((plugin: any) => (
