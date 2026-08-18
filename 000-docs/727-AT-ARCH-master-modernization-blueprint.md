@@ -1201,6 +1201,11 @@ registered, and the checker reports `ALLOW cohorts=5 enforced=6 deferred=91 disc
 The values remain unchanged; research, stale/live-copy, README, and mirrored populations remain
 deferred.
 
+**E1.6 research-snapshot continuation (2026-08-18).** The research landing page and six published
+research analyses now display a shared 2026-03-04 snapshot boundary tied to repository commit
+`256db0b3eabc0669ffe75bc16f19053820c3e91c`. Their historical values remain deferred and are not
+presented as current marketplace totals.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**
