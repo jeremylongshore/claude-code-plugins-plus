@@ -235,7 +235,7 @@ function exactRenderedTagOccurrences(source, expected) {
 }
 
 const OTHER_POPULATION_NOUN =
-  /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?)\b/i;
+  /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?|stars?|seconds?|minutes?|hours?|days?|weeks?|months?|years?)\b/i;
 const COUNT_AFTER_SEPARATOR = /^[\s:;=()[\]–—-]*$/u;
 
 function namesOtherPopulation(intervening) {
@@ -270,6 +270,11 @@ function codeOutsideQuotedStrings(value) {
   return result;
 }
 
+function containsMarkupOutsideQuotedStrings(value) {
+  const code = codeOutsideQuotedStrings(value);
+  return /<[A-Za-z!/][^>]*>/u.test(code);
+}
+
 function nounIsInsideUrlToken(source, nounOffset) {
   let tokenStart = nounOffset - 1;
   while (tokenStart >= 0 && !/[\s"'`<>{}()[\]=]/u.test(source[tokenStart])) {
@@ -284,7 +289,9 @@ function crossLineGlueAllowsCount(intervening) {
     .replace(/[^a-z0-9+]+/g, ' ')
     .trim();
   if (visibleWords === '') return true;
-  return /^(?:(?:marketplace visible|first party|curated mirror|curriculum|graded|agent|ai|total|available|published|verified|all|showing|of)(?:\s+|$))+$/u.test(
+  const words = visibleWords.split(/\s+/);
+  if (words.length > 4) return false;
+  return !/\b(?:where|these|those|this|that|come|comes|came|from|what|why|how|learn|browse|explore|built|made|create|use|using|for|with|and|or|but|to|in|on|at|by|as|about)\b/u.test(
     visibleWords,
   );
 }
@@ -689,7 +696,30 @@ function outerBracedExpressions(source, rawTextRegions) {
     // sits inside a compound template, the outer expression is retained too,
     // so an inner registered count cannot grant authority to the compound.
   }
-  return expressions;
+  const renderedExpressions = expressions.filter(
+    (expression) =>
+      !expressions.some(
+        (outer) =>
+          outer.start < expression.start &&
+          expression.end <= outer.end &&
+          !containsMarkupOutsideQuotedStrings(source.slice(outer.start, expression.start)),
+      ),
+  );
+  return renderedExpressions.map((expression) => {
+    const renderContainer = expressions
+      .filter(
+        (outer) =>
+          outer.start < expression.start &&
+          expression.end <= outer.end &&
+          containsMarkupOutsideQuotedStrings(source.slice(outer.start, expression.start)),
+      )
+      .sort((left, right) => left.end - left.start - (right.end - right.start))[0];
+    return {
+      ...expression,
+      renderContainerStart: renderContainer?.start,
+      renderContainerEnd: renderContainer?.end,
+    };
+  });
 }
 
 export function findPublishedSkillCountEvidence(source, discovery) {
@@ -719,6 +749,9 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const next = folded[offset] ?? '';
     if (/[a-z0-9_]/i.test(previous) || /[a-z0-9_]/i.test(next)) continue;
     if (previous === '/' || next === '/' || nounIsInsideUrlToken(searchable, found)) continue;
+    const nounInMarkup = renderedMarkupRegions.some(
+      (region) => region.start <= found && offset <= region.end,
+    );
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
@@ -730,6 +763,15 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         (region) => region.start <= expression.start && expression.end <= region.end,
       );
       const expressionOwnsNoun = expression.start < found && expression.end > offset;
+      const renderContainerExcludesNoun =
+        expression.renderContainerStart !== undefined &&
+        !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
+      const incompatibleMarkupAssociation =
+        !expressionOwnsNoun &&
+        (expressionInMarkup ||
+          nounInMarkup ||
+          containsMarkupOutsideQuotedStrings(expression.text) ||
+          renderContainerExcludesNoun);
       if (
         expressionOwnsNoun &&
         expression.text.includes('${') &&
@@ -756,7 +798,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         // Include the noun itself so modifiers such as "Agent Skills" are
         // treated as one skill label rather than an intervening agent count.
         interveningOtherPopulation:
-          blocksSkillAssociation(intervening, noun) || (expressionInMarkup && !expressionOwnsNoun),
+          blocksSkillAssociation(intervening, noun) || incompatibleMarkupAssociation,
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
@@ -771,12 +813,24 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         (region) => region.start <= expression.start && expression.end <= region.end,
       );
       const expressionOwnsNoun = expression.start < found && expression.end > offset;
+      const renderContainerExcludesNoun =
+        expression.renderContainerStart !== undefined &&
+        !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
+      const incompatibleMarkupAssociation =
+        !expressionOwnsNoun &&
+        (expressionInMarkup ||
+          nounInMarkup ||
+          containsMarkupOutsideQuotedStrings(expression.text) ||
+          renderContainerExcludesNoun);
       const intervening = searchable.slice(offset, expression.start);
+      const trailing = searchable.slice(expression.end, expression.end + 48);
       afterCandidates.push({
         crossLineGlueAllowed: crossLineGlueAllowsCount(intervening),
         distance: expression.start - offset,
         interveningOtherPopulation:
-          blocksSkillAssociation(intervening) || (expressionInMarkup && !expressionOwnsNoun),
+          blocksSkillAssociation(intervening) ||
+          incompatibleMarkupAssociation ||
+          namesOtherPopulation(trailing),
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
@@ -830,10 +884,16 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       (left, right) => left.distance - right.distance || left.offset - right.offset,
     );
     const sameLineBefore = beforeCandidates.filter(
-      (candidate) => candidate.sameLine && !candidate.interveningOtherPopulation,
+      (candidate) =>
+        candidate.sameLine &&
+        !candidate.interveningOtherPopulation &&
+        (candidate.kind === 'numeric' || candidate.crossLineGlueAllowed),
     );
     const sameLineAfter = afterCandidates.filter(
-      (candidate) => candidate.sameLine && !candidate.interveningOtherPopulation,
+      (candidate) =>
+        candidate.sameLine &&
+        !candidate.interveningOtherPopulation &&
+        (candidate.kind === 'numeric' || candidate.crossLineGlueAllowed),
     );
     if (sameLineBefore.length > 0) {
       evidence.push(...sameLineBefore);
@@ -847,8 +907,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const crossLine = [...beforeCandidates, ...afterCandidates].filter(
       (candidate) =>
         !candidate.interveningOtherPopulation &&
-        (candidate.kind === 'numeric' ||
-          (!candidate.text.includes('\n') && candidate.crossLineGlueAllowed)),
+        (candidate.kind === 'numeric' || candidate.crossLineGlueAllowed),
     );
     const skillNamed = crossLine.filter((candidate) =>
       /skill/i.test(codeOutsideQuotedStrings(candidate.text)),

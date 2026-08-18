@@ -189,6 +189,18 @@ test('registered pages cannot add a second unregistered count expression', () =>
   });
   equal(check(exactFormattingCall).allow, true);
 
+  const exactNestedObjectCall = makeFixture({
+    surfaces: [enforcedSurface({ expression: 'format({ total: quantumWidgets })' })],
+    source: [
+      '---',
+      '---',
+      '<strong>{format({ total: quantumWidgets })}</strong> marketplace-visible skills',
+      '<CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(check(exactNestedObjectCall).allow, true);
+
   const nestedTemplateAttribute = makeFixture({
     source: validSource().replace(
       '<strong>{fmt(totalSkills)}</strong>',
@@ -276,6 +288,11 @@ test('identifier-independent discovery refuses catalog counts, collection length
     '<strong>{skillQuantity}</strong> skills\n',
     '<strong>{widgetsAvailable}</strong>\n<span>skills</span>\n',
     '<span>Skills</span>\n<strong>{widgetsAvailable}</strong>\n',
+    '<strong>{quantumWidgets}</strong>\n<span>community-maintained skills</span>\n',
+    '<span>Skills currently indexed:</span>\n<strong>{quantumWidgets}</strong>\n',
+    '<strong>{\n  quantumWidgets\n}</strong>\n<span>skills</span>\n',
+    '<span>Skills</span>\n<strong>{\n  quantumWidgets\n}</strong>\n',
+    '<BaseLayout\n  description={`${seoQuantity}\n    marketplace-visible skills`}\n/>\n',
     '<p>Research across 1,372 skills.</p>\n',
     '<p>Skills: 9,999</p>\n',
   ]) {
@@ -287,9 +304,17 @@ test('identifier-independent discovery refuses catalog counts, collection length
   for (const source of [
     '<a href={`/skills/${item.slug}/`}>Skill detail</a>\n',
     '<a href="https://github.com/example/plugins-plus-skills">{starsDisplay} stars</a>\n',
+    '<a href="https://github.com/skills">GitHub Skills</a>\n<span>{starsDisplay}</span> stars\n',
     '<BaseLayout\n  description={pageDescription}\n  title="Skills"\n/>\n',
+    '<CrossProperty current="skills" />\n<p>{eyebrow}</p>\n',
     '<p>{eyebrow}</p>\n<h2>Where these skills come from</h2>\n',
+    '<p>{eyebrow}</p><h2>Where these skills come from</h2>\n',
     '<p>Learn what plugins and skills are, install in 60 seconds.</p>\n',
+    '<p>Skills: 2 hours to complete this workshop.</p>\n',
+    '<h2>Skills</h2>\n<span>{durationHours}</span> hours of training\n',
+    '<h2>Skills</h2>\n<span>{notebookTotal}</span> notebooks\n',
+    '<h2>Agent Skills</h2>\n<span>{stats.totalAgents}</span> custom agents\n',
+    '<h2>Related Skills</h2>\n<div>{relatedSkills.map((skill) => (\n<a>{skill.name}</a>\n))}</div>\n',
     '<h3>Agent Skills (5 notebooks)</h3>\n',
   ]) {
     const root = makeFixture();
