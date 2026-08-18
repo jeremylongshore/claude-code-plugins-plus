@@ -228,6 +228,18 @@ test('trailing line comments cannot supply the visible label or provenance', () 
   });
   equal(findingCode(check(labelOnly)), 'MISSING_COHORT_LABEL');
 
+  const compactLabelOnly = makeFixture({
+    source: [
+      '---',
+      'const totalSkills = 3068;',
+      '---',
+      '<strong>{fmt(totalSkills)}</strong> skills;// marketplace-visible skills',
+      '<div />;// <CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(compactLabelOnly)), 'MISSING_COHORT_LABEL');
+
   const provenanceOnly = makeFixture({
     source: validSource().replace(
       '<CountProvenance cohort="marketplace-visible" />',
