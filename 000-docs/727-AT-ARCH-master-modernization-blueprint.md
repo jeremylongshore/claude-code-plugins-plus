@@ -1134,7 +1134,19 @@ retired-domain normalizer applies to the complete rendered value, timestamps and
 are omitted, malformed or contradictory inputs fail closed, and
 `node marketplace/scripts/sync-catalog.mjs --check` compares rendered bytes with the stage-0 Git
 index without mutating the worktree. `unified-search-index.json` remains the final
-E1.8 slice, so three of four deterministic projections are gated and this bead remains open.
+E1.8 slice, so three of four deterministic projections are gated at the end of that third slice.
+The fourth slice, measured from exact base
+`8558c10dd5c29f62d74b4463a69fa922dd56cfc0`, replaces the search producer's wall-clock
+`meta.generated` field and output overwrite disguised as `--check` with one source-derived renderer
+and non-mutating stage-0 Git-index comparison. The committed baseline moves from 448 plugins / 3,008
+skills / 0 documents / 3,456 total items / 311 agents / 19 hooks to 467 plugins / 3,068 skills / 24
+documents / 3,559 total items / 347 agents / 28 hooks. Plugin, skill, and documentation order and
+load-bearing consumer fields remain compatible; the renderer supports the repository's scalar,
+block-list, and inline-list documentation frontmatter, rejects malformed identities and symlinked or
+unreadable surfaces, and applies governed retired-domain normalization to the complete output. The
+existing unconditional generated-content job invokes the same renderer with `--check`, so all four
+deterministic local projections now have executable content-drift gates without a new required
+context or path filter.
 
 **E1.13 measurement correction (2026-08-16).** The earlier 341/121 headline used a case-sensitive grep and treated all non-6767 files as one population. At exact base `3543d5d167bd4e8d27666c8893080bca3bd72950`, `git grep -I -i -o "$(printf '%s%s' claudecode plugins.io)" <SHA> -- | wc -l` reports 356 occurrences and the corresponding `-l` command reports 125 files. Running `node scripts/check-dead-domain.mjs --json --root <clean-checkout-of-SHA>` separates 292 actionable occurrences (260 editable first-party + 32 registered generated projections) from 64 retained occurrences (3 in frozen 6767-h + 1 in its byte-pinned anchor manifest + 60 in the registered Freshie run-1 snapshot + 0 provenance mirrors). The 292/64 correction supersedes the earlier 293/63 partition, which incorrectly treated the frozen anchor manifest as editable. These populations are not interchangeable. The gate targets zero actionable occurrences and requires every retained class to remain byte-identical.
 

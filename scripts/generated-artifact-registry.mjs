@@ -56,9 +56,8 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     canonical: 'catalog.json, skills-catalog.json, plugin sources, and marketplace documentation',
     regenerate: 'node marketplace/scripts/generate-unified-search.mjs --check',
     postprocess: 'pnpm run normalize:dead-domain-projections',
-    contentCheck: false,
-    followup: 'depends on the catalog and full skill projection baselines that remain in E1.8',
-    why: 'deterministic search projection consumed by marketplace discovery surfaces; downstream gate remains in E1.8',
+    contentCheck: true,
+    why: 'deterministic search projection consumed by marketplace discovery surfaces; exact staged bytes are enforced by the shared E1.8 gate',
   },
   {
     id: 'marketplace-external-stats',

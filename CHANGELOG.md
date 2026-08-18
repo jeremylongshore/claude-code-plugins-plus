@@ -69,6 +69,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   generated-content job now byte-checks three of four deterministic marketplace projections with
   no new required context; unified search remains the final E1.8 slice.
 
+- **Unified marketplace search now completes the deterministic projection gate.** The renderer
+  removes its wall-clock timestamp and never reads the tracked output, then derives the current
+  plugin, skill, documentation, agent, and hook search surface from governed repository inputs.
+  It preserves the public item order and consumer fields, parses the repository's scalar, block,
+  and inline-list documentation frontmatter forms, rejects malformed identities and symlinked or
+  unreadable surfaces, writes atomically, and compares exact stage-0 Git-index bytes in `--check`
+  mode without repairing drift. The shared unconditional `Validate Plugins` job now gates all four
+  deterministic marketplace projections without adding a required status context or path filter.
+
 ### Fixed (2026-08-17 — release-note coverage evidence)
 
 - **Release-note coverage now fails closed when Git tag evidence is absent or incomplete.** The

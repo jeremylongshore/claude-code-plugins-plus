@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23057
+        "tracked_files": 23058
       }
     },
     "2": {
@@ -1044,7 +1044,7 @@
         "marketplace/scripts/generate-unified-search.mjs",
         "marketplace/scripts/sync-catalog.mjs"
       ],
-      "status": "partial",
+      "status": "measured",
       "values": {
         "artifacts": [
           {
@@ -1066,13 +1066,13 @@
             "wired_checkers": ["marketplace/scripts/discover-skills.mjs"]
           },
           {
-            "content_drift_gate": false,
+            "content_drift_gate": true,
             "path": "marketplace/src/data/unified-search-index.json",
             "producers": ["marketplace/scripts/generate-unified-search.mjs"],
-            "wired_checkers": []
+            "wired_checkers": ["marketplace/scripts/generate-unified-search.mjs"]
           }
         ],
-        "count_without_content_drift_gate": 1,
+        "count_without_content_drift_gate": 0,
         "target_without_content_drift_gate": 0
       }
     },
@@ -1955,9 +1955,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15539,
+        "invisible_files": 15540,
         "target_invisible_files": 0,
-        "tracked_files": 23057
+        "tracked_files": 23058
       }
     },
     "47": {
