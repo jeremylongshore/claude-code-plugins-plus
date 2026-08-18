@@ -102,12 +102,19 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
             <div class="stat-divider"></div>
             <div class="stat-item">
               <div class="stat-number">1,500+</div>
-              <div class="stat-label">Skills Analyzed</div>
+              <div class="stat-label">Original Analysis Claim</div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    <p class="research-snapshot-note">
+      Research page snapshot captured 2026-03-04 from repository commit
+      <code>256db0b3eabc0669ffe75bc16f19053820c3e91c</code>. The original 1,500+ analysis claim is
+      retained as historical evidence; it is not a live total or a claim about that commit's
+      separately documented 1,372-skill evidence corpus.
+    </p>
 
     <!-- Domain Cards -->
     <section class="domains-section">
@@ -157,6 +164,16 @@ const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.read
       min-height: 100vh;
       background: var(--brand-light);
       color: var(--brand-dark);
+    }
+
+    .research-snapshot-note {
+      max-width: 1200px;
+      margin: 1.5rem auto 0;
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--brand-green);
+      background: var(--brand-light-gray);
+      color: var(--brand-dark);
+      font-size: 0.875rem;
     }
 
     .container {
