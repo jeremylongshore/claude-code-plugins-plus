@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AFTER ACTION REPORT (AAR) TEMPLATE
 
 > **Use this template after every phase; save AARs to `000-docs/` with NNN naming:**

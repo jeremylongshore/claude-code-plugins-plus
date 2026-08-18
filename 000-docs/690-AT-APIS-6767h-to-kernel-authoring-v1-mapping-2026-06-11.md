@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 6767-h ↔ kernel `authoring/v1` Mapping
 
 **Document ID**: 690-AT-APIS-6767h-to-kernel-authoring-v1-mapping

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADR-262: Decline Semgrep — redundant against existing CodeQL + gitleaks + trufflehog stack
 
 | Field        | Value                                                                              |

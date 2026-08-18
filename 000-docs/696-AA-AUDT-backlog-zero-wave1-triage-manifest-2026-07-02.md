@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Backlog Zero — Wave 1 triage close manifest for claude-code-plugins (2026-07-02)
 
 **Campaign:** Backlog Zero (umbrella intent-solutions-io/intent-os#21).

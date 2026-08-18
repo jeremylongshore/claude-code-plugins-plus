@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # User Security Guide
 
 **How to Safely Use Claude Code Plugins**

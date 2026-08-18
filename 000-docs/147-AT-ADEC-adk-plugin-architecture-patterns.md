@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADK Plugin Architecture Patterns
 
 **Document ID**: 090-AT-ADEC-adk-plugin-architecture-patterns

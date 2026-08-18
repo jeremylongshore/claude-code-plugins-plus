@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Code of Conduct
 
 This project follows the Contributor Covenant Code of Conduct (v2.1).

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 710-AT-DECR — Neobrutalist rebrand: design-reference anonymity preamble
 
 **Date:** 2026-08-02

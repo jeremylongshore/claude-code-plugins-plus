@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 723-RA-AUDT — Version Drift Report (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3`

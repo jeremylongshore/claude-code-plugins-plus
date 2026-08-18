@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 721-RA-DATA — CI & Validation Baseline (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3` · **Machine-readable:** `721-RA-DATA-ci-validation-baseline.json`

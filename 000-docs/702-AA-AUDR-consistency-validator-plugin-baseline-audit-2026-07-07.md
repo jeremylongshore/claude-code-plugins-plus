@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Validation baseline audit — 000-jeremy-content-consistency-validator (first-party plugin)
 
 **Date:** 2026-07-07 · **Scope:** full validator pass over

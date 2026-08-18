@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Backlog Zero — SaaS-pack supersession close manifest (2026-07-02)
 
 **Campaign:** Backlog Zero Wave 0 (umbrella: intent-solutions-io/intent-os#21).

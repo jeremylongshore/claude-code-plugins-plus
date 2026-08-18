@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 711-AA-AUDR — Outside-in defect sweep, 2026-08-03/04
 
 **Date:** 2026-08-04

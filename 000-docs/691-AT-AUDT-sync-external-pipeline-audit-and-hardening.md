@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # External-Plugin Sync Pipeline — Audit & Hardening
 
 **Date:** 2026-06-24

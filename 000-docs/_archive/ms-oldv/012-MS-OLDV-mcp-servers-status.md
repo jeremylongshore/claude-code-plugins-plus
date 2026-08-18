@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # MCP Servers Status Report
 
 **All 5 MCP Servers: Configured and Ready** 

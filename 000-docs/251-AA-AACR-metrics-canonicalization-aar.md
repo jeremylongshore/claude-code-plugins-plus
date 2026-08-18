@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # After Action Report: Docs/Status Canonicalization + Metrics Consistency
 
 **Date:** 2025-12-26 20:30 CST

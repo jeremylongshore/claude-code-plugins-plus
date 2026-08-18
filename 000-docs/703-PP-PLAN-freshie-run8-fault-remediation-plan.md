@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Freshie Run-8 Fault-Remediation Plan
 
 **Doc:** 703-PP-PLAN · **Date:** 2026-07-10 · **Author:** Jeremy Longshore (Backlog Zero sweep)

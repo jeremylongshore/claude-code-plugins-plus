@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Intent-Solutions Standards Enhancement Report
 
 **Date:** December 10, 2025

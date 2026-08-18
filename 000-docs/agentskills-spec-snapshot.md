@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 <!-- TOMBSTONE [9k5h.9]: this file previously held a versioned capture of
      https://agentskills.io/specification (Snapshot ID 2026-05-07-initial). That
      copy diverged from the 2026-05-28 capture in intent-eval-lab and is retired —

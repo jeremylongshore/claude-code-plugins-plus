@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # EPIC C COMPLETE - PROOF GATE EVIDENCE
 
 **Date**: 2025-12-25

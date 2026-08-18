@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Release Report: claude-code-plugins-plus-skills v4.28.0
 
 ## Executive Summary

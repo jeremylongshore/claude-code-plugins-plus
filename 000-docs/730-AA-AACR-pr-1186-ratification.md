@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 730-AA-AACR — PR #1186 Ratification After-Action Review
 
 **Review date:** 2026-08-14  

@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 ---
 filing_code: DR-GUID-SKILL-SUBMISSION-STANDARD-2026-07-07
 date: 2026-07-07

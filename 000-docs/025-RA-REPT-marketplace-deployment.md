@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Deployment Summary - [retired legacy public domain]
 
 **Date:** 2025-10-16

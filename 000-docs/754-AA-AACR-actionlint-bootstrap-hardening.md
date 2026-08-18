@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Actionlint Bootstrap Hardening — After-Action Review
 
 - **Date:** 2026-08-17

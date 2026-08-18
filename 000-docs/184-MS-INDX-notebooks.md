@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Interactive Learning Lab Notebooks
 
 **Interactive Jupyter notebooks** for hands-on learning of the Test Harness Pattern.

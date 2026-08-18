@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Wiki Audit — `jeremylongshore/claude-code-plugins-plus-skills.wiki`
 
 **Audited**: 2026-06-04

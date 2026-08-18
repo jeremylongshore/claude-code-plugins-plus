@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 title: Repo Quality Audit
 date: 2026-05-17

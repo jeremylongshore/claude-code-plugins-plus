@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 # Global Master Standard – Claude Skills Specification
 
 > ⚠️ **CURRENT SCHEMA: 4.0.0** (`scripts/validate-skills-schema.py` `SCHEMA_VERSION`). This document is the

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Agent Communication Fabric — engineering canon review
 
 **Date:** 2026-08-09 · **Panel:** 6 named-thinker reviewers · **Status:** advisory input to the open calls in `713 § 5`

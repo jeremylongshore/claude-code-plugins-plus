@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Setup Instructions for Claude Code Plugins Repository
 
 ##  Current Status

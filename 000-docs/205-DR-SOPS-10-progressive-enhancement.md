@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Progressive Enhancement Patterns: Safe AI Feature Rollouts
 
 **Production Playbook for Product Engineers and SREs**

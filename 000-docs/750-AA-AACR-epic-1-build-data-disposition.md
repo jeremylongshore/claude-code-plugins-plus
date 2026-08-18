@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 1 Build-Derived Data Disposition — After-Action Review
 
 - **Date:** 2026-08-17

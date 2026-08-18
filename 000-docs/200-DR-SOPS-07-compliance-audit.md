@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Compliance & Audit Guide: Security and Regulatory Compliance
 
 **Production Playbook for Security Teams and Compliance Officers**

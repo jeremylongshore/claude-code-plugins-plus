@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Blog Markdown and Scorecard Correction — After-Action Review
 
 - **Date:** 2026-08-17

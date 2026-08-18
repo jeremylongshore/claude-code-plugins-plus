@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CountProvenance from '../components/CountProvenance.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 const stats = searchIndex.stats;
 
 const title = "Claude Code Plugin Marketplaces Compared — Tons of Skills vs Alternatives";
-const description = `Compare Claude Code plugin marketplaces side-by-side. ${stats.totalPlugins} plugins, ${stats.totalSkills} skills, ${stats.categories.length} categories — all open source. See how Tons of Skills stacks up.`;
+const description = `Compare Claude Code plugin marketplaces side-by-side. ${stats.totalPlugins} catalog plugins, ${stats.totalSkills.toLocaleString()} marketplace-visible skills, ${stats.categories.length} categories — all open source. See how Tons of Skills stacks up.`;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -42,7 +43,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
         </div>
         <div class="stat">
           <span class="stat-num">{stats.totalSkills.toLocaleString()}</span>
-          <span class="stat-lbl">Agent Skills</span>
+          <span class="stat-lbl">Marketplace-visible Agent Skills</span>
         </div>
         <div class="stat">
           <span class="stat-num">{stats.totalAgents}</span>
@@ -53,6 +54,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
           <span class="stat-lbl">Categories</span>
         </div>
       </div>
+      <CountProvenance cohort="marketplace-visible" />
     </div>
   </section>
 
@@ -79,7 +81,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
               <td>1 per repo</td>
             </tr>
             <tr>
-              <td>Agent Skills</td>
+              <td>Marketplace-visible Agent Skills</td>
               <td class="highlight"><strong>{stats.totalSkills.toLocaleString()}</strong></td>
               <td>None</td>
               <td>Varies</td>
@@ -168,7 +170,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
       <div class="diff-grid">
         <div class="diff-card">
           <h3>Instant Discovery</h3>
-          <p>Fuzzy search across {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills. Filter by category, keyword, or tool type. No README scrolling.</p>
+          <p>Fuzzy search across {stats.totalPlugins} catalog plugins and {stats.totalSkills.toLocaleString()} marketplace-visible skills. Filter by category, keyword, or tool type. No README scrolling.</p>
         </div>
         <div class="diff-card">
           <h3>CLI-First Install</h3>
@@ -220,7 +222,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
         </div>
         <div class="faq-item">
           <h3>Is Tons of Skills free?</h3>
-          <p>Yes, 100% free and open source under the MIT license. All {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills are available at no cost. The entire codebase is on GitHub.</p>
+          <p>Yes, 100% free and open source under the MIT license. All {stats.totalPlugins} catalog plugins and {stats.totalSkills.toLocaleString()} marketplace-visible skills are available at no cost. The entire codebase is on GitHub.</p>
         </div>
         <div class="faq-item">
           <h3>How is this different from awesome-claude-code lists?</h3>
@@ -241,7 +243,7 @@ const description = `Compare Claude Code plugin marketplaces side-by-side. ${sta
   <section class="cta-section">
     <div class="cta-inner">
       <h2>Ready to Speed Up Your Claude Code?</h2>
-      <p>Browse {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills. Install in seconds.</p>
+      <p>Browse {stats.totalPlugins} catalog plugins and {stats.totalSkills.toLocaleString()} marketplace-visible skills. Install in seconds.</p>
       <div class="cta-buttons">
         <a href="/explore" class="cta-primary">Explore Plugins</a>
         <a href="/getting-started" class="cta-secondary">Getting Started Guide</a>

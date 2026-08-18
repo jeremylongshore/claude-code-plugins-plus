@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Production Playbooks
 
 Comprehensive technical guides for building production-grade Claude Code plugin systems. Each playbook provides deep implementation details, production-ready code examples, and real-world patterns learned from operating large-scale AI agent deployments.

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # PR Pre-screen System — Operator Runbook
 
 Status: production, advisory (never a required check).

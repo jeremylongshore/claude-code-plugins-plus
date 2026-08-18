@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Release Report: claude-code-plugins v4.19.0
 
 ## Executive Summary

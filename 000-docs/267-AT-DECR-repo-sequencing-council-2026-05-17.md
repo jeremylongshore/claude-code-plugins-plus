@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 title: ISEDC Decision Record — Repo Sequencing After 2026-05-17 Quality Audit
 date: 2026-05-17
