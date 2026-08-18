@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins Marketplace - System Audit
 **Generated:** 2025-10-11
 **Auditor:** Senior Web Developer

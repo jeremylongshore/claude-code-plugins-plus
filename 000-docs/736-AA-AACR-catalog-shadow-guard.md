@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Catalog Shadow Guard — After-Action Review
 
 - **Date:** 2026-08-15

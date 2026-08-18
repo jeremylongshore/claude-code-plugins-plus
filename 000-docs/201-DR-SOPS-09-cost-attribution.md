@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Cost Attribution System: Track and Optimize AI Spending
 
 **Production Playbook for Finance Teams and Engineering Managers**

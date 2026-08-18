@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # EPIC B Proof Gate Evidence
 
 ## MANDATORY PROOF GATE: Virtual Environments + Headless Tests

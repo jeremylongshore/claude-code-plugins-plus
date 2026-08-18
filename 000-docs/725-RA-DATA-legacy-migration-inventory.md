@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 725-RA-DATA — Legacy Model-Agnostic Migration Inventory (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3` · **Machine-readable:** `725-RA-DATA-legacy-migration-inventory.json`

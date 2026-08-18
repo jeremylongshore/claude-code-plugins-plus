@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Agent Skills Pages Implementation Summary
 
 **Date:** 2025-12-24

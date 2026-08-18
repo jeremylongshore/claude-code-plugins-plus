@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 ---
 filing_code: AT-DECR-EXTERNAL-SYNC-MIRROR-BY-DEFAULT-MODEL-2026-06-30
 date: 2026-06-30

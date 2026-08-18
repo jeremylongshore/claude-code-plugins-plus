@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Interactive Learning Lab Implementation Plan
 
 **Epic ID**: claude-code-plugins-pvx  

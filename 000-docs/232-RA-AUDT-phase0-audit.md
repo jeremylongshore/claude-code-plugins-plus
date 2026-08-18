@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 0 Orientation + Audit
 
 **Branch**: p0-stabilization-proof-gates

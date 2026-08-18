@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins Marketplace - Complete Redesign Summary
 
 **Date**: 2025-10-11

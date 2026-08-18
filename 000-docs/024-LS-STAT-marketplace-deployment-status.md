@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Deployment Status - [retired legacy public domain]
 
 **Generated:** 2025-10-16

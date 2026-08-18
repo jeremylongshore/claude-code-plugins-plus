@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # First Mover Report: Claude Code Plugin Marketplace
 
 **Generated**: October 11, 2025

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 1 After Action Review: CI Green + Repo Hygiene
 
 **Date**: 2025-12-25 19:15 CST (Final)

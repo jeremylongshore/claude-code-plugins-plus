@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Spec-Currency Audit — Claude Code authoring artifacts vs IS validators (2026-06-28)
 
 **Code:** 692-AA-AACR · **Author:** Jeremy Longshore · **Date:** 2026-06-28

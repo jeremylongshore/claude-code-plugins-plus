@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Security Pack Option C Uplift — Execution Plan
 
 **Status:** DRAFT (awaiting Jeremy's phase-start approval)

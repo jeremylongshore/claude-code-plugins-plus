@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 filing_code: AT-ADEC-SECURITY-PACK-OPTION-C-SCOPE-2026-05-29
 date: 2026-05-29

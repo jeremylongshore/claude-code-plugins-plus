@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Skills Index Drift Gate — Interim After-Action Review
 
 - **Date:** 2026-08-17

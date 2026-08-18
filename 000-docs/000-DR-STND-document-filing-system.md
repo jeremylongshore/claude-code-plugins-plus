@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 # DOCUMENT FILING SYSTEM STANDARD v4.4 (LLM/AI-ASSISTANT FRIENDLY)
 
 > **Published mirror.** The canonical live copy of this standard is the `/doc-filing` skill

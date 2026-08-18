@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AI-Authorship Disclosure Policy
 
 **Filing:** 697-BL-POLI · **Effective:** 2026-07-02 · **Status:** Active

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Testing Quick Reference
 
 ## Run Tests

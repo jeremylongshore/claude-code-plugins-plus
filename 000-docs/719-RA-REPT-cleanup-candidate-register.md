@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 719-RA-REPT — Cleanup Candidate Register (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3` · **Machine-readable:** `719-RA-REPT-cleanup-candidate-register.json`

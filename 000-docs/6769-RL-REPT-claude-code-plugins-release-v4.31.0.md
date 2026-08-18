@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Release Report: claude-code-plugins v4.31.0
 
 **Document ID**: 6769-RL-REPT-claude-code-plugins-release-v4.31.0.md

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADR-263: Decline BDD/Gherkin — no non-engineer readership for scenarios
 
 | Field        | Value                                                                              |

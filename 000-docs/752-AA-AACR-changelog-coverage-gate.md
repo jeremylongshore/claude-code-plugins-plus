@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Changelog Coverage Gate — After-Action Review
 
 - **Date:** 2026-08-17

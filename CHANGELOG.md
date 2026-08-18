@@ -23,6 +23,9 @@
   copy and distinguish grading thresholds from corpus counts.
 - **docs(counts):** record the completed E1.6 count-cohort inventory and
   closure evidence.
+- **docs(governance):** classify every tracked `000-docs/*.md` file as
+  `canonical`, `generated`, `frozen`, or `record`; enforce frozen-body and
+  generated-index boundaries in the existing `doc-governance` gate.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.

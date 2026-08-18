@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 2 Cross-System Authority Boundary — After-Action Review
 
 - **Date:** 2026-08-17

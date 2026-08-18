@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Quick Deploy Guide - [retired legacy public domain]
 
 **Last Updated:** 2025-10-16

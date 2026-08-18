@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Archived — MS-OLDV (Old-Version) Documents
 
 These documents are tagged `MS-OLDV` per the filing standard

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins - Complete Catalog
 
 **Date:** October 11, 2025

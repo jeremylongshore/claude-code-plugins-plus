@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Advanced Tool Use: Dynamic Discovery, Programmatic Orchestration, and Parameter Guidance
 
 ## Introduction

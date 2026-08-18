@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # SEO Setup Guide
 
 ## Sitemap Configuration

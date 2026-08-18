@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 1 Measurement Harness — After-Action Review
 
 - **Date:** 2026-08-16

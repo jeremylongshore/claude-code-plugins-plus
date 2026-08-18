@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # How the CI/CD, Validator, and Maintainer System Works — Tons of Skills
 
 **Doc:** 704-DR-GUID · **Audience:** maintainers and reviewers being onboarded · **Status:** teaching

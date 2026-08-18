@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AAR — Xquik external-author onboarding, eval dogfood, and the tooling fixes it surfaced
 
 **Doc:** 693-AA-AACR · **Date:** 2026-06-30 · **Status:** LANDED (after-action change-record)

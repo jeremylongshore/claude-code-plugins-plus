@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Cowork Manifest Contract — After-Action Review
 
 - **Date:** 2026-08-18

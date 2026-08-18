@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 #  Claude Code Plugin Marketplace - Release Plan v1.1.0
 
 **Release Date**: October 10, 2025

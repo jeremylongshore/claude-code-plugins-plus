@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # P0 Implementation Report: [retired legacy public domain]
 ## Complete Website Overhaul & Optimization
 
