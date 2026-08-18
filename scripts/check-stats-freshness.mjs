@@ -77,6 +77,15 @@ export function evaluateFreshness(name, data, nowMs) {
     };
   }
   const ageHours = (nowMs - Date.parse(generatedAt)) / 3_600_000;
+  // A future generatedAt would make the age negative and sail through the
+  // one-sided maximum check. Runner clocks can skew a little, so allow 15
+  // minutes; anything further ahead is a bad write, not a fresh one.
+  if (ageHours < -0.25) {
+    return {
+      kind: 'structural',
+      message: `${name}: generatedAt is ${(-ageHours).toFixed(1)}h in the future (${generatedAt}) — a snapshot cannot postdate the clock checking it`,
+    };
+  }
   if (ageHours > maxAgeHours) {
     return {
       kind: 'stale',

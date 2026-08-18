@@ -42,6 +42,18 @@ test('missing or invalid declarations fail closed as structural violations', () 
   assert.match(evaluateFreshness('x.json', null, NOW).message, /not a JSON object/);
 });
 
+test('future-dated snapshots fail closed beyond clock-skew tolerance', () => {
+  // 10 minutes ahead: inside the 15-minute skew allowance — fresh.
+  assert.equal(
+    evaluateFreshness('x.json', { generatedAt: hoursAgo(-1 / 6), max_age_hours: 72 }, NOW),
+    null,
+  );
+  // 2 hours ahead: a bad write, structural.
+  const v = evaluateFreshness('x.json', { generatedAt: hoursAgo(-2), max_age_hours: 72 }, NOW);
+  assert.equal(v.kind, 'structural');
+  assert.match(v.message, /future/);
+});
+
 test('checkAll reports every governed artifact from a directory', () => {
   const dir = mkdtempSync(join(tmpdir(), 'stats-freshness-'));
   writeFileSync(
