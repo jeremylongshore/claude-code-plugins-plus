@@ -16,6 +16,7 @@ export const VALID_CLASSES = new Set(['canonical', 'generated', 'frozen', 'recor
 const MARKER = /^<!-- doc-class: ([a-z-]+) -->\n/;
 const DOC_PREFIX = '000-docs/';
 const INDEX = `${DOC_PREFIX}000-INDEX.md`;
+const BASELINE_REF = process.env.DOC_CLASS_BASELINE_REF || 'origin/main';
 
 const FROZEN = new Set([
   `${DOC_PREFIX}6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`,
@@ -89,7 +90,7 @@ function frozenDiffs(root, docs) {
   for (const path of docs.filter((candidate) => FROZEN.has(candidate))) {
     let baseline;
     try {
-      baseline = execFileSync('git', ['-C', root, 'show', `origin/main:${path}`], {
+      baseline = execFileSync('git', ['-C', root, 'show', `${BASELINE_REF}:${path}`], {
         encoding: 'utf8',
       });
     } catch (error) {

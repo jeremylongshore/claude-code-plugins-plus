@@ -1460,6 +1460,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # The frozen-body check compares against an immutable event baseline.
+      # PRs use the exact target base SHA; pushes use the exact prior main SHA.
+      # A manual run falls back to its own SHA and therefore remains a no-op
+      # for historical drift while still validating all current content.
+      - name: Fetch document-class baseline
+        env:
+          BASELINE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        run: git fetch --no-tags --depth=1 origin "$BASELINE_SHA"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -1513,6 +1524,8 @@ jobs:
       # check also keeps frozen 6767 bodies byte-stable and delegates the
       # generated index content comparison to its canonical writer.
       - name: Check document classes and frozen/generated boundaries
+        env:
+          DOC_CLASS_BASELINE_REF: FETCH_HEAD
         run: |
           node --test scripts/check-doc-classes.test.mjs
           node scripts/check-doc-classes.mjs
