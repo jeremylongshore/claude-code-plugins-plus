@@ -23,12 +23,12 @@
       "error_total": 7433,
       "grade_distribution": {
         "A": 1596,
-        "B": 985,
+        "B": 986,
         "C": 896,
         "D": 193,
         "F": 9
       },
-      "rows": 3679
+      "rows": 3680
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23083
+        "raw_tracked_plugin_skill_files": 3180,
+        "tracked_files": 23088
       }
     },
     "2": {
@@ -80,25 +80,25 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 253,
-          "fully_compliant_surfaces": 791,
+          "fully_compliant_surfaces": 792,
           "terminal_denominator": {
             "agents": 353,
             "files": 353,
             "label": "agents_excluding_plugin_manifests"
           },
-          "validator_reported_mixed_denominator_percent": 224.1
+          "validator_reported_mixed_denominator_percent": 224.4
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 7687,
-          "fully_compliant_surfaces": 1158,
+          "fully_compliant_surfaces": 1159,
           "terminal_denominator": {
             "agents": 353,
             "commands": 373,
-            "files": 4405,
+            "files": 4406,
             "label": "skills_plus_commands_plus_agents_excluding_plugin_manifests",
-            "skills": 3679
+            "skills": 3680
           },
-          "validated_plugin_manifests": 629,
+          "validated_plugin_manifests": 630,
           "validator_reported_mixed_denominator_percent": 26.3
         },
         "skill_rows": {
@@ -111,12 +111,12 @@
           "error_total": 7433,
           "grade_distribution": {
             "A": 1596,
-            "B": 985,
+            "B": 986,
             "C": 896,
             "D": 193,
             "F": 9
           },
-          "rows": 3679
+          "rows": 3680
         }
       }
     },
@@ -130,7 +130,7 @@
         "average_score": 85.1,
         "grade_distribution": {
           "A": 1596,
-          "B": 985,
+          "B": 986,
           "C": 896,
           "D": 193,
           "F": 9
@@ -138,11 +138,11 @@
         "grade_percentages": {
           "A": 43.4,
           "B": 26.8,
-          "C": 24.4,
+          "C": 24.3,
           "D": 5.2,
           "F": 0.2
         },
-        "rows": 3679
+        "rows": 3680
       }
     },
     "6": {
@@ -159,7 +159,7 @@
         "b_error_total": 1936,
         "b_failing": 830,
         "certified_target": 0,
-        "skill_summary_rows": 3679
+        "skill_summary_rows": 3680
       }
     },
     "7": {
@@ -210,7 +210,7 @@
       "values": {
         "agent_errors": 253,
         "agent_files": 353,
-        "reported_compliance_percent": 224.1,
+        "reported_compliance_percent": 224.4,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -268,12 +268,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3638,
+        "declared": 3639,
         "folded_scalar": 10,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 41,
-        "rows": 3679,
+        "rows": 3680,
         "target_malformed": 0
       }
     },
@@ -284,7 +284,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 44,
+        "distinct_values": 45,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -327,6 +327,10 @@
           {
             "count": 1,
             "value": "Designed for Claude Code · Output works in any surface that loads CLAUDE.md"
+          },
+          {
+            "count": 1,
+            "value": "Designed for Claude Code, Codex, Cursor, and GitHub Copilot; works in any agent that can read project files and fetch a URL."
           },
           {
             "count": 45,
@@ -1122,7 +1126,7 @@
           },
           {
             "cohort": "graded",
-            "value": 3679
+            "value": 3680
           },
           {
             "cohort": "marketplace-visible",
@@ -1164,20 +1168,20 @@
       "values": {
         "sources": [
           {
-            "has_valid_max_age_hours": true,
+            "has_valid_max_age_hours": false,
             "path": "marketplace/src/data/github-stats.json"
           },
           {
-            "has_valid_max_age_hours": true,
+            "has_valid_max_age_hours": false,
             "path": "marketplace/src/data/npm-stats.json"
           },
           {
-            "has_valid_max_age_hours": true,
+            "has_valid_max_age_hours": false,
             "path": "marketplace/src/data/skills-stats.json"
           }
         ],
         "target_without_valid_bound": 0,
-        "without_valid_bound": 0
+        "without_valid_bound": 3
       }
     },
     "27": {
@@ -1233,6 +1237,7 @@
         "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
+        "plugins/design/uizze/.source.json",
         "plugins/design/wondelai-design-everyday-things/.source.json",
         "plugins/design/wondelai-hooked-ux/.source.json",
         "plugins/design/wondelai-ios-hig-design/.source.json",
@@ -1265,7 +1270,7 @@
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 30,
+        "mirrors_shipping_license_text": 31,
         "missing_license_text": [
           "plugins/api-development/x-twitter-scraper",
           "plugins/business-tools/wondelai-blue-ocean-strategy",
@@ -1301,15 +1306,15 @@
           "plugins/productivity/wondelai-design-sprint",
           "plugins/productivity/wondelai-lean-startup"
         ],
-        "provenance_marked_mirrors": 63,
-        "target_shipping_license_text": 63
+        "provenance_marked_mirrors": 64,
+        "target_shipping_license_text": 64
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 63
+        "local_source_records_with_parseable_json": 64
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1352,6 +1357,7 @@
         "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
+        "plugins/design/uizze/.source.json",
         "plugins/design/wondelai-design-everyday-things/.source.json",
         "plugins/design/wondelai-hooked-ux/.source.json",
         "plugins/design/wondelai-ios-hig-design/.source.json",
@@ -1461,6 +1467,8 @@
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
+        "plugins/design/uizze/.source.json",
+        "plugins/design/uizze/package.json",
         "plugins/design/wondelai-design-everyday-things/.source.json",
         "plugins/design/wondelai-design-everyday-things/package.json",
         "plugins/design/wondelai-hooked-ux/.source.json",
@@ -1523,9 +1531,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 63,
-        "repository_package_mirrors": 63,
-        "scoped_packages": 58,
+        "private_packages": 64,
+        "repository_package_mirrors": 64,
+        "scoped_packages": 59,
         "target_publishable": 0
       }
     },
@@ -1605,6 +1613,8 @@
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
+        "plugins/design/uizze/.source.json",
+        "plugins/design/uizze/package.json",
         "plugins/design/wondelai-design-everyday-things/.source.json",
         "plugins/design/wondelai-design-everyday-things/package.json",
         "plugins/design/wondelai-hooked-ux/.source.json",
@@ -1958,9 +1968,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15558,
+        "invisible_files": 15559,
         "target_invisible_files": 0,
-        "tracked_files": 23083
+        "tracked_files": 23088
       }
     },
     "47": {
@@ -2140,7 +2150,7 @@
       "values": {
         "adoption_percent": 0.44,
         "curated_copies": 12,
-        "plugin_skill_rows": 3179,
+        "plugin_skill_rows": 3180,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }
