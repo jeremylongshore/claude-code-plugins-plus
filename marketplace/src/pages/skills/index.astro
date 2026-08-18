@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CountProvenance from '../../components/CountProvenance.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import CrossProperty from '../../components/CrossProperty.astro';
 import { readFileSync } from 'node:fs';
@@ -23,7 +24,7 @@ const firstPageSkills = _rawCatalog.skills.slice(0, PAGE_SIZE).map((skill: any) 
 }));
 
 const pageTitle = 'Skills (Embedded in Plugins)';
-const pageDescription = `Browse ${_rawCatalog.count} agent skills embedded in plugins across ${_rawCatalog.categories.length} categories`;
+const pageDescription = `Browse ${_rawCatalog.count} marketplace-visible agent skills embedded in plugins across ${_rawCatalog.categories.length} categories`;
 
 const allTools = _rawCatalog.allowedToolsUsed;
 ---
@@ -205,7 +206,8 @@ const allTools = _rawCatalog.allowedToolsUsed;
   <div class="skills-header">
     <div class="skills-header-content">
       <h1 class="skills-title">Skills Directory</h1>
-      <p class="skills-subtitle"><strong style="font-family: var(--font-mono); color: var(--primary);">{_rawCatalog.count}</strong> skills across {_rawCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
+      <p class="skills-subtitle"><strong style="font-family: var(--font-mono); color: var(--primary);">{_rawCatalog.count}</strong> marketplace-visible skills across {_rawCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
+      <CountProvenance cohort="marketplace-visible" />
     </div>
   </div>
 
@@ -251,7 +253,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
 
       <div class="filters-footer">
         <p id="results-count" class="results-count">
-          Showing {_rawCatalog.count} of {_rawCatalog.count} skills
+          Showing {_rawCatalog.count} of {_rawCatalog.count} marketplace-visible skills
         </p>
         <button onclick="clearFilters()" class="clear-filters-btn">
           Clear Filters

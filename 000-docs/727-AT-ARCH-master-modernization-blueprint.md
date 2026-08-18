@@ -1150,6 +1150,40 @@ context or path filter.
 
 **E1.13 measurement correction (2026-08-16).** The earlier 341/121 headline used a case-sensitive grep and treated all non-6767 files as one population. At exact base `3543d5d167bd4e8d27666c8893080bca3bd72950`, `git grep -I -i -o "$(printf '%s%s' claudecode plugins.io)" <SHA> -- | wc -l` reports 356 occurrences and the corresponding `-l` command reports 125 files. Running `node scripts/check-dead-domain.mjs --json --root <clean-checkout-of-SHA>` separates 292 actionable occurrences (260 editable first-party + 32 registered generated projections) from 64 retained occurrences (3 in frozen 6767-h + 1 in its byte-pinned anchor manifest + 60 in the registered Freshie run-1 snapshot + 0 provenance mirrors). The 292/64 correction supersedes the earlier 293/63 partition, which incorrectly treated the frozen anchor manifest as editable. These populations are not interchangeable. The gate targets zero actionable occurrences and requires every retained class to remain byte-identical.
 
+**E1.6 first-slice progress (2026-08-17).** At exact base
+`109179f92cf7f01b95ad2f88fd15956713631fc2`,
+`node scripts/corpus-resolver.mjs --cohort marketplace-visible --cohort graded --cohort first-party --cohort curated-mirror --cohort curriculum --json | jq '.cohorts | map_values(.count)'`
+reports 3,068 / 3,679 / 2,802 / 1,915 / 500 respectively. This bounded slice changes none of
+those values. It labels five live global website totals as `marketplace-visible`, renders the
+cohort definition and exact resolver command next to each, and adds
+`pnpm run validate:published-count-cohorts` to the existing `validate` job. The fixture-driven gate
+recursively discovers count-bearing public Astro pages and components from literals, catalog
+counts, collection lengths, post-noun numeric forms, and identifier-independent rendered
+expressions—including multiline expressions split from the `skills` noun by adjacent markup—rather
+than one identifier. URL path segments, prose durations, stars, other-population units, narrative
+heading shapes, collection renderers, and unrelated attributes are excluded by fixtures rather than
+silently treated as skill totals; plain/canonical/hyphenated count-label headings still bind adjacent
+counts, and nested object syntax stays owned by its enclosing expression. The first
+inventory finds 51 Astro sources: five global pages are enforced, 46 discovered non-global or
+point-in-time sources are grouped by exact path as owned deferrals, and
+the generated social image is a forty-seventh path-level deferral. Three local/query expressions
+on otherwise enforced pages are separately registered, producing 50 owned deferral claims in
+total. Discovery binds every detected expression to an exact enforced or deferred registration;
+simple brace/interpolation wrappers normalize, but compound wrappers do not inherit an inner
+registration. A second count or unregistered member/call extension added to an already registered
+page therefore fails closed. Unknown cohorts, unsafe
+or unreadable paths, symlinks, comment-only labels, missing provenance, and unregistered new count
+sources or expressions fail closed. Astro frontmatter and script/style bodies cannot satisfy the
+rendered count/label contract, markup attributes cannot impersonate it, and provenance must be a
+top-level component tag parsed outside quoted attributes and Astro expression strings. Paired raw
+text elements are parsed with quote- and brace-aware opening tags, so a quoted `/>` cannot disguise
+a script body as self-closing; malformed raw-text elements are refused. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
+are not forced into the marketplace cohort. README work is deferred because its generated count
+contract overlaps active PRs; the authoritative local check is
+`node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains
+open until every published count surface is either enforced with its true cohort or governed as an
+explicit non-live/historical exception.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**

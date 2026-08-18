@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-08-17 — published count cohort labels)
+
+- **Live marketplace skill totals now identify the population they count.** The homepage, explore,
+  comparison, sponsor, and skills-directory pages label their unchanged totals as
+  `marketplace-visible` and expose the canonical corpus-resolver command beside the value. A
+  machine-readable registry and fixture-driven, fail-closed CI gate discover count expressions by
+  meaning rather than one variable name across public Astro pages and components, rejecting any
+  unregistered rendered expression—including unfamiliar or multiline identifiers split from the
+  `skills` noun by adjacent markup—or pre/post-noun literal count, collection length, catalog count,
+  unsafe or unreadable path,
+  comment-only labels, and missing provenance without adding another required status context. The
+  first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
+  plus the generated social image remain path-level deferrals; three local/query expressions on
+  otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
+  detected expression to its exact normalized registration—including any formatter call. Simple
+  brace/interpolation wrappers normalize; compound outer expressions do not inherit an inner
+  registration. Adding a second count or extending a registered expression therefore cannot bypass
+  cohort governance. Frontmatter, script/style bodies, comments, and markup
+  attributes are masked for the rendered count/label contract; provenance must be a standalone
+  top-level component tag parsed outside quoted attributes and Astro expression strings, while
+  self-closing head scripts remain correctly parsed. Quote- and brace-aware raw-text parsing prevents
+  a quoted `/>` attribute from exposing paired script content as visible evidence and refuses
+  malformed raw-text elements. Fixtures distinguish `/skills/` paths, prose durations, and adjacent
+  time units, stars, notebook/agent populations, narrative heading shapes, collection renderers, and
+  unrelated attributes from actual published skill totals without relying on count-like identifier
+  names. Plain, canonical, and hyphenated count-label headings remain associated with adjacent
+  counts. Nested object syntax remains part of its enclosing registered expression rather than
+  being misclassified as a second rendered count.
+
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 
 - **The editable plugin catalog now contains 467 rows with 467 unique names.** Three redundant

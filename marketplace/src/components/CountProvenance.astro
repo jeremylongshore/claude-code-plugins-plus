@@ -1,0 +1,48 @@
+---
+import registry from '../../../scripts/published-count-cohorts.json';
+
+type Cohort = keyof typeof registry.cohorts;
+
+interface Props {
+  cohort: Cohort;
+  class?: string;
+}
+
+const { cohort, class: className } = Astro.props;
+const definition = registry.cohorts[cohort];
+---
+
+<details class:list={['count-provenance', className]} data-count-cohort={cohort}>
+  <summary>Count cohort: <code>{definition.label}</code></summary>
+  <p>{definition.description}</p>
+  <p>Reproduce from the repository root:</p>
+  <code class="count-command">{definition.command}</code>
+</details>
+
+<style>
+  .count-provenance {
+    margin: 0.75rem auto 0;
+    max-width: 48rem;
+    color: var(--text-2, currentColor);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  summary {
+    cursor: pointer;
+  }
+
+  p {
+    margin: 0.4rem 0;
+  }
+
+  .count-command {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--border, currentColor);
+    background: var(--surface-1, transparent);
+    color: var(--text, currentColor);
+    white-space: nowrap;
+  }
+</style>

@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23059
+        "tracked_files": 23063
       }
     },
     "2": {
@@ -1955,9 +1955,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15541,
+        "invisible_files": 15542,
         "target_invisible_files": 0,
-        "tracked_files": 23059
+        "tracked_files": 23063
       }
     },
     "47": {
