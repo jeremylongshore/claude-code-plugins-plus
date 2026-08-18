@@ -65,6 +65,10 @@ export function compareFrozenBytes(current, baseline, path = '<fixture>') {
   return current === baseline ? [] : [{ code: 'FROZEN_CONTENT_DRIFT', path }];
 }
 
+function bodyWithoutClassMarker(text) {
+  return text.replace(/^<!-- doc-class: (?:canonical|generated|frozen|record) -->\n\n?/, '');
+}
+
 export function compareGeneratedBytes(actual, expected, path = INDEX) {
   return actual === expected ? [] : [{ code: 'GENERATED_CONTENT_DRIFT', path }];
 }
@@ -83,20 +87,27 @@ export function trackedMarkdownDocs(root = ROOT) {
 function frozenDiffs(root, docs) {
   const issues = [];
   for (const path of docs.filter((candidate) => FROZEN.has(candidate))) {
-    const result = spawnSync(
-      'git',
-      ['-C', root, 'diff', '--quiet', 'origin/main...HEAD', '--', path],
-      {
+    let baseline;
+    try {
+      baseline = execFileSync('git', ['-C', root, 'show', `origin/main:${path}`], {
         encoding: 'utf8',
-      },
-    );
-    if (result.error || result.status === null) {
+      });
+    } catch (error) {
       issues.push({
         code: 'FROZEN_BASELINE_UNAVAILABLE',
         path,
-        detail: result.error?.message ?? result.stderr,
+        detail: error.message,
       });
-    } else if (result.status !== 0) {
+      continue;
+    }
+    let current;
+    try {
+      current = readFileSync(resolve(root, path), 'utf8');
+    } catch (error) {
+      issues.push({ code: 'UNREADABLE_DOCUMENT', path, detail: error.message });
+      continue;
+    }
+    if (bodyWithoutClassMarker(current) !== bodyWithoutClassMarker(baseline)) {
       issues.push(...compareFrozenBytes('drift', 'baseline', path));
     }
   }
