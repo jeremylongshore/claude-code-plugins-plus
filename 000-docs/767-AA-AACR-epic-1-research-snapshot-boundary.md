@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Research Snapshot Boundary — After-Action Review
 
 - **Date:** 2026-08-18

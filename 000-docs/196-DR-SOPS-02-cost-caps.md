@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Cost Caps & Budget Management
 
 **Production Playbook for Claude Code Plugin Developers**
@@ -19,13 +21,14 @@ API costs can spiral quickly when running multi-agent workflows at scale. This p
 
 ### Anthropic Claude Pricing (January 2025)
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) | Context Window |
-|-------|----------------------|------------------------|----------------|
-| **Claude 3.5 Sonnet** | $3.00 | $15.00 | 200K |
-| **Claude 3.5 Haiku** | $0.80 | $4.00 | 200K |
-| **Claude 3 Opus** | $15.00 | $75.00 | 200K |
+| Model                 | Input (per 1M tokens) | Output (per 1M tokens) | Context Window |
+| --------------------- | --------------------- | ---------------------- | -------------- |
+| **Claude 3.5 Sonnet** | $3.00                 | $15.00                 | 200K           |
+| **Claude 3.5 Haiku**  | $0.80                 | $4.00                  | 200K           |
+| **Claude 3 Opus**     | $15.00                | $75.00                 | 200K           |
 
 **Reality Check**: A single code review session can cost:
+
 - Small file (500 tokens): $0.0075 (Sonnet)
 - Large file (5,000 tokens): $0.075 (Sonnet)
 - Full repository (50,000 tokens): $0.75 (Sonnet)
@@ -37,10 +40,12 @@ API costs can spiral quickly when running multi-agent workflows at scale. This p
 const response = await claude.messages.create({
   model: 'claude-3-5-sonnet-20241022',
   max_tokens: 4096,
-  messages: [{
-    role: 'user',
-    content: `Review this entire codebase: ${fs.readFileSync('monorepo.txt')}` // 250K tokens
-  }]
+  messages: [
+    {
+      role: 'user',
+      content: `Review this entire codebase: ${fs.readFileSync('monorepo.txt')}`, // 250K tokens
+    },
+  ],
 });
 
 // Breakdown:
@@ -247,10 +252,10 @@ try {
 
 ```typescript
 enum Priority {
-  CRITICAL = 'critical',  // $100/day
-  HIGH = 'high',          // $50/day
-  MEDIUM = 'medium',      // $20/day
-  LOW = 'low'             // $5/day
+  CRITICAL = 'critical', // $100/day
+  HIGH = 'high', // $50/day
+  MEDIUM = 'medium', // $20/day
+  LOW = 'low', // $5/day
 }
 
 class TieredBudget {
@@ -261,10 +266,7 @@ class TieredBudget {
     [Priority.LOW, new BudgetEnforcer(5)],
   ]);
 
-  async execute<T>(
-    priority: Priority,
-    fn: () => Promise<{ result: T; cost: number }>
-  ): Promise<T> {
+  async execute<T>(priority: Priority, fn: () => Promise<{ result: T; cost: number }>): Promise<T> {
     const budget = this.budgets.get(priority)!;
     return await budget.executeWithBudget(fn);
   }
@@ -273,7 +275,7 @@ class TieredBudget {
     return Array.from(this.budgets.entries()).map(([priority, budget]) => ({
       priority,
       spent: budget.getSpendPercentage().toFixed(1) + '%',
-      remaining: '$' + budget.getRemainingBudget().toFixed(2)
+      remaining: '$' + budget.getRemainingBudget().toFixed(2),
     }));
   }
 }
@@ -284,7 +286,7 @@ const tiered = new TieredBudget();
 // Critical: Production incident debugging
 await tiered.execute(Priority.CRITICAL, async () => {
   const result = await debugIncident();
-  return { result, cost: 0.50 };
+  return { result, cost: 0.5 };
 });
 
 // Low: Non-urgent code reviews
@@ -309,15 +311,13 @@ class UserQuotaManager {
 
   async executeForUser<T>(
     userId: string,
-    fn: () => Promise<{ result: T; cost: number }>
+    fn: () => Promise<{ result: T; cost: number }>,
   ): Promise<T> {
     const quota = this.userBudgets.get(userId) || this.defaultQuota;
     const spent = this.userSpent.get(userId) || 0;
 
     if (spent >= quota) {
-      throw new Error(
-        `User ${userId} quota exceeded: $${spent.toFixed(2)} / $${quota}`
-      );
+      throw new Error(`User ${userId} quota exceeded: $${spent.toFixed(2)} / $${quota}`);
     }
 
     const { result, cost } = await fn();
@@ -335,7 +335,7 @@ class UserQuotaManager {
       quota: `$${quota}`,
       spent: `$${spent.toFixed(2)}`,
       remaining: `$${(quota - spent).toFixed(2)}`,
-      percentage: `${((spent / quota) * 100).toFixed(1)}%`
+      percentage: `${((spent / quota) * 100).toFixed(1)}%`,
     };
   }
 }
@@ -352,20 +352,20 @@ class UserQuotaManager {
 
 const models = {
   sonnet: {
-    input: (10_000 / 1_000_000) * 3.00,   // $0.03
-    output: (1_000 / 1_000_000) * 15.00,  // $0.015
-    total: 0.045                           // $0.045
+    input: (10_000 / 1_000_000) * 3.0, // $0.03
+    output: (1_000 / 1_000_000) * 15.0, // $0.015
+    total: 0.045, // $0.045
   },
   haiku: {
-    input: (10_000 / 1_000_000) * 0.80,   // $0.008
-    output: (1_000 / 1_000_000) * 4.00,   // $0.004
-    total: 0.012                           // $0.012 (73% cheaper!)
+    input: (10_000 / 1_000_000) * 0.8, // $0.008
+    output: (1_000 / 1_000_000) * 4.0, // $0.004
+    total: 0.012, // $0.012 (73% cheaper!)
   },
   opus: {
-    input: (10_000 / 1_000_000) * 15.00,  // $0.15
-    output: (1_000 / 1_000_000) * 75.00,  // $0.075
-    total: 0.225                           // $0.225 (5x more expensive)
-  }
+    input: (10_000 / 1_000_000) * 15.0, // $0.15
+    output: (1_000 / 1_000_000) * 75.0, // $0.075
+    total: 0.225, // $0.225 (5x more expensive)
+  },
 };
 
 // Smart model selection
@@ -373,7 +373,7 @@ function selectModel(task: AgentTask): string {
   if (task.requiresReasoning) {
     return 'claude-3-5-sonnet-20241022'; // Best reasoning
   } else if (task.isSimple) {
-    return 'claude-3-5-haiku-20241022';  // 73% cost savings
+    return 'claude-3-5-haiku-20241022'; // 73% cost savings
   } else {
     return 'claude-3-5-sonnet-20241022'; // Default
   }
@@ -392,10 +392,12 @@ function selectModel(task: AgentTask): string {
 async function reviewFile(file: string, codebase: string) {
   return await claude.messages.create({
     model: 'claude-3-5-sonnet-20241022',
-    messages: [{
-      role: 'user',
-      content: `Codebase context:\n${codebase}\n\nReview:\n${file}` // 100K + 5K tokens
-    }]
+    messages: [
+      {
+        role: 'user',
+        content: `Codebase context:\n${codebase}\n\nReview:\n${file}`, // 100K + 5K tokens
+      },
+    ],
   });
 }
 // Cost per call: 100K tokens × $3/1M = $0.30
@@ -405,10 +407,12 @@ async function reviewFileOptimized(file: string, relatedFiles: string[]) {
   const context = relatedFiles.join('\n'); // 10K tokens
   return await claude.messages.create({
     model: 'claude-3-5-sonnet-20241022',
-    messages: [{
-      role: 'user',
-      content: `Related files:\n${context}\n\nReview:\n${file}` // 10K + 5K tokens
-    }]
+    messages: [
+      {
+        role: 'user',
+        content: `Related files:\n${context}\n\nReview:\n${file}`, // 10K + 5K tokens
+      },
+    ],
   });
 }
 // Cost per call: 15K tokens × $3/1M = $0.045 (85% cheaper!)
@@ -478,7 +482,7 @@ const { result, cost, cached } = await cache.execute(
 async function reviewFiles(files: string[]) {
   for (const file of files) {
     await claude.messages.create({
-      messages: [{ role: 'user', content: `Review: ${file}` }]
+      messages: [{ role: 'user', content: `Review: ${file}` }],
     });
   }
 }
@@ -490,10 +494,12 @@ async function reviewFilesBatch(files: string[]) {
 
   for (const batch of batches) {
     await claude.messages.create({
-      messages: [{
-        role: 'user',
-        content: `Review these files:\n${batch.map((f, i) => `${i+1}. ${f}`).join('\n')}`
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: `Review these files:\n${batch.map((f, i) => `${i + 1}. ${f}`).join('\n')}`,
+        },
+      ],
     });
   }
 }
@@ -511,7 +517,7 @@ async function reviewFilesBatch(files: string[]) {
 // Average plugin size: 5K tokens
 // Total tokens: 258 × 5K = 1.29M tokens
 
-const budget = new BudgetEnforcer(10.00); // $10 budget
+const budget = new BudgetEnforcer(10.0); // $10 budget
 const cache = new ResponseCache();
 const tracker = new CostTracker();
 
@@ -528,15 +534,17 @@ async function reviewPlugins() {
             const response = await claude.messages.create({
               model: 'claude-3-5-haiku-20241022', // Use cheaper model
               max_tokens: 500,
-              messages: [{
-                role: 'user',
-                content: `Security review:\n${plugin.code}`
-              }]
+              messages: [
+                {
+                  role: 'user',
+                  content: `Security review:\n${plugin.code}`,
+                },
+              ],
             });
 
             const metrics = tracker.track(response.usage, response.model);
             return { result: response, cost: metrics.totalCost };
-          }
+          },
         );
 
         results.push({ plugin: plugin.name, review: result, cached });
@@ -580,7 +588,7 @@ class TeamBudgetManager {
   async executeForTeam<T>(
     teamName: string,
     userId: string,
-    fn: () => Promise<{ result: T; cost: number }>
+    fn: () => Promise<{ result: T; cost: number }>,
   ): Promise<T> {
     const team = this.teams.get(teamName);
     if (!team) throw new Error(`Unknown team: ${teamName}`);
@@ -611,7 +619,7 @@ class TeamBudgetManager {
       remaining: `$${(team.monthlyBudget - spent).toFixed(2)}`,
       percentageUsed: `${((spent / team.monthlyBudget) * 100).toFixed(1)}%`,
       daysRemaining: 30 - new Date().getDate(),
-      projectedOverage: spent / new Date().getDate() * 30 > team.monthlyBudget
+      projectedOverage: (spent / new Date().getDate()) * 30 > team.monthlyBudget,
     };
   }
 }
@@ -622,19 +630,19 @@ const manager = new TeamBudgetManager();
 manager.addTeam({
   name: 'Engineering',
   members: ['alice@example.com', 'bob@example.com'],
-  monthlyBudget: 500
+  monthlyBudget: 500,
 });
 
 manager.addTeam({
   name: 'QA',
   members: ['charlie@example.com'],
-  monthlyBudget: 100
+  monthlyBudget: 100,
 });
 
 // Engineering team member makes request
 await manager.executeForTeam('Engineering', 'alice@example.com', async () => {
   const result = await runTests();
-  return { result, cost: 2.50 };
+  return { result, cost: 2.5 };
 });
 
 console.log(manager.getTeamReport('Engineering'));
@@ -660,9 +668,9 @@ console.log(manager.getTeamReport('Engineering'));
 interface WorkflowMetrics {
   name: string;
   costPerRun: number;
-  timesSaved: number;    // minutes
+  timesSaved: number; // minutes
   errorsPrevented: number;
-  manualCost: number;    // $ per hour equivalent
+  manualCost: number; // $ per hour equivalent
 }
 
 function calculateROI(metrics: WorkflowMetrics): number {
@@ -678,10 +686,10 @@ function calculateROI(metrics: WorkflowMetrics): number {
 // Example: Automated Code Review
 const codeReviewMetrics: WorkflowMetrics = {
   name: 'Automated Code Review',
-  costPerRun: 0.50,           // Claude API cost
-  timesSaved: 30,              // 30 minutes saved
-  errorsPrevented: 3,          // 3 bugs caught
-  manualCost: 100              // $100/hour developer time
+  costPerRun: 0.5, // Claude API cost
+  timesSaved: 30, // 30 minutes saved
+  errorsPrevented: 3, // 3 bugs caught
+  manualCost: 100, // $100/hour developer time
 };
 
 const roi = calculateROI(codeReviewMetrics);
@@ -696,12 +704,12 @@ console.log(`ROI: ${roi.toFixed(0)}%`); // 69,900% ROI
 
 ### Break-Even Analysis
 
-| Workflow | API Cost/Run | Manual Cost/Run | Runs to Break Even |
-|----------|--------------|-----------------|-------------------|
-| Code Review | $0.50 | $50 | 1 |
-| Test Generation | $2.00 | $200 | 1 |
-| Documentation | $1.00 | $80 | 1 |
-| Bug Triage | $0.25 | $25 | 1 |
+| Workflow        | API Cost/Run | Manual Cost/Run | Runs to Break Even |
+| --------------- | ------------ | --------------- | ------------------ |
+| Code Review     | $0.50        | $50             | 1                  |
+| Test Generation | $2.00        | $200            | 1                  |
+| Documentation   | $1.00        | $80             | 1                  |
+| Bug Triage      | $0.25        | $25             | 1                  |
 
 **Key Insight**: Even "expensive" AI workflows pay for themselves in the first run.
 
@@ -712,22 +720,26 @@ console.log(`ROI: ${roi.toFixed(0)}%`); // 69,900% ROI
 ### DO ✅
 
 1. **Track every API call**
+
    ```typescript
    const tracker = new CostTracker();
    // Log costs to analytics daemon
    ```
 
 2. **Set hard budget limits**
+
    ```typescript
    const budget = new BudgetEnforcer(50); // Never exceed $50/day
    ```
 
 3. **Use model selection**
+
    ```typescript
    const model = task.isComplex ? 'sonnet' : 'haiku'; // 73% savings
    ```
 
 4. **Cache responses**
+
    ```typescript
    const cache = new ResponseCache();
    // 30% cache hit rate = 30% cost savings
@@ -741,18 +753,21 @@ console.log(`ROI: ${roi.toFixed(0)}%`); // 69,900% ROI
 ### DON'T ❌
 
 1. **Don't use Opus for everything**
+
    ```typescript
    // ❌ 5x more expensive than Sonnet
-   model: 'claude-3-opus-20240229'
+   model: 'claude-3-opus-20240229';
    ```
 
 2. **Don't send full codebase every time**
+
    ```typescript
    // ❌ Wastes 90% of tokens
-   content: fs.readFileSync('entire-repo.txt')
+   content: fs.readFileSync('entire-repo.txt');
    ```
 
 3. **Don't ignore token usage**
+
    ```typescript
    // ❌ No cost tracking
    await claude.messages.create({...});
@@ -761,7 +776,9 @@ console.log(`ROI: ${roi.toFixed(0)}%`); // 69,900% ROI
 4. **Don't run without budgets**
    ```typescript
    // ❌ Unlimited spending = surprise bills
-   while (true) { await expensiveCall(); }
+   while (true) {
+     await expensiveCall();
+   }
    ```
 
 ---
@@ -769,7 +786,9 @@ console.log(`ROI: ${roi.toFixed(0)}%`); // 69,900% ROI
 ## Tools & Resources
 
 ### Analytics Daemon
+
 Monitor costs in real-time:
+
 ```bash
 cd packages/analytics-daemon
 pnpm start
@@ -778,9 +797,11 @@ pnpm start
 ```
 
 ### Anthropic Dashboard
+
 Official cost tracking: [console.anthropic.com](https://console.anthropic.com/)
 
 ### Plugins with Built-in Cost Optimization
+
 - `performance-engineer` - Automatic model selection
 - `cost-optimizer` - Budget tracking
 - `cache-manager` - Response caching
@@ -798,6 +819,7 @@ Official cost tracking: [console.anthropic.com](https://console.anthropic.com/)
 5. **Budget enforcement**: Prevents runaway costs
 
 **Cost Control Checklist**:
+
 - [ ] Implement CostTracker
 - [ ] Set daily budget limits
 - [ ] Use Haiku for simple tasks

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins Marketplace - Complete Redesign Summary
 
 **Date**: 2025-10-11
@@ -15,6 +17,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 ## What Was Changed
 
 ### 1. Global Styles (`src/styles/global.css`)
+
 - **New Color Scheme**:
   - Primary: Slate grays (`#0f172a`, `#1e293b`, `#334155`)
   - Accent: DevOps green (`#10b981`, `#059669`, `#047857`)
@@ -28,6 +31,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 ### 2. New Components
 
 #### `src/components/Hero.astro`
+
 - Bold headline with gradient text: "220 Production-Ready Claude Code Plugins"
 - Live stats display (plugins, categories, open source)
 - Quick install code snippet with copy button
@@ -35,6 +39,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - Radial gradient background effect
 
 #### `src/components/SearchBar.astro`
+
 - Real-time search functionality (filters as you type)
 - Category dropdown filter
 - Sort options (A-Z, Z-A, Featured)
@@ -44,6 +49,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - Client-side JavaScript for instant filtering
 
 #### `src/components/PluginCard.astro`
+
 - Modern card design with hover effects
 - Plugin icon (emoji) display
 - Category badges with color coding (16 unique colors)
@@ -55,6 +61,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - Responsive layout
 
 ### 3. Main Page (`src/pages/index.astro`)
+
 - **Hero Section**: Eye-catching introduction with stats
 - **Search & Filter**: Sticky search bar for easy navigation
 - **Featured Plugins**: Showcase section for hand-picked plugins
@@ -64,6 +71,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - **Resources Section**: Links to GitHub, docs, Discord, and contributing guide
 
 ### 4. Layout (`src/layouts/Layout.astro`)
+
 - **Modern Navigation Header**:
   - Brand logo with plugin icon
   - Version badge
@@ -83,6 +91,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 ## Design Features
 
 ### Visual Design
+
 - Dark slate background (`#020617`) for reduced eye strain
 - DevOps green accents (`#10b981`) for CTAs and highlights
 - Gradient text effects for headings
@@ -90,6 +99,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - Professional, tech-focused aesthetic
 
 ### User Experience
+
 - **Search & Filter**: Instant results with real-time filtering
 - **One-Click Copy**: Install commands copy with single click
 - **Smooth Animations**: Fade-in effects and hover transitions
@@ -97,6 +107,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 - **Accessibility**: Focus states, ARIA labels, keyboard navigation
 
 ### Performance
+
 - **Static Site Generation**: Pre-rendered HTML for fast loads
 - **Minimal JavaScript**: Only for search/filter functionality
 - **Lazy Loading**: Plugin cards load efficiently
@@ -107,6 +118,7 @@ Completely redesigned the Claude Code Plugins marketplace with a modern, profess
 ## Category Color Coding
 
 Each of the 16 categories has a unique color:
+
 - DevOps: Green (`#10b981`)
 - Security: Orange (`#f97316`)
 - Testing: Teal (`#14b8a6`)
@@ -180,12 +192,14 @@ npm run preview
 ## Files Created/Modified
 
 ### New Files
+
 - `src/components/Hero.astro`
 - `src/components/SearchBar.astro`
 - `src/components/PluginCard.astro`
 - `marketplace/REDESIGN_SUMMARY.md` (this file)
 
 ### Modified Files
+
 - `src/styles/global.css` (complete rewrite)
 - `src/pages/index.astro` (complete redesign)
 - `src/layouts/Layout.astro` (modern header/footer)

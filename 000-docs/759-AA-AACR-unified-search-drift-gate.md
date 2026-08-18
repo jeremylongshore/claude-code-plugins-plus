@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Unified Search Drift Gate — After-Action Review
 
 - **Date:** 2026-08-17

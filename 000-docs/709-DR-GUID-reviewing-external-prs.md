@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 # Reviewing external PRs — the maintainer's playbook
 
 **Audience:** whoever is on external-PR duty. Written for Ope as the first reader.

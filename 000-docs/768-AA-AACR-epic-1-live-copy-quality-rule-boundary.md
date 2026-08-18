@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Live Copy and Quality-Rule Boundary — After-Action Review
 
 - **Date:** 2026-08-18

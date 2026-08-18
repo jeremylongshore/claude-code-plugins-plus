@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 710-AT-DECR — Neobrutalist rebrand: design-reference anonymity preamble
 
 **Date:** 2026-08-02
@@ -36,12 +38,12 @@ The sibling repository `blog/jeremylongshore` already solved this problem. We
 port its script rather than write a second implementation, and we preserve the
 four properties that make it work:
 
-| Property | Why it matters |
-|---|---|
-| Patterns stored **base64-encoded** | The gate file itself would otherwise be the leak it exists to prevent. |
-| `git grep -I -i -F --untracked` | `--untracked` catches scratch files and drafts, so a leak is caught before it can ever enter a diff — not merely at commit time. `-F` is literal (no regex surprises), `-i` case-insensitive, `-I` skips binaries. |
-| Excludes only itself | Nothing else gets a carve-out; an exclusion list is how gates rot. |
-| Non-zero exit on any hit | Fails loudly. No advisory mode, no `continue-on-error`. |
+| Property                           | Why it matters                                                                                                                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Patterns stored **base64-encoded** | The gate file itself would otherwise be the leak it exists to prevent.                                                                                                                                             |
+| `git grep -I -i -F --untracked`    | `--untracked` catches scratch files and drafts, so a leak is caught before it can ever enter a diff — not merely at commit time. `-F` is literal (no regex surprises), `-i` case-insensitive, `-I` skips binaries. |
+| Excludes only itself               | Nothing else gets a carve-out; an exclusion list is how gates rot.                                                                                                                                                 |
+| Non-zero exit on any hit           | Fails loudly. No advisory mode, no `continue-on-error`.                                                                                                                                                            |
 
 ### One deliberate deviation from the sibling list
 

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 732-AA-AACR — Slice 1 Containment After-Action Review
 
 **Date:** 2026-08-14  

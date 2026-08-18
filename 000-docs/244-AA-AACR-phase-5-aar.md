@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 5: Production Landing Excellence - After Action Report
 
 **Date:** 2025-12-26

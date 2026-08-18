@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Compliance & Audit Guide: Security and Regulatory Compliance
 
 **Production Playbook for Security Teams and Compliance Officers**
@@ -24,13 +26,13 @@ Ensuring Claude Code plugin workflows meet SOC 2, GDPR, HIPAA, and other regulat
 
 ### Compliance Requirements Overview
 
-| Framework | Scope | Key Requirements | Claude Code Impact |
-|-----------|-------|------------------|-------------------|
-| **SOC 2 Type II** | Service organizations | Security, availability, confidentiality | Audit logs, access controls, encryption |
-| **GDPR** | EU data subjects | Consent, data minimization, right to erasure | Data retention, anonymization, deletion |
-| **HIPAA** | Healthcare data (PHI) | Encryption, access logs, BAA required | Self-hosted, audit trails, no cloud APIs |
-| **PCI DSS** | Payment card data | Encryption, access controls, logging | Tokenization, secure storage |
-| **ISO 27001** | Information security | Risk management, controls framework | Security policies, incident response |
+| Framework         | Scope                 | Key Requirements                             | Claude Code Impact                       |
+| ----------------- | --------------------- | -------------------------------------------- | ---------------------------------------- |
+| **SOC 2 Type II** | Service organizations | Security, availability, confidentiality      | Audit logs, access controls, encryption  |
+| **GDPR**          | EU data subjects      | Consent, data minimization, right to erasure | Data retention, anonymization, deletion  |
+| **HIPAA**         | Healthcare data (PHI) | Encryption, access logs, BAA required        | Self-hosted, audit trails, no cloud APIs |
+| **PCI DSS**       | Payment card data     | Encryption, access controls, logging         | Tokenization, secure storage             |
+| **ISO 27001**     | Information security  | Risk management, controls framework          | Security policies, incident response     |
 
 ### Risk Assessment
 
@@ -51,7 +53,7 @@ const risks: ComplianceRisk[] = [
     currentState: 'non-compliant',
     risk: 'high',
     remediation: 'Implement conversation deletion API',
-    dueDate: new Date('2025-12-31')
+    dueDate: new Date('2025-12-31'),
   },
   {
     framework: 'SOC2',
@@ -59,8 +61,8 @@ const risks: ComplianceRisk[] = [
     currentState: 'partial',
     risk: 'medium',
     remediation: 'Enable immutable audit logs with timestamps',
-    dueDate: new Date('2025-12-28')
-  }
+    dueDate: new Date('2025-12-28'),
+  },
 ];
 ```
 
@@ -71,6 +73,7 @@ const risks: ComplianceRisk[] = [
 ### Comprehensive Audit Trail
 
 **Required Events to Log**:
+
 ```typescript
 enum AuditEventType {
   // Authentication
@@ -94,7 +97,7 @@ enum AuditEventType {
   AUTHENTICATION_FAILED = 'auth.failed',
   AUTHORIZATION_DENIED = 'authz.denied',
   ENCRYPTION_KEY_ROTATED = 'encryption.key_rotated',
-  SUSPICIOUS_ACTIVITY = 'security.suspicious'
+  SUSPICIOUS_ACTIVITY = 'security.suspicious',
 }
 
 interface AuditLog {
@@ -111,7 +114,7 @@ interface AuditLog {
   action: string;
   outcome: 'success' | 'failure';
   metadata: Record<string, any>;
-  signature: string;  // HMAC for tamper detection
+  signature: string; // HMAC for tamper detection
 }
 ```
 
@@ -132,7 +135,7 @@ class AuditLogger {
       id: crypto.randomUUID(),
       timestamp: Date.now(),
       ...event,
-      signature: '' // Computed below
+      signature: '', // Computed below
     };
 
     // Generate HMAC signature for tamper detection
@@ -143,13 +146,10 @@ class AuditLogger {
       userId: auditLog.userId,
       resource: auditLog.resource,
       action: auditLog.action,
-      outcome: auditLog.outcome
+      outcome: auditLog.outcome,
     });
 
-    auditLog.signature = crypto
-      .createHmac('sha256', this.secretKey)
-      .update(data)
-      .digest('hex');
+    auditLog.signature = crypto.createHmac('sha256', this.secretKey).update(data).digest('hex');
 
     // Write to immutable log storage
     await this.writeToStorage(auditLog);
@@ -162,14 +162,14 @@ class AuditLogger {
     // Option 2: PostgreSQL with audit triggers
     await db.query(
       'INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES ($1, $2, $3, $4, $5, $6)',
-      [log.id, log.timestamp, log.eventType, log.userId, log, log.signature]
+      [log.id, log.timestamp, log.eventType, log.userId, log, log.signature],
     );
 
     // Option 3: Send to SIEM (Splunk, ELK)
     await fetch('https://siem.example.com/audit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(log)
+      body: JSON.stringify(log),
     });
   }
 
@@ -181,7 +181,7 @@ class AuditLogger {
       userId: log.userId,
       resource: log.resource,
       action: log.action,
-      outcome: log.outcome
+      outcome: log.outcome,
     });
 
     const expectedSignature = crypto
@@ -208,7 +208,7 @@ await auditor.log({
   resource: { type: 'session', id: 'session-abc' },
   action: 'authenticate',
   outcome: 'success',
-  metadata: { method: 'api_key' }
+  metadata: { method: 'api_key' },
 });
 
 // Log data access
@@ -220,7 +220,7 @@ await auditor.log({
   resource: { type: 'conversation', id: 'conv-xyz' },
   action: 'read',
   outcome: 'success',
-  metadata: { messageCount: 42 }
+  metadata: { messageCount: 42 },
 });
 
 // Log deletion (GDPR right to erasure)
@@ -232,7 +232,7 @@ await auditor.log({
   resource: { type: 'conversation', id: 'conv-xyz' },
   action: 'delete',
   outcome: 'success',
-  metadata: { reason: 'user_request', gdpr_article: '17' }
+  metadata: { reason: 'user_request', gdpr_article: '17' },
 });
 ```
 
@@ -259,17 +259,17 @@ class GDPRCompliantStorage {
   async storeConversation(data: ConversationData): Promise<void> {
     const minimized = {
       id: data.id,
-      userId: data.userId,  // Keep for right to access
-      messages: data.messages.map(m => ({
+      userId: data.userId, // Keep for right to access
+      messages: data.messages.map((m) => ({
         role: m.role,
-        content: this.redactPII(m.content),  // Remove PII
-        timestamp: m.timestamp
+        content: this.redactPII(m.content), // Remove PII
+        timestamp: m.timestamp,
       })),
       metadata: {
         createdAt: data.metadata.createdAt,
-        pluginsUsed: data.metadata.pluginsUsed
+        pluginsUsed: data.metadata.pluginsUsed,
         // Omit: IP addresses, user agents, detailed telemetry
-      }
+      },
     };
 
     await db.conversations.insert(minimized);
@@ -277,15 +277,17 @@ class GDPRCompliantStorage {
 
   // Redact personally identifiable information
   private redactPII(text: string): string {
-    return text
-      // Email addresses
-      .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
-      // Phone numbers
-      .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE_REDACTED]')
-      // SSN
-      .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]')
-      // Credit cards
-      .replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, '[CC_REDACTED]');
+    return (
+      text
+        // Email addresses
+        .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
+        // Phone numbers
+        .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE_REDACTED]')
+        // SSN
+        .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]')
+        // Credit cards
+        .replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, '[CC_REDACTED]')
+    );
   }
 }
 ```
@@ -294,10 +296,10 @@ class GDPRCompliantStorage {
 
 ```typescript
 enum RetentionPolicy {
-  CONVERSATIONS = 90,      // 90 days
-  AUDIT_LOGS = 2555,       // 7 years (SOC 2 requirement)
-  ANALYTICS = 365,         // 1 year
-  BACKUPS = 30             // 30 days
+  CONVERSATIONS = 90, // 90 days
+  AUDIT_LOGS = 2555, // 7 years (SOC 2 requirement)
+  ANALYTICS = 365, // 1 year
+  BACKUPS = 30, // 30 days
 }
 
 class RetentionManager {
@@ -305,25 +307,25 @@ class RetentionManager {
     const now = Date.now();
 
     // Delete old conversations (GDPR: storage limitation)
-    const cutoff = now - (RetentionPolicy.CONVERSATIONS * 86400000);
+    const cutoff = now - RetentionPolicy.CONVERSATIONS * 86400000;
     await db.conversations.deleteMany({
-      lastModified: { $lt: cutoff }
+      lastModified: { $lt: cutoff },
     });
 
     // Archive (not delete) audit logs
-    const auditCutoff = now - (RetentionPolicy.AUDIT_LOGS * 86400000);
+    const auditCutoff = now - RetentionPolicy.AUDIT_LOGS * 86400000;
     const oldLogs = await db.auditLogs.find({
-      timestamp: { $lt: auditCutoff }
+      timestamp: { $lt: auditCutoff },
     });
     await this.archiveToS3(oldLogs);
     await db.auditLogs.deleteMany({
-      timestamp: { $lt: auditCutoff }
+      timestamp: { $lt: auditCutoff },
     });
 
     // Delete old analytics
-    const analyticsCutoff = now - (RetentionPolicy.ANALYTICS * 86400000);
+    const analyticsCutoff = now - RetentionPolicy.ANALYTICS * 86400000;
     await db.analytics.deleteMany({
-      timestamp: { $lt: analyticsCutoff }
+      timestamp: { $lt: analyticsCutoff },
     });
   }
 
@@ -332,7 +334,7 @@ class RetentionManager {
     await s3.putObject({
       Bucket: 'audit-logs-archive',
       Key: `archive-${Date.now()}.json.gz`,
-      Body: gzip(archive)
+      Body: gzip(archive),
     });
   }
 }
@@ -352,7 +354,7 @@ class GDPRErasureHandler {
       resource: { type: 'user', id: userId },
       action: 'gdpr_erasure',
       outcome: 'success',
-      metadata: { requestId, article: '17' }
+      metadata: { requestId, article: '17' },
     });
 
     // Delete all user data
@@ -363,7 +365,7 @@ class GDPRErasureHandler {
     // Anonymize audit logs (can't delete due to legal requirements)
     await db.auditLogs.updateMany(
       { userId },
-      { $set: { userId: `ANONYMIZED_${crypto.randomUUID()}` } }
+      { $set: { userId: `ANONYMIZED_${crypto.randomUUID()}` } },
     );
 
     // Generate confirmation
@@ -388,7 +390,7 @@ enum Role {
   ADMIN = 'admin',
   DEVELOPER = 'developer',
   AUDITOR = 'auditor',
-  USER = 'user'
+  USER = 'user',
 }
 
 enum Permission {
@@ -398,7 +400,7 @@ enum Permission {
   PLUGINS_INSTALL = 'plugins:install',
   SETTINGS_MODIFY = 'settings:modify',
   AUDIT_LOGS_READ = 'audit_logs:read',
-  USERS_MANAGE = 'users:manage'
+  USERS_MANAGE = 'users:manage',
 }
 
 const rolePermissions: Record<Role, Permission[]> = {
@@ -409,21 +411,15 @@ const rolePermissions: Record<Role, Permission[]> = {
     Permission.PLUGINS_INSTALL,
     Permission.SETTINGS_MODIFY,
     Permission.AUDIT_LOGS_READ,
-    Permission.USERS_MANAGE
+    Permission.USERS_MANAGE,
   ],
   [Role.DEVELOPER]: [
     Permission.CONVERSATIONS_READ,
     Permission.CONVERSATIONS_WRITE,
-    Permission.PLUGINS_INSTALL
+    Permission.PLUGINS_INSTALL,
   ],
-  [Role.AUDITOR]: [
-    Permission.AUDIT_LOGS_READ,
-    Permission.CONVERSATIONS_READ
-  ],
-  [Role.USER]: [
-    Permission.CONVERSATIONS_READ,
-    Permission.CONVERSATIONS_WRITE
-  ]
+  [Role.AUDITOR]: [Permission.AUDIT_LOGS_READ, Permission.CONVERSATIONS_READ],
+  [Role.USER]: [Permission.CONVERSATIONS_READ, Permission.CONVERSATIONS_WRITE],
 };
 
 class AccessControl {
@@ -434,7 +430,7 @@ class AccessControl {
   async enforcePermission(
     userId: string,
     permission: Permission,
-    action: () => Promise<void>
+    action: () => Promise<void>,
   ): Promise<void> {
     const user = await db.users.findOne({ id: userId });
 
@@ -447,7 +443,7 @@ class AccessControl {
         resource: { type: 'permission', id: permission },
         action: 'check',
         outcome: 'failure',
-        metadata: { role: user.role }
+        metadata: { role: user.role },
       });
 
       throw new Error(`Permission denied: ${permission}`);
@@ -485,7 +481,7 @@ class SOC2AccessControl {
       resource: { type: 'user', id: userId },
       action: 'grant_access',
       outcome: 'success',
-      metadata: { role, permissions }
+      metadata: { role, permissions },
     });
   }
 
@@ -493,7 +489,7 @@ class SOC2AccessControl {
   async revokeAccess(userId: string): Promise<void> {
     await db.users.update(
       { id: userId },
-      { $set: { status: 'inactive', accessRevoked: Date.now() } }
+      { $set: { status: 'inactive', accessRevoked: Date.now() } },
     );
 
     await auditor.log({
@@ -504,7 +500,7 @@ class SOC2AccessControl {
       resource: { type: 'user', id: userId },
       action: 'revoke_access',
       outcome: 'success',
-      metadata: { reason: 'employment_termination' }
+      metadata: { reason: 'employment_termination' },
     });
   }
 
@@ -513,18 +509,18 @@ class SOC2AccessControl {
     const recentLogins = await db.auditLogs.find({
       userId,
       eventType: AuditEventType.USER_LOGIN,
-      timestamp: { $gte: Date.now() - 3600000 } // Last hour
+      timestamp: { $gte: Date.now() - 3600000 }, // Last hour
     });
 
     // Multiple failed logins
-    const failedLogins = recentLogins.filter(l => l.outcome === 'failure');
+    const failedLogins = recentLogins.filter((l) => l.outcome === 'failure');
     if (failedLogins.length >= 5) {
       await this.lockAccount(userId);
       await this.alertSecurityTeam(userId, 'brute_force_detected');
     }
 
     // Login from unusual location
-    const locations = recentLogins.map(l => l.ipAddress);
+    const locations = recentLogins.map((l) => l.ipAddress);
     if (new Set(locations).size > 3) {
       await this.alertSecurityTeam(userId, 'multiple_locations');
     }
@@ -533,7 +529,7 @@ class SOC2AccessControl {
   private async lockAccount(userId: string): Promise<void> {
     await db.users.update(
       { id: userId },
-      { $set: { locked: true, lockedReason: 'suspicious_activity' } }
+      { $set: { locked: true, lockedReason: 'suspicious_activity' } },
     );
 
     await auditor.log({
@@ -544,7 +540,7 @@ class SOC2AccessControl {
       resource: { type: 'user', id: userId },
       action: 'lock_account',
       outcome: 'success',
-      metadata: { reason: 'brute_force_detected' }
+      metadata: { reason: 'brute_force_detected' },
     });
   }
 
@@ -595,15 +591,15 @@ echo "Evidence collected: $EVIDENCE_DIR"
 
 ### GDPR Articles Implementation
 
-| Article | Requirement | Implementation |
-|---------|-------------|----------------|
-| **Article 6** | Lawful basis for processing | Explicit consent on signup |
-| **Article 13** | Information to be provided | Privacy policy displayed |
-| **Article 15** | Right of access | `/api/data-export` endpoint |
-| **Article 16** | Right to rectification | User can edit profile |
-| **Article 17** | Right to erasure | `/api/delete-account` endpoint |
-| **Article 20** | Right to data portability | Export in JSON format |
-| **Article 32** | Security of processing | Encryption at rest and in transit |
+| Article        | Requirement                 | Implementation                    |
+| -------------- | --------------------------- | --------------------------------- |
+| **Article 6**  | Lawful basis for processing | Explicit consent on signup        |
+| **Article 13** | Information to be provided  | Privacy policy displayed          |
+| **Article 15** | Right of access             | `/api/data-export` endpoint       |
+| **Article 16** | Right to rectification      | User can edit profile             |
+| **Article 17** | Right to erasure            | `/api/delete-account` endpoint    |
+| **Article 20** | Right to data portability   | Export in JSON format             |
+| **Article 32** | Security of processing      | Encryption at rest and in transit |
 
 ### Data Subject Rights API
 
@@ -615,7 +611,7 @@ class GDPRDataSubjectRights {
       profile: await db.users.findOne({ id: userId }),
       conversations: await db.conversations.find({ userId }),
       analytics: await db.analytics.find({ userId }),
-      auditLogs: await db.auditLogs.find({ userId }).limit(100) // Last 100 entries
+      auditLogs: await db.auditLogs.find({ userId }).limit(100), // Last 100 entries
     };
 
     await auditor.log({
@@ -626,7 +622,7 @@ class GDPRDataSubjectRights {
       resource: { type: 'user', id: userId },
       action: 'export_data',
       outcome: 'success',
-      metadata: { gdpr_article: '15' }
+      metadata: { gdpr_article: '15' },
     });
 
     return data;
@@ -671,8 +667,8 @@ class HIPAACompliantLLM {
       body: JSON.stringify({
         model: 'llama3.3:70b',
         prompt: `Analyze patient data: ${patientData}`,
-        stream: false
-      })
+        stream: false,
+      }),
     });
 
     const result = await response.json();
@@ -686,7 +682,7 @@ class HIPAACompliantLLM {
       resource: { type: 'patient_analysis', id: 'patient-456' },
       action: 'process_phi',
       outcome: 'success',
-      metadata: { model: 'llama3.3:70b', local: true }
+      metadata: { model: 'llama3.3:70b', local: true },
     });
 
     return result.response;
@@ -699,6 +695,7 @@ class HIPAACompliantLLM {
 **Self-hosted = No BAA required** (data never leaves your control)
 
 **Required Security Controls**:
+
 ```bash
 # Encryption at rest
 cryptsetup luksFormat /dev/sdb
@@ -721,6 +718,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 
 ```markdown
 ## Infrastructure Security
+
 - [ ] All services run with least privilege (non-root users)
 - [ ] Firewall configured (UFW/iptables) with default-deny
 - [ ] SSH access restricted (key-only, no password auth)
@@ -728,6 +726,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 - [ ] Intrusion detection system deployed (OSSEC, Fail2ban)
 
 ## Application Security
+
 - [ ] Input validation on all endpoints
 - [ ] SQL injection prevention (parameterized queries)
 - [ ] XSS prevention (output encoding)
@@ -735,6 +734,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 - [ ] Rate limiting on APIs (429 responses)
 
 ## Data Security
+
 - [ ] Encryption at rest (LUKS for disks)
 - [ ] Encryption in transit (TLS 1.3)
 - [ ] Database credentials rotated quarterly
@@ -742,6 +742,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 - [ ] Backups encrypted with separate key
 
 ## Monitoring & Response
+
 - [ ] SIEM configured (Splunk, ELK)
 - [ ] Intrusion alerts sent to security team
 - [ ] Vulnerability scanning automated (weekly)
@@ -756,6 +757,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 ### DO ✅
 
 1. **Log all security events**
+
    ```typescript
    await auditor.log({
      eventType: AuditEventType.AUTHENTICATION_FAILED,
@@ -766,6 +768,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
    ```
 
 2. **Encrypt sensitive data**
+
    ```typescript
    const encrypted = crypto.publicEncrypt(publicKey, Buffer.from(data));
    ```
@@ -779,6 +782,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 ### DON'T ❌
 
 1. **Don't store PII unnecessarily**
+
    ```typescript
    // ❌ Store full conversation with PII
    await db.save({ userId, messages: fullConversation });
@@ -788,6 +792,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
    ```
 
 2. **Don't skip audit logging**
+
    ```typescript
    // ❌ No audit trail
    await db.conversations.delete({ id });
@@ -830,6 +835,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS
 7. **Test regularly** - Penetration tests, vulnerability scans
 
 **Compliance Checklist**:
+
 - [ ] Audit logging implemented (immutable, signed)
 - [ ] Data retention policies enforced (90-day conversations)
 - [ ] GDPR rights endpoints deployed (access, erasure, portability)

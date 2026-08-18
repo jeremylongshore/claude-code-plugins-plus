@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AI-Authorship Disclosure Policy
 
 **Filing:** 697-BL-POLI · **Effective:** 2026-07-02 · **Status:** Active
@@ -28,8 +30,8 @@ built **AI-assisted under human direction and review**. Concretely, that means:
   through the j-rig behavioral-eval harness before being graded
   production-ready; graded artifacts record their eval evidence.
 - **Human merge decisions.** No AI-drafted change lands on `main` without a
-  human owning the merge. Automated pipelines *propose* (e.g. sync PRs); a
-  human *disposes*.
+  human owning the merge. Automated pipelines _propose_ (e.g. sync PRs); a
+  human _disposes_.
 
 AI assistance is a production tool here, the same way a compiler or linter is.
 Accountability for what ships stays with the human maintainer.

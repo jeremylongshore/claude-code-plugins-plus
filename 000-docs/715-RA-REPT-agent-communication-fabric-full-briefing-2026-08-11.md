@@ -1,8 +1,12 @@
+<!-- doc-class: record -->
+
 ---
+
 title: "Agent Communication Fabric"
 subtitle: "Where we are, what the research says, what two adversarial panels found, and the six decisions waiting on you"
 author: "Prepared for Jeremy Longshore · Intent Solutions"
 date: "11 August 2026"
+
 ---
 
 # Read this first
@@ -81,7 +85,7 @@ Where it is beatable, and these are all verified at line level:
 
 **Identity is bookkeeping, not security.** Tokens are stored in plaintext. Their own command-line tool will read any agent's token with no authentication. A window identifier from an environment variable is accepted as proof of identity.
 
-**It is ungovernable.** Zero of fifty-three pull requests have been merged, by stated policy. Bus factor of one. There is an open priority-zero issue where a kill-based startup seizure lost committed rows and wedged a unit in a permanent crash loop — the reporter's summary is the best line in the whole corpus: *a kill that can lose committed rows converts a liveness problem into a corruption problem.*
+**It is ungovernable.** Zero of fifty-three pull requests have been merged, by stated policy. Bus factor of one. There is an open priority-zero issue where a kill-based startup seizure lost committed rows and wedged a unit in a permanent crash loop — the reporter's summary is the best line in the whole corpus: _a kill that can lose committed rows converts a liveness problem into a corruption problem._
 
 There is also a security audit filed against it by an outside contributor across issues 197 through 232 which is, frankly, the most valuable free document in this space. Expired approvals still authorizing. Silent drops of failed deliveries. Invalid policy silently defaulting to permissive. Tokens accepted without a key identifier. Every one of those is the same bug: **fail-open under error.** We should adopt that list as a regression suite.
 
@@ -111,13 +115,13 @@ The consequence is that **sshd is the daemon.** The serve command reads standard
 
 Four more ideas worth taking:
 
-*Kernel-enforced single reader.* An exclusive non-blocking file lock on the cursor, with the process ID written inside so a refusal can name the holder. The kernel releases it on process death, so there is no stale-lock garbage collection. Takeover is a cooperative marker file tested by presence, not modification time, because some filesystems round timestamps to the second. The reasoning in the source comment is the sharpest in the corpus: two readers draining one inbox produce **no error signal at all** — mail is gone, the cursor moved, nothing failed. That must be made impossible, not diagnosable.
+_Kernel-enforced single reader._ An exclusive non-blocking file lock on the cursor, with the process ID written inside so a refusal can name the holder. The kernel releases it on process death, so there is no stale-lock garbage collection. Takeover is a cooperative marker file tested by presence, not modification time, because some filesystems round timestamps to the second. The reasoning in the source comment is the sharpest in the corpus: two readers draining one inbox produce **no error signal at all** — mail is gone, the cursor moved, nothing failed. That must be made impossible, not diagnosable.
 
-*Notify is not deliver.* The notify path reports that mail exists and never advances the cursor. A lost nudge costs a nudge, not a message.
+_Notify is not deliver._ The notify path reports that mail exists and never advances the cursor. A lost nudge costs a nudge, not a message.
 
-*One greppable line per message.* Sequence, timestamp, sender, body, capped at 512 bytes, with the newline as the frame. Torn writes become trivially detectable and reading stops at the first unparseable line, so a cursor can never advance past corruption.
+_One greppable line per message._ Sequence, timestamp, sender, body, capped at 512 bytes, with the newline as the frame. Torn writes become trivially detectable and reading stops at the first unparseable line, so a cursor can never advance past corruption.
 
-*It refuses to send to a non-member.* Creating an inbox on demand, in the author's words, would acknowledge a message into a mailbox nobody reads, which is mail loss reported as success.
+_It refuses to send to a non-member._ Creating an inbox on demand, in the author's words, would acknowledge a message into a mailbox nobody reads, which is mail loss reported as success.
 
 Durability is real: write, then fsync, then acknowledge. Injection defense is real: it rejects C0 control characters, delete, **and the C1 range**, specifically calling out the bare control-sequence-introducer character. Names are restricted to a safe character class, which makes path traversal unrepresentable rather than merely checked.
 
@@ -155,17 +159,17 @@ And there is a field report in an unmerged pull request on that project that we 
 
 Nine harnesses, and MCP reaches eight of them.
 
-| Harness | Stars | MCP | Note |
-|---|---|---|---|
-| Claude Code | — | Yes | Plus plugins, skills, hooks |
-| sst/opencode | 195,418 | Yes | Largest by stars; absent from the original brief |
-| google-gemini/gemini-cli | 106,430 | Yes | Config key differs |
-| openai/codex | 104,947 | Yes | Plus a notify handler |
-| cline/cline | 65,921 | Yes | |
-| block/goose | 52,609 | Yes | MCP-native; every extension is an MCP server |
-| charmbracelet/crush | 27,220 | Yes | Absent from the original brief |
-| Cursor | — | Yes | |
-| Aider-AI/aider | 48,081 | Partial | Last push May 2026; the MCP holdout |
+| Harness                  | Stars   | MCP     | Note                                             |
+| ------------------------ | ------- | ------- | ------------------------------------------------ |
+| Claude Code              | —       | Yes     | Plus plugins, skills, hooks                      |
+| sst/opencode             | 195,418 | Yes     | Largest by stars; absent from the original brief |
+| google-gemini/gemini-cli | 106,430 | Yes     | Config key differs                               |
+| openai/codex             | 104,947 | Yes     | Plus a notify handler                            |
+| cline/cline              | 65,921  | Yes     |                                                  |
+| block/goose              | 52,609  | Yes     | MCP-native; every extension is an MCP server     |
+| charmbracelet/crush      | 27,220  | Yes     | Absent from the original brief                   |
+| Cursor                   | —       | Yes     |                                                  |
+| Aider-AI/aider           | 48,081  | Partial | Last push May 2026; the MCP holdout              |
 
 The conclusion held at the time and is now qualified: MCP is universal **among harnesses**. It is not universal one layer down. See `herdr` in Part III.
 
@@ -227,13 +231,13 @@ The adapter is quarantined by design. Its header comment says it is the only pla
 
 ## herdr — the runtime the research never saw
 
-26,413 stars. 1,861 forks. Apache 2.0. Rust. Created in March 2026, pushed the day I looked. Its own description: *the runtime your coding agents live on.* Its topics are multiplexer, terminal-multiplexer, tmux, tui, workspace-manager, claude-code, codex, coding-agents.
+26,413 stars. 1,861 forks. Apache 2.0. Rust. Created in March 2026, pushed the day I looked. Its own description: _the runtime your coding agents live on._ Its topics are multiplexer, terminal-multiplexer, tmux, tui, workspace-manager, claude-code, codex, coding-agents.
 
 It has an ecosystem: a code-review sidebar at 372 stars, a file viewer at 365, a remote driver at 208, and a session mirror at 113 that drives remote sessions over SSH.
 
 Two consequences, and both matter.
 
-**It is not a row in the harness table. It is a layer beneath it.** It is a tmux successor that Claude Code and Codex run *inside*. Our entire analysis of the terminal-injection family was conducted against tmux and a 403-line shell script, while the 26,000-star Rust runtime that is displacing tmux for coding agents went unexamined. If the doorbell adapter targets tmux, it is targeting the receding substrate.
+**It is not a row in the harness table. It is a layer beneath it.** It is a tmux successor that Claude Code and Codex run _inside_. Our entire analysis of the terminal-injection family was conducted against tmux and a 403-line shell script, while the 26,000-star Rust runtime that is displacing tmux for coding agents went unexamined. If the doorbell adapter targets tmux, it is targeting the receding substrate.
 
 **It is a counterexample to the MCP thesis.** It shows zero MCP, ACP, or A2A references in its README and zero MCP hits in a repository code search. "MCP is the universal surface" holds across harnesses and fails at the runtime layer where the largest adjacent project lives.
 
@@ -243,7 +247,7 @@ The research concluded that three capability columns were unclaimed by everyone:
 
 That reasoning is intact. Its conclusion no longer follows, because a third complete implementation exists that is Apache 2.0 and ours.
 
-So the live question stopped being *what do we build* and became:
+So the live question stopped being _what do we build_ and became:
 
 > **Is the fabric a new core, or a transport-and-routing layer over the existing policy, journal, and fencing-lease kernel, with AGP as the enforcement gate, and ACP alongside MCP and A2A?**
 
@@ -289,7 +293,7 @@ The CFO and CTO also independently measured the coupling, and both found the ker
 
 **On licensing:** seven of seven, the clean-room ruling holds. Two seats say it is understated.
 
-**On the mesh:** seven of seven, no mesh in version one. This was the point my document flagged as the sharpest place to challenge me, and the council unanimously upheld the conclusion while rejecting my reasoning. The CTO's correction: citing ExaDev against durable queues confuses a bad implementation with a bad category. ExaDev abandoned a *naive* file bus. `beb` solves the same substrate correctly.
+**On the mesh:** seven of seven, no mesh in version one. This was the point my document flagged as the sharpest place to challenge me, and the council unanimously upheld the conclusion while rejecting my reasoning. The CTO's correction: citing ExaDev against durable queues confuses a bad implementation with a bad category. ExaDev abandoned a _naive_ file bus. `beb` solves the same substrate correctly.
 
 **On identity:** seven of seven, non-negotiable. Three seats named it the single most costly decision to recover from.
 
@@ -351,7 +355,7 @@ Notably, the existing code already states the correct split in a source comment:
 
 Armstrong's finding, and it is the one that most directly threatens the product's central promise.
 
-The design says fsync before acknowledge, and kernel-released locks. **It never says whether the cursor advances on *read* or on *consumer-acknowledgement-of-processing*.**
+The design says fsync before acknowledge, and kernel-released locks. **It never says whether the cursor advances on _read_ or on _consumer-acknowledgement-of-processing_.**
 
 > If cursor-advance is synchronous with the read call returning bytes, this is at-most-once delivery wearing at-least-once clothing. A reading process that crashes after the read but before it actually uses the message has a permanently vanished message with the cursor already past it — and that produces no error signal at all, the exact failure class the design elsewhere refuses to accept.
 
@@ -391,13 +395,13 @@ Lamport added a sixth, smaller item: there is no no-duplicate-delivery invariant
 
 ## Where the canon contradicts the business council
 
-| Topic | Business council | Engineering canon | Resolution |
-|---|---|---|---|
-| Most costly decision | Identity envelope, three of seven | Split: journal-queue reconciliation, delivery-ack boundary, fencing check durability, identity envelope | Identity keeps the plurality across both panels; three new defects join it in the unrecoverable class |
-| Mesh in version one | Seven of seven against | Agree, reasoning rejected | Conclusion stands, rationale replaced |
-| Protocol surfaces | ACP admitted five of seven | Thompson and Hickey go further than the CFO: cut ACP, A2A, herdr, telemetry, discovery, delegation from version zero entirely | Canon strengthens the CFO dissent |
-| Formal methods | Not considered | Specify only the resolver, lease, and cursor interleaving; explicitly refuse ceremony elsewhere | Adopt the narrow scope |
-| Build versus probe | CFO dissent, one of seven | Beck sequences it regardless of who wins | See Part VIII |
+| Topic                | Business council                  | Engineering canon                                                                                                             | Resolution                                                                                            |
+| -------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Most costly decision | Identity envelope, three of seven | Split: journal-queue reconciliation, delivery-ack boundary, fencing check durability, identity envelope                       | Identity keeps the plurality across both panels; three new defects join it in the unrecoverable class |
+| Mesh in version one  | Seven of seven against            | Agree, reasoning rejected                                                                                                     | Conclusion stands, rationale replaced                                                                 |
+| Protocol surfaces    | ACP admitted five of seven        | Thompson and Hickey go further than the CFO: cut ACP, A2A, herdr, telemetry, discovery, delegation from version zero entirely | Canon strengthens the CFO dissent                                                                     |
+| Formal methods       | Not considered                    | Specify only the resolver, lease, and cursor interleaving; explicitly refuse ceremony elsewhere                               | Adopt the narrow scope                                                                                |
+| Build versus probe   | CFO dissent, one of seven         | Beck sequences it regardless of who wins                                                                                      | See Part VIII                                                                                         |
 
 Two things stand out. Thompson and Hickey both went **further than our most conservative business seat** on scope. And Lamport, who could have recommended formal specification everywhere, explicitly refused:
 
@@ -417,7 +421,7 @@ That is empirical evidence that adversarial composition catches a class of error
 
 ## The convergent answer: right instinct, wrong placement
 
-All six landed in the same place. It belongs *inside* an agent, below the addressing boundary, or *outside* the fabric as a user of it. **Never in the transport.**
+All six landed in the same place. It belongs _inside_ an agent, below the addressing boundary, or _outside_ the fabric as a user of it. **Never in the transport.**
 
 Thompson's version is the cleanest, and it uses this engagement as its own proof:
 
@@ -431,7 +435,7 @@ Hickey framed it as a data-model question: a message stays a **value** no matter
 
 Kleppmann and Lamport arrived at it independently, from opposite directions, and Lamport's version is the sharp one:
 
-> Channel-derived identity proves *who* signed, never *whether the signer's internal process actually decided* what it signed. A composite that authenticates cleanly can still emit a message its own quorum never approved — a tamper-evident record of an internal fabrication.
+> Channel-derived identity proves _who_ signed, never _whether the signer's internal process actually decided_ what it signed. A composite that authenticates cleanly can still emit a message its own quorum never approved — a tamper-evident record of an internal fabrication.
 
 That is a genuinely new hole. Our whole identity story is that the sender cannot be forged. It is silent on whether the sender's own internal process actually sanctioned the content. For a composite agent, those come apart.
 
@@ -593,17 +597,17 @@ The security fix and the A2A client server are in pull request 1170, green. Pull
 
 # Appendix C: The nine defects, in one table
 
-| # | Found by | What | Class |
-|---|---|---|---|
-| 1 | Business council | Injection-defense claim false: C0 and delete only, display names only, no message body path | My error, amended |
-| 2 | Business council | Ring-loop control reported as a gap; it is implemented | My error, amended |
-| 3 | Business council | Line count counted tests as production | My error, amended |
-| 4 | Business council | Live redirect-bypass and credential egress in an open PR | Shipped fix |
-| 5 | Canon | Journal and queue are two stores with no reconciliation invariant | Unrecoverable class |
-| 6 | Canon | Delivery-acknowledgement boundary undefined | Unrecoverable class |
-| 7 | Canon | Fencing token needs a durable check, not just a counter | Unrecoverable class |
-| 8 | Canon | Cross-machine ordering undefined; lock unsafe on network filesystems | Design gap |
-| 9 | Canon | Authentication-method field is a closed enum | Unrecoverable class |
+| #   | Found by         | What                                                                                        | Class               |
+| --- | ---------------- | ------------------------------------------------------------------------------------------- | ------------------- |
+| 1   | Business council | Injection-defense claim false: C0 and delete only, display names only, no message body path | My error, amended   |
+| 2   | Business council | Ring-loop control reported as a gap; it is implemented                                      | My error, amended   |
+| 3   | Business council | Line count counted tests as production                                                      | My error, amended   |
+| 4   | Business council | Live redirect-bypass and credential egress in an open PR                                    | Shipped fix         |
+| 5   | Canon            | Journal and queue are two stores with no reconciliation invariant                           | Unrecoverable class |
+| 6   | Canon            | Delivery-acknowledgement boundary undefined                                                 | Unrecoverable class |
+| 7   | Canon            | Fencing token needs a durable check, not just a counter                                     | Unrecoverable class |
+| 8   | Canon            | Cross-machine ordering undefined; lock unsafe on network filesystems                        | Design gap          |
+| 9   | Canon            | Authentication-method field is a closed enum                                                | Unrecoverable class |
 
 # Appendix D: The rules adopted
 

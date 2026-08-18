@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Social Image Count Cohort — After-Action Review
 
 - **Date:** 2026-08-18

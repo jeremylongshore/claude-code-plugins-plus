@@ -1,15 +1,20 @@
+<!-- doc-class: record -->
+
 ---
+
 filing_code: AT-ADEC-SECURITY-PACK-V1-DEPRECATION-LANE-2026-05-29
 date: 2026-05-29
 acting_head_of_board: Jeremy Longshore
 status: locked
 scope: 23 LIGHT/PROMPT-ONLY plugins absorbed into security-pro-pack v2.0.0
 inputs:
-  - 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md
-  - 000-docs/685-AT-ADEC-security-pack-option-c-scope.md
-  - /tmp/security-pack-audit-2026-05-29.md (audit table)
-  - Reference: marketplace catalog and pnpm/npm install metrics (~45,000+ cumulative downloads across security plugins per package READMEs)
-affects: 23 plugin marketplace listings, downstream user installs, plugin.json deprecated flag, marketplace.json catalog, README banners, CHANGELOG entries
+
+- 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md
+- 000-docs/685-AT-ADEC-security-pack-option-c-scope.md
+- /tmp/security-pack-audit-2026-05-29.md (audit table)
+- Reference: marketplace catalog and pnpm/npm install metrics (~45,000+ cumulative downloads across security plugins per package READMEs)
+  affects: 23 plugin marketplace listings, downstream user installs, plugin.json deprecated flag, marketplace.json catalog, README banners, CHANGELOG entries
+
 ---
 
 # Security Pack v1.x Deprecation Lane Policy
@@ -21,9 +26,11 @@ affects: 23 plugin marketplace listings, downstream user installs, plugin.json d
 ## The 23 absorbed plugins
 
 ### LIGHT tier (12)
+
 `access-control-auditor`, `encryption-tool`, `pci-dss-validator`, `compliance-report-generator`, `soc2-audit-helper`, `gdpr-compliance-scanner`, `owasp-compliance-checker`, `vulnerability-scanner` (security/), `compliance-checker` (devops/), `csrf-protection-validator`, `security-incident-responder`, plus the legacy `security-pro-pack` v1 itself (102 LOC).
 
 ### PROMPT-ONLY tier (11)
+
 `severity1-marketplace`, `hipaa-compliance-checker`, `secret-scanner`, `ssl-certificate-manager`, `xss-vulnerability-scanner`, `data-privacy-scanner`, `security-misconfiguration-finder`, `sql-injection-detector`, `api-security-scanner` (api-development/), `security-audit-reporter`, `session-security-checker`.
 
 ## Deprecation lane mechanics — per-plugin
@@ -56,6 +63,7 @@ Every plugin in the absorption list ships **one v1.x.PATCH release** containing:
 ## [1.X.PATCH] — 2026-05-29
 
 ### Deprecated
+
 - This plugin is superseded by `security-pro-pack` v2.0.0.
 - **Sunset date:** 2026-08-27 (90 days).
 - Migration: see security-pro-pack/000-docs/00N-DR-MGRD-v1-to-v2-migration.md.
@@ -96,11 +104,11 @@ On sunset date (2026-08-27 if security-pro-pack v2.0.0 ships 2026-05-29):
 
 A single migration table at `plugins/packages/security-pro-pack/000-docs/00N-DR-MGRD-v1-to-v2-migration.md` maps every absorbed v1 plugin → its v2 skill or command path. Schema per row:
 
-| v1 plugin | v1 command/skill | v2 skill path | Notes |
-|---|---|---|---|
+| v1 plugin           | v1 command/skill                     | v2 skill path                                                | Notes                                              |
+| ------------------- | ------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------- |
 | `soc2-audit-helper` | `assist-with-soc2-audit-preparation` | `security-pro-pack/skills/compliance/soc2-audit-preparation` | Forge-template upgraded to research-anchored skill |
-| `secret-scanner` | `scan-for-secrets` | `security-pro-pack/skills/web/secret-scanning` | Prompt-only → wired to MCP CVE lookup |
-| ... | ... | ... | ... |
+| `secret-scanner`    | `scan-for-secrets`                   | `security-pro-pack/skills/web/secret-scanning`               | Prompt-only → wired to MCP CVE lookup              |
+| ...                 | ...                                  | ...                                                          | ...                                                |
 
 Building this table is part of Phase 2.1 (bead `claude-43pk` — inventory + classify).
 

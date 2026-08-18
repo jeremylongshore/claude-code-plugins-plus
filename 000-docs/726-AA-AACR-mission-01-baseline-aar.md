@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 726-AA-AACR — Mission 01 After-Action Review: Repository Cleanup Baseline
 
 **Mission window:** 2026-08-11 → 2026-08-12 · **Baseline HEAD:** `4358a65a3` · **PR:** #1174
@@ -19,7 +21,7 @@
 
 1. **The documentation estate was majority-invisible.** 200 of 343 on-disk `000-docs` files were
    gitignored-untracked — including records cited by root `CLAUDE.md`. Mechanism: the
-   `.gitignore` negation rules sit *above* the blanket `000-docs/**` ignores, so last-match-wins
+   `.gitignore` negation rules sit _above_ the blanket `000-docs/**` ignores, so last-match-wins
    renders the entire allowlist structurally dead. Every doc filed since the 2026-05 sweep landed
    local-only. (Register row 9 owns the redesign.)
 2. **Credential incident (remediated).** The untracked-docs sweep found live credentials in
@@ -43,7 +45,7 @@
   working-tree state); caught on verification, amended from the index.
 - A local repro of the markdownlint gate swept untracked files and briefly pulled an untracked
   local research doc into a fix-up commit; caught before the push stood, removed, disclosed in
-  the commit body. Lesson: reproduce CI failures against *tracked* state only.
+  the commit body. Lesson: reproduce CI failures against _tracked_ state only.
 - Tracked-bytes total was quoted on two measurement bases (du-block vs stat-sum); both recorded
   in doc 716 so future baselines diff cleanly.
 

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Contributing to Claude Code Plugins
 
 > ⚠️ **SUPERSEDED — canonical copy: [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md)**

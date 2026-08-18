@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Package Manager Policy
 
 **Last Updated:** 2025-12-23
@@ -151,6 +153,7 @@ node scripts/check-package-manager.mjs
 ```
 
 Exit codes:
+
 - `0` = All checks passed
 - `1` = Policy violations found
 

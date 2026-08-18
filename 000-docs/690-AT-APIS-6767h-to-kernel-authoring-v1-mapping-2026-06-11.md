@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 6767-h ↔ kernel `authoring/v1` Mapping
 
 **Document ID**: 690-AT-APIS-6767h-to-kernel-authoring-v1-mapping
@@ -27,12 +29,12 @@ the small set of **intentional divergences** the kernel-shadow validator
 
 ## 1. The two specs
 
-| | Prose spec (human-authored) | Machine spec (kernel SSoT) |
-|---|---|---|
-| **Artifact** | `6767-h` master standard; source detail in `6767-b §4` | `@intentsolutions/core@0.9.0` `schemas/authoring/v1/skill-frontmatter.schema.json` |
-| **Form** | Markdown prose + the 5,100-line `validate-skills-schema.py` that operationalizes it | JSON Schema 2020-12, pure `allOf` composition of three layers |
-| **Enforced by** | `validate-skills-schema.py` (required CI: `validate-plugins.yml`) | `kernel-shadow-validation.mjs` (advisory CI: `kernel-shadow-validation.yml`) |
-| **Required set** | IS 8-field marketplace set (`6767-b §4` NON-NEGOTIABLE) | Same 8-field set (effective-required = base ∪ overlay) |
+|                  | Prose spec (human-authored)                                                         | Machine spec (kernel SSoT)                                                         |
+| ---------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Artifact**     | `6767-h` master standard; source detail in `6767-b §4`                              | `@intentsolutions/core@0.9.0` `schemas/authoring/v1/skill-frontmatter.schema.json` |
+| **Form**         | Markdown prose + the 5,100-line `validate-skills-schema.py` that operationalizes it | JSON Schema 2020-12, pure `allOf` composition of three layers                      |
+| **Enforced by**  | `validate-skills-schema.py` (required CI: `validate-plugins.yml`)                   | `kernel-shadow-validation.mjs` (advisory CI: `kernel-shadow-validation.yml`)       |
+| **Required set** | IS 8-field marketplace set (`6767-b §4` NON-NEGOTIABLE)                             | Same 8-field set (effective-required = base ∪ overlay)                             |
 
 The kernel `skill-frontmatter.schema.json` is a **pure composition** (zero
 authored fields of its own) — the `allOf` of:
@@ -59,20 +61,20 @@ Schema paths below are relative to
 `node_modules/@intentsolutions/core/schemas/authoring/v1/` (the pinned 0.4.1
 package). "→" = prose citation; "⇐" = the machine layer that owns the rule.
 
-| Field | Prose spec → (`6767-h` / `6767-b`) | Machine spec ⇐ (kernel layer + constraint) | Coherent? |
-|---|---|---|---|
-| `name` | `6767-h §3.1`; `6767-b §4.1` — required; ≤64 chars; lowercase/digits/hyphen; no reserved words; no XML | `upstream-base` (`required`, `maxLength:64`, `pattern ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`) + `securityChecks` (reserved-word `enum` + `[<>]` ban) | ✅ |
-| `description` | `6767-h §3.1`; `6767-b §4.1` — required; non-empty; third-person; **≤1024 chars** (prose); no XML | `upstream-base` (`required`, `minLength:1`) + `disclosureMarkers` (**≤1536 chars**) + `securityChecks` (`<[^>]+>\|\$\{` ban) | ⚠️ §4.1 |
-| `allowed-tools` | `6767-h §3.1` — **"MUST be a CSV string"**; `6767-b §4` — "CSV / space-separated / YAML list (all three accepted, v3.3.1)" | `is-overlay` (`required`, **`type:array`, `items:string`**) | ⚠️ §4.2 |
-| `version` | `6767-b §4.6` — required; semver `X.Y.Z` | `is-overlay` (`required`, **strict SemVer 2.0.0 `pattern`**) | ⚠️ §4.3 |
-| `author` | `6767-h §3.1`; `6767-b §4.6` — required; non-empty | `is-overlay` (`required`, `minLength:1`) | ✅ |
-| `license` | `6767-h §3.1`; `6767-b §4.6` — required; non-empty | `is-overlay` (`required`, `minLength:1`) | ✅ |
-| `compatibility` | `6767-b §4.5/§4.6` — required; free-text; ≤500 chars | `is-overlay` (`required`, `minLength:1`) + `upstream-base` (`maxLength:500`) | ✅ |
-| `tags` | `6767-b §4.6` — required (pure IS invention, zero upstream provenance) | `is-overlay` (`required`, `type:array`, `items:string`) | ✅ |
-| `compatible-with` (legacy) | `6767-b §4.5` — deprecated → `compatibility` | `deprecationRegistry` (present key = fold failure; names replacement) | ✅ |
-| `when_to_use` (legacy) | `6767-b §4` optional-fields list — folded into `description` | `deprecationRegistry` (deprecated → `description`) | ✅ |
-| `requires_env` / `requires_tools` / `fallback_for_env` / `fallback_for_tools` / `required_environment_variables` | `6767-b` IS optional extensions (validator schema 3.5.0/3.6.0) | `is-overlay` optional properties (typed arrays / object array) | ✅ |
-| `model`, `effort`, `argument-hint`, `arguments`, `paths`, `shell`, `context`, `agent`, `user-invocable`, `disable-model-invocation`, `hooks`, `metadata` | `6767-b §4` optional Anthropic/AgentSkills.io fields — validated only when present, never required | Not constrained by the `skill-frontmatter` composition (open-world; per-contract schemas own their own closed-world checks) | ✅ |
+| Field                                                                                                                                                    | Prose spec → (`6767-h` / `6767-b`)                                                                                         | Machine spec ⇐ (kernel layer + constraint)                                                                                                     | Coherent? |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `name`                                                                                                                                                   | `6767-h §3.1`; `6767-b §4.1` — required; ≤64 chars; lowercase/digits/hyphen; no reserved words; no XML                     | `upstream-base` (`required`, `maxLength:64`, `pattern ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$`) + `securityChecks` (reserved-word `enum` + `[<>]` ban) | ✅        |
+| `description`                                                                                                                                            | `6767-h §3.1`; `6767-b §4.1` — required; non-empty; third-person; **≤1024 chars** (prose); no XML                          | `upstream-base` (`required`, `minLength:1`) + `disclosureMarkers` (**≤1536 chars**) + `securityChecks` (`<[^>]+>\|\$\{` ban)                   | ⚠️ §4.1   |
+| `allowed-tools`                                                                                                                                          | `6767-h §3.1` — **"MUST be a CSV string"**; `6767-b §4` — "CSV / space-separated / YAML list (all three accepted, v3.3.1)" | `is-overlay` (`required`, **`type:array`, `items:string`**)                                                                                    | ⚠️ §4.2   |
+| `version`                                                                                                                                                | `6767-b §4.6` — required; semver `X.Y.Z`                                                                                   | `is-overlay` (`required`, **strict SemVer 2.0.0 `pattern`**)                                                                                   | ⚠️ §4.3   |
+| `author`                                                                                                                                                 | `6767-h §3.1`; `6767-b §4.6` — required; non-empty                                                                         | `is-overlay` (`required`, `minLength:1`)                                                                                                       | ✅        |
+| `license`                                                                                                                                                | `6767-h §3.1`; `6767-b §4.6` — required; non-empty                                                                         | `is-overlay` (`required`, `minLength:1`)                                                                                                       | ✅        |
+| `compatibility`                                                                                                                                          | `6767-b §4.5/§4.6` — required; free-text; ≤500 chars                                                                       | `is-overlay` (`required`, `minLength:1`) + `upstream-base` (`maxLength:500`)                                                                   | ✅        |
+| `tags`                                                                                                                                                   | `6767-b §4.6` — required (pure IS invention, zero upstream provenance)                                                     | `is-overlay` (`required`, `type:array`, `items:string`)                                                                                        | ✅        |
+| `compatible-with` (legacy)                                                                                                                               | `6767-b §4.5` — deprecated → `compatibility`                                                                               | `deprecationRegistry` (present key = fold failure; names replacement)                                                                          | ✅        |
+| `when_to_use` (legacy)                                                                                                                                   | `6767-b §4` optional-fields list — folded into `description`                                                               | `deprecationRegistry` (deprecated → `description`)                                                                                             | ✅        |
+| `requires_env` / `requires_tools` / `fallback_for_env` / `fallback_for_tools` / `required_environment_variables`                                         | `6767-b` IS optional extensions (validator schema 3.5.0/3.6.0)                                                             | `is-overlay` optional properties (typed arrays / object array)                                                                                 | ✅        |
+| `model`, `effort`, `argument-hint`, `arguments`, `paths`, `shell`, `context`, `agent`, `user-invocable`, `disable-model-invocation`, `hooks`, `metadata` | `6767-b §4` optional Anthropic/AgentSkills.io fields — validated only when present, never required                         | Not constrained by the `skill-frontmatter` composition (open-world; per-contract schemas own their own closed-world checks)                    | ✅        |
 
 ---
 
@@ -147,11 +149,11 @@ The coherence documented above is **measured continuously** by the kernel-shadow
 validator, which runs both specs over the live corpus and reports the per-file
 AGREE / DISAGREE deviation rate:
 
-| Layer | File | Mode |
-|---|---|---|
-| Shadow script | `scripts/kernel-shadow-validation.mjs` | report-only |
+| Layer             | File                                             | Mode                                                |
+| ----------------- | ------------------------------------------------ | --------------------------------------------------- |
+| Shadow script     | `scripts/kernel-shadow-validation.mjs`           | report-only                                         |
 | Advisory workflow | `.github/workflows/kernel-shadow-validation.yml` | `continue-on-error`, **not** in required-status set |
-| Deviation report | `scripts/.kernel-shadow/report.json` | CI artifact + job summary |
+| Deviation report  | `scripts/.kernel-shadow/report.json`             | CI artifact + job summary                           |
 
 Running the shadow locally (`node scripts/kernel-shadow-validation.mjs`) prints
 the deviation rate and lists the disagreeing files with the first kernel error
@@ -176,7 +178,7 @@ per file. As of the cutover-step-1 baseline, the dominant deviation bucket is
 
 ---
 
-*This is a reference doc for prose ↔ machine spec coherence during the kernel
+_This is a reference doc for prose ↔ machine spec coherence during the kernel
 consumer cutover. It is advisory and non-normative; the existing validator and
 the required CI gate remain the production authority until a later, explicit
-blocking-cutover step.*
+blocking-cutover step._

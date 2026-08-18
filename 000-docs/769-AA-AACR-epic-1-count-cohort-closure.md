@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 1 Count-Cohort Closure — After-Action Review
 
 - **Date:** 2026-08-18

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AAR — Xquik external-author onboarding, eval dogfood, and the tooling fixes it surfaced
 
 **Doc:** 693-AA-AACR · **Date:** 2026-06-30 · **Status:** LANDED (after-action change-record)
@@ -19,18 +21,18 @@ The headline lesson is the same as the [088 `beads-dolt`] run: a platform that r
 
 ## What we changed (the concrete record)
 
-| Change | Where | Status |
-|---|---|---|
-| Onboard `hermes-tweet` external source | this repo **#924** | MERGED (clean — dropped a `numman-ali` `verified` flip + an unrelated blog-newline strip that rode in from codex) |
-| Onboard `x-twitter-scraper` external source | this repo **#865** | MERGED (resolved a `sources.yaml` conflict with the `publishing-skills` block that landed at the same spot) |
-| Bump `@intentsolutions/jrig-cli` `0.1.0 → 0.1.1` | this repo **#925** | MERGED (the pinned `0.1.0` predated the per-test-case `criteria_ids` scoping fix; kernel-coupling-safe — `0.1.1` deps `core@0.9.0`, the root pin) |
-| Judge verdict-parsing robustness (`extractVerdict` regex fallback + judge token-budget parity) | `j-rig-skill-binary-eval` **#175** | MERGED |
+| Change                                                                                         | Where                              | Status                                                                                                                                            |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Onboard `hermes-tweet` external source                                                         | this repo **#924**                 | MERGED (clean — dropped a `numman-ali` `verified` flip + an unrelated blog-newline strip that rode in from codex)                                 |
+| Onboard `x-twitter-scraper` external source                                                    | this repo **#865**                 | MERGED (resolved a `sources.yaml` conflict with the `publishing-skills` block that landed at the same spot)                                       |
+| Bump `@intentsolutions/jrig-cli` `0.1.0 → 0.1.1`                                               | this repo **#925**                 | MERGED (the pinned `0.1.0` predated the per-test-case `criteria_ids` scoping fix; kernel-coupling-safe — `0.1.1` deps `core@0.9.0`, the root pin) |
+| Judge verdict-parsing robustness (`extractVerdict` regex fallback + judge token-budget parity) | `j-rig-skill-binary-eval` **#175** | MERGED                                                                                                                                            |
 
 ## Findings
 
 ### Finding 1 — the pinned eval CLI carried a shipped false-blocker
 
-The repo pinned `jrig-cli@0.1.0`, which **predates jrig #162**. On `0.1.0`, `j-rig eval` applies **every criterion to every test case**, so an off-topic `should_not_trigger` control prompt (e.g. "capital of France", "Hamlet plot") fails unrelated X-safety criteria — the *false-blocker bug that inflated NO-SHIP rates*. The fix shipped in `0.1.1`; we were just behind. **Change:** pin bumped to `0.1.1` (#925). **Correction filed:** an earlier internal note wrongly said the fix was "absent from 0.1.1" — it is present; the only gap was our stale pin.
+The repo pinned `jrig-cli@0.1.0`, which **predates jrig #162**. On `0.1.0`, `j-rig eval` applies **every criterion to every test case**, so an off-topic `should_not_trigger` control prompt (e.g. "capital of France", "Hamlet plot") fails unrelated X-safety criteria — the _false-blocker bug that inflated NO-SHIP rates_. The fix shipped in `0.1.1`; we were just behind. **Change:** pin bumped to `0.1.1` (#925). **Correction filed:** an earlier internal note wrongly said the fix was "absent from 0.1.1" — it is present; the only gap was our stale pin.
 
 ### Finding 2 — the judge mis-parsed truncated structured verdicts as "unsure"
 
@@ -42,7 +44,7 @@ Both skills scored **66/73** in the IS validator **only** because their section 
 
 ## What went right / what to repeat
 
-- **Run the eval ourselves before any public claim.** The behavioral score is a property of *(skill × subject-model × judge-model × spec)*, not just "is the skill good." The honest read of a `block` is "look at the rows" — and the rows indicted our harness, not the author. Had we published the raw `block`/score, we'd have insulted a strong contributor with our own bug.
+- **Run the eval ourselves before any public claim.** The behavioral score is a property of _(skill × subject-model × judge-model × spec)_, not just "is the skill good." The honest read of a `block` is "look at the rows" — and the rows indicted our harness, not the author. Had we published the raw `block`/score, we'd have insulted a strong contributor with our own bug.
 - **Clean the contribution as maintainer, don't merge the noise.** #924's stray `numman` flip would have downgraded another contributor's `verified` status; a rebase onto the updated `main` auto-resolved it to a clean hermes-only diff.
 - **Reciprocity stays implicit.** We merged his PRs and made the dogfood ask peer-to-peer — no tit-for-tat language anywhere public.
 

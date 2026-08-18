@@ -1509,6 +1509,14 @@ jobs:
           node --test scripts/check-supersession-template.test.mjs
           node scripts/check-supersession-template.mjs --all
 
+      # Every tracked Markdown document has an explicit lifecycle class. The
+      # check also keeps frozen 6767 bodies byte-stable and delegates the
+      # generated index content comparison to its canonical writer.
+      - name: Check document classes and frozen/generated boundaries
+        run: |
+          node --test scripts/check-doc-classes.test.mjs
+          node scripts/check-doc-classes.mjs
+
       # The documentation estate index is a generated projection of Git's
       # tracked inventory; hand-edited counts or rows must never drift.
       - name: Check generated documentation index is current

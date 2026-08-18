@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins - Complete Catalog
 
 **Date:** October 11, 2025
@@ -10,9 +12,11 @@ This repository contains **220+ plugins** across **13 categories** for Claude Co
 ## Plugin Categories
 
 ### 1. DevOps (26 plugins)
+
 Location: `
 
 **Core Infrastructure:**
+
 - docker-compose-generator
 - kubernetes-deployment-creator
 - infrastructure-as-code-generator
@@ -20,6 +24,7 @@ Location: `
 - helm-chart-generator
 
 **CI/CD & Deployment:**
+
 - ci-cd-pipeline-builder
 - deployment-pipeline-orchestrator
 - deployment-rollback-manager
@@ -27,35 +32,42 @@ Location: `
 - container-registry-manager
 
 **Security & Compliance:**
+
 - container-security-scanner
 - secrets-manager-integrator
 - compliance-checker
 - network-policy-manager
 
 **Monitoring & Operations:**
+
 - monitoring-stack-deployer
 - log-aggregation-setup
 - infrastructure-drift-detector
 - cloud-cost-optimizer
 
 **Configuration & Scaling:**
+
 - environment-config-manager
 - auto-scaling-configurator
 - load-balancer-configurator
 - service-mesh-configurator
 
 **Backup & Recovery:**
+
 - backup-strategy-implementor
 - disaster-recovery-planner
 
 **Automation:**
+
 - ansible-playbook-creator
 - git-commit-smart (featured)
 
 ### 2. AI/ML Data Science (25 plugins)
+
 Location: `
 
 **Model Development:**
+
 - ml-model-trainer
 - neural-network-builder
 - classification-model-builder
@@ -63,29 +75,34 @@ Location: `
 - deep-learning-optimizer
 
 **Data Processing:**
+
 - data-preprocessing-pipeline
 - feature-engineering-toolkit
 - dataset-splitter
 
 **Domain-Specific ML:**
+
 - nlp-text-analyzer
 - computer-vision-processor
 - time-series-forecaster
 - recommendation-engine
 
 **Analysis & Detection:**
+
 - anomaly-detection-system
 - sentiment-analysis-tool
 - clustering-algorithm-runner
 - model-evaluation-suite
 
 **MLOps & Production:**
+
 - model-deployment-helper
 - model-versioning-tracker
 - experiment-tracking-setup
 - data-visualization-creator
 
 **Advanced ML:**
+
 - automl-pipeline-builder
 - transfer-learning-adapter
 - model-explainability-tool
@@ -93,21 +110,25 @@ Location: `
 - ai-ethics-validator
 
 ### 3. API Development (25 plugins)
+
 Location: `
 
 **API Generation:**
+
 - rest-api-generator (featured)
 - graphql-server-builder (featured)
 - grpc-service-generator
 - websocket-server-builder
 
 **API Management:**
+
 - api-gateway-builder
 - api-versioning-manager
 - api-rate-limiter
 - api-throttling-manager
 
 **Documentation & Testing:**
+
 - api-documentation-generator
 - api-mock-server
 - api-load-tester
@@ -115,16 +136,19 @@ Location: `
 - api-response-validator
 
 **Security & Authentication:**
+
 - api-security-scanner
 - api-authentication-builder
 - webhook-handler-creator
 
 **Observability:**
+
 - api-monitoring-dashboard
 - api-request-logger
 - api-error-handler
 
 **Advanced Features:**
+
 - api-cache-manager
 - api-event-emitter
 - api-batch-processor
@@ -133,9 +157,11 @@ Location: `
 - api-migration-tool
 
 ### 4. Testing (25 plugins)
+
 Location: `
 
 **Test Types:**
+
 - snapshot-test-manager
 - contract-test-validator
 - visual-regression-tester
@@ -143,30 +169,36 @@ Location: `
 - chaos-engineering-toolkit
 
 **Test Infrastructure:**
+
 - test-doubles-generator
 - test-environment-manager
 - test-orchestrator
 - smoke-test-runner
 
 **Cross-Platform Testing:**
+
 - browser-compatibility-tester
 - mobile-app-tester
 
 **Specialized Testing:**
+
 - database-test-manager
 - load-balancer-tester
 - api-fuzzer
 - test-report-generator
 
 ### 5. Security (25 plugins)
+
 Location: `
 
 **Vulnerability Scanning:**
+
 - dependency-vulnerability-scanner
 - code-security-analyzer
 - container-image-scanner
 
 **Compliance:**
+
 - compliance-audit-tool
 - gdpr-compliance-checker
 - hipaa-validator
@@ -174,102 +206,125 @@ Location: `
 - soc2-auditor
 
 **Security Tools:**
+
 - secrets-scanner
 - api-security-tester
 - encryption-helper
 - auth-system-builder
 
 **Monitoring & Response:**
+
 - security-monitoring-setup
 - incident-response-planner
 
 ### 6. Performance Optimization (25 plugins)
+
 Location: `
 
 **Profiling & Analysis:**
+
 - performance-profiler
 - memory-leak-detector
 - cpu-bottleneck-analyzer
 
 **Optimization:**
+
 - bundle-size-optimizer
 - image-optimizer
 - cache-strategy-builder
 
 **Monitoring:**
+
 - lighthouse-automation
 - web-vitals-tracker
 - cdn-performance-optimizer
 
 **Load Testing:**
+
 - load-test-generator
 - stress-test-runner
 
 ### 7. Database (25 plugins)
+
 Location: `
 
 **Schema Management:**
+
 - migration-generator
 - schema-validator
 - orm-model-creator
 
 **Optimization:**
+
 - query-optimizer
 - index-advisor
 - connection-pool-manager
 
 **Backup & Recovery:**
+
 - backup-automation
 - disaster-recovery-setup
 
 **Monitoring:**
+
 - query-performance-analyzer
 - slow-query-detector
 
 ### 8. Cryptography (25 plugins)
+
 Location: `
 
 **Encryption:**
+
 - encryption-helper
 - key-management-system
 - certificate-manager
 
 **Hashing:**
+
 - password-hasher
 - integrity-checker
 
 **PKI:**
+
 - ssl-tls-configurator
 - signing-verification-tool
 
 **Blockchain:**
+
 - smart-contract-auditor
 - wallet-integration-helper
 
 ### 9. Premium Plugin Packs (4 packs)
+
 Location: `
 
 **DevOps Automation Pack** (25 plugins)
+
 - Complete DevOps toolkit
 - CI/CD, Docker, Kubernetes, Terraform
 - Featured
 
 **Security Pro Pack** (10 plugins)
+
 - Professional security tools
 - Vulnerability scanning, compliance
 - Featured
 
 **Fullstack Starter Pack** (15 plugins)
+
 - React, Express/FastAPI, PostgreSQL
 - Complete fullstack toolkit
 - Featured
 
 **AI/ML Engineering Pack** (12 plugins)
+
 - Prompt engineering, LLM integration
 - RAG systems, AI safety
 - Featured
 
 ### 10. AI Agency (6 plugins)
+
 Location: `
 
 - n8n-workflow-designer (featured)
@@ -280,6 +335,7 @@ Location: `
 - roi-calculator
 
 ### 11. MCP Servers (5 plugins)
+
 Location: `
 
 - project-health-auditor (featured, 4 tools)
@@ -289,11 +345,13 @@ Location: `
 - workflow-orchestrator (featured, 4 tools)
 
 ### 12. Productivity (1 plugin)
+
 Location: `
 
 - overnight-dev (featured)
 
 ### 13. Examples (3 plugins)
+
 Location: `
 
 - hello-world
@@ -316,6 +374,7 @@ Location: `
 ## Featured Highlights
 
 ### Top 5 Categories by Plugin Count
+
 1. DevOps - 26 plugins
 2. AI/ML - 25 plugins
 3. API Development - 25 plugins
@@ -323,12 +382,14 @@ Location: `
 5. Security - 25 plugins
 
 ### Most Comprehensive Packs
+
 1. DevOps Automation Pack - 25 plugins
 2. Fullstack Starter Pack - 15 plugins
 3. AI/ML Engineering Pack - 12 plugins
 4. Security Pro Pack - 10 plugins
 
 ### Advanced MCP Servers
+
 - Domain Memory Agent - 6 MCP tools
 - Project Health Auditor - 4 MCP tools
 - Conversational API Debugger - 4 MCP tools

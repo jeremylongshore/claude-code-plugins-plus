@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Security Pack Option C Uplift — Execution Plan
 
 **Status:** DRAFT (awaiting Jeremy's phase-start approval)
@@ -29,6 +31,7 @@ Audit of 30 SKILL.md files showed:
 Per LangChain / Databricks reference:
 
 **Per HEAVY plugin (penetration-tester, dependency-checker, authentication-validator):**
+
 - ≥10 docs in own `000-docs/` (or shared catalog with namespace)
 - ≥25 skills, each ≥250 LOC
 - Multi-reference depth (avg ≥2 reference files per skill)
@@ -37,6 +40,7 @@ Per LangChain / Databricks reference:
 - Shared MCP server (umbrella-level)
 
 **At umbrella level (`security-pro-pack` v2):**
+
 - Pain catalog ≥50 entries from primary sources (CVE, OWASP, NIST, Reddit r/netsec, GitHub issues)
 - ≥10 research docs in `000-docs/` (auditor patterns, OWASP top-10 crosswalk, NIST/ISO mapping, threat-model methodology, CVE landscape, etc.)
 - ≥1 AT-ADEC per major structural choice (umbrella scope, deprecation lane, MCP server boundary)
@@ -143,6 +147,7 @@ Or, if cohort capacity exists: subcontractor pairs take Phase 1A/1B/1C in parall
 Epic: `Promote security plugin pack to heavy-hitter standard (Option C)`
 
 Phase 0 sub-beads:
+
 - `AT-ADEC: scope (Option C choice) for security pack v2`
 - `AT-ADEC: deprecation lane policy for v1 security plugins`
 - `AT-ADEC: shared MCP server boundary for security-pro-pack v2`
@@ -150,11 +155,13 @@ Phase 0 sub-beads:
 - `Pain catalog scaffolding + source list under security-pro-pack`
 
 Phase 1 sub-beads (3, one per heavy-hitter):
+
 - `Promote penetration-tester to heavy-hitter (25 skills, references, MCP wire)`
 - `Promote dependency-checker to heavy-hitter`
 - `Promote authentication-validator to heavy-hitter`
 
 Phase 2 sub-beads:
+
 - `Inventory + classify 23 LIGHT/PROMPT-ONLY plugins for v2 disposition`
 - `Design security-pro-pack v2 namespace + skill taxonomy`
 - `Build shared MCP server for security-pro-pack v2`
@@ -163,10 +170,12 @@ Phase 2 sub-beads:
 - `Cut security-pro-pack v2.0.0 release`
 
 Phase 3 sub-beads:
+
 - `Author 10 research docs in security-pro-pack 000-docs/`
 - `Author Anthropic skill-architecture patterns research doc`
 
 Plus side beads (NOT bundled, file alongside):
+
 - `Federico ${CLAUDE_SKILL_DIR} path-resolution UX cut (1-liner fix)`
 - `Re-populate freshie inventory DB (post-2026-05-12 drift)`
 

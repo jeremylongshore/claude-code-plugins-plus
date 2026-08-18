@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Team Presets & Workflows: Standardized Team Configurations
 
 **Production Playbook for Team Leads and Engineering Managers**
@@ -35,6 +37,7 @@ graph TB
 ```
 
 **Configuration Precedence**:
+
 1. **Organization** - Security policies, approved plugins, compliance settings
 2. **Team** - Team-specific workflows, shared plugins, coding standards
 3. **Project** - Project dependencies, custom agents, specific tools
@@ -53,40 +56,36 @@ graph TB
     "required": [
       "code-reviewer@claude-code-plugins-plus",
       "test-automator@claude-code-plugins-plus",
-      "security-auditor@claude-code-plugins-plus"
+      "security-auditor@claude-code-plugins-plus",
     ],
     "recommended": [
       "performance-engineer@claude-code-plugins-plus",
-      "database-optimizer@claude-code-plugins-plus"
+      "database-optimizer@claude-code-plugins-plus",
     ],
     "forbidden": [
-      "untrusted-plugin"  // Security risk
-    ]
+      "untrusted-plugin", // Security risk
+    ],
   },
 
   "workflows": {
     "default": "code-review-workflow",
-    "available": [
-      "code-review-workflow",
-      "hotfix-workflow",
-      "feature-development-workflow"
-    ]
+    "available": ["code-review-workflow", "hotfix-workflow", "feature-development-workflow"],
   },
 
   "standards": {
     "coding": {
       "linter": "eslint",
       "formatter": "prettier",
-      "typeChecker": "typescript"
+      "typeChecker": "typescript",
     },
     "security": {
       "scanOnCommit": true,
-      "preventSecrets": true
+      "preventSecrets": true,
     },
     "review": {
       "minReviewers": 2,
-      "requireTests": true
-    }
+      "requireTests": true,
+    },
   },
 
   "onboarding": {
@@ -94,10 +93,10 @@ graph TB
       "install-required-plugins",
       "configure-git-hooks",
       "setup-local-environment",
-      "run-first-workflow"
+      "run-first-workflow",
     ],
-    "documentation": "https://wiki.acme.com/claude-code-setup"
-  }
+    "documentation": "https://wiki.acme.com/claude-code-setup",
+  },
 }
 ```
 
@@ -108,6 +107,7 @@ graph TB
 ### Team-Specific Plugin Packs
 
 **Backend Engineering Team**:
+
 ```json
 {
   "name": "backend-engineering-pack",
@@ -120,16 +120,12 @@ graph TB
     "api-documenter@claude-code-plugins-plus",
     "performance-engineer@claude-code-plugins-plus"
   ],
-  "skills": [
-    "typescript-pro",
-    "nodejs-expert",
-    "postgresql-optimizer",
-    "rest-api-designer"
-  ]
+  "skills": ["typescript-pro", "nodejs-expert", "postgresql-optimizer", "rest-api-designer"]
 }
 ```
 
 **Frontend Engineering Team**:
+
 ```json
 {
   "name": "frontend-engineering-pack",
@@ -140,16 +136,12 @@ graph TB
     "frontend-security-coder@claude-code-plugins-plus",
     "seo-content-auditor@claude-code-plugins-plus"
   ],
-  "skills": [
-    "react-expert",
-    "css-architect",
-    "accessibility-specialist",
-    "responsive-design"
-  ]
+  "skills": ["react-expert", "css-architect", "accessibility-specialist", "responsive-design"]
 }
 ```
 
 **DevOps Team**:
+
 ```json
 {
   "name": "devops-pack",
@@ -213,6 +205,7 @@ echo "✓ Team bundle installed: $BUNDLE"
 
 ```markdown
 <!-- .claude/workflows/code-review-workflow.md -->
+
 # Code Review Workflow
 
 ## Steps
@@ -254,8 +247,9 @@ echo "✓ Team bundle installed: $BUNDLE"
 
 ### Hotfix Workflow
 
-```markdown
+````markdown
 <!-- .claude/workflows/hotfix-workflow.md -->
+
 # Hotfix Workflow
 
 ## Steps
@@ -264,6 +258,7 @@ echo "✓ Team bundle installed: $BUNDLE"
    ```bash
    git checkout -b hotfix/issue-description main
    ```
+````
 
 2. **Implement Fix**
    - Make minimal changes
@@ -295,7 +290,8 @@ echo "✓ Team bundle installed: $BUNDLE"
 - Keep previous version ready
 - Monitor for 30 minutes post-deploy
 - Auto-rollback if error rate > 5%
-```
+
+````
 
 ### Feature Development Workflow
 
@@ -360,7 +356,7 @@ const featureDevelopmentWorkflow: FeatureWorkflow = {
     { type: 'e2e', coverage: 0.4 }
   ]
 };
-```
+````
 
 ---
 
@@ -464,26 +460,26 @@ async function runOnboarding(): Promise<void> {
       type: 'input',
       name: 'name',
       message: 'Your name:',
-      validate: (input) => input.length > 0
+      validate: (input) => input.length > 0,
     },
     {
       type: 'list',
       name: 'team',
       message: 'Select your team:',
-      choices: ['backend', 'frontend', 'devops', 'mobile', 'qa']
+      choices: ['backend', 'frontend', 'devops', 'mobile', 'qa'],
     },
     {
       type: 'list',
       name: 'role',
       message: 'Your role:',
-      choices: ['engineer', 'senior-engineer', 'staff-engineer', 'manager']
+      choices: ['engineer', 'senior-engineer', 'staff-engineer', 'manager'],
     },
     {
       type: 'checkbox',
       name: 'projects',
-      message: 'Projects you\'ll work on:',
-      choices: ['api-server', 'web-app', 'mobile-app', 'analytics', 'infrastructure']
-    }
+      message: "Projects you'll work on:",
+      choices: ['api-server', 'web-app', 'mobile-app', 'analytics', 'infrastructure'],
+    },
   ]);
 
   console.log('\n⚙️  Setting up your environment...\n');
@@ -547,7 +543,9 @@ class TeamConfigSync {
 
   async syncFromCentral(team: string): Promise<void> {
     // Clone/pull config repo
-    execSync(`git clone ${this.configRepo} /tmp/team-configs || (cd /tmp/team-configs && git pull)`);
+    execSync(
+      `git clone ${this.configRepo} /tmp/team-configs || (cd /tmp/team-configs && git pull)`,
+    );
 
     // Copy team config
     const teamConfig = readFileSync(`/tmp/team-configs/${team}/config.json`, 'utf-8');
@@ -593,8 +591,8 @@ await sync.syncFromCentral('backend');
 // pair-programming.ts
 
 interface PairSession {
-  driver: string;  // Human writing code
-  navigator: string;  // AI agent providing guidance
+  driver: string; // Human writing code
+  navigator: string; // AI agent providing guidance
   task: string;
   startTime: number;
 }
@@ -605,7 +603,7 @@ class AIPairProgramming {
       driver: 'user-123',
       navigator: 'code-reviewer-agent',
       task,
-      startTime: Date.now()
+      startTime: Date.now(),
     };
 
     console.log(`🎯 Pair Programming Session Started`);
@@ -620,7 +618,7 @@ class AIPairProgramming {
     // AI agent analyzes code and provides real-time feedback
     const response = await callClaude({
       agent: 'code-reviewer',
-      prompt: `As a pair programming navigator, review this code:\n\n${code}\n\nContext: ${context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices`
+      prompt: `As a pair programming navigator, review this code:\n\n${code}\n\nContext: ${context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices`,
     });
 
     return response;
@@ -643,7 +641,7 @@ interface ReviewResult {
   approved: boolean;
   issues: Issue[];
   suggestions: string[];
-  score: number;  // 0-100
+  score: number; // 0-100
 }
 
 interface Issue {
@@ -660,36 +658,27 @@ class AutomatedCodeReview {
     const diff = await getPRDiff(prNumber);
 
     // Run parallel reviews
-    const [
-      securityReview,
-      performanceReview,
-      styleReview,
-      testCoverage
-    ] = await Promise.all([
+    const [securityReview, performanceReview, styleReview, testCoverage] = await Promise.all([
       this.securityAudit(diff),
       this.performanceAnalysis(diff),
       this.styleCheck(diff),
-      this.checkTestCoverage(diff)
+      this.checkTestCoverage(diff),
     ]);
 
     // Aggregate results
-    const issues = [
-      ...securityReview.issues,
-      ...performanceReview.issues,
-      ...styleReview.issues
-    ];
+    const issues = [...securityReview.issues, ...performanceReview.issues, ...styleReview.issues];
 
     const score = this.calculateScore(issues, testCoverage);
 
     // Auto-approve if score >= 85 and no critical issues
-    const criticalIssues = issues.filter(i => i.severity === 'critical');
+    const criticalIssues = issues.filter((i) => i.severity === 'critical');
     const approved = score >= 85 && criticalIssues.length === 0;
 
     return {
       approved,
       issues,
       suggestions: this.generateSuggestions(issues),
-      score
+      score,
     };
   }
 
@@ -697,9 +686,9 @@ class AutomatedCodeReview {
     let score = 100;
 
     // Deduct points for issues
-    score -= issues.filter(i => i.severity === 'critical').length * 20;
-    score -= issues.filter(i => i.severity === 'major').length * 10;
-    score -= issues.filter(i => i.severity === 'minor').length * 5;
+    score -= issues.filter((i) => i.severity === 'critical').length * 20;
+    score -= issues.filter((i) => i.severity === 'major').length * 10;
+    score -= issues.filter((i) => i.severity === 'minor').length * 5;
 
     // Factor in test coverage
     score = Math.min(score, testCoverage);
@@ -728,9 +717,7 @@ class AutomatedCodeReview {
   }
 
   private generateSuggestions(issues: Issue[]): string[] {
-    return issues
-      .filter(i => i.suggestion)
-      .map(i => i.suggestion!);
+    return issues.filter((i) => i.suggestion).map((i) => i.suggestion!);
   }
 }
 ```
@@ -742,6 +729,7 @@ class AutomatedCodeReview {
 ### DO ✅
 
 1. **Standardize configurations**
+
    ```json
    {
      "team": "backend",
@@ -751,11 +739,13 @@ class AutomatedCodeReview {
    ```
 
 2. **Automate onboarding**
+
    ```bash
    ./onboard-team-member.sh alice backend
    ```
 
 3. **Version control team configs**
+
    ```bash
    git commit -m "Update team workflow templates"
    ```
@@ -763,14 +753,16 @@ class AutomatedCodeReview {
 4. **Document workflows**
    ```markdown
    # Code Review Workflow
+
    1. Run linter
    2. Run tests
-   ...
+      ...
    ```
 
 ### DON'T ❌
 
 1. **Don't hardcode credentials**
+
    ```json
    // ❌ Hardcoded API key
    { "apiKey": "sk-..." }
@@ -817,6 +809,7 @@ class AutomatedCodeReview {
 7. **Document everything** - Workflows, standards, processes
 
 **Team Setup Checklist**:
+
 - [ ] Create team configuration file
 - [ ] Define plugin bundle for team
 - [ ] Document workflows (code review, hotfix, feature)

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Marketplace Testing Documentation
 
 ## Overview

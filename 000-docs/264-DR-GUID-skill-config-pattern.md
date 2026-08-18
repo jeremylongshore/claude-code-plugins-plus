@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Skill Config Pattern (schema 3.6.0)
 
 > **Status:** REFERENCE — the governing schema owners are linked below.

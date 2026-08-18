@@ -1,16 +1,21 @@
+<!-- doc-class: record -->
+
 ---
+
 filing_code: AT-ADEC-SECURITY-PACK-OPTION-C-SCOPE-2026-05-29
 date: 2026-05-29
 acting_head_of_board: Jeremy Longshore
 status: locked
-scope: plugins/security/* + plugins/devops/compliance-checker + plugins/database/database-audit-logger + plugins/api-development/api-security-scanner + plugins/packages/security-pro-pack
+scope: plugins/security/\* + plugins/devops/compliance-checker + plugins/database/database-audit-logger + plugins/api-development/api-security-scanner + plugins/packages/security-pro-pack
 inputs:
-  - /tmp/security-pack-audit-2026-05-29.md (investigation table, 30 SKILL.md files scored on validator + freshie + 13-point heavy-hitter rubric)
-  - 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md (phased execution plan)
-  - Investigation bead claude-uqen (closed 2026-05-29)
-  - Reference heavy-hitter standard: plugins/saas-packs/langchain-py-pack/ (33 skills, 11,249 LOC), plugins/saas-packs/databricks-pack/ (24 skills, 6,669 LOC)
-  - Federico Sapuppo LinkedIn DM (2026-05-28) — surfaced UX cut on soc2-audit-helper and validator-illusion structural concern
-affects: 3 HEAVY plugins (penetration-tester, dependency-checker, authentication-validator), 4 SUBSTANTIAL plugins, 23 LIGHT/PROMPT-ONLY plugins, security-pro-pack umbrella, marketplace listings, ~45,000+ cumulative downstream installs
+
+- /tmp/security-pack-audit-2026-05-29.md (investigation table, 30 SKILL.md files scored on validator + freshie + 13-point heavy-hitter rubric)
+- 000-docs/684-AT-PLAN-security-pack-option-c-uplift.md (phased execution plan)
+- Investigation bead claude-uqen (closed 2026-05-29)
+- Reference heavy-hitter standard: plugins/saas-packs/langchain-py-pack/ (33 skills, 11,249 LOC), plugins/saas-packs/databricks-pack/ (24 skills, 6,669 LOC)
+- Federico Sapuppo LinkedIn DM (2026-05-28) — surfaced UX cut on soc2-audit-helper and validator-illusion structural concern
+  affects: 3 HEAVY plugins (penetration-tester, dependency-checker, authentication-validator), 4 SUBSTANTIAL plugins, 23 LIGHT/PROMPT-ONLY plugins, security-pro-pack umbrella, marketplace listings, ~45,000+ cumulative downstream installs
+
 ---
 
 # Security Plugin Pack — Option C Scope Decision
@@ -43,7 +48,7 @@ Promote the 3 HEAVY plugins (`penetration-tester`, `dependency-checker`, `authen
 
 **Why chosen:**
 
-1. **Leverages existing substance.** The 3 HEAVY plugins already have 6,254 LOC of working Python. Heavy-hitter promotion is *scaffolding + skill expansion*, not a rewrite.
+1. **Leverages existing substance.** The 3 HEAVY plugins already have 6,254 LOC of working Python. Heavy-hitter promotion is _scaffolding + skill expansion_, not a rewrite.
 2. **One shared MCP server, one shared research catalog.** The 3 HEAVY plugins and the umbrella all wire to a single MCP at `plugins/packages/security-pro-pack/mcp/`. Pain catalog lives once at the umbrella level and is referenced by all four.
 3. **Discoverability preserved.** Users who currently install `penetration-tester` keep installing `penetration-tester`. The umbrella adds a single-package install path for users who want the whole stack.
 4. **Matches LangChain pattern.** LangChain's 33-skill pack is itself a heavy-hitter, AND specific high-value skills inside it (LCEL, agents, retrievers) are individually identifiable. Same here: penetration-tester is the LCEL of this pack.

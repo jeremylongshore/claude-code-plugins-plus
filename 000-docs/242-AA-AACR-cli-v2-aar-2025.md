@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AAR: Claude Code Plugins - Status Update
 
 **Date:** 2025-12-25

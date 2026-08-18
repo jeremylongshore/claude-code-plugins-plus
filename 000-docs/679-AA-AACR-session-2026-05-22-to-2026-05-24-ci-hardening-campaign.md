@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Session AAR — 2026-05-22 to 2026-05-24
 
 CI hardening campaign + repo-root cleanup + v4.32.0 release + courtesy

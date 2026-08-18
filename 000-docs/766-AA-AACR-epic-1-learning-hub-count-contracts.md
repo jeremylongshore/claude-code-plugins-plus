@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Learning-Hub Count Contracts — After-Action Review
 
 - **Date:** 2026-08-18

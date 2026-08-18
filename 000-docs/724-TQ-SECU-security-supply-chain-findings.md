@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 724-TQ-SECU — Security & Supply-Chain Findings (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3`. This is the public baseline record; operational
@@ -12,12 +14,12 @@ until remediation completes.
 
 2. **Full-history secret scan (gitleaks, this mission):** 1,595 commits / 329.4 MB scanned —
    **0 findings** for structured credentials (cloud keys, platform tokens, private keys).
-   Defense-gap observation: gitleaks' rule set targets *structured* token shapes; it cannot
+   Defense-gap observation: gitleaks' rule set targets _structured_ token shapes; it cannot
    detect free-prose credentials. Complementary content-level sweeps are part of this
    mission's method and are recommended as standing practice for docs directories.
 
 3. **Tracked-tree secret posture:** `.gitleaks.toml` present; the `gitleaks` required check is
-   green on main; prior audit's 83 content-*about*-secrets matches remain non-findings.
+   green on main; prior audit's 83 content-_about_-secrets matches remain non-findings.
 
 4. **Kernel pin staleness:** `@intentsolutions/core@0.9.0` vs published `0.10.0` — documented,
    advisory-only, lockstep-bump governed (doc 723). Not a vulnerability; recorded as

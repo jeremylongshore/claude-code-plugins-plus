@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 711-AA-AUDR — Outside-in defect sweep, 2026-08-03/04
 
 **Date:** 2026-08-04
@@ -14,22 +16,22 @@ been live for **months**, and none was detectable by reading source or by any CI
 gate. They were found by probing the deployed site from outside — fetching URLs,
 reading response headers, and inspecting computed styles in a real browser.
 
-The individual fixes are in the PRs. What is worth keeping is the *class*: these
+The individual fixes are in the PRs. What is worth keeping is the _class_: these
 defects are invisible to the checks this repo already runs, and will recur unless
 someone periodically looks at the served artifact rather than the code that
 produces it.
 
 ## The defects, with age
 
-| Defect | Live since | How it was found |
-|---|---|---|
-| `og:image` returned 404 on 3,830 pages | **2026-03-09** | `curl -I` on the asset every page advertises |
-| Security headers were inert `<meta http-equiv>` | **2025-12-24** | Browser console error on every page load |
-| `/research/` linked a stylesheet that 404s | **2026-03-04** | Cross-referencing built HTML against `dist/` |
-| `/research/` had no design tokens at all | same | Reading *computed* CSS values, not markup |
-| 104 dead URLs, 404 page 3rd most-served | rolling | Umami path metric vs `dist/` |
-| 42 dead in-content blog links | rolling | Same cross-reference |
-| Mandy `/healthz` 500 on HEAD | since written | `curl -sI` (HEAD) during the header audit |
+| Defect                                          | Live since     | How it was found                             |
+| ----------------------------------------------- | -------------- | -------------------------------------------- |
+| `og:image` returned 404 on 3,830 pages          | **2026-03-09** | `curl -I` on the asset every page advertises |
+| Security headers were inert `<meta http-equiv>` | **2025-12-24** | Browser console error on every page load     |
+| `/research/` linked a stylesheet that 404s      | **2026-03-04** | Cross-referencing built HTML against `dist/` |
+| `/research/` had no design tokens at all        | same           | Reading _computed_ CSS values, not markup    |
+| 104 dead URLs, 404 page 3rd most-served         | rolling        | Umami path metric vs `dist/`                 |
+| 42 dead in-content blog links                   | rolling        | Same cross-reference                         |
+| Mandy `/healthz` 500 on HEAD                    | since written  | `curl -sI` (HEAD) during the header audit    |
 
 Dates are from `git log -S`, not estimates.
 
@@ -70,7 +72,7 @@ which is the only layer where the answer is real.
 
 ### 3. Loading a stylesheet is not the same as applying one
 
-The `/research/` pages linked `/styles/global.css` — a *source* path never copied
+The `/research/` pages linked `/styles/global.css` — a _source_ path never copied
 to `public/`, so it 404'd. The first fix imported `global.css` properly and added
 the webfont, and the built HTML looked correct.
 

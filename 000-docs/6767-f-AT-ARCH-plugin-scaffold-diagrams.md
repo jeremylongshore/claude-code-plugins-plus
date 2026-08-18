@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 6767-f-AT-ARCH-plugin-scaffold-diagrams.md
 
 **Document Type**: Architecture & Technical - Architecture (AT-ARCH)

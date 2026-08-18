@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Slice 3 Interim AAR — E7.3 Publication Locks
 
 Status: interim record; code locks are implemented and independently reviewed, while the protected Environment and token rotation remain owner-gated.

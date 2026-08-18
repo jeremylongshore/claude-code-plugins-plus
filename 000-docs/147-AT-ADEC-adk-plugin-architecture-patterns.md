@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADK Plugin Architecture Patterns
 
 **Document ID**: 090-AT-ADEC-adk-plugin-architecture-patterns
@@ -19,7 +21,8 @@ This document establishes the canonical architecture patterns for creating produ
 
 ### Problem Statement
 
-The existing jeremy-* plugins are instruction-based (markdown templates) that rely on Claude's interpretation. While functional, they cannot:
+The existing jeremy-\* plugins are instruction-based (markdown templates) that rely on Claude's interpretation. While functional, they cannot:
+
 - Deploy to Vertex AI Engine
 - Participate in A2A protocol
 - Execute Python code directly
@@ -29,6 +32,7 @@ The existing jeremy-* plugins are instruction-based (markdown templates) that re
 ### Solution Approach
 
 Transform plugins to follow Google ADK patterns with:
+
 - Executable Python agents using ADK SDK
 - A2A protocol implementation
 - Vertex AI deployment configuration
@@ -153,9 +157,9 @@ skills:
   - id: skill-1
     name: Skill Name
     description: What this skill does
-    input_modes: ["application/json"]
-    output_modes: ["application/json"]
-    tags: ["tag1", "tag2"]
+    input_modes: ['application/json']
+    output_modes: ['application/json']
+    tags: ['tag1', 'tag2']
 
 security_schemes:
   bearer:
@@ -324,30 +328,35 @@ jobs:
 ## Migration Strategy
 
 ### Phase 1: Core Structure (Week 1)
+
 1. Create `agent/` directory
 2. Implement `agent.py` with get_agent()
 3. Create `tools.py` with FunctionTool
 4. Add `agent_card.yaml`
 
 ### Phase 2: Memory & Session (Week 2)
+
 1. Implement create_runner()
 2. Configure VertexAiSessionService
 3. Configure VertexAiMemoryBankService
 4. Add auto_save callback
 
 ### Phase 3: A2A Protocol (Week 3)
+
 1. Implement discovery endpoints
 2. Add invocation handlers
 3. Create agent registry
 4. Test inter-agent communication
 
 ### Phase 4: Deployment (Week 4)
+
 1. Create deploy.yaml
 2. Set up CI/CD pipeline
 3. Configure monitoring
 4. Deploy to Vertex AI Engine
 
 ### Phase 5: Production Hardening (Week 5)
+
 1. Add circuit breakers
 2. Implement rate limiting
 3. Set up alerts
@@ -358,30 +367,35 @@ jobs:
 ## Best Practices
 
 ### 1. Tool Design
+
 - Use Pydantic models for inputs
 - Return structured dictionaries
 - Handle errors gracefully
 - Include tool_context parameter
 
 ### 2. Memory Management
+
 - Save sessions after each interaction
 - Implement 14-day TTL for R5
 - Index by agent, task, timestamp
 - Enable semantic search
 
 ### 3. Error Handling
+
 - Retry with exponential backoff
 - Implement circuit breakers
 - Log all failures
 - Provide fallback options
 
 ### 4. Security
+
 - Validate all inputs
 - Use OAuth 2.0 for auth
 - Encrypt sensitive data
 - Audit all operations
 
 ### 5. Performance
+
 - Enable parallel tool calls
 - Cache agent cards
 - Reuse sessions
@@ -392,18 +406,21 @@ jobs:
 ## Compliance Requirements
 
 ### R5 Compliance
+
 - Auto-save sessions to Memory Bank
 - 14-day data retention
 - Proper deletion procedures
 - Audit trail maintenance
 
 ### SOC 2
+
 - Security controls
 - Availability monitoring
 - Confidentiality measures
 - Privacy protection
 
 ### GDPR
+
 - Data minimization
 - Right to deletion
 - Consent management
@@ -414,6 +431,7 @@ jobs:
 ## Testing Strategy
 
 ### Unit Tests
+
 ```python
 # tests/test_agent.py
 import pytest
@@ -432,12 +450,14 @@ async def test_runner_creation():
 ```
 
 ### Integration Tests
+
 - A2A protocol communication
 - Memory Bank persistence
 - Session management
 - Tool execution
 
 ### Load Tests
+
 - 1000 requests/minute
 - Concurrent agent invocations
 - Memory usage under load
@@ -448,6 +468,7 @@ async def test_runner_creation():
 ## Monitoring & Observability
 
 ### Metrics to Track
+
 - Agent invocation count
 - Response time (p50, p95, p99)
 - Error rate
@@ -456,12 +477,14 @@ async def test_runner_creation():
 - Tool execution time
 
 ### Dashboards
+
 - Real-time agent status
 - Workflow execution flow
 - Error distribution
 - Performance trends
 
 ### Alerts
+
 - Agent unavailable > 1 minute
 - Error rate > 1%
 - Response time p99 > 10s
@@ -472,6 +495,7 @@ async def test_runner_creation():
 ## Example: Complete Plugin Transformation
 
 ### Before (Instruction-based)
+
 ```
 plugins/ai-ml/jeremy-adk-orchestrator/
 ├── .claude-plugin/plugin.json
@@ -481,6 +505,7 @@ plugins/ai-ml/jeremy-adk-orchestrator/
 ```
 
 ### After (ADK-compliant)
+
 ```
 plugins/ai-ml/jeremy-adk-orchestrator/
 ├── .claude-plugin/plugin.json
@@ -505,7 +530,7 @@ plugins/ai-ml/jeremy-adk-orchestrator/
 
 ## Conclusion
 
-This architecture enables jeremy-* plugins to evolve from instruction-based templates to production-ready ADK agents while maintaining backward compatibility with Claude Code. The dual approach (instructions + executable) provides maximum flexibility for both development and production deployment scenarios.
+This architecture enables jeremy-\* plugins to evolve from instruction-based templates to production-ready ADK agents while maintaining backward compatibility with Claude Code. The dual approach (instructions + executable) provides maximum flexibility for both development and production deployment scenarios.
 
 ---
 

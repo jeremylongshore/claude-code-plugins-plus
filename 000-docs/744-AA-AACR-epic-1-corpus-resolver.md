@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 1 Corpus Resolver — After-Action Review
 
 - **Date:** 2026-08-16

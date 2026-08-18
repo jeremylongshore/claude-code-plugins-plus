@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Generated Documentation Estate Index — After-Action Review
 
 - **Date:** 2026-08-15

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Troubleshooting Guide
 
 Common issues and solutions for Claude Code Plugins marketplace.
@@ -9,6 +11,7 @@ Common issues and solutions for Claude Code Plugins marketplace.
 ### WSL2: "Clone succeeded, but checkout failed"
 
 **Problem:** Git clone fails when adding the marketplace on WSL2 with error:
+
 ```
 Clone succeeded, but checkout failed.
 You can inspect what was checked out with 'git status'
