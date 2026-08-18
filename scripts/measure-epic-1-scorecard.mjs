@@ -1469,7 +1469,7 @@ export function buildExtendedScorecardRows({
     44,
     'measured',
     'tracked 000-docs estate excluding the generated index and filing ignore ledger',
-    ['000-docs/000-INDEX.md'],
+    ['000-docs/000-INDEX.md', '000-docs/761-AA-AACR-epic-1-social-image-count-cohort.md'],
     { ...index, target_equal: true },
   );
   const proseWorkflows = reader.paths
