@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# sops-env — wrapper around SOPS for this repo's .env.sops file.
+# Decrypts to tmpfs, sources into env, executes the command, wipes tmpfs.
+# Plaintext never touches the SSD.
+#
+# Usage:
+#   scripts/sops-env <command>           # run command with secrets in env
+#   scripts/sops-env decrypt             # print decrypted env to stdout
+#   scripts/sops-env edit                # edit encrypted file in place
+#
+# Requires: ~/bin/sops; ~/.config/sops/age/keys.txt or SOPS_AGE_KEY env var.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+ENV_FILE="${SOPS_ENV_FILE:-$REPO_ROOT/.env.sops}"
+
+if [ ! -f "$ENV_FILE" ]; then
+  echo "sops-env: no encrypted env file at $ENV_FILE" >&2
+  exit 2
+fi
+
+if [ -x "$HOME/bin/sops" ]; then
+  SOPS_BIN="$HOME/bin/sops"
+elif command -v sops >/dev/null 2>&1; then
+  SOPS_BIN="sops"
+else
+  echo "sops-env: sops binary not found (tried ~/bin/sops and PATH)" >&2
+  exit 3
+fi
+
+decrypt_to_stdout() {
+  exec "$SOPS_BIN" -d --input-type dotenv --output-type dotenv "$ENV_FILE"
+}
+
+edit_in_place() {
+  exec "$SOPS_BIN" --input-type dotenv --output-type dotenv "$ENV_FILE"
+}
+
+exec_with_env() {
+  if [ -d /dev/shm ] && [ -w /dev/shm ]; then
+    TMPFILE=$(mktemp -p /dev/shm sops-env-XXXXXX)
+  else
+    TMPFILE=$(mktemp sops-env-XXXXXX)
+  fi
+  chmod 600 "$TMPFILE"
+  trap 'shred -u "$TMPFILE" 2>/dev/null || rm -f "$TMPFILE"' EXIT
+
+  "$SOPS_BIN" -d --input-type dotenv --output-type dotenv "$ENV_FILE" > "$TMPFILE"
+
+  set -a
+  # shellcheck disable=SC1090
+  source "$TMPFILE"
+  set +a
+
+  shred -u "$TMPFILE" 2>/dev/null || rm -f "$TMPFILE"
+  trap - EXIT
+
+  if [ "$#" -eq 0 ]; then
+    env
+  elif [ "$#" -eq 1 ]; then
+    bash -c "$1"
+  else
+    "$@"
+  fi
+}
+
+case "${1:-help}" in
+  decrypt|cat|show) decrypt_to_stdout ;;
+  edit)             edit_in_place ;;
+  help|-h|--help)   sed -n 's/^# \?//p' "$0" | head -20 ;;
+  --)               shift; exec_with_env "$@" ;;
+  *)                exec_with_env "$@" ;;
+esac

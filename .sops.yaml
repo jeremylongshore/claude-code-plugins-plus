@@ -1,0 +1,20 @@
+# SOPS configuration. Encrypted secrets travel with the code.
+#
+# Recipients below can decrypt. To add an engineer:
+#   1. They run: age-keygen -o ~/.config/sops/age/keys.txt
+#   2. They share their public key (line starting "age1...")
+#   3. Add it under `age:` below (one per recipient block)
+#   4. Run: sops updatekeys .env.sops
+#   5. Commit. Old recipients stay valid until their line is removed + updatekeys re-run.
+#
+# CI uses SOPS_AGE_KEY env var (single GitHub Actions secret).
+
+creation_rules:
+  # Plaintext .env -> .env.sops:  sops -e .env > .env.sops
+  - path_regex: \.env$
+    age: >-
+      age1me3vkelljqe2u4zcagja9ru5fdpfpw72xmch39fwle2cr0yfr4cs8vr5d8
+  # secrets.<env>.yaml -> secrets.<env>.sops.yaml
+  - path_regex: secrets\.[a-z]+\.yaml$
+    age: >-
+      age1me3vkelljqe2u4zcagja9ru5fdpfpw72xmch39fwle2cr0yfr4cs8vr5d8
