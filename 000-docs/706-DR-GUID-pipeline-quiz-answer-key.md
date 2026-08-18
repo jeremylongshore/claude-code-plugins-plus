@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Pipeline Quiz — Answer Key
 
 **Doc:** 706-DR-GUID · **For:** the Lead grading the

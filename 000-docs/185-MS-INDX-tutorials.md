@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Interactive Learning Lab
 
 **Learn Claude Code plugin development through hands-on Jupyter notebooks**

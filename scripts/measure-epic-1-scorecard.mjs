@@ -1143,15 +1143,15 @@ export function buildExtendedScorecardRows({
     deadDomain.all_policy_surface.paths,
     deadDomain,
   );
+  const ungatedGenerated = generated.filter((entry) => !entry.content_drift_gate);
   output[22] = baseRow(
     22,
-    'partial',
+    ungatedGenerated.length === 0 ? 'measured' : 'partial',
     'deterministic tracked marketplace projections classified by the artifact authority registry and executable writers',
     generated.flatMap((entry) => [...entry.producers, ...entry.wired_checkers]),
     {
       artifacts: generated,
-      count_without_content_drift_gate: generated.filter((entry) => !entry.content_drift_gate)
-        .length,
+      count_without_content_drift_gate: ungatedGenerated.length,
       target_without_content_drift_gate: 0,
     },
     {
@@ -1469,7 +1469,7 @@ export function buildExtendedScorecardRows({
     44,
     'measured',
     'tracked 000-docs estate excluding the generated index and filing ignore ledger',
-    ['000-docs/000-INDEX.md'],
+    ['000-docs/000-INDEX.md', '000-docs/761-AA-AACR-epic-1-social-image-count-cohort.md'],
     { ...index, target_equal: true },
   );
   const proseWorkflows = reader.paths

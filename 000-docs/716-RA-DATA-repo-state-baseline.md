@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 716-RA-DATA — Repository State Baseline (Mission 01)
 
 **Mission:** 01 — repository cleanup state & governance baseline

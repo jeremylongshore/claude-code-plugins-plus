@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Frozen Prose-Anchor Gate — After-Action Review
 
 - **Date:** 2026-08-15

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 724-TQ-SECU — Security & Supply-Chain Findings (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3`. This is the public baseline record; operational

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 filing_code: AT-ADEC-CLAUDE-CODE-PLATFORM-CHANGELOG-IMPACT-2026-05-27
 date: 2026-05-27

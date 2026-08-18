@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3179,
-        "tracked_files": 23057
+        "tracked_files": 23081
       }
     },
     "2": {
@@ -1044,7 +1044,7 @@
         "marketplace/scripts/generate-unified-search.mjs",
         "marketplace/scripts/sync-catalog.mjs"
       ],
-      "status": "partial",
+      "status": "measured",
       "values": {
         "artifacts": [
           {
@@ -1066,13 +1066,13 @@
             "wired_checkers": ["marketplace/scripts/discover-skills.mjs"]
           },
           {
-            "content_drift_gate": false,
+            "content_drift_gate": true,
             "path": "marketplace/src/data/unified-search-index.json",
             "producers": ["marketplace/scripts/generate-unified-search.mjs"],
-            "wired_checkers": []
+            "wired_checkers": ["marketplace/scripts/generate-unified-search.mjs"]
           }
         ],
-        "count_without_content_drift_gate": 1,
+        "count_without_content_drift_gate": 0,
         "target_without_content_drift_gate": 0
       }
     },
@@ -1925,13 +1925,16 @@
       "cohort": "tracked 000-docs estate excluding the generated index and filing ignore ledger",
       "dimension": "Documentation index entries versus tracked documents",
       "reproduce": "pnpm run measure:e1 --row=44 --stdout",
-      "source": ["000-docs/000-INDEX.md"],
+      "source": [
+        "000-docs/000-INDEX.md",
+        "000-docs/761-AA-AACR-epic-1-social-image-count-cohort.md"
+      ],
       "status": "measured",
       "values": {
-        "index_entries": 198,
+        "index_entries": 210,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 198,
+        "tracked_documents": 210,
         "untracked_index_entries": []
       }
     },
@@ -1955,9 +1958,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15539,
+        "invisible_files": 15557,
         "target_invisible_files": 0,
-        "tracked_files": 23057
+        "tracked_files": 23081
       }
     },
     "47": {

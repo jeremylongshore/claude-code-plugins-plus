@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Package Manager Policy
 
 **Last Updated:** 2025-12-23

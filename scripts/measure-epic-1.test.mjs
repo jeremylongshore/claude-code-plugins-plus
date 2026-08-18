@@ -126,6 +126,7 @@ test('buildReport names cohorts and derives every governed row from tracked fixt
   assert.equal(report.rows[12].values.missed_count, 0);
   assert.equal(report.rows[12].values.refused_count, 1);
   assert.equal(report.rows[22].values.count_without_content_drift_gate, 0);
+  assert.equal(report.rows[22].status, 'measured');
   assert.equal(report.rows[24].values.named_cohorts, 5);
   assert.deepEqual(report.rows[25].values, {
     count: 1,

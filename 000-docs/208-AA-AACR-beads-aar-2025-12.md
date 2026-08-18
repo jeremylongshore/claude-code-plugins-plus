@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # After Action Review - Beads Epic Status
 
 **Date**: 2025-12-24

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Doc Filing Cleanup AAR (v4.2)
 
 - Date: 2025-12-28

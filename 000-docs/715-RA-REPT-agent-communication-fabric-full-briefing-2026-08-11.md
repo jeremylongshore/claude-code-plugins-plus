@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 title: "Agent Communication Fabric"
 subtitle: "Where we are, what the research says, what two adversarial panels found, and the six decisions waiting on you"

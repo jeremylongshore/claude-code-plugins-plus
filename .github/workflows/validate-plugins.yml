@@ -170,6 +170,12 @@ jobs:
       - name: Verify README Killer-Skill block is in sync with spotlights.json
         run: node scripts/render-spotlight.mjs --check
 
+      # Epic 1.6: a public skill total is valid only when its cohort and exact
+      # corpus-resolver command travel with it. Keep this inside the existing
+      # validate job so the gate adds no fourth required status context.
+      - name: Validate published count cohort labels
+        run: pnpm run validate:published-count-cohorts
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."
@@ -1445,14 +1451,26 @@ jobs:
 
       - name: Check deterministic marketplace projections
         run: |
-          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs
+          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
           node marketplace/scripts/discover-skills.mjs --level=full --check
           node marketplace/scripts/sync-catalog.mjs --check
+          node marketplace/scripts/generate-unified-search.mjs --check
 
   doc-governance:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # The frozen-body check compares against an immutable event baseline.
+      # PRs use the exact target base SHA; pushes use the exact prior main SHA.
+      # A manual run falls back to its own SHA and therefore remains a no-op
+      # for historical drift while still validating all current content.
+      - name: Fetch document-class baseline
+        env:
+          BASELINE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        run: git fetch --no-tags --depth=1 origin "$BASELINE_SHA"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -1501,6 +1519,16 @@ jobs:
         run: |
           node --test scripts/check-supersession-template.test.mjs
           node scripts/check-supersession-template.mjs --all
+
+      # Every tracked Markdown document has an explicit lifecycle class. The
+      # check also keeps frozen 6767 bodies byte-stable and delegates the
+      # generated index content comparison to its canonical writer.
+      - name: Check document classes and frozen/generated boundaries
+        env:
+          DOC_CLASS_BASELINE_REF: FETCH_HEAD
+        run: |
+          node --test scripts/check-doc-classes.test.mjs
+          node scripts/check-doc-classes.mjs
 
       # The documentation estate index is a generated projection of Git's
       # tracked inventory; hand-edited counts or rows must never drift.

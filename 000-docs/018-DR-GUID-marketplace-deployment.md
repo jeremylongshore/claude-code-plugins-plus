@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Deployment Guide - Claude Code Plugins Marketplace
 
 **Last Updated**: 2025-10-11

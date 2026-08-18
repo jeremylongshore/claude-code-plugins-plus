@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # P0 STABILIZATION COMPLETE - MASTER EVIDENCE
 
 **Date**: 2025-12-25

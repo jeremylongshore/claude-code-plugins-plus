@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 726-AA-AACR — Mission 01 After-Action Review: Repository Cleanup Baseline
 
 **Mission window:** 2026-08-11 → 2026-08-12 · **Baseline HEAD:** `4358a65a3` · **PR:** #1174

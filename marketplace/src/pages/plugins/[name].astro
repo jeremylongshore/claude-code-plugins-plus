@@ -29,7 +29,6 @@ const readme = (readmeSections as any)[plugin.name] || null;
 const formatComponents = (components: any) => {
   if (!components) return [];
   const items = [];
-  if (components.skills) items.push(`${components.skills} skill${components.skills > 1 ? 's' : ''}`);
   if (components.commands) items.push(`${components.commands} command${components.commands > 1 ? 's' : ''}`);
   if (components.agents) items.push(`${components.agents} agent${components.agents > 1 ? 's' : ''}`);
   if (components.hooks) items.push(`${components.hooks} hook${components.hooks > 1 ? 's' : ''}`);
@@ -56,11 +55,14 @@ const cleanTools = (tools: string[]) =>
   tools.map((t: string) => t.replace(/^"|"$/g, '')).filter((t: string) => t.length > 0);
 
 const isSaasPack = plugin.category === 'saas-packs';
-const hasSkills = pluginSkills.length > 0;
+const pluginSkillCount = pluginSkills.length;
+const hasSkills = pluginSkillCount > 0;
+const hasMultipleSkills = pluginSkillCount > 1;
+const componentSkillCount = plugin.components?.skills;
+const hasComponentSkillCount = typeof componentSkillCount === 'number' && componentSkillCount > 0;
 
 // Stats bar items
 const statsItems: Array<{ label: string; value: string }> = [];
-if (plugin.components?.skills) statsItems.push({ label: 'Skills', value: String(plugin.components.skills) });
 if (plugin.components?.commands) statsItems.push({ label: 'Commands', value: String(plugin.components.commands) });
 if (plugin.components?.agents) statsItems.push({ label: 'Agents', value: String(plugin.components.agents) });
 if (plugin.mcpTools) statsItems.push({ label: 'MCP Tools', value: String(plugin.mcpTools) });
@@ -105,9 +107,15 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
       <!-- 4. Stats Bar -->
       {statsItems.length > 0 && (
         <div class="stats-bar">
+          {hasComponentSkillCount && (
+            <div class="stat-item">
+              <span class="stat-value" data-count-provenance="plugin-local">{componentSkillCount.toLocaleString()}</span>
+              <span class="stat-label">plugin-local skills</span>
+            </div>
+          )}
           {statsItems.map((stat, i) => (
             <>
-              {i > 0 && <span class="stats-divider" aria-hidden="true" />}
+              {(hasComponentSkillCount || i > 0) && <span class="stats-divider" aria-hidden="true" />}
               <div class="stat-item">
                 <span class="stat-value">{stat.value}</span>
                 <span class="stat-label">{stat.label}</span>
@@ -150,8 +158,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
       {hasSkills ? (
         <div class="section skills-section">
           <div class="skills-header">
-            <h2>Skills ({pluginSkills.length})</h2>
-            {pluginSkills.length > 1 && (
+            <h2>Skills ({pluginSkillCount.toLocaleString()}) <small data-count-provenance="plugin-local">plugin-local skills</small></h2>
+            {hasMultipleSkills && (
               <button class="expand-all-btn" id="expand-all-btn">Expand All</button>
             )}
           </div>

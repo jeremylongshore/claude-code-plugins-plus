@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 717-RA-DATA — Estate Inventory (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3` · **Machine-readable:** `717-RA-DATA-estate-inventory.json`

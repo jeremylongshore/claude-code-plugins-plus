@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 # Schema Changelog — Claude Code Skills Spec (Intent Solutions)
 
 This file tracks every change to the validator's required-fields set, field

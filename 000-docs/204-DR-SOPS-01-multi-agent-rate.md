@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Multi-Agent Rate Limit Management
 
 **Production Playbook for Claude Code Plugin Developers**

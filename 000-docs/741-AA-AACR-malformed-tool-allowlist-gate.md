@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Malformed Tool-Allowlist Gate — After-Action Review
 
 - **Date:** 2026-08-16

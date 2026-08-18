@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 6767-g-AT-ARCH-skill-scaffold-diagrams.md
 
 **Document Type**: Architecture & Technical - Architecture (AT-ARCH)

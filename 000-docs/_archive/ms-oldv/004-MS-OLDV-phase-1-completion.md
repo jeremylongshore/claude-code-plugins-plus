@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 #  Phase 1 Completion Report
 
 **Claude Code Plugin Marketplace - MCP Plugin Development**

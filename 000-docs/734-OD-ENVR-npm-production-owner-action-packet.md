@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # E7.3 Owner Action Packet — npm Production Lock
 
 Status: owner-gated and not executed by the E7.3 code slice.

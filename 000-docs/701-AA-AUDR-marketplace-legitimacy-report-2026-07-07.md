@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Marketplace legitimacy report — open PRs + Killer-Skill nominations
 
 **Date:** 2026-07-07 · **Evidence basis:** required gates (`ci-required` + `gitleaks` + pinned validator + `scan-synced-content`) actually executed on every open PR (stalled `action_required` runs approved at latest heads; #960 given a fresh post-rebuild event via update-branch; #965 superseding sync dispatched). Nomination evidence gathered read-only from upstream HEADs via GitHub API. Nothing merged, no contributor-surface comments posted.

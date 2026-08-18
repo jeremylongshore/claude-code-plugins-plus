@@ -1,3 +1,5 @@
+<!-- doc-class: canonical -->
+
 # 718-AT-ARCH — Source-of-Truth Map with GENERATED Tiers (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3`

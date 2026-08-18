@@ -5,7 +5,7 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
-Covers the **tracked** documentation estate (198 files). Local-only working
+Covers the **tracked** documentation estate (210 files). Local-only working
 documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
 index and `000-docs/.gitignore`.
 
@@ -180,6 +180,18 @@ index and `000-docs/.gitignore`.
 - [756-AA-AACR-skills-catalog-drift-gate.md](756-AA-AACR-skills-catalog-drift-gate.md)
 - [757-AA-AACR-catalog-name-uniqueness.md](757-AA-AACR-catalog-name-uniqueness.md)
 - [758-AA-AACR-plugin-catalog-drift-gate.md](758-AA-AACR-plugin-catalog-drift-gate.md)
+- [759-AA-AACR-unified-search-drift-gate.md](759-AA-AACR-unified-search-drift-gate.md)
+- [760-AA-AACR-epic-1-cowork-manifest-contract.md](760-AA-AACR-epic-1-cowork-manifest-contract.md)
+- [761-AA-AACR-epic-1-social-image-count-cohort.md](761-AA-AACR-epic-1-social-image-count-cohort.md)
+- [762-AA-AACR-epic-1-query-local-count-contracts.md](762-AA-AACR-epic-1-query-local-count-contracts.md)
+- [763-AA-AACR-epic-1-entity-local-count-contracts.md](763-AA-AACR-epic-1-entity-local-count-contracts.md)
+- [764-AA-AACR-epic-1-cowork-count-contracts.md](764-AA-AACR-epic-1-cowork-count-contracts.md)
+- [765-AA-AACR-epic-1-vendor-pack-count-contracts.md](765-AA-AACR-epic-1-vendor-pack-count-contracts.md)
+- [766-AA-AACR-epic-1-learning-hub-count-contracts.md](766-AA-AACR-epic-1-learning-hub-count-contracts.md)
+- [767-AA-AACR-epic-1-research-snapshot-boundary.md](767-AA-AACR-epic-1-research-snapshot-boundary.md)
+- [768-AA-AACR-epic-1-live-copy-quality-rule-boundary.md](768-AA-AACR-epic-1-live-copy-quality-rule-boundary.md)
+- [769-AA-AACR-epic-1-count-cohort-closure.md](769-AA-AACR-epic-1-count-cohort-closure.md)
+- [770-AA-AACR-epic-2-document-class-enforcement.md](770-AA-AACR-epic-2-document-class-enforcement.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)

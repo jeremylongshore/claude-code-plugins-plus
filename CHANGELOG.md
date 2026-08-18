@@ -1,11 +1,70 @@
 # Changelog
 
+## 2026-08-18
+
+- **fix(marketplace):** label search-result and entity-local skill counts with
+  their local population and provenance instead of presenting them as global
+  marketplace totals.
+- **fix(marketplace):** make spotlight, plugin, community, and plugin-detail
+  counts identify their entity-local population with fail-closed registry
+  contracts; numeric values are unchanged.
+- **fix(cowork):** label downloadable bundle, package, landing-page, and
+  archive counts as `Cowork-package-local` with exact fail-closed contracts.
+- **fix(learning):** label vendor pack and category counts as
+  `vendor-pack-local`, remove unscoped metadata totals, and register all 60
+  rendered claims with the fail-closed count contract.
+- **fix(learning):** separate learning-hub aggregate totals from per-pack
+  counts with four exact population-labeled contracts.
+- **docs(research):** mark the research index and published analyses as a
+  dated historical snapshot with an exact source-commit evidence boundary.
+- **docs(research):** distinguish the original index analysis claim from the
+  source commit's separately documented evidence-corpus size.
+- **docs(counts):** mark the documentation CTA's retained totals as historical
+  copy and distinguish grading thresholds from corpus counts.
+- **docs(counts):** record the completed E1.6 count-cohort inventory and
+  closure evidence.
+- **docs(governance):** classify every tracked `000-docs/*.md` file as
+  `canonical`, `generated`, `frozen`, or `record`; enforce frozen-body and
+  generated-index boundaries in the existing `doc-governance` gate.
+- **fix(marketplace):** label generated social-card counts with the
+  `marketplace-visible` cohort, canonical source, and reproducible resolver
+  command; reject unreadable or malformed count inputs.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed (2026-08-17 — published count cohort labels)
+
+- **Live marketplace skill totals now identify the population they count.** The homepage, explore,
+  comparison, sponsor, and skills-directory pages label their unchanged totals as
+  `marketplace-visible` and expose the canonical corpus-resolver command beside the value. A
+  machine-readable registry and fixture-driven, fail-closed CI gate discover count expressions by
+  meaning rather than one variable name across public Astro pages and components, rejecting any
+  unregistered rendered expression—including unfamiliar or multiline identifiers split from the
+  `skills` noun by adjacent markup—or pre/post-noun literal count, collection length, catalog count,
+  unsafe or unreadable path,
+  comment-only labels, and missing provenance without adding another required status context. The
+  first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
+  plus the generated social image remain path-level deferrals; three local/query expressions on
+  otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
+  detected expression to its exact normalized registration—including any formatter call. Simple
+  brace/interpolation wrappers normalize; compound outer expressions do not inherit an inner
+  registration. Adding a second count or extending a registered expression therefore cannot bypass
+  cohort governance. Frontmatter, script/style bodies, comments, and markup
+  attributes are masked for the rendered count/label contract; provenance must be a standalone
+  top-level component tag parsed outside quoted attributes and Astro expression strings, while
+  self-closing head scripts remain correctly parsed. Quote- and brace-aware raw-text parsing prevents
+  a quoted `/>` attribute from exposing paired script content as visible evidence and refuses
+  malformed raw-text elements. Fixtures distinguish `/skills/` paths, prose durations, and adjacent
+  time units, stars, notebook/agent populations, narrative heading shapes, collection renderers, and
+  unrelated attributes from actual published skill totals without relying on count-like identifier
+  names. Plain, canonical, and hyphenated count-label headings remain associated with adjacent
+  counts. Nested object syntax remains part of its enclosing registered expression rather than
+  being misclassified as a second rendered count.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 
@@ -68,6 +127,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   malformed inputs, and staged drift. The unconditional
   generated-content job now byte-checks three of four deterministic marketplace projections with
   no new required context; unified search remains the final E1.8 slice.
+
+- **Unified marketplace search now completes the deterministic projection gate.** The renderer
+  removes its wall-clock timestamp and never reads the tracked output, then derives the current
+  plugin, skill, documentation, agent, and hook search surface from governed repository inputs.
+  It preserves the public item order and consumer fields, parses the repository's scalar, block,
+  and inline-list documentation frontmatter forms, rejects malformed identities and symlinked or
+  unreadable surfaces, writes atomically, and compares exact stage-0 Git-index bytes in `--check`
+  mode without repairing drift. The shared unconditional `Validate Plugins` job now gates all four
+  deterministic marketplace projections without adding a required status context or path filter.
 
 ### Fixed (2026-08-17 — release-note coverage evidence)
 
@@ -1903,3 +1971,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ### Changed
 
 - Skill quality improvements to 99.9% compliance
+
+### Fixed
+
+- **Cowork manifest contract** — require generated manifest totals, use the producer's `skills`/`commands` fields, and verify emitted `checksum` values deterministically instead of inventing fallback totals or silently skipping checksum checks.

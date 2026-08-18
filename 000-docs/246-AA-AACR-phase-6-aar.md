@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 6: Ship & Verify - After Action Report
 
 **Date:** 2025-12-26

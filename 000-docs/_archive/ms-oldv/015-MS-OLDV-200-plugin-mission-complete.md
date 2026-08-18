@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 200 PLUGIN MISSION - COMPLETE
 
 **Date:** October 11, 2025

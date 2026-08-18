@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADR-260: Defer Stryker mutation testing for MCP plugin packages
 
 | Field        | Value                                                                              |

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Security Status – Automations Setup
 
 Date: 2025-10-15

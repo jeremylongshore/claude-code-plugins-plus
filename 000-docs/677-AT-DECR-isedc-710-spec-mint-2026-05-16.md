@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ISEDC Decision Record — Issue #710 spec-mint response (2026-05-16)
 
 **Document type:** Adversarial Technical Decision Record (AT-DECR) — partial reconstruction

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Virtual Environment Testing Suite
 
 Comprehensive testing infrastructure for claude-code-plugins supporting both Docker-based and native environment testing.

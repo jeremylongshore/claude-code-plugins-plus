@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Self-Hosted Stack Setup: Complete Infrastructure Guide
 
 **Production Playbook for Infrastructure Engineers and DevOps**

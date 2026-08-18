@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 filing_code: TQ-SECU-EXTERNAL-SYNC-THREAT-MODEL-2026-07-06
 date: 2026-07-06

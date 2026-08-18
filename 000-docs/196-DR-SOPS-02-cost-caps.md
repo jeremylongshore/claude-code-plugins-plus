@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Cost Caps & Budget Management
 
 **Production Playbook for Claude Code Plugin Developers**

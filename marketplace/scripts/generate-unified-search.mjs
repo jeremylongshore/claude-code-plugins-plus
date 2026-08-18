@@ -1,110 +1,323 @@
 #!/usr/bin/env node
 
 /**
- * Generate Unified Search Index
- * Combines plugins and skills into a single searchable index for /explore page
+ * Render marketplace/src/data/unified-search-index.json from deterministic
+ * repository inputs. The tracked output is never an input.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { lstatSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, sep } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { assertGeneratedContentCurrent } from '../../scripts/check-generated-artifacts.mjs';
+import { normalizeDeadDomainValue } from '../../scripts/dead-domain-policy.mjs';
 
-const ROOT_DIR = path.resolve(__dirname, '..');
-const DATA_DIR = path.join(ROOT_DIR, 'src/data');
-const CATALOG_FILE = path.join(DATA_DIR, 'catalog.json');
-const SKILLS_FILE = path.join(DATA_DIR, 'skills-catalog.json');
-const OUTPUT_FILE = path.join(DATA_DIR, 'unified-search-index.json');
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
+const DEFAULT_ROOT = join(dirname(SCRIPT_PATH), '..', '..');
+const OUTPUT_PATH = 'marketplace/src/data/unified-search-index.json';
+const CATALOG_PATH = 'marketplace/src/data/catalog.json';
+const SKILLS_PATH = 'marketplace/src/data/skills-catalog.json';
+const EXTENDED_PATH = '.claude-plugin/marketplace.extended.json';
+const PLUGINS_PATH = 'plugins';
+const DOCS_PATH = 'marketplace/src/content/docs';
+const WALK_SKIP = new Set(['node_modules', 'dist', 'build', '.git', '.next', '.astro']);
 
-const PLUGINS_DIR = path.resolve(ROOT_DIR, '..', 'plugins');
-const EXTENDED_CATALOG_FILE = path.resolve(ROOT_DIR, '..', '.claude-plugin', 'marketplace.extended.json');
-const DOCS_DIR = path.join(ROOT_DIR, 'src/content/docs');
+export function compareOrdinal(left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
 
-console.log('🔍 Generating unified search index...\n');
+function requireObject(value, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`${label} must be an object`);
+  }
+  return value;
+}
 
-// Count agents and hooks across all plugins.
-//
-// We walk the entire plugins/ tree rather than the old fixed depth-3 walk
-// (plugins/<cat>/<plugin>/agents). The shipped surface area includes meta-packs
-// (devops-automation-pack, ai-ml-engineering-pack, etc.) that nest sub-plugins
-// at plugins/<cat>/<pack>/plugins/<sub>/agents — those agents ship to users
-// when the pack is installed, so the public-facing count must include them.
-// Skipped dirs: node_modules, dist, build, .git (build/dep noise).
-function countAgentsAndHooks() {
-  const SKIP = new Set(['node_modules', 'dist', 'build', '.git', '.next', '.astro']);
+function requireString(value, label) {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(`${label} must be a non-empty string`);
+  }
+  return value;
+}
+
+function requireSlug(value, label) {
+  const slug = requireString(value, label);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    throw new Error(`${label} must be a lowercase kebab-case path segment`);
+  }
+  return slug;
+}
+
+function optionalString(value, label) {
+  if (value === undefined || value === null) return '';
+  if (typeof value !== 'string') throw new Error(`${label} must be a string`);
+  return value;
+}
+
+function searchableDescription(value, label) {
+  if (value === undefined || value === null) return { value: '', text: '' };
+  if (typeof value === 'string') return { value, text: value };
+  if (Array.isArray(value)) {
+    const entries = stringArray(value, label);
+    return { value: entries, text: entries.join(' ') };
+  }
+  throw new Error(`${label} must be a string or string array`);
+}
+
+function stringArray(value, label, fallback = [], { allowEmpty = false } = {}) {
+  if (value === undefined || value === null) return fallback;
+  if (!Array.isArray(value)) throw new Error(`${label} must be an array`);
+  return value.map((entry, index) => {
+    if (typeof entry !== 'string' || (!allowEmpty && entry.length === 0)) {
+      throw new Error(
+        `${label} ${index} must be ${allowEmpty ? 'a string' : 'a non-empty string'}`,
+      );
+    }
+    return entry;
+  });
+}
+
+function nonNegativeInteger(value, label, fallback = 0) {
+  if (value === undefined) return fallback;
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative integer`);
+  }
+  return value;
+}
+
+function assertRepositoryPath(root, repositoryPath, finalKind) {
+  const components = repositoryPath.split('/');
+  if (components.some((component) => !component || component === '.' || component === '..')) {
+    throw new Error(`unsafe repository path: ${repositoryPath}`);
+  }
+  let current = root;
+  for (const [index, component] of components.entries()) {
+    current = join(current, component);
+    const label = components.slice(0, index + 1).join('/');
+    let stat;
+    try {
+      stat = lstatSync(current);
+    } catch (error) {
+      throw new Error(`cannot inspect ${label}: ${error.message}`);
+    }
+    if (stat.isSymbolicLink()) throw new Error(`${label} must not be a symlink`);
+    const isFinal = index === components.length - 1;
+    if (!isFinal && !stat.isDirectory()) throw new Error(`${label} must be a regular directory`);
+    if (isFinal && finalKind === 'file' && !stat.isFile()) {
+      throw new Error(`${label} must be a regular file`);
+    }
+    if (isFinal && finalKind === 'directory' && !stat.isDirectory()) {
+      throw new Error(`${label} must be a regular directory`);
+    }
+  }
+}
+
+function readJson(root, repositoryPath, label) {
+  try {
+    const path = join(root, repositoryPath);
+    assertRepositoryPath(root, repositoryPath, 'file');
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch (error) {
+    throw new Error(`cannot read ${label} at ${repositoryPath}: ${error.message}`);
+  }
+}
+
+function readDirectory(path, label) {
+  try {
+    const stat = lstatSync(path);
+    if (stat.isSymbolicLink() || !stat.isDirectory()) {
+      throw new Error(`${label} must be a regular directory`);
+    }
+    return readdirSync(path, { withFileTypes: true }).sort((left, right) =>
+      compareOrdinal(left.name, right.name),
+    );
+  } catch (error) {
+    throw new Error(`cannot read ${label}: ${error.message}`);
+  }
+}
+
+function assertRegularFile(path, label) {
+  let stat;
+  try {
+    stat = lstatSync(path);
+  } catch (error) {
+    throw new Error(`cannot inspect ${label}: ${error.message}`);
+  }
+  if (stat.isSymbolicLink() || !stat.isFile()) {
+    throw new Error(`${label} must be a regular file`);
+  }
+}
+
+function assertReadableRegularFile(path, label, readFile) {
+  assertRegularFile(path, label);
+  try {
+    readFile(path);
+  } catch (error) {
+    throw new Error(`cannot read ${label}: ${error.message}`);
+  }
+}
+
+function countSurfaceFiles(directory, extensions, label, readFile) {
+  let count = 0;
+  for (const entry of readDirectory(directory, label)) {
+    const entryPath = join(directory, entry.name);
+    if (entry.isSymbolicLink()) throw new Error(`${label}/${entry.name} must not be a symlink`);
+    if (entry.isFile() && extensions.some((extension) => entry.name.endsWith(extension))) {
+      assertReadableRegularFile(entryPath, `${label}/${entry.name}`, readFile);
+      count += 1;
+    }
+  }
+  return count;
+}
+
+export function countAgentsAndHooks(root = DEFAULT_ROOT, { readFile = readFileSync } = {}) {
+  const pluginsRoot = join(root, PLUGINS_PATH);
+  assertRepositoryPath(root, PLUGINS_PATH, 'directory');
+
   let totalAgents = 0;
   let totalHooks = 0;
   let pluginsWithAgents = 0;
   let pluginsWithHooks = 0;
 
-  function walk(dir) {
-    let entries;
-    try {
-      entries = fs.readdirSync(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-
-    // If this dir contains agents/ or hooks/, count its files. Otherwise recurse.
-    const agentsDir = path.join(dir, 'agents');
-    if (fs.existsSync(agentsDir) && fs.statSync(agentsDir).isDirectory()) {
-      const agentFiles = fs.readdirSync(agentsDir).filter((f) => f.endsWith('.md'));
-      if (agentFiles.length > 0) {
-        totalAgents += agentFiles.length;
-        pluginsWithAgents++;
+  function walk(directory) {
+    const entries = readDirectory(directory, relative(root, directory) || PLUGINS_PATH);
+    for (const surface of [
+      { name: 'agents', extensions: ['.md'], total: 'agents' },
+      { name: 'hooks', extensions: ['.json', '.sh'], total: 'hooks' },
+    ]) {
+      const entry = entries.find((candidate) => candidate.name === surface.name);
+      if (!entry) continue;
+      if (entry.isSymbolicLink() || !entry.isDirectory()) {
+        throw new Error(
+          `${relative(root, join(directory, surface.name))} must be a regular directory`,
+        );
+      }
+      const count = countSurfaceFiles(
+        join(directory, surface.name),
+        surface.extensions,
+        relative(root, join(directory, surface.name)),
+        readFile,
+      );
+      if (surface.total === 'agents') {
+        totalAgents += count;
+        if (count > 0) pluginsWithAgents += 1;
+      } else {
+        totalHooks += count;
+        if (count > 0) pluginsWithHooks += 1;
       }
     }
-    const hooksDir = path.join(dir, 'hooks');
-    if (fs.existsSync(hooksDir) && fs.statSync(hooksDir).isDirectory()) {
-      const hookFiles = fs
-        .readdirSync(hooksDir)
-        .filter((f) => f.endsWith('.json') || f.endsWith('.sh'));
-      if (hookFiles.length > 0) {
-        totalHooks += hookFiles.length;
-        pluginsWithHooks++;
-      }
-    }
 
-    // Recurse into subdirectories (skip noise dirs and the agents/hooks dirs
-    // we just counted — their contents are flat .md/.json/.sh files, not nested
-    // plugin trees).
-    for (const ent of entries) {
-      if (!ent.isDirectory()) continue;
-      if (SKIP.has(ent.name)) continue;
-      if (ent.name === 'agents' || ent.name === 'hooks') continue;
-      walk(path.join(dir, ent.name));
+    for (const entry of entries) {
+      if (WALK_SKIP.has(entry.name)) continue;
+      if (entry.isSymbolicLink()) {
+        throw new Error(`${relative(root, join(directory, entry.name))} must not be a symlink`);
+      }
+      if (!entry.isDirectory()) continue;
+      if (entry.name === 'agents' || entry.name === 'hooks') continue;
+      walk(join(directory, entry.name));
     }
   }
 
-  walk(PLUGINS_DIR);
+  walk(pluginsRoot);
   return { totalAgents, totalHooks, pluginsWithAgents, pluginsWithHooks };
 }
 
-const agentHookStats = countAgentsAndHooks();
+export function parseDocFrontmatter(content, label = 'document') {
+  if (typeof content !== 'string') throw new Error(`${label} content must be a string`);
+  const normalized = content.replaceAll('\r\n', '\n');
+  const match = normalized.match(/^---\n([\s\S]*?)\n---(?:\n|$)/);
+  if (!match) throw new Error(`${label} is missing YAML frontmatter`);
 
-// Read source files
-const catalogData = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
-const skillsData = JSON.parse(fs.readFileSync(SKILLS_FILE, 'utf8'));
-
-// Build verification lookup from extended catalog
-const verificationMap = new Map();
-if (fs.existsSync(EXTENDED_CATALOG_FILE)) {
-  const extendedData = JSON.parse(fs.readFileSync(EXTENDED_CATALOG_FILE, 'utf8'));
-  for (const plugin of extendedData.plugins || []) {
-    if (plugin.verification) {
-      verificationMap.set(plugin.name, plugin.verification);
+  const frontmatter = {};
+  let currentKey = null;
+  for (const line of match[1].split('\n')) {
+    const keyValue = line.match(/^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (keyValue) {
+      currentKey = keyValue[1];
+      const value = keyValue[2].trim();
+      if (value === '') {
+        frontmatter[currentKey] = [];
+      } else if (value.startsWith('[')) {
+        let parsed;
+        try {
+          parsed = JSON.parse(value);
+        } catch (error) {
+          throw new Error(`${label} ${currentKey} inline list is invalid: ${error.message}`);
+        }
+        frontmatter[currentKey] = stringArray(parsed, `${label} ${currentKey}`);
+      } else {
+        frontmatter[currentKey] = value.replace(/^["']|["']$/g, '');
+      }
+      continue;
+    }
+    const item = line.match(/^\s+-\s+(.*)$/);
+    if (item && currentKey && Array.isArray(frontmatter[currentKey])) {
+      const value = item[1].trim().replace(/^["']|["']$/g, '');
+      if (!/^[A-Za-z][A-Za-z0-9_-]*:\s/.test(value)) frontmatter[currentKey].push(value);
     }
   }
-  console.log(`   Verification data loaded for ${verificationMap.size} plugins`);
+  requireString(frontmatter.title, `${label} title`);
+  if (frontmatter.description !== undefined && typeof frontmatter.description !== 'string') {
+    throw new Error(`${label} description must be a string`);
+  }
+  if (frontmatter.section !== undefined && typeof frontmatter.section !== 'string') {
+    throw new Error(`${label} section must be a string`);
+  }
+  if (frontmatter.keywords !== undefined && !Array.isArray(frontmatter.keywords)) {
+    throw new Error(`${label} keywords must be a list`);
+  }
+  return frontmatter;
 }
 
-// Determine if author is official (Intent Solutions / Jeremy Longshore / house accounts)
-function getAuthorType(author) {
+export function readDocs(root = DEFAULT_ROOT) {
+  const docsRoot = join(root, DOCS_PATH);
+  const docs = [];
+  assertRepositoryPath(root, DOCS_PATH, 'directory');
+
+  function walk(directory) {
+    for (const entry of readDirectory(directory, relative(root, directory))) {
+      const entryPath = join(directory, entry.name);
+      if (entry.isSymbolicLink()) {
+        throw new Error(`${relative(root, entryPath)} must not be a symlink`);
+      }
+      if (entry.isDirectory()) {
+        walk(entryPath);
+      } else if (entry.name.endsWith('.md')) {
+        assertRegularFile(entryPath, relative(root, entryPath));
+        const slug = relative(docsRoot, entryPath).split(sep).join('/').replace(/\.md$/, '');
+        if (!slug || slug.startsWith('../')) throw new Error(`invalid documentation slug: ${slug}`);
+        const frontmatter = parseDocFrontmatter(
+          readFileSync(entryPath, 'utf8'),
+          relative(root, entryPath),
+        );
+        const keywords = frontmatter.keywords ?? [];
+        docs.push({
+          type: 'docs',
+          id: `docs/${slug}`,
+          slug,
+          name: frontmatter.title,
+          description: frontmatter.description ?? '',
+          category: frontmatter.section ?? 'docs',
+          keywords,
+          url: `/docs/${slug}/`,
+          searchText:
+            `${frontmatter.title} ${frontmatter.description ?? ''} ${frontmatter.section ?? ''} ${keywords.join(' ')}`.toLowerCase(),
+        });
+      }
+    }
+  }
+
+  walk(docsRoot);
+  docs.sort((left, right) => compareOrdinal(left.slug, right.slug));
+  assertUnique(docs, 'id', 'documentation');
+  return docs;
+}
+
+export function getAuthorType(author) {
   if (!author) return 'community';
-  const name = (author.name || '').toLowerCase();
-  const email = (author.email || '').toLowerCase();
+  const value = requireObject(author, 'plugin author');
+  const name = optionalString(value.name, 'plugin author name').toLowerCase();
+  const email = optionalString(value.email, 'plugin author email').toLowerCase();
   if (
     name.includes('jeremy longshore') ||
     email.endsWith('@intentsolutions.io') ||
@@ -120,175 +333,227 @@ function getAuthorType(author) {
   return 'community';
 }
 
-// Transform plugins for search
-const plugins = catalogData.plugins.map(plugin => {
-  const verification = verificationMap.get(plugin.name) || null;
-  return {
-    type: 'plugin',
-    id: plugin.slug,
-    slug: plugin.slug,
-    name: plugin.name,  // FULL plugin name (e.g., "004-jeremy-google-cloud-agent-sdk")
-    displayName: plugin.displayName || plugin.name,  // Display name for UI
-    description: plugin.description,
-    category: plugin.category,
-    keywords: plugin.keywords || plugin.tags || [],
-    author: plugin.author,
-    authorType: getAuthorType(plugin.author),
-    version: plugin.version,
-    // Trust signals
-    isFeatured: plugin.isFeatured || false,
-    isNew: plugin.isNew || false,
-    badges: plugin.badges || [],
-    skillCount: plugin.skillCount || 0,
-    // Verification
-    ...(verification && {
-      verificationScore: verification.score,
-      verificationGrade: verification.grade,
-      verificationBadge: verification.badge,
-    }),
-    // Search-specific fields
-    searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.keywords || plugin.tags || []).join(' ')}`.toLowerCase()
-  };
-});
-
-// Transform skills for search
-const skills = skillsData.skills.map(skill => ({
-  type: 'skill',
-  id: skill.slug,
-  slug: skill.slug,
-  name: skill.name,
-  description: skill.description || '',
-  category: skill.parentPlugin.category,
-  allowedTools: skill.allowedTools || [],
-  compatibleWith: skill.compatibleWith || [],
-  version: skill.version,
-  // Link to parent plugin
-  parentPlugin: {
-    name: skill.parentPlugin.name,
-    slug: skill.parentPlugin.slug,
-    category: skill.parentPlugin.category
-  },
-  // Search-specific fields
-  searchText: `${skill.name} ${skill.description || ''} ${skill.parentPlugin.category} ${(skill.allowedTools || []).join(' ')} ${(skill.compatibleWith || []).join(' ')}`.toLowerCase()
-}));
-
-// Transform docs for search — walk src/content/docs/**/*.md and index the
-// documentation section alongside plugins and skills. URLs mirror the Astro
-// content-collection routing in src/pages/docs/[...slug].astro, where the
-// entry id is the file path relative to the collection root minus `.md`.
-function walkDocFiles(dir) {
-  let entries;
-  try {
-    entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return [];
+function assertUnique(rows, key, label) {
+  const seen = new Set();
+  for (const [index, row] of rows.entries()) {
+    const value = requireString(row[key], `${label} ${index} ${key}`);
+    const normalized = value.normalize('NFC').toLocaleLowerCase('und');
+    if (seen.has(normalized)) throw new Error(`duplicate ${label} ${key}: ${value}`);
+    seen.add(normalized);
   }
-  const out = [];
-  for (const ent of entries) {
-    const full = path.join(dir, ent.name);
-    if (ent.isDirectory()) {
-      out.push(...walkDocFiles(full));
-    } else if (ent.name.endsWith('.md')) {
-      out.push(full);
-    }
-  }
-  return out;
 }
 
-// Minimal frontmatter parser for the docs schema (title, description,
-// section: scalar strings; keywords: block list of strings). Nested object
-// lists (officialLinks) are ignored — only scalar and string-list fields
-// referenced below are consumed.
-function parseDocFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return null;
-  const fm = {};
-  let currentKey = null;
-  for (const line of match[1].split('\n')) {
-    const kv = line.match(/^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
-    if (kv) {
-      currentKey = kv[1];
-      const value = kv[2].trim();
-      if (value === '') {
-        fm[currentKey] = []; // block list (or nested structure) follows
-      } else {
-        fm[currentKey] = value.replace(/^["']|["']$/g, '');
-      }
-      continue;
+export function renderUnifiedSearch({
+  catalogData,
+  skillsData,
+  extendedData,
+  docs,
+  agentHookStats,
+}) {
+  const catalog = requireObject(catalogData, 'catalog');
+  const skillsCatalog = requireObject(skillsData, 'skills catalog');
+  const extended = requireObject(extendedData, 'extended catalog');
+  const stats = requireObject(agentHookStats, 'agent and hook stats');
+  if (!Array.isArray(catalog.plugins)) throw new Error('catalog plugins must be an array');
+  if (!Array.isArray(skillsCatalog.skills))
+    throw new Error('skills catalog skills must be an array');
+  if (!Array.isArray(extended.plugins))
+    throw new Error('extended catalog plugins must be an array');
+  if (!Array.isArray(docs)) throw new Error('documents must be an array');
+  if (
+    skillsCatalog.count !== undefined &&
+    (!Number.isInteger(skillsCatalog.count) || skillsCatalog.count !== skillsCatalog.skills.length)
+  ) {
+    throw new Error('skills catalog count does not match skills array length');
+  }
+
+  assertUnique(catalog.plugins, 'slug', 'plugin');
+  assertUnique(skillsCatalog.skills, 'slug', 'skill');
+
+  const verificationMap = new Map();
+  const extendedNames = new Set();
+  for (const [index, rawPlugin] of extended.plugins.entries()) {
+    const plugin = requireObject(rawPlugin, `extended plugin ${index}`);
+    const name = requireString(plugin.name, `extended plugin ${index} name`);
+    const normalizedName = name.normalize('NFC').toLocaleLowerCase('und');
+    if (extendedNames.has(normalizedName)) {
+      throw new Error(`duplicate extended plugin name: ${name}`);
     }
-    const item = line.match(/^\s*-\s+(.*)$/);
-    if (item && currentKey && Array.isArray(fm[currentKey])) {
-      const entry = item[1].trim().replace(/^["']|["']$/g, '');
-      // Skip object-list entries (e.g. officialLinks `- title: ...`)
-      if (!/^[A-Za-z][A-Za-z0-9_-]*:\s/.test(entry)) fm[currentKey].push(entry);
+    extendedNames.add(normalizedName);
+    if (plugin.verification !== undefined) {
+      verificationMap.set(
+        name,
+        requireObject(plugin.verification, `extended plugin ${name} verification`),
+      );
     }
   }
-  return fm;
-}
 
-const docs = walkDocFiles(DOCS_DIR)
-  .map(file => {
-    const fm = parseDocFrontmatter(fs.readFileSync(file, 'utf8'));
-    if (!fm || !fm.title) {
-      console.warn(`   ⚠ Skipping doc without frontmatter title: ${path.relative(ROOT_DIR, file)}`);
-      return null;
-    }
-    const slug = path.relative(DOCS_DIR, file).replace(/\\/g, '/').replace(/\.md$/, '');
-    const keywords = Array.isArray(fm.keywords) ? fm.keywords : [];
+  const plugins = catalog.plugins.map((rawPlugin, index) => {
+    const plugin = requireObject(rawPlugin, `catalog plugin ${index}`);
+    const slug = requireSlug(plugin.slug, `catalog plugin ${index} slug`);
+    const name = requireString(plugin.name, `catalog plugin ${index} name`);
+    const displayName =
+      optionalString(plugin.displayName, `catalog plugin ${name} displayName`) || name;
+    const description = requireString(plugin.description, `catalog plugin ${name} description`);
+    const category = requireString(plugin.category, `catalog plugin ${name} category`);
+    const keywords = stringArray(plugin.keywords ?? plugin.tags, `catalog plugin ${name} keywords`);
+    const verification = verificationMap.get(name) ?? null;
     return {
-      type: 'docs',
-      id: `docs/${slug}`,
+      type: 'plugin',
+      id: slug,
       slug,
-      name: fm.title,
-      description: typeof fm.description === 'string' ? fm.description : '',
-      category: typeof fm.section === 'string' ? fm.section : 'docs',
+      name,
+      displayName,
+      description,
+      category,
       keywords,
-      url: `/docs/${slug}/`,
-      searchText: `${fm.title} ${fm.description || ''} ${fm.section || ''} ${keywords.join(' ')}`.toLowerCase()
+      author: plugin.author,
+      authorType: getAuthorType(plugin.author),
+      version: requireString(plugin.version, `catalog plugin ${name} version`),
+      isFeatured: plugin.isFeatured === true,
+      isNew: plugin.isNew === true,
+      badges: stringArray(plugin.badges, `catalog plugin ${name} badges`),
+      skillCount: nonNegativeInteger(plugin.skillCount, `catalog plugin ${name} skillCount`),
+      ...(verification && {
+        verificationScore: verification.score,
+        verificationGrade: verification.grade,
+        verificationBadge: verification.badge,
+      }),
+      searchText: `${displayName} ${description} ${category} ${keywords.join(' ')}`.toLowerCase(),
     };
-  })
-  .filter(Boolean)
-  .sort((a, b) => a.slug.localeCompare(b.slug));
+  });
 
-// Combine into unified index
-const unifiedIndex = {
-  meta: {
-    version: '1.0.0',
-    generated: new Date().toISOString(),
-    generator: 'scripts/generate-unified-search.mjs'
-  },
-  stats: {
-    totalPlugins: plugins.length,
-    totalSkills: skills.length,
-    totalDocs: docs.length,
-    totalItems: plugins.length + skills.length + docs.length,
-    // Docs sections are intentionally excluded — this drives the plugin/skill
-    // category filter dropdown and the "N categories" marketing copy.
-    categories: [...new Set([...plugins.map(p => p.category), ...skills.map(s => s.category)])].sort(),
-    skillTools: skillsData.allowedToolsUsed || [],
-    allKeywords: [...new Set(plugins.flatMap(p => p.keywords || []))].sort(),
-    totalAgents: agentHookStats.totalAgents,
-    totalHooks: agentHookStats.totalHooks,
-    pluginsWithAgents: agentHookStats.pluginsWithAgents,
-    pluginsWithHooks: agentHookStats.pluginsWithHooks,
-    officialPlugins: plugins.filter(p => p.authorType === 'official').length,
-    communityPlugins: plugins.filter(p => p.authorType === 'community').length,
-    communityContributors: [...new Set(plugins.filter(p => p.authorType === 'community').map(p => p.author?.name || 'Unknown'))].length
-  },
-  items: [...plugins, ...skills, ...docs]
-};
+  const skills = skillsCatalog.skills.map((rawSkill, index) => {
+    const skill = requireObject(rawSkill, `skill ${index}`);
+    const parent = requireObject(skill.parentPlugin, `skill ${index} parentPlugin`);
+    const slug = requireSlug(skill.slug, `skill ${index} slug`);
+    const name = requireString(skill.name, `skill ${index} name`);
+    const description = searchableDescription(skill.description, `skill ${name} description`);
+    const category = requireString(parent.category, `skill ${name} parent category`);
+    const allowedTools = stringArray(skill.allowedTools, `skill ${name} allowedTools`, [], {
+      allowEmpty: true,
+    });
+    const compatibleWith = stringArray(skill.compatibleWith, `skill ${name} compatibleWith`, [], {
+      allowEmpty: true,
+    });
+    const parentSlug = optionalString(parent.slug, `skill ${name} parent slug`);
+    if (parentSlug) requireSlug(parentSlug, `skill ${name} parent slug`);
+    return {
+      type: 'skill',
+      id: slug,
+      slug,
+      name,
+      description: description.value,
+      category,
+      allowedTools,
+      compatibleWith,
+      version: requireString(skill.version, `skill ${name} version`),
+      parentPlugin: {
+        name: requireString(parent.name, `skill ${name} parent name`),
+        ...(parentSlug && { slug: parentSlug }),
+        category,
+      },
+      searchText:
+        `${name} ${description.text} ${category} ${allowedTools.join(' ')} ${compatibleWith.join(' ')}`.toLowerCase(),
+    };
+  });
 
-// Write unified index
-fs.writeFileSync(OUTPUT_FILE, JSON.stringify(unifiedIndex, null, 2));
+  for (const key of ['totalAgents', 'totalHooks', 'pluginsWithAgents', 'pluginsWithHooks']) {
+    if (!Number.isInteger(stats[key]) || stats[key] < 0) {
+      throw new Error(`agent and hook stats ${key} must be a non-negative integer`);
+    }
+  }
 
-console.log('✅ Unified search index generated!\n');
-console.log(`📊 Statistics:`);
-console.log(`   Plugins: ${plugins.length}`);
-console.log(`   Skills: ${skills.length}`);
-console.log(`   Docs: ${docs.length}`);
-console.log(`   Total searchable items: ${unifiedIndex.stats.totalItems}`);
-console.log(`   Categories: ${unifiedIndex.stats.categories.length}`);
-console.log(`   Skill tools: ${unifiedIndex.stats.skillTools.length}`);
-console.log(`   Agents: ${unifiedIndex.stats.totalAgents} (across ${unifiedIndex.stats.pluginsWithAgents} plugins)`);
-console.log(`   Hooks: ${unifiedIndex.stats.totalHooks} (across ${unifiedIndex.stats.pluginsWithHooks} plugins)\n`);
-console.log(`📝 Output: ${OUTPUT_FILE}\n`);
+  const officialPlugins = plugins.filter((plugin) => plugin.authorType === 'official');
+  const communityPlugins = plugins.filter((plugin) => plugin.authorType === 'community');
+  return normalizeDeadDomainValue({
+    meta: {
+      version: '1.0.0',
+      source:
+        'catalog.json + skills-catalog.json + marketplace.extended.json + plugin surfaces + docs',
+      generator: 'marketplace/scripts/generate-unified-search.mjs',
+    },
+    stats: {
+      totalPlugins: plugins.length,
+      totalSkills: skills.length,
+      totalDocs: docs.length,
+      totalItems: plugins.length + skills.length + docs.length,
+      categories: [...new Set([...plugins, ...skills].map((item) => item.category))].sort(
+        compareOrdinal,
+      ),
+      skillTools: stringArray(
+        skillsCatalog.allowedToolsUsed,
+        'skills catalog allowedToolsUsed',
+        [],
+        {
+          allowEmpty: true,
+        },
+      ),
+      allKeywords: [...new Set(plugins.flatMap((plugin) => plugin.keywords))].sort(compareOrdinal),
+      totalAgents: stats.totalAgents,
+      totalHooks: stats.totalHooks,
+      pluginsWithAgents: stats.pluginsWithAgents,
+      pluginsWithHooks: stats.pluginsWithHooks,
+      officialPlugins: officialPlugins.length,
+      communityPlugins: communityPlugins.length,
+      communityContributors: new Set(
+        communityPlugins.map((plugin) => plugin.author?.name || 'Unknown'),
+      ).size,
+    },
+    items: [...plugins, ...skills, ...docs],
+  });
+}
+
+export function renderUnifiedSearchBytes({ root = DEFAULT_ROOT } = {}) {
+  const index = renderUnifiedSearch({
+    catalogData: readJson(root, CATALOG_PATH, 'catalog'),
+    skillsData: readJson(root, SKILLS_PATH, 'skills catalog'),
+    extendedData: readJson(root, EXTENDED_PATH, 'extended catalog'),
+    docs: readDocs(root),
+    agentHookStats: countAgentsAndHooks(root),
+  });
+  return `${JSON.stringify(index, null, 2)}\n`;
+}
+
+export function syncUnifiedSearch({ root = DEFAULT_ROOT, check = false } = {}) {
+  const contents = renderUnifiedSearchBytes({ root });
+  if (check) {
+    assertGeneratedContentCurrent([{ path: OUTPUT_PATH, contents }], { root });
+    return JSON.parse(contents);
+  }
+
+  const temporary = join(root, `${OUTPUT_PATH}.tmp-${process.pid}`);
+  try {
+    writeFileSync(
+      temporary /* staging file for marketplace/src/data/unified-search-index.json */,
+      contents,
+      { flag: 'wx' },
+    );
+    renameSync(temporary, join(root, OUTPUT_PATH));
+  } finally {
+    rmSync(temporary, { force: true });
+  }
+  return JSON.parse(contents);
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  if (args.some((arg) => arg !== '--check') || args.filter((arg) => arg === '--check').length > 1) {
+    throw new Error(`unknown arguments: ${args.join(' ')}`);
+  }
+  const check = args.includes('--check');
+  const index = syncUnifiedSearch({ check });
+  const verb = check ? 'checked' : 'generated';
+  console.log(
+    `unified-search-index: ${verb} ${index.stats.totalPlugins} plugins, ${index.stats.totalSkills} skills, ${index.stats.totalDocs} docs, ${index.stats.totalItems} total`,
+  );
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`unified-search-index: ${error.message}`);
+    process.exitCode = 1;
+  }
+}

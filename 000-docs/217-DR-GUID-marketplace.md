@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Skills Hub - Marketplace Website
 
 [![Version](https://img.shields.io/badge/version-3.0.0-brightgreen)](247-OD-CHNG-changelog.md)

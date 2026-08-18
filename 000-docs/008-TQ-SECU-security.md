@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Security Policy
 
 **Claude Code Plugins Marketplace Security Framework**

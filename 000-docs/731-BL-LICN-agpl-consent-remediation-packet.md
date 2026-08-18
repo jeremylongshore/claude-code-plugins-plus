@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 731-BL-LICN — E7.13 AGPL and Consent Remediation Packet
 
 **Filed:** 2026-08-14  

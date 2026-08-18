@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Intent Solutions Theme Style Guide
 ## For [retired legacy public domain] Marketplace
 

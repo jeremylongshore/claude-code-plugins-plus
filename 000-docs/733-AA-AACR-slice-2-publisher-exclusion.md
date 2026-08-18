@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 733-AA-AACR — Slice 2 Publisher Exclusion After-Action Review
 
 **Date:** 2026-08-15  

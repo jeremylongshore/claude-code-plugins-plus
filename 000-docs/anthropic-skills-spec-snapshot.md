@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 <!-- TOMBSTONE [9k5h.9]: this file previously held a versioned capture of
      https://code.claude.com/docs/en/skills (Snapshot ID 2026-05-07-initial). That
      copy diverged from later captures in intent-eval-lab and is retired — the lab

@@ -97,6 +97,11 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
 
           <!-- Research Content -->
           <article class="research-content">
+            <p class="snapshot-note">
+              <strong>Research snapshot:</strong> captured 2026-03-04 from repository commit
+              <code>256db0b3eabc0669ffe75bc16f19053820c3e91c</code>. Values are historical evidence,
+              not live corpus totals.
+            </p>
             <slot />
 
             <!-- Cite This Block -->
@@ -278,6 +283,14 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     /* Research Content */
     .research-content {
       max-width: 800px;
+    }
+
+    .snapshot-note {
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--primary);
+      background: var(--panel);
+      color: var(--ink-2);
+      font-size: 0.875rem;
     }
 
     /* Typography within content */

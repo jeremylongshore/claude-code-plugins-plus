@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Epic 1 Domain Retirement — After-Action Review
 
 - **Date:** 2026-08-17

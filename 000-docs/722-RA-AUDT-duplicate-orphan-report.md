@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # 722-RA-AUDT — Duplicate & Orphan Report (Mission 01)
 
 **Captured:** 2026-08-11 @ `4358a65a3`. Dispositions live in the register (doc 719); this

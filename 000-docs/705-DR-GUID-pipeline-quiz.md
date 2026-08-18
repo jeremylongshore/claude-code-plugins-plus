@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Pipeline Quiz — Tons of Skills CI/CD & Maintainer System
 
 **Doc:** 705-DR-GUID · **Purpose:** competency gate for the Reviewer → Approver
