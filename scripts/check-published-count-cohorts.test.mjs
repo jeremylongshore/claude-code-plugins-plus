@@ -313,12 +313,14 @@ test('identifier-independent discovery refuses catalog counts, collection length
     '<p>{eyebrow}</p>\n<h2>Where these skills come from</h2>\n',
     '<p>{eyebrow}</p><h2>Where these skills come from</h2>\n',
     '<p>{eyebrow}</p>\n<h2>Discover Skills</h2>\n',
+    '<p>{eyebrow}</p>\n<h2>Build Real-world Skills</h2>\n',
     '<p>Learn what plugins and skills are, install in 60 seconds.</p>\n',
     '<p>Skills: 2 hours to complete this workshop.</p>\n',
     '<h2>Skills</h2>\n<span>{durationHours}</span> hours of training\n',
     '<h2>Skills</h2>\n<span>{notebookTotal}</span> notebooks\n',
     '<h2>Agent Skills</h2>\n<span>{stats.totalAgents}</span> custom agents\n',
     '<h2>Related Skills</h2>\n<div>{relatedSkills.map((skill) => (\n<a>{skill.name}</a>\n))}</div>\n',
+    '<h2>Related Skills</h2><div>{relatedSkills.map((skill) => (<a>{skill.name}</a>))}</div>\n',
     '<h3>Agent Skills (5 notebooks)</h3>\n',
   ]) {
     const root = makeFixture();

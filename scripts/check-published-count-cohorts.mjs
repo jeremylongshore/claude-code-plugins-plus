@@ -258,7 +258,6 @@ function headingCanLabelExternalCount(source, range, noun) {
     .replace(/[^a-z0-9+-]+/g, ' ')
     .trim();
   if (modifiers === '') return true;
-  if (/[a-z0-9]+-[a-z0-9]+/u.test(modifiers)) return true;
   const allowed = new Set([
     'agent',
     'ai',
@@ -279,7 +278,15 @@ function headingCanLabelExternalCount(source, range, noun) {
     'verified',
     'visible',
   ]);
-  return modifiers.split(/\s+/).every((word) => allowed.has(word));
+  const allowedCompoundLabels = new Set([
+    'community-maintained',
+    'curated-mirror',
+    'first-party',
+    'marketplace-visible',
+  ]);
+  return modifiers
+    .split(/\s+/)
+    .every((word) => allowed.has(word) || allowedCompoundLabels.has(word));
 }
 
 const OTHER_POPULATION_NOUN =
@@ -321,6 +328,14 @@ function codeOutsideQuotedStrings(value) {
 function containsMarkupOutsideQuotedStrings(value) {
   const code = codeOutsideQuotedStrings(value);
   return /<[A-Za-z!/][^>]*>/u.test(code);
+}
+
+function isNonCountCollectionRenderer(value, noun) {
+  const code = codeOutsideQuotedStrings(value);
+  if (!/\.\s*map\s*\(/u.test(code)) return false;
+  if (/\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b/u.test(code)) return false;
+  const visibleNoun = new RegExp(`\\b${noun}\\b(?!\\s*\\.)`, 'i');
+  return !visibleNoun.test(code);
 }
 
 function nounIsInsideUrlToken(source, nounOffset) {
@@ -804,6 +819,13 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const nounHeadingCanLabelExternalCount =
       nounHeadingRange === undefined ||
       headingCanLabelExternalCount(searchable, nounHeadingRange, noun);
+    const nounOwnedByNonCountCollection = dynamicExpressions.some(
+      (expression) =>
+        expression.start < found &&
+        expression.end > offset &&
+        isNonCountCollectionRenderer(expression.text, noun),
+    );
+    if (nounOwnedByNonCountCollection) continue;
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
@@ -815,6 +837,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         (region) => region.start <= expression.start && expression.end <= region.end,
       );
       const expressionOwnsNoun = expression.start < found && expression.end > offset;
+      if (!expressionOwnsNoun && isNonCountCollectionRenderer(expression.text, noun)) continue;
       const renderContainerExcludesNoun =
         expression.renderContainerStart !== undefined &&
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
@@ -870,6 +893,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         (region) => region.start <= expression.start && expression.end <= region.end,
       );
       const expressionOwnsNoun = expression.start < found && expression.end > offset;
+      if (!expressionOwnsNoun && isNonCountCollectionRenderer(expression.text, noun)) continue;
       const renderContainerExcludesNoun =
         expression.renderContainerStart !== undefined &&
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
