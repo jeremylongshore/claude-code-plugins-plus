@@ -2,17 +2,23 @@
 /**
  * generate-readme-toc.mjs
  *
- * Reads .claude-plugin/marketplace.extended.json and emits an awesome-list-style
- * Table of Contents into README.md, bounded by HTML comment sentinels. CI fails
- * if the bounded block is out of sync with the catalog.
+ * Reads .claude-plugin/marketplace.extended.json and maintains the generated
+ * blocks of the root README — the governed landing contract of blueprint 727
+ * § 6A. CI fails if any bounded block is out of sync with the catalog.
  *
- * Structure:
- *   - Quick navigation table (category + emoji + count)
- *   - Per-category section with a plugin table (name, description, tags)
- *   - Back-to-top links
+ * Blocks owned by this writer (the README's ONLY metrics writer — E1.9):
+ *   - AUTO-TOC:  the category navigation table ONLY. Per-plugin rows are the
+ *     drift engine every benchmarked repo fell into (728 § 4 C6) and are
+ *     asserted absent — the catalog lives on the website and in the machine
+ *     indexes, never here (§ 6A R1).
+ *   - SCALE:     every published count with its cohort name and the command
+ *     that reproduces it (§ 6A R4).
+ *   - CERTIFICATION: rendered from certification-report.json when it exists;
+ *     until Epic 10 produces one, renders the honest "not yet certified"
+ *     state — never blank (§ 6A R10).
  *
- * Anchors use GitHub's auto-slug algorithm on plain (no-emoji) headers for
- * stability. Emojis live in the TOC display text only.
+ * Hard budgets enforced at emit time AND in --check (§ 6A R2): README ≤ 25 KB,
+ * AUTO-TOC block ≤ 8 KB. The benchmark failure mode is a 50,315-byte README.
  *
  * Usage:
  *   node scripts/generate-readme-toc.mjs           # write README
@@ -91,6 +97,16 @@ function applyStats(readme, { plugins, skills, agents }) {
 const TOC_START =
   '<!-- AUTO-TOC:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->';
 const TOC_END = '<!-- AUTO-TOC:END -->';
+const SCALE_START =
+  '<!-- SCALE:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->';
+const SCALE_END = '<!-- SCALE:END -->';
+const CERT_START =
+  '<!-- CERTIFICATION:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->';
+const CERT_END = '<!-- CERTIFICATION:END -->';
+
+// § 6A R2 — byte budgets. The README is a landing contract, not a catalog.
+const README_BYTE_BUDGET = 25 * 1024;
+const TOC_BYTE_BUDGET = 8 * 1024;
 
 // Display metadata for each category: emoji + human-friendly label.
 // Categories not listed fall back to auto-title and a default emoji.
@@ -169,48 +185,105 @@ function buildBlock(catalog) {
   const lines = [];
   lines.push(TOC_START);
   lines.push('');
-  lines.push('## Browse Plugins by Category');
+  lines.push('## Browse by category');
   lines.push('');
   lines.push(
-    `Jump to any of the ${ordered.length} categories below. Plugin counts are catalog totals — auto-generated from \`marketplace.extended.json\`.`,
+    `The ${ordered.length} categories below link into the live marketplace. Plugin counts are the catalog-entry cohort — regenerated from \`marketplace.extended.json\` by this generator; the catalog itself lives on [tonsofskills.com](https://tonsofskills.com), never in this file (§ 6A of the platform blueprint).`,
   );
   lines.push('');
 
-  // Quick navigation table
-  lines.push('|   | Category | Plugins |');
-  lines.push('|---|----------|--------:|');
+  // Category navigation table — the ONLY table this block may contain (R1).
+  lines.push('|     | Category | Plugins |');
+  lines.push('| --- | -------- | ------: |');
   for (const slug of ordered) {
     const meta = metaFor(slug);
     const count = byCategory.get(slug).length;
-    const anchor = '#' + githubSlug(meta.label);
-    lines.push(`| ${meta.emoji} | [${meta.label}](${anchor}) | ${count} |`);
+    lines.push(
+      `| ${meta.emoji} | [${meta.label}](https://tonsofskills.com/plugins?category=${encodeURIComponent(slug)}) | ${count} |`,
+    );
   }
   lines.push('');
-
-  // Per-category sections with plugin tables
-  for (const slug of ordered) {
-    const meta = metaFor(slug);
-    const items = [...byCategory.get(slug)].sort((a, b) =>
-      (a.name || '').localeCompare(b.name || ''),
-    );
-    lines.push(`### ${meta.label}`);
-    lines.push('');
-    lines.push(`${meta.emoji} **${items.length} plugins** · category slug: \`${slug}\``);
-    lines.push('');
-    lines.push('| Plugin | Description |');
-    lines.push('|--------|-------------|');
-    for (const p of items) {
-      const name = escapeTable(p.name);
-      const desc = escapeTable(truncate(p.description, 140));
-      lines.push(`| \`${name}\` | ${desc} |`);
-    }
-    lines.push('');
-    lines.push('<sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>');
-    lines.push('');
-  }
-
   lines.push(TOC_END);
   return lines.join('\n');
+}
+
+// § 6A R4 — every published count with its cohort name and reproducing command.
+function buildScaleBlock({ plugins, skills, agents }, categoryCount) {
+  const grouped = (n) => n.toLocaleString('en-US');
+  return [
+    SCALE_START,
+    '',
+    '## Scale, labeled',
+    '',
+    'Every number below names the cohort it counts and the command that reproduces it — an unlabeled count is how a corpus ends up with five contradictory answers to "how many skills."',
+    '',
+    '| Count | Cohort | Reproduce with |',
+    '| ----: | ------ | -------------- |',
+    `| ${grouped(plugins)} | catalog plugins (catalog-entry cohort) | \`node scripts/generate-readme-toc.mjs\` over \`marketplace.extended.json\` |`,
+    `| ${grouped(skills)} | marketplace-visible skills (distinct) | \`resolveCorpus('marketplace-visible')\` via \`pnpm run measure:e1\` |`,
+    `| ${grouped(agents)} | agent definitions in plugins | \`git ls-files 'plugins/**' \\| grep '/agents/.*\\.md'\` |`,
+    `| ${categoryCount} | plugin categories | \`ls -d plugins/*/\` |`,
+    '',
+    SCALE_END,
+  ].join('\n');
+}
+
+// § 6A R10 — the certified/pending split renders from the certification report;
+// an absent report renders the honest zero state, never a blank.
+function buildCertBlock() {
+  const reportPath = join(ROOT, 'certification-report.json');
+  let body;
+  try {
+    const report = JSON.parse(readFileSync(reportPath, 'utf-8'));
+    const certified = Number(report?.certified ?? 0);
+    const pending = Number(report?.pending ?? 0);
+    body =
+      `Certification status from \`certification-report.json\`: ` +
+      `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
+      `claim with retained evidence — never a self-approved badge.`;
+  } catch {
+    body =
+      '**Not yet certified.** The certification program (tiers T0–T4 with retained, ' +
+      'hash-matched evidence) is a later epic of the platform blueprint; until its report ' +
+      'exists, no artifact on this surface claims a tier. This line is rendered from the ' +
+      'absence of `certification-report.json` — honestly, not cosmetically.';
+  }
+  return [CERT_START, '', body, '', CERT_END].join('\n');
+}
+
+// Splice one sentinel-bounded block; the sentinels must already exist.
+function spliceBlock(readme, start, end, block) {
+  const startIdx = readme.indexOf(start);
+  const endIdx = readme.indexOf(end);
+  if (startIdx === -1 || endIdx === -1) {
+    throw new Error(`README.md is missing the ${start.slice(5, 20)}… sentinels.`);
+  }
+  if (endIdx < startIdx) throw new Error(`README sentinels out of order for ${start}`);
+  return readme.slice(0, startIdx) + block + readme.slice(endIdx + end.length);
+}
+
+// § 6A R1 + R2 — fail loudly at emit time, not just in a separate gate.
+function assertLandingContract(finalText, tocBlock) {
+  const readmeBytes = Buffer.byteLength(finalText, 'utf-8');
+  if (readmeBytes > README_BYTE_BUDGET) {
+    throw new Error(
+      `README byte budget exceeded: ${readmeBytes} > ${README_BYTE_BUDGET} (§ 6A R2). ` +
+        'The README is a landing contract — move content to the website or docs.',
+    );
+  }
+  const tocBytes = Buffer.byteLength(tocBlock, 'utf-8');
+  if (tocBytes > TOC_BYTE_BUDGET) {
+    throw new Error(`AUTO-TOC byte budget exceeded: ${tocBytes} > ${TOC_BYTE_BUDGET} (§ 6A R2).`);
+  }
+  // R1: the block may contain exactly one table — the category table. A
+  // planted per-plugin/per-skill row (backticked name cell) is a red run.
+  const tableRows = tocBlock.split('\n').filter((l) => l.startsWith('|'));
+  const backtickRows = tableRows.filter((l) => /^\|\s*`/.test(l));
+  if (backtickRows.length > 0) {
+    throw new Error(
+      `AUTO-TOC contains ${backtickRows.length} per-plugin row(s) — forbidden (§ 6A R1 / 728 § 4 C6).`,
+    );
+  }
 }
 
 function replaceBlock(readme, newBlock) {
@@ -250,9 +323,16 @@ async function main() {
 
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
+  const stats = computeStats(catalog);
+  const categoryCount = new Set((catalog.plugins || []).map((p) => p.category || 'uncategorized'))
+    .size;
   const current = readFileSync(README, 'utf-8');
-  const spliced = applyStats(replaceBlock(current, block), computeStats(catalog));
+  let spliced = replaceBlock(current, block);
+  spliced = spliceBlock(spliced, SCALE_START, SCALE_END, buildScaleBlock(stats, categoryCount));
+  spliced = spliceBlock(spliced, CERT_START, CERT_END, buildCertBlock());
+  spliced = applyStats(spliced, stats);
   const updated = await formatReadme(spliced);
+  assertLandingContract(updated, block);
 
   if (checkMode) {
     if (current !== updated) {
