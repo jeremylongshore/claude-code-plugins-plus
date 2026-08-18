@@ -588,7 +588,7 @@ const allPlugins = manifest.plugins;
         autocomplete="off"
         aria-label="Search plugins by name"
       />
-      <p class="plugin-count-label" id="plugin-count">Showing all <span data-count-provenance="cowork-package-local">{allPlugins.length.toLocaleString()} Cowork-package-local plugins</span></p>
+      <p class="plugin-count-label" id="plugin-count" data-count-provenance="cowork-package-local">Showing all {allPlugins.length.toLocaleString()} Cowork-package-local plugins</p>
 
       <div class="plugin-list" id="plugin-list">
         {allPlugins.map(plugin => (
@@ -715,8 +715,8 @@ const allPlugins = manifest.plugins;
 
         if (pluginCount) {
           pluginCount.textContent = query
-            ? `Showing ${visible} of ${items.length} plugins`
-            : `Showing all ${items.length} plugins`;
+            ? `Showing ${visible.toLocaleString()} of ${items.length.toLocaleString()} Cowork-package-local plugins`
+            : `Showing all ${items.length.toLocaleString()} Cowork-package-local plugins`;
         }
       });
     }

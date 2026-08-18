@@ -187,7 +187,7 @@ if (manifest?.plugins) {
         {plugin && (
           <div class="cowork-stats">
             {hasPluginSkills && <span class="cowork-stat" data-count-provenance="cowork-package-local">{pluginSkillCount.toLocaleString()} Cowork-package-local skills</span>}
-            {plugin.commands > 0 && <span class="cowork-stat">{plugin.commands} commands</span>}
+            {plugin.commands > 0 && <span class="cowork-stat" data-count-provenance="cowork-package-local">{plugin.commands.toLocaleString()} Cowork-package-local commands</span>}
           </div>
         )}
 

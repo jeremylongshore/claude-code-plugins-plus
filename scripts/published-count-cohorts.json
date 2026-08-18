@@ -269,7 +269,7 @@
           "label": "Cowork-package-local plugins",
           "provenance": "data-count-provenance=\"cowork-package-local\"",
           "command": "node scripts/check-published-count-cohorts.mjs --json",
-          "contract": "data-count-provenance=\"cowork-package-local\">{allPlugins.length.toLocaleString()} Cowork-package-local plugins",
+          "contract": "data-count-provenance=\"cowork-package-local\">Showing all {allPlugins.length.toLocaleString()} Cowork-package-local plugins",
           "sink": "rendered",
           "function": "Astro",
           "call": "Astro"
