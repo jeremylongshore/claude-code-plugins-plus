@@ -5,14 +5,14 @@
     "email": "business@uizze.com"
   },
   "metadata": {
-    "description": "If your UI screams AI, your app is dead. Stop UI slop with 800,000+ real web and iOS screens, a product-specific design contract, and a hard finish gate.",
+    "description": "Stop AI coding agents from shipping generic UI with a free anti-ui-slop Skill, a UI Slop Gate, and optional UIZZE research across 800,000+ real web and iOS screens.",
     "version": "1.2.11"
   },
   "plugins": [
     {
       "name": "uizze",
       "source": "./",
-      "description": "If your UI screams AI, your app is dead. Stop UI slop with 800,000+ real web and iOS screens, a product-specific design contract, and a hard finish gate.",
+      "description": "Stop AI coding agents from shipping generic UI with a free anti-ui-slop Skill, a UI Slop Gate, and optional UIZZE research across 800,000+ real web and iOS screens.",
       "version": "1.2.11",
       "author": {
         "name": "UIZZE",

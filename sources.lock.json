@@ -1413,6 +1413,18 @@
         "skills/warden/SKILL.md": "sha256:dff6fff04b1b273322ae19ef93148ce8f6d71388c449a077d9d5c4e01ca9f0b2"
       }
     },
+    "uizze": {
+      "repo": "uizze/uizze",
+      "resolved_ref": "7d97c8d126703626adb757073572cb54ac451ce5",
+      "locked_at": "2026-08-18T20:49:08.147Z",
+      "files": {
+        ".claude-plugin/marketplace.json": "sha256:48cb7feb3567142975ed886b4ff08d96f5adedd0ab935a9ed87ccdb598303066",
+        ".claude-plugin/plugin.json": "sha256:ae412b89baab7095ae331357d6d4d554f6897d0cb51340e13cb62fcd1c3851d2",
+        "LICENSE": "sha256:4a58e8025fdccc01f07a63fdec54f37ae1174e362200049e304f7841d41fb73c",
+        "README.md": "sha256:5619b713feae0ae0f1a952e0a176e4a981123f0e8ad1b3828b1634130cac69bb",
+        "skills/anti-ui-slop/SKILL.md": "sha256:1c86da86ae0471af2728433f555816bef2a7600739ac05cf486b4b5355b1b573"
+      }
+    },
     "walkie-talkie": {
       "repo": "walkie-talkie-skill/walkie-talkie",
       "resolved_ref": "0b74f4d361022f51297896e2ef884c0ed5bfd0df",

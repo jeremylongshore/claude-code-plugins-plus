@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3180,
-        "tracked_files": 23093
+        "tracked_files": 23096
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 467,
+        "distinct_names": 468,
         "duplicate_names": [],
-        "entries": 467
+        "entries": 468
       }
     },
     "3": {
@@ -1130,7 +1130,7 @@
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3068
+            "value": 3069
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1191,11 +1191,11 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 63,
+        "lock_keys": 64,
         "lock_only": [],
         "target_equal": true,
         "yaml_keys": 64,
-        "yaml_only": ["uizze"]
+        "yaml_only": []
       }
     },
     "28": {
@@ -1941,10 +1941,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 211,
+        "index_entries": 212,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 211,
+        "tracked_documents": 212,
         "untracked_index_entries": []
       }
     },
@@ -1968,9 +1968,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15561,
+        "invisible_files": 15563,
         "target_invisible_files": 0,
-        "tracked_files": 23093
+        "tracked_files": 23096
       }
     },
     "47": {
@@ -2010,7 +2010,7 @@
       "status": "partial",
       "values": {
         "push_trigger_present": true,
-        "scanner_mentions": 4,
+        "scanner_mentions": 5,
         "scanner_pr_only_guard_present": true
       }
     },

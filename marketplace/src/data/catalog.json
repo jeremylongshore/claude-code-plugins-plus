@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 467,
-    "totalSkills": 3068,
+    "totalPlugins": 468,
+    "totalSkills": 3069,
     "totalCommands": 80,
-    "pluginsWithSkills": 435,
+    "pluginsWithSkills": 436,
     "byCategory": {
       "productivity": 31,
       "security": 27,
@@ -27,7 +27,7 @@
       "community": 24,
       "examples": 5,
       "saas-packs": 106,
-      "design": 8,
+      "design": 9,
       "analytics": 1
     },
     "featured": 40
@@ -12687,6 +12687,33 @@
       "author": {
         "name": "metr0x",
         "url": "https://github.com/metrox-eth"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "uizze",
+      "name": "uizze",
+      "displayName": "uizze",
+      "description": "STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.",
+      "version": "1.2.11",
+      "category": "design",
+      "keywords": [
+        "ui",
+        "design",
+        "frontend",
+        "anti-slop",
+        "agent-skill"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install uizze",
+      "sourcePath": "./plugins/design/uizze",
+      "isFeatured": false,
+      "author": {
+        "name": "UIZZE",
+        "url": "https://uizze.com",
+        "email": "business@uizze.com"
       },
       "type": "instruction-plugin"
     }

@@ -10,11 +10,11 @@ compatibility: Designed for Claude Code, Codex, Cursor, and GitHub Copilot; work
 tags: [ui-design, design-system, design-review, frontend, web-ui, ios-ui]
 ---
 
-> ***If your UI screams AI, your app is dead.***
+> **Stop AI coding agents from shipping generic UI.**
 
 # Stop Making UI Slop
 
-Build distinctive UI with 800,000+ real web and iOS screens via [UIZZE](https://uizze.com).
+Build product-specific UI with 800,000+ real web and iOS screens via [UIZZE](https://uizze.com).
 
 ![Stop Making UI Slop with UIZZE](https://uizze.com/landing/anti-ui-slop-skill-banner.png)
 

@@ -1,8 +1,8 @@
-> ***If your UI screams AI, your app is dead.***
+> **Stop AI coding agents from shipping generic UI.**
 
 # Stop Making UI Slop
 
-Build distinctive UI with 800,000+ real web and iOS screens via [UIZZE](https://uizze.com).
+Build product-specific UI with a free anti-ui-slop Skill and UI Slop Gate. Optional full UIZZE adds 800,000+ real web and iOS screens via [UIZZE](https://uizze.com).
 
 ![Stop Making UI Slop with UIZZE](https://uizze.com/landing/anti-ui-slop-skill-banner.png)
 
@@ -121,8 +121,23 @@ Use [DISTRIBUTION.md](DISTRIBUTION.md) for canonical public copy, install langua
 
 - [Official MCP Registry record](https://github.com/mcp/uizze/uizze)
 - [GitHub Copilot anti-ui-slop Skill](https://github.com/github/awesome-copilot/tree/main/skills/anti-ui-slop)
+- [Agentic Awesome Skills listing](https://github.com/sickn33/agentic-awesome-skills) (accepted in the active 45,000+ star catalog via [PR #1166](https://github.com/sickn33/agentic-awesome-skills/pull/1166); attempted historical source repair [PR #1176](https://github.com/sickn33/agentic-awesome-skills/pull/1176) was closed by the maintainer because the provenance transition could not be verified)
+- [Developer Resources listing](https://github.com/marcelscruz/dev-resources) (accepted in the active 1,328-star developer-resources index via [PR #1170](https://github.com/marcelscruz/dev-resources/pull/1170))
+- [Agency Agents UI Finish-Gate Reviewer](https://github.com/msitarzewski/agency-agents/blob/main/design/design-ui-finish-gate-reviewer.md) (live in the 146,000+ star directory via merged [PR #742](https://github.com/msitarzewski/agency-agents/pull/742); canonical Skill refresh is tracked in [PR #792](https://github.com/msitarzewski/agency-agents/pull/792))
+- [Build with Claude listing](https://github.com/davepoon/buildwithclaude) (live in the 3,300+ star Claude discovery hub via merged [PR #249](https://github.com/davepoon/buildwithclaude/pull/249) and copy-sync [PR #251](https://github.com/davepoon/buildwithclaude/pull/251))
+- [Awesome Codex Skills submission](https://github.com/composio-community/awesome-codex-skills/pull/236) (15,896-star directory; maintainer review pending)
+- [GreatFrontEnd Front-End System Design submission](https://github.com/greatfrontend/awesome-front-end-system-design/pull/9) (8,400+ star directory; maintainer review pending)
+- [Awesome MCP Servers submission](https://github.com/punkpeye/awesome-mcp-servers/pull/10946) (92,000+ star directory; Glama scored-server requirement remains external)
+- [Awesome DevOps MCP Servers submission](https://github.com/rohitg00/awesome-devops-mcp-servers/pull/316) (1,018-star directory; UIZZE is proposed under Continuous Integration with the free Skill, no-account preview, and optional 800,000+ workflow)
 - [Agent Skill Index listing](https://github.com/heilcheng/awesome-agent-skills/pull/420) (6,110-star directory; maintainer review pending)
+- [Awesome Agentic Patterns contribution](https://github.com/nibzard/awesome-agentic-patterns/pull/134) (4,888-star pattern catalogue; generalized Rendered UI Finish Gate with UIZZE disclosed as one known implementation)
+- [Chinese Agentic AI catalogue submission](https://github.com/WenyuChiou/awesome-agentic-ai-zh/pull/111) (5,300-star trilingual agentic-AI roadmap; proposes the free MIT anti-ui-slop Skill in its Design catalog, with the optional 800,000+ workflow clearly separated; maintainer review pending)
+- [Datawhale Hello-Agents community chapter](https://github.com/datawhalechina/hello-agents/pull/819) (73,000+ star Chinese agent-building tutorial; adds a practical UI quality chapter and README index entry, with the free Skill first and optional 800,000+ workflow clearly separated; maintainer review pending)
+- [GitHubDaily recommendation](https://github.com/GitHubDaily/GitHubDaily/issues/1030) (47,000+ star Chinese developer-discovery repository; recommendation is source-backed and leads with the free Skill, preview MCP, GitHub Action, and separate 800,000+ full-workflow scope)
+- [Wshobson Agents plugin marketplace](https://github.com/wshobson/agents/pull/658) (38,000+ star multi-harness marketplace; PR approved and mergeable, proposing the canonical free Skill across Claude Code, Codex CLI, Cursor, OpenCode, Copilot, and Gemini CLI with the optional 800,000+ workflow separated)
+- [OpenAI Codex curated marketplace request](https://github.com/openai/codex/issues/39168) (106,000+ star official Codex repository; issue-based review request for the canonical UIZZE plugin, free Skill, and no-account preview)
+- Additional high-reach routes under review: [Anthropic Agent Skills](https://github.com/anthropics/skills/pull/1595) (170,000+ stars), [Claude Code Best Practice](https://github.com/shanraisshan/claude-code-best-practice/pull/187) (64,000+ stars), [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code/issues/2548) (52,000+ stars), [Awesome Actions](https://github.com/sdras/awesome-actions/pull/899) (28,000+ stars), and [Awesome Design](https://github.com/gztchan/awesome-design/pull/229) (17,000+ stars)
 - [UIZZE on skills.sh](https://www.skills.sh/site/uizze.com/anti-ui-slop) (free install listing; the page reports 348.5K installs on 2026-08-18, a third-party directory metric rather than a UIZZE product-usage claim)
 - [UIZZE organization profile](https://github.com/uizze)
-- [Latest distribution update](https://github.com/uizze/uizze/discussions/44#discussioncomment-18059783)
+- [Latest distribution update](https://github.com/uizze/uizze/discussions/44#discussioncomment-18062303)
 - [Full distribution map](DISTRIBUTION.md)
