@@ -107,8 +107,10 @@ Three traps that have produced wrong verdicts here and that you must avoid:
 
 - **Pipelines eat exit codes.** `cmd | head; echo $?` reports `head`'s status. Capture
   the exit code directly: `cmd >/dev/null 2>&1; echo $?`.
-- **`git grep` searches tracked files only.** An untracked probe file is invisible; stage
-  it before concluding a pattern is absent.
+- **`git grep` searches tracked files only.** An untracked probe file is invisible. Use
+  `git grep --untracked` (or `rg`) for negative-existence checks — never stage the probe:
+  staging mutates the caller's index and can leak the probe into a later commit. If a probe
+  file must exist on disk, delete it as soon as the check completes.
 - **Aliases are inherited.** `grep` is `rg`, `find` is `fd`, `cp` is `cp -i` (which hangs).
   Use `/usr/bin/grep`, `command find`, `\cp -f`.
 

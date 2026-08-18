@@ -398,7 +398,8 @@ skill; take its **deterministic** findings as evidence and its advisory findings
 
 **Verification traps these encode** (they have each produced a wrong verdict here):
 `cmd | head; echo $?` reports _head's_ exit code — capture it directly; `git grep` searches
-**tracked files only**, so stage a probe before concluding a pattern is absent; `grep`→`rg`,
+**tracked files only**, so use `git grep --untracked` (never stage a probe — that mutates
+the caller's index) before concluding a pattern is absent; `grep`→`rg`,
 `find`→`fd`, `cp`→`cp -i` (hangs) — use `/usr/bin/grep`, `command find`, `\cp -f`.
 
 ## Beads Issue Tracker
