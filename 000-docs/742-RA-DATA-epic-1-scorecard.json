@@ -1941,8 +1941,8 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 211,
-        "missing_from_index": ["000-docs/772-AA-AACR-epic-1-sources-lock-parity.md"],
+        "index_entries": 212,
+        "missing_from_index": [],
         "target_equal": true,
         "tracked_documents": 212,
         "untracked_index_entries": []
