@@ -644,6 +644,87 @@ function renderedContractOccurrences(
   ].sort((left, right) => left - right);
 }
 
+function validateDeferredClaim({
+  claim,
+  claimField,
+  surfacePath,
+  rawSource,
+  visibleSource,
+  expressions,
+}) {
+  if (!claim || typeof claim !== 'object' || Array.isArray(claim)) {
+    refuse('INVALID_DEFERRED_GROUP_CLAIM', `${claimField} must be an object`);
+  }
+  const claimExpression = nonemptyString(claim.expression, `${claimField}.expression`);
+  nonemptyString(claim.classification, `${claimField}.classification`);
+  nonemptyString(claim.owner, `${claimField}.owner`);
+  nonemptyString(claim.reason, `${claimField}.reason`);
+  const claimLabel = nonemptyString(claim.label, `${claimField}.label`);
+  const claimProvenance = nonemptyString(claim.provenance, `${claimField}.provenance`);
+  const claimCommand = nonemptyString(claim.command, `${claimField}.command`);
+  const claimContract = nonemptyString(claim.contract, `${claimField}.contract`);
+  const claimSink = nonemptyString(claim.sink, `${claimField}.sink`);
+  const claimFunction = nonemptyString(claim.function, `${claimField}.function`);
+  const claimCall = nonemptyString(claim.call, `${claimField}.call`);
+  if (claimCommand !== 'node scripts/check-published-count-cohorts.mjs --json') {
+    refuse(
+      'INVALID_LOCAL_COMMAND',
+      `${claimField}.command must be the executable local-count checker command`,
+    );
+  }
+  if (!foldedText(claimLabel).includes(foldedText(claim.classification))) {
+    refuse(
+      'LOCAL_LABEL_MISMATCH',
+      `${claimField}.label must name classification ${JSON.stringify(claim.classification)}`,
+    );
+  }
+  if (!claimProvenance.includes(claim.classification)) {
+    refuse(
+      'LOCAL_PROVENANCE_MISMATCH',
+      `${claimField}.provenance must name classification ${JSON.stringify(claim.classification)}`,
+    );
+  }
+  if (!claimContract.includes(claimExpression)) {
+    refuse(
+      'LOCAL_CONTRACT_MISMATCH',
+      `${claimField}.contract must include expression ${JSON.stringify(claimExpression)}`,
+    );
+  }
+  if (!claimContract.includes(claimLabel) || !claimContract.includes(claimProvenance)) {
+    refuse(
+      'LOCAL_CONTRACT_MISMATCH',
+      `${claimField}.contract must include its declared label and provenance`,
+    );
+  }
+  if (expressions.includes(claimExpression)) {
+    refuse(
+      'DUPLICATE_SURFACE_EXPRESSION',
+      `${surfacePath} registers expression more than once: ${JSON.stringify(claimExpression)}`,
+    );
+  }
+  if (literalOccurrences(rawSource, claimExpression).length === 0) {
+    refuse(
+      'MISSING_EXPRESSION',
+      `${surfacePath} does not contain deferred expression ${JSON.stringify(claimExpression)}`,
+    );
+  }
+  const contractOccurrences = renderedContractOccurrences(
+    rawSource,
+    visibleSource,
+    claimContract,
+    claimSink,
+    claimFunction,
+    claimCall,
+  );
+  if (contractOccurrences.length !== 1) {
+    refuse(
+      'INVALID_LOCAL_CONTRACT',
+      `${surfacePath} must contain local contract exactly once (found ${contractOccurrences.length})`,
+    );
+  }
+  return claimExpression;
+}
+
 function lineAtOffset(source, offset) {
   return source.slice(0, offset).split('\n').length;
 }
@@ -882,14 +963,44 @@ function validateSurfaces(registry, root, io) {
     nonemptyString(group.classification, `${field}.classification`);
     nonemptyString(group.owner, `${field}.owner`);
     nonemptyString(group.reason, `${field}.reason`);
-    if (!Array.isArray(group.paths) || group.paths.length === 0) {
-      refuse('INVALID_DEFERRED_GROUP', `${field}.paths must be a nonempty array`);
+    if (group.paths !== undefined && !Array.isArray(group.paths)) {
+      refuse('INVALID_DEFERRED_GROUP', `${field}.paths must be an array when provided`);
     }
-    for (const [pathIndex, candidate] of group.paths.entries()) {
+    if (group.claims !== undefined && !Array.isArray(group.claims)) {
+      refuse('INVALID_DEFERRED_GROUP', `${field}.claims must be an array when provided`);
+    }
+    const paths = group.paths ?? [];
+    const claims = group.claims ?? [];
+    if (paths.length === 0 && claims.length === 0) {
+      refuse('INVALID_DEFERRED_GROUP', `${field} must contain paths or claims`);
+    }
+    for (const [pathIndex, candidate] of paths.entries()) {
       const surfacePath = validateRepositoryPath(candidate, `${field}.paths[${pathIndex}]`);
       registerSurfacePath(surfacePath);
       safeRead(root, surfacePath, io);
       registeredExpressions.set(surfacePath, null);
+      deferred += 1;
+    }
+    for (const [claimIndex, claim] of claims.entries()) {
+      const claimField = `${field}.claims[${claimIndex}]`;
+      if (!claim || typeof claim !== 'object' || Array.isArray(claim)) {
+        refuse('INVALID_DEFERRED_GROUP_CLAIM', `${claimField} must be an object`);
+      }
+      const surfacePath = validateRepositoryPath(claim.path, `${claimField}.path`);
+      registerSurfacePath(surfacePath);
+      const rawSource = safeRead(root, surfacePath, io);
+      const visibleSource = stripComments(maskNonRenderedAstroRegions(rawSource));
+      const expressions = [];
+      const claimExpression = validateDeferredClaim({
+        claim,
+        claimField,
+        surfacePath,
+        rawSource,
+        visibleSource,
+        expressions,
+      });
+      expressions.push(claimExpression);
+      registeredExpressions.set(surfacePath, expressions);
       deferred += 1;
     }
   }
