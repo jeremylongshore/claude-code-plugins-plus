@@ -20,7 +20,7 @@ landing-page metadata description no longer repeats an unlabeled count.
 | Gate                          | Result                                                              |
 | ----------------------------- | ------------------------------------------------------------------- |
 | Published-count fixture suite | PASS — 33/33, including duplicate-expression red proof              |
-| Live registry                 | PASS — `ALLOW cohorts=5 enforced=6 deferred=57 discovered=50`       |
+| Live registry                 | PASS — `ALLOW cohorts=5 enforced=6 deferred=58 discovered=50`       |
 | Claims                        | Nine exact contracts across `CoworkGrid.astro` and `cowork.astro`   |
 | Numeric corpus values         | Unchanged; only local population labels/contracts changed           |
 | Mirrored content              | No `.source.json` or mirrored skill content changed                 |

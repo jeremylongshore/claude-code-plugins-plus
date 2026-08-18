@@ -23,6 +23,7 @@ const heroPluginCount = totalPlugins;
 const heroSkillCount = totalSkills;
 const megaPluginCount = totalPlugins;
 const megaSkillCount = totalSkills;
+const categoryPackCount = manifest.bundles.length;
 const allPlugins = manifest.plugins;
 ---
 
@@ -523,8 +524,8 @@ const allPlugins = manifest.plugins;
         <span class="stat-label">Cowork-package-local skills</span>
       </div>
       <div class="cowork-hero-stat">
-        <span class="stat-number">{manifest.bundles.length}</span>
-        <span class="stat-label">Cowork category packs</span>
+        <span class="stat-number" data-count-provenance="cowork-package-local">{categoryPackCount.toLocaleString()}</span>
+        <span class="stat-label">Cowork-package-local category packs</span>
       </div>
     </div>
   </section>

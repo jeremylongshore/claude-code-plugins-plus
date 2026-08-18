@@ -220,6 +220,20 @@
         },
         {
           "path": "marketplace/src/pages/cowork.astro",
+          "expression": "categoryPackCount.toLocaleString()",
+          "classification": "cowork-package-local",
+          "owner": "E1.6 follow-up",
+          "reason": "The Cowork landing hero reports the generated category-bundle population.",
+          "label": "Cowork-package-local category packs",
+          "provenance": "data-count-provenance=\"cowork-package-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "<span class=\"stat-number\" data-count-provenance=\"cowork-package-local\">{categoryPackCount.toLocaleString()}</span>\n        <span class=\"stat-label\">Cowork-package-local category packs",
+          "sink": "rendered",
+          "function": "Astro",
+          "call": "Astro"
+        },
+        {
+          "path": "marketplace/src/pages/cowork.astro",
           "expression": "megaPluginCount.toLocaleString()",
           "classification": "cowork-package-local",
           "owner": "E1.6 follow-up",
