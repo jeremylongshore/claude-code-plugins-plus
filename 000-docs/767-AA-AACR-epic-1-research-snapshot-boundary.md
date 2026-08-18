@@ -29,8 +29,12 @@ population rather than being relabeled as current marketplace counts.
 
 ```bash
 node scripts/check-published-count-cohorts.mjs --json
+# Observed: ALLOW; cohorts=5, enforced=6, deferred=91, discovered=20.
 pnpm --dir marketplace run build
 ```
+
+The checker output was `ALLOW` with no findings; the four population counts
+above are the result observed on the reviewed source commit.
 
 ## Rollback and boundaries
 
