@@ -10,12 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed (2026-08-17 — published count cohort labels)
 
 - **Live marketplace skill totals now identify the population they count.** The homepage, explore,
-  comparison, and sponsor pages label their unchanged totals as `marketplace-visible` and expose
-  the canonical corpus-resolver command beside the value. A machine-readable registry and
-  fixture-driven, fail-closed CI gate reject unregistered Astro count surfaces, unknown cohorts,
-  unsafe or unreadable paths, comment-only labels, and missing provenance without adding another
-  required status context. Distinct Cowork-package and social-image surfaces remain explicitly
-  deferred for later E1.6 slices instead of being mislabeled as marketplace totals.
+  comparison, sponsor, and skills-directory pages label their unchanged totals as
+  `marketplace-visible` and expose the canonical corpus-resolver command beside the value. A
+  machine-readable registry and fixture-driven, fail-closed CI gate discover count expressions by
+  meaning rather than one variable name across public Astro pages and components, rejecting
+  unregistered literals, collection lengths, catalog counts, unsafe or unreadable paths,
+  comment-only labels, and missing provenance without adding another required status context. The
+  first inventory finds 51 public Astro source files; 46 non-global or point-in-time sources plus
+  the generated social image remain explicit, owned deferrals for later E1.6 slices.
 
 ### Fixed (2026-08-17 — canonical catalog name uniqueness)
 

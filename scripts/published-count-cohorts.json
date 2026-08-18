@@ -33,9 +33,11 @@
     }
   },
   "discovery": {
-    "root": "marketplace/src/pages",
+    "roots": ["marketplace/src/pages", "marketplace/src/components"],
     "extension": ".astro",
-    "token": "totalSkills"
+    "noun": "skills",
+    "dynamicTerms": ["count", "length", "shown", "total"],
+    "ignoredPhrases": ["Tons of Skills"]
   },
   "surfaces": [
     {
@@ -75,18 +77,13 @@
       "status": "enforced"
     },
     {
-      "path": "marketplace/src/pages/cowork.astro",
-      "classification": "packaged",
-      "status": "deferred",
-      "owner": "E1.6 follow-up",
-      "reason": "The Cowork archive count comes from cowork-manifest.json and currently has hard-coded fallbacks; it is not the marketplace-visible cohort."
-    },
-    {
-      "path": "marketplace/src/components/CoworkGrid.astro",
-      "classification": "packaged",
-      "status": "deferred",
-      "owner": "E1.6 follow-up",
-      "reason": "Per-bundle counts are derived from Cowork manifest entries and require a separate packaged-cohort contract."
+      "path": "marketplace/src/pages/skills/index.astro",
+      "classification": "live-global",
+      "cohort": "marketplace-visible",
+      "expression": "_rawCatalog.count",
+      "label": "marketplace-visible",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "status": "enforced"
     },
     {
       "path": "scripts/generate-og-image.mjs",
@@ -94,6 +91,83 @@
       "status": "deferred",
       "owner": "E1.6 follow-up",
       "reason": "The generated image must carry a legible cohort and reproduction locator without duplicating the registry wording."
+    }
+  ],
+  "deferredGroups": [
+    {
+      "classification": "packaged-or-bundle-local",
+      "owner": "E1.6 follow-up",
+      "reason": "Cowork totals count downloadable package contents or one bundle/plugin, not the marketplace-visible cohort; their manifest authority and fallback removal require a separate contract.",
+      "paths": ["marketplace/src/components/CoworkGrid.astro", "marketplace/src/pages/cowork.astro"]
+    },
+    {
+      "classification": "entity-local",
+      "owner": "E1.6 follow-up",
+      "reason": "These values count skills attached to one card, spotlight, plugin, or result item; a local-entity labeling contract is still required before E1.6 closes.",
+      "paths": [
+        "marketplace/src/components/KillerSkills.astro",
+        "marketplace/src/components/PluginCard.astro",
+        "marketplace/src/pages/community.astro",
+        "marketplace/src/pages/plugins/[name].astro"
+      ]
+    },
+    {
+      "classification": "vendor-pack-local",
+      "owner": "E1.6 follow-up",
+      "reason": "Each generated learning page counts one vendor pack or one category inside that pack, not a repository-wide corpus; the pack-local cohort contract remains separate.",
+      "paths": [
+        "marketplace/src/pages/learn/apollo/index.astro",
+        "marketplace/src/pages/learn/clay/index.astro",
+        "marketplace/src/pages/learn/clerk/index.astro",
+        "marketplace/src/pages/learn/coderabbit/index.astro",
+        "marketplace/src/pages/learn/cursor/index.astro",
+        "marketplace/src/pages/learn/customerio/index.astro",
+        "marketplace/src/pages/learn/deepgram/index.astro",
+        "marketplace/src/pages/learn/exa/index.astro",
+        "marketplace/src/pages/learn/firecrawl/index.astro",
+        "marketplace/src/pages/learn/fireflies/index.astro",
+        "marketplace/src/pages/learn/gamma/index.astro",
+        "marketplace/src/pages/learn/granola/index.astro",
+        "marketplace/src/pages/learn/groq/index.astro",
+        "marketplace/src/pages/learn/ideogram/index.astro",
+        "marketplace/src/pages/learn/index.astro",
+        "marketplace/src/pages/learn/instantly/index.astro",
+        "marketplace/src/pages/learn/juicebox/index.astro",
+        "marketplace/src/pages/learn/klingai/index.astro",
+        "marketplace/src/pages/learn/langchain/index.astro",
+        "marketplace/src/pages/learn/lindy/index.astro",
+        "marketplace/src/pages/learn/linear/index.astro",
+        "marketplace/src/pages/learn/openrouter/index.astro",
+        "marketplace/src/pages/learn/perplexity/index.astro",
+        "marketplace/src/pages/learn/posthog/index.astro",
+        "marketplace/src/pages/learn/replit/index.astro",
+        "marketplace/src/pages/learn/retellai/index.astro",
+        "marketplace/src/pages/learn/sentry/index.astro",
+        "marketplace/src/pages/learn/supabase/index.astro",
+        "marketplace/src/pages/learn/vastai/index.astro",
+        "marketplace/src/pages/learn/vercel/index.astro",
+        "marketplace/src/pages/learn/windsurf/index.astro"
+      ]
+    },
+    {
+      "classification": "live-copy-or-quality-rule",
+      "owner": "E1.6 follow-up",
+      "reason": "These active pages contain a stale global literal or a skill-quality threshold that the conservative discovery pass cannot safely classify as a canonical corpus cohort without a focused copy decision.",
+      "paths": ["marketplace/src/pages/docs/index.astro", "marketplace/src/pages/grading.astro"]
+    },
+    {
+      "classification": "research-snapshot",
+      "owner": "E1.6 follow-up",
+      "reason": "These figures are point-in-time research populations, not live corpus totals; each needs a visible snapshot date and reproduction/evidence locator without changing its historical value.",
+      "paths": [
+        "marketplace/src/pages/research.astro",
+        "marketplace/src/pages/research/agent-skill-command-interaction.astro",
+        "marketplace/src/pages/research/allowed-tools-surface-area.astro",
+        "marketplace/src/pages/research/cicd-integration-patterns.astro",
+        "marketplace/src/pages/research/model-tiering-strategy.astro",
+        "marketplace/src/pages/research/plugin-composition-patterns.astro",
+        "marketplace/src/pages/research/tool-permission-threat-modeling.astro"
+      ]
     }
   ]
 }

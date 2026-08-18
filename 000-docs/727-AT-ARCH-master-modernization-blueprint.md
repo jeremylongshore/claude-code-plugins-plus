@@ -1154,13 +1154,17 @@ context or path filter.
 `109179f92cf7f01b95ad2f88fd15956713631fc2`,
 `node scripts/corpus-resolver.mjs --cohort marketplace-visible --cohort graded --cohort first-party --cohort curated-mirror --cohort curriculum --json | jq '.cohorts | map_values(.count)'`
 reports 3,068 / 3,679 / 2,802 / 1,915 / 500 respectively. This bounded slice changes none of
-those values. It labels the four live global website totals as `marketplace-visible`, renders the
+those values. It labels five live global website totals as `marketplace-visible`, renders the
 cohort definition and exact resolver command next to each, and adds
 `pnpm run validate:published-count-cohorts` to the existing `validate` job. The fixture-driven gate
-recursively discovers Astro count sources and fails closed on unregistered surfaces, unknown
-cohorts, unsafe or unreadable paths, symlinks, comment-only labels, or missing provenance. Cowork
-package totals and the generated social image are registered as distinct, owned deferrals rather
-than being forced into the marketplace cohort. README work is deferred because its generated count
+recursively discovers count-bearing public Astro pages and components from literals, catalog
+counts, collection lengths, and total/count expressions rather than one identifier. The first
+inventory finds 51 Astro sources: five global pages are enforced, 46 discovered non-global or
+point-in-time sources are grouped by exact path as owned deferrals, and
+the generated social image is a forty-seventh deferral. Unknown cohorts, unsafe or unreadable
+paths, symlinks, comment-only labels, missing provenance, and unregistered new count sources fail
+closed. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
+are not forced into the marketplace cohort. README work is deferred because its generated count
 contract overlaps active PRs; the authoritative local check is
 `node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains
 open until every published count surface is either enforced with its true cohort or governed as an

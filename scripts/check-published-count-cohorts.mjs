@@ -5,7 +5,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REGISTRY_PATH = 'scripts/published-count-cohorts.json';
-const DISCOVERY_ROOT = 'marketplace/src/pages';
+const DISCOVERY_ROOTS = Object.freeze(['marketplace/src/pages', 'marketplace/src/components']);
+const DISCOVERY_DYNAMIC_TERMS = Object.freeze(['count', 'length', 'shown', 'total']);
+const DISCOVERY_IGNORED_PHRASES = Object.freeze(['Tons of Skills']);
 const LABEL_LINE_WINDOW = 4;
 const CANONICAL_COHORTS = Object.freeze([
   'marketplace-visible',
@@ -215,11 +217,15 @@ function validateDiscovery(registry) {
   ) {
     refuse('INVALID_DISCOVERY', 'discovery must be an object');
   }
-  const expected = { root: DISCOVERY_ROOT, extension: '.astro', token: 'totalSkills' };
-  for (const [field, value] of Object.entries(expected)) {
-    if (registry.discovery[field] !== value) {
-      refuse('INVALID_DISCOVERY', `discovery.${field} must equal ${JSON.stringify(value)}`);
-    }
+  const expected = {
+    roots: DISCOVERY_ROOTS,
+    extension: '.astro',
+    noun: 'skills',
+    dynamicTerms: DISCOVERY_DYNAMIC_TERMS,
+    ignoredPhrases: DISCOVERY_IGNORED_PHRASES,
+  };
+  if (JSON.stringify(registry.discovery) !== JSON.stringify(expected)) {
+    refuse('INVALID_DISCOVERY', `discovery must equal ${JSON.stringify(expected)}`);
   }
   return expected;
 }
@@ -234,14 +240,7 @@ function validateSurfaces(registry, root, io) {
   let enforced = 0;
   let deferred = 0;
 
-  for (const [index, surface] of registry.surfaces.entries()) {
-    const field = `surfaces[${index}]`;
-    if (!surface || typeof surface !== 'object' || Array.isArray(surface)) {
-      refuse('INVALID_SURFACE', `${field} must be an object`);
-    }
-    const surfacePath = validateRepositoryPath(surface.path, `${field}.path`);
-    nonemptyString(surface.classification, `${field}.classification`);
-
+  function registerSurfacePath(surfacePath) {
     if (exactPaths.has(surfacePath))
       refuse('DUPLICATE_SURFACE_PATH', `duplicate surface path: ${surfacePath}`);
     exactPaths.add(surfacePath);
@@ -254,6 +253,17 @@ function validateSurfaces(registry, root, io) {
     }
     foldedPaths.set(folded, surfacePath);
     registeredPaths.add(surfacePath);
+  }
+
+  for (const [index, surface] of registry.surfaces.entries()) {
+    const field = `surfaces[${index}]`;
+    if (!surface || typeof surface !== 'object' || Array.isArray(surface)) {
+      refuse('INVALID_SURFACE', `${field} must be an object`);
+    }
+    const surfacePath = validateRepositoryPath(surface.path, `${field}.path`);
+    nonemptyString(surface.classification, `${field}.classification`);
+
+    registerSurfacePath(surfacePath);
 
     if (surface.status === 'deferred') {
       nonemptyString(surface.owner, `${field}.owner`);
@@ -317,13 +327,66 @@ function validateSurfaces(registry, root, io) {
     enforced += 1;
   }
 
+  if (!Array.isArray(registry.deferredGroups)) {
+    refuse('INVALID_REGISTRY', 'deferredGroups must be an array');
+  }
+  for (const [groupIndex, group] of registry.deferredGroups.entries()) {
+    const field = `deferredGroups[${groupIndex}]`;
+    if (!group || typeof group !== 'object' || Array.isArray(group)) {
+      refuse('INVALID_DEFERRED_GROUP', `${field} must be an object`);
+    }
+    nonemptyString(group.classification, `${field}.classification`);
+    nonemptyString(group.owner, `${field}.owner`);
+    nonemptyString(group.reason, `${field}.reason`);
+    if (!Array.isArray(group.paths) || group.paths.length === 0) {
+      refuse('INVALID_DEFERRED_GROUP', `${field}.paths must be a nonempty array`);
+    }
+    for (const [pathIndex, candidate] of group.paths.entries()) {
+      const surfacePath = validateRepositoryPath(candidate, `${field}.paths[${pathIndex}]`);
+      registerSurfacePath(surfacePath);
+      safeRead(root, surfacePath, io);
+      deferred += 1;
+    }
+  }
+
   return { enforced, deferred, registeredPaths };
+}
+
+export function containsPublishedSkillCount(source, discovery) {
+  let searchable = stripComments(source);
+  for (const phrase of discovery.ignoredPhrases) searchable = searchable.replaceAll(phrase, '');
+  const terms = discovery.dynamicTerms.join('|');
+  const dynamicExpression = new RegExp(
+    String.raw`\$?\{[^}\n]{0,200}(?:${terms})[^}\n]{0,200}\}`,
+    'i',
+  );
+  const numericBefore = /\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b[^\n]{0,100}$/i;
+  const folded = searchable.toLocaleLowerCase('en-US');
+  const noun = discovery.noun.toLocaleLowerCase('en-US');
+  let offset = 0;
+  while (offset < folded.length) {
+    const found = folded.indexOf(noun, offset);
+    if (found === -1) break;
+    offset = found + noun.length;
+    const previous = folded[found - 1] ?? '';
+    const next = folded[offset] ?? '';
+    if (/[a-z0-9_]/i.test(previous) || /[a-z0-9_]/i.test(next)) continue;
+    const before = searchable.slice(Math.max(0, found - 240), found);
+    const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
+    if (
+      dynamicExpression.test(before) ||
+      dynamicExpression.test(after) ||
+      numericBefore.test(before)
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function discoverPublicCountSources(root, registeredPaths, discovery, io) {
   let discovered = 0;
-  const pending = [discovery.root];
-  const tokenPattern = new RegExp(`\\b${discovery.token}\\b`);
+  const pending = [...discovery.roots];
 
   while (pending.length > 0) {
     const directory = pending.shift();
@@ -351,8 +414,8 @@ function discoverPublicCountSources(root, registeredPaths, discovery, io) {
         continue;
       }
       if (!entry.name.endsWith(discovery.extension)) continue;
-      const source = stripComments(safeRead(root, relativePath, io));
-      if (!tokenPattern.test(source)) continue;
+      const source = safeRead(root, relativePath, io);
+      if (!containsPublishedSkillCount(source, discovery)) continue;
       discovered += 1;
       if (!registeredPaths.has(relativePath)) {
         refuse(

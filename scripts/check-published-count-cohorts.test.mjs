@@ -30,11 +30,14 @@ function registryFor(surfaces) {
       ]),
     ),
     discovery: {
-      root: 'marketplace/src/pages',
+      roots: ['marketplace/src/pages', 'marketplace/src/components'],
       extension: '.astro',
-      token: 'totalSkills',
+      noun: 'skills',
+      dynamicTerms: ['count', 'length', 'shown', 'total'],
+      ignoredPhrases: ['Tons of Skills'],
     },
     surfaces,
+    deferredGroups: [],
   };
 }
 
@@ -56,8 +59,7 @@ function validSource() {
     '---',
     'const totalSkills = 3068;',
     '---',
-    '<span>marketplace-visible skills</span>',
-    '<strong>{fmt(totalSkills)}</strong>',
+    '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
     '<CountProvenance cohort="marketplace-visible" />',
     '',
   ].join('\n');
@@ -68,6 +70,7 @@ function makeFixture({ surfaces = [enforcedSurface()], source = validSource() } 
   temporaryRoots.push(root);
   fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
   fs.mkdirSync(path.join(root, 'marketplace/src/pages'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'marketplace/src/components'), { recursive: true });
   fs.writeFileSync(
     path.join(root, 'scripts/published-count-cohorts.json'),
     `${JSON.stringify(registryFor(surfaces), null, 2)}\n`,
@@ -122,7 +125,7 @@ test('red proof: an unlabeled, unregistered live count admitted before this gate
   const root = makeFixture();
   fs.writeFileSync(
     path.join(root, 'marketplace/src/pages/legacy.astro'),
-    '<strong>{totalSkills}</strong>\n',
+    '<strong>{totalSkills}</strong> skills\n',
   );
   equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
 });
@@ -132,7 +135,41 @@ test('nested public count sources are discovered and cannot evade registration',
   fs.mkdirSync(path.join(root, 'marketplace/src/pages/nested'), { recursive: true });
   fs.writeFileSync(
     path.join(root, 'marketplace/src/pages/nested/legacy.astro'),
-    '<strong>{totalSkills}</strong>\n',
+    '<strong>{totalSkills}</strong> skills\n',
+  );
+  equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
+});
+
+test('identifier-independent discovery refuses catalog counts, collection lengths, and literals', () => {
+  for (const source of [
+    '<strong>{_rawCatalog.count}</strong> skills\n',
+    '<strong>{skills.length}</strong> skills\n',
+    '<p>Research across 1,372 skills.</p>\n',
+  ]) {
+    const root = makeFixture();
+    fs.writeFileSync(path.join(root, 'marketplace/src/pages/legacy.astro'), source);
+    equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT', source);
+  }
+});
+
+test('count-like sources in public Astro components require registration', () => {
+  const root = makeFixture();
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/components/LegacyCard.astro'),
+    '<span>{item.skillCount} skills</span>\n',
+  );
+  equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
+});
+
+test('count and label split across adjacent markup still require registration', () => {
+  const root = makeFixture();
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/legacy.astro'),
+    [
+      '<div>{catalog.count}</div>',
+      '<div class="stat-label">Marketplace-visible skills</div>',
+      '',
+    ].join('\n'),
   );
   equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT');
 });
@@ -168,13 +205,33 @@ test('comment-only labels and provenance do not satisfy the visible contract', (
   equal(findingCode(check(root)), 'MISSING_COHORT_LABEL');
 });
 
+test('comment-only provenance is refused even when the visible label is valid', () => {
+  const root = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      '<!-- <CountProvenance cohort="marketplace-visible" /> -->',
+    ),
+  });
+  equal(findingCode(check(root)), 'INVALID_PROVENANCE_COUNT');
+});
+
+test('the branded project name is not mistaken for a numeric skill count', () => {
+  const root = makeFixture();
+  fs.writeFileSync(
+    path.join(root, 'marketplace/src/pages/not-found.astro'),
+    '<BaseLayout title="404 — Page Not Found · Tons of Skills" />\n',
+  );
+  equal(check(root).allow, true);
+  equal(check(root).discovered, 1);
+});
+
 test('missing or duplicated provenance is refused', () => {
   const missing = makeFixture({
     source: validSource().replace('<CountProvenance cohort="marketplace-visible" />', ''),
   });
   equal(findingCode(check(missing)), 'INVALID_PROVENANCE_COUNT');
 
-  const duplicated = makeFixture({ source: `${validSource()}${validSource().split('\n')[5]}\n` });
+  const duplicated = makeFixture({ source: `${validSource()}${validSource().split('\n')[4]}\n` });
   equal(findingCode(check(duplicated)), 'INVALID_PROVENANCE_COUNT');
 });
 
@@ -302,6 +359,36 @@ test('deferred surfaces require an owner and reason and never count as enforced'
     const root = makeFixture({ surfaces: [deferred], source: '<p>Historical</p>\n' });
     equal(findingCode(check(root)), 'INVALID_REGISTRY', omitted);
   }
+});
+
+test('deferred groups require exact owned paths and share duplicate protection', () => {
+  const root = makeFixture();
+  const registryPath = path.join(root, 'scripts/published-count-cohorts.json');
+  const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  registry.deferredGroups = [
+    {
+      classification: 'local-entity',
+      owner: 'E1.6 follow-up',
+      reason: 'Fixture deferral.',
+      paths: ['marketplace/src/pages/index.astro'],
+    },
+  ];
+  fs.writeFileSync(registryPath, JSON.stringify(registry));
+  equal(findingCode(check(root)), 'DUPLICATE_SURFACE_PATH');
+
+  const missing = makeFixture();
+  const missingRegistryPath = path.join(missing, 'scripts/published-count-cohorts.json');
+  const missingRegistry = JSON.parse(fs.readFileSync(missingRegistryPath, 'utf8'));
+  missingRegistry.deferredGroups = [
+    {
+      classification: 'local-entity',
+      owner: 'E1.6 follow-up',
+      reason: 'Fixture deferral.',
+      paths: [],
+    },
+  ];
+  fs.writeFileSync(missingRegistryPath, JSON.stringify(missingRegistry));
+  equal(findingCode(check(missing)), 'INVALID_DEFERRED_GROUP');
 });
 
 test('canonical cohort shape and resolver commands fail closed on contradiction', () => {
