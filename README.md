@@ -83,28 +83,28 @@ ccpi update                     # Pull latest versions
 
 Across **396 published packages** in the [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
-| Window | All packages | Established (>30d) |
-|--------|-------------:|-------------------:|
-| Last 24 hours | 962 | 962 |
-| Last 7 days | 2,920 | 2,916 |
-| Last 30 days | 12,868 | 12,779 |
+| Window        | All packages | Established (>30d) |
+| ------------- | -----------: | -----------------: |
+| Last 24 hours |          962 |                962 |
+| Last 7 days   |        2,920 |              2,916 |
+| Last 30 days  |       12,868 |             12,779 |
 
 <sub>"Established" excludes packages first published within the last 30 days, so a bulk-publish event doesn't dominate the headline.</sub>
 
 **Top 10 by last 30 days:**
 
-| # | Package | Last 30d |
-|---|---------|---------:|
-| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 556 |
-| 2 | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack) | 496 |
-| 3 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 274 |
-| 4 | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack) | 273 |
-| 5 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 263 |
-| 6 | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack) | 258 |
-| 7 | [`@intentsolutionsio/elevenlabs-pack`](https://www.npmjs.com/package/@intentsolutionsio/elevenlabs-pack) | 244 |
-| 8 | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) | 214 |
-| 9 | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack) | 210 |
-| 10 | [`@intentsolutionsio/agency-os`](https://www.npmjs.com/package/@intentsolutionsio/agency-os) | 204 |
+| #   | Package                                                                                                                      | Last 30d |
+| --- | ---------------------------------------------------------------------------------------------------------------------------- | -------: |
+| 1   | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack)                     |      556 |
+| 2   | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack)                                 |      496 |
+| 3   | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack)                     |      274 |
+| 4   | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack)                     |      273 |
+| 5   | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor)     |      263 |
+| 6   | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack)                             |      258 |
+| 7   | [`@intentsolutionsio/elevenlabs-pack`](https://www.npmjs.com/package/@intentsolutionsio/elevenlabs-pack)                     |      244 |
+| 8   | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) |      214 |
+| 9   | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack)                         |      210 |
+| 10  | [`@intentsolutionsio/agency-os`](https://www.npmjs.com/package/@intentsolutionsio/agency-os)                                 |      204 |
 
 <sub>Last refreshed 2026-08-18T00:58:03.376Z.</sub>
 
