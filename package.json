@@ -25,6 +25,7 @@
     "validate:changelog-coverage": "node --test scripts/check-changelog-coverage.test.mjs && node scripts/check-changelog-coverage.mjs",
     "validate:stats-freshness": "node --test scripts/check-stats-freshness.test.mjs && node scripts/check-stats-freshness.mjs --report",
     "validate:sources-lock-parity": "node --test scripts/check-sources-lock-parity.test.mjs && node scripts/check-sources-lock-parity.mjs",
+    "validate:mcp-plaintext-creds": "node --test scripts/check-mcp-plaintext-creds.test.mjs && node scripts/check-mcp-plaintext-creds.mjs",
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
     "lint:design": "node scripts/lint-design-tells.mjs",

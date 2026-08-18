@@ -216,3 +216,7 @@ freshie/archives/*.sqlite
 
 # HF dataset build artifact (regenerate via freshie/scripts/build-hf-dataset.py)
 freshie/hf-dataset/skills.jsonl
+
+# SOPS-encrypted machine-local env (E1.14): ciphertext of live credentials
+# stays off the public remote; scripts/sops-env decrypts it in-process.
+.env.sops
