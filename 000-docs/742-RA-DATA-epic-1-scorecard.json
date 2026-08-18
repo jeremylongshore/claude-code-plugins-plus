@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3180,
-        "tracked_files": 23095
+        "tracked_files": 23096
       }
     },
     "2": {
@@ -1942,9 +1942,9 @@
       "status": "measured",
       "values": {
         "index_entries": 211,
-        "missing_from_index": [],
+        "missing_from_index": ["000-docs/772-AA-AACR-epic-1-sources-lock-parity.md"],
         "target_equal": true,
-        "tracked_documents": 211,
+        "tracked_documents": 212,
         "untracked_index_entries": []
       }
     },
@@ -1968,9 +1968,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15562,
+        "invisible_files": 15563,
         "target_invisible_files": 0,
-        "tracked_files": 23095
+        "tracked_files": 23096
       }
     },
     "47": {
