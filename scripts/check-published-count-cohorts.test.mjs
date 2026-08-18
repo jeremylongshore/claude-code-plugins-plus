@@ -1066,3 +1066,23 @@ test('CLI rejects unknown arguments and emits JSON for a fixture root', () => {
   equal(report.enforced, 1);
   deepEqual(parseArguments(['--root', root, '--json']), { root, json: true });
 });
+
+test('live vendor-pack pages use explicit local claims for pack and category counts', () => {
+  const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const registry = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, 'scripts/published-count-cohorts.json'), 'utf8'),
+  );
+  const group = registry.deferredGroups.find(
+    (candidate) => candidate.classification === 'vendor-pack-local',
+  );
+  equal(group.paths.length, 0);
+  equal(group.claims.length, 60);
+  equal(new Set(group.claims.map((claim) => claim.path)).size, 30);
+  equal(group.claims.filter((claim) => claim.expression === 'vendor.skillCount').length, 30);
+  equal(group.claims.filter((claim) => claim.expression === 'category.skills.length').length, 30);
+
+  const report = check(repositoryRoot);
+  equal(report.allow, true);
+  equal(report.deferred >= 60, true);
+  equal(report.findings.length, 0);
+});

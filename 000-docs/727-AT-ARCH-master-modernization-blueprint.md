@@ -1188,6 +1188,13 @@ contract overlaps active PRs; the authoritative local check is
 open until every published count surface is either enforced with its true cohort or governed as an
 explicit non-live/historical exception.
 
+**E1.6 vendor-pack continuation (2026-08-18).** Thirty generated `/learn/<vendor>/` pages now
+label their pack and category counts as `vendor-pack-local`; unscoped metadata totals were removed.
+The registry carries 60 exact claims (two per page), and the live checker reports
+`ALLOW cohorts=5 enforced=6 deferred=88 discovered=20`. Numeric values remain unchanged. The
+learning-hub aggregate, stale live copy, research snapshots, README, and mirrored content remain
+separate deferred populations.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**

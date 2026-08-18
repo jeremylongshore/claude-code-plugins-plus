@@ -10,6 +10,9 @@
   contracts; numeric values are unchanged.
 - **fix(cowork):** label downloadable bundle, package, landing-page, and
   archive counts as `Cowork-package-local` with exact fail-closed contracts.
+- **fix(learning):** label vendor pack and category counts as
+  `vendor-pack-local`, remove unscoped metadata totals, and register all 60
+  rendered claims with the fail-closed count contract.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.
