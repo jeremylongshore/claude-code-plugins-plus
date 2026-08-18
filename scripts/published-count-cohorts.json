@@ -130,7 +130,6 @@
         "marketplace/src/pages/learn/granola/index.astro",
         "marketplace/src/pages/learn/groq/index.astro",
         "marketplace/src/pages/learn/ideogram/index.astro",
-        "marketplace/src/pages/learn/index.astro",
         "marketplace/src/pages/learn/instantly/index.astro",
         "marketplace/src/pages/learn/juicebox/index.astro",
         "marketplace/src/pages/learn/klingai/index.astro",
@@ -148,6 +147,12 @@
         "marketplace/src/pages/learn/vercel/index.astro",
         "marketplace/src/pages/learn/windsurf/index.astro"
       ]
+    },
+    {
+      "classification": "learning-hub-aggregate",
+      "owner": "E1.6 follow-up",
+      "reason": "The learning-hub landing page aggregates skills across vendor packs; it is neither a repository-wide corpus nor a single vendor-pack count, so it requires its own aggregate cohort contract.",
+      "paths": ["marketplace/src/pages/learn/index.astro"]
     },
     {
       "classification": "live-copy-or-quality-rule",

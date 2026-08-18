@@ -48,7 +48,7 @@ function stripComments(source) {
   return source
     .replace(/<!--[\s\S]*?-->/g, (comment) => comment.replace(/[^\n]/g, ' '))
     .replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '))
-    .replace(/^[\t ]*\/\/.*$/gm, '');
+    .replace(/(^|[\t ])\/\/.*$/gm, '$1');
 }
 
 function validateRepositoryPath(value, field) {

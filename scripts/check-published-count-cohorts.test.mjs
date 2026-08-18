@@ -215,6 +215,38 @@ test('comment-only provenance is refused even when the visible label is valid', 
   equal(findingCode(check(root)), 'INVALID_PROVENANCE_COUNT');
 });
 
+test('trailing line comments cannot supply the visible label or provenance', () => {
+  const labelOnly = makeFixture({
+    source: [
+      '---',
+      'const totalSkills = 3068;',
+      '---',
+      '<strong>{fmt(totalSkills)}</strong> skills // marketplace-visible skills',
+      '<div /> // <CountProvenance cohort="marketplace-visible" />',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(labelOnly)), 'MISSING_COHORT_LABEL');
+
+  const provenanceOnly = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      '<div /> // <CountProvenance cohort="marketplace-visible" />',
+    ),
+  });
+  equal(findingCode(check(provenanceOnly)), 'INVALID_PROVENANCE_COUNT');
+});
+
+test('URL slashes are preserved while stripping trailing line comments', () => {
+  const root = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
+      '<a href="https://example.com/skills"><strong>{fmt(totalSkills)}</strong> marketplace-visible skills</a>',
+    ),
+  });
+  equal(check(root).allow, true);
+});
+
 test('the branded project name is not mistaken for a numeric skill count', () => {
   const root = makeFixture();
   fs.writeFileSync(
