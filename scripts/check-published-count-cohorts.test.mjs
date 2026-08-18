@@ -216,19 +216,159 @@ test('registered pages may explicitly defer a second owned count expression', ()
     classification: 'entity-local',
     owner: 'fixture owner',
     reason: 'This fixture count is local to one entity.',
+    label: 'entity-local skills',
+    provenance: 'data-count-provenance="entity-local"',
+    command: 'node scripts/check-published-count-cohorts.mjs --json',
+    contract: 'data-count-provenance="entity-local">{catalog.count} entity-local skills',
+    sink: 'metaParts.push',
+    function: 'renderCard',
+    call: 'renderCard',
   };
   const root = makeFixture({
     surfaces: [enforcedSurface({ deferredExpressions: [deferredExpression] })],
-    source: `${validSource()}<div>{catalog.count} entity-local skills</div>\n`,
+    source: `${validSource()}<div data-count-provenance="entity-local">{catalog.count} entity-local skills</div>\n`,
   });
   equal(check(root).allow, true);
   equal(check(root).deferred, 1);
 
   const malformed = makeFixture({
     surfaces: [enforcedSurface({ deferredExpressions: [{ ...deferredExpression, owner: '' }] })],
-    source: `${validSource()}<div>{catalog.count} entity-local skills</div>\n`,
+    source: `${validSource()}<div data-count-provenance="entity-local">{catalog.count} entity-local skills</div>\n`,
   });
   equal(findingCode(check(malformed)), 'INVALID_REGISTRY');
+
+  const nonExecutableCommand = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [{ ...deferredExpression, command: 'browser resolver prose' }],
+      }),
+    ],
+    source: `${validSource()}<div data-count-provenance="entity-local">{catalog.count} entity-local skills</div>\n`,
+  });
+  equal(findingCode(check(nonExecutableCommand)), 'INVALID_LOCAL_COMMAND');
+
+  const unboundContract = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [{ ...deferredExpression, contract: 'not rendered here' }],
+      }),
+    ],
+    source: `${validSource()}<div data-count-provenance="entity-local">{catalog.count} entity-local skills</div>\n`,
+  });
+  equal(findingCode(check(unboundContract)), 'LOCAL_CONTRACT_MISMATCH');
+
+  const missingContract = { ...deferredExpression };
+  delete missingContract.contract;
+  const missingContractFixture = makeFixture({
+    surfaces: [enforcedSurface({ deferredExpressions: [missingContract] })],
+    source: `${validSource()}<div data-count-provenance="entity-local">{catalog.count} entity-local skills</div>\n`,
+  });
+  equal(findingCode(check(missingContractFixture)), 'INVALID_REGISTRY');
+
+  const unlabeledContract = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [
+          {
+            ...deferredExpression,
+            contract: '<span>{catalog.count} skills</span>',
+          },
+        ],
+      }),
+    ],
+    source: `${validSource()}<span>{catalog.count} skills</span>\n`,
+  });
+  equal(findingCode(check(unlabeledContract)), 'LOCAL_CONTRACT_MISMATCH');
+
+  const nonRenderedContract = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [
+          {
+            ...deferredExpression,
+            sink: 'el.innerHTML',
+            function: 'updateCount',
+            call: 'updateCount',
+          },
+        ],
+      }),
+    ],
+    source: [
+      '---',
+      'const deadContract = `data-count-provenance="entity-local">{catalog.count} entity-local skills`;',
+      '---',
+      '<div>{catalog.count} skills</div>',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(nonRenderedContract)), 'INVALID_LOCAL_CONTRACT');
+
+  const runtimeContract = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [
+          {
+            ...deferredExpression,
+            sink: 'el.innerHTML',
+            function: 'updateCount',
+            call: 'updateCount',
+          },
+        ],
+      }),
+    ],
+    source: [
+      validSource().trimEnd(),
+      '<div>{catalog.count} skills</div>',
+      '<script>',
+      '  const el = document.querySelector("#count");',
+      '  function updateCount() {',
+      '    el.innerHTML = `<span data-count-provenance="entity-local">{catalog.count} entity-local skills</span>`;',
+      '  }',
+      '  updateCount();',
+      '</script>',
+      '',
+    ].join('\n'),
+  });
+  equal(check(runtimeContract).allow, true);
+
+  const discardedPush = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [deferredExpression],
+      }),
+    ],
+    source: [
+      validSource().trimEnd(),
+      '<script>',
+      '  const discarded = [];',
+      '  discarded.push(`<span data-count-provenance="entity-local">{catalog.count} entity-local skills</span>`);',
+      '</script>',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(discardedPush)), 'INVALID_LOCAL_CONTRACT');
+
+  const deadExactSink = makeFixture({
+    surfaces: [
+      enforcedSurface({
+        deferredExpressions: [deferredExpression],
+      }),
+    ],
+    source: [
+      validSource().trimEnd(),
+      '<script>',
+      '  function renderCard() {',
+      '    metaParts.push(`<span data-count-provenance="entity-local">{catalog.count} entity-local skills</span>`);',
+      '  }',
+      '  // renderCard();',
+      '  const text = "renderCard()";',
+      '  notrenderCard();',
+      '  other.renderCard();',
+      '</script>',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(deadExactSink)), 'INVALID_LOCAL_CONTRACT');
 });
 
 test('every expression in a combined shown-of-total skill count needs registration', () => {
@@ -241,11 +381,19 @@ test('every expression in a combined shown-of-total skill count needs registrati
             classification: 'query-result-local',
             owner: 'fixture owner',
             reason: 'The total belongs to the query-result cohort.',
+            label: 'query-result-local skills',
+            provenance: 'query-result-local',
+            command: 'node scripts/check-published-count-cohorts.mjs --json',
+            contract:
+              '<span data-count-provenance="query-result-local">Showing ${shown} of ${total} query-result-local skills</span>',
+            sink: 'el.innerHTML',
+            function: 'updateResultsCount',
+            call: 'updateResultsCount',
           },
         ],
       }),
     ],
-    source: `${validSource()}<p>Showing \${shown} of \${total} skills</p>\n`,
+    source: `${validSource()}<span data-count-provenance="query-result-local">Showing \${shown} of \${total} query-result-local skills</span><p>{shown} skills</p>\n`,
   });
   equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT_EXPRESSION');
 });

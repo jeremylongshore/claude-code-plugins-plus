@@ -396,7 +396,9 @@ const allTools = _rawCatalog.allowedToolsUsed;
 
     function updateResultsCount(shown, total) {
       const el = document.getElementById('results-count');
-      if (el) el.textContent = `Showing ${shown} of ${total} skills`;
+      if (el) {
+        el.innerHTML = `<span data-count-provenance="query-result-local">Showing ${shown} of ${total} query-result-local skills</span>`;
+      }
     }
 
     // Event listeners

@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as ts from 'typescript';
 
 const REGISTRY_PATH = 'scripts/published-count-cohorts.json';
 const DISCOVERY_ROOTS = Object.freeze(['marketplace/src/pages', 'marketplace/src/components']);
@@ -522,6 +523,127 @@ function literalOccurrences(source, literal) {
   return occurrences;
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function runtimeFunctionRanges(source, functionName) {
+  const sourceFile = ts.createSourceFile(
+    'published-count-runtime.js',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const ranges = [];
+  function visit(node) {
+    if (ts.isFunctionDeclaration(node) && node.name?.text === functionName && node.body) {
+      ranges.push({ start: node.body.getStart(sourceFile), end: node.body.getEnd() });
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(sourceFile);
+  return ranges;
+}
+
+function runtimeDirectCallOffsets(source, functionName) {
+  const sourceFile = ts.createSourceFile(
+    'published-count-runtime.js',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.JS,
+  );
+  const offsets = [];
+  function visit(node) {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === functionName
+    ) {
+      offsets.push(node.expression.getStart(sourceFile));
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(sourceFile);
+  return offsets;
+}
+
+function runtimeTemplateLiteralOccurrences(source, literal, sink, functionName, callName) {
+  const occurrences = [];
+  for (const region of rawTextElementRegions(source).filter(
+    (entry) => entry.element === 'script',
+  )) {
+    const script = source.slice(region.start, region.end);
+    const bodyStart = script.indexOf('>') + 1;
+    const bodyEnd = script.lastIndexOf('</');
+    const body = bodyEnd > bodyStart ? script.slice(bodyStart, bodyEnd) : '';
+    const functionRanges = runtimeFunctionRanges(body, functionName).map((range) => ({
+      start: range.start + bodyStart,
+      end: range.end + bodyStart,
+    }));
+    const callOffsets = runtimeDirectCallOffsets(body, callName).map(
+      (offset) => offset + bodyStart,
+    );
+    const calledOutsideFunction = callOffsets.some(
+      (offset) => !functionRanges.some((range) => range.start <= offset && offset < range.end),
+    );
+    if (!calledOutsideFunction) continue;
+    let inTemplate = false;
+    let escaped = false;
+    for (let index = 0; index < script.length; index += 1) {
+      const character = script[index];
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (character === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (character === '`') {
+        inTemplate = !inTemplate;
+        continue;
+      }
+      if (!inTemplate || !script.startsWith(literal, index)) continue;
+
+      const templateStart = script.lastIndexOf('`', index);
+      const statementStart = Math.max(
+        script.lastIndexOf(';', templateStart),
+        script.lastIndexOf('{', templateStart),
+        script.lastIndexOf('}', templateStart),
+        script.lastIndexOf('\n', templateStart),
+      );
+      const prefix = script.slice(statementStart + 1, templateStart);
+      const sinkPattern = sink.endsWith('.push')
+        ? new RegExp(`${escapeRegExp(sink)}\\(\\s*$`, 'u')
+        : new RegExp(`${escapeRegExp(sink)}\\s*=\\s*$`, 'u');
+      const functionRange = functionRanges.find(
+        (range) => range.start <= index && index < range.end,
+      );
+      if (functionRange && sinkPattern.test(prefix)) {
+        occurrences.push(region.start + index);
+      }
+      index += Math.max(literal.length - 1, 0);
+    }
+  }
+  return occurrences;
+}
+
+function renderedContractOccurrences(
+  rawSource,
+  visibleSource,
+  literal,
+  sink,
+  functionName,
+  callName,
+) {
+  return [
+    ...literalOccurrences(visibleSource, literal),
+    ...runtimeTemplateLiteralOccurrences(rawSource, literal, sink, functionName, callName),
+  ].sort((left, right) => left - right);
+}
+
 function lineAtOffset(source, offset) {
   return source.slice(0, offset).split('\n').length;
 }
@@ -642,6 +764,50 @@ function validateSurfaces(registry, root, io) {
         nonemptyString(claim.classification, `${claimField}.classification`);
         nonemptyString(claim.owner, `${claimField}.owner`);
         nonemptyString(claim.reason, `${claimField}.reason`);
+        const claimLabel = nonemptyString(claim.label, `${claimField}.label`);
+        const claimProvenance = nonemptyString(claim.provenance, `${claimField}.provenance`);
+        const claimCommand = nonemptyString(claim.command, `${claimField}.command`);
+        const claimContract = nonemptyString(claim.contract, `${claimField}.contract`);
+        const claimSink = nonemptyString(claim.sink, `${claimField}.sink`);
+        const claimFunction = nonemptyString(claim.function, `${claimField}.function`);
+        const claimCall = nonemptyString(claim.call, `${claimField}.call`);
+        if (
+          [claimExpression, claimLabel, claimProvenance, claimCommand, claimContract].some(
+            (value) => value.length === 0,
+          )
+        ) {
+          continue;
+        }
+        if (claimCommand !== 'node scripts/check-published-count-cohorts.mjs --json') {
+          refuse(
+            'INVALID_LOCAL_COMMAND',
+            `${claimField}.command must be the executable local-count checker command`,
+          );
+        }
+        if (!foldedText(claimLabel).includes(foldedText(claim.classification))) {
+          refuse(
+            'LOCAL_LABEL_MISMATCH',
+            `${claimField}.label must name classification ${JSON.stringify(claim.classification)}`,
+          );
+        }
+        if (!claimProvenance.includes(claim.classification)) {
+          refuse(
+            'LOCAL_PROVENANCE_MISMATCH',
+            `${claimField}.provenance must name classification ${JSON.stringify(claim.classification)}`,
+          );
+        }
+        if (!claimContract.includes(claimExpression)) {
+          refuse(
+            'LOCAL_CONTRACT_MISMATCH',
+            `${claimField}.contract must include expression ${JSON.stringify(claimExpression)}`,
+          );
+        }
+        if (!claimContract.includes(claimLabel) || !claimContract.includes(claimProvenance)) {
+          refuse(
+            'LOCAL_CONTRACT_MISMATCH',
+            `${claimField}.contract must include its declared label and provenance`,
+          );
+        }
         if (expressions.includes(claimExpression)) {
           refuse(
             'DUPLICATE_SURFACE_EXPRESSION',
@@ -652,6 +818,24 @@ function validateSurfaces(registry, root, io) {
           refuse(
             'MISSING_EXPRESSION',
             `${surfacePath} does not contain deferred expression ${JSON.stringify(claimExpression)}`,
+          );
+        }
+        // A contract only governs a published count when it is present in the
+        // rendered Astro surface or in a recognizable runtime HTML sink. Raw
+        // source also includes frontmatter and dead script constants, where a
+        // copy could otherwise satisfy the registry without affecting output.
+        const contractOccurrences = renderedContractOccurrences(
+          rawSource,
+          visibleSource,
+          claimContract,
+          claimSink,
+          claimFunction,
+          claimCall,
+        );
+        if (contractOccurrences.length !== 1) {
+          refuse(
+            'INVALID_LOCAL_CONTRACT',
+            `${surfacePath} must contain local contract exactly once (found ${contractOccurrences.length})`,
           );
         }
         expressions.push(claimExpression);

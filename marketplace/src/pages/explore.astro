@@ -603,7 +603,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} catalog plugins an
         metaParts.push(`<span>Docs · ${escHtml(item.category)}</span>`);
       }
       if (item.skillCount > 0) {
-        metaParts.push(`<span>${item.skillCount} skills</span>`);
+        metaParts.push(`<span data-count-provenance="entity-local">${item.skillCount} entity-local skills</span>`);
       }
       const metaHtml = metaParts.length
         ? `<small>${metaParts.join(' · ')}</small>`

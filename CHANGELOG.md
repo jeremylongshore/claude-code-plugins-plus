@@ -2,6 +2,9 @@
 
 ## 2026-08-18
 
+- **fix(marketplace):** label search-result and entity-local skill counts with
+  their local population and provenance instead of presenting them as global
+  marketplace totals.
 - **fix(marketplace):** label generated social-card counts with the
   `marketplace-visible` cohort, canonical source, and reproducible resolver
   command; reject unreadable or malformed count inputs.
