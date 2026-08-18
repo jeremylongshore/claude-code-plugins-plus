@@ -12,7 +12,6 @@
 ## 🎯 Vision
 
 Transform the Learning Lab from static markdown into interactive, executable learning experiences where users can:
-
 - Run code examples in-browser (no setup)
 - Modify and experiment with workflows
 - See results immediately
@@ -25,21 +24,18 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 ### Three-Phase Approach
 
 **Phase 1: Colab Notebooks** (Easiest, Quick Win)
-
 - Feature branch: `feature/interactive-colab`
 - Time estimate: 4-6 hours
 - Deliverable: 5 interactive Jupyter notebooks
 - Release: v4.1.0
 
 **Phase 2: GitHub Codespaces** (Full Environment)
-
 - Feature branch: `feature/codespaces-env`
 - Time estimate: 2-3 hours
 - Deliverable: One-click dev environment
 - Release: v4.2.0
 
 **Phase 3: Advanced Features** (Premium Experience)
-
 - Feature branch: `feature/advanced-interactive`
 - Time estimate: 1-2 days
 - Deliverable: Streamlit demos, video integration
@@ -52,7 +48,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 ### Tasks
 
 **Task 1.1: Environment Setup**
-
 - Install jupytext: `pip install jupytext nbformat ipykernel`
 - Create `notebooks/` directory structure
 - Set up conversion workflow
@@ -60,7 +55,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 1.2: Convert GUIDE-00 (Mental Model)**
-
 - Convert markdown → .ipynb
 - Add interactive code cells with examples
 - Add "Try it yourself" prompts
@@ -69,7 +63,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 1 hour
 
 **Task 1.3: Convert ORCHESTRATION-PATTERN**
-
 - Convert markdown → .ipynb (main reference)
 - Add executable examples for each section
 - Interactive phase contract builder
@@ -78,7 +71,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 2 hours
 
 **Task 1.4: Convert GUIDE-01 (Architecture)**
-
 - Convert markdown → .ipynb
 - Add context budget calculator (interactive)
 - Visualize phase flow with diagrams
@@ -86,7 +78,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 1 hour
 
 **Task 1.5: Convert GUIDE-02 (Build Your Own)**
-
 - Convert markdown → .ipynb
 - Add workflow template generator
 - Interactive decision tree
@@ -94,7 +85,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 1 hour
 
 **Task 1.6: Convert GUIDE-03 (Debugging)**
-
 - Convert markdown → .ipynb
 - Add debugging examples (runnable)
 - Interactive troubleshooting wizard
@@ -102,7 +92,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 1 hour
 
 **Task 1.7: Update README with Colab Badges**
-
 - Add "Open in Colab" badges for all 5 notebooks
 - Update Learning Lab section
 - Add "Interactive Version" callout
@@ -110,7 +99,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 1.8: Test & Validate**
-
 - Open each notebook in Colab
 - Run all cells end-to-end
 - Verify no errors
@@ -119,7 +107,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 1 hour
 
 **Task 1.9: Create Release PR**
-
 - Merge feature/interactive-colab → main
 - Update CHANGELOG.md (v4.1.0)
 - Tag and release
@@ -133,7 +120,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 ### Tasks
 
 **Task 2.1: Create .devcontainer Configuration**
-
 - Create `.devcontainer/devcontainer.json`
 - Configure base image (Ubuntu)
 - Install required tools (bash, jq, git)
@@ -141,7 +127,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 2.2: Add Workspace Configuration**
-
 - Configure VS Code extensions
 - Set up integrated terminal
 - Add welcome message with instructions
@@ -149,7 +134,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 2.3: Create Getting Started Guide**
-
 - Add `CODESPACES.md` with instructions
 - Quick start commands
 - How to run the 5-phase workflow
@@ -157,14 +141,12 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 2.4: Add Codespaces Badge to README**
-
 - Add "Open in GitHub Codespaces" badge
 - Update docs to mention both options
 - Priority: P2
 - Estimated: 15 min
 
 **Task 2.5: Test Codespaces Environment**
-
 - Launch fresh Codespace
 - Run through entire workflow
 - Verify all scripts executable
@@ -172,7 +154,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 30 min
 
 **Task 2.6: Create Release PR**
-
 - Merge feature/codespaces-env → main
 - Update CHANGELOG.md (v4.2.0)
 - Tag and release
@@ -186,7 +167,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 ### Tasks
 
 **Task 3.1: Create Streamlit Demo App**
-
 - Build interactive workflow visualizer
 - Show phase execution in real-time
 - Live report generation
@@ -194,7 +174,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 4 hours
 
 **Task 3.2: Add Video Walkthroughs**
-
 - Record 5-min intro video
 - Embed in notebooks
 - Add to README
@@ -202,7 +181,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 3 hours
 
 **Task 3.3: Claude API Integration Examples**
-
 - Add live API call examples in notebooks
 - Show actual agent spawning
 - Demonstrate verification pattern
@@ -210,7 +188,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 2 hours
 
 **Task 3.4: Create Interactive Decision Tree**
-
 - "Which workflow pattern fits my use case?"
 - Web-based questionnaire
 - Generates starter template
@@ -218,7 +195,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 3 hours
 
 **Task 3.5: Build Observable Notebooks**
-
 - Create visual architecture explorer
 - Interactive diagrams
 - Publish to Observable
@@ -226,7 +202,6 @@ Transform the Learning Lab from static markdown into interactive, executable lea
 - Estimated: 4 hours
 
 **Task 3.6: Create Release PR**
-
 - Merge feature/advanced-interactive → main
 - Update CHANGELOG.md (v4.3.0)
 - Tag and release
@@ -269,7 +244,6 @@ claude-code-plugins/
 ## 📊 Success Metrics
 
 ### Phase 1 Success Criteria
-
 - [ ] 5 notebooks created and tested
 - [ ] All cells execute without errors in Colab
 - [ ] Badges added to README
@@ -277,7 +251,6 @@ claude-code-plugins/
 - [ ] User feedback: "I could run the examples immediately"
 
 ### Phase 2 Success Criteria
-
 - [ ] Codespaces launches in <60 seconds
 - [ ] Full workflow executable in Codespace
 - [ ] Badge added to README
@@ -285,7 +258,6 @@ claude-code-plugins/
 - [ ] User feedback: "I had a complete dev environment instantly"
 
 ### Phase 3 Success Criteria
-
 - [ ] Streamlit demo deployed and accessible
 - [ ] Videos embedded in notebooks
 - [ ] Observable diagrams published
@@ -373,7 +345,6 @@ mkdir -p notebooks
 ## 📝 Dependencies
 
 ### Required Tools
-
 - Python 3.8+
 - pip (package manager)
 - git
@@ -382,13 +353,11 @@ mkdir -p notebooks
 - ipykernel (notebook kernel)
 
 ### Optional Tools (Phase 3)
-
 - Streamlit (`pip install streamlit`)
 - ffmpeg (video processing)
 - Observable account (free tier)
 
 ### Services Required
-
 - Google account (for Colab testing)
 - GitHub account (for Codespaces, already have)
 - Observable account (Phase 3, free)
@@ -398,19 +367,15 @@ mkdir -p notebooks
 ## ⚠️ Risk Mitigation
 
 ### Risk 1: Notebooks Don't Run in Colab
-
 **Mitigation**: Test each notebook immediately after conversion, fix before moving to next
 
 ### Risk 2: Codespaces Resource Limits
-
 **Mitigation**: Keep environment minimal, document free tier limits clearly
 
 ### Risk 3: User Confusion (Too Many Options)
-
 **Mitigation**: Clear progression path in README: "Start with Colab → Try Codespaces → Explore Advanced"
 
 ### Risk 4: Maintenance Burden
-
 **Mitigation**: Keep notebooks in sync with markdown using jupytext bidirectional sync
 
 ---
@@ -427,8 +392,7 @@ Total timeline: ~1 month for all 3 phases
 
 **Ready to execute Phase 1!**
 
-Next command:
-
+Next command: 
 ```bash
 bd update claude-code-plugins-pvx.1 --status in_progress
 ```
@@ -444,7 +408,6 @@ bd update claude-code-plugins-pvx.1 --status in_progress
 ### Task Breakdown
 
 **Phase 1: Colab Notebooks** (P1 - 9 tasks)
-
 ```
 pvx.1  - Environment setup (30min)
 pvx.2  - Convert GUIDE-00 (1hr)
@@ -456,11 +419,9 @@ pvx.7  - Update README badges (30min)
 pvx.8  - Test & validate (1hr)
 pvx.9  - Release v4.1.0 (30min)
 ```
-
 **Total Phase 1**: ~8.5 hours
 
 **Phase 2: Codespaces** (P2 - 6 tasks)
-
 ```
 pvx.10 - Create devcontainer (30min)
 pvx.11 - Workspace config (30min)
@@ -469,11 +430,9 @@ pvx.13 - README badge (15min)
 pvx.14 - Test Codespaces (30min)
 pvx.15 - Release v4.2.0 (30min)
 ```
-
 **Total Phase 2**: ~2.75 hours
 
 **Phase 3: Advanced** (P3 - 6 tasks)
-
 ```
 pvx.16 - Streamlit demo (4hrs)
 pvx.17 - Video walkthroughs (3hrs)
@@ -482,7 +441,6 @@ pvx.19 - Decision tree (3hrs)
 pvx.20 - Observable notebooks (4hrs)
 pvx.21 - Release v4.3.0 (30min)
 ```
-
 **Total Phase 3**: ~16.5 hours
 
 ---
@@ -540,10 +498,9 @@ bd sync
 ✅ **beads (bd)** - Globally installed, working  
 ✅ **cass** - v0.1.36 - Coding agent session search  
 ✅ **git** - Version control  
-✅ **Python 3** - Ready for jupytext
+✅ **Python 3** - Ready for jupytext  
 
 **To install for Phase 1**:
-
 ```bash
 pip install jupytext nbformat ipykernel
 ```
@@ -555,7 +512,6 @@ pip install jupytext nbformat ipykernel
 **First task**: `claude-code-plugins-pvx.1`
 
 **Execute now**:
-
 ```bash
 bd update claude-code-plugins-pvx.1 --status in_progress
 ```

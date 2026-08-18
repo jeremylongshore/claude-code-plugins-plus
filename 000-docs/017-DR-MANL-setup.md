@@ -2,18 +2,18 @@
 
 # Setup Instructions for Claude Code Plugins Repository
 
-## Current Status
+##  Current Status
 
 Your repository structure has been created successfully with:
 
-- Main marketplace catalog source (`.claude-plugin/marketplace.extended.json` + sync script that generates `.claude-plugin/marketplace.json`)
-- 3 Complete example plugins (hello-world, auto-formatter, security-reviewer)
-- 4 Plugin templates (minimal, command, agent, full)
-- 6 Documentation files
-- GitHub workflows and issue templates
-- README.md, CONTRIBUTING.md, LICENSE
+-  Main marketplace catalog source (`.claude-plugin/marketplace.extended.json` + sync script that generates `.claude-plugin/marketplace.json`)
+-  3 Complete example plugins (hello-world, auto-formatter, security-reviewer)
+-  4 Plugin templates (minimal, command, agent, full)
+-  6 Documentation files
+-  GitHub workflows and issue templates
+-  README.md, CONTRIBUTING.md, LICENSE
 
-## Final Setup Steps
+##  Final Setup Steps
 
 ### Step 1: Make Scripts Executable
 
@@ -114,7 +114,7 @@ After pushing, configure your repository on GitHub:
 /hello
 ```
 
-## What Was Created
+##  What Was Created
 
 ### Directory Structure
 
@@ -160,7 +160,7 @@ claude-code-plugins/
 - `agent-plugin/` - With AI agent
 - `full-plugin/` - All features (commands, agents, hooks)
 
-## Next Steps
+##  Next Steps
 
 After setup is complete:
 
@@ -183,17 +183,15 @@ After setup is complete:
    - Update docs as Claude Code evolves
    - Add more example plugins over time
 
-## Troubleshooting
+##  Troubleshooting
 
 **Scripts not executable:**
-
 ```bash
 chmod +x plugins/examples/auto-formatter/scripts/format.sh
 chmod +x templates/full-plugin/scripts/example.sh
 ```
 
 **Git not tracking hidden files:**
-
 ```bash
 git add .claude-plugin/
 git add plugins/*/.claude-plugin/
@@ -201,16 +199,14 @@ git commit -m "Add hidden .claude-plugin directories"
 ```
 
 **JSON validation errors:**
-
 ```bash
 # Validate all JSON files
 find . -name "*.json" -exec sh -c 'echo "Checking {}"; jq empty {}' \;
 ```
 
-## Support
+##  Support
 
 If you encounter issues:
-
 - Check the troubleshooting section above
 - Review files in the repository
 - Ask in Claude Developers Discord

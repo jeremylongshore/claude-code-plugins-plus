@@ -1,7 +1,6 @@
 <!-- doc-class: canonical -->
 
 ---
-
 filing_code: AT-DECR-EXTERNAL-SYNC-MIRROR-BY-DEFAULT-MODEL-2026-06-30
 date: 2026-06-30
 acting_head_of_board: Jeremy Longshore
@@ -10,13 +9,11 @@ scope: External-plugin sync pipeline — sources.yaml, scripts/sync-external.mjs
 branch: feat/external-sync-mirror-model
 trigger: A 4-agent deep-dive found the sync clobbering our own A-grade curation — a --force run reverted ~100 A-graded tonone agents (+ hyperflow) to 3-field upstream stubs, surfacing as an ~18.9k-line "deletion" no one had authored
 inputs:
-
-- 000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md (prior pipeline audit + hardening)
-- 000-docs/693-AA-AACR-xquik-external-author-dogfood-and-tooling-fixes-2026-06-30.md (Xquik dogfood AAR)
-- PR #881 (the A-grade frontmatter uplift the sync reverted)
-- sources.yaml (source registry)
-  affects: 51 externally-synced plugins (of 454 total), the weekly + on-demand sync, the automated sync PR lifecycle, the marketplace/enterprise section-heading fairness check
-
+  - 000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md (prior pipeline audit + hardening)
+  - 000-docs/693-AA-AACR-xquik-external-author-dogfood-and-tooling-fixes-2026-06-30.md (Xquik dogfood AAR)
+  - PR #881 (the A-grade frontmatter uplift the sync reverted)
+  - sources.yaml (source registry)
+affects: 51 externally-synced plugins (of 454 total), the weekly + on-demand sync, the automated sync PR lifecycle, the marketplace/enterprise section-heading fairness check
 ---
 
 # External-Plugin Sync — "Mirror by Default · Upstream Improvements · Never Clobber"
@@ -31,7 +28,7 @@ A 4-agent deep-dive into the sync produced a clear picture of how it behaved bef
 
 - **`--force` overwrites everything, every run.** `scripts/sync-external.mjs` re-clones each source and overwrites every mirrored file with the upstream copy on every run. Upstream is treated as the sole source of truth for the destination path — with no exception for files we had deliberately changed locally.
 - **`verified:` was ignored by the sync.** The flag existed in `sources.yaml` but had no effect on what the sync wrote; it recorded maintainer trust, nothing more.
-- **Each run opened a fresh per-run-branch PR with nothing closing the old ones.** The unique-per-run-branch model (adopted in `000-docs/691-AT-AUDT`, which fixed an earlier _shared_-branch clobber) is safe by design, but it produced a pileup — every run stacked another open `automation/sync-external-*` PR and nothing pruned the stack.
+- **Each run opened a fresh per-run-branch PR with nothing closing the old ones.** The unique-per-run-branch model (adopted in `000-docs/691-AT-AUDT`, which fixed an earlier *shared*-branch clobber) is safe by design, but it produced a pileup — every run stacked another open `automation/sync-external-*` PR and nothing pruned the stack.
 - **No auto-merge.** A human reviewed each sync PR; historically ~1 of every 10 merged. That review gate is correct and is preserved — the sync proposes, a human disposes.
 
 This document exists precisely so the next reader does not have to rebuild the policy from a diff again.
@@ -84,15 +81,15 @@ A "Close superseded sync PRs" step runs **before** Create-PR and closes older op
 
 Enterprise/marketplace section checks now credit **equivalent** non-Intent-Solutions heading names so external contributors aren't failed for standard-but-different wording:
 
-| IS heading          | Credited equivalents            |
-| ------------------- | ------------------------------- |
-| `## Overview`       | `## Summary`, `## Capabilities` |
-| `## Instructions`   | `## Usage`                      |
-| `## Output`         | `## Returns`                    |
-| `## Error Handling` | `## Troubleshooting`            |
-| `## Resources`      | `## References`                 |
+| IS heading | Credited equivalents |
+|---|---|
+| `## Overview` | `## Summary`, `## Capabilities` |
+| `## Instructions` | `## Usage` |
+| `## Output` | `## Returns` |
+| `## Error Handling` | `## Troubleshooting` |
+| `## Resources` | `## References` |
 
-**UNCHANGED (NON-NEGOTIABLE):** the 8-field `ALWAYS_REQUIRED` set, the tier model, error-vs-warning semantics, and the frontmatter `capabilities` field **ban** — only `## Capabilities` as a _heading_ is credited; `capabilities` as a frontmatter _field_ remains an error.
+**UNCHANGED (NON-NEGOTIABLE):** the 8-field `ALWAYS_REQUIRED` set, the tier model, error-vs-warning semantics, and the frontmatter `capabilities` field **ban** — only `## Capabilities` as a *heading* is credited; `capabilities` as a frontmatter *field* remains an error.
 
 ### 5. Two Xquik sources activated
 
@@ -107,8 +104,8 @@ Mirrored + catalogued from the Xquik dogfood (see `000-docs/693-AA-AACR`):
 
 Curated / long-time contributors are handled respectfully — peer-to-peer, credit-preserving, never extractive:
 
-1. **A friendly issue first**, on the contributor's own repo — in the spirit of: _"we featured your plugin and hardened its frontmatter to our A-grade bar — would you be open to a PR upstreaming it?"_ No surprise PRs.
-2. **Then a PR they own and merge.** They decide; credit is preserved; the improvement lands in _their_ repo, and the mirror inherits it.
+1. **A friendly issue first**, on the contributor's own repo — in the spirit of: *"we featured your plugin and hardened its frontmatter to our A-grade bar — would you be open to a PR upstreaming it?"* No surprise PRs.
+2. **Then a PR they own and merge.** They decide; credit is preserved; the improvement lands in *their* repo, and the mirror inherits it.
 
 **HARD RULE:** any contributor-facing post (issue text, PR body, comment) gets **Jeremy's wording sign-off before it is posted.** Tone toward contributors is the Xquik-dogfood posture — a peer contributing back, never an owner reclaiming.
 

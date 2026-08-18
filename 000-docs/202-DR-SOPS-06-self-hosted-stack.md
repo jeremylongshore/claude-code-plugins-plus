@@ -48,15 +48,15 @@ graph TB
 
 ### Infrastructure Tiers
 
-| Component            | Purpose              | Port       | Storage         |
-| -------------------- | -------------------- | ---------- | --------------- |
-| **Ollama**           | Local LLM inference  | 11434      | 100GB (models)  |
-| **Analytics Daemon** | Real-time monitoring | 3333, 3456 | 10GB (logs)     |
-| **PostgreSQL**       | Persistent data      | 5432       | 50GB (database) |
-| **Redis**            | Caching, sessions    | 6379       | 5GB (cache)     |
-| **Prometheus**       | Metrics collection   | 9090       | 20GB (metrics)  |
-| **Grafana**          | Dashboards           | 3000       | 5GB (config)    |
-| **Nginx**            | Reverse proxy, SSL   | 80, 443    | 1GB (logs)      |
+| Component | Purpose | Port | Storage |
+|-----------|---------|------|---------|
+| **Ollama** | Local LLM inference | 11434 | 100GB (models) |
+| **Analytics Daemon** | Real-time monitoring | 3333, 3456 | 10GB (logs) |
+| **PostgreSQL** | Persistent data | 5432 | 50GB (database) |
+| **Redis** | Caching, sessions | 6379 | 5GB (cache) |
+| **Prometheus** | Metrics collection | 9090 | 20GB (metrics) |
+| **Grafana** | Dashboards | 3000 | 5GB (config) |
+| **Nginx** | Reverse proxy, SSL | 80, 443 | 1GB (logs) |
 
 **Total Storage**: ~191GB minimum
 
@@ -76,7 +76,7 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     ports:
-      - '11434:11434'
+      - "11434:11434"
     volumes:
       - ollama_models:/root/.ollama
     deploy:
@@ -88,7 +88,7 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/tags']
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -98,8 +98,8 @@ services:
     build: ./packages/analytics-daemon
     container_name: analytics-daemon
     ports:
-      - '3333:3333' # HTTP API
-      - '3456:3456' # WebSocket
+      - "3333:3333"  # HTTP API
+      - "3456:3456"  # WebSocket
     volumes:
       - analytics_data:/data
       - ${HOME}/.claude:/root/.claude:ro
@@ -109,7 +109,7 @@ services:
       - WS_PORT=3456
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3333/health']
+      test: ["CMD", "curl", "-f", "http://localhost:3333/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -119,7 +119,7 @@ services:
     image: postgres:16-alpine
     container_name: postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backups/postgres:/backups
@@ -129,7 +129,7 @@ services:
       - POSTGRES_DB=claude_prod
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U claude']
+      test: ["CMD-SHELL", "pg_isready -U claude"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -139,13 +139,13 @@ services:
     image: redis:7-alpine
     container_name: redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -155,7 +155,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
-      - '9090:9090'
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -170,7 +170,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
@@ -187,8 +187,8 @@ services:
     image: nginx:alpine
     container_name: nginx
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -360,7 +360,6 @@ docker-compose logs -f
 ### Complete Kubernetes Manifests
 
 **Namespace**:
-
 ```yaml
 # namespace.yaml
 apiVersion: v1
@@ -370,7 +369,6 @@ metadata:
 ```
 
 **Ollama Deployment**:
-
 ```yaml
 # ollama-deployment.yaml
 apiVersion: apps/v1
@@ -379,7 +377,7 @@ metadata:
   name: ollama
   namespace: claude-stack
 spec:
-  replicas: 3 # Scale with GPUs
+  replicas: 3  # Scale with GPUs
   selector:
     matchLabels:
       app: ollama
@@ -389,29 +387,29 @@ spec:
         app: ollama
     spec:
       containers:
-        - name: ollama
-          image: ollama/ollama:latest
-          ports:
-            - containerPort: 11434
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-            requests:
-              memory: '16Gi'
-              cpu: '4'
-          volumeMounts:
-            - name: models
-              mountPath: /root/.ollama
-          livenessProbe:
-            httpGet:
-              path: /api/tags
-              port: 11434
-            initialDelaySeconds: 60
-            periodSeconds: 30
-      volumes:
+      - name: ollama
+        image: ollama/ollama:latest
+        ports:
+        - containerPort: 11434
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+          requests:
+            memory: "16Gi"
+            cpu: "4"
+        volumeMounts:
         - name: models
-          persistentVolumeClaim:
-            claimName: ollama-models-pvc
+          mountPath: /root/.ollama
+        livenessProbe:
+          httpGet:
+            path: /api/tags
+            port: 11434
+          initialDelaySeconds: 60
+          periodSeconds: 30
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: ollama-models-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -422,9 +420,9 @@ spec:
   selector:
     app: ollama
   ports:
-    - protocol: TCP
-      port: 11434
-      targetPort: 11434
+  - protocol: TCP
+    port: 11434
+    targetPort: 11434
   type: ClusterIP
 ---
 apiVersion: v1
@@ -442,7 +440,6 @@ spec:
 ```
 
 **PostgreSQL StatefulSet**:
-
 ```yaml
 # postgres-statefulset.yaml
 apiVersion: apps/v1
@@ -462,39 +459,39 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: postgres
-          image: postgres:16-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_USER
-              value: 'claude'
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: password
-            - name: POSTGRES_DB
-              value: 'claude_prod'
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
-          resources:
-            requests:
-              memory: '4Gi'
-              cpu: '2'
-            limits:
-              memory: '8Gi'
-              cpu: '4'
-  volumeClaimTemplates:
-    - metadata:
-        name: postgres-data
-      spec:
-        accessModes: ['ReadWriteOnce']
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "claude"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: POSTGRES_DB
+          value: "claude_prod"
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
         resources:
           requests:
-            storage: 50Gi
-        storageClassName: fast-ssd
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: fast-ssd
 ---
 apiVersion: v1
 kind: Service
@@ -505,14 +502,13 @@ spec:
   selector:
     app: postgres
   ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
   clusterIP: None
 ```
 
 **Monitoring Stack**:
-
 ```yaml
 # prometheus-deployment.yaml
 apiVersion: apps/v1
@@ -531,25 +527,25 @@ spec:
         app: prometheus
     spec:
       containers:
-        - name: prometheus
-          image: prom/prometheus:latest
-          ports:
-            - containerPort: 9090
-          volumeMounts:
-            - name: config
-              mountPath: /etc/prometheus
-            - name: data
-              mountPath: /prometheus
-          args:
-            - '--config.file=/etc/prometheus/prometheus.yml'
-            - '--storage.tsdb.retention.time=30d'
-      volumes:
+      - name: prometheus
+        image: prom/prometheus:latest
+        ports:
+        - containerPort: 9090
+        volumeMounts:
         - name: config
-          configMap:
-            name: prometheus-config
+          mountPath: /etc/prometheus
         - name: data
-          persistentVolumeClaim:
-            claimName: prometheus-data-pvc
+          mountPath: /prometheus
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.retention.time=30d'
+      volumes:
+      - name: config
+        configMap:
+          name: prometheus-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: prometheus-data-pvc
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -657,8 +653,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'High LLM error rate'
-          description: 'Error rate is {{ $value | humanizePercentage }}'
+          summary: "High LLM error rate"
+          description: "Error rate is {{ $value | humanizePercentage }}"
 
       # Ollama down
       - alert: OllamaDown
@@ -667,7 +663,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'Ollama is down'
+          summary: "Ollama is down"
 
       # High memory usage
       - alert: HighMemoryUsage
@@ -676,8 +672,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'High memory usage'
-          description: 'Memory usage is {{ $value | humanizePercentage }}'
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
 
       # Database connection issues
       - alert: PostgreSQLDown
@@ -686,13 +682,12 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: 'PostgreSQL is down'
+          summary: "PostgreSQL is down"
 ```
 
 ### Grafana Dashboards
 
 **Claude Stack Dashboard (JSON)**:
-
 ```json
 {
   "dashboard": {
@@ -903,11 +898,11 @@ spec:
   selector:
     app: ollama
   ports:
-    - protocol: TCP
-      port: 11434
-      targetPort: 11434
+  - protocol: TCP
+    port: 11434
+    targetPort: 11434
   type: LoadBalancer
-  sessionAffinity: ClientIP # Sticky sessions
+  sessionAffinity: ClientIP  # Sticky sessions
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -915,7 +910,7 @@ metadata:
   name: ollama
   namespace: claude-stack
 spec:
-  replicas: 5 # 5 GPU nodes
+  replicas: 5  # 5 GPU nodes
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -927,11 +922,11 @@ spec:
         app: ollama
     spec:
       containers:
-        - name: ollama
-          image: ollama/ollama:latest
-          resources:
-            limits:
-              nvidia.com/gpu: 1
+      - name: ollama
+        image: ollama/ollama:latest
+        resources:
+          limits:
+            nvidia.com/gpu: 1
 ```
 
 ### PostgreSQL High Availability
@@ -945,7 +940,7 @@ metadata:
   namespace: claude-stack
 spec:
   serviceName: postgres-ha
-  replicas: 3 # Primary + 2 replicas
+  replicas: 3  # Primary + 2 replicas
   selector:
     matchLabels:
       app: postgres-ha
@@ -955,18 +950,18 @@ spec:
         app: postgres-ha
     spec:
       containers:
-        - name: postgres
-          image: postgres:16-alpine
-          env:
-            - name: PATRONI_SCOPE
-              value: 'postgres-cluster'
-            - name: PATRONI_REPLICATION_USERNAME
-              value: 'replicator'
-            - name: PATRONI_REPLICATION_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-ha-secret
-                  key: replication-password
+      - name: postgres
+        image: postgres:16-alpine
+        env:
+        - name: PATRONI_SCOPE
+          value: "postgres-cluster"
+        - name: PATRONI_REPLICATION_USERNAME
+          value: "replicator"
+        - name: PATRONI_REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-ha-secret
+              key: replication-password
 ```
 
 ---
@@ -976,19 +971,17 @@ spec:
 ### DO ✅
 
 1. **Use persistent volumes**
-
    ```yaml
    volumes:
-     - ollama_models:/root/.ollama # Persistent
-     - type: tmpfs # Temporary cache
+     - ollama_models:/root/.ollama  # Persistent
+     - type: tmpfs                    # Temporary cache
        target: /tmp
    ```
 
 2. **Implement health checks**
-
    ```yaml
    healthcheck:
-     test: ['CMD', 'curl', '-f', 'http://localhost:11434/api/tags']
+     test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
      interval: 30s
      timeout: 10s
      retries: 3
@@ -996,16 +989,15 @@ spec:
    ```
 
 3. **Use resource limits**
-
    ```yaml
    resources:
      limits:
-       memory: '16Gi'
-       cpu: '4'
+       memory: "16Gi"
+       cpu: "4"
        nvidia.com/gpu: 1
      requests:
-       memory: '8Gi'
-       cpu: '2'
+       memory: "8Gi"
+       cpu: "2"
    ```
 
 4. **Automate backups**
@@ -1017,19 +1009,16 @@ spec:
 ### DON'T ❌
 
 1. **Don't expose services publicly**
-
    ```yaml
    # ❌ Direct internet exposure
    ports:
-     - '5432:5432' # PostgreSQL exposed!
-
+     - "5432:5432"  # PostgreSQL exposed!
 
    # ✅ Use reverse proxy
    # Access via Nginx only
    ```
 
 2. **Don't skip SSL/TLS**
-
    ```nginx
    # ❌ HTTP only
    listen 80;
@@ -1039,7 +1028,6 @@ spec:
    ```
 
 3. **Don't use default passwords**
-
    ```bash
    # ❌ Weak password
    POSTGRES_PASSWORD=password
@@ -1055,7 +1043,6 @@ spec:
 ### Infrastructure as Code
 
 **Terraform** (provision cloud resources):
-
 ```hcl
 # main.tf
 resource "aws_instance" "ollama_server" {
@@ -1069,7 +1056,6 @@ resource "aws_instance" "ollama_server" {
 ```
 
 **Ansible** (configure servers):
-
 ```yaml
 # playbook.yml
 - hosts: ollama_servers
@@ -1108,7 +1094,6 @@ resource "aws_instance" "ollama_server" {
 7. **Test disaster recovery** - Practice restores monthly
 
 **Self-Hosted Stack Checklist**:
-
 - [ ] Deploy Ollama with GPU support
 - [ ] Set up PostgreSQL with backups
 - [ ] Configure Redis for caching

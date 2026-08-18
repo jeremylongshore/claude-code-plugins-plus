@@ -9,11 +9,11 @@ report is evidence only.
 
 Exactly **2** files have `marketplace/src/data` ↔ `marketplace/public/data` twins:
 
-| File                        | Bytes          |
-| --------------------------- | -------------- |
-| `skills-catalog.json`       | 25,600,536     |
-| `unified-search-index.json` | 2,860,309      |
-| **Total duplicated**        | **28,460,845** |
+| File | Bytes |
+| --- | --- |
+| `skills-catalog.json` | 25,600,536 |
+| `unified-search-index.json` | 2,860,309 |
+| **Total duplicated** | **28,460,845** |
 
 No other data file has a twin — the dedup candidate (register row 4) is precisely scoped.
 

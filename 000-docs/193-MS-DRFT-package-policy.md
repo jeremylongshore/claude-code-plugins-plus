@@ -153,7 +153,6 @@ node scripts/check-package-manager.mjs
 ```
 
 Exit codes:
-
 - `0` = All checks passed
 - `1` = Policy violations found
 

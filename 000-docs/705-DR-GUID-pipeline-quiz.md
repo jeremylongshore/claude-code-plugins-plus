@@ -8,7 +8,7 @@ promotion on `ci-infra` and `marketplace-site`. Answer key:
 
 > **How this is used.** Read the [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md)
 > first. Then answer these ~20 questions in your own words — the point is that you
-> can _explain_ the pipeline to a client, not recite it. The Lead reviews your
+> can *explain* the pipeline to a client, not recite it. The Lead reviews your
 > answers against the key. Passing is the gate to become an **Approver** (your
 > review satisfies the code-owner merge gate) on CI/infra and the marketplace
 > site. These are the exact things a client will probe.
@@ -74,7 +74,7 @@ and which job enforces it?
 **Q14.** List the 8 required SKILL.md frontmatter fields at marketplace tier. What
 happens if one is missing — warning or error?
 
-**Q15.** Why does the Intent Solutions rubric sit _on top of_ Anthropic's spec
+**Q15.** Why does the Intent Solutions rubric sit *on top of* Anthropic's spec
 rather than matching it? What was the 2026-04-28 debacle?
 
 **Q16.** How do agent validation requirements differ from skill requirements, and
@@ -106,4 +106,4 @@ contributor from sneaking a payload into one of your 470 plugins?" Give the
 
 ---
 
-_Related: [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md) · [answer key](706-DR-GUID-pipeline-quiz-answer-key.md) · [`GOVERNANCE.md`](../GOVERNANCE.md)_
+*Related: [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md) · [answer key](706-DR-GUID-pipeline-quiz-answer-key.md) · [`GOVERNANCE.md`](../GOVERNANCE.md)*

@@ -11,33 +11,29 @@
 
 ### ✅ All Systems Ready
 
-| Component               | Status        | Location                                    |
-| ----------------------- | ------------- | ------------------------------------------- |
-| Astro Config            | ✅ Configured | `marketplace/astro.config.mjs`              |
-| CNAME File              | ✅ Present    | `marketplace/public/CNAME`                  |
-| GitHub Actions Workflow | ✅ Updated    | `.github/workflows/deploy-marketplace.yml`  |
-| Build Output            | ✅ Generated  | `marketplace/dist/` (2.7 MB)                |
-| Package Manager         | ✅ Aligned    | npm (workflow now uses npm instead of pnpm) |
+| Component | Status | Location |
+|-----------|--------|----------|
+| Astro Config | ✅ Configured | `marketplace/astro.config.mjs` |
+| CNAME File | ✅ Present | `marketplace/public/CNAME` |
+| GitHub Actions Workflow | ✅ Updated | `.github/workflows/deploy-marketplace.yml` |
+| Build Output | ✅ Generated | `marketplace/dist/` (2.7 MB) |
+| Package Manager | ✅ Aligned | npm (workflow now uses npm instead of pnpm) |
 
 ---
 
 ## What Was Fixed
 
 ### 1. GitHub Actions Workflow Update
-
 **Problem:** Workflow was using `pnpm` but marketplace directory uses `npm` (has `package-lock.json`)
 
 **Solution:** Updated `.github/workflows/deploy-marketplace.yml`:
-
 - Changed from `pnpm install --frozen-lockfile` to `npm ci`
 - Removed pnpm setup step
 - Added npm caching for faster builds
 - Specified cache dependency path: `./marketplace/package-lock.json`
 
 ### 2. Build Verification
-
 **Verified:**
-
 - Build completes successfully in ~6.4 seconds
 - Generates 4 pages: index, spotlight, sponsor, skill-enhancers
 - CNAME file correctly copied to dist/
@@ -49,7 +45,6 @@
 ## Current Configuration
 
 ### Astro Config (`marketplace/astro.config.mjs`)
-
 ```javascript
 {
   site: '[retired legacy public domain]',
@@ -64,13 +59,11 @@
 ```
 
 ### CNAME File (`marketplace/public/CNAME`)
-
 ```
 [retired legacy public domain]
 ```
 
 ### Build Output (`marketplace/dist/`)
-
 ```
 dist/
 ├── CNAME                        # Custom domain file
@@ -89,7 +82,6 @@ dist/
 ## Deployment Workflow
 
 ### Automatic Deployment (Recommended)
-
 ```bash
 # Navigate to repository
 cd
@@ -101,14 +93,12 @@ git push origin main
 ```
 
 ### Manual Deployment
-
 1. Visit: https://github.com/jeremylongshore/claude-code-plugins/actions/workflows/deploy-marketplace.yml
 2. Click "Run workflow"
 3. Select branch: `main`
 4. Click "Run workflow" button
 
 ### Deployment Steps (Automated by GitHub Actions)
-
 1. **Build Job** (runs on push to main):
    - Checkout repository
    - Setup Node.js 20 with npm caching
@@ -125,11 +115,9 @@ git push origin main
 ## Required GitHub Setup
 
 ### 1. Enable GitHub Pages
-
 **URL:**
 
 **Configuration:**
-
 ```
 Source: GitHub Actions (not "Deploy from a branch")
 Custom Domain: [retired legacy public domain]
@@ -137,7 +125,6 @@ Enforce HTTPS: ✅ Enabled
 ```
 
 ### 2. Verify Repository Settings
-
 - [ ] Repository is public
 - [ ] Actions are enabled
 - [ ] Workflow permissions: "Read and write permissions"
@@ -147,11 +134,9 @@ Enforce HTTPS: ✅ Enabled
 ## DNS Configuration
 
 ### Required DNS Records
-
 Configure these at your domain registrar (e.g., Namecheap, GoDaddy, Cloudflare):
 
 #### A Records (Point to GitHub Pages)
-
 ```
 Type: A    Name: @    Value: 185.199.108.153    TTL: 3600
 Type: A    Name: @    Value: 185.199.109.153    TTL: 3600
@@ -160,13 +145,11 @@ Type: A    Name: @    Value: 185.199.111.153    TTL: 3600
 ```
 
 #### CNAME Record (Optional - for www subdomain)
-
 ```
 Type: CNAME    Name: www    Value: jeremylongshore.github.io    TTL: 3600
 ```
 
 ### Verify DNS Configuration
-
 ```bash
 # Check A records
 dig retired-domain.invalid A +short
@@ -187,7 +170,6 @@ dig retired-domain.invalid CNAME +short
 ## Post-Deployment Verification
 
 ### Immediate Checks (5 minutes after deployment)
-
 - [ ] Visit [retired legacy public domain]
 - [ ] Verify HTTPS works (green padlock in browser)
 - [ ] Check homepage loads correctly
@@ -196,7 +178,6 @@ dig retired-domain.invalid CNAME +short
 - [ ] Test skill enhancers page: [retired legacy public domain]/skill-enhancers
 
 ### Content Verification
-
 - [ ] All plugin cards display
 - [ ] Search functionality works
 - [ ] Category filters work
@@ -205,7 +186,6 @@ dig retired-domain.invalid CNAME +short
 - [ ] No console errors
 
 ### Performance Verification
-
 ```bash
 # Run Lighthouse audit
 # Open Chrome DevTools > Lighthouse > Run audit
@@ -218,7 +198,6 @@ dig retired-domain.invalid CNAME +short
 ```
 
 ### SEO Verification
-
 - [ ] Page title: "Claude Code Plugins Marketplace - 227 Plugins"
 - [ ] Meta description present
 - [ ] Open Graph tags present
@@ -231,14 +210,12 @@ dig retired-domain.invalid CNAME +short
 ## Deployment Timeline
 
 ### Expected Timeframes
-
 1. **Push to GitHub:** Instant
 2. **GitHub Actions Build:** 2-3 minutes
 3. **GitHub Pages Deploy:** 1-2 minutes
 4. **Total Time (after setup):** 3-5 minutes
 
 ### First-Time Setup (with custom domain)
-
 1. **DNS Propagation:** 24-48 hours
 2. **HTTPS Certificate Provisioning:** 10-15 minutes after DNS propagates
 3. **Total First-Time Setup:** Up to 48 hours
@@ -248,7 +225,6 @@ dig retired-domain.invalid CNAME +short
 ## Troubleshooting
 
 ### Build Fails in GitHub Actions
-
 ```bash
 # Test build locally first
 cd
@@ -260,14 +236,12 @@ npm run build
 ```
 
 ### Site Not Updating
-
 1. Clear browser cache: Ctrl+Shift+R or Cmd+Shift+R
 2. Check GitHub Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
 3. Wait 5-10 minutes for CDN cache to clear
 4. Try incognito/private browsing mode
 
 ### Custom Domain Not Working
-
 ```bash
 # Verify CNAME in dist/
 cat
@@ -283,7 +257,6 @@ dig retired-domain.invalid A +short
 ```
 
 ### HTTPS Not Working
-
 1. Ensure "Enforce HTTPS" is enabled in GitHub Pages settings
 2. Wait 10-15 minutes for certificate provisioning
 3. Clear browser cache
@@ -294,7 +267,6 @@ dig retired-domain.invalid A +short
 ## Quick Reference Commands
 
 ### Local Development
-
 ```bash
 cd
 npm install          # Install dependencies
@@ -304,7 +276,6 @@ npm run preview      # Preview production build
 ```
 
 ### Deployment
-
 ```bash
 cd
 git add .
@@ -313,7 +284,6 @@ git push origin main  # Triggers automatic deployment
 ```
 
 ### Verification
-
 ```bash
 # Check DNS
 dig retired-domain.invalid A +short
@@ -333,7 +303,6 @@ cat marketplace/dist/CNAME
 ## Documentation
 
 ### Created Files
-
 1. **`DEPLOYMENT_CHECKLIST.md`** (repository root)
    - Comprehensive deployment guide
    - Pre/post-deployment checklists
@@ -351,7 +320,6 @@ cat marketplace/dist/CNAME
    - Quick start guide
 
 ### Official Documentation
-
 - **Astro Docs:** https://docs.astro.build
 - **GitHub Pages:** https://docs.github.com/en/pages
 - **Custom Domains:** https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
@@ -361,7 +329,6 @@ cat marketplace/dist/CNAME
 ## Next Steps
 
 ### 1. Commit Workflow Fix
-
 ```bash
 cd
 git add .github/workflows/deploy-marketplace.yml
@@ -373,7 +340,6 @@ git push origin main
 ```
 
 ### 2. Enable GitHub Pages
-
 1. Visit:
 2. Source: Select "GitHub Actions"
 3. Custom domain: Enter `[retired legacy public domain]`
@@ -381,20 +347,17 @@ git push origin main
 5. Save changes
 
 ### 3. Configure DNS
-
 1. Log in to your domain registrar
 2. Add the 4 A records (see DNS Configuration section above)
 3. Optionally add www CNAME record
 4. Wait for DNS propagation (24-48 hours)
 
 ### 4. Monitor Deployment
-
 1. Watch GitHub Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
 2. Check for green checkmark (build successful)
 3. Visit [retired legacy public domain] (may take time for DNS)
 
 ### 5. Verify Deployment
-
 - Run through Post-Deployment Verification checklist
 - Test all pages and functionality
 - Run Lighthouse audit
@@ -415,7 +378,6 @@ git push origin main
 ---
 
 **Questions or Issues?**
-
 - See `DEPLOYMENT_CHECKLIST.md` for detailed troubleshooting
 - Check GitHub Actions logs for build errors
 - Verify DNS configuration with `dig` command

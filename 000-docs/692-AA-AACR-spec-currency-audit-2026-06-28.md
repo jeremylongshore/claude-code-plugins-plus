@@ -13,19 +13,19 @@ verified spec. Four read-only audit passes + the live-doc fetches back every cla
 
 ## 0. Verdict at a glance
 
-| Surface                  | Enforcer                                                 | Spec-currency verdict                                                              |
-| ------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **plugin.json manifest** | `validate-skills-schema.py` `PLUGIN_JSON_FIELDS`         | **FIXED** — was the one blocking gap (schema 3.12.0 + 3.13.0, merged)              |
-| **SKILL.md frontmatter** | `validate-skills-schema.py` `SKILL_FIELDS`               | **CURRENT** — all live fields recognized; unknowns warn, not error                 |
-| **Agent definition**     | `validate-skills-schema.py` `AGENT_FIELDS`               | **CURRENT** — one intentional IS narrowing (preserved) + one dead constant (fixed) |
-| **hooks**                | `/validate-hook` skill (global)                          | **CURRENT** — one cosmetic table-row omission (fixed in the global skill)          |
-| **.mcp.json**            | `/validate-mcp` skill (global) + kernel schema           | skill: **2 doc gaps (fixed)**; kernel schema: **FLAGGED (architectural)**          |
-| **marketplace.json**     | catalog scripts + `/validate-marketplace` skill + kernel | **FLAGGED** — blocked behind the kernel `authoring/v1 → v2` cutover (soak-gated)   |
+| Surface | Enforcer | Spec-currency verdict |
+|---|---|---|
+| **plugin.json manifest** | `validate-skills-schema.py` `PLUGIN_JSON_FIELDS` | **FIXED** — was the one blocking gap (schema 3.12.0 + 3.13.0, merged) |
+| **SKILL.md frontmatter** | `validate-skills-schema.py` `SKILL_FIELDS` | **CURRENT** — all live fields recognized; unknowns warn, not error |
+| **Agent definition** | `validate-skills-schema.py` `AGENT_FIELDS` | **CURRENT** — one intentional IS narrowing (preserved) + one dead constant (fixed) |
+| **hooks** | `/validate-hook` skill (global) | **CURRENT** — one cosmetic table-row omission (fixed in the global skill) |
+| **.mcp.json** | `/validate-mcp` skill (global) + kernel schema | skill: **2 doc gaps (fixed)**; kernel schema: **FLAGGED (architectural)** |
+| **marketplace.json** | catalog scripts + `/validate-marketplace` skill + kernel | **FLAGGED** — blocked behind the kernel `authoring/v1 → v2` cutover (soak-gated) |
 
-**Headline:** the one _blocking_ in-repo currency bug was plugin.json (already fixed
+**Headline:** the one *blocking* in-repo currency bug was plugin.json (already fixed
 and merged — schema 3.12.0 added 7 GA fields + `experimental`; 3.13.0 flipped
 unrecognized-field handling error → warning + `--strict`). Everything else this repo
-_enforces_ is current. The remaining items are (a) intentional IS-overlay choices we
+*enforces* is current. The remaining items are (a) intentional IS-overlay choices we
 keep on purpose, (b) cosmetic/doc fixes applied here, or (c) **architectural kernel /
 gated cutover work that must not be changed autonomously** — flagged below for a
 decision.
@@ -43,13 +43,13 @@ daily 09:00 UTC, 16 upstream surfaces, FF#2 field-diff → kernel SSoT) is that 
    (`enforce_admins:false`), and the `github-actions` bot is not an admin, so a direct push
    of a fresh (un-checked) commit is rejected. Confirmed in every run log
    (`archive commit-back push failed (branch protection?) — delta preserved as a workflow
-artifact`) and in git history (no bot commit-back has **ever** landed on `main`).
+   artifact`) and in git history (no bot commit-back has **ever** landed on `main`).
    **Consequence:** the kernel SSoT snapshots, the liveness `.state.json`, the lineage log,
    and the currency evidence are all frozen at the last **manual** deep-capture PR
    (#132–#137). The committed `specs/snapshots/.state.json` is `last_run_utc: null` forever
    → `watcher-liveness.py` prints `"heartbeat bootstrap — no prior run recorded yet (OK)"`
    → the dead-man heartbeat is inert and the dashboard reads **DEGRADED / no successful live
-   run recorded**. The watcher built to "never fail silent-green" _is_ silent-green, because
+   run recorded**. The watcher built to "never fail silent-green" *is* silent-green, because
    it can't write its own liveness proof back.
 
 2. **Even with a current SSoT, CCP doesn't consume it.** The kernel's vendored
@@ -82,7 +82,7 @@ treatment**. L1 + L2 are the cure.
 
 `PLUGIN_JSON_FIELDS` carried only the pre-GA 15 fields and **errored** on every
 unrecognized field. Anthropic had added 7 GA fields + an `experimental` object, and
-its own `claude plugin validate` _warns_ (never errors) on unknowns.
+its own `claude plugin validate` *warns* (never errors) on unknowns.
 
 - **Schema 3.12.0** — added `displayName`, `defaultEnabled`, `dependencies`,
   `userConfig`, `channels`, `$schema`, `experimental`; `TYPE_MAP` gained `boolean`.
@@ -116,12 +116,12 @@ plugin-restricted set (`hooks`, `mcpServers`, `permissionMode` silently ignored 
 plugin agents) and the banned-field list are correct.
 
 - **FIXED here (dead code):** module-level `VALID_EFFORT_LEVELS` (line 1588) was a
-  stale, unused `["low","medium","high","max"]` — missing `xhigh`. The _live_ check
+  stale, unused `["low","medium","high","max"]` — missing `xhigh`. The *live* check
   uses `AGENT_FIELDS["effort"]` (correct, includes `xhigh`); the dead constant is
   aligned to avoid a future-use landmine.
 - **PRESERVED (intentional IS narrowing — per the "leave my extras" instruction):**
   the agent `model` enum (`sonnet|haiku|opus|fable|inherit`) **rejects full
-  `claude-*` model IDs**, which Anthropic permits and which the _skill_ path accepts.
+  `claude-*` model IDs**, which Anthropic permits and which the *skill* path accepts.
   The code comment states this is a deliberate IS-contract narrowing. Left as-is. If
   you want the agent path to accept full IDs (matching the skill path + spec), that's
   a one-line change — say the word.
@@ -135,7 +135,7 @@ to the `/validate-hook` skill. That skill + its `anthropic-hooks-reference.md` l
 event surface (incl. `SessionEnd`, `StopFailure`, `PostToolUseFailure`, `Elicitation`)
 and all 5 handler types with correct required fields.
 
-- **FIXED in the global skill:** the reference's Hook Events _table_ omitted a
+- **FIXED in the global skill:** the reference's Hook Events *table* omitted a
   `SessionEnd` row even though the rest of the file uses it — internal inconsistency,
   now corrected. (Global file; not part of this repo's PR.)
 
@@ -192,30 +192,30 @@ change. This is environment/coordination work, not a committed-code fix.
 
 ## 8. What was changed by this audit
 
-| Change                                                          | Where                                                        | Class                 |
-| --------------------------------------------------------------- | ------------------------------------------------------------ | --------------------- |
-| Dead `VALID_EFFORT_LEVELS` aligned to include `xhigh`           | `scripts/validate-skills-schema.py` (this repo)              | hygiene / correctness |
-| `SessionEnd` events-table row added                             | `~/.claude/skills/.../anthropic-hooks-reference.md` (global) | doc currency          |
-| `websocket` + `streamable-http` aliases; `sse` deprecation note | `~/.claude/skills/validate-mcp/SKILL.md` (global)            | doc currency          |
-| This audit doc                                                  | `000-docs/692-AT-AUDT-…` (this repo)                         | record                |
+| Change | Where | Class |
+|---|---|---|
+| Dead `VALID_EFFORT_LEVELS` aligned to include `xhigh` | `scripts/validate-skills-schema.py` (this repo) | hygiene / correctness |
+| `SessionEnd` events-table row added | `~/.claude/skills/.../anthropic-hooks-reference.md` (global) | doc currency |
+| `websocket` + `streamable-http` aliases; `sse` deprecation note | `~/.claude/skills/validate-mcp/SKILL.md` (global) | doc currency |
+| This audit doc | `000-docs/692-AT-AUDT-…` (this repo) | record |
 
 ## 9. Open decisions for you (not auto-changed)
 
 **The cure (close the auto-currency loop — see § 0.5):**
 
 0a. **L1 — drift-watch persistence.** Pick the commit-back mechanism so the watcher can
-write back: admin/bypass push token, or auto-mergeable capture PRs; plus set
-`SPEC_DRIFT_HEARTBEAT_URL` for durable external liveness. Until this lands, the SSoT
-only advances on manual capture PRs and liveness can't be proven from the repo.
+    write back: admin/bypass push token, or auto-mergeable capture PRs; plus set
+    `SPEC_DRIFT_HEARTBEAT_URL` for durable external liveness. Until this lands, the SSoT
+    only advances on manual capture PRs and liveness can't be proven from the repo.
 
 0b. **L2 — kernel→CCP consumer-cutover.** Derive/drift-gate `PLUGIN_JSON_FIELDS` (and the
-other hand-maintained validator sets) against the kernel `authoring/v*` schemas, so a
-kernel update propagates without a hand-patch. Soak-gated (SAK Phase-2/4).
+    other hand-maintained validator sets) against the kernel `authoring/v*` schemas, so a
+    kernel update propagates without a hand-patch. Soak-gated (SAK Phase-2/4).
 
 **Smaller items:**
 
 1. **Agent `model` full-IDs** — accept `claude-*` on the agent path (match skill path
-   - spec), or keep the intentional IS narrowing? (Left narrowed for now.)
+   + spec), or keep the intentional IS narrowing? (Left narrowed for now.)
 2. **Kernel mcp-config schema** (§5) — architectural fix in `@intentsolutions/core`,
    ISEDC-gated.
 3. **Marketplace `authoring/v1 → v2` cutover** (§6) — soak-gated; lands the modern

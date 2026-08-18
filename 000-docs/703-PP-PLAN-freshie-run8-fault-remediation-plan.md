@@ -10,15 +10,15 @@
 
 ## 1. Run-8 headline
 
-| Metric                               | Run 7               | Run 8                 | Δ                                     |
-| ------------------------------------ | ------------------- | --------------------- | ------------------------------------- |
-| Skills graded                        | 3,713               | 3,681                 | −32                                   |
-| A / B / C                            | 954 / 1,505 / 1,048 | 1,013 / 1,424 / 1,027 | A +59                                 |
-| D / F                                | 195 / 11            | 197 / 20              | F +9                                  |
-| Marketplace-tier errors (skill rows) | 9,076               | 9,001                 | −75                                   |
-| `is_stub` flags                      | 99                  | 111                   | +12                                   |
-| Agents graded                        | 322                 | 345                   | +23 (hyperflow mirror first-mirrored) |
-| Plugins discovered                   | 398 rows            | 456                   | catalog grew                          |
+| Metric | Run 7 | Run 8 | Δ |
+|---|---|---|---|
+| Skills graded | 3,713 | 3,681 | −32 |
+| A / B / C | 954 / 1,505 / 1,048 | 1,013 / 1,424 / 1,027 | A +59 |
+| D / F | 195 / 11 | 197 / 20 | F +9 |
+| Marketplace-tier errors (skill rows) | 9,076 | 9,001 | −75 |
+| `is_stub` flags | 99 | 111 | +12 |
+| Agents graded | 322 | 345 | +23 (hyperflow mirror first-mirrored) |
+| Plugins discovered | 398 rows | 456 | catalog grew |
 
 Production-ready (A+B): **66.2%**, avg score 83.7.
 
@@ -27,7 +27,7 @@ Production-ready (A+B): **66.2%**, avg score 83.7.
 **D+F = 217 skills → 204 external mirrors (94%) · 13 internal (6%).** All 20 F-grades are external; internal has **zero F**. External sources contribute 37.5% of all errors from 9.8% of the corpus.
 
 - **External D+F mass:** tonone 128 (curated-frozen — lever is upstreaming, per 694-AT-DECR), portaljs 12, hyperflow 10, wondelai family 23 one-skill plugins, long tail of singletons.
-- **New-F wave (11→20) is portaljs onboarding, NOT hyperflow.** 12 of 13 new Fs are portaljs skills that entered the corpus at run 8 (scores 53–56, 13–14 errors each; every one defers to a `.claude/commands/*.md` file absent from the mirror — dangling pointers). Hyperflow _improved_ (F 4→3) — the unfreeze did not regress grades.
+- **New-F wave (11→20) is portaljs onboarding, NOT hyperflow.** 12 of 13 new Fs are portaljs skills that entered the corpus at run 8 (scores 53–56, 13–14 errors each; every one defers to a `.claude/commands/*.md` file absent from the mirror — dangling pointers). Hyperflow *improved* (F 4→3) — the unfreeze did not regress grades.
 - **Internal D list (complete, 13 skills):** ga4-pack ×3, algolia-pack ×4, miro-pack ×2, attio-pack ×2, apify-pack ×1, adobe-pack ×1 — all scores 67–69, 3–7 errors each.
 
 **Hand-read verdict on the internal 13: every one is FIX, none is DROP.** Each is a substantial, technically accurate skill (244–333 lines, current SDKs) whose D grade comes from one shared v1-template gap — the same 3 missing marketplace-tier required body sections. No deletions needed on the internal side; npm one-way-door checks therefore moot for this wave.
@@ -40,10 +40,9 @@ Production-ready (A+B): **66.2%**, avg score 83.7.
 - 30 = `compatibility`-only in `plugins/saas-packs/skill-databases/`.
 
 Mechanics (run in this order):
-
 1. `freshie/scripts/batch-remediate.py --dry-run` first, **path-scoped to the internal dirs** (the fixer must not touch sources.yaml target_paths).
 2. `--execute` writes SKILL.md frontmatter only.
-3. ⚠️ **Known-broken fixer:** `--fix-compatible-with` is stale — its DB-mode query matches zero run-8 rows (gaps are recorded as `compatibility` now) and its no-db mode writes the _deprecated_ `compatible-with` field. Use the tags/compatibility writers + chain `scripts/batch-remediate.py --migrate-compatible-with` afterward; fixing the fixer is beaded.
+3. ⚠️ **Known-broken fixer:** `--fix-compatible-with` is stale — its DB-mode query matches zero run-8 rows (gaps are recorded as `compatibility` now) and its no-db mode writes the *deprecated* `compatible-with` field. Use the tags/compatibility writers + chain `scripts/batch-remediate.py --migrate-compatible-with` afterward; fixing the fixer is beaded.
 4. Re-validate + freshie run 9 to confirm the 530 clear.
 
 The other 312 metadata-missing skills are external mirrors → Wave C, never batch-remediate.
@@ -55,7 +54,6 @@ One-pack-a-day cadence (the epic's step 3): ga4 → algolia → miro → attio �
 ## 5. Wave C — mirror posture for the 204 external D/F (never local `rm`)
 
 Levers, per 694-AT-DECR (sync re-mirrors anything deleted locally):
-
 - **portaljs (12 F):** raise the dangling-pointer defect upstream (their skills reference un-mirrored `.claude/commands/`); either upstream ships the commands, our include list adds them, or the entry gets `verified: false` pending fix. Friendly-issue-first protocol.
 - **tonone (128 D+F):** stays `curated: true` frozen; the planned upstreaming is the only path that reduces this mass.
 - **wondelai family (23):** already flipped `verified: false` (2026-07-08 census PR); no further action until upstream moves.

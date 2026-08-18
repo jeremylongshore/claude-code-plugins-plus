@@ -8,19 +8,19 @@
 
 ## Executive Summary
 
-| Field                            | Value                                                                                   |
-| -------------------------------- | --------------------------------------------------------------------------------------- |
-| **Version**                      | 4.31.0                                                                                  |
-| **Previous Version**             | 4.30.0 (2026-05-04)                                                                     |
-| **Release Date**                 | 2026-05-08                                                                              |
-| **Release Type**                 | MINOR (15 feat + 6 fix; no breaking changes)                                            |
-| **Approver**                     | Jeremy Longshore                                                                        |
-| **Approval SHA**                 | `90e5652...` (HEAD when approval gate fired)                                            |
-| **Final Tag SHA**                | `fd62f229e...`                                                                          |
-| **Days Since Last Release**      | 4                                                                                       |
-| **Duration of Release Ceremony** | ~6 minutes                                                                              |
-| **GitHub Release**               | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.31.0 |
-| **Updated Gist**                 | https://gist.github.com/a61dcd78f4a28bc32bed07997d9de3fb                                |
+| Field | Value |
+|---|---|
+| **Version** | 4.31.0 |
+| **Previous Version** | 4.30.0 (2026-05-04) |
+| **Release Date** | 2026-05-08 |
+| **Release Type** | MINOR (15 feat + 6 fix; no breaking changes) |
+| **Approver** | Jeremy Longshore |
+| **Approval SHA** | `90e5652...` (HEAD when approval gate fired) |
+| **Final Tag SHA** | `fd62f229e...` |
+| **Days Since Last Release** | 4 |
+| **Duration of Release Ceremony** | ~6 minutes |
+| **GitHub Release** | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.31.0 |
+| **Updated Gist** | https://gist.github.com/a61dcd78f4a28bc32bed07997d9de3fb |
 
 ## What This Release Is
 
@@ -39,23 +39,23 @@ All four gaps are now operational. The forge workflow is no longer theoretical �
 
 13 PRs landed in this release window across two repos:
 
-| PR   | Repo                            | Title                                                                                       |
-| ---- | ------------------------------- | ------------------------------------------------------------------------------------------- |
-| #693 | claude-code-plugins-plus-skills | docs(spec): bump master skills spec 3.1.0 → 3.3.1                                           |
-| #694 | claude-code-plugins-plus-skills | chore(freshie): discovery run 7 + compliance population under v7.0                          |
-| #695 | claude-code-plugins-plus-skills | feat(validate): JRig Tier 3A spec snapshots + gitignore exceptions                          |
-| #696 | claude-code-plugins-plus-skills | feat(marketplace): tagline + JRig-Verified + forge-generated badges                         |
-| #697 | claude-code-plugins-plus-skills | feat(schema): IS-extension fields for forge provenance + marketplace display                |
-| #698 | claude-code-plugins-plus-skills | feat(validator): Tier 2 static production gate (5 inline checks, 273 lines Python)          |
-| #699 | claude-code-plugins-plus-skills | feat(freshie): JRig integration columns + forge_proofs table                                |
-| #700 | claude-code-plugins-plus-skills | feat(marketplace): wire forge_proofs → JRig-Verified badge data flow                        |
-| #701 | claude-code-plugins-plus-skills | feat(marketplace): Start-Here curated starter pack on homepage                              |
-| #702 | claude-code-plugins-plus-skills | feat(marketplace): per-plugin /verification page (JRig badge click target)                  |
-| #703 | claude-code-plugins-plus-skills | feat(forge): plane plugin — first end-to-end /skill-creator --forge dogfood                 |
-| #704 | claude-code-plugins-plus-skills | docs(CLAUDE.md): refresh after the plan landed                                              |
-| #40  | j-rig-skill-binary-eval         | docs(epics): epic-index README accuracy fix                                                 |
-| #41  | j-rig-skill-binary-eval         | feat(governance): bring skill spec sources of truth into the repo (192 lines TS + 22 tests) |
-| #692 | claude-code-plugins-plus-skills | fix(analytics): Umami custom events + data-domains spam guard                               |
+| PR | Repo | Title |
+|---|---|---|
+| #693 | claude-code-plugins-plus-skills | docs(spec): bump master skills spec 3.1.0 → 3.3.1 |
+| #694 | claude-code-plugins-plus-skills | chore(freshie): discovery run 7 + compliance population under v7.0 |
+| #695 | claude-code-plugins-plus-skills | feat(validate): JRig Tier 3A spec snapshots + gitignore exceptions |
+| #696 | claude-code-plugins-plus-skills | feat(marketplace): tagline + JRig-Verified + forge-generated badges |
+| #697 | claude-code-plugins-plus-skills | feat(schema): IS-extension fields for forge provenance + marketplace display |
+| #698 | claude-code-plugins-plus-skills | feat(validator): Tier 2 static production gate (5 inline checks, 273 lines Python) |
+| #699 | claude-code-plugins-plus-skills | feat(freshie): JRig integration columns + forge_proofs table |
+| #700 | claude-code-plugins-plus-skills | feat(marketplace): wire forge_proofs → JRig-Verified badge data flow |
+| #701 | claude-code-plugins-plus-skills | feat(marketplace): Start-Here curated starter pack on homepage |
+| #702 | claude-code-plugins-plus-skills | feat(marketplace): per-plugin /verification page (JRig badge click target) |
+| #703 | claude-code-plugins-plus-skills | feat(forge): plane plugin — first end-to-end /skill-creator --forge dogfood |
+| #704 | claude-code-plugins-plus-skills | docs(CLAUDE.md): refresh after the plan landed |
+| #40 | j-rig-skill-binary-eval | docs(epics): epic-index README accuracy fix |
+| #41 | j-rig-skill-binary-eval | feat(governance): bring skill spec sources of truth into the repo (192 lines TS + 22 tests) |
+| #692 | claude-code-plugins-plus-skills | fix(analytics): Umami custom events + data-domains spam guard |
 
 ### Branch State
 
@@ -107,39 +107,39 @@ All four gaps are now operational. The forge workflow is no longer theoretical �
 
 ## Metrics
 
-| Metric                                    | Value                                                                                       |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Commits since v4.30.0                     | 25                                                                                          |
-| Files changed                             | 137                                                                                         |
-| Lines added                               | +153,644 (includes auto-blog content + freshie/inventory.sqlite binary refresh)             |
-| Lines removed                             | −2,465                                                                                      |
-| PRs merged this window                    | 15 (13 in claude-code-plugins, 2 in j-rig)                                                  |
-| Real code shipped                         | ~1,800 lines (Python validator, TS module, Astro pages, Node build script, plugin scaffold) |
-| Documentation shipped                     | ~3,200 lines                                                                                |
-| Plugin count                              | 425 → 427 (+2: plane + validate-plugin published)                                           |
-| Tests added                               | 22 (j-rig spec-sources test suite)                                                          |
-| Production-ready plugins (A+B) at v4.31.0 | 2,429 / 3,535 (68.9%)                                                                       |
+| Metric | Value |
+|---|---|
+| Commits since v4.30.0 | 25 |
+| Files changed | 137 |
+| Lines added | +153,644 (includes auto-blog content + freshie/inventory.sqlite binary refresh) |
+| Lines removed | −2,465 |
+| PRs merged this window | 15 (13 in claude-code-plugins, 2 in j-rig) |
+| Real code shipped | ~1,800 lines (Python validator, TS module, Astro pages, Node build script, plugin scaffold) |
+| Documentation shipped | ~3,200 lines |
+| Plugin count | 425 → 427 (+2: plane + validate-plugin published) |
+| Tests added | 22 (j-rig spec-sources test suite) |
+| Production-ready plugins (A+B) at v4.31.0 | 2,429 / 3,535 (68.9%) |
 
 ## External Artifacts
 
-| Artifact                | Status    | Detail                                                                                                                                                 |
-| ----------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GitHub Release          | Created   | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.31.0                                                                |
-| Tag (annotated)         | Pushed    | v4.31.0 → fd62f229e                                                                                                                                    |
-| Gist                    | Refreshed | https://gist.github.com/a61dcd78f4a28bc32bed07997d9de3fb (header v4.30.0 → v4.31.0; changelog section refreshed; one-pager + operator audit preserved) |
-| Email session breakdown | Sent      | Message-ID `<2282a9fe-14e1-d228-ded3-fd85c18aa1f7@intentsolutions.io>` to jeremy@intentsolutions.io (379 lines, 27.9 KB)                               |
+| Artifact | Status | Detail |
+|---|---|---|
+| GitHub Release | Created | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.31.0 |
+| Tag (annotated) | Pushed | v4.31.0 → fd62f229e |
+| Gist | Refreshed | https://gist.github.com/a61dcd78f4a28bc32bed07997d9de3fb (header v4.30.0 → v4.31.0; changelog section refreshed; one-pager + operator audit preserved) |
+| Email session breakdown | Sent | Message-ID `<2282a9fe-14e1-d228-ded3-fd85c18aa1f7@intentsolutions.io>` to jeremy@intentsolutions.io (379 lines, 27.9 KB) |
 
 ## Quality Gates
 
-| Gate                  | Status  | Notes                                                                                      |
-| --------------------- | ------- | ------------------------------------------------------------------------------------------ |
-| Tests passing         | ✓       | j-rig: 173/173; CCP CI: validate + marketplace-validation green on every release-window PR |
-| Secrets scan          | ✓       | No tracked .env files; no obvious key patterns in last 5 commits                           |
-| Dependency audit      | not run | npm audit not invoked this session — recommend running before next release                 |
-| Branch protection     | ✓       | Bypassed for push, restored post-push (with API-payload retry)                             |
-| Documentation current | ✓       | CHANGELOG, CLAUDE.md, master spec, snapshots all aligned                                   |
-| Gist current          | ✓       | Refreshed at 2026-05-08T14:07:19Z                                                          |
-| AAR generated         | ✓       | This document                                                                              |
+| Gate | Status | Notes |
+|---|---|---|
+| Tests passing | ✓ | j-rig: 173/173; CCP CI: validate + marketplace-validation green on every release-window PR |
+| Secrets scan | ✓ | No tracked .env files; no obvious key patterns in last 5 commits |
+| Dependency audit | not run | npm audit not invoked this session — recommend running before next release |
+| Branch protection | ✓ | Bypassed for push, restored post-push (with API-payload retry) |
+| Documentation current | ✓ | CHANGELOG, CLAUDE.md, master spec, snapshots all aligned |
+| Gist current | ✓ | Refreshed at 2026-05-08T14:07:19Z |
+| AAR generated | ✓ | This document |
 
 ## Architectural Changes Worth Knowing
 
@@ -212,4 +212,4 @@ This release is the materialization of the plan documented at session start. Ful
 This release is signed by:
 
 - Jeremy Longshore
-  intentsolutions.io
+intentsolutions.io

@@ -7,7 +7,7 @@
 [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md) and the live repo as
 of this initiative.
 
-> Grade for understanding, not exact wording. A candidate who can _explain_ the
+> Grade for understanding, not exact wording. A candidate who can *explain* the
 > "why" behind each gate to a client has passed; one who recites job names without
 > the reasoning has not. **Must-get:** Q1, Q6, Q11, Q18.
 
@@ -43,7 +43,7 @@ required jobs, they'd sit "Expected" forever, and the PR could never merge — t
 **"N Expected forever" stuck-PR class (PR #778 / #964)**. Running unconditionally
 guarantees the gate always reports.
 
-**A4.** Legitimate **only** when the job skipped via a _designed_ job-level `if:`
+**A4.** Legitimate **only** when the job skipped via a *designed* job-level `if:`
 (a conditional gate that correctly did not apply — e.g. `check-submission-docs`
 passing cleanly when no new plugin was added). Dangerous when a job skips for an
 **undesigned** reason: `skipped` counts as pass, so a real gate would be silently
@@ -51,7 +51,7 @@ bypassed by a green aggregate.
 
 **A5.** Add the check as a **job inside `validate-plugins.yml`** and add its name
 to `ci-required`'s `needs:`. **Anti-pattern:** creating a separate, path-filtered
-workflow and adding _its_ context to the branch-protection required set — that
+workflow and adding *its* context to the branch-protection required set — that
 recreates the stuck-PR class.
 
 ## Section B — Advisory vs. blocking
@@ -116,7 +116,7 @@ a warning. (This 8-field `ALWAYS_REQUIRED` set is a documented NON-NEGOTIABLE.)
 **A15.** Anthropic's spec is intentionally **permissive** (it must accept the
 whole ecosystem); our marketplace is a **curated storefront** held to a higher
 bar, so the IS rubric adds required fields and strict errors on top. The
-**2026-04-28 debacle** was "realigning" the strict marketplace tier _down_ to
+**2026-04-28 debacle** was "realigning" the strict marketplace tier *down* to
 Anthropic's permissive floor — which broke the quality gate. Don't do it.
 
 **A16.** Agents are **kernel-strict, not tier-gated**: every agent must carry the
@@ -166,4 +166,4 @@ the catching; humans do the judgment."
 
 ---
 
-_Related: [pipeline quiz](705-DR-GUID-pipeline-quiz.md) · [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md)_
+*Related: [pipeline quiz](705-DR-GUID-pipeline-quiz.md) · [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md)*

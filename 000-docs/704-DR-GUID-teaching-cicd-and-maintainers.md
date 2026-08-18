@@ -62,25 +62,25 @@ wait on, and it always reports.
 (a `skipped` result counts as pass — legitimate only for a designed conditional).
 The gated jobs, and what each one protects:
 
-| Job                                | What it blocks a PR for                                                                                                                                                     |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `validate`                         | Malformed `plugin.json`, broken catalog format, plugin-structure errors.                                                                                                    |
-| `verify`                           | The full `pnpm run verify` pipeline (build + core checks).                                                                                                                  |
-| `test`                             | Package unit tests (CLI, MCP plugins).                                                                                                                                      |
-| `check-package-manager`            | Wrong package manager — `pnpm` everywhere except `marketplace/` which is `npm`.                                                                                             |
-| `marketplace-validation`           | The Astro site fails to build or routes don't resolve.                                                                                                                      |
-| `cli-smoke-tests`                  | The `@intentsolutions/*` CLI regressed.                                                                                                                                     |
-| `shellcheck-skills`                | Shell errors in skill/command scripts.                                                                                                                                      |
-| `skill-codeblock-syntax`           | Broken fenced code blocks in SKILL.md files.                                                                                                                                |
-| `typescript-coverage-audit`        | TS coverage regressions.                                                                                                                                                    |
-| `eslint-check` / `format-check`    | JS/TS lint + formatting.                                                                                                                                                    |
-| `ruff-check` / `ruff-format-check` | Python lint + formatting.                                                                                                                                                   |
-| `markdownlint`                     | Markdown rule violations (also guards synced-plugin lint exclusions).                                                                                                       |
-| `scan-synced-content`              | **Supply-chain scanner** over changed `plugins/**` — REFUSE (pipe-to-shell, reverse shell, secret exfil) is never waivable; CHALLENGE (dual-use) needs an allowlist waiver. |
-| `promote-curated-check`            | The `skills/.curated/` mirror drifted from its plugin sources.                                                                                                              |
-| `check-submission-docs`            | A new plugin arrived without its tier's submission docs (PRD/ADR/ONE-PAGER).                                                                                                |
-| `commit-scope-check`               | The PR title isn't a valid Conventional Commit / uses an unregistered area scope.                                                                                           |
-| `codeowners-drift`                 | A plugin's `maintainer` field changed but `CODEOWNERS` wasn't regenerated.                                                                                                  |
+| Job | What it blocks a PR for |
+| --- | --- |
+| `validate` | Malformed `plugin.json`, broken catalog format, plugin-structure errors. |
+| `verify` | The full `pnpm run verify` pipeline (build + core checks). |
+| `test` | Package unit tests (CLI, MCP plugins). |
+| `check-package-manager` | Wrong package manager — `pnpm` everywhere except `marketplace/` which is `npm`. |
+| `marketplace-validation` | The Astro site fails to build or routes don't resolve. |
+| `cli-smoke-tests` | The `@intentsolutions/*` CLI regressed. |
+| `shellcheck-skills` | Shell errors in skill/command scripts. |
+| `skill-codeblock-syntax` | Broken fenced code blocks in SKILL.md files. |
+| `typescript-coverage-audit` | TS coverage regressions. |
+| `eslint-check` / `format-check` | JS/TS lint + formatting. |
+| `ruff-check` / `ruff-format-check` | Python lint + formatting. |
+| `markdownlint` | Markdown rule violations (also guards synced-plugin lint exclusions). |
+| `scan-synced-content` | **Supply-chain scanner** over changed `plugins/**` — REFUSE (pipe-to-shell, reverse shell, secret exfil) is never waivable; CHALLENGE (dual-use) needs an allowlist waiver. |
+| `promote-curated-check` | The `skills/.curated/` mirror drifted from its plugin sources. |
+| `check-submission-docs` | A new plugin arrived without its tier's submission docs (PRD/ADR/ONE-PAGER). |
+| `commit-scope-check` | The PR title isn't a valid Conventional Commit / uses an unregistered area scope. |
+| `codeowners-drift` | A plugin's `maintainer` field changed but `CODEOWNERS` wasn't regenerated. |
 
 The last two (`commit-scope-check`, `codeowners-drift`) are the maintainer-ladder
 gates added in this initiative — see §7.
@@ -107,7 +107,7 @@ stop a merge. Knowing which is which is the single most common client question.
   `skill-frontmatter` schema over the corpus and logs agreement/deviation vs. the
   prose-spec validator) and `kernel-vendor-hash` (enforces the version-coupling
   invariant V ≤ C ≤ K). Both `continue-on-error`, both advisory. They are a
-  30-day-plus soak toward a _future_ cutover — the validator authority has **not**
+  30-day-plus soak toward a *future* cutover — the validator authority has **not**
   flipped and won't until a strict, documented bar is met.
 - **CodeQL** — security scanning, PR-scoped to `packages/**` + `marketplace/src/**`
   so it adds no fan-out to plugin PRs.
@@ -122,10 +122,10 @@ never let a bot's opinion be the thing that merges code.
 There are two marketplace catalog files, and confusing them is the classic
 mistake:
 
-| File                                       | Role                                           | Edit it?   |
-| ------------------------------------------ | ---------------------------------------------- | ---------- |
-| `.claude-plugin/marketplace.extended.json` | **Source of truth** — rich metadata.           | **Yes.**   |
-| `.claude-plugin/marketplace.json`          | CLI-compatible, **auto-generated**, sanitized. | **Never.** |
+| File | Role | Edit it? |
+| --- | --- | --- |
+| `.claude-plugin/marketplace.extended.json` | **Source of truth** — rich metadata. | **Yes.** |
+| `.claude-plugin/marketplace.json` | CLI-compatible, **auto-generated**, sanitized. | **Never.** |
 
 `pnpm run sync-marketplace` regenerates the CLI catalog, any missing plugin
 `package.json`s, and the README auto-TOC. The generator **strips** any
@@ -243,4 +243,4 @@ and code-review-assignment to onboard the cohort — is the decision record
 
 ---
 
-_Related: [`GOVERNANCE.md`](../GOVERNANCE.md) · [`MAINTAINERS.md`](../MAINTAINERS.md) · [pipeline quiz](705-DR-GUID-pipeline-quiz.md) · [`SCHEMA_CHANGELOG.md`](SCHEMA_CHANGELOG.md) · [submission standard](700-DR-GUID-skill-submission-standard.md) · [org migration](707-AT-DECR-org-migration-to-intent-solutions-io.md)_
+*Related: [`GOVERNANCE.md`](../GOVERNANCE.md) · [`MAINTAINERS.md`](../MAINTAINERS.md) · [pipeline quiz](705-DR-GUID-pipeline-quiz.md) · [`SCHEMA_CHANGELOG.md`](SCHEMA_CHANGELOG.md) · [submission standard](700-DR-GUID-skill-submission-standard.md) · [org migration](707-AT-DECR-org-migration-to-intent-solutions-io.md)*

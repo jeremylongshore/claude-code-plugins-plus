@@ -10,7 +10,6 @@
 ## Configuration Summary
 
 ### Astro Configuration
-
 **File:** `
 
 ```javascript
@@ -27,7 +26,6 @@
 ---
 
 ### CNAME File
-
 **File:** `
 
 **Content:** `[retired legacy public domain]`
@@ -37,16 +35,13 @@
 ---
 
 ### GitHub Actions Workflow
-
 **File:** `
 
 **Trigger Conditions:**
-
 - Push to main branch (paths: `marketplace/**`)
 - Manual workflow dispatch
 
 **Build Process:**
-
 1. Checkout code
 2. Setup Node.js 20 with npm caching
 3. Install dependencies: `npm ci`
@@ -57,18 +52,15 @@
 ✅ **Status:** Workflow exists and uses correct package manager (npm)
 
 **Recent Fix Applied:**
-
 - Changed from `pnpm` to `npm` to match marketplace directory's package manager
 - Added npm cache configuration for faster builds
 
 ---
 
 ### Build Output
-
 **Directory:** `
 
 **Contents:**
-
 - `index.html` - Main homepage
 - `spotlight/index.html` - Spotlight page
 - `CNAME` - Custom domain file
@@ -80,7 +72,6 @@
 ✅ **Status:** Build successful, all required files present
 
 **Build Performance:**
-
 - Total build time: ~4.34s
 - Pages generated: 2
 - Assets optimized: Yes
@@ -91,21 +82,17 @@
 ## Required Actions for Deployment
 
 ### 1. GitHub Repository Settings
-
 **URL:**
 
 **Required Configuration:**
-
 - [ ] Source: **GitHub Actions** (not Deploy from a branch)
 - [ ] Custom domain: `[retired legacy public domain]`
 - [ ] Enforce HTTPS: ✅ Enabled
 
 ### 2. DNS Configuration
-
 **At your domain registrar (e.g., Namecheap, GoDaddy, Cloudflare):**
 
 **A Records (required for root domain):**
-
 ```
 Type: A, Name: @, Value: 185.199.108.153
 Type: A, Name: @, Value: 185.199.109.153
@@ -114,22 +101,18 @@ Type: A, Name: @, Value: 185.199.111.153
 ```
 
 **CNAME Record (optional for www subdomain):**
-
 ```
 Type: CNAME, Name: www, Value: jeremylongshore.github.io
 ```
 
 **Verification:**
-
 ```bash
 dig retired-domain.invalid A +short
 # Historical verification shape; the reserved host intentionally returns no records.
 ```
 
 ### 3. Trigger Deployment
-
 **Option A - Automatic (Recommended):**
-
 ```bash
 cd
 git add .github/workflows/deploy-marketplace.yml
@@ -138,7 +121,6 @@ git push origin main
 ```
 
 **Option B - Manual:**
-
 1. Go to: https://github.com/jeremylongshore/claude-code-plugins/actions/workflows/deploy-marketplace.yml
 2. Click "Run workflow"
 3. Select branch: main
@@ -151,7 +133,6 @@ git push origin main
 After deployment completes:
 
 ### Immediate Checks (within 5 minutes)
-
 - [ ] Visit [retired legacy public domain]
 - [ ] Verify HTTPS works (green padlock)
 - [ ] Check homepage loads correctly
@@ -159,7 +140,6 @@ After deployment completes:
 - [ ] Verify plugin count shows "227 plugins"
 
 ### Content Checks
-
 - [ ] All plugin cards display
 - [ ] Search functionality works
 - [ ] Category filters work
@@ -167,14 +147,12 @@ After deployment completes:
 - [ ] Fonts render properly
 
 ### Technical Checks
-
 - [ ] Run Lighthouse audit (target: 90+ in all categories)
 - [ ] Check browser console for errors
 - [ ] Verify mobile responsiveness
 - [ ] Test on multiple browsers
 
 ### SEO Checks
-
 - [ ] Page title: "Claude Code Plugins Marketplace - 227 Plugins"
 - [ ] Meta description present
 - [ ] Open Graph tags: https://www.opengraph.xyz/?url=https://retired-domain.invalid
@@ -185,7 +163,6 @@ After deployment completes:
 ## Deployment Timeline
 
 ### Estimated Time to Live
-
 1. **Push to GitHub:** Instant
 2. **GitHub Actions Build:** 2-3 minutes
 3. **GitHub Pages Deploy:** 1-2 minutes
@@ -193,7 +170,6 @@ After deployment completes:
 5. **HTTPS Certificate:** 10-15 minutes (after DNS propagation)
 
 ### Expected Timeline
-
 - **First deployment with custom domain:** 24-48 hours
 - **Subsequent deployments:** 3-5 minutes
 
@@ -202,7 +178,6 @@ After deployment completes:
 ## Troubleshooting Quick Reference
 
 ### Build Fails
-
 ```bash
 # Test locally first
 cd
@@ -214,13 +189,11 @@ cat dist/CNAME
 ```
 
 ### Site Not Updating
-
 1. Clear browser cache: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
 2. Check GitHub Actions: https://github.com/jeremylongshore/claude-code-plugins/actions
 3. Wait 5-10 minutes for CDN cache to clear
 
 ### Custom Domain Issues
-
 ```bash
 # Check DNS propagation
 dig retired-domain.invalid A +short
@@ -237,14 +210,12 @@ cat
 ## Files Modified
 
 ### Updated Files
-
 1. **`.github/workflows/deploy-marketplace.yml`**
    - Changed from pnpm to npm
    - Added npm cache configuration
    - Verified build commands
 
 ### New Files Created
-
 1. **`DEPLOYMENT_CHECKLIST.md`** (root directory)
    - Comprehensive deployment guide
    - Pre/post-deployment checklists
@@ -264,7 +235,6 @@ cat
    - See `
 
 2. **Update GitHub Actions workflow:**
-
    ```bash
    cd
    git add .github/workflows/deploy-marketplace.yml

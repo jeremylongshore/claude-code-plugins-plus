@@ -6,7 +6,7 @@
 **Owner:** Jeremy Longshore (Lead). **Recommended gate before execution:** an
 ISEDC council review (`/exec-decision-council`).
 
-> This record documents the deliberate _next step_ after the MVP maintainer
+> This record documents the deliberate *next step* after the MVP maintainer
 > ladder proves out on the personal repo. It is the "org rules for the team"
 > answer — and those rules **only exist in an org**. Nothing here is executed by
 > the PR that introduces this file; execution is a separate, gated action.
@@ -46,7 +46,7 @@ into platform-enforced org primitives:
 
 1. **Areas → GitHub Teams.** Create one team per area:
    `@intent-solutions-io/{ci-infra, validator-schema, marketplace-site,
-external-sync, docs-governance, freshie, deps}` (plus per-category
+   external-sync, docs-governance, freshie, deps}` (plus per-category
    `plugins-*` teams as needed). Team membership becomes the source of truth for
    who holds which rung — `MAINTAINERS.md` documents it; the teams enforce it.
 2. **Team-based CODEOWNERS.** Replace each `@jeremylongshore` (and the commented
@@ -73,7 +73,7 @@ which the legacy slug 301-redirects to.
 A GitHub org transfer **does** install an automatic redirect from the old
 owner/repo path to the new one, so existing `git remote` URLs and clone links keep
 working. **But** redirects are best-effort and break if a repo of the same name is
-later created at the old path, and any tooling that pins the _owner_ string
+later created at the old path, and any tooling that pins the *owner* string
 (not just follows the redirect) can break. Before executing:
 
 - Inventory every place the owner/slug is hardcoded (CLI, Hero, marketplace config,
@@ -119,4 +119,4 @@ a dated addendum with the ISEDC verdict and the migration runbook results.
 
 ---
 
-_Related: [`GOVERNANCE.md`](../GOVERNANCE.md) · [`MAINTAINERS.md`](../MAINTAINERS.md) · [`.github/CODEOWNERS`](../.github/CODEOWNERS) · [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md) · `/exec-decision-council`_
+*Related: [`GOVERNANCE.md`](../GOVERNANCE.md) · [`MAINTAINERS.md`](../MAINTAINERS.md) · [`.github/CODEOWNERS`](../.github/CODEOWNERS) · [teaching doc](704-DR-GUID-teaching-cicd-and-maintainers.md) · `/exec-decision-council`*

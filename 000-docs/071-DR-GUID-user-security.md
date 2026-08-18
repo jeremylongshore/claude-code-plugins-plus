@@ -15,7 +15,6 @@ This guide helps you evaluate plugins before installation and protect yourself f
 Every plugin in this marketplace has a trust level:
 
 #### 🟢 **FEATURED** - Highest Trust
-
 - ✅ Manually reviewed by 2+ maintainers
 - ✅ Active maintenance (updated within 90 days)
 - ✅ Community adoption (10+ users)
@@ -23,14 +22,12 @@ Every plugin in this marketplace has a trust level:
 - **Safe for production use**
 
 #### 🟡 **VERIFIED** - Medium Trust
-
 - ✅ Full security review completed
 - ✅ 7-day public review period
 - ✅ 2+ maintainer approvals
 - **Use with normal caution**
 
 #### 🔴 **COMMUNITY** - Lowest Trust
-
 - ⚠️ Automated validation only
 - ⚠️ Minimal manual review
 - **Inspect before using in production**
@@ -50,7 +47,6 @@ Every plugin in this marketplace has a trust level:
 - [ ] **How to uninstall?** - Clear removal instructions
 
 **Red flags:**
-
 - ❌ Vague description ("helps with productivity")
 - ❌ No explanation of data access
 - ❌ Unexplained network calls
@@ -74,7 +70,6 @@ https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/[plugin
 ```
 
 **Check for suspicious patterns:**
-
 - ❌ `rm -rf` (destructive file operations)
 - ❌ `curl http://unknown-domain.com` (data exfiltration)
 - ❌ Hardcoded API keys or credentials
@@ -175,7 +170,6 @@ Execute operations on the codebase.
 
 ✅ GOOD - Clear instructions
 When user runs /analyze:
-
 1. Read package.json
 2. Check dependencies for updates
 3. Generate report (no external API calls)
@@ -303,7 +297,6 @@ Go to: https://github.com/jeremylongshore/claude-code-plugins/issues/new
 Title: [SECURITY] Malicious behavior in [plugin-name]
 
 Description:
-
 - Plugin name:
 - What happened:
 - Evidence (logs, screenshots):
