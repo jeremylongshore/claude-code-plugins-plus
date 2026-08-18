@@ -1158,7 +1158,9 @@ those values. It labels five live global website totals as `marketplace-visible`
 cohort definition and exact resolver command next to each, and adds
 `pnpm run validate:published-count-cohorts` to the existing `validate` job. The fixture-driven gate
 recursively discovers count-bearing public Astro pages and components from literals, catalog
-counts, collection lengths, and total/count expressions rather than one identifier. The first
+counts, collection lengths, post-noun numeric forms, and identifier-independent rendered
+expressions rather than one identifier. URL path segments, prose durations, and counts of a
+different adjacent noun are excluded by fixtures rather than silently treated as skill totals. The first
 inventory finds 51 Astro sources: five global pages are enforced, 46 discovered non-global or
 point-in-time sources are grouped by exact path as owned deferrals, and
 the generated social image is a forty-seventh path-level deferral. Three local/query expressions
@@ -1170,7 +1172,9 @@ page therefore fails closed. Unknown cohorts, unsafe
 or unreadable paths, symlinks, comment-only labels, missing provenance, and unregistered new count
 sources or expressions fail closed. Astro frontmatter and script/style bodies cannot satisfy the
 rendered count/label contract, markup attributes cannot impersonate it, and provenance must be a
-top-level component tag parsed outside quoted attributes and Astro expression strings. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
+top-level component tag parsed outside quoted attributes and Astro expression strings. Paired raw
+text elements are parsed with quote- and brace-aware opening tags, so a quoted `/>` cannot disguise
+a script body as self-closing; malformed raw-text elements are refused. Cowork packages, entity-local cards, vendor packs, stale live copy, and research snapshots
 are not forced into the marketplace cohort. README work is deferred because its generated count
 contract overlaps active PRs; the authoritative local check is
 `node scripts/generate-readme-toc.mjs --check` (there is no `pnpm run readme:check`). E1.6 remains

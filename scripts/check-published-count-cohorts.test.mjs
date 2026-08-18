@@ -33,7 +33,7 @@ function registryFor(surfaces) {
       roots: ['marketplace/src/pages', 'marketplace/src/components'],
       extension: '.astro',
       noun: 'skills',
-      dynamicTerms: ['count', 'length', 'shown', 'total'],
+      dynamicExpressionPolicy: 'any-braced-expression',
       ignoredPhrases: ['Tons of Skills'],
     },
     surfaces,
@@ -273,12 +273,31 @@ test('identifier-independent discovery refuses catalog counts, collection length
   for (const source of [
     '<strong>{_rawCatalog.count}</strong> skills\n',
     '<strong>{skills.length}</strong> skills\n',
+    '<strong>{skillQuantity}</strong> skills\n',
     '<p>Research across 1,372 skills.</p>\n',
+    '<p>Skills: 9,999</p>\n',
   ]) {
     const root = makeFixture();
     fs.writeFileSync(path.join(root, 'marketplace/src/pages/legacy.astro'), source);
     equal(findingCode(check(root)), 'UNREGISTERED_PUBLIC_COUNT', source);
   }
+
+  for (const source of [
+    '<a href={`/skills/${item.slug}/`}>Skill detail</a>\n',
+    '<p>Learn what plugins and skills are, install in 60 seconds.</p>\n',
+    '<h3>Agent Skills (5 notebooks)</h3>\n',
+  ]) {
+    const root = makeFixture();
+    fs.writeFileSync(path.join(root, 'marketplace/src/pages/relationship.astro'), source);
+    equal(check(root).allow, true, source);
+  }
+
+  const nestedRenderedCount = makeFixture();
+  fs.writeFileSync(
+    path.join(nestedRenderedCount, 'marketplace/src/components/NestedCount.astro'),
+    '{skill.skillCount && (<span>{skill.skillCount} skills</span>)}\n',
+  );
+  equal(findingCode(check(nestedRenderedCount)), 'UNREGISTERED_PUBLIC_COUNT');
 });
 
 test('count-like sources in public Astro components require registration', () => {
@@ -371,6 +390,20 @@ test('frontmatter and script strings cannot satisfy the visible label or provena
   });
   equal(findingCode(check(scriptOnly)), 'MISSING_COHORT_LABEL');
 
+  const quotedSelfClosingText = makeFixture({
+    source: [
+      '---',
+      '---',
+      '<strong>{fmt(totalSkills)}</strong> skills',
+      '<script data-x="/>">',
+      "const label = 'marketplace-visible skills';",
+      'const marker = `<CountProvenance cohort="marketplace-visible" />`;',
+      '</script>',
+      '',
+    ].join('\n'),
+  });
+  equal(findingCode(check(quotedSelfClosingText)), 'MISSING_COHORT_LABEL');
+
   const hiddenExpression = makeFixture({
     source: [
       '---',
@@ -390,6 +423,14 @@ test('frontmatter and script strings cannot satisfy the visible label or provena
     ),
   });
   equal(check(selfClosingHeadScript).allow, true);
+
+  const unclosedScript = makeFixture({
+    source: validSource().replace(
+      '<CountProvenance cohort="marketplace-visible" />',
+      '<script>const value = 1;',
+    ),
+  });
+  equal(findingCode(check(unclosedScript)), 'MALFORMED_ASTRO_RAW_TEXT');
 });
 
 test('markup attributes cannot impersonate rendered count labels or provenance', () => {

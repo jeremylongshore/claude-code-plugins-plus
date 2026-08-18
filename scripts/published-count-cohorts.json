@@ -36,7 +36,7 @@
     "roots": ["marketplace/src/pages", "marketplace/src/components"],
     "extension": ".astro",
     "noun": "skills",
-    "dynamicTerms": ["count", "length", "shown", "total"],
+    "dynamicExpressionPolicy": "any-braced-expression",
     "ignoredPhrases": ["Tons of Skills"]
   },
   "surfaces": [

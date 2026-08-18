@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const REGISTRY_PATH = 'scripts/published-count-cohorts.json';
 const DISCOVERY_ROOTS = Object.freeze(['marketplace/src/pages', 'marketplace/src/components']);
-const DISCOVERY_DYNAMIC_TERMS = Object.freeze(['count', 'length', 'shown', 'total']);
+const DISCOVERY_DYNAMIC_EXPRESSION_POLICY = 'any-braced-expression';
 const DISCOVERY_IGNORED_PHRASES = Object.freeze(['Tons of Skills']);
 const LABEL_LINE_WINDOW = 4;
 const CANONICAL_COHORTS = Object.freeze([
@@ -48,28 +48,110 @@ function stripComments(source) {
   return source
     .replace(/<!--[\s\S]*?-->/g, (comment) => comment.replace(/[^\n]/g, ' '))
     .replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '))
-    .replace(/(?<!:)\/\/.*$/gm, '');
+    .replace(/(?<!:)\/\/.*$/gm, maskText);
 }
 
 function maskText(value) {
   return value.replace(/[^\r\n]/g, ' ');
 }
 
+function astroFrontmatterRegion(source) {
+  const opening = /^(?:\uFEFF)?---[ \t]*(?:\r?\n|$)/.exec(source);
+  if (!opening) return null;
+  const closing = /^---[ \t]*\r?$/gm;
+  closing.lastIndex = opening[0].length;
+  const match = closing.exec(source);
+  if (!match) refuse('MALFORMED_ASTRO_FRONTMATTER', 'Astro frontmatter lacks a closing delimiter');
+  return { start: 0, end: match.index + match[0].length, element: 'frontmatter' };
+}
+
+function rawTextElementRegions(source) {
+  const regions = [];
+  let expressionDepth = 0;
+  let expressionQuote = '';
+  let escaped = false;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (expressionDepth > 0) {
+      if (escaped) escaped = false;
+      else if (expressionQuote) {
+        if (character === '\\') escaped = true;
+        else if (character === expressionQuote) expressionQuote = '';
+      } else if (character === '"' || character === "'" || character === '`') {
+        expressionQuote = character;
+      } else if (character === '{') expressionDepth += 1;
+      else if (character === '}') expressionDepth -= 1;
+      continue;
+    }
+    if (character === '{') {
+      expressionDepth = 1;
+      continue;
+    }
+    if (source.startsWith('<!--', index)) {
+      const commentEnd = source.indexOf('-->', index + 4);
+      if (commentEnd === -1) return regions;
+      index = commentEnd + 2;
+      continue;
+    }
+    if (character !== '<') continue;
+    const opening = /^<(script|style)\b/i.exec(source.slice(index));
+    if (!opening) continue;
+
+    let tagQuote = '';
+    let tagEscaped = false;
+    let tagBraceDepth = 0;
+    let tagEnd = index + opening[0].length;
+    for (; tagEnd < source.length; tagEnd += 1) {
+      const tagCharacter = source[tagEnd];
+      if (tagEscaped) tagEscaped = false;
+      else if (tagQuote) {
+        if (tagCharacter === '\\') tagEscaped = true;
+        else if (tagCharacter === tagQuote) tagQuote = '';
+      } else if (tagCharacter === '"' || tagCharacter === "'" || tagCharacter === '`') {
+        tagQuote = tagCharacter;
+      } else if (tagCharacter === '{') tagBraceDepth += 1;
+      else if (tagCharacter === '}') tagBraceDepth = Math.max(0, tagBraceDepth - 1);
+      else if (tagCharacter === '>' && tagBraceDepth === 0) break;
+    }
+    if (tagEnd >= source.length) {
+      refuse('MALFORMED_ASTRO_RAW_TEXT', `<${opening[1].toLowerCase()}> has no tag end`);
+    }
+
+    const openingText = source.slice(index, tagEnd + 1);
+    if (openingText.slice(0, -1).trimEnd().endsWith('/')) {
+      index = tagEnd;
+      continue;
+    }
+
+    const element = opening[1].toLocaleLowerCase('en-US');
+    const closingPattern = new RegExp(`<\\/${element}\\s*>`, 'gi');
+    closingPattern.lastIndex = tagEnd + 1;
+    const closing = closingPattern.exec(source);
+    if (!closing) refuse('MALFORMED_ASTRO_RAW_TEXT', `<${element}> lacks a closing tag`);
+    const regionEnd = closing.index + closing[0].length;
+    regions.push({ start: index, end: regionEnd, element });
+    index = regionEnd - 1;
+  }
+  return regions;
+}
+
 function maskNonRenderedAstroRegions(source) {
   let visible = source;
-  const opening = /^(?:\uFEFF)?---[ \t]*(?:\r?\n|$)/.exec(visible);
-  if (opening) {
-    const closing = /^---[ \t]*\r?$/gm;
-    closing.lastIndex = opening[0].length;
-    const match = closing.exec(visible);
-    if (!match)
-      refuse('MALFORMED_ASTRO_FRONTMATTER', 'Astro frontmatter lacks a closing delimiter');
-    const end = match.index + match[0].length;
-    visible = `${maskText(visible.slice(0, end))}${visible.slice(end)}`;
+  const frontmatter = astroFrontmatterRegion(visible);
+  if (frontmatter)
+    visible = `${maskText(visible.slice(0, frontmatter.end))}${visible.slice(frontmatter.end)}`;
+
+  const regions = rawTextElementRegions(visible);
+
+  let cursor = 0;
+  let masked = '';
+  for (const region of regions) {
+    masked += visible.slice(cursor, region.start);
+    masked += maskText(visible.slice(region.start, region.end));
+    cursor = region.end;
   }
-  return visible
-    .replace(/<script\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/script\s*>/gi, maskText)
-    .replace(/<style\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/style\s*>/gi, maskText);
+  return `${masked}${visible.slice(cursor)}`;
 }
 
 function topLevelMarkupTags(source) {
@@ -153,7 +235,9 @@ function exactRenderedTagOccurrences(source, expected) {
 }
 
 const OTHER_POPULATION_NOUN =
-  /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?)\b/i;
+  /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?)\b/i;
+const CROSS_LINE_COUNT_TERM = /(?:count|length|shown|total|quantity|number|size)/i;
+const COUNT_AFTER_SEPARATOR = /^[\s:;=()[\]–—-]*$/u;
 
 function namesOtherPopulation(intervening) {
   const skillModifiersRemoved = intervening.replace(/\b(?:agent|plugin)\s+skills\b/gi, 'skills');
@@ -163,6 +247,44 @@ function namesOtherPopulation(intervening) {
 function blocksSkillAssociation(intervening, adjacentNoun = '') {
   const combined = `${intervening}${adjacentNoun}`;
   return namesOtherPopulation(combined) || /(?:^|\s)(?:const|let|var)\s|[;`]/i.test(intervening);
+}
+
+function codeOutsideQuotedStrings(value) {
+  let quote = '';
+  let escaped = false;
+  let result = '';
+  for (const character of value) {
+    if (escaped) {
+      escaped = false;
+      result += ' ';
+    } else if (quote) {
+      if (character === '\\') escaped = true;
+      else if (character === quote) quote = '';
+      result += character === '\n' ? '\n' : ' ';
+    } else if (character === '"' || character === "'" || character === '`') {
+      quote = character;
+      result += ' ';
+    } else {
+      result += character;
+    }
+  }
+  return result;
+}
+
+function insideTemplateLiteralAt(value, targetOffset) {
+  let quote = '';
+  let escaped = false;
+  for (let index = 0; index < targetOffset; index += 1) {
+    const character = value[index];
+    if (escaped) escaped = false;
+    else if (quote) {
+      if (character === '\\') escaped = true;
+      else if (character === quote) quote = '';
+    } else if (character === '"' || character === "'" || character === '`') {
+      quote = character;
+    }
+  }
+  return quote === '`';
 }
 
 function validateRepositoryPath(value, field) {
@@ -335,7 +457,7 @@ function validateDiscovery(registry) {
     roots: DISCOVERY_ROOTS,
     extension: '.astro',
     noun: 'skills',
-    dynamicTerms: DISCOVERY_DYNAMIC_TERMS,
+    dynamicExpressionPolicy: DISCOVERY_DYNAMIC_EXPRESSION_POLICY,
     ignoredPhrases: DISCOVERY_IGNORED_PHRASES,
   };
   if (JSON.stringify(registry.discovery) !== JSON.stringify(expected)) {
@@ -503,15 +625,70 @@ function validateSurfaces(registry, root, io) {
   return { enforced, deferred, registeredExpressions, registeredPaths };
 }
 
+function outerBracedExpressions(source, rawTextRegions) {
+  const expressions = [];
+  for (let start = 0; start < source.length; start += 1) {
+    if (source[start] !== '{') continue;
+    const rawRegion = rawTextRegions.find((region) => region.start <= start && start < region.end);
+    if (rawRegion?.element === 'style') continue;
+    if (
+      (rawRegion?.element === 'script' || rawRegion?.element === 'frontmatter') &&
+      source[start - 1] !== '$'
+    )
+      continue;
+    let depth = 1;
+    let quote = '';
+    let escaped = false;
+    let end = start + 1;
+    for (; end < source.length; end += 1) {
+      const character = source[end];
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (quote) {
+        if (character === '\\') escaped = true;
+        else if (character === quote) quote = '';
+        continue;
+      }
+      if (character === '"' || character === "'" || character === '`') {
+        quote = character;
+      } else if (character === '{') {
+        depth += 1;
+      } else if (character === '}') {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+    if (depth !== 0) continue;
+    const expressionStart = source[start - 1] === '$' ? start - 1 : start;
+    expressions.push({
+      start: expressionStart,
+      end: end + 1,
+      text: source.slice(expressionStart, end + 1),
+    });
+    // Retain nested rendered expressions as separate evidence. When a noun
+    // sits inside a compound template, the outer expression is retained too,
+    // so an inner registered count cannot grant authority to the compound.
+  }
+  return expressions;
+}
+
 export function findPublishedSkillCountEvidence(source, discovery) {
   let searchable = stripComments(source);
   for (const phrase of discovery.ignoredPhrases) {
     searchable = searchable.replaceAll(phrase, ' '.repeat(phrase.length));
   }
-  const terms = discovery.dynamicTerms.join('|');
-  const dynamicExpressionSource = String.raw`\$?\{[^}\n]{0,200}(?:${terms})[^}\n]{0,200}\}`;
+  // Count discovery must not depend on identifier spelling. Any outer Astro
+  // or template expression associated with the noun is owned until explicitly
+  // registered or deferred.
+  const frontmatter = astroFrontmatterRegion(searchable);
+  const expressionRegions = rawTextElementRegions(searchable);
+  if (frontmatter) expressionRegions.push(frontmatter);
+  const dynamicExpressions = outerBracedExpressions(searchable, expressionRegions);
   const evidence = [];
   const numericBefore = /\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b[^\n]{0,100}$/i;
+  const numericAfter = /\b\d[\d,]*(?:\.\d+)?\+?(?:-\d+)?\b/gi;
   const folded = searchable.toLocaleLowerCase('en-US');
   const noun = discovery.noun.toLocaleLowerCase('en-US');
   let offset = 0;
@@ -522,39 +699,59 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const previous = folded[found - 1] ?? '';
     const next = folded[offset] ?? '';
     if (/[a-z0-9_]/i.test(previous) || /[a-z0-9_]/i.test(next)) continue;
+    if (previous === '/' || next === '/') continue;
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
     const beforeCandidates = [];
     const afterCandidates = [];
 
-    for (const match of before.matchAll(new RegExp(dynamicExpressionSource, 'gi'))) {
-      const absolute = beforeStart + match.index;
-      const intervening = searchable.slice(absolute + match[0].length, found);
+    for (const expression of dynamicExpressions) {
+      if (
+        expression.start < found &&
+        expression.end > offset &&
+        expression.text.includes('${') &&
+        insideTemplateLiteralAt(expression.text, found - expression.start)
+      ) {
+        beforeCandidates.push({
+          distance: 0,
+          interveningOtherPopulation: false,
+          kind: 'dynamic',
+          line: lineAtOffset(searchable, found),
+          nounOffset: found,
+          offset: expression.start,
+          sameLine: !expression.text.includes('\n'),
+          text: expression.text,
+        });
+        continue;
+      }
+      if (expression.end > found || expression.end < beforeStart) continue;
+      const intervening = searchable.slice(expression.end, found);
       beforeCandidates.push({
-        distance: found - (absolute + match[0].length),
+        distance: found - expression.end,
         // Include the noun itself so modifiers such as "Agent Skills" are
         // treated as one skill label rather than an intervening agent count.
         interveningOtherPopulation: blocksSkillAssociation(intervening, noun),
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
-        offset: absolute,
+        offset: expression.start,
         sameLine: !intervening.includes('\n'),
-        text: match[0],
+        text: expression.text,
       });
     }
-    for (const match of after.matchAll(new RegExp(dynamicExpressionSource, 'gi'))) {
-      const intervening = searchable.slice(offset, offset + match.index);
+    for (const expression of dynamicExpressions) {
+      if (expression.start < offset || expression.start >= offset + after.length) continue;
+      const intervening = searchable.slice(offset, expression.start);
       afterCandidates.push({
-        distance: match.index,
+        distance: expression.start - offset,
         interveningOtherPopulation: blocksSkillAssociation(intervening),
         kind: 'dynamic',
         line: lineAtOffset(searchable, found),
         nounOffset: found,
-        offset: offset + match.index,
+        offset: expression.start,
         sameLine: !intervening.includes('\n'),
-        text: match[0],
+        text: expression.text,
       });
     }
     const numeric = numericBefore.exec(before);
@@ -570,6 +767,26 @@ export function findPublishedSkillCountEvidence(source, discovery) {
         offset: absolute,
         sameLine: !intervening.includes('\n'),
         text: numeric[0],
+      });
+    }
+    for (const match of after.matchAll(numericAfter)) {
+      const intervening = searchable.slice(offset, offset + match.index);
+      const trailing = after.slice(
+        match.index + match[0].length,
+        match.index + match[0].length + 48,
+      );
+      afterCandidates.push({
+        distance: match.index,
+        interveningOtherPopulation:
+          blocksSkillAssociation(intervening) ||
+          !COUNT_AFTER_SEPARATOR.test(intervening) ||
+          namesOtherPopulation(trailing),
+        kind: 'numeric',
+        line: lineAtOffset(searchable, found),
+        nounOffset: found,
+        offset: offset + match.index,
+        sameLine: !intervening.includes('\n'),
+        text: match[0],
       });
     }
 
@@ -595,10 +812,13 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     }
 
     const crossLine = [...beforeCandidates, ...afterCandidates].filter(
-      (candidate) => !candidate.interveningOtherPopulation,
+      (candidate) =>
+        !candidate.interveningOtherPopulation &&
+        (candidate.kind === 'numeric' ||
+          (!candidate.text.includes('\n') && CROSS_LINE_COUNT_TERM.test(candidate.text))),
     );
     const skillNamed = crossLine.filter((candidate) =>
-      foldedText(candidate.text).includes('skill'),
+      /skill/i.test(codeOutsideQuotedStrings(candidate.text)),
     );
     const nearest =
       (skillNamed.length === 1 ? skillNamed[0] : undefined) ??
