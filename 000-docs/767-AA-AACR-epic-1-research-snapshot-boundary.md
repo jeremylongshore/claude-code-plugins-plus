@@ -24,7 +24,8 @@ corpus documented by the source commit.
 | ----------------------- | -------------------------------------------------------------------------- |
 | Published-count checker | PASS — existing research paths remain explicit deferrals                   |
 | Snapshot boundary       | PASS — shared template plus research index                                 |
-| Numeric values          | Unchanged; only boundary wording and presentation added                    |
+| Research numeric values | Unchanged; historical analysis values were not rewritten                   |
+| Estate counters         | PASS — generated index/scorecard counters increased for filed AAR 767      |
 | Corpus distinction      | PASS — original `1,500+` claim is not conflated with source `1,372` corpus |
 | Mirrored content        | No `.source.json` or mirrored skill content changed                        |
 | External systems        | No registry, credential, contributor, Plane, or production mutation        |
