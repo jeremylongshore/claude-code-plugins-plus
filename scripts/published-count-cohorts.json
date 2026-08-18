@@ -110,9 +110,14 @@
     {
       "path": "scripts/generate-og-image.mjs",
       "classification": "social-image",
-      "status": "deferred",
+      "cohort": "marketplace-visible",
+      "expression": "stats.totalSkills",
+      "label": "marketplace-visible skills",
+      "provenance": "<CountProvenance cohort=\"marketplace-visible\" />",
+      "command": "node scripts/corpus-resolver.mjs --cohort marketplace-visible --json",
+      "status": "enforced",
       "owner": "E1.6 follow-up",
-      "reason": "The generated image must carry a legible cohort and reproduction locator without duplicating the registry wording."
+      "reason": "The generated image carries the cohort, source, and reproduction command in its visible card and metadata sidecar."
     }
   ],
   "deferredGroups": [
