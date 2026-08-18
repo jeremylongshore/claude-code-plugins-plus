@@ -1161,7 +1161,7 @@ recursively discovers count-bearing public Astro pages and components from liter
 counts, collection lengths, post-noun numeric forms, and identifier-independent rendered
 expressions—including multiline expressions split from the `skills` noun by adjacent markup—rather
 than one identifier. URL path segments, prose durations, stars, other-population units, narrative
-headings, collection renderers, and unrelated attributes are excluded by fixtures rather than
+headings outside the candidate expression's heading container, collection renderers, and unrelated attributes are excluded by fixtures rather than
 silently treated as skill totals; nested object syntax stays owned by its enclosing expression. The first
 inventory finds 51 Astro sources: five global pages are enforced, 46 discovered non-global or
 point-in-time sources are grouped by exact path as owned deferrals, and

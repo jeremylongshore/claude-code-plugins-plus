@@ -234,6 +234,22 @@ function exactRenderedTagOccurrences(source, expected) {
   return topLevelMarkupTags(source).filter((tag) => tag.text.trim() === expected).length;
 }
 
+function enclosingHeadingRange(tags, offset) {
+  let active;
+  for (const tag of tags) {
+    if (tag.start >= offset) break;
+    const opening = /^<h([1-6])\b/i.exec(tag.text);
+    const closing = /^<\/h([1-6])\b/i.exec(tag.text);
+    if (opening) active = { level: opening[1], start: tag.end };
+    else if (closing && active?.level === closing[1]) active = undefined;
+  }
+  if (!active) return undefined;
+  const closing = tags.find(
+    (tag) => tag.start >= offset && new RegExp(`^<\\/h${active.level}\\b`, 'i').test(tag.text),
+  );
+  return { start: active.start, end: closing?.start ?? Number.POSITIVE_INFINITY };
+}
+
 const OTHER_POPULATION_NOUN =
   /\b(?:plugins?|categor(?:y|ies)|items?|commands?|agents?|bundles?|packs?|notebooks?|stars?|seconds?|minutes?|hours?|days?|weeks?|months?|years?)\b/i;
 const COUNT_AFTER_SEPARATOR = /^[\s:;=()[\]–—-]*$/u;
@@ -752,6 +768,7 @@ export function findPublishedSkillCountEvidence(source, discovery) {
     const nounInMarkup = renderedMarkupRegions.some(
       (region) => region.start <= found && offset <= region.end,
     );
+    const nounHeadingRange = enclosingHeadingRange(renderedMarkupRegions, found);
     const beforeStart = Math.max(0, found - 240);
     const before = searchable.slice(beforeStart, found);
     const after = searchable.slice(offset, Math.min(searchable.length, offset + 120));
@@ -766,12 +783,16 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       const renderContainerExcludesNoun =
         expression.renderContainerStart !== undefined &&
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
+      const headingExcludesExpression =
+        nounHeadingRange !== undefined &&
+        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end);
       const incompatibleMarkupAssociation =
         !expressionOwnsNoun &&
         (expressionInMarkup ||
           nounInMarkup ||
           containsMarkupOutsideQuotedStrings(expression.text) ||
-          renderContainerExcludesNoun);
+          renderContainerExcludesNoun ||
+          headingExcludesExpression);
       if (
         expressionOwnsNoun &&
         expression.text.includes('${') &&
@@ -816,12 +837,16 @@ export function findPublishedSkillCountEvidence(source, discovery) {
       const renderContainerExcludesNoun =
         expression.renderContainerStart !== undefined &&
         !(expression.renderContainerStart < found && offset < expression.renderContainerEnd);
+      const headingExcludesExpression =
+        nounHeadingRange !== undefined &&
+        !(nounHeadingRange.start <= expression.start && expression.end <= nounHeadingRange.end);
       const incompatibleMarkupAssociation =
         !expressionOwnsNoun &&
         (expressionInMarkup ||
           nounInMarkup ||
           containsMarkupOutsideQuotedStrings(expression.text) ||
-          renderContainerExcludesNoun);
+          renderContainerExcludesNoun ||
+          headingExcludesExpression);
       const intervening = searchable.slice(offset, expression.start);
       const trailing = searchable.slice(expression.end, expression.end + 48);
       afterCandidates.push({
