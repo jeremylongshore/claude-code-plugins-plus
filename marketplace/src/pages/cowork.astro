@@ -19,12 +19,16 @@ if (
 const megaZip = manifest.megaZip;
 const totalPlugins = manifest.totalPlugins;
 const totalSkills = manifest.totalSkills;
+const heroPluginCount = totalPlugins;
+const heroSkillCount = totalSkills;
+const megaPluginCount = totalPlugins;
+const megaSkillCount = totalSkills;
 const allPlugins = manifest.plugins;
 ---
 
 <BaseLayout
   title="Download Plugin Packs for Claude Cowork | No Terminal Needed"
-  description={`Download ${totalPlugins}+ plugins and ${totalSkills}+ skills as zip files. One-click downloads for Claude Cowork users. No CLI required.`}
+  description="Download plugin and skill packs as zip files for Claude Cowork users. One-click downloads, no CLI required."
 >
   <style>
     .cowork-hero {
@@ -511,12 +515,12 @@ const allPlugins = manifest.plugins;
 
     <div class="cowork-hero-stats">
       <div class="cowork-hero-stat">
-        <span class="stat-number">{totalPlugins}+</span>
-        <span class="stat-label">Cowork-packaged plugins</span>
+        <span class="stat-number" data-count-provenance="cowork-package-local">{heroPluginCount.toLocaleString()}+</span>
+        <span class="stat-label">Cowork-package-local plugins</span>
       </div>
       <div class="cowork-hero-stat">
-        <span class="stat-number">{totalSkills}+</span>
-        <span class="stat-label">Cowork-packaged skills</span>
+        <span class="stat-number" data-count-provenance="cowork-package-local">{heroSkillCount.toLocaleString()}+</span>
+        <span class="stat-label">Cowork-package-local skills</span>
       </div>
       <div class="cowork-hero-stat">
         <span class="stat-number">{manifest.bundles.length}</span>
@@ -530,7 +534,7 @@ const allPlugins = manifest.plugins;
     <div class="mega-banner">
       <div class="mega-info">
         <h2>Download Everything</h2>
-        <p>All {totalPlugins} Cowork-packaged plugins and {totalSkills} Cowork-packaged skills in one zip</p>
+        <p>All <span data-count-provenance="cowork-package-local">{megaPluginCount.toLocaleString()} Cowork-package-local plugins</span> and <span data-count-provenance="cowork-package-local">{megaSkillCount.toLocaleString()} Cowork-package-local skills</span> in one zip</p>
         <div class="mega-stats">
           {megaZip && <span class="mega-stat">{megaZip.sizeFormatted}</span>}
         </div>
@@ -583,7 +587,7 @@ const allPlugins = manifest.plugins;
         autocomplete="off"
         aria-label="Search plugins by name"
       />
-      <p class="plugin-count-label" id="plugin-count">Showing all {allPlugins.length} plugins</p>
+      <p class="plugin-count-label" id="plugin-count">Showing all <span data-count-provenance="cowork-package-local">{allPlugins.length.toLocaleString()} Cowork-package-local plugins</span></p>
 
       <div class="plugin-list" id="plugin-list">
         {allPlugins.map(plugin => (
