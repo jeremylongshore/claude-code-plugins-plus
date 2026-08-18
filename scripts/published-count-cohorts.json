@@ -62,7 +62,14 @@
           "expression": "item.skillCount",
           "classification": "entity-local",
           "owner": "E1.6 follow-up",
-          "reason": "This client-rendered value counts skills attached to one search result, not the marketplace-visible corpus; its local-entity label remains a separate contract."
+          "reason": "This client-rendered value counts skills attached to one search result, not the marketplace-visible corpus.",
+          "label": "entity-local skills",
+          "provenance": "data-count-provenance=\"entity-local\"",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "data-count-provenance=\"entity-local\">${item.skillCount} entity-local skills",
+          "sink": "metaParts.push",
+          "function": "renderCard",
+          "call": "renderCard"
         }
       ]
     },
@@ -97,13 +104,27 @@
           "expression": "${shown}",
           "classification": "query-result-local",
           "owner": "E1.6 follow-up",
-          "reason": "This client-rendered value is the current filtered result count, not a stable corpus cohort; its query-local label remains a separate contract."
+          "reason": "This client-rendered value is the current filtered result count, not a stable corpus cohort.",
+          "label": "query-result-local skills",
+          "provenance": "query-result-local",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "<span data-count-provenance=\"query-result-local\">Showing ${shown} of ${total} query-result-local skills</span>",
+          "sink": "el.innerHTML",
+          "function": "updateResultsCount",
+          "call": "updateResultsCount"
         },
         {
           "expression": "${total}",
           "classification": "query-result-local",
           "owner": "E1.6 follow-up",
-          "reason": "This client-rendered value is the current query total paired with the filtered result count, not an independently governed corpus cohort."
+          "reason": "This client-rendered value is the current query total paired with the filtered result count, not an independently governed corpus cohort.",
+          "label": "query-result-local skills",
+          "provenance": "query-result-local",
+          "command": "node scripts/check-published-count-cohorts.mjs --json",
+          "contract": "<span data-count-provenance=\"query-result-local\">Showing ${shown} of ${total} query-result-local skills</span>",
+          "sink": "el.innerHTML",
+          "function": "updateResultsCount",
+          "call": "updateResultsCount"
         }
       ]
     },
