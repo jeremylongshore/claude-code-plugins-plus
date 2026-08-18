@@ -69,11 +69,14 @@ test('marketplace data authority separates deterministic, network, and editorial
   const index = artifactRegistration('marketplace/src/data/skills-index.json');
   const catalog = artifactRegistration('marketplace/src/data/skills-catalog.json');
   const pluginCatalog = artifactRegistration('marketplace/src/data/catalog.json');
+  const search = artifactRegistration('marketplace/src/data/unified-search-index.json');
   assert.equal(index?.contentCheck, true);
   assert.equal(catalog?.contentCheck, true);
   assert.equal(pluginCatalog?.contentCheck, true);
+  assert.equal(search?.contentCheck, true);
   assert.equal(index?.regenerate, catalog?.regenerate);
   assert.equal(pluginCatalog?.regenerate, 'node marketplace/scripts/sync-catalog.mjs --check');
+  assert.equal(search?.regenerate, 'node marketplace/scripts/generate-unified-search.mjs --check');
   assert.equal(
     artifactRegistration('marketplace/src/data/npm-stats.json')?.kind,
     'external_snapshot',
