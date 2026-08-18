@@ -1579,6 +1579,14 @@ jobs:
       - name: Check external stats artifacts declare freshness bounds
         run: pnpm run validate:stats-freshness
 
+      # The two most rot-prone documented facts stay mechanically equal to the
+      # code (blueprint 727 E2.7 + E2.8): CLAUDE.md's enumerated ci-required
+      # gate list must equal the workflow's needs: block, CLAUDE.md and
+      # GOVERNANCE.md must name all three required contexts, and every live
+      # schema-version claim surface must equal the validator's SCHEMA_VERSION.
+      - name: Assert documented ci-required contract and schema version equal the code
+        run: pnpm run validate:doc-fact-assertions
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid
