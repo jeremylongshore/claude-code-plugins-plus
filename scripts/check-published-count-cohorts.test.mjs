@@ -409,6 +409,22 @@ test('markup attributes cannot impersonate rendered count labels or provenance',
   });
   equal(findingCode(check(attributeExpression)), 'MISSING_EXPRESSION');
 
+  const quotedGreaterThanLabel = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
+      '<strong title=">" data-label="marketplace-visible skills">{fmt(totalSkills)}</strong> skills',
+    ),
+  });
+  equal(findingCode(check(quotedGreaterThanLabel)), 'MISSING_COHORT_LABEL');
+
+  const quotedGreaterThanExpression = makeFixture({
+    source: validSource().replace(
+      '<strong>{fmt(totalSkills)}</strong> marketplace-visible skills',
+      '<strong title=">" data-count={fmt(totalSkills)}>marketplace-visible skills</strong>',
+    ),
+  });
+  equal(findingCode(check(quotedGreaterThanExpression)), 'MISSING_EXPRESSION');
+
   const attributeProvenance = makeFixture({
     source: validSource().replace(
       '<CountProvenance cohort="marketplace-visible" />',

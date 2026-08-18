@@ -72,12 +72,8 @@ function maskNonRenderedAstroRegions(source) {
     .replace(/<style\b(?![^>]*\/\s*>)[^>]*>[\s\S]*?<\/style\s*>/gi, maskText);
 }
 
-function maskMarkupTags(source) {
-  return source.replace(/<[^>]*>/g, maskText);
-}
-
-function exactRenderedTagOccurrences(source, expected) {
-  let count = 0;
+function topLevelMarkupTags(source) {
+  const tags = [];
   let expressionDepth = 0;
   let expressionQuote = '';
   let escaped = false;
@@ -135,10 +131,25 @@ function exactRenderedTagOccurrences(source, expected) {
       }
     }
     if (end >= source.length) continue;
-    if (source.slice(index, end + 1).trim() === expected) count += 1;
+    tags.push({ end: end + 1, start: index, text: source.slice(index, end + 1) });
     index = end;
   }
-  return count;
+  return tags;
+}
+
+function maskMarkupTags(source) {
+  let cursor = 0;
+  let masked = '';
+  for (const tag of topLevelMarkupTags(source)) {
+    masked += source.slice(cursor, tag.start);
+    masked += maskText(source.slice(tag.start, tag.end));
+    cursor = tag.end;
+  }
+  return `${masked}${source.slice(cursor)}`;
+}
+
+function exactRenderedTagOccurrences(source, expected) {
+  return topLevelMarkupTags(source).filter((tag) => tag.text.trim() === expected).length;
 }
 
 const OTHER_POPULATION_NOUN =
