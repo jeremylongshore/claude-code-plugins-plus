@@ -2,18 +2,24 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CoworkGrid from '../components/CoworkGrid.astro';
 
-// Try to load manifest for mega-zip stats
-let manifest: any = null;
-try {
-  manifest = (await import('../data/cowork-manifest.json')).default;
-} catch {
-  // Not yet generated
+// The build pipeline must generate this projection before Astro renders.
+// Failing here prevents stale or invented totals from reaching the public site.
+const manifest = (await import('../data/cowork-manifest.json')).default;
+if (
+  !manifest ||
+  !Array.isArray(manifest.plugins) ||
+  !Array.isArray(manifest.bundles) ||
+  !manifest.megaZip ||
+  typeof manifest.totalPlugins !== 'number' ||
+  typeof manifest.totalSkills !== 'number'
+) {
+  throw new Error('Cowork manifest is missing required generated fields');
 }
 
-const megaZip = manifest?.megaZip;
-const totalPlugins = manifest?.totalPlugins || 300;
-const totalSkills = manifest?.totalSkills || 1300;
-const allPlugins = manifest?.plugins || [];
+const megaZip = manifest.megaZip;
+const totalPlugins = manifest.totalPlugins;
+const totalSkills = manifest.totalSkills;
+const allPlugins = manifest.plugins;
 ---
 
 <BaseLayout
@@ -506,15 +512,15 @@ const allPlugins = manifest?.plugins || [];
     <div class="cowork-hero-stats">
       <div class="cowork-hero-stat">
         <span class="stat-number">{totalPlugins}+</span>
-        <span class="stat-label">Plugins</span>
+        <span class="stat-label">Cowork-packaged plugins</span>
       </div>
       <div class="cowork-hero-stat">
         <span class="stat-number">{totalSkills}+</span>
-        <span class="stat-label">Skills</span>
+        <span class="stat-label">Cowork-packaged skills</span>
       </div>
       <div class="cowork-hero-stat">
-        <span class="stat-number">{manifest?.bundles?.length || 18}</span>
-        <span class="stat-label">Category Packs</span>
+        <span class="stat-number">{manifest.bundles.length}</span>
+        <span class="stat-label">Cowork category packs</span>
       </div>
     </div>
   </section>
@@ -524,13 +530,13 @@ const allPlugins = manifest?.plugins || [];
     <div class="mega-banner">
       <div class="mega-info">
         <h2>Download Everything</h2>
-        <p>All {totalPlugins} plugins and {totalSkills} skills in one zip</p>
+        <p>All {totalPlugins} Cowork-packaged plugins and {totalSkills} Cowork-packaged skills in one zip</p>
         <div class="mega-stats">
           {megaZip && <span class="mega-stat">{megaZip.sizeFormatted}</span>}
         </div>
       </div>
       <a
-        href={megaZip ? megaZip.path : '/downloads/claude-code-plugins-all.zip'}
+        href={megaZip.path}
         download
         class="mega-download-btn"
       >

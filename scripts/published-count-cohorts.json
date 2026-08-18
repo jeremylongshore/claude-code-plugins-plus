@@ -119,7 +119,7 @@
     {
       "classification": "packaged-or-bundle-local",
       "owner": "E1.6 follow-up",
-      "reason": "Cowork totals count downloadable package contents or one bundle/plugin, not the marketplace-visible cohort; their manifest authority and fallback removal require a separate contract.",
+      "reason": "Cowork totals count downloadable package contents or one bundle/plugin, not the marketplace-visible cohort; they are reproduced by the generated Cowork manifest after `node scripts/build-cowork-zips.mjs`. The manifest is now required and consumer fallbacks are forbidden; local package/bundle cohort enforcement remains a separate contract.",
       "paths": ["marketplace/src/components/CoworkGrid.astro", "marketplace/src/pages/cowork.astro"]
     },
     {
