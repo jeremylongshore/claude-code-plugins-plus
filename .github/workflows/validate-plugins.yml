@@ -122,12 +122,18 @@ jobs:
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml || true
           python3 scripts/validate-skills-schema.py --agents-only || true
 
-      # .mcp.json advisory validation — surfaces MCP-config findings on every PR.
-      # (kernel-shadow-validation runs this same validator, but only when the
-      # validator itself changes.) ADVISORY ONLY — never pass --strict here; the
-      # promotion to a blocking gate is the DR-049 soak checklist's call.
-      - name: Validate .mcp.json configs (advisory)
-        run: node scripts/validate-mcp-config.mjs || true
+      # .mcp.json validation, two lanes (E4.8, blueprint 727):
+      #   1. UNAMBIGUOUS classes block: JSON parse failures, non-object server
+      #      maps/entries, and a server missing its transport-essential field
+      #      (stdio ⇒ command; http/sse ⇒ url). Landed with zero baseline debt.
+      #   2. Everything else (the IS overlay: description/version/enabled/…)
+      #      stays advisory under the deadline below; full --strict promotion
+      #      remains the DR-049 soak checklist's call — never pass --strict here.
+      # REPORT-ONLY-UNTIL: 2026-11-17
+      - name: Validate .mcp.json configs (advisory + unambiguous gate)
+        run: |
+          node scripts/validate-mcp-config.mjs || true
+          node scripts/validate-mcp-config.mjs --gate-unambiguous
 
       # Design-tell gate (VibeCheck 25/100 regression guard, 2026-05-31).
       # Fails on chrome gradients, glassmorphism, purple/indigo/violet
