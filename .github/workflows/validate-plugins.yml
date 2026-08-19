@@ -1603,6 +1603,13 @@ jobs:
       - name: Check the canonical skill-contract schema
         run: pnpm run validate:canonical-schema
 
+      # Capability-vocabulary coverage (blueprint 727 E3.3): every tool token
+      # in every tracked SKILL.md/agent allowlist must map to an abstract
+      # capability through the ONE shared parser, or carry an enumerated
+      # disposition. An unmapped token fails, naming file and token.
+      - name: Check capability-vocabulary coverage
+        run: pnpm run validate:capability-coverage
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid
