@@ -76,8 +76,15 @@ python3 scripts/dolt-mcp-client.py \
   [`dolthub/dolt-mcp`](https://github.com/dolthub/dolt-mcp) server (a ~40-tool
   version-control surface — fetch the exact list live, never freeze it), least-privilege
   wired.
-- **The safety layer** — every `query`/`exec` passes the verb-class statement classifier
-  (`scripts/sql_classifier.py`) *before* reaching the server.
+- **The safety layer** — `scripts/dolt-mcp-guard.py`, the plugin's MCP **entrypoint**: a
+  stdio proxy that wraps `dolt-mcp-server` and enforces the mutation posture ON the wire.
+  Destructive tools (push / pull / both merges / `reset --hard` / branch-delete /
+  `DROP DATABASE`) are refused before they reach the server and filtered out of
+  `tools/list`; every `query`/`exec` passes the verb-class statement classifier
+  (`scripts/sql_classifier.py`); safe-write SQL through `exec` additionally requires
+  `DOLT_MCP_ALLOW_MUTATION=1`. (Until 2026-08-19 this posture was enforced only on the
+  `dolt-mcp-client.py` path — a bare `dolt-mcp-server` registration exposed the
+  destructive verbs ungated. Register through the guard; see § Wire the MCP server.)
 
 ## Declared mutation posture
 
@@ -85,7 +92,10 @@ python3 scripts/dolt-mcp-client.py \
 - **Safe writes** (INSERT/UPDATE/DELETE …) require an explicit `--allow-mutation`, a
   non-`main` agent branch, and a GA/beta flavor maturity.
 - **History-affecting statements** (push / merge / `reset --hard` / branch-delete /
-  `DROP DATABASE` / unknown `CALL`) are **always refused** — recommend-only.
+  `DROP DATABASE` / unknown `CALL`) are **always refused** — recommend-only. Enforced at
+  BOTH boundaries: the client path (`dolt-mcp-client.py`) and the MCP wire itself
+  (`dolt-mcp-guard.py`); proven by `tests/test_dolt_mcp_guard.py`, which drives the guard
+  over real JSON-RPC.
 - **Pre-GA flavors** (`doltlite` alpha, `dumbo` experimental) are held read-only by the
   maturity gate and have **no wired connection** (fail-closed descriptor stubs, decision 6).
 - **Embedded stores** are never written — the single-writer lock belongs to the embedding
@@ -109,8 +119,19 @@ Any consumer, no estate-specific assumptions:
    Pinned module `github.com/dolthub/dolt-mcp v0.3.6` verifies against the Go checksum
    database as `h1:uwjh1zf0er51VBT6uY3tI7JLj5pYxWyk9uB6CYQOhfU=`. A version bump is proposed
    by the `dolt-watch` routine and reviewed — never auto-trusted.
-3. **Detect** — `python3 scripts/dolt-detect.py` (stdlib-only; no other dependency).
-4. **For the beads adapter**: [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a
+3. **Wire the MCP server THROUGH THE GUARD** — never register the bare binary (that
+   exposes drop_database/reset-hard/push as ungated live tools):
+   ```json
+   "dolt-mcp-vcs": {
+     "command": "python3",
+     "args": ["<plugin>/scripts/dolt-mcp-guard.py", "--",
+              "dolt-mcp-server", "--stdio", "--dolt",
+              "--host", "127.0.0.1", "--port", "3308",
+              "--user", "root", "--database", "beads"]
+   }
+   ```
+4. **Detect** — `python3 scripts/dolt-detect.py` (stdlib-only; no other dependency).
+5. **For the beads adapter**: [`bd`](https://github.com/gastownhall/beads) ≥ 1.0.4 with a
    Dolt-backed workspace.
 
 ## Configuration
