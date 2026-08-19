@@ -131,9 +131,7 @@ def pump_child_stdout(child, list_ids, lock):
             if is_list and isinstance(message.get("result"), dict):
                 tools = message["result"].get("tools")
                 if isinstance(tools, list):
-                    message["result"]["tools"] = [
-                        tool for tool in tools if tool.get("name") not in ALWAYS_REFUSE
-                    ]
+                    message["result"]["tools"] = [tool for tool in tools if tool.get("name") not in ALWAYS_REFUSE]
                     forwarded = json.dumps(message)
         except (json.JSONDecodeError, AttributeError):
             pass  # non-JSON noise from the child forwards verbatim
@@ -164,9 +162,7 @@ def main(argv):
     )
     list_ids = set()
     lock = threading.Lock()
-    reader = threading.Thread(
-        target=pump_child_stdout, args=(child, list_ids, lock), daemon=True
-    )
+    reader = threading.Thread(target=pump_child_stdout, args=(child, list_ids, lock), daemon=True)
     reader.start()
 
     try:

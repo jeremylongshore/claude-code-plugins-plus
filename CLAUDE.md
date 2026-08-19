@@ -365,7 +365,9 @@ query="select:mcp__dolt-mcp-vcs__query,mcp__dolt-mcp-vcs__list_dolt_commits,mcp_
   `freshie/dolt/freshie`; a live server holds the lock and the sync will clobber/deadlock. `kill
 <server-pid>`, sync, then restart if you still need it.
 - **Mutation gate**: destructive verbs (`push`/`merge`/`reset`/`branch-delete`) are
-  **recommend-only** — the plugin surfaces them but won't execute, so DoltHub pushes still go
+  **recommend-only, enforced at the wire** — since E4.9 the registered entrypoint is
+  `plugins/mcp/dolt-mcp-vcs/scripts/dolt-mcp-guard.py`, which refuses those verbs before the
+  server sees them and hides them from `tools/list` — so DoltHub pushes still go
   through the one-way `dolt-sync.py` exporter, never the MCP.
 
 **Rules:** local is the sole writer — never merge DoltHub PRs or web-edit the

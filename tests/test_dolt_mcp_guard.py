@@ -96,9 +96,13 @@ class DoltMcpGuardTest(unittest.TestCase):
 
     def test_every_declared_destructive_tool_is_refused_at_the_wire(self):
         names = [
-            "drop_database", "dolt_reset_hard", "dolt_push_branch",
-            "dolt_pull_branch", "merge_dolt_branch",
-            "merge_dolt_branch_no_fast_forward", "delete_dolt_branch",
+            "drop_database",
+            "dolt_reset_hard",
+            "dolt_push_branch",
+            "dolt_pull_branch",
+            "merge_dolt_branch",
+            "merge_dolt_branch_no_fast_forward",
+            "delete_dolt_branch",
         ]
         requests = [call(i + 1, name) for i, name in enumerate(names)]
         responses = run_guard(requests)
@@ -106,19 +110,23 @@ class DoltMcpGuardTest(unittest.TestCase):
             self.assert_refused(responses[i + 1], "recommend-only")
 
     def test_reads_pass_through_and_execute(self):
-        responses = run_guard([
-            call(1, "list_databases"),
-            call(2, "query", {**SQL_ARGS, "query": "SELECT COUNT(*) FROM issues"}),
-        ])
+        responses = run_guard(
+            [
+                call(1, "list_databases"),
+                call(2, "query", {**SQL_ARGS, "query": "SELECT COUNT(*) FROM issues"}),
+            ]
+        )
         self.assert_executed(responses[1])
         self.assert_executed(responses[2])
 
     def test_query_refuses_writes_and_exec_refuses_history(self):
-        responses = run_guard([
-            call(1, "query", {**SQL_ARGS, "query": "DELETE FROM issues"}),
-            call(2, "exec", {**SQL_ARGS, "query": "DROP DATABASE freshie"}),
-            call(3, "exec", {**SQL_ARGS, "query": "CALL DOLT_RESET('--hard')"}),
-        ])
+        responses = run_guard(
+            [
+                call(1, "query", {**SQL_ARGS, "query": "DELETE FROM issues"}),
+                call(2, "exec", {**SQL_ARGS, "query": "DROP DATABASE freshie"}),
+                call(3, "exec", {**SQL_ARGS, "query": "CALL DOLT_RESET('--hard')"}),
+            ]
+        )
         self.assert_refused(responses[1])
         self.assert_refused(responses[2], "history-affecting")
         self.assert_refused(responses[3], "history-affecting")
@@ -127,9 +135,7 @@ class DoltMcpGuardTest(unittest.TestCase):
         insert = {**SQL_ARGS, "query": "INSERT INTO t VALUES (1)"}
         blocked = run_guard([call(1, "exec", insert)])
         self.assert_refused(blocked[1], "DOLT_MCP_ALLOW_MUTATION")
-        allowed = run_guard(
-            [call(1, "exec", insert)], env_extra={"DOLT_MCP_ALLOW_MUTATION": "1"}
-        )
+        allowed = run_guard([call(1, "exec", insert)], env_extra={"DOLT_MCP_ALLOW_MUTATION": "1"})
         self.assert_executed(allowed[1])
 
     def test_missing_sql_fails_closed(self):
@@ -137,9 +143,7 @@ class DoltMcpGuardTest(unittest.TestCase):
         self.assert_refused(responses[1], "fail-closed")
 
     def test_tools_list_hides_the_refused_tools(self):
-        responses = run_guard(
-            [{"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}]
-        )
+        responses = run_guard([{"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}])
         names = {tool["name"] for tool in responses[1]["result"]["tools"]}
         self.assertEqual(names, {"query", "exec", "list_databases"})
 
