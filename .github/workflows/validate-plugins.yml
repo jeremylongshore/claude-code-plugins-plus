@@ -1634,6 +1634,14 @@ jobs:
       - name: Check the generated-adapter toolchain
         run: pnpm run validate:adapter-toolchain
 
+      # Canonical vendor-literal gate (blueprint 727 E3.10): a Claude-specific
+      # token reappearing in the harness-free core (skill-card.yaml files or
+      # canonical/ dirs) fails — model literals, ${CLAUDE_*}, mcp__ spellings,
+      # Builtin(...) scoping, denylist fields. Adapters and the v0 contract
+      # docs are the translation layer and are exempt by design.
+      - name: Check canonical layer for vendor literals
+        run: pnpm run validate:canonical-vendor-literals
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid
