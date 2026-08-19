@@ -76,6 +76,13 @@ jobs:
       - name: Enforce the gitleaks allowlist shape
         run: pnpm run validate:gitleaks-config
 
+      # E4.10: every tracked MCP plugin must declare its destructive-operation
+      # policy (plugins/mcp/destructive-policies.json); refuse/recommend-only
+      # declarations are executed against their named refusal test — a
+      # declaration is only as good as its passing test.
+      - name: Enforce MCP destructive-operation policies
+        run: pnpm run validate:mcp-destructive-policy
+
       # E4.13: a denylist (disallowed-tools) posture is enforced by the
       # Claude Code runtime only. This gate forbids silent-drop: a
       # denylist-bearing skill may not claim a foreign harness in

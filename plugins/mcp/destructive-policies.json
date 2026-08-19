@@ -1,0 +1,84 @@
+{
+  "$comment": "Blueprint 727 E4.10 \u2014 the declared destructive-operation policy for every MCP plugin, one entry per tracked plugins/mcp/* directory. Lives BESIDE the plugin dirs (never inside) so .source.json mirrors stay untouched. policy \u2208 {refuse, recommend-only, permit-with-confirmation, permit}: refuse = no destructive tool surface exists (backed by a pinned-surface refusal test); recommend-only = destructive ops surfaced but refused by an enforcing artifact (backed by an executable refusal test); permit-with-confirmation = code requires explicit opt-in/approval before destructive ops; permit = destructive ops run when called (honest, no gate \u2014 the rationale names the blast radius). Enforced by scripts/check-mcp-destructive-policy.mjs (doc-governance, blocking): entry required per tracked dir, artifact paths must exist, refuse/recommend-only declarations must name a refusal test that the gate EXECUTES and requires to pass. Classification sweep: 2026-08-19 (AAR 000-docs/800). a2a-client is intentionally absent: it lives on open PR #1170 (unmerged); the moment it merges, this gate fails with UNDECLARED_PLUGIN until an entry is added \u2014 self-enforcing intake.",
+  "policies": {
+    "ai-experiment-logger": {
+      "policy": "permit",
+      "enforcing_artifact": "plugins/mcp/ai-experiment-logger/src/index.ts",
+      "rationale": "delete_experiment and update_experiment run immediately on call with no confirmation. Blast radius: the plugin's own ~/.ai-experiment-logger/experiments.json store."
+    },
+    "conversational-api-debugger": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/conversational-api-debugger/servers/api-debugger.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "Read/analyze-only surface (load_openapi, ingest_logs, explain_failure, make_repro); make_repro builds a command string but never executes or writes."
+    },
+    "databricks-workspace-mcp": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/databricks-workspace-mcp/src/tools/index.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "Read-only workspace surface (list/get/events); no create/edit/delete/terminate endpoint is reachable from any registered tool."
+    },
+    "design-to-code": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/design-to-code/servers/design-converter.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "Generates code as a returned string; no file writes, no network."
+    },
+    "dolt-mcp-vcs": {
+      "policy": "recommend-only",
+      "enforcing_artifact": "plugins/mcp/dolt-mcp-vcs/scripts/dolt-mcp-guard.py",
+      "refusal_test": "tests/test_dolt_mcp_guard.py",
+      "rationale": "Destructive verbs (push/pull/both merges/reset --hard/branch-delete/DROP DATABASE) are refused at the MCP wire by the guard proxy (E4.9); safe-write SQL requires DOLT_MCP_ALLOW_MUTATION=1. Mirror content \u2014 the guard lives upstream (dolt-mcp-vcs-plugin#10)."
+    },
+    "domain-memory-agent": {
+      "policy": "permit",
+      "enforcing_artifact": "plugins/mcp/domain-memory-agent/servers/knowledge-base.ts",
+      "rationale": "delete_document runs on call with no gate. Blast radius: a process-local in-memory Map \u2014 nothing persisted is destroyed."
+    },
+    "governed-second-brain": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/governed-second-brain/plugin-runtime/governed-brain.cjs",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "No delete/purge tool exists; writes are append-only and audited; the only lifecycle mutation is a validated, reason-required, hash-chain-anchored state transition. Mirror content \u2014 declaration lives here, not in the mirror."
+    },
+    "lumera-agent-memory": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/lumera-agent-memory/src/mcp_server.py",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "Upload-only surface (content-addressed, additive); no delete tool is wired to MCP; live egress is env-gated and defaults to mock."
+    },
+    "pr-to-spec": {
+      "policy": "permit",
+      "enforcing_artifact": "plugins/mcp/pr-to-spec/src/core/intent/storage.ts",
+      "rationale": "set_intent unconditionally overwrites one fixed plugin-owned file (.intent/intent.yaml); no remote writes. Mirror content \u2014 declaration lives here, not in the mirror."
+    },
+    "project-health-auditor": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/project-health-auditor/servers/code-metrics.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "Read-only metrics surface; git access is log/show only."
+    },
+    "servicegraph": {
+      "policy": "permit-with-confirmation",
+      "enforcing_artifact": "plugins/mcp/servicegraph/hooks/hooks.json",
+      "rationale": "unlock_rows irreversibly spends paid credits (~$0.10/row) against the remote HTTP server (mcp.servicegraph.co) \u2014 no local code path exists in the server itself, so enforcement is a host-side PreToolUse hook (curated hardening, 2026-08-19): the hook returns permissionDecision 'ask' on every unlock_rows call, turning the SKILL.md cost-confirmation instruction from prose into an enforced prompt for hosts honoring hook decisions. Read-only tools are unmatched. Residual: a host that ignores hook decisions gets the raw remote surface."
+    },
+    "slack-channel": {
+      "policy": "permit-with-confirmation",
+      "enforcing_artifact": "plugins/mcp/slack-channel/policy.ts",
+      "rationale": "Mutations pass an authored policy engine (auto_approve/deny/require_approval with deny-by-omission); destructive admin verbs additionally require an out-of-band single-use HMAC nonce handshake (nonce-hitl.ts). Mirror content \u2014 declaration lives here, not in the mirror."
+    },
+    "workflow-orchestrator": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/workflow-orchestrator/servers/workflow-engine.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "execute_workflow is a simulated stub \u2014 no child_process, fs write, or network. The refusal test pins the absence of real execution so wiring child_process later fails the gate instead of silently becoming permit."
+    },
+    "x-bug-triage": {
+      "policy": "refuse",
+      "enforcing_artifact": "plugins/mcp/x-bug-triage/mcp/triage-server/server.ts",
+      "refusal_test": "tests/test_mcp_refusal_surfaces.py",
+      "rationale": "No tool performs a real external write: confirm_and_file is a synthetic-URL stub behind a draft\u2192duplicate-check\u2192confirm chain; the retention purge is reachable only from scripts/cleanup.sh, not from any MCP tool. Mirror content \u2014 declaration lives here, not in the mirror."
+    }
+  }
+}

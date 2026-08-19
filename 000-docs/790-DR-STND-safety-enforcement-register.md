@@ -69,7 +69,18 @@ is corrected in the same PR that changes an enforcement boundary.
 | validate-skills-schema.py § tier 2 | Unscoped Bash + Write/WebFetch = "canonical curl-pipe-shell surface" → error unless justified | ⚠️ the justification check is a **prose-heading presence test**, tier 2 is opt-in; validator self-declares a false-negative-preferring posture                                                                                                                                                                                  | **E4.3 target**                                       |
 | validate-skills-schema.py § 3.16.x | Shell-substitution in YAML values trips security tooling                                      | ✅ blocking regex with allowlisted template vars — **10 legacy occurrences remain; blocking-on-changed-files is E4.4**                                                                                                                                                                                                          |                                                       |
 
-## 6. MCP plugin destructive-operation posture (15 plugins)
+## 6. MCP plugin destructive-operation posture (15 plugins; 14 tracked)
+
+> **Since E4.10 this section is machine-enforced:** `plugins/mcp/destructive-policies.json`
+> declares every tracked plugin's policy (`refuse=8 · recommend-only=1 ·
+permit-with-confirmation=2 · permit=3`) with its enforcing artifact, and
+> `scripts/check-mcp-destructive-policy.mjs` (blocking in `validate`) fails undeclared or
+> orphaned entries, missing artifacts, and any refuse/recommend-only declaration whose named
+> refusal test does not execute and pass (`tests/test_mcp_refusal_surfaces.py` pins the eight
+> refuse surfaces; `tests/test_dolt_mcp_guard.py` proves the dolt wire). servicegraph's cost
+> confirmation was upgraded from prose to a shipped PreToolUse ask-hook (curated hardening).
+> a2a-client is untracked (open PR #1170) — the gate self-enforces its declaration on merge.
+> The table below is the human-readable record; the registry is the enforced source.
 
 | Plugin                                                                                                                                     | Claimed policy                                                                                                                                                            | Enforcement                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | E4.10 declaration owed     |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
