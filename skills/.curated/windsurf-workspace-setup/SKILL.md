@@ -19,7 +19,7 @@ tags:
 - saas
 - skill-databases
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Workspace Setup
 

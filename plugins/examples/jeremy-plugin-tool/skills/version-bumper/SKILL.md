@@ -13,7 +13,7 @@ license: MIT
 tags:
 - example
 - version-bumper
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Version Bumper
 

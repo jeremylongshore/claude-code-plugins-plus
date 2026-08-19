@@ -20,7 +20,7 @@ tags:
 - saas
 - documenso
 - documenso-reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Documenso Reference Architecture
 

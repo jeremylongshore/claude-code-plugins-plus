@@ -20,7 +20,7 @@ tags:
 - document-loaders
 - text-splitters
 - rag
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Data Handling — Loaders and Splitters (Python)
 

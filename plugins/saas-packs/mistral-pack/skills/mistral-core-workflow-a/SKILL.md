@@ -20,7 +20,7 @@ tags:
 - saas
 - mistral
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Mistral AI Core Workflow A: Chat Completions
 

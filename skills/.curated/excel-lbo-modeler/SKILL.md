@@ -15,7 +15,7 @@ license: MIT
 tags:
 - business
 - excel-lbo
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Excel LBO Modeler
 

@@ -22,7 +22,7 @@ tags:
 - workflow
 - tuning
 - learnings
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Core Workflow B: Learnings & Tuning
 

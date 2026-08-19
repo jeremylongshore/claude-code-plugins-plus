@@ -16,7 +16,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(kubectl get:*), Bash(python3:*)
 version: 1.11.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 tags: [saas, coreweave, gpu-cloud, rdma, nccl]
 ---
 

@@ -20,7 +20,7 @@ tags:
 - gamma
 - api
 - performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Gamma Performance Tuning
 

@@ -19,7 +19,7 @@ tags:
 - saas
 - vast-ai
 - deployment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vast.ai Multi-Environment Setup
 

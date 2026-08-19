@@ -22,7 +22,7 @@ tags:
 - kyc
 - verification
 - onboarding
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Persona Core Workflow A — KYC Inquiry Flow
 

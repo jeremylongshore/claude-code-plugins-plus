@@ -21,7 +21,7 @@ tags:
 - coderabbit
 - migration
 - upgrade
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Upgrade & Migration
 

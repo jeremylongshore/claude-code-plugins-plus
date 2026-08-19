@@ -15,7 +15,7 @@ tags:
 - web3
 - rpc
 - ethereum
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # QuickNode Security Basics
 

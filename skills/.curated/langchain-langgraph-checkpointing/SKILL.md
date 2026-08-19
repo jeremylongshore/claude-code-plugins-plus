@@ -19,7 +19,7 @@ tags:
 - checkpointing
 - persistence
 - memory
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangGraph Checkpointing (Python)
 

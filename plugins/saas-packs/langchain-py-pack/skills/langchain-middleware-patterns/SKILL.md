@@ -20,7 +20,7 @@ tags:
 - middleware
 - security
 - caching
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Middleware Patterns (Python)
 

@@ -19,7 +19,7 @@ tags:
 - saas
 - apollo
 - webhooks
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Apollo Webhooks & Events
 

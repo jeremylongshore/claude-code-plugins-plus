@@ -19,7 +19,7 @@ tags:
 - saas
 - apollo
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Apollo Core Workflow A: Lead Search & Enrichment
 

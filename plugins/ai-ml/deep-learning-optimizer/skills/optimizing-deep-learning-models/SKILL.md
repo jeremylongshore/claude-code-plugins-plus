@@ -14,7 +14,7 @@ tags:
 - ai
 - performance
 - optimizing-deep
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deep Learning Optimizer
 

@@ -20,7 +20,7 @@ tags:
 - apm
 - grafana
 - opentelemetry
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Observability Integration
 

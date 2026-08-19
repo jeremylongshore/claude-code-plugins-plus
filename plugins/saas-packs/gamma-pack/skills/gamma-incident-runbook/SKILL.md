@@ -19,7 +19,7 @@ tags:
 - saas
 - gamma
 - incident-response
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Gamma Incident Runbook
 

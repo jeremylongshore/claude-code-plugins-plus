@@ -22,7 +22,7 @@ tags:
 - foundry
 - cost
 - optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Cost Tuning
 

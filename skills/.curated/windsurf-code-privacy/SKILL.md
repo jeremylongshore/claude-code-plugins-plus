@@ -18,7 +18,7 @@ tags:
 - saas
 - skill-databases
 - compliance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Code Privacy
 

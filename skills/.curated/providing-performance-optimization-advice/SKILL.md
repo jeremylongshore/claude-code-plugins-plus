@@ -11,7 +11,7 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - performance
 - providing-performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Performance Optimization Advisor
 

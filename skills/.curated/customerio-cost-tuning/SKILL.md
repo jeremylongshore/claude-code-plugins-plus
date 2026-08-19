@@ -20,7 +20,7 @@ tags:
 - customer-io
 - cost-optimization
 - billing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Cost Tuning
 

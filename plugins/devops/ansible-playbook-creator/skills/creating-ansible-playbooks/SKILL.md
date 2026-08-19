@@ -16,7 +16,7 @@ license: MIT
 tags:
 - devops
 - ansible-playbooks
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Creating Ansible Playbooks
 

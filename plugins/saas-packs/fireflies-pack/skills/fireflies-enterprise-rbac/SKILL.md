@@ -20,7 +20,7 @@ tags:
 - saas
 - fireflies
 - rbac
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Enterprise RBAC
 

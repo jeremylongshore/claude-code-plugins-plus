@@ -26,7 +26,7 @@ tags:
 - embeddings
 - rag
 - vector-store
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Embeddings and Vector Search (Python)
 

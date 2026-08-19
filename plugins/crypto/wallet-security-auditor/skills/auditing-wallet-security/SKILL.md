@@ -17,7 +17,7 @@ tags:
 - crypto
 - security
 - audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Wallet Security Auditor
 

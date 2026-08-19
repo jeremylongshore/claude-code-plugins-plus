@@ -21,7 +21,7 @@ tags:
 - exa
 - deployment
 - production
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Production Checklist
 

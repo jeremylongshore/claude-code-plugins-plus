@@ -21,7 +21,7 @@ tags:
 - reliability
 - circuit-breaker
 - resilience
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Reliability Patterns
 

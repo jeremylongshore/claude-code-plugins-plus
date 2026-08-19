@@ -23,7 +23,7 @@ tags:
 - nix
 - secrets
 - configuration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Install & Auth
 

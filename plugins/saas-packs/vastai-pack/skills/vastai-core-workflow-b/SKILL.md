@@ -20,7 +20,7 @@ tags:
 - saas
 - vast-ai
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vast.ai Core Workflow B: Multi-Instance & Cost Optimization
 

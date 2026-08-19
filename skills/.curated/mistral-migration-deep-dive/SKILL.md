@@ -19,7 +19,7 @@ tags:
 - saas
 - mistral
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Mistral AI Migration Deep Dive
 

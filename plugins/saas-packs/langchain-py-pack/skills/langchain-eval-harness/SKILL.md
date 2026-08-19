@@ -22,7 +22,7 @@ tags:
 - ragas
 - deepeval
 - research
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Eval Harness (Python)
 

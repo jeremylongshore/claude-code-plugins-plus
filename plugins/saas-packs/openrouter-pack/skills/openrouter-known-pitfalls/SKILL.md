@@ -14,7 +14,7 @@ tags:
 - openrouter
 - best-practices
 - pitfalls
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Known Pitfalls
 

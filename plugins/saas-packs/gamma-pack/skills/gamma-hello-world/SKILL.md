@@ -20,7 +20,7 @@ tags:
 - gamma
 - api
 - getting-started
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Gamma Hello World
 

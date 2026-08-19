@@ -21,7 +21,7 @@ tags:
 - granola
 - performance
 - transcription
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola Performance Tuning
 

@@ -21,7 +21,7 @@ tags:
 - coderabbit
 - deployment
 - onboarding
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Deploy Integration
 

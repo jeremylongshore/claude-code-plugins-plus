@@ -19,7 +19,7 @@ tags:
 - saas
 - evernote
 - evernote-sdk
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Evernote SDK Patterns
 

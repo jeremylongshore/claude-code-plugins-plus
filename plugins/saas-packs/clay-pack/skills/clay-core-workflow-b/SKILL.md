@@ -22,7 +22,7 @@ tags:
 - workflow
 - ai
 - claygent
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Core Workflow B: Claygent AI Research & Personalization
 

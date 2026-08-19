@@ -18,7 +18,7 @@ tags:
 - production
 - security
 - rls
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Production Deployment Checklist
 

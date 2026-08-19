@@ -20,7 +20,7 @@ tags:
 - saas
 - clay
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Core Workflow A: Lead Enrichment Pipeline
 

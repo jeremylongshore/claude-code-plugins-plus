@@ -22,7 +22,7 @@ tags:
 - contractor
 - misclassification
 - gig-economy
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Freelancer Review — Independent Contractor Contract Analysis
 

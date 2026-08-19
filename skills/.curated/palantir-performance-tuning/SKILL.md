@@ -22,7 +22,7 @@ tags:
 - foundry
 - performance
 - optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Performance Tuning
 

@@ -16,7 +16,7 @@ tags:
 - devops
 - terraform
 - infrastructure-as
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Generating Infrastructure as Code
 

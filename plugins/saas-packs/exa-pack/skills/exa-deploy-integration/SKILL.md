@@ -21,7 +21,7 @@ tags:
 - deployment
 - vercel
 - docker
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Deploy Integration
 

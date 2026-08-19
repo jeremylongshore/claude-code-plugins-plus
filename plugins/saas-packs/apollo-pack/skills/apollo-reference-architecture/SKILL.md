@@ -19,7 +19,7 @@ tags:
 - saas
 - apollo
 - apollo-reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Apollo Reference Architecture
 

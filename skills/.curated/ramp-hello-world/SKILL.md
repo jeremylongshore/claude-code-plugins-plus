@@ -14,7 +14,7 @@ tags:
 - fintech
 - expenses
 - corporate-cards
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Ramp Hello World
 

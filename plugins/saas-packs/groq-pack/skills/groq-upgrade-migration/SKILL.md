@@ -20,7 +20,7 @@ tags:
 - groq
 - api
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Groq Upgrade & Migration
 

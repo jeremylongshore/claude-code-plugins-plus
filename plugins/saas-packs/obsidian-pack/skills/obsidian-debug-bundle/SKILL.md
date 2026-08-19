@@ -19,7 +19,7 @@ tags:
 - saas
 - obsidian
 - debugging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Debug Bundle
 

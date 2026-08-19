@@ -21,7 +21,7 @@ tags:
 - vercel
 - migration
 - replatform
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel Migration Deep Dive
 

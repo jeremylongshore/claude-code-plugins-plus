@@ -19,7 +19,7 @@ tags:
 - saas
 - fireflies
 - api
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Rate Limits
 

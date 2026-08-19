@@ -22,7 +22,7 @@ tags:
 - foundry
 - ontology
 - getting-started
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Hello World
 

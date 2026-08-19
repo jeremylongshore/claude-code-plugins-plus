@@ -17,7 +17,7 @@ tags:
 - kling-ai
 - models
 - reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Model Catalog
 

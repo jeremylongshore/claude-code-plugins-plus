@@ -22,7 +22,7 @@ tags:
 - load-testing
 - scaling
 - performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Load & Scale
 

@@ -14,7 +14,7 @@ tags:
 - saas
 - groq
 - compliance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Groq Data Handling
 

@@ -19,7 +19,7 @@ tags:
 - observability
 - langsmith
 - callbacks
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Observability (Python)
 

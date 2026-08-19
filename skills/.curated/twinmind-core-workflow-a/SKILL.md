@@ -21,7 +21,7 @@ tags:
 - twinmind
 - transcription
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # TwinMind Core Workflow A: Meeting Transcription & Summary
 

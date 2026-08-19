@@ -93,7 +93,7 @@ Across **396 published packages** in the [claude-code-plugins](https://www.npmjs
 | 9   | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack)                         |      210 |
 | 10  | [`@intentsolutionsio/agency-os`](https://www.npmjs.com/package/@intentsolutionsio/agency-os)                                 |      204 |
 
-<sub>Last refreshed 2026-08-19T02:05:49.713Z.</sub>
+<sub>Last refreshed 2026-08-19T03:03:05.709Z.</sub>
 
 <!-- NPM-STATS:END -->
 

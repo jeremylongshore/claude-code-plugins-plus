@@ -18,7 +18,7 @@ tags:
 - database
 - performance
 - analyzing-database
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Index Advisor
 

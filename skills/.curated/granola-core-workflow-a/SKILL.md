@@ -14,7 +14,7 @@ tags:
 - granola
 - workflow
 - templates
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola Core Workflow A: Meeting Preparation & Templates
 

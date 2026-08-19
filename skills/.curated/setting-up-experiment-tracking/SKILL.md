@@ -14,7 +14,7 @@ tags:
 - ai
 - ml
 - logging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Experiment Tracking Setup
 

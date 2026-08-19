@@ -16,7 +16,7 @@ tags:
 - deployment
 - security
 - scaling
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Setting Up Log Aggregation
 

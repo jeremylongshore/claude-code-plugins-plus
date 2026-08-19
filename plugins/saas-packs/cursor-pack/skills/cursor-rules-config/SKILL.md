@@ -15,7 +15,7 @@ tags:
 - saas
 - cursor
 - cursor-rules
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Cursor Rules Config
 

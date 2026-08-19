@@ -20,7 +20,7 @@ tags:
 - prompts
 - langsmith
 - prompt-engineering
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Prompt Engineering (Python)
 

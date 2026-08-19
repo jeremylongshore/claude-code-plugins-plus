@@ -1642,6 +1642,14 @@ jobs:
       - name: Check canonical layer for vendor literals
         run: pnpm run validate:canonical-vendor-literals
 
+      # Unbacked-portability ratchet (blueprint 727 E3.11): a first-party
+      # SKILL.md may not name a harness outside the registered adapter set
+      # (claude-code) in its compatibility claim, in any phrasing. Withdrawn
+      # 2,700 legacy claims stay withdrawn; mirror-owned claims are reported,
+      # never failed (upstream-repair only).
+      - name: Check portability claims are adapter-backed
+        run: pnpm run validate:portability-claims
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

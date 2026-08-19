@@ -19,7 +19,7 @@ tags:
 - saas
 - lindy
 - deployment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lindy Deploy Integration
 

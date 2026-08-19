@@ -21,7 +21,7 @@ tags:
 - workflow
 - campaigns
 - cold-email
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly Core Workflow A: Campaign Launch Pipeline
 

@@ -20,7 +20,7 @@ tags:
 - instantly
 - multi-environment
 - configuration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly Multi-Environment Setup
 

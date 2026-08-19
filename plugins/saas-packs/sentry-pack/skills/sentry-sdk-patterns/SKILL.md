@@ -24,7 +24,7 @@ tags:
 - typescript
 - best-practices
 - error-handling
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry SDK Patterns
 

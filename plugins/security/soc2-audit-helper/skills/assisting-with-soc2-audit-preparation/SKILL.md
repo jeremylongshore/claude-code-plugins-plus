@@ -18,7 +18,7 @@ tags:
 - security
 - compliance
 - audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Assisting With SOC 2 Audit Preparation
 

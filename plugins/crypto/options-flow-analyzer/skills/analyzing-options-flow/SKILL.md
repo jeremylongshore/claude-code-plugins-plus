@@ -16,7 +16,7 @@ license: MIT
 tags:
 - crypto
 - analyzing-options
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Analyzing Options Flow
 

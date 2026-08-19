@@ -19,7 +19,7 @@ tags:
 - saas
 - lokalise
 - lokalise-local
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lokalise Local Dev Loop
 

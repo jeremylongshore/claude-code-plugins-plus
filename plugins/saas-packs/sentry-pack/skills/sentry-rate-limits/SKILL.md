@@ -27,7 +27,7 @@ tags:
 - rate-limiting
 - quotas
 - observability
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Rate Limits & Quota Optimization
 

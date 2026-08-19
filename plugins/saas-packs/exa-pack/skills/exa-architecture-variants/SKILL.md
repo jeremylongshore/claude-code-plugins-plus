@@ -22,7 +22,7 @@ tags:
 - architecture
 - rag
 - scaling
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Architecture Variants
 

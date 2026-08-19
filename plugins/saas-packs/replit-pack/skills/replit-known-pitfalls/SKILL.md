@@ -21,7 +21,7 @@ tags:
 - replit
 - audit
 - anti-patterns
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Known Pitfalls
 

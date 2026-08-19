@@ -28,7 +28,7 @@ tags:
 - langchain-1.0
 - lcel
 - runnables
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain SDK Patterns (Python)
 

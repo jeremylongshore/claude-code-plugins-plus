@@ -12,7 +12,7 @@ license: MIT
 tags:
 - ai
 - processing-computer
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Computer Vision Processor
 

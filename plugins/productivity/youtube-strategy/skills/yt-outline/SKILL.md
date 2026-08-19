@@ -20,7 +20,7 @@ license: MIT
 tags:
 - productivity
 - yt-outline
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # YouTube Outline
 

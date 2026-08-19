@@ -15,7 +15,7 @@ license: MIT
 tags:
 - testing
 - snapshot-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Snapshot Test Manager
 

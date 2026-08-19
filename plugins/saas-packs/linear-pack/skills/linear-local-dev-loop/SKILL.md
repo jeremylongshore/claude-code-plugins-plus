@@ -20,7 +20,7 @@ tags:
 - linear
 - testing
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Linear Local Dev Loop
 

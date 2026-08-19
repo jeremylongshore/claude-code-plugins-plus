@@ -15,7 +15,7 @@ tags:
 - example
 - workflow
 - plugin-creator
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Plugin Creator
 

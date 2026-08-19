@@ -14,7 +14,7 @@ tags:
 - openrouter
 - rate-limits
 - throttling
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Rate Limits
 

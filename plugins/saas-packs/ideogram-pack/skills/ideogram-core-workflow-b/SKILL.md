@@ -23,7 +23,7 @@ tags:
 - editing
 - remix
 - upscale
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Ideogram Core Workflow B -- Edit, Remix, Upscale, Describe, Reframe
 

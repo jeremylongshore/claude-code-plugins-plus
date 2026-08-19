@@ -19,7 +19,7 @@ tags:
 - saas
 - obsidian
 - obsidian-enterprise
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Enterprise RBAC
 

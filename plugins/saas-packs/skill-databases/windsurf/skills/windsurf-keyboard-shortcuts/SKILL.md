@@ -18,7 +18,7 @@ tags:
 - saas
 - skill-databases
 - windsurf-keyboard
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Keyboard Shortcuts
 

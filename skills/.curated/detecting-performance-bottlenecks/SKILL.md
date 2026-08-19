@@ -15,7 +15,7 @@ tags:
 - performance
 - database
 - detecting-performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Bottleneck Detector
 

@@ -19,7 +19,7 @@ tags:
 - saas
 - vast-ai
 - incident-response
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vast.ai Incident Runbook
 

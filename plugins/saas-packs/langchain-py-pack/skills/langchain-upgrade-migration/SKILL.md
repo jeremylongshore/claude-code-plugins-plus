@@ -19,7 +19,7 @@ tags:
 - langchain-1.0
 - migration
 - upgrade
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain 1.0 Upgrade Migration (Python)
 

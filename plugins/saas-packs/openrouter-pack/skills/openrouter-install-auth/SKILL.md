@@ -16,7 +16,7 @@ tags:
 - api
 - authentication
 - setup
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Install & Auth
 

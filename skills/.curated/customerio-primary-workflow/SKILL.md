@@ -21,7 +21,7 @@ tags:
 - workflow
 - campaigns
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Primary Workflow
 

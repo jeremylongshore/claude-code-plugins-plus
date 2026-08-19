@@ -17,7 +17,7 @@ tags:
 - api
 - webhooks
 - webhook-handlers
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Creating Webhook Handlers
 

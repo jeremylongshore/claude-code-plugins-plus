@@ -20,7 +20,7 @@ tags:
 - apollo
 - security
 - rbac
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Apollo Enterprise RBAC
 

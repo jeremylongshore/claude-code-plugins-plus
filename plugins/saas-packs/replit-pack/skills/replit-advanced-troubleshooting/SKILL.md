@@ -21,7 +21,7 @@ tags:
 - replit
 - debugging
 - advanced
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Advanced Troubleshooting
 

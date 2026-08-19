@@ -31,7 +31,7 @@ tags:
 - source-maps
 - distributed-tracing
 - sdk-conflicts
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Advanced Troubleshooting
 

@@ -16,7 +16,7 @@ license: MIT
 tags:
 - testing
 - unit-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Unit Test Generator
 

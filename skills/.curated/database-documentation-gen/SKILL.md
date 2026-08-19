@@ -17,7 +17,7 @@ license: MIT
 tags:
 - database
 - database-documentation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Documentation Generator
 

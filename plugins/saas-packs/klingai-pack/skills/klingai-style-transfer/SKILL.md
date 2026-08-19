@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - style-transfer
 - effects
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Style Transfer & Effects
 

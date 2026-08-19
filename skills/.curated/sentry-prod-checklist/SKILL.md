@@ -23,7 +23,7 @@ tags:
 - production
 - checklist
 - operations
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Production Deployment Checklist
 

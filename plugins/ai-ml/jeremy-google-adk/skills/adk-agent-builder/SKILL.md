@@ -15,7 +15,7 @@ tags:
 - google-adk
 - react
 - adk-agent
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # ADK Agent Builder
 

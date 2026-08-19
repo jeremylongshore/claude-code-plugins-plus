@@ -21,7 +21,7 @@ tags:
 - foundry
 - webhooks
 - events
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Webhooks & Events
 

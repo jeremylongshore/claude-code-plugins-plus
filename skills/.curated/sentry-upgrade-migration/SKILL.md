@@ -23,7 +23,7 @@ tags:
 - upgrade
 - sdk
 - breaking-changes
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Upgrade Migration
 

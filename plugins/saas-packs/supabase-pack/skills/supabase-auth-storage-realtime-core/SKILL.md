@@ -19,7 +19,7 @@ tags:
 - storage
 - realtime
 - rls
-compatibility: Designed for Claude Code, also compatible with Cursor
+compatibility: Designed for Claude Code
 ---
 # Supabase Auth + Storage + Realtime Core
 

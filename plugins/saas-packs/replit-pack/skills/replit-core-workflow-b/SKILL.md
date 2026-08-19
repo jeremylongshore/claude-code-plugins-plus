@@ -22,7 +22,7 @@ tags:
 - workflow
 - admin
 - teams
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Core Workflow B — Teams & Admin
 

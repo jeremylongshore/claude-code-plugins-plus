@@ -17,7 +17,7 @@ tags:
 - identity
 - kyc
 - verification
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # persona ci integration | sed 's/\b\(.\)/\u\1/g'
 

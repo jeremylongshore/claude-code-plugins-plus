@@ -11,7 +11,7 @@ allowed-tools: Read, Bash(git:*), Bash(python3:*)
 version: 1.0.0
 author: Signal Loom Works <194151508+el-zachariah@users.noreply.github.com>
 license: MIT
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 tags:
   - security
   - agent-safety

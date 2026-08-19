@@ -20,7 +20,7 @@ tags:
 - lokalise
 - typescript
 - nodejs
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lokalise SDK Patterns
 

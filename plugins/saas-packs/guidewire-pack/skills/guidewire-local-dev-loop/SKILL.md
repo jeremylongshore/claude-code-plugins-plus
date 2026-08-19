@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Edit, Bash(gradle:*), Bash(java:*), Bash(jdb:*), Gre
 version: 1.25.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 tags:
   - guidewire
   - gosu

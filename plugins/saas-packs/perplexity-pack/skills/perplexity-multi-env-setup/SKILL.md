@@ -21,7 +21,7 @@ tags:
 - perplexity
 - api
 - cost-optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Perplexity Multi-Environment Setup
 

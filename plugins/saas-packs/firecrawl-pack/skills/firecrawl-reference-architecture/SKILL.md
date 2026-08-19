@@ -20,7 +20,7 @@ tags:
 - saas
 - firecrawl
 - firecrawl-reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firecrawl Reference Architecture
 

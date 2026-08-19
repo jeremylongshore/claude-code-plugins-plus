@@ -19,7 +19,7 @@ tags:
 - saas
 - clay
 - compliance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Data Handling
 

@@ -22,7 +22,7 @@ tags:
 - ccpa
 - data-protection
 - cookies
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Privacy Policy Generator
 

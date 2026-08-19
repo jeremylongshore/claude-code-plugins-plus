@@ -28,7 +28,7 @@ tags:
 - gitlab-ci
 - source-maps
 - deployment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry CI Integration
 

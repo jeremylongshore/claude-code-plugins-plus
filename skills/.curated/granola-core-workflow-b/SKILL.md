@@ -20,7 +20,7 @@ tags:
 - granola
 - workflow
 - sharing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola Core Workflow B: Post-Meeting Processing & Sharing
 

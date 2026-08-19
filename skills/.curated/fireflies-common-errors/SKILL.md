@@ -19,7 +19,7 @@ tags:
 - saas
 - fireflies
 - debugging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Common Errors
 

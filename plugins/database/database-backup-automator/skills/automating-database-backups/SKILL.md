@@ -22,7 +22,7 @@ tags:
 - postgresql
 - mysql
 - mongodb
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Backup Automation
 

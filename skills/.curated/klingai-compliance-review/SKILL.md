@@ -17,7 +17,7 @@ tags:
 - kling-ai
 - compliance
 - security
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Compliance Review
 

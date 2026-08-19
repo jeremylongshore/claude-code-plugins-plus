@@ -19,7 +19,7 @@ tags:
 - saas
 - lindy
 - performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lindy Performance Tuning
 

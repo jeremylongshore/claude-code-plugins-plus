@@ -20,7 +20,7 @@ tags:
 - documenso
 - api
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Documenso Upgrade & Migration
 

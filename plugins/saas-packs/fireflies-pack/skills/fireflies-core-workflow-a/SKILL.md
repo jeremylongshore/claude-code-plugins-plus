@@ -21,7 +21,7 @@ tags:
 - fireflies
 - workflow
 - transcripts
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Core Workflow A -- Transcript Retrieval & Processing
 

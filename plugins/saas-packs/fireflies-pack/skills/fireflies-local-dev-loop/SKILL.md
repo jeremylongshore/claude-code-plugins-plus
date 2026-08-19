@@ -20,7 +20,7 @@ tags:
 - fireflies
 - testing
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Local Dev Loop
 

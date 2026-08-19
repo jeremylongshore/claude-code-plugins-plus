@@ -10,7 +10,7 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
 - security
 - scanning-input
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Input Validation Scanner
 

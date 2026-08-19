@@ -19,7 +19,7 @@ tags:
 - saas
 - evernote
 - evernote-data
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Evernote Data Handling
 

@@ -16,7 +16,7 @@ tags:
 - performance
 - latency
 - optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Performance Tuning
 

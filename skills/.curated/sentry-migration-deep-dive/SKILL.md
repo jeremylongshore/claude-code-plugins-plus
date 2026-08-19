@@ -24,7 +24,7 @@ tags:
 - bugsnag
 - new-relic
 - error-tracking
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Migration Deep Dive
 

@@ -16,7 +16,7 @@ license: MIT
 tags:
 - api
 - handling-api
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Handling API Errors
 

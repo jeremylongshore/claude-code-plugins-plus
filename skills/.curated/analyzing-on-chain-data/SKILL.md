@@ -16,7 +16,7 @@ tags:
 - crypto
 - monitoring
 - analyzing-on
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Analyzing On-Chain Data
 

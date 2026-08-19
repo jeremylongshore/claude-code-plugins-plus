@@ -17,7 +17,7 @@ tags:
 - testing
 - workflow
 - e2e-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # E2E Test Framework
 

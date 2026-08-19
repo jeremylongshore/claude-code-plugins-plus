@@ -22,7 +22,7 @@ tags:
 - workflow
 - export
 - templates
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Gamma Core Workflow B: Templates & Export
 

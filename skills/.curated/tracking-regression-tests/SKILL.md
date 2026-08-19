@@ -15,7 +15,7 @@ license: MIT
 tags:
 - testing
 - tracking-regression
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Regression Test Tracker
 

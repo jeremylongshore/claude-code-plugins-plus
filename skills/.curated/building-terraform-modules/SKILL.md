@@ -15,7 +15,7 @@ tags:
 - devops
 - terraform
 - terraform-modules
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Building Terraform Modules
 

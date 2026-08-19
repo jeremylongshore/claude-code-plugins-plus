@@ -15,7 +15,7 @@ tags:
 - ai
 - performance
 - tracking-model
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Model Versioning Tracker
 

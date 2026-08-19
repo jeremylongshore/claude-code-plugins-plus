@@ -16,7 +16,7 @@ license: MIT
 tags:
 - community
 - website-generator
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Website Generator Skill
 

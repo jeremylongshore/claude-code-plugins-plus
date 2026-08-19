@@ -19,7 +19,7 @@ tags:
 - security
 - incident-response
 - responding-security
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Responding To Security Incidents
 

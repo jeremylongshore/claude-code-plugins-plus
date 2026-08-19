@@ -27,7 +27,7 @@ tags:
 - optimization
 - profiling
 - web-vitals
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Performance Tuning
 

@@ -21,7 +21,7 @@ tags:
 - workflow
 - neural-search
 - search
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Core Workflow A — Neural Search
 

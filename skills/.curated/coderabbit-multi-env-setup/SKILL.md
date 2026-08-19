@@ -23,7 +23,7 @@ tags:
 - coderabbit
 - environments
 - branching
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Multi-Environment Setup
 

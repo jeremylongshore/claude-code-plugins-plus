@@ -16,7 +16,7 @@ tags:
 - testing
 - database
 - test-data
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Test Data Generator
 

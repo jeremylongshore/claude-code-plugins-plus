@@ -18,7 +18,7 @@ tags:
 - devops
 - docker
 - docker-compose
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Generating Docker Compose Files
 

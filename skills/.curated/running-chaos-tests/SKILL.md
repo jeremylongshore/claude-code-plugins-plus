@@ -14,7 +14,7 @@ license: MIT
 tags:
 - testing
 - chaos-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Chaos Engineering Toolkit
 

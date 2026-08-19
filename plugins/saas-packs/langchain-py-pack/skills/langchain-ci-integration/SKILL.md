@@ -21,7 +21,7 @@ tags:
 - ci
 - github-actions
 - testing
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain CI Integration (Python)
 

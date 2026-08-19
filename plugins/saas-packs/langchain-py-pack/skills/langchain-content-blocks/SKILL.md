@@ -20,7 +20,7 @@ tags:
 - content-blocks
 - multimodal
 - tool-use
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Content Blocks (Python)
 

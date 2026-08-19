@@ -20,7 +20,7 @@ tags:
 - customer-io
 - best-practices
 - anti-patterns
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Known Pitfalls
 

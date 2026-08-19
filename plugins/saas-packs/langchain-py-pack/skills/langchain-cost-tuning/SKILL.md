@@ -28,7 +28,7 @@ tags:
 - cost
 - tokens
 - budget
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Cost Tuning (Python)
 
