@@ -1859,9 +1859,9 @@
       "zod"
     ],
     "totalAgents": 347,
-    "totalHooks": 28,
+    "totalHooks": 29,
     "pluginsWithAgents": 90,
-    "pluginsWithHooks": 19,
+    "pluginsWithHooks": 20,
     "officialPlugins": 388,
     "communityPlugins": 80,
     "communityContributors": 44
