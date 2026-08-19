@@ -217,6 +217,7 @@ index and `000-docs/.gitignore`.
 - [792-AA-AACR-epic-4-gitleaks-deblanket.md](792-AA-AACR-epic-4-gitleaks-deblanket.md)
 - [793-AA-AACR-epic-4-scan-push-main.md](793-AA-AACR-epic-4-scan-push-main.md)
 - [794-AA-AACR-epic-4-unverified-secret-pr-scan.md](794-AA-AACR-epic-4-unverified-secret-pr-scan.md)
+- [795-AA-AACR-epic-4-dolt-mcp-guard.md](795-AA-AACR-epic-4-dolt-mcp-guard.md)
 - [796-AA-AACR-epic-4-mcp-config-gate.md](796-AA-AACR-epic-4-mcp-config-gate.md)
 - [798-AA-AACR-epic-4-denylist-fail-closed.md](798-AA-AACR-epic-4-denylist-fail-closed.md)
 - [799-AA-AACR-epic-4-plaintext-preflight.md](799-AA-AACR-epic-4-plaintext-preflight.md)
