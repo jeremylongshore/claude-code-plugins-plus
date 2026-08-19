@@ -2,8 +2,9 @@
 
 **Status: DRAFT · UPSTREAM-PENDING.** This repository must never become its own schema
 authority: the contract here is the draft to be proposed to `@intentsolutions/core` as the
-`skill-contract` authoring schema (blueprint 727, Epic 3 bead 3.13 — the kernel issue number is
-recorded there when filed). Until the kernel adopts it, this directory is the single draft
+`skill-contract` authoring schema (blueprint 727, Epic 3 bead 3.13 —
+FILED as [intent-eval-core#90](https://github.com/jeremylongshore/intent-eval-core/issues/90),
+2026-08-19). Until the kernel adopts it, this directory is the single draft
 source and every consumer cites it as DRAFT.
 
 ## What this is
