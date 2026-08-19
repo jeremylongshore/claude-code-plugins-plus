@@ -1,0 +1,47 @@
+{
+  "measured_at_commit": "0dde800aa943724dd689122e67c35f0f595fd0f0",
+  "anthropic_docs_occurrences": {
+    "first-party": 257,
+    "mirror": 4,
+    "generated": 179
+  },
+  "anthropic_docs_files": {
+    "first-party": 115,
+    "mirror": 2,
+    "generated": 57
+  },
+  "claude_env_var_occurrences": {
+    "first-party": 1627,
+    "mirror": 104,
+    "generated": 1605
+  },
+  "claude_env_var_files": {
+    "first-party": 381,
+    "mirror": 41,
+    "generated": 299
+  },
+  "model_id_occurrences": {
+    "first-party": {
+      "functional": 398,
+      "prose": 485,
+      "bead-id": 7656
+    },
+    "mirror": {
+      "functional": 5,
+      "prose": 3,
+      "bead-id": 421
+    },
+    "generated": {
+      "functional": 531,
+      "prose": 387,
+      "bead-id": 382
+    }
+  },
+  "model_id_functional_files": {
+    "first-party": 184,
+    "mirror": 2,
+    "generated": 128
+  },
+  "mirror_roots": 64,
+  "tracked_files": 23109
+}
