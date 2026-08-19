@@ -222,6 +222,7 @@ def compute_compliance_rate(compliant_count: int, total_count: int) -> float:
         )
     return compliant_count / total_count * 100
 
+
 # Validation tiers
 TIER_STANDARD = "standard"
 TIER_MARKETPLACE = "marketplace"
