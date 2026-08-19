@@ -218,7 +218,7 @@ index and `000-docs/.gitignore`.
 - [793-AA-AACR-epic-4-scan-push-main.md](793-AA-AACR-epic-4-scan-push-main.md)
 - [794-AA-AACR-epic-4-unverified-secret-pr-scan.md](794-AA-AACR-epic-4-unverified-secret-pr-scan.md)
 - [796-AA-AACR-epic-4-mcp-config-gate.md](796-AA-AACR-epic-4-mcp-config-gate.md)
-- [799-AA-AACR-epic-4-plaintext-preflight.md](799-AA-AACR-epic-4-plaintext-preflight.md)
+- [798-AA-AACR-epic-4-denylist-fail-closed.md](798-AA-AACR-epic-4-denylist-fail-closed.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)
