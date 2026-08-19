@@ -435,7 +435,13 @@ async function main() {
     console.log(`\nWrote ${OUT_JSON}`);
 
     try {
-      const updated = updateReadme(buildReadmeBlock(agg));
+      // Pipe the spliced README through the repo's Prettier config so the
+      // daily bot commit satisfies format-check and the TOC byte-compare —
+      // the same contract generate-readme-toc.mjs honors (issue #657 class).
+      const prettier = (await import('prettier')).default;
+      const spliced = updateReadme(buildReadmeBlock(agg));
+      const options = (await prettier.resolveConfig(README)) || {};
+      const updated = await prettier.format(spliced, { ...options, filepath: README });
       const current = readFileSync(README, 'utf-8');
       if (updated !== current) {
         writeFileSync(README, updated);
