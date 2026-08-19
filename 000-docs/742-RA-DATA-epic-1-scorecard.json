@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3180,
-        "tracked_files": 23113
+        "tracked_files": 23110
       }
     },
     "2": {
@@ -539,8 +539,8 @@
       "cohort": "literal docs.anthropic.com occurrences in tracked text-like files",
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
-        "files": 173,
-        "occurrences": 435,
+        "files": 171,
+        "occurrences": 432,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -548,7 +548,6 @@
           "000-docs/719-RA-REPT-cleanup-candidate-register.md",
           "000-docs/725-RA-DATA-legacy-migration-inventory.md",
           "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
-          "000-docs/778-RA-DATA-model-agnostic-migration-surface.md",
           "marketplace/src/content/blog-posts/noise-robust-signed-llm-judge-evals.md",
           "marketplace/src/content/docs/concepts/agents.md",
           "marketplace/src/content/docs/concepts/commands-and-hooks.md",
@@ -655,7 +654,6 @@
           "plugins/security/severity1-marketplace/skills/prompt-improver/SKILL.md",
           "plugins/skill-enhancers/web-to-github-issue/README.md",
           "plugins/testing/kobiton-automate/README.md",
-          "scripts/measure-canonical-surface.mjs",
           "skills/.curated/agent-context-loader/SKILL.md",
           "skills/.curated/agent-safety-preflight/SKILL.md",
           "skills/.curated/anth-ci-integration/SKILL.md",
@@ -729,7 +727,6 @@
         "000-docs/719-RA-REPT-cleanup-candidate-register.md",
         "000-docs/725-RA-DATA-legacy-migration-inventory.md",
         "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
-        "000-docs/778-RA-DATA-model-agnostic-migration-surface.md",
         "marketplace/src/content/blog-posts/noise-robust-signed-llm-judge-evals.md",
         "marketplace/src/content/docs/concepts/agents.md",
         "marketplace/src/content/docs/concepts/commands-and-hooks.md",
@@ -836,7 +833,6 @@
         "plugins/security/severity1-marketplace/skills/prompt-improver/SKILL.md",
         "plugins/skill-enhancers/web-to-github-issue/README.md",
         "plugins/testing/kobiton-automate/README.md",
-        "scripts/measure-canonical-surface.mjs",
         "skills/.curated/agent-context-loader/SKILL.md",
         "skills/.curated/agent-safety-preflight/SKILL.md",
         "skills/.curated/anth-ci-integration/SKILL.md",
@@ -1949,10 +1945,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 218,
+        "index_entries": 217,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 218,
+        "tracked_documents": 217,
         "untracked_index_entries": []
       }
     },
@@ -1976,9 +1972,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15572,
+        "invisible_files": 15571,
         "target_invisible_files": 0,
-        "tracked_files": 23113
+        "tracked_files": 23110
       }
     },
     "47": {

@@ -1243,7 +1243,13 @@ demanded. (7) **Skill-count cohorts**: the `3,179 SKILL.md` figure used across �
 are incorrect. (8) **Plugin totals**: "~470"/"470-plugin" reads resolve to the catalog-entry
 cohort, 468 at this correction. Bead 2.6's own target text (§ 13 row 2.6) predates these
 landings; its operative targets are the assertions in beads 2.7/2.8 plus the cohort-label
-discipline of E1.6.
+discipline of E1.6. (9) **Epic 2's exit criterion "8→3 self-declarations, all linked"**
+(§ 13, and exit-scorecard row 43's "8/1 → 3/3") is reconciled against the live graph: the
+effective authority-claimant count is **2** (this blueprint and 6767-b), both linked — the
+freeze retired more claimants than the criterion anticipated, so the target is EXCEEDED, not
+missed. The pinned assertion is `check-doc-authority.test.mjs` (two claimants, twelve
+canonical-table links); "2 ≤ 3, all linked" is the satisfied reading, recorded here so no
+audit needs to re-derive it.
 
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 

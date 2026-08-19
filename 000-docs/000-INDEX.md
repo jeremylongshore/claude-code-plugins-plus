@@ -5,9 +5,16 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
+<<<<<<< HEAD
 Covers the **tracked** documentation estate (218 files). Local-only working
-documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
-index and `000-docs/.gitignore`.
+||||||| 0dde800aa
+Covers the **tracked** documentation estate (216 files). Local-only working
+=======
+Covers the **tracked** documentation estate (217 files). Local-only working
+
+> > > > > > > origin/main
+> > > > > > > documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
+> > > > > > > index and `000-docs/.gitignore`.
 
 ## Files (global chronological order)
 
@@ -198,8 +205,13 @@ index and `000-docs/.gitignore`.
 - [774-AA-AACR-epic-1-closure.md](774-AA-AACR-epic-1-closure.md)
 - [775-AA-AACR-epic-2-doc-fact-assertions.md](775-AA-AACR-epic-2-doc-fact-assertions.md)
 - [776-AA-AACR-epic-2-readme-landing-contract.md](776-AA-AACR-epic-2-readme-landing-contract.md)
+  <<<<<<< HEAD
 - [778-RA-DATA-model-agnostic-migration-surface.json](778-RA-DATA-model-agnostic-migration-surface.json)
 - [778-RA-DATA-model-agnostic-migration-surface.md](778-RA-DATA-model-agnostic-migration-surface.md)
+  ||||||| 0dde800aa
+  =======
+- [777-AA-AACR-epic-2-closure.md](777-AA-AACR-epic-2-closure.md)
+  > > > > > > > origin/main
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)

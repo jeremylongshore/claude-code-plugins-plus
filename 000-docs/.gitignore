@@ -71,5 +71,10 @@
 !774-AA-AACR-epic-1-closure.md
 !775-AA-AACR-epic-2-doc-fact-assertions.md
 !776-AA-AACR-epic-2-readme-landing-contract.md
+<<<<<<< HEAD
 !778-RA-DATA-model-agnostic-migration-surface.md
 !778-RA-DATA-model-agnostic-migration-surface.json
+||||||| 0dde800aa
+=======
+!777-AA-AACR-epic-2-closure.md
+>>>>>>> origin/main
