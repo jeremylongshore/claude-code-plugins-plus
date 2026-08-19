@@ -1292,6 +1292,29 @@ jobs:
           esac
           node scripts/scan-synced-content.mjs --changed-only --base "origin/$BASE_REF" $WARN
 
+      # E4.7 (blueprint 727): the workflow already fires on push:main, but the
+      # scan above skipped itself outside pull_request — so nothing ever
+      # scanned what actually LANDED on main (admin merges, direct pushes).
+      # Scan the push range with FULL grading — no --warn-only on main: main
+      # is the trust boundary, and REFUSE stays exit 2 and unwaivable.
+      # Residual (stated per the bead's acceptance): enforce_admins:false
+      # means an admin can still merge past a red aggregate; this step makes
+      # that visible on main rather than silent, it cannot make it impossible.
+      - name: Scan pushed plugin content (push to main)
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          BASE="$BEFORE"
+          # A forced or branch-creation push reports an all-zero or unknown
+          # `before`; fall back to the parent commit so the scan still judges
+          # the newest change rather than silently passing.
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            BASE="$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)"
+          fi
+          node scripts/scan-synced-content.mjs --changed-only --base "$BASE"
+
   # skills/.curated/ is a GENERATED mirror of the repo's best (A/B) plugin skills,
   # rebuilt from freshie/grades.csv by freshie/scripts/promote-to-curated.py so
   # skills.sh can index them (its crawler only reads root skills/ / .curated/, not
