@@ -19,7 +19,7 @@ tags:
 - storage
 - s3
 - gcs
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Storage Integration
 

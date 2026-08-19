@@ -15,7 +15,7 @@ license: MIT
 tags:
 - testing
 - testing-visual
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Visual Regression Tester
 

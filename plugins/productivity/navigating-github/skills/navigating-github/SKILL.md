@@ -23,7 +23,7 @@ tags:
 - version-control
 - learning
 - onboarding
-compatibility: Designed for Claude Code, also compatible with Cursor, Windsurf, Aider
+compatibility: Designed for Claude Code
   and Continue
 ---
 # Navigating GitHub

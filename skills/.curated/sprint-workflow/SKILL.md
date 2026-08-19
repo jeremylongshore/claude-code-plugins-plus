@@ -15,7 +15,7 @@ tags:
 - community
 - workflow
 - sprint-workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sprint Workflow
 

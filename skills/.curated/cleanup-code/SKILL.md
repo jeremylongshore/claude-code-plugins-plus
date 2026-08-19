@@ -30,7 +30,7 @@ tags:
 - type-safety
 - security
 argument-hint: '[scope] [--dimensions d1,d2,...] [--changed]'
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Codebase Cleanup
 

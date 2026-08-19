@@ -32,7 +32,7 @@ tags:
 - opentelemetry
 - jaeger
 - honeycomb
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain OTEL Observability (Python)
 

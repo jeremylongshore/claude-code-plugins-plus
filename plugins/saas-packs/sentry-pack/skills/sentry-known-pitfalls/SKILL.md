@@ -24,7 +24,7 @@ tags:
 - best-practices
 - sdk
 - configuration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Known Pitfalls
 

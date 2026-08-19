@@ -22,7 +22,7 @@ tags:
 - identity
 - kyc
 - getting-started
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Persona Hello World
 

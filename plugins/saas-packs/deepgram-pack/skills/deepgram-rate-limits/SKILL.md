@@ -20,7 +20,7 @@ tags:
 - deepgram
 - api
 - rate-limiting
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deepgram Rate Limits
 

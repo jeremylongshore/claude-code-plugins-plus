@@ -19,7 +19,7 @@ tags:
 - saas
 - posthog
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # PostHog Migration Deep Dive
 

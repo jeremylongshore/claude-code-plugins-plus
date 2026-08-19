@@ -21,7 +21,7 @@ tags:
 - database
 - azure
 - archiving-databases
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Archival System
 

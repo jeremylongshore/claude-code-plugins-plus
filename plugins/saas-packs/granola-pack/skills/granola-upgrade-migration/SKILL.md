@@ -20,7 +20,7 @@ tags:
 - granola
 - migration
 - upgrade
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola Upgrade & Migration
 

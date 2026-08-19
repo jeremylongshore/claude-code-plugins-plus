@@ -19,7 +19,7 @@ tags:
 - saas
 - obsidian
 - obsidian-prod
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Prod Checklist
 

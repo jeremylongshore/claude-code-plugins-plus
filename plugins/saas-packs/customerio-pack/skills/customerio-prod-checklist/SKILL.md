@@ -21,7 +21,7 @@ tags:
 - deployment
 - production
 - audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Production Checklist
 

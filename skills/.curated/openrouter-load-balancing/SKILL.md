@@ -16,7 +16,7 @@ tags:
 - scaling
 - high-availability
 - load-balancing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Load Balancing
 

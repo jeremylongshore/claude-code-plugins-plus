@@ -20,7 +20,7 @@ tags:
 - rbac
 - enterprise
 - security
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Enterprise RBAC (Python)
 

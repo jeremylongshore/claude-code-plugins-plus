@@ -14,7 +14,7 @@ tags:
 - openrouter
 - models
 - catalog
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Model Catalog
 

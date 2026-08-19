@@ -18,7 +18,7 @@ tags:
 - devops
 - deployment
 - container-registries
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Managing Container Registries
 

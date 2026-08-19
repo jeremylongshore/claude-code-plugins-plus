@@ -18,7 +18,7 @@ tags:
 - security
 - database
 - detecting-sql
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Detecting SQL Injection Vulnerabilities
 

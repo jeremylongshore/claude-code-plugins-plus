@@ -16,7 +16,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 tags:
 - business
 - brand-strategy
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Brand Strategy Framework
 

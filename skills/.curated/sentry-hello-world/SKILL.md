@@ -22,7 +22,7 @@ tags:
 - testing
 - dashboard
 - quickstart
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Hello World
 

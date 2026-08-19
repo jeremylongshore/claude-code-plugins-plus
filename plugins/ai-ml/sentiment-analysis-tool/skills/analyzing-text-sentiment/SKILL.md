@@ -14,7 +14,7 @@ license: MIT
 tags:
 - ai
 - analyzing-text
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentiment Analysis Tool
 

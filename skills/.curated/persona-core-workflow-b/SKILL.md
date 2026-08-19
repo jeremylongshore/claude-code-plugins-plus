@@ -23,7 +23,7 @@ tags:
 - government-id
 - selfie
 - kyc
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Persona Core Workflow B — Verification Checks
 

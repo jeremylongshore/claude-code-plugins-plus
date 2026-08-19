@@ -20,7 +20,7 @@ tags:
 - windsurf
 - debugging
 - troubleshooting
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Common Errors
 

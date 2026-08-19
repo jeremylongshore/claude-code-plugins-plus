@@ -21,7 +21,7 @@ tags:
 - speak
 - voice-ai
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Speak Core Workflow B: Pronunciation Training
 

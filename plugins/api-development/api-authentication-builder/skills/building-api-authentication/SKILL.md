@@ -17,7 +17,7 @@ tags:
 - api
 - authentication
 - api-authentication
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Building API Authentication
 

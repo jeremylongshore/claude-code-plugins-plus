@@ -24,7 +24,7 @@ tags:
 - crypto
 - testing
 - performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Backtesting Trading Strategies
 

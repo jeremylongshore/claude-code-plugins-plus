@@ -14,7 +14,7 @@ license: MIT
 tags:
 - skill-development
 - github-issues
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Web To Github Issue
 

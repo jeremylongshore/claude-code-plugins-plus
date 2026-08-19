@@ -22,7 +22,7 @@ tags:
 - ci-cd
 - github-actions
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel CI Integration
 

@@ -20,7 +20,7 @@ tags:
 - saas
 - clay
 - clay-reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Reference Architecture
 

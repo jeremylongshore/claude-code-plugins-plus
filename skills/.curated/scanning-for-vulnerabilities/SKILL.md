@@ -14,7 +14,7 @@ license: MIT
 tags:
 - security
 - scanning-vulnerabilities
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vulnerability Scanner
 

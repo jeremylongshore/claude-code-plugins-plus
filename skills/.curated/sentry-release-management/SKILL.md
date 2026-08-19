@@ -24,7 +24,7 @@ tags:
 - source-maps
 - ci-cd
 - versioning
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Release Management
 

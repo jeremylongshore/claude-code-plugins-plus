@@ -21,7 +21,7 @@ tags:
 - architecture
 - reference-architecture
 - patterns
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Reference Architecture (Python)
 

@@ -15,7 +15,7 @@ tags:
 - ai
 - ml
 - explaining-machine
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Model Explainability Tool
 

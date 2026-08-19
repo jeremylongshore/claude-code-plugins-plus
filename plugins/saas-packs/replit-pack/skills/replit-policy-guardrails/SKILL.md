@@ -23,7 +23,7 @@ tags:
 - replit
 - security
 - policy
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Policy Guardrails
 

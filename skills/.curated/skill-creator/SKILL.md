@@ -24,7 +24,7 @@ tags:
 - validation
 - meta-tooling
 model: inherit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Skill Creator
 

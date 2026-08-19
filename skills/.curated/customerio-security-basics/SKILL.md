@@ -21,7 +21,7 @@ tags:
 - security
 - gdpr
 - compliance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Security Basics
 

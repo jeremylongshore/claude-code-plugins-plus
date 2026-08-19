@@ -19,7 +19,7 @@ tags:
 - testing
 - pytest
 - vcr
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Local Dev Loop (Python)
 

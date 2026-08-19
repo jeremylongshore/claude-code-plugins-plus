@@ -22,7 +22,7 @@ tags:
 - meetings
 - productivity
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # Calendar to Workflow
 

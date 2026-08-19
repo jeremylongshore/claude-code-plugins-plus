@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - ci-cd
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI CI Integration
 

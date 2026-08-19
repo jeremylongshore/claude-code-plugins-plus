@@ -18,7 +18,7 @@ tags:
 - security
 - authentication
 - audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Scanning API Security
 

@@ -21,7 +21,7 @@ tags:
 - llm
 - embeddings
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Mistral AI Core Workflow B: Embeddings & Function Calling
 

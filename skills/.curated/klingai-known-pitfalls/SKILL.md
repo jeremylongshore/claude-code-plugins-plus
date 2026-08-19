@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - troubleshooting
 - best-practices
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Known Pitfalls
 

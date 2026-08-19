@@ -19,7 +19,7 @@ tags:
 - saas
 - firecrawl
 - api
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firecrawl Rate Limits
 

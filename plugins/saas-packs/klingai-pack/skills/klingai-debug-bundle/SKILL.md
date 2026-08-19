@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - debugging
 - observability
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Debug Bundle
 

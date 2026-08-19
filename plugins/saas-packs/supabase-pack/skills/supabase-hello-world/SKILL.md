@@ -14,7 +14,7 @@ tags:
 - supabase
 - database
 - getting-started
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Hello World — First Query
 

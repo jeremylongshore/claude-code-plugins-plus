@@ -24,7 +24,7 @@ tags:
 - schema-design
 - postgres
 - rls
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Schema from Requirements
 

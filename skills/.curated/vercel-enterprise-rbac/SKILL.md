@@ -22,7 +22,7 @@ tags:
 - rbac
 - enterprise
 - sso
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel Enterprise RBAC
 

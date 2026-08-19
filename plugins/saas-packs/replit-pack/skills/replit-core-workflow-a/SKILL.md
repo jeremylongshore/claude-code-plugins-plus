@@ -21,7 +21,7 @@ tags:
 - replit
 - workflow
 - full-stack
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Core Workflow A — Full-Stack App
 

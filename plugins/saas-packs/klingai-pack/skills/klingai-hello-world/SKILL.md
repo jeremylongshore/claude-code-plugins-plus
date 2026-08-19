@@ -17,7 +17,7 @@ tags:
 - saas
 - kling-ai
 - quickstart
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Hello World
 

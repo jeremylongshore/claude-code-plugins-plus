@@ -15,7 +15,7 @@ tags:
 - errors
 - debugging
 - troubleshooting
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Common Errors
 

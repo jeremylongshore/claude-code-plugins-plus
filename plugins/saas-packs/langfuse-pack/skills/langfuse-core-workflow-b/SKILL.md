@@ -21,7 +21,7 @@ tags:
 - llm
 - workflow
 - evaluation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Langfuse Core Workflow B: Evaluation, Scoring & Datasets
 

@@ -21,7 +21,7 @@ tags:
 - webhooks
 - transcription
 - async
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deepgram Webhooks & Callbacks
 

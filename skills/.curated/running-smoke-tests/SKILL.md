@@ -16,7 +16,7 @@ tags:
 - testing
 - deployment
 - smoke-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Smoke Test Runner
 

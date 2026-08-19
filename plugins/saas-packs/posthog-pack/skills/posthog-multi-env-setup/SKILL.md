@@ -19,7 +19,7 @@ tags:
 - saas
 - posthog
 - posthog-multi
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # PostHog Multi-Environment Setup
 

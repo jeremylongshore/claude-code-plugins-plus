@@ -21,7 +21,7 @@ tags:
 - clerk-core
 - sessions
 - middleware
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clerk Core Workflow B: Session & Middleware
 

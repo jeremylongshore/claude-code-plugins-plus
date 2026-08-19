@@ -18,7 +18,7 @@ tags:
 - devops
 - cost-optimization
 - optimizing-cloud
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Optimizing Cloud Costs
 

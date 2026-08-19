@@ -20,7 +20,7 @@ tags:
 - instantly
 - api
 - getting-started
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly Hello World
 

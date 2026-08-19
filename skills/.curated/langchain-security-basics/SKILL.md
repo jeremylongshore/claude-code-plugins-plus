@@ -27,7 +27,7 @@ tags:
 - prompt-injection
 - pii
 - owasp-llm
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Security Basics (Python)
 

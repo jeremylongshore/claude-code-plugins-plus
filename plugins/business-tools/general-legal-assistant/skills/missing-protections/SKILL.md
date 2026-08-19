@@ -22,7 +22,7 @@ tags:
 - protections
 - compliance
 - checklist
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Missing Protections — Contract Gap Finder
 

@@ -22,7 +22,7 @@ tags:
 - cost-optimization
 - licensing
 - teams
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Cost Tuning
 

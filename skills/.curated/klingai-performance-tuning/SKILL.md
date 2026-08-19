@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - performance
 - optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Performance Tuning
 

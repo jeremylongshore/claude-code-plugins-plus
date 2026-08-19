@@ -30,7 +30,7 @@ tags:
 - multi-env
 - dsn
 - alerts
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Multi-Environment Setup
 

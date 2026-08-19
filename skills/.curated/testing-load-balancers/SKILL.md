@@ -15,7 +15,7 @@ license: MIT
 tags:
 - testing
 - testing-load
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Load Balancer Tester
 

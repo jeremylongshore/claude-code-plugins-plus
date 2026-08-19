@@ -20,7 +20,7 @@ tags:
 - exa
 - debugging
 - errors
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Common Errors
 

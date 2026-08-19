@@ -22,7 +22,7 @@ tags:
 - debugging
 - observability
 - incident-response
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Debug Bundle (Python)
 

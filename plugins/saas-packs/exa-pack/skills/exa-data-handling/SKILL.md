@@ -22,7 +22,7 @@ tags:
 - data
 - rag
 - caching
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Data Handling
 

@@ -20,7 +20,7 @@ tags:
 - langfuse
 - testing
 - tracing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Langfuse Hello World
 

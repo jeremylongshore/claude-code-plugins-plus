@@ -18,7 +18,7 @@ tags:
 - posthog
 - workflow
 - analytics
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # PostHog Core Workflow A — Product Analytics
 

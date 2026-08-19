@@ -13,7 +13,7 @@ license: MIT
 tags:
 - ai
 - clustering-algorithms
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clustering Algorithm Runner
 

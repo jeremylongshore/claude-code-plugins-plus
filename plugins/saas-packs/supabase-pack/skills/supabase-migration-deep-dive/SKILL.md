@@ -22,7 +22,7 @@ tags:
 - schema
 - zero-downtime
 - rollback
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Migration Deep Dive
 

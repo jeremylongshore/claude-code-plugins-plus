@@ -20,7 +20,7 @@ tags:
 - lokalise
 - api
 - testing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lokalise Hello World
 

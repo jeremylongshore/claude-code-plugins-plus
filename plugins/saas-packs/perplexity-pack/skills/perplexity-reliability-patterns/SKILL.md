@@ -18,7 +18,7 @@ tags:
 - saas
 - perplexity
 - perplexity-reliability
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Perplexity Reliability Patterns
 

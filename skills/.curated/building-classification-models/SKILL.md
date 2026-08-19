@@ -12,7 +12,7 @@ license: MIT
 tags:
 - ai
 - classification-models
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Classification Model Builder
 

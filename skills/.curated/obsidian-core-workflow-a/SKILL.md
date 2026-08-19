@@ -22,7 +22,7 @@ tags:
 - plugin-development
 - typescript
 - scaffolding
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Core Workflow A: Create a Plugin from Scratch
 

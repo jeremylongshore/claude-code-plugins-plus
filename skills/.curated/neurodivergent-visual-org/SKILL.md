@@ -19,7 +19,7 @@ license: MIT
 tags:
 - productivity
 - neurodivergent-visual
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 ## Mode System (v3.1.1)
 

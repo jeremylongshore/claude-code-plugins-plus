@@ -20,7 +20,7 @@ tags:
 - ci-cd
 - github-actions
 - devops
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase CI Integration
 

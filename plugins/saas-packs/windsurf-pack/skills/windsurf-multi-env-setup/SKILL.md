@@ -21,7 +21,7 @@ tags:
 - windsurf
 - team-setup
 - multi-environment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Multi-Environment Setup
 

@@ -14,7 +14,7 @@ tags:
 - openrouter
 - migration
 - upgrade
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Upgrade & Migration
 

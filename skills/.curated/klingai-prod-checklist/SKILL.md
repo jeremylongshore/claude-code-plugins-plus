@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - production
 - deployment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Production Checklist
 

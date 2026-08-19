@@ -21,7 +21,7 @@ tags:
 - replit
 - debugging
 - support
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Debug Bundle
 

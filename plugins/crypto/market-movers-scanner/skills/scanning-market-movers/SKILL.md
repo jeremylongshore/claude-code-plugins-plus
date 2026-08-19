@@ -20,7 +20,7 @@ license: MIT
 tags:
 - crypto
 - scanning-market
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Scanning Market Movers
 

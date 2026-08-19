@@ -21,7 +21,7 @@ tags:
 - api
 - rbac
 - enterprise
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deepgram Enterprise RBAC
 

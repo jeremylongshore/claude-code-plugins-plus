@@ -17,7 +17,7 @@ license: MIT
 tags:
 - crypto
 - analyzing-market
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Analyzing Market Sentiment
 

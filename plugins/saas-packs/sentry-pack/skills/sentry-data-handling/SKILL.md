@@ -27,7 +27,7 @@ tags:
 - gdpr
 - pii
 - data-privacy
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Data Handling
 

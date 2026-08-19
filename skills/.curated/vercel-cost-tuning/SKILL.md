@@ -22,7 +22,7 @@ tags:
 - cost-optimization
 - billing
 - monitoring
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel Cost Tuning
 

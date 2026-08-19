@@ -16,7 +16,7 @@ tags:
 - analytics
 - cost-optimization
 - monitoring
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Usage Analytics
 

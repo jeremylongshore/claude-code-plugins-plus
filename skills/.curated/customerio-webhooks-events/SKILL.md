@@ -21,7 +21,7 @@ tags:
 - webhooks
 - events
 - delivery
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Webhooks & Events
 

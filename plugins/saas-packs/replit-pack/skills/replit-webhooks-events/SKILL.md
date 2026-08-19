@@ -22,7 +22,7 @@ tags:
 - webhooks
 - extensions
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Webhooks & Events
 

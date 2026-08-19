@@ -14,7 +14,7 @@ tags:
 - ai
 - video-generation
 - creative
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Runway Security Basics
 

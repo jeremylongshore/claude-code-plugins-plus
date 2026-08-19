@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(curl:*), Bash(jq:*), Bash(kubectl g
 version: 1.11.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 tags: [saas, coreweave, gpu-cloud, finops, cost]
 ---
 

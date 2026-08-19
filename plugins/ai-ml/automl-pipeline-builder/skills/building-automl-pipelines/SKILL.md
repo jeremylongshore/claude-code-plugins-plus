@@ -17,7 +17,7 @@ tags:
 - ai
 - deployment
 - ml
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Building Automl Pipelines
 

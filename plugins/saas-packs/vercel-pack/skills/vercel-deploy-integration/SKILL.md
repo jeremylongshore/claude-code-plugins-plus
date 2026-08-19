@@ -22,7 +22,7 @@ tags:
 - deployment
 - production
 - rollback
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel Deploy Integration
 

@@ -21,7 +21,7 @@ tags:
 - api
 - debugging
 - transcription
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deepgram Common Errors
 

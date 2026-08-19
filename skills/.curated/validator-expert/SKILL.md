@@ -34,7 +34,7 @@ tags:
 model: inherit
 effort: high
 argument-hint: '[project-id]'
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Validator Expert
 

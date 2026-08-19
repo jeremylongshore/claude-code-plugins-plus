@@ -17,7 +17,7 @@ tags:
 - saas
 - cursor
 - cursor-indexing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Cursor Indexing Issues
 

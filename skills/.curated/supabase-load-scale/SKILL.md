@@ -21,7 +21,7 @@ tags:
 - connection-pooling
 - read-replicas
 - partitioning
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Load & Scale
 

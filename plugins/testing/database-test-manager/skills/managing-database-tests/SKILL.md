@@ -17,7 +17,7 @@ tags:
 - testing
 - database
 - database-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Test Manager
 

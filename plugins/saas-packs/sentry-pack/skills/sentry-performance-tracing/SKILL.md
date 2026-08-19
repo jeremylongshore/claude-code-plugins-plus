@@ -22,7 +22,7 @@ tags:
 - performance
 - tracing
 - spans
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Performance Tracing
 

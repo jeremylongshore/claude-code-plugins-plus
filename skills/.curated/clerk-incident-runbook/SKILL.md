@@ -21,7 +21,7 @@ tags:
 - security
 - authentication
 - incident-response
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clerk Incident Runbook
 

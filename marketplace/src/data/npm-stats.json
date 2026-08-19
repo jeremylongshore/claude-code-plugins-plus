@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-19T02:05:49.713Z",
+  "generatedAt": "2026-08-19T03:03:05.709Z",
   "max_age_hours": 72,
   "publishedCount": 396,
   "establishedCount": 395,
-  "candidateCount": 423,
+  "candidateCount": 424,
   "totalDay": 962,
   "totalWeek": 2920,
   "totalMonth": 12868,
@@ -3577,11 +3577,11 @@
     }
   ],
   "telemetry": {
-    "candidates": 423,
-    "probed": 423,
+    "candidates": 424,
+    "probed": 424,
     "published": 396,
     "unpublished": 25,
-    "foreign": 2,
+    "foreign": 3,
     "rateLimited": 0,
     "errors": 0
   }

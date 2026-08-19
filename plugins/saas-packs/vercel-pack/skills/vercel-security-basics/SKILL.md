@@ -22,7 +22,7 @@ tags:
 - security
 - headers
 - secrets
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel Security Basics
 

@@ -20,7 +20,7 @@ tags:
 - performance
 - caching
 - async
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Performance Tuning
 

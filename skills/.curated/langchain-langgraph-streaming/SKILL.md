@@ -31,7 +31,7 @@ tags:
 - streaming
 - sse
 - websocket
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangGraph Streaming (Python)
 
