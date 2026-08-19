@@ -5689,6 +5689,7 @@ def main() -> int:
             return 0
 
     if args.safety_metrics:
+
         def _is_mirror(path: Path) -> bool:
             probe = path.parent
             while probe != repo_root and probe != probe.parent:
