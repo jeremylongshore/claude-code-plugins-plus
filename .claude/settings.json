@@ -20,6 +20,15 @@
           }
         ],
         "matcher": ""
+      },
+      {
+        "hooks": [
+          {
+            "command": "node scripts/check-mcp-plaintext-creds.mjs --all-local || echo '\u26a0\ufe0f E4.14 PRE-FLIGHT FAILED: a plaintext MCP credential sits on this box \u2014 encrypt via .sops.env + scripts/sops-env before doing anything else.'",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
       }
     ]
   }

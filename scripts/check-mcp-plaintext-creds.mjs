@@ -30,7 +30,7 @@
  * as a secret. Fail closed: when in doubt, it does not belong in plaintext.
  */
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -72,23 +72,57 @@ export function scanMcpConfig(config) {
 
 const isMain = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href;
 if (isMain) {
-  const target = join(REPO_ROOT, '.mcp.json');
-  if (!existsSync(target)) {
-    console.log('mcp-plaintext-creds: OK (no root .mcp.json in this checkout)');
+  // E4.14 refuse-to-start pre-flight: --all-local additionally scans this
+  // machine's ~/.claude.json project registration for the repo — the config
+  // that actually LAUNCHES the MCP servers, and where the § 18.7 plaintext
+  // key historically lived. Wired into the pre-commit hook so work on this
+  // box refuses to proceed while a plaintext key sits in either config.
+  const ALL_LOCAL = process.argv.includes('--all-local');
+  const targets = [{ path: join(REPO_ROOT, '.mcp.json'), label: 'root .mcp.json' }];
+  if (ALL_LOCAL && process.env.HOME) {
+    targets.push({
+      path: join(process.env.HOME, '.claude.json'),
+      label: "~/.claude.json (this repo's project mcpServers)",
+      project: REPO_ROOT,
+    });
+  }
+  let violations = [];
+  let scanned = 0;
+  for (const target of targets) {
+    if (!existsSync(target.path)) continue;
+    let config;
+    try {
+      config = JSON.parse(readFileSync(target.path, 'utf8'));
+    } catch (err) {
+      console.error(
+        `mcp-plaintext-creds: STRUCTURAL — ${target.label} unparseable (${err.message})`,
+      );
+      process.exit(1);
+    }
+    if (target.project) {
+      const projects = config?.projects ?? {};
+      const key = Object.keys(projects).find((p) => {
+        try {
+          return realpathSync(p) === realpathSync(target.project);
+        } catch {
+          return p === target.project;
+        }
+      });
+      config = { mcpServers: (key && projects[key]?.mcpServers) || {} };
+    }
+    scanned += 1;
+    violations = violations.concat(scanMcpConfig(config).map((v) => `${target.label}: ${v}`));
+  }
+  if (scanned === 0) {
+    console.log('mcp-plaintext-creds: OK (no MCP config present in this checkout)');
     process.exit(0);
   }
-  let config;
-  try {
-    config = JSON.parse(readFileSync(target, 'utf8'));
-  } catch (err) {
-    console.error(`mcp-plaintext-creds: STRUCTURAL — .mcp.json unparseable (${err.message})`);
-    process.exit(1);
-  }
-  const violations = scanMcpConfig(config);
   for (const v of violations) console.error(`mcp-plaintext-creds: VIOLATION — ${v}`);
   if (violations.length > 0) {
     console.error(`mcp-plaintext-creds: FAIL — ${violations.length} plaintext credential(s).`);
     process.exit(1);
   }
-  console.log('mcp-plaintext-creds: OK (root .mcp.json holds no live-shaped plaintext env)');
+  console.log(
+    `mcp-plaintext-creds: OK (${scanned} config(s) hold no live-shaped plaintext env${ALL_LOCAL ? '; local pre-flight' : ''})`,
+  );
 }
