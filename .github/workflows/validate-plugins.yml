@@ -1595,6 +1595,14 @@ jobs:
       - name: Check the README landing contract
         run: pnpm run validate:readme-contract
 
+      # The canonical harness-free skill contract (blueprint 727 § 5.2, Epic 3
+      # E3.2): schemas/canonical/v0 must compile under Ajv 2020 strict and hold
+      # its red runs (closed schema, no vendor-literal model class, registry-
+      # enum adapters, resolved-SHA mirror pins). DRAFT + UPSTREAM-PENDING —
+      # the kernel proposal is E3.13's deliverable.
+      - name: Check the canonical skill-contract schema
+        run: pnpm run validate:canonical-schema
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

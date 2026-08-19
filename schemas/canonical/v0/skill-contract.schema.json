@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tonsofskills.com/schemas/canonical/v0/skill-contract.schema.json",
+  "title": "Canonical harness-free skill contract (skill-card.yaml)",
+  "$comment": "Status: DRAFT (v0). UPSTREAM-PENDING: this repository must never become its own schema authority — the contract is to be proposed to @intentsolutions/core as the `skill-contract` authoring schema (blueprint 727 Epic 3 bead 3.13; the kernel issue number is recorded in that bead and in 000-docs when filed). Home B of the four-home split (blueprint 727 § 5.1): written by the skill author per behavior change, read by validators, adapter generators, marketplace filters, and security review. The SKILL.md frontmatter (home A) is NOT this contract and keeps the IS 8 unchanged — this file is additive and never touches ALWAYS_REQUIRED.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "intent",
+    "capabilities",
+    "model_class",
+    "lifecycle",
+    "provenance",
+    "adapters"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "description": "Stable identity; NEVER renamed — install slugs are API."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "The ONE version; display surfaces project from it."
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 10,
+      "description": "What the skill is for. No trigger syntax, no harness verbs."
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ioPort" }
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ioPort" }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/capability" },
+      "description": "ABSTRACT capabilities from the committed vocabulary (capability-map.json). Never a harness tool name — `Bash(jq:*)` is a Claude Code expression of `shell.exec`, not a capability."
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "forbid": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" },
+          "description": "Capabilities this skill must never exercise, portable intent behind disallowed-tools."
+        },
+        "bounded": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_steps": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "risk_tier": { "enum": ["low", "medium", "high"] }
+      }
+    },
+    "side_effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "writes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path"],
+            "properties": {
+              "path": { "type": "string" },
+              "approx_mb_max": { "type": "number", "exclusiveMinimum": 0 }
+            }
+          }
+        },
+        "network": { "type": "array", "items": { "type": "string" } },
+        "env": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" } }
+      }
+    },
+    "requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "name"],
+            "properties": {
+              "kind": { "enum": ["mcp", "cli", "api"] },
+              "name": { "type": "string" },
+              "env": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "model_class": {
+      "enum": ["reasoning-high", "balanced", "fast"],
+      "description": "NEVER a vendor literal. Adapters resolve the tier to a concrete model; an adapter with no matching model MUST error (fail closed) — silent substitution is a schema violation."
+    },
+    "evaluation": {
+      "type": "string",
+      "description": "Path to the harness-neutral eval-spec.yaml. REQUIRED at certification tier T3+ (enforced by the tier gate, not by this schema)."
+    },
+    "not_for": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sibling skill ids that should win instead; anti-trigger routing."
+    },
+    "lifecycle": { "enum": ["active", "deprecated", "sunset"] },
+    "superseded_by": { "type": ["string", "null"] },
+    "sunset_on": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["author", "license", "spdx"],
+      "properties": {
+        "author": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 },
+        "spdx": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.+-]+( (WITH|AND|OR) [A-Za-z0-9.+-]+)*$",
+          "description": "SPDX expression only. \"SEE LICENSE IN LICENSE\" is invalid."
+        },
+        "source": { "type": ["string", "null"], "description": "Upstream repo URL when mirrored." },
+        "source_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "RESOLVED SHA when mirrored — a branch name is not a pin."
+        },
+        "upstream_license": {
+          "type": ["string", "null"],
+          "description": "MUST equal .source.json when mirrored (cross-file check, not expressible here)."
+        }
+      }
+    },
+    "adapters": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["claude-code"] },
+      "description": "Enum from the committed adapter registry — grows ONLY when a generated adapter artifact exists (listing a harness with no artifact fails CI, blueprint E3.11). claude-code is the sole registered adapter at v0."
+    },
+    "unsupported": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability", "adapter", "reason", "degradation"],
+        "properties": {
+          "capability": { "type": "string" },
+          "adapter": { "type": "string" },
+          "reason": { "type": "string", "minLength": 1 },
+          "degradation": {
+            "enum": ["fail-closed", "skip", "prompt-in-band"],
+            "default": "fail-closed"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ioPort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+        "type": { "type": "string" },
+        "required": { "type": "boolean" },
+        "schema": { "type": "string" }
+      }
+    },
+    "capability": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_.]*$",
+          "$comment": "Bare capability token, e.g. filesystem.read, user.prompt."
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_.]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "paths": { "type": "array", "items": { "type": "string" } },
+              "commands": { "type": "array", "items": { "type": "string" } },
+              "hosts": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "$comment": "Scoped capability, e.g. shell.exec: { commands: [jq, date] }."
+        }
+      ]
+    }
+  }
+}
