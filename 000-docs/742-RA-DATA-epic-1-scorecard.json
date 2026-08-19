@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3180,
-        "tracked_files": 23114
+        "tracked_files": 23118
       }
     },
     "2": {
@@ -1949,10 +1949,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 219,
+        "index_entries": 220,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 219,
+        "tracked_documents": 220,
         "untracked_index_entries": []
       }
     },
@@ -1976,9 +1976,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15573,
+        "invisible_files": 15576,
         "target_invisible_files": 0,
-        "tracked_files": 23114
+        "tracked_files": 23118
       }
     },
     "47": {
