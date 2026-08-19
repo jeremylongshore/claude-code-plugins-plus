@@ -76,6 +76,13 @@ jobs:
       - name: Enforce the gitleaks allowlist shape
         run: pnpm run validate:gitleaks-config
 
+      # E4.10: every tracked MCP plugin must declare its destructive-operation
+      # policy (plugins/mcp/destructive-policies.json); refuse/recommend-only
+      # declarations are executed against their named refusal test — a
+      # declaration is only as good as its passing test.
+      - name: Enforce MCP destructive-operation policies
+        run: pnpm run validate:mcp-destructive-policy
+
       # E4.3/E4.4/E4.11: the triple-keyed safety ratchet. Frozen debt classes
       # (bare-Bash skills, tier-2 tool-safety findings, YAML shell-substitution
       # occurrences — never waivable — and the agents-lane error corpus) are
