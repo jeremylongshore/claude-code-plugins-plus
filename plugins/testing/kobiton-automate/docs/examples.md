@@ -1,6 +1,6 @@
 # Kobiton MCP Tools — Examples
 
-A guide to every tool available in the Kobiton MCP server, organized by domain. Each tool includes a description and natural-language prompt examples you can use directly in Claude Code.
+Worked examples for the most common Kobiton MCP tools, organized by domain. Each tool includes a description and natural-language prompt examples you can use directly in Claude Code. For the complete tool inventory, see the [README Tools section](../README.md#tools).
 
 ---
 
@@ -203,7 +203,7 @@ Test this app <PATH_TO_APP> by my script <PATH_TO_SCRIPT> on Kobiton <PLATFORM> 
 
 ---
 
-## 5. Running `run-interactive-cli-session` skill
+## 5. Running `run-interactive-session` skill
 
 Guided workflow for interactive testing using natural language. WebDriver actions, device operations (adb shell, logs, screen), file management (push/pull), and more.
 

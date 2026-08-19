@@ -861,13 +861,16 @@ sources:
     category: testing
     verified: true
     include:
-      - 'README.md'
-      - 'LICENSE'
-      - 'CHANGELOG.md'
-      - '.claude-plugin/**'
-      - 'skills/**'
-      - 'docs/**'
-      - 'tools/**'
+      # Anchored (blueprint 727 E3.6): the unanchored 'skills/**' matched at
+      # ANY depth via the engine's auto-'**/' prefix and mirrored upstream's
+      # .codex/skills fork — the intake ratchet's over-collection class.
+      - '/README.md'
+      - '/LICENSE'
+      - '/CHANGELOG.md'
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/docs/**'
+      - '/tools/**'
     exclude:
       - 'node_modules/**'
       - '.git/**'

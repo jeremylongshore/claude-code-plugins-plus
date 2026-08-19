@@ -58,3 +58,21 @@ bead's call.
 - A real Codex adapter, if ever wanted, arrives as: registry entry + generator in
   `scripts/adapters/` + schema enum extension — the E3.4/E3.11 lineage — never as a directory
   of copies.
+
+---
+
+**Root-cause addendum (2026-08-18, same PR).** The first deletion pass exposed the actual origin
+of the fork: kobiton's `sources.yaml` include list used the unanchored `skills/**`, which the
+sync engine's auto-`**/` prefix matches at ANY depth — the exact over-collection class the
+intake ratchet documents — so `.codex/skills/**` was being mirrored as a side effect, and a
+routine relock faithfully resurrected the fork minutes after deletion. The durable fix landed in
+the same PR: (1) kobiton's include list is now fully anchored (`/skills/**` etc., with the
+ratchet-required anchoring on the edited entry); (2) the source was re-relocked against the
+anchored filter — `sources.lock.json` now records 38 files with zero `.codex` entries, so a
+future sync treats any `.codex` reappearance as drift rather than content; (3) the stale
+`.source.json` ledger was corrected to the same 38-file census (the engine had preserved deleted
+entries in its `files` list — engine follow-up noted); (4) the fork was deleted once more against
+the corrected baseline. The relock also carried routine upstream content updates (mirror-by-
+default; upstream renamed `run-interactive-cli-session` → `run-interactive-session`), scanned by
+the supply-chain gate in CI. The frontmatter census test was updated from the double-graded
+10-file state to the five canonical skills, asserting `.codex` never reappears.

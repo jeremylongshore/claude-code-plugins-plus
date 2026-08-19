@@ -18,11 +18,25 @@ version: 1.0.0
 author: Kobiton Inc.
 license: MIT
 compatibility: >-
+  Runs on any MCP-aware host, including hosts with no local filesystem — this
+  is the plugin's only pure-MCP skill, needing no local file, binary, or shell.
   Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite,
   listDevices, and getOrgSettings; requires an authenticated Kobiton MCP
-  connection. Delegates monitoring to the monitor-test-run skill (same plugin).
+  connection. Delegates monitoring to the monitor-test-run skill (same plugin),
+  which does need a local poller — so on a filesystem-less host, create the run
+  and report its id rather than offering to watch it.
 tags: [testing, test-run, create, monitoring, live-remediation, kobiton]
 ---
+
+## Prerequisites
+
+**Needs only an authenticated Kobiton MCP connection** — no local filesystem, no credentials file, no
+binary, no shell. It is the plugin's only pure-MCP skill, so it is the only one that works where the
+host supplies nothing else. **The monitoring hand-off in Step 5 is the exception**: `monitor-test-run`
+runs a local poller, so where you can't run a local command at all, create the run and report its id
+instead of offering to watch it (Step 5 carries the wording). Where you *can*, hand off and let that
+skill check its own credentials and streaming options — it degrades rather than refusing. See the Skill
+compatibility matrix in `CLAUDE.md`.
 
 ## Overview
 
@@ -124,6 +138,21 @@ If `createTestRun` returns a validation error, fix it from the error text and th
 rather than guessing — do not retry the same body.
 
 ### 5. Offer monitoring — one prompt, then delegate
+
+**First, decide whether monitoring is even possible here.** `monitor-test-run` runs a bundled Node
+poller, so it needs a local filesystem, a shell, and `~/.kobiton/.credentials`. You can't probe for
+those from this skill (it has no shell of its own), so judge from what your host has given you: **if
+you have no way to run a local command, monitoring is out** — don't present the choices below, because
+offering a watch you can't perform is the trap the matrix in `CLAUDE.md` warns about. Close out instead:
+
+> Run created (`<testRunId>`) — <portal link>. I can't watch it from here (monitoring needs to run a
+> local poller, which isn't available in this environment), so follow it in the portal — or ask me again
+> from a host with a shell and I'll monitor it for you.
+
+Then stop. If you *can* run local commands, continue below and let `monitor-test-run` handle the rest:
+it checks for the credentials file itself and reports the `/automate:setup` remedy, and it degrades to a
+foreground loop on hosts without a streamed-output affordance rather than refusing. Don't pre-empt
+either of those decisions here.
 
 Read the live-remediation flag first: call `getOrgSettings` once and note `live_remediation_enabled`
 (`flagOn`). This decides whether the auto-open option is meaningful.

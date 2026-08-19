@@ -14,13 +14,13 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 218,
+      "a_error_total": 219,
       "a_failing": 131,
-      "ab_error_total": 2150,
+      "ab_error_total": 2152,
       "ab_failing": 959,
       "b_failing": 828,
       "error_files": 2032,
-      "error_total": 7418,
+      "error_total": 7419,
       "grade_distribution": {
         "A": 1595,
         "B": 984,
@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23108
+        "tracked_files": 23111
       }
     },
     "2": {
@@ -89,7 +89,7 @@
           "validator_reported_mixed_denominator_percent": 223.7
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7672,
+          "error_total_all_validated_surfaces": 7673,
           "fully_compliant_surfaces": 1161,
           "terminal_denominator": {
             "agents": 355,
@@ -102,13 +102,13 @@
           "validator_reported_mixed_denominator_percent": 26.4
         },
         "skill_rows": {
-          "a_error_total": 218,
+          "a_error_total": 219,
           "a_failing": 131,
-          "ab_error_total": 2150,
+          "ab_error_total": 2152,
           "ab_failing": 959,
           "b_failing": 828,
           "error_files": 2032,
-          "error_total": 7418,
+          "error_total": 7419,
           "grade_distribution": {
             "A": 1595,
             "B": 984,
@@ -152,11 +152,11 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 218,
+        "a_error_total": 219,
         "a_failing": 131,
-        "ab_error_total": 2150,
+        "ab_error_total": 2152,
         "ab_failing": 959,
-        "b_error_total": 1932,
+        "b_error_total": 1933,
         "b_failing": 828,
         "certified_target": 0,
         "skill_summary_rows": 3675
@@ -290,6 +290,14 @@
         "values": [
           {
             "count": 1,
+            "value": "Any OS, but requires a persistent local filesystem and ~/.kobiton/.credentials (written by /automate:setup) — so it cannot run where the host offers only an MCP connection. A host affordance that streams a background command's output is strongly preferred; without one the skill falls back to a foreground loop. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+), which reads those credentials, polls run state over REST, and emits only on change. Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
+          },
+          {
+            "count": 1,
+            "value": "Any OS, but requires a persistent local filesystem — it runs the user's own Appium script from a local directory, so it cannot work where the host offers only an MCP connection. Requires Node.js >= 18, Appium 2.x, and whichever language runtime the test script uses. Test scripts must use the Appium WebDriver protocol."
+          },
+          {
+            "count": 1,
             "value": "Claude Code native workflows; Codex/OpenCode/Grok portable adapter"
           },
           {
@@ -314,11 +322,7 @@
           },
           {
             "count": 1,
-            "value": "Compatible with any MCP-aware AI coding assistant. Requires Node.js >= 18 and Appium 2.x. Test scripts must use Appium WebDriver protocol."
-          },
-          {
-            "count": 1,
-            "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18 and an authenticated Kobiton MCP connection (or, as a fallback, ~/.kobiton/.credentials written by /automate:setup)."
+            "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
             "count": 1885,
@@ -445,10 +449,6 @@
             "value": "Requires internet access to call the first-party Xquik REST API."
           },
           {
-            "count": 1,
-            "value": "Requires the bundled Kobiton CLI binary, which targets macOS. On other platforms, use run-automation-suite or the Kobiton MCP tools directly. Run /automate:setup once before first use to install the CLI wrapper symlink and write credentials."
-          },
-          {
             "count": 4,
             "value": "Requires the ejentum-mcp MCP server installed and EJENTUM_API_KEY env var set. Free and paid tiers at ejentum.com."
           },
@@ -458,15 +458,15 @@
           },
           {
             "count": 1,
-            "value": "Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin)."
-          },
-          {
-            "count": 1,
-            "value": "Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+; reads ~/.kobiton/.credentials, same file /automate:setup writes) which polls run state over REST and emits only on change. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
+            "value": "Runs on any MCP-aware host, including hosts with no local filesystem — this is the plugin's only pure-MCP skill, needing no local file, binary, or shell. Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin), which does need a local poller — so on a filesystem-less host, create the run and report its id rather than offering to watch it."
           },
           {
             "count": 1,
             "value": "Verified against @aomi-labs/client v0.1.42 and the current aomi-widget/packages/client TypeScript CLI. Install globally via npm install -g @aomi-labs/client@latest, or run on demand via npx @aomi-labs/client@latest. The CLI defaults to https://api.aomi.dev; pass --backend-url https://api-staging.aomi.dev when explicitly targeting staging. viem and Solana signing dependencies are bundled by the package. Designed for claude-code; also works with Cursor, Codex CLI, Gemini, and any agent runtime that supports the Anthropic skill spec."
+          },
+          {
+            "count": 1,
+            "value": "macOS (Apple Silicon), Linux (x64), and Windows (x64, under Git Bash). The Kobiton CLI is downloaded on install: the plugin pins a build version (skills/run-interactive-session/CLI_VERSION) and the install script fetches the matching platform build from public.kobiton.download, sha256-verified and cached under ~/.kobiton/cli/. Intel Macs are not supported (no macos-x64 build is published) - there, use run-automation-suite or drive-automation-session, or the Kobiton MCP tools directly. Requires local file access for the cached binary and ~/.kobiton/.credentials. Run /automate:setup once before first use to install the CLI wrapper and write credentials."
           }
         ]
       }
@@ -1887,14 +1887,14 @@
         "documented": [
           {
             "path": "CLAUDE.md",
-            "version": "4.0.0"
+            "version": "4.0.1"
           },
           {
             "path": "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
-            "version": "4.0.0"
+            "version": "4.0.1"
           }
         ],
-        "runtime": "4.0.0"
+        "runtime": "4.0.1"
       }
     },
     "43": {
@@ -1949,10 +1949,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 224,
+        "index_entries": 225,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 224,
+        "tracked_documents": 225,
         "untracked_index_entries": []
       }
     },
@@ -1976,9 +1976,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15569,
+        "invisible_files": 15571,
         "target_invisible_files": 0,
-        "tracked_files": 23108
+        "tracked_files": 23111
       }
     },
     "47": {

@@ -39,7 +39,10 @@ def _frontmatter(fm: dict, tier: str):
 
 
 def test_schema_version_records_fail_closed_allowed_tools_change():
-    assert validator.SCHEMA_VERSION == "4.0.0"
+    # 4.0.1: E3.9 added the portable ${SKILL_DIR}/${PLUGIN_ROOT} spellings to
+    # YAML_VALUE_ALLOWED_VARS (SCHEMA_CHANGELOG 2026-08-18); the fail-closed
+    # allowed-tools semantics this test pins are unchanged from 4.0.0.
+    assert validator.SCHEMA_VERSION == "4.0.1"
 
 
 # =========================================================================
@@ -301,15 +304,15 @@ def test_mirror_owned_folded_scalars_are_parseable_and_byte_identical():
         assert tools
         assert all(validator.validate_tool_permission(tool)[0] for tool in tools)
 
-    assert len(folded_paths) == 10
+    # E3.6 deleted the byte-identical .codex fork (blueprint 727 section 6:
+    # a fork is not an adapter), so the folded-scalar census is the five
+    # canonical kobiton skills only, and no .codex copy may reappear — the
+    # adapter-thinness gate owns that invariant going forward.
+    assert len(folded_paths) == 5
     assert len(mirror_roots) == 1
     mirror_root = mirror_roots.pop()
-    canonical_paths = [path for path in folded_paths if ".codex" not in path.parts]
-    assert len(canonical_paths) == 5
-    for canonical in canonical_paths:
-        relative_skill = canonical.relative_to(mirror_root / "skills")
-        codex_copy = mirror_root / ".codex" / "skills" / relative_skill
-        assert canonical.read_bytes() == codex_copy.read_bytes()
+    assert all(".codex" not in path.parts for path in folded_paths)
+    assert not (mirror_root / ".codex").exists()
 
 
 # =========================================================================
