@@ -1251,6 +1251,14 @@ missed. The pinned assertion is `check-doc-authority.test.mjs` (two claimants, t
 canonical-table links); "2 ≤ 3, all linked" is the satisfied reading, recorded here so no
 audit needs to re-derive it.
 
+**E3.13 kernel-boundary record (2026-08-19).** The canonical contract was proposed to the
+kernel as `intent-eval-core#90` (schemas `skill-contract`, `capability`, `eval-spec`), citing
+`schemas/canonical/v0/` as the draft. The ownership boundary stands as designed: this repository
+is never its own schema authority — the v0 directory is `DRAFT · UPSTREAM-PENDING`, every
+consumer names that status, and on kernel adoption the local draft becomes a cited vendored copy
+of the kernel contract with the kernel changelog as the canonical record of semantics. Until
+adoption, the draft evolves only through reviewed PRs here with #90 linked.
+
 **Dependencies / entry criteria.** None for the measurement harness, the catalog work, and the asset sniff. The dead-domain sweep **must wait for Epic 2's freeze** — the frozen set is an input, not an afterthought.
 
 **Proposed beads (15).**

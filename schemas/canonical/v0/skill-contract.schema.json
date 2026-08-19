@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tonsofskills.com/schemas/canonical/v0/skill-contract.schema.json",
   "title": "Canonical harness-free skill contract (skill-card.yaml)",
-  "$comment": "Status: DRAFT (v0). UPSTREAM-PENDING: this repository must never become its own schema authority — the contract is to be proposed to @intentsolutions/core as the `skill-contract` authoring schema (blueprint 727 Epic 3 bead 3.13; the kernel issue number is recorded in that bead and in 000-docs when filed). Home B of the four-home split (blueprint 727 § 5.1): written by the skill author per behavior change, read by validators, adapter generators, marketplace filters, and security review. The SKILL.md frontmatter (home A) is NOT this contract and keeps the IS 8 unchanged — this file is additive and never touches ALWAYS_REQUIRED.",
+  "$comment": "Status: DRAFT (v0). UPSTREAM-PENDING: this repository must never become its own schema authority — the contract is to be proposed to @intentsolutions/core as the `skill-contract` authoring schema (blueprint 727 Epic 3 bead 3.13 — FILED as intent-eval-core#90, 2026-08-19). Home B of the four-home split (blueprint 727 § 5.1): written by the skill author per behavior change, read by validators, adapter generators, marketplace filters, and security review. The SKILL.md frontmatter (home A) is NOT this contract and keeps the IS 8 unchanged — this file is additive and never touches ALWAYS_REQUIRED.",
   "type": "object",
   "additionalProperties": false,
   "required": [
