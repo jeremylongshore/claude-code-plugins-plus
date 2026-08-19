@@ -4,9 +4,21 @@
 # for the purpose of catching leaked credentials). The repo also runs trufflehog
 # on a weekly schedule against the full history as a verified-credentials check.
 #
-# Extends the upstream default ruleset. Add repo-specific rules for Anthropic,
-# Firebase, and GCP credential shapes. Allowlists exclude documentation
-# examples, test fixtures, and plugin author-provided placeholder tokens.
+# Extends the upstream default ruleset. Adds repo-specific rules for Anthropic,
+# Firebase, and Groq credential shapes.
+#
+# ALLOWLIST POLICY (blueprint 727 E4.5, 2026-08-19 — enforced by
+# scripts/check-gitleaks-config.mjs):
+#   - NO file-TYPE blankets. The former allowlist excluded ~67% of tracked
+#     files (every SKILL.md, README.md, CHANGELOG.md, references/*.md,
+#     000-docs/*.md, tests/, fixtures/, freshie/) — including the exact
+#     tests/fixtures/ location other docs recommend for test secrets. All of
+#     those surfaces are now scanned.
+#   - Placeholder/teaching examples pass by VALUE (stopwords + regexes below),
+#     never by excluding the file that holds them.
+#   - Each surviving path entry is a SPECIFIC surface carrying a
+#     "reason: ... expiry: YYYY-MM-DD" comment; the shape gate fails a path
+#     entry without one, and fails any reintroduced type blanket.
 
 [extend]
 useDefault = true
@@ -36,94 +48,146 @@ regex = '''https://hooks\.slack\.com/services/T[A-Z0-9]{8,}/B[A-Z0-9]{8,}/[A-Za-
 tags = ["url", "slack"]
 
 [allowlist]
-description = "Repo-wide allowlist for documentation, tests, and placeholder fixtures."
+description = "Specific documented surfaces + placeholder VALUES. No file-type blankets (E4.5)."
 paths = [
-    '''(?i).*/README\.md$''',
-    '''(?i).*/CHANGELOG\.md$''',
-    '''(?i).*/SKILL\.md$''',
-    '''(?i).*/references/.*\.md$''',
-    '''.*/tests?/.*''',
-    '''.*/__tests__/.*''',
-    '''.*/fixtures/.*''',
-    # *.test.ts / *.spec.ts at any depth — test files often hold leak-canary
-    # fixtures (e.g., xoxb-SECRET-LEAK-CANARY-..., eyJ.eyJ.abc JWT shapes) to
-    # verify redaction logic. The tests/ glob above misses files that live at
-    # module root rather than under a tests/ subdir (e.g.
-    # plugins/mcp/slack-channel/server.test.ts).
-    '''.*\.(test|spec)\.(ts|js|tsx|jsx|mjs|cjs)$''',
-    '''^plugins/mcp/.*/dist/.*\.js$''',
+    # reason: this config file itself holds the detector regexes and example
+    # values below, which the default rules would re-read as leaks.
+    # expiry: none (self-referential by construction)
     '''^\.gitleaks\.toml$''',
+    # reason: the canonical validator embeds credential-shape detector
+    # patterns (its own secret-scanning rule set), not credentials.
+    # expiry: 2027-06-30 (re-review when the validator consumes the kernel)
     '''^scripts/validate-skills-schema\.py$''',
-    '''^freshie/.*''',
+    # reason: the hardcoded-secrets scanner ships the canonical detector
+    # pattern library (BEGIN-PRIVATE-KEY headers, AKIA prefixes, vendor key
+    # prefixes) as literal strings.
+    # expiry: 2027-06-30
+    '''^plugins/security/penetration-tester/skills/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
+    # reason: generated mirror of the same detector library promoted by
+    # freshie/scripts/promote-to-curated.py; the source above is in scope.
+    # expiry: 2027-06-30
+    '''^skills/\.curated/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
+    # reason: compiled MCP build output; sources under src/ are scanned.
+    # expiry: 2027-06-30 (re-review if dist/ ever stops being generated)
+    '''^plugins/mcp/.*/dist/.*\.js$''',
+    # reason: generated build projections of SKILL.md bodies already scanned
+    # at their source (skills-catalog/unified-search + the public/ and dist/
+    # copies build.mjs makes of them); scanning the bundle double-reports
+    # every source finding on each regen.
+    # expiry: 2027-06-30
     '''^marketplace/src/data/.*\.json$''',
-    # Runtime mirror of src/data/ — `marketplace/scripts/build.mjs` copies
-    # skills-catalog.json + unified-search-index.json into public/data/ so
-    # they're served as static assets. Same content, same allowlist scope
-    # as the source (which is already allowlisted above). Without this,
-    # gitleaks re-scans the demo Supabase JWTs and other documentation
-    # examples that live inside SKILL.md body content bundled into these
-    # generated files. SKILL.md itself is allowlisted; the bundled mirror
-    # must follow suit or every catalog regen turns CI red.
     '''^marketplace/public/data/.*\.json$''',
     '''^marketplace/dist/.*''',
-    # The hardcoded-secrets scanner ships the canonical detector pattern
-    # library (BEGIN-PRIVATE-KEY headers, AWS AKIA prefix shapes, vendor
-    # API-key prefixes). Gitleaks's own rules flag those literal pattern
-    # strings as if they were keys. Allowlist the file so the detector
-    # library is not re-read as a leak surface.
-    '''^plugins/security/penetration-tester/skills/scanning-for-hardcoded-secrets/scripts/scan_secrets\.py$''',
-
-    # --- Documentation / illustrative-example surfaces (2026-07-09 audit) ---
-    # The weekly full-history scan (fetch-depth: 0) surfaced 87 findings, all
-    # illustrative example creds in prose/templates — no real credential. Each
-    # pattern below is grounded in a real finding from run 28731012059.
-    #
-    # Home-level security guides carry `API_KEY="sk-..."` teaching examples
-    # (generic-api-key, stripe-access-token hits in 000-docs/*.md incl. the
-    # 6767-d extensions-schema and 071 user-security guide).
-    '''^000-docs/.*\.md$''',
-    '''^SECURITY\.md$''',
-    '''^CREDENTIAL-MIGRATION-READY\.md$''',
-    # Prior path of the user-security guide (renamed into 000-docs/); still
-    # reachable via history on the full-depth scan.
-    '''^docs/USER_SECURITY_GUIDE\.md$''',
-    # Plugin documentation surfaces — command/agent/plugin-docs markdown and
-    # skill-adapter example assets hold curl-auth-header / generic-api-key /
-    # jwt teaching examples (security-scanner, penetration-tester, crypto
-    # audit, api-* generators, on-chain-analytics, etc.). These are prose docs
-    # and generated example templates, not executable secrets; real plugin
-    # code (.py/.ts/.js/.sh) stays in scope.
-    '''^plugins/.*/commands/.*\.md$''',
-    '''^plugins/.*/agents/.*\.md$''',
-    '''^plugins/.*/docs/.*\.md$''',
-    '''^plugins/.*/skills/skill-adapter/assets/.*''',
-    # Deleted `backups/` tree — a snapshot of plugin docs removed from HEAD but
-    # still reachable through git history under fetch-depth: 0. It re-tripped
-    # ~60 of the 87 findings every scheduled run. The tree no longer exists in
-    # the working copy; scope it out of the history scan so it stops re-firing.
+    # reason: generated HuggingFace dataset projection of SKILL.md bodies
+    # (freshie/scripts export); every embedded example exists in a scanned
+    # source file.
+    # expiry: 2027-06-30
+    '''^freshie/hf-dataset/.*''',
+    # reason: deleted backups/ tree — absent from HEAD but reachable in the
+    # weekly fetch-depth:0 history scan, where it re-fired ~60 stale findings
+    # per run.
+    # expiry: 2027-06-30 (drop when the weekly scan gains a HEAD-only mode)
     '''^backups/.*''',
 ]
 
+# Placeholder/teaching VALUES. gitleaks skips a finding whose secret matches
+# any regex here or contains any stopword below — the file itself stays
+# scanned, so a real credential added next to an example still fires.
 regexes = [
     # AWS public example key — documented by AWS, not a real credential.
     '''AKIAIOSFODNN7EXAMPLE''',
     # Common placeholder patterns used in plugin bodies.
     '''your[-_](api[-_])?key[-_]here''',
-    '''YOUR_[A-Z_]+_HERE''',
+    '''YOUR_[A-Z_]+''',
     '''xxx+''',
     '''\*\*\*+''',
     '''placeholder''',
     '''replace[-_]me''',
     '''example\.com''',
-    # Firebase Web (browser) API key from the now-retired Firebase-hosted
-    # version of marketplace/src/layouts/BaseLayout.astro (the single
-    # gcp-api-key hit at commit 44933759:52; the firebaseConfig block has since
-    # been removed — the current site uses Umami, no Firebase). Firebase Web
-    # API keys are public by design: Google ships them in client-side config
-    # and documents that they are safe to commit (access is gated by Security
-    # Rules + App Check, not by key secrecy). The default gcp-api-key rule
-    # flags the AIzaSy… shape regardless. Allowlist the exact value, NOT the
-    # .astro path, so a real server key ever added to an .astro file still
-    # surfaces.
+    # Ellipsis-truncated illustrative value (`sk_live_abc123...`) — a real
+    # captured credential never contains a literal "...".
+    '''\.\.\.''',
+    # Ethereum addresses (USDT/LINK/UNI contract addresses in crypto-pack
+    # docs) are public identifiers, not secrets.
+    '''\b0x[0-9a-fA-F]{40}\b''',
+    # jwt.io canonical demo token family (payload sub "12345…").
+    '''eyJzdWIiOiIxMjM0NT''',
+    # Tiered-plan teaching keys in rate-limiter examples.
+    '''key_(free|pro|ent)_\d+''',
+    # Environment-labeled fake secrets in multi-env teaching docs.
+    '''(prod|dev|stag(e|ing))[-_]secret[-_]\d+''',
+    # Model identifiers matched by the generic rule are not credentials.
+    '''claude-[0-9a-z.-]+-\d{8}''',
+    # Prose fragment "GCP/AWS/Vault" captured by the generic rule.
+    '''GCP/AWS/Vault''',
+    # Base64 of "tok:abcdefghijklmnopqrstuvwxyz" / "tok:staging_token" /
+    # "tok:dev_token" — Intercom basic-auth teaching examples. Exact values
+    # only: real Intercom tokens share the dG9rO prefix, so no prefix rule.
+    '''dG9rOmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6''',
+    '''dG9rOnN0YWdpbmdfdG9rZW4=''',
+    '''dG9rOmRldl90b2tlbg==''',
+    # Supabase's publicly documented demo JWTs (payload iss "supabase-demo")
+    # — shipped verbatim in Supabase's own docs for local development.
+    '''eyJpc3MiOiJzdXBhYmFzZS1kZW1vIi''',
+    # Base64 placeholders that decode to "api-key-here", "tok:abcdefghi",
+    # "tok:dev_token_here" (basic-auth teaching examples).
+    '''YXBpLWtleS1oZXJl''',
+    '''dG9rOmFiY2RlZmdoaQ==''',
+    '''dG9rOmRldl90b2tlbl9oZXJl''',
+    # Documentation UUID examples (sequential/"invalid"-marked shapes).
+    '''12345678-abcd-1234-efgh-invalid00000''',
+    '''5f9d6f8e-7c3a-4b2e-9c1d-1e2f3a4b5c6d''',
+    # Doc text quoting PEM header patterns in backticks (pattern libraries,
+    # not key material — real PEM bodies never contain a backtick).
+    '''PRIVATE KEY-----[`'"]''',
+    # Dead historical npm token from the 2025 v1.3.2 release draft
+    # (000-docs/143). Redacted from the working tree in the E4.5 PR;
+    # registry-verified invalid (401) on 2026-08-19. Matched by prefix-anchored
+    # regex rather than the literal value (GitHub push protection rightly
+    # refuses commits containing the full token) so the fetch-depth:0 history
+    # scan doesn't re-fire on a credential that no longer exists.
+    '''npm_C26t[A-Za-z0-9]{32}''',
+    # Firebase Web (browser) API key from the retired Firebase-hosted
+    # BaseLayout.astro (history-only). Firebase Web API keys are public by
+    # design; the default gcp-api-key rule flags the AIzaSy… shape
+    # regardless. Exact value, NOT the path, so a real server key ever added
+    # to an .astro file still surfaces.
     '''AIzaSyAUbgBuoMCtcjEdRcYzqu08kuVFVDeiHsM''',
+]
+
+stopwords = [
+    # Sequential/keyboard-walk fillers used across teaching examples.
+    "abc123",
+    "123abc",
+    "abcdef",
+    "ABCDEF",
+    "GHIJKL",
+    "1234567890",
+    "abcdefghijklmnop",
+    # Alphabet-walk fillers (uvwxyz9876543210-style example keys).
+    "uvwxyz",
+    "hijklm",
+    # Self-describing placeholder tokens.
+    "TESTKEY",
+    "invalid",
+    "wrong_key",
+    "WithDecryption",
+    "your-key",
+    "your_key",
+    "api-key-here",
+    "token-here",
+    "test-key",
+    "live-key",
+    "dev_token",
+    "USER_TOKEN",
+    "example",
+    "EXAMPLE",
+    "sample",
+    "dummy",
+    "changeme",
+    "change-me",
+    # Leak-canary fixtures in redaction tests are deliberately fake and
+    # self-labeled (e.g. xoxb-SECRET-LEAK-CANARY-…).
+    "CANARY",
+    "canary",
 ]
