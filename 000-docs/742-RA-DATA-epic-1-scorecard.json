@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23130
+        "tracked_files": 23128
       }
     },
     "2": {
@@ -1860,9 +1860,10 @@
           "commit-scope-check",
           "codeowners-drift",
           "generated-content-drift",
-          "doc-governance"
+          "doc-governance",
+          "secret-diff-scan"
         ],
-        "actual_needs_count": 21,
+        "actual_needs_count": 22,
         "documented_needs": null
       }
     },
@@ -1974,7 +1975,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23130
+        "tracked_files": 23128
       }
     },
     "47": {
@@ -1987,7 +1988,7 @@
       "source": [".github/workflows/secret-scan.yml", ".github/workflows/validate-plugins.yml"],
       "status": "partial",
       "values": {
-        "blocking_unverifiable_pr_scans": 1,
+        "blocking_unverifiable_pr_scans": 0,
         "invocations": [
           {
             "only_verified": true,
@@ -1995,7 +1996,7 @@
             "pull_request": true
           },
           {
-            "only_verified": false,
+            "only_verified": true,
             "path": ".github/workflows/validate-plugins.yml",
             "pull_request": true
           }

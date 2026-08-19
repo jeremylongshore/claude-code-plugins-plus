@@ -1693,6 +1693,36 @@ jobs:
       - name: Check generated projections are not tracked
         run: pnpm run validate:generated-artifacts
 
+  # E4.6 (blueprint 727): blocking, diff-scoped scan for UNVERIFIABLE secrets
+  # on every PR. Closes the union gap the Safety Enforcement Register (790 §2)
+  # measured: gitleaks is rule-shape-based and trufflehog's weekly job runs
+  # --only-verified on a schedule — so a rotated key or internal token whose
+  # issuer can't be probed never gated a PR. This job runs trufflehog over the
+  # PR range WITHOUT --only-verified (verified + unknown results both fail).
+  # Diff-scoped noise measured before landing: 0 findings across the prior 30
+  # commits — detector-shape matching doesn't fire on the repo's teaching
+  # placeholders the way generic-entropy rules would.
+  # The scan step skips outside pull_request (designed if:, same pattern as
+  # scan-synced-content) so the job always reports for the aggregate.
+  secret-diff-scan:
+    runs-on: ubuntu-latest
+    name: secret-diff-scan (unverified, PR diff)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Scan the PR range for unverifiable secrets
+        if: github.event_name == 'pull_request'
+        # Same SHA pin as secret-scan.yml's weekly job — never @main; the
+        # action appends --fail itself (do not repeat it in extra_args).
+        uses: trufflesecurity/trufflehog@27b0417c16317ca9a472a9a8092acce143b49c55 # v3.95.9
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --results=verified,unknown
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1732,6 +1762,7 @@ jobs:
       - codeowners-drift
       - generated-content-drift
       - doc-governance
+      - secret-diff-scan
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:
