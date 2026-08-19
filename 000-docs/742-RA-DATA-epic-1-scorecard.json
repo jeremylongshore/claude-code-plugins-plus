@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23120
+        "tracked_files": 23123
       }
     },
     "2": {
@@ -1905,6 +1905,7 @@
         "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
         "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
         "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+        "000-docs/790-DR-STND-safety-enforcement-register.md",
         "000-docs/SCHEMA_CHANGELOG.md",
         "STANDARDS.md"
       ],
@@ -1922,11 +1923,12 @@
           "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
           "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
           "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+          "000-docs/790-DR-STND-safety-enforcement-register.md",
           "000-docs/SCHEMA_CHANGELOG.md"
         ],
-        "canonical_table_links": 12,
-        "declared": 2,
-        "linked_declared": 2,
+        "canonical_table_links": 13,
+        "declared": 3,
+        "linked_declared": 3,
         "target_unlinked": 0,
         "unlinked": []
       }
@@ -1941,10 +1943,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 230,
+        "index_entries": 232,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 230,
+        "tracked_documents": 232,
         "untracked_index_entries": []
       }
     },
@@ -1968,9 +1970,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15578,
+        "invisible_files": 15580,
         "target_invisible_files": 0,
-        "tracked_files": 23120
+        "tracked_files": 23123
       }
     },
     "47": {
