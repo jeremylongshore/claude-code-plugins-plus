@@ -133,9 +133,8 @@
         "author": { "type": "string", "minLength": 1 },
         "license": { "type": "string", "minLength": 1 },
         "spdx": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9.+-]+( (WITH|AND|OR) [A-Za-z0-9.+-]+)*$",
-          "description": "SPDX expression only. \"SEE LICENSE IN LICENSE\" is invalid."
+          "$ref": "#/$defs/spdxExpression",
+          "description": "SPDX expression over the registered vocabulary only. \"SEE LICENSE IN LICENSE\" and invented token-shaped values are invalid; a genuinely custom license uses LicenseRef-<name>."
         },
         "source": { "type": ["string", "null"], "description": "Upstream repo URL when mirrored." },
         "source_commit": {
@@ -147,6 +146,18 @@
           "type": ["string", "null"],
           "description": "MUST equal .source.json when mirrored (cross-file check, not expressible here)."
         }
+      },
+      "if": {
+        "properties": { "source": { "type": "string" } },
+        "required": ["source"]
+      },
+      "then": {
+        "$comment": "A mirrored contract (non-null source) MUST pin the resolved commit and record the upstream license — mutable upstream provenance is exactly what the lockfile threat model forbids.",
+        "properties": {
+          "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "upstream_license": { "type": "string", "minLength": 1 }
+        },
+        "required": ["source_commit", "upstream_license"]
       }
     },
     "adapters": {
@@ -161,20 +172,62 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["capability", "adapter", "reason", "degradation"],
+        "required": ["capability", "adapter", "reason"],
         "properties": {
           "capability": { "type": "string" },
           "adapter": { "type": "string" },
           "reason": { "type": "string", "minLength": 1 },
           "degradation": {
             "enum": ["fail-closed", "skip", "prompt-in-band"],
-            "default": "fail-closed"
+            "default": "fail-closed",
+            "$comment": "Optional so the documented fail-closed default can actually apply: an omitted degradation MEANS fail-closed (consumers compile with useDefaults or treat absence as fail-closed). Requiring it made the default unreachable."
           }
         }
       }
     }
   },
   "$defs": {
+    "spdxId": {
+      "$comment": "The v0 registered license vocabulary — the ids present in this corpus plus the SPDX LicenseRef- extension shape for genuinely custom licenses. An invented token-shaped value (e.g. MadeUpLicense) is rejected; growing this list is a schema change, reviewed like one.",
+      "anyOf": [
+        {
+          "enum": [
+            "MIT",
+            "Apache-2.0",
+            "BSD-2-Clause",
+            "BSD-3-Clause",
+            "ISC",
+            "GPL-2.0-only",
+            "GPL-2.0-or-later",
+            "GPL-3.0-only",
+            "GPL-3.0-or-later",
+            "LGPL-2.1-only",
+            "LGPL-3.0-only",
+            "AGPL-3.0-only",
+            "AGPL-3.0-or-later",
+            "MPL-2.0",
+            "Unlicense",
+            "CC0-1.0",
+            "CC-BY-4.0",
+            "CC-BY-SA-4.0",
+            "0BSD",
+            "Zlib"
+          ]
+        },
+        { "type": "string", "pattern": "^LicenseRef-[A-Za-z0-9.-]+$" }
+      ]
+    },
+    "spdxExpression": {
+      "$comment": "A single id, or a binary expression over ids. Nested parenthesized expressions are out of v0 scope — use LicenseRef- for exotic terms.",
+      "anyOf": [
+        { "$ref": "#/$defs/spdxId" },
+        {
+          "type": "string",
+          "pattern": "^\\S+( (WITH|AND|OR) \\S+)+$",
+          "$comment": "Expression shape; each operand is checked by the gate layer against the same vocabulary (JSON Schema cannot split-and-check operands)."
+        }
+      ]
+    },
     "ioPort": {
       "type": "object",
       "additionalProperties": false,

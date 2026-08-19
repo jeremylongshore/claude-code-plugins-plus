@@ -89,9 +89,41 @@ test('red run — a harness with no registered adapter artifact is rejected', ()
 test('red run — a branch name is not a mirror pin', () => {
   const p = withPatch({});
   p.provenance.source = 'https://github.com/x/y';
+  p.provenance.upstream_license = 'MIT';
   p.provenance.source_commit = 'main';
   assert.equal(validate(p), false);
   p.provenance.source_commit = 'a'.repeat(40);
+  assert.ok(validate(p), JSON.stringify(validate.errors));
+});
+
+test('red run — a mirrored contract cannot omit its pin or upstream license', () => {
+  const p = withPatch({});
+  p.provenance.source = 'https://github.com/x/y';
+  p.provenance.source_commit = null;
+  p.provenance.upstream_license = 'MIT';
+  assert.equal(validate(p), false, 'null source_commit with non-null source must fail');
+  p.provenance.source_commit = 'a'.repeat(40);
+  p.provenance.upstream_license = null;
+  assert.equal(validate(p), false, 'null upstream_license with non-null source must fail');
+  // and a non-mirrored contract (null source) keeps nulls legal
+  p.provenance.source = null;
+  p.provenance.source_commit = null;
+  assert.ok(validate(p), JSON.stringify(validate.errors));
+});
+
+test('red run — an invented token-shaped SPDX id is rejected', () => {
+  const p = withPatch({});
+  p.provenance.spdx = 'MadeUpLicense';
+  assert.equal(validate(p), false);
+  p.provenance.spdx = 'LicenseRef-IntentSolutions-Proprietary';
+  assert.ok(validate(p), JSON.stringify(validate.errors));
+  p.provenance.spdx = 'Apache-2.0 WITH LLVM-exception';
+  assert.ok(validate(p), JSON.stringify(validate.errors));
+});
+
+test('an omitted degradation is legal and means fail-closed', () => {
+  const p = withPatch({});
+  p.unsupported = [{ capability: 'user.prompt', adapter: 'codex', reason: 'no primitive' }];
   assert.ok(validate(p), JSON.stringify(validate.errors));
 });
 
@@ -101,7 +133,7 @@ test('red run — harness tool spellings are not capabilities', () => {
   }
 });
 
-test('red run — unsupported entries require reason and degradation', () => {
+test('red run — unsupported entries require a reason', () => {
   const p = withPatch({});
   p.unsupported = [{ capability: 'user.prompt', adapter: 'codex' }];
   assert.equal(validate(p), false);
