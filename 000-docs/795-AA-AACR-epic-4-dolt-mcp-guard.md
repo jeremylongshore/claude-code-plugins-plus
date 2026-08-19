@@ -56,6 +56,18 @@ drop_database` handshake through the guard returned `isError: true — REFUSED
 - CLAUDE.md's freshie section wording updated ("surfaces them but won't execute" →
   enforced-at-the-wire wording), and the register (790 § 6) row flipped to `E4.9 closed`.
 
+## Mirror discipline (corrected mid-slice)
+
+`plugins/mcp/dolt-mcp-vcs` is a `.source.json` mirror of Jeremy's own
+`jeremylongshore/dolt-mcp-vcs-plugin` — and Epic 4's prohibited scope forbids editing mirror
+content. The first draft of this slice hand-edited the mirror; corrected before merge: the
+guard + README landed **upstream first**
+([dolt-mcp-vcs-plugin#10](https://github.com/jeremylongshore/dolt-mcp-vcs-plugin/pull/10),
+merged at `56cb984`), the hand edits were reverted, and the mirror content arrived through the
+engine (`sync-external.mjs --relock=dolt-mcp-vcs`, advancing `sources.lock.json` and the
+`.source.json` ledger). The upstream repo remains the source of truth; the weekly sync can no
+longer clobber the guard because upstream now carries it.
+
 ## Scope discipline
 
 E4.10 (declared `destructive_policy` for all MCP plugins + refusal tests) is the separate
