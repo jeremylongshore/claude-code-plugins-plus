@@ -150,6 +150,18 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [4.1.0] — 2026-08-19
+
+**Added** (blueprint 727 E4.3/E4.4): `--safety-metrics` mode — emits the
+safety-ratchet metric sets as JSON (first-party `bare_bash` skills, the
+`tier2_tool_safety` finding set, every YAML `shell_substitution` occurrence as
+`file::field`; `.source.json` mirror subtrees excluded as upstream-owned) and
+exits. Consumed by `scripts/check-safety-ratchet.mjs`, the triple-keyed
+monotone ratchet in the `validate` job. No grading semantics changed; the mode
+reuses `parse_allowed_tools` / `tier2_check_tool_safety` /
+`check_yaml_shell_substitution` verbatim so the gate owns no classification
+logic of its own.
+
 ## [4.0.2] — 2026-08-19
 
 ### Fixed
