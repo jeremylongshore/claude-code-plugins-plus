@@ -67,6 +67,19 @@ if (plugin.components?.commands) statsItems.push({ label: 'Commands', value: Str
 if (plugin.components?.agents) statsItems.push({ label: 'Agents', value: String(plugin.components.agents) });
 if (plugin.mcpTools) statsItems.push({ label: 'MCP Tools', value: String(plugin.mcpTools) });
 statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
+
+// Declared adapters (blueprint 727 E3.12). The registered adapter set is the
+// canonical contract's enum (schemas/canonical/v0) — a harness appears here
+// only when a generated adapter artifact exists. Free-text compatibility has
+// no page consumer anywhere (verified); this DECLARED line replaces it as the
+// only harness-support statement on the surface. When per-skill skill-cards
+// land, this same slot renders their adapters[] + unsupported[] detail.
+const ADAPTER_DISPLAY: Record<string, string> = { 'claude-code': 'Claude Code' };
+const declaredAdapters = ['claude-code'];
+statsItems.push({
+  label: 'Adapters (declared)',
+  value: declaredAdapters.map((a) => ADAPTER_DISPLAY[a] ?? a).join(', '),
+});
 ---
 
 <BaseLayout title={`${plugin.name} | Claude Code Plugins`} description={plugin.description}>
