@@ -46,12 +46,20 @@ test('the three sets are disjoint by construction', () => {
   );
 });
 
-test('the exclusion list stays regenerable from the live beads export', () => {
+test('the exclusion list stays regenerable from the live beads export', (t) => {
+  // The beads workspace is deliberately untracked in this repo (local Dolt is
+  // the authority; the JSONL is a machine-local export). CI checkouts have no
+  // .beads/, so the census assertion is a LOCAL-workspace check: absent file
+  // → skip, never a synthetic pass of the actual comparison.
+  let raw;
+  try {
+    raw = readFileSync(new URL('../.beads/issues.jsonl', import.meta.url), 'utf-8');
+  } catch {
+    t.skip('no local beads export (CI checkout) — census verified at generation time');
+    return;
+  }
   const ids = new Set();
-  for (const line of readFileSync(
-    new URL('../.beads/issues.jsonl', import.meta.url),
-    'utf-8',
-  ).split('\n')) {
+  for (const line of raw.split('\n')) {
     if (!line.trim()) continue;
     try {
       const id = JSON.parse(line).id ?? '';
