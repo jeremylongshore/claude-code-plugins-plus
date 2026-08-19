@@ -86,7 +86,7 @@ are all regenerated. Flag hand-edits; direct the change to the source
 ## CI gate architecture (do not restate what it enforces)
 
 The merge gate is exactly `ci-required` (an aggregate of the validate/verify/test/lint jobs) +
-`gitleaks`. AI review and the kernel lanes are **advisory and never blocking**. Do not duplicate
+`gitleaks` + `skill-conform`. AI review and the kernel lanes are **advisory and never blocking**. Do not duplicate
 markdownlint/eslint/ruff/prettier/gitleaks findings or push a plugin's blocking check into the required
 set from a side PR. Report the human-facing "here is what to fix," not the mechanical lint output.
 

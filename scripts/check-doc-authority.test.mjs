@@ -193,12 +193,13 @@ test('Topic-column and later prose links cannot grant authority', () => {
 test('live repository has only linked effective claimants', () => {
   const result = scanRepository(repositoryRoot);
   deepEqual(result.findings, []);
-  // 12 since E2.6 added the filing standard and the source-of-truth map to the
-  // STANDARDS.md canonical table, closing the rule over doc-class: canonical.
-  equal(result.canonicalLinks.size, 12);
+  // 13 since E4.1 added the safety enforcement register (12 was the E2.6
+  // state: filing standard + source-of-truth map joined the table).
+  equal(result.canonicalLinks.size, 13);
   deepEqual(result.claimants.map((item) => item.path).sort(), [
     '000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md',
     '000-docs/727-AT-ARCH-master-modernization-blueprint.md',
+    '000-docs/790-DR-STND-safety-enforcement-register.md',
   ]);
   equal(
     result.claimants.find((item) => item.path.startsWith('000-docs/727-')).kind,

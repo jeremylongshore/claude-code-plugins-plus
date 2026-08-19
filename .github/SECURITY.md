@@ -52,15 +52,15 @@ Plugin zip packages (cowork downloads) are built with:
 - **GitHub Dependabot** — automated PRs for vulnerable dependencies (npm + GitHub Actions)
 - **CodeQL** — static analysis on push, PR, and weekly schedule
 - **Secret scanning with push protection** — blocks commits containing detected secrets
-- **Weekly security audit workflow** — scheduled sweep of the full repository
+- **Weekly full-history secret scan** — trufflehog runs on a Sunday schedule against the entire git history (`.github/workflows/secret-scan.yml`)
 
 ## Plugin Trust Levels
 
-| Level         | Requirements                                                                                                                                                                                                                    | Recommendation                 |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
-| **Community** | Automated CI passed                                                                                                                                                                                                              | Inspect before production use  |
-| **Verified**  | A maintainer completed the listing checklist in the [vetting playbook](../000-docs/699-DR-GUID-external-source-vetting-playbook.md) and vouches for the source's trust and quality at listing time — a trust record, not a control | Lower risk; still inspect      |
-| **Featured**  | Editorial pick: A-grade at marketplace tier + the pack/flagship doc set                                                                                                                                                          | Recommended                    |
+| Level         | Requirements                                                                                                                                                                                                                       | Recommendation                |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **Community** | Automated CI passed                                                                                                                                                                                                                | Inspect before production use |
+| **Verified**  | A maintainer completed the listing checklist in the [vetting playbook](../000-docs/699-DR-GUID-external-source-vetting-playbook.md) and vouches for the source's trust and quality at listing time — a trust record, not a control | Lower risk; still inspect     |
+| **Featured**  | Editorial pick: A-grade at marketplace tier + the pack/flagship doc set                                                                                                                                                            | Recommended                   |
 
 ## External Plugin Sync — Supply-Chain Security
 
