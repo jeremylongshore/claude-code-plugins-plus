@@ -76,12 +76,21 @@ jobs:
       - name: Enforce the gitleaks allowlist shape
         run: pnpm run validate:gitleaks-config
 
-      # E4.10: every tracked MCP plugin must declare its destructive-operation
-      # policy (plugins/mcp/destructive-policies.json); refuse/recommend-only
-      # declarations are executed against their named refusal test — a
-      # declaration is only as good as its passing test.
-      - name: Enforce MCP destructive-operation policies
-        run: pnpm run validate:mcp-destructive-policy
+      # E4.3/E4.4/E4.11: the triple-keyed safety ratchet. Frozen debt classes
+      # (bare-Bash skills, tier-2 tool-safety findings, YAML shell-substitution
+      # occurrences — never waivable — and the agents-lane error corpus) are
+      # monotone non-increasing; a swap fails even at equal count; a shrink
+      # re-pins via --write in the shrinking PR. Metrics come from the
+      # canonical validator (--safety-metrics / --agents-only) so this gate
+      # owns no classification logic.
+      - name: Setup Python for the safety ratchet
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce the safety ratchet
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
+          pnpm run validate:safety-ratchet
 
       # E4.13: a denylist (disallowed-tools) posture is enforced by the
       # Claude Code runtime only. This gate forbids silent-drop: a

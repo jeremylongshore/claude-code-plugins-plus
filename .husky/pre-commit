@@ -30,3 +30,12 @@ fi
 
 # Step 2: Standard gates
 pnpm exec lint-staged && pnpm exec audit-harness verify
+
+# E4.14 refuse-to-start pre-flight (blueprint 727 § 18.7): refuse to proceed
+# while a live-shaped plaintext credential sits in this box's MCP configs
+# (repo .mcp.json + ~/.claude.json project registration). The sanctioned fix
+# is SOPS (.sops.env) + scripts/sops-env at launch. Fast: two small JSON reads.
+node scripts/check-mcp-plaintext-creds.mjs --all-local || {
+  echo "✗ plaintext MCP credential on this box — encrypt it before continuing." >&2
+  exit 1
+}

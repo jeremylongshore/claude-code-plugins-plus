@@ -29,6 +29,7 @@
     "validate:gitleaks-config": "node --test scripts/check-gitleaks-config.test.mjs && node scripts/check-gitleaks-config.mjs",
     "validate:mcp-destructive-policy": "node --test scripts/check-mcp-destructive-policy.test.mjs && node scripts/check-mcp-destructive-policy.mjs",
     "validate:denylist-degradation": "node --test scripts/check-denylist-degradation.test.mjs && node scripts/check-denylist-degradation.mjs",
+    "validate:safety-ratchet": "node --test scripts/check-safety-ratchet.test.mjs && node scripts/check-safety-ratchet.mjs",
     "validate:doc-fact-assertions": "node --test scripts/check-doc-fact-assertions.test.mjs && node scripts/check-doc-fact-assertions.mjs",
     "validate:readme-contract": "node --test scripts/check-readme-contract.test.mjs && node scripts/check-readme-contract.mjs",
     "validate:canonical-schema": "node --test scripts/check-canonical-schema.test.mjs",
