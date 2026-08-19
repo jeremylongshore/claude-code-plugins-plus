@@ -1,24 +1,27 @@
 <!-- doc-class: canonical -->
 
 ---
+
 filing_code: DR-GUID-SKILL-SUBMISSION-STANDARD-2026-07-07
 date: 2026-07-07
 status: active
 scope: The tiered submission-documents standard + issue-before-PR intake for every plugin/source submission — external and Intent Solutions' own
 related:
-  - templates/skill-docs/ (the four fill-in templates + tier matrix)
-  - 000-docs/698-TQ-SECU-external-sync-threat-model.md (threat model for synced sources)
-  - 000-docs/699-DR-GUID-external-source-vetting-playbook.md (source vetting procedure)
-  - STANDARDS.md (8-field marketplace frontmatter rubric)
-  - "GitHub issue #984 — marketplace quality pipeline umbrella"
+
+- templates/skill-docs/ (the four fill-in templates + tier matrix)
+- 000-docs/698-TQ-SECU-external-sync-threat-model.md (threat model for synced sources)
+- 000-docs/699-DR-GUID-external-source-vetting-playbook.md (source vetting procedure)
+- STANDARDS.md (8-field marketplace frontmatter rubric)
+- "GitHub issue #984 — marketplace quality pipeline umbrella"
+
 ---
 
 # Skill Submission Standard (tiered documents + issue-before-PR)
 
 ## Purpose
 
-The marketplace already gates *validity* (validators, security scan, 8-field frontmatter).
-This standard gates *value*: every submission arrives with just enough written proof that
+The marketplace already gates _validity_ (validators, security scan, 8-field frontmatter).
+This standard gates _value_: every submission arrives with just enough written proof that
 the problem is real, the design was deliberate, and the claim matches the tier. The
 documents are a filter that helps contributors sharpen a submission — not a wall that
 rejects them.
@@ -39,10 +42,10 @@ Templates: [`templates/skill-docs/`](../templates/skill-docs/). Docs live in the
 directory as `docs/PRD.md`, `docs/ADR.md`, etc. The same matrix applies to Intent
 Solutions' own skills.
 
-| Tier | What it covers | Required docs |
-|------|----------------|---------------|
-| **Micro-skill** | a single command or skill, no scripts | `PRD.md` (short form OK) |
-| **Standard plugin** | skills plus scripts/commands | `PRD.md` + `ADR.md` |
+| Tier                                       | What it covers                                   | Required docs                                                                        |
+| ------------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **Micro-skill**                            | a single command or skill, no scripts            | `PRD.md` (short form OK)                                                             |
+| **Standard plugin**                        | skills plus scripts/commands                     | `PRD.md` + `ADR.md`                                                                  |
 | **Pack / flagship / featured / paid-tier** | multi-skill packs, featured picks, anything sold | `PRD.md` + `ADR.md` + `ONE-PAGER.md` (+ `CFO-ONE-PAGER.md` where money is the pitch) |
 
 Enforced in CI: the `check-submission-docs` gate (`scripts/check-submission-docs.mjs`,
@@ -66,16 +69,18 @@ the pitch" deterministically).
 How an external plugin's quality improvements flow is decided per source, not by one
 global policy:
 
-| Situation | Model |
-|-----------|-------|
-| Responsive maintainer + thin consumer | **Upstream PR** they own and merge; mirror stays SHA-pinned via `sources.lock.json` |
+| Situation                                                                    | Model                                                                                |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Responsive maintainer + thin consumer                                        | **Upstream PR** they own and merge; mirror stays SHA-pinned via `sources.lock.json`  |
 | We're featuring it / our name is on its quality / maintainer slow-or-unknown | **Mirror + `curated: true`** — we harden our copy, frozen from sync, author credited |
-| Full adoption (we take over maintenance) | **Vendor** into this repo |
+| Full adoption (we take over maintenance)                                     | **Vendor** into this repo                                                            |
 
 The upstream PR is **always a courtesy, never a blocker** — a stalled or silent upstream
-never delays listing or featuring. Curated copies join a periodic reconcile that pulls
-upstream **security fixes** into the frozen copy so hardening never means falling behind
-on safety.
+never delays listing or featuring. Curated copies are **frozen by design** — the sync engine
+writes no files to a `curated:` source, so an upstream security fix reaches a frozen copy only
+through a deliberate, human-reviewed re-baseline (`--relock` after review), never automatically.
+(Corrected 2026-08-19, E4.1: the earlier "periodic reconcile" wording promised an automatic
+backport job that does not exist and would contradict the freeze.)
 
 ## 5. Canonical sources (cited, not restated)
 

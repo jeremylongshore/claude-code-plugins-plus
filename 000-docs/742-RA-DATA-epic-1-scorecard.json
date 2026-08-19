@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23121
+        "tracked_files": 23123
       }
     },
     "2": {
@@ -83,11 +83,10 @@
           "fully_compliant_surfaces": 794,
           "terminal_denominator": {
             "agents": 355,
-            "files": 977,
-            "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 622
+            "files": 355,
+            "label": "agents_excluding_plugin_manifests"
           },
-          "validator_reported_mixed_denominator_percent": 81.3
+          "validator_reported_mixed_denominator_percent": 223.7
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 7673,
@@ -95,13 +94,12 @@
           "terminal_denominator": {
             "agents": 355,
             "commands": 373,
-            "files": 5025,
-            "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 622,
+            "files": 4403,
+            "label": "skills_plus_commands_plus_agents_excluding_plugin_manifests",
             "skills": 3675
           },
           "validated_plugin_manifests": 630,
-          "validator_reported_mixed_denominator_percent": 23.1
+          "validator_reported_mixed_denominator_percent": 26.4
         },
         "skill_rows": {
           "a_error_total": 219,
@@ -212,7 +210,7 @@
       "values": {
         "agent_errors": 253,
         "agent_files": 355,
-        "reported_compliance_percent": 81.3,
+        "reported_compliance_percent": 223.7,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -1881,14 +1879,14 @@
         "documented": [
           {
             "path": "CLAUDE.md",
-            "version": "4.0.2"
+            "version": "4.0.1"
           },
           {
             "path": "000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md",
-            "version": "4.0.2"
+            "version": "4.0.1"
           }
         ],
-        "runtime": "4.0.2"
+        "runtime": "4.0.1"
       }
     },
     "43": {
@@ -1907,6 +1905,7 @@
         "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
         "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
         "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+        "000-docs/790-DR-STND-safety-enforcement-register.md",
         "000-docs/SCHEMA_CHANGELOG.md",
         "STANDARDS.md"
       ],
@@ -1924,11 +1923,12 @@
           "000-docs/727-AT-ARCH-master-modernization-blueprint.md",
           "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
           "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
+          "000-docs/790-DR-STND-safety-enforcement-register.md",
           "000-docs/SCHEMA_CHANGELOG.md"
         ],
-        "canonical_table_links": 12,
-        "declared": 2,
-        "linked_declared": 2,
+        "canonical_table_links": 13,
+        "declared": 3,
+        "linked_declared": 3,
         "target_unlinked": 0,
         "unlinked": []
       }
@@ -1943,10 +1943,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 230,
+        "index_entries": 232,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 230,
+        "tracked_documents": 232,
         "untracked_index_entries": []
       }
     },
@@ -1970,9 +1970,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15578,
+        "invisible_files": 15580,
         "target_invisible_files": 0,
-        "tracked_files": 23121
+        "tracked_files": 23123
       }
     },
     "47": {

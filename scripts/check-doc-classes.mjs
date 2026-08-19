@@ -39,6 +39,7 @@ const CANONICAL = new Set([
   `${DOC_PREFIX}727-AT-ARCH-master-modernization-blueprint.md`,
   `${DOC_PREFIX}728-RA-DATA-reference-architecture-benchmark.md`,
   `${DOC_PREFIX}729-AT-ADEC-reference-architecture-synthesis.md`,
+  `${DOC_PREFIX}790-DR-STND-safety-enforcement-register.md`,
   `${DOC_PREFIX}SCHEMA_CHANGELOG.md`,
 ]);
 
