@@ -5,7 +5,7 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
-Covers the **tracked** documentation estate (240 files). Local-only working
+Covers the **tracked** documentation estate (241 files). Local-only working
 documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
 index and `000-docs/.gitignore`.
 
@@ -222,6 +222,7 @@ index and `000-docs/.gitignore`.
 - [797-AA-AACR-epic-4-safety-ratchet.md](797-AA-AACR-epic-4-safety-ratchet.md)
 - [798-AA-AACR-epic-4-denylist-fail-closed.md](798-AA-AACR-epic-4-denylist-fail-closed.md)
 - [799-AA-AACR-epic-4-plaintext-preflight.md](799-AA-AACR-epic-4-plaintext-preflight.md)
+- [800-AA-AACR-epic-4-mcp-destructive-policies.md](800-AA-AACR-epic-4-mcp-destructive-policies.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)
