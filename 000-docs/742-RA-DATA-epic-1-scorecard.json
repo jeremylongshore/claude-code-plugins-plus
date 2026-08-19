@@ -14,21 +14,21 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 219,
-      "a_failing": 132,
-      "ab_error_total": 2155,
-      "ab_failing": 962,
-      "b_failing": 830,
-      "error_files": 2037,
-      "error_total": 7433,
+      "a_error_total": 218,
+      "a_failing": 131,
+      "ab_error_total": 2150,
+      "ab_failing": 959,
+      "b_failing": 828,
+      "error_files": 2032,
+      "error_total": 7418,
       "grade_distribution": {
-        "A": 1596,
-        "B": 986,
-        "C": 896,
+        "A": 1595,
+        "B": 984,
+        "C": 894,
         "D": 193,
         "F": 9
       },
-      "rows": 3680
+      "rows": 3675
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3180,
-        "tracked_files": 23132
+        "raw_tracked_plugin_skill_files": 3175,
+        "tracked_files": 23108
       }
     },
     "2": {
@@ -89,34 +89,34 @@
           "validator_reported_mixed_denominator_percent": 223.7
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7687,
+          "error_total_all_validated_surfaces": 7672,
           "fully_compliant_surfaces": 1161,
           "terminal_denominator": {
             "agents": 355,
             "commands": 373,
-            "files": 4408,
+            "files": 4403,
             "label": "skills_plus_commands_plus_agents_excluding_plugin_manifests",
-            "skills": 3680
+            "skills": 3675
           },
           "validated_plugin_manifests": 630,
-          "validator_reported_mixed_denominator_percent": 26.3
+          "validator_reported_mixed_denominator_percent": 26.4
         },
         "skill_rows": {
-          "a_error_total": 219,
-          "a_failing": 132,
-          "ab_error_total": 2155,
-          "ab_failing": 962,
-          "b_failing": 830,
-          "error_files": 2037,
-          "error_total": 7433,
+          "a_error_total": 218,
+          "a_failing": 131,
+          "ab_error_total": 2150,
+          "ab_failing": 959,
+          "b_failing": 828,
+          "error_files": 2032,
+          "error_total": 7418,
           "grade_distribution": {
-            "A": 1596,
-            "B": 986,
-            "C": 896,
+            "A": 1595,
+            "B": 984,
+            "C": 894,
             "D": 193,
             "F": 9
           },
-          "rows": 3680
+          "rows": 3675
         }
       }
     },
@@ -129,9 +129,9 @@
       "values": {
         "average_score": 85.1,
         "grade_distribution": {
-          "A": 1596,
-          "B": 986,
-          "C": 896,
+          "A": 1595,
+          "B": 984,
+          "C": 894,
           "D": 193,
           "F": 9
         },
@@ -139,10 +139,10 @@
           "A": 43.4,
           "B": 26.8,
           "C": 24.3,
-          "D": 5.2,
+          "D": 5.3,
           "F": 0.2
         },
-        "rows": 3680
+        "rows": 3675
       }
     },
     "6": {
@@ -152,14 +152,14 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 219,
-        "a_failing": 132,
-        "ab_error_total": 2155,
-        "ab_failing": 962,
-        "b_error_total": 1936,
-        "b_failing": 830,
+        "a_error_total": 218,
+        "a_failing": 131,
+        "ab_error_total": 2150,
+        "ab_failing": 959,
+        "b_error_total": 1932,
+        "b_failing": 828,
         "certified_target": 0,
-        "skill_summary_rows": 3680
+        "skill_summary_rows": 3675
       }
     },
     "7": {
@@ -268,12 +268,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3639,
-        "folded_scalar": 10,
+        "declared": 3634,
+        "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 41,
-        "rows": 3680,
+        "rows": 3675,
         "target_malformed": 0
       }
     },
@@ -313,11 +313,11 @@
             "value": "Claude Code, Codex, OpenCode, Antigravity (needs gh CLI + git remote); Desktop/web via pasted issue text (lossy)"
           },
           {
-            "count": 2,
+            "count": 1,
             "value": "Compatible with any MCP-aware AI coding assistant. Requires Node.js >= 18 and Appium 2.x. Test scripts must use Appium WebDriver protocol."
           },
           {
-            "count": 2,
+            "count": 1,
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18 and an authenticated Kobiton MCP connection (or, as a fallback, ~/.kobiton/.credentials written by /automate:setup)."
           },
           {
@@ -445,7 +445,7 @@
             "value": "Requires internet access to call the first-party Xquik REST API."
           },
           {
-            "count": 2,
+            "count": 1,
             "value": "Requires the bundled Kobiton CLI binary, which targets macOS. On other platforms, use run-automation-suite or the Kobiton MCP tools directly. Run /automate:setup once before first use to install the CLI wrapper symlink and write credentials."
           },
           {
@@ -457,11 +457,11 @@
             "value": "Requires the pr-to-spec CLI on PATH (Node.js 18+; ships with this plugin) and a git repository to analyze. Runs in Claude Code or any agent runtime with shell access."
           },
           {
-            "count": 2,
+            "count": 1,
             "value": "Uses the Kobiton MCP tools createTestRun, getTestCase/getTestSuite, listDevices, and getOrgSettings; requires an authenticated Kobiton MCP connection. Delegates monitoring to the monitor-test-run skill (same plugin)."
           },
           {
-            "count": 2,
+            "count": 1,
             "value": "Uses the Kobiton MCP tools getOrgSettings (up front) and terminateTestRun (on request); requires an authenticated Kobiton MCP connection, and getOrgSettings requires the automate plugin release that ships it. The watch loop runs the bundled scripts/poll-test-run.js (Node 18+; reads ~/.kobiton/.credentials, same file /automate:setup writes) which polls run state over REST and emits only on change. The optional live-remediation window (Step 4a) reuses run-automation-suite's chromeless-launcher scripts (Chrome; resize on macOS/Windows, launch-only on Linux) — if Chrome is absent the skill falls back to printing the URL."
           },
           {
@@ -1130,7 +1130,7 @@
           },
           {
             "cohort": "graded",
-            "value": 3680
+            "value": 3675
           },
           {
             "cohort": "marketplace-visible",
@@ -1949,10 +1949,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 223,
+        "index_entries": 224,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 223,
+        "tracked_documents": 224,
         "untracked_index_entries": []
       }
     },
@@ -1976,9 +1976,9 @@
       "values": {
         "allowlist_patterns": 25,
         "invalid_patterns": 0,
-        "invisible_files": 15582,
+        "invisible_files": 15569,
         "target_invisible_files": 0,
-        "tracked_files": 23132
+        "tracked_files": 23108
       }
     },
     "47": {
@@ -2158,7 +2158,7 @@
       "values": {
         "adoption_percent": 0.44,
         "curated_copies": 12,
-        "plugin_skill_rows": 3180,
+        "plugin_skill_rows": 3175,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }
