@@ -201,7 +201,13 @@ export function parseTerminalSummary(evidence, lane) {
     const skills = summaryValue(output, 'Skills validated');
     const commands = summaryValue(output, 'Commands validated');
     const agents = summaryValue(output, 'Agents validated');
-    if (skills + commands + agents !== totalFiles) {
+    // 4.0.2 (blueprint E4.12): the validator's denominator now includes the
+    // plugin-manifest lane, printed as its own summary line. Optional so the
+    // harness also parses pre-4.0.2 output shapes in fixtures.
+    const manifests = /Plugin manifests validated:/.test(output)
+      ? summaryValue(output, 'Plugin manifests validated')
+      : 0;
+    if (skills + commands + agents + manifests !== totalFiles) {
       fail('marketplace terminal denominator arithmetic is inconsistent');
     }
     return {
@@ -211,7 +217,8 @@ export function parseTerminalSummary(evidence, lane) {
         agents,
         commands,
         files: totalFiles,
-        label: 'skills_plus_commands_plus_agents_excluding_plugin_manifests',
+        label: 'skills_plus_commands_plus_agents_plus_plugin_manifests',
+        plugin_manifests: manifests,
         skills,
       },
       validator_reported_mixed_denominator_percent: summaryValue(
@@ -223,14 +230,21 @@ export function parseTerminalSummary(evidence, lane) {
   }
   if (lane !== 'agents') fail(`unknown terminal lane: ${lane}`);
   const agents = summaryValue(output, 'Agents validated');
-  if (agents !== totalFiles) fail('agent terminal denominator arithmetic is inconsistent');
+  // 4.0.2 (E4.12): the plugin-manifest lane joins the denominator in every
+  // invocation that validates manifests, including --agents-only runs.
+  const agentLaneManifests = /Plugin manifests validated:/.test(output)
+    ? summaryValue(output, 'Plugin manifests validated')
+    : 0;
+  if (agents + agentLaneManifests !== totalFiles)
+    fail('agent terminal denominator arithmetic is inconsistent');
   return {
     error_total_all_validated_surfaces: errors,
     fully_compliant_surfaces: summaryValue(output, 'Fully compliant'),
     terminal_denominator: {
       agents,
       files: totalFiles,
-      label: 'agents_excluding_plugin_manifests',
+      label: 'agents_plus_plugin_manifests',
+      plugin_manifests: agentLaneManifests,
     },
     validator_reported_mixed_denominator_percent: summaryValue(
       output,

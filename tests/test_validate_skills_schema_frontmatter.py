@@ -39,10 +39,11 @@ def _frontmatter(fm: dict, tier: str):
 
 
 def test_schema_version_records_fail_closed_allowed_tools_change():
-    # 4.0.1: E3.9 added the portable ${SKILL_DIR}/${PLUGIN_ROOT} spellings to
-    # YAML_VALUE_ALLOWED_VARS (SCHEMA_CHANGELOG 2026-08-18); the fail-closed
-    # allowed-tools semantics this test pins are unchanged from 4.0.0.
-    assert validator.SCHEMA_VERSION == "4.0.1"
+    # 4.0.2: E4.12 corrected the compliance-rate denominator to include the
+    # plugin-manifest lane (impossible 224.1% rates); 4.0.1 added the portable
+    # ${SKILL_DIR}/${PLUGIN_ROOT} spellings. The fail-closed allowed-tools
+    # semantics this test pins are unchanged from 4.0.0.
+    assert validator.SCHEMA_VERSION == "4.0.2"
 
 
 # =========================================================================
@@ -689,3 +690,21 @@ def test_clean_disallowed_tools_is_quiet():
     fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Bash(rm:*), Agent"}
     _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
     assert not any("disallowed-tools" in w for w in warnings), warnings
+
+
+# =========================================================================
+# 4.0.2 — compliance-rate invariants (blueprint 727 bead 4.12)
+# =========================================================================
+
+
+def test_compliance_rate_invariants():
+    assert validator.compute_compliance_rate(0, 0) == 0.0
+    assert validator.compute_compliance_rate(0, 10) == 0.0
+    assert validator.compute_compliance_rate(10, 10) == 100.0
+    assert 0.0 <= validator.compute_compliance_rate(3, 7) <= 100.0
+    import pytest
+
+    with pytest.raises(ValueError):
+        validator.compute_compliance_rate(11, 10)  # the 224.1% class
+    with pytest.raises(ValueError):
+        validator.compute_compliance_rate(-1, 10)

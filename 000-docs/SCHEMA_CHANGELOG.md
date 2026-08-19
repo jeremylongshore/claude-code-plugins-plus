@@ -150,6 +150,17 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [4.0.2] — 2026-08-19
+
+### Fixed
+
+- **Compliance-rate denominator** (blueprint 727 Epic 4 bead 4.12): the summary rate divided
+  compliant files (which include the plugin-manifest validation lane) by skills+commands+agents
+  only, producing impossible rates (observed 224.1%). The denominator now includes validated
+  plugin manifests and the summary prints their count. Per-file verdicts, error classes, and the
+  agents-only 253-error baseline are unaffected. A unit test asserts 0 ≤ rate ≤ 100 and
+  compliant ≤ total.
+
 ## [4.0.1] — 2026-08-18
 
 ### Added
