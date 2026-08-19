@@ -1618,6 +1618,14 @@ jobs:
       - name: Check model-id classifier protections
         run: pnpm run validate:model-id-classifier
 
+      # Thin-adapter conformance (blueprint 727 E3.5): an adapter subtree may
+      # never contain a byte-identical copy of a canonical file (a fork is not
+      # an adapter) nor reference/script/eval/license/version content. Waivers
+      # are dated and name the bead that deletes them (the known Kobiton
+      # .codex fork, removed by E3.6).
+      - name: Check adapter thinness
+        run: pnpm run validate:adapter-thinness
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

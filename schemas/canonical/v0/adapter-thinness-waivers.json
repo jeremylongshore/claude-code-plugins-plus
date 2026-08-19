@@ -1,0 +1,11 @@
+{
+  "$comment": "Dated waivers for the adapter-thinness gate (blueprint 727 E3.5). Every entry names its reason and the bead that DELETES it — a waiver without a removal owner is an exemption class, which this file must never become.",
+  "waivers": [
+    {
+      "path_prefix": "plugins/testing/kobiton-automate/.codex/",
+      "reason": "Known pre-existing Codex fork: 27 files byte-identical to canonical, measured 2026-08-18. The gate lands first with this dated waiver; the fork is converted to a real thin adapter and THIS WAIVER IS DELETED in the same PR (blueprint E3.6, the only sanctioned removal path).",
+      "dated": "2026-08-18",
+      "removed_by": "727:epic-3.6"
+    }
+  ]
+}

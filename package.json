@@ -31,6 +31,7 @@
     "validate:canonical-schema": "node --test scripts/check-canonical-schema.test.mjs",
     "validate:capability-coverage": "node --test scripts/check-capability-coverage.test.mjs && node scripts/check-capability-coverage.mjs",
     "validate:model-id-classifier": "node --test scripts/classify-model-ids.test.mjs",
+    "validate:adapter-thinness": "node --test scripts/check-adapter-thinness.test.mjs && node scripts/check-adapter-thinness.mjs",
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
     "lint:design": "node scripts/lint-design-tells.mjs",
