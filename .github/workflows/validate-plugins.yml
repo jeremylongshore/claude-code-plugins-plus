@@ -68,6 +68,14 @@ jobs:
       - name: Refuse plaintext credentials in the root MCP config
         run: pnpm run validate:mcp-plaintext-creds
 
+      # E4.5 allowlist-shape ratchet: the gitleaks allowlist may never regain
+      # a file-TYPE blanket (SKILL.md/README/CHANGELOG/references/tests/
+      # fixtures/000-docs), and every path exception must carry a written
+      # reason + expiry. Placeholder examples pass by VALUE, keeping the file
+      # itself scanned.
+      - name: Enforce the gitleaks allowlist shape
+        run: pnpm run validate:gitleaks-config
+
       # Supply-chain intake gate: sources.yaml include-anchoring ratchet.
       # An include starting with neither '/' nor '**' is silently auto-prefixed
       # '**/' by the sync engine's matcher and matches at ANY depth — the
