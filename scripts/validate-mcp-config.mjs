@@ -63,6 +63,12 @@ const COMPOSED_SCHEMA_ID =
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
+// E4.8 (blueprint 727): the fail-closed lane for the UNAMBIGUOUS classes only
+// — JSON parse failures, non-object server maps/entries, and a server entry
+// missing its transport-essential field (stdio ⇒ command; http/sse ⇒ url).
+// Schema-overlay findings (description/version/enabled/…) stay advisory under
+// the workflow step's REPORT-ONLY-UNTIL marker.
+const GATE_UNAMBIGUOUS = args.includes('--gate-unambiguous');
 const JSON_OUT = args.includes('--json');
 
 function die(msg) {
@@ -127,7 +133,9 @@ function main() {
     p.includes(`${join('.claude-plugin')}`),
   );
 
-  const findings = []; // { file, server, source, errors: [...] }
+  const findings = [];
+
+  const unambiguous = []; // { file, server, source, errors: [...] }
   let filesScanned = 0;
   let serversValidated = 0;
   let serversPassed = 0;
@@ -143,6 +151,11 @@ function main() {
         source,
         errors: ['mcpServers is not an object map'],
       });
+      unambiguous.push({
+        file: relTo(file),
+        server: null,
+        error: 'mcpServers is not an object map',
+      });
       return;
     }
     for (const [serverName, config] of Object.entries(servers)) {
@@ -154,7 +167,21 @@ function main() {
           source,
           errors: ['server entry is not an object'],
         });
+        unambiguous.push({
+          file: relTo(file),
+          server: serverName,
+          error: 'server entry is not an object',
+        });
         continue;
+      }
+      const transport = config.type ?? config.transport ?? 'stdio';
+      const essential = transport === 'http' || transport === 'sse' ? 'url' : 'command';
+      if (typeof config[essential] !== 'string' || config[essential].length === 0) {
+        unambiguous.push({
+          file: relTo(file),
+          server: serverName,
+          error: `transport '${transport}' requires a non-empty '${essential}'`,
+        });
       }
       // Projection: the kernel per-server contract requires `name` inside the
       // entry; on-disk configs carry it as the map key.
@@ -192,6 +219,11 @@ function main() {
         source: '.mcp.json',
         errors: [`JSON parse error: ${e.message}`],
       });
+      unambiguous.push({
+        file: relTo(file),
+        server: null,
+        error: `JSON parse error: ${e.message}`,
+      });
       continue;
     }
     const servers =
@@ -215,6 +247,11 @@ function main() {
         server: null,
         source: 'plugin.json',
         errors: [`JSON parse error: ${e.message}`],
+      });
+      unambiguous.push({
+        file: relTo(file),
+        server: null,
+        error: `JSON parse error: ${e.message}`,
       });
       continue;
     }
@@ -312,6 +349,16 @@ function main() {
     }
   }
 
+  if (GATE_UNAMBIGUOUS && unambiguous.length > 0) {
+    console.error('');
+    console.error('  UNAMBIGUOUS-CLASS VIOLATIONS (blocking — E4.8 fail-closed lane):');
+    for (const violation of unambiguous) {
+      console.error(
+        `    ✗ ${violation.file}${violation.server ? ` [${violation.server}]` : ''} — ${violation.error}`,
+      );
+    }
+    process.exit(1);
+  }
   if (STRICT && findings.length > 0) process.exit(1);
   process.exit(0);
 }
