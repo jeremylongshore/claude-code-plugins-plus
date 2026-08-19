@@ -1,7 +1,7 @@
 #!/bin/bash
 # Wrapper that resolves binary, portal URL, and credentials automatically.
 # Usage: kobiton [kobiton-cli args...]
-# Install: ln -sf <plugin-path>/skills/run-interactive-cli-session/scripts/run.sh ~/.kobiton/bin/kobiton
+# Install: ln -sf <plugin-path>/skills/run-interactive-session/scripts/run.sh ~/.kobiton/bin/kobiton
 
 set -euo pipefail
 
@@ -19,14 +19,35 @@ SCRIPT_DIR="$(cd "$(dirname "$SOURCE")" && pwd)"
 SKILL_DIR="$SCRIPT_DIR/.."
 PROJECT_ROOT="$SKILL_DIR/../.."
 
-# --- 1. Resolve bundled binary ---
-BINARY="$SKILL_DIR/bin/kobiton"
-if [ ! -f "$BINARY" ]; then
-  echo "Error: bundled kobiton CLI binary missing at $BINARY." >&2
-  echo "Re-install the plugin to restore it." >&2
+# --- 1. Resolve CLI binary from the version cache ---
+# install-cli.sh (SessionStart hook / /automate:setup) downloads the build
+# pinned in $SKILL_DIR/CLI_VERSION into ~/.kobiton/cli/<version>/. This
+# wrapper only resolves; it never downloads, so it stays fast and offline-safe.
+CACHE_ROOT="$HOME/.kobiton/cli"
+BIN_NAME="kobiton"
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) BIN_NAME="kobiton.exe" ;; esac
+PIN=""
+[ -f "$SKILL_DIR/CLI_VERSION" ] && PIN="$(tr -d '[:space:]' < "$SKILL_DIR/CLI_VERSION")"
+BINARY=""
+if [ -n "$PIN" ] && [ -x "$CACHE_ROOT/$PIN/$BIN_NAME" ]; then
+  BINARY="$CACHE_ROOT/$PIN/$BIN_NAME"
+else
+  # Pinned build not cached (e.g. pruned upstream and install-cli.sh fell
+  # back, or the pin changed): use the newest cached build with a warning.
+  for d in "$CACHE_ROOT"/*/; do
+    c="${d}${BIN_NAME}"
+    [ -x "$c" ] || continue
+    if [ -z "$BINARY" ] || [ "$c" -nt "$BINARY" ]; then BINARY="$c"; fi
+  done
+  if [ -n "$BINARY" ]; then
+    echo "Warning: pinned CLI version ${PIN:-unknown} is not cached; using $(basename "$(dirname "$BINARY")") instead. Run /automate:doctor for details." >&2
+  fi
+fi
+if [ -z "$BINARY" ]; then
+  echo "Error: kobiton CLI is not installed (no cached build under ~/.kobiton/cli)." >&2
+  echo "Run /automate:setup, or re-open the session so the SessionStart hook installs it." >&2
   exit 1
 fi
-chmod +x "$BINARY" 2>/dev/null
 
 # --- 2. Load credentials from ~/.kobiton/.credentials (INI profile format) ---
 CRED_FILE="$HOME/.kobiton/.credentials"

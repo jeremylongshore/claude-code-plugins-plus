@@ -90,9 +90,12 @@ test('a dated waiver suppresses its prefix and nothing else', () => {
   );
 });
 
-test('the live waiver file names its removal owner', () => {
+test('every live waiver is dated and names its removal owner', () => {
+  // The list may legitimately be EMPTY — E3.6 deleted the Kobiton waiver with
+  // the fork, which was that waiver's named removal path. What must never
+  // exist is a waiver without a date or removal owner.
   const live = loadWaivers();
-  assert.ok(live.waivers.length >= 1);
+  assert.ok(Array.isArray(live.waivers));
   for (const w of live.waivers) {
     assert.ok(w.dated, 'every waiver is dated');
     assert.ok(w.removed_by, 'every waiver names the bead that deletes it');

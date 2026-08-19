@@ -8,7 +8,7 @@ description: >-
   model self-declared blocker), and returns the session id. Use when the
   user says "drive the device to X", describes a flow they want exercised
   on a reserved device, or asks to "automate this intent on Kobiton".
-  Complements run-interactive-cli-session (which uses the CLI session type) by
+  Complements run-interactive-session (which uses the CLI session type) by
   using the automation session type so the resulting session is consumable
   by saveTestCase and the existing test-run authoring flow.
 allowed-tools: >-
@@ -24,8 +24,12 @@ license: MIT
 compatibility: >-
   Cross-platform — talks WebDriver HTTP directly via Node's built-in
   node:https; no platform-specific binary dependency. Requires Node.js
-  >= 18 and an authenticated Kobiton MCP connection (or, as a fallback,
-  ~/.kobiton/.credentials written by /automate:setup).
+  >= 18, a persistent local filesystem (the observe-decide-act loop
+  passes state through local turn files), and ~/.kobiton/.credentials
+  written by /automate:setup — scripts/appium.js reads that file
+  directly and never calls the MCP getCredential tool, so it is
+  required, not a fallback. An authenticated Kobiton MCP connection is
+  additionally useful for device selection.
 tags: [mobile, testing, appium, natural-language, intent, automation, kobiton]
 ---
 
@@ -43,16 +47,18 @@ The skill opens an **automation-type** Appium session (with `appium:newCommandTi
 
 > **Tool naming.** This doc refers to Kobiton MCP tools by their bare names (`getSession`, `reserveDevice`, `terminateSession`, …). The exact registered name depends on how the host loaded the MCP server (e.g. Claude Code as a plugin exposes `mcp__plugin_automate_kobiton__getSession`; a repo-local `.mcp.json` or `claude mcp add` exposes `mcp__kobiton__getSession`; other hosts differ). Models fuzzy-match on the bare name, so use it and let the host resolve the prefix.
 
-This skill complements — and does NOT replace — `run-interactive-cli-session`. They serve different session types:
+This skill complements — and does NOT replace — `run-interactive-session`. They serve different session types:
 
 | Skill | Session type | Best for |
 |-------|--------------|----------|
-| `run-interactive-cli-session` | CLI session (`~/.kobiton/bin/kobiton`) | Human-driven exploration, ad-hoc inspection |
+| `run-interactive-session` | CLI session (`~/.kobiton/bin/kobiton`) | Human-driven exploration, ad-hoc inspection |
 | `drive-automation-session` | Automation session (direct Appium HTTP) | AI-driven flows, saveable as a test case |
 
 ## Prerequisites
 
-- **Credentials available.** The skill reads credentials from the Kobiton MCP `getCredential` tool by default — no `/automate:setup` prerequisite. If MCP is unavailable, the skill falls back to `~/.kobiton/.credentials` (written by `/automate:setup`). If neither source produces credentials, the skill stops with a helpful message.
+**Runs on any OS, but needs two things from the host:** a persistent local filesystem — the observe-decide-act loop passes state between turns through `iter-N.*.json` files, so that file handoff *is* the loop — and `~/.kobiton/.credentials`, which `scripts/appium.js` reads directly (see below). A host with a filesystem but no way to run `/automate:setup` still can't finish; route those users to `create-test-run`. Node.js 18+; no native binary (`scripts/appium.js` uses `node:https`). See the Skill compatibility matrix in `CLAUDE.md`.
+
+- **Credentials available.** `scripts/appium.js` reads `~/.kobiton/.credentials` (written by `/automate:setup`) directly on every invocation and stops with `no-credentials` if it's missing — this file is **required**, not a fallback, and the script never calls the MCP `getCredential` tool. Reading it directly is deliberate: credentials never pass through argv, env, or the host transcript.
 - **A device.** Either the user provides one (UDID, deviceName, platformVersion) or the skill helps pick + reserve one (see Step 0 below).
 - **An app** (for app testing) — a Kobiton-store reference like `kobiton-store:vXXXXX`, an `.apk` / `.ipa` to upload, or a browser name (for web testing). The skill helps locate or upload it in Step 0.
 
@@ -347,8 +353,8 @@ The only hard programmatic stop is `MAX_ITERS=100` (override per session), which
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `No credentials available...` | Kobiton MCP not connected AND no `~/.kobiton/.credentials` | Either authenticate the Kobiton MCP server, or run `/automate:setup` |
-| `iter-N.error.json` has `status: 401` on session create | Credentials stale | Re-authenticate the MCP server (or re-run `/automate:setup` for the file fallback); check the portal URL |
+| `No credentials available...` | No `~/.kobiton/.credentials` (an authenticated MCP connection does not substitute — `appium.js` only reads the file) | Run `/automate:setup`, which uses the MCP connection to fetch and write the file |
+| `iter-N.error.json` has `status: 401` on session create | Credentials stale | Re-run `/automate:setup` to refresh `~/.kobiton/.credentials`; check the portal URL |
 | `iter-N.error.json` has a platform-cap message on session create | `newCommandTimeout: 1800` rejected by Kobiton | Lower the timeout in `references/capabilities.md` |
 | `iter-N.error.json` body has `value.error: "no such element"` | Selector matched nothing | Re-plan next turn with a different strategy / selector |
 | `iter-N.error.json` body has `value.error: "invalid session id"` | Kobiton platform-side session ended | Emit `control --blocked` (or just let MAX_ITERS catch it); trap cleans up |
@@ -356,5 +362,5 @@ The only hard programmatic stop is `MAX_ITERS=100` (override per session), which
 ## Notes
 
 - The `kobiton:aiToolName` capability is auto-detected by `render-capabilities.js` (Claude / Codex / Copilot / Gemini). No flag needed.
-- Artifacts live under `.kobiton/sessions/<session-id>/` — workspace-relative, not `/tmp` (consistent with `run-interactive-cli-session`).
+- Artifacts live under `.kobiton/sessions/<session-id>/` — workspace-relative, not `/tmp` (consistent with `run-interactive-session`).
 - The skill writes nothing to `tools/*.yaml` and does not add any MCP tool. It only consumes existing MCP tools (`reserveDevice`, `getSession`, `terminateSession`, etc.).

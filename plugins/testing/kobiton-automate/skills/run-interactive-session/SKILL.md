@@ -1,5 +1,5 @@
 ---
-name: run-interactive-cli-session
+name: run-interactive-session
 description: >-
   Perform interactive testing on Kobiton devices using natural language.
   Translates user intents into CLI commands - WebDriver actions (find
@@ -16,15 +16,23 @@ allowed-tools: >-
   Bash(mkdir:*), Bash(date:*), Bash(base64:*), Bash(echo:*),
   Bash(cat:*), Bash(grep:*), Bash(head:*), Bash(tail:*),
   Bash(jq:*), Bash(xmllint:*),
+  Bash(timeout:*), Bash(perl:*),
   Bash(open:*), Bash(xdg-open:*)
 version: 1.0.0
 author: Kobiton Inc.
 license: MIT
 compatibility: >-
-  Requires the bundled Kobiton CLI binary, which targets macOS. On
-  other platforms, use run-automation-suite or the Kobiton MCP tools
-  directly. Run /automate:setup once before first use to install the
-  CLI wrapper symlink and write credentials.
+  macOS (Apple Silicon), Linux (x64), and Windows (x64, under Git
+  Bash). The Kobiton CLI is downloaded on install: the plugin pins a
+  build version (skills/run-interactive-session/CLI_VERSION) and the
+  install script fetches the matching platform build from
+  public.kobiton.download, sha256-verified and cached under
+  ~/.kobiton/cli/. Intel Macs are not supported (no macos-x64 build
+  is published) - there, use run-automation-suite or
+  drive-automation-session, or the Kobiton MCP tools directly.
+  Requires local file access for the cached binary and
+  ~/.kobiton/.credentials. Run /automate:setup once before first use
+  to install the CLI wrapper and write credentials.
 tags: [mobile, testing, interactive, webdriver, devices, kobiton]
 ---
 
@@ -38,9 +46,11 @@ Use this skill whenever the user wants to interact with a mobile device on Kobit
 
 ## Prerequisites
 
+**Runs on macOS (Apple Silicon), Linux (x64), and Windows (x64 under Git Bash), and needs a local filesystem** — it executes a locally cached CLI binary and reads `~/.kobiton/.credentials`. On Intel Macs or other unsupported architectures, or anywhere a local filesystem isn't available, don't invoke this skill: route to `run-automation-suite` (user already has a test script) or `drive-automation-session` (describe the flow instead), both cross-platform. Check this *before* reserving a device, so a doomed run doesn't burn device minutes. See the Skill compatibility matrix in `CLAUDE.md`.
+
 Before invoking this skill, ensure:
 
-- **Bundled Kobiton CLI** - `~/.kobiton/bin/kobiton` (a symlink to this plugin's `run.sh` wrapper) must exist and point at an executable. Claude Code and Codex CLI both recreate it automatically via a bundled SessionStart hook; on Codex, the user trusts the hook once via `/hooks` after install. `/automate:setup` re-installs the symlink on demand on any host. GitHub Copilot CLI and Gemini CLI load `/automate:setup` (Copilot via Claude-format `.md`, Gemini via bundled TOML at `commands/automate/setup.toml`) but have no SessionStart hook - run `/automate:setup` once after install. The bundled binary targets **macOS** - on other platforms, do not invoke this skill; recommend `run-automation-suite` or the MCP tools instead, which are platform-independent.
+- **Kobiton CLI wrapper** - `~/.kobiton/bin/kobiton` (a symlink to this plugin's `run.sh` wrapper on macOS/Linux, a bash exec-shim on Windows) must exist and resolve to an executable. Claude Code and Codex CLI both recreate it automatically via a bundled SessionStart hook; on Codex, the user trusts the hook once via `/hooks` after install. `/automate:setup` re-installs the wrapper on demand on any host. GitHub Copilot CLI and Gemini CLI load `/automate:setup` (Copilot via Claude-format `.md`, Gemini via bundled TOML at `commands/automate/setup.toml`) but have no SessionStart hook - run `/automate:setup` once after install. The CLI binary itself is **downloaded, not bundled**: the install script fetches the build pinned in `CLI_VERSION` (sha256-verified) into `~/.kobiton/cli/` on first run. `run.sh` reports a missing binary or missing credentials with the right remedy, so surface its error rather than pre-flighting your own checks.
 - **Credentials file** - `~/.kobiton/.credentials` must contain a valid INI-formatted profile with `KOBITON_USER`, `KOBITON_API_KEY`, and `KOBITON_PORTAL`. Created by `/automate:setup`. The active profile is `$KOBITON_PROFILE` if set, otherwise `default`.
 - **Kobiton MCP connection** - useful for `listDevices` / `getDeviceStatus` calls when picking a device. Default `api.kobiton.com/mcp`; check `.mcp.json` for the configured endpoint.
 - **Kobiton account** - credentials with device access for the target platform (Android / iOS) and remaining session quota.
@@ -51,7 +61,7 @@ If a command fails with a credentials error or missing-binary error, direct the 
 
 All CLI calls go through a single wrapper at `~/.kobiton/bin/kobiton` that automatically handles:
 
-- **Bundled binary resolution** - resolves the bundled `kobiton` binary inside the skill directory.
+- **CLI binary resolution** - resolves the pinned CLI build from the version cache at `~/.kobiton/cli/<version>/` (falling back to the newest cached build with a drift warning).
 - **Portal URL** - from `KOBITON_PORTAL` in credentials, or derived from `.mcp.json` as fallback.
 - **Credentials** - loaded from `~/.kobiton/.credentials` using AWS-style profiles (`$KOBITON_PROFILE`, default `default`).
 - **Session token** - loaded by the CLI from `~/.kobiton/.session` once a session exists.
@@ -215,65 +225,119 @@ This terminates the Kobiton-side session and frees the device. The local artifac
 
 ### adb-shell commands (Android only)
 
-`device adb-shell` forwards everything after it to `adb shell <...>` on the device. Two failure modes account for most AI-agent mistakes - read these before composing a command.
+`device adb-shell` forwards everything after it to `adb shell <...>` on the device. Three failure modes account for most AI-agent mistakes - read these before composing a command.
+
+**Restricted sessions (public cloud and trial devices).** On Kobiton public cloud devices and for trial users, every invocation is checked against a deny-by-default whitelist before it reaches the device. Dedicated devices (private cloud / on-premise) are unrestricted; everything in this block applies only to restricted sessions. The interactive shell is unavailable on restricted sessions - every invocation must name a command.
+
+Rejected on restricted sessions:
+
+- Any command not in the whitelist below, and command lines longer than 1024 characters.
+- Control characters, and these shell metacharacters anywhere in the input: `` & ; | $ ` ( ) > < \ " ' * ? ~ { } # ! `` - so no pipes, redirection, command or variable substitution, backgrounding, globbing, or **quoting**. Arguments may not contain whitespace.
+
+Whitelisted commands, by category:
+
+| Category | Commands |
+|----------|----------|
+| Device information | `getprop`, `dumpsys`, `df`, `free` |
+| Diagnostics | `logcat`, `ps`, `top`, `netstat`, `printenv`, `uptime`, `id`, `whoami`, `date` (flags only) |
+| Applications | `pm`, `am`, `monkey` (`pm install` may name an APK inside the allowed directories below) |
+| Text tools | `grep`, `egrep`, `fgrep`, `head`, `tail`, `wc`, `sort`, `uniq`, `nl`, `cut` - they read files, not stdin (pipes are rejected), and pattern arguments are limited to letters, digits, dot, underscore, hyphen |
+| File inspection | `ls`, `cat`, `stat`, `du`, `md5sum`, `sha1sum` |
+| Screen and input | `screencap`, `input` |
+| Settings | `settings` - one key only, see below |
+
+File-path arguments must stay inside `/sdcard/Download/`, `/sdcard/Documents/`, or `/data/local/tmp/`, plus the individually allowed read-only file `/proc/version`; paths containing `..` are rejected. To list a directory outside that allowlist, use `$KOBITON_BIN file list <path>` instead of `adb-shell ls`. The same directories bound `file push` / `file pull`.
+
+Settings: only `settings get secure enabled_accessibility_services` and `settings put secure enabled_accessibility_services <value>` are permitted. Every other settings namespace, key, and subcommand (including `list` and `delete`) is rejected.
+
+A rejected invocation prints one of these messages on stdout and - gotcha - **exits 0**, so check the first line of output rather than `$?`:
+
+- `Input contains a forbidden character: '<c>'.`
+- `Command is not on the whitelist: '<cmd>'.`
+- `Argument is not permitted for '<cmd>': '<arg>'.`
+- `Only get/put of secure enabled_accessibility_services is permitted for 'settings'.` (the settings rule has its own message)
+
+The whitelist evolves with CLI releases; `$KOBITON_BIN device adb-shell --help` carries the full current policy - trust it over this snapshot.
 
 **Quoting rules.** The local shell parses pipes, redirects, globs, and variable expansion *before* the wrapper sees them. Anything you wrap in quotes survives to the device's shell; anything outside is interpreted on your laptop.
 
-- **Plain command, no shell metacharacters** - pass args separately:
+- **Plain command, no shell metacharacters** - pass args separately (works on restricted and unrestricted sessions alike; `/sdcard/Download/` is inside the restricted path allowlist):
 
       $KOBITON_BIN device adb-shell ls -la /sdcard/Download/
       $KOBITON_BIN device adb-shell getprop ro.build.version.release
 
-- **Pipes, redirects, globs, `&&`, `$VAR`, or quotes inside the command** - wrap the entire remote command in one quoted string so it runs on the device's shell, not your local shell:
+- **Pipes, redirects, globs, `&&`, `$VAR`, or quotes inside the command** - **unrestricted (dedicated) devices only**: wrap the entire remote command in one quoted string so it runs on the device's shell, not your local shell:
 
       $KOBITON_BIN device adb-shell "dumpsys window | grep mCurrentFocus"
       $KOBITON_BIN device adb-shell 'pm list packages -3 | wc -l'
       $KOBITON_BIN device adb-shell "logcat -d -t 200 > /sdcard/log.txt"
 
-  Wrong: `$KOBITON_BIN device adb-shell dumpsys window | grep mCurrentFocus` - the `| grep` runs locally on the full dumpsys output (slow, can overflow the 25k-token MCP limit, may truncate before the line you want). Quote the whole expression.
+  On a **restricted session** this form is rejected outright - the quotes and the metacharacters inside them are all forbidden characters, so there is no on-device composition form at all. Compose locally instead (next bullet).
+
+- **Restricted sessions: compose locally.** Run the bare whitelisted command, bound its output, redirect *locally* into the session artifact directory, then filter the file locally:
+
+      $KOBITON_BIN device adb-shell dumpsys window \
+        > .kobiton/sessions/<session-id>/window-$(date +%s).txt
+      grep mCurrentFocus .kobiton/sessions/<session-id>/window-*.txt
+
+  On unrestricted devices prefer the quoted on-device form - filtering locally on the full output is slower and can overflow the 25k-token MCP limit if it isn't routed through an artifact file. On restricted sessions the local route is the only one: always bound the command (`-d -t N`, `-n 1`) and go through an artifact file, never paste raw output to chat.
 
 **Platform guard.** `adb` is Android-only. If the active session targets iOS, do **not** call `device adb-shell`. Refuse and reach for the WebDriver equivalent (`wd post execute '{"script":"mobile: ..."}'`) or a different inspection path.
 
-| Intent | Command |
-|--------|---------|
-| Get OS / build property | `$KOBITON_BIN device adb-shell getprop <key>` |
-| Get screen resolution | `$KOBITON_BIN device adb-shell wm size` |
-| Get foreground app/activity | `$KOBITON_BIN device adb-shell "dumpsys window \| grep mCurrentFocus"` |
-| List running processes | `$KOBITON_BIN device adb-shell ps -A` |
-| List user-installed packages | `$KOBITON_BIN device adb-shell pm list packages -3` |
-| Find APK path of a package | `$KOBITON_BIN device adb-shell pm path <pkg>` |
-| Launch app by package | `$KOBITON_BIN device adb-shell monkey -p <pkg> -c android.intent.category.LAUNCHER 1` |
-| Force-stop app | `$KOBITON_BIN device adb-shell am force-stop <pkg>` |
-| Clear app data | `$KOBITON_BIN device adb-shell pm clear <pkg>` |
-| Battery level + charging state | `$KOBITON_BIN device adb-shell dumpsys battery` |
-| Memory snapshot for a package | `$KOBITON_BIN device adb-shell dumpsys meminfo <pkg>` |
-| Storage free on /sdcard | `$KOBITON_BIN device adb-shell df -h /sdcard` |
-| Press hardware key (home=3, back=4, power=26) | `$KOBITON_BIN device adb-shell input keyevent <code>` |
-| Type text into focused field | `$KOBITON_BIN device adb-shell input text "<text>"` |
-| Tap at coordinates | `$KOBITON_BIN device adb-shell input tap <x> <y>` |
-| Swipe (ms = duration) | `$KOBITON_BIN device adb-shell input swipe <x1> <y1> <x2> <y2> <ms>` |
-| Read recent logs (bounded) | `$KOBITON_BIN device adb-shell "logcat -d -t 500"` |
-| Read system setting | `$KOBITON_BIN device adb-shell settings get system <key>` |
-| Write system setting | `$KOBITON_BIN device adb-shell settings put system <key> <value>` |
-| Read file content | `$KOBITON_BIN device adb-shell cat <path>` |
-| List directory | `$KOBITON_BIN device adb-shell ls -la <path>` |
-| Current IME | `$KOBITON_BIN device adb-shell "dumpsys input_method \| grep mCurId"` |
+**Device logs on iOS.** `logcat` is Android-only; the cross-platform log path is `$KOBITON_BIN device log`, which **streams until killed** — always bound it and expect the bound's exit code, which means success here, not failure:
 
-**Big-output commands.** `dumpsys`, `logcat`, `pm list -f`, and full process dumps can blow past the 25k-token MCP limit. For these, redirect to an artifact file first, then read/grep only what you need:
+    timeout 45 $KOBITON_BIN device log > .kobiton/sessions/<session-id>/device-log.txt   # exit 124 = bound fired (coreutils)
+    # stock macOS has no `timeout` - use the perl-alarm equivalent (exit 142 = SIGALRM, same meaning):
+    perl -e 'alarm shift; exec @ARGV' 45 ~/.kobiton/bin/kobiton device log > .kobiton/sessions/<session-id>/device-log.txt
 
-    $KOBITON_BIN device adb-shell "logcat -d -t 1000" \
+The **Restricted** column says what changes on a restricted session; `ok` means the command runs as written.
+
+| Intent | Command | Restricted |
+|--------|---------|------------|
+| Get OS / build property | `$KOBITON_BIN device adb-shell getprop <key>` | ok |
+| Get screen resolution | `$KOBITON_BIN device adb-shell wm size` | rejected (`wm` not whitelisted) - use `$KOBITON_BIN wd get window/rect` instead |
+| Get foreground app/activity | `$KOBITON_BIN device adb-shell "dumpsys window \| grep mCurrentFocus"` | quoted pipe rejected - run bare `dumpsys window`, filter locally |
+| Open a URL (Android Chrome) | UI-driven: launch Chrome via `monkey -p com.android.chrome -c android.intent.category.LAUNCHER 1`, then `wd post element '{"using":"id","value":"com.android.chrome:id/url_bar"}'` → `wd post element/<id>/click '{}'` → `wd post element/<id>/value '{"text":"<url>"}'` → `input keyevent 66` | this recipe IS the restricted path - a URL argument to `am start` is rejected (`Argument is not permitted for 'am'`); on unrestricted devices `am start -a android.intent.action.VIEW -d <url>` also works |
+| Open a URL (iOS Safari) | `wd post execute '{"script":"mobile: launchApp","args":[{"bundleId":"com.apple.mobilesafari"}]}'` → `wd post element '{"using":"accessibility id","value":"TabBarItemTitle"}'` → `wd post element/<id>/click '{}'` → `wd post element/<id>/value '{"text":"<url>\n"}'` — the trailing `\n` submits (iOS has no keyevent); `click` requires a body, `'{}'` works | n/a - WebDriver path, not adb-shell |
+| List running processes | `$KOBITON_BIN device adb-shell ps -A` | ok |
+| List user-installed packages | `$KOBITON_BIN device adb-shell pm list packages -3` | ok |
+| Find APK path of a package | `$KOBITON_BIN device adb-shell pm path <pkg>` | ok |
+| Launch app by package | `$KOBITON_BIN device adb-shell monkey -p <pkg> -c android.intent.category.LAUNCHER 1` | ok |
+| Force-stop app | `$KOBITON_BIN device adb-shell am force-stop <pkg>` | ok |
+| Clear app data | `$KOBITON_BIN device adb-shell pm clear <pkg>` | ok |
+| Battery level + charging state | `$KOBITON_BIN device adb-shell dumpsys battery` | ok |
+| Memory snapshot for a package | `$KOBITON_BIN device adb-shell dumpsys meminfo <pkg>` | ok |
+| Storage free on /sdcard | `$KOBITON_BIN device adb-shell df -h /sdcard` | ok |
+| Press hardware key (home=3, back=4, power=26) | `$KOBITON_BIN device adb-shell input keyevent <code>` | ok |
+| Type text into focused field | `$KOBITON_BIN device adb-shell input text "<text>"` | quotes/whitespace rejected - a single token works (`%s` encodes a space); for real text entry prefer `wd post element/<id>/value` |
+| Tap at coordinates | `$KOBITON_BIN device adb-shell input tap <x> <y>` | ok |
+| Swipe (ms = duration) | `$KOBITON_BIN device adb-shell input swipe <x1> <y1> <x2> <y2> <ms>` | ok |
+| Read recent logs (Android only) | `$KOBITON_BIN device adb-shell logcat -d -t 500 > <local-file>` — on iOS use `device log` (see "Device logs on iOS" above) | ok (no quotes needed - the args carry no metacharacters; the redirect is local) |
+| Screenshot via shell | `$KOBITON_BIN device adb-shell screencap -p /sdcard/Download/shot.png` | ok - retrieve with `file pull` (or use `device screen` directly) |
+| Read system setting | `$KOBITON_BIN device adb-shell settings get system <key>` | rejected - only the `secure enabled_accessibility_services` key is readable/writable |
+| Write system setting | `$KOBITON_BIN device adb-shell settings put system <key> <value>` | rejected - same single-key rule |
+| Read/write enabled accessibility services | `$KOBITON_BIN device adb-shell settings get secure enabled_accessibility_services` / `... put secure enabled_accessibility_services <value>` | ok - the one permitted settings key (`<value>` is colon-separated components, or `null` to clear) |
+| Read file content | `$KOBITON_BIN device adb-shell cat <path>` | path allowlist applies (allowed dirs + `/proc/version`) |
+| List directory | `$KOBITON_BIN device adb-shell ls -la <path>` | path allowlist applies - outside it, use `$KOBITON_BIN file list <path>` |
+| Current IME | `$KOBITON_BIN device adb-shell "dumpsys input_method \| grep mCurId"` | quoted pipe rejected - run bare `dumpsys input_method`, filter locally |
+
+**Big-output commands.** `dumpsys`, `logcat`, `pm list -f`, and full process dumps can blow past the 25k-token MCP limit. For these, redirect to an artifact file first, then read/grep only what you need (the redirect is your *local* shell's, so this exact pattern also works on restricted sessions - it is the same local-composition idiom from the quoting rules):
+
+    $KOBITON_BIN device adb-shell logcat -d -t 1000 \
       > .kobiton/sessions/<session-id>/logcat-$(date +%s).txt
     grep -E 'FATAL|AndroidRuntime' \
       .kobiton/sessions/<session-id>/logcat-*.txt | head -20
 
 Never paste full dumpsys/logcat output to chat - surface a summary + the file path.
 
-**Long-running commands.** Streaming commands like `logcat` (no `-d`), `tcpdump`, or `top` (no `-n 1`) run forever. Either bound them (`-d -t N`, `-c N`, `-n 1`) or launch with `run_in_background: true` and kill explicitly.
+**Long-running commands.** Streaming commands like `logcat` (no `-d`), `device log`, `tcpdump`, or `top` (no `-n 1`) run forever. Either bound them (`-d -t N`, `-c N`, `-n 1`, or the `timeout`/perl-alarm wrapper for `device log`) or launch with `run_in_background: true` and kill explicitly.
 
 **adb-shell vs WebDriver overlap.** Both can press keys, type, and tap. Tie-breakers:
 
 - If the target is a known element ID -> WebDriver (`wd post element/<id>/click`, `.../value`).
 - If the target is a hardware key, a blind coordinate tap, or a system-level action -> `adb shell input` / `am` / `pm`.
+
+**Web content visibility differs by platform.** iOS exposes web page content to the automation hierarchy — `wd get source` on a Safari page includes the page's text, links, and buttons, so in-page elements (cookie dialogs, page buttons) are findable and clickable with native locators. Android's UiAutomator does **not** see inside a WebView: the same dialog that is clickable on iOS is invisible on Android — fall back to coordinate taps or handle it outside the WebView. Locator tip for iOS web content: when an `accessibility id` lookup misses (or an XPath by `@label` does), check `wd get source` for the element's actual `XCUIElementType` — web controls often surface as `Link` or `StaticText` rather than `Button`, and the type in your XPath must match.
 - For inspection (foreground app, processes, build props, settings) -> adb shell only; there is no WebDriver equivalent.
 
 Default: prefer adb-shell for system-level work, WebDriver for UI element-level work.
@@ -285,7 +349,7 @@ These commands require an active session. Run `$KOBITON_BIN <command> --help` to
 | Domain | Command | What it does |
 |--------|---------|-------------|
 | Device | `$KOBITON_BIN device screen` | Capture device screen as jpg |
-| Device | `$KOBITON_BIN device forward <local> <remote>` | Forward local port to device |
+| Device | `$KOBITON_BIN device forward <local> <remote>` | Forward local port to device. Runs in the foreground until interrupted and holds the local port for the lifetime of the forward - launch with `run_in_background: true` and kill explicitly, like the long-running adb-shell commands above |
 | Device | `$KOBITON_BIN device ps` | List processes on device |
 | File | `$KOBITON_BIN file list <path>` | List files on device |
 | File | `$KOBITON_BIN file push <local> <remote>` | Push file to device |
@@ -326,11 +390,14 @@ Where `<portal-base>` is derived from the `KOBITON_PORTAL` value in the active p
 ## Error Handling
 
 - **Unexpected argument / unknown flag**: run `$KOBITON_BIN <command> --help` to discover the correct syntax, then retry with the right arguments. Never guess flags.
+- **`wd` errors exit 0**: WebDriver failures (e.g. no such element) return exit code 0 with a JSON error body - check the response JSON, not `$?`. A bounded `device log` exiting 124 (`timeout`) or 142 (perl-alarm) is the bound firing, not a failure.
 - **Session create failed**: device may be offline, already reserved, or the UDID is wrong - verify availability with the `listDevices` MCP tool before retrying.
 - **Session expired / auth error mid-flow**: `session ping` fails or a command returns auth error - offer to create a new session.
 - **Element not found**: suggest getting page source first (`wd get source`) to inspect the UI hierarchy, then try a different locator strategy (xpath instead of id, or vice versa).
 - **Stale element reference** after navigation: re-find the element on the new screen; element IDs do not survive page transitions.
-- **Binary not found**: the bundled `kobiton` binary is missing from the skill's `bin/` directory - tell the user to re-install the plugin. If the platform isn't macOS, recommend `run-automation-suite` or the MCP tools instead.
+- **Binary not found**: no cached CLI build exists under `~/.kobiton/cli/` - run `/automate:setup` (or re-open the session so the SessionStart hook downloads the pinned build). If the platform is unsupported (Intel Mac, non-x64), recommend `run-automation-suite` or the MCP tools instead.
+- **Checksum mismatch during install**: the download was corrupted or tampered with - the installer discards it and keeps any existing cache. Retry `/automate:setup`; if it persists, report it on the plugin repo.
+- **Version drift warning from `run.sh`**: the pinned build is not cached (usually pruned upstream) and a different cached build is being used - run `/automate:doctor` to see pinned vs installed vs latest, and update the automate plugin to its latest version (newer releases pin a validated build).
 - **Missing credentials**: direct the user to run `/automate:doctor` first to see what's missing; if the credentials file is missing or incomplete, run `/automate:setup` to fetch and write fresh credentials.
 
 ## Examples
@@ -436,7 +503,7 @@ Assumes a session is already active (run `session ping` first; if expired, creat
 ## Resources
 
 - [Appium 2.x documentation](https://appium.io/docs/en/2.0/) - driver-specific docs (UiAutomator2 for Android, XCUITest for iOS) for the WebDriver endpoints called via `wd post` / `wd get`.
-- [`kobiton/automate` plugin source](https://github.com/kobiton/automate) - issue tracker and source for the bundled CLI wrapper (`skills/run-interactive-cli-session/scripts/run.sh`) and platform binaries.
-- [`run-automation-suite`](../run-automation-suite/SKILL.md) - sister skill for non-interactive runs of an existing Appium script. Use it when the user wants to execute a full test suite rather than drive the device step-by-step, or when the host platform isn't supported by this skill's bundled binary.
+- [`kobiton/automate` plugin source](https://github.com/kobiton/automate) - issue tracker and source for the CLI wrapper (`skills/run-interactive-session/scripts/run.sh`), the install script, and the `CLI_VERSION` pin.
+- [`run-automation-suite`](../run-automation-suite/SKILL.md) - sister skill for non-interactive runs of an existing Appium script. Use it when the user wants to execute a full test suite rather than drive the device step-by-step, or when the host platform has no published CLI build (e.g. Intel Macs).
 - `/automate:setup` - install / refresh the CLI symlink and the credentials profile at `~/.kobiton/.credentials`.
 - `/automate:doctor` - read-only health check for CLI symlink, credentials file, active profile, and required fields.

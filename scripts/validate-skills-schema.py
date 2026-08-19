@@ -206,7 +206,7 @@ except ImportError:
 #                       advisory. Approved by ratified blueprint 727 E1.11 and
 #                       the owner's written execution directive.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "4.0.0"
+SCHEMA_VERSION = "4.0.1"
 
 # Validation tiers
 TIER_STANDARD = "standard"
@@ -433,6 +433,12 @@ RE_YAML_SHELL_SUBST = re.compile(r"(?:\$\(|`)")
 YAML_VALUE_ALLOWED_VARS = {
     "${CLAUDE_SKILL_DIR}",
     "${CLAUDE_PLUGIN_ROOT}",
+    # Portable canonical-layer spellings (blueprint 727 E3.9): canonical
+    # bodies write ${SKILL_DIR}/${PLUGIN_ROOT}; the claude-code adapter emits
+    # the CLAUDE_-branded forms. The anti-absolute-path posture is unchanged —
+    # these are the same variables in their harness-free spelling.
+    "${SKILL_DIR}",
+    "${PLUGIN_ROOT}",
     "${CLAUDE_PLUGIN_DATA}",
     "${CLAUDE_SESSION_ID}",
     "${CLAUDE_EFFORT}",

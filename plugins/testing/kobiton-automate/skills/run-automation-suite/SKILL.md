@@ -19,8 +19,11 @@ version: 1.0.2
 author: Kobiton Inc.
 license: MIT
 compatibility: >-
-  Compatible with any MCP-aware AI coding assistant. Requires Node.js >= 18
-  and Appium 2.x. Test scripts must use Appium WebDriver protocol.
+  Any OS, but requires a persistent local filesystem — it runs the user's own
+  Appium script from a local directory, so it cannot work where the host
+  offers only an MCP connection. Requires Node.js >= 18, Appium 2.x, and whichever
+  language runtime the test script uses. Test scripts must use the Appium
+  WebDriver protocol.
 tags: [mobile, testing, appium, automation, devices, kobiton]
 ---
 
@@ -33,6 +36,8 @@ Execute Appium-based mobile test automation suites on Kobiton's device cloud. Gi
 Use this skill when the user asks to run mobile tests, validate an APK or IPA across real devices, or trigger a Kobiton-hosted automation run from a local script directory.
 
 ## Prerequisites
+
+**Runs on any OS, but needs a persistent local filesystem** — its whole job is running the user's *local* Appium script, plus that script's own language runtime. Where the host can't provide those, route to `create-test-run` to execute a test case already saved in Kobiton instead. See the Skill compatibility matrix in `CLAUDE.md`.
 
 Before invoking this skill, ensure:
 

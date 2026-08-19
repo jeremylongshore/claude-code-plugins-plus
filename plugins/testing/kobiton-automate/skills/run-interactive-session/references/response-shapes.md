@@ -1,6 +1,6 @@
 # Per-Command Response Shapes
 
-Reference material for the `run-interactive-cli-session` skill. The skill drives a Kobiton device by translating natural-language intent into CLI commands; this file holds the parsing guidance for every command's response so the skill knows how to extract values, detect success, and surface results to the user.
+Reference material for the `run-interactive-session` skill. The skill drives a Kobiton device by translating natural-language intent into CLI commands; this file holds the parsing guidance for every command's response so the skill knows how to extract values, detect success, and surface results to the user.
 
 Most WebDriver endpoints return a JSON envelope `{"value": <result>}`. A few commands (`wd get screenshot`, `wd get source`) are unwrapped by the CLI and emit raw bytes/text directly. Non-WebDriver commands (`session`, `device`, `file`, `app`, `test`) typically emit plain text and signal failure through exit code.
 
@@ -27,9 +27,10 @@ Most WebDriver endpoints return a JSON envelope `{"value": <result>}`. A few com
 
 | Command | Response on stdout | How to read |
 |---|---|---|
-| `device adb-shell <cmd>` | Raw stdout from the on-device shell. Shape depends on `<cmd>` - KV pairs (`dumpsys battery`), single line (`getprop`), multi-line table (`pm list`, `ps`), or free text (`logcat`) | (a) For single-value extractions, `grep` or `awk` the line. (b) For multi-line output, save to artifact then parse. (c) **Gotcha:** exit code 0 does NOT mean the inner command succeeded - adb returns 0 as long as it could deliver the command; check stderr or look for error strings in stdout. |
+| `device adb-shell <cmd>` | Raw stdout from the on-device shell. Shape depends on `<cmd>` - KV pairs (`dumpsys battery`), single line (`getprop`), multi-line table (`pm list`, `ps`), or free text (`logcat`) | (a) For single-value extractions, `grep` or `awk` the line. (b) For multi-line output, save to artifact then parse. (c) **Gotcha:** exit code 0 does NOT mean the inner command succeeded - adb returns 0 as long as it could deliver the command; check stderr or look for error strings in stdout. (d) On restricted sessions (public cloud / trial devices) a **whitelist rejection also lands on stdout at exit 0** - string-match the first line against `Input contains a forbidden character:`, `Command is not on the whitelist:`, `Argument is not permitted for`, and `Only get/put of secure enabled_accessibility_services is permitted` before trusting empty or short output (see the SKILL's Restricted sessions block). |
 | `device screen` | JPEG image bytes - check `--help` for output flag (e.g., `--out`) | Redirect or use the documented output flag |
-| `device forward`, `device ps`, `file list` | Plain text on stdout | Read directly |
+| `device forward` | `Listening on <addr>.` then blocks - the command runs in the foreground for the lifetime of the forward and holds the local port | A non-returning invocation is normal, not a hang; launch with `run_in_background: true` and kill explicitly to release the port |
+| `device ps`, `file list` | Plain text on stdout | Read directly |
 | `file push`, `file pull` | Text confirmation; non-zero exit on failure | Surface failures by exit code |
 | `app run <app-id>` | Text confirmation; the app launches on the device | Continue interacting after launch |
 | `test run` | Streaming test-runner output | Run with `run_in_background: true`; parse the final summary block |

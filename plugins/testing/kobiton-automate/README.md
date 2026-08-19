@@ -21,6 +21,10 @@ Plugin for the [Kobiton](https://kobiton.com) mobile testing platform. Works wit
 - [Login](#login)
   - [API Key Authentication (Alternative)](#api-key-authentication-alternative)
 - [Getting Started](#getting-started)
+  - [Your First Session](#your-first-session)
+  - [Which Skill Do I Want?](#which-skill-do-i-want)
+  - [Concepts](#concepts)
+  - [Prerequisites](#prerequisites)
 - [What You Can Do](#what-you-can-do)
 - [Tools](#tools)
 - [Skills](#skills)
@@ -148,7 +152,7 @@ Then exit and relaunch `agent`. Cursor CLI currently loads plugin skills only at
 
 Run `/mcp list`, select **Kobiton**, and choose **Login** to complete Kobiton OAuth in the browser.
 
-Run `/setup` once to install the `~/.kobiton/bin/kobiton` CLI wrapper used by the `run-interactive-cli-session` skill. Cursor registers plugin commands without a namespace prefix, so the plugin's setup and doctor commands appear as `/setup` and `/doctor` — pick the one with the Kobiton description to tell them apart from Cursor's built-ins.
+Run `/setup` once to install the `~/.kobiton/bin/kobiton` CLI wrapper used by the `run-interactive-session` skill. Cursor registers plugin commands without a namespace prefix, so the plugin's setup and doctor commands appear as `/setup` and `/doctor` — pick the one with the Kobiton description to tell them apart from Cursor's built-ins.
 
 If you also use the Cursor IDE, install the plugin only once. Installs are shared between the CLI and the IDE (see the note in the next section).
 
@@ -159,7 +163,7 @@ The Cursor desktop editor installs the plugin from its built-in plugin browser:
 1. Open **Cursor Settings** > **Plugins** and paste `https://github.com/kobiton/automate` into the search box
 2. Click the **automate** result, then **Add to Cursor**, then **Install**
 
-To authenticate with the Kobiton MCP server: open **Tool & MCPs**, search for **kobiton**, click **Connect**, and complete the OAuth login in the browser.
+To authenticate with the Kobiton MCP server: open **Tool & MCPs**, search for **kobiton**, click **Authenticate**, and complete the OAuth login in the browser.
 
 > **Using both Cursor CLI and the Cursor IDE?** They share plugin installs: a plugin installed from the `agent` CLI shows up in the IDE, and vice versa. Install the plugin **once** in either one, installing it in both registers the skills, commands, and MCP server twice.
 
@@ -219,7 +223,7 @@ Every Claude surface that supports MCP can call the Kobiton [tools](#tools). The
 | **Claude Cowork** (macOS / Windows) |           ✅ Yes            |        ⚠️ Manual upload ²        | Add `https://api.kobiton.com/mcp` as a connector under **Connectors** |
 | **claude.ai web · Claude Desktop · Claude mobile** |           ✅ Yes            |        ⚠️ Manual upload ²        | Add `https://api.kobiton.com/mcp` as a Custom Connector at [claude.ai](https://claude.ai); for mobile, configure it on the web first and it syncs to the app |
 
-¹ `run-interactive-cli-session` also requires the bundled `kobiton` CLI binary (macOS Apple Silicon only) - see the [platform support note](#skills).
+¹ `run-interactive-session` also requires the downloaded `kobiton` CLI binary (macOS on Apple Silicon, Linux x64, or Windows x64 under Git Bash; Intel Macs unsupported) - see the [platform support note](#skills).
 ² This plugin is not listed in the [Claude directory](https://support.claude.com/en/articles/14328846-browse-skills-connectors-and-plugins-in-one-directory) yet, so these surfaces can't install it as a plugin. As a workaround, zip a skill folder from this repo (e.g. `skills/run-automation-suite/`) and upload it as a [custom skill](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills).
 
 ## Login
@@ -232,8 +236,8 @@ You can also trigger or inspect authentication explicitly:
 - **GitHub Copilot CLI**: type `/mcp auth kobiton` to start the OAuth flow; use `/mcp` (or `/mcp show`) to inspect server status
 - **Gemini CLI**: type `/mcp auth kobiton` to start the OAuth flow; use `/mcp` to inspect server status
 - **Codex CLI**: browser opens automatically on the first MCP tool call (e.g. *"List my Kobiton devices"*) after plugin install. Tokens are cached in the OS keychain with automatic refresh. Use `/mcp` (or `/mcp verbose`) to inspect server status
-- **Cursor CLI**: run `/mcp list`, select **kobiton**, and choose **Login** to start the OAuth flow; tokens are stored by Cursor in the OS keychain
-- **Cursor IDE**: open **Cursor Settings** > **Tool & MCPs**, search for **kobiton**, and click **Connect** to start the OAuth flow
+- **Cursor CLI**: run `/mcp list`, select **Kobiton**, and choose **Login** to start the OAuth flow; tokens are stored by Cursor in the OS keychain
+- **Cursor IDE**: open **Cursor Settings** > **Tool & MCPs**, search for **kobiton**, and click **Authenticate** to start the OAuth flow
 
 Behind the scenes, `.mcp.json` points to the Kobiton MCP server and authentication uses OAuth 2.1:
 
@@ -269,7 +273,18 @@ For CI/CD pipelines or headless environments that cannot open a browser, use API
 
 > **Note:** OAuth and API key auth cannot coexist in a single `.mcp.json` (the API key config sets an `Authorization` header that OAuth must not have). To switch, replace `.mcp.json` with the appropriate format from `.mcp.apikey-example.json`.
 >
+> **`/automate:setup` does not work under API key auth.** It fetches your credentials through an *OAuth-authenticated* MCP session to write `~/.kobiton/.credentials`. Per the [skill compatibility matrix](CLAUDE.md#skill-compatibility-matrix), three skills read that file directly and have no MCP fallback, so they are unavailable on API key auth: `run-interactive-session`, `drive-automation-session`, and `monitor-test-run`. The MCP tools, `run-automation-suite` (your script carries its own credentials), and `create-test-run` (pure MCP) are unaffected.
+>
 > **Gemini CLI:** API key auth requires editing `gemini-extension.json` instead of `.mcp.json`. Add a `headers` block under `mcpServers.kobiton` with `"Authorization": "${KOBITON_AUTH}"`.
+>
+> **Cursor (CLI and IDE):** API key auth requires editing `.cursor/mcp.json` instead of `.mcp.json` - that is the file the plugin manifest points `mcpServers` at. Cursor expands `${env:NAME}`, not the bare `${NAME}` other clients use, so start from `.cursor/mcp.apikey-example.json` rather than another client's config:
+>
+> ```bash
+> mkdir -p .cursor
+> curl -sL -o .cursor/mcp.json https://raw.githubusercontent.com/kobiton/automate/main/.cursor/mcp.apikey-example.json
+> ```
+>
+> A project-level `.cursor/mcp.json` survives plugin updates; the plugin's own copy lives in the version-pinned plugin cache and is replaced on reinstall.
 >
 > **Codex CLI:** OAuth is the default. For CI/headless environments where a browser cannot open, switch to API key auth by adding an `env_http_headers` block to the plugin's `.mcp.json`, then export `KOBITON_AUTH` in the shell that launches `codex`:
 >
@@ -297,14 +312,14 @@ To verify everything is wired correctly, run the diagnostic:
 /automate:doctor
 ```
 
-`/automate:doctor` is read-only. It checks the CLI installation (symlink + target), the credentials file, the active profile, and required fields, and prints actionable remediation hints for any failures.
+`/automate:doctor` is read-only. It checks the CLI installation (wrapper + target), the credentials file, the active profile, required fields, and CLI version drift (the plugin's pinned version vs the installed binary vs the newest published build), and prints actionable remediation hints for any failures.
 
 > **On Cursor (CLI and IDE)** the plugin's commands carry no `automate:` prefix. Run `/setup` and `/doctor` instead, picking the entry with the Kobiton description next to it to tell it apart from Cursor's built-in command of the same name.
 
-**CLI symlink install behavior across CLIs:** The `run-interactive-cli-session` skill depends on a `~/.kobiton/bin/kobiton` symlink.
+**CLI install behavior across CLIs:** The `run-interactive-session` skill depends on a `~/.kobiton/bin/kobiton` wrapper (a symlink on macOS/Linux, an exec shim on Windows). The same install script also downloads the plugin's pinned CLI build into `~/.kobiton/cli/` the first time it runs (sha256-verified; cache hits skip the network entirely).
 
-- **Claude Code, Codex CLI**: recreated automatically by a bundled SessionStart hook on every session start. On Codex CLI, the first session prompts you to trust the hook once via `/hooks`; subsequent sessions run it silently. Running `/automate:setup` also recreates the symlink on demand.
-- **GitHub Copilot CLI, Gemini CLI, Cursor CLI**: no SessionStart hook runs, so create the symlink manually by running the setup command once after install: `/automate:setup` on Copilot and Gemini, `/setup` (the one with the Kobiton description) on Cursor (Copilot reads Claude-format Markdown commands; Gemini reads bundled TOML at `commands/automate/setup.toml`). Re-run it if the symlink goes missing.
+- **Claude Code, Codex CLI**: run automatically by a bundled SessionStart hook on every session start. On Codex CLI, the first session prompts you to trust the hook once via `/hooks`; subsequent sessions run it silently. Running `/automate:setup` also re-runs the installer on demand.
+- **GitHub Copilot CLI, Gemini CLI, Cursor CLI**: no SessionStart hook runs, so run the setup command once after install: `/automate:setup` on Copilot and Gemini, `/setup` (the one with the Kobiton description) on Cursor (Copilot reads Claude-format Markdown commands; Gemini reads bundled TOML at `commands/automate/setup.toml`). Re-run it if the wrapper goes missing.
 
 Manual fallback - if the SessionStart hook was denied on Codex, or you need to install without an active session:
 
@@ -313,6 +328,67 @@ bash "$(find ~/.codex -name install-cli.sh -path '*automate*' 2>/dev/null | head
 ```
 
 The script is idempotent - safe to re-run.
+
+### Your First Session
+
+New to Kobiton? This is the whole journey, start to finish. Each step is one thing you say to your assistant:
+
+1. **Set up credentials** — run `/automate:setup` once (see above).
+2. **Find a device** — "List my available Android devices." Kobiton's cloud devices are real phones and tablets; pick one and note its name or UDID.
+3. **Reserve it** — "Reserve the Pixel 8." A reservation holds the device exclusively for you.
+4. **Do one thing on it** — "Open the browser and search for kobiton" (the `drive-automation-session` skill auto-pilots it), or drive it step by step yourself with `run-interactive-session`.
+5. **Save it as a test case** — "Save that session as a test case named smoke-search." Now the flow is repeatable.
+6. **(Optional) Run it at scale** — "Create a test run for smoke-search on 3 devices and watch it." The `create-test-run` and `monitor-test-run` skills take it from here.
+
+That's the full loop: device → session → test case → test run. Every skill in this plugin is a step on that path.
+
+### Which Skill Do I Want?
+
+| Reach for this when… | Skill |
+|----------------------|-------|
+| You have local Appium test scripts (Node.js, Python, .NET, Java) to run on Kobiton devices | `run-automation-suite` |
+| You want a clean, hands-off run of a described flow that you'll SAVE as a test case and rerun | `drive-automation-session` |
+| You want quick inspection or troubleshooting when something breaks — poke at the device, pull logs, push files | `run-interactive-session` |
+| You have a test case or suite and want to kick off a test run from it | `create-test-run` |
+| A test run is already going and you want to watch it and catch blockers | `monitor-test-run` |
+
+Say it your way — your assistant routes by meaning, not keyword: "rerun / revisit / replay **a test case** on other devices" goes to `create-test-run`; "rerun **a session**" means saving it as a test case first (sessions aren't rerun directly); "replay **the recording**" just opens the session's artifacts, no new run. And if your prompt names a goal but not a method ("test the login screen of app ABC"), the assistant asks one short question — run your scripts, let it drive the flow, or explore hands-on — defaulting to `drive-automation-session` so the result stays saveable as a test case.
+
+### Concepts
+
+| Term | Meaning |
+|------|---------|
+| Session | One connection to a device — everything you did (commands, video, logs) is recorded under a session id. |
+| Session type | How the session is driven: `AUTOMATION` (script or agent via Appium), `CLI` (the bundled CLI wrapper), `MANUAL` (you, in the portal live view). Interacting in the live view while an automation session runs makes it `MIXED`. |
+| Test case | A saved, replayable sequence of steps, created by saving a completed session (`saveTestCase`). Automation sessions are saveable; CLI sessions are not. |
+| Revisit | What a test run does: re-executes a test case's saved steps on each selected device — one "revisit execution" per device. |
+| Test run | An execution of a test case or test suite across one or more devices, with per-device results. |
+| Test suite | An ordered collection of test cases run together. |
+| Reservation | An exclusive hold on a device so nothing else can use it while you work. |
+| Device UDID | The unique identifier of a specific device — the unambiguous way to target one. |
+| Live remediation | When a test run execution hits a blocker, Kobiton lets you take over the device in the browser, fix the step live, and let the run continue. |
+
+### Prerequisites
+
+Before your first session, you need:
+
+- **A Kobiton account** — [sign up](https://kobiton.com) or use your organization's account.
+- **A supported host CLI** — Claude Code, GitHub Copilot CLI, Gemini CLI, Codex CLI, or Cursor (see [Installation](#installation)).
+- **Credentials configured** — run `/automate:setup` once after install.
+- **Your app build** (`.apk` / `.ipa`), if you're testing your own app rather than a system app or website.
+- **Platform note:** the `run-interactive-session` skill's CLI runs on **macOS (Apple Silicon), Linux (x64), and Windows (x64 under Git Bash)**. The binary is downloaded on install — a version pinned by the plugin release, sha256-verified, cached under `~/.kobiton/cli/` — so the first install needs network access once. Intel Macs are not supported (no macos-x64 build is published); there, use `run-automation-suite` or `drive-automation-session` instead — no dead end.
+
+**One worked example, end to end** — paste these to your assistant one at a time:
+
+```
+Upload ./builds/my-app.apk to Kobiton
+List my available Android devices and reserve a Pixel
+Open my app on the reserved device, log in, and add the first item to the cart
+Save that session as a test case named smoke-add-to-cart
+Create a test run for smoke-add-to-cart on 3 Android devices and watch it
+```
+
+Every step above uses only what this plugin ships: the app tools (`uploadAppToStore`, `confirmAppUpload`), device tools (`listDevices`, `reserveDevice`), the `drive-automation-session` skill, the `saveTestCase` tool, and the `create-test-run` / `monitor-test-run` skills.
 
 ## What You Can Do
 
@@ -325,7 +401,7 @@ The script is idempotent - safe to re-run.
 
 ## Tools
 
-29 MCP tools across 5 domains.
+30 MCP tools across 5 domains.
 
 ### Devices
 
@@ -380,18 +456,19 @@ The script is idempotent - safe to re-run.
 | Tool | Description |
 |------|-------------|
 | `getCredential` | Return the authenticated user's username, API key, and portal URL — backs `/automate:setup` |
+| `getOrgSettings` | Return your organization's feature flags and preferences (e.g. live remediation) — read up front by `create-test-run` and `monitor-test-run` |
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
 | **run-automation-suite** | Guided workflow for app upload, device selection, local Appium script execution (Node.js, Python, .NET, Java), and result collection. |
-| **run-interactive-cli-session** | Guided workflow for interactive testing using natural language. WebDriver actions, device operations (adb shell, logs, screen), file management (push/pull), and more. |
-| **drive-automation-session** | Drives an already-reserved device from a natural-language intent via a direct Appium HTTP session (observe-decide-act loop). Returns a session id consumable by `saveTestCase`. Complements `run-interactive-cli-session` — it uses the automation session type rather than the CLI. |
+| **run-interactive-session** | Guided workflow for interactive testing using natural language. WebDriver actions, device operations (adb shell, logs, screen), file management (push/pull), and more. Renamed from `run-interactive-cli-session` in 1.8.0. |
+| **drive-automation-session** | Drives an already-reserved device from a natural-language intent via a direct Appium HTTP session (observe-decide-act loop). Returns a session id consumable by `saveTestCase`. Complements `run-interactive-session` — it uses the automation session type rather than the CLI. |
 | **create-test-run** | Creates a test run from a test case or suite — fills sensible defaults from the `createTestRun` schema when details are omitted, confirms a summary, then offers to monitor it and hands off to `monitor-test-run`. |
 | **monitor-test-run** | Watches a running test run and narrates it: reads the live-remediation flag up front, surfaces the live-remediation URL the moment an execution is blocked (optionally auto-opening the window), and post-mortems so a `BLOCKER_ENCOUNTERED` execution is never reported as passed. Quiet between real state changes. |
 
-> **Platform support note:** all MCP tools and the `run-automation-suite` skill work on every platform the host CLI supports. The `run-interactive-cli-session` skill ships a CLI binary for **macOS Apple Silicon** only. On other platforms, use `run-automation-suite` or the MCP tools directly.
+> **Platform support note:** all MCP tools and the `run-automation-suite` skill work on every platform the host CLI supports. The `run-interactive-session` skill downloads its CLI binary on install (a version pinned by the plugin release, sha256-verified, cached under `~/.kobiton/cli/`) and runs on **macOS (Apple Silicon), Linux (x64), and Windows (x64 under Git Bash)**. Intel Macs are not supported — no macos-x64 build is published; there, use `run-automation-suite` or the MCP tools directly. For the full per-skill picture — which skills need a persistent local filesystem, which need the `~/.kobiton/.credentials` file that `/automate:setup` writes, and which run on an MCP connection alone — see the Skill compatibility matrix in [`CLAUDE.md`](CLAUDE.md#skill-compatibility-matrix).
 
 ## Commands
 
@@ -408,7 +485,7 @@ Use the **run-automation-suite** skill to run local Appium test scripts. Your AI
 
 ## Interactive Device Testing
 
-Use the **run-interactive-cli-session** skill to interact with devices using natural language. Describe what you want — "tap the login button", "type hello in the search field", "swipe down" — and your assistant translates your intent into CLI commands.
+Use the **run-interactive-session** skill to interact with devices using natural language. Describe what you want — "tap the login button", "type hello in the search field", "swipe down" — and your assistant translates your intent into CLI commands.
 
 Beyond WebDriver, the skill also supports device operations (adb shell, logs, screen capture), file management (push/pull files to device), and app management.
 
@@ -710,7 +787,7 @@ Cursor CLI caches plugin state per session, and older builds didn't load plugin-
 <details>
 <summary><strong><code>~/.kobiton/bin/kobiton</code> CLI wrapper missing (interactive testing fails)</strong></summary>
 
-Cursor CLI does not run the plugin's SessionStart hook, so the CLI wrapper isn't created automatically like on Claude Code or Codex. Run `/setup` (the plugin's command with the Kobiton description, not Cursor's built-in) once after install; re-run it if the symlink goes missing.
+Cursor CLI does not run the plugin's SessionStart hook, so the CLI wrapper isn't created automatically like on Claude Code or Codex. Run `/setup` (the plugin's command with the Kobiton description, not Cursor's built-in) once after install; re-run it if the wrapper goes missing.
 </details>
 
 ### Still Stuck?

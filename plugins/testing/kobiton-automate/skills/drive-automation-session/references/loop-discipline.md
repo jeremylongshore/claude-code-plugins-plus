@@ -57,7 +57,7 @@ For how to actually construct the `act` call body from the observed XML — sele
   session.log                          ← human-readable timeline
 ```
 
-Workspace-relative, NOT `/tmp`. Consistent with `run-interactive-cli-session` so existing post-session tooling (test-case authoring, video pickup) finds artifacts in the same place.
+Workspace-relative, NOT `/tmp`. Consistent with `run-interactive-session` so existing post-session tooling (test-case authoring, video pickup) finds artifacts in the same place.
 
 ## Iteration ceiling
 

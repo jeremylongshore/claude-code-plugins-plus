@@ -1626,6 +1626,14 @@ jobs:
       - name: Check adapter thinness
         run: pnpm run validate:adapter-thinness
 
+      # The generated-adapter toolchain (blueprint 727 E3.4/E3.8/E3.9): the
+      # compatibility projection is deterministic and marker-prefixed; the
+      # claude-code adapter resolves model_class tiers and portable runtime
+      # variables FAIL-CLOSED — an unresolvable tier or unknown variable
+      # throws, never silently substitutes.
+      - name: Check the generated-adapter toolchain
+        run: pnpm run validate:adapter-toolchain
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid
