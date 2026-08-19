@@ -39,11 +39,13 @@ def _frontmatter(fm: dict, tier: str):
 
 
 def test_schema_version_records_fail_closed_allowed_tools_change():
+    # 4.1.0: E4.3/E4.4 added the --safety-metrics ratchet feed (bare-Bash /
+    # tier-2 tool-safety / shell-substitution sets, mirrors excluded).
     # 4.0.2: E4.12 corrected the compliance-rate denominator to include the
     # plugin-manifest lane (impossible 224.1% rates); 4.0.1 added the portable
     # ${SKILL_DIR}/${PLUGIN_ROOT} spellings. The fail-closed allowed-tools
     # semantics this test pins are unchanged from 4.0.0.
-    assert validator.SCHEMA_VERSION == "4.0.2"
+    assert validator.SCHEMA_VERSION == "4.1.0"
 
 
 # =========================================================================

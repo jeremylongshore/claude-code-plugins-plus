@@ -206,7 +206,7 @@ except ImportError:
 #                       advisory. Approved by ratified blueprint 727 E1.11 and
 #                       the owner's written execution directive.
 # See 000-docs/SCHEMA_CHANGELOG.md.
-SCHEMA_VERSION = "4.0.2"
+SCHEMA_VERSION = "4.1.0"
 
 
 def compute_compliance_rate(compliant_count: int, total_count: int) -> float:
@@ -5350,6 +5350,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument("--verbose", "-v", action="store_true", help="Print per-file OK lines and grades")
     parser.add_argument(
+        "--safety-metrics",
+        action="store_true",
+        help=(
+            "4.1.0 (E4.3/E4.4): emit the safety-ratchet metrics as JSON and exit — "
+            "first-party SKILL.md files with bare (unscoped) Bash, the tier-2 "
+            "tool-safety finding set, and every YAML shell-substitution occurrence. "
+            "Mirror (.source.json) subtrees are excluded: upstream-owned."
+        ),
+    )
+    parser.add_argument(
         "--standard",
         action="store_true",
         help="Use standard tier (Anthropic spec exactly: name + description required). This is the default.",
@@ -5677,6 +5687,52 @@ def main() -> int:
                     print(f"   WARN: {warning}")
             print("\n✅ Validation passed")
             return 0
+
+    if args.safety_metrics:
+        import hashlib as _hashlib
+
+        def _is_mirror(path: Path) -> bool:
+            probe = path.parent
+            while probe != repo_root and probe != probe.parent:
+                if (probe / ".source.json").exists():
+                    return True
+                probe = probe.parent
+            return False
+
+        bare_bash: List[str] = []
+        tier2_tool_safety: List[str] = []
+        shell_substitution: List[str] = []
+        for skill_path in find_skill_files(repo_root):
+            if _is_mirror(skill_path):
+                continue
+            rel = str(skill_path.relative_to(repo_root))
+            try:
+                content = skill_path.read_text(encoding="utf-8")
+                fm, body = parse_frontmatter(content)
+            except Exception:
+                continue
+            if not fm:
+                continue
+            tools_value = fm.get("allowed-tools")
+            parsed = parse_allowed_tools(tools_value) if tools_value else []
+            if any(t.strip() == "Bash" for t in parsed):
+                bare_bash.append(rel)
+                t2_errors, _t2w = tier2_check_tool_safety(body, fm)
+                if t2_errors:
+                    tier2_tool_safety.append(rel)
+            for issue in check_yaml_shell_substitution(fm):
+                field = issue.split("'")[1] if "'" in issue else "?"
+                shell_substitution.append(f"{rel}::{field}")
+        import json as _json
+
+        metrics = {
+            "schema_version": SCHEMA_VERSION,
+            "bare_bash": sorted(bare_bash),
+            "tier2_tool_safety": sorted(tier2_tool_safety),
+            "shell_substitution": sorted(shell_substitution),
+        }
+        print(_json.dumps(metrics, indent=1))
+        return 0
 
     # Determine what to validate
     validate_skills = not args.commands_only and not args.agents_only

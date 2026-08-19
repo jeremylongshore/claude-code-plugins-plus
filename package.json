@@ -27,6 +27,7 @@
     "validate:sources-lock-parity": "node --test scripts/check-sources-lock-parity.test.mjs && node scripts/check-sources-lock-parity.mjs",
     "validate:mcp-plaintext-creds": "node --test scripts/check-mcp-plaintext-creds.test.mjs && node scripts/check-mcp-plaintext-creds.mjs",
     "validate:gitleaks-config": "node --test scripts/check-gitleaks-config.test.mjs && node scripts/check-gitleaks-config.mjs",
+    "validate:safety-ratchet": "node --test scripts/check-safety-ratchet.test.mjs && node scripts/check-safety-ratchet.mjs",
     "validate:doc-fact-assertions": "node --test scripts/check-doc-fact-assertions.test.mjs && node scripts/check-doc-fact-assertions.mjs",
     "validate:readme-contract": "node --test scripts/check-readme-contract.test.mjs && node scripts/check-readme-contract.mjs",
     "validate:canonical-schema": "node --test scripts/check-canonical-schema.test.mjs",

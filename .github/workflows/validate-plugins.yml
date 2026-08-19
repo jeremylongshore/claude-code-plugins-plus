@@ -76,6 +76,22 @@ jobs:
       - name: Enforce the gitleaks allowlist shape
         run: pnpm run validate:gitleaks-config
 
+      # E4.3/E4.4/E4.11: the triple-keyed safety ratchet. Frozen debt classes
+      # (bare-Bash skills, tier-2 tool-safety findings, YAML shell-substitution
+      # occurrences — never waivable — and the agents-lane error corpus) are
+      # monotone non-increasing; a swap fails even at equal count; a shrink
+      # re-pins via --write in the shrinking PR. Metrics come from the
+      # canonical validator (--safety-metrics / --agents-only) so this gate
+      # owns no classification logic.
+      - name: Setup Python for the safety ratchet
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce the safety ratchet
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
+          pnpm run validate:safety-ratchet
+
       # Supply-chain intake gate: sources.yaml include-anchoring ratchet.
       # An include starting with neither '/' nor '**' is silently auto-prefixed
       # '**/' by the sync engine's matcher and matches at ANY depth — the
