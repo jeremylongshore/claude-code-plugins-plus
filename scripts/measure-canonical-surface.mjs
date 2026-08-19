@@ -39,6 +39,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { classifyModelToken, claudeTokensOnLine } from './lib/model-id-classifier.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 
@@ -51,21 +52,6 @@ const GENERATED_PREFIXES = [
   '000-docs/742-RA-DATA-epic-1-scorecard.json',
 ];
 
-// Model-family ids ONLY — the bead-id shape (claude-<4char-hash>) must not
-// match. Families: opus/sonnet/haiku/fable/instant plus numeric generations.
-const MODEL_ID =
-  /\bclaude-(?:opus|sonnet|haiku|fable|instant|[1-9](?:[-.][0-9])?)(?:-[a-z0-9.]+)*\b/gi;
-// A beads handle: claude-<3-5 alnum hash>(.child)* — and NOT a model family.
-const BEAD_ID = /^claude-[a-z0-9]{3,5}(?:\.[0-9]+)*$/;
-// The numeric arm requires a generation boundary ("claude-3", "claude-3-5…",
-// "claude-2.1") so a bead handle like "claude-4laa" — digit followed
-// immediately by letters — stays in the protected bead-id class instead of
-// prefix-matching a model family. That shape is exactly the case the
-// blueprint's bead-ID protection exists for.
-const MODEL_FAMILY = /^claude-(?:opus|sonnet|haiku|fable|instant|[1-9](?:[-.]|$))/;
-
-const FUNCTIONAL_LINE = /(?:^|[^a-z])(?:model|models|MODEL)["']?\s*[:=]|--model[= ]/;
-
 export function classifyPath(path, mirrorRoots) {
   for (const root of mirrorRoots) {
     if (path.startsWith(root + '/')) return 'mirror';
@@ -76,11 +62,9 @@ export function classifyPath(path, mirrorRoots) {
   return 'first-party';
 }
 
-export function classifyModelToken(token, line) {
-  if (BEAD_ID.test(token) && !MODEL_FAMILY.test(token)) return 'bead-id';
-  if (FUNCTIONAL_LINE.test(line)) return 'functional';
-  return 'prose';
-}
+// The classifier semantics were promoted to the shared library in E3.7 —
+// re-exported so this module's tests keep exercising the ONE implementation.
+export { classifyModelToken };
 
 function trackedFiles() {
   return execFileSync('git', ['ls-files'], {
@@ -140,19 +124,12 @@ export function measure() {
 
     let functionalInFile = false;
     for (const line of text.split('\n')) {
-      const tokens = line.match(MODEL_ID) || [];
-      for (const token of tokens) {
+      // ONE token scan + ONE classifier (E3.7's shared library) — the earlier
+      // local scan double-owned these semantics.
+      for (const token of claudeTokensOnLine(line)) {
         const role = classifyModelToken(token, line);
         result.model_id_occurrences[cls][role] += 1;
         if (role === 'functional') functionalInFile = true;
-      }
-      // bead ids that the model regex cannot match still need protection
-      // counting: claude-<hash> handles on this line
-      const beadTokens = line.match(/\bclaude-[a-z0-9]{3,5}(?:\.[0-9]+)*\b/g) || [];
-      for (const token of beadTokens) {
-        if (BEAD_ID.test(token) && !MODEL_FAMILY.test(token) && !tokens.includes(token)) {
-          result.model_id_occurrences[cls]['bead-id'] += 1;
-        }
       }
     }
     if (functionalInFile) result.model_id_functional_files[cls] += 1;

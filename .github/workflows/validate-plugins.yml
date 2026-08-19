@@ -1610,6 +1610,14 @@ jobs:
       - name: Check capability-vocabulary coverage
         run: pnpm run validate:capability-coverage
 
+      # Model-id classifier protection contract (blueprint 727 E3.7): the
+      # committed exclusion list must stay a complete census of live bead
+      # handles, and a bead handle must never classify as migratable — even on
+      # a model:/--model line. E3.8's rewriter and E3.10's gate import this
+      # exact library; the tests are the contract.
+      - name: Check model-id classifier protections
+        run: pnpm run validate:model-id-classifier
+
       # 6767-h is a frozen historical standard that remains cited by schemas.
       # Pin its section map and prove every cited heading still resolves.
       - name: Check frozen prose anchors remain valid

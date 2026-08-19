@@ -68,3 +68,16 @@ node --test scripts/measure-canonical-surface.test.mjs
 
 The JSON records the exact commit it measured; re-running at a later commit produces a NEW
 measurement, never an edit to this one.
+
+---
+
+**E3.7 classifier-promotion correction (2026-08-18).** The classifier semantics were promoted to
+the shared library (`scripts/lib/model-id-classifier.mjs`) with two refinements, and the JSON
+baseline was regenerated through it: (1) a trailing-hyphen lookahead stops a hyphen-continued
+model id (`claude-fable-5`) or product slug (`claude-code-plugins`) from leaking its prefix into
+the protected scan as a phantom token — the protected count drops accordingly (7,656 → 2,923
+first-party) with functional (398 → 404) and prose (485 → 493) essentially stable; (2) the
+committed exclusion list (`schemas/canonical/v0/model-id-exclusions.json`, 393 live handles)
+now pins every bead handle by exact string on top of the shape rule. The protected class
+deliberately includes non-model `claude-*` tokens such as the bare harness name `claude-code`:
+protection wins every tie, and model-id migration must not touch harness names either.
