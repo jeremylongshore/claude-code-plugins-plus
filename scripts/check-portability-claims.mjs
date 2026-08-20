@@ -24,21 +24,12 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { KNOWN_HARNESSES } from './lib/harness-lexicon.mjs';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 
-/** Harness names the ratchet recognizes in prose claims. */
-export const KNOWN_HARNESSES = [
-  ['claude-code', /claude\s*code/i],
-  ['codex', /\bcodex\b/i],
-  ['openclaw', /open\s*claw/i],
-  ['gemini-cli', /\bgemini\b/i],
-  ['cursor', /\bcursor\b/i],
-  ['copilot', /\bcopilot\b/i],
-  ['windsurf', /\bwindsurf\b/i],
-  ['aider', /\baider\b/i],
-  ['cline', /\bcline\b/i],
-];
+// Re-exported for existing consumers; the definition lives in scripts/lib/.
+export { KNOWN_HARNESSES };
 
 /** The registered adapter set — grows only with generated adapter artifacts. */
 export const REGISTERED_ADAPTERS = new Set(['claude-code']);

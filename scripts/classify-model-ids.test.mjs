@@ -8,6 +8,7 @@ import {
   claudeTokensOnLine,
   loadExclusions,
 } from './lib/model-id-classifier.mjs';
+import { unpinnedTrackedHandles } from './classify-model-ids.mjs';
 
 test('the committed exclusion list pins every live bead handle', () => {
   const excl = loadExclusions();
@@ -22,6 +23,29 @@ test('the committed exclusion list pins every live bead handle', () => {
     assert.ok(BEAD_ID.test(h), `${h} must match the bead shape`);
     assert.ok(!MODEL_FAMILY.test(h), `${h} must never match a model family`);
   }
+});
+
+test('the committed exclusion list is sorted and duplicate-free', () => {
+  const handles = loadExclusions().protected_handles;
+  assert.deepEqual(handles, [...handles].sort(), 'handles must stay sorted');
+  assert.equal(new Set(handles).size, handles.length, 'handles must be unique');
+});
+
+test('every bead handle referenced in the tracked tree is pinned (CI-reachable census)', () => {
+  // The 2026-08 audit found the census could only drift-detect on boxes with
+  // the untracked .beads/issues.jsonl — CI's green carried no signal, so
+  // Epic 4's own epic bead (claude-or1m) landed in tracked AARs without a
+  // pin and nothing went red. This leg scans a corpus CI CAN see: any
+  // bead-handle-shaped token on a bead-context line in tracked files must
+  // already be in the committed exclusion list.
+  const missing = unpinnedTrackedHandles();
+  assert.equal(
+    missing.size,
+    0,
+    `unpinned handle(s) referenced in tracked files: ${[...missing]
+      .map(([p, where]) => `${p} (${where})`)
+      .join(', ')}`,
+  );
 });
 
 test('bead handles are never rewritable — even on functional-looking lines', () => {
@@ -49,8 +73,9 @@ test('the three sets are disjoint by construction', () => {
 test('the exclusion list stays regenerable from the live beads export', (t) => {
   // The beads workspace is deliberately untracked in this repo (local Dolt is
   // the authority; the JSONL is a machine-local export). CI checkouts have no
-  // .beads/, so the census assertion is a LOCAL-workspace check: absent file
-  // → skip, never a synthetic pass of the actual comparison.
+  // .beads/, so this leg is the LOCAL-workspace check: absent file → skip.
+  // It is no longer the ONLY drift detector — the tracked-tree census above
+  // runs everywhere, CI included.
   let raw;
   try {
     raw = readFileSync(new URL('../.beads/issues.jsonl', import.meta.url), 'utf-8');

@@ -27,7 +27,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { KNOWN_HARNESSES } from './check-portability-claims.mjs';
+import { KNOWN_HARNESSES } from './lib/harness-lexicon.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
