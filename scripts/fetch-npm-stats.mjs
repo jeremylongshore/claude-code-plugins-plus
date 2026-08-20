@@ -367,7 +367,11 @@ async function main() {
   //    rate-limit / server-error so we can surface drops loudly instead of
   //    silently undercounting.
   console.log('Fetching npm registry metadata + download stats...');
-  const { counts, published, rateLimitedNames, errorDetails } = await collectStats(names, 4);
+  // collectStats takes an OPTIONS OBJECT; the previous positional `4` here
+  // was silently ignored, so the run has always been serial (concurrency 1,
+  // 250ms throttle ≈ 4 req/s — the documented npm-cap-safe rate). Kept
+  // serial deliberately; the argument is dropped so the code says what runs.
+  const { counts, published, rateLimitedNames, errorDetails } = await collectStats(names);
 
   // 3. Aggregate
   const now = Date.now();
