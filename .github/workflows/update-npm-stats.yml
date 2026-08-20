@@ -62,11 +62,14 @@ jobs:
       - name: Report tracked stats freshness (advisory)
         run: node scripts/check-stats-freshness.mjs --report
 
-      # timeout: a 2026-08-18 scheduled run hung ~29 minutes inside this fetch
-      # and was only ended by the next dispatch's concurrency cancel — a hang
-      # must fail fast and loud, not linger until something else kills it.
+      # timeout calibration: a HEALTHY fetch takes ~25-30 minutes — 423
+      # candidates x 4 requests, deliberately serial at ~4 req/s to stay under
+      # npm's per-IP cap (last 6 green runs: 29-35 min total). The earlier
+      # 10-minute bound was miscalibrated against that reality and failed a
+      # healthy dispatch; 45 keeps the fail-fast property (vs the 6h job
+      # default) with headroom for 429 backoff waves.
       - name: Fetch stats and update artifacts
-        timeout-minutes: 10
+        timeout-minutes: 45
         run: node scripts/fetch-npm-stats.mjs
 
       # skills.sh install count — the credibility figure shown in the hero.
@@ -138,8 +141,12 @@ jobs:
           # was ever opened — main's npm-stats.json silently froze for 6 weeks
           # (estate audit finding F5). Only an OPEN PR counts.
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            # Conventional-commit title: the commit-scope-check gate validates
+            # PR titles, and the old emoji title failed it (PR #1290) — the
+            # scheduled pipeline could open a PR that was unmergeable by
+            # construction.
             gh pr create \
-              --title "📦 Daily npm download stats refresh" \
+              --title "chore(marketplace-site): refresh daily npm download stats" \
               --head "$BRANCH" \
               --base main \
               --label "automated,stats" \
