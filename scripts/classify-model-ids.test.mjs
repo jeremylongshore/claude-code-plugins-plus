@@ -48,6 +48,18 @@ test('every bead handle referenced in the tracked tree is pinned (CI-reachable c
   );
 });
 
+test('the tracked-tree census actually detects — an empty pin set surfaces real handles', () => {
+  // Guards the detection path itself: if the scan ever degenerates to
+  // returning nothing (broken regex, broken git walk), the all-pinned
+  // empty-result test above would still pass. With NO pins, the same scan
+  // must surface the real handle population, including the one whose miss
+  // motivated this gate.
+  const found = unpinnedTrackedHandles(new Set());
+  assert.ok(found.size >= 50, `expected a large unpinned census, got ${found.size}`);
+  assert.ok(found.has('claude-or1m'), 'the Epic 4 epic handle must be detectable');
+  assert.match(found.get('claude-or1m'), /^\S+:\d+$/, 'sightings carry file:line provenance');
+});
+
 test('bead handles are never rewritable — even on functional-looking lines', () => {
   for (const handle of ['claude-hz8f', 'claude-hedb.11', 'claude-t9s9.1', 'claude-4laa.1']) {
     assert.equal(classifyModelToken(handle, `model: ${handle}`), 'bead-id');

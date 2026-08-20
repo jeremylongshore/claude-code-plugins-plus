@@ -76,9 +76,12 @@ const NOT_A_HANDLE = new Set(['claude-code']);
  * before anything else, so this trips on exactly the drift class that once
  * went CI-invisible: an epic created after the census was committed.
  * Placeholder mentions ("claude-7yz...") are skipped by the ellipsis guard.
+ *
+ * `pinned` is injectable so the regression test can prove the DETECTION path
+ * end-to-end (empty pin set → the scan must surface real handles), not just
+ * the all-pinned empty result.
  */
-export function unpinnedTrackedHandles() {
-  const pinned = new Set(loadExclusions().protected_handles);
+export function unpinnedTrackedHandles(pinned = new Set(loadExclusions().protected_handles)) {
   const files = execFileSync('git', ['ls-files'], {
     cwd: ROOT,
     encoding: 'utf-8',
