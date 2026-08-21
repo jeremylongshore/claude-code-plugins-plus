@@ -1765,6 +1765,33 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # Personal Pack (Adam Radek)
+  # https://github.com/adamradek-ux/claude-code-personal-pack
+  # ============================================================
+
+  - name: personal-pack
+    description: Personal assistant pack for Claude Code - lifestyle agents (Czech, Brno-flavored), discipline skills, opt-in guardrail hooks
+    repo: adamradek-ux/claude-code-personal-pack
+    source_path: .
+    target_path: plugins/community/personal-pack
+    author:
+      name: Adam Radek
+      github: adamradek-ux
+    license: MIT
+    category: community
+    include:
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - 'skills/**'
+      - 'hooks/**'
+      - 'config/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - '.github/**'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
