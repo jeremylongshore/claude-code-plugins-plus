@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23150
+        "tracked_files": 23153
       }
     },
     "2": {
@@ -80,10 +80,10 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 253,
-          "fully_compliant_surfaces": 794,
+          "fully_compliant_surfaces": 796,
           "terminal_denominator": {
-            "agents": 355,
-            "files": 977,
+            "agents": 357,
+            "files": 979,
             "label": "agents_plus_plugin_manifests",
             "plugin_manifests": 622
           },
@@ -91,11 +91,11 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 7673,
-          "fully_compliant_surfaces": 1161,
+          "fully_compliant_surfaces": 1163,
           "terminal_denominator": {
-            "agents": 355,
+            "agents": 357,
             "commands": 373,
-            "files": 5025,
+            "files": 5027,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 622,
             "skills": 3675
@@ -211,7 +211,7 @@
       "status": "partial",
       "values": {
         "agent_errors": 253,
-        "agent_files": 355,
+        "agent_files": 357,
         "reported_compliance_percent": 81.3,
         "target_errors": 0,
         "target_percent_max": 100
@@ -1975,7 +1975,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23150
+        "tracked_files": 23153
       }
     },
     "47": {
