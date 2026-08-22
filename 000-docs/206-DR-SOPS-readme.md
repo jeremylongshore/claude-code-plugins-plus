@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Production Playbooks
 
 Comprehensive technical guides for building production-grade Claude Code plugin systems. Each playbook provides deep implementation details, production-ready code examples, and real-world patterns learned from operating large-scale AI agent deployments.
@@ -121,7 +123,7 @@ Migration path:
 ## 🔗 Related Resources
 
 - **Learning Lab** - Hands-on tutorials for agent workflow patterns
-- **[Plugin Marketplace](https://claudecodeplugins.io/)** - 258 plugins across 18 categories
+- **[Plugin Marketplace](https://tonsofskills.com/)** - Browse the live plugin and skill catalog
 - **MCP Plugins** - Production MCP server implementations
 - **Templates** - Starter templates for new plugins
 

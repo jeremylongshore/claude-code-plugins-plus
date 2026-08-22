@@ -16,7 +16,7 @@ tags:
 - routing
 - cost-optimization
 - model-selection
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Model Routing
 

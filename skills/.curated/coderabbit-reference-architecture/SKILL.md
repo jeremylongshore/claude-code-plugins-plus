@@ -22,7 +22,7 @@ tags:
 - coderabbit
 - reference-architecture
 - best-practices
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Reference Architecture
 

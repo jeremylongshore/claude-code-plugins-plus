@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Plugin Repository Report
 
 Generated: 2025-10-11
@@ -66,7 +68,7 @@ mcp/
 | Name | claude-code-plugins |
 | Owner | Jeremy Longshore |
 | Version | 1.1.0 |
-| Homepage | https://claudecodeplugins.io/ |
+| Homepage | [retired legacy public domain]/ |
 | Plugins Count | 20 registered in marketplace.json |
 
 ### Sample Plugin Pack Metadata (DevOps Automation)

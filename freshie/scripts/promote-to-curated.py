@@ -62,6 +62,7 @@ Modes
 
 Usage
 -----
+  Requires the repository Node 20+ runtime on PATH for canonical cohort resolution.
   python3 freshie/scripts/promote-to-curated.py            # rebuild skills/.curated/
   python3 freshie/scripts/promote-to-curated.py --check    # CI: exit 1 if stale vs source
   python3 freshie/scripts/promote-to-curated.py --no-validate   # skip the in-process regrade
@@ -70,6 +71,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import codecs
 import csv
 import importlib.util
 import json
@@ -77,13 +79,14 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 GRADES_CSV = ROOT / "freshie" / "grades.csv"
 CURATED_DIR = ROOT / "skills" / ".curated"
 MANIFEST = CURATED_DIR / "MANIFEST.json"
 VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
+CORPUS_RESOLVER = Path(__file__).resolve().parents[2] / "scripts" / "corpus-resolver.mjs"
 
 PROMOTE_GRADES = {"A", "B"}
 
@@ -92,6 +95,69 @@ PROMOTE_GRADES = {"A", "B"}
 # --allow-shrink for a legitimate large drop (e.g. a deliberate threshold change).
 SHRINK_FLOOR_RATIO = 0.5
 
+# Machine-readable strategy marker consumed by the Epic 1 measurement harness.
+# Changing this value requires updating the harness and its independent fixtures.
+CONTENT_TYPE_STRATEGY = "magic_bytes"
+
+
+class ContentInspectionError(RuntimeError):
+    """A file cannot be classified safely enough for curated promotion."""
+
+
+class ContentTypeMismatchError(ContentInspectionError):
+    """The file's extension contradicts its recognized or required content type."""
+
+
+class UnknownBinaryContentError(ContentInspectionError):
+    """Binary-looking bytes have no registered, reviewable content type."""
+
+
+# The curated mirror is a text index. Recognized binary files are deliberately
+# omitted, while misleading extensions and unknown binary bytes abort both build
+# and --check. The registry covers the formats currently present in plugin skill
+# trees plus common executable payloads that previously reached the mirror.
+_MAGIC_SIGNATURES: Tuple[Tuple[str, Tuple[bytes, ...], frozenset[str]], ...] = (
+    ("png", (bytes.fromhex("89504e470d0a1a0a"),), frozenset({".png"})),
+    ("jpeg", (bytes.fromhex("ffd8ff"),), frozenset({".jpg", ".jpeg"})),
+    ("gif", (b"GIF87a", b"GIF89a"), frozenset({".gif"})),
+    ("pdf", (b"%PDF-",), frozenset({".pdf"})),
+    (
+        "zip",
+        (bytes.fromhex("504b0304"), bytes.fromhex("504b0506"), bytes.fromhex("504b0708")),
+        frozenset({".zip", ".jar", ".docx", ".xlsx", ".pptx", ".whl"}),
+    ),
+    ("truetype", (bytes.fromhex("00010000"), b"true"), frozenset({".ttf"})),
+    ("opentype", (b"OTTO",), frozenset({".otf"})),
+    ("woff", (b"wOFF",), frozenset({".woff"})),
+    ("woff2", (b"wOF2",), frozenset({".woff2"})),
+    ("gzip", (bytes.fromhex("1f8b"),), frozenset({".gz", ".tgz"})),
+    ("bzip2", (b"BZh",), frozenset({".bz2", ".tbz2"})),
+    ("xz", (bytes.fromhex("fd377a585a00"),), frozenset({".xz", ".txz"})),
+    ("7zip", (bytes.fromhex("377abcaf271c"),), frozenset({".7z"})),
+    ("elf", (bytes.fromhex("7f454c46"),), frozenset({".elf", ".so", ".node"})),
+    ("wasm", (bytes.fromhex("0061736d"),), frozenset({".wasm"})),
+    (
+        "mach-o",
+        (
+            bytes.fromhex("feedface"),
+            bytes.fromhex("feedfacf"),
+            bytes.fromhex("cefaedfe"),
+            bytes.fromhex("cffaedfe"),
+            bytes.fromhex("cafebabe"),
+            bytes.fromhex("bebafeca"),
+        ),
+        frozenset({".dylib", ".node"}),
+    ),
+)
+
+_BINARY_EXTENSIONS = frozenset(
+    extension for _kind, _signatures, extensions in _MAGIC_SIGNATURES for extension in extensions
+) | frozenset({".dll", ".exe", ".webp"})
+# Unix executables commonly have no suffix; data formats and Windows PE files
+# must retain one of their registered extensions.
+_EXTENSION_OPTIONAL_BINARY_TYPES = frozenset({"elf", "mach-o"})
+_INSPECTION_CHUNK_BYTES = 64 * 1024
+
 
 # ── selection ────────────────────────────────────────────────────────────────
 def _plugin_root(skill_path: str) -> str:
@@ -99,10 +165,75 @@ def _plugin_root(skill_path: str) -> str:
     return skill_path.split("/skills/")[0] if "/skills/" in skill_path else skill_path
 
 
-def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
-    """A+B plugin skills, our own (no `.source.json`), whose source dir still exists.
+def resolve_corpora(*cohorts: str) -> Dict[str, set[str]]:
+    """Read named cohorts in one canonical resolver process."""
+    arguments = ["node", str(CORPUS_RESOLVER), "--root", str(ROOT), "--json"]
+    for cohort in cohorts:
+        arguments.extend(["--cohort", cohort])
+    try:
+        result = subprocess.run(
+            arguments,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("corpus resolver requires Node 20+ on PATH") from exc
+    if result.returncode != 0:
+        raise RuntimeError(f"corpus resolver failed for {', '.join(cohorts)}: {result.stderr.strip()}")
+    try:
+        payload = json.loads(result.stdout)
+        resolved = (
+            {cohorts[0]: payload}
+            if len(cohorts) == 1
+            else payload["cohorts"]
+        )
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise RuntimeError(f"corpus resolver returned invalid JSON: {exc}") from exc
+    output: Dict[str, set[str]] = {}
+    for cohort in cohorts:
+        files = resolved.get(cohort, {}).get("files")
+        if not isinstance(files, list) or not all(isinstance(value, str) for value in files):
+            raise RuntimeError(f"corpus resolver returned an invalid file list for {cohort}")
+        output[cohort] = set(files)
+    return output
 
-    Sorted by skill_path for deterministic output.
+
+def resolve_corpus(cohort: str) -> set[str]:
+    """Compatibility wrapper for one named cohort."""
+    return resolve_corpora(cohort)[cohort]
+
+
+def is_external_mirror(skill_path: str) -> bool:
+    """True when ANY ancestor directory of the skill carries a `.source.json`.
+
+    Retained as a compatibility and regression-test helper after production
+    selection moved to the shared graded/first-party corpus intersection.
+
+    Walking every ancestor — rather than only `_plugin_root()` — is load-bearing.
+    `_plugin_root()` splits on `/skills/`, so a skill vendored at
+    `plugins/<cat>/<plugin>/.codex/skills/<name>` yields `.../<plugin>/.codex`, which
+    sits BELOW the plugin root where `.source.json` lives. The marker was therefore
+    missed and six mirrored skills were promoted into `skills/.curated/`, republishing
+    other people's work under our name — exactly what this module's header forbids.
+    """
+    node = Path(skill_path)
+    # `node != node.parent` rather than `!= Path(".")`: Path("/").parent is "/",
+    # so the latter never terminates on an absolute path. The sole call site passes
+    # a repo-relative path today, but the loop should not depend on that.
+    while node != node.parent:
+        if (ROOT / node / ".source.json").exists():
+            return True
+        node = node.parent
+    return False
+
+
+def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
+    """Select curated candidates from the resolved graded/first-party intersection.
+
+    The shared corpus resolver excludes mirrors, hidden paths, and untracked files;
+    this caller then keeps A/B rows whose source directory still exists. Results
+    are sorted by skill_path for deterministic output.
     """
     if not grades_csv.exists():
         sys.exit(
@@ -110,6 +241,9 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
             f"(rebuild-inventory.py → validate --populate-db → dolt-sync.py)."
         )
     out: List[Dict[str, str]] = []
+    cohorts = resolve_corpora("graded", "first-party")
+    graded = cohorts["graded"]
+    first_party = cohorts["first-party"]
     try:
         with grades_csv.open(newline="") as fh:
             for row in csv.DictReader(fh):
@@ -117,8 +251,9 @@ def load_candidates(grades_csv: Path) -> List[Dict[str, str]]:
                 if not sp or not sp.startswith("plugins/") or grade not in PROMOTE_GRADES:
                     continue
                 root = _plugin_root(sp)
-                if (ROOT / root / ".source.json").exists():
-                    continue  # external mirror — never republish under our name
+                skill_file = f"{sp}/SKILL.md"
+                if skill_file not in graded or skill_file not in first_party:
+                    continue  # outside the canonical graded/first-party intersection
                 if not (ROOT / sp).is_dir():
                     continue  # source removed / downgraded since the graded run
                 parts = sp.split("/")  # plugins/<category>/<plugin>/skills/<name>  (or shorter)
@@ -201,9 +336,93 @@ def assign_curated_names(candidates: List[Dict[str, str]]) -> None:
 
 
 # ── git-tracked file enumeration ─────────────────────────────────────────────
+def _detect_magic_type(prefix: bytes) -> Optional[Tuple[str, frozenset[str]]]:
+    """Return a recognized binary content type and its valid extensions."""
+    if len(prefix) >= 12 and prefix.startswith(b"RIFF") and prefix[8:12] == b"WEBP":
+        return "webp", frozenset({".webp"})
+    if prefix.startswith(b"MZ") and len(prefix) >= 64:
+        # The DOS header stores the PE signature offset at bytes 0x3C-0x40.
+        pe_offset = int.from_bytes(prefix[0x3C:0x40], "little")
+        if pe_offset + 4 <= len(prefix) and prefix[pe_offset : pe_offset + 4] == b"PE\0\0":
+            return "portable-executable", frozenset({".exe", ".dll", ".node"})
+    for kind, signatures, extensions in _MAGIC_SIGNATURES:
+        if any(prefix.startswith(signature) for signature in signatures):
+            return kind, extensions
+    return None
+
+
+def _is_binary(path: Path) -> bool:
+    """Classify a file for the curated text mirror, failing closed on ambiguity.
+
+    A recognized binary is omitted. Text and empty files remain mirrorable. A
+    binary extension carrying text, binary bytes hidden behind a text extension,
+    unknown binary bytes, a symlink, or an unreadable path is an error: neither
+    build nor drift-check may silently normalize contradictory content.
+    """
+    if path.is_symlink():
+        raise ContentInspectionError(f"refusing symlink during content inspection: {path}")
+    try:
+        with path.open("rb") as fh:
+            prefix = fh.read(_INSPECTION_CHUNK_BYTES)
+
+            suffix = path.suffix.lower()
+            detected = _detect_magic_type(prefix)
+            if detected is not None:
+                kind, valid_extensions = detected
+                extension_is_valid = suffix in valid_extensions or (
+                    not suffix and kind in _EXTENSION_OPTIONAL_BINARY_TYPES
+                )
+                if not extension_is_valid:
+                    expected = ", ".join(sorted(valid_extensions))
+                    if kind in _EXTENSION_OPTIONAL_BINARY_TYPES:
+                        expected = f"{expected}, or no extension"
+                    raise ContentTypeMismatchError(
+                        f"{path} contains {kind} bytes but uses {suffix or 'no extension'}; expected {expected}"
+                    )
+                return True
+
+            if suffix in _BINARY_EXTENSIONS:
+                raise ContentTypeMismatchError(
+                    f"{path} uses governed binary extension {suffix} but has no matching magic bytes"
+                )
+
+            decoder = codecs.getincrementaldecoder("utf-8")("strict")
+            chunk = prefix
+            while chunk:
+                # NUL is valid UTF-8, so the decoder alone cannot distinguish
+                # NUL-bearing binary payloads from curated text.
+                if b"\0" in chunk:
+                    raise UnknownBinaryContentError(
+                        f"{path} contains NUL-bearing binary data with no registered content type"
+                    )
+                try:
+                    decoder.decode(chunk, final=False)
+                except UnicodeDecodeError as exc:
+                    raise UnknownBinaryContentError(
+                        f"{path} is not valid UTF-8 text and has no registered content type"
+                    ) from exc
+                chunk = fh.read(_INSPECTION_CHUNK_BYTES)
+            try:
+                decoder.decode(b"", final=True)
+            except UnicodeDecodeError as exc:
+                raise UnknownBinaryContentError(
+                    f"{path} ends with invalid UTF-8 and has no registered content type"
+                ) from exc
+    except OSError as exc:
+        raise ContentInspectionError(f"cannot inspect {path}: {exc}") from exc
+    return False
+
+
 def tracked_files(skill_dir: Path) -> List[str]:
-    """Relative paths of the git-tracked files under a skill dir, sorted. Uses the committed
-    tree so local == CI. Empty list means nothing tracked (skip)."""
+    """Relative paths of the git-tracked, MIRRORABLE files under a skill dir, sorted. Uses the
+    committed tree so local == CI. Empty list means nothing tracked (skip).
+
+    Recognized binary blobs are excluded: skills/.curated/ exists so skills.sh can INDEX skill
+    text, and a compiled executable is not indexable. Contradictory extensions, unreadable
+    paths, and unknown binary bytes fail closed rather than being silently copied or skipped.
+    The SOURCE plugin remains unchanged; only the generated text index omits valid binaries.
+    Filtering here rather than at the call sites is load-bearing: both the build copy loop and
+    the drift checker read this function, so they cannot disagree about mirror eligibility."""
     try:
         out = subprocess.run(
             ["git", "ls-files", "-z", "--", str(skill_dir.relative_to(ROOT))],
@@ -212,12 +431,12 @@ def tracked_files(skill_dir: Path) -> List[str]:
             text=True,
             check=True,
         ).stdout
-    except subprocess.CalledProcessError:
-        return []
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ContentInspectionError(f"cannot enumerate tracked files below {skill_dir}: {exc}") from exc
     rel_to_root = [p for p in out.split("\0") if p]
     base = skill_dir.relative_to(ROOT).as_posix()
     files = [p[len(base) + 1 :] for p in rel_to_root if p.startswith(base + "/")]
-    return sorted(files)
+    return sorted(f for f in files if not _is_binary(skill_dir / f))
 
 
 # ── build ────────────────────────────────────────────────────────────────────
@@ -446,4 +665,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except ContentInspectionError as exc:
+        print(f"error: curated content-type gate refused the corpus: {exc}", file=sys.stderr)
+        sys.exit(2)

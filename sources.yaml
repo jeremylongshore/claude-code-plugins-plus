@@ -861,13 +861,16 @@ sources:
     category: testing
     verified: true
     include:
-      - 'README.md'
-      - 'LICENSE'
-      - 'CHANGELOG.md'
-      - '.claude-plugin/**'
-      - 'skills/**'
-      - 'docs/**'
-      - 'tools/**'
+      # Anchored (blueprint 727 E3.6): the unanchored 'skills/**' matched at
+      # ANY depth via the engine's auto-'**/' prefix and mirrored upstream's
+      # .codex/skills fork — the intake ratchet's over-collection class.
+      - '/README.md'
+      - '/LICENSE'
+      - '/CHANGELOG.md'
+      - '/.claude-plugin/**'
+      - '/skills/**'
+      - '/docs/**'
+      - '/tools/**'
     exclude:
       - 'node_modules/**'
       - '.git/**'
@@ -875,6 +878,14 @@ sources:
       - '.mcp.dev-local.json'
       - 'pnpm-lock.yaml'
       - 'package.json'
+      # Upstream commits a prebuilt `kobiton` CLI (11.5 MB Mach-O, macOS
+      # x86_64) inside the skill. `skills/**` is unanchored, so it is
+      # auto-prefixed `**/` and pulls the blob TWICE — once from `skills/`
+      # and once from upstream's `.codex/skills/` shadow copy — for 23 MB of
+      # a foreign-platform binary CI can never execute. Excluding it is a
+      # mirroring decision on our side, not an edit to their plugin: the
+      # skill's docs still tell users to install the CLI from Kobiton.
+      - '**/bin/kobiton'
   # ============================================================
   # Claudebase (Rohit Hazra / rohithzr)
   # https://github.com/rohithzr/claudebase
@@ -948,6 +959,15 @@ sources:
       - 'docs/**'
       - 'templates/**'
       - '.github/**'
+      # Upstream commits its own claude-mem session exhaust at
+      # .claude-plugin/CLAUDE.md — an auto-generated activity table, not plugin
+      # guidance, that tooling walking CLAUDE.md files reads as instructions.
+      # The local copy is deleted in this same PR (which sticks only because
+      # curated: true freezes the write). This exclude is what makes it stick
+      # AFTER the freeze is lifted: dropping curated: is the documented
+      # off-ramp, and without this line the very next sync would restore it via
+      # the '.claude-plugin/**' include.
+      - '.claude-plugin/CLAUDE.md'
 
   # ============================================================
   # Hyperflow (Mohammed Abdelhady)

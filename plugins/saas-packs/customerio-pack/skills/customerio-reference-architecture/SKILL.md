@@ -20,7 +20,7 @@ tags:
 - customer-io
 - architecture
 - enterprise
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Customer.io Reference Architecture
 

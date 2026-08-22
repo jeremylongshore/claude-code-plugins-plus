@@ -14,7 +14,7 @@ license: MIT
 tags:
 - ai
 - forecasting-time
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Time Series Forecaster
 

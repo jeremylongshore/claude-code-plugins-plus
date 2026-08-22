@@ -18,13 +18,16 @@ test.describe('Explore & Plugin Flows (Real-world Scenarios)', () => {
     test('should display install command on homepage', async ({ page }) => {
       await page.goto('/');
 
-      // Look for install command
-      const installSection = page.locator('text=/npx|npm|pnpm|bun/i').first();
+      // Since the 2026-08-02 neobrutalist pass the homepage leads with the
+      // Claude-Code-native slash command rather than a package-manager command,
+      // so matching on /npx|npm|pnpm|bun/ no longer finds anything. Assert the
+      // command itself.
+      const installSection = page.locator('.install-cmd').first();
       await expect(installSection).toBeVisible({ timeout: 10000 });
 
       // Verify it contains the marketplace command pattern
       const pageContent = await page.textContent('body');
-      expect(pageContent).toMatch(/plugin.*marketplace.*add|npx.*ccpi|npm.*install/i);
+      expect(pageContent).toMatch(/plugin.*marketplace.*add/i);
 
       // Screenshot
       await page.screenshot({

@@ -20,7 +20,7 @@ tags:
 - coderabbit
 - workflow
 - code-review
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Core Workflow A: Automated PR Review
 

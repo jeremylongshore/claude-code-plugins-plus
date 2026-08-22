@@ -21,7 +21,7 @@ tags:
 - lcel
 - runnables
 - rag
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Core Workflow (Python)
 

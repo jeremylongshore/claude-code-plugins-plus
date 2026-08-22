@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # How the CI/CD, Validator, and Maintainer System Works — Tons of Skills
 
 **Doc:** 704-DR-GUID · **Audience:** maintainers and reviewers being onboarded · **Status:** teaching
@@ -13,18 +15,27 @@ reference · **Repo:** `jeremylongshore/claude-code-plugins-plus-skills` (live a
 
 ---
 
-## 1. The one thing to remember: exactly two required checks
+## 1. The one thing to remember: exactly three required checks
 
-Branch protection on `main` requires **exactly two** status contexts:
+Branch protection on `main` requires **exactly three** status contexts:
 
 1. **`ci-required`** — an aggregate job that gates through every real CI job.
 2. **`gitleaks`** — the secret scanner (from `secret-scan.yml`).
+3. **`skill-conform`** — `audit-harness conform --strict` over the whole
+   marketplace corpus, in its **own** workflow (`skill-conform.yml`).
+
+> **Why `skill-conform` is separate and NOT inside `ci-required`'s `needs:`.**
+> Per `000-docs/110` § 5, a job that can be skipped or is path-scoped must never
+> be allowed to green the aggregate — if it were a `needs:` entry, a skip would
+> read as a pass. It therefore always-reports as its own required context. This
+> is the single most-missed detail on this page; if you can explain it, you
+> understand the whole gate design.
 
 Plus one approving code-owner review. That is the whole merge gate. Everything
 else you'll see on a PR (AI review, pre-screen grades, kernel soak lanes) is
 **advisory** — it reports, it does not block.
 
-**Why exactly two, and why an aggregate?** We used to require ~10 separate
+**Why so few, and why an aggregate?** We used to require ~10 separate
 contexts, and several came from **path-filtered** workflows. A PR that didn't
 touch those paths left the checks in "Expected" forever — they never ran, so the
 PR could never merge. That was the "N Expected forever" stuck-PR class (observed
@@ -220,9 +231,9 @@ and code-review-assignment to onboard the cohort — is the decision record
 
 ## 8. The 60-second version (for a client)
 
-> "Every PR runs one aggregate CI gate plus a secret scan — two required checks,
-> by design, so nothing gets stuck and nothing merges half-checked. Inside the
-> aggregate are ~19 jobs: build, tests, a strict marketplace validator that holds
+> "Every PR runs one aggregate CI gate, a secret scan, and a corpus-wide skill
+> conformance check — three required checks, by design, so nothing gets stuck and
+> nothing merges half-checked. Inside the aggregate are 19 jobs: build, tests, a strict marketplace validator that holds
 > every skill to an 8-field A-grade bar, a supply-chain scanner over any mirrored
 > code, and ownership/commit-convention gates. On top of that, advisory lanes —
 > an AI reviewer and a validator-grounded coach — give signal without ever being

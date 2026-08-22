@@ -16,7 +16,7 @@ license: MIT
 tags:
 - business
 - excel-variance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Excel Variance Analyzer
 

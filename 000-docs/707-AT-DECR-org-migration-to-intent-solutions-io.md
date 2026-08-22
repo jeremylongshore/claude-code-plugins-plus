@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Decision Record — Migrate the flagship repo to the `intent-solutions-io` org
 
 **Doc:** 707-AT-DECR · **Status:** PROPOSED — staged, gated, **not executed**.

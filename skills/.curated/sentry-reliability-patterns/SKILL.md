@@ -25,7 +25,7 @@ tags:
 - circuit-breaker
 - offline-queue
 - graceful-degradation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Reliability Patterns
 

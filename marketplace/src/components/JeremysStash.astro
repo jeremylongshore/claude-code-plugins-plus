@@ -40,7 +40,7 @@ const items = stashData.items;
   .stash-card {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 2px;
+    border-radius: 0;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -74,7 +74,7 @@ const items = stashData.items;
   }
 
   .stash-tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -82,11 +82,11 @@ const items = stashData.items;
     color: var(--text-3);
     background: var(--surface-3);
     padding: 0.15rem 0.4rem;
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   .stash-name {
-    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 1.15rem;
     font-weight: 700;
     line-height: 1.25;
@@ -122,7 +122,7 @@ const items = stashData.items;
     background: var(--surface-3);
     border: 1px solid var(--border);
     padding: 0.35rem 0.75rem;
-    border-radius: 6px;
+    border-radius: 0;
     transition: border-color var(--duration-fast), color var(--duration-fast), background var(--duration-fast);
   }
 

@@ -20,7 +20,7 @@ tags:
 - maintainx
 - debugging
 - logging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # MaintainX Debug Bundle
 

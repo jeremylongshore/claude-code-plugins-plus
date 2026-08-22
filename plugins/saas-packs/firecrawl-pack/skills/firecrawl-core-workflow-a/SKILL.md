@@ -20,7 +20,7 @@ tags:
 - saas
 - firecrawl
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firecrawl Core Workflow A — Scrape & Crawl
 

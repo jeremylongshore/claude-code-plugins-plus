@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AAR: Claude Code Plugins - Status Update
 
 **Date:** 2025-12-25
@@ -73,7 +75,7 @@ All 7 tasks complete:
 | Agent Skills  | 241                     |
 | CLI Version   | 2.0.0                   |
 | npm Package   | @intentsolutionsio/ccpi |
-| Website       | claudecodeplugins.io    |
+| Website       | [retired legacy public domain]    |
 
 ---
 

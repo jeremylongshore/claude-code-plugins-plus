@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 4 After Action Report (AAR)
 
 ## Overview

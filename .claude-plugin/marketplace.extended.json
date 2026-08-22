@@ -2365,8 +2365,8 @@
         "mcp"
       ],
       "author": {
-        "name": "ClaudeCodePlugins",
-        "email": "plugins@tonsofskills.com"
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
       },
       "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins",
@@ -5443,6 +5443,8 @@
         "name": "Luke Steuber",
         "url": "https://github.com/lukeslp"
       },
+      "homepage": "https://dr.eamer.dev/geepers/",
+      "repository": "https://github.com/lukeslp/geepers",
       "components": {
         "agents": 51,
         "total": 51
@@ -5537,31 +5539,6 @@
       }
     },
     {
-      "name": "geepers-agents",
-      "source": "./plugins/community/geepers-agents",
-      "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built with MCP tools and Claude Code plugin agents.",
-      "version": "1.13.0",
-      "category": "community",
-      "keywords": [
-        "mcp",
-        "orchestration",
-        "multi-agent",
-        "development-workflow",
-        "code-quality",
-        "deployment",
-        "geepers",
-        "claude-code"
-      ],
-      "author": {
-        "name": "Luke Steuber"
-      },
-      "homepage": "https://dr.eamer.dev/geepers/",
-      "repository": "https://github.com/lukeslp/geepers",
-      "components": {
-        "agents": 51
-      }
-    },
-    {
       "name": "jeremy-firebase",
       "source": "./plugins/community/jeremy-firebase",
       "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
@@ -5626,9 +5603,7 @@
       "category": "devops",
       "keywords": ["changelog", "release-notes", "weekly-update", "git", "github", "automation"],
       "author": {
-        "name": "Mattyp",
-        "email": "mattyp@tonsofskills.com",
-        "url": "https://tonsofskills.com"
+        "name": "Mattyp"
       },
       "components": {
         "skills": 1,
@@ -10257,7 +10232,7 @@
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "category": "mcp",
       "keywords": [
         "memory",
@@ -10276,27 +10251,6 @@
       "homepage": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "repository": "https://github.com/jeremylongshore/bobs-big-brain-plugin",
       "license": "Apache-2.0"
-    },    {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
-      "license": "MIT"
     },
     {
       "name": "databricks-workspace-mcp",
@@ -10488,28 +10442,6 @@
       "license": "MIT"
     },
     {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
-      "license": "MIT"
-    },
-    {
       "name": "mnemos",
       "source": "./plugins/community/mnemos",
       "description": "Persistent memory for Claude Code — capture, digest, and recall project knowledge across sessions with a dependency-free Go CLI and hook integration.",
@@ -10656,28 +10588,6 @@
       "license": "MIT"
     },
     {
-      "name": "claudebase",
-      "source": "./plugins/productivity/claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
-      "version": "0.2.0",
-      "category": "productivity",
-      "keywords": [
-        "github",
-        "sync",
-        "backup",
-        "config",
-        "profiles",
-        "settings"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "url": "https://github.com/rohithzr"
-      },
-      "homepage": "https://github.com/rohithzr/claudebase",
-      "repository": "https://github.com/rohithzr/claudebase",
-      "license": "MIT"
-    },
-    {
       "name": "skills-janitor",
       "source": "./plugins/community/skills-janitor",
       "description": "Audit, clean and swipe-triage your Claude Code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe TUI)",
@@ -10768,6 +10678,28 @@
         "url": "https://github.com/metrox-eth"
       },
       "repository": "https://github.com/metrox-eth/quit-sponsor",
+      "license": "MIT"
+    },
+    {
+      "name": "uizze",
+      "source": "./plugins/design/uizze",
+      "description": "STOP UI SLOP. Ground Claude Code in 800,000+ real web and iOS screens, a product-specific design contract, required states, and a hard finish gate.",
+      "version": "1.2.11",
+      "category": "design",
+      "keywords": [
+        "ui",
+        "design",
+        "frontend",
+        "anti-slop",
+        "agent-skill"
+      ],
+      "author": {
+        "name": "UIZZE",
+        "url": "https://uizze.com",
+        "email": "business@uizze.com"
+      },
+      "homepage": "https://uizze.com",
+      "repository": "https://github.com/uizze/uizze",
       "license": "MIT"
     }
   ]

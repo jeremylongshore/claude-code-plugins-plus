@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 2 After Action Review: Foundation + Clean Ops
 
 **Date**: 2025-12-25 20:00 CST

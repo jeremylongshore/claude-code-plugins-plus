@@ -13,10 +13,29 @@ interface Props {
   canonical?: string;
 }
 
-const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png", canonical } = Astro.props;
+// The fallback description carries NO counts, deliberately. It used to say
+// "244 searchable agent skills and 259 plugins". Both numbers were stale by an
+// order of magnitude — src/data/unified-search-index.json `stats.totalSkills`
+// and `stats.totalPlugins` are the build-time source of truth, and they read in
+// the low thousands and mid hundreds respectively. Rather than restate a figure
+// here that would itself go stale, read those fields.
+//
+// The fallback happens to render on zero built pages today because every page
+// passes its own description — which is exactly why nobody noticed it rotting.
+// A number in an unmaintained fallback is a landmine, not a live error: the
+// next page added without a description would have shipped that claim to search
+// engines and social cards. Pages that want counts interpolate the live values,
+// as src/pages/index.astro does with fmt(totalSkills) / fmt(totalPlugins).
+const { title, description = "Browse agent skills and plugins for Claude Code. Fuzzy search, interactive tutorials, and production-ready tools.", image = "/og-image.png", canonical } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
+// The partner badge is a homepage-only footer element.
+// `Astro.url.pathname` always begins with '/', so a `=== ''` branch would be
+// unreachable — an earlier version of this line had one, with a comment about
+// trailingSlash that did not describe what it actually guarded against.
+// Removed rather than left as harmless-but-misleading.
+const isHome = currentPath === '/';
 ---
 
 <!DOCTYPE html>
@@ -38,10 +57,24 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
       (function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'}document.documentElement.setAttribute('data-theme',t)})();
     </script>
 
-    <!-- Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <!-- Referrer policy — the ONE of the three former "security headers" here
+         that a <meta> tag can actually set. `name="referrer"` is the spec form
+         (HTML Standard § 4.2.5.3); the `http-equiv="Referrer-Policy"` spelling
+         used before is not.
+
+         X-Content-Type-Options and X-Frame-Options were REMOVED, not relocated,
+         because they are response-header-only: browsers ignore them in <meta>
+         entirely. Chrome logs "X-Frame-Options may only be set via an HTTP
+         header sent along with a document" on every page load, which is how
+         this was found (console-error sweep, 2026-08-03).
+
+         So the site had NO clickjacking or MIME-sniffing protection — the tags
+         only looked like protection. `curl -I https://tonsofskills.com/` sends
+         none of them either. THE REAL FIX IS IN CADDY on the VPS, and is not in
+         this repo; see the PR description for the exact block to add. Leaving
+         inert tags here would keep the console error and keep implying a
+         protection that is not there. -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -80,11 +113,14 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
     <!-- Unified Analytics Helper -->
     <script is:inline src="/scripts/analytics.js"></script>
 
-    <!-- Fonts: Inter Tight (display), Inter (body, with tnum), JetBrains Mono (mono).
-         Family: Data-Dense Pro. See marketplace/DESIGN.md § Typography. -->
+    <!-- Fonts: JetBrains Mono only — display, body and code all resolve to it.
+         See marketplace/DESIGN.md § 3 Typography. Weights 400/500 carry running
+         text, 700/800 carry display. Dropping the two Inter families makes this
+         a strictly SMALLER request than before despite the two added weights,
+         which is why the perf budget improves rather than tightens. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
         @import '../styles/tokens.css';
@@ -184,7 +220,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             font-weight: var(--body-weight, 400);
             background-color: var(--surface-1);
             color: var(--text);
@@ -192,13 +228,13 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         h1, h2 {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 700;
             letter-spacing: -0.02em;
         }
 
         h3, h4, h5, h6 {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 600;
         }
 
@@ -233,11 +269,11 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             letter-spacing: -0.02em;
             color: var(--text);
             text-decoration: none;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
         }
 
         .logo-title {
-            font-family: 'Inter Tight', system-ui, sans-serif;
+            font-family: var(--font-display);
             font-weight: 700;
             font-size: 1.2rem;
             letter-spacing: -0.01em;
@@ -249,7 +285,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             gap: 2rem;
             list-style: none;
             align-items: center;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
         }
 
         .nav-links a {
@@ -271,11 +307,21 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         /* nav-cta is the canonical primary CTA — signal yellow on near-black */
-        .nav-cta {
+        /* Selector is `.nav-links a.nav-cta`, not `.nav-cta`, deliberately.
+           `.nav-links a` above is (0,1,1) and was out-specifying the bare
+           `.nav-cta` (0,1,0), so this button's `color` silently lost to
+           `var(--text-2)` — light grey on signal orange in dark theme, measured
+           at roughly 1.1:1. That is a WCAG failure on the most prominent CTA on
+           the site, and it was invisible in review because the LIGHT theme
+           resolves --text-2 to a dark grey that happens to read fine.
+           Pre-existing; found by contrast-checking the rebrand and fixed here
+           rather than left, since it is a one-selector fix. DESIGN.md § 4 sets
+           near-black as the primary-button ink in BOTH themes. */
+        .nav-links a.nav-cta {
             background: var(--signal);
             color: #0a0a0c;
             padding: 0.5rem 1.25rem;
-            border-radius: 6px;
+            border-radius: 0;
             font-weight: 600;
             min-height: 44px;
             display: inline-flex;
@@ -283,7 +329,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             transition: all var(--duration-fast) var(--ease-out);
         }
 
-        .nav-cta:hover {
+        .nav-links a.nav-cta:hover {
             background: var(--signal-light);
             color: #0a0a0c;
             transform: translateY(-1px);
@@ -303,7 +349,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             justify-content: center;
             width: 36px;
             height: 36px;
-            border-radius: 8px;
+            border-radius: 0;
             border: 1px solid var(--border);
             background: transparent;
             color: var(--text-2);
@@ -373,7 +419,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             margin-bottom: 0.75rem;
         }
 
@@ -389,10 +435,10 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             padding: 0.6rem 0.75rem;
             background: var(--surface-2);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 0;
             color: var(--text);
             font-size: 0.85rem;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             outline: none;
             transition: border-color var(--duration-fast);
         }
@@ -411,7 +457,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             font-size: 0.85rem;
             min-height: 44px;
             cursor: pointer;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: var(--font-body);
             transition: border-color var(--duration-fast);
             white-space: nowrap;
         }
@@ -425,7 +471,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             margin-top: 0.5rem;
             font-size: 0.7rem;
             color: var(--text-3);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             text-align: center;
         }
 
@@ -437,7 +483,7 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
         }
 
         .footer-col h5 {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -467,6 +513,54 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             color: var(--text);
         }
 
+        /* Badge + byline row, sitting above the legal line inside the footer. */
+        .footer-badge-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        .footer-badge-link {
+            display: inline-block;
+            flex-shrink: 0;
+            /* Same hard offset as the install block — DESIGN.md § 6. The badge
+               reads as part of the page's language, not a pasted-on widget. */
+            box-shadow: var(--shadow-hard);
+            border: 1px solid var(--ink);
+            background: var(--panel);
+            padding: var(--space-2);
+            line-height: 0;
+        }
+
+        .footer-badge-img {
+            display: block;
+            width: 64px;
+            height: 64px;
+        }
+
+        .footer-badge-text a {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .footer-badge-text a:hover {
+            border-bottom-color: var(--signal);
+        }
+
+        /* Unchanged from before the badge row was introduced. An earlier
+           revision of this PR also added `margin-top: var(--space-5)` here; it
+           was removed because `.footer-columns` already carries
+           `margin-bottom: var(--space-6)` (32px) directly above, and adjacent
+           vertical margins collapse — the 24px was absorbed and did nothing on
+           every non-homepage page. Measured: the columns-to-footer-bottom gap is
+           32px with or without it. Keeping it would have been an unexplained
+           no-op in the diff. */
         .footer-bottom {
             display: flex;
             justify-content: space-between;
@@ -475,6 +569,15 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             border-top: 1px solid var(--border);
             flex-wrap: wrap;
             gap: var(--space-3);
+        }
+
+        /* Homepage only. The badge row above already draws the separating rule,
+           so this drops the second one rather than doubling it, and supplies its
+           own spacing since there is no collapsing margin to inherit here. */
+        .footer-badge-row + .footer-bottom {
+            border-top: 0;
+            padding-top: 0;
+            margin-top: var(--space-4);
         }
 
         .footer-blurb {
@@ -559,7 +662,21 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
 
             .footer-columns {
                 grid-template-columns: repeat(2, 1fr);
-                gap: var(--space-5);
+                gap: var(--space-5) var(--space-4);
+            }
+
+            /* Touch targets: DESIGN.md § 9 and the 44px floor. Footer links were
+               ~20px tall, well under it. Making them 44px costs height per row,
+               which is affordable ONLY because the grid stays 2-up below —
+               6 rows x 44px in the tallest column beats 18 rows stacked. */
+            .footer-col a {
+                display: flex;
+                align-items: center;
+                min-height: 44px;
+            }
+
+            .footer-col li {
+                margin-bottom: 0;
             }
 
             .footer-bottom {
@@ -570,13 +687,20 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
             .footer-blurb {
                 max-width: 100%;
             }
-        }
 
-        @media (max-width: 480px) {
-            .footer-columns {
-                grid-template-columns: 1fr;
+            .footer-badge-row {
+                justify-content: center;
+                text-align: left;
             }
         }
+
+        /* NOTE: there is deliberately NO 1-column collapse below 480px.
+           A `@media (max-width: 480px) { .footer-columns { grid-template-columns: 1fr } }`
+           rule used to live here, and it is what turned the phone footer into a
+           single ~18-row list you had to scroll through (reported 2026-08-03).
+           Four short link groups fit 2-up at 375px with room to spare; stacking
+           them buys nothing and costs a screen and a half of scrolling.
+           Do not reintroduce it. */
 
         /* Prevent body scroll when mobile menu is open */
         body.menu-open {
@@ -674,8 +798,38 @@ const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
                 </div>
             </div>
 
+            <!-- Partner badge + byline. Lives INSIDE the real footer rather than
+                 as a separate block above it — the homepage used to end with its
+                 own mini-footer and then the site footer, which read as two
+                 footers stacked. Homepage only, per the rebrand decision; flip
+                 `isHome` to `true` to show it site-wide. -->
+            {isHome && (
+                <div class="footer-badge-row">
+                    <a
+                        class="footer-badge-link"
+                        href="https://www.credly.com/badges/ddf22fb4-0aa6-46b3-a93b-0b45b509e471/public_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            class="footer-badge-img"
+                            src="/claude-partner-badge.png"
+                            width="64"
+                            height="64"
+                            loading="lazy"
+                            decoding="async"
+                            alt="Claude Partner Badge — Claude Code, issued by Anthropic to Jeremy Longshore."
+                        />
+                    </a>
+                    <span class="footer-badge-text">
+                        Built by <a href="https://jeremylongshore.com" target="_blank" rel="noopener noreferrer">Jeremy Longshore</a><br />
+                        <a href="https://intentsolutions.io" target="_blank" rel="noopener noreferrer">intent solutions io</a>
+                    </span>
+                </div>
+            )}
+
             <div class="footer-bottom">
-                <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect.</p>
+                <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank" rel="noopener noreferrer">Intent Solutions</a>. Open-source plugins, agents and skills for AI coding agents.</p>
                 <p class="footer-copyright">&copy; {new Date().getFullYear()} Tons of Skills | <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a></p>
             </div>
         </div>

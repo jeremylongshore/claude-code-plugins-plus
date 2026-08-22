@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # ADR-261: Defer dependency-cruiser architecture rules until policy is written
 
 | Field        | Value                                                                              |

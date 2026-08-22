@@ -22,7 +22,7 @@ tags:
 - identity
 - kyc
 - authentication
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Persona Install & Auth
 

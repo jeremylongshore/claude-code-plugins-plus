@@ -12,7 +12,7 @@ tags:
 - performance
 - api
 - monitoring
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Synthetic Monitoring Setup
 

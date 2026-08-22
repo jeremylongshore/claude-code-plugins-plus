@@ -23,7 +23,7 @@ tags:
 - ontology
 - osdk
 - actions
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Core Workflow B — Ontology Objects & Actions
 

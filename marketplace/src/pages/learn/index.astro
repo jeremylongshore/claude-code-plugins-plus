@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import vendorPacks from '../../data/vendor-packs.json';
 
 const pageTitle = 'SaaS Skill Packs - Learn Hub';
-const pageDescription = 'Deep integration packs for your favorite SaaS platforms. Each pack contains 12-30 skills for complete coverage.';
+const pageDescription = 'Deep integration packs for your favorite SaaS platforms, with focused coverage for complete workflows.';
 
 const tierOrder = ['flagship+', 'flagship', 'pro', 'standard'];
 const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
@@ -74,7 +74,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
       color: var(--ink-2);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .tier-description {
@@ -91,7 +91,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
     .vendor-card {
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem;
       transition: all 0.2s ease;
       text-decoration: none;
@@ -147,7 +147,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
       text-align: center;
       padding: 2rem;
       background: var(--brand-light-gray);
-      border-radius: 12px;
+      border-radius: 0;
       color: var(--brand-mid-gray);
     }
 
@@ -166,17 +166,17 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
   <section class="learn-hero">
     <h1 class="learn-title">SaaS Skill Packs</h1>
     <p class="learn-subtitle">
-      Deep integration packs for your favorite platforms. Each pack contains 12-30 skills
+      Deep integration packs for your favorite platforms. Each pack contains focused skills
       covering authentication, operations, debugging, and production best practices.
     </p>
     <div class="hero-stats">
       <div class="hero-stat">
-        <span>{vendorPacks.vendors.length}</span>
-        Vendor Packs
+        <span data-count-provenance="learning-hub-aggregate">{vendorPacks.vendors.length}</span>
+        learning-hub-aggregate vendor packs
       </div>
       <div class="hero-stat">
-        <span>{vendorPacks.vendors.reduce((acc, v) => acc + v.skillCount, 0)}</span>
-        Total Skills
+        <span data-count-provenance="learning-hub-aggregate">{vendorPacks.vendors.reduce((acc, v) => acc + v.skillCount, 0)}</span>
+        learning-hub-aggregate skills across packs
       </div>
     </div>
   </section>
@@ -194,7 +194,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
               {tierInfo.badge}
             </span>
             <span class="tier-description">
-              {tierInfo.skillCount} skills per pack
+              <span data-count-provenance="vendor-pack-local">{tierInfo.skillCount} vendor-pack-local skills per pack</span>
             </span>
           </div>
 
@@ -206,7 +206,7 @@ const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
                 </div>
                 <p class="vendor-description">{vendor.description}</p>
                 <div class="vendor-meta">
-                  <span class="skill-count">{vendor.skillCount} skills</span>
+                  <span class="skill-count" data-count-provenance="vendor-pack-local">{vendor.skillCount} vendor-pack-local skills</span>
                   <span class="install-hint">View Pack</span>
                 </div>
               </a>

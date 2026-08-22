@@ -1,0 +1,21 @@
+{
+  "description": "Curated hardening (E4.10): force explicit user confirmation before unlock_rows spends paid ServiceGraph credits. The server is remote HTTP (mcp.servicegraph.co) — this host-side hook is the only local enforcement point, turning the SKILL.md cost-confirmation instruction from prose into an enforced gate.",
+  "version": "1.0.0",
+  "lastUpdated": "2026-08-19",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "description": "unlock_rows irreversibly spends paid credits (~10 credits ≈ $0.10 per row); always surface the spend to the user for confirmation",
+        "matcher": "mcp__servicegraph__unlock_rows",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/confirm-unlock.sh",
+            "description": "Emits a permissionDecision: ask so the host prompts before any credit spend",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

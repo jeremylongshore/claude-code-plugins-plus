@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 #  Repository Restructure Complete
 
 **Date**: October 10, 2025

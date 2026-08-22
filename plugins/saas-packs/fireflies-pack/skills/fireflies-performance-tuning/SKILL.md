@@ -21,7 +21,7 @@ tags:
 - fireflies
 - api
 - performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Fireflies.ai Performance Tuning
 

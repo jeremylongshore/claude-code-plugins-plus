@@ -22,7 +22,7 @@ tags:
 - transcription
 - workflow
 - stt
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Deepgram Core Workflow A: Pre-recorded Transcription
 

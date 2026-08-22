@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Testing Quick Reference Card
 
 **Virtual Environment Testing Suite for claude-code-plugins**

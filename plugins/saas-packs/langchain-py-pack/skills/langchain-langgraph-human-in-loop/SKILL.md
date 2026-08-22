@@ -20,7 +20,7 @@ tags:
 - human-in-loop
 - approval
 - interrupts
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain LangGraph Human-in-the-Loop (Python)
 

@@ -23,7 +23,7 @@ tags:
 - gdpr
 - compliance
 - leads
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly Data Handling
 

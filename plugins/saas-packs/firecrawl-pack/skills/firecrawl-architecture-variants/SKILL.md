@@ -22,7 +22,7 @@ tags:
 - migration
 - scaling
 - microservices
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firecrawl Architecture Variants
 

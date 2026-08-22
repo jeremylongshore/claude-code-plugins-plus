@@ -22,7 +22,7 @@ tags:
 - configuration
 - rules
 - mcp
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Configuration Patterns
 

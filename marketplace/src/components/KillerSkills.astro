@@ -4,6 +4,8 @@ import spotlightData from '../data/spotlights.json';
 const skill = spotlightData.spotlight;
 const week = spotlightData.week;
 const isExternal = skill.link.startsWith('http');
+const skillCount = skill.skillCount;
+const hasSkillCount = typeof skillCount === 'number' && skillCount > 0;
 ---
 
 <div
@@ -14,6 +16,9 @@ const isExternal = skill.link.startsWith('http');
   data-week={week}
   data-external={isExternal ? 'true' : 'false'}
 >
+  {hasSkillCount && (
+    <p class="killer-skills" data-count-provenance="entity-local">{skillCount.toLocaleString()} entity-local skills</p>
+  )}
   <div class="killer-top">
     <span class="killer-category">{skill.category}</span>
   </div>
@@ -42,9 +47,6 @@ const isExternal = skill.link.startsWith('http');
       />
       <span class="killer-author-name">{skill.author}</span>
     </a>
-    {skill.skillCount && (
-      <span class="killer-skills">{skill.skillCount} skills</span>
-    )}
   </div>
 
   <div class="killer-actions">
@@ -67,7 +69,7 @@ const isExternal = skill.link.startsWith('http');
   .killer-card {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 2px;
+    border-radius: 0;
     padding: 2rem;
     color: inherit;
     display: flex;
@@ -106,7 +108,7 @@ const isExternal = skill.link.startsWith('http');
   }
 
   .killer-category {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -114,11 +116,11 @@ const isExternal = skill.link.startsWith('http');
     color: var(--text-2);
     background: var(--surface-3);
     padding: 0.3rem 0.6rem;
-    border-radius: 6px;
+    border-radius: 0;
   }
 
   .killer-headline {
-    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 1.45rem;
     font-weight: 700;
     line-height: 1.2;
@@ -138,7 +140,7 @@ const isExternal = skill.link.startsWith('http');
     padding: 0.75rem 1rem;
     border-left: 3px solid var(--primary);
     background: var(--primary-tint);
-    border-radius: 0 8px 8px 0;
+    border-radius: 0;
     font-style: italic;
     font-size: 0.9rem;
     line-height: 1.6;
@@ -184,13 +186,13 @@ const isExternal = skill.link.startsWith('http');
   }
 
   .killer-skills {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--primary);
     background: var(--primary-tint);
     padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   .killer-actions {
@@ -221,7 +223,7 @@ const isExternal = skill.link.startsWith('http');
     background: var(--surface-3);
     border: 1px solid var(--border);
     padding: 0.35rem 0.75rem;
-    border-radius: 6px;
+    border-radius: 0;
     transition: border-color var(--duration-fast), color var(--duration-fast);
   }
 

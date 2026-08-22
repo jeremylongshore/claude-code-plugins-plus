@@ -22,7 +22,7 @@ tags:
 - api
 - limits
 - database
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Rate Limits
 

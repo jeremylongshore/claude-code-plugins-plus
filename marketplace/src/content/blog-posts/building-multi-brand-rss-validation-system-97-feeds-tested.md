@@ -500,7 +500,7 @@ Extend validation framework to:
 
 ## Related Posts
 
-- **[When Commands Don't Work: A Debugging Journey Through Automated Content Systems](/blog/when-commands-dont-work-debugging-journey-through-automated-content-systems/)** - Debugging automation systems when they silently fail
+- **[When Commands Don't Work: A Debugging Journey Through Automated Content Systems](https://startaitools.com/posts/when-commands-dont-work-debugging-journey-through-automated-content-systems/)** - Debugging automation systems when they silently fail
 
 - **[Debugging Claude Code Slash Commands: When Your Blog Automation Silently Fails](/blog/debugging-claude-code-slash-commands-silent-deployment-failures/)** - How we fixed blog deployment automation that was creating files but never pushing to production
 

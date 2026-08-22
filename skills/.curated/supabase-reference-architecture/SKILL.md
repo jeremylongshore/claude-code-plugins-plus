@@ -20,7 +20,7 @@ tags:
 - patterns
 - multi-tenant
 - monorepo
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Reference Architecture
 

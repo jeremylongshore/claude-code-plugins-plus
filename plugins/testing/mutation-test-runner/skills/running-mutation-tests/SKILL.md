@@ -15,7 +15,7 @@ license: MIT
 tags:
 - testing
 - mutation-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Mutation Test Runner
 

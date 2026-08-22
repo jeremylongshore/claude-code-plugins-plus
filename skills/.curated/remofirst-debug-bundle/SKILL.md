@@ -15,7 +15,7 @@ tags:
 - eor
 - payroll
 - global-employment
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # RemoFirst Debug Bundle
 

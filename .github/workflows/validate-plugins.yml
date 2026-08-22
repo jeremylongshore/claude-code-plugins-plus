@@ -31,6 +31,13 @@ jobs:
         # depth=1 doesn't include any history to compare against either.
         with:
           fetch-depth: 2
+          # fetch-tags is REQUIRED by check-changelog-coverage.mjs below.
+          # actions/checkout does not fetch tags by default, so `git tag --list`
+          # returned EMPTY and that gate silently exited 0 — it never fired in
+          # CI at all. Verified by cloning --depth 2 --no-tags and deleting every
+          # release note: still exit 0. fetch-depth stays 2 (the catalog format
+          # guard needs the merge base); fetch-tags is the surgical addition.
+          fetch-tags: true
           persist-credentials: true
 
       - name: Setup pnpm
@@ -43,6 +50,62 @@ jobs:
 
       - name: Install root dev dependencies
         run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      # Supply-chain parity gate (blueprint 727 E1.12): every source registered
+      # in sources.yaml must have a reviewed sources.lock.json baseline, and no
+      # lock entry may outlive its registration. A registered-but-unlocked
+      # source syncs unpinned (the uizze gap); an orphaned lock entry is a
+      # stale approval. Full-repo and deterministic — runs on every event.
+      - name: Assert sources.yaml and sources.lock.json key parity
+        run: pnpm run validate:sources-lock-parity
+
+      # Credential pre-flight (blueprint 727 E1.14 / § 18.7): the root
+      # .mcp.json must never hold a live-shaped credential in plaintext env —
+      # values are SOPS-encrypted in the untracked machine-local .env.sops and
+      # injected at MCP launch by scripts/sops-env. CI checkouts have no root
+      # .mcp.json (untracked), so this passes trivially here; the same command
+      # is the local pre-flight, and the unit tests pin the classifier.
+      - name: Refuse plaintext credentials in the root MCP config
+        run: pnpm run validate:mcp-plaintext-creds
+
+      # E4.5 allowlist-shape ratchet: the gitleaks allowlist may never regain
+      # a file-TYPE blanket (SKILL.md/README/CHANGELOG/references/tests/
+      # fixtures/000-docs), and every path exception must carry a written
+      # reason + expiry. Placeholder examples pass by VALUE, keeping the file
+      # itself scanned.
+      - name: Enforce the gitleaks allowlist shape
+        run: pnpm run validate:gitleaks-config
+
+      # E4.10: every tracked MCP plugin must declare its destructive-operation
+      # policy (plugins/mcp/destructive-policies.json); refuse/recommend-only
+      # declarations are executed against their named refusal test — a
+      # declaration is only as good as its passing test.
+      - name: Enforce MCP destructive-operation policies
+        run: pnpm run validate:mcp-destructive-policy
+
+      # E4.3/E4.4/E4.11: the triple-keyed safety ratchet. Frozen debt classes
+      # (bare-Bash skills, tier-2 tool-safety findings, YAML shell-substitution
+      # occurrences — never waivable — and the agents-lane error corpus) are
+      # monotone non-increasing; a swap fails even at equal count; a shrink
+      # re-pins via --write in the shrinking PR. Metrics come from the
+      # canonical validator (--safety-metrics / --agents-only) so this gate
+      # owns no classification logic.
+      - name: Setup Python for the safety ratchet
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce the safety ratchet
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
+          pnpm run validate:safety-ratchet
+
+      # E4.13: a denylist (disallowed-tools) posture is enforced by the
+      # Claude Code runtime only. This gate forbids silent-drop: a
+      # denylist-bearing skill may not claim a foreign harness in
+      # compatibility, and a skill-card adapter beyond claude-code must
+      # degrade the denylist fail-closed (structural until card adoption).
+      - name: Enforce fail-closed denylist degradation
+        run: pnpm run validate:denylist-degradation
 
       # Supply-chain intake gate: sources.yaml include-anchoring ratchet.
       # An include starting with neither '/' nor '**' is silently auto-prefixed
@@ -90,12 +153,18 @@ jobs:
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml || true
           python3 scripts/validate-skills-schema.py --agents-only || true
 
-      # .mcp.json advisory validation — surfaces MCP-config findings on every PR.
-      # (kernel-shadow-validation runs this same validator, but only when the
-      # validator itself changes.) ADVISORY ONLY — never pass --strict here; the
-      # promotion to a blocking gate is the DR-049 soak checklist's call.
-      - name: Validate .mcp.json configs (advisory)
-        run: node scripts/validate-mcp-config.mjs || true
+      # .mcp.json validation, two lanes (E4.8, blueprint 727):
+      #   1. UNAMBIGUOUS classes block: JSON parse failures, non-object server
+      #      maps/entries, and a server missing its transport-essential field
+      #      (stdio ⇒ command; http/sse ⇒ url). Landed with zero baseline debt.
+      #   2. Everything else (the IS overlay: description/version/enabled/…)
+      #      stays advisory under the deadline below; full --strict promotion
+      #      remains the DR-049 soak checklist's call — never pass --strict here.
+      # REPORT-ONLY-UNTIL: 2026-11-17
+      - name: Validate .mcp.json configs (advisory + unambiguous gate)
+        run: |
+          node scripts/validate-mcp-config.mjs || true
+          node scripts/validate-mcp-config.mjs --gate-unambiguous
 
       # Design-tell gate (VibeCheck 25/100 regression guard, 2026-05-31).
       # Fails on chrome gradients, glassmorphism, purple/indigo/violet
@@ -163,6 +232,12 @@ jobs:
       - name: Verify README Killer-Skill block is in sync with spotlights.json
         run: node scripts/render-spotlight.mjs --check
 
+      # Epic 1.6: a public skill total is valid only when its cohort and exact
+      # corpus-resolver command travel with it. Keep this inside the existing
+      # validate job so the gate adds no fourth required status context.
+      - name: Validate published count cohort labels
+        run: pnpm run validate:published-count-cohorts
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."
@@ -189,6 +264,37 @@ jobs:
 
       - name: Validate design-token discipline (DESIGN.md color rules)
         run: node scripts/lint-design-tokens.mjs
+
+      # Deliberately a step in `validate` (already in ci-required's needs) rather
+      # than a new job: it needs no wiring change to become blocking, and it must
+      # NOT be confused with check-links.yml, which is path-filtered and reports
+      # `fail: false`. Only the DETERMINISTIC half (links to paths inside the repo)
+      # is gated here; external link rot stays with the weekly lychee report,
+      # where a rate-limit false positive costs a glance, not a blocked merge.
+      - name: Validate internal doc links resolve (deterministic half of link-check)
+        run: node scripts/check-internal-doc-links.mjs
+
+      # Same placement rationale as the doc-links step above: a step in `validate`,
+      # which is already in ci-required's needs, so it is blocking with no change
+      # to branch protection. Scans untracked files too, so a scratch note that
+      # never gets committed still trips it locally before it can reach a diff.
+      - name: Validate design-reference anonymity (name-leak gate)
+        run: bash scripts/name-leak-gate.sh
+
+      # BaseLayout emits og:image -> /og-image.png on every page. That file had
+      # NEVER been committed, so 3,830 built pages advertised an image that
+      # returned 404 and every link preview of the site rendered blank — for the
+      # life of the site, with nothing failing to signal it. This asserts the
+      # file exists; regenerate with `node scripts/generate-og-image.mjs`.
+      - name: Validate social-card image exists (og:image)
+        run: node scripts/generate-og-image.mjs --check
+
+      # /changelog had 3 entries (newest v4.16.0, 2026-03-07) while the site ran
+      # v4.33.0 — 17 tagged releases shipped undocumented and nothing failed,
+      # while the homepage linked "what's new →" straight at it. Ratchets from a
+      # pinned floor (v4.14.0); older tags are grandfathered.
+      - name: Validate every released tag has release notes
+        run: pnpm run validate:changelog-coverage
 
       - name: Validate cascading Greptile configuration
         run: |
@@ -232,6 +338,31 @@ jobs:
               done
             fi
           done
+
+      # Every package-bearing external mirror is non-publishable. Provenance
+      # comes only from .source.json; this prevents a mirror from entering a
+      # future publish candidate list through a naming or path convention.
+      - name: Enforce private external mirror packages
+        run: |
+          node --test scripts/check-mirror-packages-private.test.mjs
+          node scripts/check-mirror-packages-private.mjs
+
+      # E7.2: package privacy is one boundary; publisher-level provenance
+      # exclusion is the independent second boundary. This stays inside the
+      # existing validate job so ci-required gains no fourth status context.
+      - name: Refuse provenance-marked publish candidates
+        run: |
+          node --test scripts/plugin-provenance.test.mjs
+          node scripts/publish-candidate-report.mjs --all --scope '@intentsolutionsio/' --json > /tmp/e72-publish-report.json
+          jq -e '.refused | length == 0' /tmp/e72-publish-report.json
+          jq -e '[.firstPartyCandidates[] | select(.reasonCode != "FIRST_PARTY_CANDIDATE")] | length == 0' /tmp/e72-publish-report.json
+          echo "E7.2 dry-run: $(jq '.firstPartyCandidates | length' /tmp/e72-publish-report.json) first-party candidates; $(jq '.mirrorSkipped | length' /tmp/e72-publish-report.json) provenance candidates skipped; 0 refused candidates."
+
+      # E7.3: deterministic fixture coverage for the workflow_run guard and
+      # exact-SHA required-check preflight. This remains a step in validate,
+      # so ci-required gains no fourth status context.
+      - name: Test npm publication locks
+        run: node --test scripts/npm-publication-lock.test.mjs
 
       - name: Validate marketplace catalog
         run: |
@@ -1198,6 +1329,29 @@ jobs:
           esac
           node scripts/scan-synced-content.mjs --changed-only --base "origin/$BASE_REF" $WARN
 
+      # E4.7 (blueprint 727): the workflow already fires on push:main, but the
+      # scan above skipped itself outside pull_request — so nothing ever
+      # scanned what actually LANDED on main (admin merges, direct pushes).
+      # Scan the push range with FULL grading — no --warn-only on main: main
+      # is the trust boundary, and REFUSE stays exit 2 and unwaivable.
+      # Residual (stated per the bead's acceptance): enforce_admins:false
+      # means an admin can still merge past a red aggregate; this step makes
+      # that visible on main rather than silent, it cannot make it impossible.
+      - name: Scan pushed plugin content (push to main)
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          BASE="$BEFORE"
+          # A forced or branch-creation push reports an all-zero or unknown
+          # `before`; fall back to the parent commit so the scan still judges
+          # the newest change rather than silently passing.
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            BASE="$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD)"
+          fi
+          node scripts/scan-synced-content.mjs --changed-only --base "$BASE"
+
   # skills/.curated/ is a GENERATED mirror of the repo's best (A/B) plugin skills,
   # rebuilt from freshie/grades.csv by freshie/scripts/promote-to-curated.py so
   # skills.sh can index them (its crawler only reads root skills/ / .curated/, not
@@ -1361,6 +1515,251 @@ jobs:
       - name: Verify CODEOWNERS per-plugin block is in sync
         run: node scripts/generate-codeowners.mjs --check
 
+  # E1.8 deterministic projection gate. This job is unconditional, receives no
+  # secrets, and regenerates into memory before byte-comparing with the Git
+  # index. Network snapshots and editorial data are deliberately outside this
+  # cohort. Keep it in ci-required.needs; do not create a fourth status context.
+  generated-content-drift:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Check deterministic marketplace projections
+        run: |
+          node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs marketplace/scripts/generate-unified-search.test.mjs
+          node marketplace/scripts/discover-skills.mjs --level=full --check
+          node marketplace/scripts/sync-catalog.mjs --check
+          node marketplace/scripts/generate-unified-search.mjs --check
+
+  doc-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      # The frozen-body check compares against an immutable event baseline.
+      # PRs use the exact target base SHA; pushes use the exact prior main SHA.
+      # A manual run falls back to its own SHA and therefore remains a no-op
+      # for historical drift while still validating all current content.
+      - name: Fetch document-class baseline
+        env:
+          BASELINE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        run: git fetch --no-tags --depth=1 origin "$BASELINE_SHA"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install root measurement dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validator dependencies
+        run: pip install pyyaml
+
+      # 000-docs ignore-policy invariant (ownership + filing-ledger model —
+      # 000-docs/.gitignore header; Mission 01 bead claude-5awj.6) plus the
+      # citation gate: no governance-scope file may cite an untracked doc.
+      - name: Check 000-docs ignore policy fixtures
+        run: node scripts/check-docs-ignore-policy.mjs
+
+      - name: Check doc citations resolve to tracked files
+        run: node scripts/check-doc-citations.mjs
+
+      # A document cannot grant itself authority by editing its own header.
+      # STANDARDS.md § Canonical documents is the sole public authority index.
+      - name: Check document authority claims have canonical pointers
+        run: |
+          node --test scripts/check-doc-authority.test.mjs
+          node scripts/check-doc-authority.mjs
+
+      # j-rig owns eval execution but never writes its runtime tables into the
+      # Freshie inventory. First-party operator surfaces must use the scratch-DB
+      # wrapper and repository-owned recorder described by blueprint 727 §4.
+      - name: Check JRig never receives the Freshie inventory database
+        run: pnpm run validate:jrig-db-boundary
+
+      # Supersession is one atomic record, not a status-only edit. Keep the
+      # frozen header, per-section disposition, and canonical pointer together.
+      - name: Check document supersession record template
+        run: |
+          node --test scripts/check-supersession-template.test.mjs
+          node scripts/check-supersession-template.mjs --all
+
+      # Every tracked Markdown document has an explicit lifecycle class. The
+      # check also keeps frozen 6767 bodies byte-stable and delegates the
+      # generated index content comparison to its canonical writer.
+      - name: Check document classes and frozen/generated boundaries
+        env:
+          DOC_CLASS_BASELINE_REF: FETCH_HEAD
+        run: |
+          node --test scripts/check-doc-classes.test.mjs
+          node scripts/check-doc-classes.mjs
+
+      # The documentation estate index is a generated projection of Git's
+      # tracked inventory; hand-edited counts or rows must never drift.
+      - name: Check generated documentation index is current
+        run: |
+          node --test scripts/generate-docs-index.test.mjs
+          node scripts/generate-docs-index.mjs --check
+
+      # Blueprint 727 Epic 1 uses one cohort-labelled scorecard for every
+      # before/after claim. Recompute it from the exact Git index and reject
+      # stale or hand-edited evidence in the same required aggregate context.
+      - name: Check Epic 1 measurement scorecard is current
+        run: |
+          node --test scripts/measure-epic-1.test.mjs scripts/measure-epic-1-scorecard.test.mjs
+          pnpm run measure:e1:check
+
+      # The live property is tonsofskills.com. Preserve frozen 6767 records and
+      # provenance-owned mirrors byte-for-byte, but refuse the retired domain on
+      # every first-party source or generated projection. This remains inside
+      # doc-governance, which is a blocking dependency of ci-required, so the
+      # policy blocks merges without adding a fourth required status context.
+      - name: Reject the retired domain on actionable surfaces
+        run: pnpm run validate:dead-domain
+
+      # External stats artifacts (stars, npm downloads, installs) must declare
+      # their own max_age_hours freshness bound (blueprint 727 E1.10). PR CI
+      # enforces the declaration structurally; age breaches stay advisory here
+      # (time-based, unrelated to PR content) and fail hard in the daily
+      # update-npm-stats workflow instead. The homepage independently refuses
+      # to render an out-of-bound number as current.
+      - name: Check external stats artifacts declare freshness bounds
+        run: pnpm run validate:stats-freshness
+
+      # The two most rot-prone documented facts stay mechanically equal to the
+      # code (blueprint 727 E2.7 + E2.8): CLAUDE.md's enumerated ci-required
+      # gate list must equal the workflow's needs: block, CLAUDE.md and
+      # GOVERNANCE.md must name all three required contexts, and every live
+      # schema-version claim surface must equal the validator's SCHEMA_VERSION.
+      - name: Assert documented ci-required contract and schema version equal the code
+        run: pnpm run validate:doc-fact-assertions
+
+      # The root README is a governed landing contract (blueprint 727 § 6A):
+      # frozen install slug verbatim, no bare integers outside generated
+      # blocks, four artifact classes defined, five navigation doors live, no
+      # adapterless harness named as supported. R1/R2 (no per-plugin rows,
+      # byte budgets) are enforced inside generate-readme-toc.mjs itself.
+      - name: Check the README landing contract
+        run: pnpm run validate:readme-contract
+
+      # The canonical harness-free skill contract (blueprint 727 § 5.2, Epic 3
+      # E3.2): schemas/canonical/v0 must compile under Ajv 2020 strict and hold
+      # its red runs (closed schema, no vendor-literal model class, registry-
+      # enum adapters, resolved-SHA mirror pins). DRAFT + UPSTREAM-PENDING —
+      # the kernel proposal is E3.13's deliverable.
+      - name: Check the canonical skill-contract schema
+        run: pnpm run validate:canonical-schema
+
+      # Capability-vocabulary coverage (blueprint 727 E3.3): every tool token
+      # in every tracked SKILL.md/agent allowlist must map to an abstract
+      # capability through the ONE shared parser, or carry an enumerated
+      # disposition. An unmapped token fails, naming file and token.
+      - name: Check capability-vocabulary coverage
+        run: pnpm run validate:capability-coverage
+
+      # Model-id classifier protection contract (blueprint 727 E3.7): the
+      # committed exclusion list must stay a complete census of live bead
+      # handles, and a bead handle must never classify as migratable — even on
+      # a model:/--model line. E3.8's rewriter and E3.10's gate import this
+      # exact library; the tests are the contract.
+      - name: Check model-id classifier protections
+        run: pnpm run validate:model-id-classifier
+
+      # Thin-adapter conformance (blueprint 727 E3.5): an adapter subtree may
+      # never contain a byte-identical copy of a canonical file (a fork is not
+      # an adapter) nor reference/script/eval/license/version content. Waivers
+      # are dated and name the bead that deletes them (the known Kobiton
+      # .codex fork, removed by E3.6).
+      - name: Check adapter thinness
+        run: pnpm run validate:adapter-thinness
+
+      # The generated-adapter toolchain (blueprint 727 E3.4/E3.8/E3.9): the
+      # compatibility projection is deterministic and marker-prefixed; the
+      # claude-code adapter resolves model_class tiers and portable runtime
+      # variables FAIL-CLOSED — an unresolvable tier or unknown variable
+      # throws, never silently substitutes.
+      - name: Check the generated-adapter toolchain
+        run: pnpm run validate:adapter-toolchain
+
+      # Canonical vendor-literal gate (blueprint 727 E3.10): a Claude-specific
+      # token reappearing in the harness-free core (skill-card.yaml files or
+      # canonical/ dirs) fails — model literals, ${CLAUDE_*}, mcp__ spellings,
+      # Builtin(...) scoping, denylist fields. Adapters and the v0 contract
+      # docs are the translation layer and are exempt by design.
+      - name: Check canonical layer for vendor literals
+        run: pnpm run validate:canonical-vendor-literals
+
+      # Unbacked-portability ratchet (blueprint 727 E3.11): a first-party
+      # SKILL.md may not name a harness outside the registered adapter set
+      # (claude-code) in its compatibility claim, in any phrasing. Withdrawn
+      # 2,700 legacy claims stay withdrawn; mirror-owned claims are reported,
+      # never failed (upstream-repair only).
+      - name: Check portability claims are adapter-backed
+        run: pnpm run validate:portability-claims
+
+      # 6767-h is a frozen historical standard that remains cited by schemas.
+      # Pin its section map and prove every cited heading still resolves.
+      - name: Check frozen prose anchors remain valid
+        run: python3 -m unittest tests.test_prose_anchors -v
+
+      # Recurrence prevention for the tracked-generated-artifact class: a
+      # projection that is also committed has two claimants to one fact and
+      # diverges silently (public/data duplicated ~28.5MB of src/data with
+      # identical blob SHAs). Beads claude-5awj.2 / .1.
+      - name: Check generated projections are not tracked
+        run: pnpm run validate:generated-artifacts
+
+  # E4.6 (blueprint 727): blocking, diff-scoped scan for UNVERIFIABLE secrets
+  # on every PR. Closes the union gap the Safety Enforcement Register (790 §2)
+  # measured: gitleaks is rule-shape-based and trufflehog's weekly job runs
+  # --only-verified on a schedule — so a rotated key or internal token whose
+  # issuer can't be probed never gated a PR. This job runs trufflehog over the
+  # PR range WITHOUT --only-verified (verified + unknown results both fail).
+  # Diff-scoped noise measured before landing: 0 findings across the prior 30
+  # commits — detector-shape matching doesn't fire on the repo's teaching
+  # placeholders the way generic-entropy rules would.
+  # The scan step skips outside pull_request (designed if:, same pattern as
+  # scan-synced-content) so the job always reports for the aggregate.
+  secret-diff-scan:
+    runs-on: ubuntu-latest
+    name: secret-diff-scan (unverified, PR diff)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Scan the PR range for unverifiable secrets
+        if: github.event_name == 'pull_request'
+        # Same SHA pin as secret-scan.yml's weekly job — never @main; the
+        # action appends --fail itself (do not repeat it in extra_args).
+        uses: trufflesecurity/trufflehog@27b0417c16317ca9a472a9a8092acce143b49c55 # v3.95.9
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --results=verified,unknown
+
   # ───────────────────────────────────────────────────────────────────────────
   # Aggregate required gate. This is the SINGLE pull_request status context in
   # branch protection (alongside `gitleaks`). Because this workflow runs on
@@ -1398,6 +1797,9 @@ jobs:
       - check-submission-docs
       - commit-scope-check
       - codeowners-drift
+      - generated-content-drift
+      - doc-governance
+      - secret-diff-scan
     steps:
       - name: Assert every gated job passed (skipped == a designed conditional gate)
         env:

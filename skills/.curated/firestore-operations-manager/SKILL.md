@@ -18,7 +18,7 @@ tags:
 - community
 - migration
 - firestore-operations
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firestore Operations Manager
 

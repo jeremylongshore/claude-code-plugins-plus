@@ -9,16 +9,17 @@ Covers review findings f-ccp-validator-1 and f-ccp-validator-2 (2026-06-11):
     zero field-presence diagnostics despite STANDARD_REQUIRED = {name,
     description}.
 
-All new diagnostics are WARNING-level by design: escalating them to errors
-would be an error-vs-warning semantics change, which is architectural per
-000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLE #7 and needs prior approval.
-The marketplace-tier guard tests at the bottom pin NON-NEGOTIABLES #1-#2
-(missing ALWAYS_REQUIRED fields stay ERRORS at marketplace tier).
+Unknown but structurally valid tool names remain advisory. Structurally
+malformed `allowed-tools` entries are ERROR-level under ratified blueprint 727
+E1.11 and the owner's written approval. The marketplace-tier guard tests at
+the bottom pin NON-NEGOTIABLES #1-#2 (missing ALWAYS_REQUIRED fields stay
+ERRORS at marketplace tier).
 """
 
 from __future__ import annotations
 
 import importlib.util
+import subprocess
 from pathlib import Path
 
 VALIDATOR_PATH = Path(__file__).resolve().parents[1] / "scripts" / "validate-skills-schema.py"
@@ -35,6 +36,16 @@ SKILL_PATH = Path("plugins/testing/my-skill/skills/my-skill/SKILL.md")
 
 def _frontmatter(fm: dict, tier: str):
     return validator.validate_frontmatter(SKILL_PATH, fm, tier=tier)
+
+
+def test_schema_version_records_fail_closed_allowed_tools_change():
+    # 4.1.0: E4.3/E4.4 added the --safety-metrics ratchet feed (bare-Bash /
+    # tier-2 tool-safety / shell-substitution sets, mirrors excluded).
+    # 4.0.2: E4.12 corrected the compliance-rate denominator to include the
+    # plugin-manifest lane (impossible 224.1% rates); 4.0.1 added the portable
+    # ${SKILL_DIR}/${PLUGIN_ROOT} spellings. The fail-closed allowed-tools
+    # semantics this test pins are unchanged from 4.0.0.
+    assert validator.SCHEMA_VERSION == "4.1.0"
 
 
 # =========================================================================
@@ -129,25 +140,182 @@ def test_empty_entry_is_malformed():
 
 
 def test_misspelled_allowed_tool_surfaces_warning_not_error():
-    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Reads, Write"}
-    errors, warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
-    assert any("allowed-tools" in w and "Reads" in w for w in warnings), warnings
-    assert not any("allowed-tools" in e for e in errors), errors
+    for tier in (validator.TIER_STANDARD, validator.TIER_MARKETPLACE):
+        fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Reads, Write"}
+        errors, warnings, _infos = _frontmatter(fm, tier)
+        assert any("allowed-tools" in w and "Reads" in w for w in warnings), (tier, warnings)
+        assert not any("allowed-tools" in e for e in errors), (tier, errors)
 
 
-def test_malformed_wildcard_surfaces_warning_not_error():
+def test_malformed_allowed_tool_surfaces_error_at_every_tier():
     # YAML-list form so the comma-free truncated entry survives parsing intact.
-    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": ["Bash(git add *", "Read"]}
-    errors, warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
-    assert any("allowed-tools" in w and "parenthes" in w.lower() for w in warnings), warnings
-    assert not any("allowed-tools" in e for e in errors), errors
+    malformed_entries = ("Bash(git add *", "Bash()", "123invalid")
+    for tier in (validator.TIER_STANDARD, validator.TIER_MARKETPLACE, validator.TIER_ENTERPRISE):
+        for entry in malformed_entries:
+            fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": [entry, "Read"]}
+            errors, warnings, _infos = _frontmatter(fm, tier)
+            valid, message = validator.validate_tool_permission(entry)
+            assert valid is False
+            assert any("allowed-tools" in e and message in e for e in errors), (tier, entry, errors)
+            assert not any("allowed-tools" in w and message in w for w in warnings), (
+                tier,
+                entry,
+                warnings,
+            )
+
+
+def test_structurally_empty_or_non_string_allowlist_entries_fail_closed():
+    malformed_values = (
+        [None],
+        [True],
+        ["Read", ""],
+        ["Read", "   "],
+        "Read,,Write",
+        ",Read",
+        "Read,",
+    )
+    for tier in (validator.TIER_STANDARD, validator.TIER_MARKETPLACE, validator.TIER_ENTERPRISE):
+        for allowed_tools in malformed_values:
+            fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": allowed_tools}
+            errors, _warnings, _infos = _frontmatter(fm, tier)
+            assert any("allowed-tools" in error for error in errors), (tier, allowed_tools, errors)
 
 
 def test_clean_allowed_tools_produce_no_tool_diagnostics():
-    fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": "Read, Write, Bash(git:*)"}
-    errors, warnings, _infos = _frontmatter(fm, validator.TIER_STANDARD)
-    assert not any("Unknown tool" in w or "Malformed" in w for w in warnings), warnings
-    assert not any("allowed-tools" in e for e in errors), errors
+    supported_forms = (
+        "Read, Write, Bash(git:*)",
+        "Read Write Bash(git add *)",
+        ["Read", "Write", "Bash(git:*)"],
+    )
+    for tier in (validator.TIER_STANDARD, validator.TIER_MARKETPLACE):
+        for allowed_tools in supported_forms:
+            fm = {"name": "my-skill", "description": GOOD_DESC, "allowed-tools": allowed_tools}
+            errors, warnings, _infos = _frontmatter(fm, tier)
+            assert not any("Unknown tool" in w or "Malformed" in w for w in warnings), (
+                tier,
+                allowed_tools,
+                warnings,
+            )
+            assert not any("allowed-tools" in e for e in errors), (tier, allowed_tools, errors)
+
+
+def test_folded_scalar_allowed_tools_parse_cleanly():
+    frontmatter, _body = validator.parse_frontmatter(
+        """---
+name: my-skill
+description: Validate folded scalar permission syntax without changing its semantics.
+allowed-tools: >-
+  Read Write Bash(git status *)
+---
+
+Validate the repository.
+"""
+    )
+    errors, warnings, _infos = _frontmatter(frontmatter, validator.TIER_STANDARD)
+    assert not any("allowed-tools" in error for error in errors), errors
+    assert not any("allowed-tools" in warning for warning in warnings), warnings
+
+
+def _tracked_skill_paths() -> list[Path]:
+    repo_root = VALIDATOR_PATH.parent.parent
+    result = subprocess.run(
+        ["git", "ls-files", "plugins/**/SKILL.md"],
+        cwd=repo_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    paths = [repo_root / line for line in result.stdout.splitlines() if line]
+    assert paths, "no tracked plugins/**/SKILL.md files found; corpus regression is vacuous"
+    return paths
+
+
+def _source_ancestor(path: Path) -> Path | None:
+    repo_root = VALIDATOR_PATH.parent.parent
+    for parent in (path.parent, *path.parents):
+        if (parent / ".source.json").is_file():
+            return parent
+        if parent == repo_root:
+            break
+    return None
+
+
+def test_tracked_corpus_has_zero_malformed_allowed_tools_by_provenance():
+    repo_root = VALIDATOR_PATH.parent.parent
+    malformed: dict[str, list[str]] = {"first-party": [], "mirror": []}
+    declarations = {"first-party": 0, "mirror": 0}
+    for path in _tracked_skill_paths():
+        cohort = "mirror" if _source_ancestor(path) is not None else "first-party"
+        frontmatter, _body = validator.parse_frontmatter(path.read_text(encoding="utf-8"))
+        if "allowed-tools" not in frontmatter:
+            continue
+        declarations[cohort] += 1
+        raw_tools = frontmatter["allowed-tools"]
+        if not isinstance(raw_tools, (str, list)):
+            malformed[cohort].append(
+                f"{path.relative_to(repo_root)}: wrong type {type(raw_tools).__name__}"
+            )
+            continue
+        if isinstance(raw_tools, list):
+            invalid_items = [
+                index
+                for index, item in enumerate(raw_tools, start=1)
+                if not isinstance(item, str) or not item.strip()
+            ]
+            if invalid_items:
+                malformed[cohort].append(
+                    f"{path.relative_to(repo_root)}: invalid YAML-list item(s) {invalid_items}"
+                )
+                continue
+        if isinstance(raw_tools, str) and "," in raw_tools:
+            empty_items = [
+                index
+                for index, item in enumerate(raw_tools.split(","), start=1)
+                if not item.strip()
+            ]
+            if empty_items:
+                malformed[cohort].append(
+                    f"{path.relative_to(repo_root)}: empty CSV item(s) {empty_items}"
+                )
+                continue
+        tools = validator.parse_allowed_tools(raw_tools)
+        if not tools:
+            malformed[cohort].append(f"{path.relative_to(repo_root)}: empty allowed-tools")
+            continue
+        for tool in tools:
+            valid, message = validator.validate_tool_permission(tool)
+            if not valid:
+                malformed[cohort].append(f"{path.relative_to(repo_root)}: {message}")
+
+    assert all(count > 0 for count in declarations.values()), declarations
+    assert malformed == {"first-party": [], "mirror": []}
+
+
+def test_mirror_owned_folded_scalars_are_parseable_and_byte_identical():
+    folded_paths = []
+    mirror_roots: set[Path] = set()
+    for path in _tracked_skill_paths():
+        frontmatter_text = path.read_text(encoding="utf-8")
+        if "allowed-tools: >-" not in frontmatter_text:
+            continue
+        mirror_root = _source_ancestor(path)
+        assert mirror_root is not None, f"folded scalar is not provenance-marked: {path}"
+        folded_paths.append(path)
+        mirror_roots.add(mirror_root)
+        frontmatter, _body = validator.parse_frontmatter(frontmatter_text)
+        tools = validator.parse_allowed_tools(frontmatter["allowed-tools"])
+        assert tools
+        assert all(validator.validate_tool_permission(tool)[0] for tool in tools)
+
+    # E3.6 deleted the byte-identical .codex fork (blueprint 727 section 6:
+    # a fork is not an adapter), so the folded-scalar census is the five
+    # canonical kobiton skills only, and no .codex copy may reappear — the
+    # adapter-thinness gate owns that invariant going forward.
+    assert len(folded_paths) == 5
+    assert len(mirror_roots) == 1
+    mirror_root = mirror_roots.pop()
+    assert all(".codex" not in path.parts for path in folded_paths)
+    assert not (mirror_root / ".codex").exists()
 
 
 # =========================================================================
@@ -524,3 +692,21 @@ def test_clean_disallowed_tools_is_quiet():
     fm = {"name": "my-skill", "description": GOOD_DESC, "disallowed-tools": "Bash(rm:*), Agent"}
     _, warnings, _ = _frontmatter(fm, validator.TIER_MARKETPLACE)
     assert not any("disallowed-tools" in w for w in warnings), warnings
+
+
+# =========================================================================
+# 4.0.2 — compliance-rate invariants (blueprint 727 bead 4.12)
+# =========================================================================
+
+
+def test_compliance_rate_invariants():
+    assert validator.compute_compliance_rate(0, 0) == 0.0
+    assert validator.compute_compliance_rate(0, 10) == 0.0
+    assert validator.compute_compliance_rate(10, 10) == 100.0
+    assert 0.0 <= validator.compute_compliance_rate(3, 7) <= 100.0
+    import pytest
+
+    with pytest.raises(ValueError):
+        validator.compute_compliance_rate(11, 10)  # the 224.1% class
+    with pytest.raises(ValueError):
+        validator.compute_compliance_rate(-1, 10)

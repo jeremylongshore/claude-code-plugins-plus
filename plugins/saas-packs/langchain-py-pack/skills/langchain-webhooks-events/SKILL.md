@@ -22,7 +22,7 @@ tags:
 - async
 - events
 - callbacks
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Webhooks and Event Dispatch (Python)
 

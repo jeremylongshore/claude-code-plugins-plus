@@ -20,7 +20,7 @@ tags:
 - blockchain
 - web3
 - debugging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # QuickNode Common Errors
 

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Package Manager Policy
 
 **Last Updated:** 2025-12-23
@@ -110,7 +112,7 @@ The marketplace deploys to GitHub Pages via `.github/workflows/deploy-marketplac
 - Uses `pnpm install --frozen-lockfile`
 - Builds with `pnpm -C marketplace build`
 - Deploys `marketplace/dist/` to `gh-pages` branch
-- Custom domain: `claudecodeplugins.io` (configured in GitHub UI)
+- Custom domain: `[retired legacy public domain]` (configured in GitHub UI)
 
 ## Publishing: npm Registry
 

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Claude Code Plugins Marketplace - Complete Redesign Summary
 
 **Date**: 2025-10-11
@@ -198,7 +200,7 @@ The site is ready for deployment to GitHub Pages:
 
 1. Build the site: `npm run build`
 2. Deploy the `dist/` directory to GitHub Pages
-3. Access at: `https://claudecodeplugins.io/`
+3. Access at: `[retired legacy public domain]/`
 
 ---
 
@@ -274,4 +276,4 @@ The community will LOVE this new design!
 
 **Build Status**: SUCCESS
 **Ready for Production**: YES
-**Deployment URL**: `https://claudecodeplugins.io/`
+**Deployment URL**: `[retired legacy public domain]/`

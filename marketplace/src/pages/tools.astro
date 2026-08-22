@@ -13,7 +13,11 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- This page does not use BaseLayout, so it loads its own font. Kept in
+         step with the system font (JetBrains Mono, DESIGN.md § 3) rather than
+         left on Inter, which would render this one route in a typeface that no
+         longer exists anywhere else on the site. -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="CLI Tools | Claude Code Plugins" />
@@ -33,7 +37,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         --accent-hover: #059669;
         --blue: #3b82f6;
         --orange: #f59e0b;
-        --radius: 12px;
+        --radius: 0;
       }
 
       * {
@@ -43,7 +47,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       }
 
       body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        font-family: var(--font-body);
         background: var(--bg);
         color: var(--text);
         line-height: 1.6;
@@ -150,9 +154,9 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
 
       .tool-status {
         font-size: 11px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: var(--font-mono);
         padding: 2px 8px;
-        border-radius: 2px;
+        border-radius: 0;
         border: 1px solid var(--border);
         color: var(--text-muted);
         font-weight: 500;
@@ -181,7 +185,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
       .install-box {
         background: var(--bg);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0;
         padding: 1rem;
         font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
         font-size: 0.9rem;
@@ -200,7 +204,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
         right: 0.75rem;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 0;
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
         color: var(--text);
@@ -291,7 +295,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
 
       .btn {
         padding: 0.75rem 2rem;
-        border-radius: 8px;
+        border-radius: 0;
         font-weight: 600;
         font-size: 1rem;
         text-decoration: none;
@@ -451,7 +455,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">1</div>
             <div class="step-content">
               <h3>Add the Marketplace</h3>
-              <p>Open Claude Code and run: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">{MARKETPLACE_INSTALL}</code></p>
+              <p>Open Claude Code and run: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 0;">{MARKETPLACE_INSTALL}</code></p>
             </div>
           </div>
 
@@ -459,7 +463,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">2</div>
             <div class="step-content">
               <h3>Install CLI Tools</h3>
-              <p>The <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">@claude-code-plugins/ccp</code> package is published to npm. No installation needed - just use npx!</p>
+              <p>The <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 0;">@claude-code-plugins/ccp</code> package is published to npm. No installation needed - just use npx!</p>
             </div>
           </div>
 
@@ -467,7 +471,7 @@ const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
             <div class="step-number">3</div>
             <div class="step-content">
               <h3>Run Diagnostics</h3>
-              <p>Verify your setup with: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 4px;">npx @claude-code-plugins/ccp doctor</code></p>
+              <p>Verify your setup with: <code style="background: var(--bg); padding: 0.2rem 0.4rem; border-radius: 0;">npx @claude-code-plugins/ccp doctor</code></p>
             </div>
           </div>
         </div>

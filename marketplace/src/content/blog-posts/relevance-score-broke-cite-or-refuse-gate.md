@@ -82,7 +82,7 @@ The eval pipeline now injects a temp ledger at construction instead of opening t
 
 The audit had flagged coverage sitting at 75%. So you add more tests. The reflex is always: more tests → more safety. But coverage alone wouldn't have caught this. The assertion that caught the -1.83 worked because it checked an *invariant* — every score in [0,1] — not because it closed a percentage. The bug wasn't in an untested code path; it was in an *assumption* the tests themselves were making: that the third-party library would always hand back scores in [0,1].
 
-This is why the PR added a real [mutation-testing gate](/posts/coverage-vs-mutation-testing-rules-engine/) (mutmut) that can *fail* the build. Coverage can lie: a covered line is not necessarily a tested line. A mutation-testing gate asks: if we flip a boolean, change an operator, or delete a statement, does the test still pass? If the test passes after the mutation, the test isn't actually testing that line.
+This is why the PR added a real [mutation-testing gate](/blog/coverage-vs-mutation-testing-rules-engine/) (mutmut) that can *fail* the build. Coverage can lie: a covered line is not necessarily a tested line. A mutation-testing gate asks: if we flip a boolean, change an operator, or delete a statement, does the test still pass? If the test passes after the mutation, the test isn't actually testing that line.
 
 The mutation scope was deliberately narrow: pure-logic modules (the citation_verifier itself). String-heavy modules (policy.py regexes, ledger.py hash-chain) are covered by boundary and tamper tests instead, which are stronger than mutmut for string-heavy code. The insight is that mutation testing is best reserved for decision logic—branches, comparisons, threshold checks—where a flipped sign can silently change behavior.
 
@@ -155,7 +155,7 @@ Property tests on the redaction and ledger layers held across every generated in
 
 ## In Context
 
-This post is a sibling to yesterday's [The Moat Is the Trust Layer](/posts/the-moat-is-the-trust-layer-nexus-byok-rag/)—the architecture of the cite-or-refuse gate itself. Today's bug is what you find when you harden that architecture: an assumption buried in the third-party library, silently corrupting the thing you built to defend.
+This post is a sibling to yesterday's [The Moat Is the Trust Layer](/blog/the-moat-is-the-trust-layer-nexus-byok-rag/)—the architecture of the cite-or-refuse gate itself. Today's bug is what you find when you harden that architecture: an assumption buried in the third-party library, silently corrupting the thing you built to defend.
 
 The testing-remediation series moved coverage from 75% → 80%, landing 216 unit tests. But the *real* gains weren't percentage points; they were finding this bug, hardening the redaction and ledger properties against generated inputs, and making the safety invariant executable.
 
@@ -167,9 +167,9 @@ The testing-remediation series moved coverage from 75% → 80%, landing 216 unit
 
 ## Related
 
-- [The Moat Is the Trust Layer](/posts/the-moat-is-the-trust-layer-nexus-byok-rag/) — Architecture of the cite-or-refuse safety gate
-- [Coverage vs. Mutation Testing: Rules Engine Edition](/posts/coverage-vs-mutation-testing-rules-engine/) — Why coverage gaps can hide logic bugs
-- [Gate the Statement, Not the Tool Name](/posts/gate-the-statement-not-the-tool-name/) — Enforcement design and trust boundaries
+- [The Moat Is the Trust Layer](/blog/the-moat-is-the-trust-layer-nexus-byok-rag/) — Architecture of the cite-or-refuse safety gate
+- [Coverage vs. Mutation Testing: Rules Engine Edition](/blog/coverage-vs-mutation-testing-rules-engine/) — Why coverage gaps can hide logic bugs
+- [Gate the Statement, Not the Tool Name](/blog/gate-the-statement-not-the-tool-name/) — Enforcement design and trust boundaries
 
 <script type="application/ld+json">
 {

@@ -5,7 +5,7 @@
  * Marketplace-safe launcher for the committed MCP bundle.
  *
  * Claude/Codex plugin installs copy files but do not run this repository's npm
- * installer. Team mode is dependency-free, while local mode needs the two
+ * installer. Team mode is dependency-free, while local mode needs the three
  * native modules externalized by build.mjs. Provision those exact, lockfile-
  * pinned modules on first local start, then execute the bundled server.
  */
@@ -41,6 +41,13 @@ function nativeDependenciesReady() {
     const runtimeRequire = createRequire(BUNDLE);
     runtimeRequire('better-sqlite3');
     runtimeRequire('fs-ext');
+    // sqlite-vec MUST be probed too: on a host where better-sqlite3/fs-ext
+    // resolve from a parent node_modules but sqlite-vec does not, skipping the
+    // probe makes bootstrap skip provisioning entirely — and the bundle then
+    // dies at adapter init with MODULE_NOT_FOUND (caught by the zero-egress
+    // smoke on PR #60). The readiness probe and plugin-runtime/package.json's
+    // provision list must name the same modules.
+    runtimeRequire('sqlite-vec');
     return true;
   } catch {
     return false;

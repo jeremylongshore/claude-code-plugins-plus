@@ -1,12 +1,5 @@
 
 !/.npmrc
-!000-docs/*-AA-AACR-*.md
-!000-docs/*-AT-DECR-*.md
-!000-docs/*-RL-REPT-*.md
-!000-docs/000-*.md
-!000-docs/6767*.md
-!000-docs/agentskills-spec-snapshot.md
-!000-docs/anthropic-skills-spec-snapshot.md
 !plugins/**/.mcp.json
 !plugins/mcp/*/.mcp.json
 !plugins/saas-packs/databricks-pack/000-docs/
@@ -138,10 +131,8 @@ scripts/.kernel-shadow/
 # Kernel-vendor version-coupling advisory output (generated; CI artifact, not source)
 scripts/.kernel-vendor-hash/
 
-000-docs/*
-000-docs/**/*
-000-docs/680-AT-DECR-*.md
-000-docs/683-AT-DECR-*.md
+# Root 000-docs ignore policy lives in 000-docs/.gitignore (ownership + filing
+# ledger — see that file's header; Mission 01 docs 720/726, bead claude-5awj.6).
 EXECUTIVE-SUMMARY.md
 MARKETPLACE-READY.md
 PHASE-1-STATUS.md
@@ -166,6 +157,17 @@ logs/
 marketplace/.firebase/
 marketplace/backup-*/
 marketplace/public/downloads/
+# public/data/*.json is a PROJECTION of the canonical marketplace/src/data/*.json,
+# regenerated on every build (and on `predev`) by scripts/copy-public-data.mjs.
+# Tracking it duplicated ~28.5MB and gave a second, silently-divergeable claimant
+# to a fact src/data/ already owns. Enforced by scripts/check-generated-artifacts.mjs.
+marketplace/public/data/*.json
+# Epic 1.7: these build-only projections have no supported checkout-level
+# consumer. The marketplace build regenerates both; `npm run dev` regenerates
+# readme-sections before Astro starts. Tracking is rejected by
+# scripts/check-generated-artifacts.mjs.
+marketplace/src/data/jrig-data.json
+marketplace/src/data/readme-sections.json
 marketplace/src/data/cowork-manifest.json
 node_modules/
 npm-debug.log
@@ -183,7 +185,17 @@ test-marketplace/
 test-results/
 tmp/
 website/
-workspace/
+# workspace/ stays a scratch sandbox by default — but NOT as `workspace/`, which
+# excludes the directory itself so git never descends and no `!` rule inside can
+# ever fire. `workspace/*` excludes the CONTENTS, leaving the dir walkable.
+workspace/*
+# ...EXCEPT the Learning Lab, which is published teaching material: root README
+# L917/925/926 and the eight /learning/* site pages link these files on GitHub, so
+# untracking them 404s public links. They were already wiped once by an unrelated
+# sync commit and needed a CRITICAL RECOVERY (da09e99d7, 2025-12-21). Two-part
+# rule because git cannot re-include files inside an excluded directory.
+!workspace/lab/
+!workspace/lab/**
 yarn-error.log
 yarn.lock
 
@@ -195,9 +207,19 @@ freshie/inventory.sqlite
 freshie/inventory.sqlite-shm
 freshie/inventory.sqlite-wal
 freshie/dolt/
+# Archived inventory snapshots are local runtime evidence, not source
+# (Mission 01 baseline, 2026-08: 42M untracked with zero consumers)
+freshie/archives/*.sqlite
 
 # Backup files created by freshie/scripts/batch-remediate.py during --execute
 *.bak
 
 # HF dataset build artifact (regenerate via freshie/scripts/build-hf-dataset.py)
 freshie/hf-dataset/skills.jsonl
+
+# SOPS-encrypted machine-local env (E1.14): ciphertext of live credentials
+# stays off the public remote; scripts/sops-env decrypts it in-process.
+# Named .sops.env so `sops exec-env` infers the dotenv format; the older
+# .env.sops spelling stays ignored for compatibility.
+.sops.env
+.env.sops

@@ -20,7 +20,7 @@ tags:
 - exa
 - audit
 - best-practices
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Known Pitfalls
 

@@ -21,7 +21,7 @@ tags:
 - deployment
 - api
 - environments
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Multi-Environment Setup
 

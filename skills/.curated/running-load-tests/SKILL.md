@@ -13,7 +13,7 @@ tags:
 - performance
 - testing
 - load-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Load Test Runner
 

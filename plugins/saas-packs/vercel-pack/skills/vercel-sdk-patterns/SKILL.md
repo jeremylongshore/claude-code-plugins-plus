@@ -22,7 +22,7 @@ tags:
 - api
 - typescript
 - patterns
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vercel SDK Patterns
 

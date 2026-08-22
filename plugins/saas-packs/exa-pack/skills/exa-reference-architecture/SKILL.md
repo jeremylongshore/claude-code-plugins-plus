@@ -21,7 +21,7 @@ tags:
 - exa
 - architecture
 - rag
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Exa Reference Architecture
 

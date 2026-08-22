@@ -23,7 +23,7 @@ tags:
 - redline
 - negotiation
 - diff
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Contract Compare — Version Comparison and Favorability Analysis
 

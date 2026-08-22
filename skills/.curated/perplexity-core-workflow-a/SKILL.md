@@ -19,7 +19,7 @@ tags:
 - saas
 - perplexity
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Perplexity Core Workflow A: Search with Citations
 

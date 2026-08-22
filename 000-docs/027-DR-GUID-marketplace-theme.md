@@ -1,5 +1,7 @@
+<!-- doc-class: record -->
+
 # Intent Solutions Theme Style Guide
-## For claudecodeplugins.io Marketplace
+## For [retired legacy public domain] Marketplace
 
 **Generated**: 2025-10-16
 **Source**: https://intentsolutions.io
@@ -524,4 +526,4 @@ const { name, description, version, category } = Astro.props;
 
 **End of Style Guide**
 **Generated**: 2025-10-16
-**Next Steps**: Apply these patterns to claudecodeplugins.io marketplace components
+**Next Steps**: Apply these patterns to [retired legacy public domain] marketplace components

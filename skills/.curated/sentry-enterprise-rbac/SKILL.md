@@ -28,7 +28,7 @@ tags:
 - permissions
 - audit
 - enterprise
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Enterprise RBAC
 

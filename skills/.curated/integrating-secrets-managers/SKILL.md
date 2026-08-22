@@ -15,7 +15,7 @@ tags:
 - devops
 - aws
 - integrating-secrets
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Integrating Secrets Managers
 

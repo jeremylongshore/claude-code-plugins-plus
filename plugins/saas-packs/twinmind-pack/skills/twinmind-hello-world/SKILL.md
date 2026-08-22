@@ -20,7 +20,7 @@ tags:
 - twinmind
 - testing
 - transcription
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # TwinMind Hello World
 

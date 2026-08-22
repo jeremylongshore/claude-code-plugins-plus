@@ -1,0 +1,64 @@
+{
+  "$comment": "Capability vocabulary v0 (blueprint 727, Epic 3 bead 3.3). Maps every tool token shape in the corpus to an abstract capability from the canonical contract (skill-contract.schema.json). ONE parser owns tokenization: scripts/lib/tool-token-parser.mjs — a gate that parses tool tokens any other way is the anti-pattern this file ends. Coverage is enforced by scripts/check-capability-coverage.mjs: a token that neither maps here nor appears in dispositions fails CI. UPSTREAM-PENDING alongside the skill contract (kernel proposal is E3.13).",
+  "version": "0.1.0",
+  "capabilities": {
+    "filesystem.read": "Read file contents",
+    "filesystem.search": "Search file contents and names",
+    "filesystem.glob": "Enumerate files by pattern",
+    "filesystem.write": "Create or overwrite files",
+    "filesystem.edit": "Modify existing files in place",
+    "shell.exec": "Execute shell commands (scoped by command list)",
+    "network.http": "Fetch remote resources over HTTP(S)",
+    "network.search": "Query a web search service",
+    "user.prompt": "Ask the operating user a question and wait",
+    "agent.spawn": "Launch subagents or delegated tasks",
+    "task.plan": "Maintain a task/plan list",
+    "skill.invoke": "Invoke another packaged skill",
+    "service.mcp": "Call a named MCP server (scoped by server name)",
+    "service.custom": "Call a platform-specific named tool a pack declares (scoped by namespace)",
+    "agent.control": "Monitor, resume, or stop background tasks"
+  },
+  "builtins": {
+    "Read": "filesystem.read",
+    "Grep": "filesystem.search",
+    "Glob": "filesystem.glob",
+    "Write": "filesystem.write",
+    "Edit": "filesystem.edit",
+    "NotebookEdit": "filesystem.edit",
+    "Bash": "shell.exec",
+    "BashOutput": "shell.exec",
+    "KillBash": "shell.exec",
+    "WebFetch": "network.http",
+    "WebSearch": "network.search",
+    "AskUserQuestion": "user.prompt",
+    "Task": "agent.spawn",
+    "Agent": "agent.spawn",
+    "TodoWrite": "task.plan",
+    "Skill": "skill.invoke",
+    "SlashCommand": "skill.invoke",
+    "Monitor": "agent.control",
+    "TaskStop": "agent.control",
+    "TaskOutput": "agent.control"
+  },
+  "shapes": {
+    "mcp": {
+      "capability": "service.mcp",
+      "$comment": "mcp__<server>[__<tool>] maps to service.mcp scoped by server name; the canonical contract records it as requires.services[{kind: mcp, name: <server>}]."
+    },
+    "namespaced": {
+      "capability": "service.custom",
+      "$comment": "<ns>:<tool> custom platform tool names map to service.custom scoped by namespace, pending Epic 4's per-pack runtime-safety review."
+    }
+  },
+  "dispositions": {
+    "$comment": "Enumerated corpus tokens that parse as 'unknown' — each carries a reason. Every entry below lives in a .source.json mirror subtree: mirror files are upstream-owned and never edited locally (the never-clobber rule), so their shapes are tolerated here and any repair flows by upstreaming. An unknown token NOT listed here fails the coverage gate.",
+    "tolerated": {
+      "tweet_explore": "hermes-tweet mirror: upstream declares bare custom tool names; maps conceptually to service.custom, repair upstream-only",
+      "tweet_read": "hermes-tweet mirror: upstream declares bare custom tool names; maps conceptually to service.custom, repair upstream-only",
+      "tweet_action": "hermes-tweet mirror: upstream declares bare custom tool names; maps conceptually to service.custom, repair upstream-only",
+      "Read Glob Grep Bash": "claude-workflow-skills mirror: upstream uses space-separated tool lists; every member is a mapped builtin, repair upstream-only",
+      "Read Glob Grep Bash WebSearch WebFetch": "claude-workflow-skills mirror: space-separated legacy shape; every member is a mapped builtin, repair upstream-only",
+      "Read Glob Grep Bash Edit Write": "claude-workflow-skills mirror: space-separated legacy shape; every member is a mapped builtin, repair upstream-only"
+    }
+  }
+}

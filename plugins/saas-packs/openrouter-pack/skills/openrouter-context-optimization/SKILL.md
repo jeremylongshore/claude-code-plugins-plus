@@ -15,7 +15,7 @@ tags:
 - openrouter
 - optimization
 - context-window
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Context Optimization
 

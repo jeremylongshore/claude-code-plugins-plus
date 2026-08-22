@@ -19,7 +19,7 @@ tags:
 - saas
 - documenso
 - api
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Documenso Rate Limits
 

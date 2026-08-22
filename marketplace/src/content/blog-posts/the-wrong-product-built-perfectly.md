@@ -130,7 +130,7 @@ Every expensive, durable thing survived untouched. The deploy key didn't care th
 
 This is the structural point, and it's the reason the post exists.
 
-The error lived at the requirements layer. The pipeline below it was faithful — and faithful is exactly the problem. A high-quality pipeline does not catch a misread spec. It executes the misread perfectly and hands you the wrong thing at production grade. We've watched the same shape from a different angle — [a React app whose container shipped the Vite dev server to every visitor](/posts/vite-dev-server-in-production-the-871-byte-tell/), green health checks and all. Every downstream step compounded the original reading: the plan assumed an audience, the IA sorted that audience, the schema described that audience, the deploy shipped it to that audience. Each step was correct relative to the one above it, and the one at the very top was wrong.
+The error lived at the requirements layer. The pipeline below it was faithful — and faithful is exactly the problem. A high-quality pipeline does not catch a misread spec. It executes the misread perfectly and hands you the wrong thing at production grade. We've watched the same shape from a different angle — [a React app whose container shipped the Vite dev server to every visitor](/blog/vite-dev-server-in-production-the-871-byte-tell/), green health checks and all. Every downstream step compounded the original reading: the plan assumed an audience, the IA sorted that audience, the schema described that audience, the deploy shipped it to that audience. Each step was correct relative to the one above it, and the one at the very top was wrong.
 
 The five declined design subagents are the tell. People reach for "more process at the execution layer" as the fix for shipping the wrong thing. It isn't. Those five subagents would have made the *audience* version more beautiful — better triage copy, tighter property cards, a more polished FAQ. They would have polished the wrong product. Spending more at the execution layer when the defect is at the requirements layer just buys you a higher-fidelity mistake.
 
@@ -163,9 +163,9 @@ And don't draw the wrong conclusion about the five design subagents we declined 
 
 ## Related posts
 
-- [The Vite Dev Server in Production: The 871-Byte Tell](/posts/vite-dev-server-in-production-the-871-byte-tell/) — another story of shipping the wrong thing to production cleanly, and the small artifact that finally gave it away.
-- [Server-Ops MCP: Safety Before Tools](/posts/server-ops-mcp-safety-before-tools/) — the same instinct as the force-command deploy key: constrain the blast radius before you hand anything the keys.
-- [Self-Expiring, Report-Only CI Gates](/posts/self-expiring-report-only-ci-gates/) — on putting process spend where it actually pays instead of where it feels productive.
+- [The Vite Dev Server in Production: The 871-Byte Tell](/blog/vite-dev-server-in-production-the-871-byte-tell/) — another story of shipping the wrong thing to production cleanly, and the small artifact that finally gave it away.
+- [Server-Ops MCP: Safety Before Tools](/blog/server-ops-mcp-safety-before-tools/) — the same instinct as the force-command deploy key: constrain the blast radius before you hand anything the keys.
+- [Self-Expiring, Report-Only CI Gates](/blog/self-expiring-report-only-ci-gates/) — on putting process spend where it actually pays instead of where it feels productive.
 
 <script type="application/ld+json">
 {

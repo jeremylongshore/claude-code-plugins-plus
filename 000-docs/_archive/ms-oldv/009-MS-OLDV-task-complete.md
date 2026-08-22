@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Task Complete: Marketplace JSON Generation
 
 **Date:** 2025-10-11  

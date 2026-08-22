@@ -7,6 +7,22 @@ interface Props {
   wordCount: number;
 }
 
+// tokens.css FIRST, then global.css. Both are bundled by Astro into a hashed
+// /_astro/ asset, replacing the `<link href="/styles/global.css">` that 404'd
+// (src/styles is a source directory and was never copied to public/).
+//
+// tokens.css is not optional here and its absence is not cosmetic. Verified on
+// the deployed page: with only global.css, `--font-sans`, `--bg` and `--ink`
+// all resolved to (UNDEFINED) — global.css and this component's own styles are
+// written entirely in `var(--*)`, so EVERY one of those declarations was
+// invalid. The six /research/ pages rendered with no design system at all:
+// Times New Roman on a transparent background.
+//
+// BaseLayout gets these via `@import '../styles/tokens.css'` inside its
+// <style>; this template does not use BaseLayout, so it has to ask for them.
+import '../styles/tokens.css';
+import '../styles/global.css';
+
 const { title, description, domain, domainSlug, wordCount } = Astro.props;
 const readTime = Math.round(wordCount / 200);
 const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
@@ -19,7 +35,25 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{title} | Research | Claude Code Plugins</title>
   <meta name="description" content={description}>
-  <link rel="stylesheet" href="/styles/global.css">
+
+  <!-- This template does NOT use BaseLayout, so everything below has to be
+       declared here. Three things were missing, all found by auditing the built
+       output on 2026-08-03:
+
+       1. It linked `/styles/global.css` — a SOURCE path that is never published,
+          so all six /research/ pages fired a 404 for their stylesheet on every
+          visit and rendered without the global styles they were written against.
+          Astro bundles the import below instead, which cannot 404.
+       2. No webfont, so these pages rendered in a system font while the rest of
+          the site is JetBrains Mono (DESIGN.md § 3).
+       3. No analytics tag, so /research/ traffic was invisible in Umami — these
+          pages were absent from the numbers any traffic decision was based on. -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <script defer src="https://analytics.intentsolutions.io/script.js" data-website-id="0cee47ed-bee5-48da-8fed-46b3d8a2ddd3" data-domains="tonsofskills.com,www.tonsofskills.com"></script>
 </head>
 <body>
   <div class="research-page">
@@ -63,6 +97,11 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
 
           <!-- Research Content -->
           <article class="research-content">
+            <p class="snapshot-note">
+              <strong>Research snapshot:</strong> captured 2026-03-04 from repository commit
+              <code>256db0b3eabc0669ffe75bc16f19053820c3e91c</code>. Values are historical evidence,
+              not live corpus totals.
+            </p>
             <slot />
 
             <!-- Cite This Block -->
@@ -116,7 +155,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-size: 0.875rem;
       margin-bottom: 2rem;
       color: var(--brand-mid-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .breadcrumbs a {
@@ -150,7 +189,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 500;
       border: 1px solid var(--rule);
       margin-bottom: 1rem;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .research-title {
@@ -159,7 +198,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       color: var(--brand-dark);
       margin-bottom: 1rem;
       line-height: 1.1;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-description {
@@ -175,7 +214,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       gap: 0.75rem;
       font-size: 0.875rem;
       color: var(--brand-mid-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .meta-divider {
@@ -210,7 +249,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       color: var(--brand-mid-gray);
       margin-bottom: 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .toc-nav {
@@ -246,6 +285,14 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       max-width: 800px;
     }
 
+    .snapshot-note {
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--primary);
+      background: var(--panel);
+      color: var(--ink-2);
+      font-size: 0.875rem;
+    }
+
     /* Typography within content */
     .research-content :global(h2) {
       font-size: 2rem;
@@ -256,7 +303,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid var(--brand-light-gray);
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(h3) {
@@ -266,7 +313,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       margin-top: 2rem;
       margin-bottom: 1rem;
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(h4) {
@@ -276,7 +323,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
       scroll-margin-top: 2rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(p) {
@@ -303,7 +350,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       border-collapse: collapse;
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
       overflow: hidden;
     }
 
@@ -314,7 +361,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       text-align: left;
       padding: 0.75rem 1rem;
       border-bottom: 2px solid var(--brand-light-gray);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .research-content :global(td) {
@@ -330,7 +377,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .research-content :global(pre) {
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
       padding: 1.5rem;
       overflow-x: auto;
       margin: 1.5rem 0;
@@ -362,7 +409,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
     .research-content :global(.data-point) {
       background: oklch(61.184% 0.0713 127.12 / 0.08);
       border: 1px solid oklch(61.184% 0.0713 127.12 / 0.2);
-      border-radius: 2px;
+      border-radius: 0;
       padding: 1.25rem 1.5rem;
       margin: 1.5rem 0;
     }
@@ -377,7 +424,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       padding: 1.5rem;
       background: var(--brand-light);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 2px;
+      border-radius: 0;
     }
 
     .cite-title {
@@ -385,7 +432,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       color: var(--brand-mid-gray);
       margin-bottom: 0.75rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .cite-text code {
@@ -416,7 +463,7 @@ const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
       font-weight: 600;
       transition: color 0.2s ease;
       text-decoration: none;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .back-link:hover {

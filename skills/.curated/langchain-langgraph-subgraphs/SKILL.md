@@ -19,7 +19,7 @@ tags:
 - langchain-1.0
 - subgraphs
 - composition
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangGraph Subgraphs and Composition (Python)
 

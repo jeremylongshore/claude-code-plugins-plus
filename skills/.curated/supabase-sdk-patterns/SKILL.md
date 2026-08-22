@@ -18,7 +18,7 @@ tags:
 - python
 - sdk
 - patterns
-compatibility: Designed for Claude Code, also compatible with Cursor
+compatibility: Designed for Claude Code
 ---
 # Supabase SDK Patterns
 

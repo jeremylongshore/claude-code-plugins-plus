@@ -180,7 +180,7 @@ This is a common issue with **new domains**. X/Twitter flags domains without tru
 
 ### The Problem
 
-`claudecodeplugins.io` was deployed the same day. New domain + no security headers = X flags it.
+`[retired legacy public domain]` was deployed the same day. New domain + no security headers = X flags it.
 
 ### The Fix: Security Headers via Meta Tags
 
@@ -313,7 +313,7 @@ X/Twitter, Google, and other platforms flag new domains aggressively. Security h
 - ✅ Full legal compliance with embedded policies
 - ✅ CI/CD passing without false positives
 - ✅ Security headers deployed
-- ✅ 7 pages deployed to claudecodeplugins.io
+- ✅ 7 pages deployed to [retired legacy public domain]
 
 **Installation now works:**
 
@@ -331,7 +331,8 @@ The complete fix is open source:
 git log --oneline fb87448..5865a92
 
 # See the marketplace
-https://claudecodeplugins.io/
+# Historical command shape; the reserved host intentionally does not resolve.
+# Historical marketplace URL: https://retired-domain.invalid/
 
 # Install plugins
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -340,7 +341,7 @@ https://claudecodeplugins.io/
 
 ## Related Reading
 
-- [Building Production Testing Suite with Playwright and GitHub Actions](/blog/building-production-testing-suite-playwright-github-actions-survey-automation/) - More CI/CD automation patterns
+- [Building Production Testing Suite with Playwright and GitHub Actions](https://startaitools.com/posts/building-production-testing-suite-playwright-github-actions-survey-automation/) - More CI/CD automation patterns
 - [Deploying Next.js 15 to Google Cloud Run with Custom Domains](/blog/deploying-nextjs-15-google-cloud-run-custom-domain-ssl/) - Production deployment best practices
 - [Master Directory Standards Prompt for Repository Organization](/blog/master-directory-standards-prompt-repository-organization/) - Keeping codebases organized
 

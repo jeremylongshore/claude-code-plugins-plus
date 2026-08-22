@@ -18,7 +18,7 @@ tags:
 - kling-ai
 - image-to-video
 - video-generation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Kling AI Image-to-Video
 

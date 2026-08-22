@@ -29,7 +29,6 @@ const readme = (readmeSections as any)[plugin.name] || null;
 const formatComponents = (components: any) => {
   if (!components) return [];
   const items = [];
-  if (components.skills) items.push(`${components.skills} skill${components.skills > 1 ? 's' : ''}`);
   if (components.commands) items.push(`${components.commands} command${components.commands > 1 ? 's' : ''}`);
   if (components.agents) items.push(`${components.agents} agent${components.agents > 1 ? 's' : ''}`);
   if (components.hooks) items.push(`${components.hooks} hook${components.hooks > 1 ? 's' : ''}`);
@@ -56,15 +55,31 @@ const cleanTools = (tools: string[]) =>
   tools.map((t: string) => t.replace(/^"|"$/g, '')).filter((t: string) => t.length > 0);
 
 const isSaasPack = plugin.category === 'saas-packs';
-const hasSkills = pluginSkills.length > 0;
+const pluginSkillCount = pluginSkills.length;
+const hasSkills = pluginSkillCount > 0;
+const hasMultipleSkills = pluginSkillCount > 1;
+const componentSkillCount = plugin.components?.skills;
+const hasComponentSkillCount = typeof componentSkillCount === 'number' && componentSkillCount > 0;
 
 // Stats bar items
 const statsItems: Array<{ label: string; value: string }> = [];
-if (plugin.components?.skills) statsItems.push({ label: 'Skills', value: String(plugin.components.skills) });
 if (plugin.components?.commands) statsItems.push({ label: 'Commands', value: String(plugin.components.commands) });
 if (plugin.components?.agents) statsItems.push({ label: 'Agents', value: String(plugin.components.agents) });
 if (plugin.mcpTools) statsItems.push({ label: 'MCP Tools', value: String(plugin.mcpTools) });
 statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
+
+// Declared adapters (blueprint 727 E3.12). The registered adapter set is the
+// canonical contract's enum (schemas/canonical/v0) — a harness appears here
+// only when a generated adapter artifact exists. Free-text compatibility has
+// no page consumer anywhere (verified); this DECLARED line replaces it as the
+// only harness-support statement on the surface. When per-skill skill-cards
+// land, this same slot renders their adapters[] + unsupported[] detail.
+const ADAPTER_DISPLAY: Record<string, string> = { 'claude-code': 'Claude Code' };
+const declaredAdapters = ['claude-code'];
+statsItems.push({
+  label: 'Adapters (declared)',
+  value: declaredAdapters.map((a) => ADAPTER_DISPLAY[a] ?? a).join(', '),
+});
 ---
 
 <BaseLayout title={`${plugin.name} | Claude Code Plugins`} description={plugin.description}>
@@ -105,9 +120,15 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
       <!-- 4. Stats Bar -->
       {statsItems.length > 0 && (
         <div class="stats-bar">
+          {hasComponentSkillCount && (
+            <div class="stat-item">
+              <span class="stat-value" data-count-provenance="plugin-local">{componentSkillCount.toLocaleString()}</span>
+              <span class="stat-label">plugin-local skills</span>
+            </div>
+          )}
           {statsItems.map((stat, i) => (
             <>
-              {i > 0 && <span class="stats-divider" aria-hidden="true" />}
+              {(hasComponentSkillCount || i > 0) && <span class="stats-divider" aria-hidden="true" />}
               <div class="stat-item">
                 <span class="stat-value">{stat.value}</span>
                 <span class="stat-label">{stat.label}</span>
@@ -150,8 +171,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
       {hasSkills ? (
         <div class="section skills-section">
           <div class="skills-header">
-            <h2>Skills ({pluginSkills.length})</h2>
-            {pluginSkills.length > 1 && (
+            <h2>Skills ({pluginSkillCount.toLocaleString()}) <small data-count-provenance="plugin-local">plugin-local skills</small></h2>
+            {hasMultipleSkills && (
               <button class="expand-all-btn" id="expand-all-btn">Expand All</button>
             )}
           </div>
@@ -370,7 +391,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     text-decoration: none;
     margin-bottom: 2rem;
     font-size: 0.95rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: opacity var(--duration-fast) var(--ease-out);
   }
 
@@ -387,7 +408,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text, var(--brand-dark));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .meta {
@@ -396,7 +417,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     gap: 0.75rem;
     align-items: center;
     font-size: 0.9rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .meta-item {
@@ -407,7 +428,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     background: var(--surface-2, var(--brand-light-gray));
     border: 1px solid var(--border, var(--brand-mid-gray));
     padding: 0.25rem 0.75rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text, var(--brand-dark));
@@ -447,7 +468,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
     overflow-x: auto;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   .stat-item {
@@ -490,7 +511,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--text, var(--brand-dark));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .section-hint {
@@ -526,7 +547,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: white;
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .copy-btn:hover {
@@ -572,7 +593,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     background: none;
     border: none;
     color: var(--primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -604,8 +625,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   .readme-content :global(code) {
     background: var(--surface-3, var(--brand-light-gray));
     padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    border-radius: 0;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
   }
 
@@ -667,7 +688,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-size: 0.85rem;
     color: var(--text-2, var(--brand-mid-gray));
     font-weight: 500;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .info-value {
@@ -689,7 +710,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-sm);
     font-size: 11px;
     font-weight: 500;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   /* Skill Gist Explorer */
@@ -717,7 +738,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-weight: 500;
     color: var(--text-2, var(--brand-mid-gray));
     cursor: pointer;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: all var(--duration-fast) var(--ease-out);
   }
 
@@ -778,7 +799,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   }
 
   .gist-filename {
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--primary);
@@ -793,7 +814,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: var(--text-3, var(--brand-mid-gray));
     text-decoration: none;
     white-space: nowrap;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     transition: color var(--duration-fast) var(--ease-out);
   }
 
@@ -825,7 +846,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   }
 
   .tool-pill {
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
     font-size: 11px;
     padding: 2px 8px;
     border-radius: var(--radius-sm);
@@ -850,8 +871,8 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
   .gist-content-inner :global(code) {
     background: var(--surface-3, var(--brand-light-gray));
     padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    border-radius: 0;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
   }
 
@@ -888,7 +909,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-3, var(--brand-mid-gray));
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .tags-list {
@@ -903,7 +924,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     border-radius: var(--radius-sm);
     font-size: 11px;
     color: var(--text-2, var(--brand-mid-gray));
-    font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
   }
 
   .repo-link {
@@ -913,7 +934,7 @@ statsItems.push({ label: 'License', value: plugin.license || 'MIT' });
     color: var(--primary);
     text-decoration: none;
     font-size: 0.95rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-weight: 500;
   }
 

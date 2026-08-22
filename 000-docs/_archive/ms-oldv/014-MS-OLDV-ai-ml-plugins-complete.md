@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # AI/ML Data Science Plugins - COMPLETE
 
 **Date:** October 11, 2025

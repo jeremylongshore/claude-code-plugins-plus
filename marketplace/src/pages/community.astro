@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PluginCard from '../components/PluginCard.astro';
+import PartnerBar from '../components/PartnerBar.astro';
 import searchIndex from '../data/unified-search-index.json';
 import spotlightData from '../data/spotlights.json';
 const hallOfFame = spotlightData.hallOfFame || [];
@@ -78,7 +79,7 @@ function getContributionSummary(plugins: any[]): string {
     .hero-stat {
       background: oklch(100.000% 0 0 / 0.05);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md, 8px);
+      border-radius: var(--radius-md, 0);
       padding: 0.75rem 1.25rem;
       text-align: center;
     }
@@ -117,7 +118,7 @@ function getContributionSummary(plugins: any[]): string {
     .contributor-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--card-standard-radius, 12px);
+      border-radius: var(--card-standard-radius, 0);
       padding: var(--card-standard-padding, 1.5rem);
       transition: var(--card-transition, border-color 0.2s ease);
       cursor: pointer;
@@ -223,7 +224,7 @@ function getContributionSummary(plugins: any[]): string {
       background: var(--surface-2);
       margin: 0 -0.5rem;
       padding: 0.5rem;
-      border-radius: var(--radius-sm, 6px);
+      border-radius: var(--radius-sm, 0);
     }
 
     .plugin-row-info {
@@ -273,7 +274,7 @@ function getContributionSummary(plugins: any[]): string {
     .cta-section {
       background: var(--surface-1);
       border: 2px solid var(--border);
-      border-radius: var(--card-featured-radius, 16px);
+      border-radius: var(--card-featured-radius, 0);
       padding: var(--card-featured-padding, 2rem);
       text-align: center;
       margin-bottom: 3rem;
@@ -305,7 +306,7 @@ function getContributionSummary(plugins: any[]): string {
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-md, 8px);
+      border-radius: var(--radius-md, 0);
       font-weight: 600;
       font-size: 0.95rem;
       text-decoration: none;
@@ -342,7 +343,7 @@ function getContributionSummary(plugins: any[]): string {
     .hof-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem;
       text-decoration: none;
       color: inherit;
@@ -373,20 +374,20 @@ function getContributionSummary(plugins: any[]): string {
       height: 28px;
       border: 1px solid var(--rule);
       color: var(--ink);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 500;
       border-radius: var(--radius-sm);
     }
 
     .hof-week {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.7rem;
       color: var(--text-3);
     }
 
     .hof-category {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-2);
       border: 1px solid var(--rule);
@@ -419,7 +420,7 @@ function getContributionSummary(plugins: any[]): string {
       padding: 0.6rem 0.85rem;
       border-left: 3px solid var(--primary);
       background: var(--primary-tint);
-      border-radius: 0 8px 8px 0;
+      border-radius: 0;
       font-style: italic;
       font-size: 0.8rem;
       line-height: 1.5;
@@ -452,7 +453,7 @@ function getContributionSummary(plugins: any[]): string {
     }
 
     .hof-skills {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.7rem;
       color: var(--primary);
       margin-left: auto;
@@ -495,6 +496,11 @@ function getContributionSummary(plugins: any[]): string {
     </div>
   </section>
 
+  <!-- Rehomed from the homepage in the 2026-08-02 neobrutalist pass. The
+       homepage was cut to a single action; the partner row belongs with the
+       people, which is this page. Not deleted — just moved. -->
+  <PartnerBar />
+
   {hallOfFame.length > 0 && (
     <div class="section-container" style="padding-bottom: 0;">
       <h2 id="hall-of-fame" class="section-heading">Hall of Fame</h2>
@@ -502,8 +508,11 @@ function getContributionSummary(plugins: any[]): string {
       <div class="hof-grid">
         {hallOfFame.map(item => {
           const isExternal = item.link.startsWith('http');
+          const itemSkillCount = item.skillCount;
+          const hasItemSkillCount = typeof itemSkillCount === 'number' && itemSkillCount > 0;
           return (
             <a href={item.link} class="hof-card" target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
+              {hasItemSkillCount && <span class="hof-skills" data-count-provenance="entity-local">{itemSkillCount.toLocaleString()} entity-local skills</span>}
               <div class="hof-top">
                 <span class="hof-grade">{item.grade}</span>
                 <span class="hof-week">{item.week}</span>
@@ -515,7 +524,6 @@ function getContributionSummary(plugins: any[]): string {
               <div class="hof-author">
                 <img src={`https://github.com/${item.authorGithub}.png?size=64`} alt={item.author} class="hof-avatar" width="32" height="32" loading="lazy" />
                 <a href={`https://github.com/${item.authorGithub}`} class="hof-author-link" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">{item.author}</a>
-                {item.skillCount && <span class="hof-skills">{item.skillCount} skills</span>}
               </div>
               <span class="hof-link">{isExternal ? 'View on GitHub →' : 'View plugin →'}</span>
             </a>
@@ -529,13 +537,15 @@ function getContributionSummary(plugins: any[]): string {
   <div class="section-container">
     <h2 class="section-heading">Contributors</h2>
     <div class="contributors-grid">
-      {contributors.map(contrib => (
+      {contributors.map(contrib => {
+        const contributorPluginCount = contrib.plugins.length;
+        return (
         <div
           class="contributor-card"
           role="button"
           tabindex="0"
           aria-expanded="false"
-          aria-label={`${contrib.name}, ${contrib.plugins.length} plugins`}
+          aria-label={`${contrib.name}, ${contributorPluginCount} plugins`}
         >
           <div class="contributor-header">
             <div class="contributor-info">
@@ -543,7 +553,7 @@ function getContributionSummary(plugins: any[]): string {
               <div class="contributor-summary">{getContributionSummary(contrib.plugins)}</div>
             </div>
             <div class="contributor-count">
-              {contrib.plugins.length} plugin{contrib.plugins.length !== 1 ? 's' : ''}
+              <span data-count-provenance="contributor-local">{contributorPluginCount.toLocaleString()} contributor-local plugin{contributorPluginCount !== 1 ? 's' : ''}</span>
             </div>
             <span class="toggle-chevron" aria-hidden="true">&#9656;</span>
           </div>
@@ -561,7 +571,8 @@ function getContributionSummary(plugins: any[]): string {
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- Community Plugins Grid -->

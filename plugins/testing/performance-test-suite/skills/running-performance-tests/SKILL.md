@@ -16,7 +16,7 @@ tags:
 - testing
 - performance
 - performance-tests
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Performance Test Suite
 

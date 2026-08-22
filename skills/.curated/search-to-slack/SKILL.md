@@ -22,7 +22,7 @@ tags:
 - automation
 - team-communication
 - digest
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # Search to Slack
 

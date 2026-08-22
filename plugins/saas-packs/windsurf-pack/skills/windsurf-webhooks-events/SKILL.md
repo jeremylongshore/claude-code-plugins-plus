@@ -21,7 +21,7 @@ tags:
 - extensions
 - vscode-api
 - development
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Extension Development & Events
 

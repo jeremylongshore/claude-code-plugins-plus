@@ -20,7 +20,7 @@ tags:
 - incident-response
 - slo
 - on-call
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Incident Runbook
 

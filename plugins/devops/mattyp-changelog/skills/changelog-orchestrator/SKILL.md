@@ -8,12 +8,12 @@ description: Draft changelog PRs by collecting GitHub/Slack/Git changes, formatt
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(gh:*), Bash(python:*),
   Bash(date:*)
 version: 0.3.0
-author: Mattyp <mattyp@claudecodeplugins.io>
+author: Mattyp
 license: MIT
 tags:
 - automation
 - changelog-orchestrator
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Changelog Orchestrator
 

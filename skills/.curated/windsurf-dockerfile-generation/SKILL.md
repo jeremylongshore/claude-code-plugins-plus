@@ -18,7 +18,7 @@ tags:
 - saas
 - skill-databases
 - docker
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Dockerfile Generation
 

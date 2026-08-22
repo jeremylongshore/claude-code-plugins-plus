@@ -21,7 +21,7 @@ tags:
 - coderabbit
 - performance
 - tuning
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit Performance Tuning
 

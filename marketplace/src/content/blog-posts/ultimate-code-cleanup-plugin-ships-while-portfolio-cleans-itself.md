@@ -242,4 +242,4 @@ Every project in the portfolio is a candidate. The 24-hour window of April 15 wa
 
 - [QCSS Research Corpus: Twenty-One Documents and a Weak Reject](/blog/qcss-research-corpus-twenty-one-documents/) — the research-corpus arc that flagged the FLOPs class of error in its peer-review document.
 - [Repo-Resolver in a Day: ADR to Integration](/blog/repo-resolver-adr-to-integration-one-day/) — the April 14 post on the same portfolio, different lens.
-- [The Wild Ecosystem Deep Dive #4: Tech Lead](/blog/wild-deep-dive-4-tech-lead/) — the design philosophy behind risk-ordered execution plans, applied earlier in the wild ecosystem.
+- [The Wild Ecosystem Deep Dive #4: Tech Lead](https://startaitools.com/posts/wild-deep-dive-4-tech-lead/) — the design philosophy behind risk-ordered execution plans, applied earlier in the wild ecosystem.

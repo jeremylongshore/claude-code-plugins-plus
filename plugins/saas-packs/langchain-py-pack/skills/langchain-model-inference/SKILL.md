@@ -25,7 +25,7 @@ tags:
 - python
 - langchain-1.0
 - model-inference
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Model Inference (Python)
 

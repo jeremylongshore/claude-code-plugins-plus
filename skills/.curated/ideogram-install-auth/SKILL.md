@@ -21,7 +21,7 @@ tags:
 - api
 - authentication
 - image-generation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Ideogram Install & Auth
 

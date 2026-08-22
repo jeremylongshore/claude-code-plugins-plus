@@ -20,7 +20,8 @@ interface Props {
   href: string;
 }
 const { name, description, installCommand, author, skillCount, href } = Astro.props;
-const showMeta = Boolean(author) || Boolean(skillCount);
+const hasSkillCount = typeof skillCount === 'number' && skillCount > 0;
+const showMeta = Boolean(author) || hasSkillCount;
 ---
 <a class="pcard" href={href}>
   <h3>{name}</h3>
@@ -29,8 +30,10 @@ const showMeta = Boolean(author) || Boolean(skillCount);
   {showMeta && (
     <small>
       {author && <span>{author}</span>}
-      {author && skillCount ? ' · ' : null}
-      {skillCount && <span>{skillCount} skills</span>}
+      {author && hasSkillCount ? ' · ' : null}
+      {hasSkillCount && (
+        <span data-count-provenance="entity-local">{skillCount.toLocaleString()} entity-local skills</span>
+      )}
     </small>
   )}
 </a>
@@ -87,7 +90,7 @@ const showMeta = Boolean(author) || Boolean(skillCount);
     color: var(--ink);
     background: var(--panel-2);
     padding: var(--space-2) var(--space-3);
-    border-radius: 6px;
+    border-radius: 0;
     word-break: break-all;
     margin: 0 0 var(--space-3);
   }
@@ -103,7 +106,7 @@ const showMeta = Boolean(author) || Boolean(skillCount);
   @media (min-width: 768px) {
     .pcard {
       border: 1px solid var(--rule);
-      border-radius: 2px;
+      border-radius: 0;
     }
   }
 </style>

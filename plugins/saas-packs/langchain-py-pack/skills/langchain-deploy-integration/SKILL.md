@@ -20,7 +20,7 @@ tags:
 - cloud-run
 - vercel
 - langserve
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Deploy Integration (Python)
 

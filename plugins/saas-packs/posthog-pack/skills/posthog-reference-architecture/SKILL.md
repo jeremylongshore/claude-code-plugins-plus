@@ -18,7 +18,7 @@ tags:
 - saas
 - posthog
 - posthog-reference
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # PostHog Reference Architecture
 

@@ -14,7 +14,7 @@ license: MIT
 tags:
 - devops
 - load-balancers
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Configuring Load Balancers
 

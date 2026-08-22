@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Incident Debugging Playbook: Production Troubleshooting Guide
 
 **Production Playbook for DevOps and Plugin Maintainers**

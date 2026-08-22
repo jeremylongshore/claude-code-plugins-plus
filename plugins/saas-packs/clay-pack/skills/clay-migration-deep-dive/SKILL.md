@@ -21,7 +21,7 @@ tags:
 - saas
 - clay
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Migration Deep Dive
 

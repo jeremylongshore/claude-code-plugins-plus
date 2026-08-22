@@ -29,32 +29,75 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
+      # Fail RED the moment the token is missing — no silent fallback. The
+      # 2026-08 audit found `BOT_PR_TOKEN || GITHUB_TOKEN` meant token expiry
+      # would silently regress to the GITHUB_TOKEN path, whose stats PRs never
+      # re-trigger required checks (anti-recursion) — the exact zero-checks
+      # failure the token was added to fix, wearing a green badge.
+      - name: Require BOT_PR_TOKEN (no silent fallback)
+        env:
+          BOT_PR_TOKEN: ${{ secrets.BOT_PR_TOKEN }}
+        run: |
+          if [ -z "$BOT_PR_TOKEN" ]; then
+            echo "::error::BOT_PR_TOKEN is absent or empty (expired, revoked, or never set). This workflow refuses to fall back to GITHUB_TOKEN because its PRs cannot re-trigger required checks. Rotate the fine-grained PAT (contents:write + pull-requests:write) and re-run."
+            exit 1
+          fi
+          echo "BOT_PR_TOKEN present."
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
           # This persisted credential authenticates the branch push below.
-          # Falls back to GITHUB_TOKEN (today's behavior) until the secret exists.
-          token: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          # No fallback: the guard step above fails red when the secret is gone.
+          token: ${{ secrets.BOT_PR_TOKEN }}
 
       - uses: actions/setup-node@v6
         with:
           node-version: 20
 
+      # E1.10 advisory pass BEFORE fetching: reports how stale main's tracked
+      # copies are (surfaces automation-PR merge lag) without failing the run
+      # that is about to fix it.
+      - name: Report tracked stats freshness (advisory)
+        run: node scripts/check-stats-freshness.mjs --report
+
+      # timeout calibration: a HEALTHY fetch takes ~25-30 minutes — 423
+      # candidates x 4 requests, deliberately serial at ~4 req/s to stay under
+      # npm's per-IP cap (last 6 green runs: 29-35 min total). The earlier
+      # 10-minute bound was miscalibrated against that reality and failed a
+      # healthy dispatch; 45 keeps the fail-fast property (vs the 6h job
+      # default) with headroom for 429 backoff waves.
       - name: Fetch stats and update artifacts
+        timeout-minutes: 45
         run: node scripts/fetch-npm-stats.mjs
 
       # skills.sh install count — the credibility figure shown in the hero.
       # Fails soft (exit 0, leaves the data file untouched) so a skills.sh blip
       # never blocks the npm refresh or the resulting PR.
       - name: Fetch skills.sh install count
+        timeout-minutes: 5
         run: node scripts/fetch-skills-stats.mjs
+
+      # Star count for the homepage credibility line. Same fail-soft contract:
+      # a GitHub blip leaves the last known good value in place and exits 0.
+      - name: Fetch GitHub star count
+        timeout-minutes: 5
+        run: node scripts/fetch-github-stats.mjs
+
+      # E1.10 hard gate AFTER fetching: the fetch scripts fail soft by design,
+      # so an upstream API rotting for days would otherwise never be loud. If
+      # even the just-refreshed working copies breach their declared
+      # max_age_hours, every fetch has been failing past the bound — fail the
+      # workflow so the breach is visible instead of silently re-PRing rot.
+      - name: Enforce stats freshness bound
+        run: node scripts/check-stats-freshness.mjs
 
       - name: Detect changes
         id: changes
         run: |
           set -euo pipefail
-          if git diff --quiet marketplace/src/data/npm-stats.json marketplace/src/data/skills-stats.json README.md; then
+          if git diff --quiet marketplace/src/data/npm-stats.json marketplace/src/data/skills-stats.json marketplace/src/data/github-stats.json README.md; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No stats changes today — nothing to commit."
           else
@@ -70,7 +113,8 @@ jobs:
         # automated commit doesn't OOM on prettier across the staged set.
         env:
           # BOT_PR_TOKEN (fine-grained PAT, contents:write + pull-requests:write) re-triggers required checks; GITHUB_TOKEN cannot (anti-recursion). See ops-review bead claude-k0h2.
-          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          # No fallback: the guard step at the top fails red when the secret is gone.
+          GH_TOKEN: ${{ secrets.BOT_PR_TOKEN }}
         run: |
           set -euo pipefail
           BRANCH="automation/npm-stats"
@@ -82,8 +126,8 @@ jobs:
           # rather than stacking commits on a stale branch.
           git checkout -B "$BRANCH"
 
-          git add marketplace/src/data/npm-stats.json marketplace/src/data/skills-stats.json README.md
-          git commit --no-verify -m "chore(stats): daily npm download refresh
+          git add marketplace/src/data/npm-stats.json marketplace/src/data/skills-stats.json marketplace/src/data/github-stats.json README.md
+          git commit --no-verify -m "chore(marketplace-site): refresh daily npm download stats
 
           Auto-generated by .github/workflows/update-npm-stats.yml.
 
@@ -97,8 +141,12 @@ jobs:
           # was ever opened — main's npm-stats.json silently froze for 6 weeks
           # (estate audit finding F5). Only an OPEN PR counts.
           if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            # Conventional-commit title: the commit-scope-check gate validates
+            # PR titles, and the old emoji title failed it (PR #1290) — the
+            # scheduled pipeline could open a PR that was unmergeable by
+            # construction.
             gh pr create \
-              --title "📦 Daily npm download stats refresh" \
+              --title "chore(marketplace-site): refresh daily npm download stats" \
               --head "$BRANCH" \
               --base main \
               --label "automated,stats" \

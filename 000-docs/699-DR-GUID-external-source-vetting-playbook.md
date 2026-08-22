@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 ---
 filing_code: DR-GUID-EXTERNAL-SOURCE-VETTING-PLAYBOOK-2026-07-06
 date: 2026-07-06

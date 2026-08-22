@@ -21,7 +21,7 @@ tags:
 - mistral
 - testing
 - ci-cd
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Mistral CI Integration
 

@@ -18,7 +18,7 @@ tags:
 - security
 - audit
 - checking-session
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Checking Session Security
 

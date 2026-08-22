@@ -72,9 +72,16 @@
   --text-3xl:  clamp(2.5rem, 2rem + 2vw, 4rem);
   --text-4xl:  clamp(3rem, 2.5rem + 3vw, 5rem);
 
-  /* ── Type stack ── */
-  --font-display: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* ── Type stack ──
+     Mono is the PRIMARY typeface, not an accent. Display and body both resolve
+     to JetBrains Mono; the fallback chain degrades to whatever monospace the
+     platform has rather than to a sans, so a font-load failure changes the
+     texture but never the character of the page. --font-sans is retained as a
+     token name (components reference it) and now also resolves mono, so no
+     component has to be edited to inherit the change. */
+  --font-display: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  --font-body:    'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  --font-sans:    var(--font-body);
   --font-mono:    'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
 
   /* ── 4pt Spacing Grid ── */
@@ -94,13 +101,25 @@
   --breakpoint-desktop: 1280px;
   --breakpoint-wide:    1536px;
 
-  /* ── Border radius scale (data-dense, anti-AI-slop) ──
-     Squared corners are the anti-default. We keep small radii for
-     pills and tags only; cards are hairline-ruled rectangles. */
-  --radius-sm: 2px;    /* tags, pills */
-  --radius-md: 2px;    /* compact cards (was 8px — squared per VibeCheck) */
-  --radius-lg: 2px;    /* standard cards (was 12px) */
-  --radius-xl: 2px;    /* featured cards, sections (was 16px) */
+  /* ── Border radius scale (neobrutalist: there is no radius) ──
+     The 2026-05-31 pass flattened these to 2px and the 2026-08-02 pass takes
+     them to 0. The scale is kept as four token NAMES purely so the ~125
+     components already referencing them inherit the change without edits —
+     they are not four tiers any more, they are one value four times. A
+     genuinely circular element (avatar, status dot) uses 50% directly; it is
+     a shape, not a corner treatment, and is out of scope for this scale. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+
+  /* ── Elevation: hard offset shadow, the ONLY depth device ──
+     Not a blurred drop-shadow — a solid, un-blurred rectangle offset down-right,
+     as if the element were a physical card lit by a hard source. Blur radius is
+     0 by construction; see DESIGN.md § 6. Reserved for the page's single
+     signature element, never applied per-card. */
+  --shadow-hard:        4px 4px 0 var(--ink);
+  --shadow-hard-signal: 4px 4px 0 var(--signal);
 
   /* ── Card system (3 tiers) ── */
   --card-compact-padding: var(--space-4);
@@ -126,8 +145,10 @@
   /* ── Hover choreography (rule-based, NOT shadow-based) ── */
   --card-transition: transform var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
   --card-hover-lift: translateY(-1px);
-  /* Shadow tokens kept for true overlays (modals); cards do NOT use these */
-  --card-hover-shadow: 0 8px 24px oklch(0.000% 0 0 / 0.4);
+  /* Overlay depth. Was `0 8px 24px` — a blurred stack, now banned by DESIGN.md
+     § 6. Re-pointed at the hard offset so a modal still separates from the page
+     without reintroducing blur. Cards do NOT use these. */
+  --card-hover-shadow: var(--shadow-hard);
   --card-hover-shadow-accent: 0 0 0 1px var(--signal-edge);
 
   /* ── Typography scale (consistent across all cards) ── */

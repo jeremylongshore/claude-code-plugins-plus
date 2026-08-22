@@ -20,7 +20,7 @@ tags:
 - vast-ai
 - api
 - testing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vast.ai Hello World
 

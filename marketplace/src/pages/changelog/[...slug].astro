@@ -71,7 +71,7 @@ const dateFormatted = new Date(post.data.date).toLocaleDateString('en-US', {
     margin: 0 auto;
   }
   .back-link {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--text-3);
     text-decoration: none;
@@ -87,20 +87,20 @@ const dateFormatted = new Date(post.data.date).toLocaleDateString('en-US', {
     margin-bottom: 1rem;
   }
   time {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--text-3);
   }
   .version-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
     padding: 0.2rem 0.6rem;
     background: oklch(77.785% 0.1605 81.33 / 0.12);
     color: var(--primary);
-    border-radius: 4px;
+    border-radius: 0;
   }
   .post-header h1 {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: clamp(1.5rem, 4vw, 2.2rem);
     font-weight: 700;
     color: var(--text);
@@ -120,12 +120,12 @@ const dateFormatted = new Date(post.data.date).toLocaleDateString('en-US', {
     flex-wrap: wrap;
   }
   .tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
     background: var(--surface-3);
     color: var(--text-3);
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   .post-body {
@@ -139,7 +139,7 @@ const dateFormatted = new Date(post.data.date).toLocaleDateString('en-US', {
     font-size: 1rem;
   }
   .prose :global(h2) {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--text);
@@ -166,11 +166,11 @@ const dateFormatted = new Date(post.data.date).toLocaleDateString('en-US', {
     font-weight: 600;
   }
   .prose :global(code) {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.88em;
     background: var(--surface-3);
     padding: 0.15em 0.35em;
-    border-radius: 4px;
+    border-radius: 0;
     color: var(--primary);
   }
   .prose :global(a) {

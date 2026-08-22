@@ -21,7 +21,7 @@ tags:
 - testing
 - authentication
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clerk Local Dev Loop
 

@@ -9,7 +9,7 @@ description: |
   for marketplace submission, running deep quality analysis, or gating a skill for
   production. Trigger with "validate this skill", "grade my skill", "deep eval",
   "check SKILL.md", "validate thorough", "/validate-skillmd".
-allowed-tools: "Read,Edit,Write,Bash(python3:*),Bash(j-rig:*),Bash(node:*),Glob,Grep,AskUserQuestion"
+allowed-tools: "Read,Edit,Write,Bash(python3:*),Bash(j-rig:*),Bash(node:*),Bash(scripts/run-jrig-eval.sh:*),Glob,Grep,AskUserQuestion"
 version: 5.0.1
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -226,14 +226,16 @@ This is a separate concern from the IS spec-compliance check (Tier 1) — JRig's
 #### Tier 3B: 7-Layer Behavioral Eval (execution-based, slow, $)
 
 ```bash
-# Default invocation — Sonnet only, no DB persistence
+# Ad hoc invocation — Sonnet only, with no write to the Freshie inventory
 j-rig eval "$(dirname "SKILL.md")" --json
 
-# Full model matrix with DB persistence
-j-rig eval "$(dirname "SKILL.md")" \
+# Full model matrix with a durable Freshie evidence row. Run from the repository root.
+# j-rig receives only a scratch DB; the local recorder owns the Freshie write.
+scripts/run-jrig-eval.sh \
+  --skill-dir "$(dirname "SKILL.md")" \
+  --plugin "<catalog-plugin-name>" \
   --models haiku,sonnet,opus \
-  --db claude-code-plugins-plus-skills/freshie/inventory.sqlite \
-  --json
+  --inventory-db freshie/inventory.sqlite
 
 # Skip specific layers (when iterating)
 j-rig eval "$(dirname "SKILL.md")" --no-trigger --no-functional --json
@@ -259,24 +261,31 @@ Layers:
 
 #### Persist results to Freshie
 
-JRig writes its own SQLite DB by default (`j-rig.db` in cwd, or `--db <path>`). To unify with Freshie, point `--db` at `freshie/inventory.sqlite`:
+JRig writes runtime tables into whatever `--db` it receives, so it must never receive
+`freshie/inventory.sqlite`. The supported wrapper gives JRig a temporary database under `/dev/shm`,
+captures its JSON, then invokes the repository-owned recorder to upsert only the governed
+`forge_proofs` row:
 
 ```bash
-j-rig eval "$(dirname "SKILL.md")" \
+scripts/run-jrig-eval.sh \
+  --skill-dir "$(dirname "SKILL.md")" \
+  --plugin "<catalog-plugin-name>" \
   --models haiku,sonnet,opus \
-  --db claude-code-plugins-plus-skills/freshie/inventory.sqlite
+  --inventory-db freshie/inventory.sqlite
 ```
 
-JRig manages its own tables in that DB; cross-table joins to `skill_compliance` happen in the Freshie rebuild script. The unified-report rendering reads both:
+JRig's runtime tables remain in the temporary database and never enter the Freshie/Dolt export.
+The durable integration surface is `forge_proofs`, written by `scripts/record-jrig-proofs.mjs`:
 
 ```sql
--- Inferred join (actual table names per j-rig schema)
-SELECT s.skill_path, s.score, s.grade, j.passed, j.layers_passed, j.baseline_delta
-FROM skill_compliance s
-LEFT JOIN jrig_eval_results j ON j.skill_path = s.skill_path;
+SELECT plugin_name, passed, layers_passed, baseline_delta, verified_at
+FROM forge_proofs
+WHERE verification_type = 'tier3-jrig';
 ```
 
-Forward-looking: once JRig adds explicit `--append-skill-compliance` mode, the `skill_compliance` table can carry these columns directly:
+Freshie remains the sole local writer of inventory and grade history. A future schema change may
+project selected JRig evidence into `skill_compliance`, but JRig itself still must not write that
+database directly:
 
 - `jrig_passed` (boolean)
 - `jrig_tier_blocked` (1–7 if any)

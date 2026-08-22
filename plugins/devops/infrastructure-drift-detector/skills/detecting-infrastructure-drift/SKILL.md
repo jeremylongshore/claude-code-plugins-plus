@@ -15,7 +15,7 @@ tags:
 - devops
 - terraform
 - detecting-infrastructure
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Detecting Infrastructure Drift
 

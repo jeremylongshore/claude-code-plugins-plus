@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Troubleshooting Guide
 
 Common issues and solutions for Claude Code Plugins marketplace.

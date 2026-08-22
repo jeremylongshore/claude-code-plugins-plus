@@ -1,6 +1,8 @@
+<!-- doc-class: record -->
+
 # Skill Config Pattern (schema 3.6.0)
 
-> **Status:** AUTHORITATIVE — defines the self-declared config surface introduced in schema 3.6.0.
+> **Status:** REFERENCE — the governing schema owners are linked below.
 > **Schema log:** `000-docs/SCHEMA_CHANGELOG.md` § [3.6.0]
 > **Master spec:** `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
 

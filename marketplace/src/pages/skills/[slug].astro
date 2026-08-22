@@ -104,7 +104,7 @@ const cleanTools = (tools: string[]) =>
     }
 
     .platform-pill {
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       padding: 0.25rem 0.6rem;
       border-radius: var(--radius-sm);
@@ -131,7 +131,7 @@ const cleanTools = (tools: string[]) =>
       font-weight: 600;
       color: var(--text, var(--brand-dark));
       margin-bottom: 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .section-box.dark .section-title {
@@ -151,7 +151,7 @@ const cleanTools = (tools: string[]) =>
       border-radius: var(--radius-sm);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
     }
 
     .plugin-info {
@@ -202,7 +202,7 @@ const cleanTools = (tools: string[]) =>
       color: #0a0a0c;
       border-radius: var(--radius-md);
       text-decoration: none;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       font-weight: 600;
       font-size: 0.875rem;
       transition: all var(--duration-fast) var(--ease-out);
@@ -384,7 +384,7 @@ const cleanTools = (tools: string[]) =>
       color: var(--text-3, var(--brand-mid-gray));
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       opacity: 0.6;
     }
 
@@ -441,10 +441,10 @@ const cleanTools = (tools: string[]) =>
     }
 
     .related-tool-pill {
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       padding: 0.1rem 0.35rem;
-      border-radius: 3px;
+      border-radius: 0;
       color: var(--ink-2, var(--text-2));
       border: 1px solid var(--rule, var(--border));
     }

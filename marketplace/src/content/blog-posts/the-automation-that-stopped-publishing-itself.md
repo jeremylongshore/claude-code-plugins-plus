@@ -77,6 +77,6 @@ The real lesson: monitoring silence is worse than monitoring noise. Nine days of
 
 ## Related Posts
 
-- [Five Tags, Zero Ships: How an Auto-Release Workflow Lied for a Whole Day](/posts/five-tags-zero-ships/)
-- [Five Silent Failures in One Day](/posts/five-silent-failures-one-day/)
-- [Ship Dormant, Wire Later — A Multi-Agent Slack Production Day](/posts/ship-dormant-wire-later-multi-agent-slack/)
+- [Five Tags, Zero Ships: How an Auto-Release Workflow Lied for a Whole Day](https://startaitools.com/posts/five-tags-zero-ships/)
+- [Five Silent Failures in One Day](/blog/five-silent-failures-one-day/)
+- [Ship Dormant, Wire Later — A Multi-Agent Slack Production Day](https://startaitools.com/posts/ship-dormant-wire-later-multi-agent-slack/)

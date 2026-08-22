@@ -1,239 +1,287 @@
 #!/usr/bin/env node
 
 /**
- * Sync marketplace/src/data/catalog.json to match .claude-plugin/marketplace.extended.json.
- *
- * Goal: avoid broken /explore links by ensuring the plugin set in catalog.json matches
- * the actual plugin pages generated from marketplace.extended.json.
- *
- * Strategy:
- * - Keep existing catalog entries (preserves badges/flags) when names match.
- * - Drop entries not present in marketplace.extended.json.
- * - Add missing entries with sensible defaults.
- * - Deduplicate by plugin name deterministically.
+ * Render marketplace/src/data/catalog.json from canonical catalog and skill
+ * projection inputs. The tracked output is never an input.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, isAbsolute, join, posix } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {
+  assertGeneratedContentCurrent,
+} from '../../scripts/check-generated-artifacts.mjs';
+import { normalizeDeadDomainValue } from '../../scripts/dead-domain-policy.mjs';
 
-const REPO_ROOT = path.join(__dirname, '..', '..');
-const EXTENDED_PATH = path.join(REPO_ROOT, '.claude-plugin', 'marketplace.extended.json');
-const CATALOG_PATH = path.join(REPO_ROOT, 'marketplace', 'src', 'data', 'catalog.json');
-const SKILLS_CATALOG_PATH = path.join(REPO_ROOT, 'marketplace', 'src', 'data', 'skills-catalog.json');
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
+const DEFAULT_ROOT = join(dirname(SCRIPT_PATH), '..', '..');
+const OUTPUT_PATH = 'marketplace/src/data/catalog.json';
+const EXTENDED_PATH = '.claude-plugin/marketplace.extended.json';
+const SKILLS_PATH = 'marketplace/src/data/skills-catalog.json';
 
-function slugFromName(name) {
-  const numberedJeremy = name.match(/^\d{3}-jeremy-(.+)$/);
-  if (numberedJeremy) return numberedJeremy[1];
-  const numbered = name.match(/^\d{3}-(.+)$/);
-  if (numbered) return numbered[1];
-  return name;
+function requireObject(value, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`${label} must be an object`);
+  }
+  return value;
+}
+
+function requireString(value, label) {
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error(`${label} must be a non-empty string`);
+  }
+  return value;
+}
+
+function normalizedIdentity(value, label) {
+  const name = requireString(value, label);
+  if (name !== name.trim()) throw new Error(`${label} must not contain surrounding whitespace`);
+  return name.toLocaleLowerCase('und');
+}
+
+export function normalizePluginPath(value, label = 'plugin path') {
+  const original = requireString(value, label);
+  const candidate = original.replaceAll('\\', '/').replace(/^\.\//, '');
+  if (
+    candidate.includes('\0') ||
+    /[\r\n]/.test(candidate) ||
+    isAbsolute(candidate) ||
+    /^[A-Za-z]:\//.test(candidate) ||
+    candidate.startsWith(':') ||
+    candidate.split('/').includes('..')
+  ) {
+    throw new Error(`${label} escapes the repository: ${original}`);
+  }
+  const normalized = posix.normalize(candidate).replace(/\/$/, '');
+  if (normalized !== candidate.replace(/\/$/, '') || !normalized.startsWith('plugins/')) {
+    throw new Error(`${label} is not a normalized plugins path: ${original}`);
+  }
+  return normalized;
+}
+
+export function slugFromName(name) {
+  return name.replace(/^\d{3}-jeremy-/, '').replace(/^\d{3}-/, '');
 }
 
 function displayNameFromSlug(slug) {
-  return slug.replace(/-/g, ' ').toLowerCase();
+  return slug.replaceAll('-', ' ').toLowerCase();
 }
 
-function scoreCatalogEntry(entry) {
-  const hasEmail = entry?.author?.email ? 1 : 0;
-  const hasSkills = entry?.hasSkills ? 1 : 0;
-  const skillCount = Number(entry?.skillCount || 0);
-  const commandCount = Number(entry?.commandCount || 0);
-  const keywordCount = Array.isArray(entry?.keywords) ? entry.keywords.length : 0;
-  const descriptionLength = typeof entry?.description === 'string' ? entry.description.length : 0;
-
-  return (
-    hasEmail * 10_000 +
-    hasSkills * 5_000 +
-    skillCount * 1_000 +
-    commandCount * 500 +
-    keywordCount * 10 +
-    descriptionLength
-  );
+function nonNegativeInteger(value, label) {
+  if (value === undefined) return 0;
+  if (!Number.isInteger(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative integer`);
+  }
+  return value;
 }
 
-function buildDefaultCatalogEntry(plugin, now) {
-  const name = plugin?.name || 'unknown';
-  const slug = slugFromName(name);
-  const category = plugin?.category || 'other';
-  const keywords = Array.isArray(plugin?.keywords) ? plugin.keywords : [];
-  const author = plugin?.author && typeof plugin.author === 'object' ? plugin.author : { name: 'Claude Code Plugins' };
-  const version = plugin?.version || '1.0.0';
-
-  const skillCount = Number(plugin?.components?.skills || 0);
-  const commandCount = Number(plugin?.components?.commands || 0);
-
-  return {
-    slug,
-    name,
-    displayName: displayNameFromSlug(slug),
-    description: plugin?.description || '',
-    version,
-    category,
-    keywords,
-    hasSkills: skillCount > 0,
-    skillCount,
-    commandCount,
-    installCommand: `/plugin install ${name}`,
-    sourcePath: plugin?.source || '',
-    lastUpdatedEpoch: Math.floor(now.getTime() / 1000),
-    lastUpdatedDate: now.toISOString(),
-    status: 'active',
-    badges: ['new'],
-    isFeatured: Boolean(plugin?.featured),
-    isNew: true,
-    author,
-    type: 'instruction-plugin'
-  };
-}
-
-/**
- * Build a map of plugin name -> actual skill count from skills-catalog.json
- * This is more accurate than components.skills in marketplace.extended.json
- */
-function loadSkillCounts() {
-  const counts = new Map();
-  if (!fs.existsSync(SKILLS_CATALOG_PATH)) return counts;
-
+function readJson(root, repositoryPath, label) {
   try {
-    const data = JSON.parse(fs.readFileSync(SKILLS_CATALOG_PATH, 'utf8'));
-    for (const skill of (data.skills || [])) {
-      const pluginName = skill?.parentPlugin?.name;
-      if (pluginName) {
-        counts.set(pluginName, (counts.get(pluginName) || 0) + 1);
-      }
-    }
-  } catch {
-    console.warn('⚠️  Could not read skills-catalog.json for skill counts');
+    return JSON.parse(readFileSync(join(root, repositoryPath), 'utf8'));
+  } catch (error) {
+    throw new Error(`cannot read ${label} at ${repositoryPath}: ${error.message}`);
   }
-  return counts;
 }
 
-function main() {
-  if (!fs.existsSync(EXTENDED_PATH)) {
-    console.error(`❌ Missing marketplace.extended.json at ${EXTENDED_PATH}`);
-    process.exit(1);
+export function renderCatalog(extendedCatalog, skillsCatalog) {
+  const extended = requireObject(extendedCatalog, 'extended catalog');
+  const skillProjection = requireObject(skillsCatalog, 'skills catalog');
+  if (!Array.isArray(extended.plugins)) throw new Error('extended catalog plugins must be an array');
+  if (!Array.isArray(skillProjection.skills)) throw new Error('skills catalog skills must be an array');
+
+  const canonicalRows = [];
+  const identities = new Set();
+  const slugs = new Set();
+  const canonicalSources = new Set();
+
+  for (const [index, rawPlugin] of extended.plugins.entries()) {
+    const plugin = requireObject(rawPlugin, `extended plugin ${index}`);
+    const name = requireString(plugin.name, `extended plugin ${index} name`);
+    const identity = normalizedIdentity(name, `extended plugin ${index} name`);
+    if (identities.has(identity)) throw new Error(`duplicate catalog plugin identity: ${name}`);
+    identities.add(identity);
+
+    const slug = slugFromName(name);
+    if (!slug || slugs.has(slug)) throw new Error(`duplicate or empty catalog plugin slug: ${slug}`);
+    slugs.add(slug);
+
+    const source = normalizePluginPath(plugin.source, `extended plugin ${name} source`);
+    canonicalSources.add(source);
+    const category = requireString(plugin.category, `extended plugin ${name} category`);
+    const description = requireString(plugin.description, `extended plugin ${name} description`);
+    const version = requireString(plugin.version, `extended plugin ${name} version`);
+    if (plugin.keywords !== undefined && !Array.isArray(plugin.keywords)) {
+      throw new Error(`extended plugin ${name} keywords must be an array`);
+    }
+    const keywords = (plugin.keywords ?? []).map((keyword, keywordIndex) =>
+      requireString(keyword, `extended plugin ${name} keyword ${keywordIndex}`),
+    );
+    if (plugin.featured !== undefined && typeof plugin.featured !== 'boolean') {
+      throw new Error(`extended plugin ${name} featured must be boolean`);
+    }
+    if (
+      plugin.components !== undefined &&
+      (!plugin.components || typeof plugin.components !== 'object' || Array.isArray(plugin.components))
+    ) {
+      throw new Error(`extended plugin ${name} components must be an object`);
+    }
+    if (
+      plugin.author !== undefined &&
+      plugin.author !== null &&
+      (typeof plugin.author !== 'object' || Array.isArray(plugin.author))
+    ) {
+      throw new Error(`extended plugin ${name} author must be an object`);
+    }
+
+    canonicalRows.push({
+      name,
+      slug,
+      source,
+      sourcePath: plugin.source,
+      displayName: displayNameFromSlug(slug),
+      description,
+      version,
+      category,
+      keywords,
+      commandCount: nonNegativeInteger(
+        plugin.components?.commands,
+        `extended plugin ${name} command count`,
+      ),
+      isFeatured: plugin.featured === true,
+      author: plugin.author ?? { name: 'Claude Code Plugins' },
+    });
   }
 
-  const extended = JSON.parse(fs.readFileSync(EXTENDED_PATH, 'utf8'));
-  const extendedPlugins = Array.isArray(extended?.plugins) ? extended.plugins : [];
-  const extendedNameSet = new Set(extendedPlugins.map(p => p?.name).filter(Boolean));
-
-  // Load actual skill counts from skills-catalog.json (generated by discover-skills)
-  const actualSkillCounts = loadSkillCounts();
-
-  const now = new Date();
-
-  let existingCatalog = null;
-  if (fs.existsSync(CATALOG_PATH)) {
-    existingCatalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'));
+  const skillCounts = new Map();
+  const skillPaths = new Set();
+  if (
+    skillProjection.count !== undefined &&
+    (!Number.isInteger(skillProjection.count) || skillProjection.count !== skillProjection.skills.length)
+  ) {
+    throw new Error('skills catalog count does not match skills array length');
+  }
+  for (const [index, rawSkill] of skillProjection.skills.entries()) {
+    const skill = requireObject(rawSkill, `skill ${index}`);
+    const parent = requireObject(skill.parentPlugin, `skill ${index} parentPlugin`);
+    const parentPath = normalizePluginPath(parent.path, `skill ${index} parentPlugin.path`);
+    const filePath = normalizePluginPath(skill.filePath, `skill ${index} filePath`);
+    if (!filePath.startsWith(`${parentPath}/`)) {
+      throw new Error(`skill ${index} filePath is outside parent plugin: ${filePath}`);
+    }
+    if (!filePath.endsWith('/SKILL.md')) {
+      throw new Error(`skill ${index} filePath is not a SKILL.md path: ${filePath}`);
+    }
+    if (skillPaths.has(filePath)) throw new Error(`duplicate skill filePath: ${filePath}`);
+    skillPaths.add(filePath);
+    skillCounts.set(parentPath, (skillCounts.get(parentPath) ?? 0) + 1);
   }
 
-  const existingPlugins = Array.isArray(existingCatalog?.plugins) ? existingCatalog.plugins : [];
-
-  // Build best existing entry per name (handles duplicates deterministically).
-  const bestExistingByName = new Map();
-  for (const entry of existingPlugins) {
-    if (!entry || typeof entry !== 'object') continue;
-    const name = entry.name;
-    if (!name || !extendedNameSet.has(name)) continue;
-
-    const prev = bestExistingByName.get(name);
-    if (!prev || scoreCatalogEntry(entry) > scoreCatalogEntry(prev)) {
-      bestExistingByName.set(name, entry);
+  for (const parentPath of skillCounts.keys()) {
+    if (!canonicalSources.has(parentPath)) {
+      throw new Error(`skills catalog parent has no canonical plugin source: ${parentPath}`);
     }
   }
 
-  // Preserve existing order where possible, drop unknowns, and dedupe.
-  const ordered = [];
-  const seen = new Set();
-  for (const entry of existingPlugins) {
-    const name = entry?.name;
-    if (!name || !extendedNameSet.has(name) || seen.has(name)) continue;
-    const best = bestExistingByName.get(name) || entry;
-    ordered.push(best);
-    seen.add(name);
-  }
-
-  // Append any plugins missing from catalog (deterministic by name).
-  const missingPlugins = extendedPlugins
-    .filter(p => p?.name && !seen.has(p.name))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  for (const plugin of missingPlugins) {
-    ordered.push(buildDefaultCatalogEntry(plugin, now));
-    seen.add(plugin.name);
-  }
-
-  // Patch skill counts from actual skills-catalog.json data
-  let skillCountPatched = 0;
-  for (const plugin of ordered) {
-    const actualCount = actualSkillCounts.get(plugin.name) || 0;
-    const catalogCount = Number(plugin.skillCount || 0);
-
-    if (actualCount > 0 && actualCount !== catalogCount) {
-      plugin.skillCount = actualCount;
-      plugin.hasSkills = true;
-      skillCountPatched++;
-    }
-  }
-
-  // Recompute stats from final plugin list.
-  const byCategory = {};
-  const byStatus = {};
-  let totalSkills = 0;
+  const byCategory = new Map();
   let totalCommands = 0;
   let pluginsWithSkills = 0;
   let featured = 0;
-  let newCount = 0;
-
-  for (const plugin of ordered) {
-    const category = plugin.category || 'other';
-    byCategory[category] = (byCategory[category] || 0) + 1;
-
-    const status = plugin.status || 'unknown';
-    byStatus[status] = (byStatus[status] || 0) + 1;
-
-    totalSkills += Number(plugin.skillCount || 0);
-    totalCommands += Number(plugin.commandCount || 0);
-    if (plugin.hasSkills) pluginsWithSkills += 1;
+  const plugins = canonicalRows.map((plugin) => {
+    const skillCount = skillCounts.get(plugin.source) ?? 0;
+    byCategory.set(plugin.category, (byCategory.get(plugin.category) ?? 0) + 1);
+    totalCommands += plugin.commandCount;
+    if (skillCount > 0) pluginsWithSkills += 1;
     if (plugin.isFeatured) featured += 1;
-    if (plugin.isNew) newCount += 1;
-  }
+    return {
+      slug: plugin.slug,
+      name: plugin.name,
+      displayName: plugin.displayName,
+      description: plugin.description,
+      version: plugin.version,
+      category: plugin.category,
+      keywords: plugin.keywords,
+      hasSkills: skillCount > 0,
+      skillCount,
+      commandCount: plugin.commandCount,
+      installCommand: `/plugin install ${plugin.name}`,
+      sourcePath: plugin.sourcePath,
+      isFeatured: plugin.isFeatured,
+      author: plugin.author,
+      type: 'instruction-plugin',
+    };
+  });
 
-  const nextCatalog = {
+  return normalizeDeadDomainValue({
     meta: {
-      version: existingCatalog?.meta?.version || '1.0.0',
-      generated: now.toISOString(),
-      source: 'marketplace.extended.json',
-      generator: 'scripts/sync-catalog.mjs'
+      version: '1.0.0',
+      source: 'marketplace.extended.json + skills-catalog.json',
+      generator: 'marketplace/scripts/sync-catalog.mjs',
     },
     stats: {
-      totalPlugins: ordered.length,
-      totalSkills,
+      totalPlugins: plugins.length,
+      totalSkills: skillPaths.size,
       totalCommands,
       pluginsWithSkills,
-      byCategory,
-      byStatus,
+      byCategory: Object.fromEntries(byCategory),
       featured,
-      new: newCount,
-      generatedAt: now.toISOString()
     },
-    plugins: ordered
-  };
-
-  fs.writeFileSync(CATALOG_PATH, JSON.stringify(nextCatalog, null, 2) + '\n');
-  const keptNames = new Set(ordered.map(p => p.name).filter(Boolean));
-  const removedCount = existingPlugins.filter(p => p?.name && !keptNames.has(p.name)).length;
-  console.log(`✅ Synced catalog -> ${CATALOG_PATH}`);
-  console.log(`   Plugins: ${ordered.length}`);
-  console.log(`   Removed: ${removedCount}`);
-  console.log(`   Added: ${missingPlugins.length}`);
-  console.log(`   Skill counts patched: ${skillCountPatched}`);
-  console.log(`   Total skills: ${totalSkills}`);
+    plugins,
+  });
 }
 
-main();
+export function renderCatalogBytes(extendedCatalog, skillsCatalog) {
+  return `${JSON.stringify(renderCatalog(extendedCatalog, skillsCatalog), null, 2)}\n`;
+}
+
+export function syncCatalog({ root = DEFAULT_ROOT, check = false } = {}) {
+  const extended = readJson(root, EXTENDED_PATH, 'extended catalog');
+  const skills = readJson(root, SKILLS_PATH, 'skills catalog');
+  const contents = renderCatalogBytes(extended, skills);
+  if (check) {
+    assertGeneratedContentCurrent([{ path: OUTPUT_PATH, contents }], { root });
+  } else {
+    // Keep the literal target in the real write path so the Epic 1 harness can
+    // discover this producer without a parallel hand-maintained writer list.
+    const temporary = join(
+      root,
+      `marketplace/src/data/catalog.json.tmp-${process.pid}`,
+    );
+    try {
+      writeFileSync(
+        temporary /* atomic target: marketplace/src/data/catalog.json */,
+        contents,
+        { flag: 'wx' },
+      );
+      renameSync(temporary, join(root, OUTPUT_PATH));
+    } finally {
+      rmSync(temporary, { force: true });
+    }
+  }
+  const catalog = JSON.parse(contents);
+  return {
+    contents,
+    plugins: catalog.stats.totalPlugins,
+    skills: catalog.stats.totalSkills,
+    commands: catalog.stats.totalCommands,
+  };
+}
+
+function main() {
+  const unknown = process.argv.slice(2).filter((argument) => argument !== '--check');
+  if (unknown.length > 0) throw new Error(`unknown argument(s): ${unknown.join(', ')}`);
+  const check = process.argv.includes('--check');
+  const result = syncCatalog({ check });
+  console.log(
+    `catalog projection: ${check ? 'OK' : 'generated'} (${result.plugins} plugins, ${result.skills} distinct skills, ${result.commands} commands)`,
+  );
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`catalog projection: ${error.message}`);
+    process.exitCode = 1;
+  }
+}

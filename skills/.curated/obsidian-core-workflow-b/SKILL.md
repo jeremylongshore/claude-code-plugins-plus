@@ -23,7 +23,7 @@ tags:
 - views
 - modals
 - editor
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Core Workflow B: Advanced Plugin Features
 

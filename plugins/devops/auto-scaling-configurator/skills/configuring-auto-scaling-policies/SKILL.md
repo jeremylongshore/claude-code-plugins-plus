@@ -17,7 +17,7 @@ tags:
 - devops
 - scaling
 - auto-scaling
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Configuring Auto-Scaling Policies
 

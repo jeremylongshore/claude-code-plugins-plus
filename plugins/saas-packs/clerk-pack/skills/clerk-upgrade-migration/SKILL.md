@@ -19,7 +19,7 @@ tags:
 - saas
 - clerk
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clerk Upgrade & Migration
 

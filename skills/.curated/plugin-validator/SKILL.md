@@ -15,7 +15,7 @@ tags:
 - example
 - compliance
 - plugin-validator
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Plugin Validator
 

@@ -22,7 +22,7 @@ tags:
 - automation
 - github-api
 - typescript
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # CodeRabbit SDK Patterns
 

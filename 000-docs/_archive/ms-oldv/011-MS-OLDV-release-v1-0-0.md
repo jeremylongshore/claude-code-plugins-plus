@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Release v1.0.0 - Launch Ready!
 
 **Date**: October 10, 2025

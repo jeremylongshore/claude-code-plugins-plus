@@ -17,7 +17,7 @@ tags:
 - python
 - langchain-1.0
 - statgraph
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain LangGraph Basics (Python)
 

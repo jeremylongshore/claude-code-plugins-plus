@@ -19,7 +19,7 @@ tags:
 - granola
 - ci-cd
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola CI Integration
 

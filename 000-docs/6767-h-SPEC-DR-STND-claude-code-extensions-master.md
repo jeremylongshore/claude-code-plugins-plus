@@ -1,3 +1,7 @@
+<!-- doc-class: frozen -->
+
+> **SUPERSEDED–FROZEN (Epic 2 bead 2.1; 2026-08-15).** This historical standard is retained for citation and anchor compatibility; it is not authoritative. The governing platform standard is [727](727-AT-ARCH-master-modernization-blueprint.md). Its known-false rules are: CSV-only `allowed-tools` ([727:38](727-AT-ARCH-master-modernization-blueprint.md#L38)); six required fields instead of eight ([727:39](727-AT-ARCH-master-modernization-blueprint.md#L39)); the nonexistent `scripts/validate-frontmatter.py` and the wrong package manager for `marketplace/` ([727:40](727-AT-ARCH-master-modernization-blueprint.md#L40)); authority assigned to dead `claudecodeplugins.io` rather than live `tonsofskills.com` ([727:36](727-AT-ARCH-master-modernization-blueprint.md#L36)); and supersession of the still-canonical 6767-b rubric ([727:43](727-AT-ARCH-master-modernization-blueprint.md#L43)). Do not edit below this banner; preserve the body and section anchors byte-for-byte.
+
 # Global Master Standard – Claude Code Extensions (Plugins + Skills) Specification
 
 **Document ID**: 6767-h-SPEC-DR-STND-claude-code-extensions-master

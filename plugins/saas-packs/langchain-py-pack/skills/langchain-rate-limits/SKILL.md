@@ -20,7 +20,7 @@ tags:
 - rate-limits
 - throttling
 - concurrency
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Rate Limits (Python)
 

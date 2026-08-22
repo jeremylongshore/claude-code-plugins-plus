@@ -53,7 +53,7 @@ scripts/extract-marketplace-catalog-projection.py --check --surface plugin-marke
 
 Verified, not assumed: `check-surface-registry.py` returned exit 0 on a registry with the wrong mode. So did the test suite. Both only asked "does this script exist?"
 
-That is [exit 0 is not success](/posts/exit-0-is-not-success/) wearing a freshness costume. It is also the failure mode described in [every safety gate has a failure direction](/posts/every-safety-gate-has-a-failure-direction/): the next person who flips a surface, sees red, and "fixes" the flag gets a quieter green. No gate objects. The lane dies because people learn not to read it.
+That is [exit 0 is not success](/blog/exit-0-is-not-success/) wearing a freshness costume. It is also the failure mode described in [every safety gate has a failure direction](/blog/every-safety-gate-has-a-failure-direction/): the next person who flips a surface, sees red, and "fixes" the flag gets a quieter green. No gate objects. The lane dies because people learn not to read it.
 
 ### Fix: pin mode, not only path
 
@@ -110,7 +110,7 @@ Fix was one shared rule (`captured_source.clause_end`): period-digit is not clau
 
 Plus a gap the review surfaced in its own evidence: nothing verified that `vendor-meta.json` describes the bytes on disk. `--check` proves the projection derives from files and never reads sha256. A hand re-vendor with a wrong hash passed every gate. New `scripts/check-vendor-meta-integrity.py` checks existence, sha256, byte count, and undeclared files. Demonstrated: corrupt a recorded sha and the new gate fails while `--check` still prints OK.
 
-That is the same family as [empty is not clean](/posts/empty-is-not-clean/) and [passing is not validating](/posts/passing-is-not-validating/): a check that never looks at the claim under audit.
+That is the same family as [empty is not clean](/blog/empty-is-not-clean/) and [passing is not validating](/blog/passing-is-not-validating/): a check that never looks at the claim under audit.
 
 ## Neighbor defect: the bot restored the human baseline
 
@@ -179,7 +179,7 @@ Session signal for the day was strong across Claude Opus 4.8, Grok 4.5, and GPT-
 
 The interesting collaboration fact is not token volume. It is the gap the review filled. With AI review dark on the lab, Claude Opus 4.8 and Grok 4.5 spent the day implementing and chasing CI. The nine defects came from a deliberate hostile re-read of a commit that had already gone green under mutation tests. Tools did not invent that pass. An operator ordered it because the automated second pair of eyes was gone.
 
-That is the same discipline as [adversarial review before team rollout](/posts/adversarial-review-before-team-rollout/), applied inward to a gate that ships under your own name.
+That is the same discipline as [adversarial review before team rollout](/blog/adversarial-review-before-team-rollout/), applied inward to a gate that ships under your own name.
 
 ## Also shipped
 
@@ -206,10 +206,10 @@ Wrong-mode green is not a gate. It is a board that learned to smile.
 
 ## Related posts
 
-- [Exit 0 Is Not Success](/posts/exit-0-is-not-success/)
-- [Every Safety Gate Has a Failure Direction](/posts/every-safety-gate-has-a-failure-direction/)
-- [A Green Recovery Drill Can Still Be Lying](/posts/a-green-recovery-drill-can-still-be-lying/)
-- [Passing Is Not Validating](/posts/passing-is-not-validating/)
-- [Empty Is Not Clean](/posts/empty-is-not-clean/)
-- [When Green CI Proves Nothing](/posts/when-green-ci-proves-nothing/)
-- [Adversarial Review Before Team Rollout](/posts/adversarial-review-before-team-rollout/)
+- [Exit 0 Is Not Success](/blog/exit-0-is-not-success/)
+- [Every Safety Gate Has a Failure Direction](/blog/every-safety-gate-has-a-failure-direction/)
+- [A Green Recovery Drill Can Still Be Lying](/blog/a-green-recovery-drill-can-still-be-lying/)
+- [Passing Is Not Validating](/blog/passing-is-not-validating/)
+- [Empty Is Not Clean](/blog/empty-is-not-clean/)
+- [When Green CI Proves Nothing](/blog/when-green-ci-proves-nothing/)
+- [Adversarial Review Before Team Rollout](/blog/adversarial-review-before-team-rollout/)

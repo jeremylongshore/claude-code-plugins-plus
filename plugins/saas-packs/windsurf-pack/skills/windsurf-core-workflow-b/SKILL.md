@@ -22,7 +22,7 @@ tags:
 - workflows
 - memories
 - automation
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Core Workflow B — Workflows & Memories
 

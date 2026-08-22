@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Ollama Migration Guide: From Cloud APIs to Self-Hosted LLMs
 
 **Production Playbook for Teams Migrating to Local AI**

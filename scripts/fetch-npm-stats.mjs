@@ -367,7 +367,11 @@ async function main() {
   //    rate-limit / server-error so we can surface drops loudly instead of
   //    silently undercounting.
   console.log('Fetching npm registry metadata + download stats...');
-  const { counts, published, rateLimitedNames, errorDetails } = await collectStats(names, 4);
+  // collectStats takes an OPTIONS OBJECT; the previous positional `4` here
+  // was silently ignored, so the run has always been serial (concurrency 1,
+  // 250ms throttle ≈ 4 req/s — the documented npm-cap-safe rate). Kept
+  // serial deliberately; the argument is dropped so the code says what runs.
+  const { counts, published, rateLimitedNames, errorDetails } = await collectStats(names);
 
   // 3. Aggregate
   const now = Date.now();
@@ -384,6 +388,9 @@ async function main() {
 
   const agg = {
     generatedAt: new Date().toISOString(),
+    // Freshness bound consumed by scripts/check-stats-freshness.mjs (see
+    // fetch-github-stats.mjs for the rationale behind 72h).
+    max_age_hours: 72,
     publishedCount: published.length,
     establishedCount: established.length,
     candidateCount: names.length,
@@ -432,7 +439,13 @@ async function main() {
     console.log(`\nWrote ${OUT_JSON}`);
 
     try {
-      const updated = updateReadme(buildReadmeBlock(agg));
+      // Pipe the spliced README through the repo's Prettier config so the
+      // daily bot commit satisfies format-check and the TOC byte-compare —
+      // the same contract generate-readme-toc.mjs honors (issue #657 class).
+      const prettier = (await import('prettier')).default;
+      const spliced = updateReadme(buildReadmeBlock(agg));
+      const options = (await prettier.resolveConfig(README)) || {};
+      const updated = await prettier.format(spliced, { ...options, filepath: README });
       const current = readFileSync(README, 'utf-8');
       if (updated !== current) {
         writeFileSync(README, updated);

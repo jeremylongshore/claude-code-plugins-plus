@@ -826,19 +826,24 @@ function addedAllowlistLines(base) {
 }
 
 /**
- * True when a changed file's ENTIRE diff vs `base` is the version field —
- * i.e. every added/removed line (hunk headers excluded) is a lone
- * `version: X` (YAML frontmatter) or `"version": "X"` (JSON manifest) line.
+ * True when a changed file's ENTIRE diff vs `base` is inert frontmatter
+ * metadata — i.e. every added/removed line (hunk headers excluded) is a lone
+ * `version: X` (YAML frontmatter), `"version": "X"` (JSON manifest), or
+ * `compatibility: …` (YAML frontmatter) line.
  *
- * Why: a mass version reconstruction / auto-bump edits the version string in
- * thousands of first-party SKILL.md + plugin.json files. Those files then show
+ * Why: a mass version reconstruction / auto-bump — or the E3.11
+ * portability-claim withdrawal, which rewrote one compatibility line in 2,700
+ * files — edits a single metadata string in thousands of first-party
+ * SKILL.md + plugin.json files. Those files then show
  * up as "changed vs base" and, in --changed-only mode, get FULLY re-scanned —
  * surfacing every pre-existing documented dual-use example (the classic
  * secret-exfil-cooccur false positive in SaaS-pack API docs) as a fresh
  * CHALLENGE, even though the PR injected nothing.
  *
- * Skipping is SAFE, not a bypass: a lone version-string line carries no
- * executable / exfil / network content, and the moment ANY other line in the
+ * Skipping is SAFE, not a bypass: a lone version or compatibility metadata
+ * line is never executed and carries no executable / exfil / network content
+ * (the compatibility field is prose policed by its own ratchet,
+ * check-portability-claims.mjs), and the moment ANY other line in the
  * file changes, this returns false and the file is scanned in full — so a
  * payload cannot hide behind a co-changed version bump. Fail-closed: if the
  * diff can't be computed, returns false (scan the file).
@@ -854,7 +859,11 @@ export function isVersionOnlyChange(diffText) {
   if (changed.length === 0) return false; // no content delta we can attribute — scan it
   const YAML_VERSION = /^[+-]\s*version:\s*['"]?[\w.+-]+['"]?\s*(#.*)?$/;
   const JSON_VERSION = /^[+-]\s*"version":\s*"[\w.+-]+",?\s*$/;
-  return changed.every((l) => YAML_VERSION.test(l) || JSON_VERSION.test(l));
+  // A lone compatibility metadata line: prose only — no quotes into shell,
+  // no URLs-with-pipes; anything shaped like an execution vector fails the
+  // metadata test and forces a full scan.
+  const YAML_COMPAT = /^[+-]\s*compatibility:\s*['"]?[\w ,.()-]+['"]?\s*$/;
+  return changed.every((l) => YAML_VERSION.test(l) || JSON_VERSION.test(l) || YAML_COMPAT.test(l));
 }
 
 function isVersionOnlyDiff(base, rel) {

@@ -19,7 +19,7 @@ tags:
 - saas
 - linear
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Linear Core Workflow A: Issue Lifecycle
 

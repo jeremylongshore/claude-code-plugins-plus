@@ -21,7 +21,7 @@ tags:
 - lokalise
 - monitoring
 - cost-optimization
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lokalise Cost Tuning
 

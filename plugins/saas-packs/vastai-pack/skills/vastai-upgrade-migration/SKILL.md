@@ -20,7 +20,7 @@ tags:
 - vast-ai
 - api
 - migration
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vast.ai Upgrade & Migration
 

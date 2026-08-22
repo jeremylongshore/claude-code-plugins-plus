@@ -22,7 +22,7 @@ tags:
 - deployment
 - vercel
 - cloud-run
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly Deploy Integration
 

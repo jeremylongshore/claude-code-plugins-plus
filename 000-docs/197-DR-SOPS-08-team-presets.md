@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Team Presets & Workflows: Standardized Team Configurations
 
 **Production Playbook for Team Leads and Engineering Managers**

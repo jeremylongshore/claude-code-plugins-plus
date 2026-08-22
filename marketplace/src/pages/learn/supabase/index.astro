@@ -9,8 +9,8 @@ if (!vendor) {
   return Astro.redirect('/learn/');
 }
 
-const pageTitle = `${vendor.name} Skill Pack - ${vendor.skillCount} Skills`;
-const pageDescription = `Complete ${vendor.name} integration with ${vendor.skillCount} skills covering ${vendor.description.toLowerCase()}.`;
+const pageTitle = `${vendor.name} Skill Pack`;
+const pageDescription = `Complete ${vendor.name} integration covering ${vendor.description.toLowerCase()}.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -68,13 +68,13 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       color: var(--ink-2);
       font-size: 11px;
       font-weight: 500;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       margin-top: 0.5rem;
     }
 
     .install-section {
       background: var(--panel); border: 1px solid var(--rule);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 1.5rem;
       margin-top: 2rem;
     }
@@ -90,7 +90,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       font-size: 1rem;
       background: var(--bg); border: 1px solid var(--rule);
       padding: 0.75rem 1rem;
-      border-radius: 8px;
+      border-radius: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -101,7 +101,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       color: var(--brand-dark);
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 0;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.85rem;
@@ -135,7 +135,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       border: 1px solid var(--rule);
       color: var(--brand-mid-gray);
       font-size: 11px;
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       padding: 2px 8px;
       border-radius: var(--radius-sm);
     }
@@ -149,7 +149,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
     .skill-card {
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 10px;
+      border-radius: 0;
       padding: 1rem;
       transition: all 0.2s ease;
     }
@@ -187,7 +187,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
     .link-card {
       background: var(--card);
       padding: 1.5rem;
-      border-radius: 10px;
+      border-radius: 0;
       flex: 1;
       min-width: 250px;
       text-decoration: none;
@@ -230,7 +230,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
         <div>
           <h1 class="pack-title">{vendor.name} Pack</h1>
           <p class="pack-subtitle">{vendor.description}</p>
-          <span class="tier-badge">{vendor.skillCount} Skills</span>
+          <span class="tier-badge" data-count-provenance="vendor-pack-local">{vendor.skillCount} vendor-pack-local skills</span>
         </div>
       </div>
 
@@ -251,7 +251,7 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       <div class="category-section">
         <h2 class="category-title">
           {category.name}
-          <span class="category-badge">{category.skills.length} skills</span>
+          <span class="category-badge" data-count-provenance="vendor-pack-local">{category.skills.length} vendor-pack-local skills</span>
         </h2>
         <div class="skills-grid">
           {category.skills.map((skill) => (

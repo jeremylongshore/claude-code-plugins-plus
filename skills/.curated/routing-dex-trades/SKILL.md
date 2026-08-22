@@ -19,7 +19,7 @@ tags:
 - crypto
 - cost-optimization
 - routing-dex
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Routing DEX Trades
 

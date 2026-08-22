@@ -23,7 +23,7 @@ tags:
 - sdk
 - patterns
 - typescript
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir SDK Patterns
 

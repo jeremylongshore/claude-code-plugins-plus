@@ -4,7 +4,7 @@
   "run_id": 10,
   "threshold": "AB",
   "validated": true,
-  "count": 1921,
+  "count": 1915,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -67,7 +67,7 @@
         "assets/README.md",
         "assets/data_preprocessing_example.py",
         "assets/example_config.json",
-        "assets/model_architecture.png",
+        "assets/model-architecture-brief.md",
         "references/README.md",
         "scripts/README.md"
       ]
@@ -6870,26 +6870,6 @@
       ]
     },
     {
-      "curated_name": "drive-automation-session",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/drive-automation-session",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/capabilities.md",
-        "references/endpoint-reference.md",
-        "references/loop-discipline.md",
-        "scripts/__fixtures__/webview-mobile-sample.xml",
-        "scripts/appium.js",
-        "scripts/appium.test.js",
-        "scripts/strip-webview-dom.js",
-        "scripts/strip-webview-dom.test.js"
-      ]
-    },
-    {
       "curated_name": "elevenlabs-ci-integration",
       "source_path": "plugins/saas-packs/elevenlabs-pack/skills/elevenlabs-ci-integration",
       "category": "saas-packs",
@@ -10913,20 +10893,6 @@
       ]
     },
     {
-      "curated_name": "hermes-tweet",
-      "source_path": "plugins/community/hermes-tweet/hermes_tweet/skills/hermes-tweet",
-      "category": "community",
-      "plugin": "hermes_tweet",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/endpoint-contract.md",
-        "skill-card.md"
-      ]
-    },
-    {
       "curated_name": "hex-ci-integration",
       "source_path": "plugins/saas-packs/hex-pack/skills/hex-ci-integration",
       "category": "saas-packs",
@@ -14756,7 +14722,7 @@
         "assets/README.md",
         "assets/docker-compose-template.yml",
         "assets/example_test_script.py",
-        "assets/test_environment_diagram.png",
+        "assets/test-environment-diagram-brief.md",
         "references/README.md",
         "scripts/README.md",
         "scripts/setup_environment.py",
@@ -15114,18 +15080,6 @@
       "files": [
         "SKILL.md",
         "references/implementation.md"
-      ]
-    },
-    {
-      "curated_name": "mnemos",
-      "source_path": "plugins/community/mnemos/.claude/skills/mnemos",
-      "category": "community",
-      "plugin": ".claude",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
       ]
     },
     {
@@ -17473,7 +17427,6 @@
         "SKILL.md",
         "assets/README.md",
         "assets/cost_report_template.csv",
-        "assets/cost_report_template.pdf",
         "assets/example_cost_report.csv",
         "assets/optimization_recommendation_template.json",
         "references/README.md",
@@ -19268,18 +19221,6 @@
       ]
     },
     {
-      "curated_name": "pr-to-spec",
-      "source_path": "plugins/mcp/pr-to-spec/.claude/skills/pr-to-spec",
-      "category": "mcp",
-      "plugin": ".claude",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
       "curated_name": "preprocessing-data-with-automated-pipelines",
       "source_path": "plugins/ai-ml/data-preprocessing-pipeline/skills/preprocessing-data-with-automated-pipelines",
       "category": "ai-ml",
@@ -21024,42 +20965,6 @@
       ]
     },
     {
-      "curated_name": "run-automation-suite",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/run-automation-suite",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "references/capabilities.md",
-        "references/templates/appium.ejs",
-        "scripts/chromeless-launcher-linux.sh",
-        "scripts/chromeless-launcher-mac.sh",
-        "scripts/chromeless-launcher-windows.ps1",
-        "scripts/chromeless-launcher.sh",
-        "scripts/chromeless-launcher.test.js",
-        "scripts/render-capabilities.js",
-        "scripts/render-capabilities.test.js"
-      ]
-    },
-    {
-      "curated_name": "run-interactive-cli-session",
-      "source_path": "plugins/testing/kobiton-automate/.codex/skills/run-interactive-cli-session",
-      "category": "testing",
-      "plugin": ".codex",
-      "recorded_grade": "A",
-      "fresh_grade": "A",
-      "run_id": 10,
-      "files": [
-        "SKILL.md",
-        "bin/kobiton",
-        "references/response-shapes.md",
-        "scripts/run.sh"
-      ]
-    },
-    {
       "curated_name": "running-chaos-tests",
       "source_path": "plugins/testing/chaos-engineering-toolkit/skills/running-chaos-tests",
       "category": "testing",
@@ -21864,8 +21769,8 @@
         "SKILL.md",
         "assets/README.md",
         "assets/codeql_ruleset.qls",
-        "assets/example_code_with_vulnerabilities.zip",
         "assets/semgrep_ruleset.yaml",
+        "assets/vulnerable-code-examples.md",
         "references/README.md",
         "scripts/README.md",
         "scripts/codeql_scan.py",
@@ -24602,7 +24507,7 @@
         "assets/README.md",
         "assets/example_mlflow_workflow.yaml",
         "assets/model_card_template.md",
-        "assets/versioning_diagram.png",
+        "assets/versioning-diagram-brief.md",
         "references/README.md",
         "scripts/README.md",
         "scripts/version_control.py"

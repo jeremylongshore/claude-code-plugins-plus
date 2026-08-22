@@ -19,7 +19,7 @@ tags:
 - saas
 - evernote
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Evernote Core Workflow A: Note Creation & Management
 

@@ -22,8 +22,7 @@
   "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
   "license": "MIT",
   "author": {
-    "name": "Mattyp",
-    "email": "mattyp@claudecodeplugins.io"
+    "name": "Mattyp"
   },
   "publishConfig": {
     "access": "public"

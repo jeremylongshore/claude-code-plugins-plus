@@ -23,7 +23,7 @@ tags:
 - pci-dss
 - audit
 - regulatory
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Regulatory Compliance Audit
 

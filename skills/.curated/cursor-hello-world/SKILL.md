@@ -17,7 +17,7 @@ tags:
 - saas
 - cursor
 - cursor-hello
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Cursor Hello World
 

@@ -16,7 +16,7 @@ author: Bayram Annakov <bayram.annakov@gmail.com>
 tags:
 - community
 - claude-reflect
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Claude Reflect - Self-Learning System
 

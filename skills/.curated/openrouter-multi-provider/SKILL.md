@@ -15,7 +15,7 @@ tags:
 - openrouter
 - multi-provider
 - comparison
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # OpenRouter Multi-Provider
 

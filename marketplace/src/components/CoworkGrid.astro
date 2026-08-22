@@ -16,12 +16,10 @@ if (limit) {
   displayPacks = displayPacks.slice(0, limit);
 }
 
-// Try to load enriched manifest data (generated at build time)
-let manifest: any = null;
-try {
-  manifest = (await import('../data/cowork-manifest.json')).default;
-} catch {
-  // Manifest not yet generated - will show packs without sizes
+// The page build must generate this projection before the component renders.
+const manifest = (await import('../data/cowork-manifest.json')).default;
+if (!manifest || !Array.isArray(manifest.bundles) || !Array.isArray(manifest.plugins)) {
+  throw new Error('Cowork manifest is missing bundle or plugin data');
 }
 
 // Map bundle data by category for enrichment
@@ -52,7 +50,7 @@ if (manifest?.plugins) {
   .cowork-card {
     background: var(--card);
     border: 2px solid var(--brand-light-gray, #e5e7eb);
-    border-radius: 2px;
+    border-radius: 0;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
@@ -78,7 +76,7 @@ if (manifest?.plugins) {
     font-size: 1.1rem;
     font-weight: 700;
     margin: 0;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .cowork-description {
@@ -98,7 +96,7 @@ if (manifest?.plugins) {
   .cowork-stat {
     background: var(--brand-light, #f8f9fa);
     padding: 0.2rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 0;
     font-size: 0.78rem;
     font-weight: 600;
     color: var(--brand-mid-gray, #6b7280);
@@ -121,13 +119,13 @@ if (manifest?.plugins) {
     background: var(--primary);
     color: #0a0a0c;
     border: none;
-    border-radius: 6px;
+    border-radius: 0;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s, transform 0.1s;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-body);
   }
 
   .download-btn:hover {
@@ -159,13 +157,17 @@ if (manifest?.plugins) {
     const bundle = !isSaasPack ? bundleMap.get(pack.category) : null;
 
     // Determine download path and stats
-    const downloadPath = isSaasPack
-      ? (plugin?.path || `/downloads/plugins/${pack.packName}.zip`)
-      : (bundle?.path || `/downloads/bundles/${pack.category}.zip`);
+    const downloadRecord = isSaasPack ? plugin : bundle;
+    if (!downloadRecord?.path || !downloadRecord.sizeFormatted) {
+      throw new Error(`Cowork manifest has no complete download record for ${pack.id}`);
+    }
+    const downloadPath = downloadRecord.path;
     const downloadName = isSaasPack ? `${pack.packName}.zip` : `${pack.category}.zip`;
-    const sizeFormatted = isSaasPack
-      ? (plugin?.sizeFormatted || 'Loading...')
-      : (bundle?.sizeFormatted || 'Loading...');
+    const sizeFormatted = downloadRecord.sizeFormatted;
+    const bundleSkillCount = bundle?.totalSkills;
+    const hasBundleSkills = typeof bundleSkillCount === 'number' && bundleSkillCount > 0;
+    const pluginSkillCount = plugin?.skills;
+    const hasPluginSkills = typeof pluginSkillCount === 'number' && pluginSkillCount > 0;
 
     return (
       <div class="cowork-card" data-pack-id={pack.id}>
@@ -177,15 +179,15 @@ if (manifest?.plugins) {
 
         {bundle && (
           <div class="cowork-stats">
-            <span class="cowork-stat">{bundle.pluginCount} plugins</span>
-            {bundle.totalSkills > 0 && <span class="cowork-stat">{bundle.totalSkills} skills</span>}
+            <span class="cowork-stat" data-count-provenance="cowork-package-local">{bundle.pluginCount.toLocaleString()} Cowork-package-local plugins</span>
+            {hasBundleSkills && <span class="cowork-stat" data-count-provenance="cowork-package-local">{bundleSkillCount.toLocaleString()} Cowork-package-local skills</span>}
           </div>
         )}
 
         {plugin && (
           <div class="cowork-stats">
-            {plugin.skillCount > 0 && <span class="cowork-stat">{plugin.skillCount} skills</span>}
-            {plugin.commandCount > 0 && <span class="cowork-stat">{plugin.commandCount} commands</span>}
+            {hasPluginSkills && <span class="cowork-stat" data-count-provenance="cowork-package-local">{pluginSkillCount.toLocaleString()} Cowork-package-local skills</span>}
+            {plugin.commands > 0 && <span class="cowork-stat" data-count-provenance="cowork-package-local">{plugin.commands.toLocaleString()} Cowork-package-local commands</span>}
           </div>
         )}
 
@@ -218,7 +220,7 @@ if (manifest?.plugins) {
 
     const toast = document.createElement('div');
     toast.textContent = 'Downloading ' + category + ' pack...';
-    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius: 2px;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius: 0;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
     document.body.appendChild(toast);
     setTimeout(function() { toast.remove(); }, 2500);
 

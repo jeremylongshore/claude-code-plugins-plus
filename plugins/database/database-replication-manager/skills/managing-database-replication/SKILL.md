@@ -17,7 +17,7 @@ tags:
 - database
 - scaling
 - database-replication
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Database Replication Manager
 

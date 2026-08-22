@@ -18,7 +18,7 @@ allowed-tools: Read, Write, Edit, Bash(databricks:*), Bash(jq:*), Bash(python3:*
 version: 2.27.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 tags: [saas, databricks, streaming, delta, data-ops]
 ---
 

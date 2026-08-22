@@ -12,7 +12,7 @@ tags:
 - performance
 - ci-cd
 - detecting-performance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Performance Regression Detector
 

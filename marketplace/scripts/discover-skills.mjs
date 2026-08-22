@@ -47,9 +47,14 @@
  * .github/workflows/validate-plugins.yml's "Check plugin structure" step.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
+import {
+  assertGeneratedContentCurrent,
+  readIndexedArtifact,
+} from '../../scripts/check-generated-artifacts.mjs';
+import { resolveCorpus } from '../../scripts/corpus-resolver.mjs';
 import { mdToHtml } from './md-to-html.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -70,9 +75,29 @@ const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extend
 //   Not a build-time concern; CLI errors with guidance.
 const LEVELS = new Set(['metadata', 'full', 'file']);
 let LEVEL = 'full';
+const CHECK = process.argv.includes('--check');
 for (const arg of process.argv.slice(2)) {
   const m = arg.match(/^--level=(.+)$/);
   if (m) LEVEL = m[1];
+}
+
+export function compareSkillNamesOrdinal(left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function preservedGeneratedAt(path, label) {
+  let value;
+  try {
+    value = JSON.parse(
+      readIndexedArtifact(relative(ROOT_DIR, path), { root: ROOT_DIR }).toString('utf8'),
+    ).generatedAt;
+  } catch (error) {
+    throw new Error(`cannot preserve ${label} generatedAt from ${path}: ${error.message}`);
+  }
+  if (typeof value !== 'string' || !Number.isFinite(Date.parse(value))) {
+    throw new Error(`cannot preserve invalid ${label} generatedAt in ${path}`);
+  }
+  return value;
 }
 if (!LEVELS.has(LEVEL)) {
   console.error(`❌ Unknown --level=${LEVEL}. Expected: metadata | full | file`);
@@ -231,6 +256,7 @@ function getPluginMetadata(pluginDir) {
         author: pluginJson.author
       };
     } catch (error) {
+      if (CHECK) throw new Error(`failed to parse plugin.json at ${pluginJsonPath}: ${error.message}`);
       console.warn(`Failed to parse plugin.json at ${pluginJsonPath}: ${error.message}`);
     }
   }
@@ -241,30 +267,6 @@ function getPluginMetadata(pluginDir) {
     description: '',
     author: ''
   };
-}
-
-/**
- * Recursively find all SKILL.md files
- */
-function findSkillFiles(dir, skillFiles = []) {
-  const entries = readdirSync(dir);
-
-  for (const entry of entries) {
-    const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      // Skip node_modules and hidden directories
-      if (entry === 'node_modules' || entry.startsWith('.')) {
-        continue;
-      }
-      findSkillFiles(fullPath, skillFiles);
-    } else if (entry === 'SKILL.md') {
-      skillFiles.push(fullPath);
-    }
-  }
-
-  return skillFiles;
 }
 
 /**
@@ -472,12 +474,15 @@ function main() {
     marketplacePluginNames = new Set(marketplaceCatalog.plugins.map(p => p.name));
     console.log(`📦 Loaded marketplace catalog: ${marketplacePluginNames.size} plugins\n`);
   } catch (error) {
+    if (CHECK) throw new Error(`cannot load marketplace catalog in check mode: ${error.message}`);
     console.warn(`⚠️  Could not load marketplace catalog: ${error.message}`);
     console.warn(`    Proceeding without marketplace filtering...\n`);
   }
 
   // Find all SKILL.md files
-  const skillFiles = findSkillFiles(PLUGINS_DIR);
+  const skillFiles = resolveCorpus('marketplace-visible', { root: ROOT_DIR }).map((entry) =>
+    join(ROOT_DIR, entry),
+  );
   console.log(`Found ${skillFiles.length} SKILL.md files\n`);
 
   // Process each skill file
@@ -489,7 +494,8 @@ function main() {
   for (const filePath of skillFiles) {
     const skill = processSkillFile(filePath, { metadataOnly });
     if (skill) {
-      // Only include skills whose parent plugin is in the marketplace
+      // Resolver membership is authoritative; keep this assertion as a
+      // defensive check against catalog changes during a long generation run.
       if (marketplacePluginNames.size === 0 || marketplacePluginNames.has(skill.parentPlugin.name)) {
         skills.push(skill);
         successCount++;
@@ -516,8 +522,12 @@ function main() {
   }
   console.log('');
 
+  if (failCount > 0) {
+    throw new Error(`refusing to generate an incomplete skill projection: ${failCount} source file(s) failed`);
+  }
+
   // Sort skills by name
-  skills.sort((a, b) => a.name.localeCompare(b.name));
+  skills.sort((a, b) => compareSkillNamesOrdinal(a.name, b.name));
 
   // Check for duplicate slugs
   const slugCounts = {};
@@ -545,6 +555,12 @@ function main() {
   }
 
   const generatedAt = new Date().toISOString();
+  const indexGeneratedAt = CHECK
+    ? preservedGeneratedAt(INDEX_FILE, 'skills index')
+    : generatedAt;
+  const catalogGeneratedAt = CHECK && !metadataOnly
+    ? preservedGeneratedAt(OUTPUT_FILE, 'skills catalog')
+    : generatedAt;
   const categories = [...new Set(skills.map(s => s.parentPlugin.category))].sort();
 
   // L0 index — always emitted. ~150 bytes per skill, ~3-10 KB gzipped at our
@@ -555,25 +571,32 @@ function main() {
     level: 'metadata',
     skills: skills.map(projectL0),
     count: skills.length,
-    generatedAt,
+    generatedAt: indexGeneratedAt,
     categories,
   };
-  writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
-  console.log(`✅ L0 index generated:   ${INDEX_FILE}  (${skills.length} skills)`);
+  const indexBytes = JSON.stringify(index, null, 2);
+  if (!CHECK) writeFileSync(INDEX_FILE, indexBytes);
+  console.log(
+    `✅ L0 index ${CHECK ? 'rendered for check' : 'generated'}:   ${INDEX_FILE}  (${skills.length} skills)`,
+  );
 
   // L1 catalog — only emitted at level=full. Heavy artifact with body HTML.
+  let catalogBytes = null;
   if (!metadataOnly) {
     const catalog = {
       schemaVersion: '3.6.0',
       level: 'full',
       skills,
       count: skills.length,
-      generatedAt,
+      generatedAt: catalogGeneratedAt,
       categories,
       allowedToolsUsed: [...new Set(skills.flatMap(s => s.allowedTools))].sort()
     };
-    writeFileSync(OUTPUT_FILE, JSON.stringify(catalog, null, 2));
-    console.log(`✅ L1 catalog generated: ${OUTPUT_FILE}  (${skills.length} skills with body HTML)`);
+    catalogBytes = JSON.stringify(catalog, null, 2);
+    if (!CHECK) writeFileSync(OUTPUT_FILE, catalogBytes);
+    console.log(
+      `✅ L1 catalog ${CHECK ? 'rendered for check' : 'generated'}: ${OUTPUT_FILE}  (${skills.length} skills with body HTML)`,
+    );
   } else {
     console.log(`ℹ️  L1 catalog skipped (level=metadata — re-run without --level to emit it).`);
   }
@@ -597,7 +620,20 @@ function main() {
     if (!metadataOnly) console.log(`   Tools: ${skill.allowedTools.join(', ')}`);
   });
 
+  if (CHECK) {
+    const candidates = [
+      { path: 'marketplace/src/data/skills-index.json', contents: indexBytes },
+      ...(metadataOnly
+        ? []
+        : [{ path: 'marketplace/src/data/skills-catalog.json', contents: catalogBytes }]),
+    ];
+    assertGeneratedContentCurrent(candidates, { root: ROOT_DIR });
+    console.log(
+      `\n✅ Generated skill projections match the Git index (${candidates.length} checked${metadataOnly ? '; skills-catalog pending' : ''})`,
+    );
+  }
+
   process.exit(0);
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

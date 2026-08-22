@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Pipeline Quiz — Tons of Skills CI/CD & Maintainer System
 
 **Doc:** 705-DR-GUID · **Purpose:** competency gate for the Reviewer → Approver
@@ -19,7 +21,9 @@ gate" questions — missing any one is an automatic re-take regardless of total.
 ## Section A — Gate architecture
 
 **Q1.** Exactly how many status checks are required by branch protection on
-`main`, and what are they? (Name them.)
+`main`, and what are they? (Name them.) Then: one of them is deliberately NOT in
+`ci-required`'s `needs:` list — which one, and why would putting it there break
+the gate?
 
 **Q2.** What is `ci-required`, and mechanically how does it decide whether to pass
 or fail?
@@ -37,8 +41,8 @@ to wire it in, and the specific anti-pattern you must avoid.
 
 ## Section B — Advisory vs. blocking
 
-**Q6.** Greptile requests changes on a PR, but `ci-required` and `gitleaks` are
-green and a code owner approved. Can the PR merge? Explain the principle.
+**Q6.** Greptile requests changes on a PR, but `ci-required`, `gitleaks` and
+`skill-conform` are green and a code owner approved. Can the PR merge? Explain the principle.
 
 **Q7.** Name three advisory lanes that run on PRs and state, for each, why it is
 advisory and not blocking.

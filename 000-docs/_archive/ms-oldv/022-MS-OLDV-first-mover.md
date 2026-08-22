@@ -1,9 +1,11 @@
+<!-- doc-class: record -->
+
 # First Mover Report: Claude Code Plugin Marketplace
 
 **Generated**: October 11, 2025
 **Marketplace Version**: v1.1.0
 **Repository**: https://github.com/jeremylongshore/claude-code-plugins
-**Live Site**: https://claudecodeplugins.io/
+**Live Site**: [retired legacy public domain]/
 
 ---
 
@@ -38,7 +40,7 @@ We have successfully positioned ourselves as **THE first-mover marketplace for C
 
 **Status**: ALL 20 PLUGINS DEPLOYED AND ACCESSIBLE
 
-Verified plugins on https://claudecodeplugins.io/:
+Verified plugins on [retired legacy public domain]/:
 
 **Plugin Packs (4)**:
 1. ai-ml-engineering-pack
@@ -214,7 +216,7 @@ Installation:
 ### GitHub Pages
 
 **Status**: Live and accessible
-**URL**: https://claudecodeplugins.io/
+**URL**: [retired legacy public domain]/
 **Build System**: Astro 5.14.4 with automated GitHub Actions deployment
 **Performance**: Fast loading, optimized static site
 
@@ -435,5 +437,5 @@ We have successfully established ourselves as the **definitive first-mover marke
 
 **Report Generated**: October 11, 2025
 **Repository**: https://github.com/jeremylongshore/claude-code-plugins
-**Live Marketplace**: https://claudecodeplugins.io/
+**Live Marketplace**: [retired legacy public domain]/
 **Version**: v1.1.0

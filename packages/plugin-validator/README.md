@@ -269,7 +269,7 @@ Found a bug or want to add checks? Contribute at:
 ## Resources
 
 - **Claude Code Docs:** https://docs.claude.com/en/docs/claude-code/
-- **Plugin Marketplace:** https://claudecodeplugins.io/
+- **Plugin Marketplace:** https://tonsofskills.com/
 - **Discord Community:** https://discord.com/invite/6PPFFzqPDZ (#claude-code)
 
 ## License
@@ -279,4 +279,4 @@ MIT © 2024-2026 Jeremy Longshore & Contributors
 ---
 
 **Made with ❤️ by the Claude Code Plugins community**
-*Visit [claudecodeplugins.io](https://claudecodeplugins.io) for 253 production-ready plugins*
+*Visit [tonsofskills.com](https://tonsofskills.com) for 253 production-ready plugins*

@@ -20,7 +20,7 @@ surface area we ship — not in a generic "developer persona" abstraction.
 
 **Role.** External contributor opening a fork-and-PR to add or update a
 plugin or skill. Could be a one-time submitter or a recurring contributor.
-Maps to the workflow described in [`CONTRIBUTING.md`](../CONTRIBUTING.md).
+Maps to the workflow described in [`CONTRIBUTING.md`](../.github/CONTRIBUTING.md).
 
 **Primary goals.**
 
@@ -29,7 +29,7 @@ Maps to the workflow described in [`CONTRIBUTING.md`](../CONTRIBUTING.md).
 - Pass `./scripts/quick-test.sh` locally before pushing so CI doesn't churn.
 - Score above the Intent Solutions 100-point rubric threshold in the
   marketplace-tier validator (`scripts/validate-skills-schema.py
-  --marketplace`).
+--marketplace`).
 - Get actionable feedback fast — Gemini PR review within 2–5 minutes,
   maintainer follow-up within 48 hours.
 - Have the install command published in the README and `/plugins/<slug>/`

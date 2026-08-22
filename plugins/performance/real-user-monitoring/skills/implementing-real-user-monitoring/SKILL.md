@@ -12,7 +12,7 @@ tags:
 - performance
 - monitoring
 - real-user
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Real User Monitoring
 

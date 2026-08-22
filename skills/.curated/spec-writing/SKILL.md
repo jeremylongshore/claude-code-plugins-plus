@@ -14,7 +14,7 @@ license: MIT
 tags:
 - community
 - spec-writing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Spec Writing
 

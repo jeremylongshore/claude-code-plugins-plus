@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CountProvenance from '../../components/CountProvenance.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import CrossProperty from '../../components/CrossProperty.astro';
 import { readFileSync } from 'node:fs';
@@ -23,7 +24,7 @@ const firstPageSkills = _rawCatalog.skills.slice(0, PAGE_SIZE).map((skill: any) 
 }));
 
 const pageTitle = 'Skills (Embedded in Plugins)';
-const pageDescription = `Browse ${_rawCatalog.count} agent skills embedded in plugins across ${_rawCatalog.categories.length} categories`;
+const pageDescription = `Browse ${_rawCatalog.count} marketplace-visible agent skills embedded in plugins across ${_rawCatalog.categories.length} categories`;
 
 const allTools = _rawCatalog.allowedToolsUsed;
 ---
@@ -52,7 +53,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
     .skills-subtitle {
       color: var(--text-2);
       font-size: 1rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
     }
 
     .filters-section {
@@ -75,7 +76,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
 
     .filter-group label {
       display: block;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text);
@@ -88,7 +89,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
       font-size: 0.95rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       transition: all var(--duration-fast) var(--ease-out);
     }
 
@@ -114,7 +115,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
     }
 
     .clear-filters-btn {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       background: transparent;
       border: none;
       color: var(--primary);
@@ -159,7 +160,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
     }
 
     .no-results button {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       padding: 0.75rem 1.5rem;
       background: var(--primary);
       color: #0a0a0c;
@@ -205,7 +206,8 @@ const allTools = _rawCatalog.allowedToolsUsed;
   <div class="skills-header">
     <div class="skills-header-content">
       <h1 class="skills-title">Skills Directory</h1>
-      <p class="skills-subtitle"><strong style="font-family: 'JetBrains Mono', monospace; color: var(--primary);">{_rawCatalog.count}</strong> skills across {_rawCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
+      <p class="skills-subtitle"><strong style="font-family: var(--font-mono); color: var(--primary);">{_rawCatalog.count}</strong> marketplace-visible skills across {_rawCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
+      <CountProvenance cohort="marketplace-visible" />
     </div>
   </div>
 
@@ -251,7 +253,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
 
       <div class="filters-footer">
         <p id="results-count" class="results-count">
-          Showing {_rawCatalog.count} of {_rawCatalog.count} skills
+          Showing {_rawCatalog.count} of {_rawCatalog.count} marketplace-visible skills
         </p>
         <button onclick="clearFilters()" class="clear-filters-btn">
           Clear Filters
@@ -394,7 +396,9 @@ const allTools = _rawCatalog.allowedToolsUsed;
 
     function updateResultsCount(shown, total) {
       const el = document.getElementById('results-count');
-      if (el) el.textContent = `Showing ${shown} of ${total} skills`;
+      if (el) {
+        el.innerHTML = `<span data-count-provenance="query-result-local">Showing ${shown} of ${total} query-result-local skills</span>`;
+      }
     }
 
     // Event listeners

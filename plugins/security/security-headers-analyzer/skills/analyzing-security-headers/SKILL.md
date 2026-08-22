@@ -18,7 +18,7 @@ tags:
 - security
 - compliance
 - audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Analyzing Security Headers
 
@@ -72,7 +72,7 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the five-phase implem
 
 ## Examples
 
-- "Analyze security headers for `https://claudecodeplugins.io` and explain any CSP or HSTS issues."
+- "Analyze security headers for `https://tonsofskills.com` and explain any CSP or HSTS issues."
 - "Check headers for `example.com` on both HTTP and HTTPS and provide an Nginx remediation config."
 - "Batch-analyze headers for five staging domains and rank them by security grade."
 

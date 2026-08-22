@@ -15,7 +15,7 @@ tags:
 - saas
 - cursor
 - cursor-tab
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Cursor Tab Completion
 

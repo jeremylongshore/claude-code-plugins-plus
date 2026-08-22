@@ -22,7 +22,7 @@ tags:
 - ci-cd
 - github-actions
 - testing
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Instantly CI Integration
 

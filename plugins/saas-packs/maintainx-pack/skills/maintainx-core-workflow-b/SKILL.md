@@ -19,7 +19,7 @@ tags:
 - saas
 - maintainx
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # MaintainX Core Workflow B: Asset & Location Management
 

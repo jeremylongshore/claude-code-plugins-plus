@@ -19,7 +19,7 @@ tags:
 - saas
 - linear
 - backup
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Linear Data Handling
 

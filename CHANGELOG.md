@@ -1,11 +1,419 @@
 # Changelog
 
+## 2026-08-18
+
+- **docs(governance):** correct every live documented number that disagreed
+  with the code (E2.6): the merge gate is three required contexts, the
+  aggregate needs twenty-one jobs, and ratified records received dated
+  correction appendices instead of rewritten baselines.
+- **feat(governance):** pin the documented `ci-required` contract and schema
+  version to the code with fail-loud prose-anchor assertions (E2.7+E2.8).
+- **docs(governance):** point STANDARDS, CLAUDE, and AGENTS at the blueprint's
+  one-owner-per-fact-class authority map instead of restating ownership
+  (E2.10).
+- **feat(governance):** rebuild the root README as a governed landing contract
+  — category-only TOC, byte budgets, cohort-labeled scale block, certification
+  honesty block, frozen install slug pinned by red-run tests (E2.13).
+- **fix(marketplace):** label search-result and entity-local skill counts with
+  their local population and provenance instead of presenting them as global
+  marketplace totals.
+- **fix(marketplace):** make spotlight, plugin, community, and plugin-detail
+  counts identify their entity-local population with fail-closed registry
+  contracts; numeric values are unchanged.
+- **fix(cowork):** label downloadable bundle, package, landing-page, and
+  archive counts as `Cowork-package-local` with exact fail-closed contracts.
+- **fix(learning):** label vendor pack and category counts as
+  `vendor-pack-local`, remove unscoped metadata totals, and register all 60
+  rendered claims with the fail-closed count contract.
+- **fix(learning):** separate learning-hub aggregate totals from per-pack
+  counts with four exact population-labeled contracts.
+- **docs(research):** mark the research index and published analyses as a
+  dated historical snapshot with an exact source-commit evidence boundary.
+- **docs(research):** distinguish the original index analysis claim from the
+  source commit's separately documented evidence-corpus size.
+- **docs(counts):** mark the documentation CTA's retained totals as historical
+  copy and distinguish grading thresholds from corpus counts.
+- **docs(counts):** record the completed E1.6 count-cohort inventory and
+  closure evidence.
+- **docs(governance):** classify every tracked `000-docs/*.md` file as
+  `canonical`, `generated`, `frozen`, or `record`; enforce frozen-body and
+  generated-index boundaries in the existing `doc-governance` gate.
+- **fix(marketplace):** label generated social-card counts with the
+  `marketplace-visible` cohort, canonical source, and reproducible resolver
+  command; reject unreadable or malformed count inputs.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Changed (2026-08-17 — published count cohort labels)
+
+- **Live marketplace skill totals now identify the population they count.** The homepage, explore,
+  comparison, sponsor, and skills-directory pages label their unchanged totals as
+  `marketplace-visible` and expose the canonical corpus-resolver command beside the value. A
+  machine-readable registry and fixture-driven, fail-closed CI gate discover count expressions by
+  meaning rather than one variable name across public Astro pages and components, rejecting any
+  unregistered rendered expression—including unfamiliar or multiline identifiers split from the
+  `skills` noun by adjacent markup—or pre/post-noun literal count, collection length, catalog count,
+  unsafe or unreadable path,
+  comment-only labels, and missing provenance without adding another required status context. The
+  first inventory finds 51 public Astro source files. Forty-six non-global or point-in-time files
+  plus the generated social image remain path-level deferrals; three local/query expressions on
+  otherwise enforced pages are separately owned, expression-level deferrals. The gate binds every
+  detected expression to its exact normalized registration—including any formatter call. Simple
+  brace/interpolation wrappers normalize; compound outer expressions do not inherit an inner
+  registration. Adding a second count or extending a registered expression therefore cannot bypass
+  cohort governance. Frontmatter, script/style bodies, comments, and markup
+  attributes are masked for the rendered count/label contract; provenance must be a standalone
+  top-level component tag parsed outside quoted attributes and Astro expression strings, while
+  self-closing head scripts remain correctly parsed. Quote- and brace-aware raw-text parsing prevents
+  a quoted `/>` attribute from exposing paired script content as visible evidence and refuses
+  malformed raw-text elements. Fixtures distinguish `/skills/` paths, prose durations, and adjacent
+  time units, stars, notebook/agent populations, narrative heading shapes, collection renderers, and
+  unrelated attributes from actual published skill totals without relying on count-like identifier
+  names. Plain, canonical, and hyphenated count-label headings remain associated with adjacent
+  counts. Nested object syntax remains part of its enclosing registered expression rather than
+  being misclassified as a second rendered count.
+
+### Fixed (2026-08-17 — canonical catalog name uniqueness)
+
+- **The editable plugin catalog now contains 467 rows with 467 unique names.** Three redundant
+  `claudebase` rows and one duplicate `geepers-agents` row were collapsed without renaming either
+  plugin; the retained Geepers record preserves its richer component metadata and upstream links.
+  The existing catalog invariant validator now fails closed on exact or normalization-equivalent
+  duplicates, empty names, and non-string names, while `marketplace.json` and the README catalog
+  navigation are regenerated from the corrected source.
+
+### Fixed (2026-08-17 — README star-history chart)
+
+- **The README star-history chart now uses the working `star-history.dera.page` mirror.** The
+  image and its destination no longer depend on the broken tokenless upstream endpoint.
+
+### Fixed (2026-08-17 — blog Markdown validation)
+
+- **The newly published failure-diagnostics article now preserves blank-line boundaries around its
+  numbered list.** This restores the repository-wide blocking Markdownlint gate without changing
+  article wording or weakening MD032.
+
+### Fixed (2026-08-17 — Actionlint bootstrap availability)
+
+- **Actionlint now downloads its pinned release archive directly and verifies the upstream
+  SHA-256 before extraction.** This removes the executable installer-script dependency on
+  `raw.githubusercontent.com`, which returned HTTP 429 before lint execution in three consecutive
+  PR runs, while preserving the blocking v1.7.4 lint command and fail-closed behavior.
+
+### Added (2026-08-17 — deterministic generated skill projections)
+
+- **The marketplace L0 skill index now has a fail-closed regenerate-and-diff gate.** A dedicated,
+  unconditional `Validate Plugins` job renders `skills-index.json` in memory and byte-compares it
+  with the Git index without touching the working tree, receiving no credentials and performing no
+  network calls. Fixtures refuse mutated, untracked, symlinked, duplicate, and path-escaping
+  candidates. Skill names now use a fixture-pinned ordinal sort instead of host-locale ordering, and
+  any unreadable source aborts generation rather than emitting a partial artifact. The
+  generated-artifact registry now separates four deterministic local
+  projections from three external-stat snapshots and editorial marketplace data; this first E1.8
+  slice gates one of four and leaves the full skill catalog, plugin catalog, and unified search
+  projection explicitly pending rather than treating unlike populations as interchangeable.
+
+- **The full marketplace skill catalog now has the same fail-closed content gate.** The reviewed
+  baseline moves from 3,008 to 3,068 marketplace-visible skills: 96 source paths entered, 36 left,
+  and 2,943 of 2,972 shared records changed as current skill and parent-plugin metadata replaced the
+  stale 2026-06-02 projection. CI renders both skill projections in memory, compares both with
+  stage-0 Git-index bytes, and refuses if either drifts; a matching L0 index cannot hide a stale L1
+  catalog. Of the added and removed paths, 73 and 7 respectively are provenance-marked mirrors;
+  only the generated projection changed, with zero mirrored `SKILL.md` edits. E1.8 deterministic
+  content-drift coverage is now two of four. Plugin catalog and unified search remain separate
+  follow-up slices.
+
+- **The website plugin catalog is now a deterministic projection instead of its own historical
+  input.** Its renderer no longer preserves stale rows or flags from `catalog.json`, emits runtime
+  timestamps, or silently ignores malformed skill data. It derives 467 plugins in canonical
+  catalog order and 3,068 distinct skill paths from the extended catalog plus the full skill
+  projection; aliases that share one source receive the same source-derived count without
+  double-counting the global total. The projection preserves the legacy default author for the two
+  canonical rows without one and applies the governed retired-domain normalization to every output
+  field. Fixture tests reject duplicate identities and paths, contradictory ancestry, traversal,
+  malformed inputs, and staged drift. The unconditional
+  generated-content job now byte-checks three of four deterministic marketplace projections with
+  no new required context; unified search remains the final E1.8 slice.
+
+- **Unified marketplace search now completes the deterministic projection gate.** The renderer
+  removes its wall-clock timestamp and never reads the tracked output, then derives the current
+  plugin, skill, documentation, agent, and hook search surface from governed repository inputs.
+  It preserves the public item order and consumer fields, parses the repository's scalar, block,
+  and inline-list documentation frontmatter forms, rejects malformed identities and symlinked or
+  unreadable surfaces, writes atomically, and compares exact stage-0 Git-index bytes in `--check`
+  mode without repairing drift. The shared unconditional `Validate Plugins` job now gates all four
+  deterministic marketplace projections without adding a required status context or path filter.
+
+### Fixed (2026-08-17 — release-note coverage evidence)
+
+- **Release-note coverage now fails closed when Git tag evidence is absent or incomplete.** The
+  newly pinned changelog-coverage check runs with fetched tags inside `Validate Plugins`, rejects tag
+  enumeration failures, tagless or floor-incomplete clones, missing or duplicate release notes,
+  non-regular note paths, and malformed version metadata, and carries deterministic red fixtures.
+  Every release from v4.14.0 onward must have exactly one public changelog entry; older tags remain
+  explicitly grandfathered.
+
+### Fixed (2026-08-17 — JRig/Freshie authority boundary)
+
+- **First-party operator guidance can no longer send JRig's runtime tables into the Freshie
+  inventory.** The public validation skill and Plane evidence note now use
+  `scripts/run-jrig-eval.sh`, which evaluates against a `/dev/shm` scratch database and delegates
+  the governed `forge_proofs` write to the repository recorder. A provenance-aware, fail-closed
+  check rejects direct `j-rig eval --db ...freshie/inventory.sqlite` commands and equivalent prose
+  directives across active first-party operator surfaces, including `npx` invocations, folded
+  and flow-style YAML commands, shell-escaped executable and flag spellings, statically resolvable
+  executable/verb/flag/value indirection, ad hoc shell-function aliases, command substitution,
+  parameter assignment, brace expansion, parsed YAML tags/keys/anchors, and active filesystem-glob
+  path spellings. Command state follows shell ordering while assignments isolated by subshells,
+  pipelines, background jobs, or skipped `&&`/`||` branches cannot overwrite parent state; quoted
+  or escaped literal glob characters remain literal, and mirrors remain upstream-owned.
+  The check runs inside the existing
+  documentation-governance job and adds no required status context.
+
+### Changed (2026-08-16 — build-derived marketplace data ownership)
+
+- **Two build-only marketplace JSON projections no longer have a second committed claimant.**
+  `readme-sections.json` is regenerated before both Astro build and local development, while the
+  now-unconsumed `jrig-data.json` is generated only from local `forge_proofs` evidence and writes a
+  deterministic empty map when that untracked database is absent. The shared generated-artifact
+  registry and fail-closed tracking gate reject either file if it is committed again. Four audited
+  build-derived files remain tracked because supported non-build consumers or prior-state semantics
+  still read their committed bytes; Epic 1.8 owns their regenerate-and-diff controls. The unconsumed
+  JRig projection is temporary: blueprint bead E9.2 still owns deleting it and its build step.
+
+### Changed (2026-08-16 — retired public-domain containment)
+
+- **First-party and generated surfaces now use only the live Tons of Skills domain.** A
+  case-insensitive, fail-closed policy classifies every tracked occurrence before allowing it:
+  editable sources and registered generated projections must be clean, while frozen standards,
+  provenance-owned mirrors, and registered point-in-time exports remain byte-identical. The exact
+  base contained 356 occurrences across 125 files: 292 actionable and 64 retained by policy.
+  The existing documentation-governance job now runs the fixture-backed lint so mixed case,
+  symlinks, malformed provenance, path traversal, and unregistered frozen paths cannot bypass it.
+  Retained frozen and Freshie evidence is path-and-byte pinned, and the generated postprocessor
+  skips every `.source.json` ancestry boundary. Historical claims use neutral redaction instead of
+  rewriting past evidence; command and URL examples use the reserved non-resolving
+  `retired-domain.invalid` host so they remain syntactically clear without reviving the dead
+  property. Unsupported email identities are removed or mapped to the existing
+  Intent Solutions contact, CLI catalog repair uses the verified canonical GitHub artifact, and
+  the MCP preset catalog no longer advertises an unserved remote schema URL.
+  [Exact-path supply-chain waivers](scripts/scan-allowlist.txt) record review of seven pre-existing
+  dual-use capabilities whose files have only domain or contact changes in this slice; the
+  underlying capabilities and scanner remain unchanged. The catalog schema permits an author
+  email and author URL to be omitted, so the unsupported Mattyp address and marketplace attribution
+  URL are removed while contributor credit is retained; the first-party Excel listing uses the
+  matching Intent Solutions identity and contact.
+  Retained-evidence, provenance, and generated-projection I/O is descriptor-bound with
+  no-follow semantics where available, closing metadata-check/file-use races without weakening
+  refusal behavior. Provenance absence is accepted only when the initial descriptor open reports
+  no path; disappearance after a successful open is refused as a concurrent mutation.
+  Cross-platform CLI validation now installs only the CLI package and its
+  dependencies, avoiding unrelated native-workspace build failures while preserving every CLI
+  runtime, package-manager, and operating-system assertion. Windows jobs use the maintained
+  Node-20-compatible `node-gyp` release that recognizes the hosted runner's Visual Studio 2026
+  toolchain when a transitive native dependency has no prebuilt binary. The production redirect
+  assertion for the retired external domain is removed intentionally: the dead property is no
+  longer an owned compatibility surface, while `tonsofskills.com` remains the governed live site.
+
+### Fixed (2026-08-16 — curated asset content-type integrity)
+
+- **Curated promotion now validates file content instead of relying on a NUL-byte prefix.**
+  Recognized image, archive, document, font, and executable signatures are omitted from the
+  text-only `skills/.curated/` projection, while misleading extensions, unreadable paths,
+  symlinks, NUL-bearing data, non-UTF-8 payloads, and failed `git ls-files` enumeration fail
+  closed in both build and drift-check modes instead of silently producing an empty mirror. The
+  paired corpus correction replaces seven first-party text placeholders that masqueraded as
+  `.png`, `.pdf`, or `.zip` files with truthful Markdown briefs or removes them, then rebuilds
+  all 1,915 curated skills. The pre-change scorecard found 11 extension/byte mismatches: seven
+  source artifacts and four generated curated copies; the corrected tree reports zero.
+
+### Added (2026-08-16 — required supersession records)
+
+- **Document supersession now has one reviewable record shape.** A filed template binds the frozen
+  class marker, `SUPERSEDED–FROZEN` banner, per-section disposition, and `STANDARDS.md` canonical
+  pointer into one pull request. A fixture-driven checker rejects missing components, placeholders,
+  and fenced or commented decoys inside the existing documentation-governance gate. The same gate
+  discovers every tracked completed record or malformed attempt; the five-document 6767 to 727
+  reconciliation is the worked example. The corpus gate fails closed if no completed record remains,
+  so removing that example requires filing a replacement record in the same change.
+
+### Changed (2026-08-16 — single README metrics writer)
+
+- **README counts now have one enforced writer.** The orphaned
+  `scripts/update-metrics.mjs` command was removed, leaving
+  `scripts/generate-readme-toc.mjs` as the only governed writer for catalog,
+  skill, and agent counts. The Epic 1 measurement gate searches the full tracked
+  executable tree, excluding explicit test and provenance-owned mirror surfaces,
+  and fails closed if another production writer appears. A package-level planted
+  writer proves the duplicate path cannot return silently.
+
+### Changed (2026-08-16 — canonical skill cohorts)
+
+- **Four binding skill-count surfaces now use one corpus resolver.** README
+  metrics, marketplace discovery, canonical validation, and curated promotion
+  consume sorted tracked paths from the named `marketplace-visible`, `graded`,
+  `first-party`, `curated-mirror`, and `curriculum` cohorts. Fixture-tree tests
+  pin provenance, hidden-path, traversal, and malformed-record behavior without
+  freezing live corpus totals. The README badge now reports the 3,068
+  marketplace-visible skills the site can render; the broader graded and
+  first-party cohorts remain available under their own names. Status-quo
+  compatibility is explicit: an orphan plugin with neither provenance nor a
+  manifest remains first-party rather than being silently reclassified.
+  Scorecard consumers must migrate row 1 from `plugin_skill_files` to the
+  explicit `raw_tracked_plugin_skill_files` key; row 24 owns governed cohort
+  counts. Both direct Git scans and caller-supplied tracked inventories reject
+  `SKILL.md` symlinks before cohort membership is computed.
+
+### Added (2026-08-16 — Epic 1 measurement harness)
+
+- **All 62 modernization scorecard rows now have one deterministic evidence
+  command.** `pnpm run measure:e1` measures the exact staged Git tree, preserves
+  distinct plugin, validator, Freshie, generated-index, and terminal cohorts,
+  and records explicit `not_reproducible` reason codes instead of copying stale
+  numbers where the repository lacks committed evidence. Per-row commands are
+  valid, `pnpm run measure:e1:check` is enforced inside the existing required
+  validation aggregate, and fixtures prove ignored mirrors, unstaged edits,
+  malformed protocols, bad signatures, missing inputs, and one-value drift fail
+  closed.
+
+### Fixed (2026-08-16 — malformed tool-allowlist enforcement)
+
+- **Structurally malformed `allowed-tools` entries now fail closed.** Validator
+  schema 4.0.0 reports malformed entries as errors at every tier while keeping
+  well-formed unknown tool names advisory. Empty CSV fields and non-string or
+  blank YAML-list members can no longer be normalized away. Corpus regression
+  coverage proves zero first-party baseline debt and preserves the ten parseable
+  mirror-owned Kobiton folded-scalar copies without editing mirrored content.
+
+### Added (2026-08-15 — frozen prose-anchor gate)
+
+- **Frozen 6767-h section anchors are now regression-gated.** The existing `doc-governance` job
+  verifies the exact 21-section manifest, exercises valid and invalid citation fixtures, and proves
+  that renaming a cited heading fails closed before schema references can silently drift.
+
+### Added (2026-08-15 — generated documentation index)
+
+- **The documentation estate index is now generated and drift-gated.** A deterministic generator
+  builds `000-docs/000-INDEX.md` from Git's tracked documentation inventory, preserves archived and
+  non-Markdown artifacts, and fails the existing `doc-governance` job when any count, row, order, or
+  generator-owned reference text is stale.
+
+### Added (2026-08-15 — document authority gate)
+
+- **Documents can no longer self-grant canonical authority.** The existing
+  `doc-governance` job now rejects an effective `AUTHORITATIVE` or `CANONICAL`
+  declaration unless `STANDARDS.md` § Canonical documents links the claimant. The gate's first
+  live run also demoted the subordinate schema 3.6.0 configuration guide from self-declared
+  authority to a reference that points at its existing schema owners.
+
+### Changed (2026-08-15 — documentation authority consolidation)
+
+- **Superseded standards are explicitly frozen.** Documents 6767-a/c/d/e/h now identify
+  their known-false authority or schema rules with evidence from the ratified modernization
+  blueprint, while scaffold diagrams 6767-f/g are reference-only and the canonical 6767-b
+  skill rubric remains untouched. ([#1197](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1197))
+
+### Added (2026-08-15 — governed-brain v1.2.0)
+
+- **The governed-brain mirror now documents hybrid local search and provenance limits.**
+  Upstream v1.2.0 describes native FTS5 plus `qmd` reciprocal-rank fusion with a
+  freshness/category rerank, and makes explicit that authenticated origin proves where a
+  capture came from—not that its content is true. ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
+### Fixed (2026-08-15 — governed-brain MCP startup)
+
+- **`governed-second-brain` now provisions and probes all three pinned native modules before
+  MCP initialization.** The v1.2.0 upstream mirror adds `sqlite-vec` to the runtime manifest,
+  lockfile, and native-dependency readiness probe so partial dependency sets cannot skip
+  provisioning and fail before the initialize response. Its install guide, plugin and marketplace
+  manifests, and bootstrap guidance now describe all three lockfile-pinned native modules accurately.
+  ([#1195](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1195))
+
+### Fixed (2026-08-15 — catalog source-of-truth protection)
+
+- **Tracked catalog shadows are forbidden.** The stale
+  `.claude-plugin/marketplace.extended.json.backup` copy is removed, and the catalog
+  invariant validator now fails closed if either canonical catalog is untracked or any
+  additional tracked `marketplace*.json*` variant appears beside them. ([#1196](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1196))
+
+### Added (2026-08-03/06 — site correctness gates)
+
+- **`scripts/generate-og-image.mjs`** — renders the social card and gates it. `BaseLayout`
+  had emitted `og:image` → `/og-image.png` on 3,830 pages since **2026-03-09**; the file was
+  never committed, so every link preview of the site rendered imageless for five months.
+  `--check` validates PNG signature, IHDR dimensions and minimum size — an earlier
+  existence-only version was correctly flagged in review as reproducing the original failure
+  one level up. ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156))
+- **`scripts/check-security-headers.mjs`** — asserts the LIVE response carries the security
+  headers. Not wired as a blocking gate: the headers are set in Caddy on the VPS, and a gate
+  nobody in this repo can fix is a gate that gets disabled.
+- **`scripts/check-changelog-coverage.mjs`** — every released tag at or above a pinned floor
+  (v4.14.0) must have release notes. `/changelog` had 3 entries, newest v4.16.0, while the
+  site ran v4.33.0. ([#1162](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1162))
+- **`scripts/name-leak-gate.sh`** — anonymity gate for the rebrand's design reference,
+  ported from the sibling blog repo; base64 patterns, scans untracked files.
+
+### Changed (2026-08-02/04 — neobrutalist rebrand)
+
+- **Marketplace visual system rebranded.** `--radius-*` → `0`; JetBrains Mono as the single
+  typeface (Inter and Inter Tight removed, a strictly smaller font request); `--shadow-hard`
+  as the only elevation device, rationed to one element per page. 373 hardcoded radius
+  declarations flattened and 261 font references tokenised across 82 files; 9 genuine
+  circles preserved after individual audit. `marketplace/DESIGN.md` §§ 1/3/4/6/8 amended
+  first — § 8 previously banned the very device being adopted.
+  ([#1152](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1152))
+- **Homepage cut to a single action.** 1,742 lines → ~9 elements, leading with the
+  Claude-Code-native `/plugin marketplace add …`. Nothing deleted: Killer Skill of the Week,
+  Jeremy's Stash and the Stack Builder moved to `/collections`, the partner bar to
+  `/community`.
+- **Site chrome made model-agnostic** — third-party tool names dropped from the footer, hero
+  subhead, meta description and social card. `Claude Code` retained only where it is the
+  literal mechanism. ([#1159](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1159))
+- **Retired URLs now served as real HTTP 301s** from Caddy rather than Astro `redirects`,
+  which emit one thin meta-refresh page per entry (3 → 85 in one deploy). Three pre-existing
+  entries stay in Astro because `check-routes.mjs` asserts those files exist.
+  ([#1158](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1158))
+
+### Fixed (2026-08-03/04 — defects found by probing the deployed site)
+
+- **Security headers were inert.** `X-Frame-Options` and `X-Content-Type-Options` were
+  declared as `<meta http-equiv>`, which browsers ignore outright — the site had no
+  clickjacking or MIME-sniffing protection since **2025-12-24** while appearing to have both.
+  Only `<meta name="referrer">` is a valid HTML form; the real headers now come from Caddy.
+- **`/research/` had no design system.** It linked `/styles/global.css`, a source path never
+  published (404 since **2026-03-04**), and lacked `tokens.css` entirely — so every
+  `var(--*)` was undefined and six pages rendered as browser-default serif on a transparent
+  background while loading a webfont they never applied. Also had no analytics tag, so that
+  traffic was invisible in Umami.
+  ([#1156](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1156),
+  [#1157](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1157))
+- **104 dead URLs**, 177 pageviews/week, the 404 page the 3rd most-served on the site — 76%
+  under `/skills/` from rewritten SaaS packs. 81 now redirect to their vendor pack page.
+- **42 dead in-content blog links** across 29 posts, each verified 200 at its new target
+  before rewriting.
+- **Homepage version resolution** walked a fixed `../../../../` from `import.meta.url`, which
+  is a bundler path during an Astro build — it broke the VPS deploy. Now searches upward for
+  the manifest that names itself the monorepo root, and fails soft.
+  ([#1153](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1153))
+- **Mobile footer collapsed to one 17-link column** below 480px; now 2-up with 44px touch
+  targets, 1291px → 979px.
+  ([#1154](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/1154))
+- **Stale fallback meta description** claiming "244 searchable agent skills and 259 plugins"
+  against an actual 3,000+/470+. Rendered on zero pages, which is why it rotted unnoticed.
+
+### Infrastructure (2026-08-03/04 — VPS, recorded in intent-os)
+
+- **Security headers added to 8 of 16 hosts** that never imported the existing
+  `(security-headers)` Caddy snippet, including the authenticated `erp.intentsolutions.io`
+  and `mandy.intentsolutions.io`.
+- **VPS build log made legible on failure.** `pnpm … | tail -3/-5` discarded the error, which
+  a failing build reports early; now captured to a log, tailed on success and dumped in full
+  on failure, with `CI=true` to stop pnpm's interactive prompt overwriting output.
 
 ### Fixed (2026-07-26 kernel-vendor-hash fail-open)
 
@@ -1419,7 +1827,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
   - **Infrastructure**: cross-chain-bridge-monitor, wallet-security-auditor
-- Firebase Hosting deployment workflow for claudecodeplugins.io
+- Firebase Hosting deployment workflow for [retired legacy public domain]
 - Firebase Analytics integration with measurement ID tracking
 - Google Secret Manager integration for secure Firebase config
 
@@ -1485,7 +1893,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
-- Learn pages for all Batch 3 vendors on claudecodeplugins.io
+- Learn pages for all Batch 3 vendors on [retired legacy public domain]
 
 ### Changed
 
@@ -1575,3 +1983,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ### Changed
 
 - Skill quality improvements to 99.9% compliance
+
+### Fixed
+
+- **Cowork manifest contract** — require generated manifest totals, use the producer's `skills`/`commands` fields, and verify emitted `checksum` values deterministically instead of inventing fallback totals or silently skipping checksum checks.

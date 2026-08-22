@@ -291,9 +291,9 @@ Same day, a separate estate-hygiene artifact landed in intent-os: a hand-maintai
 
 ## Related posts
 
-- [Eval-gated model swaps: shipping gpt-5.4 as a one-line config switch](/posts/eval-gated-model-swap-gpt-5-4/)
-- [The moat is the trust layer: enforced egress, code-enforced citations, tamper-evident audit](/posts/the-moat-is-the-trust-layer-nexus-byok-rag/)
-- [Every safety gate has a failure direction](/posts/every-safety-gate-has-a-failure-direction/)
+- [Eval-gated model swaps: shipping gpt-5.4 as a one-line config switch](/blog/eval-gated-model-swap-gpt-5-4/)
+- [The moat is the trust layer: enforced egress, code-enforced citations, tamper-evident audit](/blog/the-moat-is-the-trust-layer-nexus-byok-rag/)
+- [Every safety gate has a failure direction](/blog/every-safety-gate-has-a-failure-direction/)
 
 <script type="application/ld+json">
 {

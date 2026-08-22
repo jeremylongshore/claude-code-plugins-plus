@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-refactoring-ui",
+  "private": true,
   "version": "1.0.4",
   "description": "Practical UI design system for professional interfaces",
   "keywords": [

@@ -305,4 +305,4 @@ Jeremy Longshore (jeremy@intentsolutions.io)
 
 ---
 
-*Part of the Claude Code Plugins ecosystem - https://claudecodeplugins.io*
+*Part of the Claude Code Plugins ecosystem - https://tonsofskills.com*

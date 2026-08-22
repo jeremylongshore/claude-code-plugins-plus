@@ -19,7 +19,7 @@ tags:
 - agents
 - deep-agents
 - research
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # LangChain Deep Agents (Python)
 

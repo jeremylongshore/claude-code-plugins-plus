@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-one-page-marketing",
+  "private": true,
   "version": "1.0.2",
   "description": "End-to-end marketing plan framework in a single page",
   "keywords": [

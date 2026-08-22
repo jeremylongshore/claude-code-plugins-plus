@@ -22,7 +22,7 @@ tags:
 - development
 - workflow
 - agent
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Replit Local Dev Loop
 

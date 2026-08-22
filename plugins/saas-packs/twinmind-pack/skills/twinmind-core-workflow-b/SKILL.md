@@ -20,7 +20,7 @@ tags:
 - saas
 - twinmind
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # TwinMind Core Workflow B: Action Items & Follow-ups
 

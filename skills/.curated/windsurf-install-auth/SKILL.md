@@ -21,7 +21,7 @@ tags:
 - codeium
 - authentication
 - ide-setup
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Install & Auth
 

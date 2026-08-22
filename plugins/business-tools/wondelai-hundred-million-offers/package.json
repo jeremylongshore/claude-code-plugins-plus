@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/wondelai-hundred-million-offers",
+  "private": true,
   "version": "1.0.3",
   "description": "Grand Slam Offer creation framework for irresistible pricing",
   "keywords": [

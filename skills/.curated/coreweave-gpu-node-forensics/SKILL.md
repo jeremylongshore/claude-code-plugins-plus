@@ -12,7 +12,7 @@ allowed-tools: Read, Bash(python3:*), Bash(nvidia-smi -q:*), Bash(kubectl get:*)
 version: 1.11.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 tags: [saas, coreweave, gpu-cloud, reliability, xid]
 ---
 

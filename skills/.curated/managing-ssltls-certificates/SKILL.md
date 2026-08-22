@@ -15,7 +15,7 @@ tags:
 - security
 - monitoring
 - ssltls-certificates
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Ssl Certificate Manager
 

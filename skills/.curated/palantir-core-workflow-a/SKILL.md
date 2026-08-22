@@ -22,7 +22,7 @@ tags:
 - transforms
 - pipelines
 - spark
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Palantir Core Workflow A — Data Pipelines with Transforms
 

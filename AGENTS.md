@@ -39,3 +39,5 @@ Required branch-protection contexts on `main`: **`ci-required`**, **`gitleaks`**
 - `skill-conform` is a **separate** always-report workflow (`audit-harness conform --strict`). Never add it (or any path-scoped / provider-dependent job) to `ci-required`'s `needs:`.
 - Behavioral skill eval (`skill-eval-advisory.yml`) is **advisory only** until explicitly graduated.
 - Full gate architecture, validator SSoT rules, and non-negotiables: see `CLAUDE.md`.
+- Which document owns which fact class: blueprint `000-docs/727` § 11 (the authority map),
+  indexed publicly by `STANDARDS.md § Canonical documents`. Point at owners; don't restate.

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # MCP Server Reliability & Production Readiness
 
 **Production Playbook for Model Context Protocol Developers**

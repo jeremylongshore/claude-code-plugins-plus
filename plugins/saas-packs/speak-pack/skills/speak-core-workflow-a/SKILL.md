@@ -20,7 +20,7 @@ tags:
 - saas
 - speak
 - workflow
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Speak Core Workflow A: AI Conversation Practice
 

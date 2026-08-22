@@ -25,7 +25,7 @@ tags:
 - devops
 - terraform
 - cloud
-compatibility: Designed for Claude Code, also compatible with Codex
+compatibility: Designed for Claude Code
 ---
 # Research to Deploy
 

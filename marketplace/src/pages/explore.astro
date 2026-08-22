@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CompareBar from '../components/CompareBar.astro';
 import CrossProperty from '../components/CrossProperty.astro';
+import CountProvenance from '../components/CountProvenance.astro';
 import PluginCard from '../components/PluginCard.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -19,7 +20,7 @@ const _rawStats = JSON.parse(
 ).stats;
 
 const pageTitle = 'Explore Plugins & Skills';
-const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_rawStats.totalSkills} skills in one place. Find exactly what you need with instant fuzzy search.`;
+const pageDescription = `Search all ${_rawStats.totalPlugins} catalog plugins and ${_rawStats.totalSkills} marketplace-visible skills in one place. Find exactly what you need with instant fuzzy search.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -65,8 +66,8 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       padding: 1.25rem 1.75rem;
       font-size: 1.1rem;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      font-family: 'Inter', system-ui, sans-serif;
+      border-radius: 0;
+      font-family: var(--font-body);
       background: var(--surface-1);
       color: var(--text);
       
@@ -94,7 +95,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       font-weight: 700;
       font-size: 1.2rem;
       display: block;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
     }
 
     /* Filters Section */
@@ -121,18 +122,18 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       gap: 0.5rem;
       background: var(--surface-3);
       padding: 0.25rem;
-      border-radius: 8px;
+      border-radius: 0;
     }
 
     .type-btn {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       padding: 0.5rem 1.25rem;
       border: none;
       background: transparent;
       color: var(--brand-mid-gray);
       font-size: 0.9rem;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 0;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -146,9 +147,9 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     .filter-select {
       padding: 0.6rem 1rem;
       border: 1px solid var(--brand-light-gray);
-      border-radius: 8px;
+      border-radius: 0;
       font-size: 0.9rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       background: var(--surface-2);
       color: var(--text);
       cursor: pointer;
@@ -177,9 +178,9 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     .keyboard-hint kbd {
       background: var(--surface-3);
       border: 1px solid var(--brand-light-gray);
-      border-radius: 4px;
+      border-radius: 0;
       padding: 0.15rem 0.4rem;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.7rem;
     }
 
@@ -239,12 +240,12 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     }
 
     .no-results button {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       padding: 0.75rem 1.5rem;
       background: var(--primary);
       color: #0a0a0c;
       border: none;
-      border-radius: 8px;
+      border-radius: 0;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -368,13 +369,15 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       </div>
       <div class="hero-stat">
         <span>{_rawStats.totalSkills}</span>
-        Skills
+        Marketplace-visible skills
       </div>
       <div class="hero-stat">
         <span>{_rawStats.categories.length}</span>
         Categories
       </div>
     </div>
+
+    <CountProvenance cohort="marketplace-visible" />
   </section>
 
   <!-- Filters Bar -->
@@ -600,7 +603,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         metaParts.push(`<span>Docs · ${escHtml(item.category)}</span>`);
       }
       if (item.skillCount > 0) {
-        metaParts.push(`<span>${item.skillCount} skills</span>`);
+        metaParts.push(`<span data-count-provenance="entity-local">${item.skillCount} entity-local skills</span>`);
       }
       const metaHtml = metaParts.length
         ? `<small>${metaParts.join(' · ')}</small>`
@@ -945,7 +948,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
           background: #1a1a1a;
           color: white;
           padding: 0.75rem 1.25rem;
-          border-radius: 8px;
+          border-radius: 0;
           font-size: 0.9rem;
           z-index: 1001;
           animation: fadeInOut 2s ease-in-out forwards;

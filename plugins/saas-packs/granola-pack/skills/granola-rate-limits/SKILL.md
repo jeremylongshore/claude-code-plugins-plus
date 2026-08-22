@@ -20,7 +20,7 @@ tags:
 - granola
 - monitoring
 - plans
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Granola Rate Limits & Plan Quotas
 

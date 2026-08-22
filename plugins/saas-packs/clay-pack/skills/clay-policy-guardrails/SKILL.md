@@ -20,7 +20,7 @@ tags:
 - saas
 - clay
 - clay-policy
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Clay Policy Guardrails
 

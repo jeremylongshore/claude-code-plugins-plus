@@ -12,7 +12,7 @@
 
 ## 1. Theme
 
-A serious analytics product, not a developer side project. Near-black canvas. Neon-yellow signal accent used like a highlighter, sparingly. Hairline rules instead of card-fill chrome. Tabular numerals. Editorial restraint over ornament.
+A serious analytics product, not a developer side project. Near-black canvas. A single signal accent used like a highlighter, sparingly. Square corners — every corner. Monospace throughout. Hairline rules instead of card-fill chrome, with one hard offset shadow per page reserved for the element that page exists to make you act on. Tabular numerals. Editorial restraint over ornament.
 
 The aesthetic peers the site reads against:
 
@@ -71,7 +71,27 @@ OKLCH structure preserved from prior system; values replaced wholesale. Token *n
 | `--positive` | `#6dffa1` | Success states. Used sparingly. |
 | `--ink-link` | `#7dd3fc` (dark) / `#0284c7` (light) | Inline-link underline color. Distinct from `--signal`. |
 
-### Contrast budget
+### Contrast budget — measured 2026-08-02
+
+The table below it predates the accent's move to signal orange and quotes the
+retired `#faff69` values. These are the numbers actually measured on the built
+site (canvas pixel sampling, WCAG 2.x relative-luminance formula), dark theme:
+
+| Pair | Ratio | Verdict |
+|---|---|---|
+| `--signal` on `--bg` | **8.95:1** | AAA. Safe for the version line, prompt marker and focus ring. |
+| `--signal` on `--panel` | 8.03:1 | AAA. |
+| near-black `#0a0a0c` on `--signal` | 8.95:1 | AAA. The primary-button pairing from § 4. |
+| `--ink` on `--bg` | 18.00:1 | AAA. |
+| `--ink` on `--panel` | 16.15:1 | AAA. |
+| `--ink-2` on `--bg` | 7.72:1 | AAA. **Use this for secondary running text.** |
+| `--ink-3` on `--bg` | **4.09:1** | **Fails AA (4.5:1) at normal size.** Decorative only — separators, disabled states. Never body or meta text. |
+
+The `--ink-3` finding is the one to carry forward: it is the token most likely to
+be reached for by reflex when something should look quiet, and at normal size it
+is not accessible. Reach for `--ink-2` and let the smaller size do the work.
+
+### Contrast budget (historical — retired yellow accent)
 
 - `#faff69` on `#0a0a0c` — measured 17.4:1. Passes WCAG AAA for normal + large text.
 - `#f4f4f5` on `#0a0a0c` — 15.8:1. AAA.
@@ -81,19 +101,33 @@ OKLCH structure preserved from prior system; values replaced wholesale. Token *n
 
 ## 3. Typography
 
+**Mono is the primary typeface, not an accent.** Inter and Inter Tight are removed from the system.
+
 | Role | Font | Weights loaded | Notes |
 |---|---|---|---|
-| Display | **Inter Tight** | 500, 600, 700 | h1, h2, hero. Tight letter-spacing (-0.02 em). |
-| Body | **Inter** | 400, 500, 600 | All running text. `font-feature-settings: 'tnum' 1, 'cv11' 1` — tabular numerals always on, stylistic alt for single-story `a`. |
-| Mono | **JetBrains Mono** | 400, 500 | Code, labels, stats, badges. Tabular by default. |
+| Display | **JetBrains Mono** | 700, 800 | h1, h2, hero. Letter-spacing `-0.02 em` at display sizes; mono is already wide, so tightening is corrective, not stylistic. |
+| Body | **JetBrains Mono** | 400, 500 | All running text. |
+| Mono | **JetBrains Mono** | 400, 500 | Code, labels, stats, badges. Same face — there is no longer a distinction to make. |
 
 Loaded as a single Google Fonts request:
 
 ```
-https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap
+https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap
 ```
 
-`font-feature-settings: 'tnum' 1` is set globally on `body`. Numbers in tables, stat readouts, and price/count displays will line up across rows without manual `tabular-nums` classes.
+This is a **smaller** request than the three-family version it replaces, despite adding two weights — dropping Inter Tight and Inter removes two families outright. The perf budget improves.
+
+Components reference `var(--font-display)` / `var(--font-body)` / `var(--font-mono)`, never a literal family name. All three resolve to JetBrains Mono; `--font-sans` is retained as a token name and also resolves mono, so nothing referencing it needed editing. Fallback chains degrade to platform monospace, never to a sans — a font-load failure changes the texture but not the character of the page.
+
+### Why one face
+
+A marketplace for command-line tooling that renders its own install command in mono and everything else in a humanist sans is describing a terminal in a voice that isn't one. One face removes the seam. It also removes a whole category of decision — "is this label display or body?" stops being a question when the answer is always the same face at a different weight.
+
+`font-feature-settings: 'tnum' 1` is set globally on `body`. JetBrains Mono is tabular by construction, so this is belt-and-braces rather than load-bearing, but it costs nothing and survives a fallback to a proportional-digit monospace.
+
+### The readability caveat (open, decide from the rendered page)
+
+176 long-form blog posts run through this system. Mono at body size across 2,000-word prose is the one place this choice could genuinely hurt. **If it reads badly, scope mono to chrome and restore a sans for `.prose` only** — that is a permitted, pre-authorised exception to "one face", not a re-litigation of the family. Decide it by reading a rendered post, not in advance.
 
 ### Type scale (fluid, `clamp()`)
 
@@ -127,9 +161,11 @@ Buttons are **never** `box-shadow`'d. Never gradient-filled. Never have a colore
 
 | Tier | Padding | Radius | Border | Use |
 |---|---|---|---|---|
-| **Compact** | 16 px | 6 px | `1 px solid --rule` on hover only | Search results, dense grids. |
-| **Standard** | 24 px | 8 px | `1 px solid --rule` always | Plugin/skill detail cards. |
-| **Featured** | 32 px | 12 px | `1 px solid --rule` always; `--signal-edge` on hover | Hall of fame, killer-skill spotlight. |
+| **Compact** | 16 px | 0 | `1 px solid --rule` on hover only | Search results, dense grids. |
+| **Standard** | 24 px | 0 | `1 px solid --rule` always | Plugin/skill detail cards. |
+| **Featured** | 32 px | 0 | `1 px solid --rule` always; `--signal-edge` on hover | Hall of fame, killer-skill spotlight. |
+
+The three tiers now differ by **padding and border behaviour only** — radius is 0 everywhere. The tier tokens (`--card-compact-radius` etc.) survive as names so the components referencing them inherited the change without edits; they are no longer a scale.
 
 Cards are panels (`--panel`), not gradients. Hover state: `transform: translateY(-1 px)` (subtle), border tints to `--signal-edge` if it's a clickable hero card; otherwise border stays `--rule`. NEVER `box-shadow` lift on hover — that's the tell of an AI-generated layout.
 
@@ -174,14 +210,32 @@ Result grids use `grid-template-columns: repeat(auto-fill, minmax(320 px, 1 fr))
 
 ## 6. Depth + motion
 
-**Depth ladder is rule-based, not shadow-based.**
+**Depth is rule-based first, and where a shadow is genuinely needed it is a hard offset. Blur is banned.**
 
 - Level 0: `--bg`
 - Level 1: `--panel` on `--bg` (single 1 px `--rule` border)
 - Level 2: `--panel-2` on `--panel` (modal-on-card, dropdown menus)
-- Level 3 (rare): `box-shadow: 0 8 px 24 px #00000040` for true overlays (modals over the whole page)
+- Level 3 (rare): `box-shadow: var(--shadow-hard)` — `4 px 4 px 0 var(--ink)` — for true overlays and for the page's single signature element
 
-Cards do NOT use `box-shadow`. Hover lift is `transform: translateY(-1 px)` only.
+### The hard offset shadow
+
+```css
+--shadow-hard:        4px 4px 0 var(--ink);
+--shadow-hard-signal: 4px 4px 0 var(--signal);
+```
+
+**Blur radius is 0 by construction.** This is not the drop-shadow this document has always rejected — a blurred shadow simulates a soft light source and a floating surface, which is the AI-landing-page tell. A hard offset simulates nothing: it is a solid rectangle of ink displaced down-and-right, the way a printed card sits on a page under a hard light. It reads as physical, not as depth-of-field.
+
+The distinction is enforceable and worth stating precisely, because it is the difference between §8's banned row and this one:
+
+| | Blur radius | Verdict |
+|---|---|---|
+| `0 8px 24px rgba(0,0,0,.4)` | 24 px | **Banned.** Soft, floating, generic. |
+| `4px 4px 0 var(--ink)` | 0 | **The system.** Hard, printed, deliberate. |
+
+**Rationing is the point.** A hard shadow on every card is neobrutalist wallpaper and reads exactly as cheap as a drop-shadow stack. It goes on **one element per page** — the element that page exists to make you act on. On the homepage that is the install block, plus the partner badge in the footer, which carries the same treatment specifically so it reads as part of the language rather than a pasted-on third-party widget.
+
+Cards still do NOT use shadows of any kind. Hover lift is `transform: translateY(-1 px)` only.
 
 ### Motion
 
@@ -216,8 +270,9 @@ These are the AI-generated-layout fingerprints. Reject on sight.
 |---|---|
 | Gradient backgrounds (`linear-gradient(...)` on cards or sections) | Tell of a generic Tailwind starter. Use solid `--panel`. |
 | Glassmorphism (`backdrop-filter: blur()` on cards or modals) | Default-aesthetic AI sludge. Solid panels with hairline rules. |
-| Border-radius `md` (6–8 px) on every surface uniformly | Default Tailwind. Use the radius scale: 6 / 8 / 12 px deliberately by tier. |
-| Drop-shadow stacks (`shadow-lg`, `shadow-xl`, `shadow-2xl`) | Replace with hairline rules + tonal `--panel-2` for hover. |
+| **Any non-zero `border-radius`** | The corner is square. Not "small radius by tier" — zero. The only exception is a genuine circle (`50%` on an avatar, a status dot, a numbered step badge), which is a shape, not a corner treatment. Use `var(--radius-*)`, which is `0`; a hardcoded pixel value is how the last drift happened. |
+| **Blurred** shadows (`shadow-lg`, `0 8px 24px …`, any non-zero blur radius) | A soft shadow simulates a floating surface under a diffuse light — the single most reliable AI-landing-page fingerprint. Elevation is `var(--shadow-hard)` (blur radius 0) or a hairline rule. See § 6 for the exact test. |
+| A hard shadow on *every* card | Correct device, wrong dosage — that is neobrutalist wallpaper and reads as cheaply as the drop-shadow stack it replaced. One shadowed element per page. |
 | Lucide / Heroicons next to every label | Decorative noise. Use icons only when they replace a word, not when they decorate one. |
 | Slate-500 (or any gray) as body text on slate-900 bg | Low contrast. Use the OKLCH ink scale (`--ink`, `--ink-2`, `--ink-3`). |
 | Multiple accent colors (purple + teal + orange "from the brand palette") | We have ONE accent: `#faff69`. Plus `--alert` and `--positive` for semantic states only. |
@@ -226,7 +281,7 @@ These are the AI-generated-layout fingerprints. Reject on sight.
 | Center-aligned body copy in long-form sections | Editorial copy reads left-aligned. Center-align is for marketing-page heroes only. |
 | Font-weight 300 anywhere | Inter at 300 looks washed out on dark backgrounds. Minimum body weight: 400. |
 | `text-gray-400 dark:text-gray-300` style theming | Use semantic tokens (`--ink-2`), not raw gray. |
-| Different border-radius on every component within a single section | Pick one of the three tiers (compact/standard/featured) per section. |
+| Reaching for a radius "just on this one pill" | Superseded by the non-zero-radius row above. There is no tier to pick — it is 0. |
 | `border-2` or thicker on cards | Default-aesthetic. We use `1 px` everywhere. |
 | Generic stock illustrations (undraw.co, illlustrations.co) | We don't ship illustrations. Type and tabular data ARE the illustration. |
 | Soft pastel "AI" gradient on hero text (`bg-gradient-to-r from-purple-500 to-pink-500`) | The single most identifying mark of AI-generated landing pages. Hero text is solid `--ink` with `--signal` underline accent. |
@@ -283,8 +338,9 @@ When using AI to generate or edit components for this site:
 Use the design system in marketplace/DESIGN.md. Specifically:
 - Single accent #faff69 used sparingly (one primary CTA per page).
 - Solid panel #181818 on dark / #ffffff on light, separated by 1px hairline rules in #2a2a2e (dark) / #e5e5e3 (light).
-- Inter Tight (display), Inter (body, with font-feature-settings: 'tnum'), JetBrains Mono (mono).
-- No gradients. No glassmorphism. No drop-shadows on cards (hover is translateY(-1px)).
+- JetBrains Mono for EVERYTHING — display (700/800), body (400/500), code. No sans anywhere. Reference var(--font-display) / var(--font-body) / var(--font-mono), never a literal family name.
+- border-radius is 0. Always. The only exception is 50% on a genuine circle.
+- No gradients. No glassmorphism. No BLURRED shadows anywhere. Elevation is var(--shadow-hard) — 4px 4px 0, blur radius 0 — on ONE element per page; cards get hairline rules and translateY(-1px), never a shadow.
 - Hairline rules instead of card-bg fills.
 - Single signal accent #faff69 — never multi-accent.
 - Reject the Anti-Slop fingerprints in DESIGN.md § 8.
@@ -296,6 +352,15 @@ Paste that block into any prompt that asks AI to render UI for this codebase.
 ---
 
 ## Changelog
+
+- **2026-08-02** — Neobrutalist pass. The audit that triggered it: 516 `border-radius` declarations lived in `marketplace/src`, of which **391 (75 %) were hardcoded pixel values bypassing the token** and 332 were visibly rounded (≥ 4 px). The constitution already said squared corners since 2026-05-31; the components had simply never been made to obey it. So this pass is two-thirds enforcement of a brand that already existed and one-third three new decisions.
+
+  1. **Radius to zero.** `--radius-sm/md/lg/xl` all `2px → 0`. A scripted single-property sweep over `.astro`/`.css` under `src` flattened **373** hardcoded declarations, tokenised 7 `var(--radius-*, 8px)` fallbacks and 1 page-local `--radius`, and **preserved 9 `border-radius: 50%`** after individual audit — 3 avatars, 1 status dot, 5 numbered step badges, all genuine circles. `src/content/**` (176 published blog posts) and `src/data/**` were excluded from the sweep by construction: a CSS sample inside a published post is historical record, not live styling, and rewriting it would falsify the post.
+  2. **Mono as the primary typeface** (§ 3). Inter Tight and Inter removed; JetBrains Mono at 400/500/700/800 carries display, body and code. 261 hardcoded family references across 82 files were replaced with `var(--font-*)`. The Google Fonts request drops from three families to one, so the perf budget improves. Long-form blog readability is the known open risk and has a pre-authorised escape hatch documented in § 3.
+  3. **Hard offset shadow as the elevation language** (§ 6). `--shadow-hard: 4px 4px 0 var(--ink)`. Blur radius 0, one shadowed element per page. § 8's shadow row was rewritten to ban **blurred** shadows specifically rather than shadows generally — as written, the old row banned the thing being adopted, and editing components against an unamended constitution would have put the code in violation of its own rules. `--card-hover-shadow` (the vestigial `0 8px 24px` overlay token, referenced nowhere) was re-pointed at the hard offset rather than left as a loaded gun.
+  4. **Homepage cut to one job** (`pages/index.astro`, 1,742 lines → ~9 elements). The install block — leading with `/plugin marketplace add …`, the Claude-Code-native slash command, styled as a prompt rather than a `$` terminal — is the single hard-shadowed element on an otherwise flat canvas. Killer Skill of the Week, heat-check, Jeremy's Stash, Cowork downloads, SaaS packs, Level Up, both feature grids, hero search, the sponsor marquee and the stat block all left the homepage. **None were deleted**: every one keeps its route and is reachable from the nav, and `promote-spotlight.mjs` / `render-spotlight.mjs` still drive `spotlights.json` unchanged.
+  5. **Partner badge in the footer**, self-hosted from `public/claude-partner-badge.png`, carrying the same `--shadow-hard`. Self-hosted rather than embedded via Credly's script: no third-party request, no tracking vector, no rounded-corner widget fighting the design, and it survives any change to their embed. Homepage only — no partner wording in hero, subhead, meta description or `og:` tags, and it does not propagate to the README or catalog.
+  6. **§ 8 reject table** gains "any non-zero border-radius" and "a hard shadow on *every* card" (correct device, wrong dosage) and loses the by-tier radius row, which no longer means anything.
 
 - **2026-07-02** — Backlog Zero Wave 1: VibeCheck residuals settled.
   1. **Yellow-token sweep beyond the hero (Signal 4).** All remaining `var(--gold)` / `var(--brand-orange[-dark|-light])` usages (~330 across 60 files) migrated to the canonical theme-aware tokens (`--primary`, `--primary-dark`, `--primary-light`). The BaseLayout/global.css alias definitions stay as a compat layer; `sponsor.astro` keeps its page-scoped terracotta palette; blog-post prose untouched.

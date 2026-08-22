@@ -22,7 +22,7 @@ tags:
 - enterprise
 - distributed-tracing
 - microservices
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Sentry Reference Architecture
 

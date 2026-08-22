@@ -198,6 +198,6 @@ The tell that you have it backwards is comfort. If your pipeline feels clean bec
 
 **Related posts:**
 
-- [Exit 0 Is Not Success](/posts/exit-0-is-not-success/)
-- [Copying Files Is Not Installing](/posts/copying-files-is-not-installing/)
-- [Producer Fallback: When Claude Hits the Weekly Limit](/posts/producer-fallback-when-claude-hits-weekly-limit/)
+- [Exit 0 Is Not Success](/blog/exit-0-is-not-success/)
+- [Copying Files Is Not Installing](/blog/copying-files-is-not-installing/)
+- [Producer Fallback: When Claude Hits the Weekly Limit](/blog/producer-fallback-when-claude-hits-weekly-limit/)

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CountProvenance from '../components/CountProvenance.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Live catalog counts — same build-time source the homepage and explore use.
@@ -147,7 +148,7 @@ const seo = {
       h1, h2, h3, h4, h5, h6,
       .cta-primary, .cta-secondary, .pricing-tier, .pricing-name,
       .stat-number, .roadmap-tier, .faq-question {
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: var(--font-body);
       }
 
       /* Hero Section */
@@ -215,7 +216,7 @@ const seo = {
         font-weight: 600;
         color: var(--brand-light);
         background: var(--brand-orange);
-        border-radius: 0.5rem;
+        border-radius: 0;
         text-decoration: none;
         transition: all 0.2s ease;
       }
@@ -234,7 +235,7 @@ const seo = {
         color: var(--brand-dark);
         background: transparent;
         border: 2px solid var(--brand-light-gray);
-        border-radius: 0.5rem;
+        border-radius: 0;
         text-decoration: none;
         transition: all 0.2s ease;
       }
@@ -299,7 +300,7 @@ const seo = {
       .pricing-card {
         background: var(--brand-light);
         border: 2px solid var(--brand-light-gray);
-        border-radius: 1rem;
+        border-radius: 0;
         padding: 2rem;
         transition: all 0.3s ease;
         display: flex;
@@ -327,7 +328,7 @@ const seo = {
         background: var(--brand-orange);
         color: var(--brand-light);
         padding: 0.375rem 1rem;
-        border-radius: 2rem;
+        border-radius: 0;
         font-size: 0.75rem;
         font-weight: 700;
         letter-spacing: 0.05em;
@@ -408,7 +409,7 @@ const seo = {
         color: var(--brand-light);
         background: var(--brand-orange);
         border: none;
-        border-radius: 0.5rem;
+        border-radius: 0;
         text-align: center;
         text-decoration: none;
         transition: all 0.2s ease;
@@ -436,7 +437,7 @@ const seo = {
         margin-top: 2rem;
         background: var(--brand-light);
         border: 1px solid var(--brand-light-gray);
-        border-radius: 1rem;
+        border-radius: 0;
         overflow: hidden;
       }
 
@@ -486,7 +487,7 @@ const seo = {
       .roadmap-card {
         background: var(--brand-light);
         border: 1px solid var(--brand-light-gray);
-        border-radius: 1rem;
+        border-radius: 0;
         padding: 2rem;
         transition: all 0.3s ease;
       }
@@ -503,7 +504,7 @@ const seo = {
         color: var(--brand-orange);
         font-size: 0.75rem;
         font-weight: 700;
-        border-radius: 2rem;
+        border-radius: 0;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 1rem;
@@ -541,7 +542,7 @@ const seo = {
       .faq-item {
         background: var(--brand-light);
         border: 1px solid var(--brand-light-gray);
-        border-radius: 1rem;
+        border-radius: 0;
         padding: 2rem;
       }
 
@@ -567,7 +568,7 @@ const seo = {
       .success-card {
         background: var(--brand-light);
         border: 1px solid var(--brand-light-gray);
-        border-radius: 1rem;
+        border-radius: 0;
         padding: 2rem;
       }
 
@@ -659,13 +660,14 @@ const seo = {
           </div>
           <div class="stat-item">
             <div class="stat-number">{totalSkills.toLocaleString('en-US')}</div>
-            <div class="stat-label">AI Skills</div>
+            <div class="stat-label">Marketplace-visible AI Skills</div>
           </div>
           <div class="stat-item">
             <div class="stat-number">100%</div>
             <div class="stat-label">Open Source</div>
           </div>
         </div>
+        <CountProvenance cohort="marketplace-visible" />
       </div>
     </section>
 

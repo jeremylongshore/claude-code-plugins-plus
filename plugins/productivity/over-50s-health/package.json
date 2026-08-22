@@ -1,5 +1,6 @@
 {
   "name": "@intentsolutionsio/over-50s-health",
+  "private": true,
   "version": "3.2.10",
   "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
   "keywords": [

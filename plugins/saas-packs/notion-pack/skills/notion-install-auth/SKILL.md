@@ -22,7 +22,7 @@ tags:
 - authentication
 - sdk
 - setup
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Notion Install & Auth
 

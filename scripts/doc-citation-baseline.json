@@ -1,0 +1,25 @@
+{
+  "$comment": "Pre-existing dead 000-docs citations as \"citer -> citation\" PAIRS, pinned 2026-08-12 (bead claude-5awj.6). Pair-keyed so a NEW file citing an already-listed dead target still fails the gate. Shrink by filing the cited doc or fixing the citation — NEVER add entries to silence the gate.",
+  "baseline": [
+    "000-docs/246-AA-AACR-phase-6-aar.md -> 000-docs/118-AA-REPT-phase-5-aar.md",
+    "000-docs/246-AA-AACR-phase-6-aar.md -> 000-docs/120-RA-PH6A-state-snapshot.md",
+    "000-docs/246-AA-AACR-phase-6-aar.md -> 000-docs/121-AA-REPT-phase-6-aar.md",
+    "000-docs/247-OD-CHNG-changelog.md -> 000-docs/087-RA-SUMM-jeremy-plugins-comprehensive-audit.md",
+    "000-docs/247-OD-CHNG-changelog.md -> 000-docs/088-RA-SUMM-jeremy-plugins-audit-detailed-findings.md",
+    "000-docs/247-OD-CHNG-changelog.md -> 000-docs/089-RA-SUMM-jeremy-plugins-action-plan.md",
+    "000-docs/251-AA-AACR-metrics-canonicalization-aar.md -> 000-docs/123-SR-STAT-session-accomplishments.md",
+    "000-docs/267-AT-DECR-repo-sequencing-council-2026-05-17.md -> 000-docs/004-AT-DECR-isedc-council-record-2026-05-10.md",
+    "000-docs/690-AT-APIS-6767h-to-kernel-authoring-v1-mapping-2026-06-11.md -> 000-docs/045-RR-LAND-single-source-of-truth-and-continuous-spec-compliance-2026-06-09.md",
+    "000-docs/693-AA-AACR-xquik-external-author-dogfood-and-tooling-fixes-2026-06-30.md -> 000-docs/104-RR-LAND-xquik-external-author-dogfood-initiative-2026-06-30.md",
+    "000-docs/696-AA-AUDT-backlog-zero-wave1-triage-manifest-2026-07-02.md -> 000-docs/004-RA-REVW-engineering-panel-review.md",
+    "000-docs/696-AA-AUDT-backlog-zero-wave1-triage-manifest-2026-07-02.md -> 000-docs/011-DR-PAIN-catalog-master.md",
+    "000-docs/696-AA-AUDT-backlog-zero-wave1-triage-manifest-2026-07-02.md -> 000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md",
+    "000-docs/SCHEMA_CHANGELOG.md -> 000-docs/031-PP-PLAN-skill-refiner-sak-amendment-v6-2026-05-28.md",
+    "CHANGELOG.md -> 000-docs/032-RL-REPT-claude-code-plugins-release-v4.31.0.md",
+    "CHANGELOG.md -> 000-docs/270-AT-AACR-2026-05-22-to-24-ci-hardening-9pr-arc.md",
+    "scripts/check-issue-body-links.mjs -> 000-docs/013-AT-ADEC-epic1-mcp-scope-adjustment.md",
+    "scripts/name-leak-gate.sh -> 000-docs/706-AT-DECR-neobrutalist-rebrand-anonymity-preamble.md",
+    "tests/ci/test_path_routing.py -> 000-docs/014-spec.md",
+    "tests/pr-classifier/test_classifier.py -> 000-docs/014-DR-DRFT-cost-leak-cfo-output-spec.md"
+  ]
+}

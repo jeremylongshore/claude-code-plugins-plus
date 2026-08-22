@@ -1,0 +1,4 @@
+{
+  "$comment": "Dated waivers for the adapter-thinness gate (blueprint 727 E3.5). Every entry names its reason and the bead that DELETES it \u2014 a waiver without a removal owner is an exemption class, which this file must never become.",
+  "waivers": []
+}

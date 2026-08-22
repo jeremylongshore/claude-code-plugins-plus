@@ -22,7 +22,7 @@ tags:
 - typescript
 - nodejs
 - setup
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Obsidian Install & Auth
 

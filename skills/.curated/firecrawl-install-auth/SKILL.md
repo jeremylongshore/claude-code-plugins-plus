@@ -20,7 +20,7 @@ tags:
 - firecrawl
 - api
 - authentication
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Firecrawl Install & Auth
 

@@ -20,7 +20,7 @@ tags:
 - nft
 - tokens
 - web3
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # QuickNode Core Workflow B — NFT & Token APIs
 

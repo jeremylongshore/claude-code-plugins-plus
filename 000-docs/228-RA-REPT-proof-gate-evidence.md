@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # EPIC B Proof Gate Evidence
 
 ## MANDATORY PROOF GATE: Virtual Environments + Headless Tests
@@ -5,7 +7,7 @@
 **Repository**: jeremylongshore/claude-code-plugins-plus-skills
 **Branch**: p0-stabilization-proof-gates
 **Target**: iOS Safari + mobile-first UX
-**Website**: claudecodeplugins.io (Astro 5.x static site)
+**Website**: [retired legacy public domain] (Astro 5.x static site)
 
 ---
 

@@ -87,7 +87,7 @@ const allCrumbs: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
     list-style: none;
     padding: 0;
     margin: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: var(--text-sm, 0.8rem);
   }
 
@@ -110,7 +110,7 @@ const allCrumbs: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
   .breadcrumbs__link:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: 0;
   }
 
   .breadcrumbs__sep {

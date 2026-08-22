@@ -10,7 +10,7 @@ Tons of Skills — Claude Code plugins marketplace. Live at https://tonsofskills
 
 **Package manager:** `pnpm` everywhere **except** `marketplace/` which uses `npm` (CI-enforced).
 
-**Session protocol lives in `AGENTS.md`** — post-compaction recovery, end-of-session push checklist, and beads workflow. Read it before starting work.
+**Contributor guidelines live in `AGENTS.md`** — project structure, build/test/dev commands, style and naming, test conventions, commit/PR expectations, and the merge gates. Read it before starting work. (Session protocol lives in this file: the beads workflow in § Beads Issue Tracker — where `bd prime` is also the post-compaction context-recovery step — and the end-of-session push checklist in § Session Completion.)
 
 ## Cross-session coordination — another Claude session may be in this repo
 
@@ -37,7 +37,7 @@ pnpm test && pnpm typecheck
 pnpm lint
 pnpm run verify                   # Full pipeline — what CI's `verify` job runs
 
-# Validator (schema 3.15.2 — see 000-docs/SCHEMA_CHANGELOG.md)
+# Validator (schema 4.1.0 — see 000-docs/SCHEMA_CHANGELOG.md)
 python3 scripts/validate-skills-schema.py --verbose
 python3 scripts/validate-skills-schema.py --marketplace --verbose
 python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite
@@ -96,13 +96,21 @@ CI fails if any derived file is out of sync. Never hand-edit auto-generated file
 
 ## Marketplace Build Pipeline
 
-`npm run build` in `marketplace/` runs 7 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → enrich-jrig-data → generate-unified-search → build-cowork-zips → astro build.
+`npm run build` in `marketplace/` runs 9 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → enrich-jrig-data → generate-unified-search → build-cowork-zips → validate-cowork-manifest → copy-public-data → astro build. `readme-sections.json` and `jrig-data.json` are untracked build projections; `npm run dev` regenerates the README projection before Astro starts. The JRig projection has no live page consumer after PR #1046 removed the badge UI and remains only as a temporary build-adjacent inspection output pending its E9.2 removal.
 
 `discover-skills.mjs` emits two artifacts (schema 3.4.0+): `skills-index.json` (L0, ~97 KB gzipped, metadata only — for trigger-match / browse) and `skills-catalog.json` (L1, ~5.5 MB gzipped, full body HTML). Both carry top-level `schemaVersion` + `level` fields. CLI flag `--level=metadata|full|file` (default `full`).
 
+`pnpm run validate:generated-content` regenerates the L0 index, L1 full catalog, and plugin catalog
+in memory and byte-compares all three with the Git index. The check is non-mutating and
+network-free. The plugin catalog renderer reads only the canonical extended catalog and L1 skill
+projection; its tracked output is never an input. The unified search projection remains tracked
+but is not yet covered by this command; blueprint E1.8 owns its separately reviewed determinism
+repair and gate expansion. External statistics are E1.10 snapshots, and `spotlights.json` is
+canonical editorial data, not deterministic build output.
+
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` — iOS Safari fails on lines > 5000 chars. CI enforces this.
 
-Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s build, 2,800–4,000 routes.
+Performance budgets (CI-enforced; authority is `scripts/check-performance.mjs` `BUDGETS`): 48 MB total gzipped, 1 MB largest file, < 30s build, 2,800–4,500 routes.
 
 ## Auto-cowork contract
 
@@ -124,7 +132,7 @@ Performance budgets (CI-enforced): 40 MB total gzipped, 1 MB largest file, < 30s
 
 Adopted model: **mirror by default · upstream improvements · never clobber.** Decision record: `000-docs/694-AT-DECR-external-sync-mirror-by-default-model.md`; pipeline audit + hardening: `000-docs/691-AT-AUDT-sync-external-pipeline-audit-and-hardening.md`.
 
-**Scale first — external is a minority augment, not the core.** ~470 plugins total (per `marketplace.extended.json`), but only 63 are externally synced (57 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`). The other ~407 (~87%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
+**Scale first — external is a minority augment, not the core.** 468 catalog plugins total (catalog-entry cohort; regenerate via `pnpm run measure:e1`), but only 64 are externally synced (58 third-party sources + 6 of Jeremy's own repos, per `sources.yaml`). The other 404 (~86%) are in-repo Intent Solutions work. The sync is a curated side-channel, not the marketplace — treat external contributors as a respected minority augment, never the center of gravity.
 
 **How sync works.** `sources.yaml` registers each external source. `.github/workflows/sync-external.yml` runs weekly (Mondays 06:00 UTC) and on demand (`workflow_dispatch` / `repository_dispatch`), invoking `scripts/sync-external.mjs` to mirror a source's files into `plugins/` and open an automated PR. A human reviews every auto-PR — historically ~1 in 10 sync PRs merges. The contributor's own repo is the source of truth; we do NOT locally edit a pure-mirror plugin.
 
@@ -166,7 +174,7 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Agents use `disallowedTools` (camelCase denylist).** Skills use `allowed-tools` (allowlist) AND optionally `disallowed-tools` (kebab-case denylist, schema 3.7.0+). The two field names are intentionally different — do NOT use camelCase on skills or kebab-case on agents; the validator rejects either mismatch. Agent-only fields: `effort`, `maxTurns`.
 
-**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. All 317 in-repo agents are at **A-grade** (least-privilege `tools`, Trigger-bearing descriptions, real tags). **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
+**Agent gate is kernel-strict (schema 3.10.0, NOT tier-gated).** Every authored agent must carry the kernel-floor 8 (`name, description, tools, model, color, version, author, tags`) plus the enterprise live set (`disallowedTools`, `skills`, `background`; + `hooks`, `mcpServers`, `permissionMode` on standalone agents) — all **errors** at every tier. Banned fields (`capabilities`, `expertise_level`, `activation_priority`, `type`, `category`, `compatible-with`, `when_to_use`) are errors; `fable` is an accepted model. **Corpus status (measured 2026-08-11, doc 721):** the advisory `--agents-only` lane recorded a baseline of **253 errors** across the agent corpus — the earlier "all agents A-grade" claim is retired until the lane is re-baselined clean; treat A-grade as the bar, not the current state. **Schema 3.11.0** added a body-vs-allowlist check: an agent whose body invokes `mcp__server__tool` not in its `tools` allowlist is an error (it would runtime-block). Validate with `--agents-only`.
 
 ### Optional frontmatter (schema 3.5.0 / 3.6.0 / 3.7.0 — all default to off)
 
@@ -179,7 +187,7 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 
 **Branch protection on `main` requires THREE always-reporting contexts: `ci-required` + `gitleaks` + `skill-conform`** (GitHub Actions app; `strict:false`, `enforce_admins:false`, 1 approving review).
 
-- **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 17 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content, promote-curated-check, check-submission-docs). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
+- **`ci-required`** is the final job in `.github/workflows/validate-plugins.yml` — `if: always()`, `needs:` all 22 gate jobs (validate, verify, test, check-package-manager, marketplace-validation, cli-smoke-tests, shellcheck-skills, skill-codeblock-syntax, typescript-coverage-audit, eslint-check, format-check, ruff-check, ruff-format-check, markdownlint, scan-synced-content, promote-curated-check, check-submission-docs, commit-scope-check, codeowners-drift, generated-content-drift, doc-governance, secret-diff-scan). It fails if any needed job ended `failure`/`cancelled`; a `skipped` result counts as PASS — legitimate **only** for a designed job-level `if:`.
 - **`gitleaks`** comes from `secret-scan.yml` (also unfiltered).
 - **`skill-conform`** is its **own** workflow (`.github/workflows/skill-conform.yml`) — `pnpm exec audit-harness conform --strict` over the full marketplace corpus. Always-reports (no path filter). **Never** folded into `ci-required`'s `needs:` (doc 110 § 5: a skippable/path-scoped job must not green the aggregate). Baseline after #1108/#1118: thousands PASS / 0 FAIL; remaining ADVISORY is the harness-side missing marketplace schema only.
 - **Advisory (never required):** `.github/workflows/skill-eval-advisory.yml` — j-rig behavioral eval on changed skills that already carry `eval-spec.yaml`. Kill-switch `vars.ENABLE_SKILL_EVAL=true` + same-repo guard + `MINIMAX_API_KEY`. Graduation to required needs Jeremy + ≥4-week clean flap window (doc 110).
@@ -212,6 +220,12 @@ Beyond the 8 required fields, schema 3.5.0+ adds optional visibility-gating fiel
 - **Never checkout or execute PR-authored code in a `pull_request_target` workflow.** Applies equally to `plane-sync.yml` (which runs on `pull_request_target` so fork-PR close-outs get secrets — it reads event context only).
 
 ## Validation & the kernel SSoT — CI/CD posture
+
+> **Authority map:** which document owns which fact class is assigned in blueprint
+> `000-docs/727` § 11 (indexed by `STANDARDS.md § Canonical documents`). The sections below are
+> operational guidance that NAMES its authorities — where this file and an owner disagree, the
+> owner wins, and the doc-governance assertions (`validate:doc-fact-assertions`) pin the facts
+> most prone to drift.
 
 Two things grade frontmatter in this repo today, and the relationship between them is the load-bearing context to preserve.
 
@@ -317,7 +331,8 @@ python3 freshie/scripts/batch-remediate.py --dry-run && python3 freshie/scripts/
 
 **skills.sh curated mirror** (`freshie/scripts/promote-to-curated.py`): rebuilds
 `skills/.curated/` as a generated mirror of the repo's best **A+B** plugin skills (our own;
-external `.source.json` mirrors excluded → ~1,881) so skills.sh can index them — it only
+external `.source.json` mirrors excluded — 1,915 at this writing; the promote gate message
+is the live count) so skills.sh can index them — it only
 crawls root `skills/` / `.curated/`, never `plugins/**/skills/`. The plugin skill stays the
 source of truth; the mirror is wipe-and-rebuilt from the tracked `grades.csv` (not the
 git-ignored `inventory.sqlite`, so the CI drift gate is reproducible), copies only
@@ -350,7 +365,9 @@ query="select:mcp__dolt-mcp-vcs__query,mcp__dolt-mcp-vcs__list_dolt_commits,mcp_
   `freshie/dolt/freshie`; a live server holds the lock and the sync will clobber/deadlock. `kill
 <server-pid>`, sync, then restart if you still need it.
 - **Mutation gate**: destructive verbs (`push`/`merge`/`reset`/`branch-delete`) are
-  **recommend-only** — the plugin surfaces them but won't execute, so DoltHub pushes still go
+  **recommend-only, enforced at the wire** — since E4.9 the registered entrypoint is
+  `plugins/mcp/dolt-mcp-vcs/scripts/dolt-mcp-guard.py`, which refuses those verbs before the
+  server sees them and hides them from `tools/list` — so DoltHub pushes still go
   through the one-way `dolt-sync.py` exporter, never the MCP.
 
 **Rules:** local is the sole writer — never merge DoltHub PRs or web-edit the
@@ -359,13 +376,41 @@ DoltHub push exits non-zero on purpose: until pushed, Dolt history is
 single-copy on this box. Exporter unit tests: `python3 -m unittest
 tests.test_dolt_sync`. Full details + restore path: `freshie/README.md`.
 
-Key tables: `skill_compliance` (scores, grades, JRig columns), `forge_proofs` (drives JRig-Verified badges on plugin detail pages — `enrich-jrig-data.mjs` preserves the committed `jrig-data.json` when the local DB is absent, e.g. in CI).
+Key tables: `skill_compliance` (scores, grades, JRig columns) and `forge_proofs` (durable JRig behavioral-evaluation evidence). `enrich-jrig-data.mjs` can render an untracked build projection from `forge_proofs`, but no live marketplace page consumes it after PR #1046 removed the badge UI.
 
 ## npm Publish Pipeline
 
 Patch version bumps happen automatically on PR (via `auto-bump-on-pr.yml`). For minor/major bumps, hand-edit the version in the same PR. Merge to main triggers publish + tag + GitHub Release via `publish-changed-packages.yml`. See `RELEASING.md` for the full operator flow.
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
+
+## Internal governance agents — use them, don't re-derive their checks
+
+This repo ships 347 agents as **product** under `plugins/**/agents/`. Separately,
+`.claude/agents/` holds 3 internal governance agents that exist to work **on this
+repo**. The governance agents are advisory (read-only, no Write/Edit) — a deterministic
+check belongs in a script wired to `ci-required`, not in a prompt.
+
+| Agent            | Reach for it when                                                                                 | Catches                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `claim-verifier` | before merging anything that asserts counts, consumers, enforcement, provenance, or certification | false statements in PR bodies, commits, bead notes and governing docs — the class that shipped six times in one day              |
+| `beads-warden`   | after a batch of `bd` writes, before closing an epic, when a bead premise smells stale            | dropped writes from the bd rapid-write race, closures whose _title_ overstates delivery, undispositioned beads, projection drift |
+| `skill-auditor`  | repairing SKILL.md compliance                                                                     | frontmatter + body-section defects                                                                                               |
+
+**Do NOT duplicate the bead specialists.** `plugins/mcp/dolt-mcp-vcs/agents/` already owns
+the graph: `bead-dependency-mapper` (cycles, bottlenecks, critical path),
+`bead-epic-auditor` (epic closure drift), `bead-recovery-specialist`, `beads-guru` (the
+routing generalist), `dolt-sync-advisor`. `beads-warden` deliberately delegates to them and
+keeps only record-integrity — a second owner of one fact is the anti-pattern.
+
+`claim-verifier` delegates documentation-drift classes to the `/validate-consistency`
+skill; take its **deterministic** findings as evidence and its advisory findings as leads.
+
+**Verification traps these encode** (they have each produced a wrong verdict here):
+`cmd | head; echo $?` reports _head's_ exit code — capture it directly; `git grep` searches
+**tracked files only**, so use `git grep --untracked` (never stage a probe — that mutates
+the caller's index) before concluding a pattern is absent; `grep`→`rg`,
+`find`→`fd`, `cp`→`cp -i` (hangs) — use `/usr/bin/grep`, `command find`, `\cp -f`.
 
 ## Beads Issue Tracker
 
@@ -415,4 +460,5 @@ bd close <id>         # Complete work
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
+
 <!-- END BEADS INTEGRATION -->

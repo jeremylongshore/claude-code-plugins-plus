@@ -17,7 +17,7 @@ tags:
 - crypto
 - monitoring
 - monitoring-whale
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Monitoring Whale Activity
 

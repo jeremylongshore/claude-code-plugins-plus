@@ -15,7 +15,7 @@ tags:
 - business
 - dashboard
 - excel-pivot
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Excel Pivot Wizard
 

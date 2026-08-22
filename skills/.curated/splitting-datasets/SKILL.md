@@ -13,7 +13,7 @@ tags:
 - ai
 - testing
 - ml
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Dataset Splitter
 

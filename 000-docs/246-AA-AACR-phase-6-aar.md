@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Phase 6: Ship & Verify - After Action Report
 
 **Date:** 2025-12-26
@@ -95,45 +97,48 @@ Status: Clean
 
 ## Production Verification Evidence
 
+The command shapes and output annotations below are retained as historical evidence. The reserved
+host intentionally does not resolve; these are not current verification instructions.
+
 ### CLI Command on Homepage
 
 ```bash
-curl -s https://claudecodeplugins.io/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
-# Output: pnpm add -g @intentsolutionsio/ccpi
+curl -s https://retired-domain.invalid/ | grep -o 'pnpm add -g @intentsolutionsio/ccpi'
+# Historical output: pnpm add -g @intentsolutionsio/ccpi
 ```
 
 ### Search Redirect JavaScript
 
 ```bash
-curl -s https://claudecodeplugins.io/ | grep -o "redirectToExplore"
-# Output: redirectToExplore
+curl -s https://retired-domain.invalid/ | grep -o "redirectToExplore"
+# Historical output: redirectToExplore
 
-curl -s https://claudecodeplugins.io/ | grep -o "searchContainer.addEventListener"
-# Output: searchContainer.addEventListener
+curl -s https://retired-domain.invalid/ | grep -o "searchContainer.addEventListener"
+# Historical output: searchContainer.addEventListener
 ```
 
 ### Explore Page URL Params
 
 ```bash
-curl -s https://claudecodeplugins.io/explore/ | grep -o "DOMContentLoaded"
-# Output: DOMContentLoaded
+curl -s https://retired-domain.invalid/explore/ | grep -o "DOMContentLoaded"
+# Historical output: DOMContentLoaded
 ```
 
 ### Skills Index "Provided by" Labels
 
 ```bash
-curl -s https://claudecodeplugins.io/skills/ | grep -o "Provided by" | head -3
-# Output: Provided by (x3)
+curl -s https://retired-domain.invalid/skills/ | grep -o "Provided by" | head -3
+# Historical output: Provided by (x3)
 ```
 
 ### Skill Detail Page Styling
 
 ```bash
-curl -s https://claudecodeplugins.io/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
-# Output: <h2 class="section-title">Provided by Plugin</h2>
+curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "Provided by Plugin"
+# Historical output: <h2 class="section-title">Provided by Plugin</h2>
 
-curl -s https://claudecodeplugins.io/skills/adk-deployment-specialist/ | grep "skill-detail"
-# Output: skill-detail (class present)
+curl -s https://retired-domain.invalid/skills/adk-deployment-specialist/ | grep "skill-detail"
+# Historical output: skill-detail (class present)
 ```
 
 ---
@@ -180,7 +185,7 @@ git push origin main --force-with-lease
 
 - PR #205: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/205
 - Deploy Run: https://github.com/jeremylongshore/claude-code-plugins-plus-skills/actions/runs/20516632044
-- Production Site: https://claudecodeplugins.io/
+- Production Site: [retired legacy public domain]/
 
 ---
 

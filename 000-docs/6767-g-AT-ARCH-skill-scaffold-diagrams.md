@@ -1,10 +1,12 @@
+<!-- doc-class: record -->
+
 # 6767-g-AT-ARCH-skill-scaffold-diagrams.md
 
 **Document Type**: Architecture & Technical - Architecture (AT-ARCH)
 **Document ID**: 6767-g-AT-ARCH-skill-scaffold-diagrams
 **Title**: Skill Scaffold Diagrams (Enforceable)
 **Version**: 3.0.0
-**Status**: CANONICAL (Enterprise-Only)
+**Status**: REFERENCE (non-authoritative structural diagrams)
 **Date**: 2025-12-20
 **Companion To**: 6767-c (Extensions Standard), 6767-d (Schema), 6767-e (Validation), 6767-f (Plugin Diagrams)
 **Authority**: Intent Solutions (Enterprise Marketplace)

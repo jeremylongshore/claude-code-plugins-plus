@@ -21,7 +21,7 @@ tags:
 - observability
 - llm
 - debugging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Langfuse Incident Runbook
 

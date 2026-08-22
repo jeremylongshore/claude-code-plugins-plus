@@ -12,7 +12,7 @@ license: MIT
 tags:
 - productivity
 - vertex-ai
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Vertex AI Media Master
 

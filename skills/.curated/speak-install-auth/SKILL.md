@@ -20,7 +20,7 @@ tags:
 - speak
 - api
 - authentication
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Speak Install & Auth
 

@@ -1,0 +1,22 @@
+{
+  "synced_from": {
+    "repo": "uizze/uizze",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-08-18T20:49:08.098Z",
+  "author": {
+    "name": "UIZZE",
+    "github": "samuelbushi",
+    "email": "business@uizze.com"
+  },
+  "license": "MIT",
+  "files_synced": 5,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    "LICENSE",
+    "README.md",
+    "skills/anti-ui-slop/SKILL.md"
+  ]
+}

@@ -15,7 +15,7 @@ tags:
 - ai
 - ml
 - adapting-transfer
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Transfer Learning Adapter
 

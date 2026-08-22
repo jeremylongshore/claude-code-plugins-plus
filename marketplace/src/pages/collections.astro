@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CollectionsGrid from '../components/CollectionsGrid.astro';
+import KillerSkills from '../components/KillerSkills.astro';
+import JeremysStash from '../components/JeremysStash.astro';
+import StackBuilder from '../components/StackBuilder.astro';
 import collections from '../data/collections.json';
 
 const totalCollections = collections.collections.length;
@@ -29,7 +32,7 @@ const totalPluginsInCollections = collections.collections.reduce(
       font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 700;
       margin: 0 0 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .page-description {
@@ -56,7 +59,7 @@ const totalPluginsInCollections = collections.collections.reduce(
       font-size: 2rem;
       font-weight: 700;
       color: var(--primary);
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .stat-label {
@@ -79,19 +82,30 @@ const totalPluginsInCollections = collections.collections.reduce(
       font-size: 1.5rem;
       font-weight: 600;
       margin: 0;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
+    }
+
+    .section-lede {
+      color: var(--text-2);
+      max-width: 60ch;
+      margin: -0.75rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .section-lede a {
+      color: var(--ink-link);
     }
 
     .install-guide {
       background: var(--brand-light);
-      border-radius: 12px;
+      border-radius: 0;
       padding: 2rem;
       margin-top: 4rem;
     }
 
     .install-guide h3 {
       margin: 0 0 1rem;
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
     }
 
     .install-guide p {
@@ -113,7 +127,7 @@ const totalPluginsInCollections = collections.collections.reduce(
     }
 
     .step-number {
-      font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+      font-family: var(--font-mono);
       font-weight: 500;
       font-size: 0.9rem;
       color: var(--ink-2, var(--brand-mid-gray));
@@ -133,7 +147,7 @@ const totalPluginsInCollections = collections.collections.reduce(
       background: var(--card);
       border: 1px solid var(--brand-light-gray);
       padding: 0.5rem 0.75rem;
-      border-radius: 6px;
+      border-radius: 0;
       display: block;
       font-size: 0.9rem;
       margin-top: 0.5rem;
@@ -187,6 +201,40 @@ const totalPluginsInCollections = collections.collections.reduce(
         <h2 class="section-title">All Collections</h2>
       </div>
       <CollectionsGrid />
+    </section>
+
+    <!-- Rehomed from the homepage in the 2026-08-02 neobrutalist pass. The
+         homepage was cut to a single action; these three are all curation
+         surfaces, which is exactly what this page is, so they moved here rather
+         than being deleted. Killer Skill of the Week in particular is
+         hand-curated editorial — scripts/promote-spotlight.mjs and
+         render-spotlight.mjs still drive src/data/spotlights.json unchanged. -->
+    <section class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">Killer Skill of the Week</h2>
+      </div>
+      <p class="section-lede">
+        We scour GitHub for the most impressive agent skills and spotlight one each week.
+        <a href="/community">Meet the contributors</a>.
+      </p>
+      <KillerSkills />
+    </section>
+
+    <section class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">Jeremy's Stash</h2>
+      </div>
+      <JeremysStash />
+    </section>
+
+    <section class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">Build Your Own Stack</h2>
+      </div>
+      <p class="section-lede">
+        Pick the plugins you want and get a single install block for the set.
+      </p>
+      <StackBuilder />
     </section>
 
     <div class="install-guide">

@@ -1,3 +1,5 @@
+<!-- doc-class: record -->
+
 # Implementation Status Report
 
 ## The Visitor's Feedback Analysis

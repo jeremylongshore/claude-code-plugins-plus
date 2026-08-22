@@ -21,7 +21,7 @@ tags:
 - saas
 - lokalise
 - rbac
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Lokalise Enterprise RBAC
 

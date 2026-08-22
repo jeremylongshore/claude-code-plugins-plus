@@ -25,7 +25,7 @@ tags:
 - postgrest
 - rls
 - auth
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Supabase Common Errors
 

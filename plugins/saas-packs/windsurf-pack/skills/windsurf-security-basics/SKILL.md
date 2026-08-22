@@ -22,7 +22,7 @@ tags:
 - security
 - privacy
 - compliance
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatibility: Designed for Claude Code
 ---
 # Windsurf Security Basics
 
