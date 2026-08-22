@@ -177,6 +177,18 @@
         "skills/cli-ux-tester/testing-checklist.md": "sha256:b6e1bde5dc0031e474f1a9da6de60afbca755ac32885be33ab8e2efe6a0eca4e"
       }
     },
+    "cohesivity": {
+      "repo": "cohesivity-org/cohesivity-plugin",
+      "resolved_ref": "fd2e3091aa7b4b56567173c117a70077446d4960",
+      "locked_at": "2026-08-22T05:06:02.641Z",
+      "files": {
+        ".claude-plugin/plugin.json": "sha256:e8d57a7566e488b3e2471dac28ffe21f9669d74c67538e677cd95609f23bab02",
+        ".mcp.json": "sha256:286a5324823e30a845c89d25e99f02fcd977b85ef55006b97e164b26673804d2",
+        "LICENSE": "sha256:b72b4f2905d726d4a45e530e82ad58f70b7de337c8e67276022196b3f82deae3",
+        "mcp/project-bootstrap.mjs": "sha256:04a54bf6fa5e87e0b609c5507142e3d0398eeb99a398627bfcf177bda2607b31",
+        "skills/cohesivity/SKILL.md": "sha256:84ce077ea35e92254356a6dcda05f39926a962b8d35ee7f7dd9236f950db0e1d"
+      }
+    },
     "content-multiplier": {
       "repo": "localplugins/plugins",
       "resolved_ref": "fe2f4fa2a5bd98adcfc5b84bfd4e3e4fa593e1d6",
