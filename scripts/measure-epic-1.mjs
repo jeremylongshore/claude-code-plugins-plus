@@ -5,6 +5,20 @@
  *
  * The package-level `measure:e1:check` command runs the resolver and harness
  * fixture suites before invoking this module's artifact drift check.
+ *
+ * ORDERING MATTERS, and getting it wrong looks like a broken generator.
+ * `--check` builds its report from the GIT INDEX, not from the worktree, while
+ * generation WRITES to the worktree. So this sequence never converges:
+ *
+ *     edit inputs -> generate -> stage everything -> --check      (DRIFT)
+ *
+ * because the report was measured against an index that did not yet contain the
+ * edits. The correct order stages the inputs first:
+ *
+ *     edit inputs -> stage inputs -> generate -> stage artifact -> --check  (OK)
+ *
+ * A regeneration run before the inputs are staged measures one state and
+ * verifies another, which reads as non-determinism and is not.
  */
 
 import { spawnSync } from 'node:child_process';
