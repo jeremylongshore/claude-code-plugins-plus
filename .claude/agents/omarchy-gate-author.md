@@ -10,6 +10,9 @@ tags: [omarchy, gates, ci, quality]
 disallowedTools: []
 skills: []
 background: false
+hooks: {}
+mcpServers: {}
+permissionMode: default
 ---
 
 # Omarchy gate author
