@@ -200,13 +200,14 @@ Commander: @[name]
 | Secret manager access denied | IAM policy | Use break-glass admin account |
 | Fallback mode not implemented | Missing code path | Return cached/default data |
 
-
 ## Instructions
 
 Follow the existing Adobe-specific procedure in order: establish the prerequisites, make the scoped configuration or operational change, and complete its validation or cleanup step before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe Status Page](https://status.adobe.com)

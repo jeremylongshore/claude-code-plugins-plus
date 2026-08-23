@@ -251,10 +251,10 @@ function guardAdobeOperation(operation: string): void {
 | Quota counter reset | Server restart | Persist counter in Redis/DB |
 | Scope validation fails | Wrong env var | Check `NODE_ENV` and `ADOBE_SCOPES` |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)

@@ -12,7 +12,7 @@ description: 'Configure Adobe OAuth credentials and API access across developmen
 
   '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -203,10 +203,10 @@ async function deleteAllCachedAssets() {
 | Secret access denied | Missing IAM binding | Grant secretAccessor role |
 | Config merge fails | Missing env config file | Ensure all environments defined |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe Developer Console](https://developer.adobe.com/console)

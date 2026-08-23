@@ -237,10 +237,10 @@ export async function submitPrivacyRequest(
 | Credentials in logs | Missing redaction | Configure pino redact paths |
 | Privacy request failed | Missing org ID | Set `ADOBE_IMS_ORG_ID` env var |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe Privacy Service API](https://developer.adobe.com/experience-platform-apis/references/privacy-service/)

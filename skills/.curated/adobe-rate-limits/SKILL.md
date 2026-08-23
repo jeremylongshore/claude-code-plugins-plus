@@ -14,7 +14,7 @@ description: 'Implement Adobe API rate limiting, backoff, and quota management a
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -207,10 +207,10 @@ class PdfServicesQuotaTracker {
 | PDF `QUOTA_EXCEEDED` | Monthly limit hit | Upgrade tier or wait for reset |
 | Events 429 | 3000/5sec exceeded | Reduce batch size or add queue |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe Events API Rate Limits](https://developer.adobe.com/events/docs/guides/api/eventsingress-api)

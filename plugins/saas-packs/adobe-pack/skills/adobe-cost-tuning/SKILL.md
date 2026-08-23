@@ -214,10 +214,10 @@ ORDER BY credits DESC;
 | High Firefly costs | Duplicate prompts | Cache by prompt hash |
 | PDF overage | Unnecessary re-extractions | Cache extraction results |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe PDF Services Pricing](https://developer.adobe.com/document-services/pricing/main/)

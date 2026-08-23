@@ -244,13 +244,14 @@ Workarounds Attempted:
 - Network layers tested independently
 - Support escalation with x-request-id
 
-
 ## Error Handling
 
 If a step fails, stop before applying follow-on changes, retain sanitized diagnostic evidence, and use the troubleshooting or escalation guidance already in this skill. Treat authentication and vendor-service failures separately from local configuration errors.
+
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe Developer Support](https://developer.adobe.com/support)

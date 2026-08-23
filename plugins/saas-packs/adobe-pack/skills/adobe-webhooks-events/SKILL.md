@@ -258,10 +258,10 @@ async function processEventIdempotently(event: AdobeEvent): Promise<boolean> {
 | Duplicate events | No idempotency | Track `event_id` in Redis/DB |
 | Public key fetch fails | Network/firewall | Whitelist `static.adobeioevents.com` |
 
-
 ## Examples
 
 Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
+
 ## Resources
 
 - [Adobe I/O Events Webhooks Guide](https://developer.adobe.com/events/docs/guides/)
