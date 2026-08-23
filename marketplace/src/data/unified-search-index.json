@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 469,
-    "totalSkills": 3069,
+    "totalSkills": 3070,
     "totalDocs": 24,
-    "totalItems": 3562,
+    "totalItems": 3563,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -40,6 +40,7 @@
       "'Bash(aomi:*)",
       "'mcp__governed-brain__brain_search",
       "'mcp__governed-brain__brain_search'",
+      "'mcp__pocketnook__deploy",
       "Agent",
       "AskUserQuestion",
       "AskUserQuestion\"",
@@ -366,6 +367,10 @@
       "mcp__governed-brain__brain_govern",
       "mcp__governed-brain__brain_status",
       "mcp__governed-brain__brain_transition",
+      "mcp__pocketnook__deploy_directory",
+      "mcp__pocketnook__list_nooks",
+      "mcp__pocketnook__nook_logs",
+      "mcp__pocketnook__stop_nook'",
       "mcp__servicegraph__check_filter",
       "mcp__servicegraph__describe_dataset",
       "mcp__servicegraph__get_credit_balance",
@@ -16166,7 +16171,7 @@
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "pocketnook deploy a github repository or the working directory as it stands on disk to a private url, from inside the agent that wrote the code. five mcp tools over the @pocketnook/mcp server (deploy, deploy_directory, list_nooks, nook_logs, stop_nook) and deliberately no delete. private by default with no public option; sharing is by github username from the web app. in beta. mcp deploy hosting private mcp github internal-tools"
     },
     {
@@ -64270,6 +64275,28 @@
         "category": "examples"
       },
       "searchText": "plugin-validator 'validate automatically validates ai assistant code plugin structure, examples read grep bash(cmd:*) "
+    },
+    {
+      "type": "skill",
+      "id": "pocketnook",
+      "slug": "pocketnook",
+      "name": "pocketnook",
+      "description": "Deploys a repository or a working directory to a private URL, and manages what is already deployed: build logs, stopping. Use when a finished piece of work needs somewhere to run, or when a deploy has failed and the reason is in the build log. Trigger with \"deploy this\", \"put this somewhere private\", \"get me a link for this\", or \"/pocketnook\". Requires the pocketnook MCP server and a POCKETNOOK_TOKEN.",
+      "category": "mcp",
+      "allowedTools": [
+        "'mcp__pocketnook__deploy",
+        "mcp__pocketnook__deploy_directory",
+        "mcp__pocketnook__list_nooks",
+        "mcp__pocketnook__nook_logs",
+        "mcp__pocketnook__stop_nook'"
+      ],
+      "compatibleWith": [],
+      "version": "0.1.0",
+      "parentPlugin": {
+        "name": "pocketnook",
+        "category": "mcp"
+      },
+      "searchText": "pocketnook deploys a repository or a working directory to a private url, and manages what is already deployed: build logs, stopping. use when a finished piece of work needs somewhere to run, or when a deploy has failed and the reason is in the build log. trigger with \"deploy this\", \"put this somewhere private\", \"get me a link for this\", or \"/pocketnook\". requires the pocketnook mcp server and a pocketnook_token. mcp 'mcp__pocketnook__deploy mcp__pocketnook__deploy_directory mcp__pocketnook__list_nooks mcp__pocketnook__nook_logs mcp__pocketnook__stop_nook' "
     },
     {
       "type": "skill",

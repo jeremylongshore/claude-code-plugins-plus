@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 469,
-    "totalSkills": 3069,
+    "totalSkills": 3070,
     "totalCommands": 80,
-    "pluginsWithSkills": 436,
+    "pluginsWithSkills": 437,
     "byCategory": {
       "productivity": 31,
       "security": 27,
@@ -12732,8 +12732,8 @@
         "github",
         "internal-tools"
       ],
-      "hasSkills": false,
-      "skillCount": 0,
+      "hasSkills": true,
+      "skillCount": 1,
       "commandCount": 0,
       "installCommand": "/plugin install pocketnook",
       "sourcePath": "./plugins/mcp/pocketnook",

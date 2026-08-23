@@ -29,8 +29,14 @@ repository is involved.
 | `path` | no | The directory to pack. Omitted, the working directory is used. |
 | `name` | no | The nook's name. Omitted, the directory's name is used. |
 
-`node_modules`, `.git` and build caches are excluded. Nothing else is. Check for
-a `.env`, a key file or a database dump before calling this, not after.
+The excluded list is exactly `node_modules`, `.git`, `.venv`, `venv`,
+`__pycache__`, `.next/cache` and `.pnpm-store`. It is a size list, not a safety
+list: nothing is excluded for being sensitive. A `.env`, a `.pem`, a
+`credentials.json`, an `.npmrc` with a token in it, a database dump. Each is
+uploaded verbatim.
+
+Stop and ask before deploying a directory holding any of them. An uploaded
+secret is a leaked secret, and stopping the nook afterwards does not unsend it.
 
 Deploying the same `name` again replaces that nook.
 

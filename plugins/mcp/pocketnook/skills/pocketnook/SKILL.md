@@ -67,12 +67,19 @@ cheaper than deploying the wrong thing, and both wrong answers are silent.
 
 ### Deploy a directory
 
-1. Check what is in the directory before packing it. Everything is sent apart
-   from `node_modules`, `.git` and build caches, so look for a `.env`, a key
-   file, a database dump, and say so before deploying rather than after.
-2. Call `deploy_directory`. Set `name` when the directory name is not what the
+1. Look at what is in the directory before packing it. The upload drops
+   `node_modules`, `.git`, `.venv`, `venv`, `__pycache__`, `.next/cache` and
+   `.pnpm-store`, and **nothing else**. A `.env`, a `.pem` or other private key,
+   a `credentials.json`, a `.npmrc` carrying a token, a database dump: each of
+   those goes up exactly as it sits on disk.
+2. **Stop and ask if any of them are there.** Name the file, say plainly that
+   deploying will upload it, and wait for the user to say go ahead or to move it
+   out. Deploying first and mentioning it afterwards is not the same thing,
+   because an uploaded secret is a leaked secret and the deploy cannot be taken
+   back by deleting the nook.
+3. Call `deploy_directory`. Set `name` when the directory name is not what the
    user would call the nook.
-3. Wait. Builds run synchronously and can take a few minutes. Never start a
+4. Wait. Builds run synchronously and can take a few minutes. Never start a
    second deploy of the same repository while one is running.
 
 Deploying the same name again replaces that nook, which is what makes the
