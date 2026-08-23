@@ -1,0 +1,24 @@
+{
+  "synced_from": {
+    "repo": "shotintoeternity/pocketnook-mcp",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-08-23T04:56:55.144Z",
+  "author": {
+    "name": "Kevin Carter",
+    "github": "shotintoeternity",
+    "email": "kevinandrewcarter@gmail.com"
+  },
+  "license": "MIT",
+  "files_synced": 7,
+  "files": [
+    ".claude-plugin/marketplace.json",
+    ".claude-plugin/plugin.json",
+    ".mcp.json",
+    "LICENSE",
+    "README.md",
+    "skills/pocketnook/SKILL.md",
+    "skills/pocketnook/references/tools.md"
+  ]
+}

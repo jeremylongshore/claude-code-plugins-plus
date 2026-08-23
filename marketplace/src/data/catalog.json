@@ -5,7 +5,7 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 468,
+    "totalPlugins": 469,
     "totalSkills": 3069,
     "totalCommands": 80,
     "pluginsWithSkills": 436,
@@ -15,7 +15,7 @@
       "testing": 28,
       "ai-agency": 10,
       "ai-ml": 36,
-      "mcp": 16,
+      "mcp": 17,
       "packages": 5,
       "performance": 25,
       "devops": 36,
@@ -12714,6 +12714,33 @@
         "name": "UIZZE",
         "url": "https://uizze.com",
         "email": "business@uizze.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "pocketnook",
+      "name": "pocketnook",
+      "displayName": "pocketnook",
+      "description": "Deploy a GitHub repository or the working directory as it stands on disk to a private URL, from inside the agent that wrote the code. Five MCP tools over the @pocketnook/mcp server (deploy, deploy_directory, list_nooks, nook_logs, stop_nook) and deliberately no delete. Private by default with no public option; sharing is by GitHub username from the web app. In beta.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "deploy",
+        "hosting",
+        "private",
+        "mcp",
+        "github",
+        "internal-tools"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install pocketnook",
+      "sourcePath": "./plugins/mcp/pocketnook",
+      "isFeatured": false,
+      "author": {
+        "name": "Kevin Carter",
+        "url": "https://pocketnook.dev"
       },
       "type": "instruction-plugin"
     }

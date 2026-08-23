@@ -10701,6 +10701,28 @@
       "homepage": "https://uizze.com",
       "repository": "https://github.com/uizze/uizze",
       "license": "MIT"
+    },
+    {
+      "name": "pocketnook",
+      "source": "./plugins/mcp/pocketnook",
+      "description": "Deploy a GitHub repository or the working directory as it stands on disk to a private URL, from inside the agent that wrote the code. Five MCP tools over the @pocketnook/mcp server (deploy, deploy_directory, list_nooks, nook_logs, stop_nook) and deliberately no delete. Private by default with no public option; sharing is by GitHub username from the web app. In beta.",
+      "version": "0.1.0",
+      "category": "mcp",
+      "keywords": [
+        "deploy",
+        "hosting",
+        "private",
+        "mcp",
+        "github",
+        "internal-tools"
+      ],
+      "author": {
+        "name": "Kevin Carter",
+        "url": "https://pocketnook.dev"
+      },
+      "homepage": "https://pocketnook.dev/?utm_source=claude-plugins",
+      "repository": "https://github.com/shotintoeternity/pocketnook-mcp",
+      "license": "MIT"
     }
   ]
 }

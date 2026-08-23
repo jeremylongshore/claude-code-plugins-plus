@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/pocketnook",
+  "version": "0.1.0",
+  "description": "Deploy a GitHub repository or your working directory to a private URL, without leaving the agent that wrote it.",
+  "keywords": [
+    "deploy",
+    "hosting",
+    "private",
+    "mcp",
+    "github",
+    "internal-tools",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/mcp/pocketnook"
+  },
+  "homepage": "https://tonsofskills.com/plugins/pocketnook",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Kevin Carter",
+    "url": "https://pocketnook.dev"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install pocketnook\\\\n  or /plugin install pocketnook@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -362,6 +362,8 @@ importers:
 
   plugins/mcp/lumera-agent-memory: {}
 
+  plugins/mcp/pocketnook: {}
+
   plugins/mcp/pr-to-spec:
     dependencies:
       '@modelcontextprotocol/sdk':

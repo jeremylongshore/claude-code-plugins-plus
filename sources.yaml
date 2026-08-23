@@ -1765,6 +1765,41 @@ sources:
       - '**/node_modules/**'
       - '**/*.log'
 
+  # ============================================================
+  # pocketnook (Kevin Carter)
+  # https://github.com/shotintoeternity/pocketnook-mcp
+  # ============================================================
+
+  - name: pocketnook
+    description: Deploy a GitHub repository or the working directory as it stands on disk to a private URL, from inside the agent that wrote the code. Five MCP tools over the @pocketnook/mcp server (deploy, deploy_directory, list_nooks, nook_logs, stop_nook) and deliberately no delete. Private by default with no public option; sharing is by GitHub username from the web app. In beta.
+    repo: shotintoeternity/pocketnook-mcp
+    source_path: .
+    target_path: plugins/mcp/pocketnook
+    author:
+      name: Kevin Carter
+      github: shotintoeternity
+      email: kevinandrewcarter@gmail.com
+    license: MIT
+    category: mcp
+    verified: false
+    keywords:
+      - deploy
+      - hosting
+      - private
+      - mcp
+      - github
+      - internal-tools
+    include:
+      - '/.claude-plugin/**'
+      - '/.mcp.json'
+      - '/skills/**'
+      - '/README.md'
+      - '/LICENSE'
+    exclude:
+      - '**/node_modules/**'
+      - '/.git/**'
+      - '**/*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)

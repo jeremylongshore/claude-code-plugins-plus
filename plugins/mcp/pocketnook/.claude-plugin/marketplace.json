@@ -1,0 +1,6 @@
+{
+  "name": "pocketnook-mcp",
+  "description": "The pocketnook plugin: deploy a repository or a working directory to a private URL, from inside the agent that wrote it.",
+  "owner": { "name": "Kevin Carter", "url": "https://pocketnook.dev" },
+  "plugins": [ { "name": "pocketnook", "source": "./" } ]
+}

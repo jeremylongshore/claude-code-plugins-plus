@@ -4,8 +4,8 @@
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/latest)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-468-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-3069-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-469-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-3070-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![skills.sh](https://skills.sh/b/jeremylongshore/claude-code-plugins-plus-skills)](https://skills.sh/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Kobiton](https://img.shields.io/badge/Sponsor-kobiton.com-0487D9)](https://kobiton.com)
@@ -57,8 +57,8 @@ Every number below names the cohort it counts and the command that reproduces it
 
 | Count | Cohort                                 | Reproduce with                                                                                                          |
 | ----: | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-|   468 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
-| 3,069 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
+|   469 | catalog plugins (catalog-entry cohort) | `node scripts/generate-readme-toc.mjs` over `marketplace.extended.json`                                                 |
+| 3,070 | marketplace-visible skills (distinct)  | `node -e "import('./scripts/corpus-resolver.mjs').then(m=>console.log(m.resolveCorpus('marketplace-visible').length))"` |
 |   347 | agent definitions in plugins           | `git ls-files 'plugins/**' \| grep '/agents/.*\.md'`                                                                    |
 |    19 | plugin categories                      | `ls -d plugins/*/`                                                                                                      |
 
@@ -125,7 +125,7 @@ The 19 categories below link into the live marketplace. Plugin counts are the ca
 | 🎨  | [Design](https://tonsofskills.com/plugins#design)                   |       9 |
 | 🔧  | [DevOps & Infrastructure](https://tonsofskills.com/plugins#devops)  |      36 |
 | 📚  | [Examples & Templates](https://tonsofskills.com/plugins#examples)   |       5 |
-| 🧩  | [MCP Servers](https://tonsofskills.com/plugins#mcp)                 |      16 |
+| 🧩  | [MCP Servers](https://tonsofskills.com/plugins#mcp)                 |      17 |
 | 📦  | [Packages](https://tonsofskills.com/plugins#packages)               |       5 |
 | ⚡  | [Performance](https://tonsofskills.com/plugins#performance)         |      25 |
 | ✅  | [Productivity](https://tonsofskills.com/plugins#productivity)       |      31 |
