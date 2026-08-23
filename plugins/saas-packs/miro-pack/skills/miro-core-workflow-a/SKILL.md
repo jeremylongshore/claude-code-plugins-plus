@@ -5,7 +5,7 @@ description: "Manage Miro boards and items \u2014 create, read, update, delete b
   \ like \"miro board management\", \"create miro board\",\n\"miro items CRUD\", \"\
   miro sticky notes\", \"organize miro board\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

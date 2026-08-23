@@ -10,7 +10,7 @@ description: 'Configure Miro REST API v2 across development, staging, and produc
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(vault:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

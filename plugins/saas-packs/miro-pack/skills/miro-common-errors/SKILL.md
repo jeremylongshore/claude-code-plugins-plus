@@ -12,7 +12,7 @@ description: 'Diagnose and fix Miro REST API v2 errors by HTTP status code.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

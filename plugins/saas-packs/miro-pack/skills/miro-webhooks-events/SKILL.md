@@ -11,7 +11,7 @@ description: 'Implement Miro REST API v2 webhooks with board subscriptions, even
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -13,7 +13,7 @@ description: 'Execute Miro REST API v2 production deployment checklist and rollb
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

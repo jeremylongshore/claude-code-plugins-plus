@@ -12,7 +12,7 @@ description: 'Apply production-ready patterns for @mirohq/miro-api client usage.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

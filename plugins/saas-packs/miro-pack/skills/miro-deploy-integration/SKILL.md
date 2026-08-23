@@ -10,7 +10,7 @@ description: 'Deploy Miro REST API v2 integrations to Vercel, Fly.io, and Cloud 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
