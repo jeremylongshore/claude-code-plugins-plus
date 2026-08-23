@@ -104,20 +104,27 @@ jobs:
           jq -r '.[].filename' /tmp/pr-files.json > /tmp/pr-files.txt
           echo "All changed files (count=$(wc -l < /tmp/pr-files.txt | tr -d ' ')):" >&2
           head -50 /tmp/pr-files.txt >&2
-          { grep '^plugins/' /tmp/pr-files.txt || true; } \
+          jq -r '.[] | select(.status != "removed") | .filename' /tmp/pr-files.json \
+            | { grep '^plugins/' || true; } \
             | awk -F/ '{print $1"/"$2"/"$3}' \
             | sort -u > /tmp/changed-plugins.txt
-          echo "Changed plugin dirs:" >&2
+          jq -r '.[] | select(.status == "removed") | .filename' /tmp/pr-files.json \
+            | { grep '^plugins/' || true; } \
+            | awk -F/ '{print $1"/"$2"/"$3}' \
+            | sort -u > /tmp/deleted-plugins.txt
+          echo "Changed (non-deleted) plugin dirs:" >&2
           cat /tmp/changed-plugins.txt >&2
-          PLUGIN_LINES=$({ grep -c '^plugins/' /tmp/pr-files.txt || true; })
+          echo "Deleted plugin dirs:" >&2
+          cat /tmp/deleted-plugins.txt >&2
+          PLUGIN_LINES=$(jq '[.[] | select(.filename | startswith("plugins/"))] | length' /tmp/pr-files.json)
           CHANGED_DIRS=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')
+          DELETED_DIRS=$(wc -l < /tmp/deleted-plugins.txt | tr -d ' ')
           : > /tmp/diff-step-signals.txt
           if [ "$PLUGIN_LINES" -gt 0 ] && [ "$CHANGED_DIRS" = "0" ]; then
-            echo "prescreen-internal-error: diff contained $PLUGIN_LINES plugin file(s) but extraction produced 0 dirs" >> /tmp/diff-step-signals.txt
-            echo "::error::pr-prescreen internal: plugin lines present but no dirs extracted (see /tmp/pr-files.txt)"
+            echo "All $PLUGIN_LINES changed plugin file(s) are removals; grading is intentionally skipped and deletion integrity is checked separately." >&2
           fi
           {
-            echo "count=$CHANGED_DIRS"
+            echo "count=$((CHANGED_DIRS + DELETED_DIRS))"
           } >> "$GITHUB_OUTPUT"
 
       - name: Run validator against PR tree (full --json sweep)
@@ -184,6 +191,21 @@ jobs:
                 fi
               fi
             done < /tmp/changed-plugins.txt
+          fi
+          if [ -s /tmp/deleted-plugins.txt ]; then
+            while read -r plug; do
+              [ -z "$plug" ] && continue
+              # A directory absent from the PR checkout is a full plugin
+              # removal. Its structural invariant is the inverse of an added
+              # plugin: it must no longer be listed in the catalog. Partial
+              # file removals keep their directory and remain covered by the
+              # normal validator/catalog lanes.
+              if [ ! -d "$plug" ] && [ -f .claude-plugin/marketplace.extended.json ]; then
+                if grep -q "\"$plug\"\|/$(basename "$plug")\"" .claude-plugin/marketplace.extended.json; then
+                  echo "Deleted plugin $plug still has a catalog entry in marketplace.extended.json" >> /tmp/hard-blocks.txt
+                fi
+              fi
+            done < /tmp/deleted-plugins.txt
           fi
           echo "Detected hard-block signals:" >&2
           cat /tmp/hard-blocks.txt >&2 || true
