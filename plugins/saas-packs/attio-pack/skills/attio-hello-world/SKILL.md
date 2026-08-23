@@ -12,7 +12,7 @@ description: 'Make your first Attio API calls -- list objects, create a person,
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

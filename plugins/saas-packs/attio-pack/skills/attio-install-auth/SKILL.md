@@ -12,7 +12,7 @@ description: 'Set up Attio REST API authentication with access tokens or OAuth 2
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
