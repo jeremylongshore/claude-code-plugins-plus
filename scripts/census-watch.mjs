@@ -454,7 +454,12 @@ function existingEnforcePR() {
         { encoding: 'utf8' },
       ),
     );
-    return prs[0] || null;
+    // A closed, unmerged enforcement PR is historical evidence, not an active
+    // idempotency target. Keeping it here would permanently suppress a fresh
+    // deadline run even after its branch was deleted. Only an open PR can be
+    // reused safely; the remote-branch guard below still prevents overwriting
+    // an orphaned branch.
+    return prs.find((pr) => pr.state === 'OPEN') || null;
   } catch {
     return null;
   }
