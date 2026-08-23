@@ -13,7 +13,7 @@ description: 'Deploy Adobe-powered applications to Vercel, Cloud Run, and Adobe 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(aio:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

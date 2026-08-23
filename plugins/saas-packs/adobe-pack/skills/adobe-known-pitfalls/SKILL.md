@@ -13,7 +13,7 @@ description: 'Identify and avoid Adobe-specific anti-patterns: using deprecated 
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

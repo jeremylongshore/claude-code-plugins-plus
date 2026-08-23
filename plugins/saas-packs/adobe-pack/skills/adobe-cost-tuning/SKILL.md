@@ -14,7 +14,7 @@ description: 'Optimize Adobe API costs across Firefly Services (generative credi
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

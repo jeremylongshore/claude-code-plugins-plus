@@ -12,7 +12,7 @@ description: 'Implement Adobe-specific lint rules, CI policy checks, and runtime
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
