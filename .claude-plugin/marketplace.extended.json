@@ -10701,6 +10701,85 @@
       "homepage": "https://uizze.com",
       "repository": "https://github.com/uizze/uizze",
       "license": "MIT"
+    },
+    {
+      "name": "general-legal-assistant",
+      "source": "./plugins/business-tools/general-legal-assistant",
+      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "legal",
+        "contracts",
+        "nda",
+        "compliance",
+        "gdpr",
+        "ccpa",
+        "risk-analysis",
+        "terms-of-service",
+        "privacy-policy"
+      ],
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "homepage": "https://tonsofskills.com",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+      "license": "MIT",
+      "featured": false,
+      "pricing": "free",
+      "components": {
+        "skills": 12,
+        "agents": 5
+      }
+    },
+    {
+      "name": "claude-memory-kit",
+      "source": "./plugins/productivity/claude-memory-kit",
+      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "skills",
+        "session",
+        "claude-code"
+      ],
+      "author": {
+        "name": "builtbyzac"
+      },
+      "homepage": "https://builtbyzac.com/memory-kit.html",
+      "repository": "https://github.com/seankim-android/builtbyagent",
+      "license": "MIT",
+      "components": {
+        "skills": 1,
+        "commands": 5,
+        "total": 6
+      }
+    },
+    {
+      "name": "claude-pack",
+      "source": "./plugins/saas-packs/claude-pack",
+      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "ai",
+        "sdk",
+        "messages-api"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "license": "MIT",
+      "components": {
+        "skills": 32,
+        "total": 32
+      }
     }
   ]
 }

@@ -5,12 +5,12 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 468,
-    "totalSkills": 3069,
-    "totalCommands": 80,
-    "pluginsWithSkills": 436,
+    "totalPlugins": 471,
+    "totalSkills": 3114,
+    "totalCommands": 85,
+    "pluginsWithSkills": 439,
     "byCategory": {
-      "productivity": 31,
+      "productivity": 32,
       "security": 27,
       "testing": 28,
       "ai-agency": 10,
@@ -23,10 +23,10 @@
       "crypto": 27,
       "skill-enhancers": 9,
       "database": 26,
-      "business-tools": 21,
+      "business-tools": 22,
       "community": 24,
       "examples": 5,
-      "saas-packs": 106,
+      "saas-packs": 107,
       "design": 9,
       "analytics": 1
     },
@@ -12714,6 +12714,87 @@
         "name": "UIZZE",
         "url": "https://uizze.com",
         "email": "business@uizze.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "general-legal-assistant",
+      "name": "general-legal-assistant",
+      "displayName": "general legal assistant",
+      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "legal",
+        "contracts",
+        "nda",
+        "compliance",
+        "gdpr",
+        "ccpa",
+        "risk-analysis",
+        "terms-of-service",
+        "privacy-policy"
+      ],
+      "hasSkills": true,
+      "skillCount": 12,
+      "commandCount": 0,
+      "installCommand": "/plugin install general-legal-assistant",
+      "sourcePath": "./plugins/business-tools/general-legal-assistant",
+      "isFeatured": false,
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "claude-memory-kit",
+      "name": "claude-memory-kit",
+      "displayName": "claude memory kit",
+      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "skills",
+        "session",
+        "claude-code"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 5,
+      "installCommand": "/plugin install claude-memory-kit",
+      "sourcePath": "./plugins/productivity/claude-memory-kit",
+      "isFeatured": false,
+      "author": {
+        "name": "builtbyzac"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "claude-pack",
+      "name": "claude-pack",
+      "displayName": "claude pack",
+      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "ai",
+        "sdk",
+        "messages-api"
+      ],
+      "hasSkills": true,
+      "skillCount": 32,
+      "commandCount": 0,
+      "installCommand": "/plugin install claude-pack",
+      "sourcePath": "./plugins/saas-packs/claude-pack",
+      "isFeatured": false,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     }
