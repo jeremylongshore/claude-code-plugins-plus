@@ -181,6 +181,13 @@ curl -sI -H "Authorization: Bearer $MIRO_ACCESS_TOKEN" https://api.miro.com/v2/b
 curl -s -H "Authorization: Bearer $MIRO_ACCESS_TOKEN" https://api.miro.com/v1/oauth-token | jq '.scopes'
 ```
 
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 ## Error Handling
 
 | Diagnostic | What It Reveals | If It Fails |

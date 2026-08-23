@@ -26,6 +26,9 @@ compatibility: Designed for Claude Code
 
 Miro's API pricing is based on your plan tier (Free, Business, Enterprise), not per-API-call billing. However, the **credit-based rate limiting** system (100,000 credits/minute) effectively caps throughput. Cost optimization means minimizing API calls to stay within your plan's rate limits and reduce the need for higher-tier upgrades.
 
+## Prerequisites
+
+Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
 ## Miro Plan Comparison
 
 | Feature | Free | Business | Enterprise |
@@ -223,6 +226,16 @@ Consider Enterprise if you need:
 - SSO/SAML integration APIs
 - Dedicated support for API issues
 
+
+## Instructions
+
+Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 ## Error Handling
 
 | Issue | Cause | Solution |

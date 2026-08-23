@@ -252,6 +252,13 @@ const api = new MiroApi(process.env.MIRO_ACCESS_TOKEN!, {
 | `MIRO_REDIRECT_URI` | For OAuth flow | OAuth callback URL |
 | `MIRO_TEST_BOARD_ID` | For integration tests | Board ID for live tests |
 
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 ## Error Handling
 
 | Error | Cause | Solution |
