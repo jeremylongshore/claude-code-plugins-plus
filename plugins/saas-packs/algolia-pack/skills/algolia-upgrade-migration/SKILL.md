@@ -12,7 +12,7 @@ description: 'Upgrade algoliasearch from v4 to v5 with breaking change detection
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

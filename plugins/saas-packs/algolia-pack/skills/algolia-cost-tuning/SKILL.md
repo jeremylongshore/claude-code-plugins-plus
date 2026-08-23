@@ -10,7 +10,7 @@ description: 'Optimize Algolia costs: understand search request vs record pricin
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

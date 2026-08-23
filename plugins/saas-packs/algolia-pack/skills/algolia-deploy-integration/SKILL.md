@@ -10,7 +10,7 @@ description: 'Deploy Algolia-powered apps to Vercel, Fly.io, and Cloud Run with 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
