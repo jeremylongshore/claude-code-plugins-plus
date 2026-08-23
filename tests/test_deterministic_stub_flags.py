@@ -33,3 +33,24 @@ def test_flags_missing_in_pack_reference_but_exempts_templates(tmp_path):
     ])
     assert str(skill) in flags
     assert str(templated) not in flags
+
+
+def test_duplicate_hashes_do_not_cross_pack_boundaries(tmp_path):
+    body = "# Shared\n\nThis identical body is only a finding within one pack."
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    rows = [
+        record(first / "skills" / name / "SKILL.md", first, body)
+        for name in ("a", "b")
+    ] + [record(second / "skills" / "c" / "SKILL.md", second, body)]
+    assert validator.deterministic_stub_flags(rows) == {}
+
+
+def test_existing_in_pack_reference_is_not_a_dangling_pointer(tmp_path):
+    pack = tmp_path / "pack"
+    skill = pack / "skills" / "a" / "SKILL.md"
+    target = pack / "references" / "real.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("present", encoding="utf-8")
+    rows = [record(skill, pack, "See [real](../../references/real.md)")]
+    assert validator.deterministic_stub_flags(rows) == {}

@@ -1608,10 +1608,6 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     # === ANTI-PATTERN DETECTION (graduated penalty system) ===
     # Each detected anti-pattern reduces score by 1pt, floor at -5
     skill_dir = path.parent
-    code_blocks = len(re.findall(r"```", body)) // 2
-    md_links = len(re.findall(r"\[.*?\]\((?!https?://)[^)]+\)", body))
-    body_word_count = len(body.split())
-
     anti_patterns_found = []
 
     # AP1: Over-constrained — excessive MUST/NEVER/ALWAYS keywords
@@ -1650,28 +1646,10 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
         if orphan_refs:
             anti_patterns_found.append(f"orphan references: {', '.join(orphan_refs[:3])}")
 
-    # AP5: Stub detection (replaces old flat -3 penalty with graduated system)
-    placeholder_tokens = ["TODO", "FIXME", "REPLACE_ME", "TBD", "[YOUR_", "<insert"]
-    placeholder_count = sum(len(re.findall(re.escape(tok), body, re.IGNORECASE)) for tok in placeholder_tokens) + len(
-        re.findall(r"\{[a-z_]+\}", body)
-    )
-    placeholder_density = placeholder_count / body_word_count if body_word_count > 0 else 0.0
-    stub_signals = 0
-    stub_reasons_mod = []
-    if lines < 30:
-        stub_signals += 1
-        stub_reasons_mod.append(f"{lines} lines")
-    if code_blocks == 0 and md_links == 0:
-        stub_signals += 1
-        stub_reasons_mod.append("no code blocks or links")
-    if body_word_count < 150:
-        stub_signals += 1
-        stub_reasons_mod.append(f"{body_word_count} words")
-    if placeholder_density > 0.05:
-        stub_signals += 1
-        stub_reasons_mod.append(f"placeholder density {placeholder_density:.1%}")
-    if stub_signals >= 2:
-        anti_patterns_found.append(f"stub skill: {', '.join(stub_reasons_mod)}")
+    # Stub classification belongs exclusively to deterministic_stub_flags(),
+    # which evaluates the complete run.  Do not reintroduce thin-content,
+    # placeholder-density, or link-count guesses here: those are local
+    # heuristics and disagree with the persisted Freshie is_stub verdict.
 
     # AP6: Ecosystem coherence — bonus for cross-referencing siblings
     has_cross_ref = bool(re.search(r"(?i)(see also|related skill|sibling|cross-reference|companion)", body))
