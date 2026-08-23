@@ -321,3 +321,16 @@ sources.yaml:sources-change-unscanned  tonone excludes '.claude-plugin/CLAUDE.md
 plugins/testing/kobiton-automate/README.md:secret-exfil-cooccur  Reviewed 2026-08-19 (E3.6 relock): the co-occurrence is Kobiton's documented API-key auth alongside a curl fetch of their own repo's AGENTS.md (raw.githubusercontent.com/kobiton/automate) — verified sponsor source, product install docs, not exfil.
 plugins/testing/kobiton-automate/README.md:mcp-remote  Reviewed 2026-08-19 (E3.6 relock): https://api.kobiton.com/mcp is the product's own remote MCP endpoint on the vendor's domain — the plugin's entire purpose; verified source.
 plugins/mcp/servicegraph/hooks/hooks.json:hook-definition  E4.10 curated hardening reviewed 2026-08-19: a PreToolUse gate matching ONLY mcp__servicegraph__unlock_rows that runs the plugin's own confirm-unlock.sh to emit permissionDecision "ask" — it ADDS a confirmation before paid credit spends and executes nothing else; this is the enforcing artifact for the destructive-policy declaration (790 § 6, AAR 800).
+
+# ── Attio internal pack remediation (2026-08-23). ──
+# Each reviewed example sends an Attio API credential only to Attio's documented
+# API endpoints; no example forwards that credential to a third-party host or logs it.
+plugins/saas-packs/attio-pack/skills/attio-ci-integration/SKILL.md:secret-exfil-cooccur  documented Attio CI example sends its Attio test credential only to api.attio.com
+plugins/saas-packs/attio-pack/skills/attio-debug-bundle/SKILL.md:secret-exfil-cooccur  documented Attio diagnostic request sends its Attio credential only to api.attio.com
+plugins/saas-packs/attio-pack/skills/attio-deploy-integration/SKILL.md:secret-exfil-cooccur  documented deployment example sends its Attio credential only to Attio's API
+plugins/saas-packs/attio-pack/skills/attio-install-auth/SKILL.md:secret-exfil-cooccur  documented authentication example sends Attio credentials only to Attio's API
+plugins/saas-packs/attio-pack/skills/attio-prod-checklist/SKILL.md:secret-exfil-cooccur  documented production verification sends its Attio credential only to api.attio.com
+plugins/saas-packs/attio-pack/skills/attio-sdk-patterns/SKILL.md:secret-exfil-cooccur  documented SDK example sends its Attio credential only to api.attio.com
+plugins/saas-packs/attio-pack/skills/attio-security-basics/SKILL.md:secret-exfil-cooccur  documented security example sends its Attio credential only to Attio's API
+plugins/saas-packs/attio-pack/skills/attio-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented upgrade request sends its Attio credential only to api.attio.com
+plugins/saas-packs/attio-pack/skills/attio-webhooks-events/SKILL.md:secret-exfil-cooccur  documented webhook management example sends its Attio credential only to api.attio.com

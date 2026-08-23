@@ -211,6 +211,19 @@ async function checkForApiChanges(): Promise<boolean> {
 [ ] OpenAPI spec monitoring configured for future changes
 ```
 
+
+## Prerequisites
+
+Confirm that you have an Attio workspace appropriate to the task, a dedicated non-production record or workspace for testing, and only the API token scopes or administrative access required by the procedure.
+## Instructions
+
+Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+## Output
+
+Following this guide produces the Attio integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test record or workspace and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 ## Error Handling
 
 | Migration issue | Symptom | Fix |
