@@ -8155,7 +8155,7 @@
       "name": "ga4-pack",
       "displayName": "ga4 pack",
       "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "saas-packs",
       "keywords": [
         "google-analytics",
