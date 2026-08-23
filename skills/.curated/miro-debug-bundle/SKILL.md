@@ -12,7 +12,7 @@ description: 'Collect Miro REST API v2 diagnostic evidence for support tickets.
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
