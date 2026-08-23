@@ -254,13 +254,14 @@ describe.skipIf(!LIVE)("Attio Live API", () => {
 });
 ```
 
-
 ## Output
 
 Following this guide produces the Attio integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
 ## Examples
 
 Start with the smallest applicable command or code example in the relevant section, using a dedicated test record or workspace and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
