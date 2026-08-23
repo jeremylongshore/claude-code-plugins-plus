@@ -113,6 +113,10 @@ async function verifyAlgoliaConnection() {
 await verifyAlgoliaConnection();
 ```
 
+## Output
+
+The project has a v5 Algolia client configured with the correct application ID and least-privileged key for its environment. The verification request confirms connectivity without exposing an Admin key to browser code.
+
 ## Error Handling
 
 | Error | HTTP Code | Cause | Solution |

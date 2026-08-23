@@ -25,7 +25,17 @@ compatibility: Designed for Claude Code
 
 Quick reference for the most common Algolia errors, their root causes, and fixes. All examples use `algoliasearch` v5 client error types.
 
-## Error Reference
+## Prerequisites
+
+- The Algolia application ID and the least-privileged API key needed for the failing operation.
+- `curl`, `jq`, and the relevant application runtime available where you run diagnostics.
+- A safe test index when reproducing write failures; do not investigate against production with an unrestricted Admin key.
+
+## Instructions
+
+Match the exact response status and request ID to the reference below, run the diagnostic script only with scoped credentials, then apply the smallest listed corrective action before retrying.
+
+## Error Handling
 
 ### 1. Invalid Application-ID or API key (403)
 
@@ -216,6 +226,10 @@ in_stock = true                    # Boolean (stored as 0/1)
 _tags:featured                     # Tag filter
 ```
 
+## Examples
+
+The diagnostic script is a read-only example: it checks credential presence, API connectivity, SDK version, and service status without printing the API key itself.
+
 ## Quick Diagnostic Script
 
 ```bash
@@ -245,6 +259,10 @@ curl -s https://status.algolia.com/api/v2/status.json | jq -r '.status.descripti
 2. Collect debug info with `algolia-debug-bundle` skill
 3. Search [Algolia Support](https://support.algolia.com) articles
 4. Open support ticket with request ID from error response
+
+## Output
+
+You will have a classified failure, a reproducible diagnostic result, and the next recovery action or escalation path. Preserve the request ID from any API response when handing the case to Algolia support.
 
 ## Resources
 

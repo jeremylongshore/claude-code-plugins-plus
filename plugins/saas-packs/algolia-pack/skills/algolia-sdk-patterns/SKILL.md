@@ -37,6 +37,10 @@ Production-ready patterns for `algoliasearch` v5. Key architectural change from 
 
 ## Instructions
 
+## Examples
+
+The client, result, error, batch, and tenant examples below establish a consistent v5 SDK boundary. Centralize credentials and index naming in that boundary so individual callers do not reimplement error or retry policy.
+
 ### Pattern 1: Typed Singleton Client
 
 ```typescript
@@ -218,6 +222,10 @@ export function tenantIndex(tenantId: string, base: string): string {
   return `${tenantId}_${base}`; // "acme_products"
 }
 ```
+
+## Output
+
+The application gains typed, reusable SDK access patterns for search and write paths, with explicit error classification and post-write task waiting. Callers receive structured results without duplicating connection or credential logic.
 
 ## Error Handling
 

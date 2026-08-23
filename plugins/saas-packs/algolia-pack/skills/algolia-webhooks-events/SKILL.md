@@ -34,6 +34,10 @@ Algolia doesn't use traditional webhooks. Instead, it provides the **Insights AP
 
 ## Instructions
 
+## Examples
+
+The search, Insights, analytics, and database-sync snippets below show the event correlation contract end to end. Preserve the query ID and a stable user token, and route failed source-database events to a retryable queue rather than dropping them.
+
 ### Step 1: Enable Click Analytics in Search
 
 ```typescript
@@ -202,6 +206,10 @@ prisma.$use(async (params, next) => {
   return result;
 });
 ```
+
+## Output
+
+The search experience emits correlated click and conversion events, provides analytics reads, and keeps index updates synchronized with source-database changes. Operators can diagnose whether missing insight data originates in search, event capture, or the sync pipeline.
 
 ## Error Handling
 

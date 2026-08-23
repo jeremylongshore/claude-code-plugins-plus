@@ -27,6 +27,12 @@ compatibility: Designed for Claude Code
 
 Comprehensive guide for migrating from another search engine (Elasticsearch, Typesense, Meilisearch, or custom) to Algolia. Uses the strangler fig pattern: run old and new in parallel, gradually shift traffic, then cut over.
 
+## Prerequisites
+
+- A tested export of the source search data and a rollback owner for the cutover window.
+- An isolated target index or Algolia application for rehearsal.
+- Baseline relevance, latency, and record-count measurements for comparison after migration.
+
 ## Migration Planning
 
 | From | Difficulty | Notes | Duration |
@@ -38,6 +44,10 @@ Comprehensive guide for migrating from another search engine (Elasticsearch, Typ
 | Solr | Medium | config-heavy to API-driven | 2-4 weeks |
 
 ## Instructions
+
+## Examples
+
+The migration commands and comparison checks below illustrate a staged copy, validation, and cutover. Rehearse them against the target index before scheduling any production alias or frontend switch.
 
 ### Step 1: Assess Current Implementation
 
@@ -311,6 +321,10 @@ export ALGOLIA_TRAFFIC_PERCENT=0
 # Or if fully cut over: old engine is still running, swap adapter
 # Keep old engine data in sync for at least 2 weeks after cutover
 ```
+
+## Output
+
+The migration yields a verified target index with reconciled records, settings, and search behavior, plus a documented rollback point. It does not retire the source index until the acceptance checks pass.
 
 ## Error Handling
 

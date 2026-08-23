@@ -26,6 +26,20 @@ compatibility: Designed for Claude Code
 
 Production-ready architecture for Algolia-powered search. Covers index design, data pipeline from source to Algolia, service layer patterns, and frontend integration.
 
+## Prerequisites
+
+- A source-of-truth datastore, an approved transformation boundary, and explicit ownership for indexing and search-serving services.
+- Separate Admin and search-only credentials, kept on the backend and frontend respectively.
+- An environment and index naming convention that permits safe rehearsal and rollback.
+
+## Instructions
+
+Use the architecture, project layout, and design patterns as a composable reference. Keep indexing, settings management, and search serving as separately testable boundaries rather than coupling them to a frontend component.
+
+## Examples
+
+The diagrams and TypeScript patterns below demonstrate the reference topology, record transformation, settings-as-code, and service-layer contracts. Adapt the interfaces to your source schema while preserving the key boundary between write and search credentials.
+
 ## Architecture Overview
 
 ```
@@ -240,6 +254,10 @@ export class SearchService {
   }
 }
 ```
+
+## Output
+
+The resulting system has explicit data flow, index ownership, settings deployment, and search-service contracts. It supports independent observability and rollback of indexing without exposing write credentials to end users.
 
 ## Error Handling
 

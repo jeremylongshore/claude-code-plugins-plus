@@ -34,6 +34,10 @@ Set up CI/CD pipelines for Algolia: run integration tests against a test index, 
 
 ## Instructions
 
+## Examples
+
+The workflow definitions below show the complete test, validation, and release-triggered reindex paths. Adapt only the index names and secret names to your repository; keep the test index isolated from production.
+
 ### Step 1: Store Algolia Secrets
 
 ```bash
@@ -208,6 +212,10 @@ jobs:
       - name: Verify index health
         run: npx tsx scripts/verify-index-health.ts
 ```
+
+## Output
+
+The pipeline validates index configuration and search behavior before deployment, then performs and verifies a production reindex only after a release tag. Each run leaves actionable logs for the failed stage rather than silently shipping stale search data.
 
 ## Error Handling
 

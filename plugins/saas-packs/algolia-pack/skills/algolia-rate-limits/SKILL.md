@@ -26,6 +26,12 @@ compatibility: Designed for Claude Code
 
 Algolia has two distinct rate limiting mechanisms: **per-API-key limits** (configurable, returns HTTP 429) and **server-side indexing limits** (protects cluster stability, returns HTTP 429 with specific messages). The `algoliasearch` v5 client has built-in retry with backoff, but you need to handle sustained rate limiting yourself.
 
+## Prerequisites
+
+- A current inventory of public and server-side API keys, expected request rates, and peak traffic sources.
+- Access to application metrics so 429 responses can be distinguished from client bugs or plan limits.
+- A safe test workload for verifying backoff and batch throttling without stressing production.
+
 ## How Algolia Rate Limiting Works
 
 ### Per-API-Key Rate Limits
@@ -48,6 +54,10 @@ When the indexing queue is overloaded, Algolia returns 429 with these messages:
 | `Disk almost full` | Record quota near limit | Delete unused records or upgrade |
 
 ## Instructions
+
+## Examples
+
+The key configuration, backoff, and batch-indexing examples show bounded responses to rate pressure. Use jittered retries and queue limits rather than retrying every rejected request immediately.
 
 ### Step 1: Configure Per-Key Rate Limits
 
@@ -166,6 +176,10 @@ async function checkRecordUsage() {
   console.log(`Total records across all indices: ${totalRecords.toLocaleString()}`);
 }
 ```
+
+## Output
+
+The application enforces per-key boundaries, uses backoff for transient limits, and exposes the signals needed to identify sustained overload. Indexing pressure is throttled before it can starve interactive search traffic.
 
 ## Error Handling
 

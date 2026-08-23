@@ -55,6 +55,10 @@ Guide for upgrading `algoliasearch` from v4 to v5. The v5 release is a major rew
 
 ## Instructions
 
+## Examples
+
+The upgrade steps are concrete v4-to-v5 examples: replace client initialization and method calls, then run the search and type-check suite before widening rollout. Keep the pre-upgrade branch available until production verification succeeds.
+
 ### Step 1: Create Upgrade Branch and Install v5
 
 ```bash
@@ -155,6 +159,10 @@ npm install algoliasearch@4
 git checkout -- src/  # Restore v4 code
 npm test              # Verify v4 still works
 ```
+
+## Output
+
+The codebase uses the v5 client API with verified imports, parameter shapes, and task waiting, while retaining a tested rollback procedure to the prior package version and source revision.
 
 ## Error Handling
 

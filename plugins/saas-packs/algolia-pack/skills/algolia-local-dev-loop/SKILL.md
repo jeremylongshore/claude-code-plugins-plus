@@ -177,6 +177,10 @@ describe.skipIf(!process.env.ALGOLIA_APP_ID)('Algolia Integration', () => {
 });
 ```
 
+## Output
+
+The local loop provides an isolated development index, repeatable seed data, and a fast verification path for search and indexing changes. Production data and credentials remain outside the local development workflow.
+
 ## Error Handling
 
 | Error | Cause | Solution |

@@ -33,6 +33,10 @@ Collect all necessary diagnostic information for Algolia support tickets or inte
 
 ## Instructions
 
+## Examples
+
+The bundle script below is the support-ready example. It gathers configuration and response metadata into a timestamped directory while redacting secret values from the collected files.
+
 ### Step 1: Create the Debug Bundle Script
 
 ```bash
@@ -169,6 +173,10 @@ async function collectDebugInfo() {
 - Index names and record counts
 - SDK and Node.js versions
 - Processing times and latencies
+
+## Output
+
+The command creates a timestamped diagnostic bundle containing index, key-permission, and query-health evidence suitable for an internal incident or Algolia support ticket, without including raw API keys.
 
 ## Error Handling
 
