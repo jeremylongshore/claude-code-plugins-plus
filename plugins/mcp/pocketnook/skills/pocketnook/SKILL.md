@@ -8,7 +8,7 @@ description: |
   link for this", or "/pocketnook". Requires the pocketnook MCP server and a
   POCKETNOOK_TOKEN.
 allowed-tools: 'mcp__pocketnook__deploy, mcp__pocketnook__deploy_directory, mcp__pocketnook__list_nooks, mcp__pocketnook__nook_logs, mcp__pocketnook__stop_nook'
-version: 0.1.0
+version: 0.1.1
 author: Kevin Carter <kevinandrewcarter@gmail.com>
 license: MIT
 compatibility: 'Designed for Claude Code, and works in any MCP client that runs the @pocketnook/mcp server over stdio (Cursor, Codex, Windsurf). Needs a POCKETNOOK_TOKEN minted at pocketnook.dev/home under "Agent access".'

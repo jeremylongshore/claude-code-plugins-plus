@@ -26370,7 +26370,7 @@
       "slug": "pocketnook",
       "name": "pocketnook",
       "description": "Deploys a repository or a working directory to a private URL, and manages what is already deployed: build logs, stopping. Use when a finished piece of work needs somewhere to run, or when a deploy has failed and the reason is in the build log. Trigger with \"deploy this\", \"put this somewhere private\", \"get me a link for this\", or \"/pocketnook\". Requires the pocketnook MCP server and a POCKETNOOK_TOKEN.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "mcp",
       "parentPlugin": "pocketnook",
       "requires_env": [],
@@ -36851,7 +36851,7 @@
     }
   ],
   "count": 3070,
-  "generatedAt": "2026-08-23T05:13:27.313Z",
+  "generatedAt": "2026-08-23T05:52:46.485Z",
   "categories": [
     "ai-agency",
     "ai-ml",

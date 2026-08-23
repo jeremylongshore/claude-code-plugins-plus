@@ -16167,7 +16167,7 @@
         "url": "https://pocketnook.dev"
       },
       "authorType": "community",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -64291,7 +64291,7 @@
         "mcp__pocketnook__stop_nook'"
       ],
       "compatibleWith": [],
-      "version": "0.1.0",
+      "version": "0.1.1",
       "parentPlugin": {
         "name": "pocketnook",
         "category": "mcp"

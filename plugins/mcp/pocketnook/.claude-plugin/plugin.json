@@ -1,7 +1,7 @@
 {
   "name": "pocketnook",
   "description": "Deploy a GitHub repository or your working directory to a private URL, without leaving the agent that wrote it.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "Kevin Carter", "url": "https://pocketnook.dev" },
   "homepage": "https://pocketnook.dev/?utm_source=claude-plugins",
   "repository": "https://github.com/shotintoeternity/pocketnook-mcp",

@@ -624,15 +624,15 @@
     },
     "pocketnook": {
       "repo": "shotintoeternity/pocketnook-mcp",
-      "resolved_ref": "eb7ca50b8325fb118882cd409e938b93f66c0866",
-      "locked_at": "2026-08-23T05:13:25.590Z",
+      "resolved_ref": "3c7508764fea59dda8967cca994e18fbcb17915e",
+      "locked_at": "2026-08-23T05:52:44.757Z",
       "files": {
         ".claude-plugin/marketplace.json": "sha256:5c92b86808eead8b11c05b343e772349c61b8d78d3dd5cd59bd4b88c38c402f4",
-        ".claude-plugin/plugin.json": "sha256:c01c4a00f47d5c3d063b46dd0652bb23e2accb16e0f25338968d1080191ba8fc",
-        ".mcp.json": "sha256:d23c59ec1af29b6f52cad945bb4aeb759d8ea0e54c3854fd59ffaa8d33695ef1",
+        ".claude-plugin/plugin.json": "sha256:fed43419f62769ac05de8e519284c3ecae9f3e665a46e78fd913c0a613db4a70",
+        ".mcp.json": "sha256:da4a9e1308b360c17d5e037650b3a24588abfece32733104c7318fa29d1d3afe",
         "LICENSE": "sha256:1061843cfa0dc2f7d63a54848fbea7ebdde6cba9e495c19ab0d5c33d70fc1ee3",
         "README.md": "sha256:00589386e94d34cb035f4ae0d84a20c182aee4d3e2d13136a413658c7a15df62",
-        "skills/pocketnook/SKILL.md": "sha256:f6413a15c18d2c6a3bc7b4b5f4b72e18ac01b3a73594303a232e65b31086404a",
+        "skills/pocketnook/SKILL.md": "sha256:a307535af5c7b57250b7077e4af9de6ad2ff33687b1425f207b8d266503ba318",
         "skills/pocketnook/references/tools.md": "sha256:de8d48b44acaffd68e349dacfe2bbf9ce4fe5f1b4f1f5ac69663602446061ff8"
       }
     },

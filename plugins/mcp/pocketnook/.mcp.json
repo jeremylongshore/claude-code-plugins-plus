@@ -2,7 +2,7 @@
   "mcpServers": {
     "pocketnook": {
       "command": "npx",
-      "args": ["-y", "@pocketnook/mcp@0.1.0"]
+      "args": ["-y", "@pocketnook/mcp@0.1.1"]
     }
   }
 }
