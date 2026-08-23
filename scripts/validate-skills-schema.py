@@ -46,6 +46,7 @@ Schema:  3.8.0  (see 000-docs/SCHEMA_CHANGELOG.md)
 
 import argparse
 import difflib
+import hashlib
 import json as json_module
 import os
 import re
@@ -4652,6 +4653,47 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD, strict: bool = 
 # === COMPLIANCE DATABASE ===
 
 
+def deterministic_stub_flags(records: list) -> dict:
+    """Return run-scoped stub findings without heuristic thin-content guesses.
+
+    A finding is limited to repeated normalized content within one plugin pack
+    (three or more skills) or a relative in-plugin link to a missing path.
+    Templates are intentionally excluded and A/B graded skills are protected.
+    """
+    hashes: Dict[Tuple[str, str], list] = {}
+    flags: Dict[str, list] = {}
+    for record in records:
+        path = record["path"]
+        if "templates" in path.parts:
+            continue
+        normalized = re.sub(r"\s+", " ", record["body"].strip()).lower()
+        if normalized:
+            digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+            hashes.setdefault((str(record["pack"]), digest), []).append(record)
+        for target in re.findall(r"\[[^\]]*\]\(([^)]+)\)", record["body"]):
+            target = target.strip().split("#", 1)[0]
+            if not target or re.match(r"(?:https?:|mailto:|/)", target):
+                continue
+            resolved = (path.parent / target).resolve()
+            try:
+                resolved.relative_to(record["pack"].resolve())
+            except ValueError:
+                continue
+            if not resolved.exists():
+                flags.setdefault(str(path), []).append(f"missing in-plugin reference: {target}")
+    for (_pack, _digest), members in hashes.items():
+        if len(members) >= 3:
+            for record in members:
+                flags.setdefault(str(record["path"]), []).append(
+                    f"normalized body hash shared by {len(members)} skills in pack"
+                )
+    return {
+        path: reasons
+        for path, reasons in flags.items()
+        if next(record for record in records if str(record["path"]) == path)["grade"] not in {"A", "B"}
+    }
+
+
 def populate_compliance_db(
     db_path: str, skill_results: list, agent_results: list = None, validator_version: str = "5.0.0"
 ):
@@ -4948,6 +4990,28 @@ def populate_compliance_db(
 
     now = datetime.now(timezone.utc).isoformat()
 
+    # Build the complete run snapshot before writing rows: duplicate stamping
+    # cannot be established safely while visiting one skill at a time.
+    stub_records = []
+    for result in skill_results:
+        raw = result.get("path", "")
+        skill_file = Path(raw)
+        if not skill_file.is_absolute():
+            skill_file = repo_root_for_paths / skill_file
+        if skill_file.is_dir():
+            skill_file = skill_file / "SKILL.md"
+        try:
+            _fm, body = parse_frontmatter(skill_file.read_text(encoding="utf-8"))
+        except Exception:
+            body = ""
+        parts = skill_file.parts
+        try:
+            pack = Path(*parts[: parts.index("skills")])
+        except ValueError:
+            pack = skill_file.parent
+        stub_records.append({"path": skill_file, "pack": pack, "body": body, "grade": result.get("grade", "F")})
+    deterministic_stubs = deterministic_stub_flags(stub_records)
+
     for result in skill_results:
         raw_skill_path = result.get("path", "")
         # Read the file via the raw (possibly absolute) path before normalizing
@@ -4982,28 +5046,8 @@ def populate_compliance_db(
         total_fields = anthropic_fields + enterprise_fields
         missing = [k for k in ALWAYS_REQUIRED if k not in fm]
 
-        # Compute stub criteria from body
-        _db_stub_reasons: list = []
-        if body_for_stub:
-            _db_lines = len(body_for_stub.strip().splitlines())
-            _db_code_blocks = len(re.findall(r"```", body_for_stub)) // 2
-            _db_md_links = len(re.findall(r"\[.*?\]\((?!https?://)[^)]+\)", body_for_stub))
-            _db_word_count = len(body_for_stub.split())
-            _db_placeholder_tokens = ["TODO", "FIXME", "REPLACE_ME", "TBD", "[YOUR_", "<insert"]
-            _db_placeholder_count = sum(
-                len(re.findall(re.escape(tok), body_for_stub, re.IGNORECASE)) for tok in _db_placeholder_tokens
-            ) + len(re.findall(r"\{[a-z_]+\}", body_for_stub))
-            _db_placeholder_density = _db_placeholder_count / _db_word_count if _db_word_count > 0 else 0.0
-            if _db_lines < 30:
-                _db_stub_reasons.append(f"body < 30 lines ({_db_lines})")
-            if _db_code_blocks == 0 and _db_md_links == 0:
-                _db_stub_reasons.append("no code blocks and no markdown links")
-            if _db_word_count < 150:
-                _db_stub_reasons.append(f"word count < 150 ({_db_word_count})")
-            if _db_placeholder_density > 0.05:
-                _db_stub_reasons.append(f"placeholder density > 5% ({_db_placeholder_density:.1%})")
-        # Require 2+ stub signals to flag as stub (single signal = false positive)
-        is_stub_val = 1 if len(_db_stub_reasons) >= 2 else 0
+        _db_stub_reasons = deterministic_stubs.get(str(skill_file), [])
+        is_stub_val = 1 if _db_stub_reasons else 0
 
         try:
             mtime = (
