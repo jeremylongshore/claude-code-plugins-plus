@@ -1561,7 +1561,6 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     modifiers = {}
     name = str(fm.get("name", ""))
     desc = str(fm.get("description", ""))
-    lines = len(body.splitlines())
 
     # Bonuses (up to +5)
     # Gerund-style name (verb-ing pattern) +1
