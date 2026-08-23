@@ -209,6 +209,10 @@ export async function GET() {
 | Cloud Run cold start timeout | Token generation on cold start | Set `min-instances=1` |
 | Secret not found | Wrong secret name | Verify with `gcloud secrets list` or `vercel env ls` |
 
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - [Adobe App Builder Deployment](https://developer.adobe.com/app-builder/docs/guides/app_builder_guides/deployment/deployment)

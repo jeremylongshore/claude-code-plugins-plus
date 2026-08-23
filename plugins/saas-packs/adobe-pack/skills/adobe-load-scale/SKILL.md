@@ -258,6 +258,10 @@ function planCapacity(metrics: {
 | HPA not scaling | Custom metric not exposed | Verify Prometheus metric exists |
 | Token expires mid-test | Long test duration | Token valid 24h; pre-generate |
 
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - [k6 Documentation](https://k6.io/docs/)

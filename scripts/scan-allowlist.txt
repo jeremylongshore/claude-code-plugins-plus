@@ -322,6 +322,27 @@ plugins/testing/kobiton-automate/README.md:secret-exfil-cooccur  Reviewed 2026-0
 plugins/testing/kobiton-automate/README.md:mcp-remote  Reviewed 2026-08-19 (E3.6 relock): https://api.kobiton.com/mcp is the product's own remote MCP endpoint on the vendor's domain — the plugin's entire purpose; verified source.
 plugins/mcp/servicegraph/hooks/hooks.json:hook-definition  E4.10 curated hardening reviewed 2026-08-19: a PreToolUse gate matching ONLY mcp__servicegraph__unlock_rows that runs the plugin's own confirm-unlock.sh to emit permissionDecision "ask" — it ADDS a confirmation before paid credit spends and executes nothing else; this is the enforcing artifact for the destructive-policy declaration (790 § 6, AAR 800).
 
+# ── Adobe internal pack remediation (2026-08-23). ──
+# Each reviewed example sends an Adobe IMS or Firefly credential only to Adobe's
+# documented IMS / Firefly endpoints; no example forwards that credential to a third-party host or logs it.
+plugins/saas-packs/adobe-pack/skills/adobe-advanced-troubleshooting/SKILL.md:secret-exfil-cooccur  diagnostic OAuth and job-status calls use only Adobe IMS or firefly-api.adobe.io endpoints
+plugins/saas-packs/adobe-pack/skills/adobe-architecture-variants/SKILL.md:secret-exfil-cooccur  documented architecture example sends Adobe token only to firefly-api.adobe.io
+plugins/saas-packs/adobe-pack/skills/adobe-ci-integration/SKILL.md:secret-exfil-cooccur  documented CI example sends Adobe token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-core-workflow-a/SKILL.md:secret-exfil-cooccur  documented Adobe workflow sends its token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-data-handling/SKILL.md:secret-exfil-cooccur  documented data-handling example sends its Adobe token only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-deploy-integration/SKILL.md:secret-exfil-cooccur  documented deployment example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-enterprise-rbac/SKILL.md:secret-exfil-cooccur  documented RBAC example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-hello-world/SKILL.md:secret-exfil-cooccur  documented starter example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-known-pitfalls/SKILL.md:secret-exfil-cooccur  documented troubleshooting example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-local-dev-loop/SKILL.md:secret-exfil-cooccur  documented local development example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-migration-deep-dive/SKILL.md:secret-exfil-cooccur  documented migration example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-multi-env-setup/SKILL.md:secret-exfil-cooccur  documented environment example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-performance-tuning/SKILL.md:secret-exfil-cooccur  documented performance example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-reliability-patterns/SKILL.md:secret-exfil-cooccur  documented reliability example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-sdk-patterns/SKILL.md:secret-exfil-cooccur  documented SDK example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-upgrade-migration/SKILL.md:secret-exfil-cooccur  documented upgrade example sends Adobe credential only to Adobe's API
+plugins/saas-packs/adobe-pack/skills/adobe-webhooks-events/SKILL.md:secret-exfil-cooccur  documented webhook example sends Adobe credential only to Adobe's API
+
 # ── Attio internal pack remediation (2026-08-23). ──
 # Each reviewed example sends an Attio API credential only to Attio's documented
 # API endpoints; no example forwards that credential to a third-party host or logs it.

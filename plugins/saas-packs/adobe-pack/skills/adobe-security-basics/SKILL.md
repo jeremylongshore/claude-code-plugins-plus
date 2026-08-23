@@ -225,6 +225,13 @@ jobs:
 | Unverified webhooks | Missing signature check | Implement RSA-SHA256 verification |
 | Stale credentials | Auth failures in monitoring | Schedule periodic rotation |
 
+
+## Output
+
+Following this guide produces the Adobe integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - Adobe I/O Events Signature Verification

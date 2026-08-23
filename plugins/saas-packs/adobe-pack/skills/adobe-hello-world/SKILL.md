@@ -207,6 +207,10 @@ removeBackground().catch(console.error);
 | `InputValidationError` on Photoshop | Invalid storage URL | Use pre-signed URLs with read/write permissions |
 | `429 Too Many Requests` | Rate limit exceeded | Implement backoff; see `adobe-rate-limits` |
 
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - [Firefly API Quickstart](https://developer.adobe.com/firefly-services/docs/firefly-api/guides/)

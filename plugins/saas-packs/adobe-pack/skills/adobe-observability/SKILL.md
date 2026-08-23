@@ -241,6 +241,10 @@ app.get('/metrics', async (req, res) => {
 | Missing traces | No OTel propagation | Verify context propagation setup |
 | Redacted data in logs | Over-aggressive redaction | Whitelist safe fields |
 
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)

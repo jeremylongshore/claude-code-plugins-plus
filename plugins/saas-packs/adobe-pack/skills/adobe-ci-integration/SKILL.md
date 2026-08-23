@@ -203,6 +203,10 @@ jobs:
 | Secret scan false positive | Test fixture data | Exclude test directories from scan |
 | Timeout on Firefly test | API latency | Increase vitest timeout to 30s |
 
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 ## Resources
 
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
