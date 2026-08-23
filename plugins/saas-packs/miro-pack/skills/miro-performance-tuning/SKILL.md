@@ -29,6 +29,7 @@ Optimize Miro REST API v2 throughput and latency. Key levers: minimize API calls
 ## Prerequisites
 
 Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
+
 ## Latency Benchmarks
 
 Typical latencies for `api.miro.com` (US region):
@@ -268,16 +269,18 @@ async function instrumentedMiroFetch<T>(
 | Connection pooling | Medium | Low | High request volume |
 | Cursor pagination | High | Low | Always — avoid loading full board |
 
-
 ## Instructions
 
 Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+
 ## Output
 
 Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
 ## Examples
 
 Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

@@ -32,6 +32,7 @@ Complete checklist for deploying Miro REST API v2 integrations to production, co
 ## Prerequisites
 
 Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
+
 ## Pre-Deployment: OAuth & Scopes
 
 - [ ] **Production Miro app created** at https://developers.miro.com (separate from dev app)
