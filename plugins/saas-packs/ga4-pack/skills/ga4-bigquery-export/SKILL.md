@@ -8,7 +8,7 @@ description: |
   "GA4 BigQuery", "GA4 to BQ", "event-level GA4 data", "unsampled GA4",
   "GA4 export setup", "GA4 SQL".
 allowed-tools: Bash(bq:*), Bash(gcloud:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, bigquery]
