@@ -4167,18 +4167,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "blue-ocean-strategy",
-      "name": "blue-ocean-strategy",
-      "description": "'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"ERRC framework\", \"value innovation\", \"non-customers\", \"buyer utility map\", \"the market is too crowded\", \"how do we stand out\", or \"escape the price war\". Also trigger when exploring a new market category, or finding underserved or non-customers. Covers the Four Actions Framework, Six Paths, buyer utility map, and value-cost trade-offs. For real strategy formulation and bad-strategy detection, see good-strategy-bad-strategy. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'",
-      "version": "\"1.4.1\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-blue-ocean-strategy",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "box-cloud-filesystem",
       "name": "box-cloud-filesystem",
       "description": "Cloud filesystem operations via Box CLI. Use when the user mentions Box, cloud files, cloud storage, uploading to the cloud, sharing files, document management, or syncing project files offsite. Trigger with \"upload to box\", \"save to cloud\", \"pull from box\", \"search my box files\", \"share this file\", \"box sync\", \"cloud backup\", or \"box filesystem\".",
@@ -8007,18 +7995,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "contagious",
-      "name": "contagious",
-      "description": "'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", \"why people share\", \"referral program\", \"nobody is sharing it\", or \"make this spread\". Also trigger when designing shareable features, crafting social campaigns, or building products that spread through peer recommendation. Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-contagious",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "contract-compare",
       "name": "contract-compare",
       "description": "'Compares two contract versions side-by-side to detect added, removed,",
@@ -8553,30 +8529,6 @@
       "version": "0.6.4",
       "category": "ai-agency",
       "parentPlugin": "tonone",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "cro-methodology",
-      "name": "cro-methodology",
-      "description": "'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions \"landing page isnt converting\", \"conversion rate\", \"A/B test\", \"why visitors leave\", \"objection handling\", \"bounce rate\", \"conversion funnel\", \"increase signups\", or \"people add to cart but dont buy\". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'",
-      "version": "\"1.5.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-cro-methodology",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "crossing-the-chasm",
-      "name": "crossing-the-chasm",
-      "description": "'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs mainstream\", \"tech go-to-market\", \"bowling pin strategy\", \"technology adoption lifecycle\", \"pragmatist buyers\", \"growth stalled after early adopters\", or \"our go-to-market plan\". Also trigger when planning go-to-market for a technical product. Covers the D-Day analogy, bowling-pin strategy, the tornado, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-crossing-the-chasm",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -9759,30 +9711,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "design-everyday-things",
-      "name": "design-everyday-things",
-      "description": "'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", \"mental model\", \"mapping\", \"seven stages of action\", \"users keep making mistakes\", \"this is unintuitive\", or \"people cant figure out how to use it\". Also trigger when reducing product complexity or feature creep. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'",
-      "version": "\"1.4.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-design-everyday-things",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "design-sprint",
-      "name": "design-sprint",
-      "description": "'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions \"design sprint\", \"validate before we build\", \"rapid prototype\", \"test with users\", or \"should we build this\". Also trigger when a team is stuck in endless debate over a high-stakes product decision, or wants to de-risk a costly idea before investing in development. Covers mapping, sketching, deciding, prototyping, and testing across Monday-Friday. For ongoing experimentation and MVPs, see lean-startup. For customer job analysis, see jobs-to-be-done. For non-leading user interviews, see mom-test.'",
-      "version": "\"1.4.0\"",
-      "category": "productivity",
-      "parentPlugin": "wondelai-design-sprint",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "designing-database-schemas",
       "name": "designing-database-schemas",
       "description": "'Process use when you need to work with database schema design.",
@@ -10413,18 +10341,6 @@
       "version": "0.7.0",
       "category": "ai-agency",
       "parentPlugin": "tonone",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "drive-motivation",
-      "name": "drive-motivation",
-      "description": "'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions \"intrinsic motivation\", \"gamification isnt working\", \"rewards arent working\", \"autonomy\", \"mastery\", \"purpose-driven\", \"my team is disengaged\", or \"how do I motivate people\". Also trigger when designing onboarding progression, fixing broken gamification, or building team structures that sustain high performance. Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-drive-motivation",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -14943,18 +14859,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "gastown",
-      "name": "gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Use when user mentions gastown, gas town, gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery, the deacon, dogs, escalation, or wants to run multiple AI agents on projects simultaneously. Handles installation, workspace setup, work tracking, agent lifecycle, crash recovery, and all gt/bd CLI operations.",
-      "version": "1.0.0",
-      "category": "community",
-      "parentPlugin": "gastown",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "gcp-examples-expert",
       "name": "gcp-examples-expert",
       "description": "'Generate production-ready Google Cloud code examples from official repositories",
@@ -16935,18 +16839,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "hooked-ux",
-      "name": "hooked-ux",
-      "description": "'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users arent coming back\", \"habit formation\", \"engagement loops\", \"habit zone\", or \"the manipulation matrix\". Also trigger when designing notification or re-engagement strategies, building streaks or progress systems, or analyzing why users stop after signup. Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'",
-      "version": "\"1.5.1\"",
-      "category": "design",
-      "parentPlugin": "wondelai-hooked-ux",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "hootsuite-ci-integration",
       "name": "hootsuite-ci-integration",
       "description": "'Configure Hootsuite CI/CD integration with GitHub Actions and testing.",
@@ -17277,18 +17169,6 @@
       "version": "2.9.0",
       "category": "saas-packs",
       "parentPlugin": "hubspot-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "hundred-million-offers",
-      "name": "hundred-million-offers",
-      "description": "'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions \"grand slam offer\", \"make my offer more compelling\", \"what bonuses should I add\", \"guarantee strategy\", \"offer naming\", or \"people say its too expensive\". Also trigger when packaging a product for higher perceived value, justifying premium pricing instead of discounting, designing a money-back guarantee, or structuring tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-hundred-million-offers",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -17793,18 +17673,6 @@
       "version": "1.0.0",
       "category": "productivity",
       "parentPlugin": "claude-workflow-skills",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "influence-psychology",
-      "name": "influence-psychology",
-      "description": "'Apply the seven principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity, unity) to product design, copy, and sales. Use when the user mentions \"social proof\", \"persuasive copy\", \"why users dont convert\", \"ethical persuasion\", \"reciprocity\", \"scarcity tactics\", \"commitment and consistency\", \"shared identity\", \"in-group\", \"make my copy more persuasive\", \"increase trust\", or \"get more people to say yes\". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. Covers the principles, when each applies, and ethical limits. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'",
-      "version": "\"1.4.1\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-influence-psychology",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -18483,18 +18351,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "ios-hig-design",
-      "name": "ios-hig-design",
-      "description": "'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", \"HIG compliance\", \"SF Symbols\", \"haptic feedback\", \"iOS accessibility\", \"make my app feel native\", or \"follow Apple design guidelines\". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts across screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'",
-      "version": "\"1.5.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-ios-hig-design",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "issue",
       "name": "issue",
       "description": "Use when starting a chain from a GitHub issue — turning an issue URL or number into a triaged, planned, dispatched, and reviewed pull request. Classifies the thread (bug → root-cause discipline, feature → plan chain, question → drafted reply), synthesizes a spec from the issue's own acceptance criteria, then runs the standard chain with a PR exit. Trigger with /hyperflow:issue, \"work on issue #N\", \"fix this issue <url>\", \"implement this issue\", \"triage issue #N and raise a PR\".",
@@ -18573,18 +18429,6 @@
       "version": "1.5.1",
       "category": "community",
       "parentPlugin": "skills-janitor",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "jobs-to-be-done",
-      "name": "jobs-to-be-done",
-      "description": "'Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", \"product-market fit\", \"switching behavior\", \"milkshake moment\", or \"functional vs emotional jobs\". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing a value proposition. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. For non-leading interview technique, see mom-test.'",
-      "version": "\"1.5.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-jobs-to-be-done",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -20283,18 +20127,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "lean-startup",
-      "name": "lean-startup",
-      "description": "'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions \"MVP scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", \"test assumptions\", \"innovation accounting\", \"build-measure-learn\", \"minimum viable experiment\", \"should we pivot\", \"test a business idea cheaply\", or \"build the smallest version first\". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'",
-      "version": "\"1.4.0\"",
-      "category": "productivity",
-      "parentPlugin": "wondelai-lean-startup",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "lens",
       "name": "lens",
       "description": "Analytics and BI engineer — dashboards, metrics design, reporting pipelines, and data storytelling.",
@@ -21777,18 +21609,6 @@
       "version": "0.6.4",
       "category": "ai-agency",
       "parentPlugin": "tonone",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "made-to-stick",
-      "name": "made-to-stick",
-      "description": "'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"no one remembers our pitch\", \"tagline\", \"value proposition\", \"why the message isnt landing\", \"curse of knowledge\", or \"concrete language\". Also trigger when writing a pitch deck, simplifying a complex product explanation, or making a presentation more compelling. Covers the six SUCCESs traits and the curse of knowledge. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-made-to-stick",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -23607,18 +23427,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "negotiation",
-      "name": "negotiation",
-      "description": "'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", \"difficult conversation\", \"deal terms\", \"BATNA\", \"anchoring\", \"how do I ask for a raise\", \"get a better deal\", or \"they wont budge on price\". Also trigger when preparing for a vendor negotiation, resolving a pricing dispute, or navigating a high-stakes conversation where both sides need to feel heard. Covers accusation audits, Black Swan discovery, and the \"Thats Right\" technique. For persuasion in product and marketing, see influence-psychology.'",
-      "version": "\"1.5.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-negotiation",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "neurodivergent-visual-org",
       "name": "neurodivergent-visual-org",
       "description": "'Creates ADHD-friendly visual organizational tools using Mermaid diagrams",
@@ -24315,36 +24123,12 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "obviously-awesome",
-      "name": "obviously-awesome",
-      "description": "'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", \"positioning canvas\", \"repositioning\", \"category creation\", \"what category are we in\", or \"why prospects dont get what we do\". Also trigger when launching a new product, entering a crowded market, or diagnosing why prospects dont grasp the product''s value. Covers the positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-obviously-awesome",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "ollama-setup",
       "name": "ollama-setup",
       "description": "'Configure auto-configure Ollama when user needs local LLM deployment,",
       "version": "1.18.0",
       "category": "ai-ml",
       "parentPlugin": "ollama-local-ai",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "one-page-marketing",
-      "name": "one-page-marketing",
-      "description": "'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions \"marketing plan\", \"marketing strategy\", \"target market\", \"USP\", \"lead nurture\", \"customer lifetime value\", \"PVP Index\", or \"I dont know where to start with marketing\". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer-lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-one-page-marketing",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -27459,18 +27243,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "predictable-revenue",
-      "name": "predictable-revenue",
-      "description": "'Build a scalable outbound B2B sales machine with specialized roles (SDR, AE, CSM). Use when the user mentions \"outbound sales\", \"Cold Calling 2.0\", \"cold email sequences\", \"sales pipeline\", \"SDR process\", \"sales development\", \"build an outbound sales team\", or \"fill my pipeline\". Also trigger when setting up a B2B SaaS sales team from scratch or building a lead-qualification framework to improve close rates. Covers the three lead types (seeds/nets/spears), role specialization, the referral-email method, ANUM qualification, and pipeline math. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'",
-      "version": "\"1.4.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-predictable-revenue",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "preprocessing-data-with-automated-pipelines",
       "name": "preprocessing-data-with-automated-pipelines",
       "description": "'Process automate data cleaning, transformation, and validation for ML",
@@ -28617,18 +28389,6 @@
       "version": "3.30.0",
       "category": "security",
       "parentPlugin": "penetration-tester",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "refactoring-ui",
-      "name": "refactoring-ui",
-      "description": "'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\" (or amateur/unprofessional), \"fix the design\", \"Tailwind styling\", \"color palette\", \"visual hierarchy\", \"design system\", \"spacing scale\", or \"component styling\". Also trigger when building consistent design tokens, creating dark mode themes, improving data-visualization clarity, or polishing UI details before launch. Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'",
-      "version": "\"1.5.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-refactoring-ui",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -30705,18 +30465,6 @@
       "version": "\"1.0.0\"",
       "category": "productivity",
       "parentPlugin": "schedule-after-usage-reset",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "scorecard-marketing",
-      "name": "scorecard-marketing",
-      "description": "'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions \"quiz funnel\", \"scorecard\", \"lead magnet\", \"score-based segmentation\", or \"lead qualification\". Also trigger when designing self-assessment tools, building calculators or graders for marketing, or creating personalized result pages that drive conversions. Covers concept hooks, question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'",
-      "version": "\"1.5.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-scorecard-marketing",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -32955,18 +32703,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "storybrand-messaging",
-      "name": "storybrand-messaging",
-      "description": "'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"brand script\", \"StoryBrand framework\", \"customer as hero\", or \"my messaging isnt resonating\". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales and marketing collateral. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'",
-      "version": "\"1.5.0\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-storybrand-messaging",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "strategic-clarity",
       "name": "strategic-clarity",
       "description": "Guided workflow for establishing team identity, boundaries, and strategic",
@@ -34047,18 +33783,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "top-design",
-      "name": "top-design",
-      "description": "'Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions \"Awwwards quality\", \"make my site stunning\", \"scroll animations\", \"parallax storytelling\", \"cinematic web design\", \"portfolio site\", or \"brand experience\". Also trigger when elevating a standard landing page into a memorable digital experience. Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography.'",
-      "version": "\"1.6.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-top-design",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "touch",
       "name": "touch",
       "description": "Mobile engineer — native iOS/Android, cross-platform, app stores, mobile performance.",
@@ -34269,18 +33993,6 @@
       "version": "1.30.0",
       "category": "crypto",
       "parentPlugin": "token-launch-tracker",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "traction-eos",
-      "name": "traction-eos",
-      "description": "'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions \"EOS\", \"Entrepreneurial Operating System\", \"V/TO\", \"quarterly rocks\", \"Level 10 meetings\", \"accountability chart\", \"IDS process\", \"my company feels chaotic\", \"we keep having the same problems\", or \"get the whole team aligned\". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic way to solve recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'",
-      "version": "\"1.4.1\"",
-      "category": "business-tools",
-      "parentPlugin": "wondelai-traction-eos",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -34641,18 +34353,6 @@
       "version": "1.13.0",
       "category": "saas-packs",
       "parentPlugin": "twinmind-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "ux-heuristics",
-      "name": "ux-heuristics",
-      "description": "'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions \"usability audit\", \"users are confused\", \"form usability\", \"navigation problems\", \"Nielsen heuristics\", \"cognitive walkthrough\", or \"is this easy to use\". Also trigger when reviewing a design for usability issues, improving form-completion rates, or evaluating information architecture and navigation. Covers Krug''s laws, Nielsen''s 10 heuristics, severity ratings, dark-pattern recognition, and accessibility. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'",
-      "version": "\"1.6.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-ux-heuristics",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -36111,18 +35811,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "web-typography",
-      "name": "web-typography",
-      "description": "'Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", \"type hierarchy\", \"variable fonts\", \"FOUT/FOIT\", \"typographic scale\", or \"the text is hard to read\". Also trigger when choosing between system fonts and web fonts, optimizing font-loading performance, or designing readable long-form content. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'",
-      "version": "\"1.5.0\"",
-      "category": "design",
-      "parentPlugin": "wondelai-web-typography",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "webflow-ci-integration",
       "name": "webflow-ci-integration",
       "description": "\"Configure Webflow CI/CD with GitHub Actions \\u2014 automated CMS validation,\\n\\",
@@ -37347,25 +37035,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "zai-cli",
-      "name": "zai-cli",
-      "description": [
-        "Vision: image/video analysis, OCR, UI-to-code, error diagnosis (GLM-4.6V)",
-        "Search: real-time web search with domain/recency filtering",
-        "Reader: web page to markdown extraction",
-        "Repo: GitHub code search and reading via ZRead",
-        "Tools: MCP tool discovery and raw calls",
-        "Code: TypeScript tool chaining"
-      ],
-      "version": "1.0.0",
-      "category": "community",
-      "parentPlugin": "zai-cli",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "zero-tech-debt",
       "name": "zero-tech-debt",
       "description": "Rebuild a feature as if the correct product architecture existed from day one — remove compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Use when the operator says \"refactor properly,\" \"clean up,\" \"rewrite,\" \"modernize,\" \"remove legacy,\" \"simplify,\" \"rethink,\" \"pay down tech debt,\" or signals frustration with accumulated complexity. Do NOT use for hotfixes, bug repros, surgical patches, or security backports — blast-radius minimization wins there. Trigger with \"/zero-tech-debt\", \"do it right this time\", \"the way it should have been built\", \"refactor toward intent\".",
@@ -37378,8 +37047,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3114,
-  "generatedAt": "2026-08-24T22:51:58.169Z",
+  "count": 3087,
+  "generatedAt": "2026-08-24T23:06:19.410Z",
   "categories": [
     "ai-agency",
     "ai-ml",

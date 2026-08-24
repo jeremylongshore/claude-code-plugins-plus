@@ -6911,82 +6911,6 @@
       }
     },
     {
-      "name": "gastown",
-      "source": "./plugins/community/gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "multi-agent",
-        "orchestration",
-        "automation",
-        "polecats",
-        "convoys",
-        "beads",
-        "work-tracking",
-        "ai-factory",
-        "gastown",
-        "claude-code"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/gastown"
-      },
-      "verification": {
-        "score": 95,
-        "grade": "A",
-        "badge": "gold",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "zai-cli",
-      "source": "./plugins/community/zai-cli",
-      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "vision",
-        "image-analysis",
-        "ocr",
-        "web-search",
-        "web-reader",
-        "github",
-        "mcp",
-        "z-ai",
-        "glm-4",
-        "multimodal"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/zai-cli"
-      },
-      "verification": {
-        "score": 96,
-        "grade": "A",
-        "badge": "gold",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
       "name": "claude-reflect",
       "source": "./plugins/community/claude-reflect",
       "description": "Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically",
@@ -7152,487 +7076,6 @@
       }
     },
     {
-      "name": "wondelai-blue-ocean-strategy",
-      "source": "./plugins/business-tools/wondelai-blue-ocean-strategy",
-      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "strategy",
-        "blue-ocean",
-        "value-innovation",
-        "market-creation",
-        "errc",
-        "strategy-canvas",
-        "competition",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "blue-ocean-strategy"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-contagious",
-      "source": "./plugins/business-tools/wondelai-contagious",
-      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "virality",
-        "word-of-mouth",
-        "stepps",
-        "social-currency",
-        "marketing",
-        "content-strategy",
-        "sharing",
-        "growth"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "contagious"
-      },
-      "verification": {
-        "score": 54,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-cro-methodology",
-      "source": "./plugins/business-tools/wondelai-cro-methodology",
-      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "cro",
-        "conversion",
-        "optimization",
-        "landing-pages",
-        "ab-testing",
-        "copywriting",
-        "persuasion",
-        "funnels"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "cro-methodology"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-crossing-the-chasm",
-      "source": "./plugins/business-tools/wondelai-crossing-the-chasm",
-      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "go-to-market",
-        "technology-adoption",
-        "chasm",
-        "beachhead",
-        "b2b",
-        "saas",
-        "market-strategy",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "crossing-the-chasm"
-      },
-      "verification": {
-        "score": 67,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-design-everyday-things",
-      "source": "./plugins/design/wondelai-design-everyday-things",
-      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "design",
-        "ux",
-        "affordances",
-        "signifiers",
-        "human-centered-design",
-        "usability",
-        "don-norman",
-        "hcd"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "design-everyday-things"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-design-sprint",
-      "source": "./plugins/productivity/wondelai-design-sprint",
-      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "design-sprint",
-        "prototyping",
-        "user-testing",
-        "validation",
-        "gv",
-        "product-design",
-        "rapid-iteration",
-        "mvp"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "design-sprint"
-      },
-      "verification": {
-        "score": 58,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-drive-motivation",
-      "source": "./plugins/business-tools/wondelai-drive-motivation",
-      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "motivation",
-        "autonomy",
-        "mastery",
-        "purpose",
-        "engagement",
-        "gamification",
-        "intrinsic-motivation",
-        "team-management"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "drive-motivation"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-hooked-ux",
-      "source": "./plugins/design/wondelai-hooked-ux",
-      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "habits",
-        "engagement",
-        "retention",
-        "hook-model",
-        "triggers",
-        "rewards",
-        "onboarding",
-        "ux"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "hooked-ux"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-hundred-million-offers",
-      "source": "./plugins/business-tools/wondelai-hundred-million-offers",
-      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "offers",
-        "pricing",
-        "value-equation",
-        "guarantees",
-        "bonuses",
-        "scarcity",
-        "sales",
-        "hormozi"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "hundred-million-offers"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-influence-psychology",
-      "source": "./plugins/business-tools/wondelai-influence-psychology",
-      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "persuasion",
-        "influence",
-        "cialdini",
-        "social-proof",
-        "reciprocity",
-        "scarcity",
-        "psychology",
-        "marketing"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "influence-psychology"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-ios-hig-design",
-      "source": "./plugins/design/wondelai-ios-hig-design",
-      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ios",
-        "apple",
-        "hig",
-        "swiftui",
-        "uikit",
-        "mobile-design",
-        "accessibility",
-        "interface-guidelines"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "ios-hig-design"
-      },
-      "verification": {
-        "score": 57,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-jobs-to-be-done",
-      "source": "./plugins/business-tools/wondelai-jobs-to-be-done",
-      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "jtbd",
-        "jobs-to-be-done",
-        "product-strategy",
-        "customer-discovery",
-        "innovation",
-        "christensen",
-        "product-market-fit",
-        "interviews"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "jobs-to-be-done"
-      },
-      "verification": {
-        "score": 62,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-lean-startup",
-      "source": "./plugins/productivity/wondelai-lean-startup",
-      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "lean-startup",
-        "mvp",
-        "validated-learning",
-        "pivot",
-        "metrics",
-        "innovation-accounting",
-        "experimentation",
-        "build-measure-learn"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "lean-startup"
-      },
-      "verification": {
-        "score": 63,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
       "name": "navigating-github",
       "source": "./plugins/productivity/navigating-github",
       "description": "First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on lessons on their actual project. Adapts to any skill level automatically.",
@@ -7671,451 +7114,6 @@
         "grade": "A",
         "badge": "gold",
         "lastValidated": "2026-03-16T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-made-to-stick",
-      "source": "./plugins/business-tools/wondelai-made-to-stick",
-      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "messaging",
-        "storytelling",
-        "success",
-        "sticky",
-        "communication",
-        "presentations",
-        "copywriting",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "made-to-stick"
-      },
-      "verification": {
-        "score": 61,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-negotiation",
-      "source": "./plugins/business-tools/wondelai-negotiation",
-      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "negotiation",
-        "chris-voss",
-        "mirroring",
-        "labeling",
-        "ackerman",
-        "salary",
-        "deals",
-        "conflict-resolution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "negotiation"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-obviously-awesome",
-      "source": "./plugins/business-tools/wondelai-obviously-awesome",
-      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "positioning",
-        "differentiation",
-        "competitive-analysis",
-        "market-category",
-        "value-proposition",
-        "april-dunford",
-        "go-to-market",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "obviously-awesome"
-      },
-      "verification": {
-        "score": 67,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-one-page-marketing",
-      "source": "./plugins/business-tools/wondelai-one-page-marketing",
-      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "marketing-plan",
-        "usp",
-        "lead-generation",
-        "nurture",
-        "referral",
-        "advertising",
-        "customer-lifetime-value",
-        "marketing-strategy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "one-page-marketing"
-      },
-      "verification": {
-        "score": 56,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-predictable-revenue",
-      "source": "./plugins/business-tools/wondelai-predictable-revenue",
-      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "sales",
-        "outbound",
-        "sdr",
-        "pipeline",
-        "b2b",
-        "saas",
-        "prospecting",
-        "cold-calling",
-        "revenue"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "predictable-revenue"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-refactoring-ui",
-      "source": "./plugins/design/wondelai-refactoring-ui",
-      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ui-design",
-        "visual-hierarchy",
-        "typography",
-        "color-palette",
-        "tailwind",
-        "shadows",
-        "spacing",
-        "refactoring-ui"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "refactoring-ui"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-scorecard-marketing",
-      "source": "./plugins/business-tools/wondelai-scorecard-marketing",
-      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "lead-generation",
-        "quiz-funnel",
-        "assessment",
-        "scorecard",
-        "conversion",
-        "segmentation",
-        "lead-magnet",
-        "marketing-automation"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "scorecard-marketing"
-      },
-      "verification": {
-        "score": 70,
-        "grade": "C",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-storybrand-messaging",
-      "source": "./plugins/business-tools/wondelai-storybrand-messaging",
-      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "storybrand",
-        "messaging",
-        "brand-script",
-        "copywriting",
-        "narrative",
-        "website-copy",
-        "one-liner",
-        "donald-miller"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "storybrand-messaging"
-      },
-      "verification": {
-        "score": 63,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-top-design",
-      "source": "./plugins/design/wondelai-top-design",
-      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "web-design",
-        "awwwards",
-        "animations",
-        "typography",
-        "scroll-effects",
-        "brand-website",
-        "premium-design",
-        "motion"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "top-design"
-      },
-      "verification": {
-        "score": 61,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-traction-eos",
-      "source": "./plugins/business-tools/wondelai-traction-eos",
-      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "keywords": [
-        "eos",
-        "traction",
-        "operating-system",
-        "rocks",
-        "l10-meetings",
-        "accountability",
-        "vision",
-        "execution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "traction-eos"
-      },
-      "verification": {
-        "score": 64,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-ux-heuristics",
-      "source": "./plugins/design/wondelai-ux-heuristics",
-      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "ux",
-        "usability",
-        "heuristics",
-        "nielsen",
-        "krug",
-        "ux-audit",
-        "evaluation",
-        "accessibility"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "ux-heuristics"
-      },
-      "verification": {
-        "score": 66,
-        "grade": "D",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "wondelai-web-typography",
-      "source": "./plugins/design/wondelai-web-typography",
-      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
-      "version": "1.0.0",
-      "category": "design",
-      "keywords": [
-        "typography",
-        "web-fonts",
-        "typeface",
-        "font-pairing",
-        "readability",
-        "responsive-typography",
-        "css",
-        "type-hierarchy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/wondelai/skills",
-      "components": {
-        "skills": 1
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "wondelai/skills",
-        "source_path": "web-typography"
-      },
-      "verification": {
-        "score": 59,
-        "grade": "F",
-        "badge": null,
-        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -9940,7 +8938,8 @@
         "email": "info@aomi.dev"
       },
       "featured": false
-    },    {
+    },
+    {
       "name": "cli-power-skills",
       "source": "./plugins/productivity/cli-power-skills",
       "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
@@ -9961,7 +8960,8 @@
       },
       "repository": "https://github.com/ykotik/cli-power-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claude-workflow-skills",
       "source": "./plugins/productivity/claude-workflow-skills",
       "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
@@ -9986,7 +8986,8 @@
       "homepage": "https://github.com/ali5ter/claude-workflow-skills",
       "repository": "https://github.com/ali5ter/claude-workflow-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "cli-ux-tester",
       "source": "./plugins/testing/cli-ux-tester",
       "description": "Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents",
@@ -10007,7 +9008,8 @@
       "homepage": "https://github.com/ali5ter/claude-cli-ux-skill",
       "repository": "https://github.com/ali5ter/claude-cli-ux-skill",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "skyvern",
       "source": "./plugins/productivity/skyvern",
       "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
@@ -10018,7 +9020,8 @@
         "url": "https://github.com/Skyvern-AI"
       },
       "license": "AGPL-3.0"
-    },    {
+    },
+    {
       "name": "tonone",
       "source": "./plugins/ai-agency/tonone",
       "description": "23-agent engineering + product team with 125 skills for Claude Code",
@@ -10056,7 +9059,8 @@
       },
       "repository": "https://github.com/tonone-ai/tonone",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "x-bug-triage",
       "source": "./plugins/mcp/x-bug-triage",
       "description": "Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
@@ -10076,7 +9080,8 @@
       "homepage": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "hyperflow",
       "source": "./plugins/ai-agency/hyperflow",
       "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
@@ -10101,7 +9106,8 @@
       "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claudebase",
       "source": "./plugins/productivity/claudebase",
       "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
@@ -10122,7 +9128,8 @@
       "homepage": "https://github.com/rohithzr/claudebase",
       "repository": "https://github.com/rohithzr/claudebase",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-anti-deception",
       "source": "./plugins/community/ejentum-anti-deception",
       "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10134,7 +9141,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-code",
       "source": "./plugins/community/ejentum-code",
       "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10146,7 +9154,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-memory",
       "source": "./plugins/community/ejentum-memory",
       "description": "Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10158,7 +9167,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-reasoning",
       "source": "./plugins/community/ejentum-reasoning",
       "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -10170,7 +9180,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "over-50s-health",
       "source": "./plugins/productivity/over-50s-health",
       "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
@@ -10190,7 +9201,8 @@
       "homepage": "https://github.com/ali5ter/over-50s-health-advisor",
       "repository": "https://github.com/ali5ter/over-50s-health-advisor",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "obsidian-project-documentation",
       "source": "./plugins/productivity/obsidian-project-documentation",
       "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
@@ -10209,7 +9221,8 @@
       "homepage": "https://github.com/ali5ter/obsidian-project-assistant",
       "repository": "https://github.com/ali5ter/obsidian-project-assistant",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "pair-programmer",
       "source": "./plugins/productivity/pair-programmer",
       "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
@@ -10228,7 +9241,8 @@
       "homepage": "https://github.com/ali5ter/pair-programmer",
       "repository": "https://github.com/ali5ter/pair-programmer",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",

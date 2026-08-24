@@ -19,16 +19,16 @@
       "ab_error_total": 2132,
       "ab_failing": 943,
       "b_failing": 812,
-      "error_files": 1933,
-      "error_total": 7154,
+      "error_files": 1906,
+      "error_total": 6856,
       "grade_distribution": {
         "A": 1595,
         "B": 1017,
-        "C": 873,
-        "D": 183,
-        "F": 7
+        "C": 872,
+        "D": 159,
+        "F": 5
       },
-      "rows": 3675
+      "rows": 3648
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23159
+        "raw_tracked_plugin_skill_files": 3148,
+        "tracked_files": 22819
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 471,
+        "distinct_names": 444,
         "duplicate_names": [],
-        "entries": 471
+        "entries": 444
       }
     },
     "3": {
@@ -80,28 +80,28 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 237,
-          "fully_compliant_surfaces": 796,
+          "fully_compliant_surfaces": 769,
           "terminal_denominator": {
             "agents": 357,
-            "files": 979,
+            "files": 952,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 622
+            "plugin_manifests": 595
           },
-          "validator_reported_mixed_denominator_percent": 81.3
+          "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7392,
-          "fully_compliant_surfaces": 1163,
+          "error_total_all_validated_surfaces": 7094,
+          "fully_compliant_surfaces": 1136,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 5027,
+            "files": 4973,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 622,
-            "skills": 3675
+            "plugin_manifests": 595,
+            "skills": 3648
           },
-          "validated_plugin_manifests": 630,
-          "validator_reported_mixed_denominator_percent": 23.1
+          "validated_plugin_manifests": 603,
+          "validator_reported_mixed_denominator_percent": 22.8
         },
         "skill_rows": {
           "a_error_total": 219,
@@ -109,16 +109,16 @@
           "ab_error_total": 2132,
           "ab_failing": 943,
           "b_failing": 812,
-          "error_files": 1933,
-          "error_total": 7154,
+          "error_files": 1906,
+          "error_total": 6856,
           "grade_distribution": {
             "A": 1595,
             "B": 1017,
-            "C": 873,
-            "D": 183,
-            "F": 7
+            "C": 872,
+            "D": 159,
+            "F": 5
           },
-          "rows": 3675
+          "rows": 3648
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 85.2,
+        "average_score": 85.4,
         "grade_distribution": {
           "A": 1595,
           "B": 1017,
-          "C": 873,
-          "D": 183,
-          "F": 7
+          "C": 872,
+          "D": 159,
+          "F": 5
         },
         "grade_percentages": {
-          "A": 43.4,
-          "B": 27.7,
-          "C": 23.8,
-          "D": 5,
-          "F": 0.2
+          "A": 43.7,
+          "B": 27.9,
+          "C": 23.9,
+          "D": 4.4,
+          "F": 0.1
         },
-        "rows": 3675
+        "rows": 3648
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 1913,
         "b_failing": 812,
         "certified_target": 0,
-        "skill_summary_rows": 3675
+        "skill_summary_rows": 3648
       }
     },
     "7": {
@@ -212,7 +212,7 @@
       "values": {
         "agent_errors": 237,
         "agent_files": 357,
-        "reported_compliance_percent": 81.3,
+        "reported_compliance_percent": 80.8,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -274,8 +274,8 @@
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
-        "missing": 41,
-        "rows": 3675,
+        "missing": 14,
+        "rows": 3648,
         "target_malformed": 0
       }
     },
@@ -1124,11 +1124,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3675
+            "value": 3648
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3114
+            "value": 3087
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1189,10 +1189,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 64,
+        "lock_keys": 37,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 64,
+        "yaml_keys": 37,
         "yaml_only": []
       }
     },
@@ -1204,27 +1204,10 @@
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
         "plugins/community/ejentum-reasoning/.source.json",
-        "plugins/community/gastown/.source.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/llm-box/.source.json",
         "plugins/community/mnemos/.source.json",
@@ -1232,17 +1215,9 @@
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-web-typography/.source.json",
         "plugins/devops/sugar/.source.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
         "plugins/mcp/governed-second-brain/.source.json",
@@ -1261,58 +1236,31 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 31,
+        "mirrors_shipping_license_text": 29,
         "missing_license_text": [
           "plugins/api-development/x-twitter-scraper",
-          "plugins/business-tools/wondelai-blue-ocean-strategy",
-          "plugins/business-tools/wondelai-contagious",
-          "plugins/business-tools/wondelai-cro-methodology",
-          "plugins/business-tools/wondelai-crossing-the-chasm",
-          "plugins/business-tools/wondelai-drive-motivation",
-          "plugins/business-tools/wondelai-hundred-million-offers",
-          "plugins/business-tools/wondelai-influence-psychology",
-          "plugins/business-tools/wondelai-jobs-to-be-done",
-          "plugins/business-tools/wondelai-made-to-stick",
-          "plugins/business-tools/wondelai-negotiation",
-          "plugins/business-tools/wondelai-obviously-awesome",
-          "plugins/business-tools/wondelai-one-page-marketing",
-          "plugins/business-tools/wondelai-predictable-revenue",
-          "plugins/business-tools/wondelai-scorecard-marketing",
-          "plugins/business-tools/wondelai-storybrand-messaging",
-          "plugins/business-tools/wondelai-traction-eos",
           "plugins/community/ejentum-anti-deception",
           "plugins/community/ejentum-code",
           "plugins/community/ejentum-memory",
           "plugins/community/ejentum-reasoning",
           "plugins/community/llm-box",
-          "plugins/design/wondelai-design-everyday-things",
-          "plugins/design/wondelai-hooked-ux",
-          "plugins/design/wondelai-ios-hig-design",
-          "plugins/design/wondelai-refactoring-ui",
-          "plugins/design/wondelai-top-design",
-          "plugins/design/wondelai-ux-heuristics",
-          "plugins/design/wondelai-web-typography",
           "plugins/productivity/content-multiplier",
-          "plugins/productivity/skyvern",
-          "plugins/productivity/wondelai-design-sprint",
-          "plugins/productivity/wondelai-lean-startup"
+          "plugins/productivity/skyvern"
         ],
-        "provenance_marked_mirrors": 64,
-        "target_shipping_license_text": 64
+        "provenance_marked_mirrors": 37,
+        "target_shipping_license_text": 37
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 64
+        "local_source_records_with_parseable_json": 37
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1324,27 +1272,10 @@
         "plugins/ai-agency/hyperflow/.source.json",
         "plugins/ai-agency/tonone/.source.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-code/.source.json",
         "plugins/community/ejentum-memory/.source.json",
         "plugins/community/ejentum-reasoning/.source.json",
-        "plugins/community/gastown/.source.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/llm-box/.source.json",
         "plugins/community/mnemos/.source.json",
@@ -1352,17 +1283,9 @@
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/zai-cli/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-web-typography/.source.json",
         "plugins/devops/sugar/.source.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
         "plugins/mcp/governed-second-brain/.source.json",
@@ -1381,8 +1304,6 @@
         "plugins/productivity/publishing-skills/.source.json",
         "plugins/productivity/schedule-after-usage-reset/.source.json",
         "plugins/productivity/skyvern/.source.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/kobiton-automate/.source.json"
       ],
@@ -1403,38 +1324,6 @@
         "plugins/ai-agency/tonone/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-contagious/package.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/package.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/package.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/package.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/package.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-negotiation/package.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/package.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/package.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/package.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1443,8 +1332,6 @@
         "plugins/community/ejentum-memory/package.json",
         "plugins/community/ejentum-reasoning/.source.json",
         "plugins/community/ejentum-reasoning/package.json",
-        "plugins/community/gastown/.source.json",
-        "plugins/community/gastown/package.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/hermes-tweet/package.json",
         "plugins/community/llm-box/.source.json",
@@ -1459,28 +1346,12 @@
         "plugins/community/skills-janitor/package.json",
         "plugins/community/walkie-talkie/.source.json",
         "plugins/community/walkie-talkie/package.json",
-        "plugins/community/zai-cli/.source.json",
-        "plugins/community/zai-cli/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
         "plugins/design/uizze/.source.json",
         "plugins/design/uizze/package.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-design-everyday-things/package.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-hooked-ux/package.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-ios-hig-design/package.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-refactoring-ui/package.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-top-design/package.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-ux-heuristics/package.json",
-        "plugins/design/wondelai-web-typography/.source.json",
-        "plugins/design/wondelai-web-typography/package.json",
         "plugins/devops/sugar/.source.json",
         "plugins/devops/sugar/package.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
@@ -1517,10 +1388,6 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-design-sprint/package.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
-        "plugins/productivity/wondelai-lean-startup/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1529,9 +1396,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 64,
-        "repository_package_mirrors": 64,
-        "scoped_packages": 59,
+        "private_packages": 37,
+        "repository_package_mirrors": 37,
+        "scoped_packages": 32,
         "target_publishable": 0
       }
     },
@@ -1549,38 +1416,6 @@
         "plugins/ai-agency/tonone/package.json",
         "plugins/api-development/x-twitter-scraper/.source.json",
         "plugins/api-development/x-twitter-scraper/package.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/.source.json",
-        "plugins/business-tools/wondelai-blue-ocean-strategy/package.json",
-        "plugins/business-tools/wondelai-contagious/.source.json",
-        "plugins/business-tools/wondelai-contagious/package.json",
-        "plugins/business-tools/wondelai-cro-methodology/.source.json",
-        "plugins/business-tools/wondelai-cro-methodology/package.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/.source.json",
-        "plugins/business-tools/wondelai-crossing-the-chasm/package.json",
-        "plugins/business-tools/wondelai-drive-motivation/.source.json",
-        "plugins/business-tools/wondelai-drive-motivation/package.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/.source.json",
-        "plugins/business-tools/wondelai-hundred-million-offers/package.json",
-        "plugins/business-tools/wondelai-influence-psychology/.source.json",
-        "plugins/business-tools/wondelai-influence-psychology/package.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/.source.json",
-        "plugins/business-tools/wondelai-jobs-to-be-done/package.json",
-        "plugins/business-tools/wondelai-made-to-stick/.source.json",
-        "plugins/business-tools/wondelai-made-to-stick/package.json",
-        "plugins/business-tools/wondelai-negotiation/.source.json",
-        "plugins/business-tools/wondelai-negotiation/package.json",
-        "plugins/business-tools/wondelai-obviously-awesome/.source.json",
-        "plugins/business-tools/wondelai-obviously-awesome/package.json",
-        "plugins/business-tools/wondelai-one-page-marketing/.source.json",
-        "plugins/business-tools/wondelai-one-page-marketing/package.json",
-        "plugins/business-tools/wondelai-predictable-revenue/.source.json",
-        "plugins/business-tools/wondelai-predictable-revenue/package.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/.source.json",
-        "plugins/business-tools/wondelai-scorecard-marketing/package.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/.source.json",
-        "plugins/business-tools/wondelai-storybrand-messaging/package.json",
-        "plugins/business-tools/wondelai-traction-eos/.source.json",
-        "plugins/business-tools/wondelai-traction-eos/package.json",
         "plugins/community/ejentum-anti-deception/.source.json",
         "plugins/community/ejentum-anti-deception/package.json",
         "plugins/community/ejentum-code/.source.json",
@@ -1589,8 +1424,6 @@
         "plugins/community/ejentum-memory/package.json",
         "plugins/community/ejentum-reasoning/.source.json",
         "plugins/community/ejentum-reasoning/package.json",
-        "plugins/community/gastown/.source.json",
-        "plugins/community/gastown/package.json",
         "plugins/community/hermes-tweet/.source.json",
         "plugins/community/hermes-tweet/package.json",
         "plugins/community/llm-box/.source.json",
@@ -1605,28 +1438,12 @@
         "plugins/community/skills-janitor/package.json",
         "plugins/community/walkie-talkie/.source.json",
         "plugins/community/walkie-talkie/package.json",
-        "plugins/community/zai-cli/.source.json",
-        "plugins/community/zai-cli/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/brand-forge/package.json",
         "plugins/design/uizze/.source.json",
         "plugins/design/uizze/package.json",
-        "plugins/design/wondelai-design-everyday-things/.source.json",
-        "plugins/design/wondelai-design-everyday-things/package.json",
-        "plugins/design/wondelai-hooked-ux/.source.json",
-        "plugins/design/wondelai-hooked-ux/package.json",
-        "plugins/design/wondelai-ios-hig-design/.source.json",
-        "plugins/design/wondelai-ios-hig-design/package.json",
-        "plugins/design/wondelai-refactoring-ui/.source.json",
-        "plugins/design/wondelai-refactoring-ui/package.json",
-        "plugins/design/wondelai-top-design/.source.json",
-        "plugins/design/wondelai-top-design/package.json",
-        "plugins/design/wondelai-ux-heuristics/.source.json",
-        "plugins/design/wondelai-ux-heuristics/package.json",
-        "plugins/design/wondelai-web-typography/.source.json",
-        "plugins/design/wondelai-web-typography/package.json",
         "plugins/devops/sugar/.source.json",
         "plugins/devops/sugar/package.json",
         "plugins/mcp/dolt-mcp-vcs/.source.json",
@@ -1663,10 +1480,6 @@
         "plugins/productivity/schedule-after-usage-reset/package.json",
         "plugins/productivity/skyvern/.source.json",
         "plugins/productivity/skyvern/package.json",
-        "plugins/productivity/wondelai-design-sprint/.source.json",
-        "plugins/productivity/wondelai-design-sprint/package.json",
-        "plugins/productivity/wondelai-lean-startup/.source.json",
-        "plugins/productivity/wondelai-lean-startup/package.json",
         "plugins/testing/cli-ux-tester/.source.json",
         "plugins/testing/cli-ux-tester/package.json",
         "plugins/testing/kobiton-automate/.source.json",
@@ -1975,7 +1788,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23159
+        "tracked_files": 22819
       }
     },
     "47": {
@@ -2155,7 +1968,7 @@
       "values": {
         "adoption_percent": 0.44,
         "curated_copies": 12,
-        "plugin_skill_rows": 3175,
+        "plugin_skill_rows": 3148,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }
