@@ -9,7 +9,7 @@ description: 'Secure WebContainer deployments: CSP headers, sandbox isolation, i
 
   '
 allowed-tools: Read, Write, Grep
-version: 1.5.0
+version: 1.6.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
