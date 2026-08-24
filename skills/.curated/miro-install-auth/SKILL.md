@@ -12,7 +12,7 @@ description: 'Install and configure Miro REST API v2 authentication with OAuth 2
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -161,6 +161,14 @@ Token response after successful exchange:
   "team_id": "9876543210"
 }
 ```
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

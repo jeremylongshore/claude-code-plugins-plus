@@ -10,7 +10,7 @@ description: 'Configure Miro REST API v2 across development, staging, and produc
 
   '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(vault:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Configure separate Miro app credentials, OAuth scopes, and board access for development, staging, and production. Miro does not provide a sandbox API; all environments use `https://api.miro.com/v2/` — isolation is achieved through separate apps and dedicated boards.
+
+## Prerequisites
+
+Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
 
 ## Environment Strategy
 
@@ -221,6 +225,18 @@ async function cleanupDevBoard(): Promise<void> {
 // Staging: Use a separate Miro workspace or team
 // Production: Real user boards — never clean up automatically
 ```
+
+## Instructions
+
+Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

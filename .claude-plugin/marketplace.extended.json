@@ -8952,7 +8952,7 @@
       "name": "miro-pack",
       "source": "./plugins/saas-packs/miro-pack",
       "description": "Claude Code skill pack for Miro (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": ["miro", "saas", "sdk", "integration"],
       "author": {

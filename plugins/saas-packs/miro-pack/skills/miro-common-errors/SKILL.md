@@ -12,7 +12,7 @@ description: 'Diagnose and fix Miro REST API v2 errors by HTTP status code.
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -34,6 +34,18 @@ Quick reference for Miro REST API v2 errors organized by HTTP status code, with 
 - `curl` available for diagnostic requests
 
 ## Quick Diagnostic
+
+## Instructions
+
+Run the diagnostic requests in order, identify the returned HTTP status, then use the matching entry in the error reference. Apply one corrective action at a time and repeat the original request to confirm the failure is resolved.
+
+## Output
+
+The investigation produces a status code, an identified cause, and a verified remediation step. Preserve the response code and any request or board identifiers needed for escalation without exposing access tokens.
+
+## Examples
+
+Start with the connectivity check below using a non-production token. For example, a `401` result directs you to the token-expiry entry, while a `429` result directs you to the backoff guidance.
 
 ```bash
 # 1. Verify API connectivity
@@ -265,6 +277,10 @@ async function handleMiroError(response: Response, context: string): Promise<nev
 2. Collect evidence with `miro-debug-bundle`
 3. Check https://status.miro.com
 4. File support ticket with request ID (from `X-Request-Id` response header)
+
+## Error Handling
+
+If the diagnostic result does not match a documented status or persists after the corrective step, stop retrying destructive operations, capture the sanitized response details, and follow the escalation path. Treat repeated `5xx` responses as a service-health incident rather than a credential problem.
 
 ## Resources
 

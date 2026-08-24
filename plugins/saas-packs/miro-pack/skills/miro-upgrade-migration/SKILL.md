@@ -13,7 +13,7 @@ description: 'Migrate Miro integrations from REST API v1 to v2 and upgrade @miro
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Guide for migrating from Miro REST API v1 to v2, upgrading the `@mirohq/miro-api` SDK, and handling the key breaking changes between versions.
+
+## Prerequisites
+
+Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
 
 ## Key Breaking Changes: v1 to v2
 
@@ -256,6 +260,18 @@ async function getAllItemsV2(boardId: string): Promise<any[]> {
   return items;
 }
 ```
+
+## Instructions
+
+Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

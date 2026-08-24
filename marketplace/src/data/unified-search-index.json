@@ -13892,7 +13892,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -57314,7 +57314,7 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57334,7 +57334,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57357,7 +57357,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57380,7 +57380,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57399,7 +57399,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57419,7 +57419,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57441,7 +57441,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57464,7 +57464,7 @@
         "Bash(gcloud:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57484,7 +57484,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57506,7 +57506,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57527,7 +57527,7 @@
         "Bash(jq:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57550,7 +57550,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57573,7 +57573,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57595,7 +57595,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57618,7 +57618,7 @@
         "Bash(vault:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57638,7 +57638,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57658,7 +57658,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57678,7 +57678,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57698,7 +57698,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57717,7 +57717,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57737,7 +57737,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57757,7 +57757,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57779,7 +57779,7 @@
         "Bash(npx:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"
@@ -57800,7 +57800,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.6.0",
+      "version": "1.7.0",
       "parentPlugin": {
         "name": "miro-pack",
         "category": "saas-packs"

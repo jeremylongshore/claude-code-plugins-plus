@@ -12,7 +12,7 @@ description: 'Create a minimal working Miro example with real board and item ope
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -233,6 +233,14 @@ main().catch(console.error);
 | `connector` | `/v2/boards/{id}/connectors` | startItem, endItem, captions |
 
 All create endpoints require `boards:write` scope. All GET endpoints require `boards:read`.
+
+## Output
+
+Following this guide produces the Miro integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test board and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

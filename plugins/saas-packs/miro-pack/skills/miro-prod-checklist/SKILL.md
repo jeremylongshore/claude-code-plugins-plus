@@ -13,7 +13,7 @@ description: 'Execute Miro REST API v2 production deployment checklist and rollb
 
   '
 allowed-tools: Read, Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Complete checklist for deploying Miro REST API v2 integrations to production, covering OAuth configuration, rate limit readiness, monitoring, and rollback.
+
+## Prerequisites
+
+Before applying this guide, confirm you have a Miro app or workspace appropriate to the task, a dedicated non-production board where changes can be tested safely, and only the OAuth scopes or administrative access the procedure requires.
 
 ## Pre-Deployment: OAuth & Scopes
 
@@ -126,6 +130,18 @@ class MiroCircuitBreaker {
 
 ## Deployment Verification
 
+## Instructions
+
+Complete the checklist in deployment order: confirm the production OAuth configuration and code safeguards, deploy with monitoring enabled, then run the verification commands. If a verification fails, use the rollback procedure before enabling additional traffic.
+
+## Output
+
+The checklist produces documented launch evidence: successful OAuth and health checks, observed rate-limit headroom, monitoring coverage, and either a confirmed rollout or a recorded rollback decision.
+
+## Examples
+
+Run the deployment verification commands against the production endpoint only after the non-production integration suite has passed. A healthy result includes an HTTP success response and a readable health payload with Miro status information.
+
 ```bash
 # 1. Verify production token works
 curl -s -w "\nHTTP %{http_code} in %{time_total}s\n" \
@@ -175,6 +191,10 @@ kubectl rollout status deployment/miro-integration
 - [ ] Token rotation procedure documented
 - [ ] On-call escalation path includes Miro-specific steps
 - [ ] Board cleanup procedure for orphaned test data
+
+## Error Handling
+
+For authentication, rate-limit, or availability failures during deployment, keep the integration disabled or roll it back, capture sanitized evidence, and use the incident runbook. Do not retry a rollout until the failed prerequisite or verification check has a documented resolution.
 
 ## Resources
 
