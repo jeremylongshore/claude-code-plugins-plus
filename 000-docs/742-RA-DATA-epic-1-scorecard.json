@@ -16,17 +16,17 @@
     "values": {
       "a_error_total": 219,
       "a_failing": 131,
-      "ab_error_total": 2140,
-      "ab_failing": 953,
-      "b_failing": 822,
+      "ab_error_total": 2149,
+      "ab_failing": 956,
+      "b_failing": 825,
       "error_files": 1962,
       "error_total": 7193,
       "grade_distribution": {
         "A": 1595,
-        "B": 1007,
-        "C": 882,
-        "D": 182,
-        "F": 9
+        "B": 1010,
+        "C": 879,
+        "D": 184,
+        "F": 7
       },
       "rows": 3675
     }
@@ -42,7 +42,7 @@
       "values": {
         "plugin_agent_files": 347,
         "raw_tracked_plugin_skill_files": 3175,
-        "tracked_files": 23157
+        "tracked_files": 23159
       }
     },
     "2": {
@@ -106,17 +106,17 @@
         "skill_rows": {
           "a_error_total": 219,
           "a_failing": 131,
-          "ab_error_total": 2140,
-          "ab_failing": 953,
-          "b_failing": 822,
+          "ab_error_total": 2149,
+          "ab_failing": 956,
+          "b_failing": 825,
           "error_files": 1962,
           "error_total": 7193,
           "grade_distribution": {
             "A": 1595,
-            "B": 1007,
-            "C": 882,
-            "D": 182,
-            "F": 9
+            "B": 1010,
+            "C": 879,
+            "D": 184,
+            "F": 7
           },
           "rows": 3675
         }
@@ -132,15 +132,15 @@
         "average_score": 85.2,
         "grade_distribution": {
           "A": 1595,
-          "B": 1007,
-          "C": 882,
-          "D": 182,
-          "F": 9
+          "B": 1010,
+          "C": 879,
+          "D": 184,
+          "F": 7
         },
         "grade_percentages": {
           "A": 43.4,
-          "B": 27.4,
-          "C": 24,
+          "B": 27.5,
+          "C": 23.9,
           "D": 5,
           "F": 0.2
         },
@@ -156,10 +156,10 @@
       "values": {
         "a_error_total": 219,
         "a_failing": 131,
-        "ab_error_total": 2140,
-        "ab_failing": 953,
-        "b_error_total": 1921,
-        "b_failing": 822,
+        "ab_error_total": 2149,
+        "ab_failing": 956,
+        "b_error_total": 1930,
+        "b_failing": 825,
         "certified_target": 0,
         "skill_summary_rows": 3675
       }
@@ -1975,7 +1975,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 23157
+        "tracked_files": 23159
       }
     },
     "47": {
