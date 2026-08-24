@@ -22,6 +22,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import prettier from 'prettier';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
@@ -30,6 +31,12 @@ const README = join(ROOT, 'README.md');
 
 const START = '<!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->';
 const END = '<!-- KILLER-SKILL:END -->';
+const DEEP_DIVE_LINKS = [
+  ['prd', 'PRD'],
+  ['adr', 'ADR'],
+  ['onePager', 'One-pager'],
+  ['cfo', 'CFO brief'],
+];
 
 const MONTHS = [
   'January',
@@ -63,11 +70,21 @@ function isoWeekToLabel(isoWeek, lastUpdated) {
 // Plugin link: external (https://...) keeps the URL; internal (/plugins/x)
 // gets prefixed with the marketplace domain so the README link works
 // outside the site.
-function externalize(link) {
+export function externalize(link) {
   if (!link) return null;
   if (link.startsWith('http://') || link.startsWith('https://')) return link;
   if (link.startsWith('/')) return `https://tonsofskills.com${link}`;
   return link;
+}
+
+export function renderDeepDive(assets) {
+  if (!assets || typeof assets !== 'object' || Array.isArray(assets)) return null;
+  const links = DEEP_DIVE_LINKS.flatMap(([key, label]) => {
+    const rawLink = assets[key];
+    if (typeof rawLink !== 'string' || !rawLink.trim()) return [];
+    return [`[${label}](${externalize(rawLink.trim())})`];
+  });
+  return links.length ? `> Deep dive: ${links.join(' · ')}` : null;
 }
 
 function bestLinkLabel(s) {
@@ -76,7 +93,7 @@ function bestLinkLabel(s) {
   return 'Browse on Marketplace';
 }
 
-function renderBlock(data) {
+export function renderBlock(data) {
   const s = data.spotlight;
   if (!s) throw new Error('spotlights.json has no `spotlight` field');
 
@@ -100,12 +117,14 @@ function renderBlock(data) {
   const headlineLine = s.headline ? `> **${s.headline}**\n>\n` : '';
   const whyLine = s.whyKiller ? `> ${s.whyKiller}\n>\n` : '';
   const quoteLine = s.quote ? `> *"${s.quote}"* — ${s.author || 'Anonymous'}\n>\n` : '';
+  const deepDiveLine = renderDeepDive(s.assets);
 
   const lines = [
     START,
     `> **${data.title || 'Killer Skill of the Week'}** — [${s.pluginSlug}](${link}) by ${authorLink}`,
     '>',
     `${headlineLine}${whyLine}${quoteLine}> Grade: ${s.grade || 'A'} | ${weekLabel} | [${linkLabel}](${link})`,
+    ...(deepDiveLine ? ['>', deepDiveLine] : []),
     '>',
     `> Previous picks: ${previous || '_(none yet)_'}. See all at [tonsofskills.com](https://tonsofskills.com).`,
     END,
@@ -158,7 +177,10 @@ async function main() {
   console.log('✓ README KILLER-SKILL block regenerated from spotlights.json');
 }
 
-main().catch((err) => {
-  console.error(err.message || err);
-  process.exit(1);
-});
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (isMain) {
+  main().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+}

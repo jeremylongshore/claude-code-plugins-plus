@@ -28,7 +28,7 @@
  *   pluginSlug, headline, author, authorGithub, grade, category, link
  *
  * Optional fields:
- *   whyKiller, quote, skillCount
+ *   whyKiller, quote, skillCount, assets:{prd,adr,onePager,cfo}
  *
  * Exit codes:
  *   0 — success
@@ -91,6 +91,26 @@ function validateSpotlight(s) {
     console.error(`✗ new-spotlight JSON missing required fields: ${missing.join(', ')}`);
     console.error(`  Required: ${REQUIRED.join(', ')}`);
     process.exit(2);
+  }
+  if (s.assets !== undefined) {
+    if (!s.assets || typeof s.assets !== 'object' || Array.isArray(s.assets)) {
+      console.error(
+        '✗ new-spotlight assets must be an object with optional prd, adr, onePager, and cfo links',
+      );
+      process.exit(2);
+    }
+    const invalid = Object.entries(s.assets).filter(
+      ([key, value]) =>
+        !['prd', 'adr', 'onePager', 'cfo'].includes(key) ||
+        typeof value !== 'string' ||
+        !value.trim(),
+    );
+    if (invalid.length) {
+      console.error(
+        '✗ new-spotlight assets accepts only non-empty prd, adr, onePager, and cfo string links',
+      );
+      process.exit(2);
+    }
   }
 }
 

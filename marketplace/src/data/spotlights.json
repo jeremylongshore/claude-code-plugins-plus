@@ -38,6 +38,11 @@
       "skillCount": 1,
       "category": "community",
       "link": "https://github.com/polyxmedia/mnemos",
+      "assets": {
+        "prd": "/templates/skill-docs/examples/mnemos/PRD.md",
+        "adr": "/templates/skill-docs/examples/mnemos/ADR.md",
+        "onePager": "/templates/skill-docs/examples/mnemos/ONE-PAGER.md"
+      },
       "quote": "A memory layer for AI coding agents — because Claude Code keeps forgetting, and that gets old fast."
     },
     {
