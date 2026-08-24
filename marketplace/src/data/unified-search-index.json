@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 471,
-    "totalSkills": 3114,
+    "totalPlugins": 441,
+    "totalSkills": 3042,
     "totalDocs": 24,
-    "totalItems": 3609,
+    "totalItems": 3507,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -397,9 +397,7 @@
       "abridge",
       "accessibility",
       "account-abstraction",
-      "accountability",
       "accounting",
-      "ackerman",
       "adam",
       "adapters",
       "addresses",
@@ -407,9 +405,7 @@
       "adk",
       "adk-samples",
       "adobe",
-      "advertising",
       "advisor",
-      "affordances",
       "agencies",
       "agency",
       "agent",
@@ -441,7 +437,6 @@
       "ai-coding",
       "ai-directories",
       "ai-editor",
-      "ai-factory",
       "ai-finance",
       "ai-flows",
       "ai-gateway",
@@ -469,7 +464,6 @@
       "analytics",
       "android",
       "anima",
-      "animations",
       "anomaly",
       "ansible",
       "answers",
@@ -487,11 +481,9 @@
       "app-builder",
       "appfolio",
       "appium",
-      "apple",
       "apple notes",
       "apple-notes",
       "apple-silicon",
-      "april-dunford",
       "apy",
       "arbitrage",
       "architecture",
@@ -501,7 +493,6 @@
       "arima",
       "asr",
       "assemblyai",
-      "assessment",
       "assets",
       "astro",
       "async",
@@ -524,12 +515,9 @@
       "automl",
       "autonomous",
       "autonomous-agent",
-      "autonomy",
       "autoscaling",
       "aws",
-      "awwwards",
       "b12",
-      "b2b",
       "baas",
       "backend",
       "backend-as-a-service",
@@ -543,7 +531,6 @@
       "batch-operations",
       "batch-recording",
       "bd",
-      "beachhead",
       "beads",
       "beginner",
       "beginner-friendly",
@@ -555,8 +542,6 @@
       "bitcoin",
       "blockchain",
       "blogging",
-      "blue-ocean",
-      "bonuses",
       "bottleneck",
       "box",
       "box-cli",
@@ -564,10 +549,8 @@
       "brain",
       "brand-guidelines",
       "brand-identity",
-      "brand-script",
       "brand-strategy",
       "brand-voice",
-      "brand-website",
       "branding",
       "brands",
       "bridge",
@@ -579,7 +562,6 @@
       "budget",
       "bug-tracking",
       "bug-triage",
-      "build-measure-learn",
       "builds",
       "bulk",
       "business-continuity",
@@ -597,7 +579,6 @@
       "cascade",
       "cast ai",
       "castai",
-      "ccpa",
       "cd",
       "cdn",
       "chain-of-custody",
@@ -605,15 +586,11 @@
       "channel",
       "chaos-engineering",
       "charts",
-      "chasm",
       "chatops",
       "checkpointing",
-      "chris-voss",
-      "christensen",
       "chromatic",
       "chrome-extension",
       "ci-cd",
-      "cialdini",
       "cicd",
       "citations",
       "ckan",
@@ -659,19 +636,14 @@
       "cognitive-accessibility",
       "cohere",
       "cohort-retention",
-      "cold-calling",
       "cold-email",
       "collaboration",
       "collaborative",
-      "color-palette",
       "commands",
       "commit",
       "commits",
-      "communication",
       "community",
       "compatibility",
-      "competition",
-      "competitive-analysis",
       "complexity",
       "compliance",
       "component-generation",
@@ -680,7 +652,6 @@
       "concurrency",
       "config",
       "configuration",
-      "conflict-resolution",
       "connection-pool",
       "consistency",
       "consulting",
@@ -711,10 +682,8 @@
       "conversational",
       "conversational-ai",
       "conversion",
-      "convoys",
       "coordination",
       "copilot-alternative",
-      "copywriting",
       "coreweave",
       "corpus-linguistics",
       "corrections",
@@ -730,19 +699,15 @@
       "credentials",
       "critical-path",
       "crm",
-      "cro",
       "cross-browser",
       "cross-chain",
       "crud",
       "crypto",
       "cryptography",
-      "css",
       "curl",
       "currency",
       "cursor",
-      "customer-discovery",
       "customer-io",
-      "customer-lifetime-value",
       "customer-success",
       "customerio",
       "cv",
@@ -767,7 +732,6 @@
       "dcf",
       "dead-code",
       "deadlock",
-      "deals",
       "debugging",
       "decision-support",
       "decision-trees",
@@ -783,7 +747,6 @@
       "deployments",
       "derivatives",
       "design",
-      "design-sprint",
       "detection",
       "detox",
       "developer-experience",
@@ -796,7 +759,6 @@
       "diagram",
       "diff",
       "diff-analysis",
-      "differentiation",
       "disaster-recovery",
       "discovery",
       "distribution",
@@ -814,8 +776,6 @@
       "dolt-mcp",
       "dolt-mcp-vcs",
       "dolthub",
-      "don-norman",
-      "donald-miller",
       "download",
       "dr",
       "drift",
@@ -842,7 +802,6 @@
       "emotion",
       "encryption",
       "endpoints",
-      "engagement",
       "engagement-governance",
       "engineering",
       "engineering-design",
@@ -850,10 +809,8 @@
       "enrichment",
       "enterprise",
       "environment",
-      "eos",
       "equity-research",
       "erd",
-      "errc",
       "error-handling",
       "error-monitoring",
       "errors",
@@ -874,7 +831,6 @@
       "example",
       "excel",
       "exceptions",
-      "execution",
       "executive-assistant",
       "experimentation",
       "experiments",
@@ -929,7 +885,6 @@
       "fly.io",
       "flyio",
       "fondo",
-      "font-pairing",
       "forecasting",
       "forex",
       "forge-generated",
@@ -943,18 +898,14 @@
       "fullstack",
       "function-calling",
       "funding-rate",
-      "funnels",
       "futures",
       "fuzzing",
       "ga4",
       "gainers",
       "games",
-      "gamification",
       "gamma",
       "gas",
-      "gastown",
       "gcr",
-      "gdpr",
       "gemini",
       "generative-ai",
       "generator",
@@ -972,8 +923,6 @@
       "giveaway",
       "gke",
       "glean",
-      "glm-4",
-      "go-to-market",
       "godot",
       "golang",
       "google",
@@ -991,43 +940,33 @@
       "grdb",
       "groq",
       "groq-cloud",
-      "growth",
       "grpc",
       "gtm",
-      "guarantees",
       "guidewire",
-      "gv",
       "h2o",
-      "habits",
       "handoff",
       "hands-off",
       "haproxy",
       "har",
-      "hcd",
       "health",
       "healthcare",
       "helm",
       "hermes-agent",
       "hermes-plugin",
-      "heuristics",
       "hex",
       "hierarchical",
-      "hig",
       "high-availability",
       "hipaa",
       "historical",
       "hook",
-      "hook-model",
       "hooks",
       "hootsuite",
-      "hormozi",
       "hosting",
       "hpa",
       "html",
       "http",
       "http-status",
       "hubspot",
-      "human-centered-design",
       "hyperparameters",
       "i18n",
       "iac",
@@ -1035,7 +974,6 @@
       "ideation",
       "identity",
       "ideogram",
-      "image-analysis",
       "image-generation",
       "imagen",
       "images",
@@ -1045,10 +983,7 @@
       "indexes",
       "indicators",
       "inference",
-      "influence",
       "infrastructure",
-      "innovation",
-      "innovation-accounting",
       "input-validation",
       "instantly",
       "institutional",
@@ -1062,11 +997,8 @@
       "intent-eval",
       "interactive-learning",
       "intercom",
-      "interface-guidelines",
       "internationalization",
       "interpretability",
-      "interviews",
-      "intrinsic-motivation",
       "inventory",
       "investment",
       "investment-banking",
@@ -1081,11 +1013,9 @@
       "jenkins",
       "jest",
       "job-processing",
-      "jobs-to-be-done",
       "joi",
       "json",
       "json-schema",
-      "jtbd",
       "juicebox",
       "junit",
       "jwt",
@@ -1101,15 +1031,11 @@
       "knowledge-graph",
       "knowledge-management",
       "kobiton",
-      "krug",
       "kubernetes",
-      "l10-meetings",
       "l10n",
       "l2",
-      "labeling",
       "labels",
       "lakehouse",
-      "landing-pages",
       "langchain",
       "langfuse",
       "langgraph",
@@ -1122,14 +1048,11 @@
       "lbo",
       "lead-enrichment",
       "lead-generation",
-      "lead-magnet",
       "leak",
-      "lean-startup",
       "learning",
       "learning-loop",
       "learning-rate",
       "learnings",
-      "legal",
       "license-compliance",
       "lifo",
       "lime",
@@ -1169,16 +1092,9 @@
       "make",
       "markdown",
       "market",
-      "market-category",
-      "market-creation",
       "market-data",
-      "market-strategy",
       "marketing",
-      "marketing-automation",
-      "marketing-plan",
-      "marketing-strategy",
       "marketplace",
-      "mastery",
       "mcp",
       "mcp-directories",
       "media",
@@ -1195,7 +1111,6 @@
       "mempool",
       "merge",
       "mermaid-diagrams",
-      "messages-api",
       "messaging",
       "meta-plugin",
       "meta-tooling",
@@ -1207,14 +1122,12 @@
       "migrations",
       "mindtickle",
       "miro",
-      "mirroring",
       "mistral",
       "ml",
       "ml-infrastructure",
       "mlflow",
       "mlops",
       "mobile",
-      "mobile-design",
       "mocha",
       "mock",
       "mocks",
@@ -1227,8 +1140,6 @@
       "modules",
       "monitor",
       "monitoring",
-      "motion",
-      "motivation",
       "movers",
       "multi-agent",
       "multi-location",
@@ -1240,10 +1151,7 @@
       "mvp",
       "n8n",
       "narration",
-      "narrative",
       "navan",
-      "nda",
-      "negotiation",
       "network",
       "network-policy",
       "networking",
@@ -1256,7 +1164,6 @@
       "nextjs",
       "nft",
       "nginx",
-      "nielsen",
       "nlp",
       "no-thinking-required",
       "noise-filtering",
@@ -1267,21 +1174,17 @@
       "notes",
       "notion",
       "npm",
-      "nurture",
       "nutrition",
       "oauth",
       "oauth2",
       "observability",
       "observations",
       "obsidian",
-      "ocr",
-      "offers",
       "offline",
       "oidc",
       "ollama",
       "on-chain",
       "onboarding",
-      "one-liner",
       "onenote",
       "open-interest",
       "open-source",
@@ -1293,7 +1196,6 @@
       "openrouter",
       "opensea",
       "opentelemetry",
-      "operating-system",
       "operations",
       "opinion",
       "optimization",
@@ -1339,14 +1241,12 @@
       "persistent-memory",
       "persona",
       "personas",
-      "persuasion",
       "pgbackrest",
       "phone-agents",
       "pi",
       "pip",
       "pipeline",
       "pitest",
-      "pivot",
       "pivot-tables",
       "pkm",
       "plane",
@@ -1361,7 +1261,6 @@
       "pm",
       "podium",
       "polarity",
-      "polecats",
       "policycenter",
       "polynomial",
       "pool",
@@ -1380,27 +1279,21 @@
       "preferences",
       "preflight",
       "premium",
-      "premium-design",
       "preprocessing",
       "presentations",
       "pretrained",
       "prettier",
       "preview",
       "price",
-      "pricing",
       "prisma",
       "privacy",
-      "privacy-policy",
       "private-equity",
       "procedure",
       "procore",
       "product-analytics",
-      "product-design",
       "product-directories",
       "product-launch",
       "product-management",
-      "product-market-fit",
-      "product-strategy",
       "production",
       "production-readiness",
       "production-ready",
@@ -1422,14 +1315,11 @@
       "proposal",
       "prospecting",
       "protobuf",
-      "prototyping",
       "provenance",
       "proxy",
-      "psychology",
       "publishing",
       "pull-request",
       "pulumi",
-      "purpose",
       "push-based",
       "push-notifications",
       "pytest",
@@ -1444,14 +1334,12 @@
       "questionnaire",
       "queue",
       "quicknode",
-      "quiz-funnel",
       "quota",
       "rabbitmq",
       "rag",
       "rag-agents",
       "ramp",
       "ranking",
-      "rapid-iteration",
       "rarity",
       "rate-limit",
       "rate-limiting",
@@ -1463,13 +1351,10 @@
       "real-time",
       "realtime",
       "recall",
-      "reciprocity",
       "recommendations",
       "recovery",
       "redis",
       "refactoring",
-      "refactoring-ui",
-      "referral",
       "registry",
       "regression",
       "regression-testing",
@@ -1490,21 +1375,17 @@
       "resources",
       "response-time",
       "responsible-ai",
-      "responsive-typography",
       "rest",
       "restoration",
       "retell",
       "retellai",
-      "retention",
       "retrieval",
       "return on investment",
       "revenue",
       "review",
       "rewards",
       "risk",
-      "risk-analysis",
       "rls",
-      "rocks",
       "roi",
       "rollback",
       "routing",
@@ -1515,7 +1396,6 @@
       "runway",
       "saas",
       "saas-directories",
-      "salary",
       "sales",
       "sales-engagement",
       "sales-ops",
@@ -1527,26 +1407,21 @@
       "scam-detection",
       "scanner",
       "scanning",
-      "scarcity",
       "scenarios",
       "schedule",
       "schema",
-      "scorecard",
       "scraper",
       "scraping",
       "screen-reader",
       "screencast",
       "screenshot-testing",
-      "scroll-effects",
       "sdk",
-      "sdr",
       "search",
       "second-brain",
       "secrets",
       "security",
       "security-rules",
       "seeding",
-      "segmentation",
       "selection",
       "selenium",
       "self-hosted",
@@ -1565,22 +1440,18 @@
       "service-providers",
       "servicegraph",
       "serving",
-      "session",
       "session-replay",
       "sessions",
       "settings",
       "setup",
       "severity",
       "sgd",
-      "shadows",
       "shap",
       "sharding",
-      "sharing",
       "shopify",
       "shopping",
       "signals",
       "signature",
-      "signifiers",
       "simulation",
       "sinon",
       "skill",
@@ -1604,15 +1475,12 @@
       "snowflake",
       "soc2",
       "social",
-      "social-currency",
       "social-media",
-      "social-proof",
       "socket-mode",
       "socket.io",
       "software-engineer",
       "source-of-truth",
       "sow",
-      "spacing",
       "spark",
       "speak",
       "speech",
@@ -1630,16 +1498,11 @@
       "standards",
       "starter-kits",
       "statement of work",
-      "stepps",
-      "sticky",
       "stocks",
       "stop",
       "storage",
       "storefront-api",
-      "storybrand",
-      "storytelling",
       "strategy",
-      "strategy-canvas",
       "stratify",
       "streaming",
       "stress-test",
@@ -1649,7 +1512,6 @@
       "stubs",
       "subagents",
       "subtitles",
-      "success",
       "summaries",
       "summarization",
       "supabase",
@@ -1666,7 +1528,6 @@
       "sync",
       "synthetic-monitoring",
       "tags",
-      "tailwind",
       "task-breakdown",
       "task-management",
       "task-router",
@@ -1676,16 +1537,13 @@
       "tdd",
       "team-behavior",
       "team-collaboration",
-      "team-management",
       "tech-debt",
       "technical-analysis",
       "technical-debt",
-      "technology-adoption",
       "techsmith",
       "telemetry",
       "templates",
       "terminal",
-      "terms-of-service",
       "terraform",
       "test-coverage",
       "test-data",
@@ -1719,7 +1577,6 @@
       "tokenization",
       "tracing",
       "tracking",
-      "traction",
       "trading",
       "traffic",
       "traffic-distribution",
@@ -1736,7 +1593,6 @@
       "travel",
       "triage",
       "triageflow",
-      "triggers",
       "trip-planning",
       "trivy",
       "tts",
@@ -1746,15 +1602,11 @@
       "tweets",
       "twinmind",
       "twitter",
-      "type-hierarchy",
       "type-safety",
-      "typeface",
       "typescript",
       "typography",
       "ui",
-      "ui-design",
       "ui-testing",
-      "uikit",
       "umami",
       "unit-tests",
       "unity-catalog",
@@ -1765,20 +1617,13 @@
       "usage-reset",
       "user-experience",
       "user-management",
-      "user-testing",
       "users",
-      "usp",
       "ux",
-      "ux-audit",
       "vacation",
       "validate-skillmd",
-      "validated-learning",
       "validation",
       "valuation",
       "value",
-      "value-equation",
-      "value-innovation",
-      "value-proposition",
       "variance-analysis",
       "vast-ai",
       "vastai",
@@ -1796,10 +1641,8 @@
       "video-generation",
       "video-processing",
       "video-production",
-      "virality",
       "vision",
       "visual-content",
-      "visual-hierarchy",
       "visual-organization",
       "visual-regression",
       "visualization",
@@ -1825,8 +1668,6 @@
       "weather",
       "web-crawling",
       "web-design",
-      "web-fonts",
-      "web-reader",
       "web-scraping",
       "web-search",
       "web3",
@@ -1834,7 +1675,6 @@
       "webhook",
       "webhooks",
       "website",
-      "website-copy",
       "website-generator",
       "websocket",
       "weekly-update",
@@ -1842,9 +1682,7 @@
       "wif",
       "windsurf",
       "wispr",
-      "word-of-mouth",
       "work-orders",
-      "work-tracking",
       "workflow",
       "workflow-chain",
       "workflows",
@@ -1861,7 +1699,6 @@
       "yield",
       "yolo",
       "youtube",
-      "z-ai",
       "zap",
       "zapier",
       "zero-cost",
@@ -1871,9 +1708,9 @@
     "totalHooks": 29,
     "pluginsWithAgents": 90,
     "pluginsWithHooks": 20,
-    "officialPlugins": 390,
-    "communityPlugins": 81,
-    "communityContributors": 45
+    "officialPlugins": 388,
+    "communityPlugins": 53,
+    "communityContributors": 42
   },
   "items": [
     {
@@ -11105,7 +10942,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.3.0",
+      "version": "1.2.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -11614,78 +11451,6 @@
     },
     {
       "type": "plugin",
-      "id": "gastown",
-      "slug": "gastown",
-      "name": "gastown",
-      "displayName": "gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
-      "category": "community",
-      "keywords": [
-        "multi-agent",
-        "orchestration",
-        "automation",
-        "polecats",
-        "convoys",
-        "beads",
-        "work-tracking",
-        "ai-factory",
-        "gastown",
-        "claude-code"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 95,
-      "verificationGrade": "A",
-      "verificationBadge": "gold",
-      "searchText": "gastown multi-agent orchestrator for claude code. track work with convoys, sling to polecats. the cognition engine for ai-powered software factories. community multi-agent orchestration automation polecats convoys beads work-tracking ai-factory gastown claude-code"
-    },
-    {
-      "type": "plugin",
-      "id": "zai-cli",
-      "slug": "zai-cli",
-      "name": "zai-cli",
-      "displayName": "zai cli",
-      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
-      "category": "community",
-      "keywords": [
-        "vision",
-        "image-analysis",
-        "ocr",
-        "web-search",
-        "web-reader",
-        "github",
-        "mcp",
-        "z-ai",
-        "glm-4",
-        "multimodal"
-      ],
-      "author": {
-        "name": "Numman Ali",
-        "email": "numman.ali@gmail.com",
-        "url": "https://github.com/numman-ali"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 96,
-      "verificationGrade": "A",
-      "verificationBadge": "gold",
-      "searchText": "zai cli z.ai vision, search, reader, and github exploration via cli and mcp. analyze images, search the web, read pages as markdown, explore repos. community vision image-analysis ocr web-search web-reader github mcp z-ai glm-4 multimodal"
-    },
-    {
-      "type": "plugin",
       "id": "claude-reflect",
       "slug": "claude-reflect",
       "name": "claude-reflect",
@@ -11871,435 +11636,6 @@
     },
     {
       "type": "plugin",
-      "id": "wondelai-blue-ocean-strategy",
-      "slug": "wondelai-blue-ocean-strategy",
-      "name": "wondelai-blue-ocean-strategy",
-      "displayName": "wondelai blue ocean strategy",
-      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
-      "category": "business-tools",
-      "keywords": [
-        "strategy",
-        "blue-ocean",
-        "value-innovation",
-        "market-creation",
-        "errc",
-        "strategy-canvas",
-        "competition",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 64,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai blue ocean strategy blue ocean strategy framework for creating uncontested market space. use the strategy canvas, four actions framework (errc), and value innovation to break the value-cost trade-off. business-tools strategy blue-ocean value-innovation market-creation errc strategy-canvas competition positioning"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-contagious",
-      "slug": "wondelai-contagious",
-      "name": "wondelai-contagious",
-      "displayName": "wondelai contagious",
-      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
-      "category": "business-tools",
-      "keywords": [
-        "virality",
-        "word-of-mouth",
-        "stepps",
-        "social-currency",
-        "marketing",
-        "content-strategy",
-        "sharing",
-        "growth"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 54,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai contagious word-of-mouth and virality framework using the stepps model (social currency, triggers, emotion, public, practical value, stories). engineer products and content that people naturally share. business-tools virality word-of-mouth stepps social-currency marketing content-strategy sharing growth"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-cro-methodology",
-      "slug": "wondelai-cro-methodology",
-      "name": "wondelai-cro-methodology",
-      "displayName": "wondelai cro methodology",
-      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
-      "category": "business-tools",
-      "keywords": [
-        "cro",
-        "conversion",
-        "optimization",
-        "landing-pages",
-        "ab-testing",
-        "copywriting",
-        "persuasion",
-        "funnels"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 62,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai cro methodology customer-centric conversion rate optimization methodology. audit landing pages, identify conversion blockers, write persuasive copy, design a/b tests, and optimize funnels. business-tools cro conversion optimization landing-pages ab-testing copywriting persuasion funnels"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-crossing-the-chasm",
-      "slug": "wondelai-crossing-the-chasm",
-      "name": "wondelai-crossing-the-chasm",
-      "displayName": "wondelai crossing the chasm",
-      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
-      "category": "business-tools",
-      "keywords": [
-        "go-to-market",
-        "technology-adoption",
-        "chasm",
-        "beachhead",
-        "b2b",
-        "saas",
-        "market-strategy",
-        "positioning"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 67,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai crossing the chasm technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. choose beachhead segments, build whole products, and position against incumbents. business-tools go-to-market technology-adoption chasm beachhead b2b saas market-strategy positioning"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-design-everyday-things",
-      "slug": "wondelai-design-everyday-things",
-      "name": "wondelai-design-everyday-things",
-      "displayName": "wondelai design everyday things",
-      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
-      "category": "design",
-      "keywords": [
-        "design",
-        "ux",
-        "affordances",
-        "signifiers",
-        "human-centered-design",
-        "usability",
-        "don-norman",
-        "hcd"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 62,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai design everyday things fundamental design principles from don norman. design affordances, signifiers, constraints, and feedback mechanisms. apply human-centered design and fault-tolerant systems. design design ux affordances signifiers human-centered-design usability don-norman hcd"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-design-sprint",
-      "slug": "wondelai-design-sprint",
-      "name": "wondelai-design-sprint",
-      "displayName": "wondelai design sprint",
-      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
-      "category": "productivity",
-      "keywords": [
-        "design-sprint",
-        "prototyping",
-        "user-testing",
-        "validation",
-        "gv",
-        "product-design",
-        "rapid-iteration",
-        "mvp"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 58,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai design sprint google ventures design sprint methodology. validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making. productivity design-sprint prototyping user-testing validation gv product-design rapid-iteration mvp"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-drive-motivation",
-      "slug": "wondelai-drive-motivation",
-      "name": "wondelai-drive-motivation",
-      "displayName": "wondelai drive motivation",
-      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
-      "category": "business-tools",
-      "keywords": [
-        "motivation",
-        "autonomy",
-        "mastery",
-        "purpose",
-        "engagement",
-        "gamification",
-        "intrinsic-motivation",
-        "team-management"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 62,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai drive motivation intrinsic motivation science framework (autonomy, mastery, purpose). design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging. business-tools motivation autonomy mastery purpose engagement gamification intrinsic-motivation team-management"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-hooked-ux",
-      "slug": "wondelai-hooked-ux",
-      "name": "wondelai-hooked-ux",
-      "displayName": "wondelai hooked ux",
-      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
-      "category": "design",
-      "keywords": [
-        "habits",
-        "engagement",
-        "retention",
-        "hook-model",
-        "triggers",
-        "rewards",
-        "onboarding",
-        "ux"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 64,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai hooked ux hook model framework for building habit-forming products. design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation. design habits engagement retention hook-model triggers rewards onboarding ux"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-hundred-million-offers",
-      "slug": "wondelai-hundred-million-offers",
-      "name": "wondelai-hundred-million-offers",
-      "displayName": "wondelai hundred million offers",
-      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
-      "category": "business-tools",
-      "keywords": [
-        "offers",
-        "pricing",
-        "value-equation",
-        "guarantees",
-        "bonuses",
-        "scarcity",
-        "sales",
-        "hormozi"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 56,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai hundred million offers grand slam offer creation framework. create irresistible offers using the value equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity. business-tools offers pricing value-equation guarantees bonuses scarcity sales hormozi"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-influence-psychology",
-      "slug": "wondelai-influence-psychology",
-      "name": "wondelai-influence-psychology",
-      "displayName": "wondelai influence psychology",
-      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
-      "category": "business-tools",
-      "keywords": [
-        "persuasion",
-        "influence",
-        "cialdini",
-        "social-proof",
-        "reciprocity",
-        "scarcity",
-        "psychology",
-        "marketing"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 62,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai influence psychology persuasion science framework based on cialdini's six principles (reciprocity, commitment, social proof, authority, liking, scarcity). apply ethical persuasion to product design and marketing. business-tools persuasion influence cialdini social-proof reciprocity scarcity psychology marketing"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-ios-hig-design",
-      "slug": "wondelai-ios-hig-design",
-      "name": "wondelai-ios-hig-design",
-      "displayName": "wondelai ios hig design",
-      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
-      "category": "design",
-      "keywords": [
-        "ios",
-        "apple",
-        "hig",
-        "swiftui",
-        "uikit",
-        "mobile-design",
-        "accessibility",
-        "interface-guidelines"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 57,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai ios hig design native ios app design following apple human interface guidelines. design swiftui/uikit components, implement navigation patterns, and ensure accessibility compliance. design ios apple hig swiftui uikit mobile-design accessibility interface-guidelines"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-jobs-to-be-done",
-      "slug": "wondelai-jobs-to-be-done",
-      "name": "wondelai-jobs-to-be-done",
-      "displayName": "wondelai jobs to be done",
-      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
-      "category": "business-tools",
-      "keywords": [
-        "jtbd",
-        "jobs-to-be-done",
-        "product-strategy",
-        "customer-discovery",
-        "innovation",
-        "christensen",
-        "product-market-fit",
-        "interviews"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 62,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai jobs to be done strategic product innovation framework using clayton christensen's jtbd theory. discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for. business-tools jtbd jobs-to-be-done product-strategy customer-discovery innovation christensen product-market-fit interviews"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-lean-startup",
-      "slug": "wondelai-lean-startup",
-      "name": "wondelai-lean-startup",
-      "displayName": "wondelai lean startup",
-      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
-      "category": "productivity",
-      "keywords": [
-        "lean-startup",
-        "mvp",
-        "validated-learning",
-        "pivot",
-        "metrics",
-        "innovation-accounting",
-        "experimentation",
-        "build-measure-learn"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 63,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai lean startup lean startup methodology for validated learning, mvps, and innovation accounting. design experiments, decide when to pivot vs. persevere, and reduce development waste. productivity lean-startup mvp validated-learning pivot metrics innovation-accounting experimentation build-measure-learn"
-    },
-    {
-      "type": "plugin",
       "id": "navigating-github",
       "slug": "navigating-github",
       "name": "navigating-github",
@@ -12333,403 +11669,6 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "navigating github first-time github setup and interactive git learning. walks users from zero to a working github repo, then teaches git through 9 hands-on lessons on their actual project. adapts to any skill level automatically. productivity github git learning onboarding beginner-friendly interactive-learning version-control vibe-coding setup collaboration"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-made-to-stick",
-      "slug": "wondelai-made-to-stick",
-      "name": "wondelai-made-to-stick",
-      "displayName": "wondelai made to stick",
-      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
-      "category": "business-tools",
-      "keywords": [
-        "messaging",
-        "storytelling",
-        "success",
-        "sticky",
-        "communication",
-        "presentations",
-        "copywriting",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 61,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai made to stick sticky messaging framework using the success model (simple, unexpected, concrete, credible, emotional, stories). make product messaging memorable and create compelling presentations. business-tools messaging storytelling success sticky communication presentations copywriting branding"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-negotiation",
-      "slug": "wondelai-negotiation",
-      "name": "wondelai-negotiation",
-      "displayName": "wondelai negotiation",
-      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
-      "category": "business-tools",
-      "keywords": [
-        "negotiation",
-        "chris-voss",
-        "mirroring",
-        "labeling",
-        "ackerman",
-        "salary",
-        "deals",
-        "conflict-resolution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 56,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai negotiation tactical negotiation framework based on chris voss's techniques. use mirroring, labeling, calibrated questions, the ackerman method, and accusation audits for business and salary negotiations. business-tools negotiation chris-voss mirroring labeling ackerman salary deals conflict-resolution"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-obviously-awesome",
-      "slug": "wondelai-obviously-awesome",
-      "name": "wondelai-obviously-awesome",
-      "displayName": "wondelai obviously awesome",
-      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
-      "category": "business-tools",
-      "keywords": [
-        "positioning",
-        "differentiation",
-        "competitive-analysis",
-        "market-category",
-        "value-proposition",
-        "april-dunford",
-        "go-to-market",
-        "branding"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 67,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai obviously awesome product positioning framework for competitive differentiation. define competitive alternatives, identify unique attributes, map value themes, and choose the right market category. business-tools positioning differentiation competitive-analysis market-category value-proposition april-dunford go-to-market branding"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-one-page-marketing",
-      "slug": "wondelai-one-page-marketing",
-      "name": "wondelai-one-page-marketing",
-      "displayName": "wondelai one page marketing",
-      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
-      "category": "business-tools",
-      "keywords": [
-        "marketing-plan",
-        "usp",
-        "lead-generation",
-        "nurture",
-        "referral",
-        "advertising",
-        "customer-lifetime-value",
-        "marketing-strategy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 56,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai one page marketing end-to-end marketing plan framework. define target market, craft usp, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems. business-tools marketing-plan usp lead-generation nurture referral advertising customer-lifetime-value marketing-strategy"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-predictable-revenue",
-      "slug": "wondelai-predictable-revenue",
-      "name": "wondelai-predictable-revenue",
-      "displayName": "wondelai predictable revenue",
-      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
-      "category": "business-tools",
-      "keywords": [
-        "sales",
-        "outbound",
-        "sdr",
-        "pipeline",
-        "b2b",
-        "saas",
-        "prospecting",
-        "cold-calling",
-        "revenue"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 64,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai predictable revenue outbound sales methodology for scalable b2b pipeline. implement cold calling 2.0, structure sdr/ae/csm roles, design prospecting sequences, and build predictable revenue engines. business-tools sales outbound sdr pipeline b2b saas prospecting cold-calling revenue"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-refactoring-ui",
-      "slug": "wondelai-refactoring-ui",
-      "name": "wondelai-refactoring-ui",
-      "displayName": "wondelai refactoring ui",
-      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
-      "category": "design",
-      "keywords": [
-        "ui-design",
-        "visual-hierarchy",
-        "typography",
-        "color-palette",
-        "tailwind",
-        "shadows",
-        "spacing",
-        "refactoring-ui"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 64,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai refactoring ui practical ui design system for professional interfaces. fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in tailwind css. design ui-design visual-hierarchy typography color-palette tailwind shadows spacing refactoring-ui"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-scorecard-marketing",
-      "slug": "wondelai-scorecard-marketing",
-      "name": "wondelai-scorecard-marketing",
-      "displayName": "wondelai scorecard marketing",
-      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
-      "category": "business-tools",
-      "keywords": [
-        "lead-generation",
-        "quiz-funnel",
-        "assessment",
-        "scorecard",
-        "conversion",
-        "segmentation",
-        "lead-magnet",
-        "marketing-automation"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 70,
-      "verificationGrade": "C",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai scorecard marketing lead generation framework using quiz and assessment funnels. create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences. business-tools lead-generation quiz-funnel assessment scorecard conversion segmentation lead-magnet marketing-automation"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-storybrand-messaging",
-      "slug": "wondelai-storybrand-messaging",
-      "name": "wondelai-storybrand-messaging",
-      "displayName": "wondelai storybrand messaging",
-      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
-      "category": "business-tools",
-      "keywords": [
-        "storybrand",
-        "messaging",
-        "brand-script",
-        "copywriting",
-        "narrative",
-        "website-copy",
-        "one-liner",
-        "donald-miller"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 63,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai storybrand messaging storybrand messaging framework that positions customer as hero. create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages. business-tools storybrand messaging brand-script copywriting narrative website-copy one-liner donald-miller"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-top-design",
-      "slug": "wondelai-top-design",
-      "name": "wondelai-top-design",
-      "displayName": "wondelai top design",
-      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
-      "category": "design",
-      "keywords": [
-        "web-design",
-        "awwwards",
-        "animations",
-        "typography",
-        "scroll-effects",
-        "brand-website",
-        "premium-design",
-        "motion"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 61,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai top design award-winning web design framework for premium brand experiences. build immersive websites with custom animations, dramatic typography, and scroll-based compositions. design web-design awwwards animations typography scroll-effects brand-website premium-design motion"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-traction-eos",
-      "slug": "wondelai-traction-eos",
-      "name": "wondelai-traction-eos",
-      "displayName": "wondelai traction eos",
-      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
-      "category": "business-tools",
-      "keywords": [
-        "eos",
-        "traction",
-        "operating-system",
-        "rocks",
-        "l10-meetings",
-        "accountability",
-        "vision",
-        "execution"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 64,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai traction eos entrepreneurial operating system (eos) for business execution. create v/to, set quarterly rocks, run level 10 meetings, build accountability charts, and solve issues with ids. business-tools eos traction operating-system rocks l10-meetings accountability vision execution"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-ux-heuristics",
-      "slug": "wondelai-ux-heuristics",
-      "name": "wondelai-ux-heuristics",
-      "displayName": "wondelai ux heuristics",
-      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
-      "category": "design",
-      "keywords": [
-        "ux",
-        "usability",
-        "heuristics",
-        "nielsen",
-        "krug",
-        "ux-audit",
-        "evaluation",
-        "accessibility"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 66,
-      "verificationGrade": "D",
-      "verificationBadge": "bronze",
-      "searchText": "wondelai ux heuristics usability heuristics and ux audit framework based on nielsen and krug. conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity. design ux usability heuristics nielsen krug ux-audit evaluation accessibility"
-    },
-    {
-      "type": "plugin",
-      "id": "wondelai-web-typography",
-      "slug": "wondelai-web-typography",
-      "name": "wondelai-web-typography",
-      "displayName": "wondelai web typography",
-      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
-      "category": "design",
-      "keywords": [
-        "typography",
-        "web-fonts",
-        "typeface",
-        "font-pairing",
-        "readability",
-        "responsive-typography",
-        "css",
-        "type-hierarchy"
-      ],
-      "author": {
-        "name": "Wondel.ai",
-        "url": "https://github.com/wondelai"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "verificationScore": 59,
-      "verificationGrade": "F",
-      "verificationBadge": null,
-      "searchText": "wondelai web typography web typography framework for readable, beautiful type. select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading. design typography web-fonts typeface font-pairing readability responsive-typography css type-hierarchy"
     },
     {
       "type": "plugin",
@@ -12841,7 +11780,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.7.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -13052,7 +11991,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.7.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -13892,7 +12831,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.7.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -16148,90 +15087,6 @@
       "searchText": "uizze stop ui slop. ground claude code in 800,000+ real web and ios screens, a product-specific design contract, required states, and a hard finish gate. design ui design frontend anti-slop agent-skill"
     },
     {
-      "type": "plugin",
-      "id": "general-legal-assistant",
-      "slug": "general-legal-assistant",
-      "name": "general-legal-assistant",
-      "displayName": "general legal assistant",
-      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
-      "category": "business-tools",
-      "keywords": [
-        "legal",
-        "contracts",
-        "nda",
-        "compliance",
-        "gdpr",
-        "ccpa",
-        "risk-analysis",
-        "terms-of-service",
-        "privacy-policy"
-      ],
-      "author": {
-        "name": "Intent Solutions",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "authorType": "official",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 12,
-      "searchText": "general legal assistant ai-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents business-tools legal contracts nda compliance gdpr ccpa risk-analysis terms-of-service privacy-policy"
-    },
-    {
-      "type": "plugin",
-      "id": "claude-memory-kit",
-      "slug": "claude-memory-kit",
-      "name": "claude-memory-kit",
-      "displayName": "claude memory kit",
-      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
-      "category": "productivity",
-      "keywords": [
-        "memory",
-        "context",
-        "skills",
-        "session",
-        "claude-code"
-      ],
-      "author": {
-        "name": "builtbyzac"
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "searchText": "claude memory kit context-management workflows for saving, loading, updating, sharing, and auditing claude code session memory. productivity memory context skills session claude-code"
-    },
-    {
-      "type": "plugin",
-      "id": "claude-pack",
-      "slug": "claude-pack",
-      "name": "claude-pack",
-      "displayName": "claude pack",
-      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
-      "category": "saas-packs",
-      "keywords": [
-        "claude",
-        "anthropic",
-        "ai",
-        "sdk",
-        "messages-api"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "authorType": "official",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 32,
-      "searchText": "claude pack claude code skill pack for building with the claude api and anthropic sdk. saas-packs claude anthropic ai sdk messages-api"
-    },
-    {
       "type": "skill",
       "id": "abridge-ci-integration",
       "slug": "abridge-ci-integration",
@@ -17561,27 +16416,6 @@
         "category": "performance"
       },
       "searchText": "aggregating-performance-metrics aggregate and centralize performance metrics from applications, systems, performance read write bash(prometheus:*) bash(metrics:*) bash(monitoring:*)  "
-    },
-    {
-      "type": "skill",
-      "id": "agreement-generator",
-      "slug": "agreement-generator",
-      "name": "agreement-generator",
-      "description": "'Generates customized business agreements for 10 common relationship",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "agreement-generator 'generates customized business agreements for 10 common relationship business-tools read write glob grep "
     },
     {
       "type": "skill",
@@ -23834,22 +22668,6 @@
     },
     {
       "type": "skill",
-      "id": "blue-ocean-strategy",
-      "slug": "blue-ocean-strategy",
-      "name": "blue-ocean-strategy",
-      "description": "'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"ERRC framework\", \"value innovation\", \"non-customers\", \"buyer utility map\", \"the market is too crowded\", \"how do we stand out\", or \"escape the price war\". Also trigger when exploring a new market category, or finding underserved or non-customers. Covers the Four Actions Framework, Six Paths, buyer utility map, and value-cost trade-offs. For real strategy formulation and bad-strategy detection, see good-strategy-bad-strategy. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.1\"",
-      "parentPlugin": {
-        "name": "wondelai-blue-ocean-strategy",
-        "category": "business-tools"
-      },
-      "searchText": "blue-ocean-strategy 'create uncontested market space using value innovation instead of competing head-to-head. use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"errc framework\", \"value innovation\", \"non-customers\", \"buyer utility map\", \"the market is too crowded\", \"how do we stand out\", or \"escape the price war\". also trigger when exploring a new market category, or finding underserved or non-customers. covers the four actions framework, six paths, buyer utility map, and value-cost trade-offs. for real strategy formulation and bad-strategy detection, see good-strategy-bad-strategy. for tech adoption strategy, see crossing-the-chasm. for product positioning, see obviously-awesome.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "box-cloud-filesystem",
       "slug": "box-cloud-filesystem",
       "name": "box-cloud-filesystem",
@@ -26137,663 +24955,6 @@
         "category": "productivity"
       },
       "searchText": "ci-automation \"use when running github actions locally, creating task runner recipes, generating changelogs from git history, managing github prs/issues/releases programmatically, or creating encrypted backups\" productivity [bash(gh*) bash(just*) bash(act*) bash(git-cliff*) bash(restic*) read write glob] "
-    },
-    {
-      "type": "skill",
-      "id": "clade-advanced-troubleshooting",
-      "slug": "clade-advanced-troubleshooting",
-      "name": "clade-advanced-troubleshooting",
-      "description": "\"Debug complex Claude issues \\u2014 inconsistent outputs, tool use failures,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-advanced-troubleshooting \"debug complex claude issues \\u2014 inconsistent outputs, tool use failures,\\n\\ saas-packs read write edit grep bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-architecture-variants",
-      "slug": "clade-architecture-variants",
-      "name": "clade-architecture-variants",
-      "description": "\"Build different types of Claude-powered applications \\u2014 chatbots,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-architecture-variants \"build different types of claude-powered applications \\u2014 chatbots,\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-ci-integration",
-      "slug": "clade-ci-integration",
-      "name": "clade-ci-integration",
-      "description": "\"Test and validate Claude integrations in CI/CD pipelines \\u2014\\nUse\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-ci-integration \"test and validate claude integrations in ci/cd pipelines \\u2014\\nuse\\ saas-packs read write edit bash(npm:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-common-errors",
-      "slug": "clade-common-errors",
-      "name": "clade-common-errors",
-      "description": "\"Diagnose and fix Anthropic API errors \\u2014 authentication, rate limits,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-common-errors \"diagnose and fix anthropic api errors \\u2014 authentication, rate limits,\\n\\ saas-packs read grep bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-core-workflow-a",
-      "slug": "clade-core-workflow-a",
-      "name": "clade-core-workflow-a",
-      "description": "'Redirect to claude-model-inference for Messages API streaming,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-core-workflow-a 'redirect to claude-model-inference for messages api streaming, saas-packs read "
-    },
-    {
-      "type": "skill",
-      "id": "clade-core-workflow-b",
-      "slug": "clade-core-workflow-b",
-      "name": "clade-core-workflow-b",
-      "description": "'Redirect to claude-embeddings-search for tool use (function calling)",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-core-workflow-b 'redirect to claude-embeddings-search for tool use (function calling) saas-packs read "
-    },
-    {
-      "type": "skill",
-      "id": "clade-cost-tuning",
-      "slug": "clade-cost-tuning",
-      "name": "clade-cost-tuning",
-      "description": "\"Optimize Anthropic API costs \\u2014 model selection, prompt caching,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-cost-tuning \"optimize anthropic api costs \\u2014 model selection, prompt caching,\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-data-handling",
-      "slug": "clade-data-handling",
-      "name": "clade-data-handling",
-      "description": "\"Handle sensitive data with Claude \\u2014 PII redaction, conversation\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-data-handling \"handle sensitive data with claude \\u2014 pii redaction, conversation\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-debug-bundle",
-      "slug": "clade-debug-bundle",
-      "name": "clade-debug-bundle",
-      "description": "\"Collect debug evidence for Anthropic API issues \\u2014 request IDs,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-debug-bundle \"collect debug evidence for anthropic api issues \\u2014 request ids,\\ saas-packs read grep bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-deploy-integration",
-      "slug": "clade-deploy-integration",
-      "name": "clade-deploy-integration",
-      "description": "'Deploy Claude-powered applications to Vercel, Fly.io, and Cloud Run",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(vercel:*)",
-        "Bash(fly:*)",
-        "Bash(gcloud:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-deploy-integration 'deploy claude-powered applications to vercel, fly.io, and cloud run saas-packs read write edit bash(vercel:*) bash(fly:*) bash(gcloud:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-embeddings-search",
-      "slug": "clade-embeddings-search",
-      "name": "clade-embeddings-search",
-      "description": "'Implement tool use (function calling) with Claude to let it execute",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-embeddings-search 'implement tool use (function calling) with claude to let it execute saas-packs read write edit bash(npm:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "clade-enterprise-rbac",
-      "slug": "clade-enterprise-rbac",
-      "name": "clade-enterprise-rbac",
-      "description": "'Manage Anthropic workspaces, API keys, team access, and spending limits",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-enterprise-rbac 'manage anthropic workspaces, api keys, team access, and spending limits saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-hello-world",
-      "slug": "clade-hello-world",
-      "name": "clade-hello-world",
-      "description": "'Send your first message to Claude using the Anthropic SDK.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-hello-world 'send your first message to claude using the anthropic sdk. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-incident-runbook",
-      "slug": "clade-incident-runbook",
-      "name": "clade-incident-runbook",
-      "description": "\"Respond to Anthropic API incidents \\u2014 outages, degraded performance,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-incident-runbook \"respond to anthropic api incidents \\u2014 outages, degraded performance,\\n\\ saas-packs read grep bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-install-auth",
-      "slug": "clade-install-auth",
-      "name": "clade-install-auth",
-      "description": "'Install and configure the Anthropic SDK for Claude API access.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-install-auth 'install and configure the anthropic sdk for claude api access. saas-packs read write edit bash(npm:*) bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "clade-known-pitfalls",
-      "slug": "clade-known-pitfalls",
-      "name": "clade-known-pitfalls",
-      "description": "'Common mistakes when building with the Anthropic API and how to avoid",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-known-pitfalls 'common mistakes when building with the anthropic api and how to avoid saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-load-scale",
-      "slug": "clade-load-scale",
-      "name": "clade-load-scale",
-      "description": "\"Scale Claude usage for high-throughput applications \\u2014 batches,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-load-scale \"scale claude usage for high-throughput applications \\u2014 batches,\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-local-dev-loop",
-      "slug": "clade-local-dev-loop",
-      "name": "clade-local-dev-loop",
-      "description": "\"Set up a fast local development loop for building with the Anthropic\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-local-dev-loop \"set up a fast local development loop for building with the anthropic\\ saas-packs read write edit bash(npm:*) bash(pip:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-migration-deep-dive",
-      "slug": "clade-migration-deep-dive",
-      "name": "clade-migration-deep-dive",
-      "description": "\"Migrate from OpenAI/GPT to Anthropic/Claude \\u2014 API differences,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-migration-deep-dive \"migrate from openai/gpt to anthropic/claude \\u2014 api differences,\\n\\ saas-packs read write edit grep "
-    },
-    {
-      "type": "skill",
-      "id": "clade-model-inference",
-      "slug": "clade-model-inference",
-      "name": "clade-model-inference",
-      "description": "'Stream Claude responses, use system prompts, handle multi-turn conversations,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-model-inference 'stream claude responses, use system prompts, handle multi-turn conversations, saas-packs read write edit bash(npm:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "clade-multi-env-setup",
-      "slug": "clade-multi-env-setup",
-      "name": "clade-multi-env-setup",
-      "description": "'Configure Claude across dev, staging, and production with different",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-multi-env-setup 'configure claude across dev, staging, and production with different saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-observability",
-      "slug": "clade-observability",
-      "name": "clade-observability",
-      "description": "\"Monitor Claude API calls \\u2014 log tokens, latency, costs, errors,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-observability \"monitor claude api calls \\u2014 log tokens, latency, costs, errors,\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-performance-tuning",
-      "slug": "clade-performance-tuning",
-      "name": "clade-performance-tuning",
-      "description": "\"Optimize Anthropic API latency \\u2014 streaming, prompt caching, model\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-performance-tuning \"optimize anthropic api latency \\u2014 streaming, prompt caching, model\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-policy-guardrails",
-      "slug": "clade-policy-guardrails",
-      "name": "clade-policy-guardrails",
-      "description": "\"Implement content safety guardrails for Claude \\u2014 input filtering,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-policy-guardrails \"implement content safety guardrails for claude \\u2014 input filtering,\\n\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-prod-checklist",
-      "slug": "clade-prod-checklist",
-      "name": "clade-prod-checklist",
-      "description": "\"Production readiness checklist for Claude-powered applications \\u2014\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-prod-checklist \"production readiness checklist for claude-powered applications \\u2014\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-rate-limits",
-      "slug": "clade-rate-limits",
-      "name": "clade-rate-limits",
-      "description": "\"Handle Anthropic rate limits \\u2014 understand tiers, implement backoff,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-rate-limits \"handle anthropic rate limits \\u2014 understand tiers, implement backoff,\\n\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-reference-architecture",
-      "slug": "clade-reference-architecture",
-      "name": "clade-reference-architecture",
-      "description": "\"Build Claude Code plugins \\u2014 skills, agents, MCP servers, hooks,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-reference-architecture \"build claude code plugins \\u2014 skills, agents, mcp servers, hooks,\\ saas-packs read write edit bash(npm:*) "
-    },
-    {
-      "type": "skill",
-      "id": "clade-reliability-patterns",
-      "slug": "clade-reliability-patterns",
-      "name": "clade-reliability-patterns",
-      "description": "\"Build fault-tolerant Claude integrations \\u2014 retries, circuit breakers,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-reliability-patterns \"build fault-tolerant claude integrations \\u2014 retries, circuit breakers,\\n\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-sdk-patterns",
-      "slug": "clade-sdk-patterns",
-      "name": "clade-sdk-patterns",
-      "description": "\"Production-ready Anthropic SDK patterns \\u2014 client config, retries,\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-sdk-patterns \"production-ready anthropic sdk patterns \\u2014 client config, retries,\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-security-basics",
-      "slug": "clade-security-basics",
-      "name": "clade-security-basics",
-      "description": "\"Secure your Anthropic integration \\u2014 API key management, input validation,\\n\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-security-basics \"secure your anthropic integration \\u2014 api key management, input validation,\\n\\ saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "clade-upgrade-migration",
-      "slug": "clade-upgrade-migration",
-      "name": "clade-upgrade-migration",
-      "description": "'Upgrade Anthropic SDK versions and migrate between Claude model generations.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-upgrade-migration 'upgrade anthropic sdk versions and migrate between claude model generations. saas-packs read write edit bash(npm:*) bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "clade-webhooks-events",
-      "slug": "clade-webhooks-events",
-      "name": "clade-webhooks-events",
-      "description": "'Use Anthropic Message Batches for async bulk processing and event handling.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "claude-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "clade-webhooks-events 'use anthropic message batches for async bulk processing and event handling. saas-packs read write edit bash(curl:*) "
     },
     {
       "type": "skill",
@@ -30556,27 +28717,6 @@
     },
     {
       "type": "skill",
-      "id": "compliance-audit",
-      "slug": "compliance-audit",
-      "name": "compliance-audit",
-      "description": "'Performs regulatory gap analysis across 7 compliance frameworks with",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep",
-        "WebFetch"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "compliance-audit 'performs regulatory gap analysis across 7 compliance frameworks with business-tools read glob grep webfetch "
-    },
-    {
-      "type": "skill",
       "id": "composing-vulnerability-report",
       "slug": "composing-vulnerability-report",
       "name": "composing-vulnerability-report",
@@ -30706,63 +28846,6 @@
         "category": "security"
       },
       "searchText": "confirming-pentest-authorization verify that a penetration test has explicit, written, signed authorization before any scanning begins. reads a rules-of- engagement (roe) attestation file, validates required fields (authorizer, in-scope targets, time window, emergency contact, signature), checks the signer against an allowlist, and emits a critical finding if anything is missing. designed as the first skill the orchestrator routes to. use when: starting a new engagement, after a scope change, or before any cluster 1-4 scan skill runs. threshold: any missing or unsigned roe field; any time-window expiry; any in-scope target outside the authorized list. trigger with: \"confirm authorization\", \"verify roe\", \"check pentest authz\", \"pre-flight authorization\". security read bash(python3:*) glob "
-    },
-    {
-      "type": "skill",
-      "id": "contagious",
-      "slug": "contagious",
-      "name": "contagious",
-      "description": "'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", \"why people share\", \"referral program\", \"nobody is sharing it\", or \"make this spread\". Also trigger when designing shareable features, crafting social campaigns, or building products that spread through peer recommendation. Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-contagious",
-        "category": "business-tools"
-      },
-      "searchText": "contagious 'engineer word-of-mouth and virality using the stepps framework (social currency, triggers, emotion, public, practical value, stories). use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", \"why people share\", \"referral program\", \"nobody is sharing it\", or \"make this spread\". also trigger when designing shareable features, crafting social campaigns, or building products that spread through peer recommendation. covers environmental triggers and high-arousal emotional content. for sticky messaging, see made-to-stick. for persuasion tactics, see influence-psychology.' business-tools  "
-    },
-    {
-      "type": "skill",
-      "id": "contract-compare",
-      "slug": "contract-compare",
-      "name": "contract-compare",
-      "description": "'Compares two contract versions side-by-side to detect added, removed,",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "contract-compare 'compares two contract versions side-by-side to detect added, removed, business-tools read glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "contract-review",
-      "slug": "contract-review",
-      "name": "contract-review",
-      "description": "'Orchestrates a comprehensive multi-agent contract review that analyzes",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep",
-        "Task"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "contract-review 'orchestrates a comprehensive multi-agent contract review that analyzes business-tools read glob grep task "
     },
     {
       "type": "skill",
@@ -31789,38 +29872,6 @@
         "category": "ai-agency"
       },
       "searchText": "crest-roadmap build a product roadmap with sequenced bets and explicit tradeoffs. use when asked to \"build a roadmap\", \"prioritize the backlog strategically\", \"what do we build next quarter\", \"sequence our bets\", \"what should we focus on\", or \"product strategy for the next n months\". ai-agency read write edit bash glob grep webfetch websearch task todowrite askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "cro-methodology",
-      "slug": "cro-methodology",
-      "name": "cro-methodology",
-      "description": "'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions \"landing page isnt converting\", \"conversion rate\", \"A/B test\", \"why visitors leave\", \"objection handling\", \"bounce rate\", \"conversion funnel\", \"increase signups\", or \"people add to cart but dont buy\". Also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-cro-methodology",
-        "category": "business-tools"
-      },
-      "searchText": "cro-methodology 'audit websites and landing pages for conversion issues and design evidence-based a/b tests. use when the user mentions \"landing page isnt converting\", \"conversion rate\", \"a/b test\", \"why visitors leave\", \"objection handling\", \"bounce rate\", \"conversion funnel\", \"increase signups\", or \"people add to cart but dont buy\". also trigger when diagnosing why signups are low, designing experiment hypotheses, or auditing checkout flows for friction points. covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. for overall marketing strategy, see one-page-marketing. for usability issues, see ux-heuristics.' business-tools  "
-    },
-    {
-      "type": "skill",
-      "id": "crossing-the-chasm",
-      "slug": "crossing-the-chasm",
-      "name": "crossing-the-chasm",
-      "description": "'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs mainstream\", \"tech go-to-market\", \"bowling pin strategy\", \"technology adoption lifecycle\", \"pragmatist buyers\", \"growth stalled after early adopters\", or \"our go-to-market plan\". Also trigger when planning go-to-market for a technical product. Covers the D-Day analogy, bowling-pin strategy, the tornado, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-crossing-the-chasm",
-        "category": "business-tools"
-      },
-      "searchText": "crossing-the-chasm 'navigate the technology adoption lifecycle from early adopters to mainstream market. use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs mainstream\", \"tech go-to-market\", \"bowling pin strategy\", \"technology adoption lifecycle\", \"pragmatist buyers\", \"growth stalled after early adopters\", or \"our go-to-market plan\". also trigger when planning go-to-market for a technical product. covers the d-day analogy, bowling-pin strategy, the tornado, and positioning against incumbents. for product positioning, see obviously-awesome. for new market creation, see blue-ocean-strategy.' business-tools  "
     },
     {
       "type": "skill",
@@ -34042,38 +32093,6 @@
     },
     {
       "type": "skill",
-      "id": "design-everyday-things",
-      "slug": "design-everyday-things",
-      "name": "design-everyday-things",
-      "description": "'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", \"mental model\", \"mapping\", \"seven stages of action\", \"users keep making mistakes\", \"this is unintuitive\", or \"people cant figure out how to use it\". Also trigger when reducing product complexity or feature creep. Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-design-everyday-things",
-        "category": "design"
-      },
-      "searchText": "design-everyday-things 'apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", \"mental model\", \"mapping\", \"seven stages of action\", \"users keep making mistakes\", \"this is unintuitive\", or \"people cant figure out how to use it\". also trigger when reducing product complexity or feature creep. covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design.' design  "
-    },
-    {
-      "type": "skill",
-      "id": "design-sprint",
-      "slug": "design-sprint",
-      "name": "design-sprint",
-      "description": "'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions \"design sprint\", \"validate before we build\", \"rapid prototype\", \"test with users\", or \"should we build this\". Also trigger when a team is stuck in endless debate over a high-stakes product decision, or wants to de-risk a costly idea before investing in development. Covers mapping, sketching, deciding, prototyping, and testing across Monday-Friday. For ongoing experimentation and MVPs, see lean-startup. For customer job analysis, see jobs-to-be-done. For non-leading user interviews, see mom-test.'",
-      "category": "productivity",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-design-sprint",
-        "category": "productivity"
-      },
-      "searchText": "design-sprint 'run a structured 5-day process to prototype, test, and validate product ideas with real users. use when the user mentions \"design sprint\", \"validate before we build\", \"rapid prototype\", \"test with users\", or \"should we build this\". also trigger when a team is stuck in endless debate over a high-stakes product decision, or wants to de-risk a costly idea before investing in development. covers mapping, sketching, deciding, prototyping, and testing across monday-friday. for ongoing experimentation and mvps, see lean-startup. for customer job analysis, see jobs-to-be-done. for non-leading user interviews, see mom-test.' productivity  "
-    },
-    {
-      "type": "skill",
       "id": "designing-database-schemas",
       "slug": "designing-database-schemas",
       "name": "designing-database-schemas",
@@ -35247,22 +33266,6 @@
         "category": "ai-agency"
       },
       "searchText": "draft-wireframe wireframe a screen — text/ascii by default, or hand-drawn html when the user says \"sketch\", \"hand-drawn\", \"lo-fi html\", \"whiteboard\", \"graph paper\", or \"visual wireframe\". text mode produces a buildable ascii spec form and prism can act on. html mode produces a single self-contained file with graph-paper background, marker headlines, sticky-note annotations, and hatched chart placeholders — looks like a designer's whiteboard, commits to nothing. ai-agency read write edit bash glob grep webfetch websearch task todowrite askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "drive-motivation",
-      "slug": "drive-motivation",
-      "name": "drive-motivation",
-      "description": "'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions \"intrinsic motivation\", \"gamification isnt working\", \"rewards arent working\", \"autonomy\", \"mastery\", \"purpose-driven\", \"my team is disengaged\", or \"how do I motivate people\". Also trigger when designing onboarding progression, fixing broken gamification, or building team structures that sustain high performance. Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-drive-motivation",
-        "category": "business-tools"
-      },
-      "searchText": "drive-motivation 'design motivation systems using autonomy, mastery, and purpose (amp) for products and teams. use when the user mentions \"intrinsic motivation\", \"gamification isnt working\", \"rewards arent working\", \"autonomy\", \"mastery\", \"purpose-driven\", \"my team is disengaged\", or \"how do i motivate people\". also trigger when designing onboarding progression, fixing broken gamification, or building team structures that sustain high performance. covers why carrot-and-stick fails and how to build progress systems. for habit-forming product loops, see hooked-ux. for retention behavior design, see improve-retention.' business-tools  "
     },
     {
       "type": "skill",
@@ -42839,26 +40842,6 @@
     },
     {
       "type": "skill",
-      "id": "freelancer-review",
-      "slug": "freelancer-review",
-      "name": "freelancer-review",
-      "description": "'Reviews contracts from a freelancer''s perspective across 14 evaluation",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "freelancer-review 'reviews contracts from a freelancer''s perspective across 14 evaluation business-tools read glob grep "
-    },
-    {
-      "type": "skill",
       "id": "freshie-inventory",
       "slug": "freshie-inventory",
       "name": "freshie-inventory",
@@ -43510,22 +41493,6 @@
         "category": "saas-packs"
       },
       "searchText": "gamma-webhooks-events 'handle gamma webhooks and events for real-time updates. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "gastown",
-      "slug": "gastown",
-      "name": "gastown",
-      "description": "Multi-agent orchestrator for Claude Code. Use when user mentions gastown, gas town, gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery, the deacon, dogs, escalation, or wants to run multiple AI agents on projects simultaneously. Handles installation, workspace setup, work tracking, agent lifecycle, crash recovery, and all gt/bd CLI operations.",
-      "category": "community",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "gastown",
-        "category": "community"
-      },
-      "searchText": "gastown multi-agent orchestrator for claude code. use when user mentions gastown, gas town, gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery, the deacon, dogs, escalation, or wants to run multiple ai agents on projects simultaneously. handles installation, workspace setup, work tracking, agent lifecycle, crash recovery, and all gt/bd cli operations. community  "
     },
     {
       "type": "skill",
@@ -47173,22 +45140,6 @@
     },
     {
       "type": "skill",
-      "id": "hooked-ux",
-      "slug": "hooked-ux",
-      "name": "hooked-ux",
-      "description": "'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users arent coming back\", \"habit formation\", \"engagement loops\", \"habit zone\", or \"the manipulation matrix\". Also trigger when designing notification or re-engagement strategies, building streaks or progress systems, or analyzing why users stop after signup. Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.1\"",
-      "parentPlugin": {
-        "name": "wondelai-hooked-ux",
-        "category": "design"
-      },
-      "searchText": "hooked-ux 'design habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users arent coming back\", \"habit formation\", \"engagement loops\", \"habit zone\", or \"the manipulation matrix\". also trigger when designing notification or re-engagement strategies, building streaks or progress systems, or analyzing why users stop after signup. covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious.' design  "
-    },
-    {
-      "type": "skill",
       "id": "hootsuite-ci-integration",
       "slug": "hootsuite-ci-integration",
       "name": "hootsuite-ci-integration",
@@ -47794,22 +45745,6 @@
         "category": "saas-packs"
       },
       "searchText": "hubspot-webhook-handlers build and harden hubspot v3 webhook handlers that survive production: hmac-sha256 signature verification, redis set nx deduplication, async batch processing with immediate 200 ack, dead-letter queuing for permanent failures, and event-ordering guards for property-change streams. use when implementing hubspot webhooks for the first time, hardening an existing handler against retry storms or duplicate processing, debugging signature verification failures, or designing a reliable event pipeline for contact, company, or deal change events. trigger with \"hubspot webhook\", \"hubspot signature verification\", \"hubspot webhook dedup\", \"hubspot webhook retry storm\", \"hubspot event handler\", \"hubspot property change webhook\", \"hubspot list membership webhook\", \"hubspot dead letter queue\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hundred-million-offers",
-      "slug": "hundred-million-offers",
-      "name": "hundred-million-offers",
-      "description": "'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions \"grand slam offer\", \"make my offer more compelling\", \"what bonuses should I add\", \"guarantee strategy\", \"offer naming\", or \"people say its too expensive\". Also trigger when packaging a product for higher perceived value, justifying premium pricing instead of discounting, designing a money-back guarantee, or structuring tiers to maximize conversions. Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-hundred-million-offers",
-        "category": "business-tools"
-      },
-      "searchText": "hundred-million-offers 'create irresistible offers using the value equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. use when the user mentions \"grand slam offer\", \"make my offer more compelling\", \"what bonuses should i add\", \"guarantee strategy\", \"offer naming\", or \"people say its too expensive\". also trigger when packaging a product for higher perceived value, justifying premium pricing instead of discounting, designing a money-back guarantee, or structuring tiers to maximize conversions. covers the magic naming formula and starving-crowd targeting. for product positioning, see obviously-awesome. for outbound sales, see predictable-revenue.' business-tools  "
     },
     {
       "type": "skill",
@@ -48672,22 +46607,6 @@
         "category": "productivity"
       },
       "searchText": "improve analyses the current project across code quality, feature gaps, documentation, security, competitive landscape, and monetisation opportunities, then files prioritised github issues. use when the user says improve this, analyse this project, find improvements, or fill the backlog. productivity read glob grep bash websearch webfetch "
-    },
-    {
-      "type": "skill",
-      "id": "influence-psychology",
-      "slug": "influence-psychology",
-      "name": "influence-psychology",
-      "description": "'Apply the seven principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity, unity) to product design, copy, and sales. Use when the user mentions \"social proof\", \"persuasive copy\", \"why users dont convert\", \"ethical persuasion\", \"reciprocity\", \"scarcity tactics\", \"commitment and consistency\", \"shared identity\", \"in-group\", \"make my copy more persuasive\", \"increase trust\", or \"get more people to say yes\". Also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. Covers the principles, when each applies, and ethical limits. For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.1\"",
-      "parentPlugin": {
-        "name": "wondelai-influence-psychology",
-        "category": "business-tools"
-      },
-      "searchText": "influence-psychology 'apply the seven principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity, unity) to product design, copy, and sales. use when the user mentions \"social proof\", \"persuasive copy\", \"why users dont convert\", \"ethical persuasion\", \"reciprocity\", \"scarcity tactics\", \"commitment and consistency\", \"shared identity\", \"in-group\", \"make my copy more persuasive\", \"increase trust\", or \"get more people to say yes\". also trigger when designing testimonial sections, crafting urgency messaging, or improving trust signals on landing pages. covers the principles, when each applies, and ethical limits. for deal negotiation tactics, see negotiation. for viral word-of-mouth, see contagious.' business-tools  "
     },
     {
       "type": "skill",
@@ -49925,22 +47844,6 @@
     },
     {
       "type": "skill",
-      "id": "ios-hig-design",
-      "slug": "ios-hig-design",
-      "name": "ios-hig-design",
-      "description": "'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", \"HIG compliance\", \"SF Symbols\", \"haptic feedback\", \"iOS accessibility\", \"make my app feel native\", or \"follow Apple design guidelines\". Also trigger when building tab bars, navigation stacks, sheets, or modals for iOS, implementing dark mode, or adapting layouts across screen sizes. Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-ios-hig-design",
-        "category": "design"
-      },
-      "searchText": "ios-hig-design 'design native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", \"hig compliance\", \"sf symbols\", \"haptic feedback\", \"ios accessibility\", \"make my app feel native\", or \"follow apple design guidelines\". also trigger when building tab bars, navigation stacks, sheets, or modals for ios, implementing dark mode, or adapting layouts across screen sizes. covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things.' design  "
-    },
-    {
-      "type": "skill",
       "id": "issue",
       "slug": "issue",
       "name": "issue",
@@ -50084,22 +47987,6 @@
         "category": "community"
       },
       "searchText": "janitor-value \"show whether each skill is earning its context-window cost — combined tokens-used view sorted by waste. use when the user asks 'are my skills worth it', 'what's my context budget', 'which skills are dead weight', or wants to audit skill value, token cost, or usage. trigger with '/janitor-value'.\" community read bash(bash:*) "
-    },
-    {
-      "type": "skill",
-      "id": "jobs-to-be-done",
-      "slug": "jobs-to-be-done",
-      "name": "jobs-to-be-done",
-      "description": "'Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", \"product-market fit\", \"switching behavior\", \"milkshake moment\", or \"functional vs emotional jobs\". Also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing a value proposition. Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. For non-leading interview technique, see mom-test.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-jobs-to-be-done",
-        "category": "business-tools"
-      },
-      "searchText": "jobs-to-be-done 'discover what customers truly need by analyzing the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", \"product-market fit\", \"switching behavior\", \"milkshake moment\", or \"functional vs emotional jobs\". also trigger when investigating why users choose competitors, designing features around real customer needs, or reframing a value proposition. covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint. for non-leading interview technique, see mom-test.' business-tools  "
     },
     {
       "type": "skill",
@@ -53134,22 +51021,6 @@
     },
     {
       "type": "skill",
-      "id": "lean-startup",
-      "slug": "lean-startup",
-      "name": "lean-startup",
-      "description": "'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions \"MVP scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", \"test assumptions\", \"innovation accounting\", \"build-measure-learn\", \"minimum viable experiment\", \"should we pivot\", \"test a business idea cheaply\", or \"build the smallest version first\". Also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'",
-      "category": "productivity",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-lean-startup",
-        "category": "productivity"
-      },
-      "searchText": "lean-startup 'design mvps, validated learning experiments, and pivot-or-persevere decisions using build-measure-learn. use when the user mentions \"mvp scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", \"test assumptions\", \"innovation accounting\", \"build-measure-learn\", \"minimum viable experiment\", \"should we pivot\", \"test a business idea cheaply\", or \"build the smallest version first\". also trigger when deciding what to include in a first version, measuring startup progress, or evaluating whether to change direction on a product bet. covers innovation accounting and actionable metrics. for 5-day prototype testing, see design-sprint. for customer motivation analysis, see jobs-to-be-done.' productivity  "
-    },
-    {
-      "type": "skill",
       "id": "lens",
       "slug": "lens",
       "name": "lens",
@@ -55884,22 +53755,6 @@
     },
     {
       "type": "skill",
-      "id": "made-to-stick",
-      "slug": "made-to-stick",
-      "name": "made-to-stick",
-      "description": "'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"no one remembers our pitch\", \"tagline\", \"value proposition\", \"why the message isnt landing\", \"curse of knowledge\", or \"concrete language\". Also trigger when writing a pitch deck, simplifying a complex product explanation, or making a presentation more compelling. Covers the six SUCCESs traits and the curse of knowledge. For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-made-to-stick",
-        "category": "business-tools"
-      },
-      "searchText": "made-to-stick 'craft messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"no one remembers our pitch\", \"tagline\", \"value proposition\", \"why the message isnt landing\", \"curse of knowledge\", or \"concrete language\". also trigger when writing a pitch deck, simplifying a complex product explanation, or making a presentation more compelling. covers the six success traits and the curse of knowledge. for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "maintainx-ci-integration",
       "slug": "maintainx-ci-integration",
       "name": "maintainx-ci-integration",
@@ -56883,27 +54738,6 @@
     },
     {
       "type": "skill",
-      "id": "memory-kit",
-      "slug": "memory-kit",
-      "name": "memory-kit",
-      "description": "'Persistent context management for Claude Code sessions. Save, load,",
-      "category": "productivity",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(git:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.1.0",
-      "parentPlugin": {
-        "name": "claude-memory-kit",
-        "category": "productivity"
-      },
-      "searchText": "memory-kit 'persistent context management for claude code sessions. save, load, productivity read write edit bash(git:*) "
-    },
-    {
-      "type": "skill",
       "id": "migrating-apis",
       "slug": "migrating-apis",
       "name": "migrating-apis",
@@ -57806,26 +55640,6 @@
         "category": "saas-packs"
       },
       "searchText": "miro-webhooks-events 'implement miro rest api v2 webhooks with board subscriptions, event saas-packs read write edit bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "missing-protections",
-      "slug": "missing-protections",
-      "name": "missing-protections",
-      "description": "'Audits a contract against type-specific protection checklists to find",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "missing-protections 'audits a contract against type-specific protection checklists to find business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -59163,63 +56977,6 @@
     },
     {
       "type": "skill",
-      "id": "nda-generator",
-      "slug": "nda-generator",
-      "name": "nda-generator",
-      "description": "'Generates custom non-disclosure agreements with plain English annotations.",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "nda-generator 'generates custom non-disclosure agreements with plain english annotations. business-tools read write glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "negotiate",
-      "slug": "negotiate",
-      "name": "negotiate",
-      "description": "'Analyzes contracts for unfavorable or risky clauses and generates prioritized",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "negotiate 'analyzes contracts for unfavorable or risky clauses and generates prioritized business-tools read glob grep "
-    },
-    {
-      "type": "skill",
-      "id": "negotiation",
-      "slug": "negotiation",
-      "name": "negotiation",
-      "description": "'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", \"difficult conversation\", \"deal terms\", \"BATNA\", \"anchoring\", \"how do I ask for a raise\", \"get a better deal\", or \"they wont budge on price\". Also trigger when preparing for a vendor negotiation, resolving a pricing dispute, or navigating a high-stakes conversation where both sides need to feel heard. Covers accusation audits, Black Swan discovery, and the \"Thats Right\" technique. For persuasion in product and marketing, see influence-psychology.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-negotiation",
-        "category": "business-tools"
-      },
-      "searchText": "negotiation 'prepare and execute negotiations using tactical empathy, calibrated questions, and the ackerman method. use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", \"difficult conversation\", \"deal terms\", \"batna\", \"anchoring\", \"how do i ask for a raise\", \"get a better deal\", or \"they wont budge on price\". also trigger when preparing for a vendor negotiation, resolving a pricing dispute, or navigating a high-stakes conversation where both sides need to feel heard. covers accusation audits, black swan discovery, and the \"thats right\" technique. for persuasion in product and marketing, see influence-psychology.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "neurodivergent-visual-org",
       "slug": "neurodivergent-visual-org",
       "name": "neurodivergent-visual-org",
@@ -60465,22 +58222,6 @@
     },
     {
       "type": "skill",
-      "id": "obviously-awesome",
-      "slug": "obviously-awesome",
-      "name": "obviously-awesome",
-      "description": "'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", \"positioning canvas\", \"repositioning\", \"category creation\", \"what category are we in\", or \"why prospects dont get what we do\". Also trigger when launching a new product, entering a crowded market, or diagnosing why prospects dont grasp the product''s value. Covers the positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-obviously-awesome",
-        "category": "business-tools"
-      },
-      "searchText": "obviously-awesome 'define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", \"positioning canvas\", \"repositioning\", \"category creation\", \"what category are we in\", or \"why prospects dont get what we do\". also trigger when launching a new product, entering a crowded market, or diagnosing why prospects dont grasp the product''s value. covers the positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "ollama-setup",
       "slug": "ollama-setup",
       "name": "ollama-setup",
@@ -60498,22 +58239,6 @@
         "category": "ai-ml"
       },
       "searchText": "ollama-setup 'configure auto-configure ollama when user needs local llm deployment, ai-ml read write bash(cmd:*) "
-    },
-    {
-      "type": "skill",
-      "id": "one-page-marketing",
-      "slug": "one-page-marketing",
-      "name": "one-page-marketing",
-      "description": "'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions \"marketing plan\", \"marketing strategy\", \"target market\", \"USP\", \"lead nurture\", \"customer lifetime value\", \"PVP Index\", or \"I dont know where to start with marketing\". Also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer-lifecycle campaigns. Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-one-page-marketing",
-        "category": "business-tools"
-      },
-      "searchText": "one-page-marketing 'build a complete marketing plan covering the full customer journey from stranger to raving fan. use when the user mentions \"marketing plan\", \"marketing strategy\", \"target market\", \"usp\", \"lead nurture\", \"customer lifetime value\", \"pvp index\", or \"i dont know where to start with marketing\". also trigger when building a marketing plan from scratch, choosing acquisition channels, or designing end-to-end customer-lifecycle campaigns. covers the pvp index, channel selection, and advocacy systems. for brand messaging, see storybrand-messaging. for conversion optimization, see cro-methodology.' business-tools  "
     },
     {
       "type": "skill",
@@ -65042,26 +62767,6 @@
     },
     {
       "type": "skill",
-      "id": "plain-english",
-      "slug": "plain-english",
-      "name": "plain-english",
-      "description": "'Translates every clause of a contract into plain language at an 8th-grade",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "plain-english 'translates every clause of a contract into plain language at an 8th-grade business-tools read glob grep "
-    },
-    {
-      "type": "skill",
       "id": "plan",
       "slug": "plan",
       "name": "plan",
@@ -66320,22 +64025,6 @@
     },
     {
       "type": "skill",
-      "id": "predictable-revenue",
-      "slug": "predictable-revenue",
-      "name": "predictable-revenue",
-      "description": "'Build a scalable outbound B2B sales machine with specialized roles (SDR, AE, CSM). Use when the user mentions \"outbound sales\", \"Cold Calling 2.0\", \"cold email sequences\", \"sales pipeline\", \"SDR process\", \"sales development\", \"build an outbound sales team\", or \"fill my pipeline\". Also trigger when setting up a B2B SaaS sales team from scratch or building a lead-qualification framework to improve close rates. Covers the three lead types (seeds/nets/spears), role specialization, the referral-email method, ANUM qualification, and pipeline math. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.0\"",
-      "parentPlugin": {
-        "name": "wondelai-predictable-revenue",
-        "category": "business-tools"
-      },
-      "searchText": "predictable-revenue 'build a scalable outbound b2b sales machine with specialized roles (sdr, ae, csm). use when the user mentions \"outbound sales\", \"cold calling 2.0\", \"cold email sequences\", \"sales pipeline\", \"sdr process\", \"sales development\", \"build an outbound sales team\", or \"fill my pipeline\". also trigger when setting up a b2b saas sales team from scratch or building a lead-qualification framework to improve close rates. covers the three lead types (seeds/nets/spears), role specialization, the referral-email method, anum qualification, and pipeline math. for offer design, see hundred-million-offers. for persuasion science, see influence-psychology.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "preprocessing-data-with-automated-pipelines",
       "slug": "preprocessing-data-with-automated-pipelines",
       "name": "preprocessing-data-with-automated-pipelines",
@@ -66558,28 +64247,6 @@
         "category": "ai-agency"
       },
       "searchText": "prism-ui implement a complete ui screen or feature from a form visual spec. use when asked to \"build a page\", \"implement this screen\", \"build the frontend for this feature\", or \"create this ui\". ai-agency read write edit bash glob grep webfetch websearch task todowrite askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "privacy-generator",
-      "slug": "privacy-generator",
-      "name": "privacy-generator",
-      "description": "'Generates comprehensive privacy policies by scanning websites for data",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Glob",
-        "Grep",
-        "WebFetch"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "privacy-generator 'generates comprehensive privacy policies by scanning websites for data business-tools read write glob grep webfetch "
     },
     {
       "type": "skill",
@@ -68575,22 +66242,6 @@
     },
     {
       "type": "skill",
-      "id": "refactoring-ui",
-      "slug": "refactoring-ui",
-      "name": "refactoring-ui",
-      "description": "'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\" (or amateur/unprofessional), \"fix the design\", \"Tailwind styling\", \"color palette\", \"visual hierarchy\", \"design system\", \"spacing scale\", or \"component styling\". Also trigger when building consistent design tokens, creating dark mode themes, improving data-visualization clarity, or polishing UI details before launch. Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-refactoring-ui",
-        "category": "design"
-      },
-      "searchText": "refactoring-ui 'audit and fix visual hierarchy, spacing, color, and depth in web uis. use when the user mentions \"my ui looks off\" (or amateur/unprofessional), \"fix the design\", \"tailwind styling\", \"color palette\", \"visual hierarchy\", \"design system\", \"spacing scale\", or \"component styling\". also trigger when building consistent design tokens, creating dark mode themes, improving data-visualization clarity, or polishing ui details before launch. covers grayscale-first workflow, constrained design scales, shadows, and component styling. for typeface selection, see web-typography. for usability audits, see ux-heuristics.' design  "
-    },
-    {
-      "type": "skill",
       "id": "relay",
       "slug": "relay",
       "name": "relay",
@@ -70448,26 +68099,6 @@
         "category": "productivity"
       },
       "searchText": "review-pr reviews an open pull request against coding standards, security, and test coverage, then posts a structured review comment and either approves or requests changes. use when the user says review this pr, check the pr, look at pr #n, or review pull request. productivity read glob grep bash "
-    },
-    {
-      "type": "skill",
-      "id": "risk-analysis",
-      "slug": "risk-analysis",
-      "name": "risk-analysis",
-      "description": "'Performs deep clause-by-clause risk scoring across 10 categories with",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Glob",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "risk-analysis 'performs deep clause-by-clause risk scoring across 10 categories with business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -72455,22 +70086,6 @@
         "category": "productivity"
       },
       "searchText": "schedule-after-usage-reset \"schedule a task to run after the claude usage limit resets. use when the user says things like: schedule this after my usage resets, run this when my tokens refresh, queue this task for after the limit lifts, or any variation of wanting to defer a task until after a claude usage/token limit reset. finds the reset time from the anthropic usage api and calls /schedule with that exact time. trigger with phrases like \\\"schedule after my usage resets\\\" or \\\"run this when my limit lifts\\\".\" productivity bash(security:*) bash(curl:*) bash(python3:*) bash(date:*) "
-    },
-    {
-      "type": "skill",
-      "id": "scorecard-marketing",
-      "slug": "scorecard-marketing",
-      "name": "scorecard-marketing",
-      "description": "'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions \"quiz funnel\", \"scorecard\", \"lead magnet\", \"score-based segmentation\", or \"lead qualification\". Also trigger when designing self-assessment tools, building calculators or graders for marketing, or creating personalized result pages that drive conversions. Covers concept hooks, question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-scorecard-marketing",
-        "category": "business-tools"
-      },
-      "searchText": "scorecard-marketing 'build quiz and assessment funnels that generate qualified leads at 30-50% conversion. use when the user mentions \"quiz funnel\", \"scorecard\", \"lead magnet\", \"score-based segmentation\", or \"lead qualification\". also trigger when designing self-assessment tools, building calculators or graders for marketing, or creating personalized result pages that drive conversions. covers concept hooks, question design, dynamic results by tier, and automated follow-up sequences. for landing page conversion, see cro-methodology. for full marketing plans, see one-page-marketing.' business-tools  "
     },
     {
       "type": "skill",
@@ -76609,22 +74224,6 @@
     },
     {
       "type": "skill",
-      "id": "storybrand-messaging",
-      "slug": "storybrand-messaging",
-      "name": "storybrand-messaging",
-      "description": "'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"brand script\", \"StoryBrand framework\", \"customer as hero\", or \"my messaging isnt resonating\". Also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales and marketing collateral. Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-storybrand-messaging",
-        "category": "business-tools"
-      },
-      "searchText": "storybrand-messaging 'clarify brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"brand script\", \"storybrand framework\", \"customer as hero\", or \"my messaging isnt resonating\". also trigger when rewriting homepage copy, crafting email nurture sequences, or creating consistent messaging across sales and marketing collateral. covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome.' business-tools  "
-    },
-    {
-      "type": "skill",
       "id": "strategic-clarity",
       "slug": "strategic-clarity",
       "name": "strategic-clarity",
@@ -78061,28 +75660,6 @@
     },
     {
       "type": "skill",
-      "id": "terms-generator",
-      "slug": "terms-generator",
-      "name": "terms-generator",
-      "description": "'Generates comprehensive terms of service by analyzing a website or application",
-      "category": "business-tools",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Glob",
-        "Grep",
-        "WebFetch"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "general-legal-assistant",
-        "category": "business-tools"
-      },
-      "searchText": "terms-generator 'generates comprehensive terms of service by analyzing a website or application business-tools read write glob grep webfetch "
-    },
-    {
-      "type": "skill",
       "id": "testing-browser-compatibility",
       "slug": "testing-browser-compatibility",
       "name": "testing-browser-compatibility",
@@ -78658,22 +76235,6 @@
     },
     {
       "type": "skill",
-      "id": "top-design",
-      "slug": "top-design",
-      "name": "top-design",
-      "description": "'Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions \"Awwwards quality\", \"make my site stunning\", \"scroll animations\", \"parallax storytelling\", \"cinematic web design\", \"portfolio site\", or \"brand experience\". Also trigger when elevating a standard landing page into a memorable digital experience. Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.6.0\"",
-      "parentPlugin": {
-        "name": "wondelai-top-design",
-        "category": "design"
-      },
-      "searchText": "top-design 'create award-winning, immersive web experiences at the level of awwwards-featured agencies. use when the user mentions \"awwwards quality\", \"make my site stunning\", \"scroll animations\", \"parallax storytelling\", \"cinematic web design\", \"portfolio site\", or \"brand experience\". also trigger when elevating a standard landing page into a memorable digital experience. covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. for foundational ui, see refactoring-ui. for type selection, see web-typography.' design  "
-    },
-    {
-      "type": "skill",
       "id": "touch",
       "slug": "touch",
       "name": "touch",
@@ -79108,22 +76669,6 @@
         "category": "crypto"
       },
       "searchText": "tracking-token-launches 'track new token launches across dexes with risk analysis and contract crypto read write edit grep glob bash(python:*launch_tracker*) "
-    },
-    {
-      "type": "skill",
-      "id": "traction-eos",
-      "slug": "traction-eos",
-      "name": "traction-eos",
-      "description": "'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions \"EOS\", \"Entrepreneurial Operating System\", \"V/TO\", \"quarterly rocks\", \"Level 10 meetings\", \"accountability chart\", \"IDS process\", \"my company feels chaotic\", \"we keep having the same problems\", or \"get the whole team aligned\". Also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic way to solve recurring organizational issues. Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'",
-      "category": "business-tools",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.4.1\"",
-      "parentPlugin": {
-        "name": "wondelai-traction-eos",
-        "category": "business-tools"
-      },
-      "searchText": "traction-eos 'implement the entrepreneurial operating system (eos) to align vision and execution across a company. use when the user mentions \"eos\", \"entrepreneurial operating system\", \"v/to\", \"quarterly rocks\", \"level 10 meetings\", \"accountability chart\", \"ids process\", \"my company feels chaotic\", \"we keep having the same problems\", or \"get the whole team aligned\". also trigger when a growing company needs meeting structure, goal-setting frameworks, or a systematic way to solve recurring organizational issues. covers the six eos components: vision, people, data, issues, process, traction. for team motivation design, see drive-motivation. for lean experimentation, see lean-startup.' business-tools  "
     },
     {
       "type": "skill",
@@ -79780,22 +77325,6 @@
         "category": "saas-packs"
       },
       "searchText": "twinmind-webhooks-events 'handle twinmind meeting events including transcription completion, action saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "ux-heuristics",
-      "slug": "ux-heuristics",
-      "name": "ux-heuristics",
-      "description": "'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions \"usability audit\", \"users are confused\", \"form usability\", \"navigation problems\", \"Nielsen heuristics\", \"cognitive walkthrough\", or \"is this easy to use\". Also trigger when reviewing a design for usability issues, improving form-completion rates, or evaluating information architecture and navigation. Covers Krug''s laws, Nielsen''s 10 heuristics, severity ratings, dark-pattern recognition, and accessibility. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.6.0\"",
-      "parentPlugin": {
-        "name": "wondelai-ux-heuristics",
-        "category": "design"
-      },
-      "searchText": "ux-heuristics 'evaluate and improve interface usability using heuristic analysis. use when the user mentions \"usability audit\", \"users are confused\", \"form usability\", \"navigation problems\", \"nielsen heuristics\", \"cognitive walkthrough\", or \"is this easy to use\". also trigger when reviewing a design for usability issues, improving form-completion rates, or evaluating information architecture and navigation. covers krug''s laws, nielsen''s 10 heuristics, severity ratings, dark-pattern recognition, and accessibility. for visual design fixes, see refactoring-ui. for conversion-focused audits, see cro-methodology.' design  "
     },
     {
       "type": "skill",
@@ -82559,22 +80088,6 @@
     },
     {
       "type": "skill",
-      "id": "web-typography",
-      "slug": "web-typography",
-      "name": "web-typography",
-      "description": "'Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", \"type hierarchy\", \"variable fonts\", \"FOUT/FOIT\", \"typographic scale\", or \"the text is hard to read\". Also trigger when choosing between system fonts and web fonts, optimizing font-loading performance, or designing readable long-form content. Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'",
-      "category": "design",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "\"1.5.0\"",
-      "parentPlugin": {
-        "name": "wondelai-web-typography",
-        "category": "design"
-      },
-      "searchText": "web-typography 'select, pair, and implement typefaces for web projects. use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", \"type hierarchy\", \"variable fonts\", \"fout/foit\", \"typographic scale\", or \"the text is hard to read\". also trigger when choosing between system fonts and web fonts, optimizing font-loading performance, or designing readable long-form content. covers readability evaluation, css implementation, and performance optimization. for overall ui design systems, see refactoring-ui. for dramatic typographic experiences, see top-design.' design  "
-    },
-    {
-      "type": "skill",
       "id": "webflow-ci-integration",
       "slug": "webflow-ci-integration",
       "name": "webflow-ci-integration",
@@ -84751,29 +82264,6 @@
         "category": "productivity"
       },
       "searchText": "yt-research 'research competitor youtube channels, niches, and trending topics for productivity websearch read write task "
-    },
-    {
-      "type": "skill",
-      "id": "zai-cli",
-      "slug": "zai-cli",
-      "name": "zai-cli",
-      "description": [
-        "Vision: image/video analysis, OCR, UI-to-code, error diagnosis (GLM-4.6V)",
-        "Search: real-time web search with domain/recency filtering",
-        "Reader: web page to markdown extraction",
-        "Repo: GitHub code search and reading via ZRead",
-        "Tools: MCP tool discovery and raw calls",
-        "Code: TypeScript tool chaining"
-      ],
-      "category": "community",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "zai-cli",
-        "category": "community"
-      },
-      "searchText": "zai-cli vision: image/video analysis, ocr, ui-to-code, error diagnosis (glm-4.6v) search: real-time web search with domain/recency filtering reader: web page to markdown extraction repo: github code search and reading via zread tools: mcp tool discovery and raw calls code: typescript tool chaining community  "
     },
     {
       "type": "skill",
