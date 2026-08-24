@@ -6,7 +6,7 @@ description: |
   paginate large result sets, handle sampling thresholds. Trigger with "query GA4",
   "GA4 Data API", "runReport", "fetch GA4 metrics", "GA4 pageviews", "GA4 sessions".
 allowed-tools: Bash(python3:*), Bash(curl:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, data-api]
@@ -15,9 +15,21 @@ compatibility: Designed for Claude Code
 
 # GA4 Data API v1 — runReport
 
+## Overview
+
 The Data API v1 is the canonical read path for GA4. One endpoint (`runReport`) covers most use cases. Two paths matter for picking the right query: **dimensions** describe rows (date, page, source), **metrics** describe values (sessions, users, events). Not every combination is valid — see "Compatibility" below.
 
 Prerequisite: auth working (see `ga4-auth-setup`).
+
+## Prerequisites
+
+- An authenticated GA4 Data API client with access to the target property; follow `ga4-auth-setup` first.
+- Python and the `google-analytics-data` package.
+- A numeric GA4 property ID and a bounded date range appropriate to the metric's freshness.
+
+## Instructions
+
+## Examples
 
 ## The minimum viable query
 
@@ -202,7 +214,11 @@ if resp.metadata.data_loss_from_other_row:
 
 If sampled, results are statistically valid but not exact. For exact counts, BigQuery export is the only path.
 
-## Common errors
+## Output
+
+A successful `runReport` response contains dimension and metric values in `rows`, plus response metadata for pagination and data-quality signals. The examples print those rows; production callers should retain the metadata and handle empty result sets explicitly.
+
+## Error Handling
 
 | Error | Cause | Fix |
 |---|---|---|
@@ -211,7 +227,7 @@ If sampled, results are statistically valid but not exact. For exact counts, Big
 | `503 RESOURCE_EXHAUSTED` | Per-property quota hit | Wait 1h or raise quota; batch fewer queries |
 | Empty `rows` despite valid query | Date range outside data window OR property has no data for that period | Sanity-check with a known-good query (e.g. `activeUsers` over `today`) |
 
-## Related skills
+## Resources
 
 - `ga4-auth-setup` — prerequisite
 - `ga4-realtime-api` — for "right now" data instead of `runReport`'s ~24h lag

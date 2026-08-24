@@ -6,7 +6,7 @@ description: |
   grant the right property-level access. Trigger with "set up GA4 auth",
   "GA4 service account", "GA4 OAuth", "connect to Google Analytics".
 allowed-tools: Bash(gcloud:*), Bash(curl:*), Bash(jq:*), Bash(python3:*), Bash(ls:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, auth]
@@ -14,6 +14,8 @@ compatibility: Designed for Claude Code
 ---
 
 # GA4 Auth Setup
+
+## Overview
 
 GA4 has two production-grade auth paths. Pick before you start; mixing them mid-flight is the most common failure mode.
 
@@ -23,6 +25,16 @@ GA4 has two production-grade auth paths. Pick before you start; mixing them mid-
 | **OAuth user creds** | Interactive use, multiple GA4 properties, ad-hoc analyst work. Token refreshes from a `~/.config/gcloud/application_default_credentials.json` file. | ADC |
 
 **Recommendation:** service account for any pipeline / report-runner / agent use. OAuth for a human poking around. Don't share OAuth user creds across machines — that's an audit-trail mess.
+
+## Prerequisites
+
+- A Google Cloud project where you can create a service account and enable APIs, or a Google account with access to the target GA4 property.
+- The GA4 property ID (digits only, not the `G-...` measurement ID).
+- `gcloud` authenticated to the GCP project; the Python verification also needs the Google Analytics Data API client library installed.
+
+## Instructions
+
+## Examples
 
 ## Path A — Service account (recommended for automation)
 
@@ -114,7 +126,11 @@ GA4 property IDs are 9-digit numbers (not the `G-XXXXX` measurement ID, which is
 - **Rotate the SA key annually** at minimum: `gcloud iam service-accounts keys list --iam-account=$SA_EMAIL` shows the active keys; create a new one + delete the old one.
 - **Grant Viewer-only** at the GA4 property level. Editor or Administrator gives the SA the power to delete the property — you don't want a CI pipeline with that blast radius.
 
-## Common errors
+## Output
+
+You will have either a service-account key usable by automated clients or local OAuth application-default credentials for interactive use. The verification request prints date and active-user rows when the selected credential can read the specified property.
+
+## Error Handling
 
 | Error | Likely cause | Fix |
 |---|---|---|
@@ -124,7 +140,7 @@ GA4 property IDs are 9-digit numbers (not the `G-XXXXX` measurement ID, which is
 | `Invalid property ID: G-XXXX` | Using measurement ID instead of property ID | See "Finding your PROPERTY_ID" above |
 | `Quota exceeded` | Default Data API quota is 200K tokens/day per property | Check Quotas in Cloud Console; raise quota or batch queries with broader date ranges |
 
-## Related skills
+## Resources
 
 - `ga4-data-api-query` — once auth works, build the actual `runReport` call
 - `ga4-bigquery-export` — for unsampled event-level data via BigQuery instead of the Data API

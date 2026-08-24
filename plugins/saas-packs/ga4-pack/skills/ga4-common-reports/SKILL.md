@@ -7,7 +7,7 @@ description: |
   Data API request. Trigger with "GA4 DAU", "GA4 retention", "GA4 top pages",
   "GA4 funnel", "GA4 channel report", "common GA4 reports".
 allowed-tools: Bash(python3:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, reports]
@@ -16,7 +16,17 @@ compatibility: Designed for Claude Code
 
 # GA4 Common Reports
 
+## Overview
+
 Recipes for the reports that get asked for ~95% of the time. Each one is a complete `runReport` you can paste, change `PROPERTY_ID`, and run. Prerequisite: `ga4-auth-setup` done.
+
+## Prerequisites
+
+- A GA4 Data API credential configured by `ga4-auth-setup` and granted Viewer access to the target property.
+- Python with `google-analytics-data` installed and `GA4_PROPERTY_ID` set to the numeric property ID.
+- A clear reporting window; use completed days for stable comparisons.
+
+## Instructions
 
 The setup block (same for every recipe):
 
@@ -31,6 +41,8 @@ from google.analytics.data_v1beta.types import (
 PROPERTY = f"properties/{os.environ['GA4_PROPERTY_ID']}"
 client = BetaAnalyticsDataClient()
 ```
+
+## Examples
 
 ## 1. Daily Active Users (DAU) — 30-day rolling
 
@@ -189,6 +201,19 @@ for r in resp.rows:
 ```
 
 A common signal: if one country dominates with low engagement + high bounce, it's often bot traffic from that country's cloud-host hubs (Singapore, Vietnam, China data centers are the usual suspects).
+
+## Output
+
+Each recipe prints a focused, ready-to-inspect report: date-series users, aggregate MAU/WAU, ranked pages or channels, a funnel, or geo/device rows. The results are API aggregates and should be interpreted with the date window and metric definitions shown in each recipe.
+
+## Error Handling
+
+If a request fails, first confirm that the property ID is numeric, the credential has property access, and the metric/dimension pair is valid. Empty reports can be legitimate for an inactive property or a future/incomplete date range; use `ga4-data-api-query` to check compatibility and pagination before assuming data loss.
+
+## Resources
+
+- [GA4 Data API reference](https://developers.google.com/analytics/devguides/reporting/data/v1) — metric, dimension, and request documentation.
+- `ga4-bigquery-export` — the companion skill for event-level analysis and unsampled cohort queries.
 
 ## When the Data API isn't enough
 

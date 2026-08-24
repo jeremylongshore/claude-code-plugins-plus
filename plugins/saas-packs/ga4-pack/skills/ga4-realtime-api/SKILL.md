@@ -7,7 +7,7 @@ description: |
   "GA4 realtime", "active users right now", "GA4 current sessions",
   "who's on my site now".
 allowed-tools: Bash(python3:*), Bash(curl:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, realtime]
@@ -15,6 +15,8 @@ compatibility: Designed for Claude Code
 ---
 
 # GA4 Realtime API
+
+## Overview
 
 The Realtime API is GA4's "what's happening right now" endpoint. Different from `runReport`:
 
@@ -28,6 +30,16 @@ The Realtime API is GA4's "what's happening right now" endpoint. Different from 
 | Use case | Reports, dashboards, trend analysis | Live dashboards, monitoring, "are we down?" |
 
 Don't try to use `runReport` for now-data — its freshest data point is yesterday. Use `runRealtimeReport`.
+
+## Prerequisites
+
+- A GA4 Data API credential with access to the target property, configured through `ga4-auth-setup`.
+- Python with `google-analytics-data` installed.
+- A numeric property ID; realtime data is inherently a rolling, roughly 30-minute view and is not a replacement for historical reporting.
+
+## Instructions
+
+## Examples
 
 ## Minimum viable call
 
@@ -145,7 +157,11 @@ For a live dashboard polling every 10s: that's 6 RPM, well within limits. For a 
 
 The data window is the last 30 min. Polling faster than ~30s wastes quota without meaningful resolution change. For most "live" use cases, 60s polling is plenty.
 
-## Common gotchas
+## Output
+
+The API returns the current rolling-window aggregate or a bounded set of dimension rows, such as active users by country or event count by name. A valid empty `rows` list means no currently reportable activity, so callers should render zero rather than treat it as a transport failure.
+
+## Error Handling
 
 | Issue | Why |
 |---|---|
@@ -154,7 +170,7 @@ The data window is the last 30 min. Polling faster than ~30s wastes quota withou
 | `400 INVALID_ARGUMENT: Realtime reports do not support dimension X` | Using a Data-API-only dimension (e.g. `pagePath`, `sessionSource`). Use a Realtime dimension. |
 | Latency between front-end event and Realtime visibility | ~10-30 seconds is normal. If >2 minutes, check the GA4 DebugView for event delivery issues. |
 
-## Related skills
+## Resources
 
 - `ga4-auth-setup` — prerequisite
 - `ga4-data-api-query` — for any window longer than 30 min

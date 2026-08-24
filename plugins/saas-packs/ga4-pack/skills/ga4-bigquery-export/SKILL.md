@@ -8,7 +8,7 @@ description: |
   "GA4 BigQuery", "GA4 to BQ", "event-level GA4 data", "unsampled GA4",
   "GA4 export setup", "GA4 SQL".
 allowed-tools: Bash(bq:*), Bash(gcloud:*)
-version: 1.2.0
+version: 1.3.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags: [saas, analytics, google-analytics, ga4, bigquery]
@@ -17,9 +17,19 @@ compatibility: Designed for Claude Code
 
 # GA4 → BigQuery Export
 
+## Overview
+
 The Data API is good but bounded — sampled past a threshold, capped at ~150 dimensions, no cohort joins. BigQuery export gives you the raw event stream as SQL-queryable tables, **free** at the standard GA4 tier (up to 1M events/day), with no sampling and full event payloads.
 
 This skill: one-time setup, then the SQL recipes for what the Data API can't do well.
+
+## Prerequisites
+
+- A GA4 property for which you can create a BigQuery link.
+- A Google Cloud project with BigQuery enabled and permission to grant project IAM roles.
+- The `bq` and `gcloud` CLIs authenticated to that project; use the service account created by `ga4-auth-setup` for unattended queries.
+
+## Instructions
 
 ## Setup — one time
 
@@ -102,6 +112,8 @@ LIMIT 100;
 ```
 
 `_TABLE_SUFFIX BETWEEN '...' AND '...'` is the canonical way to scan a date range across the wildcard table. **Always set it** — without a suffix filter, you query the entire history and pay for it.
+
+## Examples
 
 ## Recipe 1 — True cohort retention
 
@@ -210,7 +222,11 @@ Stay under the free tier with normal usage. Cost-saving patterns:
 
 Today's data lives in `events_intraday_TODAY`; tomorrow it gets rolled into `events_TODAY` and the intraday table for today is dropped. So if you have a query that needs both stable history + today, use `events_*` and filter on `_TABLE_SUFFIX`.
 
-## Common gotchas
+## Output
+
+After the first export window, the linked dataset contains daily `events_YYYYMMDD` tables (and optional intraday tables). The example queries return cohort, session, or page-level rows suitable for further analysis; every wildcard query includes a bounded `_TABLE_SUFFIX` range.
+
+## Error Handling
 
 | Issue | Why |
 |---|---|
@@ -220,7 +236,7 @@ Today's data lives in `events_intraday_TODAY`; tomorrow it gets rolled into `eve
 | `events_intraday_*` has 2x the rows you'd expect | Intraday tables aren't deduped; the same event may appear twice if it was buffered + retried. The daily rollup dedupes. |
 | No `user_id` even though I set it on the front-end | `user_id` is the explicit identifier; `user_pseudo_id` is the auto-generated cookie ID. If `user_id` is consistently NULL, the `gtag('set', {user_id: ...})` call is firing AFTER the event you're checking, or it's set on a property that the export doesn't pull. |
 
-## Related skills
+## Resources
 
 - `ga4-auth-setup` — for the service account that queries BQ
 - `ga4-data-api-query` — when you DON'T need event-level granularity (Data API is faster + cheaper for aggregates)
