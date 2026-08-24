@@ -6431,7 +6431,7 @@
       "name": "ga4-pack",
       "source": "./plugins/saas-packs/ga4-pack",
       "description": "Claude Code skill pack for Google Analytics 4 \u2014 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "saas-packs",
       "keywords": [
         "google-analytics",
@@ -7186,7 +7186,7 @@
       "name": "algolia-pack",
       "source": "./plugins/saas-packs/algolia-pack",
       "description": "Claude Code skill pack for Algolia (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": ["algolia", "saas", "sdk", "integration"],
       "author": {
@@ -7340,7 +7340,7 @@
       "name": "attio-pack",
       "source": "./plugins/saas-packs/attio-pack",
       "description": "Claude Code skill pack for Attio (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": ["attio", "saas", "sdk", "integration"],
       "author": {
@@ -7950,7 +7950,7 @@
       "name": "miro-pack",
       "source": "./plugins/saas-packs/miro-pack",
       "description": "Claude Code skill pack for Miro (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": ["miro", "saas", "sdk", "integration"],
       "author": {
@@ -8938,7 +8938,8 @@
         "email": "info@aomi.dev"
       },
       "featured": false
-    },    {
+    },
+    {
       "name": "cli-power-skills",
       "source": "./plugins/productivity/cli-power-skills",
       "description": "Agentic CLI tool skills — 7 domain-grouped skills covering 26 CLI tools",
@@ -8959,7 +8960,8 @@
       },
       "repository": "https://github.com/ykotik/cli-power-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claude-workflow-skills",
       "source": "./plugins/productivity/claude-workflow-skills",
       "description": "Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage",
@@ -8984,7 +8986,8 @@
       "homepage": "https://github.com/ali5ter/claude-workflow-skills",
       "repository": "https://github.com/ali5ter/claude-workflow-skills",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "cli-ux-tester",
       "source": "./plugins/testing/cli-ux-tester",
       "description": "Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents",
@@ -9005,7 +9008,8 @@
       "homepage": "https://github.com/ali5ter/claude-cli-ux-skill",
       "repository": "https://github.com/ali5ter/claude-cli-ux-skill",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "skyvern",
       "source": "./plugins/productivity/skyvern",
       "description": "AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins",
@@ -9016,7 +9020,8 @@
         "url": "https://github.com/Skyvern-AI"
       },
       "license": "AGPL-3.0"
-    },    {
+    },
+    {
       "name": "tonone",
       "source": "./plugins/ai-agency/tonone",
       "description": "23-agent engineering + product team with 125 skills for Claude Code",
@@ -9054,7 +9059,8 @@
       },
       "repository": "https://github.com/tonone-ai/tonone",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "x-bug-triage",
       "source": "./plugins/mcp/x-bug-triage",
       "description": "Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
@@ -9074,7 +9080,8 @@
       "homepage": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "hyperflow",
       "source": "./plugins/ai-agency/hyperflow",
       "description": "Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles",
@@ -9099,7 +9106,8 @@
       "homepage": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "repository": "https://github.com/Mohammed-Abdelhady/hyperflow",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "claudebase",
       "source": "./plugins/productivity/claudebase",
       "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles",
@@ -9120,7 +9128,8 @@
       "homepage": "https://github.com/rohithzr/claudebase",
       "repository": "https://github.com/rohithzr/claudebase",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-anti-deception",
       "source": "./plugins/community/ejentum-anti-deception",
       "description": "Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -9132,7 +9141,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-code",
       "source": "./plugins/community/ejentum-code",
       "description": "Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -9144,7 +9154,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-memory",
       "source": "./plugins/community/ejentum-memory",
       "description": "Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -9156,7 +9167,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "ejentum-reasoning",
       "source": "./plugins/community/ejentum-reasoning",
       "description": "Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.",
@@ -9168,7 +9180,8 @@
         "email": "info@ejentum.com"
       },
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "over-50s-health",
       "source": "./plugins/productivity/over-50s-health",
       "description": "Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+",
@@ -9188,7 +9201,8 @@
       "homepage": "https://github.com/ali5ter/over-50s-health-advisor",
       "repository": "https://github.com/ali5ter/over-50s-health-advisor",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "obsidian-project-documentation",
       "source": "./plugins/productivity/obsidian-project-documentation",
       "description": "Automatically documents technical projects in Obsidian vaults during Claude Code sessions",
@@ -9207,7 +9221,8 @@
       "homepage": "https://github.com/ali5ter/obsidian-project-assistant",
       "repository": "https://github.com/ali5ter/obsidian-project-assistant",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "pair-programmer",
       "source": "./plugins/productivity/pair-programmer",
       "description": "Graduated assistance framework to prevent skill atrophy when coding with AI",
@@ -9226,7 +9241,8 @@
       "homepage": "https://github.com/ali5ter/pair-programmer",
       "repository": "https://github.com/ali5ter/pair-programmer",
       "license": "MIT"
-    },    {
+    },
+    {
       "name": "governed-second-brain",
       "source": "./plugins/mcp/governed-second-brain",
       "description": "Bob's Big Brain — governed, cited memory with local and team modes, deterministic promotion, and a tamper-evident audit trail.",
@@ -9699,6 +9715,85 @@
       "homepage": "https://uizze.com",
       "repository": "https://github.com/uizze/uizze",
       "license": "MIT"
+    },
+    {
+      "name": "general-legal-assistant",
+      "source": "./plugins/business-tools/general-legal-assistant",
+      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "legal",
+        "contracts",
+        "nda",
+        "compliance",
+        "gdpr",
+        "ccpa",
+        "risk-analysis",
+        "terms-of-service",
+        "privacy-policy"
+      ],
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "homepage": "https://tonsofskills.com",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+      "license": "MIT",
+      "featured": false,
+      "pricing": "free",
+      "components": {
+        "skills": 12,
+        "agents": 5
+      }
+    },
+    {
+      "name": "claude-memory-kit",
+      "source": "./plugins/productivity/claude-memory-kit",
+      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "skills",
+        "session",
+        "claude-code"
+      ],
+      "author": {
+        "name": "builtbyzac"
+      },
+      "homepage": "https://builtbyzac.com/memory-kit.html",
+      "repository": "https://github.com/seankim-android/builtbyagent",
+      "license": "MIT",
+      "components": {
+        "skills": 1,
+        "commands": 5,
+        "total": 6
+      }
+    },
+    {
+      "name": "claude-pack",
+      "source": "./plugins/saas-packs/claude-pack",
+      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "ai",
+        "sdk",
+        "messages-api"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "license": "MIT",
+      "components": {
+        "skills": 32,
+        "total": 32
+      }
     }
   ]
 }

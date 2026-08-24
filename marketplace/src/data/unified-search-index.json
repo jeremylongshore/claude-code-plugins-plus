@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 3042,
+    "totalPlugins": 444,
+    "totalSkills": 3087,
     "totalDocs": 24,
-    "totalItems": 3507,
+    "totalItems": 3555,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -579,6 +579,7 @@
       "cascade",
       "cast ai",
       "castai",
+      "ccpa",
       "cd",
       "cdn",
       "chain-of-custody",
@@ -906,6 +907,7 @@
       "gamma",
       "gas",
       "gcr",
+      "gdpr",
       "gemini",
       "generative-ai",
       "generator",
@@ -1053,6 +1055,7 @@
       "learning-loop",
       "learning-rate",
       "learnings",
+      "legal",
       "license-compliance",
       "lifo",
       "lime",
@@ -1111,6 +1114,7 @@
       "mempool",
       "merge",
       "mermaid-diagrams",
+      "messages-api",
       "messaging",
       "meta-plugin",
       "meta-tooling",
@@ -1152,6 +1156,7 @@
       "n8n",
       "narration",
       "navan",
+      "nda",
       "network",
       "network-policy",
       "networking",
@@ -1287,6 +1292,7 @@
       "price",
       "prisma",
       "privacy",
+      "privacy-policy",
       "private-equity",
       "procedure",
       "procore",
@@ -1385,6 +1391,7 @@
       "review",
       "rewards",
       "risk",
+      "risk-analysis",
       "rls",
       "roi",
       "rollback",
@@ -1440,6 +1447,7 @@
       "service-providers",
       "servicegraph",
       "serving",
+      "session",
       "session-replay",
       "sessions",
       "settings",
@@ -1544,6 +1552,7 @@
       "telemetry",
       "templates",
       "terminal",
+      "terms-of-service",
       "terraform",
       "test-coverage",
       "test-data",
@@ -1708,9 +1717,9 @@
     "totalHooks": 29,
     "pluginsWithAgents": 90,
     "pluginsWithHooks": 20,
-    "officialPlugins": 388,
-    "communityPlugins": 53,
-    "communityContributors": 42
+    "officialPlugins": 390,
+    "communityPlugins": 54,
+    "communityContributors": 43
   },
   "items": [
     {
@@ -10942,7 +10951,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -11780,7 +11789,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -11991,7 +12000,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -12831,7 +12840,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -15087,6 +15096,90 @@
       "searchText": "uizze stop ui slop. ground claude code in 800,000+ real web and ios screens, a product-specific design contract, required states, and a hard finish gate. design ui design frontend anti-slop agent-skill"
     },
     {
+      "type": "plugin",
+      "id": "general-legal-assistant",
+      "slug": "general-legal-assistant",
+      "name": "general-legal-assistant",
+      "displayName": "general legal assistant",
+      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "category": "business-tools",
+      "keywords": [
+        "legal",
+        "contracts",
+        "nda",
+        "compliance",
+        "gdpr",
+        "ccpa",
+        "risk-analysis",
+        "terms-of-service",
+        "privacy-policy"
+      ],
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 12,
+      "searchText": "general legal assistant ai-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents business-tools legal contracts nda compliance gdpr ccpa risk-analysis terms-of-service privacy-policy"
+    },
+    {
+      "type": "plugin",
+      "id": "claude-memory-kit",
+      "slug": "claude-memory-kit",
+      "name": "claude-memory-kit",
+      "displayName": "claude memory kit",
+      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "skills",
+        "session",
+        "claude-code"
+      ],
+      "author": {
+        "name": "builtbyzac"
+      },
+      "authorType": "community",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 1,
+      "searchText": "claude memory kit context-management workflows for saving, loading, updating, sharing, and auditing claude code session memory. productivity memory context skills session claude-code"
+    },
+    {
+      "type": "plugin",
+      "id": "claude-pack",
+      "slug": "claude-pack",
+      "name": "claude-pack",
+      "displayName": "claude pack",
+      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+      "category": "saas-packs",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "ai",
+        "sdk",
+        "messages-api"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 32,
+      "searchText": "claude pack claude code skill pack for building with the claude api and anthropic sdk. saas-packs claude anthropic ai sdk messages-api"
+    },
+    {
       "type": "skill",
       "id": "abridge-ci-integration",
       "slug": "abridge-ci-integration",
@@ -16416,6 +16509,27 @@
         "category": "performance"
       },
       "searchText": "aggregating-performance-metrics aggregate and centralize performance metrics from applications, systems, performance read write bash(prometheus:*) bash(metrics:*) bash(monitoring:*)  "
+    },
+    {
+      "type": "skill",
+      "id": "agreement-generator",
+      "slug": "agreement-generator",
+      "name": "agreement-generator",
+      "description": "'Generates customized business agreements for 10 common relationship",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "agreement-generator 'generates customized business agreements for 10 common relationship business-tools read write glob grep "
     },
     {
       "type": "skill",
@@ -24958,6 +25072,663 @@
     },
     {
       "type": "skill",
+      "id": "clade-advanced-troubleshooting",
+      "slug": "clade-advanced-troubleshooting",
+      "name": "clade-advanced-troubleshooting",
+      "description": "\"Debug complex Claude issues \\u2014 inconsistent outputs, tool use failures,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-advanced-troubleshooting \"debug complex claude issues \\u2014 inconsistent outputs, tool use failures,\\n\\ saas-packs read write edit grep bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-architecture-variants",
+      "slug": "clade-architecture-variants",
+      "name": "clade-architecture-variants",
+      "description": "\"Build different types of Claude-powered applications \\u2014 chatbots,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-architecture-variants \"build different types of claude-powered applications \\u2014 chatbots,\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-ci-integration",
+      "slug": "clade-ci-integration",
+      "name": "clade-ci-integration",
+      "description": "\"Test and validate Claude integrations in CI/CD pipelines \\u2014\\nUse\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-ci-integration \"test and validate claude integrations in ci/cd pipelines \\u2014\\nuse\\ saas-packs read write edit bash(npm:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-common-errors",
+      "slug": "clade-common-errors",
+      "name": "clade-common-errors",
+      "description": "\"Diagnose and fix Anthropic API errors \\u2014 authentication, rate limits,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-common-errors \"diagnose and fix anthropic api errors \\u2014 authentication, rate limits,\\n\\ saas-packs read grep bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-core-workflow-a",
+      "slug": "clade-core-workflow-a",
+      "name": "clade-core-workflow-a",
+      "description": "'Redirect to claude-model-inference for Messages API streaming,",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-core-workflow-a 'redirect to claude-model-inference for messages api streaming, saas-packs read "
+    },
+    {
+      "type": "skill",
+      "id": "clade-core-workflow-b",
+      "slug": "clade-core-workflow-b",
+      "name": "clade-core-workflow-b",
+      "description": "'Redirect to claude-embeddings-search for tool use (function calling)",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-core-workflow-b 'redirect to claude-embeddings-search for tool use (function calling) saas-packs read "
+    },
+    {
+      "type": "skill",
+      "id": "clade-cost-tuning",
+      "slug": "clade-cost-tuning",
+      "name": "clade-cost-tuning",
+      "description": "\"Optimize Anthropic API costs \\u2014 model selection, prompt caching,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-cost-tuning \"optimize anthropic api costs \\u2014 model selection, prompt caching,\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-data-handling",
+      "slug": "clade-data-handling",
+      "name": "clade-data-handling",
+      "description": "\"Handle sensitive data with Claude \\u2014 PII redaction, conversation\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-data-handling \"handle sensitive data with claude \\u2014 pii redaction, conversation\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-debug-bundle",
+      "slug": "clade-debug-bundle",
+      "name": "clade-debug-bundle",
+      "description": "\"Collect debug evidence for Anthropic API issues \\u2014 request IDs,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-debug-bundle \"collect debug evidence for anthropic api issues \\u2014 request ids,\\ saas-packs read grep bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-deploy-integration",
+      "slug": "clade-deploy-integration",
+      "name": "clade-deploy-integration",
+      "description": "'Deploy Claude-powered applications to Vercel, Fly.io, and Cloud Run",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(vercel:*)",
+        "Bash(fly:*)",
+        "Bash(gcloud:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-deploy-integration 'deploy claude-powered applications to vercel, fly.io, and cloud run saas-packs read write edit bash(vercel:*) bash(fly:*) bash(gcloud:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-embeddings-search",
+      "slug": "clade-embeddings-search",
+      "name": "clade-embeddings-search",
+      "description": "'Implement tool use (function calling) with Claude to let it execute",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-embeddings-search 'implement tool use (function calling) with claude to let it execute saas-packs read write edit bash(npm:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "clade-enterprise-rbac",
+      "slug": "clade-enterprise-rbac",
+      "name": "clade-enterprise-rbac",
+      "description": "'Manage Anthropic workspaces, API keys, team access, and spending limits",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-enterprise-rbac 'manage anthropic workspaces, api keys, team access, and spending limits saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-hello-world",
+      "slug": "clade-hello-world",
+      "name": "clade-hello-world",
+      "description": "'Send your first message to Claude using the Anthropic SDK.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-hello-world 'send your first message to claude using the anthropic sdk. saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-incident-runbook",
+      "slug": "clade-incident-runbook",
+      "name": "clade-incident-runbook",
+      "description": "\"Respond to Anthropic API incidents \\u2014 outages, degraded performance,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-incident-runbook \"respond to anthropic api incidents \\u2014 outages, degraded performance,\\n\\ saas-packs read grep bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-install-auth",
+      "slug": "clade-install-auth",
+      "name": "clade-install-auth",
+      "description": "'Install and configure the Anthropic SDK for Claude API access.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)",
+        "Bash(pip:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-install-auth 'install and configure the anthropic sdk for claude api access. saas-packs read write edit bash(npm:*) bash(pip:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "clade-known-pitfalls",
+      "slug": "clade-known-pitfalls",
+      "name": "clade-known-pitfalls",
+      "description": "'Common mistakes when building with the Anthropic API and how to avoid",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-known-pitfalls 'common mistakes when building with the anthropic api and how to avoid saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-load-scale",
+      "slug": "clade-load-scale",
+      "name": "clade-load-scale",
+      "description": "\"Scale Claude usage for high-throughput applications \\u2014 batches,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-load-scale \"scale claude usage for high-throughput applications \\u2014 batches,\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-local-dev-loop",
+      "slug": "clade-local-dev-loop",
+      "name": "clade-local-dev-loop",
+      "description": "\"Set up a fast local development loop for building with the Anthropic\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)",
+        "Bash(pip:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-local-dev-loop \"set up a fast local development loop for building with the anthropic\\ saas-packs read write edit bash(npm:*) bash(pip:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-migration-deep-dive",
+      "slug": "clade-migration-deep-dive",
+      "name": "clade-migration-deep-dive",
+      "description": "\"Migrate from OpenAI/GPT to Anthropic/Claude \\u2014 API differences,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-migration-deep-dive \"migrate from openai/gpt to anthropic/claude \\u2014 api differences,\\n\\ saas-packs read write edit grep "
+    },
+    {
+      "type": "skill",
+      "id": "clade-model-inference",
+      "slug": "clade-model-inference",
+      "name": "clade-model-inference",
+      "description": "'Stream Claude responses, use system prompts, handle multi-turn conversations,",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-model-inference 'stream claude responses, use system prompts, handle multi-turn conversations, saas-packs read write edit bash(npm:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "clade-multi-env-setup",
+      "slug": "clade-multi-env-setup",
+      "name": "clade-multi-env-setup",
+      "description": "'Configure Claude across dev, staging, and production with different",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-multi-env-setup 'configure claude across dev, staging, and production with different saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-observability",
+      "slug": "clade-observability",
+      "name": "clade-observability",
+      "description": "\"Monitor Claude API calls \\u2014 log tokens, latency, costs, errors,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-observability \"monitor claude api calls \\u2014 log tokens, latency, costs, errors,\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-performance-tuning",
+      "slug": "clade-performance-tuning",
+      "name": "clade-performance-tuning",
+      "description": "\"Optimize Anthropic API latency \\u2014 streaming, prompt caching, model\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-performance-tuning \"optimize anthropic api latency \\u2014 streaming, prompt caching, model\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-policy-guardrails",
+      "slug": "clade-policy-guardrails",
+      "name": "clade-policy-guardrails",
+      "description": "\"Implement content safety guardrails for Claude \\u2014 input filtering,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-policy-guardrails \"implement content safety guardrails for claude \\u2014 input filtering,\\n\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-prod-checklist",
+      "slug": "clade-prod-checklist",
+      "name": "clade-prod-checklist",
+      "description": "\"Production readiness checklist for Claude-powered applications \\u2014\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-prod-checklist \"production readiness checklist for claude-powered applications \\u2014\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-rate-limits",
+      "slug": "clade-rate-limits",
+      "name": "clade-rate-limits",
+      "description": "\"Handle Anthropic rate limits \\u2014 understand tiers, implement backoff,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-rate-limits \"handle anthropic rate limits \\u2014 understand tiers, implement backoff,\\n\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-reference-architecture",
+      "slug": "clade-reference-architecture",
+      "name": "clade-reference-architecture",
+      "description": "\"Build Claude Code plugins \\u2014 skills, agents, MCP servers, hooks,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-reference-architecture \"build claude code plugins \\u2014 skills, agents, mcp servers, hooks,\\ saas-packs read write edit bash(npm:*) "
+    },
+    {
+      "type": "skill",
+      "id": "clade-reliability-patterns",
+      "slug": "clade-reliability-patterns",
+      "name": "clade-reliability-patterns",
+      "description": "\"Build fault-tolerant Claude integrations \\u2014 retries, circuit breakers,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-reliability-patterns \"build fault-tolerant claude integrations \\u2014 retries, circuit breakers,\\n\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-sdk-patterns",
+      "slug": "clade-sdk-patterns",
+      "name": "clade-sdk-patterns",
+      "description": "\"Production-ready Anthropic SDK patterns \\u2014 client config, retries,\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-sdk-patterns \"production-ready anthropic sdk patterns \\u2014 client config, retries,\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-security-basics",
+      "slug": "clade-security-basics",
+      "name": "clade-security-basics",
+      "description": "\"Secure your Anthropic integration \\u2014 API key management, input validation,\\n\\",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-security-basics \"secure your anthropic integration \\u2014 api key management, input validation,\\n\\ saas-packs read write edit "
+    },
+    {
+      "type": "skill",
+      "id": "clade-upgrade-migration",
+      "slug": "clade-upgrade-migration",
+      "name": "clade-upgrade-migration",
+      "description": "'Upgrade Anthropic SDK versions and migrate between Claude model generations.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(npm:*)",
+        "Bash(pip:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-upgrade-migration 'upgrade anthropic sdk versions and migrate between claude model generations. saas-packs read write edit bash(npm:*) bash(pip:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "clade-webhooks-events",
+      "slug": "clade-webhooks-events",
+      "name": "clade-webhooks-events",
+      "description": "'Use Anthropic Message Batches for async bulk processing and event handling.",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "claude-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "clade-webhooks-events 'use anthropic message batches for async bulk processing and event handling. saas-packs read write edit bash(curl:*) "
+    },
+    {
+      "type": "skill",
       "id": "clari-ci-integration",
       "slug": "clari-ci-integration",
       "name": "clari-ci-integration",
@@ -28717,6 +29488,27 @@
     },
     {
       "type": "skill",
+      "id": "compliance-audit",
+      "slug": "compliance-audit",
+      "name": "compliance-audit",
+      "description": "'Performs regulatory gap analysis across 7 compliance frameworks with",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "WebFetch"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "compliance-audit 'performs regulatory gap analysis across 7 compliance frameworks with business-tools read glob grep webfetch "
+    },
+    {
+      "type": "skill",
       "id": "composing-vulnerability-report",
       "slug": "composing-vulnerability-report",
       "name": "composing-vulnerability-report",
@@ -28846,6 +29638,47 @@
         "category": "security"
       },
       "searchText": "confirming-pentest-authorization verify that a penetration test has explicit, written, signed authorization before any scanning begins. reads a rules-of- engagement (roe) attestation file, validates required fields (authorizer, in-scope targets, time window, emergency contact, signature), checks the signer against an allowlist, and emits a critical finding if anything is missing. designed as the first skill the orchestrator routes to. use when: starting a new engagement, after a scope change, or before any cluster 1-4 scan skill runs. threshold: any missing or unsigned roe field; any time-window expiry; any in-scope target outside the authorized list. trigger with: \"confirm authorization\", \"verify roe\", \"check pentest authz\", \"pre-flight authorization\". security read bash(python3:*) glob "
+    },
+    {
+      "type": "skill",
+      "id": "contract-compare",
+      "slug": "contract-compare",
+      "name": "contract-compare",
+      "description": "'Compares two contract versions side-by-side to detect added, removed,",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "contract-compare 'compares two contract versions side-by-side to detect added, removed, business-tools read glob grep "
+    },
+    {
+      "type": "skill",
+      "id": "contract-review",
+      "slug": "contract-review",
+      "name": "contract-review",
+      "description": "'Orchestrates a comprehensive multi-agent contract review that analyzes",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep",
+        "Task"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "contract-review 'orchestrates a comprehensive multi-agent contract review that analyzes business-tools read glob grep task "
     },
     {
       "type": "skill",
@@ -40839,6 +41672,26 @@
         "category": "saas-packs"
       },
       "searchText": "framer-webhooks-events 'implement framer webhook signature validation and event handling. saas-packs read write edit bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "freelancer-review",
+      "slug": "freelancer-review",
+      "name": "freelancer-review",
+      "description": "'Reviews contracts from a freelancer''s perspective across 14 evaluation",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "freelancer-review 'reviews contracts from a freelancer''s perspective across 14 evaluation business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -54738,6 +55591,27 @@
     },
     {
       "type": "skill",
+      "id": "memory-kit",
+      "slug": "memory-kit",
+      "name": "memory-kit",
+      "description": "'Persistent context management for Claude Code sessions. Save, load,",
+      "category": "productivity",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(git:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.1.0",
+      "parentPlugin": {
+        "name": "claude-memory-kit",
+        "category": "productivity"
+      },
+      "searchText": "memory-kit 'persistent context management for claude code sessions. save, load, productivity read write edit bash(git:*) "
+    },
+    {
+      "type": "skill",
       "id": "migrating-apis",
       "slug": "migrating-apis",
       "name": "migrating-apis",
@@ -55640,6 +56514,26 @@
         "category": "saas-packs"
       },
       "searchText": "miro-webhooks-events 'implement miro rest api v2 webhooks with board subscriptions, event saas-packs read write edit bash(curl:*) "
+    },
+    {
+      "type": "skill",
+      "id": "missing-protections",
+      "slug": "missing-protections",
+      "name": "missing-protections",
+      "description": "'Audits a contract against type-specific protection checklists to find",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "missing-protections 'audits a contract against type-specific protection checklists to find business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -56974,6 +57868,47 @@
         "category": "productivity"
       },
       "searchText": "navigating-github \"first-time github setup and interactive git learning. walks users from\\n\\ productivity read write glob grep bash(git:*) bash(gh:*) bash(ssh:*) bash(test:*)  "
+    },
+    {
+      "type": "skill",
+      "id": "nda-generator",
+      "slug": "nda-generator",
+      "name": "nda-generator",
+      "description": "'Generates custom non-disclosure agreements with plain English annotations.",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "nda-generator 'generates custom non-disclosure agreements with plain english annotations. business-tools read write glob grep "
+    },
+    {
+      "type": "skill",
+      "id": "negotiate",
+      "slug": "negotiate",
+      "name": "negotiate",
+      "description": "'Analyzes contracts for unfavorable or risky clauses and generates prioritized",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "negotiate 'analyzes contracts for unfavorable or risky clauses and generates prioritized business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -62767,6 +63702,26 @@
     },
     {
       "type": "skill",
+      "id": "plain-english",
+      "slug": "plain-english",
+      "name": "plain-english",
+      "description": "'Translates every clause of a contract into plain language at an 8th-grade",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "plain-english 'translates every clause of a contract into plain language at an 8th-grade business-tools read glob grep "
+    },
+    {
+      "type": "skill",
       "id": "plan",
       "slug": "plan",
       "name": "plan",
@@ -64247,6 +65202,28 @@
         "category": "ai-agency"
       },
       "searchText": "prism-ui implement a complete ui screen or feature from a form visual spec. use when asked to \"build a page\", \"implement this screen\", \"build the frontend for this feature\", or \"create this ui\". ai-agency read write edit bash glob grep webfetch websearch task todowrite askuserquestion "
+    },
+    {
+      "type": "skill",
+      "id": "privacy-generator",
+      "slug": "privacy-generator",
+      "name": "privacy-generator",
+      "description": "'Generates comprehensive privacy policies by scanning websites for data",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Glob",
+        "Grep",
+        "WebFetch"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "privacy-generator 'generates comprehensive privacy policies by scanning websites for data business-tools read write glob grep webfetch "
     },
     {
       "type": "skill",
@@ -68099,6 +69076,26 @@
         "category": "productivity"
       },
       "searchText": "review-pr reviews an open pull request against coding standards, security, and test coverage, then posts a structured review comment and either approves or requests changes. use when the user says review this pr, check the pr, look at pr #n, or review pull request. productivity read glob grep bash "
+    },
+    {
+      "type": "skill",
+      "id": "risk-analysis",
+      "slug": "risk-analysis",
+      "name": "risk-analysis",
+      "description": "'Performs deep clause-by-clause risk scoring across 10 categories with",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "risk-analysis 'performs deep clause-by-clause risk scoring across 10 categories with business-tools read glob grep "
     },
     {
       "type": "skill",
@@ -75657,6 +76654,28 @@
         "category": "saas-packs"
       },
       "searchText": "techsmith-webhooks-events 'techsmith webhooks events for snagit com api and camtasia automation. saas-packs read write edit bash(powershell:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "terms-generator",
+      "slug": "terms-generator",
+      "name": "terms-generator",
+      "description": "'Generates comprehensive terms of service by analyzing a website or application",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Glob",
+        "Grep",
+        "WebFetch"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "general-legal-assistant",
+        "category": "business-tools"
+      },
+      "searchText": "terms-generator 'generates comprehensive terms of service by analyzing a website or application business-tools read write glob grep webfetch "
     },
     {
       "type": "skill",

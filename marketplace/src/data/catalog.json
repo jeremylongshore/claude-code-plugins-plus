@@ -5,12 +5,12 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 441,
-    "totalSkills": 3042,
-    "totalCommands": 80,
-    "pluginsWithSkills": 409,
+    "totalPlugins": 444,
+    "totalSkills": 3087,
+    "totalCommands": 85,
+    "pluginsWithSkills": 412,
     "byCategory": {
-      "productivity": 29,
+      "productivity": 30,
       "security": 27,
       "testing": 28,
       "ai-agency": 10,
@@ -23,10 +23,10 @@
       "crypto": 27,
       "skill-enhancers": 9,
       "database": 26,
-      "business-tools": 5,
+      "business-tools": 6,
       "community": 22,
       "examples": 5,
-      "saas-packs": 106,
+      "saas-packs": 107,
       "analytics": 1,
       "design": 2
     },
@@ -8155,7 +8155,7 @@
       "name": "ga4-pack",
       "displayName": "ga4 pack",
       "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "saas-packs",
       "keywords": [
         "google-analytics",
@@ -8902,7 +8902,7 @@
       "name": "algolia-pack",
       "displayName": "algolia pack",
       "description": "Claude Code skill pack for Algolia (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "algolia",
@@ -9085,7 +9085,7 @@
       "name": "attio-pack",
       "displayName": "attio pack",
       "description": "Claude Code skill pack for Attio (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "attio",
@@ -9816,7 +9816,7 @@
       "name": "miro-pack",
       "displayName": "miro pack",
       "description": "Claude Code skill pack for Miro (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "miro",
@@ -11924,6 +11924,87 @@
         "name": "UIZZE",
         "url": "https://uizze.com",
         "email": "business@uizze.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "general-legal-assistant",
+      "name": "general-legal-assistant",
+      "displayName": "general legal assistant",
+      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "legal",
+        "contracts",
+        "nda",
+        "compliance",
+        "gdpr",
+        "ccpa",
+        "risk-analysis",
+        "terms-of-service",
+        "privacy-policy"
+      ],
+      "hasSkills": true,
+      "skillCount": 12,
+      "commandCount": 0,
+      "installCommand": "/plugin install general-legal-assistant",
+      "sourcePath": "./plugins/business-tools/general-legal-assistant",
+      "isFeatured": false,
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "claude-memory-kit",
+      "name": "claude-memory-kit",
+      "displayName": "claude memory kit",
+      "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "skills",
+        "session",
+        "claude-code"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 5,
+      "installCommand": "/plugin install claude-memory-kit",
+      "sourcePath": "./plugins/productivity/claude-memory-kit",
+      "isFeatured": false,
+      "author": {
+        "name": "builtbyzac"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "claude-pack",
+      "name": "claude-pack",
+      "displayName": "claude pack",
+      "description": "Claude Code skill pack for building with the Claude API and Anthropic SDK.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "ai",
+        "sdk",
+        "messages-api"
+      ],
+      "hasSkills": true,
+      "skillCount": 32,
+      "commandCount": 0,
+      "installCommand": "/plugin install claude-pack",
+      "sourcePath": "./plugins/saas-packs/claude-pack",
+      "isFeatured": false,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     }
