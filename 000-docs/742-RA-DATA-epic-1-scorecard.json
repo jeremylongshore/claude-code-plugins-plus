@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 468,
+        "distinct_names": 471,
         "duplicate_names": [],
-        "entries": 468
+        "entries": 471
       }
     },
     "3": {
@@ -534,7 +534,7 @@
       "dimension": "docs.anthropic.com occurrences",
       "measured_proxy": {
         "files": 173,
-        "occurrences": 435,
+        "occurrences": 487,
         "paths": [
           "000-docs/198-DR-SOPS-03-mcp-reliability.md",
           "000-docs/688-AA-AACR-2026-06-04-wiki-audit.md",
@@ -1128,7 +1128,7 @@
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3069
+            "value": 3114
           }
         ],
         "distinct_numeric_answers": 5,
