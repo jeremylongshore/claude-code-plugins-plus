@@ -8,6 +8,10 @@ maxTurns: 8
 effort: medium
 skills: ["owner-routing"]
 background: false
+color: blue
+version: 0.3.0
+author: Jeremy Longshore
+tags: [triage, bugs, routing]
 ---
 
 # Owner Router Agent

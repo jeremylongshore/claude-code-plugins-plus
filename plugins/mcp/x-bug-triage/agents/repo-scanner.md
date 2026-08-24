@@ -8,6 +8,10 @@ maxTurns: 10
 effort: medium
 skills: ["repo-scanning"]
 background: false
+color: green
+version: 0.3.0
+author: Jeremy Longshore
+tags: [triage, bugs, scanning]
 ---
 
 # Repo Scanner Agent

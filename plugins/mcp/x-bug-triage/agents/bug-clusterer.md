@@ -8,6 +8,10 @@ maxTurns: 15
 effort: high
 skills: ["bug-clustering"]
 background: false
+color: red
+version: 0.3.0
+author: Jeremy Longshore
+tags: [triage, bugs, clustering]
 ---
 
 # Bug Clusterer Agent

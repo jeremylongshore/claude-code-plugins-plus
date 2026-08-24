@@ -8,6 +8,10 @@ maxTurns: 5
 effort: medium
 skills: ["triage-display"]
 background: false
+color: purple
+version: 0.3.0
+author: Jeremy Longshore
+tags: [triage, bugs, summarization]
 ---
 
 # Triage Summarizer Agent
