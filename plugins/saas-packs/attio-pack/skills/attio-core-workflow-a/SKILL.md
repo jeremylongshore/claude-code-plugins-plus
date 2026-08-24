@@ -10,7 +10,7 @@ description: 'Full CRUD on Attio records -- create, read, update, delete, and se
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -202,6 +202,14 @@ await client.patch<{ data: AttioRecord }>(
   }
 );
 ```
+
+## Output
+
+Following this guide produces the Attio integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test record or workspace and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

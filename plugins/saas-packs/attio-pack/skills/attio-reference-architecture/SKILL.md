@@ -10,7 +10,7 @@ description: 'Production reference architecture for Attio CRM integrations -- la
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -114,6 +114,22 @@ interface SyncState         { objectSlug: string; lastSyncOffset: number; lastFu
 - Batch record queries with `/records/query` pagination (500 per page) for full sync
 - Schema cache (30 min TTL) prevents redundant attribute lookups on every record access
 - Rate-limit outbound writes with p-queue to stay within Attio's per-workspace concurrency limits
+
+## Prerequisites
+
+Confirm that you have an Attio workspace appropriate to the task, a dedicated non-production record or workspace for testing, and only the API token scopes or administrative access required by the procedure.
+
+## Instructions
+
+Use the ordered procedures and code samples in this guide as a sequence: begin with the prerequisites, apply the configuration or operational step for the target environment, then perform the documented validation or cleanup before proceeding. Keep credentials in the documented secret store; never hard-code them in source.
+
+## Output
+
+Following this guide produces the Attio integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test record or workspace and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 

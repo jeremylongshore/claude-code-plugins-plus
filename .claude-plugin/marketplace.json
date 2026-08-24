@@ -7029,7 +7029,7 @@
       "name": "attio-pack",
       "source": "./plugins/saas-packs/attio-pack",
       "description": "Claude Code skill pack for Attio (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "attio",

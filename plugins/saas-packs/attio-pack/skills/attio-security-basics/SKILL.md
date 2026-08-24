@@ -10,7 +10,7 @@ description: 'Secure Attio API integrations -- token scoping, secret management,
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -209,6 +209,18 @@ fi
 [ ] No tokens in logs, error messages, or client-side code
 [ ] Audit trail: who has which tokens, when created
 ```
+
+## Prerequisites
+
+Confirm that you have an Attio workspace appropriate to the task, a dedicated non-production record or workspace for testing, and only the API token scopes or administrative access required by the procedure.
+
+## Output
+
+Following this guide produces the Attio integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Examples
+
+Start with the smallest applicable command or code example in the relevant section, using a dedicated test record or workspace and non-production credentials. Confirm the expected response or validation result before applying the pattern to production.
 
 ## Error Handling
 
