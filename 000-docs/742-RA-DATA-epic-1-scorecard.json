@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 219,
       "a_failing": 131,
-      "ab_error_total": 2132,
-      "ab_failing": 943,
-      "b_failing": 812,
-      "error_files": 1906,
-      "error_total": 6856,
+      "ab_error_total": 2125,
+      "ab_failing": 940,
+      "b_failing": 809,
+      "error_files": 1888,
+      "error_total": 6804,
       "grade_distribution": {
         "A": 1595,
-        "B": 1017,
-        "C": 872,
+        "B": 1014,
+        "C": 857,
         "D": 159,
         "F": 5
       },
-      "rows": 3648
+      "rows": 3630
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3148,
-        "tracked_files": 22819
+        "raw_tracked_plugin_skill_files": 3130,
+        "tracked_files": 22798
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 444,
+        "distinct_names": 443,
         "duplicate_names": [],
-        "entries": 444
+        "entries": 443
       }
     },
     "3": {
@@ -80,45 +80,45 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 237,
-          "fully_compliant_surfaces": 769,
+          "fully_compliant_surfaces": 768,
           "terminal_denominator": {
             "agents": 357,
-            "files": 952,
+            "files": 951,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 595
+            "plugin_manifests": 594
           },
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7094,
-          "fully_compliant_surfaces": 1136,
+          "error_total_all_validated_surfaces": 7042,
+          "fully_compliant_surfaces": 1135,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4973,
+            "files": 4954,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 595,
-            "skills": 3648
+            "plugin_manifests": 594,
+            "skills": 3630
           },
-          "validated_plugin_manifests": 603,
-          "validator_reported_mixed_denominator_percent": 22.8
+          "validated_plugin_manifests": 602,
+          "validator_reported_mixed_denominator_percent": 22.9
         },
         "skill_rows": {
           "a_error_total": 219,
           "a_failing": 131,
-          "ab_error_total": 2132,
-          "ab_failing": 943,
-          "b_failing": 812,
-          "error_files": 1906,
-          "error_total": 6856,
+          "ab_error_total": 2125,
+          "ab_failing": 940,
+          "b_failing": 809,
+          "error_files": 1888,
+          "error_total": 6804,
           "grade_distribution": {
             "A": 1595,
-            "B": 1017,
-            "C": 872,
+            "B": 1014,
+            "C": 857,
             "D": 159,
             "F": 5
           },
-          "rows": 3648
+          "rows": 3630
         }
       }
     },
@@ -132,19 +132,19 @@
         "average_score": 85.4,
         "grade_distribution": {
           "A": 1595,
-          "B": 1017,
-          "C": 872,
+          "B": 1014,
+          "C": 857,
           "D": 159,
           "F": 5
         },
         "grade_percentages": {
-          "A": 43.7,
+          "A": 43.9,
           "B": 27.9,
-          "C": 23.9,
+          "C": 23.6,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3648
+        "rows": 3630
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 219,
         "a_failing": 131,
-        "ab_error_total": 2132,
-        "ab_failing": 943,
-        "b_error_total": 1913,
-        "b_failing": 812,
+        "ab_error_total": 2125,
+        "ab_failing": 940,
+        "b_error_total": 1906,
+        "b_failing": 809,
         "certified_target": 0,
-        "skill_summary_rows": 3648
+        "skill_summary_rows": 3630
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3634,
+        "declared": 3616,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 14,
-        "rows": 3648,
+        "rows": 3630,
         "target_malformed": 0
       }
     },
@@ -327,7 +327,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3339,
+            "count": 3321,
             "value": "Designed for Claude Code"
           },
           {
@@ -1120,15 +1120,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2802
+            "value": 2784
           },
           {
             "cohort": "graded",
-            "value": 3648
+            "value": 3630
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3087
+            "value": 3069
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1788,7 +1788,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22819
+        "tracked_files": 22798
       }
     },
     "47": {
@@ -1966,9 +1966,9 @@
       ],
       "status": "measured",
       "values": {
-        "adoption_percent": 0.44,
+        "adoption_percent": 0.45,
         "curated_copies": 12,
-        "plugin_skill_rows": 3148,
+        "plugin_skill_rows": 3130,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }
