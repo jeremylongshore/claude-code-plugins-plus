@@ -11,7 +11,7 @@ description: 'Configure Algolia enterprise access control: team-scoped API keys,
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,12 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Algolia's access control is built on **API keys with ACL (Access Control Lists)**. Each key has specific permissions, index restrictions, and rate limits. For multi-tenant apps, **Secured API Keys** provide per-user filtering without creating individual keys. For team management, Algolia's dashboard supports team members with role-based access.
+
+## Prerequisites
+
+- An Algolia organization or application administrator authorized to inspect and change API-key ACLs.
+- A current inventory of services, users, and indices that require access.
+- A safe rotation path for any key whose ACL or validity will change.
 
 ## API Key ACL Permissions
 
@@ -43,6 +49,10 @@ Algolia's access control is built on **API keys with ACL (Access Control Lists)*
 | `logs` | Read API logs | Debugging, audit |
 
 ## Instructions
+
+## Examples
+
+The API-key and role examples below show least-privilege grants for common service and tenant boundaries. Start with the narrowest index and ACL set, then verify it against the caller's actual operation.
 
 ### Step 1: Define Application Roles
 
@@ -242,6 +252,10 @@ Enterprise plans support SSO (SAML 2.0) for team authentication.
 - [ ] Key rotation scheduled (every 90 days)
 - [ ] Dashboard team members have appropriate roles
 - [ ] API key audit runs monthly
+
+## Output
+
+The application has documented role-to-ACL mappings, restricted keys for each actor, and an auditable rotation path. Failed authorization attempts can be traced to a missing or excessive grant instead of being worked around with an Admin key.
 
 ## Error Handling
 

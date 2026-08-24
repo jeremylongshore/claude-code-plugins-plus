@@ -10,7 +10,7 @@ description: 'Optimize Algolia search performance: record size, searchable attri
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,12 @@ compatibility: Designed for Claude Code
 
 Algolia's edge infrastructure typically delivers search in < 50ms globally. When performance degrades, the causes are usually: oversized records, too many searchable attributes, unoptimized faceting, or missing client-side caching. This skill covers server-side and client-side optimizations.
 
+## Prerequisites
+
+- Baseline search latency, relevance, payload size, and error-rate measurements from production-like traffic.
+- A representative test index and query corpus for evaluating changes before rollout.
+- Access to index settings and an owner for accepting relevance trade-offs.
+
 ## Performance Baselines
 
 | Metric | Good | Warning | Action Needed |
@@ -35,6 +41,10 @@ Algolia's edge infrastructure typically delivers search in < 50ms globally. When
 | Record size (avg) | < 5KB | 5-50KB | > 50KB |
 
 ## Instructions
+
+## Examples
+
+The record, attribute, facet, cache, query, and replica examples below are measured tuning levers. Change one lever at a time and compare the stated baseline rather than optimizing for a synthetic request alone.
 
 ### Step 1: Optimize Record Size
 
@@ -206,6 +216,10 @@ async function measureSearchLatency(query: string, iterations = 10) {
   });
 }
 ```
+
+## Output
+
+The tuning process produces a documented baseline, a tested set of index or client changes, and monitored latency and relevance results. It preserves an explicit rollback path if a faster configuration harms search quality.
 
 ## Error Handling
 

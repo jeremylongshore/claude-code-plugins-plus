@@ -12,7 +12,7 @@ description: 'Configure Algolia local development with separate dev index, mocki
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -176,6 +176,10 @@ describe.skipIf(!process.env.ALGOLIA_APP_ID)('Algolia Integration', () => {
   });
 });
 ```
+
+## Output
+
+The local loop provides an isolated development index, repeatable seed data, and a fast verification path for search and indexing changes. Production data and credentials remain outside the local development workflow.
 
 ## Error Handling
 

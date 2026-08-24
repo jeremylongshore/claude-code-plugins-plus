@@ -13,7 +13,7 @@ description: 'Install and configure the Algolia JavaScript v5 client with proper
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -112,6 +112,10 @@ async function verifyAlgoliaConnection() {
 
 await verifyAlgoliaConnection();
 ```
+
+## Output
+
+The project has a v5 Algolia client configured with the correct application ID and least-privileged key for its environment. The verification request confirms connectivity without exposing an Admin key to browser code.
 
 ## Error Handling
 

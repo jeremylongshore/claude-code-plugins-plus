@@ -12,7 +12,7 @@ description: 'Implement Algolia data handling: record transforms, PII filtering 
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -27,6 +27,12 @@ compatibility: Designed for Claude Code
 
 Algolia stores your records in their cloud. You control what data goes in (via `saveObjects`), what comes back (via `attributesToRetrieve`), and what users can search (via `searchableAttributes`). For privacy compliance, you must filter PII before indexing and implement deletion workflows.
 
+## Prerequisites
+
+- A documented data classification for the source records and approval to index only the searchable fields.
+- An Algolia Admin key held by the backend indexing job, never the browser.
+- A deletion and retention owner for data-subject requests before production records are copied to Algolia.
+
 ## Data Flow: Source → Algolia → User
 
 ```
@@ -39,6 +45,10 @@ Source Database        Transform           Algolia Index           Search Respon
 ```
 
 ## Instructions
+
+## Examples
+
+The transformations below demonstrate an allowlist-first record shape, explicit PII removal, deletion handling, and bounded retention. Apply the same policy to every source connector rather than relying on dashboard settings alone.
 
 ### Step 1: Transform Records Before Indexing
 
@@ -239,6 +249,10 @@ async function enforceRetention(indexName: string, retentionDays: number) {
 | User-generated content | Reviews, comments | Yes (anonymized) | Yes |
 | PII | Email, phone, address | NO | NO |
 | Sensitive business data | Margins, supplier costs | NO | NO |
+
+## Output
+
+The index contains only the approved, normalized record fields; data-subject deletion and retention jobs can remove those records deterministically. The resulting search response exposes only fields the UI is permitted to retrieve.
 
 ## Error Handling
 

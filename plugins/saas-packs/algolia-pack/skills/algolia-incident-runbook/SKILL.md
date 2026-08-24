@@ -10,7 +10,7 @@ description: 'Execute Algolia incident response: triage search failures, disting
 
   '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,20 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Rapid incident response procedures for Algolia search failures. Algolia's infrastructure is distributed across multiple data centers with automatic failover, so true Algolia outages are rare. Most incidents are caused by API key issues, settings drift, or indexing pipeline failures on your side.
+
+## Prerequisites
+
+- Current incident owner, communications channel, and an approved escalation path.
+- Read-only access to Algolia status, application metrics, and a representative search request.
+- A defined production index and a safe way to distinguish it from staging before taking remediation action.
+
+## Instructions
+
+Use the severity classification and triage sequence below to establish impact before changing settings or reindexing. Record timestamps, request IDs, and the decision owner as the incident progresses.
+
+## Examples
+
+The decision tree, remediation table, and communication templates are executable incident examples: choose the branch matching observed impact and send only the update appropriate to the confirmed severity.
 
 ## Severity Classification
 
@@ -204,6 +218,10 @@ Owner: @[name]
 - [ ] [Prevent] — Owner — Due date
 - [ ] [Detect faster] — Owner — Due date
 ```
+
+## Output
+
+The runbook produces a severity decision, a recorded mitigation path, and a stakeholder update backed by observed search impact. It also identifies when to escalate to Algolia with the diagnostic evidence they need.
 
 ## Error Handling
 

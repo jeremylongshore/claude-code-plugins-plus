@@ -10,7 +10,7 @@ description: 'Configure Algolia across dev/staging/production: index prefixing, 
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,12 @@ compatibility: Designed for Claude Code
 
 Algolia doesn't have built-in environment separation. You either use **separate Algolia applications** (strongest isolation) or **index prefixing** within one application (simpler). This skill covers both approaches.
 
+## Prerequisites
+
+- Separate environment names or application credentials and a clear production promotion policy.
+- CI secrets scoped to the environment that performs indexing.
+- A naming convention that prevents a staging job from writing to the production index.
+
 ## Environment Strategies
 
 | Strategy | Isolation | Cost | Complexity |
@@ -34,6 +40,10 @@ Algolia doesn't have built-in environment separation. You either use **separate 
 | Separate applications | Full isolation | Highest | High |
 
 ## Instructions
+
+## Examples
+
+The index-prefix and configuration examples below demonstrate environment isolation and controlled promotion. Keep the same convention in local tooling, CI, and runtime configuration to avoid cross-environment writes.
 
 ### Step 1: Index Prefixing (Recommended for Most Teams)
 
@@ -242,6 +252,10 @@ async function seedEnvironment() {
 
 seedEnvironment().catch(console.error);
 ```
+
+## Output
+
+Each environment resolves to the intended index and credentials, with promotion and rollback paths that do not expose production keys or overwrite production data from staging.
 
 ## Error Handling
 

@@ -10,7 +10,7 @@ description: 'Set up observability for Algolia: Prometheus metrics for search la
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,12 @@ compatibility: Designed for Claude Code
 
 Algolia provides built-in analytics in the dashboard, but production systems need application-level observability: latency histograms, error rate counters, distributed traces, and alerts. This skill instruments the `algoliasearch` v5 client with Prometheus, OpenTelemetry, and structured logging.
 
+## Prerequisites
+
+- Access to the application's metrics, tracing, and logging platform.
+- A stable service name and index labels that distinguish production from test traffic.
+- Permission to inspect Algolia request IDs and API responses without logging API keys or user PII.
+
 ## Key Metrics to Track
 
 | Metric | Type | Why It Matters |
@@ -36,6 +42,10 @@ Algolia provides built-in analytics in the dashboard, but production systems nee
 | Record count | Gauge | Cost monitoring, data integrity |
 
 ## Instructions
+
+## Examples
+
+The client wrapper, metrics endpoint, tracing, and alert examples below create a correlated view of search latency, errors, and index activity. Preserve request IDs and aggregate labels; never emit search credentials in telemetry.
 
 ### Step 1: Instrumented Algolia Client Wrapper
 
@@ -270,6 +280,10 @@ groups:
 # P95 latency: histogram_quantile(0.95, rate(algolia_search_duration_seconds_bucket[5m]))
 # Records per index: algolia_index_records
 ```
+
+## Output
+
+The service exposes actionable search health signals: latency and error rates, request traces, structured logs, dashboards, and alert conditions. Operators can distinguish an application regression from an Algolia incident using the correlated evidence.
 
 ## Error Handling
 

@@ -12,7 +12,7 @@ description: 'Upgrade algoliasearch from v4 to v5 with breaking change detection
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(npx:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -54,6 +54,10 @@ Guide for upgrading `algoliasearch` from v4 to v5. The v5 release is a major rew
 | `index.waitTask(taskID)` | `client.waitForTask({ indexName, taskID })` |
 
 ## Instructions
+
+## Examples
+
+The upgrade steps are concrete v4-to-v5 examples: replace client initialization and method calls, then run the search and type-check suite before widening rollout. Keep the pre-upgrade branch available until production verification succeeds.
 
 ### Step 1: Create Upgrade Branch and Install v5
 
@@ -155,6 +159,10 @@ npm install algoliasearch@4
 git checkout -- src/  # Restore v4 code
 npm test              # Verify v4 still works
 ```
+
+## Output
+
+The codebase uses the v5 client API with verified imports, parameter shapes, and task waiting, while retaining a tested rollback procedure to the prior package version and source revision.
 
 ## Error Handling
 

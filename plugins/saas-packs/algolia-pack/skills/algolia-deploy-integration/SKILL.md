@@ -10,7 +10,7 @@ description: 'Deploy Algolia-powered apps to Vercel, Fly.io, and Cloud Run with 
 
   '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -32,6 +32,10 @@ Deploy Algolia-powered applications to production platforms with proper API key 
 - `algoliasearch` v5 for backend, `react-instantsearch` or `instantsearch.js` for frontend
 
 ## Instructions
+
+## Examples
+
+The deployment patterns below keep the Admin key server-side and give the frontend only a search-safe credential. Exercise the health endpoint after rollout before directing user traffic to the new search surface.
 
 ### Step 1: Backend API Key Configuration
 
@@ -222,6 +226,10 @@ export async function GET() {
   }
 }
 ```
+
+## Output
+
+The deployed application exposes a backend search path, a browser-safe InstantSearch integration, and a health check that verifies the intended index can be queried. The Admin key remains confined to the server environment.
 
 ## Error Handling
 

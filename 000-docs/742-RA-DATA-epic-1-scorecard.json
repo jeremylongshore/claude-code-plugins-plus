@@ -16,16 +16,16 @@
     "values": {
       "a_error_total": 219,
       "a_failing": 131,
-      "ab_error_total": 2152,
-      "ab_failing": 959,
-      "b_failing": 828,
-      "error_files": 2027,
-      "error_total": 7384,
+      "ab_error_total": 2150,
+      "ab_failing": 957,
+      "b_failing": 826,
+      "error_files": 2004,
+      "error_total": 7324,
       "grade_distribution": {
         "A": 1595,
-        "B": 987,
-        "C": 894,
-        "D": 190,
+        "B": 995,
+        "C": 890,
+        "D": 186,
         "F": 9
       },
       "rows": 3675
@@ -90,7 +90,7 @@
           "validator_reported_mixed_denominator_percent": 81.3
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7638,
+          "error_total_all_validated_surfaces": 7578,
           "fully_compliant_surfaces": 1163,
           "terminal_denominator": {
             "agents": 357,
@@ -106,16 +106,16 @@
         "skill_rows": {
           "a_error_total": 219,
           "a_failing": 131,
-          "ab_error_total": 2152,
-          "ab_failing": 959,
-          "b_failing": 828,
-          "error_files": 2027,
-          "error_total": 7384,
+          "ab_error_total": 2150,
+          "ab_failing": 957,
+          "b_failing": 826,
+          "error_files": 2004,
+          "error_total": 7324,
           "grade_distribution": {
             "A": 1595,
-            "B": 987,
-            "C": 894,
-            "D": 190,
+            "B": 995,
+            "C": 890,
+            "D": 186,
             "F": 9
           },
           "rows": 3675
@@ -132,16 +132,16 @@
         "average_score": 85.1,
         "grade_distribution": {
           "A": 1595,
-          "B": 987,
-          "C": 894,
-          "D": 190,
+          "B": 995,
+          "C": 890,
+          "D": 186,
           "F": 9
         },
         "grade_percentages": {
           "A": 43.4,
-          "B": 26.9,
-          "C": 24.3,
-          "D": 5.2,
+          "B": 27.1,
+          "C": 24.2,
+          "D": 5.1,
           "F": 0.2
         },
         "rows": 3675
@@ -156,10 +156,10 @@
       "values": {
         "a_error_total": 219,
         "a_failing": 131,
-        "ab_error_total": 2152,
-        "ab_failing": 959,
-        "b_error_total": 1933,
-        "b_failing": 828,
+        "ab_error_total": 2150,
+        "ab_failing": 957,
+        "b_error_total": 1931,
+        "b_failing": 826,
         "certified_target": 0,
         "skill_summary_rows": 3675
       }

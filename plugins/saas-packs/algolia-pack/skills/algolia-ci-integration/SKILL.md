@@ -11,7 +11,7 @@ description: 'Configure Algolia CI/CD: GitHub Actions for index validation, auto
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -33,6 +33,10 @@ Set up CI/CD pipelines for Algolia: run integration tests against a test index, 
 - npm/pnpm project with `algoliasearch` v5
 
 ## Instructions
+
+## Examples
+
+The workflow definitions below show the complete test, validation, and release-triggered reindex paths. Adapt only the index names and secret names to your repository; keep the test index isolated from production.
 
 ### Step 1: Store Algolia Secrets
 
@@ -208,6 +212,10 @@ jobs:
       - name: Verify index health
         run: npx tsx scripts/verify-index-health.ts
 ```
+
+## Output
+
+The pipeline validates index configuration and search behavior before deployment, then performs and verifies a production reindex only after a release tag. Each run leaves actionable logs for the failed stage rather than silently shipping stale search data.
 
 ## Error Handling
 

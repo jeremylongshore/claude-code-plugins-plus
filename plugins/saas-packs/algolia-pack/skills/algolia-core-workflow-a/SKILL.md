@@ -10,7 +10,7 @@ description: 'Implement Algolia search with filters, facets, highlighting, and p
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -145,6 +145,10 @@ async function paginatedSearch(query: string, page: number = 0) {
   };
 }
 ```
+
+## Output
+
+The configured index returns paginated, highlighted search hits with the requested filters and facets. The examples also show how to extend that baseline to federated and optional-filter search without changing the indexing contract.
 
 ## Error Handling
 

@@ -11,7 +11,7 @@ description: 'Implement Algolia indexing pipeline: data sync, partial updates, s
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -166,6 +166,10 @@ await client.saveRule({
   },
 });
 ```
+
+## Output
+
+The synchronization workflow produces an atomically replaced full index or a confirmed incremental update, with every write awaited before dependent reads. Synonyms and query rules remain versioned alongside the data pipeline.
 
 ## Error Handling
 

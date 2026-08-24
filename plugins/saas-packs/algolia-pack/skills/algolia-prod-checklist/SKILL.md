@@ -11,7 +11,7 @@ description: 'Execute Algolia production readiness checklist: index settings, ke
 
   '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -25,6 +25,20 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Complete checklist for deploying Algolia search to production. Covers index configuration, API key security, replica setup, monitoring, and rollback procedures.
+
+## Prerequisites
+
+- A named production index, deployment owner, rollback decision maker, and change window.
+- Read-only verification credentials plus separate, least-privileged deployment credentials.
+- Current monitoring and alert destinations tested before the release begins.
+
+## Instructions
+
+Run the checklist in order, record each result, and stop the deployment on any failed security, relevance, or availability requirement. Use the verification script only after every prerequisite configuration item is confirmed.
+
+## Examples
+
+The checklist and pre-deploy script are the release example: run them against the intended production index and attach the results to the deployment record before enabling the new search experience.
 
 ## Pre-Production Checklist
 
@@ -159,6 +173,10 @@ echo "Products index: $RECORDS records"
 echo ""
 echo "All checks passed. Ready to deploy."
 ```
+
+## Output
+
+The release record contains completed configuration, security, monitoring, degradation, and verification checks, with failed items converted into explicit blockers or rollback actions. It does not authorize deployment when a required check is unknown.
 
 ## Error Handling
 

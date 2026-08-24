@@ -10,7 +10,7 @@ description: 'Optimize Algolia costs: understand search request vs record pricin
 
   '
 allowed-tools: Read, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,12 @@ compatibility: Designed for Claude Code
 ## Overview
 
 Algolia pricing is based on **search requests** and **records**. A search request is one API call (which may contain multiple queries via `search({ requests: [...] })`). Records are counted across all indices including replicas.
+
+## Prerequisites
+
+- Access to current Algolia usage, billing, and index statistics for the application being reviewed.
+- An Admin or monitoring credential used only from a trusted backend environment.
+- A reporting window that distinguishes production traffic from load tests and bots.
 
 ## Pricing Structure (2025)
 
@@ -49,6 +55,10 @@ Algolia pricing is based on **search requests** and **records**. A search reques
 - `saveObjects()` = NOT a search request (indexing operations are free)
 
 ## Instructions
+
+## Examples
+
+The audit and analytics calls below show how to measure records, requests, and no-result searches before changing replicas, caching, or query design. Measure a baseline first so savings claims are testable.
 
 ### Step 1: Audit Current Usage
 
@@ -190,6 +200,10 @@ searches.slice(0, 10).forEach(s => console.log(`  "${s.search}" — ${s.count} t
 | Delete unused indices | Variable | Low |
 | Fix no-result queries (synonyms) | 10-20% fewer retries | Medium |
 | Reduce record size | Indirect (faster = cheaper) | Medium |
+
+## Output
+
+The review identifies the record and request drivers of the current bill, produces a prioritized reduction plan, and gives measurable before/after signals for each change. It does not alter billing settings by itself.
 
 ## Error Handling
 

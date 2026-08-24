@@ -11,7 +11,7 @@ description: 'Apply Algolia security best practices: API key scoping, secured AP
 
   '
 allowed-tools: Read, Write, Edit, Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -26,6 +26,12 @@ compatibility: Designed for Claude Code
 
 Algolia's security model is built around **scoped API keys**. Every Algolia app has three default keys (Admin, Search-Only, Monitoring). For production, create custom keys with minimal permissions and use Secured API Keys for per-user/per-tenant restrictions.
 
+## Prerequisites
+
+- An inventory of current API keys, their consumers, and the indices each consumer needs.
+- A secure secret store and a tested rotation process for backend credentials.
+- Authority to revoke or restrict exposed keys immediately if the audit finds a violation.
+
 ## Key Types and Where to Use Them
 
 | Key Type | ACL | Expose to Frontend? | Use Case |
@@ -37,6 +43,10 @@ Algolia's security model is built around **scoped API keys**. Every Algolia app 
 | Secured | Derived from parent key | Yes | Per-user filtered search |
 
 ## Instructions
+
+## Examples
+
+The environment, scoped-key, secured-key, and rotation examples demonstrate least privilege at each trust boundary. Replace placeholder values through the secret store and validate the resulting ACL before a client receives the key.
 
 ### Step 1: Environment Variable Setup
 
@@ -153,6 +163,10 @@ async function rotateApiKey(oldKeyDescription: string) {
 - [ ] Secured API keys have `validUntil` (expiration)
 - [ ] Key rotation scheduled quarterly
 - [ ] Git history scanned for accidentally committed keys
+
+## Output
+
+The application separates Admin, search-only, monitoring, custom, and secured keys by use case, with documented ACLs and a revocation path. Browser clients never receive a credential capable of indexing or changing settings.
 
 ## Error Handling
 

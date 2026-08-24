@@ -152,6 +152,10 @@ plugins/skill-enhancers/skill-creator/skills/skill-creator/references/validation
 # ── ops-review docs-truth pass (claude-k0h2, 2026-07-14): sources.yaml HEADER COMMENTS only. ──
 plugins/saas-packs/hubspot-pack/skills/hubspot-warehouse-sync/SKILL.md:secret-exfil-cooccur  documented backfill example reads HUBSPOT_ACCESS_TOKEN from env and sends it only to api.hubapi.com (the credential's own service); BigQuery sink uses GCP client creds, not the HubSpot token — reviewed 2026-07-16
 plugins/saas-packs/ga4-pack/skills/ga4-auth-setup/SKILL.md:secret-exfil-cooccur  documented Google Analytics Data API verification reads GOOGLE_APPLICATION_CREDENTIALS only through the official client, which sends it only to Google's own API; no third-party sink
+plugins/saas-packs/algolia-pack/skills/algolia-debug-bundle/SKILL.md:secret-exfil-cooccur  documented official Algolia client reads its own application credentials only to collect Algolia index diagnostics; bundle guidance redacts key values and has no third-party sink
+plugins/saas-packs/algolia-pack/skills/algolia-incident-runbook/SKILL.md:secret-exfil-cooccur  documented emergency recovery uses the official Algolia client with its own backend credentials to create a scoped replacement key; no third-party sink
+plugins/saas-packs/algolia-pack/skills/algolia-migration-deep-dive/SKILL.md:secret-exfil-cooccur  documented migration uses the official Algolia client and backend credentials only for the target Algolia index; source data stays in the adapter, not a foreign sink
+plugins/saas-packs/algolia-pack/skills/algolia-webhooks-events/SKILL.md:secret-exfil-cooccur  documented search and Insights examples use the official Algolia client with its own backend credentials; no third-party sink
 
 # ── dolt-mcp-vcs repo rename (2026-07-17): repoint only, same vetted source. ──
 plugins/saas-packs/notion-pack/skills/notion-advanced-troubleshooting/SKILL.md:secret-exfil-cooccur  documented SaaS API-client example: reads own-service credential from env and sends it only to its own service (NOTION_TOKEN→Notion API); no third-party sink (foreign-host scan empty) — reviewed 2026-07-17
