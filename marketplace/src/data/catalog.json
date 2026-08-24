@@ -9692,7 +9692,7 @@
       "name": "algolia-pack",
       "displayName": "algolia pack",
       "description": "Claude Code skill pack for Algolia (24 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "algolia",
