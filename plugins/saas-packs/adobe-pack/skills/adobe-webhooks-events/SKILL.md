@@ -12,7 +12,7 @@ description: 'Implement Adobe I/O Events webhook registration, RSA-SHA256 signat
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -257,6 +257,10 @@ async function processEventIdempotently(event: AdobeEvent): Promise<boolean> {
 | Events not arriving | Registration failed | Check I/O Events dashboard for status |
 | Duplicate events | No idempotency | Track `event_id` in Redis/DB |
 | Public key fetch fails | Network/firewall | Whitelist `static.adobeioevents.com` |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

@@ -13,7 +13,7 @@ description: 'Implement load testing, auto-scaling, and capacity planning for Ad
 
   '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -257,6 +257,10 @@ function planCapacity(metrics: {
 | k6 timeout | Adobe API > 60s | Increase k6 request timeout |
 | HPA not scaling | Custom metric not exposed | Verify Prometheus metric exists |
 | Token expires mid-test | Long test duration | Token valid 24h; pre-generate |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

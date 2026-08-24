@@ -12,7 +12,7 @@ description: 'Configure Adobe enterprise identity with Admin Console SCIM provis
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -254,6 +254,10 @@ app.delete('/api/assets/:id', requireAdobePermission('delete'), deleteHandler);
 | UMAPI 403 | Missing admin permission | Use system admin credentials for UMAPI |
 | Profile not applied | SCIM sync delay | Wait 5-10min for Azure/Google sync |
 | User can't access API | Missing product profile | Assign profile in Admin Console or via UMAPI |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

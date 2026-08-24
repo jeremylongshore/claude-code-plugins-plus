@@ -15,7 +15,7 @@ description: 'Execute Adobe Firefly Services workflow: AI image generation, gene
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -220,6 +220,10 @@ export async function expandImage(
 | `413 Payload Too Large` | Image too large for fill/expand | Resize input to max 4096x4096 |
 | `429 Too Many Requests` | Rate limited | Use async endpoint; honor `Retry-After` header |
 | `500 Internal Server Error` | Transient Firefly error | Retry with backoff; check status.adobe.com |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

@@ -15,7 +15,7 @@ description: 'Execute Adobe PDF Services workflow: create PDFs from HTML/DOCX, e
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -242,6 +242,10 @@ export async function pdfToMarkdown(pdfPath: string): Promise<string> {
 | `TIMEOUT` | Large PDF (100+ pages) | Split into smaller PDFs first |
 | `QUOTA_EXCEEDED` | Free tier limit (500 tx/month) | Upgrade plan or wait for monthly reset |
 | `UNSUPPORTED_MEDIA_TYPE` | Wrong MimeType for input | Match MimeType to actual file format |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

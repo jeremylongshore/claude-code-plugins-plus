@@ -12,7 +12,7 @@ description: 'Implement Adobe-specific lint rules, CI policy checks, and runtime
 
   '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -250,6 +250,10 @@ function guardAdobeOperation(operation: string): void {
 | Prompt wrongly rejected | Pattern too broad | Refine regex; allow legitimate uses |
 | Quota counter reset | Server restart | Persist counter in Redis/DB |
 | Scope validation fails | Wrong env var | Check `NODE_ENV` and `ADOBE_SCOPES` |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

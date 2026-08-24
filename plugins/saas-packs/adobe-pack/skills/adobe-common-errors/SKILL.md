@@ -15,7 +15,7 @@ description: 'Diagnose and fix common Adobe API errors across Firefly Services, 
 
   '
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -216,6 +216,18 @@ curl -s https://status.adobe.com/api/v1/incidents | python3 -m json.tool | head 
 1. Collect evidence with `adobe-debug-bundle`
 2. Check https://status.adobe.com for active incidents
 3. Contact Adobe Support with request ID (from response headers: `x-request-id`)
+
+## Output
+
+Following this guide produces the Adobe integration outcome for its topic—configuration, validation evidence, operational recovery, or a documented migration result. Record command output and relevant identifiers so a failed step is traceable.
+
+## Error Handling
+
+If a step fails, stop before applying follow-on changes, retain sanitized diagnostic evidence, and use the troubleshooting or escalation guidance already in this skill. Treat authentication and vendor-service failures separately from local configuration errors.
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

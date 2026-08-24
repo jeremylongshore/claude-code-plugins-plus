@@ -15,7 +15,7 @@ description: 'Apply production-ready patterns for Adobe Firefly Services SDK, PD
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -245,6 +245,10 @@ const validated = FireflyImageOutputSchema.parse(raw);
 | Error classification | Retry decisions | Only retries transient failures |
 | Job polling | Photoshop/Lightroom | Handles async operation lifecycle |
 | Zod validation | All responses | Catches API contract changes at runtime |
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 

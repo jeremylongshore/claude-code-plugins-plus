@@ -12,7 +12,7 @@ description: 'Apply advanced debugging techniques for Adobe API issues: IMS toke
 
   '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
-version: 1.6.0
+version: 1.7.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -46,7 +46,7 @@ TOKEN=$(curl -s -X POST 'https://ims-na1.adobelogin.com/ims/token/v3' \
   -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=${ADOBE_SCOPES}" | jq -r '.access_token')
 
 # Decode JWT payload (base64url-decode the middle segment)
-echo "$TOKEN" | cut -d. -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | python3 -m json.tool
+echo "$TOKEN" | cut -d. -f2 | tr '_-' '/+' | base64 -d 2>/dev/null | jq .
 
 # Look for:
 # - "exp": expiration timestamp (is it expired?)
@@ -76,15 +76,18 @@ curl -v -X POST 'https://firefly-api.adobe.io/v3/images/generate' \
 
 ```typescript
 // When async Firefly jobs fail, the status endpoint returns error details
-async function diagnoseFireflyJob(jobId: string, statusUrl: string) {
+async function diagnoseFireflyJob(jobId: string) {
   const token = await getAccessToken();
 
-  const response = await fetch(statusUrl, {
+  const response = await fetch(
+    `https://firefly-api.adobe.io/v3/images/jobs/${encodeURIComponent(jobId)}`,
+    {
     headers: {
       'Authorization': `Bearer ${token}`,
       'x-api-key': process.env.ADOBE_CLIENT_ID!,
     },
-  });
+    }
+  );
 
   const status = await response.json();
 
@@ -240,6 +243,14 @@ Workarounds Attempted:
 - Error codes mapped to recovery actions
 - Network layers tested independently
 - Support escalation with x-request-id
+
+## Error Handling
+
+If a step fails, stop before applying follow-on changes, retain sanitized diagnostic evidence, and use the troubleshooting or escalation guidance already in this skill. Treat authentication and vendor-service failures separately from local configuration errors.
+
+## Examples
+
+Start with the smallest applicable command or code example already provided in this guide, using a non-production Adobe environment and credentials. Confirm the documented response or validation result before applying the pattern to production.
 
 ## Resources
 
