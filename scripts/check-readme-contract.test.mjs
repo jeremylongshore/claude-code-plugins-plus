@@ -32,8 +32,8 @@ test('R4 — generated blocks, code, and link targets are not prose claims', () 
   const prose = handProse(LIVE);
   assert.deepEqual(bareIntegers(prose), []);
   // the SCALE block's counts exist in the file but not in the stripped prose
-  assert.ok(LIVE.includes('| 3,087'));
-  assert.ok(!prose.includes('3,087'));
+  assert.ok(LIVE.includes('| 3,063'));
+  assert.ok(!prose.includes('3,063'));
 });
 
 test('R8 red run — deleting an artifact-class definition fails', () => {
