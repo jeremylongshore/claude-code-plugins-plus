@@ -7280,7 +7280,7 @@
       "name": "together-pack",
       "source": "./plugins/saas-packs/together-pack",
       "description": "Claude Code skill pack for Together AI (18 skills)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "category": "saas-packs",
       "keywords": [
         "together",
