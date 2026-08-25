@@ -35679,18 +35679,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "walkie-talkie",
-      "name": "walkie-talkie",
-      "description": ">-",
-      "version": "1.0.0",
-      "category": "community",
-      "parentPlugin": "walkie-talkie",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "warden",
       "name": "warden",
       "description": "Security engineer — IAM, secrets, threat modeling, hardening, auth, and supply chain security.",
@@ -36831,8 +36819,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3069,
-  "generatedAt": "2026-08-24T23:24:56.417Z",
+  "count": 3068,
+  "generatedAt": "2026-08-25T19:42:48.515Z",
   "categories": [
     "ai-agency",
     "ai-ml",
