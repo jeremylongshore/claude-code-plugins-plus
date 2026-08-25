@@ -4,7 +4,7 @@
   "run_id": 10,
   "threshold": "AB",
   "validated": true,
-  "count": 1915,
+  "count": 1913,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -25427,30 +25427,6 @@
       "source_path": "plugins/saas-packs/vastai-pack/skills/vastai-webhooks-events",
       "category": "saas-packs",
       "plugin": "vastai-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
-      "curated_name": "veeva-debug-bundle",
-      "source_path": "plugins/saas-packs/veeva-pack/skills/veeva-debug-bundle",
-      "category": "saas-packs",
-      "plugin": "veeva-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
-      "curated_name": "veeva-hello-world",
-      "source_path": "plugins/saas-packs/veeva-pack/skills/veeva-hello-world",
-      "category": "saas-packs",
-      "plugin": "veeva-pack",
       "recorded_grade": "B",
       "fresh_grade": "B",
       "run_id": 10,
