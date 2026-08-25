@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 444,
-    "totalSkills": 3087,
+    "totalSkills": 3085,
     "totalCommands": 85,
     "pluginsWithSkills": 412,
     "byCategory": {
@@ -10354,7 +10354,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 16,
       "commandCount": 0,
       "installCommand": "/plugin install together-pack",
       "sourcePath": "./plugins/saas-packs/together-pack",

@@ -33615,18 +33615,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "together-debug-bundle",
-      "name": "together-debug-bundle",
-      "description": "'Together AI debug bundle for inference, fine-tuning, and model deployment.",
-      "version": "1.6.0",
-      "category": "saas-packs",
-      "parentPlugin": "together-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "together-deploy-integration",
       "name": "together-deploy-integration",
       "description": "'Together AI deploy integration for inference, fine-tuning, and model",
@@ -33666,18 +33654,6 @@
       "slug": "together-local-dev-loop",
       "name": "together-local-dev-loop",
       "description": "'Together AI local dev loop for inference, fine-tuning, and model deployment.",
-      "version": "1.6.0",
-      "category": "saas-packs",
-      "parentPlugin": "together-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "together-performance-tuning",
-      "name": "together-performance-tuning",
-      "description": "'Together AI performance tuning for inference, fine-tuning, and model",
       "version": "1.6.0",
       "category": "saas-packs",
       "parentPlugin": "together-pack",
@@ -37047,8 +37023,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3087,
-  "generatedAt": "2026-08-24T23:06:19.410Z",
+  "count": 3085,
+  "generatedAt": "2026-08-25T00:24:05.630Z",
   "categories": [
     "ai-agency",
     "ai-ml",

@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 444,
-    "totalSkills": 3087,
+    "totalSkills": 3085,
     "totalDocs": 24,
-    "totalItems": 3555,
+    "totalItems": 3553,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -13453,7 +13453,7 @@
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 18,
+      "skillCount": 16,
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
@@ -76949,28 +76949,6 @@
     },
     {
       "type": "skill",
-      "id": "together-debug-bundle",
-      "slug": "together-debug-bundle",
-      "name": "together-debug-bundle",
-      "description": "'Together AI debug bundle for inference, fine-tuning, and model deployment.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.6.0",
-      "parentPlugin": {
-        "name": "together-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "together-debug-bundle 'together ai debug bundle for inference, fine-tuning, and model deployment. saas-packs read write edit bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
       "id": "together-deploy-integration",
       "slug": "together-deploy-integration",
       "name": "together-deploy-integration",
@@ -77057,28 +77035,6 @@
         "category": "saas-packs"
       },
       "searchText": "together-local-dev-loop 'together ai local dev loop for inference, fine-tuning, and model deployment. saas-packs read write edit bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "together-performance-tuning",
-      "slug": "together-performance-tuning",
-      "name": "together-performance-tuning",
-      "description": "'Together AI performance tuning for inference, fine-tuning, and model",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.6.0",
-      "parentPlugin": {
-        "name": "together-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "together-performance-tuning 'together ai performance tuning for inference, fine-tuning, and model saas-packs read write edit bash(pip:*) grep "
     },
     {
       "type": "skill",
