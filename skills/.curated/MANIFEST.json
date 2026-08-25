@@ -4,7 +4,7 @@
   "run_id": 10,
   "threshold": "AB",
   "validated": true,
-  "count": 1915,
+  "count": 1913,
   "skills": [
     {
       "curated_name": "abridge-debug-bundle",
@@ -26869,30 +26869,6 @@
         "references/errors.md",
         "references/examples.md",
         "references/implementation.md"
-      ]
-    },
-    {
-      "curated_name": "wispr-hello-world",
-      "source_path": "plugins/saas-packs/wispr-pack/skills/wispr-hello-world",
-      "category": "saas-packs",
-      "plugin": "wispr-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
-      ]
-    },
-    {
-      "curated_name": "wispr-install-auth",
-      "source_path": "plugins/saas-packs/wispr-pack/skills/wispr-install-auth",
-      "category": "saas-packs",
-      "plugin": "wispr-pack",
-      "recorded_grade": "B",
-      "fresh_grade": "B",
-      "run_id": 10,
-      "files": [
-        "SKILL.md"
       ]
     },
     {
