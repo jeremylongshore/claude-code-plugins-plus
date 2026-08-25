@@ -16,19 +16,19 @@
     "values": {
       "a_error_total": 219,
       "a_failing": 131,
-      "ab_error_total": 2125,
-      "ab_failing": 940,
-      "b_failing": 809,
-      "error_files": 1888,
-      "error_total": 6804,
+      "ab_error_total": 2119,
+      "ab_failing": 938,
+      "b_failing": 807,
+      "error_files": 1880,
+      "error_total": 6780,
       "grade_distribution": {
         "A": 1595,
-        "B": 1014,
-        "C": 857,
+        "B": 1012,
+        "C": 851,
         "D": 159,
         "F": 5
       },
-      "rows": 3630
+      "rows": 3622
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 22796
+        "raw_tracked_plugin_skill_files": 3122,
+        "tracked_files": 22788
       }
     },
     "2": {
@@ -90,15 +90,15 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7042,
+          "error_total_all_validated_surfaces": 7018,
           "fully_compliant_surfaces": 1135,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4954,
+            "files": 4946,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 594,
-            "skills": 3630
+            "skills": 3622
           },
           "validated_plugin_manifests": 602,
           "validator_reported_mixed_denominator_percent": 22.9
@@ -106,19 +106,19 @@
         "skill_rows": {
           "a_error_total": 219,
           "a_failing": 131,
-          "ab_error_total": 2125,
-          "ab_failing": 940,
-          "b_failing": 809,
-          "error_files": 1888,
-          "error_total": 6804,
+          "ab_error_total": 2119,
+          "ab_failing": 938,
+          "b_failing": 807,
+          "error_files": 1880,
+          "error_total": 6780,
           "grade_distribution": {
             "A": 1595,
-            "B": 1014,
-            "C": 857,
+            "B": 1012,
+            "C": 851,
             "D": 159,
             "F": 5
           },
-          "rows": 3630
+          "rows": 3622
         }
       }
     },
@@ -132,19 +132,19 @@
         "average_score": 85.4,
         "grade_distribution": {
           "A": 1595,
-          "B": 1014,
-          "C": 857,
+          "B": 1012,
+          "C": 851,
           "D": 159,
           "F": 5
         },
         "grade_percentages": {
-          "A": 43.9,
+          "A": 44,
           "B": 27.9,
-          "C": 23.6,
+          "C": 23.5,
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3630
+        "rows": 3622
       }
     },
     "6": {
@@ -156,12 +156,12 @@
       "values": {
         "a_error_total": 219,
         "a_failing": 131,
-        "ab_error_total": 2125,
-        "ab_failing": 940,
-        "b_error_total": 1906,
-        "b_failing": 809,
+        "ab_error_total": 2119,
+        "ab_failing": 938,
+        "b_error_total": 1900,
+        "b_failing": 807,
         "certified_target": 0,
-        "skill_summary_rows": 3630
+        "skill_summary_rows": 3622
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3616,
+        "declared": 3608,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 14,
-        "rows": 3630,
+        "rows": 3622,
         "target_malformed": 0
       }
     },
@@ -327,7 +327,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3321,
+            "count": 3313,
             "value": "Designed for Claude Code"
           },
           {
@@ -1120,15 +1120,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2784
+            "value": 2776
           },
           {
             "cohort": "graded",
-            "value": 3630
+            "value": 3622
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3069
+            "value": 3061
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1788,7 +1788,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22796
+        "tracked_files": 22788
       }
     },
     "47": {
@@ -1968,7 +1968,7 @@
       "values": {
         "adoption_percent": 0.45,
         "curated_copies": 12,
-        "plugin_skill_rows": 3130,
+        "plugin_skill_rows": 3122,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }

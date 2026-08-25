@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 443,
-    "totalSkills": 3069,
+    "totalSkills": 3061,
     "totalDocs": 24,
-    "totalItems": 3536,
+    "totalItems": 3528,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -13391,7 +13391,7 @@
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 18,
+      "skillCount": 10,
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
@@ -74750,27 +74750,6 @@
     },
     {
       "type": "skill",
-      "id": "stackblitz-ci-integration",
-      "slug": "stackblitz-ci-integration",
-      "name": "stackblitz-ci-integration",
-      "description": "'CI testing for WebContainer apps with Playwright browser tests.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(gh:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-ci-integration 'ci testing for webcontainer apps with playwright browser tests. saas-packs read write edit bash(gh:*) "
-    },
-    {
-      "type": "skill",
       "id": "stackblitz-common-errors",
       "slug": "stackblitz-common-errors",
       "name": "stackblitz-common-errors",
@@ -74835,25 +74814,6 @@
     },
     {
       "type": "skill",
-      "id": "stackblitz-cost-tuning",
-      "slug": "stackblitz-cost-tuning",
-      "name": "stackblitz-cost-tuning",
-      "description": "'StackBlitz pricing tiers: free embedding, WebContainer API commercial",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-cost-tuning 'stackblitz pricing tiers: free embedding, webcontainer api commercial saas-packs read grep "
-    },
-    {
-      "type": "skill",
       "id": "stackblitz-debug-bundle",
       "slug": "stackblitz-debug-bundle",
       "name": "stackblitz-debug-bundle",
@@ -74870,26 +74830,6 @@
         "category": "saas-packs"
       },
       "searchText": "stackblitz-debug-bundle 'collect webcontainer diagnostic info: boot state, file system, process saas-packs bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "stackblitz-deploy-integration",
-      "slug": "stackblitz-deploy-integration",
-      "name": "stackblitz-deploy-integration",
-      "description": "'Deploy WebContainer apps to Vercel, Netlify with proper COOP/COEP headers.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-deploy-integration 'deploy webcontainer apps to vercel, netlify with proper coop/coep headers. saas-packs read write edit "
     },
     {
       "type": "skill",
@@ -74960,45 +74900,6 @@
     },
     {
       "type": "skill",
-      "id": "stackblitz-performance-tuning",
-      "slug": "stackblitz-performance-tuning",
-      "name": "stackblitz-performance-tuning",
-      "description": "'Optimize WebContainer boot time, file system mounts, and process spawning.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-performance-tuning 'optimize webcontainer boot time, file system mounts, and process spawning. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "stackblitz-prod-checklist",
-      "slug": "stackblitz-prod-checklist",
-      "name": "stackblitz-prod-checklist",
-      "description": "'Production checklist for WebContainer apps: headers, browser support,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-prod-checklist 'production checklist for webcontainer apps: headers, browser support, saas-packs read grep "
-    },
-    {
-      "type": "skill",
       "id": "stackblitz-rate-limits",
       "slug": "stackblitz-rate-limits",
       "name": "stackblitz-rate-limits",
@@ -75016,25 +74917,6 @@
         "category": "saas-packs"
       },
       "searchText": "stackblitz-rate-limits 'webcontainer resource limits: memory, cpu, file system size, process saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "stackblitz-reference-architecture",
-      "slug": "stackblitz-reference-architecture",
-      "name": "stackblitz-reference-architecture",
-      "description": "'Production architecture for WebContainer-powered browser IDEs and playgrounds.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-reference-architecture 'production architecture for webcontainer-powered browser ides and playgrounds. saas-packs read grep "
     },
     {
       "type": "skill",
@@ -75075,47 +74957,6 @@
         "category": "saas-packs"
       },
       "searchText": "stackblitz-security-basics 'secure webcontainer deployments: csp headers, sandbox isolation, input saas-packs read write grep "
-    },
-    {
-      "type": "skill",
-      "id": "stackblitz-upgrade-migration",
-      "slug": "stackblitz-upgrade-migration",
-      "name": "stackblitz-upgrade-migration",
-      "description": "'Migrate between WebContainer API versions and StackBlitz SDK updates.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-upgrade-migration 'migrate between webcontainer api versions and stackblitz sdk updates. saas-packs read write edit bash(npm:*) "
-    },
-    {
-      "type": "skill",
-      "id": "stackblitz-webhooks-events",
-      "slug": "stackblitz-webhooks-events",
-      "name": "stackblitz-webhooks-events",
-      "description": "'WebContainer lifecycle events: server-ready, port changes, error handling.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.5.0",
-      "parentPlugin": {
-        "name": "stackblitz-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "stackblitz-webhooks-events 'webcontainer lifecycle events: server-ready, port changes, error handling. saas-packs read write edit "
     },
     {
       "type": "skill",

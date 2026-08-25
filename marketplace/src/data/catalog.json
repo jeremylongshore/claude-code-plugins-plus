@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 443,
-    "totalSkills": 3069,
+    "totalSkills": 3061,
     "totalCommands": 85,
     "pluginsWithSkills": 411,
     "byCategory": {
@@ -10301,7 +10301,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install stackblitz-pack",
       "sourcePath": "./plugins/saas-packs/stackblitz-pack",
