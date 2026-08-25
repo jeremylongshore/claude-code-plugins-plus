@@ -13387,7 +13387,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -74782,7 +74782,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74804,7 +74804,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74826,7 +74826,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74864,7 +74864,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74906,7 +74906,7 @@
         "Bash(node:*)"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74928,7 +74928,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -74951,7 +74951,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -75010,7 +75010,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -75049,7 +75049,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
@@ -75069,7 +75069,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.5.0",
+      "version": "1.6.0",
       "parentPlugin": {
         "name": "stackblitz-pack",
         "category": "saas-packs"
