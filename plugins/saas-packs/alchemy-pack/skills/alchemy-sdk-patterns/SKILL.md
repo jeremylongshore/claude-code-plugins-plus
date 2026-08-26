@@ -27,6 +27,15 @@ compatibility: Designed for Claude Code
 
 Production patterns for the `alchemy-sdk` package: singleton clients, multi-chain factories, response caching, and type-safe contract wrappers.
 
+## Prerequisites
+
+- A server-side environment with a managed provider key and a typed list of
+  supported chains; do not create browser-side clients with the key.
+- A freshness policy for each cached response type and a test fixture for both
+  successful and failed provider calls.
+- Input validation at the application boundary before an address, collection,
+  or network value reaches the client factory or query builder.
+
 ## Instructions
 
 ### Step 1: Multi-Chain Client Factory
@@ -182,6 +191,26 @@ export { classifyError, AlchemyErrorType };
 - Response cache with configurable TTL
 - Type-safe NFT query builder pattern
 - Structured error classification for retry decisions
+
+## Examples
+
+In a staging service, request a balance for a public test address twice through
+`getCachedBalance`, assert the second request is a cache hit within the
+approved TTL, then invalidate the prefix and verify the next request reaches
+the provider. Use the factory only for a configured chain and reject an
+unrecognized chain at the route boundary. Inject a `429` and a `401` into the
+error classifier to prove that only the rate-limit case is retryable. If a
+cached value breaches its freshness rule, a chain is not configured, or a key
+reaches a client artifact, disable the route and repair that boundary first.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Provider rate limit or transient server error | Use bounded retry/backoff and retain a sanitized outcome metric. |
+| Authentication or authorization failure | Stop retries, verify managed-secret configuration, and rotate a suspected exposure. |
+| Invalid address, contract, or chain input | Reject before creating a provider operation. |
+| Cache contains stale or incompatible data | Invalidate it and refetch according to the declared freshness policy. |
 
 ## Resources
 
