@@ -161,6 +161,24 @@ for result in client.messages.batches.results(batch.id):
         print(f"[{result.custom_id}] ERROR: {result.result.error}")
 ```
 
+## Output
+
+The streaming workflow emits ordered text deltas for an interactive caller and
+ends with a final message containing the stop reason and token usage. The batch
+workflow returns a durable batch ID, a terminal processing status, and one
+result per `custom_id`; callers must retain that ID and reconcile both
+successful and errored records before marking the source workload complete.
+
+## Examples
+
+Use streaming for a chat endpoint that should show a response as it is
+generated: forward text deltas to the browser, then store the final message and
+usage after `message_stop`. Use a batch for a nightly summarization job: assign
+each document a stable `custom_id`, submit the requests once, poll until
+`ended`, and write every returned result into a table keyed by that ID. A
+per-item error is a retry or triage item, not a reason to discard successful
+records from the same batch.
+
 ## SSE Event Types Reference
 
 | Event | Description | Key Fields |
