@@ -203,6 +203,18 @@ preDeployCheck();
 - Kubernetes manifests with liveness/readiness probes
 - Pre-deploy validation script
 
+## Examples
+
+For a Cloud Run release, create the production secret through the platform’s
+secret manager rather than applying the placeholder Kubernetes `stringData`
+example. Deploy one revision with a restricted service identity, wait for the
+pre-deploy checks and readiness probe to succeed, and issue a redacted health
+request from the approved monitoring path. Promote traffic gradually while
+tracking provider authentication failures and request latency. If the new
+revision returns `503`, halt promotion and send traffic back to the last known
+healthy revision; do not diagnose by printing or replacing the secret in a
+shell command, manifest, or application log.
+
 ## Error Handling
 
 | Issue | Resolution |
