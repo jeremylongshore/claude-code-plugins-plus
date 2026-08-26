@@ -178,6 +178,17 @@ runDevEncounter().catch(console.error);
 - Specialty-specific transcript fixtures
 - Watch-mode dev loop with live note generation
 
+## Examples
+
+Start the local HAPI server, seed only the fictional patient fixture, and run
+the cardiology encounter against Abridge's sandbox. The successful local loop
+creates a sandbox session, emits completed note sections, and stores a
+`DocumentReference` in the local FHIR server. Inspect the resource through the
+local endpoint before changing application code. If Docker cannot bind port
+8080 or the FHIR write fails validation, stop the watcher, correct the local
+configuration or resource shape, and rerun with the same synthetic fixture;
+do not connect a developer machine to production EHR data.
+
 ## Error Handling
 
 | Error | Cause | Solution |
