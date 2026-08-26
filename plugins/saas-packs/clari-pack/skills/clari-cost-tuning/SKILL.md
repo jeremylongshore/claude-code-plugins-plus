@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Minimize Clari API overhead: reduce export frequency, cache aggressively, export only needed data types, and monitor usage.
 
+## Prerequisites
+
+- An approved consumer inventory and freshness requirement for each report
+- Usage telemetry for API calls, export jobs, warehouse loads, and cache age
+- Data-owner approval for retention, aggregation, and delivery changes
+- A non-production validation path for schedule or payload changes
+
 ## Instructions
 
 ### Export Only What You Need
@@ -90,6 +97,29 @@ class ClariUsageTracker:
             "exports": self.exports,
         }
 ```
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Consumer needs fresher data than the approved schedule | Obtain owner approval and measure incremental load before changing cadence. |
+| Cache returns an expired or mismatched period | Discard it and run the controlled export path. |
+| Usage spikes or provider throttles | Reduce scope/concurrency and preserve the last certified dataset. |
+| Cost reduction removes an audit-required field | Reject the change until the compliance owner approves an alternative. |
+
+## Output
+
+Publish a cost-and-usage decision with current and proposed cadence, payload
+scope, cache policy, observed API/warehouse load, forecast impact, owner, and
+rollback threshold. Keep business amounts and rep-level data out of the
+operational report unless the recipient is authorized.
+
+## Examples
+
+Move a non-critical dashboard from hourly full exports to daily minimal exports
+in staging, verify freshness and audit coverage, and compare job count and
+warehouse cost for a week. Roll back the schedule if the certified data window
+or required field coverage no longer meets the report contract.
 
 ## Resources
 

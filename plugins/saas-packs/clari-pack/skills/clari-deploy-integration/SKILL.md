@@ -29,6 +29,13 @@ compatibility: Designed for Claude Code
 
 Deploy Clari export pipelines to production environments: Airflow DAGs, AWS Lambda, or Google Cloud Functions for scheduled, serverless execution.
 
+## Prerequisites
+
+- Environment-specific cloud project/account and least-privilege runtime role
+- Secret-manager reference for the Clari token, never a literal deployment value
+- A reviewed export schedule, retry policy, and dead-letter/incident route
+- Separate non-production validation and production approval gates
+
 ## Instructions
 
 ### Airflow DAG
@@ -122,6 +129,21 @@ def clari_export(request):
 | Lambda timeout | Export takes > 15min | Use Step Functions for long jobs |
 | Secret not found | Wrong parameter path | Verify SSM/Secret Manager path |
 | Airflow task fails | Rate limited | Add retries with backoff |
+
+## Output
+
+Produce a deployment receipt with runtime version, environment, secret
+reference, scheduled scope, release identifier, health check, and rollback
+decision. Return only aggregate job status to callers; preserve forecast data,
+tokens, and provider download URLs inside the authorized processing boundary.
+
+## Examples
+
+Deploy a staging worker using a dedicated service role, run a read-only export,
+and verify that the emitted record count and job status match the approved
+manifest. Promote through an environment gate only after health and retry tests
+pass; on timeout or missing secret, roll back the release and investigate
+without widening permissions.
 
 ## Resources
 

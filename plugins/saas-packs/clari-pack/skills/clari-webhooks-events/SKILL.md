@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Clari does not provide real-time webhooks. Instead, build change detection by comparing periodic exports. This skill covers scheduled export diffing, Slack alerts for forecast movements, and Copilot webhook integration.
 
+## Prerequisites
+
+- Authorized Clari/Copilot access and a registered HTTPS receiver
+- Durable event/snapshot storage with bounded retention
+- An allow-listed downstream notification target
+- An approved threshold and escalation policy for forecast changes
+
 ## Instructions
 
 ### Step 1: Forecast Change Detection Pipeline
@@ -149,6 +156,20 @@ curl -X POST https://api.copilot.clari.com/v1/webhooks \
 | False change alerts | Data timing differences | Increase threshold to 15% |
 | Snapshot file missing | First run | Initialize with empty list |
 | Slack post fails | Bad webhook URL | Test URL with `curl` |
+
+## Output
+
+Record the source event or snapshot version, evaluated threshold, deduplication
+key, notification decision, delivery result, and safe correlation ID. Do not
+place full forecast amounts, rep identities, bearer tokens, or webhook URLs in
+shared notifications or logs.
+
+## Examples
+
+For a Copilot call event, authenticate and validate the request before writing
+its event ID to durable idempotency storage; send one redacted alert only after
+that write succeeds. For scheduled forecast comparisons, suppress a duplicate
+snapshot and escalate only changes that cross the approved threshold.
 
 ## Resources
 
