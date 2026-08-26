@@ -223,6 +223,21 @@ function calculateCostPerLead(
 | Unexpected charges | New column added with auto-run | Review all auto-run columns monthly |
 | Credit rollover capped | Balance exceeds 2x monthly | Use credits before they cap out |
 
+## Output
+
+Publish a credit-control decision with table scope, budget, actual usage,
+cost-per-qualified-result, quality baseline, owner, alert threshold, and
+rollback/stop condition. Treat pricing and calculator results as estimates;
+validate current plan behavior in the authorized workspace before expanding
+automated enrichments.
+
+## Examples
+
+Set a staging table’s per-run and monthly credit caps, run a qualified sample,
+and compare cost-per-lead with the prior baseline. If spend rises while hit rate
+falls, trip the stop condition, disable the expensive auto-run column, and
+review input quality and provider order before resuming.
+
 ## Resources
 
 - [Clay Pricing 2026](https://www.clay.com/pricing)
