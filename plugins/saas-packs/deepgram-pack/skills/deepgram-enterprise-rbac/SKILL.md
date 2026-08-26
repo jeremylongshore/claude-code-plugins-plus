@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Enterprise RBAC
 
+## Prerequisites
+
+- A verified identity source, named project/role owners, least-privilege role map, and access-review schedule.
+- Authority to provision/revoke users and service credentials through approved identity/admin paths.
+
+## Examples
+
+Grant a transcription service account only the development project scope it needs, validate its permitted action with a synthetic fixture, and record the owner and expiration/review date. Confirm that the same identity cannot access production; on role mismatch, revoke the broad assignment and correct the group mapping before further use.
+
 ## Overview
 
 Role-based access control for enterprise Deepgram deployments. Maps five application roles to Deepgram API key scopes, implements scoped key provisioning via the Deepgram Management API, Express permission middleware, team management with auto-provisioned keys, and automated key rotation.
