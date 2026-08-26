@@ -27,6 +27,17 @@ compatibility: Designed for Claude Code
 
 Deploy the Anima SDK as a backend service. The SDK is server-side only, so deploy it behind an API endpoint that accepts Figma file/node references and returns generated code.
 
+## Prerequisites
+
+- A private or authenticated service boundary with an allowlisted design-file
+  registry; do not expose arbitrary `fileKey` and `nodesId` generation to the
+  public internet.
+- Managed Anima and Figma secrets, separate staging/production credentials,
+  request limits, and an audit trail that excludes token values and design
+  content.
+- An approved generated-output path, validation pipeline, and rollback target
+  for every deployment revision.
+
 ## Instructions
 
 ### Step 1: Express API Wrapper
@@ -105,6 +116,26 @@ gcloud run deploy anima-service \
 - Express API wrapping Anima SDK for internal design tooling
 - Vercel serverless function for lightweight deployment
 - Cloud Run deployment with Secret Manager
+
+## Examples
+
+Deploy the service to a staging environment behind the organization’s existing
+identity proxy and invoke `/api/generate` with one allowlisted file/node pair.
+Verify the request is authorized, output remains in the approved generated-code
+location, logs contain only request metadata, and generated files pass the
+downstream formatter and test gate before a human reviews them. If an unauthenticated
+caller, unknown node, or secret-binding error reaches the service, reject the
+request, alert the operator, and keep the prior revision active rather than
+opening broad access or embedding credentials in the client.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Caller is not authenticated or file/node is not allowlisted | Reject before contacting Anima or Figma. |
+| Managed secret is unavailable | Fail closed and repair the deployment binding; never use a plaintext fallback. |
+| Generation or validation fails | Return a sanitized failure, preserve the prior revision, and quarantine the output. |
+| Rate limit or repeated bad requests occur | Apply bounded throttling and alert the owning service team. |
 
 ## Resources
 
