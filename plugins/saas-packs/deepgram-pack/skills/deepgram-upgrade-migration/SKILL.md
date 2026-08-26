@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Upgrade Migration
 
+## Prerequisites
+
+- Current/target SDK or API versions, compatibility matrix, approved fixtures, quality/latency thresholds, and rollback owner.
+- Separate staging credentials plus a data-retention and consent review for any migration/reprocessing action.
+
+## Examples
+
+Upgrade the SDK in staging, run mock/unit tests and a small licensed-fixture comparison against the prior version, and compare aggregate output/latency/error metrics. Promote through an approved canary only after acceptance passes; revert to the prior lockfile/configuration on regression and do not reprocess production recordings to validate the upgrade.
+
 ## Current State
 
 !`npm list @deepgram/sdk 2>/dev/null | grep deepgram || echo 'SDK not installed'`
