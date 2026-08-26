@@ -22,20 +22,35 @@ compatibility: Designed for Claude Code
 
 AppFolio Stack delivers real-time webhook notifications for property management lifecycle events including tenant onboarding, lease execution, rent payments, and maintenance workflows. Use these webhooks to sync AppFolio data with your CRM, accounting system, or custom property management dashboards without polling the API.
 
+## Prerequisites
+
+- Written confirmation in the current AppFolio partner contract that the target
+  portfolio supports the event types, registration process, delivery semantics,
+  and signature scheme. Do not infer webhook support from another integration.
+- A bounded raw-body ingress route, managed webhook secret, durable event store,
+  queue, idempotency table, and owner for downstream accounting/CRM effects.
+- A sandbox endpoint and synthetic events for valid, malformed, duplicate, and
+  delayed-delivery tests before production registration.
+
+## Instructions
+
+1. Register events only through the provider-issued process and contract-bound
+   client after verifying the target URL, allowlist, and secret delivery path.
+2. Verify bounded raw bytes and the signature before parsing; reject malformed
+   or replayed events without logging tenant, payment, or lease content.
+3. Persist the event ID, type, received time, and encrypted/minimized payload
+   transactionally before acknowledging delivery, then process it asynchronously.
+4. Enforce durable idempotency and reconcile unknown downstream outcomes before
+   writing CRM, accounting, tenant, lease, or work-order state.
+
 ## Webhook Registration
 
 ```typescript
-const response = await fetch("https://api.appfolio.com/v1/webhooks", {
-  method: "POST",
-  headers: {
-    "Authorization": `Bearer ${process.env.APPFOLIO_API_KEY}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
+// Use this only if the signed provider contract explicitly supports this API.
+const response = await createVerifiedAppFolioClient().post("/webhooks", {
     url: "https://yourapp.com/webhooks/appfolio",
     events: ["tenant.created", "work_order.updated", "payment.received", "lease.signed"],
     secret: process.env.APPFOLIO_WEBHOOK_SECRET,
-  }),
 });
 ```
 
@@ -47,11 +62,12 @@ import { Request, Response, NextFunction } from "express";
 
 function verifyAppFolioSignature(req: Request, res: Response, next: NextFunction) {
   const signature = req.headers["x-appfolio-signature"] as string;
-  const expected = crypto
+  const expected = Buffer.from(crypto
     .createHmac("sha256", process.env.APPFOLIO_WEBHOOK_SECRET!)
     .update(req.body)
-    .digest("hex");
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    .digest("hex"));
+  const received = signature ? Buffer.from(signature) : Buffer.alloc(0);
+  if (received.length !== expected.length || !crypto.timingSafeEqual(received, expected)) {
     return res.status(401).json({ error: "Invalid signature" });
   }
   next();
@@ -66,18 +82,13 @@ const app = express();
 
 app.post("/webhooks/appfolio", express.raw({ type: "application/json" }), verifyAppFolioSignature, (req, res) => {
   const event = JSON.parse(req.body.toString());
-  res.status(200).json({ received: true });
-
-  switch (event.type) {
-    case "tenant.created":
-      syncTenantToCRM(event.data.tenant_id, event.data.property_id); break;
-    case "work_order.updated":
-      notifyMaintenanceTeam(event.data.work_order_id, event.data.status); break;
-    case "payment.received":
-      recordPayment(event.data.lease_id, event.data.amount_cents); break;
-    case "lease.signed":
-      activateLease(event.data.lease_id, event.data.move_in_date); break;
-  }
+  // persistIncomingEvent performs a durable idempotency insert and queue write
+  // in one transaction. A failed persist must receive a retryable response.
+  persistIncomingEvent(event).then(() => {
+    res.status(202).json({ received: true });
+  }).catch(() => {
+    res.status(503).json({ error: "Event persistence unavailable" });
+  });
 });
 ```
 
@@ -94,16 +105,10 @@ app.post("/webhooks/appfolio", express.raw({ type: "application/json" }), verify
 ## Retry & Idempotency
 
 ```typescript
-const processed = new Set<string>();
-
 async function handleIdempotent(event: { id: string; type: string; data: any }) {
-  if (processed.has(event.id)) return;
+  if (await durableEventStore.hasSucceeded(event.id)) return;
   await routeEvent(event);
-  processed.add(event.id);
-  if (processed.size > 10_000) {
-    const entries = Array.from(processed);
-    entries.slice(0, entries.length - 10_000).forEach((id) => processed.delete(id));
-  }
+  await durableEventStore.markSucceeded(event.id);
 }
 ```
 
@@ -114,7 +119,26 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Signature mismatch | Wrong secret or parsed body | Use `express.raw()` for verification |
 | Duplicate events | AppFolio retry on timeout | Track event IDs for idempotency |
 | Missing `property_id` | Event from archived property | Check property status before processing |
-| 5xx from handler | Downstream service unavailable | Return 200 immediately, process async |
+| Durable store/queue unavailable | Cannot guarantee acknowledged event survives | Return retryable 503; do not acknowledge before persistence |
+
+## Output
+
+- A contract-gated webhook registration decision and a fail-closed raw-body
+  signature verification result
+- A durable receipt for each accepted event before acknowledgement, with
+  minimized/encrypted content and durable idempotency state
+- A controlled asynchronous processing outcome that can be retried or
+  reconciled without duplicate tenant, lease, payment, or work-order effects
+
+## Examples
+
+For a synthetic work-order update, deliver a valid signed event, a malformed
+signature, a duplicate ID, and a downstream timeout. Prove the valid event is
+persisted before `202`, the malformed request is rejected without parsing, the
+duplicate does not produce a second side effect, and the timeout remains queued
+for reconciliation. If provider support, raw-body capture, signature secret,
+durable store, or queue is unavailable, keep the endpoint disabled and use the
+provider-approved polling/reconciliation path instead.
 
 ## Resources
 
