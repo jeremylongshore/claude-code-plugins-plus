@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 443,
-    "totalSkills": 3071,
+    "totalPlugins": 442,
+    "totalSkills": 3070,
     "totalDocs": 24,
-    "totalItems": 3538,
+    "totalItems": 3536,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -1717,8 +1717,8 @@
     "pluginsWithAgents": 90,
     "pluginsWithHooks": 20,
     "officialPlugins": 389,
-    "communityPlugins": 54,
-    "communityContributors": 43
+    "communityPlugins": 53,
+    "communityContributors": 42
   },
   "items": [
     {
@@ -14939,27 +14939,6 @@
       "badges": [],
       "skillCount": 5,
       "searchText": "skills janitor audit, clean and swipe-triage your claude code skills — honest always-loaded vs on-demand token costs, usage tracking, duplicate detection, and safe deletion (auto-fix, prune, interactive swipe tui) community skills cleanup context-window token-budget maintenance tui"
-    },
-    {
-      "type": "plugin",
-      "id": "walkie-talkie",
-      "slug": "walkie-talkie",
-      "name": "walkie-talkie",
-      "displayName": "walkie talkie",
-      "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
-      "category": "community",
-      "keywords": [],
-      "author": {
-        "name": "Walkie-Talkie Maintainers",
-        "url": "https://github.com/walkie-talkie-skill"
-      },
-      "authorType": "community",
-      "version": "0.1.0",
-      "isFeatured": false,
-      "isNew": false,
-      "badges": [],
-      "skillCount": 1,
-      "searchText": "walkie talkie cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a grill protocol for interrogating handoffs community "
     },
     {
       "type": "plugin",
@@ -80803,29 +80782,6 @@
         "category": "ai-agency"
       },
       "searchText": "volt-recon firmware reconnaissance for takeover — inventory the mcu, peripherals, rtos, protocols, ota, power management, and assess code quality with risk flags. use when asked to \"understand this firmware\", \"device inventory\", or \"embedded assessment\". ai-agency read bash glob grep webfetch websearch askuserquestion "
-    },
-    {
-      "type": "skill",
-      "id": "walkie-talkie",
-      "slug": "walkie-talkie",
-      "name": "walkie-talkie",
-      "description": ">-",
-      "category": "community",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Glob",
-        "Grep",
-        "Bash(git:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "walkie-talkie",
-        "category": "community"
-      },
-      "searchText": "walkie-talkie >- community read write edit glob grep bash(git:*) "
     },
     {
       "type": "skill",

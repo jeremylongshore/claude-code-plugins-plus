@@ -5,10 +5,10 @@
     "generator": "marketplace/scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 443,
-    "totalSkills": 3071,
+    "totalPlugins": 442,
+    "totalSkills": 3070,
     "totalCommands": 85,
-    "pluginsWithSkills": 411,
+    "pluginsWithSkills": 410,
     "byCategory": {
       "productivity": 30,
       "security": 27,
@@ -24,7 +24,7 @@
       "skill-enhancers": 9,
       "database": 26,
       "business-tools": 6,
-      "community": 22,
+      "community": 21,
       "examples": 5,
       "saas-packs": 106,
       "analytics": 1,
@@ -11779,26 +11779,6 @@
         "name": "Krzysztof Hendzel",
         "url": "https://github.com/khendzel",
         "email": "krzysztoff.hendzel@gmail.com"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "walkie-talkie",
-      "name": "walkie-talkie",
-      "displayName": "walkie talkie",
-      "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
-      "version": "0.1.0",
-      "category": "community",
-      "keywords": [],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install walkie-talkie",
-      "sourcePath": "./plugins/community/walkie-talkie",
-      "isFeatured": false,
-      "author": {
-        "name": "Walkie-Talkie Maintainers",
-        "url": "https://github.com/walkie-talkie-skill"
       },
       "type": "instruction-plugin"
     },

@@ -1386,17 +1386,6 @@
         "skills/anti-ui-slop/SKILL.md": "sha256:1c86da86ae0471af2728433f555816bef2a7600739ac05cf486b4b5355b1b573"
       }
     },
-    "walkie-talkie": {
-      "repo": "walkie-talkie-skill/walkie-talkie",
-      "resolved_ref": "0b74f4d361022f51297896e2ef884c0ed5bfd0df",
-      "locked_at": "2026-07-13T17:27:23.745Z",
-      "files": {
-        "LICENSE": "sha256:2b0d5e4d45f5237c65c159bc7fc53ce695098d4fd80f1ff780f9da36a96f4fbe",
-        "PROTOCOL_TEMPLATE.md": "sha256:71673defe3c3c804bab6c91c9737fd1530757f6e71d55ed0d2881d8120e2e320",
-        "README.md": "sha256:cc61053104cb2192aed09374500d65e3805841c9eef76a4e2d4d2491be3b4552",
-        "SKILL.md": "sha256:27eb3d46893cb59f796185f1e6f92c04d1df0f606fd27ad6f72c04aef47f6a1f"
-      }
-    },
     "x-bug-triage": {
       "repo": "jeremylongshore/x-bug-triage-plugin",
       "resolved_ref": "4995c7792b37994fef740e54101aa7c2721f6f3b",

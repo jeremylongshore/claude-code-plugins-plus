@@ -23,12 +23,12 @@
       "error_total": 6804,
       "grade_distribution": {
         "A": 1597,
-        "B": 1014,
+        "B": 1013,
         "C": 857,
         "D": 159,
         "F": 5
       },
-      "rows": 3632
+      "rows": 3631
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3132,
-        "tracked_files": 22800
+        "raw_tracked_plugin_skill_files": 3131,
+        "tracked_files": 22796
       }
     },
     "2": {
@@ -53,9 +53,9 @@
       "status": "measured",
       "target_status": "pass",
       "values": {
-        "distinct_names": 443,
+        "distinct_names": 442,
         "duplicate_names": [],
-        "entries": 443
+        "entries": 442
       }
     },
     "3": {
@@ -80,27 +80,27 @@
       "values": {
         "agent_lane": {
           "error_total_all_validated_surfaces": 237,
-          "fully_compliant_surfaces": 768,
+          "fully_compliant_surfaces": 767,
           "terminal_denominator": {
             "agents": 357,
-            "files": 951,
+            "files": 950,
             "label": "agents_plus_plugin_manifests",
-            "plugin_manifests": 594
+            "plugin_manifests": 593
           },
-          "validator_reported_mixed_denominator_percent": 80.8
+          "validator_reported_mixed_denominator_percent": 80.7
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 7042,
-          "fully_compliant_surfaces": 1137,
+          "fully_compliant_surfaces": 1136,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4956,
+            "files": 4954,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
-            "plugin_manifests": 594,
-            "skills": 3632
+            "plugin_manifests": 593,
+            "skills": 3631
           },
-          "validated_plugin_manifests": 602,
+          "validated_plugin_manifests": 601,
           "validator_reported_mixed_denominator_percent": 22.9
         },
         "skill_rows": {
@@ -113,12 +113,12 @@
           "error_total": 6804,
           "grade_distribution": {
             "A": 1597,
-            "B": 1014,
+            "B": 1013,
             "C": 857,
             "D": 159,
             "F": 5
           },
-          "rows": 3632
+          "rows": 3631
         }
       }
     },
@@ -132,7 +132,7 @@
         "average_score": 85.4,
         "grade_distribution": {
           "A": 1597,
-          "B": 1014,
+          "B": 1013,
           "C": 857,
           "D": 159,
           "F": 5
@@ -144,7 +144,7 @@
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3632
+        "rows": 3631
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 1906,
         "b_failing": 809,
         "certified_target": 0,
-        "skill_summary_rows": 3632
+        "skill_summary_rows": 3631
       }
     },
     "7": {
@@ -212,7 +212,7 @@
       "values": {
         "agent_errors": 237,
         "agent_files": 357,
-        "reported_compliance_percent": 80.8,
+        "reported_compliance_percent": 80.7,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3618,
+        "declared": 3617,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 14,
-        "rows": 3632,
+        "rows": 3631,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 43,
+        "distinct_values": 42,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -369,10 +369,6 @@
           {
             "count": 1,
             "value": "Designed for Claude Code. The TUI itself requires an interactive terminal (the user runs it with the '!' prefix); requires bash 3.2+ and a terminal of at least 50x22."
-          },
-          {
-            "count": 1,
-            "value": "Designed for Claude Code; also usable from Codex/Gemini/Copilot/Cursor sessions that can read and write files"
           },
           {
             "count": 4,
@@ -1124,11 +1120,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3632
+            "value": 3631
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3071
+            "value": 3070
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1189,10 +1185,10 @@
       "source": ["sources.lock.json", "sources.yaml"],
       "status": "measured",
       "values": {
-        "lock_keys": 37,
+        "lock_keys": 36,
         "lock_only": [],
         "target_equal": true,
-        "yaml_keys": 37,
+        "yaml_keys": 36,
         "yaml_only": []
       }
     },
@@ -1214,7 +1210,6 @@
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
-        "plugins/community/walkie-talkie/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
@@ -1241,7 +1236,7 @@
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 29,
+        "mirrors_shipping_license_text": 28,
         "missing_license_text": [
           "plugins/api-development/x-twitter-scraper",
           "plugins/community/ejentum-anti-deception",
@@ -1252,15 +1247,15 @@
           "plugins/productivity/content-multiplier",
           "plugins/productivity/skyvern"
         ],
-        "provenance_marked_mirrors": 37,
-        "target_shipping_license_text": 37
+        "provenance_marked_mirrors": 36,
+        "target_shipping_license_text": 36
       }
     },
     "29": {
       "cohort": "provenance-marked mirrors",
       "dimension": "Mirror SKILL.md contradicting upstream license",
       "measured_proxy": {
-        "local_source_records_with_parseable_json": 37
+        "local_source_records_with_parseable_json": 36
       },
       "reason_code": "MISSING_PINNED_UPSTREAM_LICENSE_EVIDENCE",
       "reproduce": "pnpm run measure:e1 --row=29 --stdout",
@@ -1282,7 +1277,6 @@
         "plugins/community/portaljs/.source.json",
         "plugins/community/quit-sponsor/.source.json",
         "plugins/community/skills-janitor/.source.json",
-        "plugins/community/walkie-talkie/.source.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/design/brand-forge/.source.json",
         "plugins/design/uizze/.source.json",
@@ -1344,8 +1338,6 @@
         "plugins/community/quit-sponsor/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/walkie-talkie/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
@@ -1396,9 +1388,9 @@
       "status": "partial",
       "values": {
         "non_private": [],
-        "private_packages": 37,
-        "repository_package_mirrors": 37,
-        "scoped_packages": 32,
+        "private_packages": 36,
+        "repository_package_mirrors": 36,
+        "scoped_packages": 31,
         "target_publishable": 0
       }
     },
@@ -1436,8 +1428,6 @@
         "plugins/community/quit-sponsor/package.json",
         "plugins/community/skills-janitor/.source.json",
         "plugins/community/skills-janitor/package.json",
-        "plugins/community/walkie-talkie/.source.json",
-        "plugins/community/walkie-talkie/package.json",
         "plugins/crypto/aomi/.source.json",
         "plugins/crypto/aomi/package.json",
         "plugins/design/brand-forge/.source.json",
@@ -1571,10 +1561,10 @@
       "cohort": "tracked .github Dependabot configuration",
       "dimension": "Dependabot configuration",
       "reproduce": "pnpm run measure:e1 --row=37 --stdout",
-      "source": [],
+      "source": [".github/dependabot.yml"],
       "status": "measured",
       "values": {
-        "present": false,
+        "present": true,
         "target_present": true
       }
     },
@@ -1788,7 +1778,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22800
+        "tracked_files": 22796
       }
     },
     "47": {
@@ -1968,7 +1958,7 @@
       "values": {
         "adoption_percent": 0.45,
         "curated_copies": 12,
-        "plugin_skill_rows": 3132,
+        "plugin_skill_rows": 3131,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }

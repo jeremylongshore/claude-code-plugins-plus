@@ -32,11 +32,9 @@ test('R4 — generated blocks, code, and link targets are not prose claims', () 
   const prose = handProse(LIVE);
   assert.deepEqual(bareIntegers(prose), []);
   // the SCALE block's counts exist in the file but not in the stripped prose
-  const visibleSkills = LIVE.match(
-    /^\| ([\d,]+) \| marketplace-visible skills \(distinct\)\s+\|/m,
-  )?.[1];
-  assert.ok(visibleSkills);
-  assert.ok(!prose.includes(visibleSkills));
+  const scaleCount = LIVE.match(/\|\s*([\d,]+)\s*\| marketplace-visible skills/);
+  assert.ok(scaleCount, 'the generated SCALE block must carry the marketplace-visible skill count');
+  assert.ok(!prose.includes(scaleCount[1]));
 });
 
 test('R8 red run — deleting an artifact-class definition fails', () => {
