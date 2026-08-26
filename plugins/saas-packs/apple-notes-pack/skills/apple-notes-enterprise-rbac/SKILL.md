@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes has no built-in role-based access control (RBAC). In enterprise environments with Managed Apple IDs via Apple Business Manager, administrators control Notes access through MDM (Mobile Device Management) profiles. For multi-user automation scenarios, implement access control at the automation layer using account separation, folder-based permissions, and shared folder restrictions. iCloud Shared Notes (macOS Ventura+) provide basic collaboration, but fine-grained permissions (read-only vs edit) must be enforced in your wrapper code.
 
+## Prerequisites
+
+- An identity source, role owner, approval workflow, and audit retention policy external to Notes.app.
+- A reviewed allowlist mapping stable automation identities to explicitly configured account/folder scopes.
+- MDM and legal/security approval for managed-device controls; folder conventions alone are not an authorization boundary.
+
+## Instructions
+
+1. Authenticate and authorize every automation action before invoking JXA, default-deny unknown roles, accounts, folders, and operations.
+2. Use stable configuration identifiers rather than account or folder names in telemetry; store mappings in a protected configuration service.
+3. Apply least privilege: separate read, write, delete, and export approvals, and require elevated review for destructive operations.
+4. Audit authorization decisions and periodically test revocation; TCC consent does not replace application authorization.
+
 ## Account-Based Access Control
 
 ```javascript
@@ -122,6 +135,14 @@ sharedFolders.forEach(f => {
 | MDM blocks osascript | Device restriction profile active | Request IT to allow automation; use Shortcuts as alternative |
 | Folder permissions bypass | JXA has full access once TCC approved | Enforce permissions in your wrapper code, not at OS level |
 | Multiple accounts create confusion | Notes from wrong account modified | Always specify account explicitly; never use `defaultAccount` in multi-user |
+
+## Output
+
+The RBAC layer returns an allow/deny decision, policy version, opaque subject and scope identifiers, and a redacted audit event. It does not treat account separation, folder names, or Notes sharing UI state as proof of authorization.
+
+## Examples
+
+Before a delete request, resolve the caller through the identity source, require a role with the separately approved delete permission, verify the configured scope, and write an audit event before invoking Notes. A shared folder labelled `Public` still receives a deny decision unless the protected policy explicitly allows the caller and operation.
 
 ## Resources
 

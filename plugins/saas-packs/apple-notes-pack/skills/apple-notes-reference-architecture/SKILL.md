@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes automation systems are fundamentally different from cloud SaaS integrations. There is no REST API, no server-side SDK, and no webhook infrastructure. Everything runs locally on macOS through the Apple Events IPC bridge. This reference architecture defines the standard layered approach: a Node.js application layer that calls JXA scripts via `osascript`, a local SQLite cache for fast queries, a change detection poller for event-driven workflows, and optional Shortcuts integration for cross-app automation.
 
+## Prerequisites
+
+- An owned interactive macOS host, exact client TCC consent, and a declared account/folder scope.
+- A reviewed local-only service boundary, encrypted data stores, and an incident/rollback owner.
+- Mocked tests for all application logic; device integration tests run only on a protected self-hosted Mac.
+
+## Instructions
+
+1. Place authorization, input validation, idempotency, and audit logging above the JXA adapter; the adapter should receive only validated scoped commands.
+2. Bind any local service to loopback by default and require an authenticated, approved transport for remote administration.
+3. Treat cache and event data as sensitive replicas: minimize fields, encrypt at rest, restrict access, rotate/delete under policy, and never read NoteStore directly.
+4. Separate liveness from readiness; pause mutations when authorization, reconciliation, or sync health is uncertain.
+
 ## System Architecture
 
 ```
@@ -128,6 +141,14 @@ export class NotesClient {
 | Local HTTP API exposed to network | Security risk if not locked down | Bind to 127.0.0.1 only; use SSH tunnel for remote access |
 | Cache out of sync with Notes | Polling interval too long | Reduce poll interval; use FSEvents on NoteStore.sqlite for faster detection |
 | Template HTML rejected by Notes | Invalid HTML tags | Test templates with a canary note before bulk creation |
+
+## Output
+
+The architecture decision record identifies host ownership, scope, authorization layer, protected data stores, event/reconciliation flow, deployment version, and rollback path. It explicitly states which components are mock-tested versus device-tested and excludes hard-coded account identifiers or note data.
+
+## Examples
+
+Run a Node service on the owned Mac with a loopback-only admin endpoint, a configuration-resolved test folder, and an encrypted metadata-only cache. The worker records an idempotency key before a mutation, validates the scoped result, and pauses its queue if readiness fails; it never exposes a general remote API to Notes.app.
 
 ## Resources
 

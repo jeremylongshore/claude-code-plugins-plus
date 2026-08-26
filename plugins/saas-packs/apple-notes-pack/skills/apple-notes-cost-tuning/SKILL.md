@@ -19,6 +19,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes itself is free with every Apple ID. The only real cost is iCloud storage, which is shared across Photos, iCloud Drive, Mail, Notes, and device backups. For automation workflows, the main cost drivers are large embedded attachments (images, PDFs, scans) that inflate iCloud usage, and the "On My Mac" account that uses local disk instead. Understanding what consumes storage lets you keep notes within the free 5 GB tier or choose the right iCloud+ plan for your organization.
 
+## Prerequisites
+
+- Current pricing and storage policy from Apple or the organization; the table is illustrative and must not be used as a purchase quote.
+- Approval for any archive, deletion, or account move, plus an encrypted backup and restore test.
+- A scoped audit that reports aggregate measures only, not account names, note titles, or content.
+
+## Instructions
+
+1. Use System Settings or the iCloud account owner as the source of truth for current capacity and plan decisions.
+2. Measure aggregate storage indicators for an approved scope; avoid exporting or enumerating unrelated notes to estimate cost.
+3. Propose a reversible archive plan with retention, encryption, reconciliation, and explicit deletion approval.
+4. Do not move notes between accounts automatically—account moves can change sharing, sync, and recovery behavior.
+
 ## iCloud Storage Tiers
 
 | Plan | Storage | Price/mo | Approx Notes Capacity |
@@ -108,6 +121,14 @@ echo "Archived to $ARCHIVE_DIR — review before deleting from Notes"
 | "On My Mac" account missing | Disabled in Notes preferences | Notes > Settings > enable "On My Mac" account |
 | Notes sync paused | Storage quota exceeded | Delete large attachments or upgrade iCloud plan |
 | Cannot determine note sizes | JXA body() returns HTML, not raw bytes | Estimate: HTML chars x 1.5 for actual storage with formatting |
+
+## Output
+
+The cost review produces an aggregate usage trend, documented assumptions, current-price reference, and a reversible recommendation. It excludes note content, titles, account names, and any action that deletes or relocates a note.
+
+## Examples
+
+If aggregate storage is approaching the approved quota, prepare a pilot archive of synthetic or pre-approved records on an encrypted local volume, verify the backup and retention policy, then ask the owner to approve the actual archive and any deletion separately.
 
 ## Resources
 

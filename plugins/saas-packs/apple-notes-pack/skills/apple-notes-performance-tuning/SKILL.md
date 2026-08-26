@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes automation performance degrades linearly with note count because JXA loads all note objects into memory when you access a collection. A vault with 10,000+ notes can take 30+ seconds for a simple list operation. The primary bottleneck is the Apple Events bridge between your script and Notes.app — every property access (name, body, date) is a separate IPC call. This guide covers caching strategies, incremental sync, batch optimization, and architectural patterns to keep automation responsive at scale.
 
+## Prerequisites
+
+- A scoped workload baseline, performance budget, and a non-production corpus for tests.
+- A private encrypted cache with retention, redaction, and explicit access controls; a cache is a duplicate of sensitive notes.
+- A feature flag and rollback plan for polling interval, cache, or batching changes.
+
+## Instructions
+
+1. Measure a bounded read-only workload before changing timeouts, concurrency, or poll intervals.
+2. Minimize fields and property calls; never cache a body when an opaque identifier or timestamp is sufficient.
+3. Keep cache updates idempotent, encrypted, and scoped; reconcile change cursors before writing a new cursor.
+4. Roll back a tuning change if latency, sync behavior, or data-reconciliation evidence regresses.
+
 ## Performance Benchmarks
 
 | Operation | 100 notes | 1,000 notes | 10,000 notes |
@@ -142,6 +155,14 @@ const matches = Notes.defaultAccount.notes.whose({
 | SQLite cache stale | Forgot to re-sync after edits | Run incremental sync on schedule via launchd |
 | `.whose()` returns wrong results | Complex predicates not supported in JXA | Fall back to full load + JS filter for complex queries |
 | iCloud sync slows writes | Each write triggers sync | Batch writes with 1s delay; use "On My Mac" for bulk import |
+
+## Output
+
+Performance tuning yields a baseline, applied configuration, bounded latency result, cache data classification, and rollback result. Metrics and logs use opaque identifiers and aggregate counts; they do not expose note titles, bodies, or query terms.
+
+## Examples
+
+For a slow search, benchmark a scoped metadata-only query in the test corpus, enable a feature-flagged cache that stores only identifiers and modification timestamps, then compare p95 latency and reconciliation correctness before rollout. Disable the flag if cursor reconciliation differs.
 
 ## Resources
 
