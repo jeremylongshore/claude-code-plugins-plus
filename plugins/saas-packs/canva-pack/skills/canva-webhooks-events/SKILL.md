@@ -34,6 +34,12 @@ Receive real-time notifications from Canva via webhooks when users comment on de
 - JWK verification library (`jose` recommended)
 - Webhook URL configured in your integration settings
 
+## Instructions
+
+1. Validate the raw signed JWT/JWK issuer, audience, signature, expiry, and replay/idempotency condition before trusting or parsing the event.
+2. Persist a redacted receipt and durable idempotency key before acknowledgement, then enqueue a worker that rechecks authorization and asset scope before any side effect.
+3. Keep handlers fast, bounded, and fail closed; never process raw event data or execute publication/access changes directly in the request path.
+
 ## Setup
 
 ### Step 1: Configure Webhooks in Canva
@@ -206,6 +212,14 @@ ngrok http 3000
 
 # 3. Trigger events by commenting on a design shared with the authorized user
 ```
+
+## Output
+
+Webhook handling yields a signature/claim verification result, opaque event/operation identifier, idempotency state, queue outcome, and redacted audit receipt. It excludes JWTs, raw payloads, design/user data, signed URLs, and secret headers.
+
+## Examples
+
+When an approved comment event arrives, verify the signed claims before parsing, record the opaque event key, acknowledge only after durable receipt storage, and let a worker fetch the minimum authorized data. A duplicate or invalid event is recorded as a redacted deny/no-op; it never triggers a retry that bypasses verification.
 
 ## Error Handling
 

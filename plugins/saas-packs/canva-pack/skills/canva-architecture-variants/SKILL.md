@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Three validated architecture patterns for Canva Connect API integrations. All use the REST API at `api.canva.com/rest/v1/*` with OAuth 2.0 PKCE tokens. The key architectural decision is how to handle token storage, async operations (exports, autofills), and rate limit management.
 
+## Prerequisites
+
+- A reviewed OAuth/asset authorization model, protected secrets/data stores, current provider constraints, and a named operations owner.
+- Mocked tests and a synthetic-asset integration environment for evaluating variants without using customer designs.
+
+## Instructions
+
+1. Select a variant based on declared tenant isolation, data classification, operational SLOs, and expected export/async workload—not only implementation convenience.
+2. Place authorization, input validation, idempotency, rate/cost limits, and redacted audit logging in front of the Canva adapter in every variant.
+3. Test the chosen variant with synthetic assets, verify failure/rollback behavior, and record the approved scope before production rollout.
+
 ## Variant A: Monolith (Simple)
 
 **Best for:** MVPs, small teams, < 100 Canva users
@@ -201,6 +212,14 @@ Service Layer → Microservice:
 4. Deploy to Kubernetes
 5. Migrate token store to Vault
 ```
+
+## Output
+
+The architecture decision records the chosen variant, scope, authorization/data boundaries, resilience controls, test evidence, and rollback path. It excludes tokens, design contents, signed URLs, and tenant-identifying configuration values.
+
+## Examples
+
+For a multi-tenant export product, choose the variant that isolates tenant credentials and queues, validate a synthetic export with a policy-resolved asset, and document its rate/cost and recovery behavior. Reject a variant that requires exposing a token or sharing customer design data to meet its operational goal.
 
 ## Error Handling
 
