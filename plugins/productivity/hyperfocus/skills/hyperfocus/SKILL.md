@@ -16,6 +16,7 @@ tags:
 - neurodivergent
 - formatting
 compatibility: Designed for Claude Code
+allowed-tools: Read
 ---
 Format all responses for ADHD-optimized reading. Structure beats brevity — clarity is the goal, not compression.
 
