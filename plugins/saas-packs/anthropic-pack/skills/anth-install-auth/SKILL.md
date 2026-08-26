@@ -105,6 +105,16 @@ console.log(`Stop reason: ${message.stop_reason}`);
 - Environment variable `ANTHROPIC_API_KEY` configured
 - Successful API response confirming authentication works
 
+## Examples
+
+For local Python development, install `anthropic` in the project virtual
+environment, export `ANTHROPIC_API_KEY` only in the current shell, then run the
+Step 3 script. Its successful text response confirms both package resolution
+and authentication without adding a secret to the repository. For a Node
+service, set the same variable in the deployment platform's secret manager and
+run the TypeScript check once in a non-production environment; keep the key out
+of source, logs, and client-side bundles.
+
 ## Error Handling
 
 | Error | HTTP Code | Cause | Solution |
