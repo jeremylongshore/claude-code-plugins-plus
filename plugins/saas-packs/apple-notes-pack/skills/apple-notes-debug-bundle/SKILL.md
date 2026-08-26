@@ -33,6 +33,13 @@ iCloud sync failures, and scripting bridge errors that commonly block Notes auto
 - `osascript`, `tar` available (built into macOS)
 - Terminal granted Automation permission for Notes.app in System Preferences > Privacy & Security
 
+## Instructions
+
+1. Obtain incident-owner approval and choose a private, access-controlled destination before collection.
+2. Collect platform version, job configuration, and redacted error classifications first; include account or folder metadata only when essential to diagnosis.
+3. Exclude note titles, bodies, attachment names, TCC database rows, Keychain values, and full home-directory listings.
+4. Encrypt the bundle in transit, share it only with the incident responders, and delete it at the documented retention deadline.
+
 ## Debug Collection Script
 
 ```bash
@@ -48,33 +55,21 @@ echo "Notes.app running: $(pgrep -x Notes > /dev/null && echo Yes || echo No)" >
 echo "Shell: $SHELL ($TERM)" >> "$BUNDLE/environment.txt"
 echo "Timestamp: $(date -u)" >> "$BUNDLE/environment.txt"
 
-# Automation permissions (TCC database)
-echo "=== TCC Permissions ===" > "$BUNDLE/tcc-status.txt"
-sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \
-  "SELECT client, auth_value, auth_reason FROM access WHERE service='kTCCServiceAppleEvents'" \
-  >> "$BUNDLE/tcc-status.txt" 2>/dev/null || echo "Cannot read TCC database (SIP may block)" >> "$BUNDLE/tcc-status.txt"
+# Automation permissions: record only a read-only authorization outcome.
+echo "=== Automation Authorization ===" > "$BUNDLE/tcc-status.txt"
+osascript -l JavaScript -e 'Application("Notes").name(); "authorized"' \
+  >> "$BUNDLE/tcc-status.txt" 2>&1 || echo "authorization check failed" >> "$BUNDLE/tcc-status.txt"
 
-# Account enumeration via JXA
-echo "=== Accounts ===" > "$BUNDLE/accounts.txt"
+# Scoped authorization outcome via JXA; do not enumerate accounts or folders.
+echo "=== Scoped Notes Access ===" > "$BUNDLE/accounts.txt"
 osascript -l JavaScript -e '
   const app = Application("Notes");
-  const accts = app.accounts();
-  accts.forEach(a => {
-    const notes = a.notes().length;
-    const folders = a.folders().length;
-    ObjC.import("stdlib"); // ensure stdio
-    $.system(`echo "${a.name()}: ${notes} notes, ${folders} folders" >> /dev/stdout`);
-  });
-' >> "$BUNDLE/accounts.txt" 2>&1 || echo "JXA account query failed" >> "$BUNDLE/accounts.txt"
+  app.name();
+  "scoped access available";
+' >> "$BUNDLE/accounts.txt" 2>&1 || echo "JXA scoped query failed" >> "$BUNDLE/accounts.txt"
 
-# Note count and folder structure
-echo "=== Folder Structure ===" > "$BUNDLE/folders.txt"
-osascript -l JavaScript -e '
-  const app = Application("Notes");
-  app.defaultAccount.folders().forEach(f => {
-    $.system(`echo "  ${f.name()}: ${f.notes().length} notes" >> /dev/stdout`);
-  });
-' >> "$BUNDLE/folders.txt" 2>&1 || echo "Folder query failed" >> "$BUNDLE/folders.txt"
+# Do not collect folder structure or note counts in a general debug bundle.
+echo "Folder enumeration intentionally omitted" > "$BUNDLE/folders.txt"
 
 # Shortcuts integration check
 echo "=== Shortcuts ===" > "$BUNDLE/shortcuts.txt"
@@ -115,6 +110,10 @@ cat debug-apple-notes-*/console-errors.txt  # Look for sandbox or sync errors
 | Shortcuts integration returns empty | `shortcuts.txt` shows no matches | Create a Notes shortcut manually in Shortcuts.app, then re-run |
 | `brctl` reports conflict | `icloud-sync.txt` shows conflict state | Open Notes.app, resolve duplicate notes, then force sync via iCloud preferences |
 
+## Error Handling
+
+If the collector cannot perform a scoped authorization check, stop collection and report only the failed check and timestamp. If archive creation fails, preserve no partial bundle in a shared directory; remove the temporary directory and retry only after checking disk space and destination permissions. If a responder requests note content or a database copy, require separate incident-owner approval and use the established evidence-handling process rather than expanding this general bundle.
+
 ## Automated Health Check
 
 ```typescript
@@ -147,6 +146,14 @@ function checkAppleNotesHealth(): {
 }
 ```
 
+## Output
+
+The bundle contains redacted platform, authorization, and error-class evidence plus a manifest with collector, timestamp, scope label, checksum, and expiration. It does not include NoteStore copies, note content, account/folder names, shortcut names, or raw TCC records.
+
+## Examples
+
+For a permission failure, collect the authorization outcome, macOS version, and the last redacted job error, encrypt the archive, and attach its checksum to the incident. Do not collect every configured account or folder merely because the script can enumerate them.
+
 ## Resources
 
 - [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
@@ -155,4 +162,4 @@ function checkAppleNotesHealth(): {
 
 ## Next Steps
 
-See `apple-notes-rate-limits`.
+Use `apple-notes-rate-limits` to investigate persistent latency and `apple-notes-incident-runbook` to coordinate a recovery. Retain the bundle only for the incident's approved window, then delete it and record the deletion in the incident receipt.

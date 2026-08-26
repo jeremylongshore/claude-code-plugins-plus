@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes has no built-in metrics API or health endpoint. Observability must be built from the outside: polling note counts and folder states via JXA, monitoring iCloud sync daemon health, tracking osascript response latency, and watching system logs for Notes-related errors. This guide sets up a lightweight monitoring stack using bash scripts, structured JSON logs, and macOS notifications for alerting. For persistent monitoring, deploy the health check as a launchd agent that runs on a schedule.
 
+## Prerequisites
+
+- A job-owned, permission-restricted log directory with rotation and retention limits.
+- A monitoring scope limited to the approved account/folder; counts are sensitive operational metadata and must not be sent to broad telemetry.
+- A defined alert owner and a sustained-failure threshold so transient iCloud or TCC conditions do not trigger unsafe remediation.
+
+## Instructions
+
+1. Collect only health status, bounded latency, and coarse scoped counts required for the alert decision.
+2. Sanitize shell output before emitting JSON; do not interpolate account names, note titles, bodies, or raw errors into notifications.
+3. Alert after the agreed consecutive failure threshold and link to the incident runbook.
+4. Rotate logs and review access periodically; monitoring must never restart iCloud processes or modify Notes state.
+
 ## Health Check Script
 
 ```bash
@@ -126,9 +139,17 @@ function collectMetrics(): NotesMetrics {
 |-------|-------|----------|
 | Latency spikes >10s | Notes.app indexing or large iCloud sync | Transient; alert only if sustained over 3 consecutive checks |
 | Note count drops to 0 | iCloud account signed out or TCC revoked | Check `defaults read MobileMeAccounts`; re-authenticate |
-| `bird` process not running | iCloud daemon crashed | `killall bird` triggers automatic restart by launchd |
+| `bird` process not running | iCloud daemon unavailable | Alert the owner and follow supported macOS/iCloud recovery guidance |
 | Health check script fails | `osascript` timeout | Add `timeout 15` prefix to osascript calls |
 | Log file grows unbounded | No rotation configured | Add `logrotate` config or truncate weekly via launchd |
+
+## Output
+
+The health check emits a redacted timestamped health result, latency bucket, and bounded status counters to the restricted log. The alert states only that the scoped health check failed and where the owner can inspect the protected evidence.
+
+## Examples
+
+If three consecutive checks cannot perform the scoped read-only query, send one deduplicated alert, pause any dependent write queue, and open the incident runbook. Do not place the raw `osascript` error or a note count in a desktop notification.
 
 ## Resources
 

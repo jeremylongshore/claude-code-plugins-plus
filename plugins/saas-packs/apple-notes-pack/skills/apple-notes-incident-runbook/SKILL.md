@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 This runbook covers the most common Apple Notes automation failures and their resolution procedures. Unlike cloud SaaS incidents that involve API endpoints and status pages, Apple Notes incidents are local to the macOS machine: app crashes, TCC permission revocations, iCloud sync failures, and database corruption. Each incident section follows a detect-diagnose-fix-verify structure. Keep this runbook accessible on any machine running Notes automation.
 
+## Prerequisites
+
+- A named incident owner, an approved maintenance window for recovery actions, and a verified backup status.
+- A redacted diagnostic location with restricted access; notes, account names, and raw unified logs can contain sensitive data.
+- A documented escalation route to Apple or device management for sync, TCC, and storage failures.
+
+## Instructions
+
+1. Stop automated writes first and preserve the last successful cursor or operation ledger.
+2. Collect minimal, redacted diagnostics and classify the incident before restarting applications or services.
+3. Use supported UI, MDM, or vendor recovery paths for permissions, iCloud, and storage; do not modify TCC or Notes databases directly.
+4. Validate recovery with a scoped read-only check, reconcile pending mutations, and obtain owner approval before resuming writes.
+
 ## Severity Levels
 
 | Severity | Description | Example | Response Time |
@@ -64,9 +77,8 @@ ps aux | grep -E "(bird|cloudd|nsurlsessiond)" | grep -v grep
 brctl status com.apple.Notes 2>/dev/null || echo "brctl unavailable"
 log show --predicate 'subsystem == "com.apple.notes"' --last 5m 2>/dev/null | tail -20
 
-# FIX: Restart iCloud sync daemons
-killall bird 2>/dev/null; killall cloudd 2>/dev/null
-sleep 10  # Allow daemons to restart and reconnect
+# FIX: Pause automation, inspect Apple System Status, and follow supported
+# macOS/iCloud recovery guidance. Do not terminate iCloud daemons in a runbook.
 
 # VERIFY: Check note count is increasing / stable
 sleep 30
@@ -80,15 +92,8 @@ echo "Note count after sync restart: ${NEW_COUNT:-ERROR}"
 # DETECT: Test Apple Events access
 osascript -l JavaScript -e 'Application("Notes").name()' 2>&1 | grep -q "Not authorized" && echo "TCC: DENIED" || echo "TCC: OK"
 
-# DIAGNOSE: Check TCC database (may require Full Disk Access)
-sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \
-  "SELECT client, allowed FROM access WHERE service='kTCCServiceAppleEvents';" 2>/dev/null
-
-# FIX: Reset and re-prompt
-tccutil reset AppleEvents
-# Run a simple command to trigger the permission dialog
-osascript -l JavaScript -e 'Application("Notes").name()'
-# User must click "Allow" in the system dialog
+# DIAGNOSE/FIX: Review the exact client in System Settings > Privacy & Security
+# > Automation, or use an approved MDM profile. Do not reset system-wide consent.
 
 # VERIFY
 osascript -l JavaScript -e 'Application("Notes").defaultAccount.notes.length'
@@ -97,20 +102,11 @@ osascript -l JavaScript -e 'Application("Notes").defaultAccount.notes.length'
 ## Incident 4: Notes Database Corruption
 
 ```bash
-# DETECT: Notes.app launches but shows no notes or crashes on open
-# DIAGNOSE: Check database integrity
-NOTES_DB="$HOME/Library/Group Containers/group.com.apple.notes/NoteStore.sqlite"
-sqlite3 "$NOTES_DB" "PRAGMA integrity_check;" 2>/dev/null || echo "Cannot access DB (sandboxed)"
-
-# FIX: Force re-download from iCloud
-# 1. Quit Notes
-killall Notes 2>/dev/null
-# 2. Rename local database (iCloud will re-download)
-mv "$HOME/Library/Group Containers/group.com.apple.notes" \
-   "$HOME/Library/Group Containers/group.com.apple.notes.backup.$(date +%s)" 2>/dev/null
-# 3. Relaunch Notes — it will rebuild from iCloud
-open -a Notes
-# WARNING: "On My Mac" notes are NOT in iCloud and will be lost. Back up first.
+# DETECT: Notes.app launches but shows no scoped notes or crashes on open.
+# Preserve the error timestamp and stop automation writes.
+# DIAGNOSE/FIX: Do not inspect, move, rename, or rebuild NoteStore files.
+# Escalate with the owner to supported Apple/device-management recovery after
+# confirming backup status, especially where "On My Mac" notes are in scope.
 ```
 
 ## Error Handling
@@ -122,6 +118,14 @@ open -a Notes
 | Permissions reset after macOS update | OS upgrade resets TCC database | Re-approve automation permissions post-update |
 | Script hangs indefinitely | Notes.app showing modal dialog | Dismiss dialog manually; add `activate()` before operations |
 | Automation works for user A but not B | Per-user TCC grants | Each macOS user must approve automation separately |
+
+## Output
+
+An incident record contains severity, time window, affected automation scope, redacted diagnostics, actions taken, reconciliation status, and the approval to resume. It must not contain note bodies, database copies, or unredacted account/folder names.
+
+## Examples
+
+For a suspected sync incident, pause writes, capture the job error and a redacted system-status check, then wait for the approved recovery path. If data divergence remains, keep the automation stopped and escalate rather than renaming local Notes storage or forcing a re-download.
 
 ## Resources
 

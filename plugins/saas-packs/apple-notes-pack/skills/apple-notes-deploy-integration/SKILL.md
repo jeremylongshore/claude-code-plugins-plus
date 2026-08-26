@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes automation runs exclusively on macOS — there is no cloud deployment path because Notes.app depends on the local Apple Events subsystem and TCC permissions. Deployment means packaging your JXA/osascript automation as a persistent local service. The three deployment models are: launchd agents for scheduled/recurring tasks, Automator workflows for user-triggered actions, and Apple Shortcuts for cross-app automation. Each has different permission requirements and lifecycle management.
 
+## Prerequisites
+
+- An owned interactive macOS user session, an approved launchd label, and explicit TCC consent for the actual client path.
+- Immutable versioned scripts with a tested rollback package; do not deploy from a mutable home-directory glob.
+- A restricted log directory and a non-production account or folder for initial smoke tests.
+
+## Instructions
+
+1. Install a versioned artifact into a user-owned directory with restrictive permissions and validate the plist with `plutil -lint`.
+2. Bootstrap the agent in the GUI user domain; confirm its label, executable path, and environment exactly match the reviewed release.
+3. Run a read-only scoped smoke test before enabling scheduled writes.
+4. Roll back by booting out the exact label and restoring the previously approved artifact; never leave two schedules active.
+
 ## launchd Agent (Recommended for Background Tasks)
 
 ```xml
@@ -121,6 +134,14 @@ osascript -l JavaScript -e 'Application("Notes").defaultAccount.notes.length' &&
 | Logs show "connection invalid" | Screen locked or user switched | Add `LimitLoadToSessionType: Aqua` to plist for GUI session only |
 | Shortcut not found from CLI | Shortcut name mismatch or not saved | `shortcuts list` to verify exact name |
 | Agent runs twice | Both `StartInterval` and `StartCalendarInterval` set | Use only one scheduling mechanism per plist |
+
+## Output
+
+A deployment receipt identifies the artifact version, plist label, macOS user domain, smoke-test mode, log location, and rollback version. It excludes note counts, titles, bodies, account names, and TCC database details.
+
+## Examples
+
+Deploy a read-only health job first, verify its `launchctl print` output and redacted log receipt, then separately approve any write-capable job. If the smoke test fails, boot out the new label and restore the prior reviewed version before investigating.
 
 ## Resources
 
