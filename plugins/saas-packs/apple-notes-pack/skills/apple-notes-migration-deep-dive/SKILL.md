@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Migrating to or from Apple Notes requires understanding that Notes stores content as proprietary HTML with no REST API for bulk operations. All automation goes through JXA/osascript on a local Mac. This guide covers the four most common migration paths with production-tested scripts. Key challenges include: HTML-to-Markdown conversion fidelity, attachment extraction limitations (JXA cannot export binary attachment data directly), and iCloud sync delays that affect timing of bulk imports.
 
+## Prerequisites
+
+- Written scope, migration owner, encrypted backup, rollback decision, and retention policy for both source and destination.
+- A synthetic pilot corpus that includes formatting and attachment edge cases but contains no production data.
+- A durable manifest keyed by source identifier and a target environment/folder that has been explicitly approved.
+
+## Instructions
+
+1. Run export, conversion, and import as separate, inspectable phases; do not stream unreviewed note bodies into a destination.
+2. Sanitize HTML/Markdown and filenames, encrypt intermediate artifacts, and keep content out of shell arguments and logs.
+3. Pilot a small batch, reconcile source and destination manifests, then obtain owner approval before each larger batch.
+4. Make imports idempotent and stop on a timeout, conflict, or attachment-fidelity gap; do not retry blindly.
+
 ## Migration Paths
 
 | From | To | Method | Attachments |
@@ -121,6 +134,14 @@ echo "Imported $COUNT notes"
 | Special characters in title | Shell escaping issues with JXA | Use JSON encoding; pipe through `jq` |
 | Attachments not migrated | JXA cannot write binary attachments | Use Shortcuts "Add Attachment to Note" action |
 | Duplicate notes after re-run | No dedup in import script | Track imported note IDs in a local manifest file |
+
+## Output
+
+A migration produces a protected source receipt, conversion exception report, destination manifest, reconciliation result, and rollback decision. The routine receipt uses opaque identifiers and counts; note titles, bodies, and attachment names remain in controlled artifacts only.
+
+## Examples
+
+Migrate a five-note synthetic pilot into a dedicated test folder, compare every manifest key and expected formatting exception, then delete the pilot destination under the test policy. For a production migration, move in bounded approved batches and pause immediately if the reconciliation count or attachment handling differs from the signed plan.
 
 ## Resources
 

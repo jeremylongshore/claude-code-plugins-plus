@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Each macOS major release can change Apple Notes capabilities, JXA API behavior, and the underlying NoteStore database schema. Automation scripts that work on Ventura may fail on Sonoma due to new properties, changed Apple Events handling, or TCC permission resets. This guide covers version-specific changes, pre-upgrade backup procedures, post-upgrade validation, and a compatibility matrix for JXA features across macOS versions.
 
+## Prerequisites
+
+- A supported-device inventory, a tested encrypted backup, and a documented rollback/incident owner.
+- A non-production test account or folder for optional mutation verification; routine post-upgrade validation is read-only.
+- Reviewed release notes for the actual macOS version, rather than relying solely on the illustrative compatibility table.
+
+## Instructions
+
+1. Pause scheduled writes before the upgrade and capture a redacted pre-upgrade receipt with scope, count, checksum, and automation version.
+2. After the upgrade, review consent in System Settings or MDM for the exact client and run only scoped read-only checks first.
+3. Compare bounded reconciliation data to the pre-upgrade receipt; investigate discrepancies without changing Notes storage.
+4. Re-enable writes only after an owner accepts the validation record; perform any write test in the dedicated test folder.
+
 ## macOS Version Compatibility Matrix
 
 | macOS Version | Notes Features Added | JXA Impact | Breaking Changes |
@@ -95,16 +108,8 @@ fi
 FOLDER_COUNT=$(osascript -l JavaScript -e 'Application("Notes").defaultAccount.folders.length' 2>/dev/null)
 check "Folder access ($FOLDER_COUNT folders)" "$([ -n "$FOLDER_COUNT" ] && echo PASS || echo FAIL)"
 
-# Test write capability
-TEST_NOTE=$(osascript -l JavaScript -e '
-  const Notes = Application("Notes");
-  const n = Notes.Note({name: "__upgrade_test_" + Date.now(), body: "test"});
-  Notes.defaultAccount.folders[0].notes.push(n);
-  n.id();
-' 2>/dev/null)
-check "Write access" "$([ -n "$TEST_NOTE" ] && echo PASS || echo FAIL)"
-# Cleanup
-[ -n "$TEST_NOTE" ] && osascript -l JavaScript -e "Application('Notes').notes.byId('$TEST_NOTE').delete()" 2>/dev/null
+# Keep standard validation read-only. A supervised write test belongs only in
+# the pre-approved non-production test folder.
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
@@ -114,9 +119,8 @@ echo "Results: $PASS passed, $FAIL failed"
 ## Common Post-Upgrade Issues
 
 ```bash
-# TCC permissions reset after upgrade — re-approve
-tccutil reset AppleEvents
-osascript -l JavaScript -e 'Application("Notes").name()'  # Triggers re-prompt
+# Review the exact client permission through System Settings or MDM; do not
+# reset all Apple Events consent to force a prompt.
 
 # launchd agents may need reload after upgrade
 launchctl unload ~/Library/LaunchAgents/com.yourorg.notes-automation.plist
@@ -135,6 +139,14 @@ xcode-select --install
 | New JXA properties cause errors on old OS | Script uses Sonoma features on Ventura | Version-check: `sw_vers -productVersion` before using new APIs |
 | launchd agent not starting | Plist schema changed in new macOS | Re-validate plist: `plutil -lint your.plist` |
 | Smart folder queries return wrong results | Smart folder criteria changed between versions | Re-create smart folders after upgrade; test queries |
+
+## Output
+
+The upgrade record contains device/version identifiers, automation version, redacted scope, backup checksum, read-only validation outcome, and the decision to resume. It excludes raw note exports, account names, and TCC database data.
+
+## Examples
+
+Before a major upgrade, take a scoped encrypted backup and record its count/checksum. After upgrading, perform the read-only smoke test and reconcile it; if it differs, leave scheduled writes disabled and escalate rather than creating and deleting a note in the default folder.
 
 ## Resources
 

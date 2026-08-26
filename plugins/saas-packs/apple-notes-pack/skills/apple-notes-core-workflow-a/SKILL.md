@@ -29,6 +29,19 @@ compatibility: Designed for Claude Code
 
 Primary workflow: automate Apple Notes management with batch creation, template-based note generation, folder organization, and content sync from external sources (Markdown files, RSS, calendar events).
 
+## Prerequisites
+
+- Approved source files, a named target account and pre-created test folder, and a backup/reconciliation plan for bulk changes.
+- Sanitization for external Markdown, feed, or calendar content before it becomes note HTML.
+- A durable source-record key for every import or move so retries can be reconciled.
+
+## Instructions
+
+1. Start with synthetic data in the configured local test folder; do not use a default account or create production folders implicitly.
+2. Validate and sanitize each source record before conversion, then enqueue one mutation at a time with an idempotency key.
+3. Record only opaque source keys and outcomes, inspect a bounded sample, and reconcile counts before widening scope.
+4. Stop on a timeout or unexpected folder match; do not rerun a whole batch blindly.
+
 ## Instructions
 
 ### Step 1: Batch Note Creator from Markdown Files
@@ -166,6 +179,10 @@ osascript -l JavaScript -e '
 | HTML rendering issues | Invalid HTML tags | Use basic tags: h1, h2, p, ul, li, strong |
 | Slow batch import | iCloud sync throttling | Add 1s delay between note creates |
 | Duplicate notes | Script run twice | Check for existing note by name before creating |
+
+## Examples
+
+For a migration rehearsal, import five synthetic Markdown files into a pre-created local test folder and reconcile the five source-record keys. For a live organization change, generate a dry-run move plan first, obtain owner approval, then process a small bounded batch rather than moving every matching note at once.
 
 ## Resources
 

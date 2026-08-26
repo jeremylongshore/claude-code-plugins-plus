@@ -29,6 +29,19 @@ compatibility: Designed for Claude Code
 
 Export Apple Notes to portable formats: Markdown, JSON, HTML files, and SQLite databases. Apple Notes stores content as HTML internally — these workflows convert it to developer-friendly formats.
 
+## Prerequisites
+
+- Authorization for exact folders and fields, an encrypted owner-only destination, and a retention/deletion policy.
+- A test export of synthetic notes and a checksum/reconciliation method.
+- A decision on attachment handling; do not infer that content or attachment export is complete from JXA metadata.
+
+## Instructions
+
+1. Export one named scope at a time, minimize fields, and keep note content out of command history and console output.
+2. Create the destination with restrictive permissions before export; sanitize filenames and HTML before writing derived files.
+3. Verify record count and checksum, then encrypt or move the artifact according to the approved handling policy.
+4. Keep SQLite or search indexes private and time-bounded; they replicate sensitive note data.
+
 ## Instructions
 
 ### Step 1: Export All Notes to JSON
@@ -139,6 +152,10 @@ osascript -l JavaScript -e '
 | HTML artifacts in Markdown | Complex formatting | Use a proper HTML-to-MD library (turndown) |
 | Missing attachments | Images not exported | Attachments need separate export path |
 | Encoding issues | Unicode in note titles | Use safe filename sanitization |
+
+## Examples
+
+For a rehearsal, export a synthetic folder to a temporary encrypted workspace, compare the expected count and checksum, then remove it. For a live backup, send only the resulting record count and artifact checksum to monitoring; never publish titles, folders, or full-text search results in the job log.
 
 ## Resources
 
