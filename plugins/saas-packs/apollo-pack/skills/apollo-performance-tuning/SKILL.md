@@ -202,14 +202,18 @@ const slim = data.people.map(slimPerson);  // ~200 bytes each instead of ~2KB
 ### Step 6: Benchmark Your Endpoints
 
 ```typescript
-async function benchmark() {
+async function benchmark(includePaidEndpoints = false) {
   const endpoints = [
     { name: 'People Search', fn: () => optimizedClient.post('/mixed_people/api_search',
         { q_organization_domains_list: ['apollo.io'], per_page: 1 }) },
-    { name: 'Org Enrich', fn: () => optimizedClient.get('/organizations/enrich',
-        { params: { domain: 'apollo.io' } }) },
     { name: 'Auth Health', fn: () => optimizedClient.get('/auth/health') },
   ];
+
+  // Paid enrichment benchmarks require an approved, budgeted test run.
+  if (includePaidEndpoints) {
+    endpoints.push({ name: 'Org Enrich', fn: () => optimizedClient.get('/organizations/enrich',
+      { params: { domain: 'apollo.io' } }) });
+  }
 
   for (const ep of endpoints) {
     const times: number[] = [];
@@ -233,6 +237,17 @@ async function benchmark() {
 - Parallel search with `p-queue` concurrency control
 - Response slimming reducing memory from ~2KB to ~200B per person
 - Benchmarking script measuring avg and p95 latency
+
+## Examples
+
+For a search-latency regression, capture a baseline with the free search and
+health endpoints against a mock or approved sandbox fixture, then introduce
+connection reuse and a bounded cache behind a feature flag. Compare p95,
+error rate, cache-hit behavior, and result equivalence before promoting the
+change. A paid-enrichment benchmark requires an explicit approval flag, a
+fixed credit budget, and a public organization fixture; otherwise it remains
+out of the run. Roll back the flag if latency improves at the cost of stale,
+incorrect, or over-broadly cached results.
 
 ## Error Handling
 
