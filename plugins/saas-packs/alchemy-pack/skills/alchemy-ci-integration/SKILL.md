@@ -27,6 +27,15 @@ compatibility: Designed for Claude Code
 
 CI/CD pipeline for Alchemy-powered dApps with Hardhat mainnet fork testing, Sepolia deployment, and contract verification.
 
+## Prerequisites
+
+- A repository secret store containing a least-privilege Alchemy test key and,
+  where deployment is authorized, a testnet-only deployer credential.
+- A pinned Hardhat, Solidity, and fork block configuration that has passed
+  locally with synthetic or public-chain fixtures.
+- Branch protection that limits testnet deployment to an approved protected
+  branch and preserves the workflow run as a release receipt.
+
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
@@ -104,6 +113,26 @@ const config = {
 - GitHub Actions with fork-based tests and testnet deployment
 - API key exposure scanning in build output
 - Pinned block number for reproducible CI results
+
+## Examples
+
+Open a pull request that changes a contract test and let the test job run with
+the fork key supplied only through the CI secret context. The expected result
+is a passing pinned-block fork test, type check, and build scan with no key
+material in artifacts or logs. On merge to the protected branch, require the
+separate testnet deployment job to use the scoped testnet credential and save
+the transaction hash as the receipt. If a fork test cannot authenticate, a
+secret scan detects a value, or the deploy step is not explicitly authorized,
+stop the pipeline and rotate or correct the configuration before retrying.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Fork request is rate-limited or unauthorized | Fail the job without exposing the key; verify the secret and account limits. |
+| Test diverges from pinned fork state | Update the fixture deliberately and record the new approved block number. |
+| Build scan finds secret material | Revoke the affected credential, remove it from outputs, and rerun from a clean artifact. |
+| Testnet deployment fails | Preserve the transaction/error receipt and do not promote the change to a production deployment. |
 
 ## Resources
 
