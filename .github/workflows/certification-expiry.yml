@@ -1,0 +1,35 @@
+name: Certification expiry sweep
+
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Regenerate rendering-authoritative certification projection
+        run: |
+          if [ ! -f certification-report.json ]; then
+            echo "No certification report exists; no projection to sweep."
+            exit 0
+          fi
+          node scripts/sweep-certification-expiry.mjs --report certification-report.json --out certification-rendering.json
+      - name: Commit any expiration demotions
+        run: |
+          if [ ! -f certification-report.json ] || git diff --quiet -- certification-rendering.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add certification-rendering.json
+          git commit -m "chore(certification): sweep expired certifications"
+          git push

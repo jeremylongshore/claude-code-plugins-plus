@@ -232,10 +232,11 @@ function buildScaleBlock({ plugins, skills, agents }, categoryCount) {
   ].join('\n');
 }
 
-// § 6A R10 — the certified/pending split renders from the certification report;
-// an absent report renders the honest zero state, never a blank.
+// § 6A R10 — the expiry-swept projection is authoritative for rendering; an
+// absent source report renders the honest zero state, never a blank.
 function buildCertBlock() {
   const reportPath = join(ROOT, 'certification-report.json');
+  const renderingPath = join(ROOT, 'certification-rendering.json');
   // Only a genuinely ABSENT report renders the not-yet-certified state. A
   // present-but-malformed report must fail the generator loudly — treating it
   // as absent would hide a broken certification pipeline behind an honest-
@@ -258,15 +259,32 @@ function buildCertBlock() {
   } catch (err) {
     throw new Error(`certification-report.json exists but is unparseable: ${err.message}`);
   }
-  const { certified, pending } = report ?? {};
+  if (report?.schema_version !== 'certification-report/v1') {
+    throw new Error('certification-report.json has an invalid schema_version');
+  }
+  let rendering;
+  try {
+    rendering = JSON.parse(readFileSync(renderingPath, 'utf-8'));
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error(
+        'certification-report.json exists but certification-rendering.json is absent — run scripts/sweep-certification-expiry.mjs before rendering',
+      );
+    }
+    throw err;
+  }
+  if (rendering?.schema_version !== 'certification-rendering/v1') {
+    throw new Error('certification-rendering.json has an invalid schema_version');
+  }
+  const { certified, pending } = rendering;
   const validCount = (n) => Number.isInteger(n) && n >= 0;
   if (!validCount(certified) || !validCount(pending)) {
     throw new Error(
-      'certification-report.json exists but certified/pending are not non-negative integers — refusing to render a coerced number',
+      'certification-rendering.json has invalid certified/pending counts — refusing to render a coerced number',
     );
   }
   const body =
-    `Certification status from \`certification-report.json\`: ` +
+    `Certification status from expiry-swept \`certification-rendering.json\`: ` +
     `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
     `claim with retained evidence — never a self-approved badge.`;
   return [CERT_START, '', body, '', CERT_END].join('\n');
