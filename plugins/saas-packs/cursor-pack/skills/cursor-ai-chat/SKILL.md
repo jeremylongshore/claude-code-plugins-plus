@@ -19,6 +19,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor AI Chat
 
+## Overview
+
+Use Chat to reason about a bounded question or planned change while preserving human ownership of decisions, edits, review, and validation.
+
+## Prerequisites
+
+- Approved privacy/model settings and a workspace with sensitive paths excluded.
+- A clear question, relevant non-sensitive files, and the project's test/review expectations.
+
+## Instructions
+
+1. Start a topic-scoped chat and attach only the files needed for the question.
+2. Ask for assumptions, tradeoffs, and a testable proposal rather than accepting generated code blindly.
+3. Verify suggestions against source, tests, security controls, and a human code review.
+4. Start a new conversation when context becomes stale or the topic changes.
+
+## Output
+
+- A bounded explanation or proposal with assumptions, affected files, and validation steps.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Answer contradicts repository facts | Inspect the source and restate the question with the correct files. |
+| Conversation loses context | Start a new scoped chat; do not compensate by attaching the entire repository. |
+| Prompt includes sensitive material | Remove it and follow the exposure process before continuing. |
+
+## Examples
+
+Ask Chat to compare SSE and WebSockets for the stated service, attaching only the API contract and architecture note. Require it to list assumptions and a rollout/rollback test plan; then review the proposal before authoring any change.
+
 Master the Cursor AI Chat panel and inline edit for code assistance, debugging, and exploration.
 
 ## Core Chat Interfaces
