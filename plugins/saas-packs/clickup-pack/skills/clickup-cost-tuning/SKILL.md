@@ -168,6 +168,33 @@ class ClickUpUsageTracker {
 | Redundant API calls | No deduplication | Use DataLoader batching |
 | Polling overhead | No webhook setup | Switch to event-driven |
 
+## Prerequisites
+
+- Observed request, cache, webhook, and rate-limit baseline by workload
+- Approved data-freshness, reliability, and cost/plan decision owner
+- Staging workload capable of measuring a proposed change safely
+
+## Instructions
+
+Measure redundant calls, poll cadence, cache hits, and quota headroom before
+changing a plan, concurrency, or caching policy. Prefer correct event-driven
+invalidation and batching over a higher limit; evaluate one change at a time
+and retain the last verified configuration for rollback.
+
+## Output
+
+Publish a capacity/cost decision with baseline, proposed control, expected and
+observed request rate, freshness/error impact, owner approval, and rollback
+trigger. Pricing or quota estimates are not guarantees and must not include
+private task content or credentials.
+
+## Examples
+
+Replace an hourly polling job in staging with a webhook-driven invalidation
+path, compare request count and freshness for a week, then decide whether the
+existing plan remains sufficient. If 429s or stale data increase, restore the
+prior policy and correct the event path before changing plan tier.
+
 ## Resources
 
 - [ClickUp Pricing](https://clickup.com/pricing)

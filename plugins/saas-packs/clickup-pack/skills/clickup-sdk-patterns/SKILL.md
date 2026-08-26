@@ -264,6 +264,33 @@ async function getValidatedTask(taskId: string) {
 | Factory | Multi-tenant SaaS | Per-tenant isolation |
 | Zod validation | Response parsing | Catches API contract changes |
 
+## Prerequisites
+
+- Scoped credential injection and tenant-to-workspace authorization boundary
+- Typed contract schemas, error taxonomy, retry/idempotency policy, and owner
+- Sanitized fixtures plus a protected integration test environment
+
+## Instructions
+
+Centralize requests through the client boundary, validate provider responses,
+classify failures, enforce tenant/workspace isolation, and emit only redacted
+correlation data. Do not cache a tenant client across incompatible credentials
+or treat malformed/unknown provider data as safe; fail closed and surface the
+contract mismatch for review.
+
+## Output
+
+Return validated domain objects or typed retryable/terminal errors with safe
+correlation metadata. The SDK boundary must never log tokens, raw task bodies,
+comments, or responses beyond the fields required by the caller.
+
+## Examples
+
+Use a distinct tenant client to fetch a staging task, validate it through Zod,
+and assert that a malformed response returns a contract error without cache
+poisoning. If authorization crosses tenant or workspace boundaries, reject it
+and investigate identity mapping before retrying.
+
 ## Resources
 
 - [ClickUp API Reference](https://developer.clickup.com/)

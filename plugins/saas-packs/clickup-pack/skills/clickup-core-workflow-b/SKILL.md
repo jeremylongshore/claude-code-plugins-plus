@@ -186,6 +186,33 @@ async function scaffoldProject(teamId: string, projectName: string) {
 | 403 | Insufficient permissions | Need admin access for space creation |
 | 404 | Invalid parent ID | Verify team_id/space_id/folder_id |
 
+## Prerequisites
+
+- Authorized workspace/team scope and a naming/ownership policy
+- Approved hierarchy template, permission model, and cleanup/rollback route
+- A staging or pilot workspace for scaffold validation
+
+## Instructions
+
+Resolve every parent ID and permission before creating a space, folder, list,
+or view. Create one hierarchy in a controlled pilot, verify ownership and
+sharing, then promote the template in bounded batches. On a missing parent or
+authorization failure, stop rather than selecting a broader workspace or admin
+identity.
+
+## Output
+
+Return a redacted scaffold receipt with target IDs, hierarchy/template version,
+owner/permission checks, created resources, validation result, and rollback
+decision. Do not log full task data, private views, user profiles, or tokens.
+
+## Examples
+
+Create one staging space with the named folders and lists, verify that the
+expected group can access only its intended resources, then delete the pilot if
+the template is not approved. If a view or list lands under the wrong parent,
+remove it and correct the ID mapping before creating another.
+
 ## Resources
 
 - [Get Spaces](https://developer.clickup.com/reference/getspaces)
