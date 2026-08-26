@@ -183,6 +183,22 @@ console.log('Enriched:', redactPII(enrichedRow));
 | Over-permissioned users | Viewers running enrichments | Audit roles in Settings > Members |
 | PII in application logs | grep logs for email patterns | Add PII redaction to log pipeline |
 
+## Output
+
+Maintain a security-control record with secret references and owners, effective
+roles, callback authentication result, PII logging/redaction evidence, rotation
+date, incident route, and approved exceptions. Never include live tokens,
+webhook secrets, raw enrichment records, or audit-export contents in this
+record or its supporting logs.
+
+## Examples
+
+Rotate a staging key through the secret manager, confirm the service restarts
+with the new reference, and prove that a callback with an invalid signature is
+rejected without logging its body. If a key or PII appears in history/logs,
+revoke or contain it, follow the incident process, and verify the corrective
+control before re-enabling the integration.
+
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)

@@ -226,6 +226,20 @@ console.log('All schemas valid.');
 | Integration test flaky | Clay API latency varies | Add retry logic, increase timeout |
 | Credit waste in CI | Test sends too many rows | Add MAX_ROWS guard, use minimal fixtures |
 
+## Output
+
+Publish a redacted CI receipt with fixture/schema version, mock and integration
+results, bounded-row budget result, artifact location, promotion decision, and
+any exception owner. CI secrets, webhook URLs, provider keys, and raw lead
+fixtures remain protected and unavailable to untrusted pull-request code.
+
+## Examples
+
+Run schema and mocked callback tests for every pull request, then run a single
+synthetic integration test only in a protected environment with its scoped
+secret. Fail the workflow if the row cap, schema, authorization, or data
+redaction assertion fails; do not retry by increasing quotas or test scope.
+
 ## Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)

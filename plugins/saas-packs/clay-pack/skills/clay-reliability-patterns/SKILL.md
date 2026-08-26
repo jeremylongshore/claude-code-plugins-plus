@@ -339,6 +339,21 @@ async function reliableEnrich(lead: Record<string, unknown>, webhookUrl: string)
 | Silent webhook failures | No health monitoring | Track success/failure rates |
 | Clay outage blocks pipeline | No fallback | Implement cache + queue fallback |
 
+## Output
+
+Produce a reliability receipt with incoming workload scope, idempotency key,
+queue/DLQ state, circuit and credit status, retry count, health result,
+operator decision, and recovery evidence. A queued or acknowledged request is
+not complete until its downstream processing and required audit state are
+confirmed.
+
+## Examples
+
+Simulate a staging webhook outage, prove that the circuit opens and the lead is
+stored once in the DLQ without exposing its raw data in logs, then restore the
+endpoint and replay through the reviewed worker. If a replay fails validation,
+leave it quarantined for operator review rather than repeatedly retrying it.
+
 ## Resources
 
 - [Clay Community](https://community.clay.com)
