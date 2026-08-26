@@ -128,6 +128,30 @@ print("Status:", response.message.content[0].text)
 | `429 Too Many Requests` | Trial rate limit hit | Wait 60s or upgrade to production key |
 | `MODULE_NOT_FOUND cohere-ai` | Package not installed | Run `npm install cohere-ai` |
 
+## Examples
+
+Use a local secret store or CI secret injection, then fail fast before issuing a
+request if the key was not supplied. The check prevents an accidental unauthenticated
+request while keeping the credential out of source control and logs.
+
+```typescript
+import { CohereClientV2 } from 'cohere-ai';
+
+const token = process.env.CO_API_KEY;
+if (!token) throw new Error('CO_API_KEY is required; configure it in the secret manager');
+
+const client = new CohereClientV2({ token });
+const result = await client.chat({
+  model: 'command-r7b-12-2024',
+  messages: [{ role: 'user', content: 'Reply with OK.' }],
+  maxTokens: 5,
+});
+console.log(result.message?.content?.[0]?.text);
+```
+
+For a CI verification, inject `CO_API_KEY` only into the trusted job that needs it,
+mask it in the runner, and rotate it immediately if it appears in an artifact or log.
+
 ## SDK Auto-Detection
 
 The SDK reads `CO_API_KEY` automatically if set. You can skip the `token` param:
