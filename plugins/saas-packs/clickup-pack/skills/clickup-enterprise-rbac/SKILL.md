@@ -25,6 +25,21 @@ compatibility: Designed for Claude Code
 
 Enterprise access patterns for ClickUp API v2. ClickUp's role system is built into the workspace, and the API surfaces roles via member objects. OAuth 2.0 enables multi-workspace apps where each user authorizes their own workspaces.
 
+## Prerequisites
+
+- Named workspace owner and approved role/access model
+- Scoped OAuth/API identities with documented integration ownership
+- Inventory of spaces/lists, data sensitivity, groups, and privileged actions
+- Offboarding, access-review, token-rotation, and incident procedures
+
+## Instructions
+
+Evaluate effective workspace and list permissions before every privileged API
+action, apply only the minimum role/group change, then verify the resulting
+access with a representative least-privilege check. Keep production automation
+on dedicated identities and expire exceptional access; never rely solely on a
+displayed role name when resource-level sharing may differ.
+
 ## ClickUp Role Model
 
 ClickUp workspace members have role IDs in the API:
@@ -203,6 +218,21 @@ function logClickUpAction(entry: Omit<ClickUpAuditEntry, 'timestamp'>): void {
 | Role check fails | User role changed in ClickUp | Re-fetch member data from API |
 | Token revoked | User disconnected app | Handle 401, prompt re-auth |
 | Guest access denied | Endpoint requires member+ | Check `role` field before API call |
+
+## Output
+
+Publish a redacted access-review record with workspace/list scope, effective
+roles/groups, integration identities, privileged actions, audit evidence,
+exceptions and expiry, token owner, and remediation status. Do not export
+unnecessary member profiles, private tasks, or live authentication material.
+
+## Examples
+
+For a new engineering integration, create or approve a scoped service identity,
+verify that it can update only its designated list and cannot read a restricted
+list, then capture the result in the access review. If a former employee or
+over-broad group remains active, remove access, test dependent automation, and
+document the minimum remediation.
 
 ## Resources
 

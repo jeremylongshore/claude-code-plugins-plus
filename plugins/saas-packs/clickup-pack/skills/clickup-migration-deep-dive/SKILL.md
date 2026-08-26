@@ -28,6 +28,21 @@ compatibility: Designed for Claude Code
 
 Migrate project data to ClickUp from external tools or between ClickUp workspaces using API v2. Covers data mapping, batch creation, custom field migration, and validation.
 
+## Prerequisites
+
+- Approved source and destination owners, scopes, and change window
+- Exported source inventory plus a field/status/assignee mapping decision
+- Scoped API credentials and separate staging or reversible pilot destination
+- Verified backup, idempotency keys, reconciliation query, and rollback owner
+
+## Instructions
+
+Map and validate a small representative sample before any bulk creation, then
+create in bounded batches with durable source IDs and rate limits. Reconcile
+counts, statuses, custom fields, relationships, and permissions after every
+batch; do not retire the source system or cancel its access until the agreed
+validation window confirms the migration is complete.
+
 ## Migration Types
 
 | Source | Complexity | Key Challenge |
@@ -234,6 +249,21 @@ async function validateMigration(
 | Status not found | Status name mismatch | Map source statuses to ClickUp statuses |
 | Assignee not found | Email not in workspace | Invite user first or skip assignment |
 | Custom field UUID mismatch | Different workspace | Re-fetch field UUIDs via `/list/{id}/field` |
+
+## Output
+
+Produce a migration receipt with source/destination scope, mappings, batch and
+task counts, skipped/failed items, custom-field and assignee decisions,
+reconciliation result, approvals, and rollback status. Preserve redacted audit
+data rather than user tokens, raw private task content, or unnecessary member
+details.
+
+## Examples
+
+Migrate one staging list with ten representative tasks, map its status and one
+custom field, then compare source IDs and target tasks before proceeding. If
+the reconciliation finds missing records or a field mapping is ambiguous, stop
+the next batch and repair the map instead of recreating tasks blindly.
 
 ## Resources
 

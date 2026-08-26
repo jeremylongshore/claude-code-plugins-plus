@@ -27,6 +27,21 @@ compatibility: Designed for Claude Code
 
 Collect diagnostic information for troubleshooting ClickUp API v2 issues. Generates a redacted bundle safe for sharing with support.
 
+## Prerequisites
+
+- Authorized diagnostic access and a scoped token injected from a secret store
+- A secure workspace and support/incident reference governing what may be shared
+- Redaction rules for task content, member data, workspace names, and tokens
+- Local storage and retention controls for the generated archive
+
+## Instructions
+
+Collect only the minimum redacted connectivity, rate-limit, workspace, and
+correlation evidence needed to classify the issue. Inspect the archive locally
+before sharing, remove unapproved private content, and regenerate it if secrets
+or task data appear; do not work around a failing diagnostic by pasting tokens
+or entire API responses into a ticket.
+
 ## Quick Health Check
 
 ```bash
@@ -176,6 +191,20 @@ async function collectDiagnostics(): Promise<ClickUpDiagnostics> {
 | High latency (>2s) | Check latencyMs | Network/region issue |
 | Rate limited (0 remaining) | Check X-RateLimit-Remaining | Wait for reset or upgrade plan |
 | Workspace missing | Check teams.json | Re-authorize workspace |
+
+## Output
+
+Generate a timestamped, redacted diagnostic bundle with environment, endpoint
+status, rate-limit state, safe IDs, collection failures, review decision, and
+support-case reference. It must exclude live tokens, task descriptions,
+comments, attachments, and unnecessary member details.
+
+## Examples
+
+For a failing task update, collect the sanitized HTTP status, reset time, list
+ID, and correlation ID, review the archive, then attach it to the named support
+case. If the archive contains a task title or secret, quarantine it, adjust the
+collection filter, and create a replacement bundle before escalation.
 
 ## Resources
 

@@ -26,6 +26,21 @@ compatibility: Designed for Claude Code
 
 CRUD operations on ClickUp tasks via API v2. Tasks live in Lists and support assignees, priorities (1-4), statuses, due dates, tags, checklists, and custom fields.
 
+## Prerequisites
+
+- A scoped ClickUp API/OAuth token and verified workspace/list permission
+- Approved target list, task schema, assignee policy, and data classification
+- Idempotency/reconciliation approach for any create or bulk update operation
+- A non-production or limited pilot path for automation changes
+
+## Instructions
+
+Resolve workspace, list, task, and custom-field IDs before mutation; validate
+the intended state and actor authorization, then make one bounded create/update
+or batch. Record the returned task ID and re-read its material fields to
+confirm the desired result. Fail closed on unknown status, list, assignee, or
+permission rather than falling back to a broader workspace action.
+
 ## Endpoints
 
 | Operation | Method | Endpoint |
@@ -159,6 +174,20 @@ async function searchTasks(teamId: string, query: string) {
 | 401 | Invalid token | Re-authenticate |
 | 404 | Invalid list_id or task_id | Verify IDs via GET endpoints |
 | 403 | No permission on this list | Check workspace membership |
+
+## Output
+
+Return a redacted task-operation record with target IDs, requested and observed
+state, idempotency key, actor scope, validation result, and rollback/recovery
+decision. Do not include task descriptions, tokens, private comments, or full
+member data in general logs or automation receipts.
+
+## Examples
+
+Create one staging task with a deterministic external key, re-read the task to
+verify status and assignee, then repeat the request to prove it does not create
+a duplicate. If the list or assignee is unauthorized, return a classified
+failure and ask the owner to correct scope instead of switching to an admin key.
 
 ## Resources
 
