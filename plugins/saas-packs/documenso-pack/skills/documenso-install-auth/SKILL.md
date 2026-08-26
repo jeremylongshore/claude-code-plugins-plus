@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Install & Auth
 
+## Output
+
+- A scoped Documenso credential/reference for the intended environment, with a verified low-impact authorization check.
+- A secret-ownership and revocation path that keeps tokens and signing material out of repositories and logs.
+
+## Examples
+
+Inject a development credential from the approved secret manager, create or read a synthetic document through a least-privilege role, and record only environment/result. If a key or signing URL is exposed, revoke it first and reissue after investigation; do not reuse it while attempting cleanup.
+
 ## Overview
 
 Set up the Documenso SDK and configure API authentication for document signing. Covers the TypeScript SDK (`@documenso/sdk-typescript`), the Python SDK (`documenso-sdk-python`), and raw REST API usage. Documenso exposes two API versions: **v1** (legacy, documents only) and **v2** (envelopes, multi-document, recommended for new work).

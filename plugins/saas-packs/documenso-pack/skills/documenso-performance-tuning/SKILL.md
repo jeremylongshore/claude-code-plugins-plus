@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Performance Tuning
 
+## Output
+
+- A measured performance change with document/signing lifecycle, authorization, audit, and reliability guardrails.
+- A reversible change record with aggregate metrics, owner, threshold, and rollback decision.
+
+## Examples
+
+Measure synthetic-document workflow latency, throughput, error rate, and callback completion in staging, change one approved capacity/cache/concurrency setting, and compare against baseline. Revert if signing state, authorization, audit, or error behavior regresses; do not use real documents or weaken controls to improve a benchmark.
+
 ## Overview
 
 Optimize Documenso integrations for speed and efficiency. Key strategies: reduce API round-trips with templates, cache document metadata, batch operations with concurrency control, and use async processing for bulk signing workflows.
