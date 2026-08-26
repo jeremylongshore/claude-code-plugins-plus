@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso SDK Patterns
 
+## Output
+
+- A scoped SDK boundary with document authorization, idempotency, redacted telemetry, and safe error handling.
+- A test-backed client design that never logs signing URLs, document content, signer PII, or credentials.
+
+## Examples
+
+Instantiate the SDK with a development secret reference, create a synthetic test document with a stable idempotency key, and assert the mocked request shape in unit tests. For one development integration check, record only correlation ID and lifecycle state; never log document or signer payloads.
+
 ## Overview
 
 Production-ready patterns for the Documenso TypeScript SDK (`@documenso/sdk-typescript`) and Python SDK. Covers singleton clients, typed wrappers, error handling, retry logic, and testing patterns.
