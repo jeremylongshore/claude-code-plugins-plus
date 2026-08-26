@@ -27,7 +27,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "axe-core": "^4.11.4"
   }
 }
