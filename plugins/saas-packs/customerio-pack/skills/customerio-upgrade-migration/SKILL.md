@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Upgrade & Migration
 
+## Output
+
+- A staged migration record with schema/template compatibility, environment evidence, owner, and rollback decision.
+- A preserved prior configuration and safe observation window before any irreversible cleanup.
+
+## Examples
+
+Migrate a development workspace first using synthetic profiles and versioned event/template contracts. Verify delivery, consent, attributes, and observability before staging and production canaries. If compatibility or recipient behavior differs, roll back to the prior version and stop promotion; do not bulk-replay production events to test a migration.
+
 ## Current State
 
 !`npm list customerio-node 2>/dev/null | grep customerio || echo 'customerio-node: not installed'`
