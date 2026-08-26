@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Core Workflow B: Templates & Direct Signing
 
+## Output
+
+- A reviewed template/direct-signing workflow with role-limited access, lifecycle validation, and a safe disable/rollback action.
+- A redacted receipt showing environment, document/template version, state transitions, and result.
+
+## Examples
+
+Create a development template with synthetic fields and signer, verify role order, expiration, authentication, signing state, and callback behavior, then disable/archive the test document. Do not use real agreements or signer identity for the walkthrough, and stop promotion if authorization or lifecycle state differs from the review.
+
 ## Overview
 
 Create reusable templates, generate documents from templates with prefilled fields, and implement direct signing links for public/anonymous signers. Templates define the PDF, fields, and recipient roles once — then stamp out documents on demand.

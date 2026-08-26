@@ -23,6 +23,21 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Production Checklist
 
+## Instructions
+
+1. Complete evidence gates for workspace/identity, template/version review, signer authorization, data/retention, callbacks, audit, monitoring, and rollback.
+2. Validate the exact production role/audience and signing lifecycle with approved safe checks.
+3. Stop production enablement when any document, identity, security, or owner gate is unverified.
+4. Record the named go/no-go decision and post-release observation result.
+
+## Output
+
+- A production-readiness receipt with owners, evidence links, approved exceptions, and tested rollback path.
+
+## Examples
+
+Validate a new template in staging with synthetic signers, verify the production access roles and callback endpoint under review, then release to an approved canary. If authorization, state, or audit behavior differs, halt the release and restore the prior approved template.
+
 ## Overview
 
 Complete checklist for deploying Documenso integrations to production, covering security, reliability, monitoring, and compliance readiness.

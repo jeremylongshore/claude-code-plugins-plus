@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Deploy Integration
 
+## Output
+
+- A versioned, staged document/signing deployment with owner approval, validation evidence, and rollback reference.
+- A protected promotion path that prevents unreviewed configurations from affecting production documents or signers.
+
+## Examples
+
+Deploy a synthetic document workflow to staging with scoped credentials, verify authorization, signing lifecycle, webhook verification, and redacted alerts, then use an approved production canary. Stop and roll back if audience, access, or lifecycle behavior differs; do not place document data or signing links in deployment logs.
+
 ## Overview
 
 Deploy Documenso-integrated applications and self-hosted Documenso instances to Docker, Kubernetes, serverless, and cloud platforms. Covers both app deployment (your code that uses the Documenso API) and self-hosted Documenso deployment.
