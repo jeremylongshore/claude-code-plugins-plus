@@ -19,15 +19,15 @@
     "test:production": "npx playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.3.0",
-    "astro": "^6.4.2",
-    "fuse.js": "^7.3.0",
-    "tailwindcss": "^4.3.0"
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.4",
+    "fuse.js": "^7.5.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
-    "@playwright/test": "^1.60.0",
-    "archiver": "^7.0.1",
-    "axe-core": "^4.11.4"
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
+    "archiver": "^8.0.0",
+    "axe-core": "^4.13.0"
   }
 }
