@@ -67,6 +67,45 @@ never certified.
 - A producing identity may not record its own final verdict. E5 is enforced by
   the independent-identity ledger boundary, not a reviewer assertion.
 
+## Certification and waiver authority
+
+This policy is tied to the existing maintainer ladder, live roster, and path
+ownership: [GOVERNANCE.md](../GOVERNANCE.md),
+[MAINTAINERS.md](../MAINTAINERS.md), and
+[.github/CODEOWNERS](../.github/CODEOWNERS). Their current ownership of
+`/000-docs/` and `/freshie/` is the required human authorization boundary for
+this standard and its ledger; a GitHub approval is not itself a certification.
+
+1. **Only an independent CI recording identity may certify.** The identity
+   that produced an evaluation, authored the artifact, or implemented its
+   certification change may never record or sign that artifact's final
+   certification verdict. Until the machine-enforced independent-identity
+   check exists, the certified population remains zero; an administrator merge
+   bypass cannot substitute for it.
+2. **A waiver may be authorized only by an active Approver or Maintainer for
+   the affected CODEOWNERS area, with Lead final authority for a cross-area
+   waiver.** At filing time the active roster and applicable ownership rules
+   are resolved from `MAINTAINERS.md` and `.github/CODEOWNERS`; a waiver does
+   not grant a role or outlive an owner's active roster entry.
+3. **Every waiver is a time-bounded record, not prose.** It must name a stable
+   waiver ID, affected artifact and failing criterion, authorizing owner and
+   their CODEOWNERS area, written reason, issued-at timestamp, and expiry. An
+   absent, malformed, expired, or area-mismatched waiver is invalid and the
+   evaluator treats the criterion as failed.
+
+### Never-waivable conditions
+
+The following conditions are never waivable by any role, including the Lead:
+
+- a `REFUSE` finding;
+- a security-class error; or
+- an unresolved provenance contradiction.
+
+A waiver cannot convert any never-waivable condition into `CERTIFIED`,
+`CERTIFY-PENDING-EVIDENCE`, or an advisory pass. It may only be considered for
+a non-security, non-provenance criterion where the machine policy explicitly
+allows it; it never overrides the full G1–G10/E1–E6 conjunction.
+
 ## Change control
 
 Any change to a G or E criterion, tier mapping, or its machine verifier must
