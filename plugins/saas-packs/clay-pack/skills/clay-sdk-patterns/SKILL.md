@@ -283,6 +283,14 @@ app.post('/api/clay/callback', (req, res) => {
 });
 ```
 
+## Output
+
+Return typed, validated enrichment results or a classified retryable/terminal
+failure with a correlation ID. The client and callback boundary must redact
+webhook URLs, credentials, and unneeded lead attributes in logs; callers must
+not treat an HTTP acknowledgement as proof that downstream enrichment was
+processed.
+
 ## Resources
 
 - [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)

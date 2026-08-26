@@ -166,6 +166,22 @@ curl -X POST "$CLAY_WEBHOOK_URL" \
 | Higher credit usage than expected | Actions now counted separately | Monitor both Data Credits and Actions |
 | Webhook stopped working | Plan change affected access | Verify webhook feature on current plan |
 
+## Output
+
+Create a migration receipt with source and target plan/features, affected
+tables and integrations, projected and observed credit use, staging evidence,
+production approval, and rollback result. Pricing or feature documentation is
+not a deployment guarantee; retain the old working configuration until the new
+path is proven against the intended workspace.
+
+## Examples
+
+Test a plan-related webhook change against a staging table with a synthetic
+row, confirm authentication, idempotency, and downstream delivery, then
+compare credit consumption to the documented baseline. If a required feature
+is absent or a callback fails, restore the former integration and delay the
+cutover rather than attempting a live workaround.
+
 ## Resources
 
 - [Clay Pricing Change 2026](https://www.clay.com/pricing)
