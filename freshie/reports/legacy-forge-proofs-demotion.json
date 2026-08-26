@@ -1,0 +1,34 @@
+{
+  "schema_version": "forge-proof-demotion/v1",
+  "status": "published-demotion",
+  "source": "000-docs/727-AT-ARCH-master-modernization-blueprint.md §9 S3/S9",
+  "reason_code": "E0-PRIMARY-ARTIFACT-UNRETAINED",
+  "summary": "These legacy behavioral rows are assertions, not retained behavioral evidence. They must not light a public verification badge.",
+  "records": [
+    {
+      "plugin_name": "databricks-pack",
+      "jrig_run_id": 2,
+      "evidence_class": "E0",
+      "artifact_uri": null,
+      "artifact_sha256": null
+    },
+    {
+      "plugin_name": "databricks-pack",
+      "jrig_run_id": 4,
+      "evidence_class": "E0",
+      "artifact_uri": null,
+      "artifact_sha256": null
+    },
+    {
+      "plugin_name": "databricks-pack",
+      "jrig_run_id": 5,
+      "evidence_class": "E0",
+      "artifact_uri": null,
+      "artifact_sha256": null
+    }
+  ],
+  "rendering": {
+    "badge": "disabled",
+    "claim_ceiling": "E0"
+  }
+}

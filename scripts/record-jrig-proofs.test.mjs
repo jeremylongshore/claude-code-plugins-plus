@@ -218,12 +218,12 @@ test('(a2) all-ship multi-model result records passed=1 with the weakest layer c
   assert.equal(JSON.parse(row.evidence).models.length, 2);
 });
 
-test('(a3) legacy forge_proofs.run_id migrates in place to jrig_run_id', () => {
+test('(a3) the three unretained legacy proofs migrate to E0 with separate run namespaces', () => {
   const dir = tmpDir();
   const db = freshDb(dir);
   execFileSync('sqlite3', [
     db,
-    'CREATE TABLE forge_proofs (id INTEGER PRIMARY KEY, plugin_name TEXT NOT NULL, run_id INTEGER, verification_type TEXT NOT NULL, passed INTEGER NOT NULL, evidence TEXT, layers_passed INTEGER, total_layers INTEGER, baseline_delta REAL, verified_at TEXT, UNIQUE(plugin_name, verification_type, run_id));',
+    "CREATE TABLE forge_proofs (id INTEGER PRIMARY KEY, plugin_name TEXT NOT NULL, run_id INTEGER, verification_type TEXT NOT NULL, passed INTEGER NOT NULL, evidence TEXT, layers_passed INTEGER, total_layers INTEGER, baseline_delta REAL, verified_at TEXT, UNIQUE(plugin_name, verification_type, run_id)); INSERT INTO forge_proofs (plugin_name, run_id, verification_type, passed, evidence) VALUES ('databricks-pack', 2, 'tier3-jrig', 1, '{\"retention\":\"not retained\"}'), ('databricks-pack', 4, 'tier3-jrig', 1, '{\"retention\":\"not retained\"}'), ('databricks-pack', 5, 'tier3-jrig', 1, '{\"retention\":\"not retained\"}');",
   ]);
   const result = writeFixture(dir, 'result.json', fixtureResult());
 
@@ -231,6 +231,15 @@ test('(a3) legacy forge_proofs.run_id migrates in place to jrig_run_id', () => {
   const columns = queryRows(db, 'PRAGMA table_info(forge_proofs);').map((row) => row.name);
   assert.ok(columns.includes('jrig_run_id'));
   assert.ok(!columns.includes('run_id'));
+  const legacy = queryRows(
+    db,
+    "SELECT jrig_run_id, evidence_class, artifact_uri, artifact_sha256 FROM forge_proofs WHERE plugin_name='databricks-pack' ORDER BY jrig_run_id;",
+  );
+  assert.deepEqual(legacy, [
+    { jrig_run_id: 2, evidence_class: 'E0', artifact_uri: null, artifact_sha256: null },
+    { jrig_run_id: 4, evidence_class: 'E0', artifact_uri: null, artifact_sha256: null },
+    { jrig_run_id: 5, evidence_class: 'E0', artifact_uri: null, artifact_sha256: null },
+  ]);
   const [row] = queryRows(
     db,
     "SELECT jrig_run_id FROM forge_proofs WHERE plugin_name='legacy-pack';",
