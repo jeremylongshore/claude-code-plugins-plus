@@ -45,7 +45,7 @@ jobs:
       sha: ${{ steps.guard.outputs.sha }}
     steps:
       - name: Check out trusted default-branch guard
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main
           persist-credentials: false
@@ -72,7 +72,7 @@ jobs:
     if: ${{ needs.guard.outputs.eligible == 'true' }}
     steps:
       - name: Check out trusted preflight implementation
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: main
           persist-credentials: false
