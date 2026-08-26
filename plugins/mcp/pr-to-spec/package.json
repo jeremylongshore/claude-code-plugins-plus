@@ -52,7 +52,7 @@
     "@octokit/rest": "^21.1.1",
     "commander": "^13.1.0",
     "yaml": "^2.9.0",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
