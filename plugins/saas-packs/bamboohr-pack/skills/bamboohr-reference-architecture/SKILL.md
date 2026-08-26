@@ -389,6 +389,10 @@ export function loadConfig(): BambooHRIntegrationConfig {
 - Scheduled sync jobs with cron
 - Environment-specific configuration
 
+## Examples
+
+Use an API boundary that authenticates the caller, checks a policy-managed employee/field scope, and creates an idempotency receipt before delegating to a BambooHR adapter. Keep event queues, caches, and audit stores encrypted and access-controlled; workers must recheck authorization before side effects and pause on webhook or reconciliation uncertainty.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

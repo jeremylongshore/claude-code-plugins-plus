@@ -211,6 +211,10 @@ class BambooHRRateLimitMonitor {
 - Request volume reduction via custom reports and incremental sync
 - Rate limit monitoring with stats
 
+## Examples
+
+Set a conservative queue limit based on observed account behavior and current vendor guidance, attach an idempotency key to each workflow, and honor retry signals before resubmission. When throttled, pause the scoped queue, preserve a redacted receipt, and reconcile completion before increasing concurrency or moving the cursor.
+
 ## Error Handling
 
 | Signal | Detection | Action |

@@ -246,6 +246,10 @@ console.log(`Webhook registered: ${webhook.id}`);
 - Webhook endpoint configured and registered
 - Auto-scaling and health monitoring active
 
+## Examples
+
+Deploy a versioned artifact with BambooHR secrets injected only at runtime, begin in a sandbox or read-only production mode, and verify health without retrieving employee records. Enable mutation workers gradually behind explicit approval, concurrency, and rollback controls; route deployment logs and receipts through redaction filters.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

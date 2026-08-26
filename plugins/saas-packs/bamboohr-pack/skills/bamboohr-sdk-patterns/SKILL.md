@@ -292,6 +292,10 @@ class BambooHRClient:
 - Multi-tenant factory pattern
 - Zod runtime validation for API responses
 
+## Examples
+
+Build the client around a protected configuration that resolves an approved company domain and credential at runtime, validates response shape, and returns minimum necessary fields. A caller requesting an unapproved employee or destructive operation receives a deny result before the client sends a request; logs retain only opaque IDs, status, and policy version.
+
 ## Error Handling
 
 | Pattern | Use Case | Benefit |
