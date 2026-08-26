@@ -10,7 +10,7 @@
 //   shell_substitution  `[security] YAML field contains shell substitution`
 //                       occurrences (file::field) — NEVER waivable: this gate
 //                       has no allowlist code path by design
-//   agents_only_errors  the --agents-only lane's error lines (the 253-error
+//   agents_only_errors  the --agents-only lane's error lines (the pinned
 //                       corpus baseline), which includes the schema 3.11.0
 //                       body-vs-allowlist check
 //
