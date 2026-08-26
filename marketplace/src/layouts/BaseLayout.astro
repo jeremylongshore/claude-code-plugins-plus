@@ -26,7 +26,7 @@ interface Props {
 // next page added without a description would have shipped that claim to search
 // engines and social cards. Pages that want counts interpolate the live values,
 // as src/pages/index.astro does with fmt(totalSkills) / fmt(totalPlugins).
-const { title, description = "Browse agent skills and plugins for Claude Code. Fuzzy search, interactive tutorials, and production-ready tools.", image = "/og-image.png", canonical } = Astro.props;
+const { title, description = "Browse portable agent skills and native extensions for AI coding agents. Fuzzy search, interactive tutorials, and production-ready tools.", image = "/og-image.png", canonical } = Astro.props;
 
 const currentPath = Astro.url.pathname;
 const canonicalUrl = canonical ?? `https://tonsofskills.com${currentPath}`;
@@ -81,7 +81,7 @@ const isHome = currentPath === '/';
     <meta property="og:url" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
-    <meta property="og:site_name" content="Claude Code Plugins">
+    <meta property="og:site_name" content="Tons of Skills">
     <meta property="og:image" content={`https://tonsofskills.com${image}`}>
     <meta property="og:image:alt" content={title}>
     <meta property="og:locale" content="en_US">

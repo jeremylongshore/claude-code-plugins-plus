@@ -1,6 +1,6 @@
 # Tons of Skills
 
-**A model-agnostic agent-skills platform.** The canonical layer is harness-free by construction; [Claude Code](https://code.claude.com/docs/en/) is the first and best-supported harness, and additional harnesses appear on this surface only when a declared, generated adapter exists — never by adjective.
+**A model-agnostic agent-skills platform.** The canonical layer is harness-free by construction; [Claude Code](https://code.claude.com/docs/en/) is currently the verified-native harness. Other harnesses remain engineering candidates until their native-path integration is verified; source research alone is never presented as public support.
 
 [![Release](https://img.shields.io/badge/release-v4.33.0-green)](https://github.com/jeremylongshore/tons-of-skills-marketplace/releases/latest)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)

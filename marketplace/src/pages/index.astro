@@ -159,6 +159,11 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
             Free and open source.
         </p>
 
+        <p class="home-support-note">
+            Portable skills are model-neutral by design. Claude Code is currently verified-native;
+            other harnesses are shown only after their integration evidence exists.
+        </p>
+
         <CountProvenance cohort="marketplace-visible" />
 
         <!-- THE signature element. One hard offset shadow on an otherwise flat
@@ -291,6 +296,14 @@ const pageDescription = `${fmt(totalSkills)} marketplace-visible agent skills ac
             color: var(--ink-2);
             margin: 0 0 var(--space-8);
             max-width: 46ch;
+        }
+
+        .home-support-note {
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--ink-2);
+            margin: calc(var(--space-6) * -1) 0 var(--space-8);
+            max-width: 58ch;
         }
 
         /* ── Install block: the one shadowed element ── */
