@@ -171,6 +171,27 @@ kubectl logs job/gpu-benchmark --follow
 | OOMKilled | Insufficient GPU memory | Use larger GPU (80GB A100) |
 | Image pull error | Registry auth | Create imagePullSecret |
 
+## Output
+
+- A minimal, namespace-scoped GPU workload or inference endpoint with one declared GPU.
+- A visible readiness signal and a bounded smoke-test response that confirms the GPU
+  runtime path without placing a model token or customer prompt in source control.
+
+## Examples
+
+Validate the batch path first because it is cheaper and easier to roll back than a
+public endpoint:
+
+```bash
+kubectl -n sandbox apply -f gpu-batch-job.yaml
+kubectl -n sandbox wait --for=condition=complete job/gpu-benchmark --timeout=15m
+kubectl -n sandbox logs job/gpu-benchmark
+```
+
+Delete the smoke job after recording its redacted result. If it remains Pending,
+inspect its events and namespace quota—do not broaden cluster permissions or embed
+registry credentials in the manifest to force it through.
+
 ## Resources
 
 - [CoreWeave GPU Instances](https://docs.coreweave.com/docs/platform/instances/gpu-instances)
