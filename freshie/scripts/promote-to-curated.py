@@ -668,6 +668,8 @@ def main() -> int:
                     help="override the grade histogram used for manifest provenance")
     ap.add_argument("--curated-dir", type=Path, default=None,
                     help="override the generated curated-mirror destination")
+    ap.add_argument("--corpus-resolver", type=Path, default=None,
+                    help="override the corpus resolver (used by hermetic integration fixtures)")
     args = ap.parse_args()
     ROOT = args.repo_root.resolve()
     GRADES_CSV = args.grades_csv or ROOT / "freshie" / "grades.csv"
@@ -675,7 +677,7 @@ def main() -> int:
     CURATED_DIR = args.curated_dir or ROOT / "skills" / ".curated"
     MANIFEST = CURATED_DIR / "MANIFEST.json"
     VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
-    CORPUS_RESOLVER = ROOT / "scripts" / "corpus-resolver.mjs"
+    CORPUS_RESOLVER = args.corpus_resolver or ROOT / "scripts" / "corpus-resolver.mjs"
     if args.check:
         return check(quiet=args.quiet)
     return build(validate=not args.no_validate, quiet=args.quiet, allow_shrink=args.allow_shrink)

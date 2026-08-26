@@ -2545,6 +2545,8 @@ def run_scan(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    global REPO_ROOT
+
     parser = argparse.ArgumentParser(
         description="Rebuild inventory DB with a new versioned discovery run.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -2554,6 +2556,12 @@ def main() -> None:
         "--db",
         default=str(DB_DEFAULT),
         help="Path to the inventory SQLite database (default: freshie/inventory.sqlite)",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=REPO_ROOT,
+        help="repository root to inventory (default: this checkout)",
     )
     parser.add_argument(
         "--dry-run",
@@ -2572,6 +2580,7 @@ def main() -> None:
         help="Print diff report between existing runs and exit",
     )
     args = parser.parse_args()
+    REPO_ROOT = args.repo_root.resolve()
 
     if args.diff_only:
         print_diff_report(Path(args.db))

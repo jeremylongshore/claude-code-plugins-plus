@@ -5447,6 +5447,12 @@ def main() -> int:
         help="Write validation results to SQLite database (e.g., freshie/inventory.sqlite)",
     )
     parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=repo_root,
+        help="repository root to validate (default: this checkout)",
+    )
+    parser.add_argument(
         "--deep",
         action="store_true",
         help="Run Intent Solutions Deep Evaluation Engine (10 dimensions, badges, rankings)",
@@ -5483,6 +5489,7 @@ def main() -> int:
         help="Path to a single SKILL.md file to validate (optional)",
     )
     args, _unknown = parser.parse_known_args()
+    repo_root = args.repo_root.resolve()
     verbose = args.verbose
 
     # Kernel shadow (DR-049, advisory): the comparison block is always embedded

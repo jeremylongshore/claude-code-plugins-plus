@@ -115,6 +115,7 @@ import json
 import math
 import os
 import shutil
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -521,6 +522,23 @@ def refuse_if_server_running(repo: Path) -> None:
             f"a dolt sql-server holds {server_lock} — stop it before syncing "
             "(concurrent server + CLI writes corrupt the working set)"
         )
+    # Dolt 2.x does not consistently materialize sql-server.lock. Its default
+    # integration port is nevertheless the documented single-writer boundary:
+    # a live server makes the repository read-only and a CLI exporter otherwise
+    # gets partway through its import before failing. Refuse before any snapshot
+    # or DDL work when the port is accepting connections.
+    try:
+        with socket.create_connection(("127.0.0.1", 3308), timeout=0.2):
+            raise SyncError(
+                "a dolt sql-server holds port 3308 — stop it before syncing "
+                "(concurrent server + CLI writes corrupt the working set)"
+            )
+    except ConnectionRefusedError:
+        return
+    except TimeoutError:
+        # A non-responsive listener cannot prove it is Dolt; preserve the
+        # existing lock-file behavior rather than refusing on an unknown host.
+        return
 
 
 # ---------------------------------------------------------------------------
