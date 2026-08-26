@@ -95,13 +95,26 @@ const VALID_DECISIONS = new Set(['ship', 'warn', 'block', 'obsolete_review']);
 // Exact DDL from scripts/validate-skills-schema.py so the adapter also works
 // against a fresh scratch DB (CREATE TABLE IF NOT EXISTS is a no-op on the
 // real inventory DB, which already carries the table).
-const FORGE_PROOFS_DDL = `CREATE TABLE IF NOT EXISTS forge_proofs (
+const FORGE_PROOFS_DDL = `CREATE TABLE IF NOT EXISTS discovery_runs (
+    id INTEGER PRIMARY KEY
+);
+CREATE TABLE IF NOT EXISTS forge_proofs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     plugin_name TEXT NOT NULL,
     jrig_run_id INTEGER,
+    discovery_run_id INTEGER REFERENCES discovery_runs(id),
     verification_type TEXT NOT NULL,
     passed INTEGER NOT NULL,
     evidence TEXT,
+    evidence_class TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3')),
+    artifact_sha256 TEXT,
+    artifact_uri TEXT,
+    spec_sha256 TEXT,
+    tool_version TEXT,
+    kernel_version TEXT,
+    provider TEXT,
+    model TEXT,
+    recorded_by_identity TEXT,
     layers_passed INTEGER DEFAULT NULL,
     total_layers INTEGER DEFAULT 7,
     baseline_delta REAL DEFAULT NULL,
@@ -128,6 +141,7 @@ export function parseArgs(argv) {
     '--db': 'db',
     '--plugin': 'plugin',
     '--jrig-run-id': 'jrigRunId',
+    '--discovery-run-id': 'discoveryRunId',
     '--result': 'result',
   };
   for (let i = 0; i < argv.length; i++) {
@@ -142,8 +156,8 @@ export function parseArgs(argv) {
       fail(`Unknown argument: ${flag}`);
     }
   }
-  for (const [flag, key] of Object.entries(takesValue)) {
-    if (!args[key]) fail(`Missing required argument: ${flag}`);
+  for (const flag of ['--db', '--plugin', '--jrig-run-id', '--result']) {
+    if (!args[takesValue[flag]]) fail(`Missing required argument: ${flag}`);
   }
   if (!/^\d+$/.test(args.jrigRunId)) {
     fail(
@@ -151,6 +165,12 @@ export function parseArgs(argv) {
     );
   }
   args.jrigRunId = Number(args.jrigRunId);
+  if (args.discoveryRunId !== undefined) {
+    if (!/^\d+$/.test(args.discoveryRunId)) {
+      fail(`--discovery-run-id must be a non-negative integer (got: ${args.discoveryRunId})`);
+    }
+    args.discoveryRunId = Number(args.discoveryRunId);
+  }
   return args;
 }
 
@@ -266,13 +286,32 @@ export function retainedArtifactEvidence(resultPath) {
 export function buildUpsertSql({ plugin, jrigRunId, row }) {
   return `${FORGE_PROOFS_DDL}
 INSERT INTO forge_proofs
-  (plugin_name, jrig_run_id, verification_type, passed, evidence, layers_passed, total_layers, baseline_delta)
+  (plugin_name, jrig_run_id, discovery_run_id, verification_type, passed, evidence,
+   evidence_class, artifact_sha256, artifact_uri, spec_sha256, tool_version,
+   kernel_version, provider, model, recorded_by_identity,
+   layers_passed, total_layers, baseline_delta)
 VALUES
-  (${sqlString(plugin)}, ${jrigRunId}, ${sqlString(VERIFICATION_TYPE)}, ${row.passed},
-   ${sqlString(JSON.stringify(row.evidence))}, ${row.layers_passed}, ${row.total_layers}, NULL)
+  (${sqlString(plugin)}, ${jrigRunId}, ${row.discovery_run_id ?? 'NULL'},
+   ${sqlString(VERIFICATION_TYPE)}, ${row.passed}, ${sqlString(JSON.stringify(row.evidence))},
+   ${sqlString(row.evidence_class)}, ${sqlString(row.artifact_sha256)}, ${sqlString(row.artifact_uri)},
+   ${row.spec_sha256 ? sqlString(row.spec_sha256) : 'NULL'},
+   ${row.tool_version ? sqlString(row.tool_version) : 'NULL'},
+   ${row.kernel_version ? sqlString(row.kernel_version) : 'NULL'},
+   ${row.provider ? sqlString(row.provider) : 'NULL'}, ${row.model ? sqlString(row.model) : 'NULL'},
+   ${sqlString(row.recorded_by_identity)}, ${row.layers_passed}, ${row.total_layers}, NULL)
 ON CONFLICT(plugin_name, verification_type, jrig_run_id) DO UPDATE SET
   passed = excluded.passed,
   evidence = excluded.evidence,
+  discovery_run_id = excluded.discovery_run_id,
+  evidence_class = excluded.evidence_class,
+  artifact_sha256 = excluded.artifact_sha256,
+  artifact_uri = excluded.artifact_uri,
+  spec_sha256 = excluded.spec_sha256,
+  tool_version = excluded.tool_version,
+  kernel_version = excluded.kernel_version,
+  provider = excluded.provider,
+  model = excluded.model,
+  recorded_by_identity = excluded.recorded_by_identity,
   layers_passed = excluded.layers_passed,
   total_layers = excluded.total_layers,
   baseline_delta = excluded.baseline_delta,
@@ -280,13 +319,19 @@ ON CONFLICT(plugin_name, verification_type, jrig_run_id) DO UPDATE SET
 }
 
 function runSqlite(dbPath, sql) {
-  const result = spawnSync('sqlite3', ['-batch', dbPath], { input: sql, encoding: 'utf8' });
+  const result = spawnSync('sqlite3', ['-batch', dbPath], {
+    input: `PRAGMA foreign_keys = ON;\n${sql}`,
+    encoding: 'utf8',
+  });
   if (result.error) fail(`Failed to spawn sqlite3 CLI: ${result.error.message}`);
   if (result.status !== 0) fail(`sqlite3 exited ${result.status}: ${result.stderr.trim()}`);
   return result.stdout;
 }
 
 function ensureForgeProofsSchema(dbPath) {
+  // Standalone recorder tests and scratch inventory copies may predate both
+  // tables. Bootstrap the canonical definitions before inspecting columns.
+  runSqlite(dbPath, FORGE_PROOFS_DDL);
   const columns = runSqlite(dbPath, 'PRAGMA table_info(forge_proofs);')
     .trim()
     .split('\n')
@@ -294,6 +339,31 @@ function ensureForgeProofsSchema(dbPath) {
     .map((line) => line.split('|')[1]);
   if (columns.includes('run_id') && !columns.includes('jrig_run_id')) {
     runSqlite(dbPath, 'ALTER TABLE forge_proofs RENAME COLUMN run_id TO jrig_run_id;');
+  }
+  const currentColumns = new Set(
+    runSqlite(dbPath, 'PRAGMA table_info(forge_proofs);')
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => line.split('|')[1]),
+  );
+  for (const [name, definition] of [
+    ['discovery_run_id', 'INTEGER REFERENCES discovery_runs(id)'],
+    [
+      'evidence_class',
+      "TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3'))",
+    ],
+    ['artifact_sha256', 'TEXT'],
+    ['artifact_uri', 'TEXT'],
+    ['spec_sha256', 'TEXT'],
+    ['tool_version', 'TEXT'],
+    ['kernel_version', 'TEXT'],
+    ['provider', 'TEXT'],
+    ['model', 'TEXT'],
+    ['recorded_by_identity', 'TEXT'],
+  ]) {
+    if (!currentColumns.has(name))
+      runSqlite(dbPath, `ALTER TABLE forge_proofs ADD COLUMN ${name} ${definition};`);
   }
 }
 
@@ -318,7 +388,21 @@ export function main(argv = process.argv.slice(2)) {
 
   const entries = extractModelEntries(parsed);
   const row = aggregateEntries(entries, { allowStub: args.allowStub });
-  Object.assign(row.evidence, retainedArtifactEvidence(args.result));
+  const retained = retainedArtifactEvidence(args.result);
+  Object.assign(row.evidence, retained);
+  const unique = (key) => [...new Set(entries.map((entry) => entry[key]).filter(Boolean))];
+  row.evidence_class = 'E0';
+  row.discovery_run_id = args.discoveryRunId;
+  row.artifact_sha256 = retained.artifact_sha256;
+  row.artifact_uri = retained.artifact_uri;
+  row.spec_sha256 = process.env.JRIG_SPEC_SHA256 || null;
+  row.tool_version = process.env.JRIG_TOOL_VERSION || null;
+  row.kernel_version = process.env.JRIG_KERNEL_VERSION || null;
+  row.provider = unique('provider').length === 1 ? unique('provider')[0] : null;
+  row.model = unique('model').length === 1 ? unique('model')[0] : null;
+  row.recorded_by_identity = process.env.GITHUB_ACTOR
+    ? `github-actions:${process.env.GITHUB_ACTOR}`
+    : 'local-untrusted';
 
   ensureForgeProofsSchema(args.db);
   runSqlite(args.db, buildUpsertSql({ plugin: args.plugin, jrigRunId: args.jrigRunId, row }));

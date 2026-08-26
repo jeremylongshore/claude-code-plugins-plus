@@ -134,6 +134,15 @@ test('(a) fresh insert lands one tier3-jrig row with the contracted bindings', (
   assert.equal(row.layers_passed, 6); // scoreCard.passed
   assert.equal(row.total_layers, 7); // scoreCard.total_criteria
   assert.equal(row.baseline_delta, null);
+  assert.equal(row.evidence_class, 'E0');
+  assert.equal(row.artifact_uri, path.resolve(result));
+  assert.equal(
+    row.artifact_sha256,
+    createHash('sha256').update(fs.readFileSync(result)).digest('hex'),
+  );
+  assert.equal(row.provider, 'deepseek');
+  assert.equal(row.model, 'deepseek-v4-flash');
+  assert.equal(row.recorded_by_identity, 'local-untrusted');
   assert.ok(row.verified_at);
 
   const evidence = JSON.parse(row.evidence);
@@ -148,6 +157,47 @@ test('(a) fresh insert lands one tier3-jrig row with the contracted bindings', (
   assert.equal(evidence.models.length, 1);
   assert.equal(evidence.models[0].model, 'deepseek-v4-flash');
   assert.equal(evidence.models[0].scoreCard.passed, 6);
+});
+
+test('(a1) a supplied discovery run is FK-checked and stored separately from j-rig run id', () => {
+  const dir = tmpDir();
+  const db = freshDb(dir);
+  const result = writeFixture(dir, 'result.json', fixtureResult({ decision: 'ship' }));
+  // Bootstrap the recorder schema, then seed the parent row in its real table.
+  record(['--db', db, '--plugin', 'bootstrap', '--jrig-run-id', '1', '--result', result]);
+  execFileSync('sqlite3', [db, 'INSERT INTO discovery_runs (id) VALUES (99);']);
+
+  record([
+    '--db',
+    db,
+    '--plugin',
+    'linked-pack',
+    '--jrig-run-id',
+    '7',
+    '--discovery-run-id',
+    '99',
+    '--result',
+    result,
+  ]);
+  const [linked] = queryRows(
+    db,
+    "SELECT jrig_run_id, discovery_run_id FROM forge_proofs WHERE plugin_name='linked-pack';",
+  );
+  assert.deepEqual(linked, { jrig_run_id: 7, discovery_run_id: 99 });
+
+  const stderr = recordExpectFail([
+    '--db',
+    db,
+    '--plugin',
+    'invalid-link',
+    '--jrig-run-id',
+    '8',
+    '--discovery-run-id',
+    '100',
+    '--result',
+    result,
+  ]);
+  assert.match(stderr, /FOREIGN KEY constraint failed/);
 });
 
 test('(a2) all-ship multi-model result records passed=1 with the weakest layer count', () => {

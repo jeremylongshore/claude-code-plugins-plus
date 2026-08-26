@@ -5009,15 +5009,44 @@ def populate_compliance_db(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         plugin_name TEXT NOT NULL,
         jrig_run_id INTEGER,
+        discovery_run_id INTEGER REFERENCES discovery_runs(id),
         verification_type TEXT NOT NULL,
         passed INTEGER NOT NULL,
         evidence TEXT,
+        evidence_class TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3')),
+        artifact_sha256 TEXT,
+        artifact_uri TEXT,
+        spec_sha256 TEXT,
+        tool_version TEXT,
+        kernel_version TEXT,
+        provider TEXT,
+        model TEXT,
+        recorded_by_identity TEXT,
         layers_passed INTEGER DEFAULT NULL,
         total_layers INTEGER DEFAULT 7,
         baseline_delta REAL DEFAULT NULL,
         verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(plugin_name, verification_type, jrig_run_id)
     )""")
+
+    # Evidence v2 migration. SQLite permits an ADD COLUMN foreign-key
+    # reference with the required NULL default, so old ledger rows stay E0
+    # while all future non-null discovery references are checked.
+    forge_columns = {r[1] for r in c.execute("PRAGMA table_info(forge_proofs)").fetchall()}
+    for col_name, col_def in (
+        ("discovery_run_id", "INTEGER REFERENCES discovery_runs(id)"),
+        ("evidence_class", "TEXT NOT NULL DEFAULT 'E0' CHECK(evidence_class IN ('E0', 'E1', 'E2', 'E3'))"),
+        ("artifact_sha256", "TEXT"),
+        ("artifact_uri", "TEXT"),
+        ("spec_sha256", "TEXT"),
+        ("tool_version", "TEXT"),
+        ("kernel_version", "TEXT"),
+        ("provider", "TEXT"),
+        ("model", "TEXT"),
+        ("recorded_by_identity", "TEXT"),
+    ):
+        if col_name not in forge_columns:
+            c.execute(f"ALTER TABLE forge_proofs ADD COLUMN {col_name} {col_def}")
 
     # Complete the legacy-UNIQUE migration started above: copy rows from the
     # renamed `*__migrate_tmp` tables into the freshly created tables (which
