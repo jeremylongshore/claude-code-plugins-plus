@@ -27,6 +27,15 @@ compatibility: Designed for Claude Code
 
 Collect diagnostic data for Alchemy support tickets: connectivity tests, SDK version, network status, CU usage, and recent error logs.
 
+## Prerequisites
+
+- A scoped development or sandbox key supplied through a secret store; never
+  pass the key as a command-line argument or include it in a captured bundle.
+- A reproducible issue with the expected network, method, time window, and
+  sanitized request/correlation ID.
+- A review path that checks the bundle for credentials, wallet-address privacy
+  concerns, or proprietary application data before it leaves the organization.
+
 ## Instructions
 
 ### Step 1: Debug Bundle Generator
@@ -144,6 +153,26 @@ echo "=== Done ==="
 - JSON debug bundle with connectivity, latency, and network status
 - SDK version and environment configuration
 - Multi-network health check results
+
+## Examples
+
+When a testnet application reports intermittent RPC failures, run the generator
+with a scoped development key and inspect the JSON locally. Confirm it reports
+SDK version, network status, aggregate latency, and only redacted key state;
+remove wallet addresses or application payloads if any were added by local
+instrumentation. Attach the sanitized bundle and relevant request ID to a
+support ticket. If a bundle exposes a credential or sensitive application
+data, do not upload it—revoke the exposed credential if necessary, correct the
+redaction logic, and regenerate the evidence.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Diagnostic call is unauthorized | Stop the run and verify the scoped key without printing it. |
+| A network check times out | Record the network and timeout only, then compare against the provider status page. |
+| Bundle contains sensitive data | Quarantine it, rotate any exposed credential, improve redaction, and regenerate. |
+| Support needs more context | Provide sanitized request IDs, timestamps, and SDK version—not application secrets or private keys. |
 
 ## Resources
 
