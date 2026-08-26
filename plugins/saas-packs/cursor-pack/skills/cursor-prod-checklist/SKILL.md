@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Production Checklist
 
+## Overview
+
+Use this gate before enabling Cursor for a production repository or team workflow. It verifies governance, context controls, review, and incident ownership—not the correctness of any generated code.
+
+## Prerequisites
+
+- A named repository/tenant owner, data classification, and approved privacy/model policy.
+- Reviewed rules/ignore files, identity controls, and a rollback path for tenant configuration.
+
+## Instructions
+
+1. Complete each control with evidence: privacy setting, access model, exclusions, rules, review, tests, and support route.
+2. Pilot in a representative non-sensitive repository and verify expected context boundaries.
+3. Hold production enablement when any security, identity, data, or ownership gate is unverified.
+4. Record the go/no-go decision and schedule periodic access/rule review.
+
+## Output
+
+- A production-readiness record with owner, evidence links, exceptions, and verification date.
+
+## Error Handling
+
+| Failed gate | Required action |
+|---|---|
+| Privacy or data routing unclear | Block enablement and obtain a documented security/privacy decision. |
+| Excluded path appears in context | Stop pilot, repair exclusions, and assess exposure. |
+| Review/test workflow is absent | Do not enable use for production changes. |
+
+## Examples
+
+Pilot one repository with Privacy Mode, SSO, reviewed `.cursorignore`, and a pull-request review requirement. Verify a sample sensitive path cannot be added to context before signing off the production checklist.
+
 Comprehensive checklist for configuring Cursor IDE for production use. Covers security hardening, project rules, indexing optimization, privacy settings, and team standardization.
 
 ## Pre-Flight Checklist
