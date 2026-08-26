@@ -5,14 +5,12 @@ current-run grades export).
 
 Run: python3 -m unittest tests.test_dolt_sync -v
 
-Coverage honesty: these are pure-function tests only — no dolt binary, no
-network, no repo state. The commit/tag/push/gc state machine
-(commit_and_tag's crash-retry, tag-suffix, and head-message branches;
-push's stranded-tag reconciliation; maybe_gc) is NOT covered here, and the
-"the sync itself exercises it" framing only holds for the happy path — the
-rare branches (e.g. the run-9.1 tag-suffix event of 2026-07-13) run in
-production first. Treat any change to that state machine as untested until
-a dolt-backed round-trip test exists.
+Coverage honesty: most tests are pure-function tests — no dolt binary,
+network, or repo state. The push recovery contract is mocked below; the
+commit/tag/gc state-machine branches (commit_and_tag's crash-retry,
+tag-suffix, and head-message branches; maybe_gc) still lack a dolt-backed
+round-trip test. Treat any change to those branches as untested until such a
+test exists.
 """
 
 import importlib.util
@@ -21,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "freshie" / "scripts" / "dolt-sync.py"
@@ -560,6 +559,68 @@ class RunCompletenessGateTests(unittest.TestCase):
         )
         dolt_sync.gate_run_completeness(conn, 1)  # cannot judge — do not block
         conn.close()
+
+
+class PushRecoveryTests(unittest.TestCase):
+    """A failed tag push must be retried once by a later successful sync."""
+
+    def test_stranded_tag_is_recovered_once_and_not_replayed(self):
+        repo = Path("/tmp/fake-dolt-repo")
+        pushed: list[str] = []
+
+        def fake_dolt(args, _repo, check=True, input_text=None):
+            self.assertEqual(_repo, repo)
+            self.assertFalse(check)
+            self.assertEqual(args[:2], ["push", "origin"])
+            pushed.append(args[2])
+            return subprocess.CompletedProcess(args, 0, "", "")
+
+        # A prior run committed/tagged run-41 but its push failed. The
+        # subsequent run-42 sync sees run-41 locally but not remotely.
+        with (
+            mock.patch.object(dolt_sync, "ensure_remote"),
+            mock.patch.object(dolt_sync, "check_creds"),
+            mock.patch.object(dolt_sync, "check_repo_exists", return_value=True),
+            mock.patch.object(dolt_sync, "remote_tags", return_value=set()),
+            mock.patch.object(
+                dolt_sync,
+                "dolt_csv_query",
+                return_value=[["run-41"], ["run-42"]],
+            ),
+            mock.patch.object(dolt_sync, "dolt", side_effect=fake_dolt),
+        ):
+            dolt_sync.push(repo, "example", "inventory", "run-42")
+
+        self.assertEqual(
+            pushed,
+            [
+                "main",
+                "refs/tags/run-42:refs/tags/run-42",
+                "refs/tags/run-41:refs/tags/run-41",
+            ],
+        )
+
+        # After recovery, the remote contains both tags. A later run must not
+        # replay run-41; it pushes only its own new run tag.
+        pushed.clear()
+        with (
+            mock.patch.object(dolt_sync, "ensure_remote"),
+            mock.patch.object(dolt_sync, "check_creds"),
+            mock.patch.object(dolt_sync, "check_repo_exists", return_value=True),
+            mock.patch.object(dolt_sync, "remote_tags", return_value={"run-41", "run-42"}),
+            mock.patch.object(
+                dolt_sync,
+                "dolt_csv_query",
+                return_value=[["run-41"], ["run-42"], ["run-43"]],
+            ),
+            mock.patch.object(dolt_sync, "dolt", side_effect=fake_dolt),
+        ):
+            dolt_sync.push(repo, "example", "inventory", "run-43")
+
+        self.assertEqual(
+            pushed,
+            ["main", "refs/tags/run-43:refs/tags/run-43"],
+        )
 
 
 if __name__ == "__main__":
