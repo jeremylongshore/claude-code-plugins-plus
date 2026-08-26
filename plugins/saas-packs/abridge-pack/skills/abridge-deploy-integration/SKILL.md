@@ -164,6 +164,18 @@ gcloud secrets add-iam-policy-binding abridge-client-secret \
 - Health check endpoint monitoring Abridge + FHIR
 - Secrets managed via GCP Secret Manager
 
+## Examples
+
+For a production-release rehearsal, deploy the container to an isolated
+BAA-covered Cloud Run project using pre-provisioned Secret Manager versions and
+a service account with only the required secret-access role. Verify the
+authenticated health endpoint through the VPC path, confirm that it returns no
+patient or secret data, and retain the deployment revision, image digest, and
+redacted health result as release evidence. If the VPC connector, identity, or
+secret binding fails, roll back by routing traffic to the prior known-good
+revision; do not place credentials in the deployment command or application
+logs to force the rollout through.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
