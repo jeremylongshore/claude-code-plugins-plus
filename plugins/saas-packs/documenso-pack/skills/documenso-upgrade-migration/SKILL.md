@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Upgrade & Migration
 
+## Output
+
+- A versioned upgrade record with compatibility, access/audit checks, staged evidence, and a verified rollback revision.
+- A paused/reversible release decision when any signing, authorization, or retention requirement regresses.
+
+## Examples
+
+Upgrade in a development workspace using synthetic documents and signers, test the previous and target versions for lifecycle, callback, access, and audit behavior, then stage a canary. Retain the prior release/configuration and roll back immediately if a control fails; do not validate upgrades by changing live signed documents.
+
 ## Current State
 
 !`npm list @documenso/sdk-typescript 2>/dev/null || echo 'SDK not installed'`
