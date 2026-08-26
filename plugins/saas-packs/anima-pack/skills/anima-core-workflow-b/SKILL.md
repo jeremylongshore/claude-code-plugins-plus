@@ -202,6 +202,18 @@ function organizeGeneratedFiles(
 - Design token mapper for project consistency
 - File organizer with barrel exports
 
+## Examples
+
+Use a page you own or have written permission to reproduce, capture only the
+approved layout into a staging Figma file, and generate a single React component
+into an isolated output directory. Apply the project token map, then review the
+result for brand assets, copy, accessibility, responsive behavior, and license
+constraints before it enters the application. Treat generated markup as a
+starting point rather than a faithful or authorized reproduction of a third
+party’s product. If access is blocked, output contains unapproved material, or
+the result fails visual/semantic review, stop and obtain the needed rights or
+redesign from an original specification instead of bypassing site controls.
+
 ## Error Handling
 
 | Error | Cause | Solution |
