@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 
 Configure CI pipelines that validate AppFolio property management API integrations using a two-tier strategy. Unit tests mock the AppFolio REST client to verify tenant lookup, work order creation, and property listing logic without consuming API quota. Integration tests run against the AppFolio sandbox environment on main-branch merges only, using Basic Auth credentials stored as GitHub secrets. This keeps PR feedback fast and free while catching real API contract drift before production deploys.
 
+## Prerequisites
+
+- A repository with Actions enabled, a locked dependency install, and unit tests
+  that use only synthetic tenant, property, and work-order fixtures.
+- A separately managed AppFolio sandbox credential and a pre-provisioned,
+  non-production fixture record that the integration owner is allowed to read.
+- Defined CI ownership, a fixed request budget, and an incident path for
+  credential rotation, provider outage, or sandbox data reset.
+
+## Instructions
+
+1. Keep pull-request checks mock-only; do not expose AppFolio credentials to
+   untrusted code or forked pull requests.
+2. Gate the live sandbox job to protected `main` pushes after lint, type, and
+   unit checks pass, and inject credentials only through repository secrets.
+3. Limit the integration run to a known read-only fixture, one worker, and the
+   stated request budget; record only redacted status and count evidence.
+4. Treat failed authentication, rate limits, or missing fixtures as a blocked
+   release condition rather than creating shared sandbox data from CI.
+
 ## GitHub Actions Workflow
 
 ```yaml
@@ -42,7 +62,7 @@ jobs:
 
   integration-tests:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: unit-tests
     steps:
       - uses: actions/checkout@v4
@@ -136,9 +156,27 @@ export function getCallCount(): number { return callCount; }
 |----------|-------|-----|
 | 401 Unauthorized in integration job | Expired or rotated sandbox credentials | Regenerate `APPFOLIO_CLIENT_ID` and `APPFOLIO_CLIENT_SECRET` in GitHub Secrets |
 | 429 Too Many Requests | Sandbox rate limit (100 req/min) hit by parallel tests | Run integration tests with `--maxWorkers=1` |
-| Tenant list empty | Sandbox data periodically reset by AppFolio | Seed test property via `POST /properties` in a `beforeAll` hook |
+| Tenant list empty | Sandbox data periodically reset by AppFolio | Stop the job and restore the pre-provisioned fixture outside CI |
 | Typecheck fails on API response | AppFolio schema updated without notice | Regenerate types from OpenAPI spec, update interfaces |
 | Integration job skipped | Branch protection rule not matching `refs/heads/main` | Verify workflow `if` condition matches your default branch name |
+
+## Output
+
+- Pull-request results from mock-only lint, type, and unit checks
+- A protected-branch sandbox receipt with the redacted provider status, fixture
+  identity, request count, and integration test outcome
+- A bounded release decision that blocks on unavailable credentials, provider
+  errors, fixture drift, or request-budget exhaustion
+
+## Examples
+
+For a work-order mapping change, add a synthetic mock response and verify the
+new field in the PR suite. After merge, the protected main workflow reads one
+pre-provisioned sandbox work order and confirms the normalized shape without
+creating tenants, properties, or work orders. If the fixture is unavailable,
+the credential fails, or the request budget is exceeded, mark the release
+blocked and have the sandbox owner restore the fixture or credential before
+rerunning the live lane.
 
 ## Resources
 
