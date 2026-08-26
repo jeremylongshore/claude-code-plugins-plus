@@ -28,6 +28,18 @@ compatibility: Designed for Claude Code
 
 Instrument Canva Connect API calls with metrics, traces, and structured logging. Track latency, error rates, rate limit headroom, and export job completion times.
 
+## Prerequisites
+
+- A protected telemetry destination, retention policy, and alert owner.
+- A documented metric allowlist that excludes OAuth values, design contents, signed URLs, and personal identifiers.
+
+## Instructions
+
+1. Emit aggregate endpoint/status/latency metrics and opaque request identifiers only.
+2. Redact errors before logs/traces, bound log retention, and restrict dashboards to authorized operators.
+3. Alert on sustained authorization, rate, export, or webhook failures and link to the incident runbook.
+4. Do not automate retries or scope changes from a metric alone; reconcile through the protected operation ledger.
+
 ## Key Metrics
 
 | Metric | Type | Labels | Description |
@@ -240,6 +252,14 @@ canva_rate_limit_remaining
 histogram_quantile(0.5, rate(canva_export_duration_seconds_bucket[5m]))
 histogram_quantile(0.95, rate(canva_export_duration_seconds_bucket[5m]))
 ```
+
+## Output
+
+Observability produces redacted health, aggregate latency/error/rate indicators, alert state, and trace references. It contains no tokens, design text, asset URLs, raw payloads, or user profile data.
+
+## Examples
+
+When export failures cross the configured threshold, issue one deduplicated alert containing the aggregate count and trace reference, pause dependent exports, and invoke the incident runbook. Do not attach raw Canva responses or a design identifier to a broadly visible alert.
 
 ## Error Handling
 

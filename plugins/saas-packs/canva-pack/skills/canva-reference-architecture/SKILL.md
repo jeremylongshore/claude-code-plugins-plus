@@ -28,6 +28,18 @@ compatibility: Designed for Claude Code
 
 Production-ready architecture for Canva Connect API integrations. All interactions use the REST API at `api.canva.com/rest/v1/*` with OAuth 2.0 PKCE authentication.
 
+## Prerequisites
+
+- Server-side OAuth application, reviewed scopes, tenant/asset authorization model, and protected secrets/data stores.
+- Mocked tests plus a dedicated synthetic-asset integration environment.
+
+## Instructions
+
+1. Put caller authorization, asset-rights checks, input validation, and idempotency before the Canva adapter.
+2. Keep OAuth/token exchange and signed URLs server-side, minimize stored/exported fields, and encrypt controlled artifacts.
+3. Process webhooks through signature verification and durable queues, then recheck policy before side effects.
+4. Separate liveness from readiness and pause mutations whenever authorization, reconciliation, or provider health is uncertain.
+
 ## Project Structure
 
 ```
@@ -207,6 +219,14 @@ export function requireCanvaAuth(tokenStore: TokenStore) {
   };
 }
 ```
+
+## Output
+
+The architecture record identifies scope, authorization boundary, protected data stores, event/reconciliation flow, deployment version, and rollback path. It distinguishes mocked from device/API integration evidence and excludes tokens, design content, and signed URLs.
+
+## Examples
+
+Run an API service with server-side OAuth, a policy-resolved synthetic test asset, and an encrypted metadata-only store. A worker records an idempotency key before export, validates the authorized result, and pauses its queue if readiness or policy checks fail.
 
 ## Error Handling
 

@@ -27,6 +27,17 @@ compatibility: Designed for Claude Code
 
 The Canva Connect API enforces per-user, per-endpoint rate limits. Each endpoint has different thresholds. A 429 response means you must wait before retrying.
 
+## Prerequisites
+
+- Current account/endpoint limits verified against Canva's authoritative documentation and the integration owner.
+- A durable idempotency store, bounded queue, and named owner for budget/rate policy.
+
+## Instructions
+
+1. Start each approved workload below the current documented/account limit and apply per-user, endpoint, and job-class concurrency ceilings.
+2. Persist an idempotency key before dispatch, honor `Retry-After`, and retry only explicitly transient operations within a bounded budget.
+3. Pause and reconcile on sustained throttling; never add accounts or clients to evade a limit.
+
 ## Canva Connect API Rate Limits
 
 | Endpoint | Method | Limit |
@@ -169,6 +180,14 @@ async function throttledCanvaRequest<T>(
   return fn();
 }
 ```
+
+## Output
+
+Rate control produces redacted queue state, aggregate headroom, retry decision, and reconciliation result. It excludes tokens, design content, asset URLs, and user-identifying request details.
+
+## Examples
+
+For a batch export, enqueue one approved job per configured concurrency slot, retain its idempotency key, and pause when the provider returns 429. Resume only after the specified wait and a check that the original export did not already complete.
 
 ## Error Handling
 

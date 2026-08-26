@@ -27,6 +27,18 @@ compatibility: Designed for Claude Code
 
 Deep debugging for complex Canva Connect API issues — intermittent 5xx errors, stuck export jobs, OAuth token rotation failures, rate limit edge cases, and webhook delivery gaps.
 
+## Prerequisites
+
+- A named incident owner, redacted telemetry access, and protected test tenant/asset for any reproduction.
+- A paused/bounded side-effect queue and a documented escalation path.
+
+## Instructions
+
+1. Classify the failure by authorization, provider, callback, queue, or client layer using redacted evidence only.
+2. Reproduce against a synthetic asset and least-privilege test credential when necessary; never copy customer design data into diagnostics.
+3. Preserve the idempotency/reconciliation state before retrying and use supported recovery paths rather than bypassing policy or rate limits.
+4. Capture the root cause, mitigation, rollback/recovery state, and preventive control in the incident record.
+
 ## Systematic Layer Testing
 
 ```typescript
@@ -274,6 +286,14 @@ curl -sI -H "Authorization: Bearer $CANVA_ACCESS_TOKEN" \
 - Region: us-east-1
 - Traffic: ~50 exports/hour
 ```
+
+## Output
+
+Troubleshooting returns a redacted failure classification, opaque request/trace reference, scoped reproduction outcome, mitigation, and next owner action. It excludes tokens, customer designs, signed URLs, raw payloads, and secret-bearing headers.
+
+## Examples
+
+For a stuck export, query the existing authorized job by its opaque operation record, wait only to the configured timeout, and reconcile whether a result exists before retrying. For a 401/403, stop and route through reauthorization or scope review rather than repeatedly calling the API.
 
 ## Error Handling
 
