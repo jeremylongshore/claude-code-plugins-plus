@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Keybindings
 
+## Overview
+
+Configure keybindings for discoverability and accessibility without masking safety-critical editor commands or creating team-specific ambiguity.
+
+## Prerequisites
+
+- Existing team/editor shortcut conventions and a recoverable keybindings backup.
+- A non-sensitive test workspace for validating conflicts.
+
+## Instructions
+
+1. Search existing bindings before assigning a shortcut and prefer documented Cursor defaults when practical.
+2. Use workspace/team conventions for shared documentation; keep personal ergonomics local.
+3. Test conflict behavior in a sample workspace and retain an easy reset/revert path.
+4. Document custom bindings needed for pair programming, training, or support.
+
+## Output
+
+- A tested keybinding change with conflict result and recovery instructions.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Shortcut conflicts with edit/debug action | Remove it or choose a non-conflicting binding. |
+| Configuration prevents recovery | Restore the backed-up keybindings file or reset only the affected entry. |
+| Team documentation diverges | Treat documented shared binding as authoritative and update it through review. |
+
+## Examples
+
+Assign a personal shortcut to a Cursor command only after checking the Keyboard Shortcuts UI for conflicts, test it in a sample project, and retain the previous keybindings entry. Do not overwrite a documented team shortcut without agreement.
+
 Complete keyboard shortcut reference for Cursor IDE. Covers AI-specific shortcuts, standard editor commands, and customization. All shortcuts shown as macOS / Windows-Linux.
 
 ## AI Feature Shortcuts

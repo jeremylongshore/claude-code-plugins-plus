@@ -19,6 +19,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Composer Workflows
 
+## Overview
+
+Structure Composer work around explicit planning, small reviewed diffs, test evidence, and rollback rather than unattended multi-file generation.
+
+## Prerequisites
+
+- A bounded issue, affected-file inventory, repository rules, and test commands.
+- A recoverable branch and reviewer for material architectural, security, or data changes.
+
+## Instructions
+
+1. Request a plan and non-goals before any edits.
+2. Apply one coherent slice at a time, review the diff, and run its focused checks.
+3. Keep human decisions for API, security, migration, and dependency changes.
+4. Commit validated slices and revert/split failures rather than accepting a broad repair.
+
+## Output
+
+- A sequence of small reviewed Composer-assisted changes with validation and rollback evidence.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Plan exceeds scope | Revise the request and reduce affected files. |
+| Diff fails test or policy | Reject/revert the slice and diagnose within the stated boundary. |
+| Composer needs sensitive context | Do not attach it; use sanitized interfaces or approved process. |
+
+## Examples
+
+Ask Composer to plan a module-local refactor, accept only the first reviewed slice, run its focused test, and commit it. Stop if it proposes a dependency, migration, or unrelated repository change.
+
 Master Cursor Composer (Cmd+I / Ctrl+I) for multi-file code generation, scaffolding, and coordinated refactoring. Composer is the primary tool for changes that span multiple files.
 
 ## Composer Interface

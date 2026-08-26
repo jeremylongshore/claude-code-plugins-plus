@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Upgrade & Migration
 
+## Overview
+
+Upgrade Cursor or migrate settings through a staged, reversible rollout that preserves policy, extensions, rules, workspace trust, and user recovery.
+
+## Prerequisites
+
+- Current/target versions, release-note review, supported-platform confirmation, and a settings backup.
+- Pilot users, a named migration owner, and an approved rollback or previous installer.
+
+## Instructions
+
+1. Inventory settings, extensions, rules, integrations, and identity/privacy requirements.
+2. Test the target version with a pilot using non-sensitive workspaces and required workflows.
+3. Document compatibility, performance, and policy results before broader rollout.
+4. Roll back or pause on sign-in, privacy, extension, or workflow regression; retain evidence for follow-up.
+
+## Output
+
+- A staged upgrade/migration record with pilot evidence, owner, compatibility decision, and rollback instructions.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Upgrade breaks policy or privacy behavior | Stop rollout, revert/pause, and escalate to the tenant owner. |
+| Extension/settings migration fails | Restore the verified backup and remediate in the pilot. |
+| Version is unsupported | Do not force installation; use the supported version or plan platform remediation. |
+
+## Examples
+
+Back up a pilot user's settings, install the target version in a test profile, verify SSO, privacy, rules, indexing, and a sample repository, then expand only after the pilot receipt passes. Keep the previous installer until the observation window closes.
+
 Upgrade Cursor IDE versions, migrate from VS Code, and transfer configurations between machines.
 
 ## Version Upgrades
