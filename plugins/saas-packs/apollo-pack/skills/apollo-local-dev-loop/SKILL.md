@@ -75,10 +75,12 @@ export const devClient = axios.create({
   timeout: 30_000,
 });
 
-// Log all requests in development
+// Log request shape in development; never print contact fields or credentials.
 devClient.interceptors.request.use((config) => {
   console.log(`[Apollo] ${config.method?.toUpperCase()} ${config.url}`);
-  if (config.data) console.log('[Apollo] Body:', JSON.stringify(config.data, null, 2));
+  if (config.data && typeof config.data === 'object') {
+    console.log('[Apollo] Body fields:', Object.keys(config.data).sort().join(', '));
+  }
   return config;
 });
 
@@ -219,6 +221,17 @@ describe('Apollo People Search', () => {
 - MSW mock handlers for people search, enrichment, org enrichment, and sequences
 - Vitest config with mock server setup/teardown
 - npm scripts for dev, test, sandbox testing, and credential checks
+
+## Examples
+
+For a new people-search change, run the MSW-backed unit suite first and assert
+only synthetic fixture fields. Enable the sandbox key only for the narrow
+connectivity check after the mock suite passes, with `APOLLO_USE_SANDBOX=true`
+set explicitly in the command environment. Review logs for endpoint, status,
+and request-field names—not contact values, API keys, or full error payloads.
+If the sandbox key is absent, the mock server is bypassed, or any live-credit
+path is selected unexpectedly, stop the run and restore the mock-only setup
+before continuing development.
 
 ## Error Handling
 
