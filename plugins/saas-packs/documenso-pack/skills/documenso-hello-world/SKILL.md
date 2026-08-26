@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Hello World
 
+## Output
+
+- A verified synthetic development document/signing workflow with a redacted lifecycle receipt.
+- A cleanup/disable action that leaves no real signer or production-document tutorial artifact.
+
+## Examples
+
+Create a development document using placeholder content and a synthetic signer, verify the intended role and lifecycle transition, then archive/delete it under the test policy. Record only environment and opaque correlation/state; never use a real agreement, signer, signing URL, or production workspace for a hello-world exercise.
+
 ## Overview
 
 Minimal working example that creates a document, adds a recipient with a signature field, and sends it for signing — all in one script. Uses the Documenso TypeScript SDK (v2 API) with a Python equivalent.

@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Multi-Environment Setup
 
+## Output
+
+- Isolated development, staging, and production workspaces with separate scoped identities, templates, signer controls, and audit boundaries.
+- A promotion/rollback receipt based on synthetic validation rather than production document or signer experiments.
+
+## Examples
+
+Validate a versioned template and callback in development using synthetic recipients, promote to staging with separate credentials, and record its lifecycle/authorization/alert results. Release production through an approved canary only; if any gate differs, restore the prior configuration and do not copy production keys or signing artifacts into lower environments.
+
 ## Overview
 
 Configure Documenso across development, staging, and production with environment isolation, secret management, and promotion workflows. Documenso cloud offers a staging environment at `stg-app.documenso.com`; self-hosted users run separate instances.
