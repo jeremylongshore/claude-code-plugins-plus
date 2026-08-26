@@ -283,10 +283,27 @@ function buildCertBlock() {
       'certification-rendering.json has invalid certified/pending counts — refusing to render a coerced number',
     );
   }
+  if (!Array.isArray(rendering.artifacts)) {
+    throw new Error('certification-rendering.json must contain artifacts for the published set');
+  }
+  const certifiedPaths = rendering.artifacts
+    .filter((artifact) => artifact?.verdict === 'CERTIFIED')
+    .map((artifact) => artifact.path)
+    .filter((artifact) => typeof artifact === 'string')
+    .sort();
+  if (certifiedPaths.length !== certified) {
+    throw new Error(
+      'certification-rendering.json certified count disagrees with certified artifact set',
+    );
+  }
+  const set =
+    certifiedPaths.length === 0
+      ? 'No artifacts are currently certified.'
+      : `Certified artifacts: ${certifiedPaths.map((artifact) => `\`${artifact}\``).join(', ')}.`;
   const body =
     `Certification status from expiry-swept \`certification-rendering.json\`: ` +
-    `**${certified} certified** · **${pending} pending**. A tier is a computed, expiring ` +
-    `claim with retained evidence — never a self-approved badge.`;
+    `**${certified} certified** · **${pending} artifacts in the uncertified backlog**. ${set} ` +
+    'Uncertified artifacts render no certification badge; a tier is a computed, expiring claim with retained evidence.';
   return [CERT_START, '', body, '', CERT_END].join('\n');
 }
 
