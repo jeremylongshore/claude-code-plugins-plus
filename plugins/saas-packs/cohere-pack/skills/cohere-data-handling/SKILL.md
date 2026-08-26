@@ -261,6 +261,14 @@ await cohere.chat({
 | Audit gap | Async logging failed | Use sync fallback |
 | Safety mode ignored | Used with tools/docs | Separate safety from RAG calls |
 
+## Examples
+
+Run a staging pipeline with synthetic text containing representative sensitive
+patterns, verify redaction occurs before embed or logging, and inspect only
+aggregate audit metadata. If a new field bypasses the classifier or retention
+job, stop that data path, update the data map and controls, then retest before
+re-enabling the workflow.
+
 ## Resources
 
 - [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)

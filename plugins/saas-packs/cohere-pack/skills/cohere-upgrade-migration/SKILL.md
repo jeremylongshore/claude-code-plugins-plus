@@ -306,6 +306,14 @@ grep -rn "eventType.*text-generation" src/ --include="*.ts"
 | `embedding_types required` | v2 embed requirement | Add `embeddingTypes: ['float']` |
 | `input_type required` | v2 embed requirement | Add `inputType: 'search_document'` |
 
+## Examples
+
+Run the v2 adapter against sanitized staging fixtures, compare the normalized
+chat/embed result to the v1 baseline, and promote only after model IDs, streaming,
+and error behavior are verified. If a response shape or model contract differs,
+restore the pinned prior path and correct the migration before routing live
+traffic.
+
 ## Resources
 
 - [API v1 to v2 Migration Guide](https://docs.cohere.com/docs/migrating-v1-to-v2)

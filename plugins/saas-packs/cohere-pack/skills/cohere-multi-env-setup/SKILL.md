@@ -259,6 +259,14 @@ services:
 | Model not found | Typo in config | Validate model IDs at startup |
 | Config merge fails | Missing environment | Default to development |
 
+## Examples
+
+Configure staging with its own secret reference, model allow-list, token budget,
+and non-production destination, then prove a production identifier is rejected
+by startup guards. If an environment receives the wrong key or configuration,
+stop deployment, rotate/review the boundary as needed, and correct it before
+promoting any workload.
+
 ## Resources
 
 - [Cohere API Keys](https://dashboard.cohere.com/api-keys)

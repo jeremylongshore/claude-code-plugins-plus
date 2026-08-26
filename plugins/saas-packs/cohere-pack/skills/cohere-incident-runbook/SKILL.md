@@ -257,6 +257,30 @@ curl -s https://status.cohere.com/api/v2/incidents.json | jq '.incidents[:3]'
 - Stakeholders notified via templates
 - Evidence collected for postmortem
 
+## Instructions
+
+Classify the affected model/endpoint and data sensitivity, stabilize outbound
+traffic with the approved fallback or circuit breaker, preserve redacted
+correlation/timing evidence, and communicate through the defined incident
+cadence. Restore the smallest safe change, then verify behavior and data
+integrity before closing or replaying queued work.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Authentication/key compromise | Stop the affected workload, rotate through the secret owner, and verify scoped recovery. |
+| Provider outage or severe 5xx | Use the approved fallback/circuit breaker and preserve request state for safe retry. |
+| Rate/timeout exhaustion | Defer through bounded retry policy; do not amplify traffic. |
+| Unsafe output or data-handling concern | Disable affected feature path and engage the safety/data owner. |
+
+## Examples
+
+During a provider outage, trip the model circuit breaker, keep queued work with
+idempotency keys, notify stakeholders using the template, and test recovery on
+a small staging request before reopening. If a key is exposed, rotate it and
+validate logs/configuration before processing any previously failed request.
+
 ## Resources
 
 - [Cohere Status Page](https://status.cohere.com)
