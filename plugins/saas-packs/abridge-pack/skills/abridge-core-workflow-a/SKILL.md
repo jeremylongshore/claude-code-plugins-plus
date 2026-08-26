@@ -272,6 +272,16 @@ async function pushNoteToEpic(
 - Source-mapped citations linking AI output to conversation audio
 - FHIR DocumentReference created in Epic EHR
 
+## Examples
+
+In a non-production integration test, initialize an encounter with synthetic
+patient and encounter identifiers, then stream a short pre-recorded synthetic
+conversation. Wait for the finalized SOAP note, inspect its source map and
+quality metrics, and submit a `DocumentReference` to the sandbox FHIR endpoint.
+Treat the returned resource ID as the success signal. If the resource fails
+validation, retain only the redacted `OperationOutcome`, correct the FHIR
+payload, and retry without replaying real clinical audio.
+
 ## Error Handling
 
 | Error | Cause | Solution |
