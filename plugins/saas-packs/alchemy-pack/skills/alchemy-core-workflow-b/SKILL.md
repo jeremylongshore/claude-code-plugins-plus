@@ -176,6 +176,18 @@ async function verifyNftOwnership(
 - Smart contract read operations via Ethers.js provider
 - NFT ownership verification for token-gating
 
+## Examples
+
+Use a known public testnet collection or a contract you control to fetch a
+small page of metadata, then render the collection address, token IDs, and
+cached-image fallback without treating metadata as verified financial or
+ownership advice. For token gating, call `verifyNftOwnership` only after the
+user has proved control of the wallet through your application’s own signed
+challenge; an address submitted in a form is not authentication. If an RPC
+call reverts, metadata is absent, or image retrieval times out, preserve the
+valid fields, label the unavailable item, and retry only within the configured
+rate-limit budget.
+
 ## Error Handling
 
 | Error | Cause | Solution |
