@@ -227,10 +227,18 @@ function shouldProcessNow(rowCount: number): { proceed: boolean; reason: string 
 
 ## Output
 
-- Optimized table with conditional enrichment rules
-- Pre-processed input data (30-50% credit savings typical)
-- Column order optimized for speed
-- Waterfall depth reduced to 2-3 providers
+Produce a reviewed optimization record with table scope, baseline volume and
+credit use, selected conditions/waterfall, expected and observed throughput,
+data-quality impact, owner, and rollback threshold. Avoid representing provider
+or credit-saving estimates as guaranteed results; confirm them with observed
+workspace telemetry before expanding the rollout.
+
+## Examples
+
+In a staging table, add a conditional run for rows with a valid business email
+and limit the waterfall to two providers, then compare hit rate, cost, and
+latency to the prior baseline. Keep the former table configuration available;
+restore it if qualification quality or downstream CRM coverage drops.
 
 ## Resources
 

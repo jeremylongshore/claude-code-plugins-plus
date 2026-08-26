@@ -219,6 +219,21 @@ const worker = new Worker('clay-enrichment', async (job) => {
 | HTTP API column timeout | Callback endpoint slow | Respond 200 immediately, process async |
 | Credits exhausted mid-pipeline | No budget control | Add circuit breaker with credit limit |
 
+## Output
+
+Create an architecture decision that names the chosen ingestion pattern,
+volume/cost assumptions, data classification, idempotency and retry policy,
+operational owner, monitoring, and rollback route. The decision matrix guides
+selection but does not replace a staging validation with the actual workspace
+and downstream CRM permissions.
+
+## Examples
+
+Start a new source at low volume through the webhook pattern, verify durable
+deduplication and a bounded retry path, then move to a queue only when observed
+traffic and recovery needs justify it. If the credit guardrail opens, halt new
+jobs and notify the owner; do not bypass the circuit breaker for a live batch.
+
 ## Resources
 
 - [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)
