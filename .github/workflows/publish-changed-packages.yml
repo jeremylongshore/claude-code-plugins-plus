@@ -3,9 +3,11 @@ name: Publish changed @intentsolutionsio packages
 # Runs after the canonical Validate Plugins workflow completes successfully on
 # a push to main. For each
 # changed plugin whose package.json `version` is not yet on npm:
-#   1. Publishes to npm with provenance.
-#   2. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
-#   3. Opens a GitHub Release linked to that tag with auto-generated notes.
+#   1. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
+#   2. Opens a GitHub Release linked to that tag with auto-generated notes.
+#   3. Publishes to npm with provenance only after the source-release tuple is
+#      present. A tag/release failure therefore cannot leave an orphan npm
+#      package version.
 #
 # The version-bump trigger is provided by `auto-bump-on-pr.yml` — it runs on
 # every PR, detects which plugins' source files changed, bumps each plugin's
@@ -166,7 +168,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Publish each changed package + tag + release
+      - name: Assert source release before publishing each changed package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -198,27 +200,13 @@ jobs:
               continue
             fi
 
-            if ! (cd "$DIR" && npm publish --access public --provenance); then
-              echo "❌ FAILED publish: $NAME@$VERSION — investigate and bump patch to retry"
-              FAILED=$((FAILED+1))
-              sleep 2
-              continue
-            fi
-            echo "✓ published: $NAME@$VERSION"
-            PUBLISHED=$((PUBLISHED+1))
-            PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
-
             # Annotated tag with body that links to npm + the source dir.
             TAG_MSG="Release ${NAME} ${VERSION}\n\nnpm: https://www.npmjs.com/package/${NAME}/v/${VERSION}\nsource: ${DIR}"
             if git rev-parse "$TAG" >/dev/null 2>&1; then
               echo "  ⊙ tag $TAG already exists locally; skipping tag step"
             else
-              git tag -a "$TAG" -m "$(printf "%b" "$TAG_MSG")" || {
-                echo "  ⚠ failed to create tag $TAG"
-              }
-              git push origin "refs/tags/${TAG}" || {
-                echo "  ⚠ failed to push tag $TAG (network or perms)"
-              }
+              git tag -a "$TAG" -m "$(printf "%b" "$TAG_MSG")"
+              git push origin "refs/tags/${TAG}"
             fi
 
             # GitHub Release with auto-generated notes (PR + commit summaries
@@ -235,10 +223,24 @@ jobs:
               gh release create "$TAG" \
                 --title "$TAG" \
                 --notes "$REL_NOTES" \
-                --generate-notes || {
-                echo "  ⚠ failed to create GitHub release for $TAG"
-              }
+                --generate-notes
             fi
+
+            # Re-query both source-release components immediately before the
+            # irreversible npm publish. Do not rely on the earlier branch:
+            # a concurrent deletion or API failure must fail this run.
+            git rev-parse -q --verify "refs/tags/${TAG}^{tag}" >/dev/null
+            gh release view "$TAG" >/dev/null
+
+            if ! (cd "$DIR" && npm publish --access public --provenance); then
+              echo "❌ FAILED publish: $NAME@$VERSION — source release remains visible; investigate and bump patch to retry"
+              FAILED=$((FAILED+1))
+              sleep 2
+              continue
+            fi
+            echo "✓ published: $NAME@$VERSION"
+            PUBLISHED=$((PUBLISHED+1))
+            PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
 
             sleep 2
           done < <(echo "$PACKAGES_JSON" | jq -c '.[]')

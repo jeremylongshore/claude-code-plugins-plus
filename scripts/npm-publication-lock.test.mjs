@@ -278,3 +278,23 @@ test('the old raw-push route is absent and the new publisher requires the prefli
   assert.match(changedWorkflow, /needs: \[guard, preflight, detect\]/);
   assert.match(changedWorkflow, /environment: npm-production/);
 });
+
+test('changed-package publisher establishes a source release before irreversible npm publish', () => {
+  const changedWorkflow = readFileSync(
+    new URL('../.github/workflows/publish-changed-packages.yml', import.meta.url),
+    'utf8',
+  );
+
+  const tagCreate = changedWorkflow.indexOf('git tag -a "$TAG"');
+  const releaseCreate = changedWorkflow.indexOf('gh release create "$TAG"');
+  const publish = changedWorkflow.indexOf('npm publish --access public --provenance');
+
+  assert.ok(tagCreate >= 0, 'publisher must create an annotated package tag');
+  assert.ok(releaseCreate > tagCreate, 'publisher must create release after tag');
+  assert.ok(publish > releaseCreate, 'publisher must not publish npm before tag and release');
+  assert.match(changedWorkflow, /git rev-parse -q --verify "refs\/tags\/\$\{TAG\}\^\{tag\}"/);
+  assert.match(changedWorkflow, /gh release view "\$TAG" >\/dev\/null/);
+  assert.doesNotMatch(changedWorkflow, /⚠ failed to create tag/);
+  assert.doesNotMatch(changedWorkflow, /⚠ failed to push tag/);
+  assert.doesNotMatch(changedWorkflow, /⚠ failed to create GitHub release/);
+});
