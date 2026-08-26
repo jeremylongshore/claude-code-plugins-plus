@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Team Setup
 
+## Overview
+
+Onboard a Cursor team with approved identity, privacy, rules, repository access, and support ownership before broad AI-assisted development begins.
+
+## Prerequisites
+
+- A named tenant owner, identity source, approved plan, and data-use policy.
+- Reviewed repository templates, ignore rules, and owner for onboarding/offboarding.
+
+## Instructions
+
+1. Pilot with a small group using SSO/SCIM or approved identity controls and least-privilege roles.
+2. Publish reviewed shared rules and ignore files through source control, not untracked local instructions.
+3. Train members on context boundaries, diff review, testing, escalation, and account recovery.
+4. Review access, policy enforcement, and adoption evidence before expanding the rollout.
+
+## Output
+
+- A governed team rollout with ownership, onboarding evidence, and offboarding/access-review controls.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| A user receives excess access | Correct the identity/group mapping and record the access review. |
+| Shared rules conflict with a repository | Use a reviewed scoped override; do not disable all team rules. |
+| Privacy control cannot be verified | Hold expansion and escalate to the tenant/security owner. |
+
+## Examples
+
+Pilot one engineering group, verify SSO and Privacy Mode policy, open a template repository with reviewed rules, and collect a redacted onboarding receipt. Expand only after a new user and a departed user both pass the expected provisioning/deprovisioning checks.
+
 Configure Cursor for teams and organizations. Covers plan selection, member management, shared configurations, Privacy Mode enforcement, and onboarding workflows.
 
 ## Plan Comparison
