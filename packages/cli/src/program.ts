@@ -6,7 +6,7 @@ import { listPlugins } from './commands/list.js';
 import { doctorCheck } from './commands/doctor.js';
 import { marketplaceCommand, addMarketplace, removeMarketplace } from './commands/marketplace.js';
 import { validateCommand } from './commands/validate.js';
-import { doctorSkills, listHarnesses } from './commands/skills.js';
+import { doctorSkills, installPortableSkill, listHarnesses } from './commands/skills.js';
 import { getVersion } from './utils/version.js';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -32,6 +32,22 @@ export function buildProgram() {
     .option('--scope <scope>', 'project or user scope', 'project')
     .option('--json', 'Output JSON')
     .action(async (options) => doctorSkills(options.harness, options.scope, !!options.json));
+  skills
+    .command('install <source>')
+    .description('Install one portable SKILL.md directory into a verified harness path')
+    .requiredOption('--harness <id>', 'Harness identifier')
+    .option('--scope <scope>', 'project or user scope', 'project')
+    .option('--dry-run', 'Preview without writing')
+    .option('--json', 'Output JSON')
+    .action(async (source, options) =>
+      installPortableSkill(
+        source,
+        options.harness,
+        options.scope,
+        !!options.dryRun,
+        !!options.json,
+      ),
+    );
 
   program
     .command('install [plugin]')
