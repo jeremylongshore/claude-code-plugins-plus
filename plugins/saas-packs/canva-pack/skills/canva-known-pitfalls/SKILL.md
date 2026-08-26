@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Common mistakes when integrating with the Canva Connect API. Each pitfall includes the anti-pattern, why it fails, and the correct approach with real API endpoints.
 
+## Prerequisites
+
+- A reviewed OAuth/asset policy, test tenant, and protected configuration for rate, retention, and publication settings.
+- A redacted test/incident record to avoid using customer content as a teaching or reproduction fixture.
+
+## Instructions
+
+1. Treat every pitfall as a pre-deployment review check against the actual scopes, asset rights, callback flow, and retention policy.
+2. Correct one control at a time in a synthetic environment, then validate redacted behavior and rollback readiness.
+3. Escalate unknown authorization, enterprise entitlement, or data-rights questions rather than assuming a workaround is permitted.
+
 ## Pitfall #1: Not Handling Token Expiry
 
 ```typescript
@@ -210,6 +221,18 @@ if (result.status === 'failed') {
   }
 }
 ```
+
+## Error Handling
+
+If a mitigation would expose a token, bypass a rate limit, broaden a scope, retain a temporary URL, or act on an unverified webhook, stop and use the approved recovery process. A missing entitlement or policy is a deny condition, not an invitation to change the integration behavior.
+
+## Output
+
+Pitfall review yields a redacted control decision, configuration version, synthetic validation result, and rollback action. It does not include design contents, OAuth data, signed URLs, or user profiles.
+
+## Examples
+
+Before enabling autofill, verify Enterprise entitlement, approved template rights, input data classification, and output destination in staging. If any evidence is absent, leave the feature disabled and request owner review rather than creating a fallback against a different tenant.
 
 ## Quick Reference
 

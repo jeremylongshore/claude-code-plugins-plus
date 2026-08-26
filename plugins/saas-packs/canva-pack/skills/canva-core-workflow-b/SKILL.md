@@ -33,6 +33,12 @@ Secondary workflow: upload assets to Canva, autofill brand templates with dynami
 - Completed `canva-install-auth` with valid access token
 - Scopes: `asset:read`, `asset:write`, `brandtemplate:meta:read`, `brandtemplate:content:read`, `design:content:write`, `folder:read`, `folder:write`
 
+## Instructions
+
+1. Authorize the caller, tenant, template/asset rights, data class, and destination before any upload, autofill, or folder mutation.
+2. Validate input files and template data, use a durable idempotency key, and process one bounded approved job at a time.
+3. Store generated assets in encrypted expiry-controlled storage and reconcile the authorized job before retrying.
+
 ## Asset Management
 
 ### Upload an Asset (Binary)
@@ -235,6 +241,14 @@ await canvaAPI('/folders/move', token, {
   }),
 });
 ```
+
+## Output
+
+The workflow returns validated asset/autofill/folder references and a redacted operation receipt. It does not log OAuth data, template contents, uploaded files, signed URLs, or user identity data.
+
+## Examples
+
+For an approved autofill, use a synthetic or authorized template, validate the input schema and rights, create an idempotent job, and keep the generated design in protected expiry-controlled storage. Stop if entitlement, template scope, output destination, or data classification differs from the approved request.
 
 ## Error Handling
 

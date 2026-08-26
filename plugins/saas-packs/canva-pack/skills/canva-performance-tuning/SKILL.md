@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Optimize Canva Connect API performance. The REST API at `api.canva.com/rest/v1/*` has per-user rate limits and async operations (exports, uploads, autofills) that require polling.
 
+## Prerequisites
+
+- A protected non-production benchmark workload, current account-limit evidence, and defined latency/freshness/reconciliation budgets.
+- A feature flag and rollback plan for every cache, polling, batch, or concurrency change.
+
+## Instructions
+
+1. Measure a bounded synthetic workload before changing one performance variable.
+2. Minimize requested/persisted fields, encrypt and expire caches, and never cache OAuth values, signed URLs, or unapproved asset data.
+3. Respect provider limits, preserve idempotency/reconciliation state, and roll back on policy, freshness, or completion regression.
+
 ## Caching Strategy
 
 ### Design Metadata Cache
@@ -221,6 +232,14 @@ async function measuredCanvaCall<T>(
 | Export completion | 2-15s (depending on size) | N/A |
 | POST /asset-uploads | 300-2000ms | 30/min |
 | POST /autofills | 500-3000ms (job start) | 60/min |
+
+## Output
+
+Performance work produces a baseline, bounded aggregate latency/rate result, cache data classification, rollout decision, and rollback result. It excludes customer content, tokens, asset URLs, and user-identifying values.
+
+## Examples
+
+Benchmark metadata-only reads against synthetic designs, enable one TTL-limited encrypted cache behind a feature flag, then compare p95 latency and reconciliation correctness. Disable the change if it causes stale authorization, missed completion, or a rate-limit regression.
 
 ## Error Handling
 
