@@ -158,6 +158,18 @@ async function verifyAbridgeConnection(): Promise<boolean> {
 - SMART on FHIR OAuth flow for clinician authentication
 - Verified connectivity to Abridge partner API
 
+## Examples
+
+In a sandbox onboarding session, obtain a non-production client from the
+partner portal and place its values in the deployment platform's secret store
+or a local, gitignored environment file with restrictive permissions. Complete
+a SMART-on-FHIR authorization using a sandbox redirect URI, then call the
+health endpoint and record only its HTTP status and organization-safe request
+identifier. A `200` response proves connectivity, not production readiness.
+If verification returns `401` or `403`, stop and confirm the client, scope,
+organization provisioning, and redirect URI with the service owners; never
+paste a credential into a ticket, shell history, or source file.
+
 ## Error Handling
 
 | Error | Cause | Solution |
