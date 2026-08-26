@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@octokit/rest": "^21.1.1",
+    "@octokit/rest": "^22.0.1",
     "commander": "^13.1.0",
     "yaml": "^2.9.0",
     "zod": "^3.25.76"
