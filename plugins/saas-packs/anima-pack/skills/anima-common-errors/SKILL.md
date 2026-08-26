@@ -23,6 +23,32 @@ compatibility: Designed for Claude Code
 ---
 # Anima Common Errors
 
+## Overview
+
+Use this guide to diagnose design-to-code failures without widening design-file
+access or leaking tokens. Start from a reproducible file/node/settings tuple
+and use a least-privilege development credential for all verification.
+
+## Prerequisites
+
+- A sanitized error record with the design file identifier, node identifier,
+  selected generation settings, timestamp, and request ID where available.
+- Scoped Anima and Figma credentials held in a secret store; never paste a
+  personal access token into a ticket, source file, or shared diagnostic log.
+- A staging or disposable design fixture so fixes can be reproduced without
+  mutating a production design file.
+
+## Instructions
+
+1. Classify the failure as authentication, file/node resolution, generator
+   configuration, timeout/rate limit, or rendered-output quality.
+2. Reproduce it with the smallest approved frame/component and the diagnostic
+   commands, capturing only sanitized results.
+3. Correct the matching design input, entitlement, or generation configuration
+   and rerun only that fixture.
+4. Validate the generated file location, lint/build result, and visual review
+   before updating a broader component set.
+
 ## Error Reference
 
 ### Authentication Errors
@@ -99,6 +125,25 @@ curl -s "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}" \
 - Error classified and root cause identified
 - Valid settings matrix for reference
 - Diagnostic commands for token and file verification
+
+## Examples
+
+When a staging generation returns `Node not found`, compare the copied node ID
+with the approved Figma link, then run the file-access diagnostic using a scoped
+development token. Regenerate only that small frame after correcting the ID and
+confirm files are emitted to the expected generated-code directory. If access
+is denied, the node remains hidden, or output is empty, stop the run and ask
+the file owner to correct permissions or visibility; do not expand the token’s
+scope or substitute a personal token to get past the error.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Token is invalid, expired, or over-scoped | Stop the diagnostic, replace it through managed secret rotation, and avoid logging the value. |
+| File or node cannot be resolved | Verify the approved link and visibility with the design owner before retrying. |
+| Generator times out or rate-limits | Use bounded backoff or simplify the fixture; do not fan out uncontrolled retries. |
+| Generated output is unsafe or wrong | Keep it out of the main branch, correct source design/settings, and rerun targeted validation. |
 
 ## Resources
 
