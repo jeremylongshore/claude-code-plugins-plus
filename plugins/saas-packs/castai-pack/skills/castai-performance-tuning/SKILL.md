@@ -184,6 +184,21 @@ metadata:
 | Cache stale data | TTL too long | Reduce cache TTL to 30s |
 | Instance type unavailable | Too narrow constraints | Add more instance families |
 
+## Output
+
+Publish a bounded tuning record containing the measured baseline, target SLO,
+proposed setting, expected cost and disruption impact, rollout scope, and
+rollback trigger. Treat estimates as hypotheses: production success requires
+observed node, workload, and cost telemetry over an agreed window.
+
+## Examples
+
+In staging, shorten a workload-autoscaler cooldown for one non-critical
+service, with a PodDisruptionBudget and alerting already in place. Compare
+provision time, eviction count, p95 latency, and spend against the saved
+baseline; if disruption or error rates rise, restore the prior setting before
+testing another variable.
+
 ## Resources
 
 - [Autoscaler Settings](https://docs.cast.ai/docs/autoscaler-settings)

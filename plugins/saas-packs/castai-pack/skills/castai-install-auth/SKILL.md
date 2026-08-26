@@ -138,6 +138,21 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 | `cluster not found` | Wrong cluster ID | Verify ID at console.cast.ai > Clusters |
 | Helm chart not found | Repo not added | Run `helm repo add castai-helm ...` |
 
+## Output
+
+Record the connected cluster ID, environment, installation method, secret-store
+reference, least-privilege key owner, agent health, and verification time. Do
+not place the API key, Terraform state, Helm values containing secrets, or raw
+provider output in tickets, repositories, or chat transcripts.
+
+## Examples
+
+For a staging EKS cluster, provision the key through the approved secret store,
+install the agent with the secret reference, and verify an `online` agent using
+the read-only status request. If the agent cannot authenticate, remove the
+failed secret reference and diagnose RBAC or network egress before issuing a
+replacement key.
+
 ## Resources
 
 - [CAST AI Getting Started](https://docs.cast.ai/docs/getting-started)
