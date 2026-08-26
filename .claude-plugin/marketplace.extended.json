@@ -9602,19 +9602,6 @@
       "license": "MIT"
     },
     {
-      "name": "walkie-talkie",
-      "source": "./plugins/community/walkie-talkie",
-      "description": "Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs",
-      "version": "0.1.0",
-      "category": "community",
-      "author": {
-        "name": "Walkie-Talkie Maintainers",
-        "url": "https://github.com/walkie-talkie-skill"
-      },
-      "repository": "https://github.com/walkie-talkie-skill/walkie-talkie",
-      "license": "MIT"
-    },
-    {
       "name": "brand-forge",
       "source": "./plugins/design/brand-forge",
       "description": "Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.",

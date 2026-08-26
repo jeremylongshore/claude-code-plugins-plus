@@ -1085,31 +1085,6 @@ sources:
       - '.git/**'
       - '*.log'
 
-  # ============================================================
-  # walkie-talkie (cross-platform agent comms + handoff grill)
-  # https://github.com/walkie-talkie-skill/walkie-talkie
-  # ============================================================
-
-  - name: walkie-talkie
-    description: Cross-platform agent-to-agent comms via an append-only in-repo mailbox, with a GRILL protocol for interrogating handoffs
-    repo: walkie-talkie-skill/walkie-talkie
-    source_path: .
-    target_path: plugins/community/walkie-talkie
-    author:
-      name: Walkie-Talkie Maintainers
-      github: walkie-talkie-skill
-    license: MIT
-    category: community
-    verified: false
-    include:
-      - '/SKILL.md'
-      - '/README.md'
-      - '/PROTOCOL_TEMPLATE.md'
-      - '/LICENSE'
-    exclude:
-      - '.git/**'
-      - '.github/**'
-
   - name: brand-forge
     description: Generate on-brand logos, social templates, and marketing graphics from a saved brand profile; vector output runs locally, AI imagery is opt-in.
     repo: localplugins/plugins

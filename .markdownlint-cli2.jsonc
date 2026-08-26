@@ -127,7 +127,6 @@
     "plugins/community/portaljs/**",
     "plugins/community/quit-sponsor/**",
     "plugins/community/skills-janitor/**",
-    "plugins/community/walkie-talkie/**",
     "plugins/crypto/aomi/**",
     "plugins/design/brand-forge/**",
     "plugins/design/uizze/**",
