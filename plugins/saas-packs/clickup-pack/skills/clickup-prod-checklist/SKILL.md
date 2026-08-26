@@ -25,6 +25,21 @@ compatibility: Designed for Claude Code
 
 Complete checklist for deploying ClickUp API v2 integrations to production.
 
+## Prerequisites
+
+- Approved production owner, scope, change record, and recovery window
+- Dedicated production identity and secret-store reference
+- Certified staging run covering authorization, rate limit, and cleanup paths
+- Monitoring, data-handling, escalation, and feature-disable procedures
+
+## Instructions
+
+Complete the checklist in order: verify secret and workspace identity, run a
+bounded health/read test, confirm idempotent mutation and alerting behavior,
+then obtain the recorded approval before enabling scheduled work. Capture
+evidence for each control; a reachable API is not acceptance if task routing,
+permissions, or rollback has not been tested.
+
 ## Pre-Launch Checklist
 
 ### Authentication & Secrets
@@ -139,6 +154,21 @@ echo "=== Checks Complete ==="
 | Rate limited | X-RateLimit-Remaining = 0 | P2 |
 | High latency | P95 > 3 seconds | P2 |
 | Webhook failures | 3+ consecutive 5xx | P3 |
+
+## Output
+
+Create a production-readiness receipt linking each control to owner, redacted
+evidence, validation time, approval, currently certified integration state, and
+tested rollback decision. Exclude tokens, task details, comments, attachments,
+and unnecessary user data.
+
+## Examples
+
+Before enabling production automation, use the protected identity to perform a
+read check and one idempotent test operation in the approved scope, validate
+alerts and the feature-disable path, then attach the results to the change
+record. If any check fails, keep automation off and restore the last certified
+configuration.
 
 ## Resources
 

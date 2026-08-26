@@ -25,6 +25,21 @@ compatibility: Designed for Claude Code
 
 Automate ClickUp integration testing in CI and sync task statuses from your pipeline. Uses GitHub Actions with live API testing against ClickUp API v2.
 
+## Prerequisites
+
+- Protected CI environment with a scoped, masked ClickUp secret
+- Mock fixtures for pull requests and an isolated task/list for live tests
+- A bounded cleanup strategy and environment approval for any status update
+- Artifact/log retention policy that excludes task content and credentials
+
+## Instructions
+
+Run mocks and schema checks on every change, reserve live API tests for the
+protected integration environment, and create only identifiable disposable
+tasks. Verify cleanup and status transitions after each run; a failed cleanup,
+permission mismatch, or rate-limit response fails the workflow rather than
+being ignored or retried with a broader token.
+
 ## GitHub Actions Workflow
 
 ```yaml
@@ -177,6 +192,20 @@ updateTaskFromCI(taskId, status);
 | 401 in CI | Token expired/rotated | Update secret value |
 | Rate limited in CI | Too many test runs | Add pre-flight rate check |
 | Integration test cleanup fails | Task already deleted | Ignore 404 on cleanup |
+
+## Output
+
+Publish a redacted CI receipt containing fixture/API test result, disposable
+task IDs, cleanup result, rate-limit state, workflow URL, and promotion
+decision. Keep tokens, task descriptions, private comments, and member data out
+of logs and artifacts.
+
+## Examples
+
+On a protected branch, create one labeled test task in an isolated list, verify
+the expected status update, then delete it and prove it is absent. If cleanup
+does not complete or the secret is unavailable, fail the run and notify the
+integration owner instead of leaving production-like tasks behind.
 
 ## Resources
 
