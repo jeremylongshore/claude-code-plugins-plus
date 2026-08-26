@@ -275,6 +275,14 @@ jobs:
 | No metrics data | No closed PRs in period | Extend the time window |
 | API rate limited | Too many `gh api` calls | Add pagination and caching |
 
+## Examples
+
+Generate a weekly pilot-repository report from aggregate pull-request metadata,
+compare coverage and first-review time against the agreed baseline, and tune
+only one review setting at a time. If coverage drops or review noise spikes,
+preserve the report, notify the configuration owner, and restore the last
+verified profile rather than concealing the metric.
+
 ## Resources
 
 - [CodeRabbit Dashboard](https://app.coderabbit.ai)
