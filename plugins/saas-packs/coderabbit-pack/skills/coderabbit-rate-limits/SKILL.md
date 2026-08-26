@@ -248,6 +248,13 @@ echo "$METRICS" | tee "$CACHE_FILE"
 | GraphQL query fails | Malformed query | Validate query in GitHub GraphQL Explorer |
 | Stale cached data | Cache TTL too long | Reduce TTL or force refresh |
 
+## Examples
+
+Run an aggregate metrics query against a pilot repository, cache the redacted
+result with a short documented TTL, and compare the remaining GitHub quota
+before the next batch. On a rate-limit response, defer the same work until reset
+and preserve state; do not fan out retries or use another person’s credential.
+
 ## Resources
 
 - [GitHub Rate Limits](https://docs.github.com/en/rest/rate-limit)
