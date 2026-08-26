@@ -77,6 +77,7 @@ const REPO_KEY = 'ccp';
 const POLICY_FILES = [
   'scripts/validate-catalog-invariants.py',
   'scripts/validate-unicode-hygiene.py',
+  'scripts/evaluate-certification.mjs',
 ] as const;
 
 interface GateOutcome {
@@ -88,6 +89,8 @@ interface GateOutcome {
   readonly dimensionsSkipped: readonly string[];
   readonly advisorySeverity?: 'info' | 'warn' | 'error';
   readonly failureMode?: string;
+  readonly inputHash?: string;
+  readonly metadata?: Record<string, unknown>;
 }
 
 interface EmitContext {
@@ -152,7 +155,8 @@ export interface EmitRow {
  */
 export function buildGateResult(o: GateOutcome, ctx: EmitContext): Record<string, unknown> {
   const gateId = `${REPO_KEY}:ci:${o.gateName}`;
-  const inputHash = `sha256:${sha256Hex(`${ctx.commitSha}:${o.gateName}:${ctx.policyHash}`)}`;
+  const inputHash =
+    o.inputHash ?? `sha256:${sha256Hex(`${ctx.commitSha}:${o.gateName}:${ctx.policyHash}`)}`;
   const body: Record<string, unknown> = {
     gate_id: gateId,
     gate_name: o.gateName,
@@ -171,6 +175,7 @@ export function buildGateResult(o: GateOutcome, ctx: EmitContext): Record<string
     commit_sha: ctx.commitSha,
     ...(o.advisorySeverity !== undefined ? { advisory_severity: o.advisorySeverity } : {}),
     ...(o.failureMode !== undefined ? { failure_mode: o.failureMode } : {}),
+    ...(o.metadata !== undefined ? { metadata: o.metadata } : {}),
   };
   GateResultV1Schema.parse(body); // fail-closed
   return body;
@@ -326,6 +331,85 @@ function unicodeHygieneOutcome(): GateOutcome {
   };
 }
 
+type CertificationArtifact = {
+  readonly path: string;
+  readonly verdict: 'CERTIFIED' | 'NOT-CERTIFIED';
+  readonly evidence_class: string;
+  readonly reason_codes: readonly string[];
+};
+
+/**
+ * Turn every evaluator verdict into its own kernel gate-result row. The input
+ * digest binds each signed row to the exact verdict facts, rather than to a
+ * mutable aggregate count. Malformed reports abort the whole emission: an
+ * incomplete certification report must never silently become signed evidence.
+ */
+export function certificationOutcomes(report: unknown): GateOutcome[] {
+  if (!report || typeof report !== 'object' || Array.isArray(report)) {
+    throw new Error('certification report must be an object');
+  }
+  const payload = report as Record<string, unknown>;
+  if (payload['schema_version'] !== 'certification-report/v1') {
+    throw new Error('certification report must use certification-report/v1');
+  }
+  if (!Array.isArray(payload['artifacts'])) {
+    throw new Error('certification report must contain an artifacts array');
+  }
+  return payload['artifacts'].map((raw, index) => {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      throw new Error(`certification artifact ${index} must be an object`);
+    }
+    const artifact = raw as CertificationArtifact;
+    if (typeof artifact.path !== 'string' || artifact.path.length === 0) {
+      throw new Error(`certification artifact ${index} missing path`);
+    }
+    if (artifact.verdict !== 'CERTIFIED' && artifact.verdict !== 'NOT-CERTIFIED') {
+      throw new Error(`certification artifact ${artifact.path} has invalid verdict`);
+    }
+    if (typeof artifact.evidence_class !== 'string' || !Array.isArray(artifact.reason_codes)) {
+      throw new Error(`certification artifact ${artifact.path} has invalid evidence facts`);
+    }
+    if (!artifact.reason_codes.every((code) => typeof code === 'string')) {
+      throw new Error(`certification artifact ${artifact.path} has non-string reason code`);
+    }
+    const verdict = {
+      path: artifact.path,
+      verdict: artifact.verdict,
+      evidence_class: artifact.evidence_class,
+      reason_codes: [...artifact.reason_codes],
+    };
+    return {
+      gateName: `certification-verdict-${index + 1}`,
+      gateVersion: '1.0.0',
+      decision: artifact.verdict === 'CERTIFIED' ? 'pass' : 'fail',
+      reasons: artifact.verdict === 'CERTIFIED' ? [] : [...artifact.reason_codes],
+      dimensionsEvaluated: ['certification-verdict'],
+      dimensionsSkipped: [],
+      inputHash: `sha256:${sha256Hex(stableStringify(verdict))}`,
+      metadata: { artifact_path: artifact.path, evidence_class: artifact.evidence_class },
+      ...(artifact.verdict === 'CERTIFIED' ? {} : { failureMode: 'not-certified' }),
+    };
+  });
+}
+
+function readCertificationReport(reportPath: string): GateOutcome[] {
+  let raw: string;
+  try {
+    raw = readFileSync(reportPath, 'utf8');
+  } catch (error) {
+    throw new Error(
+      `unable to read certification report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  try {
+    return certificationOutcomes(JSON.parse(raw));
+  } catch (error) {
+    throw new Error(
+      `invalid certification report ${reportPath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
 function firstLines(s: string, n: number): string {
   return s
     .split('\n')
@@ -428,10 +512,18 @@ function ciCtx(): EmitContext {
   };
 }
 
-function parseArgs(argv: readonly string[]): { out: string; selfCheck: boolean; ref: string } {
+function parseArgs(argv: readonly string[]): {
+  out: string;
+  selfCheck: boolean;
+  ref: string;
+  certificationReport?: string;
+  certificationOnly: boolean;
+} {
   let out = 'build/evidence';
   let ref = process.env['GITHUB_REF'] ?? 'refs/heads/main';
   let sc = false;
+  let certificationReport: string | undefined;
+  let certificationOnly = false;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--out') {
       out = argv[i + 1] ?? out;
@@ -441,9 +533,18 @@ function parseArgs(argv: readonly string[]): { out: string; selfCheck: boolean; 
       i++;
     } else if (argv[i] === '--self-check') {
       sc = true;
+    } else if (argv[i] === '--certification-report') {
+      certificationReport = argv[i + 1];
+      if (!certificationReport) throw new Error('--certification-report requires a path');
+      i++;
+    } else if (argv[i] === '--certification-only') {
+      certificationOnly = true;
     }
   }
-  return { out, selfCheck: sc, ref };
+  if (certificationOnly && !certificationReport) {
+    throw new Error('--certification-only requires --certification-report');
+  }
+  return { out, selfCheck: sc, ref, certificationReport, certificationOnly };
 }
 
 function main(argv: readonly string[]): number {
@@ -454,7 +555,10 @@ function main(argv: readonly string[]): number {
   }
   const ctx = ciCtx();
   mkdirSync(args.out, { recursive: true });
-  const outcomes: GateOutcome[] = [catalogInvariantsOutcome(), unicodeHygieneOutcome()];
+  const outcomes: GateOutcome[] = args.certificationOnly
+    ? []
+    : [catalogInvariantsOutcome(), unicodeHygieneOutcome()];
+  if (args.certificationReport) outcomes.push(...readCertificationReport(args.certificationReport));
   const rows = buildRows(outcomes, ctx);
   writeEmit(rows, args.ref, args.out);
   console.log(
