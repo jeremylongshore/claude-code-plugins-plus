@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "displayName": "Claude Code",
+      "support": "verified-native",
+      "projectPath": ".claude/skills",
+      "userPath": "~/.claude/skills",
+      "source": "https://code.claude.com/docs/en/skills"
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex",
+      "support": "standard-compatible",
+      "projectPath": ".codex/skills",
+      "userPath": "~/.codex/skills",
+      "source": "https://platform.openai.com/docs/agents/skills"
+    },
+    {
+      "id": "cursor",
+      "displayName": "Cursor",
+      "support": "standard-compatible",
+      "projectPath": ".cursor/skills",
+      "userPath": "~/.cursor/skills",
+      "source": "https://prod.cursor.com/docs/skills"
+    },
+    {
+      "id": "devin",
+      "displayName": "Devin",
+      "support": "standard-compatible",
+      "projectPath": ".agents/skills",
+      "userPath": null,
+      "source": "https://docs.devin.ai/product-guides/skills"
+    },
+    {
+      "id": "gemini-cli",
+      "displayName": "Gemini CLI",
+      "support": "standard-compatible",
+      "projectPath": ".gemini/skills",
+      "userPath": "~/.gemini/skills",
+      "source": "https://geminicli.com/docs/cli/skills/"
+    },
+    {
+      "id": "goose",
+      "displayName": "Goose",
+      "support": "standard-compatible",
+      "projectPath": ".agents/skills",
+      "userPath": "~/.agents/skills",
+      "source": "https://goose-docs.ai/docs/guides/context-engineering/using-skills/"
+    },
+    {
+      "id": "kilo",
+      "displayName": "Kilo",
+      "support": "standard-compatible",
+      "projectPath": ".kilo/skills",
+      "userPath": "~/.kilo/skills",
+      "source": "https://github.com/Kilo-Org/kilocode/blob/main/packages/kilo-docs/pages/customize/skills.md"
+    },
+    {
+      "id": "opencode",
+      "displayName": "OpenCode",
+      "support": "standard-compatible",
+      "projectPath": ".opencode/skills",
+      "userPath": "~/.config/opencode/skills",
+      "source": "https://opencode.ai/docs/skills"
+    },
+    {
+      "id": "omarchy",
+      "displayName": "Omarchy",
+      "support": "native-extension",
+      "projectPath": null,
+      "userPath": "~/.config/omarchy/plugins",
+      "source": "https://omarchy.org/manual/shell-plugins/"
+    }
+  ]
+}

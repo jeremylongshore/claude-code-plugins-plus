@@ -5,16 +5,18 @@
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "ccpi": "./dist/index.js"
+    "ccpi": "./dist/index.js",
+    "tons": "./dist/index.js"
   },
   "files": [
     "dist",
+    "registry",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc && chmod +x dist/index.js",
+    "build": "tsc && mkdir -p registry && cp ../../config/harness-registry.json registry/ && chmod +x dist/index.js",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",

@@ -394,6 +394,17 @@ The authority flow is: **canonical portable skill → validated (GENERATED) harn
 
 ## 5. CANONICAL MODEL-AGNOSTIC CONTRACT
 
+> **Amendment — 2026-08-26, owner-authorized.** The compatibility constraints in
+> §§ 5.6, 6A.3, and 13 remain binding for `plugins/`, `skills/`, package identities,
+> and legacy customer entry points, but they no longer prohibit a GitHub repository
+> rename. The canonical repository identity is **Tons of Skills Marketplace** at
+> `jeremylongshore/tons-of-skills-marketplace`. The historical repository URL and
+> `jeremylongshore/claude-code-plugins` install slug remain supported compatibility
+> aliases until the migration receipt records their retirement criteria. This
+> amendment also authorizes full Beads graph instantiation for this blueprint; Beads
+> still enforces dependencies, evidence, and closure gates. Detailed identity,
+> harness, and customer-install contracts are recorded in 803–805.
+
 ### 5.1 The four homes, and the one rule
 
 **Rule: every fact has exactly one writer.** A field's home is determined by _who writes it and how often it changes_, not by convenience. **The frontmatter is NOT the machine contract and must not be overloaded.**
