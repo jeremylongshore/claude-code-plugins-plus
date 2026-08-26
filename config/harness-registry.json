@@ -1,10 +1,16 @@
 {
   "schemaVersion": 1,
+  "portableArtifact": {
+    "source": "skills/",
+    "specification": "https://agentskills.io/specification",
+    "policy": "One portable source is installed into native harness paths; native extensions are not adapters."
+  },
   "harnesses": [
     {
       "id": "claude-code",
       "displayName": "Claude Code",
       "support": "verified-native",
+      "publicSupport": true,
       "projectPath": ".claude/skills",
       "userPath": "~/.claude/skills",
       "source": "https://code.claude.com/docs/en/skills"
@@ -13,6 +19,7 @@
       "id": "codex",
       "displayName": "Codex",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".codex/skills",
       "userPath": "~/.codex/skills",
       "source": "https://platform.openai.com/docs/agents/skills"
@@ -21,6 +28,7 @@
       "id": "cursor",
       "displayName": "Cursor",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".cursor/skills",
       "userPath": "~/.cursor/skills",
       "source": "https://prod.cursor.com/docs/skills"
@@ -29,6 +37,7 @@
       "id": "devin",
       "displayName": "Devin",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".agents/skills",
       "userPath": null,
       "source": "https://docs.devin.ai/product-guides/skills"
@@ -37,6 +46,7 @@
       "id": "gemini-cli",
       "displayName": "Gemini CLI",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".gemini/skills",
       "userPath": "~/.gemini/skills",
       "source": "https://geminicli.com/docs/cli/skills/"
@@ -45,6 +55,7 @@
       "id": "goose",
       "displayName": "Goose",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".agents/skills",
       "userPath": "~/.agents/skills",
       "source": "https://goose-docs.ai/docs/guides/context-engineering/using-skills/"
@@ -53,6 +64,7 @@
       "id": "kilo",
       "displayName": "Kilo",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".kilo/skills",
       "userPath": "~/.kilo/skills",
       "source": "https://github.com/Kilo-Org/kilocode/blob/main/packages/kilo-docs/pages/customize/skills.md"
@@ -61,6 +73,7 @@
       "id": "opencode",
       "displayName": "OpenCode",
       "support": "standard-compatible",
+      "publicSupport": false,
       "projectPath": ".opencode/skills",
       "userPath": "~/.config/opencode/skills",
       "source": "https://opencode.ai/docs/skills"
@@ -69,6 +82,7 @@
       "id": "omarchy",
       "displayName": "Omarchy",
       "support": "native-extension",
+      "publicSupport": false,
       "projectPath": null,
       "userPath": "~/.config/omarchy/plugins",
       "source": "https://omarchy.org/manual/shell-plugins/"

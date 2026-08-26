@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/ccpi",
   "version": "2.0.6",
-  "description": "Command-line tool for installing and managing Claude Code plugins from tonsofskills.com",
+  "description": "Command-line tool for Tons of Skills portable skills and marketplace plugins",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -35,12 +35,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
     "directory": "packages/cli"
   },
   "homepage": "https://tonsofskills.com",
   "bugs": {
-    "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
+    "url": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues"
   },
   "engines": {
     "node": ">=18.0.0"
