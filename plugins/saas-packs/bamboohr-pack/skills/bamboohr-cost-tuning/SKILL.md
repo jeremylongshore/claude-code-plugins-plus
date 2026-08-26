@@ -245,6 +245,10 @@ ORDER BY 1 DESC, calls DESC;
 | Directory caching | 1000/day | 12/day | 98.8% |
 | Incremental sync | Full pull | Delta only | 90-99% |
 
+## Examples
+
+Measure aggregate request counts for the approved integration scope, minimize field selection, and cache only encrypted, access-controlled data with a defined expiry. Verify current plan terms through BambooHR and the account owner before making cost claims; changes that affect HR-data freshness require a reconciliation check and rollback flag.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

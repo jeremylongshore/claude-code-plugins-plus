@@ -219,6 +219,10 @@ echo "Rollback complete. Document what failed for next attempt."
 - Feature-flagged gradual migration
 - Documented rollback procedure
 
+## Examples
+
+Create a migration branch, validate only approved synthetic or sandbox employee records, and compare a redacted schema/contract receipt before enabling a feature flag. Roll back to the previous artifact if either authorization scope or data-contract validation changes; verify current vendor behavior in the official changelog rather than treating the examples as a version guarantee.
+
 ## Error Handling
 
 | Migration Issue | Detection | Solution |

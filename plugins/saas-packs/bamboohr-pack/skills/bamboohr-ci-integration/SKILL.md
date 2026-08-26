@@ -258,6 +258,10 @@ jobs:
 - PR status checks configured
 - Coverage reports uploaded
 
+## Examples
+
+Run mocked tests on every pull request. Restrict live tests to a protected environment with an approved sandbox tenant, a dedicated least-privilege key, and synthetic records only; record a redacted status result and fail closed when credentials, environment approval, or data scope are absent.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
