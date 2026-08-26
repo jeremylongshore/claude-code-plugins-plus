@@ -36,6 +36,7 @@
     "generate:disposition-ledger": "node scripts/generate-disposition-ledger.mjs",
     "validate:disposition-ledger": "node --test scripts/generate-disposition-ledger.test.mjs && node scripts/generate-disposition-ledger.mjs --check",
     "validate:mirror-quarantine": "node scripts/check-mirror-quarantine.mjs",
+    "validate:llm-box-provenance": "node scripts/check-llm-box-provenance.mjs",
     "evaluate:launch-readiness": "node scripts/evaluate-launch-readiness.mjs",
     "sweep:certification-expiry": "node scripts/sweep-certification-expiry.mjs",
     "validate:certification-separation": "node --test scripts/check-certification-separation.test.mjs",

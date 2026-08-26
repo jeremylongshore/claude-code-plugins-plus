@@ -2,7 +2,8 @@
   "synced_from": {
     "repo": "alib8b8/llm-box",
     "path": ".",
-    "branch": "main"
+    "branch": "main",
+    "source_commit": "0b4cbae76fbf86825076b230a342735bdfd2a0fc"
   },
   "last_sync": "2026-08-26T16:44:39.735Z",
   "author": {

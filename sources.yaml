@@ -941,6 +941,10 @@ sources:
       name: alib8b8
       github: alib8b8
     license: AGPL-3.0
+    copyleft_disposition:
+      status: quarantined
+      channels: []
+      rationale: 'AGPL-3.0 mirror is retained for attribution and upstream traceability only; it is excluded from npm, curated, and marketplace publication pending a reviewed redistribution decision.'
     category: community
     verified: false
     keywords:
