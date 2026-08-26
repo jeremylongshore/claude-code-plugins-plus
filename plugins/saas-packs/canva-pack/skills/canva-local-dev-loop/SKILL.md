@@ -210,6 +210,14 @@ describe('Canva Designs', () => {
 });
 ```
 
+## Output
+
+Local development yields mocked/synthetic test results, a protected local configuration, and redacted diagnostics. It excludes production OAuth tokens, customer designs, real export URLs, and retained production response payloads.
+
+## Examples
+
+Use mocked API responses and a dedicated OAuth development client by default. If a live integration check is needed, use a synthetic design in the approved test tenant, enforce a low rate/cost ceiling, expire any cached result, and delete test artifacts when the check completes.
+
 ## Error Handling
 
 | Error | Cause | Solution |

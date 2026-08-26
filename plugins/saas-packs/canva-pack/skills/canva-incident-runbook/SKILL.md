@@ -28,6 +28,18 @@ compatibility: Designed for Claude Code
 
 Rapid incident response for Canva Connect API integration failures. Covers triage, mitigation, escalation, and postmortem.
 
+## Prerequisites
+
+- A named incident owner, access to redacted application telemetry, and an approved communication/escalation path.
+- A paused or bounded mutation/export queue and a known rollback configuration.
+
+## Instructions
+
+1. Stop affected writes/exports, capture only redacted status and opaque request identifiers, and classify authorization, provider, webhook, or application failure.
+2. Check approved health/status signals without placing tokens, design IDs, URLs, or content in tickets or shell history.
+3. Apply the least-invasive supported mitigation, reconcile pending operations, and obtain owner approval before resuming the queue.
+4. Record the incident timeline, scope, rollback/recovery result, and preventive action in the protected incident record.
+
 ## Quick Triage (First 5 Minutes)
 
 ```bash
@@ -187,6 +199,14 @@ curl "localhost:9090/api/v1/query_range?query=canva_api_errors_total&start=$(dat
 ### Action Items
 - [ ] [Preventive measure] — Owner — Due date
 ```
+
+## Output
+
+The runbook produces a redacted incident record with severity, scope label, failure category, affected operation count, mitigation, reconciliation state, and owner decision. It excludes OAuth secrets, design content, asset URLs, and user data.
+
+## Examples
+
+For a spike in token-refresh failures, pause export creation, report only aggregate 401 counts and opaque request IDs, and route users through the approved reauthorization flow. Do not retry a revoked token, expose it while triaging, or treat a failed health query as permission to bypass scope checks.
 
 ## Error Handling
 

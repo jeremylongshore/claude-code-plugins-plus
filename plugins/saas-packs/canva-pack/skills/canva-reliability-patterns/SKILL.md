@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 
 Production-grade reliability patterns for the Canva Connect API. The API has async operations (exports, uploads, autofills) that can fail or timeout, OAuth tokens that expire every 4 hours, and rate limits that require backoff.
 
+## Prerequisites
+
+- Defined SLOs, queue ownership, idempotency storage, and a protected configuration for timeouts, backoff, and circuit limits.
+- A synthetic or approved non-production workload for exercising failure paths without exposing design assets.
+
+## Instructions
+
+1. Bound every asynchronous operation with an idempotency key, timeout, retry budget, and redacted outcome record.
+2. Retry only explicitly transient requests; treat authorization, policy, schema, and asset-rights errors as fail-closed.
+3. Open circuits and pause dependent queues on sustained failure, then reconcile before recovery.
+4. Change reliability thresholds behind a rollback flag and measure aggregate results before rollout.
+
 ## Circuit Breaker
 
 ```typescript
@@ -258,6 +270,14 @@ class CanvaDeadLetterQueue {
   }
 }
 ```
+
+## Output
+
+Reliability controls emit redacted operation status, retry/circuit state, aggregate latency, and reconciliation result. They do not record tokens, design contents, signed asset URLs, or raw webhook payloads.
+
+## Examples
+
+For a timed-out export, retain the idempotency key, check the existing job status within the approved scope, and retry only if no completed result exists. If the circuit opens, pause new exports and alert the owner; do not fan out retries or recreate designs blindly.
 
 ## Error Handling
 
