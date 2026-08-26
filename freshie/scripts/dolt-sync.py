@@ -831,6 +831,24 @@ def gate_run_completeness(conn: sqlite3.Connection, run_id: int) -> None:
             f"freshie/scripts/rebuild-inventory.py (it purges the newest phantom "
             f"and rescans) before syncing to Dolt."
         )
+    if row is None:
+        raise SyncError(f"discovery run {run_id} is missing from discovery_runs")
+    try:
+        actual_skills = conn.execute(
+            "SELECT COUNT(*) FROM skills WHERE run_id=?", (run_id,)
+        ).fetchone()[0]
+    except sqlite3.OperationalError as exc:
+        raise SyncError(
+            "cannot verify discovery run coherence: skills.run_id is required "
+            "to compare discovery_runs.total_skills"
+        ) from exc
+    declared_skills = row[0]
+    if declared_skills != actual_skills:
+        raise SyncError(
+            f"discovery run {run_id} skill-count mismatch: header total_skills="
+            f"{declared_skills}, skills rows={actual_skills}. Re-run "
+            "freshie/scripts/rebuild-inventory.py before syncing to Dolt."
+        )
 
 
 def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]) -> None:

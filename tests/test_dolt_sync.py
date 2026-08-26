@@ -487,6 +487,7 @@ class RunCompletenessGateTests(unittest.TestCase):
         "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY, run_date TEXT, "
         "commit_hash TEXT, total_packs INTEGER, total_plugins INTEGER, "
         "total_skills INTEGER, total_files INTEGER, total_root_files INTEGER);"
+        "CREATE TABLE skills (id INTEGER PRIMARY KEY, name TEXT, run_id INTEGER);"
     )
 
     def test_incomplete_newest_run_raises(self):
@@ -497,9 +498,27 @@ class RunCompletenessGateTests(unittest.TestCase):
 
     def test_complete_run_passes(self):
         conn = fixture_conn(
-            self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (1, 42);"
+            self.DDL
+            + "INSERT INTO discovery_runs (id, total_skills) VALUES (1, 1);"
+            + "INSERT INTO skills (id, name, run_id) VALUES (1, 'one', 1);"
         )
         dolt_sync.gate_run_completeness(conn, 1)  # must not raise
+        conn.close()
+
+    def test_run_six_shape_with_3000_header_and_19_rows_hard_fails(self):
+        conn = fixture_conn(
+            self.DDL + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);"
+        )
+        conn.executemany(
+            "INSERT INTO skills (id, name, run_id) VALUES (?, ?, 6)",
+            [(index, f"skill-{index}") for index in range(1, 20)],
+        )
+        with self.assertRaises(dolt_sync.SyncError) as ctx:
+            dolt_sync.gate_run_completeness(conn, 6)
+        message = str(ctx.exception)
+        self.assertIn("3000", message)
+        self.assertIn("19", message)
+        self.assertIn("mismatch", message)
         conn.close()
 
     def test_run_zero_passes(self):
