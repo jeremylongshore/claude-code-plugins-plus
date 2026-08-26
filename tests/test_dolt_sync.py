@@ -272,6 +272,28 @@ class ExportAllowlistTests(unittest.TestCase):
             dolt_sync.JRIG_RUNTIME_TABLES & dolt_sync.EXPORT_ALLOWLIST, frozenset()
         )
 
+    def test_cli_refuses_leaked_jrig_table_before_creating_dolt_repo(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db = root / "inventory.sqlite"
+            repo = root / "dolt" / "inventory"
+            with sqlite3.connect(db) as conn:
+                conn.execute("CREATE TABLE skills (id INTEGER PRIMARY KEY)")
+                conn.execute("CREATE TABLE criterion_results (id INTEGER PRIMARY KEY)")
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "--db", str(db), "--dolt-dir", str(repo), "--no-push"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            repo_created = repo.exists()
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("criterion_results", result.stdout)
+        self.assertIn("refusing to publish", result.stdout)
+        self.assertFalse(repo_created, "allowlist gate must abort before Dolt initialization")
+
     def test_empty_table_list_passes(self):
         dolt_sync.gate_export_allowlist([])
 
