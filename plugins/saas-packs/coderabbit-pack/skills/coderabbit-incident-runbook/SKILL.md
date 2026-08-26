@@ -238,6 +238,20 @@ echo "Create a test PR or post '@coderabbitai full review' on an open PR."
 - Branch protection restored after incident
 - Post-incident review of PRs merged without review
 
+## Prerequisites
+
+- Named incident commander, repository owners, and branch-protection authority
+- Documented emergency-bypass, restoration, communication, and audit procedure
+- Access to redacted service status, review history, and protected configuration
+
+## Examples
+
+During a verified CodeRabbit outage, preserve the status evidence, use the
+approved time-bounded emergency procedure for only the affected repository,
+record every bypassed pull request, and restore protection after a test review
+succeeds. Manually review the affected merged changes and close the incident
+only when the protective configuration and evidence are complete.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

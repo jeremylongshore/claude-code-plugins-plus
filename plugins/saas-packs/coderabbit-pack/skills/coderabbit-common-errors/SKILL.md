@@ -253,6 +253,14 @@ gh pr comment PR_NUMBER --body "@coderabbitai configuration"
 | YAML parse error in logs | Invalid `.coderabbit.yaml` | Validate YAML syntax before committing |
 | Stale reviews on old PRs | PR was created before config change | Run `@coderabbitai full review` |
 
+## Examples
+
+When reviews stop, verify the app installation and active configuration on a
+small test PR, make the smallest configuration correction, then request a
+re-review to confirm the result. If a check or policy behaves unexpectedly,
+retain the evidence and use the reviewed rollback rather than disabling
+unrelated repository protections.
+
 ## Resources
 
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
