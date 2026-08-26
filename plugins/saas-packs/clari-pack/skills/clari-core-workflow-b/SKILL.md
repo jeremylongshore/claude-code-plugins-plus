@@ -156,6 +156,21 @@ ORDER BY time_period;
 | Accuracy > 100% | Overachievement | Cap at 100% or allow for analysis |
 | Stale data | Export not refreshed | Run `clari-core-workflow-a` first |
 
+## Output
+
+Return a time-bounded analytics result with source export timestamp, period,
+calculation version, aggregate counts, and any suppression applied for small
+or unauthorized cohorts. Treat forecast accuracy and rep-level variance as
+sensitive commercial data; distribute detailed views only to authorized roles.
+
+## Examples
+
+Compare two certified quarterly exports and flag forecast changes over the
+approved threshold, while omitting individual values from the shared summary.
+If the prior period is missing or stale, return an explicit unavailable result
+and request a fresh workflow-A export rather than inferring a change from
+incompatible data.
+
 ## Resources
 
 - [Clari API Reference](https://developer.clari.com/documentation/external_spec)

@@ -29,6 +29,13 @@ compatibility: Designed for Claude Code
 
 Optimize Clari export pipelines: reduce export times, cache forecast data, and parallelize multi-period exports.
 
+## Prerequisites
+
+- A scoped Clari API credential stored outside source control
+- An approved forecast/export scope and named data owner
+- A warehouse destination with retention and access controls
+- A representative non-production or read-only validation window
+
 ## Instructions
 
 ### Parallel Multi-Period Export
@@ -125,6 +132,30 @@ WHEN NOT MATCHED THEN INSERT VALUES (
 | Sequential 4-period export | 2 min | 40s (parallel) |
 | Cache hit | 5-10s API call | <1ms |
 | Full table reload | 30s | 5s (MERGE) |
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Export job fails or times out | Stop the batch, retain the job ID, and retry only within a bounded budget. |
+| Cached result is stale | Expire it by policy and re-export rather than silently mixing periods. |
+| Warehouse merge is rejected | Preserve the staged data, inspect the schema/constraint failure, and do not fall back to a destructive reload. |
+| API rate limiting occurs | Reduce concurrency and honor retry guidance before resuming. |
+
+## Output
+
+Return a per-period export manifest with source job IDs, record counts, cache
+age, destination load status, duration, and a redacted failure reason where
+applicable. Forecast and owner-level information remains access-controlled;
+the performance report should expose aggregates rather than raw sales data.
+
+## Examples
+
+Export two closed periods in staging with a concurrency limit of two, confirm
+their counts and timestamps in the warehouse, then rerun once to prove the
+cache path is fresh and idempotent. If a period returns partial data, publish a
+failed manifest and halt downstream reporting instead of merging it with a
+previous period’s result.
 
 ## Resources
 

@@ -180,6 +180,21 @@ if __name__ == "__main__":
 | Snowflake auth error | Wrong credentials | Check env vars |
 | Duplicate records | Re-run without dedup | Add upsert logic with `MERGE` |
 
+## Output
+
+Produce a redacted export manifest containing forecast name, approved period,
+source job ID, record count, transformation version, warehouse load result,
+and freshness timestamp. Preserve row-level access controls and do not expose
+individual quota, forecast, or owner data in logs or general-purpose reports.
+
+## Examples
+
+Run a daily export for one staging forecast period, validate that the returned
+period and record count match the source, then load through an idempotent
+`MERGE`. If the export has no entries or the load is partial, mark the run
+failed, keep the previous certified dataset unchanged, and notify the data
+owner with the job ID.
+
 ## Resources
 
 - [Clari Export API](https://developer.clari.com/documentation/external_spec)
