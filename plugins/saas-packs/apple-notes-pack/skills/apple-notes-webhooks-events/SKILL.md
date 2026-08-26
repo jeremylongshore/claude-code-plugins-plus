@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes has no webhook, pub/sub, or event streaming API. To detect changes, you must build your own event system using one of three approaches: (1) JXA polling that compares note snapshots at intervals, (2) file system events (FSEvents) on the NoteStore.sqlite database file for near-real-time change detection, or (3) Apple Shortcuts automations that trigger scripts when specific conditions are met. Each approach has different latency, reliability, and resource consumption tradeoffs.
 
+## Prerequisites
+
+- An approved automation identity with read-only access to the intended account and folders.
+- Durable event storage and deduplication before any downstream side effect.
+- A scoped data policy: event records should use opaque note identifiers or salted hashes, not titles or note bodies.
+
+## Instructions
+
+1. Use polling as the authoritative signal and regard FSEvents and Shortcuts as hints that trigger a new scoped poll.
+2. Persist a cursor or snapshot only after a complete successful poll; retain the prior cursor on failure.
+3. Deduplicate events by note identifier, change version, and handler before invoking exports, notifications, or other mutations.
+4. Debounce file-system activity and never read, modify, or write Apple Notes' private SQLite files directly.
+
 ## Approach 1: JXA Polling (Recommended)
 
 ```typescript
@@ -139,6 +152,14 @@ onNoteChange((event, title) => {
 | False "deleted" events | Note moved between folders, not deleted | Track folder changes separately; verify deletion before acting |
 | Polling timeout on large vaults | >10,000 notes exceeds osascript timeout | Use incremental approach: only check `modificationDate` |
 | Shortcut automation unreliable | macOS may delay or skip automations | Use polling as primary; Shortcuts as supplementary trigger |
+
+## Output
+
+The watcher emits normalized `added`, `modified`, or `deleted` events with an opaque scoped identifier, observed timestamp, source, and deduplication result. It records handler failures separately and leaves the event pending for safe retry; no event payload should include a note body or title by default.
+
+## Examples
+
+When a filesystem notification arrives, wait for the debounce interval, perform a read-only poll of the configured folder, persist any normalized changes, then let an idempotent worker process them. If the poll times out, retain the prior cursor and retry later rather than emitting inferred deletions.
 
 ## Resources
 

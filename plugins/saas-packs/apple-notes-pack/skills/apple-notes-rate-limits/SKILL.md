@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes has no formal API rate limits like cloud services do. However, there are practical throughput limits imposed by three systems: the Apple Events IPC bridge (osascript to Notes.app), the iCloud sync daemon (`bird`/`cloudd`) that must process each write, and the Notes.app SQLite database that handles concurrent access. Exceeding these practical limits causes timeouts (-1712), sync lag, or data loss when writes outpace iCloud's upload buffer. This guide documents safe operation rates and provides throttling patterns.
 
+## Prerequisites
+
+- A tested Notes adapter that keeps note data out of command strings and logs.
+- A bounded queue with an idempotency key or durable operation ledger for each write.
+- An approved maintenance window and backup for bulk mutations; the rates below are conservative starting points, not a vendor guarantee.
+
+## Instructions
+
+1. Begin below the listed rates and increase only after observing successful sync on every required device.
+2. Serialize writes and deletes; do not retry a timed-out mutation until a durable idempotency check determines whether it succeeded.
+3. Pause the queue and escalate if timeout, sync lag, or duplicate detection crosses the service threshold.
+4. Do not terminate iCloud processes to recover throughput; preserve evidence and use normal OS recovery procedures.
+
 ## Practical Rate Limits
 
 | Operation | Safe Rate | Bottleneck | Exceeding Limit |
@@ -114,8 +127,16 @@ watch -n 5 'echo "=== Sync Status ===";
 | -1712 AppleEvent timeout | Operations sent faster than Notes can process | Increase delay between operations; use throttled queue |
 | Notes reappear after deletion | iCloud sync restored note before delete propagated | Wait 5s after delete; verify deletion on another device |
 | Duplicate notes created | Retry on timeout re-executed successful create | Track created note IDs; check before retry |
-| iCloud sync stops during bulk ops | Sync daemon overwhelmed | Pause operations for 30s; `killall bird` to restart sync |
+| iCloud sync stops during bulk ops | Sync daemon overwhelmed | Pause operations, preserve diagnostics, and use supported macOS recovery or Apple support guidance |
 | UI becomes unresponsive | Too many Apple Events queued | Reduce concurrency; add `delay(2)` in JXA scripts |
+
+## Output
+
+The queue records operation type, opaque idempotency key, attempt count, latency, and outcome. It must not record note title, body, account identifiers, or raw Apple Event payloads. A bulk run ends with a reconciliation count and an explicit list of operations requiring review.
+
+## Examples
+
+For a planned import, enqueue one create at a time with a unique source-record key, wait for the configured delay, and reconcile the resulting note count before advancing. If a create times out, query the durable ledger and the scoped target folder before deciding whether to retry; never blindly submit the same create again.
 
 ## Resources
 

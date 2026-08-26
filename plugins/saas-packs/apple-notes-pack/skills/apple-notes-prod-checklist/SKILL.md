@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Before deploying Apple Notes automation to a production macOS machine, validate every dependency: TCC permissions, iCloud sync health, Notes.app availability, error handling robustness, and data security. Unlike cloud services where deployment is a push, Apple Notes automation requires physical or remote access to a Mac with a logged-in user session. This checklist ensures nothing is missed before going live.
 
+## Prerequisites
+
+- An owned, interactive macOS host with the target account and an approved automation consent path.
+- A documented backup and restore exercise for the specific notes and folders the automation may change.
+- A non-production test folder or account for any write-path verification; production validation must be read-only by default.
+
+## Instructions
+
+1. Complete the checklist on the exact host and user context that will run the automation.
+2. Verify only the account and folders explicitly in scope; do not enumerate or export unrelated notes.
+3. Treat a failed authorization, sync, or backup check as a deployment stop, not a warning.
+4. Run a write-path test only in the designated test folder, confirm cleanup manually, and retain no note body in logs.
+
 ## Pre-Deployment Checklist
 
 ### Permissions and Access
@@ -87,16 +100,8 @@ check "JXA access (${NOTE_COUNT:-0} notes)" "$([ -n "$NOTE_COUNT" ] && echo PASS
 # iCloud sync daemon
 check "iCloud sync daemon (bird)" "$(pgrep -x bird > /dev/null && echo PASS || echo WARN)"
 
-# Write test (create and delete a test note)
-TEST_ID=$(osascript -l JavaScript -e '
-  const Notes = Application("Notes");
-  const n = Notes.Note({name: "__prod_check_" + Date.now(), body: "test"});
-  Notes.defaultAccount.folders[0].notes.push(n);
-  n.id();
-' 2>/dev/null)
-check "Write permission test" "$([ -n "$TEST_ID" ] && echo PASS || echo FAIL)"
-# Clean up test note
-[ -n "$TEST_ID" ] && osascript -l JavaScript -e "Application('Notes').notes.byId('$TEST_ID').delete()" 2>/dev/null
+# Keep readiness validation read-only. Exercise writes separately in a named,
+# non-production test folder with an operator present and a verified cleanup plan.
 
 echo ""
 echo "=== Results: $PASS passed, $WARN warnings, $FAIL failed ==="
@@ -114,6 +119,14 @@ echo "READY for production" && exit 0
 | Notes.app not at login items | Removed after macOS update | Re-add via System Settings > General > Login Items |
 | Health check does not alert | Notification permissions denied for Terminal | Grant notification permission in System Settings |
 | iCloud sync lag in production | Large attachment uploads | Monitor with `brctl status`; set expectations for sync delay |
+
+## Output
+
+The readiness run prints a pass/warn/fail summary without note contents, IDs, or account identifiers. A non-zero exit means the deployment is blocked. Store only the timestamp, host inventory identifier, and checklist decision in the change record.
+
+## Examples
+
+Before a scheduled deployment, run the read-only validation script from the launch context and attach its redacted summary to the change record. If write verification is needed, create and clean up a note in the pre-approved test folder during a supervised maintenance window; do not use a default account folder as a test target.
 
 ## Resources
 
