@@ -27,6 +27,17 @@ compatibility: Designed for Claude Code
 
 Manage access control for Canva Connect API integrations at the organization level. The Canva API uses OAuth scopes (not roles) — your application layer implements RBAC on top of Canva's scope system.
 
+## Prerequisites
+
+- An external identity source, role/policy owner, protected mapping of subjects to approved tenants/assets/actions, and audit-retention policy.
+- Enterprise entitlement confirmation where a feature requires it; folder/team conventions alone are not authorization.
+
+## Instructions
+
+1. Authenticate and authorize every action in the application layer before invoking Canva; default-deny unknown roles, tenants, assets, and operations.
+2. Separate read, edit, export, publish, and delete approvals, and require elevated review for destructive or externally visible actions.
+3. Audit redacted allow/deny results and regularly test revocation; OAuth consent and Enterprise membership do not replace application authorization.
+
 ## Canva Enterprise Requirements
 
 | Feature | Canva Free/Pro | Canva Enterprise |
@@ -217,6 +228,14 @@ async function auditCanvaAction(entry: {
   }
 }
 ```
+
+## Output
+
+RBAC returns an allow/deny decision, policy version, opaque subject/scope IDs, and redacted audit event. It never treats a Canva scope, folder name, or team membership as sufficient proof of authorization by itself.
+
+## Examples
+
+Before exporting a design, resolve the caller through the identity source, require an explicit export permission for the approved asset/tenant, and write an audit decision before creating the job. A user with broad OAuth consent still receives deny if the protected policy lacks the required export right.
 
 ## Error Handling
 
