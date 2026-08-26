@@ -731,6 +731,53 @@ def gate_export_allowlist(tables) -> None:
     raise SyncError(" ".join(parts))
 
 
+def demote_unretained_forge_proofs(conn: sqlite3.Connection) -> list[tuple[int, str]]:
+    """Downgrade ledger claims whose primary artifact is absent or hash-invalid.
+
+    This runs against the writable local ledger before the exporter snapshots it.
+    An E2/E3 claim without retrievable primary bytes is E0 by definition; keeping
+    it at a stronger class until a later run would republish a false claim.
+    """
+    tables = {
+        row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    }
+    if "forge_proofs" not in tables:
+        return []
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(forge_proofs)")}
+    required = {"id", "evidence_class", "artifact_uri", "artifact_sha256"}
+    missing = sorted(required - columns)
+    if missing:
+        raise SyncError(
+            "forge_proofs evidence schema is too old for safe export; run the "
+            f"validator migration first (missing: {', '.join(missing)})"
+        )
+
+    demoted: list[tuple[int, str]] = []
+    rows = conn.execute(
+        "SELECT id, evidence_class, artifact_uri, artifact_sha256 FROM forge_proofs"
+    ).fetchall()
+    for row_id, evidence_class, uri, expected_hash in rows:
+        reason = None
+        if not isinstance(uri, str) or not uri:
+            reason = "E0-PRIMARY-ARTIFACT-UNRETAINED"
+        elif not isinstance(expected_hash, str):
+            reason = "E0-PRIMARY-ARTIFACT-HASH-MISSING"
+        elif len(expected_hash) != 64 or any(ch not in "0123456789abcdef" for ch in expected_hash.lower()):
+            reason = "E0-PRIMARY-ARTIFACT-HASH-MISSING"
+        else:
+            try:
+                artifact = Path(uri)
+                actual_hash = hashlib.sha256(artifact.read_bytes()).hexdigest()
+                if actual_hash != expected_hash.lower():
+                    reason = "E0-PRIMARY-ARTIFACT-HASH-MISMATCH"
+            except OSError:
+                reason = "E0-PRIMARY-ARTIFACT-UNRETAINED"
+        if reason and evidence_class != "E0":
+            conn.execute("UPDATE forge_proofs SET evidence_class = 'E0' WHERE id = ?", (row_id,))
+            demoted.append((int(row_id), reason))
+    return demoted
+
+
 def gate_row_counts(conn: sqlite3.Connection, repo: Path, tables: list[str]) -> None:
     for t in tables:
         want = conn.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
@@ -1273,6 +1320,17 @@ def main() -> int:
             if (repo / ".dolt").is_dir():
                 refuse_if_server_running(repo)
             ensure_dolt_identity()
+            # This is intentionally before VACUUM INTO: the snapshot is the
+            # public-export input and must carry the demoted class, not merely
+            # diagnose it after the fact.
+            writable = sqlite3.connect(args.db)
+            try:
+                demoted = demote_unretained_forge_proofs(writable)
+                writable.commit()
+            finally:
+                writable.close()
+            if demoted:
+                log(f"evidence gate: demoted {len(demoted)} forge_proofs row(s) to E0")
 
         # Snapshot for read consistency across the whole export.
         shm = Path("/dev/shm")

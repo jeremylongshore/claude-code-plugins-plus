@@ -14,6 +14,7 @@ test exists.
 """
 
 import importlib.util
+import hashlib
 import sqlite3
 import subprocess
 import sys
@@ -263,6 +264,38 @@ class ExportAllowlistTests(unittest.TestCase):
         self.assertIn("runs", msg)
         self.assertIn("run-jrig-eval.sh", msg)
         self.assertIn("DROP TABLE", msg)
+
+
+class ForgeProofRetentionGateTests(unittest.TestCase):
+    def test_unretained_and_hash_mismatched_proofs_demote_to_e0(self):
+        with tempfile.TemporaryDirectory() as directory:
+            artifact = Path(directory) / "retained.json"
+            artifact.write_text('{"ok":true}', encoding="utf-8")
+            valid_hash = hashlib.sha256(artifact.read_bytes()).hexdigest()
+            conn = fixture_conn(
+                "CREATE TABLE forge_proofs ("
+                "id INTEGER PRIMARY KEY, evidence_class TEXT, artifact_uri TEXT, artifact_sha256 TEXT);"
+            )
+            conn.executemany(
+                "INSERT INTO forge_proofs VALUES (?, ?, ?, ?)",
+                [
+                    (1, "E3", None, None),
+                    (2, "E2", str(Path(directory) / "missing.json"), valid_hash),
+                    (3, "E2", str(artifact), "0" * 64),
+                    (4, "E2", str(artifact), valid_hash),
+                ],
+            )
+            demoted = dolt_sync.demote_unretained_forge_proofs(conn)
+            self.assertEqual([row[0] for row in demoted], [1, 2, 3])
+            self.assertEqual(
+                conn.execute("SELECT evidence_class FROM forge_proofs ORDER BY id").fetchall(),
+                [("E0",), ("E0",), ("E0",), ("E2",)],
+            )
+
+    def test_old_ledger_schema_refuses_export_until_migrated(self):
+        conn = fixture_conn("CREATE TABLE forge_proofs (id INTEGER PRIMARY KEY);")
+        with self.assertRaisesRegex(dolt_sync.SyncError, "evidence schema is too old"):
+            dolt_sync.demote_unretained_forge_proofs(conn)
 
     def test_jrig_tables_are_never_allowlisted(self):
         # The two sets must stay disjoint — allowlisting a j-rig runtime
