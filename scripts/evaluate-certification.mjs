@@ -6,6 +6,7 @@
  *   node scripts/evaluate-certification.mjs \
  *     --validator validator.json --scanner scanner.json --ledger ledger.json \
  *     --dispositions dispositions.json [--out certification-report.json]
+ *     [--max-age-hours 24]
  *
  * Input contracts deliberately stay small and explicit:
  * - validator: { artifacts: [{ path, errors, gates: { G1..G10: boolean } }] }
@@ -15,9 +16,9 @@
  *                         producing_identity, provenance_hash }] }
  * - dispositions: { artifacts: [{ path|artifact_path, disposition }] }
  *
- * These are the only decision inputs. Missing or malformed facts do not become
- * inferred success: callers receive a non-zero configuration error; an artifact
- * with incomplete facts receives NOT-CERTIFIED plus machine reason codes.
+ * These are the only decision inputs. Missing, unreadable, malformed, or stale
+ * input becomes a written NOT-CERTIFIED report with E-EVIDENCE-UNAVAILABLE;
+ * it never becomes inferred success.
  */
 
 import fs from 'node:fs';
@@ -34,7 +35,14 @@ function fail(message) {
 
 function parseArgs(argv) {
   const values = {};
-  const allowed = new Set(['--validator', '--scanner', '--ledger', '--dispositions', '--out']);
+  const allowed = new Set([
+    '--validator',
+    '--scanner',
+    '--ledger',
+    '--dispositions',
+    '--out',
+    '--max-age-hours',
+  ]);
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
     if (!allowed.has(flag)) fail(`Unknown argument: ${flag}`);
@@ -46,27 +54,54 @@ function parseArgs(argv) {
   for (const flag of ['--validator', '--scanner', '--ledger', '--dispositions']) {
     if (!values[flag]) fail(`Missing required argument: ${flag}`);
   }
+  const maxAgeHours = Number(values['--max-age-hours'] ?? 24);
+  if (!Number.isFinite(maxAgeHours) || maxAgeHours <= 0) {
+    fail('--max-age-hours must be a positive number');
+  }
   return {
     validator: values['--validator'],
     scanner: values['--scanner'],
     ledger: values['--ledger'],
     dispositions: values['--dispositions'],
     out: values['--out'] ?? 'certification-report.json',
+    maxAgeMs: maxAgeHours * 60 * 60 * 1000,
   };
 }
 
-function readJson(label, file) {
+function readInput(label, file, maxAgeMs) {
+  let stat;
+  try {
+    stat = fs.statSync(file);
+  } catch (error) {
+    return { label, code: 'MISSING_OR_UNREADABLE', detail: error.message };
+  }
+  if (!stat.isFile()) return { label, code: 'MISSING_OR_UNREADABLE', detail: 'not a regular file' };
+  if (Date.now() - stat.mtimeMs > maxAgeMs) {
+    return { label, code: 'STALE', detail: `mtime ${new Date(stat.mtimeMs).toISOString()}` };
+  }
   let raw;
   try {
     raw = fs.readFileSync(file, 'utf8');
   } catch (error) {
-    fail(`${label} input is unreadable (${file}): ${error.message}`);
+    return { label, code: 'MISSING_OR_UNREADABLE', detail: error.message };
   }
   try {
-    return JSON.parse(raw);
+    return { label, value: JSON.parse(raw) };
   } catch (error) {
-    fail(`${label} input is invalid JSON (${file}): ${error.message}`);
+    return { label, code: 'MALFORMED', detail: error.message };
   }
+}
+
+function unavailableReport(failures) {
+  return {
+    schema_version: 'certification-report/v1',
+    verdict: 'NOT-CERTIFIED',
+    certified: 0,
+    pending: 0,
+    reason_codes: ['E-EVIDENCE-UNAVAILABLE'],
+    input_failures: failures,
+    artifacts: [],
+  };
 }
 
 function arrayAt(payload, label, key) {
@@ -194,12 +229,23 @@ export function evaluate({ validator, scanner, ledger, dispositions }) {
 
 export function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
-  const report = evaluate({
-    validator: readJson('validator', args.validator),
-    scanner: readJson('scanner', args.scanner),
-    ledger: readJson('ledger', args.ledger),
-    dispositions: readJson('dispositions', args.dispositions),
-  });
+  const inputs = [
+    readInput('validator', args.validator, args.maxAgeMs),
+    readInput('scanner', args.scanner, args.maxAgeMs),
+    readInput('ledger', args.ledger, args.maxAgeMs),
+    readInput('dispositions', args.dispositions, args.maxAgeMs),
+  ];
+  const failures = inputs
+    .filter((input) => input.code)
+    .map(({ label, code, detail }) => ({ label, code, detail }));
+  const report = failures.length
+    ? unavailableReport(failures)
+    : evaluate({
+        validator: inputs[0].value,
+        scanner: inputs[1].value,
+        ledger: inputs[2].value,
+        dispositions: inputs[3].value,
+      });
   fs.writeFileSync(args.out, `${JSON.stringify(report, null, 2)}\n`);
   return report;
 }

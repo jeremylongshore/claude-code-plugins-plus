@@ -123,22 +123,61 @@ test('failed validator, REFUSE, missing ledger, and non-certify disposition stay
   assert.ok(artifact.reason_codes.includes('G10-UNSATISFIED'));
 });
 
-test('missing input fails instead of inventing a certification report', () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'certification-'));
-  const source = inputs(dir);
-  const result = spawnSync(
-    process.execPath,
-    [
-      script,
+test('removing each required input emits NOT-CERTIFIED with E-EVIDENCE-UNAVAILABLE', () => {
+  for (const removed of ['validator', 'scanner', 'ledger', 'dispositions']) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'certification-'));
+    const source = inputs(dir);
+    fs.rmSync(source[removed]);
+    const out = path.join(dir, 'certification-report.json');
+    run([
       '--validator',
       source.validator,
       '--scanner',
       source.scanner,
       '--ledger',
       source.ledger,
-    ],
-    { encoding: 'utf8' },
-  );
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /Missing required argument: --dispositions/);
+      '--dispositions',
+      source.dispositions,
+      '--out',
+      out,
+    ]);
+    const report = JSON.parse(fs.readFileSync(out, 'utf8'));
+    assert.equal(report.verdict, 'NOT-CERTIFIED', removed);
+    assert.deepEqual(report.reason_codes, ['E-EVIDENCE-UNAVAILABLE'], removed);
+    assert.equal(report.input_failures[0].label, removed);
+    assert.equal(report.input_failures[0].code, 'MISSING_OR_UNREADABLE');
+  }
+});
+
+test('unreadable and stale input emit E-EVIDENCE-UNAVAILABLE', () => {
+  for (const mode of ['unreadable', 'stale']) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'certification-'));
+    const source = inputs(dir);
+    if (mode === 'unreadable') {
+      fs.rmSync(source.scanner);
+      fs.mkdirSync(source.scanner);
+    } else {
+      const stale = new Date(Date.now() - 2 * 60 * 60 * 1000);
+      fs.utimesSync(source.ledger, stale, stale);
+    }
+    const out = path.join(dir, 'certification-report.json');
+    run([
+      '--validator',
+      source.validator,
+      '--scanner',
+      source.scanner,
+      '--ledger',
+      source.ledger,
+      '--dispositions',
+      source.dispositions,
+      '--out',
+      out,
+      '--max-age-hours',
+      '1',
+    ]);
+    const report = JSON.parse(fs.readFileSync(out, 'utf8'));
+    assert.equal(report.verdict, 'NOT-CERTIFIED', mode);
+    assert.ok(report.reason_codes.includes('E-EVIDENCE-UNAVAILABLE'), mode);
+    assert.equal(report.input_failures.length, 1, mode);
+  }
 });
