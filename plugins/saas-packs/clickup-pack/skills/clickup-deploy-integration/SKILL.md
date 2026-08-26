@@ -176,6 +176,33 @@ export async function POST(request: Request) {
 | Health check fails | Token rotated | Update secret, redeploy |
 | Webhook endpoint 5xx | Slow processing | Respond 200 immediately, process async |
 
+## Prerequisites
+
+- Environment-specific runtime identity, secret references, and deployment owner
+- Protected release gate, health checks, monitoring, and feature-disable path
+- Queue/idempotency design for asynchronous ClickUp/webhook work
+
+## Instructions
+
+Deploy first to staging, validate runtime identity, health, one bounded API
+operation, and webhook receipt with synthetic data, then promote through the
+approved environment gate. Keep processing asynchronous and idempotent; on a
+failed health, secret, or authorization check, roll back rather than widening
+permissions or exposing an endpoint.
+
+## Output
+
+Publish a deployment receipt with release ID, environment, secret references,
+health/callback results, queue state, monitoring, approval, and rollback
+decision. Exclude tokens, webhook URLs, task bodies, and raw event payloads.
+
+## Examples
+
+Deploy a staging worker with a dedicated identity, submit a synthetic event,
+verify its durable idempotency record and redacted health result, then promote
+only after the production gate approves. If the endpoint returns 5xx or lacks
+its secret, disable the release and fix configuration before retrying.
+
 ## Resources
 
 - [Vercel Environment Variables](https://vercel.com/docs/environment-variables)

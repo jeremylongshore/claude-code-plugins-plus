@@ -199,6 +199,34 @@ done
 | Cross-env data leak | Shared token | Use separate tokens per environment |
 | Destructive op in prod | Missing guard | Implement environment guards |
 
+## Prerequisites
+
+- Separate development, staging, and production workspace/list boundaries
+- Distinct scoped identities and secret references per environment
+- Configuration schema, deployment promotion gate, and tested rollback process
+
+## Instructions
+
+Validate environment identity at startup, bind every token and target ID to its
+declared environment, and reject cross-environment data or destructive actions
+without the production guard and approval. Promote tested configuration rather
+than copying secret files; rotate/review any credential that crosses an
+environment boundary.
+
+## Output
+
+Create an environment configuration receipt with target workspace/list IDs,
+secret references, validation results, guards, promotion decision, owner, and
+rollback evidence. Do not expose actual tokens, task data, or private workspace
+details in environment files or diagnostic output.
+
+## Examples
+
+Deploy a staging configuration with a distinct team/list and token, verify that
+the startup check rejects the production ID, and run only synthetic operations.
+If a production token appears in a non-production environment, stop deployment,
+revoke or rotate it as needed, and repair the configuration before promotion.
+
 ## Resources
 
 - [ClickUp Authentication](https://developer.clickup.com/docs/authentication)

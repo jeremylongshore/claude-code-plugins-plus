@@ -198,6 +198,34 @@ curl -s -X DELETE "https://api.clickup.com/api/v2/webhook/WH_ID" \
 | Timeout (no 200) | Slow processing | Respond 200 immediately, process async |
 | Webhook auto-disabled | Repeated failures | ClickUp disables after many 5xx responses |
 
+## Prerequisites
+
+- Authorized workspace webhook configuration and an HTTPS receiver
+- Durable event ID/idempotency storage, queue, and redacted monitoring
+- Defined event allow-list, retention policy, and incident escalation route
+
+## Instructions
+
+Validate event scope and receiver configuration, persist an idempotency key
+before processing, acknowledge quickly only after durable receipt, and enqueue
+authorized work for asynchronous handling. Reject malformed or unauthorized
+requests safely; do not retry by registering duplicate webhooks or replaying
+unbounded event batches.
+
+## Output
+
+Record event ID/type, workspace/resource scope, receipt and signature decision,
+idempotency result, queued job status, and redacted error/correlation data.
+Never log tokens, webhook endpoints, task descriptions, comments, or raw
+payloads beyond the policy-approved fields.
+
+## Examples
+
+For a task-update event, write the event/history ID once, enqueue a normalized
+job, and return 200; a retry of that ID returns a safe acknowledgement without
+duplicate downstream work. If processing fails, leave the job in the reviewed
+queue/DLQ path and investigate instead of forcing ClickUp to redeliver forever.
+
 ## Resources
 
 - [ClickUp Webhooks Guide](https://developer.clickup.com/docs/webhooks)

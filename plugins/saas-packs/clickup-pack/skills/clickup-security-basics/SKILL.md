@@ -172,6 +172,34 @@ async function auditedRequest(path: string, options: RequestInit = {}) {
 | Token in client bundle | Build output grep | Move to server-side only |
 | Stale token after rotation | 401 errors spike | Update all deployments |
 
+## Prerequisites
+
+- Named credential owner, approved secret manager, and rotation/incident path
+- Environment-specific identities and least-privilege workspace/list inventory
+- Secret scanning, log-redaction, and callback security checks in CI/runtime
+
+## Instructions
+
+Store credentials only through approved injection, restrict each identity to its
+environment and required resources, validate authorization before mutations,
+and test rotation/revocation in staging. Treat a leaked credential or unexpected
+scope as an incident: revoke/contain it, review access logs, and restore only a
+scoped replacement.
+
+## Output
+
+Maintain a security record with identity/secret reference, effective scope,
+rotation test, scanning/redaction evidence, webhook controls, incident owner,
+and exceptions. Never place live tokens, raw task content, or private audit
+records in this documentation or its logs.
+
+## Examples
+
+Rotate a staging service token, verify only its intended list is accessible,
+and confirm a revoked token produces a safe 401 without leaking headers. If a
+token appears in history or a client bundle, revoke it immediately and block
+release until secret scanning and deployment references are corrected.
+
 ## Resources
 
 - [ClickUp Authentication](https://developer.clickup.com/docs/authentication)
