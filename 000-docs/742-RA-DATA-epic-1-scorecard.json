@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3130,
-        "tracked_files": 22797
+        "raw_tracked_plugin_skill_files": 3129,
+        "tracked_files": 22792
       }
     },
     "2": {
@@ -1561,10 +1561,10 @@
       "cohort": "tracked .github Dependabot configuration",
       "dimension": "Dependabot configuration",
       "reproduce": "pnpm run measure:e1 --row=37 --stdout",
-      "source": [],
+      "source": [".github/dependabot.yml"],
       "status": "measured",
       "values": {
-        "present": false,
+        "present": true,
         "target_present": true
       }
     },
@@ -1778,7 +1778,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22797
+        "tracked_files": 22792
       }
     },
     "47": {
