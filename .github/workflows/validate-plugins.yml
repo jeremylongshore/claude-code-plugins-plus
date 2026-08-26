@@ -65,6 +65,13 @@ jobs:
       - name: Enforce mirror license coverage
         run: pnpm run validate:mirror-licenses
 
+      # Blueprint 727 E7.5: package display versions must agree across the
+      # plugin manifest, editable marketplace catalog, and skill frontmatter.
+      # This is deliberately inside the existing validate job so it blocks
+      # ci-required without adding another required status context.
+      - name: Enforce version-surface agreement
+        run: node scripts/reconstruct-versions.mjs --check
+
       # Credential pre-flight (blueprint 727 E1.14 / § 18.7): the root
       # .mcp.json must never hold a live-shaped credential in plaintext env —
       # values are SOPS-encrypted in the untracked machine-local .env.sops and

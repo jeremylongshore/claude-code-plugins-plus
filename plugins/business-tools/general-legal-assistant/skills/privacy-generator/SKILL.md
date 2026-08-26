@@ -12,7 +12,7 @@ description: 'Generates comprehensive privacy policies by scanning websites for 
 
   '
 allowed-tools: Read, Write, Glob, Grep, WebFetch
-version: 1.0.0
+version: 1.1.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
 tags:

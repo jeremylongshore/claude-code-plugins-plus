@@ -8331,7 +8331,7 @@
       "name": "intent-labs-pack",
       "source": "./plugins/productivity/intent-labs-pack",
       "description": "Labs skills for Intent Eval Platform dogfood: audit-tests (7-layer test auditor) and validate-skillmd (four-tier SKILL.md grader). Public checkout path for the nightly signed roster.",
-      "version": "0.1.0",
+      "version": "7.2.0",
       "category": "productivity",
       "keywords": [
         "audit-tests",
@@ -8350,7 +8350,7 @@
       "name": "agent-safety-preflight",
       "source": "./plugins/security/agent-safety-preflight",
       "description": "Local Claude Code command that generates a repo-risk receipt before AI-agent edits.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "security",
       "keywords": [
         "security",
@@ -8476,7 +8476,7 @@
       "name": "general-legal-assistant",
       "source": "./plugins/business-tools/general-legal-assistant",
       "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "business-tools",
       "keywords": [
         "legal",
@@ -8501,7 +8501,7 @@
       "name": "claude-memory-kit",
       "source": "./plugins/productivity/claude-memory-kit",
       "description": "Context-management workflows for saving, loading, updating, sharing, and auditing Claude Code session memory.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "productivity",
       "keywords": [
         "memory",
