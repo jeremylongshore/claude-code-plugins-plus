@@ -146,6 +146,10 @@ export BRIGHTDATA_ZONE_PASSWORD=old_password
 - Passing test suite against new zone
 - Old zone kept active for rollback
 
+## Examples
+
+Pin the current client/version and reproduce the approved workload against a provider-controlled test target before an upgrade. Compare request policy, response schema, cost/rate behavior, and redacted results behind a feature flag; roll back to the prior artifact on any authorization, compliance, or reconciliation difference.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
