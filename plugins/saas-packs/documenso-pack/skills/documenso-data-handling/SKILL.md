@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Data Handling
 
+## Output
+
+- A document-data flow with defined classification, access/retention/deletion controls, audit ownership, and safe recovery path.
+- Evidence that document content, signer identity, and signature artifacts are excluded from unsafe logs and test fixtures.
+
+## Examples
+
+Use a synthetic document and test signer in development to verify encryption/access/retention configuration. Record only a correlation ID and policy result; never place signed documents, signer PII, signature material, or document URLs into repositories, screenshots, or diagnostic logs.
+
 ## Overview
 
 Best practices for handling documents, signatures, and PII in Documenso integrations. Covers downloading signed PDFs, data retention, GDPR compliance, and secure storage. Note: Documenso cloud stores documents in PostgreSQL by default; self-hosted gives you full control.
