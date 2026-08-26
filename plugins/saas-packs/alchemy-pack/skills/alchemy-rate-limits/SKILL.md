@@ -52,6 +52,15 @@ Alchemy uses Compute Units (CU) to measure API usage. Different methods cost dif
 | Growth | 660 | 1.2B | $49/mo |
 | Scale | Custom | Custom | Custom |
 
+## Prerequisites
+
+- Confirm actual plan limits and method costs in the organization’s current
+  account; the reference tables are illustrative and commercial terms change.
+- Instrument aggregate request count, latency, queue depth, retry outcome, and
+  dropped-work signals without logging API keys or user-sensitive payloads.
+- Define a bounded retry budget and an application-level response for requests
+  that cannot be served within the budget.
+
 ## Instructions
 
 ### Step 1: CU-Aware Request Throttler
@@ -160,6 +169,26 @@ async function withAlchemyRetry<T>(
 - CU-aware Bottleneck throttler matching plan limits
 - Batch optimizer reducing total CU consumption
 - 429 retry handler with Retry-After header support
+
+## Examples
+
+In a test environment, configure the limiter below the account’s documented
+per-second CU allowance and issue enough public-chain balance queries to create
+a queue. Confirm that work executes in order, a simulated `429` honors
+`Retry-After`, and aggregate telemetry shows the queue depth and final outcome.
+When the retry budget is exhausted, return a controlled unavailable result and
+let the caller decide whether to retry later; do not spin indefinitely or hide
+the failed request. If observed limits differ from the configuration, pause the
+load test and update the limiter from the verified account data.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Limiter queue grows beyond the service threshold | Shed noncritical work, alert the operator, and preserve interactive request fairness. |
+| `429` persists after bounded retries | Surface unavailable state and defer work instead of retrying indefinitely. |
+| Batch request is partially unsuccessful | Keep valid results, retry eligible failures only, and report unavailable items explicitly. |
+| Account limit changes | Reconfigure from verified account information and rerun the capacity check before production use. |
 
 ## Resources
 
