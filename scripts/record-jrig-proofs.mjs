@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS forge_proofs (
     provider TEXT,
     model TEXT,
     recorded_by_identity TEXT,
+    producing_identity TEXT,
     layers_passed INTEGER DEFAULT NULL,
     total_layers INTEGER DEFAULT 7,
     baseline_delta REAL DEFAULT NULL,
@@ -142,6 +143,9 @@ export function parseArgs(argv) {
     '--plugin': 'plugin',
     '--jrig-run-id': 'jrigRunId',
     '--discovery-run-id': 'discoveryRunId',
+    '--evidence-class': 'evidenceClass',
+    '--recorded-by-identity': 'recordedByIdentity',
+    '--producing-identity': 'producingIdentity',
     '--result': 'result',
   };
   for (let i = 0; i < argv.length; i++) {
@@ -172,6 +176,37 @@ export function parseArgs(argv) {
     args.discoveryRunId = Number(args.discoveryRunId);
   }
   return args;
+}
+
+export function enforceRecorderIdentity({
+  evidenceClass,
+  recordedByIdentity,
+  producingIdentity,
+  dbPath,
+  realInventoryPath = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+    'freshie',
+    'inventory.sqlite',
+  ),
+}) {
+  if (!['E0', 'E1', 'E2', 'E3'].includes(evidenceClass))
+    fail(`Invalid evidence class: ${evidenceClass}`);
+  if (evidenceClass === 'E0' || evidenceClass === 'E1') return;
+  if (!recordedByIdentity || !producingIdentity) {
+    fail(`${evidenceClass} writes require both --recorded-by-identity and --producing-identity`);
+  }
+  if (recordedByIdentity === producingIdentity) {
+    fail(`${evidenceClass} write refused: producing and recording identities must be independent`);
+  }
+  if (
+    path.resolve(dbPath) === path.resolve(realInventoryPath) &&
+    !recordedByIdentity.startsWith('github-actions:')
+  ) {
+    fail(
+      `${evidenceClass} write refused: local recorder identity cannot target the real Freshie inventory`,
+    );
+  }
 }
 
 /**
@@ -288,7 +323,7 @@ export function buildUpsertSql({ plugin, jrigRunId, row }) {
 INSERT INTO forge_proofs
   (plugin_name, jrig_run_id, discovery_run_id, verification_type, passed, evidence,
    evidence_class, artifact_sha256, artifact_uri, spec_sha256, tool_version,
-   kernel_version, provider, model, recorded_by_identity,
+   kernel_version, provider, model, recorded_by_identity, producing_identity,
    layers_passed, total_layers, baseline_delta)
 VALUES
   (${sqlString(plugin)}, ${jrigRunId}, ${row.discovery_run_id ?? 'NULL'},
@@ -298,7 +333,8 @@ VALUES
    ${row.tool_version ? sqlString(row.tool_version) : 'NULL'},
    ${row.kernel_version ? sqlString(row.kernel_version) : 'NULL'},
    ${row.provider ? sqlString(row.provider) : 'NULL'}, ${row.model ? sqlString(row.model) : 'NULL'},
-   ${sqlString(row.recorded_by_identity)}, ${row.layers_passed}, ${row.total_layers}, NULL)
+   ${sqlString(row.recorded_by_identity)}, ${sqlString(row.producing_identity)},
+   ${row.layers_passed}, ${row.total_layers}, NULL)
 ON CONFLICT(plugin_name, verification_type, jrig_run_id) DO UPDATE SET
   passed = excluded.passed,
   evidence = excluded.evidence,
@@ -312,6 +348,7 @@ ON CONFLICT(plugin_name, verification_type, jrig_run_id) DO UPDATE SET
   provider = excluded.provider,
   model = excluded.model,
   recorded_by_identity = excluded.recorded_by_identity,
+  producing_identity = excluded.producing_identity,
   layers_passed = excluded.layers_passed,
   total_layers = excluded.total_layers,
   baseline_delta = excluded.baseline_delta,
@@ -361,6 +398,7 @@ function ensureForgeProofsSchema(dbPath) {
     ['provider', 'TEXT'],
     ['model', 'TEXT'],
     ['recorded_by_identity', 'TEXT'],
+    ['producing_identity', 'TEXT'],
   ]) {
     if (!currentColumns.has(name))
       runSqlite(dbPath, `ALTER TABLE forge_proofs ADD COLUMN ${name} ${definition};`);
@@ -392,6 +430,7 @@ export function main(argv = process.argv.slice(2)) {
   Object.assign(row.evidence, retained);
   const unique = (key) => [...new Set(entries.map((entry) => entry[key]).filter(Boolean))];
   row.evidence_class = 'E0';
+  row.evidence_class = args.evidenceClass ?? 'E0';
   row.discovery_run_id = args.discoveryRunId;
   row.artifact_sha256 = retained.artifact_sha256;
   row.artifact_uri = retained.artifact_uri;
@@ -400,9 +439,16 @@ export function main(argv = process.argv.slice(2)) {
   row.kernel_version = process.env.JRIG_KERNEL_VERSION || null;
   row.provider = unique('provider').length === 1 ? unique('provider')[0] : null;
   row.model = unique('model').length === 1 ? unique('model')[0] : null;
-  row.recorded_by_identity = process.env.GITHUB_ACTOR
-    ? `github-actions:${process.env.GITHUB_ACTOR}`
-    : 'local-untrusted';
+  row.recorded_by_identity =
+    args.recordedByIdentity ??
+    (process.env.GITHUB_ACTOR ? `github-actions:${process.env.GITHUB_ACTOR}` : 'local-untrusted');
+  row.producing_identity = args.producingIdentity ?? 'local-evaluator';
+  enforceRecorderIdentity({
+    evidenceClass: row.evidence_class,
+    recordedByIdentity: row.recorded_by_identity,
+    producingIdentity: row.producing_identity,
+    dbPath: args.db,
+  });
 
   ensureForgeProofsSchema(args.db);
   runSqlite(args.db, buildUpsertSql({ plugin: args.plugin, jrigRunId: args.jrigRunId, row }));

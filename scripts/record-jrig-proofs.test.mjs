@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { enforceRecorderIdentity } from './record-jrig-proofs.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RECORD_SCRIPT = path.join(__dirname, 'record-jrig-proofs.mjs');
@@ -102,6 +103,39 @@ function queryRows(db, sql) {
   const out = execFileSync('sqlite3', ['-batch', '-json', db, sql], { encoding: 'utf8' }).trim();
   return out ? JSON.parse(out) : [];
 }
+
+test('(identity) E2/E3 self-approval and local writes to the real ledger are refused', () => {
+  assert.throws(
+    () =>
+      enforceRecorderIdentity({
+        evidenceClass: 'E2',
+        recordedByIdentity: 'ci',
+        producingIdentity: 'ci',
+        dbPath: '/tmp/scratch.sqlite',
+      }),
+    /must be independent/,
+  );
+  assert.throws(
+    () =>
+      enforceRecorderIdentity({
+        evidenceClass: 'E3',
+        recordedByIdentity: 'local-untrusted',
+        producingIdentity: 'lab',
+        dbPath: '/repo/freshie/inventory.sqlite',
+        realInventoryPath: '/repo/freshie/inventory.sqlite',
+      }),
+    /local recorder identity/,
+  );
+  assert.doesNotThrow(() =>
+    enforceRecorderIdentity({
+      evidenceClass: 'E2',
+      recordedByIdentity: 'github-actions:reviewer',
+      producingIdentity: 'lab',
+      dbPath: '/repo/freshie/inventory.sqlite',
+      realInventoryPath: '/repo/freshie/inventory.sqlite',
+    }),
+  );
+});
 
 test('(a) fresh insert lands one tier3-jrig row with the contracted bindings', () => {
   const dir = tmpDir();

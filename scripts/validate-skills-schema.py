@@ -5022,6 +5022,7 @@ def populate_compliance_db(
         provider TEXT,
         model TEXT,
         recorded_by_identity TEXT,
+        producing_identity TEXT,
         layers_passed INTEGER DEFAULT NULL,
         total_layers INTEGER DEFAULT 7,
         baseline_delta REAL DEFAULT NULL,
@@ -5044,6 +5045,7 @@ def populate_compliance_db(
         ("provider", "TEXT"),
         ("model", "TEXT"),
         ("recorded_by_identity", "TEXT"),
+        ("producing_identity", "TEXT"),
     ):
         if col_name not in forge_columns:
             c.execute(f"ALTER TABLE forge_proofs ADD COLUMN {col_name} {col_def}")
