@@ -29,6 +29,30 @@ compatibility: Designed for Claude Code
 
 Diagnostic guide for the most common Clari API issues: authentication failures, empty exports, job timeouts, and data discrepancies.
 
+## Prerequisites
+
+- Authorized, scoped access to the affected Clari environment
+- Redacted job IDs, timestamps, and export metadata for diagnosis
+- A named owner for credentials, forecast data, and production change approval
+- Access to the certified prior dataset for safe comparison and recovery
+
+## Instructions
+
+Confirm the environment and affected period, collect the smallest redacted
+evidence needed to classify the issue, then follow the matching reference
+entry. Change one variable at a time and do not retry authentication, rate,
+or data-integrity failures indefinitely. Escalate ambiguous provider behavior
+with job IDs and timestamps rather than guessing at a production fix.
+
+## Error Handling
+
+| Failure class | Safe first response |
+|---|---|
+| Authentication or authorization | Stop retries and route to the credential/admin owner. |
+| Empty, partial, or mismatched export | Mark the dataset uncertified and retain the prior certified output. |
+| Timeout or rate limit | Preserve job state and resume through the bounded scheduler policy. |
+| Suspected data exposure | Restrict access, notify governance, and use the incident process. |
+
 ## Error Reference
 
 ### 1. 401 Unauthorized
@@ -127,6 +151,21 @@ curl -s -H "apikey: ${CLARI_API_KEY}" \
 curl -s -H "apikey: ${CLARI_API_KEY}" \
   https://api.clari.com/v4/export/jobs | jq '.jobs[] | {jobId, status, createdAt}'
 ```
+
+## Output
+
+Create a redacted incident record with environment, period, symptom, source
+job/correlation ID, evidence, containment action, current data-certification
+state, and escalation owner. Keep tokens, individual forecast values, and
+download URLs out of diagnostic tickets and chat.
+
+## Examples
+
+When an export returns zero records, confirm the source period and job status,
+mark the downstream refresh failed, and retain yesterday’s certified dataset.
+When a request returns 401, stop the scheduler, verify the secret reference
+with its owner, and rotate through the approved process instead of testing keys
+in terminals or tickets.
 
 ## Resources
 

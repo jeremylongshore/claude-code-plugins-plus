@@ -134,6 +134,20 @@ echo "Records: $(jq '.entries | length' ./data/latest-export.json)"
 | Mock data stale | Schema changed | Re-download a sample from API |
 | `.env.local` not loading | Missing dotenv | `pip install python-dotenv` |
 
+## Output
+
+The development run produces a local, access-controlled fixture or explicitly
+approved sanitized export plus a manifest with period, schema version, record
+count, transformation result, and test status. Never commit `.env.local`, live
+tokens, temporary download URLs, or raw production forecast records.
+
+## Examples
+
+Run the pipeline against a synthetic fixture, assert the aggregate totals, and
+write only the sanitized result to the local data directory. If a developer
+needs a real schema sample, obtain a limited read-only export, redact it before
+use, and delete it under the project retention rule after the test completes.
+
 ## Resources
 
 - [Clari API Reference](https://developer.clari.com/documentation/external_spec)
