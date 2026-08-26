@@ -1553,18 +1553,25 @@ export function buildExtendedScorecardRows({
   );
   for (const number of [49, 50, 51, 52, 53, 54, 55]) output[number] = unresolved(number);
   const jrigPath = 'marketplace/src/data/jrig-data.json';
+  const projectionPresent = reader.pathSet.has(jrigPath);
   const claims = verifiedClaims(reader.json(jrigPath));
   output[56] = baseRow(
     56,
-    'partial',
-    'verified:true fields in tracked public marketplace data',
-    reader.pathSet.has(jrigPath) ? [jrigPath] : [],
-    { backing_verified: null, public_verified_claims: claims },
+    projectionPresent || claims > 0 ? 'partial' : 'target_met',
+    'legacy JRig marketplace verification projection',
+    projectionPresent ? [jrigPath] : [],
+    { public_verified_claims: claims, projection_present: projectionPresent },
     {
-      reason_code: 'MISSING_HASH_LINKED_PUBLIC_CLAIM_CONTRACT',
-      required_inputs: ['claim-to-primary-artifact hash field', 'consumer-page registry'],
+      reason_code: projectionPresent
+        ? 'RETIRED_PUBLIC_PROJECTION_PRESENT'
+        : 'NO_PUBLIC_JRIG_VERIFICATION_PROJECTION',
+      required_inputs: projectionPresent
+        ? [
+            'remove the projection and producer, or replace every entry with a reasoned false verdict',
+          ]
+        : [],
       limitations: [
-        'a boolean verified field is not evidence that a retained backing artifact exists',
+        'a future public verification surface requires retained, hash-matched evidence and an explicit consumer boundary',
       ],
     },
   );

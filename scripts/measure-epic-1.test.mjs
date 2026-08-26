@@ -75,7 +75,6 @@ def _is_binary(path: Path):
 `,
     'marketplace/src/data/catalog.json': '{}',
     'marketplace/src/data/github-stats.json': JSON.stringify({ generatedAt: 'historical' }),
-    'marketplace/src/data/jrig-data.json': '{}',
     'marketplace/src/data/npm-stats.json': JSON.stringify({ generatedAt: 'historical' }),
     'marketplace/src/data/readme-sections.json': '{}',
     'marketplace/src/data/skills-catalog.json': '{}',

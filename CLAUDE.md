@@ -96,7 +96,7 @@ CI fails if any derived file is out of sync. Never hand-edit auto-generated file
 
 ## Marketplace Build Pipeline
 
-`npm run build` in `marketplace/` runs 9 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → enrich-jrig-data → generate-unified-search → build-cowork-zips → validate-cowork-manifest → copy-public-data → astro build. `readme-sections.json` and `jrig-data.json` are untracked build projections; `npm run dev` regenerates the README projection before Astro starts. The JRig projection has no live page consumer after PR #1046 removed the badge UI and remains only as a temporary build-adjacent inspection output pending its E9.2 removal.
+`npm run build` in `marketplace/` runs 8 sequential steps via `scripts/build.mjs`: discover-skills → extract-readme-sections → sync-catalog → generate-unified-search → build-cowork-zips → validate-cowork-manifest → copy-public-data → astro build. `readme-sections.json` is an untracked build projection; `npm run dev` regenerates the README projection before Astro starts. Marketplace pages do not publish a JRig verification badge: behavioral-eval results remain governed evidence in Freshie until a retained-evidence class and a separately reviewed public projection exist.
 
 `discover-skills.mjs` emits two artifacts (schema 3.4.0+): `skills-index.json` (L0, ~97 KB gzipped, metadata only — for trigger-match / browse) and `skills-catalog.json` (L1, ~5.5 MB gzipped, full body HTML). Both carry top-level `schemaVersion` + `level` fields. CLI flag `--level=metadata|full|file` (default `full`).
 
@@ -376,7 +376,7 @@ DoltHub push exits non-zero on purpose: until pushed, Dolt history is
 single-copy on this box. Exporter unit tests: `python3 -m unittest
 tests.test_dolt_sync`. Full details + restore path: `freshie/README.md`.
 
-Key tables: `skill_compliance` (scores, grades, JRig columns) and `forge_proofs` (durable JRig behavioral-evaluation evidence). `enrich-jrig-data.mjs` can render an untracked build projection from `forge_proofs`, but no live marketplace page consumes it after PR #1046 removed the badge UI.
+Key tables: `skill_compliance` (scores, grades, JRig columns) and `forge_proofs` (durable JRig behavioral-evaluation evidence). No marketplace projection or badge is generated from `forge_proofs`; publishing one requires retained, hash-matched evidence and a separately reviewed public-evidence boundary.
 
 ## npm Publish Pipeline
 

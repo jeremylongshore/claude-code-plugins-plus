@@ -89,17 +89,6 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'hand-authored marketplace collections, packs, partners, and policy data with no executable writer',
   },
   {
-    id: 'marketplace-jrig-build-data',
-    kind: 'generated_projection',
-    tracking: 'untracked',
-    pattern: /^marketplace\/src\/data\/jrig-data\.json$/,
-    pathspec: ':(top)marketplace/src/data/jrig-data.json',
-    glob: 'marketplace/src/data/jrig-data.json',
-    canonical: 'freshie/inventory.sqlite forge_proofs',
-    regenerate: 'cd marketplace && node scripts/enrich-jrig-data.mjs',
-    why: 'temporary legacy JRig inspection projection with no live page or supported non-build consumer after PR #1046; E9.2 owns deleting the projection and build step',
-  },
-  {
     id: 'marketplace-readme-sections-build-data',
     kind: 'generated_projection',
     tracking: 'untracked',

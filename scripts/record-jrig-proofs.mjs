@@ -4,11 +4,13 @@
  *
  * Takes a `j-rig eval ... --json` result file and upserts one row into the
  * `forge_proofs` table of a Freshie-shaped SQLite inventory DB. This is the
- * missing write end of the "printing press" data flow:
+ * governed write end of the behavioral-evaluation evidence flow:
  *
  *   j-rig eval → THIS SCRIPT → forge_proofs row
- *     → marketplace/scripts/enrich-jrig-data.mjs → jrig-data.json
- *     → JRig-Verified badge on the plugin detail page.
+ *
+ * This script does not publish a marketplace verification claim. A future
+ * public projection must first meet the retained, hash-matched evidence
+ * requirements owned by Blueprint 727.
  *
  * INPUT SHAPE (what we bind to — inspected from @intentsolutions/jrig-cli
  * 0.1.2, dist/index.js `registerEvalCommand`): `j-rig eval --json` prints a
@@ -54,7 +56,7 @@
  *     UNIQUE(plugin_name, verification_type, run_id)
  *   );
  *
- *   - verification_type = 'tier3-jrig' (what enrich-jrig-data.mjs selects)
+ *   - verification_type = 'tier3-jrig' (the governed behavioral-evaluation evidence class)
  *   - passed        = 1 iff EVERY model's rollout decision is "ship"
  *   - layers_passed = min(scoreCard.passed) across models (conservative)
  *   - total_layers  = scoreCard.total_criteria (must agree across models)
@@ -68,13 +70,12 @@
  * constraints, so a NULL run_id would break idempotency.
  *
  * STUB GUARD: results produced by the stub provider (`ground_truth: false`)
- * are refused unless `--allow-stub` is passed — a stub row would light a
- * JRig-Verified badge with non-ground-truth evidence. `--allow-stub` exists
- * for pipeline plumbing against scratch DB copies only.
+ * are refused unless `--allow-stub` is passed — a stub row cannot be treated
+ * as grounded behavioral-evaluation evidence. `--allow-stub` exists for
+ * pipeline plumbing against scratch DB copies only.
  *
- * Uses only node built-ins + the `sqlite3` CLI via child_process (same
- * pattern as marketplace/scripts/enrich-jrig-data.mjs — no better-sqlite3
- * native dep for a once-per-run write).
+ * Uses only node built-ins + the `sqlite3` CLI via child_process; no
+ * better-sqlite3 native dependency is needed for this once-per-run write.
  *
  * Usage:
  *   node scripts/record-jrig-proofs.mjs \

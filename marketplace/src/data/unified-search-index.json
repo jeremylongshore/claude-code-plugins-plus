@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 442,
-    "totalSkills": 3068,
+    "totalSkills": 3067,
     "totalDocs": 24,
-    "totalItems": 3534,
+    "totalItems": 3533,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -14820,7 +14820,7 @@
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 2,
+      "skillCount": 1,
       "searchText": "llm box terminal-first workflow automation engine. generate and execute yaml workflows from plain english with 20+ nodes and 15+ llm providers. community workflow automation terminal cli yaml llm mcp"
     },
     {
@@ -14871,7 +14871,7 @@
         "email": "jeremy@intentsolutions.io"
       },
       "authorType": "official",
-      "version": "0.1.0",
+      "version": "7.2.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -14901,7 +14901,7 @@
         "url": "https://github.com/el-zachariah"
       },
       "authorType": "community",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -15067,7 +15067,7 @@
         "email": "jeremy@intentsolutions.io"
       },
       "authorType": "official",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -15093,7 +15093,7 @@
         "name": "builtbyzac"
       },
       "authorType": "community",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -16409,7 +16409,7 @@
         "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "agent-safety-preflight",
         "category": "security"
@@ -16472,7 +16472,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -29448,7 +29448,7 @@
         "WebFetch"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -29600,7 +29600,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -29621,7 +29621,7 @@
         "Task"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -41634,7 +41634,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -56476,7 +56476,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -57831,7 +57831,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -57851,7 +57851,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -63661,7 +63661,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -65166,7 +65166,7 @@
         "WebFetch"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -69038,7 +69038,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -72366,16 +72366,21 @@
       "id": "setup-2",
       "slug": "setup-2",
       "name": "setup",
-      "description": "Install and configure llm-box, including the MCP server connection for Claude Code.",
+      "description": "Install and configure aflare, including the MCP server connection for Claude Code.",
       "category": "community",
-      "allowedTools": [],
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Write",
+        "Bash"
+      ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "0.6.0",
       "parentPlugin": {
         "name": "llm-box",
         "category": "community"
       },
-      "searchText": "setup install and configure llm-box, including the mcp server connection for claude code. community  "
+      "searchText": "setup install and configure aflare, including the mcp server connection for claude code. community read edit write bash "
     },
     {
       "type": "skill",
@@ -76618,7 +76623,7 @@
         "WebFetch"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "parentPlugin": {
         "name": "general-legal-assistant",
         "category": "business-tools"
@@ -78359,7 +78364,7 @@
         "AskUserQuestion\""
       ],
       "compatibleWith": [],
-      "version": "5.0.1",
+      "version": "7.2.0",
       "parentPlugin": {
         "name": "intent-labs-pack",
         "category": "productivity"
@@ -82216,22 +82221,6 @@
     },
     {
       "type": "skill",
-      "id": "workflow-2",
-      "slug": "workflow-2",
-      "name": "workflow",
-      "description": "Generate and execute terminal workflows using llm-box. Use when the user wants to automate multi-step terminal tasks, chain commands, fetch URLs, process data, create reusable pipelines, or build CI/CD-like automation locally.",
-      "category": "community",
-      "allowedTools": [],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "llm-box",
-        "category": "community"
-      },
-      "searchText": "workflow generate and execute terminal workflows using llm-box. use when the user wants to automate multi-step terminal tasks, chain commands, fetch urls, process data, create reusable pipelines, or build ci/cd-like automation locally. community  "
-    },
-    {
-      "type": "skill",
       "id": "workhuman-ci-integration",
       "slug": "workhuman-ci-integration",
       "name": "workhuman-ci-integration",
@@ -82680,7 +82669,7 @@
         "WebFetch"
       ],
       "compatibleWith": [],
-      "version": "\"2.5.0\"",
+      "version": "1.0.0",
       "parentPlugin": {
         "name": "x-twitter-scraper",
         "category": "api-development"

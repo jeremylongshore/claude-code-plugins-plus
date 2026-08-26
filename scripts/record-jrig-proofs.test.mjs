@@ -14,8 +14,7 @@
  *       --allow-stub.
  *
  * Run: node --test scripts/record-jrig-proofs.test.mjs
- * Needs the `sqlite3` CLI on PATH (same requirement as the script itself and
- * marketplace/scripts/enrich-jrig-data.mjs).
+ * Needs the `sqlite3` CLI on PATH.
  */
 
 import { test } from 'node:test';

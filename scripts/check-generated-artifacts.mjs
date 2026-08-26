@@ -19,7 +19,7 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, isAbsolute, join } from 'node:path';
+import { basename, isAbsolute, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { artifactRegistrationsByTracking } from './generated-artifact-registry.mjs';
@@ -123,6 +123,20 @@ export function assertGeneratedContentCurrent(candidates, { root = process.cwd()
 }
 
 export function checkUntrackedProjections({ root = process.cwd() } = {}) {
+  try {
+    const topLevel = execFileSync('git', ['rev-parse', '--show-toplevel'], {
+      ...BUF,
+      cwd: root,
+      stdio: 'pipe',
+    })
+      .toString()
+      .trim();
+    if (topLevel !== resolve(root)) throw new Error(`repository root is ${topLevel}`);
+  } catch (error) {
+    throw new Error(
+      `generated-artifacts refuses to pass without Git evidence: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
   const projections = artifactRegistrationsByTracking('untracked');
   let failures = 0;
   for (const p of projections) {

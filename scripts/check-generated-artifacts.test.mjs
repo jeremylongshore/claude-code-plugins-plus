@@ -30,7 +30,7 @@ test('untracked marketplace build projections are accepted', (t) => {
   const root = fixture();
   t.after(() => rmSync(root, { recursive: true, force: true }));
 
-  for (const name of ['jrig-data.json', 'readme-sections.json']) {
+  for (const name of ['readme-sections.json']) {
     const path = join(root, 'marketplace', 'src', 'data', name);
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, '{}\n');
@@ -41,7 +41,7 @@ test('untracked marketplace build projections are accepted', (t) => {
   assert.match(result.stdout, /0 tracked/);
 });
 
-for (const name of ['jrig-data.json', 'readme-sections.json']) {
+for (const name of ['readme-sections.json']) {
   test(`tracked ${name} is refused`, (t) => {
     const root = fixture();
     t.after(() => rmSync(root, { recursive: true, force: true }));

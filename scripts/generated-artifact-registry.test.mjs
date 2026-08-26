@@ -16,7 +16,6 @@ const EXAMPLES = new Map([
   ['marketplace-external-stats', 'marketplace/src/data/npm-stats.json'],
   ['marketplace-spotlight-editorial-data', 'marketplace/src/data/spotlights.json'],
   ['marketplace-canonical-data', 'marketplace/src/data/collections.json'],
-  ['marketplace-jrig-build-data', 'marketplace/src/data/jrig-data.json'],
   ['marketplace-readme-sections-build-data', 'marketplace/src/data/readme-sections.json'],
   ['marketplace-plugin-content', 'marketplace/src/content/plugins/example.json'],
   ['plugin-package-manifests', 'plugins/example/example/package.json'],

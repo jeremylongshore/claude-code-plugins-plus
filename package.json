@@ -18,7 +18,7 @@
     "measure:e1:check": "node --test scripts/corpus-resolver.test.mjs scripts/measure-epic-1.test.mjs scripts/measure-epic-1-scorecard.test.mjs && node scripts/measure-epic-1.mjs --check",
     "normalize:dead-domain-projections": "node scripts/normalize-retired-domain-projections.mjs",
     "validate:dead-domain": "node --test scripts/dead-domain-policy.test.mjs scripts/normalize-retired-domain-projections.test.mjs && node scripts/check-dead-domain.mjs",
-    "validate:generated-artifacts": "node --test marketplace/scripts/enrich-jrig-data.test.mjs scripts/check-generated-artifacts.test.mjs scripts/generated-artifact-registry.test.mjs && node scripts/check-generated-artifacts.mjs",
+    "validate:generated-artifacts": "node --test scripts/check-generated-artifacts.test.mjs scripts/generated-artifact-registry.test.mjs && node scripts/check-generated-artifacts.mjs",
     "validate:generated-content": "node --test scripts/generated-content-ci.test.mjs marketplace/scripts/sync-catalog.test.mjs && node marketplace/scripts/discover-skills.mjs --level=full --check && node marketplace/scripts/sync-catalog.mjs --check",
     "validate:published-count-cohorts": "node --test scripts/check-published-count-cohorts.test.mjs && node scripts/check-published-count-cohorts.mjs",
     "validate:jrig-db-boundary": "node --test scripts/check-jrig-db-boundary.test.mjs && node scripts/check-jrig-db-boundary.mjs",

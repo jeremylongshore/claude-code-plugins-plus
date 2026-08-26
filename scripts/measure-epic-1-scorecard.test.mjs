@@ -43,7 +43,6 @@ function fixture() {
     'marketplace/scripts/generate-alpha.mjs':
       "writeFileSync('marketplace/src/data/alpha.json', '{}')\n",
     'marketplace/src/data/alpha.json': '{}',
-    'marketplace/src/data/jrig-data.json': JSON.stringify({ plugin: { verified: true } }),
     'package.json': JSON.stringify({
       devDependencies: {
         '@intentsolutions/audit-harness': '^1.0.0',
