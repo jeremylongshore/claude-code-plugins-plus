@@ -25,6 +25,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Install & Auth
 
+## Examples
+
+Load a development API key from the approved secret manager and send a short, non-sensitive audio fixture to the intended Deepgram project. Record only the project/environment and result. If the key appears in a repository, log, or support ticket, revoke it immediately and issue a replacement before investigating further.
+
 ## Current State
 
 !`npm list @deepgram/sdk 2>/dev/null || echo '@deepgram/sdk not installed'`

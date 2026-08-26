@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Core Workflow A: Pre-recorded Transcription
 
+## Examples
+
+Upload a short synthetic or licensed audio fixture to the development workflow, validate transcript format, timestamps, language/model choice, and error handling, then remove the artifact according to retention policy. Do not use customer recordings for a tutorial or log raw transcript text when a correlation ID and aggregate result suffice.
+
 ## Overview
 
 Production pre-recorded transcription service using Deepgram's REST API. Covers `transcribeUrl` and `transcribeFile`, speaker diarization, audio intelligence (summarization, topic detection, sentiment, intent), batch processing with concurrency control, and callback-based async transcription for large files.

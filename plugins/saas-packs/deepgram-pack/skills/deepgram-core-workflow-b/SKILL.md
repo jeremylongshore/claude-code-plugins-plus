@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Core Workflow B: Live Streaming Transcription
 
+## Examples
+
+Open a development streaming session with a non-sensitive test utterance, verify connection/authentication, partial/final transcript state, timeout, and close behavior. Enforce the session's data/consent policy and log a correlation ID plus state transitions—not audio bytes, API keys, or full participant speech.
+
 ## Overview
 
 Real-time streaming transcription using Deepgram's WebSocket API. The SDK manages the WebSocket connection via `listen.live()`. Covers microphone capture, interim/final result handling, speaker diarization, UtteranceEnd detection, auto-reconnect, and building an SSE endpoint for browser clients.
