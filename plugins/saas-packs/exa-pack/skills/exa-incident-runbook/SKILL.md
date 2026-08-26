@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 ---
 # Exa Incident Runbook
 
+## Prerequisites
+
+- An incident ID, commander, affected environment/service, approved communication route, and redacted diagnostic access.
+- A safe mitigation/rollback path plus data/policy owner for query/result exposure decisions.
+
+## Instructions
+
+1. Declare scope and severity, preserve minimal redacted evidence, and stabilize customer or automation impact.
+2. Use the documented pause, credential revocation, rate reduction, or fallback before deep diagnosis.
+3. Verify recovery against the SLO and policy boundary, then create root-cause/prevention follow-up work.
+
+## Output
+
+- A time-stamped incident record with scope, mitigation, evidence, owner, and verified recovery or escalation.
+
+## Examples
+
+For an unexpected result or availability incident, record opaque request IDs, environment, status/latency aggregates, and policy category, then reduce traffic or use the approved fallback. Do not share raw customer queries, result content, or credentials in incident channels.
+
 ## Overview
 
 Rapid incident response procedures for Exa search API issues. Exa errors include a `requestId` field for support escalation. Default rate limit is 10 QPS. Contact hello@exa.ai for urgent production issues.

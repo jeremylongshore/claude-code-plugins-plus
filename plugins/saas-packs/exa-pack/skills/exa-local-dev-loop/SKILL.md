@@ -24,6 +24,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa Local Dev Loop
 
+## Output
+
+- A small reviewed local Exa integration change with focused tests and normal source-control rollback.
+- A redacted development verification receipt using sanitized queries and scoped credentials.
+
 ## Overview
 
 Set up a fast, reproducible local development workflow for Exa integrations. Covers project structure, mock responses for unit tests, integration test patterns, and hot-reload configuration.

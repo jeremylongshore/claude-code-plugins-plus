@@ -24,6 +24,20 @@ compatibility: Designed for Claude Code
 ---
 # Exa Advanced Troubleshooting
 
+## Prerequisites
+
+- A bounded non-sensitive reproduction, affected environment/version, expected behavior, and redaction policy.
+- Authority to inspect aggregate diagnostics and a named owner for escalation.
+
+## Output
+
+- A minimal redacted root-cause record with evidence, remediation, owner, and verification result.
+- A safe vendor/internal escalation packet without raw sensitive queries, result content, or API keys.
+
+## Examples
+
+Reproduce a retrieval-quality issue with a sanitized query and approved domain filter, compare response metadata and aggregate timing to the expected contract, then test one scoped configuration fix. If unresolved, submit only the redacted request category/options/correlation evidence through the approved support channel.
+
 ## Overview
 
 Deep debugging for complex Exa issues: latency spikes, intermittent failures, result quality degradation, and content retrieval failures. All Exa error responses include a `requestId` — always capture it.

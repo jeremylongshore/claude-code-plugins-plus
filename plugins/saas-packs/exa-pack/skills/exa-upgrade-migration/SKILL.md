@@ -25,6 +25,20 @@ compatibility: Designed for Claude Code
 ---
 # Exa Upgrade & Migration
 
+## Prerequisites
+
+- Current/target versions, compatibility notes, sanitized evaluation set, acceptance thresholds, and a rollback owner.
+- Separate staging credentials plus a policy/data review for any query/result migration or automation change.
+
+## Output
+
+- A staged upgrade record with compatibility/evaluation evidence, owner, observation window, and rollback revision.
+- A safe pause decision when retrieval quality, latency, policy, or data handling regresses.
+
+## Examples
+
+Upgrade in staging, run unit tests and sanitized evaluation queries through prior and target configurations, compare aggregate relevance/latency/error metrics, then release an approved canary. Roll back on regression and do not bulk-replay customer queries or export private result data to validate the migration.
+
 ## Current State
 
 !`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`
