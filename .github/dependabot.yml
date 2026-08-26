@@ -5,21 +5,33 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      root-npm-dependencies:
+        patterns: ['*']
 
   - package-ecosystem: npm
     directory: /marketplace
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      marketplace-npm-dependencies:
+        patterns: ['*']
 
   - package-ecosystem: npm
     directory: /ci/emit-evidence
     schedule:
       interval: weekly
     open-pull-requests-limit: 2
+    groups:
+      evidence-npm-dependencies:
+        patterns: ['*']
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns: ['*']
