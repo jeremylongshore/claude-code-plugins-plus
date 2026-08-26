@@ -119,6 +119,9 @@ jobs:
       - name: Verify the generated legacy disposition ledger
         run: pnpm run validate:disposition-ledger
 
+      - name: Keep quarantined external mirrors off publishable grade surfaces
+        run: pnpm run validate:mirror-quarantine
+
       # E4.13: a denylist (disallowed-tools) posture is enforced by the
       # Claude Code runtime only. This gate forbids silent-drop: a
       # denylist-bearing skill may not claim a foreign harness in
