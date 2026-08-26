@@ -6,7 +6,7 @@
   },
   "stats": {
     "totalPlugins": 442,
-    "totalSkills": 3068,
+    "totalSkills": 3070,
     "totalCommands": 85,
     "pluginsWithSkills": 410,
     "byCategory": {
@@ -8979,17 +8979,20 @@
       "slug": "apify-pack",
       "name": "apify-pack",
       "displayName": "apify pack",
-      "description": "Claude Code skill pack for Apify (18 skills)",
-      "version": "1.5.0",
+      "description": "Claude Code skill pack for Apify (20 skills)",
+      "version": "1.6.0",
       "category": "saas-packs",
       "keywords": [
         "apify",
+        "x",
+        "twitter",
+        "xquik",
         "saas",
         "sdk",
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install apify-pack",
       "sourcePath": "./plugins/saas-packs/apify-pack",

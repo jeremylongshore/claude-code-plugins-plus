@@ -36735,6 +36735,30 @@
       "fallback_for_tools": []
     },
     {
+      "slug": "xquik-x-follower-scraper",
+      "name": "xquik-x-follower-scraper",
+      "description": "Build and validate bounded X audience workflows with Xquik's Apify Actor. Use when collecting followers, following, verified followers, list members, list subscribers, or community members from public X data. Trigger with \"scrape X followers\", \"get X following\", \"compare X audiences\", \"collect X list members\", \"get X community members\".",
+      "version": "1.6.0",
+      "category": "saas-packs",
+      "parentPlugin": "apify-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
+      "slug": "xquik-x-tweet-scraper",
+      "name": "xquik-x-tweet-scraper",
+      "description": "Build and validate bounded X post workflows with Xquik's Apify Actor. Use when collecting posts, searches, timelines, threads, replies, quotes, retweeters, favoriters, or articles from public X data. Trigger with \"scrape X posts\", \"search X on Apify\", \"get an X thread\", \"collect tweet replies\", \"find tweet quotes\".",
+      "version": "1.6.0",
+      "category": "saas-packs",
+      "parentPlugin": "apify-pack",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
+    },
+    {
       "slug": "yaml-master",
       "name": "yaml-master",
       "description": "'Execute proactive YAML intelligence: automatically activates when working",
@@ -36819,8 +36843,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 3068,
-  "generatedAt": "2026-08-25T19:42:48.515Z",
+  "count": 3070,
+  "generatedAt": "2026-08-26T07:48:06.631Z",
   "categories": [
     "ai-agency",
     "ai-ml",

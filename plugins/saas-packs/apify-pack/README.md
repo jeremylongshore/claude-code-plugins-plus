@@ -1,8 +1,8 @@
 # Apify Skill Pack
 
-> 18 production-grade skills for web scraping, Actor development, and data extraction with the Apify platform
+> 20 production-grade skills for web scraping, Actor development, and data extraction with the Apify platform
 
-**What it does:** Gives Claude Code deep knowledge of Apify's entire ecosystem — the `apify-client` JS library, the `apify` Actor SDK, Crawlee crawlers (Cheerio, Playwright, Puppeteer), the Apify CLI, platform storage (datasets, key-value stores, request queues), webhooks, proxy management, and deployment workflows.
+**What it does:** Gives Claude Code deep knowledge of Apify. It covers the clients, SDK, Crawlee, CLI, and platform storage. It also covers X Actors, webhooks, proxies, and deployment workflows.
 
 **Who it's for:** Developers building web scrapers, data pipelines, and automation on Apify's cloud platform.
 
@@ -42,6 +42,13 @@
 | `apify-cost-tuning` | Compute unit math, memory right-sizing, proxy cost reduction, budget monitoring |
 | `apify-reference-architecture` | Standalone Actor, multi-Actor pipeline, full-stack integration patterns |
 
+### X Actor Skills (X19-X20)
+
+| Skill | What It Teaches |
+|-------|----------------|
+| `xquik-x-tweet-scraper` | Bounded X post, search, timeline, thread, reply, quote, and engagement workflows |
+| `xquik-x-follower-scraper` | Bounded X follower, following, verified, list, and community workflows |
+
 ## Key Concepts
 
 - **Actor** — A serverless function running on Apify's cloud. Built with the `apify` SDK.
@@ -59,6 +66,12 @@ Skills trigger automatically when you discuss Apify topics:
 - "My Actor run failed" triggers `apify-common-errors`
 - "Optimize my Apify costs" triggers `apify-cost-tuning`
 - "Set up webhooks for Actor runs" triggers `apify-webhooks-events`
+- "Search X posts with Apify" triggers `xquik-x-tweet-scraper`
+- "Compare X followers" triggers `xquik-x-follower-scraper`
+
+The Xquik skills link only to their Apify Actor listings.
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
 
 ## License
 

@@ -6,9 +6,9 @@
   },
   "stats": {
     "totalPlugins": 442,
-    "totalSkills": 3068,
+    "totalSkills": 3070,
     "totalDocs": 24,
-    "totalItems": 3534,
+    "totalItems": 3536,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -11864,10 +11864,13 @@
       "slug": "apify-pack",
       "name": "apify-pack",
       "displayName": "apify pack",
-      "description": "Claude Code skill pack for Apify (18 skills)",
+      "description": "Claude Code skill pack for Apify (20 skills)",
       "category": "saas-packs",
       "keywords": [
         "apify",
+        "x",
+        "twitter",
+        "xquik",
         "saas",
         "sdk",
         "integration"
@@ -11878,15 +11881,15 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
-      "skillCount": 18,
+      "skillCount": 20,
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
-      "searchText": "apify pack claude code skill pack for apify (18 skills) saas-packs apify saas sdk integration"
+      "searchText": "apify pack claude code skill pack for apify (20 skills) saas-packs apify x twitter xquik saas sdk integration"
     },
     {
       "type": "plugin",
@@ -82686,6 +82689,48 @@
         "category": "api-development"
       },
       "searchText": "x-twitter-scraper \"per-callback hmac secret returned by the signed event delivery api.\" api-development webfetch "
+    },
+    {
+      "type": "skill",
+      "id": "xquik-x-follower-scraper",
+      "slug": "xquik-x-follower-scraper",
+      "name": "xquik-x-follower-scraper",
+      "description": "Build and validate bounded X audience workflows with Xquik's Apify Actor. Use when collecting followers, following, verified followers, list members, list subscribers, or community members from public X data. Trigger with \"scrape X followers\", \"get X following\", \"compare X audiences\", \"collect X list members\", \"get X community members\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash(npm:*)",
+        "Bash(npx:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.6.0",
+      "parentPlugin": {
+        "name": "apify-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "xquik-x-follower-scraper build and validate bounded x audience workflows with xquik's apify actor. use when collecting followers, following, verified followers, list members, list subscribers, or community members from public x data. trigger with \"scrape x followers\", \"get x following\", \"compare x audiences\", \"collect x list members\", \"get x community members\". saas-packs read write bash(npm:*) bash(npx:*) "
+    },
+    {
+      "type": "skill",
+      "id": "xquik-x-tweet-scraper",
+      "slug": "xquik-x-tweet-scraper",
+      "name": "xquik-x-tweet-scraper",
+      "description": "Build and validate bounded X post workflows with Xquik's Apify Actor. Use when collecting posts, searches, timelines, threads, replies, quotes, retweeters, favoriters, or articles from public X data. Trigger with \"scrape X posts\", \"search X on Apify\", \"get an X thread\", \"collect tweet replies\", \"find tweet quotes\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Bash(npm:*)",
+        "Bash(npx:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.6.0",
+      "parentPlugin": {
+        "name": "apify-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "xquik-x-tweet-scraper build and validate bounded x post workflows with xquik's apify actor. use when collecting posts, searches, timelines, threads, replies, quotes, retweeters, favoriters, or articles from public x data. trigger with \"scrape x posts\", \"search x on apify\", \"get an x thread\", \"collect tweet replies\", \"find tweet quotes\". saas-packs read write bash(npm:*) bash(npx:*) "
     },
     {
       "type": "skill",

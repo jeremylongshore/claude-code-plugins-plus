@@ -22,13 +22,13 @@
       "error_files": 1888,
       "error_total": 6804,
       "grade_distribution": {
-        "A": 1595,
+        "A": 1597,
         "B": 1013,
         "C": 857,
         "D": 159,
         "F": 5
       },
-      "rows": 3629
+      "rows": 3631
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3129,
-        "tracked_files": 22792
+        "raw_tracked_plugin_skill_files": 3131,
+        "tracked_files": 22796
       }
     },
     "2": {
@@ -91,14 +91,14 @@
         },
         "marketplace_terminal": {
           "error_total_all_validated_surfaces": 7042,
-          "fully_compliant_surfaces": 1134,
+          "fully_compliant_surfaces": 1136,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4952,
+            "files": 4954,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3629
+            "skills": 3631
           },
           "validated_plugin_manifests": 601,
           "validator_reported_mixed_denominator_percent": 22.9
@@ -112,13 +112,13 @@
           "error_files": 1888,
           "error_total": 6804,
           "grade_distribution": {
-            "A": 1595,
+            "A": 1597,
             "B": 1013,
             "C": 857,
             "D": 159,
             "F": 5
           },
-          "rows": 3629
+          "rows": 3631
         }
       }
     },
@@ -131,7 +131,7 @@
       "values": {
         "average_score": 85.4,
         "grade_distribution": {
-          "A": 1595,
+          "A": 1597,
           "B": 1013,
           "C": 857,
           "D": 159,
@@ -144,7 +144,7 @@
           "D": 4.4,
           "F": 0.1
         },
-        "rows": 3629
+        "rows": 3631
       }
     },
     "6": {
@@ -161,7 +161,7 @@
         "b_error_total": 1906,
         "b_failing": 809,
         "certified_target": 0,
-        "skill_summary_rows": 3629
+        "skill_summary_rows": 3631
       }
     },
     "7": {
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3615,
+        "declared": 3617,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
         "missing": 14,
-        "rows": 3629,
+        "rows": 3631,
         "target_malformed": 0
       }
     },
@@ -327,7 +327,7 @@
             "value": "Cross-platform — talks WebDriver HTTP directly via Node's built-in node:https; no platform-specific binary dependency. Requires Node.js >= 18, a persistent local filesystem (the observe-decide-act loop passes state through local turn files), and ~/.kobiton/.credentials written by /automate:setup — scripts/appium.js reads that file directly and never calls the MCP getCredential tool, so it is required, not a fallback. An authenticated Kobiton MCP connection is additionally useful for device selection."
           },
           {
-            "count": 3321,
+            "count": 3323,
             "value": "Designed for Claude Code"
           },
           {
@@ -1116,15 +1116,15 @@
           },
           {
             "cohort": "first-party",
-            "value": 2784
+            "value": 2786
           },
           {
             "cohort": "graded",
-            "value": 3629
+            "value": 3631
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3068
+            "value": 3070
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1778,7 +1778,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22792
+        "tracked_files": 22796
       }
     },
     "47": {
@@ -1958,7 +1958,7 @@
       "values": {
         "adoption_percent": 0.45,
         "curated_copies": 12,
-        "plugin_skill_rows": 3129,
+        "plugin_skill_rows": 3131,
         "source_eval_specs": 14,
         "tracked_eval_specs": 26
       }
