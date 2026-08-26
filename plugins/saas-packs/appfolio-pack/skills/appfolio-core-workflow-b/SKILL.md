@@ -26,6 +26,17 @@ vendors to open work orders, track repair progress across properties, or close o
 completed jobs with cost records. This is the secondary workflow — for property
 dashboards and leasing, see `appfolio-core-workflow-a`.
 
+## Prerequisites
+
+- A verified AppFolio contract and sandbox portfolio with synthetic property,
+  unit, vendor, and work-order records; do not test maintenance automation
+  against an occupied production unit.
+- A least-privilege service identity, idempotency support for create/close
+  actions, and an approved escalation path for safety-critical maintenance.
+- A data-minimization policy: store and transmit only the maintenance facts
+  needed to perform work, never tenant preferences, access codes, or detailed
+  occupancy information in generic vendor notes or logs.
+
 ## Instructions
 
 ### Step 1: Create a Work Order from a Maintenance Request
@@ -36,7 +47,7 @@ const workOrder = await client.workOrders.create({
   unit_id: 'unit_12B',
   category: 'plumbing',
   priority: 'high',
-  description: 'Kitchen sink leaking under cabinet — tenant reports water damage',
+  description: 'Synthetic plumbing fixture leak reported in sandbox unit',
   requested_by: 'tenant_8934',
   due_date: '2026-04-10',
 });
@@ -50,7 +61,7 @@ const assignment = await client.workOrders.assign(workOrder.id, {
   vendor_id: 'vendor_plumb_01',
   scheduled_date: '2026-04-08',
   time_window: '09:00-12:00',
-  notes: 'Tenant prefers morning. Enter through side gate.',
+  notes: 'Confirm scheduled appointment through the approved work-order channel.',
 });
 console.log(`Assigned to ${assignment.vendor_name} on ${assignment.scheduled_date}`);
 ```
@@ -96,6 +107,17 @@ console.log(`Closed #${closed.id} — total cost: $${closed.total_cost}`);
 A successful run creates a work order, assigns it to a vendor with a scheduled
 service window, and closes it with cost records and resolution notes. The property
 manager gets a complete audit trail from request through completion.
+
+## Examples
+
+For a sandbox plumbing workflow, create one synthetic work order with a stable
+idempotency key, assign a sandbox vendor, and read back its status before any
+transition. Attach only a non-sensitive test receipt, then close the order once
+and verify the total and audit record without logging tenant or access details.
+Replay the same request to prove duplicate work orders and duplicate cost records
+are rejected. If the vendor assignment, safety classification, prior state, or
+close outcome is uncertain, leave the order open and route it to the authorized
+property operator for review.
 
 ## Resources
 
