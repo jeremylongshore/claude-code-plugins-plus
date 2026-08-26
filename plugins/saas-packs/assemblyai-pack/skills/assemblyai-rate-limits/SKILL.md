@@ -200,6 +200,10 @@ async function connectStreamingWithRetry(maxRetries = 3) {
 - Batch transcription with progress reporting
 - Streaming reconnection logic
 
+## Examples
+
+Treat displayed limits as configuration inputs that are verified against the live account and provider documentation before rollout. Begin with a low concurrency ceiling, honor server-provided retry guidance, persist idempotency keys, and alert on sustained throttling rather than retrying a workload indefinitely.
+
 ## Error Handling
 
 | Scenario | Status | Strategy |

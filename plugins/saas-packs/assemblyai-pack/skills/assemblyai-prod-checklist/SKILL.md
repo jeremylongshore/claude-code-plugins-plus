@@ -175,6 +175,10 @@ curl -s https://status.assemblyai.com/api/v2/status.json | jq '.status.descripti
 - Monitoring and alerting configuration
 - Gradual rollout strategy
 
+## Examples
+
+Before release, run mocked tests and one approved integration smoke test with a dedicated low-privilege key, verify webhook authentication and idempotency, and attach a redacted release receipt. If any authorization, retention, budget, or reconciliation check fails, keep traffic disabled and use the documented rollback.
+
 ## Error Handling
 
 | Issue | Detection | Response |

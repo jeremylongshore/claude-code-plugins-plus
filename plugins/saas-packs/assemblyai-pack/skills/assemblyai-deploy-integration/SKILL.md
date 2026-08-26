@@ -237,6 +237,10 @@ export async function GET() {
 - Streaming token endpoint for browser clients
 - Health check endpoint monitoring AssemblyAI connectivity
 
+## Examples
+
+Deploy a versioned artifact with secrets injected only at runtime, then enable a read-only health check before accepting audio. Route webhook receipts into durable storage before acknowledgement, exercise rollback in staging, and promote gradually with a concurrency and spend ceiling; never place API keys or transcript payloads in deployment logs.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

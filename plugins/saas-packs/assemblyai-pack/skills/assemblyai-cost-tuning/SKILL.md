@@ -278,6 +278,10 @@ if (parseFloat(summary.totalCost.replace('$', '')) > MONTHLY_BUDGET * 0.8) {
 - Usage tracking with budget alerts
 - Cost reduction strategies ranked by impact
 
+## Examples
+
+Before enabling a feature, verify current rates and limits in AssemblyAI's authoritative billing documentation, estimate a bounded pilot from approved audio duration, and set a budget alert below the hard limit. Tag usage by opaque tenant/workload key and review a dry-run cost report before enabling bulk transcription or LeMUR jobs.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
