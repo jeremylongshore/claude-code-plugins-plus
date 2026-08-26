@@ -141,6 +141,10 @@ print(f"Proxy IP: {resp.json()['ip']}, Country: {resp.json()['country']}")
 - `brd-ca.crt` SSL certificate for HTTPS proxying
 - Successful proxy connection showing rotated IP and country
 
+## Examples
+
+Create a separate least-privilege zone for a defined approved workload, keep its credential in the secret manager, and run one controlled authorization probe without emitting the proxy URL or credentials. Do not reuse personal or broad administrator credentials; record zone owner, target class, and rotation/revocation process before deployment.
+
 ## Error Handling
 
 | Error | Cause | Solution |

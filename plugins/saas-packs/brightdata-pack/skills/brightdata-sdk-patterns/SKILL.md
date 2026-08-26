@@ -219,6 +219,10 @@ with brightdata_session(country='us') as s:
 - HTML parsing utilities with cheerio
 - Python context manager pattern
 
+## Examples
+
+Resolve zone and target policy from reviewed configuration, pass request data through a validated adapter, and return a redacted result object with an opaque request ID. Reject arbitrary URLs, unapproved zones, unsupported methods, and responses outside the allowed schema before they can be persisted or forwarded.
+
 ## Error Handling
 
 | Pattern | Use Case | Benefit |

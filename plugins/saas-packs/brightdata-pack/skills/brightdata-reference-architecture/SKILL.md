@@ -35,6 +35,17 @@ Production-ready architecture for Bright Data scraping systems. Covers project l
 - Node.js/TypeScript project setup
 - Database for storing scraped data
 
+## Authentication
+
+Resolve the zone credential only from the approved server-side secret manager at runtime. Do not expose it to browsers, logs, source control, job payloads, or support bundles. Associate every credential with an owner, approved target/data policy, rotation schedule, and revocation path.
+
+## Instructions
+
+1. Accept a collection request only after validating caller authorization, target allowlist, legal/policy purpose, data class, and retention requirement.
+2. Create a durable idempotency record and apply rate/cost limits before dispatching the validated request to the proxy adapter.
+3. Store minimum necessary results in protected storage and run schema/data-class checks before downstream processing.
+4. Emit redacted telemetry, reconcile completion, and pause the queue on target-policy, authorization, or unexpected-data failures.
+
 ## Project Structure
 
 ```
@@ -228,6 +239,10 @@ export function startScheduler(jobs: ScrapeJob[], client: BrightDataClient) {
 - Domain-specific scrapers with parsers
 - Cron-based scraping pipeline
 - Environment-isolated zone configuration
+
+## Examples
+
+Place target authorization, request validation, rate/budget controls, and audit logging ahead of the proxy adapter. The queue persists an idempotency key, workers validate the target policy before every call, and protected storage retains only minimum necessary data. An unexpected content class pauses the job instead of flowing to downstream systems.
 
 ## Error Handling
 
