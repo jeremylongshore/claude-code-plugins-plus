@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes supports multiple accounts simultaneously: iCloud (default), Gmail/Yahoo/AOL via IMAP, Exchange, and the local "On My Mac" account. Each account has isolated folders and notes, making accounts the natural boundary for environment separation. Use this to separate personal vs work notes, production vs development data, or synced vs local-only content. The "On My Mac" account is especially useful for development and testing because it never syncs to iCloud, so experiments stay local.
 
+## Prerequisites
+
+- A written environment map that names the intended account and folder by stable local configuration, not a broad account default.
+- Separate test data for development and staging; iCloud folders alone are not an access-control boundary.
+- An approval path for creating accounts or folders, especially in managed or shared environments.
+
+## Instructions
+
+1. Resolve the selected environment from an allowlist and fail if it is not explicitly configured.
+2. Verify the expected account and folder exist before a write; do not silently create missing production folders.
+3. Keep development local where possible, and require an explicit operator choice before a job touches a synchronized account.
+4. Log only the environment label and opaque configuration version, never account names, note titles, or bodies.
+
 ## Account Discovery
 
 ```bash
@@ -133,6 +146,14 @@ osascript -l JavaScript -e '
 | Folder creation fails on Gmail | IMAP accounts have read-only folder structure | Use iCloud or "On My Mac" for custom folders |
 | Notes appear in wrong account | `defaultAccount` used instead of explicit account | Always specify account by name; never rely on default |
 | Sync conflict between environments | Same iCloud account, different folders | Use distinct folder names per environment (`Prod/`, `Staging/`) |
+
+## Output
+
+Environment selection yields the approved environment label, an account/folder existence check, and a read-only scope confirmation. A failed match blocks mutation and produces a redacted diagnostic that the configuration owner can act on.
+
+## Examples
+
+For local development, select the configured development environment, confirm the `On My Mac` test folder exists, and use synthetic notes only. For production, require a separately reviewed configuration that points to the exact approved folder; if it is absent, stop and ask the owner to create or approve it rather than creating it automatically.
 
 ## Resources
 

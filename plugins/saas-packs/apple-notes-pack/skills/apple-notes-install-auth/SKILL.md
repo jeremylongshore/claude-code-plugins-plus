@@ -116,10 +116,14 @@ shortcuts run "Create Note" --input-path /dev/stdin <<< "Test content"
 
 ## Output
 
-- macOS automation permissions granted for Notes.app
-- JXA access verified with note count
-- CLI wrapper script for common operations
-- Shortcuts integration confirmed
+- A recorded consent decision for the exact invoking app and macOS user
+- A read-only, scoped authorization result (not a complete note listing)
+- A wrapper that exposes only the approved operations and fails on unknown input
+- An explicit decision on whether any Shortcuts workflow is approved
+
+## Examples
+
+For a first-time setup, run one read-only count against the intended account and accept the macOS prompt in the interactive session. Do not use the `list` wrapper against a production account unless the task specifically requires metadata discovery; it can expose titles in terminal history and CI logs. For Shortcuts, use a non-production shortcut and a test note rather than a workflow that creates notes in a default account.
 
 ## Error Handling
 

@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes security involves three layers: macOS TCC (Transparency, Consent, and Control) which gates which apps can send Apple Events to Notes.app, the macOS sandbox that prevents direct database access, and iCloud encryption that protects notes in transit and at rest. For automation scripts, the primary security concerns are: preventing unauthorized Apple Events access, securing exported note data, avoiding credential leakage in scripts, and understanding the difference between standard and end-to-end encrypted (locked) notes.
 
+## Prerequisites
+
+- An inventory of the invoking app, macOS user, account scope, and required operation class.
+- A documented incident owner and revocation procedure for automation permissions and exported artifacts.
+- A test account for exercising write paths; never use a live note as a security test fixture.
+
+## Instructions
+
+1. Grant Apple Events consent only through System Settings or an approved MDM profile for the exact client application.
+2. Keep automation local and reject network-provided note content, script fragments, and shell arguments.
+3. Encrypt backups, restrict access before writing, and delete temporary artifacts through a verified retention process.
+4. Skip locked or unreadable notes, record a redacted failure, and require a user to handle them in Notes.app.
+
 ## Security Checklist
 
 - [ ] Scripts run only locally (never expose osascript to network input)
@@ -36,14 +49,6 @@ Apple Notes security involves three layers: macOS TCC (Transparency, Consent, an
 ## TCC Permission Management
 
 ```bash
-# Check current TCC grants for Apple Events
-sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db \
-  "SELECT client, allowed, auth_reason FROM access WHERE service='kTCCServiceAppleEvents';" \
-  2>/dev/null || echo "Cannot read TCC.db — SIP is active (this is expected)"
-
-# Reset all Apple Events permissions (forces re-prompt)
-tccutil reset AppleEvents
-
 # View which apps have automation access in System Settings:
 # System Settings > Privacy & Security > Automation
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation"
@@ -99,9 +104,9 @@ allNotes.forEach(n => {
 
 ```bash
 # Store automation credentials in macOS Keychain (not in script files)
-# Add a credential
+# Add a credential interactively; do not place a secret in command-line history.
 security add-generic-password -a "notes-automation" -s "notes-export-key" \
-  -w "your-encryption-key" -T /usr/bin/osascript
+  -T /usr/bin/osascript
 
 # Retrieve in scripts
 KEY=$(security find-generic-password -a "notes-automation" -s "notes-export-key" -w 2>/dev/null)
@@ -117,6 +122,14 @@ KEY=$(security find-generic-password -a "notes-automation" -s "notes-export-key"
 | Export file readable by other users | Default umask too permissive | Set `umask 077` before writing; `chmod 600` after |
 | Script exposes note content in process list | Note content passed as CLI argument | Pipe content via stdin or temp file instead of `-e` argument |
 | Automation works after upgrade but TCC reset | macOS upgrade clears some TCC entries | Re-approve automation permissions after every OS update |
+
+## Output
+
+The security review produces a permission inventory, export-protection decision, and redacted evidence that locked notes were skipped. It must not include TCC database rows, Keychain secrets, note bodies, or raw note titles.
+
+## Examples
+
+After an operating-system upgrade, open the Automation privacy pane, review the exact client entry, and run a read-only scoped smoke test. If access is no longer approved, stop the job and request consent through the documented owner; do not reset system-wide permissions to force a prompt.
 
 ## Resources
 

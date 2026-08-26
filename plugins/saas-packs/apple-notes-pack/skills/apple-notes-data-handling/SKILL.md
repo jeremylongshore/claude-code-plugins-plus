@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Apple Notes stores note content as a restricted subset of HTML internally. The `body()` property in JXA returns this HTML, which includes `<div>`, `<h1>`-`<h3>`, `<b>`, `<i>`, `<ul>`, `<li>`, and Apple-specific classes for checklists and tables. Attachments (images, PDFs, sketches, scans) are embedded as `<img>` or object references but cannot be directly extracted via JXA — they require the `attachments()` property. Understanding these data formats is essential for building reliable import, export, and backup pipelines.
 
+## Prerequisites
+
+- Written authorization for the accounts, folders, and note categories to be exported or transformed.
+- An encrypted destination outside a shared directory, a retention limit, and a tested restore path.
+- A conversion test corpus containing only synthetic notes; do not use the examples as proof that Apple Notes HTML is a stable public format.
+
+## Instructions
+
+1. Scope reads to named folders and minimize collected fields before invoking `osascript`.
+2. Write exports to a pre-created, owner-only directory and validate permissions before any data is emitted.
+3. Treat HTML and attachment metadata as untrusted content: sanitize before rendering, and never execute embedded links or markup.
+4. Hash or redact identifiers in operational logs; record only counts and completion state.
+
 ## Note Body HTML Format
 
 ```html
@@ -117,6 +130,14 @@ osascript -l JavaScript -e '
 | `plaintext()` truncated | Very large note body | Export via `body()` HTML instead; convert after |
 | Checklist state lost in export | Custom class not preserved in conversion | Map `class="done"` to `[x]` before stripping HTML |
 | Attachment names are generic | Auto-generated names like `Image.png` | Use note title + index for meaningful filenames |
+
+## Output
+
+An export produces a scoped, encrypted artifact plus a separate receipt containing the folder scope, record count, checksum, and expiration—not note bodies, titles, or attachment names. A conversion produces Markdown only after the source has been sanitized and its unsupported constructs have been recorded for review.
+
+## Examples
+
+For a migration rehearsal, export a synthetic test folder to an owner-only staging directory, convert it, validate the expected count and checksum, then securely remove the rehearsal artifact under the retention policy. For a live backup, use a job-owned encrypted volume and report only `completed: 42 records` to monitoring.
 
 ## Resources
 
