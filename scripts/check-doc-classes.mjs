@@ -41,6 +41,7 @@ const CANONICAL = new Set([
   `${DOC_PREFIX}729-AT-ADEC-reference-architecture-synthesis.md`,
   `${DOC_PREFIX}790-DR-STND-safety-enforcement-register.md`,
   `${DOC_PREFIX}806-AT-ARCH-cross-repo-authority-contract.md`,
+  `${DOC_PREFIX}807-DR-STND-evaluation-evidence.md`,
   `${DOC_PREFIX}SCHEMA_CHANGELOG.md`,
 ]);
 
