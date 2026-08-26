@@ -157,6 +157,22 @@ curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
 | Evictor too aggressive | Low delay threshold | Increase `emptyNodes.delaySeconds` |
 | Cluster limit hit | `maxCores` too low | Increase `clusterLimits.cpu.maxCores` |
 
+## Output
+
+Return a reviewed cluster-autoscaler policy, node-template scope, capacity
+limits, and before/after health evidence for the nominated environment. Keep a
+serialized copy of the previous policy and identify the operator authorized to
+disable autoscaling when node churn, workload disruption, or unexpected spend
+breaches the guardrail.
+
+## Examples
+
+Apply a constrained node template to a staging cluster, create one controlled
+unschedulable workload, and observe provisioning plus PodDisruptionBudget
+behavior. Promote only when capacity, lifecycle mix, and service health match
+the approved range; otherwise disable the policy and restore the prior
+template before investigating.
+
 ## Resources
 
 - [Autoscaler Policies](https://docs.cast.ai/docs/autoscaler-settings)

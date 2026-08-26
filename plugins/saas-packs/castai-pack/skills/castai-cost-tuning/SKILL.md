@@ -183,6 +183,22 @@ async function generateMonthlyCostReport(
 | Hibernation not triggering | Schedule timezone wrong | Use IANA timezone format |
 | Right-sizing too aggressive | Low headroom | Increase memory headroom to 20% |
 
+## Output
+
+Produce a cost-tuning proposal with the current baseline, forecast range,
+workload availability constraints, owner approval, staged rollout window, and
+rollback threshold. Savings are a secondary objective: do not trade away
+availability, latency SLOs, data durability, or supported instance capacity
+without an explicit risk decision.
+
+## Examples
+
+Start by increasing spot diversity for a staging node pool while keeping a
+documented on-demand floor. Review interruption rate, pod evictions, p95
+latency, and weekly spend against baseline; stop or restore the former policy
+if disruption exceeds the service’s agreed budget even when projected savings
+increase.
+
 ## Resources
 
 - [CAST AI Savings Report](https://docs.cast.ai/docs/getting-started)
