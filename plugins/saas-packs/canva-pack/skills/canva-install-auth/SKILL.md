@@ -35,6 +35,12 @@ Set up a Canva Connect API integration with OAuth 2.0 Authorization Code flow wi
 
 ## Instructions
 
+1. Register exact HTTPS redirect URIs, request only approved scopes, and perform PKCE/token exchange on the server.
+2. Store tokens in the approved encrypted secret/data store, bind them to the authorized user/tenant, and exclude them from logs and clients.
+3. Verify a read-only synthetic-tenant call first; use the owner-controlled revocation/reauthorization process on any mismatch.
+
+## Instructions
+
 ### Step 1: Register Your Integration
 
 1. Go to **Settings > Integrations** at [canva.com/developers](https://www.canva.com/developers)
@@ -186,6 +192,14 @@ async function verifyConnection(accessToken: string): Promise<void> {
 | `comment:write` | Create comments and replies |
 | `collaboration:event` | Receive webhook notifications |
 | `profile:read` | Read user profile information |
+
+## Output
+
+Authentication setup returns a redacted authorization/redirect/scope verification and opaque connection reference. It excludes client secrets, PKCE verifier, tokens, user profile data, and signed URLs.
+
+## Examples
+
+Create a dedicated development OAuth client, use a synthetic test user, complete a server-side PKCE callback, and record only the opaque connection ID and scope result. Do not put the client secret or a copied callback token in `.env.example`, browser code, logs, or support tickets.
 
 ## Error Handling
 

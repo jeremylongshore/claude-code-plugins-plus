@@ -28,6 +28,18 @@ compatibility: Designed for Claude Code
 
 Comprehensive guide for migrating to the Canva Connect API from another design platform or from direct image generation. Uses the strangler fig pattern for gradual, safe migration.
 
+## Prerequisites
+
+- A migration owner, approved source/destination asset inventory, encrypted backup, retention policy, and rollback plan.
+- A synthetic pilot corpus and a durable manifest mapping authorized source records to destination references.
+
+## Instructions
+
+1. Run extract, transform, and Canva import/export as separate, inspectable phases; do not stream unreviewed assets into production.
+2. Validate rights, data classification, template/input schema, and destination scope before each bounded batch.
+3. Reconcile manifests, obtain owner approval between batches, and stop on content, entitlement, authorization, or fidelity gaps.
+4. Retain protected artifacts only under the migration policy and keep the rollback path executable.
+
 ## Migration Types
 
 | Type | Duration | Risk | Example |
@@ -272,6 +284,14 @@ curl -X PUT "https://flagservice.internal/api/flags/canva_migration_pct" \
 # Verify legacy system still works
 curl -s "https://api.ourapp.com/health" | jq '.services.legacy_design'
 ```
+
+## Output
+
+Migration yields a protected source receipt, transform exception report, destination manifest, reconciliation result, and rollback decision. Routine telemetry uses opaque identifiers and counts rather than asset contents, URLs, or user data.
+
+## Examples
+
+Migrate a small synthetic pilot into a dedicated test tenant, compare every manifest key and expected fidelity exception, then delete the pilot output under policy. For production, move in approved batches and pause immediately if rights, count, or output classification differs from the plan.
 
 ## Error Handling
 

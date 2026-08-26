@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Security best practices for Canva Connect API OAuth 2.0 tokens, client credentials, and webhook verification. The Canva API uses OAuth with PKCE — there are no static API keys.
 
+## Prerequisites
+
+- A reviewed OAuth client, secret manager, asset/data classification, and incident/rotation owner.
+- Server-side authorization controls and protected redacted telemetry.
+
+## Instructions
+
+1. Keep client secrets, refresh/access tokens, and signed URLs server-side in the approved secret/data stores only.
+2. Apply minimum scopes, validate webhook signatures before parsing, and recheck asset rights before downstream side effects.
+3. Redact secrets and design data from logs, rotate/revoke through the owner-controlled procedure, and fail closed on unknown scope or provenance.
+
 ## Token Security
 
 ### Never Expose Client Secrets
@@ -157,6 +168,14 @@ app.post('/webhooks/canva', express.text({ type: '*/*' }), async (req, res) => {
 - [ ] Token revocation implemented for user disconnect
 - [ ] No tokens in log output
 - [ ] HTTPS enforced for all callback URLs
+
+## Output
+
+The security review produces an OAuth/secret scope inventory, token/URL storage decision, webhook-verification result, and redacted revocation/audit receipt. It excludes credentials, design content, signed URLs, and user identifiers.
+
+## Examples
+
+For a suspected token exposure, revoke and rotate through the secret manager and Canva owner workflow, identify affected opaque sessions, and verify logs contain no token material. Do not test the exposed token, paste it into a diagnostic command, or reuse it in a fallback client.
 
 ## Error Handling
 
