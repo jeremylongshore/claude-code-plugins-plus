@@ -25,6 +25,32 @@ compatibility: Designed for Claude Code
 ---
 # Alchemy Reference Architecture
 
+## Overview
+
+This reference architecture separates wallet-facing UI from server-side
+provider access so API keys, rate limits, validation, caching, and webhook
+verification are consistently controlled across supported chains.
+
+## Prerequisites
+
+- A written data-flow and threat model covering wallet addresses, signed
+  messages, provider credentials, public API routes, and webhook events.
+- A server-side deployment target with managed secrets, input validation,
+  rate limiting, and observability before any frontend endpoint is exposed.
+- Public-chain or testnet fixtures and a rollback mechanism for each feature
+  that affects external users or contract interactions.
+
+## Instructions
+
+1. Begin with a single chain and server-side client factory, keeping the
+   provider key out of browser bundles and public response payloads.
+2. Add validated, rate-limited API routes for each use case and define the
+   cache freshness rule before implementing UI data fetching.
+3. Treat a wallet address as an identifier, not authentication; use a
+   signed challenge when ownership must be proved.
+4. Verify webhook signatures and idempotency before routing any external event,
+   then test the complete path against public or testnet fixtures.
+
 ## System Architecture
 
 ```
@@ -109,6 +135,26 @@ web3-dapp/
 - Multi-chain architecture with client factory
 - API proxy pattern keeping API key server-side
 - Webhook integration for real-time event processing
+
+## Examples
+
+Implement the balance route for one public test address in a staging service.
+The frontend calls the route without an Alchemy key, while the server validates
+the address, uses the managed secret, applies the balance freshness TTL, and
+emits only aggregate latency and outcome telemetry. Confirm a malformed address
+is rejected before provider use and a simulated provider outage yields a clear
+unavailable response. If the key appears in a browser artifact, the route lacks
+rate limiting, or the failure state is ambiguous, keep the feature disabled and
+fix that boundary before adding multi-chain or wallet-gated behavior.
+
+## Error Handling
+
+| Failure | Architecture response |
+|---------|-----------------------|
+| Browser bundle contains provider credential | Revoke the credential, remove it from the artifact, and enforce server-side access. |
+| Public route receives malformed or abusive input | Reject early, apply rate limits, and do not forward the request to the provider. |
+| Webhook is unsigned or duplicate | Reject it or return a safe duplicate response before business processing. |
+| Provider or chain is unavailable | Return explicit partial/unavailable state and activate the product fallback. |
 
 ## Resources
 
