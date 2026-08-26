@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Automated policy enforcement for Canva Connect API integrations — prevent token leaks, enforce rate limit handling, require error handling, and validate OAuth configuration.
 
+## Prerequisites
+
+- Named owners for OAuth scopes, tenant access, design/asset rights, publication destinations, and retention policy.
+- CI and runtime configuration capable of evaluating policy without exposing live tokens or design content.
+
+## Instructions
+
+1. Enforce reviewed allowlists for scopes, tenant/action combinations, and destinations before issuing an API request.
+2. Fail closed when authorization, provenance, data classification, or required policy configuration is unknown.
+3. Emit only redacted policy decisions and route exceptions through the named approval process.
+
 ## ESLint Rules
 
 ### No Hardcoded Credentials
@@ -205,6 +216,14 @@ class CanvaGuardrails {
   }
 }
 ```
+
+## Output
+
+Guardrails produce an allow/deny decision, policy version, opaque subject/scope identifiers, and a redacted audit result. They never convert a missing policy or failed validation into an implicit allow.
+
+## Examples
+
+Before publishing an export, check the tenant, asset rights, approved destination, and retention policy against the reviewed allowlist. If anything is unknown, deny the request and require owner approval rather than bypassing the guardrail in CI or runtime.
 
 ## Error Handling
 

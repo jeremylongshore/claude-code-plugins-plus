@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Handle Canva Connect API data responsibly. The API exposes user identifiers, design metadata, design content (via exports), uploaded assets, and comments. Apply proper classification, retention, and privacy controls.
 
+## Prerequisites
+
+- A documented inventory for design metadata/content, exports, assets, comments, OAuth tokens, and signed URLs.
+- Approved encrypted storage, retention/deletion workflow, and a privacy/incident owner.
+
+## Instructions
+
+1. Collect only fields needed for the approved purpose and classify them before persistence or sharing.
+2. Keep tokens and temporary export URLs server-side, encrypted, access-controlled, and excluded from logs and analytics.
+3. Apply retention/deletion policy to exports and caches, then retain only a redacted execution receipt.
+
 ## Data Classification — Canva API Responses
 
 | Data Type | Source Endpoint | Sensitivity | Handling |
@@ -185,6 +196,14 @@ async function deleteCanvaUserData(userId: string): Promise<void> {
   });
 }
 ```
+
+## Output
+
+Data handling produces a scoped inventory, storage/retention decision, and redacted access or deletion receipt. It excludes design content, tokens, signed URLs, and personal identifiers from routine telemetry.
+
+## Examples
+
+For a short-lived export, place the file in encrypted job storage with an expiry and authorize access through a server route. For a deletion request, verify the subject through the approved workflow, process only in-scope data, and record the redacted completion receipt.
 
 ## Error Handling
 
