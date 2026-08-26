@@ -25,6 +25,21 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Production Checklist
 
+## Instructions
+
+1. Complete every production gate with an evidence link: workspace/environment, identity, secret scope, consent, event/schema, template review, observability, rate limits, and rollback.
+2. Verify the exact production audience and suppression/consent behavior using approved safe checks.
+3. Hold release when any data, identity, delivery, or owner gate is unverified.
+4. Record the named go/no-go decision and post-deployment observation result.
+
+## Output
+
+- A production-readiness receipt with owners, evidence, exceptions, and tested rollback path.
+
+## Examples
+
+Before enabling a campaign, validate it in staging with synthetic profiles, confirm the production segment and consent/suppression logic under review, and use an approved canary audience. If the canary differs from expected behavior, stop the launch and restore the previous version rather than widening sends.
+
 ## Overview
 
 Comprehensive go-live checklist for Customer.io integrations: credentials audit, integration quality review, email deliverability setup, monitoring configuration, smoke tests, and staged rollout plan.
