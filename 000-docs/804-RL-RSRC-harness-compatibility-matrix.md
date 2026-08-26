@@ -10,6 +10,10 @@ The registry, not this document, owns live paths and support status. This record
 captures the sources that justify the initial candidate set and requires a dated
 fresh-environment test before public `verified-native` status.
 
+On 2026-08-26, the initial source set was rechecked over HTTPS. The registry now
+carries that date per entry; source availability is research evidence only and
+does not upgrade a candidate to public support.
+
 | Harness        | Initial classification        | Primary reference                                                                                               |
 | -------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | Devin          | standard-compatible candidate | https://docs.devin.ai/product-guides/skills                                                                     |

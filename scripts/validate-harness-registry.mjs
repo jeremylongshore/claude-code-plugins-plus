@@ -52,6 +52,8 @@ export function validateRegistry(value) {
       errors.push(`${prefix}: publicSupport must be boolean`);
     if (typeof harness?.source !== 'string' || !/^https:\/\//.test(harness.source))
       errors.push(`${prefix}: source must be an HTTPS URL`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(harness?.sourceVerifiedAt ?? ''))
+      errors.push(`${prefix}: sourceVerifiedAt must be an ISO date`);
     for (const field of ['projectPath', 'userPath']) {
       if (harness?.[field] !== null && typeof harness?.[field] !== 'string') {
         errors.push(`${prefix}: ${field} must be a string or null`);

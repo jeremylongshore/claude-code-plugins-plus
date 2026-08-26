@@ -24,3 +24,9 @@ test('red run: a native extension cannot masquerade as a portable project skill'
     /native extensions must not declare a portable project path/,
   );
 });
+
+test('red run: every source needs a dated verification receipt', () => {
+  const registry = readRegistry();
+  delete registry.harnesses[0].sourceVerifiedAt;
+  assert.match(validateRegistry(registry).join('\n'), /sourceVerifiedAt must be an ISO date/);
+});

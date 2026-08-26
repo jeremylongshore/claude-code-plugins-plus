@@ -13,7 +13,8 @@
       "publicSupport": true,
       "projectPath": ".claude/skills",
       "userPath": "~/.claude/skills",
-      "source": "https://code.claude.com/docs/en/skills"
+      "source": "https://code.claude.com/docs/en/skills",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "codex",
@@ -22,7 +23,8 @@
       "publicSupport": false,
       "projectPath": ".codex/skills",
       "userPath": "~/.codex/skills",
-      "source": "https://platform.openai.com/docs/agents/skills"
+      "source": "https://developers.openai.com/codex/skills",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "cursor",
@@ -31,7 +33,8 @@
       "publicSupport": false,
       "projectPath": ".cursor/skills",
       "userPath": "~/.cursor/skills",
-      "source": "https://prod.cursor.com/docs/skills"
+      "source": "https://prod.cursor.com/docs/skills",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "devin",
@@ -40,7 +43,8 @@
       "publicSupport": false,
       "projectPath": ".agents/skills",
       "userPath": null,
-      "source": "https://docs.devin.ai/product-guides/skills"
+      "source": "https://docs.devin.ai/product-guides/skills",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "gemini-cli",
@@ -49,7 +53,8 @@
       "publicSupport": false,
       "projectPath": ".gemini/skills",
       "userPath": "~/.gemini/skills",
-      "source": "https://geminicli.com/docs/cli/skills/"
+      "source": "https://geminicli.com/docs/cli/skills/",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "goose",
@@ -58,7 +63,8 @@
       "publicSupport": false,
       "projectPath": ".agents/skills",
       "userPath": "~/.agents/skills",
-      "source": "https://goose-docs.ai/docs/guides/context-engineering/using-skills/"
+      "source": "https://goose-docs.ai/docs/guides/context-engineering/using-skills/",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "kilo",
@@ -67,7 +73,8 @@
       "publicSupport": false,
       "projectPath": ".kilo/skills",
       "userPath": "~/.kilo/skills",
-      "source": "https://github.com/Kilo-Org/kilocode/blob/main/packages/kilo-docs/pages/customize/skills.md"
+      "source": "https://github.com/Kilo-Org/kilocode/blob/main/packages/kilo-docs/pages/customize/skills.md",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "opencode",
@@ -76,7 +83,8 @@
       "publicSupport": false,
       "projectPath": ".opencode/skills",
       "userPath": "~/.config/opencode/skills",
-      "source": "https://opencode.ai/docs/skills"
+      "source": "https://opencode.ai/docs/skills",
+      "sourceVerifiedAt": "2026-08-26"
     },
     {
       "id": "omarchy",
@@ -85,7 +93,8 @@
       "publicSupport": false,
       "projectPath": null,
       "userPath": "~/.config/omarchy/plugins",
-      "source": "https://omarchy.org/manual/shell-plugins/"
+      "source": "https://omarchy.org/manual/shell-plugins/",
+      "sourceVerifiedAt": "2026-08-26"
     }
   ]
 }
