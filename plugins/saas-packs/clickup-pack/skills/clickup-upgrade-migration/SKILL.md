@@ -162,6 +162,21 @@ curl -sf https://api.clickup.com/api/v2/user \
 # 3. Redeploy with v2 adapter
 ```
 
+## Prerequisites
+
+- Recorded source/target API contract and compatibility owner
+- Pinned current adapter plus a feature flag and tested rollback path
+- Representative staging fixtures and an isolated integration environment
+- Approval for field semantic, data-retention, or permission changes
+
+## Instructions
+
+Add the target adapter behind a feature flag, run contract tests against
+sanitized staging fixtures, and compare response mappings before routing live
+traffic. Promote in bounded increments with telemetry and retain the current
+adapter until the agreed validation window passes; unknown endpoints or fields
+must fail closed rather than silently using an incompatible fallback.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
@@ -169,6 +184,20 @@ curl -sf https://api.clickup.com/api/v2/user \
 | Endpoint 404 | v3 endpoint not yet available | Fall back to v2 equivalent |
 | Field name mismatch | v3 changed response shape | Update type definitions |
 | `team_id` not recognized | v3 expects `workspace_id` | Use adapter to translate |
+
+## Output
+
+Produce a migration receipt with source/target behavior, adapter/version pins,
+contract-test results, field mapping decisions, rollout percentage, approvals,
+rollback proof, and owner. Keep tokens, private task data, and raw user
+responses out of the receipt.
+
+## Examples
+
+Route a staging read operation through both adapters, compare the normalized ID
+and name fields, and preserve the v2 result as the baseline. If the v3 adapter
+changes a required field or authorization behavior, restore the v2 flag and
+correct the translation before increasing traffic.
 
 ## Resources
 

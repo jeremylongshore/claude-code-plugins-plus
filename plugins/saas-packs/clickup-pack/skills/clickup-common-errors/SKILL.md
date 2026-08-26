@@ -157,6 +157,43 @@ async function handleClickUpError(response: Response): Promise<never> {
 }
 ```
 
+## Prerequisites
+
+- Authorized access to the affected environment and a scoped diagnostic identity
+- Redacted request/correlation metadata and last certified integration state
+- A known owner for workspace, token, task data, and production change approval
+- Access to rate-limit and platform-status information
+
+## Instructions
+
+Identify the target workspace/list and error class, collect only the minimum
+redacted response metadata, then apply the matching recovery path. Change one
+variable at a time and preserve the prior certified state; do not retry 401,
+403, 429, or data-integrity errors with broader credentials or unbounded loops.
+
+## Error Handling
+
+| Failure class | Safe response |
+|---|---|
+| Authentication or authorization | Stop requests and route token/scope repair to its owner. |
+| Rate limit or provider outage | Preserve retry timing, defer through the scheduler, and protect queued work. |
+| Resource or mapping mismatch | Do not mutate; re-resolve IDs/schema and reconcile state first. |
+| Possible data exposure | Restrict access and follow the incident process with redacted evidence. |
+
+## Output
+
+Produce a diagnostic record with environment, affected resource ID, symptom,
+safe correlation data, containment action, retry/rollback decision, and
+escalation owner. Never include tokens, full task content, attachments, or
+unapproved member data in general logs or tickets.
+
+## Examples
+
+On a 429, capture the reset header and defer the same idempotent job; do not
+submit a duplicate task. On a 401, halt the worker and verify the secret
+reference with its owner. If a mapping is wrong, compare the certified target
+state before retrying rather than overwriting tasks.
+
 ## Resources
 
 - [ClickUp Common Errors](https://developer.clickup.com/docs/common_errors)

@@ -222,6 +222,35 @@ Next update: [time]
 | Circuit breaker stuck open | resetMs too long | Reduce reset threshold |
 | Webhook backlog | ClickUp retrying failed deliveries | Fix endpoint, events replay |
 
+## Prerequisites
+
+- Named incident commander, integration/data owners, and escalation contacts
+- Access to redacted telemetry, queue/webhook state, feature flags, and status
+- Tested capability to disable mutations, webhook intake, and scheduled sync
+- Approved communication and evidence-retention procedures
+
+## Instructions
+
+Classify the impact, stabilize affected automation before changing mappings or
+credentials, preserve safe correlation IDs and timestamps, and communicate on
+the defined cadence. Restore service through the smallest reversible change,
+then verify authorization, idempotency, and data consistency before declaring
+resolution or replaying queued events.
+
+## Output
+
+Create a time-stamped incident record with severity, scope, affected lists or
+workflows, containment, communications, recovery evidence, root-cause status,
+and prevention owner. Exclude live tokens, task bodies, comments, attachments,
+and personal data from status updates and postmortems.
+
+## Examples
+
+For a webhook backlog, pause ingestion, preserve the pending queue, verify the
+callback fix in staging, then replay a small deduplicated set before reopening
+production. If a task mapping caused unauthorized or incorrect changes, keep
+the integration disabled until reconciliation and owner validation complete.
+
 ## Resources
 
 - [ClickUp Status Page](https://status.clickup.com)
