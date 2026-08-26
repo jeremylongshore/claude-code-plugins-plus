@@ -173,6 +173,16 @@ echo -e "\n=== Diagnostics Complete ==="
 - Connectivity test results with latency
 - Recent error sessions (metadata only, no PHI)
 
+## Examples
+
+When a sandbox encounter cannot reach the FHIR endpoint, run the bundle
+generator with sandbox configuration and inspect the resulting JSON before it
+leaves the environment. Confirm that secret values and synthetic patient fields
+are redacted, then attach only the sanitized bundle and the failing endpoint's
+HTTP status to the support ticket. If the redaction review finds an identifier
+or narrative text, do not upload the file: extend the redaction rule, rerun the
+bundle, and have the sanitized result reviewed again.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
