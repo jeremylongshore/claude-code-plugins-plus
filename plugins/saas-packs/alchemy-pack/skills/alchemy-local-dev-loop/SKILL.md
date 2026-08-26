@@ -141,6 +141,18 @@ describe('Mainnet Fork Tests', () => {
 - Mainnet fork testing with account impersonation
 - Development scripts with watch mode
 
+## Examples
+
+Create a local Hardhat project using a development-only Alchemy key, pin the
+fork block, and run the included read-only USDC test. Treat account
+impersonation as a local fork feature only: it must never be pointed at a live
+RPC endpoint or used to represent authorization in an application. Next,
+deploy a deliberately disposable contract to Sepolia with a separately scoped
+testnet signer and wait for its confirmation. If the fork cannot be created,
+the testnet signer lacks funds, or a transaction remains pending beyond the
+timeout, stop the script, inspect sanitized network status, and correct the
+fixture or testnet configuration before retrying.
+
 ## Error Handling
 
 | Error | Cause | Solution |
