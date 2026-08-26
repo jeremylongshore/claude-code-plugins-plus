@@ -34,6 +34,12 @@ Production-ready patterns for wrapping the Canva Connect REST API. There is no o
 - Understanding of OAuth 2.0 token lifecycle
 - TypeScript 5+ project (or Python 3.10+)
 
+## Instructions
+
+1. Resolve OAuth credentials and tenant context only on the server, then validate the caller's permission for each design or asset action.
+2. Use bounded retries only for explicitly transient, idempotent requests and retain an opaque operation key for reconciliation.
+3. Validate responses before storage or downstream side effects, minimize persisted fields, and never log access tokens or signed asset URLs.
+
 ## Pattern 1: Type-Safe Client with Auto Token Refresh
 
 ```typescript
@@ -269,6 +275,14 @@ const CanvaDesignSchema = z.object({
 
 const validated = CanvaDesignSchema.parse(await client.getDesign(id));
 ```
+
+## Output
+
+The client returns validated, minimum-necessary result objects plus a redacted request outcome and opaque operation identifier. It fails closed for unapproved scopes, tenants, response shapes, or retry conditions.
+
+## Examples
+
+For an approved design export, authorize the server-side user and tenant, request only the required asset metadata, validate the response, and store an encrypted reference with an expiration rather than a long-lived signed URL. A 429 pauses the scoped queue; a 401/403 starts reauthorization rather than retrying credentials.
 
 ## Error Handling
 
