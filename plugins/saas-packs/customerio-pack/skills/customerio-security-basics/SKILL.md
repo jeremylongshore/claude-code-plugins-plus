@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Security Basics
 
+## Output
+
+- A least-privilege Customer.io integration with scoped secrets, approved data attributes, and auditable access ownership.
+- A tested incident path for credential exposure, unauthorized delivery, and sensitive-data handling.
+
+## Examples
+
+Configure a development workspace secret through the approved manager and send a synthetic event that contains no recipient PII. Verify the event uses the intended workspace and attribute allowlist. If a token or customer attribute appears in source or logs, revoke/contain first, then investigate and replace it.
+
 ## Overview
 
 Implement security best practices for Customer.io: secrets management for API credentials, PII sanitization before sending data, webhook signature verification (HMAC-SHA256), API key rotation, and GDPR/CCPA data deletion compliance.

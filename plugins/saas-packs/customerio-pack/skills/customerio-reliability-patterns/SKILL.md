@@ -25,6 +25,24 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Reliability Patterns
 
+## Output
+
+- An idempotent, observable event-delivery design with owned retry, replay, and dead-letter decisions.
+- A recovery procedure that protects consent, ordering, and recipient experience during partial failures.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Provider returns transient failure | Retry with bounded exponential backoff and preserve the idempotency key. |
+| Event may be duplicated | Deduplicate by the stable event/correlation key before triggering downstream action. |
+| Replay could resend customer messaging | Require consent/segment review and replay only the scoped failed set. |
+| Dead-letter queue grows | Alert the owner, quarantine malformed payloads, and fix the contract before bulk replay. |
+
+## Examples
+
+Store an immutable event ID and delivery state, retry 429/5xx responses with bounded backoff, and send terminal failures to a protected dead-letter queue. After the schema fix, replay only those records whose consent and idempotency checks still pass.
+
 ## Overview
 
 Implement fault-tolerant Customer.io integrations: circuit breaker (stop cascading failures), retry with jitter (handle transient errors), fallback queue (survive outages), idempotency guard (prevent duplicates), and graceful degradation (never crash your app for analytics).

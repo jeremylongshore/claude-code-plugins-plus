@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Hello World
 
+## Output
+
+- A verified synthetic profile/event or message example in a non-production workspace.
+- A minimal receipt showing environment, validation result, and cleanup without retaining recipient data.
+
+## Examples
+
+Create a development-only profile using a synthetic identifier, submit one schema-valid event, and confirm its arrival in the development workspace. Remove the test profile or let its documented TTL expire. Never use a real customer email or production segment as a tutorial target.
+
 ## Overview
 
 Create a minimal working Customer.io integration: identify a user (create/update their profile), track an event, and send a transactional email. This covers the three fundamental Customer.io operations.
