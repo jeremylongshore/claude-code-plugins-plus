@@ -234,6 +234,17 @@ async function launchOutreach(
 - Contact creation via `POST /contacts` and search via `POST /contacts/search`
 - Full outreach pipeline: create contacts, find sender, enroll in sequence
 
+## Examples
+
+For a controlled campaign launch, select an existing approved sequence and a
+small, consented staging lead list. First query the sequence and active sender,
+then create or resolve each CRM contact without logging email addresses. Submit
+the contact IDs once, record only the added, already-enrolled, and rejected
+counts, and inspect the campaign in Apollo before enabling any send. If a
+contact is already active in another campaign, a sender is unavailable, or the
+API returns a partial result, stop that batch and resolve it manually instead
+of retrying enrollment blindly.
+
 ## Error Handling
 
 | Error | Cause | Solution |
