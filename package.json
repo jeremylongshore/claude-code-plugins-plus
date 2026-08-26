@@ -33,6 +33,8 @@
     "validate:safety-ratchet": "node --test scripts/check-safety-ratchet.test.mjs && node scripts/check-safety-ratchet.mjs",
     "validate:doc-fact-assertions": "node --test scripts/check-doc-fact-assertions.test.mjs && node scripts/check-doc-fact-assertions.mjs",
     "evaluate:certification": "node scripts/evaluate-certification.mjs",
+    "generate:disposition-ledger": "node scripts/generate-disposition-ledger.mjs",
+    "validate:disposition-ledger": "node --test scripts/generate-disposition-ledger.test.mjs && node scripts/generate-disposition-ledger.mjs --check",
     "evaluate:launch-readiness": "node scripts/evaluate-launch-readiness.mjs",
     "sweep:certification-expiry": "node scripts/sweep-certification-expiry.mjs",
     "validate:certification-separation": "node --test scripts/check-certification-separation.test.mjs",

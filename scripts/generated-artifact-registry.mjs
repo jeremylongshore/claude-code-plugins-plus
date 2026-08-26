@@ -129,6 +129,16 @@ export const GENERATED_ARTIFACT_REGISTRY = [
     why: 'curated skills.sh projection',
   },
   {
+    id: 'disposition-ledger',
+    kind: 'generated_projection',
+    tracking: 'tracked',
+    pattern: /^freshie\/disposition-ledger\.json$/,
+    canonical: 'freshie/grades.csv and scripts/validate-skills-schema.py',
+    regenerate: 'pnpm run generate:disposition-ledger',
+    postprocess: 'pnpm run normalize:dead-domain-projections',
+    why: 'Blueprint 727 §8 first-match-wins disposition for every Freshie-graded artifact',
+  },
+  {
     id: 'marketplace-public-data',
     kind: 'generated_projection',
     tracking: 'untracked',

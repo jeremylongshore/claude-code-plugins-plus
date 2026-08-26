@@ -5961,6 +5961,11 @@ def main() -> int:
                 "score": score,
                 "grade": letter,
                 "errors": len(result.get("errors", [])),
+                # Consumers that make a disposition decision need the canonical
+                # diagnostic text, not only an opaque count.  This is additive
+                # to the long-standing --json contract and keeps classification
+                # tied to the validator rather than a second parser.
+                "error_details": result.get("errors", []),
                 "warnings": len(result.get("warnings", [])),
             }
         )

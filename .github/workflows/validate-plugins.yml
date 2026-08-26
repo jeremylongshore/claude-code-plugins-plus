@@ -112,6 +112,13 @@ jobs:
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
           pnpm run validate:safety-ratchet
 
+      # Blueprint 727 E8.1: Freshie's graded cohort is the authority for the
+      # disposition ledger. Regenerate-and-compare proves each current graded
+      # artifact has exactly one first-match-wins outcome; missing/stale rows
+      # fail closed instead of silently changing publication eligibility.
+      - name: Verify the generated legacy disposition ledger
+        run: pnpm run validate:disposition-ledger
+
       # E4.13: a denylist (disallowed-tools) posture is enforced by the
       # Claude Code runtime only. This gate forbids silent-drop: a
       # denylist-bearing skill may not claim a foreign harness in
