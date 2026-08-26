@@ -1090,6 +1090,21 @@
       }
     },
     {
+      "name": "cad-dxf-agent",
+      "source": "./plugins/ai-ml/cad-dxf-agent",
+      "description": "Deterministic DXF drawing analysis for compliance, drawing QA, quantity takeoff, summaries, RFIs, and room/zone detection — no LLM or API key required.",
+      "version": "0.1.0",
+      "category": "ai-ml",
+      "keywords": ["dxf", "cad", "compliance", "takeoff", "drawing-intelligence", "aec"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
+      }
+    },
+    {
       "name": "classification-model-builder",
       "source": "./plugins/ai-ml/classification-model-builder",
       "description": "Build classification models",
