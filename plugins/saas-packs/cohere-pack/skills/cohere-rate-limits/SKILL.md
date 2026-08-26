@@ -272,6 +272,14 @@ class TokenBudget {
 | Monthly limit hit (trial) | 429 with limit message | Upgrade to production key |
 | Burst of requests | Queue depth > threshold | Add backpressure |
 
+## Examples
+
+Queue a small staging batch with a defined concurrency and idempotency key,
+capture a 429 retry decision, and verify that the same job is deferred rather
+than duplicated. If the retry budget or monthly guardrail is reached, stop new
+intake and alert the owner instead of increasing parallelism or using a
+different key.
+
 ## Resources
 
 - [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)

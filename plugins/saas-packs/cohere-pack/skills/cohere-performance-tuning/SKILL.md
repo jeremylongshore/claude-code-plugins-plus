@@ -281,6 +281,14 @@ async function timedCohereCall<T>(
 | Cache stale | Long TTL | Reduce TTL for volatile data |
 | High costs | No caching | Cache embeddings (deterministic) |
 
+## Examples
+
+Measure a representative staging query’s time-to-first-token, total latency,
+retrieval quality, cache hit rate, and billed usage, then alter one setting such
+as streaming or batch size and compare results. If the tuning creates stale
+answers, lost citations, or budget/rate regressions, restore the prior setting
+and correct the underlying data or cache policy before further changes.
+
 ## Resources
 
 - [Cohere Models & Context](https://docs.cohere.com/docs/models)

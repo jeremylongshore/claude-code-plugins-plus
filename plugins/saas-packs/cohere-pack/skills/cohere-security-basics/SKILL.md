@@ -222,6 +222,20 @@ fi
 | Key in error report | Error handler review | Sanitize error payloads |
 | Excessive token spend | Billing dashboard | Set budget alerts |
 
+## Output
+
+Maintain a security-control record with scoped key references, effective model
+access, secret-scan and log-redaction evidence, safety/budget guardrails,
+rotation owner, and incident path. It must never contain a live key, complete
+prompt, retrieved document, embedding, or raw user data.
+
+## Examples
+
+Rotate a staging key through the secret manager, verify the service uses the
+new reference and rejects the revoked key, then confirm pre-commit scanning
+blocks a synthetic key pattern. If a real key appears in history or logs,
+revoke/contain it and validate the corrected controls before reopening traffic.
+
 ## Resources
 
 - [Cohere API Keys Dashboard](https://dashboard.cohere.com/api-keys)
