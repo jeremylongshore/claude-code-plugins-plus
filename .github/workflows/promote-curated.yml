@@ -87,8 +87,8 @@ jobs:
         if: inputs.rebuild_inventory == true
         run: |
           python3 freshie/scripts/rebuild-inventory.py
-          python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite || true
-          python3 freshie/scripts/dolt-sync.py || true
+          python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite
+          python3 freshie/scripts/dolt-sync.py
 
       - name: Rebuild skills/.curated/ mirror
         run: python3 freshie/scripts/promote-to-curated.py
