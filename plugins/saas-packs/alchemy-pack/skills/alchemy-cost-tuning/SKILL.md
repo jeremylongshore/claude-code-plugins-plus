@@ -50,6 +50,15 @@ Alchemy pricing is based on Compute Units (CU). Different API methods have diffe
 | `getAssetTransfers` | 150 | Cache aggressively; paginate |
 | `getNftMetadataBatch` | 50 | Use batch over individual calls |
 
+## Prerequisites
+
+- An approved observation window with aggregate method counts and latency; do
+  not record end-user wallet data merely to estimate API usage.
+- Current plan and compute-unit limits confirmed in the organization’s Alchemy
+  account, since commercial terms and method costs may change.
+- A cache-invalidation policy that distinguishes safe metadata caching from
+  time-sensitive balance, block, and transaction data.
+
 ## Instructions
 
 ### Step 1: CU Usage Monitor
@@ -152,6 +161,27 @@ async function getNftMetadataOptimized(
 - Cost-optimized client with aggressive caching
 - Batch operations reducing CU consumption by 100x
 - Free tier optimization checklist
+
+## Examples
+
+Collect one hour of aggregate development traffic, feed the counts into
+`CuMonitor`, and identify the three methods responsible for the highest CU
+projection. Add a 24-hour metadata cache and batched NFT metadata requests in
+the test environment, then compare request counts and response correctness
+against uncached fixtures. Promote only after cache hits never serve stale
+time-sensitive balance or transfer data. If observed use approaches the
+account limit or the monitor’s input is incomplete, throttle the noncritical
+feature and obtain an updated account-limit report rather than guessing a
+budget or silently dropping user-facing requests.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Usage projection lacks complete observation data | Mark the estimate incomplete and collect a representative window before plan decisions. |
+| Cache returns stale chain state | Invalidate the affected key and narrow its TTL or caching scope. |
+| Account limit is approached | Apply bounded rate limiting and notify the account owner before service degradation. |
+| Batch operation is partially rejected | Preserve successful items, retry only failed items within limits, and expose their unavailable state. |
 
 ## Resources
 
