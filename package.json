@@ -40,6 +40,7 @@
     "validate:canonical-vendor-literals": "node --test scripts/check-canonical-vendor-literals.test.mjs && node scripts/check-canonical-vendor-literals.mjs",
     "validate:portability-claims": "node --test scripts/check-portability-claims.test.mjs && node scripts/check-portability-claims.mjs",
     "validate:harness-registry": "node --test scripts/validate-harness-registry.test.mjs && node scripts/validate-harness-registry.mjs",
+    "test:harness-install-matrix": "node --test scripts/harness-install-matrix.test.mjs",
     "verify": "node scripts/run-verification-pipeline.mjs",
     "lint:root": "eslint .",
     "lint:design": "node scripts/lint-design-tells.mjs",
