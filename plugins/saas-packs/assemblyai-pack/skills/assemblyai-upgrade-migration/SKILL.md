@@ -198,6 +198,10 @@ verifyUpgrade().catch(console.error);
 - Updated streaming setup to current patterns
 - Verified all API endpoints work post-upgrade
 
+## Examples
+
+Create an upgrade branch, lock the intended SDK version, run mocked compatibility tests, then execute one approved low-cost integration check using a dedicated test key and sample audio. Record the package lockfile diff, test result, and rollback version; do not upgrade production or rotate credentials as part of discovery.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

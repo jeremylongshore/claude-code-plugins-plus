@@ -213,6 +213,10 @@ MP3, WAV, FLAC, M4A, OGG, WebM, MP4, AAC. Max file size: 5 GB. Max duration: 10 
 - PII-redacted text and audio
 - Content safety labels for moderation
 
+## Examples
+
+For a consented meeting recording, submit a server-controlled audio object with only the features approved for that data class, store the returned transcript ID in the operation ledger, and route transcript text and intelligence output only to the authorized downstream processor. Before deletion, reconcile the ID against the retention manifest and use a reviewed bounded batch.
+
 ## Error Handling
 
 | Error | Cause | Solution |

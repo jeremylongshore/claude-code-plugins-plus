@@ -250,6 +250,10 @@ def transcribe_audio(audio_url: str, speaker_labels: bool = False) -> Transcript
 - Exponential backoff with jitter for rate limits
 - Multi-tenant client factory pattern
 
+## Examples
+
+For a tenant request, resolve the tenant from the authenticated server-side identity, obtain its key only from the approved secret store, submit a consented audio object, and retain the opaque transcript ID plus a redacted status. Do not cache credentials or transcript text in a process-global client without tenant lifecycle and revocation controls.
+
 ## Error Handling
 
 | Pattern | Use Case | Benefit |
