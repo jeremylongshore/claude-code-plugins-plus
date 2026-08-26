@@ -5,7 +5,7 @@
 > **Generated — do not edit.** Stage newly filed documents, then run
 > `node scripts/generate-docs-index.mjs`.
 
-Covers the **tracked** documentation estate (248 files). Local-only working
+Covers the **tracked** documentation estate (249 files). Local-only working
 documents are counted in doc 720 but deliberately not listed here. The inventory excludes only this
 index and `000-docs/.gitignore`.
 
@@ -230,6 +230,7 @@ index and `000-docs/.gitignore`.
 - [805-DR-GUID-universal-skills-installation.md](805-DR-GUID-universal-skills-installation.md)
 - [806-AT-ARCH-cross-repo-authority-contract.md](806-AT-ARCH-cross-repo-authority-contract.md)
 - [807-DR-STND-evaluation-evidence.md](807-DR-STND-evaluation-evidence.md)
+- [808-DR-STND-certification-standard.md](808-DR-STND-certification-standard.md)
 - [20260131-RL-REPT-claude-code-plugins-v4.14.0.md](20260131-RL-REPT-claude-code-plugins-v4.14.0.md)
 - [6767-a-SPEC-DR-STND-claude-code-plugins-standard.md](6767-a-SPEC-DR-STND-claude-code-plugins-standard.md)
 - [6767-b-SPEC-DR-STND-claude-skills-standard.md](6767-b-SPEC-DR-STND-claude-skills-standard.md)
