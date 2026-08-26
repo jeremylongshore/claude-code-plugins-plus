@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 
 Production-ready patterns for the AppFolio property management REST API. AppFolio uses HTTP Basic Auth with client credentials and returns JSON responses for properties, tenants, leases, and work orders. A structured singleton client prevents credential sprawl, enforces consistent error handling, and centralizes pagination logic across all property management endpoints.
 
+## Prerequisites
+
+- A provider-verified base URL, auth method, endpoint scope, and managed secret
+  injection path for the target portfolio.
+- Schema validation, request timeouts, endpoint-specific rate limits, and
+  idempotency keys for all mutation-capable service methods.
+- Synthetic fixtures for unit testing; production tenant, lease, and payment
+  payloads must not become default mock, log, or error-message content.
+
+## Instructions
+
+1. Construct one contract-bound client per runtime and reject missing or invalid
+   configuration before requests begin.
+2. Validate query bounds and response shapes at the service boundary, then pass
+   only minimized typed fields to callers.
+3. Return a classified `429` or unknown-write failure to the caller; retry only
+   idempotent operations after the caller records the cursor/key and delay.
+4. Keep write workflows behind explicit authorization, audit, and reconciliation
+   controls rather than embedding them in generic SDK convenience helpers.
+
 ## Singleton Client
 
 ```typescript
@@ -49,7 +69,10 @@ export async function safeCall<T>(operation: string, fn: () => Promise<T>): Prom
   try { return await fn(); }
   catch (err: any) {
     const status = err.response?.status ?? 0;
-    if (status === 429) { await new Promise(r => setTimeout(r, 5000)); return fn(); }
+    if (status === 429) {
+      const retryAfter = err.response?.headers?.['retry-after'];
+      throw new AppFolioError(429, 'RATE_LIMIT', `Retry after ${retryAfter ?? 'provider-directed delay'}; do not replay an unknown write automatically`);
+    }
     if (status === 401) throw new AppFolioError(401, 'AUTH', 'Invalid APPFOLIO_CLIENT_ID or SECRET');
     throw new AppFolioError(status, 'API_ERROR', `${operation} failed [${status}]: ${err.message}`);
   }
@@ -113,9 +136,26 @@ export function mockLease(overrides: Partial<Lease> = {}): Lease {
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | `safeCall` wrapper | All API calls | Prevents uncaught 4xx/5xx from crashing flows |
-| Retry on 429 | Rate-limited batch imports | Reads `Retry-After` header for backoff |
+| Caller-owned retry on 429 | Rate-limited idempotent batch reads | Preserve cursor/key, honor `Retry-After`, then retry deliberately |
 | Auth validation | Client init | Throws early if credentials are missing |
 | Pagination loop | Listing properties/tenants | Increment `page` until empty response |
+
+## Output
+
+- One validated, contract-bound API client with centralized timeout and error
+  classification behavior
+- Bounded query parameters and minimized typed responses for service callers
+- Explicit rate-limit and unknown-write outcomes that require caller-owned
+  cursor/idempotency/reconciliation decisions
+
+## Examples
+
+For a property-list read, build a query with a capped page size, execute it
+through `safeCall`, and verify the returned property IDs and count against a
+synthetic fixture. For a mutation, persist an idempotency key before dispatch
+and treat a timeout or `429` as a pause/reconcile condition rather than calling
+the function again. If client configuration, response schema, or write outcome
+is unverified, stop the workflow and surface a redacted error to the owner.
 
 ## Resources
 
