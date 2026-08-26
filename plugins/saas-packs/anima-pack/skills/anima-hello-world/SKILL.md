@@ -163,6 +163,17 @@ npm install  # Anima generates standard React/Vue code — no special deps
 - Files ready to drop into existing project
 - Multiple framework outputs compared
 
+## Examples
+
+Create a small staging Figma frame with an approved button and heading, store
+the Anima/Figma credentials in a local ignored environment file, and generate
+only that node into `./generated`. Confirm each filename resolves under the
+output directory, inspect the component for expected labels and styles, then
+run the project formatter and type check before copying it into a feature
+branch. If the node cannot be found, output is empty, or the generation writes
+an unexpected path, stop and correct the Figma link or output mapping; do not
+use a broader file token or copy unreviewed generated code directly to main.
+
 ## Error Handling
 
 | Error | Cause | Solution |
