@@ -228,3 +228,25 @@ For full-tier reports, spawn the `memory-agent` to:
 | Slow response (>5min) | Switch to lower tier. Mini tier bypasses all subagents. |
 | Email/Slack delivery fails | Test `/email` and `/slack` independently first |
 | Stale baselines | Run `/analytics full` to trigger memory-agent baseline update |
+
+## Output
+
+Return a tier-appropriate analytics brief. Mini reports contain the portfolio
+total, per-site visitors and pageviews, the comparison-period delta, and the
+strongest signal in no more than 15 lines. Medium and full reports retain the
+requested period, data sources consulted, material anomalies, prioritized
+actions, and any delivery result for console, email, or Slack.
+
+## Examples
+
+For a daily pulse, use `/analytics --period=today`; the result should identify
+the current visitor count and any site whose change materially differs from
+the previous day. For an executive review, use `/analytics full --period=30d
+--email`; the report should separate observed traffic movement from hypotheses
+and include the next action owner for each significant issue.
+
+## Resources
+
+- `${CLAUDE_SKILL_DIR}/references/site-registry.md` — site IDs, baselines, and thresholds
+- `${CLAUDE_SKILL_DIR}/references/reporting-tiers.md` — tier-specific report contracts
+- `${CLAUDE_SKILL_DIR}/references/interpretation-guide.md` — evidence and advisory-language rules
