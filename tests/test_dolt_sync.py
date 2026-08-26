@@ -17,6 +17,9 @@ a dolt-backed round-trip test exists.
 
 import importlib.util
 import sqlite3
+import subprocess
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -272,6 +275,52 @@ class ExportAllowlistTests(unittest.TestCase):
     def test_empty_table_list_passes(self):
         dolt_sync.gate_export_allowlist([])
 
+
+class SingleWriterTests(unittest.TestCase):
+    """A live Dolt SQL server must never overlap a CLI export."""
+
+    def test_sql_server_lock_hard_fails_before_sync(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "inventory"
+            lock = repo / ".dolt" / "sql-server.lock"
+            lock.parent.mkdir(parents=True)
+            lock.write_text("live server\n")
+
+            with self.assertRaises(dolt_sync.SyncError) as ctx:
+                dolt_sync.refuse_if_server_running(repo)
+
+        message = str(ctx.exception)
+        self.assertIn("sql-server", message)
+        self.assertIn(str(lock), message)
+        self.assertIn("corrupt", message)
+
+    def test_absent_sql_server_lock_allows_sync_to_proceed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "inventory"
+            (repo / ".dolt").mkdir(parents=True)
+
+            self.assertIsNone(dolt_sync.refuse_if_server_running(repo))
+
+    def test_cli_refuses_before_it_can_write_when_server_lock_exists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db = root / "inventory.sqlite"
+            sqlite3.connect(db).close()
+            repo = root / "inventory"
+            lock = repo / ".dolt" / "sql-server.lock"
+            lock.parent.mkdir(parents=True)
+            lock.write_text("live server\n")
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "--db", str(db), "--dolt-dir", str(repo)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("sql-server", result.stdout)
+        self.assertIn("stop it before syncing", result.stdout)
 
 class GradesExportTests(unittest.TestCase):
     """grades.csv must reflect the CURRENT run only — latest-per-skill across
