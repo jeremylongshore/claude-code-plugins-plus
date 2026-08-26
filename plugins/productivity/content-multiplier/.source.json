@@ -4,16 +4,17 @@
     "path": "content-multiplier",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:27:25.085Z",
+  "last_sync": "2026-08-26T16:40:10.443Z",
   "author": {
     "name": "localplugins",
     "github": "Local-Plugins",
     "email": "localplugins@proton.me"
   },
   "license": "MIT",
-  "files_synced": 34,
+  "files_synced": 35,
   "files": [
     ".claude-plugin/plugin.json",
+    "LICENSE",
     "README.md",
     "agents/brand-guardian.md",
     "agents/strategist.md",

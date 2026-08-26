@@ -264,7 +264,12 @@ test('buildLockEntry: null resolved ref is preserved as null (bootstrap has no c
 // `/` anchors a pattern to the source root; anything else is auto-prefixed
 // `**/` (recursive by design, for nested contributor layouts). The anchored
 // form was dead code before this corpus existed — these tests keep it alive.
-import { matchesPattern, unanchoredIncludes } from './sync-lockfile.mjs';
+import {
+  hasRootLicenseInclude,
+  isRootLicenseFile,
+  matchesPattern,
+  unanchoredIncludes,
+} from './sync-lockfile.mjs';
 
 test('anchored /README.md matches only the root README', () => {
   assert.equal(matchesPattern('README.md', ['/README.md']), true);
@@ -323,6 +328,22 @@ test('unanchoredIncludes tolerates empty / missing input', () => {
   assert.deepEqual(unanchoredIncludes([]), []);
   assert.deepEqual(unanchoredIncludes(undefined), []);
   assert.deepEqual(unanchoredIncludes(null), []);
+});
+
+test('license policy requires an explicit root LICENSE or COPYING include', () => {
+  assert.equal(hasRootLicenseInclude(['/LICENSE']), true);
+  assert.equal(hasRootLicenseInclude(['COPYING']), true);
+  assert.equal(hasRootLicenseInclude(['LICENSE.md']), true);
+  assert.equal(hasRootLicenseInclude(['docs/LICENSE']), false);
+  assert.equal(hasRootLicenseInclude(['**/LICENSE']), false);
+  assert.equal(hasRootLicenseInclude(['SKILL.md']), false);
+});
+
+test('license policy only accepts a root license file in the mirrored artifact', () => {
+  assert.equal(isRootLicenseFile('LICENSE'), true);
+  assert.equal(isRootLicenseFile('COPYING.LESSER'), true);
+  assert.equal(isRootLicenseFile('nested/LICENSE'), false);
+  assert.equal(isRootLicenseFile('license.txt/README.md'), false);
 });
 
 // The lint pairs with the real hazard: a bare include IS recursive today.

@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Radar
+# Xquik TypeScript types: radar
 
 ```typescript
 
@@ -8,6 +8,7 @@ type RadarSource =
   | "hacker_news"
   | "polymarket"
   | "reddit"
+  | "trustmrr"
   | "wikipedia";
 
 type RadarCategory =
@@ -35,6 +36,12 @@ interface RadarItem {
   metadata: Record<string, unknown>;
   publishedAt: string;
   createdAt: string;
+}
+
+interface RadarPage {
+  items: RadarItem[];
+  hasMore: boolean;
+  nextCursor?: string;
 }
 
 ```

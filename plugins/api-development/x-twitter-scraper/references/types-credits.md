@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Credits
+# Xquik TypeScript types: credits
 
 ```typescript
 

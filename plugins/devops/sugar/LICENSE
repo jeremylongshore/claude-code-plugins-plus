@@ -1,24 +1,78 @@
-MIT License
+# Sugar Dual License
 
-Copyright (c) 2024 Sugar - AI-Powered Autonomous Development System
+Sugar is available under a dual license:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. **Open Source License (AGPL-3.0)** - For open source use
+2. **Commercial License** - For proprietary/commercial use
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+---
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## Option 1: AGPL-3.0 (Open Source)
+
+Copyright (c) 2024-2026 RoboticForce, Inc.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+### AGPL-3.0 Summary
+
+The AGPL-3.0 license allows you to:
+- Use Sugar for any purpose
+- Modify the source code
+- Distribute copies
+- Distribute modified versions
+
+**With the following conditions:**
+- You must provide source code when you distribute Sugar
+- **If you run a modified version as a network service (SaaS), you must make the complete source code available to users of that service**
+- Derivative works must also be licensed under AGPL-3.0
+- You must include the original copyright notice
+
+Full license text: https://www.gnu.org/licenses/agpl-3.0.txt
+
+---
+
+## Option 2: Commercial License
+
+If you cannot comply with the AGPL-3.0 requirements (for example, you want to use Sugar in a proprietary product or offer it as a hosted service without sharing source code), you can purchase a commercial license.
+
+### Commercial License Includes:
+- Use Sugar in proprietary applications
+- Offer Sugar as a hosted/SaaS product
+- No requirement to share your source code
+- No copyleft obligations
+- Priority support options available
+
+### Pricing
+
+Contact us for commercial licensing:
+- Email: contact@roboticforce.io
+- Web: https://sugar.roboticforce.io/licensing
+
+---
+
+## Which License Do I Need?
+
+| Use Case | License Needed |
+|----------|---------------|
+| Personal projects | AGPL-3.0 (free) |
+| Open source projects | AGPL-3.0 (free) |
+| Internal company use (not SaaS) | AGPL-3.0 (free) |
+| Hosted SaaS offering | Commercial |
+| Proprietary product integration | Commercial |
+| Don't want to share source code | Commercial |
+
+---
 
 ## Additional Terms
 
@@ -26,5 +80,13 @@ This software is subject to additional terms and disclaimers as outlined in
 the TERMS.md file, which includes important limitations of liability and
 user responsibilities when using AI-powered autonomous development tools.
 
-By using this software, you acknowledge that you have read and agree to both
-this MIT License and the additional terms in TERMS.md.
+By using this software, you acknowledge that you have read and agree to
+the applicable license terms above and the additional terms in TERMS.md.
+
+---
+
+## Questions?
+
+- Licensing questions: contact@roboticforce.io
+- General inquiries: contact@roboticforce.io
+- GitHub: https://github.com/roboticforce/sugar

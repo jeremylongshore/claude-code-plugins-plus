@@ -1,16 +1,21 @@
-# Xquik TypeScript Types: Download Media
+# Xquik TypeScript types: download media
 
 ```typescript
 
-interface DownloadMediaRequest {
-  tweetInput?: string;  // Tweet URL or numeric tweet ID (single mode)
-  tweetIds?: string[];  // Array of tweet URLs or IDs (bulk mode, max 50). Exactly 1 of tweetInput or tweetIds required.
-}
+type NonEmptyTweetIds = [string, ...string[]];
+
+type DownloadMediaRequest =
+  | { tweetInput: string; tweetId?: never; tweetUrl?: never; tweetIds?: never }
+  | { tweetInput?: never; tweetId: string; tweetUrl?: never; tweetIds?: never }
+  | { tweetInput?: never; tweetId?: never; tweetUrl: string; tweetIds?: never }
+  | { tweetInput?: never; tweetId?: never; tweetUrl?: never; tweetIds: NonEmptyTweetIds };
+
+// Validate tweetIds.length <= 50 at runtime.
 
 interface DownloadMediaSingleResponse {
   tweetId: string;      // Resolved tweet ID
-  galleryUrl: string;   // Shareable gallery page URL
-  cacheHit: boolean;    // true if served from cache (no usage consumed)
+  galleryUrl: string;   // Gallery page URL. Treat it as sensitive.
+  cacheHit: boolean;    // True when the cache served the result without usage.
 }
 
 interface DownloadMediaBulkResponse {
@@ -20,3 +25,7 @@ interface DownloadMediaBulkResponse {
 }
 
 ```
+
+Check gallery visibility before sharing its URL. Restrict recipients and set a
+retention period. Prefer authenticated or expiring links when supported. Delete
+the gallery after use when supported.

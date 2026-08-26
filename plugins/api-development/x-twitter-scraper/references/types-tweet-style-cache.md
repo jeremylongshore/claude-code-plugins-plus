@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Tweet Style Cache
+# Xquik TypeScript types: tweet style cache
 
 ```typescript
 

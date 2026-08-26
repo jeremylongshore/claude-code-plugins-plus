@@ -1,11 +1,11 @@
-# Xquik REST API Endpoints: Credits
+# Xquik REST API endpoints: credits
 
-### Get Credit Balance
+## Get credit balance
 
-```
+```http
 GET /credits
 ```
 
-Get credit balance and lifetime usage fields. Plan and credit changes are dashboard-only and intentionally omitted from this installable skill.
+Get the credit balance and lifetime usage fields. Plan and credit changes are dashboard-only. This installable Skill omits those routes.
 
 ---

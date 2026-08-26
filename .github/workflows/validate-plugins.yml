@@ -59,6 +59,12 @@ jobs:
       - name: Assert sources.yaml and sources.lock.json key parity
         run: pnpm run validate:sources-lock-parity
 
+      # Blueprint 727 E7.14 / P2: every configured mirror must explicitly
+      # select license text and every checked-in mirrored artifact must carry it
+      # at its root. This is a hard gate, not a sync-time warning.
+      - name: Enforce mirror license coverage
+        run: pnpm run validate:mirror-licenses
+
       # Credential pre-flight (blueprint 727 E1.14 / § 18.7): the root
       # .mcp.json must never hold a live-shaped credential in plaintext env —
       # values are SOPS-encrypted in the untracked machine-local .env.sops and

@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "llm-box": {
+    "aflare": {
       "type": "stdio",
-      "command": "llm-box",
+      "command": "aflare",
       "args": ["--mcp-server"]
     }
   }

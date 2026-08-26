@@ -1,7 +1,7 @@
 ---
 name: list-nodes
 description: List all available workflow nodes
-usage: /llm-box:list-nodes
+usage: /aflare:list-nodes
 ---
 
 # List Nodes
@@ -11,7 +11,7 @@ Show all available workflow nodes with descriptions.
 ## Usage
 
 ```
-/llm-box:list-nodes
+/aflare:list-nodes
 ```
 
 ## What it does

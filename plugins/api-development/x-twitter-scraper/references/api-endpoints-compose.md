@@ -1,33 +1,41 @@
-# Xquik REST API Endpoints: Compose
+# Xquik REST API endpoints: compose
 
-### Compose Tweet
+## Compose tweet
 
-```
+```http
 POST /compose
 ```
 
-Compose, refine, and score tweets with Xquik style signals. Three-step workflow.
+Compose, refine, and score tweets with Xquik style signals. Run each step separately.
 
-**Body:**
+The request sends its topic, draft, username, URLs, and extra context to Xquik.
+Remove secrets, personal data, and confidential text first. Show the exact
+content and confirm it before sending. Review current privacy, retention,
+deletion, and data-sharing terms before sensitive work.
+
+Send this body:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `step` | string | Yes | `compose`, `refine`, or `score` |
-| `topic` | string | No | Tweet topic (compose, refine) |
+| `topic` | string | No | Tweet topic for compose or refine |
 | `goal` | string | No | `engagement`, `followers`, `authority`, `conversation` |
-| `styleUsername` | string | No | Cached style username for voice matching (compose) |
-| `tone` | string | No | Desired tone (refine) |
-| `additionalContext` | string | No | Extra context or URLs (refine) |
-| `callToAction` | string | No | Desired CTA (refine) |
-| `mediaType` | string | No | `photo`, `video`, `none` (refine) |
-| `draft` | string | No | Tweet text to evaluate (score) |
-| `hasLink` | boolean | No | Link attached (score) |
-| `hasMedia` | boolean | No | Media attached (score) |
+| `styleUsername` | string | No | Cached style username for compose |
+| `tone` | string | No | Desired tone for refine |
+| `additionalContext` | string | No | Extra context or URLs for refine |
+| `callToAction` | string | No | Desired call to action for refine |
+| `mediaType` | string | No | `photo`, `video`, or `none` for refine |
+| `draft` | string | For `score` | Tweet text to evaluate for score |
+| `hasLink` | boolean | No | Whether score evaluates a link |
+| `hasMedia` | boolean | No | Whether score evaluates media |
 
-**Response (step=compose):** Returns `contentRules`, `scorerWeights`, `followUpQuestions`, `algorithmInsights`, `engagementMultipliers`, `topPenalties`.
+For `step=compose`, the API returns `contentRules`, `scorerWeights`, `followUpQuestions`, `algorithmInsights`, `engagementMultipliers`, and `topPenalties`.
 
-**Response (step=refine):** Returns `compositionGuidance`, `examplePatterns`.
+For `step=refine`, the API returns `compositionGuidance` and `examplePatterns`.
 
-**Response (step=score):** Returns `totalChecks`, `passedCount`, `topSuggestion`, `checklist[]` with `factor`, `passed`, `suggestion`.
+For `step=score`, the API returns `totalChecks`, `passedCount`, `topSuggestion`, and `checklist[]`. Each checklist item contains `factor`, `passed`, and `suggestion`.
+
+`step=score` requires a nonempty `draft`. Do not send a score request without
+the final text to check.
 
 ---

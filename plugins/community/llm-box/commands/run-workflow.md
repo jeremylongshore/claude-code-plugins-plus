@@ -1,7 +1,7 @@
 ---
 name: run-workflow
 description: Execute a YAML workflow file
-usage: /llm-box:run-workflow <workflow.yaml>
+usage: /aflare:run-workflow <workflow.yaml>
 ---
 
 # Run Workflow
@@ -11,14 +11,14 @@ Execute a previously created YAML workflow file.
 ## Usage
 
 ```
-/llm-box:run-workflow <filename>
+/aflare:run-workflow <filename>
 ```
 
 ## Examples
 
 ```
-/llm-box:run-workflow my-workflow.yaml
-/llm-box:run-workflow news-summary.yaml
+/aflare:run-workflow my-workflow.yaml
+/aflare:run-workflow news-summary.yaml
 ```
 
 ## Options

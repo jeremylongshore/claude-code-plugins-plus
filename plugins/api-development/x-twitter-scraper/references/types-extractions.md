@@ -1,45 +1,52 @@
-# Xquik TypeScript Types: Extractions
+# Xquik TypeScript types: extractions
+
+Extraction results can contain identifiers, profile details, relationships,
+and Tweet content. Before requesting them:
+
+1. Confirm an authorized purpose and applicable legal basis.
+2. Follow privacy, consent, disclosure, and X terms requirements.
+3. Set finite `resultsLimit`, `maxItemsPerTarget`, and `maxPagesPerTarget` values.
+4. Never omit limits to request every available result.
+5. Request only the needed targets and fields.
+6. Name recipients, access controls, retention, and a deletion date.
+
+Treat an omitted `resultsLimit` as an unbounded extraction request. Stop and
+ask for a finite bound. Get separate confirmation before exporting profile or
+relationship data.
 
 ```typescript
 
 type ExtractionToolType =
-  | "article_extractor"
-  | "community_extractor"
-  | "community_moderator_explorer"
-  | "community_post_extractor"
-  | "community_search"
-  | "favoriters"
-  | "follower_explorer"
-  | "following_explorer"
-  | "list_follower_explorer"
-  | "list_member_extractor"
-  | "list_post_extractor"
-  | "mention_extractor"
-  | "people_search"
-  | "post_extractor"
-  | "quote_extractor"
-  | "reply_extractor"
-  | "repost_extractor"
-  | "space_explorer"
-  | "thread_extractor"
-  | "tweet_search_extractor"
-  | "user_likes"
-  | "user_media"
+  | "article_extractor" | "community_extractor"
+  | "community_moderator_explorer" | "community_post_extractor"
+  | "community_search" | "favoriters"
+  | "follower_explorer" | "following_explorer"
+  | "list_follower_explorer" | "list_member_extractor"
+  | "list_post_extractor" | "mention_extractor"
+  | "people_search" | "post_extractor"
+  | "quote_extractor" | "reply_extractor"
+  | "repost_extractor" | "space_explorer"
+  | "thread_extractor" | "tweet_search_extractor"
+  | "user_likes" | "user_media"
   | "verified_follower_explorer";
+
+type ExtractionStatus = "pending" | "running" | "completed" | "failed";
+
+interface CreateExtractionResponse {
+  id: string;
+  toolType: ExtractionToolType;
+  status: ExtractionStatus;
+}
 
 interface ExtractionJob {
   id: string;
   toolType: ExtractionToolType;
-  status: "pending" | "running" | "completed" | "failed";
+  status: ExtractionStatus;
   totalResults: number;
-  targetTweetId?: string;
-  targetUsername?: string;
-  targetUserId?: string;
-  targetCommunityId?: string;
-  targetListId?: string;
-  targetSpaceId?: string;
-  searchQuery?: string;
-  resultsLimit?: number; // Max results to extract. Stops early instead of fetching all. Omit for all.
+  targetTweetId?: string; targetUsername?: string;
+  targetCommunityId?: string; targetListId?: string;
+  targetSpaceId?: string; searchQuery?: string;
+  resultsLimit?: number;
   errorMessage?: string;
   createdAt: string;
   completedAt?: string;
@@ -47,15 +54,10 @@ interface ExtractionJob {
 
 interface ExtractionResult {
   id: string;
-  xUserId: string;
-  xUsername?: string;
-  xDisplayName?: string;
-  xFollowersCount?: number;
-  xVerified?: boolean;
+  xUserId: string; xUsername?: string; xDisplayName?: string;
+  xFollowersCount?: number; xVerified?: boolean;
   xProfileImageUrl?: string;
-  tweetId?: string;
-  tweetText?: string;
-  tweetCreatedAt?: string;
+  tweetId?: string; tweetText?: string; tweetCreatedAt?: string;
   createdAt: string;
 }
 
@@ -66,41 +68,145 @@ interface ExtractionList {
 }
 
 interface ExtractionEstimate {
-  allowed: boolean;
-  creditsAvailable: string;
-  creditsRequired: string;
+  allowed: boolean; estimatedResults: number;
+  creditsAvailable: string; creditsRequired: string;
   source: "replyCount" | "retweetCount" | "quoteCount" | "followers" | "unknown";
-  estimatedResults: number;
-  resolvedXUserId?: string;
-  error?: string;
+  resolvedXUserId?: string; error?: string;
+}
+
+type ExtractionMixedTarget = string | {
+  kind: "favoriters" | "list" | "profile" | "profile_likes" | "profile_media" |
+    "profile_replies" | "quotes" | "replies" | "retweeters" | "search" |
+    "thread" | "tweet";
+  value: string;
+};
+
+interface ExtractionRelationTarget {
+  relation: "community_members" | "followers" | "following" |
+    "list_followers" | "list_members" | "verified_followers";
+  value: string;
 }
 
 interface CreateExtractionRequest {
   toolType: ExtractionToolType;
-  targetTweetId?: string;
-  targetUsername?: string;
-  targetCommunityId?: string;
-  targetListId?: string;
+  targetTweetId?: string; targetTweetIds?: string[];
+  targetUsername?: string; targetUsernames?: string[];
+  targetCommunityId?: string; targetCommunityIds?: string[];
+  targetListId?: string; targetListIds?: string[];
   targetSpaceId?: string;
-  searchQuery?: string;
-  resultsLimit?: number; // Max results to extract. Stops early instead of fetching all. Omit for all.
-  // Tweet search filters (tweet_search_extractor only)
-  fromUser?: string;
-  toUser?: string;
-  mentioning?: string;
+  searchQuery?: string; searchQueries?: string[];
+  targets?: ExtractionMixedTarget[];
+  relationTargets?: ExtractionRelationTarget[];
+  resultsLimit: number; // Finite maximum required by this Skill.
+  queryType?: "Latest" | "Top" | "Both";
+  maxItemsPerTarget?: number; maxPagesPerTarget?: number;
+  startCursor?: string;
+  dedupeAcrossTargets?: boolean;
+  dedupeMode?: "none" | "first" | "merge";
+  overlapMode?: boolean;
+  includeSearchTerms?: boolean; includeTargetMetadata?: boolean;
+  collectionStrategy?: "auto" | "complete" | "direct" | "search" | "thread";
+  scope?: "all" | "direct" | "nested";
+  maxDepth?: number;
+  sort?: "relevance" | "latest" | "oldest" | "likes";
+  excludeOriginalAuthor?: boolean; includeOriginalPost?: boolean;
+  hasMediaOnly?: boolean;
+  sinceTime?: string | number; untilTime?: string | number;
+  // Used only by tweet_search_extractor.
+  fromUser?: string; toUser?: string; mentioning?: string;
   language?: string;
-  sinceDate?: string;           // YYYY-MM-DD
-  untilDate?: string;           // YYYY-MM-DD
-  mediaType?: 'images' | 'videos' | 'gifs' | 'media';
-  minFaves?: number;
-  minRetweets?: number;
-  minReplies?: number;
+  sinceDate?: string; untilDate?: string; // YYYY-MM-DD
+  mediaType?: 'images' | 'videos' | 'gifs' | 'media' | 'links' | 'none';
+  minFaves?: number; minRetweets?: number;
+  minReplies?: number; minQuotes?: number;
+  minViews?: number; minBookmarks?: number;
+  maxLikes?: number; maxRetweets?: number;
+  maxReplies?: number; maxQuotes?: number;
+  blueVerifiedOnly?: boolean;
+  cardName?: string;
+  source?: string; excludeSource?: string;
+  geocode?: string;
+  sinceId?: string; maxId?: string;
+  near?: string; within?: string; withinTime?: string;
+  nativeRetweets?: boolean;
+  safe?: boolean;
+  news?: boolean;
   verifiedOnly?: boolean;
   replies?: 'include' | 'exclude' | 'only';
   retweets?: 'include' | 'exclude' | 'only';
-  exactPhrase?: string;
-  excludeWords?: string;
+  quotes?: 'include' | 'exclude' | 'only';
+  exactPhrase?: string; excludeWords?: string; anyWords?: string;
+  hashtags?: string; cashtags?: string;
+  url?: string;
+  conversationId?: string; inReplyToTweetId?: string;
+  quotesOfTweetId?: string; retweetsOfTweetId?: string;
+  listId?: string;
+  place?: string; placeCountry?: string;
+  pointRadius?: string; boundingBox?: string;
   advancedQuery?: string;
+  // Filters for extractions that return profiles.
+  minFollowers?: number; maxFollowers?: number;
+  minFollowing?: number; maxFollowing?: number;
+  minPosts?: number; maxPosts?: number;
+  minAccountAgeDays?: number;
+  verifiedType?: string;
+  hasWebsite?: boolean;
+  hasLocation?: boolean;
+  bioContains?: string; locationContains?: string; usernameContains?: string;
+}
+
+interface ExtractionSafetyBounds {
+  maxResults: number;
+  maxItemsPerTarget: number;
+  maxPagesPerTarget: number;
+  maxAggregateItems: number;
+}
+
+function assertBoundedPositiveInteger(
+  value: unknown,
+  name: string,
+  maximum: number,
+): asserts value is number {
+  if (!Number.isInteger(value) || (value as number) < 1 || (value as number) > maximum) {
+    throw new TypeError(`${name} must be an integer from 1 to ${maximum}.`);
+  }
+}
+
+function extractionTargetCount(request: CreateExtractionRequest): number {
+  const targetArrays = [
+    request.targetTweetIds,
+    request.targetUsernames,
+    request.targetCommunityIds,
+    request.targetListIds,
+    request.searchQueries,
+    request.targets,
+    request.relationTargets,
+  ];
+  const arrayCount = targetArrays.reduce(
+    (count, targets) => count + (targets?.length ?? 0),
+    0,
+  );
+  return Math.max(1, arrayCount);
+}
+
+function assertCreateExtractionRequest(
+  request: CreateExtractionRequest,
+  bounds: ExtractionSafetyBounds,
+): void {
+  assertBoundedPositiveInteger(request.resultsLimit, "resultsLimit", bounds.maxResults);
+  assertBoundedPositiveInteger(
+    request.maxItemsPerTarget,
+    "maxItemsPerTarget",
+    bounds.maxItemsPerTarget,
+  );
+  assertBoundedPositiveInteger(
+    request.maxPagesPerTarget,
+    "maxPagesPerTarget",
+    bounds.maxPagesPerTarget,
+  );
+  if (extractionTargetCount(request) * request.maxItemsPerTarget > bounds.maxAggregateItems) {
+    throw new TypeError("Aggregate per-target limit exceeds the confirmed bound.");
+  }
 }
 
 ```

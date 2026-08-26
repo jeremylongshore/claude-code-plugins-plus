@@ -4,21 +4,20 @@
     "path": ".",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:27:22.280Z",
+  "last_sync": "2026-08-26T16:44:39.735Z",
   "author": {
     "name": "alib8b8",
     "github": "alib8b8"
   },
-  "license": "MIT",
-  "files_synced": 8,
+  "license": "AGPL-3.0",
+  "files_synced": 7,
   "files": [
-    ".claude-plugin/plugin.json",
     ".mcp.json",
+    "LICENSE",
     "README.md",
     "commands/create-workflow.md",
     "commands/list-nodes.md",
     "commands/run-workflow.md",
-    "skills/llm-box/SKILL.md",
     "skills/setup/SKILL.md"
   ]
 }

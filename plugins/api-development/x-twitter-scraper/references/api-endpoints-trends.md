@@ -1,21 +1,47 @@
-# Xquik REST API Endpoints: Trends
+# Xquik REST API endpoints: trends
 
-### List Trends
+## List trends
 
-```
+Before either metered request, show `woeid`, `count`, and published usage.
+Require explicit approval to spend credits on that exact request.
+
+```http
 GET /x/trends?woeid=1&count=30
 GET /trends?woeid=1&count=30
 ```
 
-Metered. Plan access required. `/trends` is an alias of `/x/trends`. Cached, refreshes every 15 minutes.
+This metered route requires plan access. `/trends` is an alias of `/x/trends`. Results refresh every 15 minutes.
 
-**WOEIDs:** 1 (Worldwide), 23424977 (US), 23424975 (UK), 23424969 (Turkey), 23424950 (Spain), 23424829 (Germany), 23424819 (France), 23424856 (Japan), 23424848 (India), 23424768 (Brazil), 23424775 (Canada), 23424900 (Mexico).
+Supported WOEIDs include:
 
-**Response:**
+| Region | WOEID |
+| --- | ---: |
+| Worldwide | 1 |
+| United States | 23424977 |
+| United Kingdom | 23424975 |
+| Turkey | 23424969 |
+| Spain | 23424950 |
+| Germany | 23424829 |
+| France | 23424819 |
+| Japan | 23424856 |
+| India | 23424848 |
+| Brazil | 23424768 |
+| Canada | 23424775 |
+| Mexico | 23424900 |
+
+The API returns:
 ```json
 {
   "trends": [
-    { "name": "#AI", "description": "...", "rank": 1, "query": "#AI" }
+    {
+      "name": "#AI",
+      "description": "...",
+      "query": "%23AI",
+      "promotedContent": null,
+      "rank": 1,
+      "tweetVolume": 250000,
+      "url": "https://x.com/search?q=%23AI"
+    }
   ],
   "total": 30,
   "woeid": 1

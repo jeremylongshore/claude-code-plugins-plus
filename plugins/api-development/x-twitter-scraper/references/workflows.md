@@ -1,17 +1,14 @@
-# Xquik Workflow Examples
+# Xquik workflow examples
 
-Code examples for common integration patterns.
-
-## Contents
-
-- [Authentication](#authentication)
-- [Retry with Exponential Backoff](#retry-with-exponential-backoff)
-- [Cursor Pagination](#cursor-pagination)
-- [Complete Extraction Workflow](#complete-extraction-workflow)
-- [Real-Time Monitoring Setup](#real-time-monitoring-setup)
-- [Endpoint Guide](#endpoint-guide)
+Use these code examples for authentication, retries, pagination, extractions, and monitoring.
 
 ## Authentication
+
+> These examples send credentials, parameters, and
+> returned data to and from `xquik.com`. Keep the key in a secret store. Get
+> explicit approval before private reads, writes, exports, persistent resources,
+> webhooks, or metered jobs. Never forward private results without separate
+> approval.
 
 ```javascript
 const apiKey = process.env.XQUIK_API_KEY;
@@ -21,55 +18,242 @@ const BASE = "https://xquik.com/api/v1";
 const headers = { "x-api-key": apiKey, "Content-Type": "application/json" };
 ```
 
-## Retry with Exponential Backoff
+## Retry with exponential backoff
 
-Retry only `429` and `5xx`. Never retry `4xx` (except 429). Max 3 retries:
+Outside documented cursor recovery, retry only idempotent requests after a
+connection failure, timeout, `408`, `429`, or `5xx`. Retry `424` only when the
+response explicitly marks the read safe to retry. Never automatically retry
+`POST`, `PATCH`, or `DELETE`. Stop after 3 retries.
 
 ```javascript
+class XquikApiError extends Error {
+  constructor(status, code, message) {
+    super(`Xquik API ${status}: ${message}`);
+    this.status = status;
+    this.code = code;
+  }
+}
+
+function isDefinitiveWriteRejection(error) {
+  return error instanceof XquikApiError &&
+    error.status >= 400 &&
+    error.status < 500 &&
+    ![408, 409, 423, 424, 425, 429].includes(error.status);
+}
+
+async function fetchTextWithTimeout(url, { timeoutMs = 30_000, ...options } = {}) {
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    throw new Error("timeoutMs must be a finite positive number.");
+  }
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Math.min(30_000, timeoutMs));
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const body = await response.text();
+    return { response, body };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function xquikFetch(path, options = {}) {
   const baseDelay = 1000;
+  const maxRetryDelay = 30_000;
+  const { timeoutMs, ...requestOptions } = options;
+  if (timeoutMs !== undefined && (!Number.isFinite(timeoutMs) || timeoutMs <= 0)) {
+    throw new Error("timeoutMs must be a finite positive number.");
+  }
+  const deadline = Number.isFinite(timeoutMs) ? performance.now() + timeoutMs : null;
+  const remainingMs = () => deadline === null ? 30_000 : deadline - performance.now();
+  const waitBeforeRetry = async (delayMs) => {
+    if (!Number.isFinite(delayMs) || delayMs < 0) {
+      throw new Error("Retry delay must be a finite nonnegative number.");
+    }
+    const remaining = remainingMs();
+    if (deadline !== null && remaining <= 0) {
+      throw new Error("Xquik request deadline exceeded.");
+    }
+    if (deadline !== null && delayMs > remaining) {
+      throw new Error("Request deadline cannot honor the full retry delay.");
+    }
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  };
+  const method = (requestOptions.method || "GET").toUpperCase();
+  const requestApprovalProvider = globalThis.xquikRequestApprovalProvider;
+  if (typeof requestApprovalProvider !== "function") {
+    throw new Error("Configure xquikRequestApprovalProvider before API access.");
+  }
+  const requestProposal = {
+    method,
+    path,
+    body: requestOptions.body ?? null,
+  };
+  const confirmedRequest = await requestApprovalProvider(
+    structuredClone(requestProposal),
+  );
+  if (JSON.stringify(confirmedRequest) !== JSON.stringify(requestProposal)) {
+    throw new Error("Request differs from its exact confirmation record.");
+  }
+  const retrySafe = method === "GET";
+  let retriedCoverageCursor = false;
 
   for (let attempt = 0; attempt <= 3; attempt++) {
-    const response = await fetch(`${BASE}${path}`, {
-      ...options,
-      headers: { ...headers, ...options.headers },
-    });
+    let response;
+    let responseBody;
 
-    if (response.ok) return response.json();
+    try {
+      const requestTimeoutMs = remainingMs();
+      if (requestTimeoutMs <= 0) throw new Error("Xquik request deadline exceeded.");
+      ({ response, body: responseBody } = await fetchTextWithTimeout(
+        `${BASE}${path}`,
+        {
+          ...requestOptions,
+          timeoutMs: requestTimeoutMs,
+          headers: { ...headers, ...requestOptions.headers },
+        },
+      ));
+    } catch (error) {
+      if (!retrySafe || attempt === 3) throw error;
+      await waitBeforeRetry(
+        Math.min(maxRetryDelay, baseDelay * 2 ** attempt + Math.random() * 1000),
+      );
+      continue;
+    }
 
-    const retryable = response.status === 429 || response.status >= 500;
+    if (response.ok) return responseBody ? JSON.parse(responseBody) : null;
+
+    let parsedError = null;
+    try {
+      parsedError = responseBody ? JSON.parse(responseBody) : null;
+    } catch {
+      // Use the generic error below.
+    }
+    const error = parsedError && typeof parsedError === "object"
+      ? parsedError
+      : { error: "request failed" };
+    const code = typeof error.error === "string" ? error.error : error.error?.code;
+    const coverageRetry =
+      response.status === 409 &&
+      code === "coverage_cursor_unavailable" &&
+      !retriedCoverageCursor;
+    const retryable =
+      retrySafe &&
+      (response.status === 408 ||
+        response.status === 429 ||
+        (response.status >= 500 && code !== "x_api_unauthorized") ||
+        coverageRetry ||
+        (response.status === 424 && error.safeToRetry === true));
     if (!retryable || attempt === 3) {
-      const error = await response.json();
-      throw new Error(`Xquik API ${response.status}: ${error.error}`);
+      const message = typeof error.error === "string"
+        ? error.error
+        : error.error?.message || code || "request failed";
+      throw new XquikApiError(response.status, code, message);
     }
 
     const retryAfter = response.headers.get("Retry-After");
-    const delay = retryAfter
-      ? parseInt(retryAfter, 10) * 1000
-      : baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+    const retryAfterMs = retryAfter && /^\d+$/.test(retryAfter)
+      ? Number(retryAfter) * 1000
+      : null;
+    if (coverageRetry && retryAfterMs === null) {
+      throw new Error("Xquik API 409: missing Retry-After");
+    }
+    if (coverageRetry) retriedCoverageCursor = true;
+    const delay = retryAfterMs !== null
+      ? retryAfterMs
+      : Math.min(maxRetryDelay, baseDelay * 2 ** attempt + Math.random() * 1000);
 
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    await waitBeforeRetry(delay);
   }
 }
 ```
 
-## Cursor Pagination
+## Cursor pagination
 
-Events, draws, extractions, and extraction results use cursor-based pagination. When more results exist, the response includes `hasMore: true` and a `nextCursor` string. Pass `nextCursor` as the `after` query parameter.
+Events, draws, extractions, and extraction results use cursor-based pagination.
+When more results exist, the response includes `hasMore: true` and a
+`nextCursor` string. Events and draws accept it as `cursor`. Radar and
+extractions accept it as `after`.
 
 ```javascript
-async function fetchAllPages(path, dataKey) {
+async function fetchAllPages(
+  path,
+  dataKey,
+  maxResults,
+  identityForItem,
+  maxPages = 100,
+  cursorParameter = "cursor",
+) {
+  if (!Number.isInteger(maxResults) || maxResults < 1) {
+    throw new Error("maxResults must be a finite positive integer.");
+  }
+  if (!Number.isInteger(maxPages) || maxPages < 1) {
+    throw new Error("maxPages must be a finite positive integer.");
+  }
+  if (typeof identityForItem !== "function") {
+    throw new Error("identityForItem must select a stable endpoint-specific ID.");
+  }
+  if (!new Set(["cursor", "after"]).has(cursorParameter)) {
+    throw new Error("cursorParameter must be cursor or after.");
+  }
+
   const results = [];
+  const seenIds = new Set();
+  const seenCursors = new Set();
   let cursor;
+  let pageCount = 0;
+  let restartedExpiredCursor = false;
 
-  while (true) {
-    const params = new URLSearchParams({ limit: "100" });
-    if (cursor) params.set("after", cursor);
+  while (results.length < maxResults) {
+    if (pageCount >= maxPages) {
+      throw new Error("Pagination exceeded the maximum page count without enough results.");
+    }
+    pageCount++;
+    const remaining = maxResults - results.length;
+    const params = new URLSearchParams({ limit: String(Math.min(100, remaining)) });
+    if (cursor) params.set(cursorParameter, cursor);
 
-    const data = await xquikFetch(`${path}?${params}`);
-    results.push(...data[dataKey]);
+    let data;
+    try {
+      data = await xquikFetch(`${path}?${params}`);
+    } catch (error) {
+      if (
+        error instanceof XquikApiError &&
+        error.status === 410 &&
+        error.code === "coverage_cursor_gone" &&
+        cursor &&
+        !restartedExpiredCursor
+      ) {
+        cursor = undefined;
+        seenCursors.clear();
+        restartedExpiredCursor = true;
+        continue;
+      }
+      throw error;
+    }
 
-    if (!data.hasMore) break;
+    const page = data?.[dataKey];
+    if (!Array.isArray(page)) throw new Error(`Missing ${dataKey} page.`);
+    for (const item of page) {
+      const identity = identityForItem(item);
+      if (typeof identity !== "string" || !identity) {
+        throw new Error(`Every ${dataKey} item needs a stable identity.`);
+      }
+      if (!seenIds.has(identity)) {
+        seenIds.add(identity);
+        results.push(item);
+      }
+      if (results.length === maxResults) break;
+    }
+
+    if (results.length === maxResults || !data.hasMore) break;
+    if (typeof data.nextCursor !== "string" || !data.nextCursor) {
+      throw new Error("Missing nextCursor for a paginated response.");
+    }
+    if (seenCursors.has(data.nextCursor)) {
+      throw new Error("Repeated nextCursor without pagination progress.");
+    }
+    seenCursors.add(data.nextCursor);
     cursor = data.nextCursor;
   }
 
@@ -79,124 +263,266 @@ async function fetchAllPages(path, dataKey) {
 
 Cursors are opaque strings. Never decode or construct them manually.
 
-## Complete Extraction Workflow
+For `409 coverage_cursor_unavailable`, wait the exact `Retry-After` seconds and
+retry the same cursor once. For `410 coverage_cursor_gone`, the response omits
+`Retry-After`. Restart without a cursor and deduplicate by an endpoint-specific
+stable identity.
+
+## Complete extraction workflow
 
 ```javascript
-// Step 1: Estimate usage before running
+async function requireExplicitApproval(proposal) {
+  const approvalProvider = globalThis.xquikApprovalProvider;
+  if (typeof approvalProvider !== "function") {
+    throw new Error("Configure xquikApprovalProvider before this workflow.");
+  }
+  const confirmed = await approvalProvider(structuredClone(proposal));
+  if (JSON.stringify(confirmed) !== JSON.stringify(proposal)) {
+    throw new Error("Confirmed proposal changed. Request approval again.");
+  }
+  return confirmed;
+}
+
+const extractionRequest = {
+  toolType: "follower_explorer",
+  targetUsername: "elonmusk",
+  resultsLimit: 1000,
+};
+
+await requireExplicitApproval({
+  action: "Calculate an extraction estimate without creating a job.",
+  request: extractionRequest,
+  purpose: "Check the bounded follower request before any bulk job.",
+});
+
+// Estimate usage before creating the job. This route creates no extraction job.
 const estimate = await xquikFetch("/extractions/estimate", {
   method: "POST",
-  body: JSON.stringify({
-    toolType: "follower_explorer",
-    targetUsername: "elonmusk",
-    resultsLimit: 1000,
-  }),
+  body: JSON.stringify(extractionRequest),
 });
 
 if (!estimate.allowed) {
-  console.log(`Estimate requires ${estimate.creditsRequired}; available ${estimate.creditsAvailable}`);
-  return;
+  throw new Error(`Extraction requires ${estimate.creditsRequired} credits. Balance: ${estimate.creditsAvailable}.`);
 }
 
-// Step 2: Create extraction job
+const extractionProposal = {
+  request: extractionRequest,
+  filters: "No additional filters.",
+  estimatedUsage: {
+    creditsRequired: estimate.creditsRequired,
+    creditsAvailable: estimate.creditsAvailable,
+  },
+  purpose: "Build a bounded follower dataset.",
+  recipients: ["Research team"],
+  destination: "Encrypted project dataset",
+  retention: "Delete after 30 days.",
+  dataHandling: "Restrict access and delete derived exports with the dataset.",
+};
+const approvedExtraction = await requireExplicitApproval(extractionProposal);
+if (JSON.stringify(approvedExtraction) !== JSON.stringify(extractionProposal)) {
+  throw new Error("Confirmed extraction changed. Request approval again.");
+}
+
 let job = await xquikFetch("/extractions", {
   method: "POST",
-  body: JSON.stringify({
-    toolType: "follower_explorer",
-    targetUsername: "elonmusk",
-    resultsLimit: 1000,
-  }),
+  body: JSON.stringify(approvedExtraction.request),
 });
 
-// Step 3: Poll until complete
-while (job.status === "pending" || job.status === "running") {
-  await new Promise((r) => setTimeout(r, 2000));
-  job = await xquikFetch(`/extractions/${job.id}`);
+// Poll for at most 5 minutes, including waits, retries, and network time.
+const pollDeadline = performance.now() + 5 * 60 * 1000;
+while (["pending", "running"].includes(job.status)) {
+  let remainingPollMs = pollDeadline - performance.now();
+  if (remainingPollMs <= 0) break;
+  await new Promise((resolve) => setTimeout(resolve, Math.min(2000, remainingPollMs)));
+  remainingPollMs = pollDeadline - performance.now();
+  if (remainingPollMs <= 0) break;
+  job = await xquikFetch(`/extractions/${job.id}`, { timeoutMs: remainingPollMs });
 }
 
-// Step 4: Retrieve paginated results (up to 1,000 per page)
-let cursor;
-const allResults = [];
-
-while (true) {
-  const path = `/extractions/${job.id}${cursor ? `?after=${cursor}` : ""}`;
-  const page = await xquikFetch(path);
-  allResults.push(...page.results);
-
-  if (!page.hasMore) break;
-  cursor = page.nextCursor;
+if (job.status !== "completed") {
+  throw new Error(job.errorMessage || "Extraction failed.");
 }
 
-// Step 5: Export as CSV/JSON/MD/MD-document/PDF/TXT/XLSX (100,000 row limit; PDF 10,000)
-const exportUrl = `${BASE}/extractions/${job.id}/export?format=csv`;
-const csvResponse = await fetch(exportUrl, { headers });
-const csvData = await csvResponse.text();
+// Retrieve no more than the confirmed 1,000 results.
+const allResults = await fetchAllPages(
+  `/extractions/${job.id}`,
+  "results",
+  1000,
+  (item) => typeof item?.xUserId === "string" ? `user:${item.xUserId}` : null,
+  100,
+  "after",
+);
+
+const exportProposal = {
+  jobId: job.id,
+  filters: "No additional export filters.",
+  format: "csv",
+  rowCount: allResults.length,
+  schema: "Documented API fields plus export enrichment columns.",
+  audience: ["Research team"],
+  storage: "Encrypted project dataset",
+  retention: "Delete after 30 days.",
+};
+const approvedExport = await requireExplicitApproval(exportProposal);
+if (JSON.stringify(approvedExport) !== JSON.stringify(exportProposal)) {
+  throw new Error("Confirmed export changed. Request approval again.");
+}
+const approvedExportWriter = globalThis.xquikApprovedExportWriter;
+if (typeof approvedExportWriter !== "function") {
+  throw new Error("Configure the confirmed xquikApprovedExportWriter first.");
+}
+const exportUrl = `${BASE}/extractions/${encodeURIComponent(approvedExport.jobId)}/export?format=${encodeURIComponent(approvedExport.format)}`;
+const { response: csvResponse, body: csvData } = await fetchTextWithTimeout(
+  exportUrl,
+  { headers },
+);
+if (!csvResponse.ok) {
+  throw new Error(`Xquik export failed with HTTP ${csvResponse.status}.`);
+}
+await approvedExportWriter({
+  destination: approvedExport.storage,
+  jobId: approvedExport.jobId,
+  format: approvedExport.format,
+  contentType: csvResponse.headers.get("Content-Type") || "text/csv",
+  data: csvData,
+});
 ```
 
-## Real-Time Monitoring Setup
+## Real-time monitoring setup
 
-Complete end-to-end: create monitor, register webhook, handle events. Create persistent monitors and webhooks only after explicit user approval of the target, event types, destination URL, and ongoing usage.
+Create a monitor, register a webhook, then handle events. Get explicit approval for the target, event types, destination URL, and ongoing usage first.
 
 ```javascript
-// 1. Create monitor (persistent resource; active monitors are metered hourly)
-const monitor = await xquikFetch("/monitors", {
-  method: "POST",
-  body: JSON.stringify({
-    username: "elonmusk",
-    eventTypes: ["tweet.new", "tweet.reply", "tweet.quote", "tweet.retweet"],
-  }),
-});
+async function requireExplicitApproval(proposal) {
+  throw new Error(`Approval required for ${JSON.stringify(proposal)}. Implement the approval gate first.`);
+}
 
-// 2. Register webhook (persistent delivery destination)
-const webhook = await xquikFetch("/webhooks", {
-  method: "POST",
-  body: JSON.stringify({
-    url: "https://your-server.com/webhook",
-    eventTypes: ["tweet.new", "tweet.reply"],
-  }),
-});
-// IMPORTANT: Save webhook.secret. It is shown only once!
+const eventTypes = ["tweet.new", "tweet.reply", "tweet.quote", "tweet.retweet"];
+const monitorConfig = {
+  username: "elonmusk",
+  eventTypes,
+};
+const webhookConfig = {
+  url: "https://your-server.com/webhook",
+  eventTypes,
+};
+const deliveryProposal = {
+  monitor: monitorConfig,
+  webhook: webhookConfig,
+  hmacVerificationPlan: {
+    signatureHeader: "X-Xquik-Signature",
+    timestampHeader: "X-Xquik-Timestamp",
+    nonceHeader: "X-Xquik-Nonce",
+    replayWindow: "5 minutes",
+  },
+  preflight: "List existing webhooks and reject an unexpected matching destination.",
+  ongoingUsage: "Active monitors are metered hourly.",
+  disablePath: "Delete the monitor and webhook when delivery is no longer needed.",
+};
+const approvedDelivery = await requireExplicitApproval(deliveryProposal);
+if (JSON.stringify(approvedDelivery) !== JSON.stringify(deliveryProposal)) {
+  throw new Error("Confirmed monitoring setup changed. Request approval again.");
+}
 
-// 3. Poll events (alternative to webhooks)
-const events = await xquikFetch("/events?monitorId=7&limit=50");
+// Create a persistent monitor. Active monitors are metered hourly.
+let monitor;
+try {
+  monitor = await xquikFetch("/monitors", {
+    method: "POST",
+    body: JSON.stringify(approvedDelivery.monitor),
+  });
+} catch (monitorCreationError) {
+  if (isDefinitiveWriteRejection(monitorCreationError)) {
+    throw monitorCreationError;
+  }
+  throw new AggregateError(
+    [monitorCreationError],
+    "Monitor creation is ambiguous. Do not adopt matching monitors. Reconcile manually.",
+  );
+}
+
+// Register a persistent delivery destination. POST /webhooks does not accept
+// an ownership key. Retain resources after an ambiguous failure.
+let webhook;
+try {
+  webhook = await xquikFetch("/webhooks", {
+    method: "POST",
+    body: JSON.stringify(approvedDelivery.webhook),
+  });
+} catch (creationError) {
+  if (isDefinitiveWriteRejection(creationError)) {
+    try {
+      await xquikFetch(`/monitors/${encodeURIComponent(monitor.id)}`, {
+        method: "DELETE",
+      });
+    } catch (cleanupError) {
+      throw new AggregateError(
+        [creationError, cleanupError],
+        `Webhook creation was rejected. Reconcile monitor ${monitor.id} manually.`,
+      );
+    }
+    throw creationError;
+  }
+  throw new AggregateError(
+    [creationError],
+    `Webhook creation is ambiguous. Retain monitor ${monitor.id} and every matching webhook. Reconcile manually.`,
+  );
+}
+// Store webhook.secret now. The API returns it once.
 ```
 
-Event types: `tweet.new`, `tweet.quote`, `tweet.reply`, `tweet.retweet`, `webhook.test`.
+Put `webhook.secret` in a secret manager immediately. Limit access to the
+receiver. Never log it, return it in responses, or place it in source control.
+Verify every signature with the stored secret before parsing event fields.
+Rotate by replacing the webhook under a separately confirmed plan. Revoke by
+disabling or deleting the webhook, then delete the stored secret.
 
-## Endpoint Guide
+Use `GET /events` only in a separate polling-only workflow. Do not register a
+webhook and poll the same monitor simultaneously.
+
+Monitor event types include `tweet.new`, `tweet.quote`, `tweet.reply`, and
+`tweet.retweet`. Test deliveries use `webhook.test`; do not subscribe to it.
+
+## Endpoint guide
 
 | Goal | Endpoint | Usage |
 |------|----------|------|
-| **Get a single tweet** by ID/URL | `GET /x/tweets/{id}` | Metered |
-| **Get an X Article** by tweet ID | `GET /x/articles/{tweetId}` | Metered |
-| **Search tweets** by keyword/hashtag | `GET /x/tweets/search?q=...` | Metered per result |
-| **Get a user profile** | `GET /x/users/{id}` | Metered |
-| **Get user's recent tweets** | `GET /x/users/{id}/tweets` | Metered per result |
-| **Get user's liked tweets** | `GET /x/users/{id}/likes` | Metered per result |
-| **Get user's media tweets** | `GET /x/users/{id}/media` | Metered per result |
-| **Get tweet favoriters** | `GET /x/tweets/{id}/favoriters` | Metered per result |
-| **Get mutual followers** | `GET /x/users/{id}/followers-you-know` | Metered per result |
-| **Check follow relationship** | `GET /x/followers/check?source=A&target=B` | Metered |
-| **Get trending topics** | `GET /trends?woeid=1` | Metered |
-| **Get radar (trending news)** | `GET /radar?source=hacker_news` | Included |
-| **Get bookmarks** | `GET /x/bookmarks` | Metered per result |
-| **Get bookmark folders** | `GET /x/bookmarks/folders` | Metered |
-| **Get notifications** | `GET /x/notifications` | Metered per result |
-| **Get home timeline** | `GET /x/timeline` | Metered per result |
-| **Get DM history** | `GET /x/dm/{userId}/history` | Metered per result |
-| **Monitor an X account** | `POST /monitors` | Active monitors are metered hourly |
-| **Poll for events** | `GET /events` | Included |
-| **Receive events via webhook** | `POST /webhooks` | Included; confirmation required for destination URL |
-| **Run a giveaway draw** | `POST /draws` | Metered per entry |
-| **Download tweet media** | `POST /x/media/download` | Metered per item |
-| **Extract bulk data** | `POST /extractions` | Metered per result |
-| **Check credits** | `GET /credits` | Included |
-| **Compose a tweet** | `POST /compose` | Included |
-| **Post a tweet** | `POST /x/tweets` | Metered write action |
-| **Like / Unlike a tweet** | `POST` or delete request to `/x/tweets/{id}/like` | Metered write action |
-| **Retweet** | `POST /x/tweets/{id}/retweet` | Metered write action |
-| **Follow / Unfollow** | `POST` or delete request to `/x/users/{id}/follow` | Metered write action |
-| **Send a DM** | `POST /x/dm/{userId}` | Metered write action |
-| **Update profile** | `PATCH /x/profile` | Metered write action |
-| **Upload media** | `POST /x/media` | Metered write action |
-| **Community actions** | `POST /x/communities`, join/leave | Metered write action |
-| **Support tickets** | `POST /support/tickets` | Included |
+| Get a tweet by ID or URL | `GET /x/tweets/{id}` | Metered |
+| Get an X Article by tweet ID | `GET /x/articles/{tweetId}` | Metered |
+| Search tweets by keyword or hashtag | `GET /x/tweets/search?q=...` | Metered per result |
+| Get a user profile | `GET /x/users/{id}` | Metered |
+| Get a user's recent tweets | `GET /x/users/{id}/tweets` | Metered per result |
+| Get a user's liked tweets | `GET /x/users/{id}/likes` | Metered per result |
+| Get a user's media tweets | `GET /x/users/{id}/media` | Metered per result |
+| Get tweet favoriters | `GET /x/tweets/{id}/favoriters` | Metered per result |
+| Get mutual followers | `GET /x/users/{id}/followers-you-know` | Metered per result |
+| Check a follow relationship | `GET /x/followers/check?source=A&target=B` | Metered |
+| Get trending topics | `GET /trends?woeid=1` | Metered |
+| Get Radar news | `GET /radar?source=hacker_news` | Included |
+| Get bookmarks | `GET /x/bookmarks` | Metered per result |
+| Get bookmark folders | `GET /x/bookmarks/folders` | Metered |
+| Get notifications | `GET /x/notifications` | Metered per result |
+| Get the home timeline | `GET /x/timeline` | Metered per result |
+| Get DM history | `GET /x/dm/{userId}/history?account={username}` | Private; approve the exact account |
+| Monitor an X account | `POST /monitors` | Active monitors are metered hourly |
+| Poll for events | `GET /events` | Included |
+| Receive webhook events | `POST /webhooks` | Included; approve the destination URL |
+| Run a giveaway draw | `POST /draws` | Metered per entry |
+| Download tweet media | `POST /x/media/download` | Metered per item |
+| Extract bulk data | `POST /extractions` | Metered per result |
+| Check credits | `GET /credits` | Included |
+| Compose a tweet | `POST /compose` | Included |
+| Post a tweet | `POST /x/tweets` | Metered write action |
+| Like or unlike a tweet | `POST /x/tweets/{id}/like` likes it. The `DELETE` method on the same route removes the like. | Metered write action |
+| Retweet or unretweet | `POST /x/tweets/{id}/retweet` retweets. The same route with the `DELETE` method unretweets. | Metered write action |
+| Follow or unfollow | `POST /x/users/{id}/follow` follows. The `DELETE` method on the same route unfollows. | Metered write action |
+| Send a DM | `POST /x/dm/{userId}` | Metered write action |
+| Update a profile | `PATCH /x/profile` | Metered write action |
+| Upload media | `POST /x/media` | Metered write action |
+| Create or delete a community | `POST /x/communities` creates. The `/x/communities/{id}` route with the `DELETE` method deletes. | Metered write action |
+| Join or leave a community | `POST /x/communities/{id}/join` joins. The same route with the `DELETE` method leaves. | Metered write action |
+| Manage support tickets | `POST /support/tickets` | Included; confirm Xquik support as the destination, exact redacted content, attachments, recipients, and retention |
+
+Before ticket creation, remove secrets and unnecessary personal data. Show the
+exact subject, body, attachments, destination, recipients, and retention terms.
+Create the ticket only after confirmation.

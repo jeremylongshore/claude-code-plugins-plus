@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Webhooks
+# Xquik TypeScript types: webhooks
 
 ```typescript
 
@@ -15,6 +15,9 @@ interface Webhook {
   url: string;
   eventTypes: EventType[];
   isActive: boolean;
+  consecutiveFailures: number;
+  deliveryStatus: "active" | "paused" | "needs_attention";
+  failureHardCap: number;
   createdAt: string;
 }
 
@@ -29,10 +32,23 @@ interface Delivery {
   deliveredAt?: string;
 }
 
-interface WebhookPayload {
+interface ProductionWebhookPayload {
+  schemaVersion: 1;
+  streamEventId: string;
+  deliveryId: string;
   eventType: EventType;
-  username: string;
-  data: EventData;
+  username?: string;
+  query?: string;
+  occurredAt: string;
+  data: Record<string, unknown>;
 }
+
+interface WebhookTestPayload {
+  eventType: "webhook.test";
+  data: { message: string };
+  timestamp: string;
+}
+
+type WebhookPayload = ProductionWebhookPayload | WebhookTestPayload;
 
 ```

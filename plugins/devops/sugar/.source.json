@@ -4,15 +4,16 @@
     "path": ".claude-plugin",
     "branch": "main"
   },
-  "last_sync": "2026-07-13T17:26:32.155Z",
+  "last_sync": "2026-08-26T16:39:49.253Z",
   "author": {
     "name": "Steven Leggett",
     "github": "cdnsteve",
     "email": "contact@roboticforce.io"
   },
   "license": "MIT",
-  "files_synced": 15,
+  "files_synced": 16,
   "files": [
+    "LICENSE",
     "PLUGIN_OVERVIEW.md",
     "README.md",
     "agents/quality-guardian.md",

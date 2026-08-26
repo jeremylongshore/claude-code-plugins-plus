@@ -1,4 +1,4 @@
-# Xquik TypeScript Types: Account Identity
+# Xquik TypeScript types: account identity
 
 ```typescript
 

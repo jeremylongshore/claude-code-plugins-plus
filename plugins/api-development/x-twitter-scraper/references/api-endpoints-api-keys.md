@@ -1,31 +1,14 @@
-# Xquik REST API Endpoints: API Keys
+# Xquik REST API endpoints: API keys
 
-Session auth only. These endpoints do not accept API key auth.
+These endpoints require session authentication. They do not accept API keys.
 
-### Create API Key
+## Manage API keys in the dashboard
 
-```
-POST /api-keys
-```
+API key lifecycle operations stay in the Xquik dashboard. Never request, copy,
+display, store, rotate, or revoke an API key through this Skill. Direct the
+user to the dashboard account page.
 
-**Body:** `{ "name": "My Key" }` (optional)
-
-**Response:** Returns `fullKey` (shown only once), `prefix`, `name`, `id`, `createdAt`.
-
-### List API Keys
-
-```
-GET /api-keys
-```
-
-Returns all keys with `id`, `name`, `prefix`, `isActive`, `createdAt`, `lastUsedAt`. Full key is never exposed.
-
-### Revoke API Key
-
-```
-delete request to `/api-keys/{id}`
-```
-
-Permanent and irreversible. The key stops working immediately.
+This reference omits API key lifecycle requests and responses. Do not call
+those routes from this Skill. Use the dashboard account page.
 
 ---
