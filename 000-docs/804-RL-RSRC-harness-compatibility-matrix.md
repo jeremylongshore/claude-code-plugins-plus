@@ -1,4 +1,4 @@
-<!-- doc-class: research -->
+<!-- doc-class: record -->
 
 # Harness Compatibility Matrix Research
 

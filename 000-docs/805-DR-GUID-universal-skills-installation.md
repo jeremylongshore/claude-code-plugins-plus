@@ -1,4 +1,4 @@
-<!-- doc-class: guide -->
+<!-- doc-class: record -->
 
 # Universal Skills Installation Guide
 

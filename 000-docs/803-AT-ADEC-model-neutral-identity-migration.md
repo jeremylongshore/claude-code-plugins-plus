@@ -1,4 +1,4 @@
-<!-- doc-class: decision -->
+<!-- doc-class: record -->
 
 # Model-Neutral Identity and Distribution Migration
 

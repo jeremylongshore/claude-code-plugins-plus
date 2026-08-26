@@ -193,13 +193,14 @@ test('Topic-column and later prose links cannot grant authority', () => {
 test('live repository has only linked effective claimants', () => {
   const result = scanRepository(repositoryRoot);
   deepEqual(result.findings, []);
-  // 13 since E4.1 added the safety enforcement register (12 was the E2.6
-  // state: filing standard + source-of-truth map joined the table).
-  equal(result.canonicalLinks.size, 13);
+  // 14 since E9.1 added the cross-repository authority contract (13 was the
+  // E4.1 state after the safety enforcement register joined the table).
+  equal(result.canonicalLinks.size, 14);
   deepEqual(result.claimants.map((item) => item.path).sort(), [
     '000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md',
     '000-docs/727-AT-ARCH-master-modernization-blueprint.md',
     '000-docs/790-DR-STND-safety-enforcement-register.md',
+    '000-docs/806-AT-ARCH-cross-repo-authority-contract.md',
   ]);
   equal(
     result.claimants.find((item) => item.path.startsWith('000-docs/727-')).kind,
