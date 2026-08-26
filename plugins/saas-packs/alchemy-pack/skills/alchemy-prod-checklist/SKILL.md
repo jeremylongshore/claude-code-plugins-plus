@@ -25,6 +25,33 @@ compatibility: Designed for Claude Code
 ---
 # Alchemy Production Checklist
 
+## Overview
+
+Use this checklist to make a deliberate go/no-go decision for an
+Alchemy-powered application. It covers provider isolation, key custody,
+application security, contract controls, performance, monitoring, and a
+reversible launch path.
+
+## Prerequisites
+
+- Named engineering, security, product, and operations owners who can block a
+  release, plus an approved deployment window and rollback target.
+- Separate production application and managed-secret bindings that have been
+  tested in staging without reusing local or testnet credentials.
+- A documented user-impact fallback for provider outages, contract incidents,
+  and unsafe chain-data results.
+
+## Instructions
+
+1. Assign an owner and evidence link to each pre-launch item, treating an
+   unchecked security, provider, or contract control as a release blocker.
+2. Run the readiness script using the production deployment identity and
+   inspect only its redacted results.
+3. Exercise the rollback or disable flag in staging, verify operator alerts,
+   and record the owner who will make the launch decision.
+4. Enable traffic progressively and stop expansion when any listed threshold
+   or safety invariant fails.
+
 ## Pre-Launch Checklist
 
 ### API & Infrastructure
@@ -118,6 +145,26 @@ checkReadiness().catch(console.error);
 - Readiness script with pass/fail reporting
 - API key exposure scan in build output
 - Multi-network connectivity verified
+
+## Examples
+
+For a mainnet release rehearsal, complete the checklist in staging with the
+production-shaped secret bindings, run the readiness script, and record the
+revision, redacted pass/fail output, rate-limit headroom, and rollback owner.
+Launch only when every required check passes and the service can be disabled
+without exposing an API key or abandoning a user operation. If the build scan
+finds a key, a contract safety control is incomplete, or provider connectivity
+fails, declare a no-go, revoke or correct the affected configuration, and rerun
+the full readiness check rather than accepting a partial result.
+
+## Error Handling
+
+| Failure | Release response |
+|---------|------------------|
+| Any required readiness check fails | Do not launch; assign remediation and retain the redacted result. |
+| API key is exposed | Revoke it, remove the exposure, audit artifacts, and deploy with a replacement. |
+| Provider is degraded or rate headroom is insufficient | Hold or throttle the release and activate the user-impact fallback. |
+| Contract emergency control is unverified | Do not enable mainnet functionality until the authorized owner validates it. |
 
 ## Resources
 
