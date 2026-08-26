@@ -33,6 +33,7 @@
     "validate:safety-ratchet": "node --test scripts/check-safety-ratchet.test.mjs && node scripts/check-safety-ratchet.mjs",
     "validate:doc-fact-assertions": "node --test scripts/check-doc-fact-assertions.test.mjs && node scripts/check-doc-fact-assertions.mjs",
     "evaluate:certification": "node scripts/evaluate-certification.mjs",
+    "evaluate:launch-readiness": "node scripts/evaluate-launch-readiness.mjs",
     "validate:certification-separation": "node --test scripts/check-certification-separation.test.mjs",
     "validate:readme-contract": "node --test scripts/check-readme-contract.test.mjs && node scripts/check-readme-contract.mjs",
     "validate:canonical-schema": "node --test scripts/check-canonical-schema.test.mjs",
