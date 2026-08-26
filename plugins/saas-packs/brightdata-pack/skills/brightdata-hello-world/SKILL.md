@@ -137,6 +137,10 @@ const username2 = `brd-customer-${ID}-zone-${ZONE}-country-us-city-newyork`;
 - HTML content of the target page
 - Rotated IP address per request
 
+## Examples
+
+Use a provider-approved test target or a domain you control, constrain the request to the minimum path and geography needed, and retain only the status and request identifier in shared logs. Verify that collection is permitted by applicable law, the target's terms, and the organization's policy before moving beyond a synthetic demonstration.
+
 ## Error Handling
 
 | Error | Cause | Solution |

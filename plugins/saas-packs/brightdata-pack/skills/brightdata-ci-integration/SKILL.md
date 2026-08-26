@@ -165,6 +165,10 @@ describe.skipIf(!LIVE)('Bright Data Live Integration', () => {
 - GitHub secrets configured securely
 - CA certificate downloaded in CI
 
+## Examples
+
+Run mocked client tests on every pull request. Restrict any live request to an approved, non-production target from a protected environment with a low-quota test credential, rate ceiling, and redacted receipt; fail closed when authorization or policy evidence is missing.
+
 ## Error Handling
 
 | Issue | Cause | Solution |
