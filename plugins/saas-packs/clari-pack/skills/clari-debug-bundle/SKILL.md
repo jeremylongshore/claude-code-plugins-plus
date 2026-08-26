@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Collect Clari API diagnostic information for support: API connectivity, forecast list, job history, and error responses. All secrets are redacted.
 
+## Prerequisites
+
+- Authorized diagnostic access to the affected environment
+- `CLARI_API_KEY` injected by an approved secret mechanism
+- A secure local workspace with enough storage for the bundle
+- A support/incident record that defines what metadata may be shared
+
 ## Instructions
 
 ### Debug Bundle Script
@@ -76,6 +83,29 @@ echo "Bundle: $BUNDLE_DIR.tar.gz"
 
 **Safe to share**: Forecast names, job IDs, HTTP status codes, library versions.
 **Never share**: API key, forecast amounts, rep names, email addresses.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| API request fails or times out | Keep the HTTP status and timestamp, then stop rather than repeatedly retrying. |
+| Bundle contains unexpected sensitive data | Quarantine it, redact or regenerate it, and do not attach it externally. |
+| Archive creation fails | Preserve the unarchived directory locally, diagnose storage/permissions, then clean it under retention policy. |
+| Support needs additional fields | Obtain data-owner approval before collecting or sharing them. |
+
+## Output
+
+Generate a timestamped, redacted archive and a summary with environment,
+sanitized connectivity status, job IDs, collection failures, and integrity
+review decision. The archive is support evidence, not a data-export mechanism;
+it must exclude live credentials and individual forecast records.
+
+## Examples
+
+During a failed scheduled export, generate the bundle, inspect `summary.txt`
+and JSON files locally, and remove any unapproved identifiers before attaching
+the archive to the named support case. If the provider is returning 429, include
+the redacted timestamps and job state rather than continuing to poll it.
 
 ## Resources
 
