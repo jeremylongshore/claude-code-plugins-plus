@@ -204,6 +204,14 @@ done
 | Same issue flagged repeatedly | Learning not created | Reply explicitly stating the preference |
 | Tone instructions ignored | YAML formatting issue | Ensure `tone_instructions` is a proper string |
 
+## Examples
+
+Apply one path-specific guideline and a neutral tone to a pilot repository,
+review a small set of pull requests, and compare accepted versus ignored
+findings with the prior baseline. If feedback becomes less useful or repeated
+issues persist, revise the scoped instruction and verify the active config
+before changing global profile settings.
+
 ## Resources
 
 - [Code Guidelines](https://www.coderabbit.ai/blog/code-guidelines-bring-your-coding-rules-to-coderabbit)
