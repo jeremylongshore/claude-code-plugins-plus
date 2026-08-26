@@ -271,6 +271,37 @@ function diagnoseCohereError(err: unknown): string {
 }
 ```
 
+## Instructions
+
+Classify the failure by status and operation, collect a redacted correlation ID
+and relevant limits/model metadata, then apply the smallest safe recovery path.
+Do not retry authentication, validation, policy, or contract errors blindly;
+preserve the last certified result and use bounded backoff only for explicitly
+retryable provider/network failures.
+
+## Error Handling
+
+| Failure class | Safe response |
+|---|---|
+| Authentication/authorization | Stop requests and repair or rotate the scoped secret through its owner. |
+| Input/model/schema validation | Reject the request, correct the contract, and retest in staging. |
+| Rate limit or timeout | Defer with bounded retry/backoff and protect queued work. |
+| Provider outage or unknown fault | Preserve safe metadata, check status, and use the incident path. |
+
+## Output
+
+Return a classified retryable or terminal error with model/operation context,
+safe correlation data, recovery decision, and escalation owner. Exclude API
+keys, complete prompts, source documents, retrieved content, and personal data
+from logs, tickets, and generic error messages.
+
+## Examples
+
+On a 429, retain the job ID and reschedule through the rate-limit policy; on a
+401, halt the worker and verify the secret reference with its owner. For an
+invalid embed request, correct the input type in a fixture and validate it
+before allowing a production batch to run.
+
 ## Resources
 
 - [Cohere Error Codes](https://docs.cohere.com/reference/errors)

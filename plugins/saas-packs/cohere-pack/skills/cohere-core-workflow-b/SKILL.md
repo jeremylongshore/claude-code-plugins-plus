@@ -263,6 +263,14 @@ async function streamWithTools(userMessage: string) {
 | Infinite loop | Model keeps calling tools | Set `maxSteps` limit |
 | `TOOL_CALL` with no toolCalls | Edge case | Check `response.message?.toolCalls` length |
 
+## Examples
+
+Run a staging agent with an allow-listed weather or search tool, a small
+`maxSteps` limit, schema validation, and redacted trace IDs, then verify it
+terminates after the expected tool sequence. If a tool call is malformed or the
+model loops, fail the request safely and preserve only the diagnostic metadata
+needed to improve the tool contract.
+
 ## Resources
 
 - [Tool Use Quickstart](https://docs.cohere.com/docs/tool-use-quickstart)

@@ -250,6 +250,14 @@ export function getCohereConfig(): CohereConfig {
 | Cold start latency | Serverless spin-up | Set `min-instances: 1` (Cloud Run/Fly) |
 | Stream breaks | Platform timeout | Use chunked transfer encoding |
 
+## Examples
+
+Deploy a staging chat endpoint with the API key referenced from the platform
+secret store, submit a synthetic request, and verify health, stream completion,
+and redacted telemetry before promotion. If authorization, timeout, or stream
+integrity checks fail, roll back the release and correct configuration rather
+than exposing credentials or raising limits blindly.
+
 ## Resources
 
 - [Cohere Going Live](https://docs.cohere.com/docs/going-live)
