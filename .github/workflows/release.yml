@@ -11,11 +11,6 @@ on:
           - patch
           - minor
           - major
-      skip_tests:
-        description: 'Skip validation tests'
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -47,7 +42,6 @@ jobs:
           pip install pyyaml
 
       - name: Run validation tests
-        if: ${{ !inputs.skip_tests }}
         run: |
           # scripts/validate-all.sh + test-installation.sh were removed; the full
           # gate now runs in CI (the ci-required aggregate on every PR + on push
