@@ -255,6 +255,14 @@ done
 | Repo config ignored | YAML syntax error | Validate YAML, check with `@coderabbitai configuration` |
 | Bot consuming seats | Bot opens PRs | Exclude bot usernames in seat management |
 
+## Examples
+
+Run a quarterly access review for a pilot organization: verify the app has only
+approved repositories, remove an inactive user, exclude bot accounts from seat
+allocation, and validate the resulting review coverage. If a team needs an
+exceptional repository or role, document its owner and expiry rather than
+granting organization-wide access permanently.
+
 ## Resources
 
 - [CodeRabbit Enterprise](https://coderabbit.ai/pricing)

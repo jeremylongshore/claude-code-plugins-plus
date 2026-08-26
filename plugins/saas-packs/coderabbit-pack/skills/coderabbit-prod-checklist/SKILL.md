@@ -269,6 +269,14 @@ chat:
 | Emergency PR blocked | Required check blocking | Admin merge bypass or remove required check |
 | Config not loading | YAML error | Run `@coderabbitai configuration` to diagnose |
 
+## Examples
+
+Before production rollout, validate the configuration in a pilot repository,
+open a test PR, verify the expected review and status behavior, test the
+documented emergency procedure, and record the decision. If the required check
+blocks legitimate work or quality/coverage regress, use the approved rollback
+and correct the configuration rather than weakening unrelated protections.
+
 ## Resources
 
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)

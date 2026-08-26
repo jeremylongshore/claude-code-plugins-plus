@@ -289,6 +289,14 @@ echo "  develop: CodeRabbit optional"
 | PR to main gets "chill" review | `.coderabbit.yaml` on main has wrong profile | Check config with `git show main:.coderabbit.yaml` |
 | Release branch not reviewed | `base_branches` doesn't include `release/*` | Add glob pattern `release/*` to base_branches |
 
+## Examples
+
+Apply the strict security profile to a protected release branch and a relaxed
+profile only to the approved development branch, then open test pull requests
+against both and inspect the active configuration. If a branch receives the
+wrong profile or a required check changes unexpectedly, restore the prior
+branch configuration and protection state before merging policy changes.
+
 ## Resources
 
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
