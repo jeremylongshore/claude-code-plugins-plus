@@ -101,7 +101,7 @@ export const PERMISSIONS: Record<Role, Permission> = {
 import crypto from 'crypto';
 
 interface ScopedKey {
-  key: string;
+  keyHash: string;
   teamId: string;
   role: Role;
   createdBy: string;
@@ -109,28 +109,40 @@ interface ScopedKey {
   expiresAt: string;
 }
 
-// In production: store in database
+interface IssuedScopedKey {
+  key: string; // return once; never persist or log this value
+  teamId: string;
+  role: Role;
+  expiresAt: string;
+}
+
+// In production: store the hash in a durable database, never the raw key.
 const keys = new Map<string, ScopedKey>();
 
-export function createScopedKey(teamId: string, role: Role, createdBy: string, ttlDays: number = 90): ScopedKey {
+function hashKey(value: string): string {
+  return crypto.createHash('sha256').update(value).digest('hex');
+}
+
+export function createScopedKey(teamId: string, role: Role, createdBy: string, ttlDays: number = 90): IssuedScopedKey {
+  const plaintextKey = `ak_${teamId}_${crypto.randomBytes(16).toString('hex')}`;
   const entry: ScopedKey = {
-    key: `ak_${teamId}_${crypto.randomBytes(16).toString('hex')}`,
+    keyHash: hashKey(plaintextKey),
     teamId, role, createdBy,
     createdAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + ttlDays * 86400000).toISOString(),
   };
-  keys.set(entry.key, entry);
-  return entry;
+  keys.set(entry.keyHash, entry);
+  return { key: plaintextKey, teamId, role, expiresAt: entry.expiresAt };
 }
 
 export function resolveKey(apiKey: string): ScopedKey | null {
-  const entry = keys.get(apiKey);
+  const entry = keys.get(hashKey(apiKey));
   if (!entry) return null;
-  if (new Date(entry.expiresAt) < new Date()) { keys.delete(apiKey); return null; }
+  if (new Date(entry.expiresAt) < new Date()) { keys.delete(entry.keyHash); return null; }
   return entry;
 }
 
-export function revokeKey(apiKey: string) { keys.delete(apiKey); }
+export function revokeKey(apiKey: string) { keys.delete(hashKey(apiKey)); }
 ```
 
 ### Step 3: Permission Middleware
@@ -249,6 +261,18 @@ export { admin };
 - Express middleware enforcing per-endpoint permissions
 - Apollo API proxy routing all requests through RBAC
 - Admin endpoints for key management and usage stats
+
+## Examples
+
+For a new analyst, an authorized administrator issues a time-limited
+read/enrichment key for that analyst’s team, delivers the plaintext value once
+through the approved secret channel, and records the key ID, role, expiry, and
+approver in the audit system. The proxy stores and compares only the key hash,
+so a database or log export cannot replay the credential. Test the analyst
+against an allowed search endpoint and a denied sequence-write endpoint. On a
+role change or suspected exposure, revoke the old key first, verify that the
+proxy returns `401`, then issue a replacement; never edit the permission map
+or share the Apollo master key to work around a denial.
 
 ## Error Handling
 
