@@ -26,6 +26,13 @@ compatibility: Designed for Claude Code
 ---
 # Alchemy Performance Tuning
 
+## Overview
+
+Optimize a Web3 application's response time and provider use through
+freshness-aware caching, bounded parallelism, batching, and real-time
+subscriptions. Measure improvements against an approved baseline rather than
+assuming fewer calls always preserves correct chain state.
+
 ## Performance Targets
 
 | Operation | Target Latency | CU Cost |
@@ -36,6 +43,15 @@ compatibility: Designed for Claude Code
 | `getNftsForOwner` | < 300ms | 50 |
 | `getAssetTransfers` | < 500ms | 150 |
 | Multi-chain portfolio | < 2s | ~400 |
+
+## Prerequisites
+
+- A representative, non-sensitive benchmark workload with baseline latency,
+  cache-hit, error-rate, and compute-unit measurements.
+- An explicit freshness policy for balances, blocks, transfers, ownership, and
+  metadata, approved by the product owner.
+- Monitoring and a rollback flag that can disable cache, batching, or WebSocket
+  changes if correctness or provider behavior regresses.
 
 ## Instructions
 
@@ -161,6 +177,26 @@ alchemy.ws.on('close', () => {
 - Parallel multi-chain fetching (4 chains in < 2s)
 - Batch NFT metadata (100x CU reduction)
 - WebSocket subscriptions replacing polling
+
+## Examples
+
+Benchmark a public test address across the four listed networks before and
+after enabling the balance cache. Confirm the cached run reduces provider calls
+while its displayed data never exceeds the approved 30-second freshness window,
+and verify a single failed chain remains visibly unavailable rather than
+silently omitted. Next, send a small synthetic NFT list through the batch path
+and compare response count with individual calls. If cache age, error rate, or
+WebSocket reconnect behavior violates the defined threshold, disable that
+optimization using the rollback flag and investigate from aggregate metrics.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Cache entry exceeds its freshness policy | Invalidate it and refresh from the provider before rendering a result. |
+| One chain query fails | Preserve successful-chain results and surface an explicit unavailable state for the failed chain. |
+| WebSocket repeatedly disconnects | Use bounded reconnect backoff, alert on sustained failure, and fall back to rate-limited polling. |
+| Batch call partially fails | Keep successful results, retry only eligible failed items, and respect the provider limit. |
 
 ## Resources
 
