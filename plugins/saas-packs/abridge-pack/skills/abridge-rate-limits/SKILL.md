@@ -46,6 +46,15 @@ X-RateLimit-Reset: 1711234567
 Retry-After: 30
 ```
 
+## Prerequisites
+
+- Confirm the organization’s contracted limits with the Abridge account owner;
+  do not treat the illustrative tiers below as an entitlement.
+- Configure an authenticated sandbox client and observability that records
+  aggregate counts, latency, and retry outcomes without retaining PHI.
+- Define a patient-care-safe fallback for requests that cannot be completed
+  within the retry budget.
+
 ## Instructions
 
 ### Step 1: Rate Limit Aware Client
@@ -225,6 +234,16 @@ class UsageMonitor {
 - Concurrent session pool with Bottleneck throttling
 - Automatic 429 retry with Retry-After header support
 - Usage monitoring with utilization alerts
+
+## Examples
+
+In a sandbox load test, configure the session limiter below the documented
+organization cap and deliberately send enough synthetic requests to receive a
+`429`. Verify that the client honors `Retry-After`, queues new work, and emits
+an aggregate retry metric without logging request payloads. When the retry
+budget is exhausted, return a controlled unavailable result to the caller and
+route the encounter to the approved manual fallback; do not retry indefinitely
+or discard a clinically important request without an operator-visible signal.
 
 ## Error Handling
 
