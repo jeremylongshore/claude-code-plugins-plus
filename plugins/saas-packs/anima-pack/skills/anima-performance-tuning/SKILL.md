@@ -24,6 +24,12 @@ compatibility: Designed for Claude Code
 ---
 # Anima Performance Tuning
 
+## Overview
+
+Improve design-to-code throughput without treating cache hits or smaller output
+as success unless the result still matches the approved design version,
+accessibility expectations, and project build contract.
+
 ## Performance Targets
 
 | Operation | Target | Notes |
@@ -32,6 +38,15 @@ compatibility: Designed for Claude Code
 | Batch (10 components) | < 2 min | With rate limit delays |
 | Cache hit | < 10ms | File-based cache |
 | Full design system (50 components) | < 15 min | Sequential with 6s delays |
+
+## Prerequisites
+
+- A representative staging fixture and a baseline measurement of generation
+  duration, cache hit rate, failure rate, and generated-code validation result.
+- A version-aware cache key and retention policy that ties each artifact to
+  Figma source version, node ID, and generation settings.
+- Review gates for generated output so performance changes cannot automatically
+  replace approved components or strip required licenses/accessibility content.
 
 ## Instructions
 
@@ -146,6 +161,26 @@ function optimizeOutput(content: string): string {
 - File-based generation cache with TTL
 - Incremental generation (only changed components)
 - Output size optimization via post-processing
+
+## Examples
+
+Benchmark ten approved staging components once without cache and once with the
+cache keyed by source version, node ID, and settings. Compare duration, API
+calls, output size, lint/type results, and visual review rather than just cache
+hit rate. Regenerate only components whose recorded source version changed, and
+keep the prior generated artifact available for diff review. If a cache entry
+cannot prove its source version, post-processing changes required behavior, or
+rate limits increase, disable the optimization and return to the prior
+validated generation path while investigating the aggregate measurements.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Cache artifact lacks valid source/version metadata | Refuse reuse and regenerate the approved component. |
+| Incremental detector cannot determine change state | Treat the affected component as needing controlled regeneration. |
+| Optimizer changes semantics or removes required content | Revert the post-processing rule and restore the reviewed artifact. |
+| Throughput increases provider failures or rate limits | Reduce concurrency, apply bounded backoff, and preserve user-visible job state. |
 
 ## Resources
 
