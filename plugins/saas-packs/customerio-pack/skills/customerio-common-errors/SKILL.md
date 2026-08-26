@@ -24,6 +24,24 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Common Errors
 
+## Output
+
+- A classified Customer.io integration failure with redacted request/response evidence and an accountable owner.
+- A bounded remediation or escalation that preserves message integrity, consent, and rate controls.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Authentication or authorization fails | Verify the scoped secret reference and workspace/region; rotate/revoke through the secret manager if exposure is suspected. |
+| Delivery event is missing | Check identifier, consent, suppression, and event ordering before replaying anything. |
+| Rate limit or transient error occurs | Apply documented backoff and idempotency; do not flood retries or disable limits. |
+| Payload contains sensitive attributes | Redact diagnostics and validate the data contract before retrying. |
+
+## Examples
+
+For a failed event, record its opaque correlation ID, status class, and destination environment. Confirm the profile ID, consent state, and idempotency key, then replay one sanitized test event only after the underlying failure is resolved.
+
 ## Overview
 
 Diagnose and fix the most frequent Customer.io integration errors: API status codes, SDK exceptions, delivery failures, campaign trigger issues, and transactional message problems.

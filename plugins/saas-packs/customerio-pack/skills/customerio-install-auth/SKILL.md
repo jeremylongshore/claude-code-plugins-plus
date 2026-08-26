@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Install & Auth
 
+## Output
+
+- A scoped Customer.io credential reference for the intended workspace/environment, with a verified low-impact connection test.
+- A secret-management and rotation record that keeps tokens out of repositories, shell history, and logs.
+
+## Examples
+
+Inject the development workspace credential from the approved secret manager, validate it with a low-impact read or synthetic event, and record only the environment and result. If a token is exposed, revoke it immediately and issue a replacement; do not reuse it while attempting to scrub logs.
+
 ## Overview
 
 Set up the `customerio-node` SDK and configure authentication for Customer.io's two API surfaces: the **Track API** (identify users, track events) and the **App API** (transactional messages, broadcasts, data queries).
