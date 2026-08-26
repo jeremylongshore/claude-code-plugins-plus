@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Observability
 
+## Prerequisites
+
+- An approved metrics/tracing/logging backend, data-retention policy, and on-call owner.
+- Redaction rules that exclude audio, transcript text, API keys, participant identifiers, and other sensitive metadata.
+
+## Examples
+
+Emit aggregate metrics for request count, latency, model, status class, streaming duration, and rate-limit headroom. Trigger a non-sensitive staging failure to verify alert routing, then record the correlation ID and remediation time—never audio samples, transcripts, or credentials.
+
 ## Overview
 
 Full observability stack for Deepgram: Prometheus metrics (request counts, latency histograms, audio processed, cost tracking), OpenTelemetry distributed tracing, structured JSON logging with Pino, Grafana dashboard JSON, and AlertManager rules.

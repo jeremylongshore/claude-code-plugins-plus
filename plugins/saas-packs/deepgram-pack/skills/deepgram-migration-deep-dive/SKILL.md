@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Migration Deep Dive
 
+## Prerequisites
+
+- An inventory of existing audio/transcript flows, data retention/consent obligations, evaluation fixtures, and rollback owner.
+- A staging environment with separate credentials and a compatibility/quality acceptance threshold.
+
+## Examples
+
+Run the old and new transcription flow against approved non-sensitive fixtures, compare aggregate accuracy/latency/error metrics, and route a small reversible staging canary only after acceptance passes. Roll back immediately on quality, consent, or operational regression; do not bulk-migrate or reprocess customer recordings before the observation window closes.
+
 ## Current State
 
 !`npm list @deepgram/sdk 2>/dev/null | grep deepgram || echo 'Not installed'`
