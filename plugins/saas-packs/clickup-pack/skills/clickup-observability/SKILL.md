@@ -225,6 +225,33 @@ app.get('/metrics', async (req, res) => {
 | Alert storm | Threshold too sensitive | Tune `for` duration and threshold |
 | Trace gaps | Missing context propagation | Ensure span context is passed |
 
+## Prerequisites
+
+- Approved telemetry owner, alert route, and retention/classification policy
+- Instrumented client boundary with redaction for task and credential data
+- Separate staging telemetry validation and production change control
+
+## Instructions
+
+Instrument the shared API client, normalize labels, capture only decision-useful
+aggregates, and validate alerts with bounded synthetic traffic before release.
+When an alert fires, preserve correlation data and follow the incident path;
+do not mute a recurring auth, rate-limit, or freshness signal without an owner
+decision and replacement control.
+
+## Output
+
+Publish a privacy-aware operations view with request outcomes, latency, retries,
+rate-limit state, alert status, correlation IDs, and owner. Exclude task bodies,
+comments, tokens, attachments, and high-cardinality personal identifiers.
+
+## Examples
+
+Create a staging alert for rate-limit exhaustion, trigger it with a capped test,
+and verify the runbook notification has aggregate metrics only. If an auth alert
+fires in production, pause affected automation and rotate/repair the scoped
+secret before resuming requests.
+
 ## Resources
 
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)

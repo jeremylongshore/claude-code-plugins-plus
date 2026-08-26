@@ -186,6 +186,32 @@ async function preFlightCheck(): Promise<{ safe: boolean; waitMs: number }> {
 | Missing reset header | Older API version | Fall back to exponential backoff |
 | Burst rejected | Too many concurrent | Reduce `concurrency` in queue |
 
+## Prerequisites
+
+- Scoped API identity and durable idempotency/job state
+- Queue with bounded concurrency, retry budget, jitter, and dead-letter route
+- Monitoring for remaining quota, reset timing, queue depth, and terminal errors
+
+## Instructions
+
+Send mutations through the centralized queue, honor reset/retry headers, and
+persist the job’s idempotency state before retrying. A 429 or timeout defers the
+same work; it never triggers an unbounded parallel replay or a different,
+broader identity. Stop intake when the configured budget guardrail is reached.
+
+## Output
+
+Emit a request-control record with resource scope, job ID, attempts, applied
+delay, quota/reset state, terminal decision, and safe correlation data. Exclude
+tokens, task bodies, comments, and full provider responses.
+
+## Examples
+
+Queue one staging task update, capture a 429 reset time, and reschedule the
+same idempotent job after the wait. If the retry budget expires, return a
+retryable unavailable result and alert the owner instead of submitting a second
+update or bypassing the queue.
+
 ## Resources
 
 - [ClickUp Rate Limits](https://developer.clickup.com/docs/rate-limits)

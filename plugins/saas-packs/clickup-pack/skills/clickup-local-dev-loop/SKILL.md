@@ -201,6 +201,31 @@ describe.skipIf(!LIVE)('ClickUp Live API', () => {
 | Integration tests fail | No live token | Set `CLICKUP_LIVE=1` and valid token |
 | Mock not matching | Route pattern wrong | Check URL path in mock router |
 
+## Prerequisites
+
+- Isolated local/staging environment, mock fixtures, and non-production list
+- Secret manager or local secure injection for any live test credential
+- Cleanup path and data-retention rule for generated test tasks
+
+## Instructions
+
+Run unit tests against sanitized fixtures by default, enable a live request
+only in the isolated integration scope, and mark disposable resources clearly.
+Re-read and clean up every live mutation; never use a production workspace or
+personal task list as a test fixture.
+
+## Output
+
+Return a local-test receipt with fixture version, mock/live mode, affected test
+IDs, assertion results, cleanup status, and safe correlation data. Do not
+commit `.env.local`, tokens, real task bodies, or private member information.
+
+## Examples
+
+Mock a `GET /task` response and assert the client mapping, then optionally run
+one protected-list read with `CLICKUP_LIVE=1`. If a live test requires a task,
+create a labeled disposable task, verify it, and delete it before the run ends.
+
 ## Resources
 
 - [Vitest Documentation](https://vitest.dev/)
