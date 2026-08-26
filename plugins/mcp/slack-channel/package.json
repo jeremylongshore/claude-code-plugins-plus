@@ -13,7 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "@slack/socket-mode": "2.0.6",
     "@slack/web-api": "7.15.2",
     "tsx": "^4.22.4",
