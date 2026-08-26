@@ -39,6 +39,15 @@ Procedures for upgrading Abridge API integrations and migrating between EHR syst
 | Note template changes | Medium | Zero | Medium |
 | Multi-site rollout | High | Per-site windows | Medium |
 
+## Prerequisites
+
+- A change record that names clinical, EHR, security, and operations owners,
+  a maintenance window, and the reversible cutover point.
+- Verified source and target sandbox access, approved synthetic fixtures, and
+  a documented manual-documentation fallback for every affected provider.
+- An immutable baseline of templates, adapter behavior, and aggregate quality
+  metrics so the parallel-run comparison has a known reference.
+
 ## Instructions
 
 ### Step 1: API Version Migration
@@ -178,6 +187,17 @@ echo "=== Rollback Complete ==="
 - EHR migration plan with parallel run validation
 - Note template migration with rollback
 - Provider re-enrollment procedure
+
+## Examples
+
+For an API-version rehearsal, set the v2 canary percentage to zero in the
+sandbox, replay a synthetic encounter fixture through both response mappers,
+and compare the resulting normalized fields and FHIR validation outcomes.
+Increase the canary only after the recorded comparison has no clinical or
+interoperability regression and the rollback operator confirms the old endpoint
+is still routable. If a template mapping or target authorization fails during
+parallel run, keep production traffic on the source integration, preserve the
+redacted failure receipt, and correct the adapter before rescheduling cutover.
 
 ## Error Handling
 
