@@ -29,6 +29,23 @@ compatibility: Designed for Claude Code
 
 Production readiness checklist for deploying Abridge clinical AI in a healthcare organization. Clinical documentation systems are safety-critical — this checklist covers HIPAA compliance, EHR integration validation, provider onboarding, and rollback procedures.
 
+## Prerequisites
+
+- A named clinical, security, privacy, EHR, and operations owner empowered to
+  make the go/no-go decision.
+- A BAA-covered production environment, approved change window, and a tested
+  manual-documentation fallback.
+- Completed sandbox validation using synthetic data, with no unresolved
+  high-severity privacy, safety, or interoperability findings.
+
+## Instructions
+
+Work through the pre-launch checklist with the responsible owner for each
+control, then run the readiness script in the target environment. Treat every
+`fail` result as a launch blocker. Record the decision, evidence locations,
+and rollback owner before enabling the integration; do not use warning-only
+results to override a failed security, EHR, or patient-safety control.
+
 ## Pre-Launch Checklist
 
 ### Legal & Compliance
@@ -171,6 +188,26 @@ echo "=== Rollback Complete ==="
 - Rollback procedure documented and tested
 - Post-launch monitoring thresholds configured
 - Go/no-go decision evidence collected
+
+## Examples
+
+During a scheduled production rehearsal, have each control owner complete the
+checklist against the BAA-covered target environment and run the readiness
+script using its managed identity. A clean result contains no `fail` entries,
+an authenticated FHIR metadata response, confirmed audit logging, and a named
+rollback operator. Capture the redacted results and change approval with the
+release record. If a control fails, declare a no-go, keep the integration
+disabled, and use the documented manual workflow until the owner corrects and
+re-verifies the failure.
+
+## Error Handling
+
+| Failure | Required response |
+|---------|-------------------|
+| Readiness check reports `fail` | Stop the launch and assign remediation to the control owner. |
+| FHIR validation or authorization fails | Keep automated note delivery disabled and use the manual fallback. |
+| Monitoring cannot prove audit coverage | Treat the deployment as non-compliant and do not enable PHI processing. |
+| Rollback drill is incomplete | Schedule and pass the drill before the next go-live decision. |
 
 ## Resources
 
