@@ -23,6 +23,23 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Compliance Audit
 
+## Overview
+
+Assess a Cursor deployment against approved privacy, identity, source-code, and audit controls. This is an evidence-backed configuration review, not legal certification.
+
+## Prerequisites
+
+- A named system owner, applicable controls, and authority to inspect tenant settings.
+- Read-only admin evidence, current access roster, and redaction rules for audit artifacts.
+- Legal/compliance review for regulated data, customer commitments, or PHI/PCI scope.
+
+## Instructions
+
+1. Define the tenant, repositories, data classes, and control period in scope.
+2. Compare privacy, retention, identity, access review, and `.cursorignore` settings to the approved baseline.
+3. Record findings with evidence, owner, severity, due date, and verification method.
+4. Escalate suspected sensitive-code exposure before broad configuration changes.
+
 Compliance and security auditing framework for Cursor IDE usage. Covers SOC 2, GDPR, and HIPAA assessment with audit checklists, evidence collection, and remediation guidance.
 
 ## Cursor Security Posture
@@ -250,6 +267,23 @@ Remediation:
 - **Vendor risk assessment**: Use Cursor's security page (cursor.com/security) as starting input
 - **Third-party audit**: Cursor's SOC 2 report covers their controls; your audit covers your configuration
 - **Continuous monitoring**: Set calendar reminders for quarterly access reviews and annual policy updates
+
+## Output
+
+- A dated audit record with redacted evidence and control-by-control status.
+- A remediation register with owners, deadlines, and verification criteria.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Admin evidence is incomplete | Mark the control unverified; do not infer compliance from plan level or screenshots alone. |
+| Sensitive code may have been exposed | Activate the incident process, restrict evidence distribution, and consult security/privacy owners. |
+| A policy conflicts with tenant configuration | Keep the restrictive policy in effect and escalate for a documented decision. |
+
+## Examples
+
+For a privacy-mode control, capture the enforced tenant setting and a sampled member status, redact personal identifiers, and record the reviewer and date. If enforcement is absent, create a high-severity finding, assign the tenant admin, and verify again after the approved change.
 
 ## Resources
 

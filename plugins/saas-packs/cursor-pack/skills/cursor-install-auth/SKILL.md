@@ -21,6 +21,17 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Install & Auth
 
+## Overview
+
+Install Cursor, authenticate through the approved identity flow, and establish privacy settings before opening sensitive repositories. Do not treat local profiles or settings files as a secrets store.
+
+## Instructions
+
+1. Download the signed installer from the official site or approved software catalog.
+2. Sign in through the organization-approved account or SSO flow and confirm the expected tenant.
+3. Enable approved privacy/data controls before opening proprietary code, then import only reviewed settings and extensions.
+4. Verify Tab and Chat with a non-sensitive sample project; escalate tenant mismatch to the administrator.
+
 Install Cursor IDE and authenticate your account. Covers all platforms, plan activation, and VS Code migration.
 
 ## Installation
@@ -144,6 +155,15 @@ For extensions not in Open VSX, install via `.vsix`:
 | Extensions missing after migration | Search Open VSX Registry; install via VSIX if needed |
 | Cursor opens as blank window (Linux) | Try `--disable-gpu` flag: `cursor --disable-gpu` |
 | Auto-update fails | Download latest installer from cursor.com/download |
+
+## Output
+
+- A verified Cursor installation tied to the intended individual or enterprise account.
+- Privacy and workspace-trust settings appropriate to the project's data classification.
+
+## Examples
+
+Install and verify in a non-sensitive workspace: install from the approved source, sign in using the company SSO tile, confirm the organization name, enable the approved privacy setting, and test Tab with a harmless comment. If the tenant is wrong or SSO is bypassed unexpectedly, sign out and contact the administrator; do not use a personal account as a workaround.
 
 ## Enterprise Considerations
 
