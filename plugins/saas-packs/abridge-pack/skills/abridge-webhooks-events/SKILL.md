@@ -41,6 +41,15 @@ Handle Abridge webhook events for clinical documentation lifecycle: note complet
 | `provider.enrolled` | Provider onboarded | Update provider roster |
 | `quality.alert` | Low confidence or missing content | Flag for clinical review |
 
+## Prerequisites
+
+- A publicly reachable, TLS-protected sandbox callback endpoint and a
+  webhook secret stored in the platform’s secret manager.
+- Persistent idempotency storage and a redacted operational log; in-memory
+  storage is suitable only for local development.
+- A documented clinical and EHR fallback when a completed-note event cannot
+  be verified or delivered.
+
 ## Instructions
 
 ### Step 1: Webhook Endpoint with Signature Verification
@@ -210,6 +219,17 @@ curl -X POST "${ABRIDGE_BASE_URL}/webhooks" \
 - Event router with handlers for all clinical documentation events
 - Idempotency store preventing duplicate processing
 - Webhook registration via Abridge API
+
+## Examples
+
+Register a sandbox callback, then send a signed synthetic
+`encounter.session.completed` event twice with the same event ID. The first
+request should verify its timestamp and signature, enqueue the safe note-push
+work, and create an idempotency record; the second should return the duplicate
+response without a second push. Capture only the event ID, status, and timing
+in test output. If signature validation, persistence, or downstream FHIR
+validation fails, return a safe non-success response or quarantine the event,
+alert the operator, and keep the encounter in the manual-review path.
 
 ## Error Handling
 
