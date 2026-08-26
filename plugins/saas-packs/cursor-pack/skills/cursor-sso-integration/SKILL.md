@@ -21,6 +21,25 @@ compatibility: Designed for Claude Code
 ---
 # Cursor SSO Integration
 
+## Overview
+
+Integrate Cursor with the organization's identity provider through a phased, auditable SSO/SCIM rollout that preserves emergency recovery and least privilege.
+
+## Instructions
+
+1. Obtain approved SAML/SCIM values from the identity owner and validate them in a non-production or pilot tenant.
+2. Pilot with a limited group, monitor sign-in/provisioning results, and correct attribute/group mappings before enforcement.
+3. Enable organization-wide enforcement only after rollback/emergency access and deprovisioning paths are tested.
+4. Retain redacted setup evidence and schedule access-review verification through the IdP.
+
+## Output
+
+- An audited SSO configuration with scoped role mappings, tested SCIM provisioning, and a documented rollback/emergency-access path.
+
+## Examples
+
+Pilot a single IdP group, confirm a new member receives the least-privilege Cursor role and a departed member is deprovisioned, then document the redacted IdP/Cursor audit evidence. If mapping is wrong, disable pilot enforcement and correct the group claim before organization-wide rollout.
+
 Configure Single Sign-On for Cursor using SAML 2.0 or OIDC. Available on Business and Enterprise plans. Supports Okta, Microsoft Entra ID (Azure AD), Google Workspace, and any SAML 2.0 / OIDC compliant IdP.
 
 ## Prerequisites
