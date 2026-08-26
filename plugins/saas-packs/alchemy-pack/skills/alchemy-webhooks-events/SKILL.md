@@ -39,6 +39,15 @@ Alchemy Notify provides real-time push notifications for on-chain events. Instea
 | NFT Activity | NFT transfer events | Marketplace notifications |
 | Custom Webhook | GraphQL-defined filter | Complex event tracking |
 
+## Prerequisites
+
+- A TLS-protected callback URL, signing key in managed storage, and a handler
+  that receives the raw body before JSON parsing for signature verification.
+- Persistent idempotency storage, validated address/filter configuration, and
+  a least-privilege workflow token for webhook management.
+- A product decision for reorganization, duplicate delivery, unavailable
+  callbacks, and event types that require user-visible confirmation.
+
 ## Instructions
 
 ### Step 1: Create Webhook via Dashboard or API
@@ -186,6 +195,17 @@ async function addAddressToWebhook(webhookId: string, newAddresses: string[]) {
 - HMAC signature verification for webhook security
 - Event router handling all Alchemy webhook types
 - Programmatic webhook management via Notify API
+
+## Examples
+
+Create a sandbox or development callback for a public test address, then send
+one valid synthetic `ADDRESS_ACTIVITY` payload and the exact duplicate event.
+Verify the handler checks the raw-body signature, persists the event ID before
+side effects, and returns a duplicate-safe response for the second delivery.
+Capture only event IDs, network, status, and timing in logs. If signature
+verification fails, the endpoint is unreachable, or a downstream update fails,
+quarantine the event for bounded replay after the fault is fixed; do not
+process an unverified payload or silently discard a user-impacting event.
 
 ## Error Handling
 
