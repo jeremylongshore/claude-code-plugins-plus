@@ -230,6 +230,21 @@ Enrichment providers within Clay have their own limits. When using Clay's manage
 | Enrichment stuck | Provider rate limit | Wait or connect your own API key |
 | Explorer 400/hr limit | Plan restriction | Queue submissions, upgrade to Pro |
 
+## Output
+
+Emit a rate-control record with table/webhook scope, queue depth, request and
+provider response class, retry timing, remaining submission capacity, credit
+budget state, and terminal decision. Do not use fresh webhook URLs or higher
+concurrency to conceal a throttling failure; preserve the idempotency key and
+resume only through the approved scheduler.
+
+## Examples
+
+Queue a staging batch at the defined concurrency, honor a provider’s retry
+guidance, and surface a warning before the table webhook reaches its limit. If
+the limit or budget guardrail is reached, stop new submissions, drain pending
+jobs safely, and schedule an approved replacement rather than resending rows.
+
 ## Resources
 
 - [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)

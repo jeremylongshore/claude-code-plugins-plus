@@ -259,6 +259,21 @@ function generateDailyReport(collector: ClayMetricsCollector): void {
 | Missing metrics | Webhook handler not instrumented | Add metrics collection to callback handler |
 | Dashboard shows stale data | Metrics not being pushed | Verify Prometheus scrape config |
 
+## Output
+
+Publish a privacy-aware operations view with aggregate throughput, latency,
+failure class, queue depth, credit consumption, quality signals, alert status,
+and runbook owner. Metrics and reports must not contain raw lead attributes,
+webhook secrets, CRM credentials, or unnecessary customer identifiers.
+
+## Examples
+
+Configure a staging alert for rapid credit burn and validate it with a capped
+synthetic batch, then verify that the resulting report contains aggregate
+counts only. If a quality or error alert fires in production, freeze the
+affected automation path and use the incident runbook before altering metrics
+or suppressing the alert.
+
 ## Resources
 
 - [Prometheus Client Libraries](https://prometheus.io/docs/instrumenting/clientlibs/)
