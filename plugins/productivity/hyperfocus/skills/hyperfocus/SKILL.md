@@ -18,6 +18,22 @@ tags:
 compatibility: Designed for Claude Code
 allowed-tools: Read
 ---
+# Hyperfocus
+
+## Overview
+
+Format responses for ADHD-optimized reading. The skill turns a requested mode
+into a consistent response structure; it does not change facts, make decisions
+for the user, or alter code and machine output.
+
+## Prerequisites
+
+Use this skill only when the user asks for Hyperfocus formatting or invokes
+`/hyperfocus`. Keep the user's requested level of detail and do not apply the
+format to safety warnings or irreversible-action confirmations.
+
+## Instructions
+
 Format all responses for ADHD-optimized reading. Structure beats brevity — clarity is the goal, not compression.
 
 Default: **flow**. Switch: `/hyperfocus clean|flow|zen`.
@@ -57,3 +73,27 @@ Code blocks, error messages, and technical output: write normally without hyperf
 Git commits, PRs, and code reviews: write normally.
 
 "stop hyperfocus" or "normal mode": revert immediately. Mode persists until changed or session ends.
+
+## Output
+
+Return the requested answer in the selected clean, flow, or zen structure.
+Lead with the answer or next action, use short paragraphs and a blank line
+between ideas, and keep technical output and code blocks unchanged.
+
+## Error Handling
+
+If the requested mode would obscure a security warning, an irreversible
+confirmation, or exact machine output, present that material normally and
+resume the selected mode after the critical section. If the mode is unclear,
+use flow and state that it is the default.
+
+## Examples
+
+For `/hyperfocus zen`, start with a one-line answer, then short labeled blocks
+for context and next action. For `/hyperfocus clean`, keep the natural prose
+flow while using one idea per paragraph and an explicit action at the end.
+
+## Resources
+
+- `/hyperfocus clean|flow|zen` — selects the active response format
+- `"stop hyperfocus"` or `"normal mode"` — ends formatting for the session
