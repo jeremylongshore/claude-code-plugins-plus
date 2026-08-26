@@ -239,6 +239,14 @@ async function cheapRAG(query: string, corpus: string[]) {
 | Budget exceeded | No monitoring | Track billedUnits per response |
 | Over-provisioned model | Using premium everywhere | Tier models by task complexity |
 
+## Examples
+
+Route a small staging classification task to the lowest approved model tier,
+set a token cap and daily budget alert, and compare quality and billed units to
+the baseline. If quality falls below the defined threshold or usage exceeds its
+guardrail, restore the prior tier and investigate scope/prompt design before
+raising model access or limits.
+
 ## Resources
 
 - [Cohere Pricing](https://cohere.com/pricing)

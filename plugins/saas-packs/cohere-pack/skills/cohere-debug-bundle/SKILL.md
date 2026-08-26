@@ -191,6 +191,20 @@ echo "Node: $(node -v 2>/dev/null || echo N/A) | SDK: $(npm list cohere-ai 2>/de
 | Request timing | Latency and timeout diagnosis |
 | Error codes | Classify issue type (4xx vs 5xx) |
 
+## Output
+
+Generate a timestamped, redacted diagnostic bundle with SDK/runtime version,
+endpoint/model status, safe request correlation data, timing/usage aggregates,
+collection failures, and support-case reference. Do not include API keys,
+bearer tokens, complete prompts, retrieved documents, embeddings, or PII.
+
+## Examples
+
+For a time-out incident, collect the sanitized endpoint status, SDK version,
+request timing, and correlation ID, review the archive locally, then share only
+the approved bundle with support. If a prompt or credential appears, quarantine
+the archive and regenerate it with a narrower collector before escalation.
+
 ## Resources
 
 - [Cohere Status Page](https://status.cohere.com)
