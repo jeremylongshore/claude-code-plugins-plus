@@ -116,7 +116,7 @@ jobs:
 
       - name: Upload version-coupling report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kernel-vendor-hash-report
           path: scripts/.kernel-vendor-hash/report.json

@@ -524,7 +524,7 @@ jobs:
         run: node scripts/run-verification-pipeline.mjs
 
       - name: Upload verification results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: verification-results
           path: .claude-plugin/verification-summary.json

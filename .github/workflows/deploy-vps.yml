@@ -64,7 +64,7 @@ jobs:
           echo "build artifacts present (max line: $MAX_LINE chars)"
 
       - name: Upload dist as workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: marketplace-dist
           path: marketplace/dist
