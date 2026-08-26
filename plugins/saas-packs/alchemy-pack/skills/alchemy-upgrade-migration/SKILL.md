@@ -37,6 +37,15 @@ Migration guide for Alchemy SDK upgrades and deprecated package transitions. The
 | `alchemy-sdk` v2 → v3 | `alchemy-sdk` v3 | Medium (some breaking changes) |
 | Direct JSON-RPC | `alchemy-sdk` | Low (SDK wraps same methods) |
 
+## Prerequisites
+
+- A version-pinned dependency baseline, lockfile, and inventory of every
+  current provider, WebSocket, NFT, and notification call.
+- A testnet or public-chain fixture suite that proves the existing behavior
+  without exposing production keys or user data.
+- A reversible deployment plan that can route traffic to the prior artifact if
+  namespace, type, or provider behavior changes unexpectedly.
+
 ## Instructions
 
 ### Step 1: Migrate from alchemy-web3 to alchemy-sdk
@@ -144,6 +153,26 @@ describe('Alchemy SDK Migration', () => {
 - All namespace changes applied (core, nft, ws, notify)
 - Deprecated packages removed
 - Migration tests passing
+
+## Examples
+
+Create a migration branch, pin the target SDK version, and replace one
+read-only Sepolia block-number call with its `alchemy.core` equivalent. Run the
+existing fixture suite plus a negative test for an invalid address, then compare
+the normalized output and sanitized error classification with the prior
+implementation. Remove deprecated imports only after the replacement tests
+pass. If a namespace change, type mismatch, or provider response differs from
+the approved behavior, keep the old release artifact available, revert the
+canary, and document the incompatibility before attempting a wider migration.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Dependency install or lockfile changes unexpectedly | Stop the upgrade, inspect the resolved graph, and restore the approved lockfile. |
+| Replacement call differs from the baseline | Keep traffic on the prior artifact and correct the adapter or fixture expectation. |
+| Deprecated import remains after migration | Treat it as incomplete, remove or replace it, and rerun the repository scan. |
+| Testnet/provider validation fails | Do not promote the version; retain sanitized evidence and investigate before retrying. |
 
 ## Resources
 
