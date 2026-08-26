@@ -27,6 +27,19 @@ compatibility: Designed for Claude Code
 
 > **Community-contributed.** Not affiliated with, endorsed by, or sponsored by CoreWeave, Inc. CoreWeave is a registered trademark of CoreWeave, Inc.
 
+## Overview
+
+Reduce GPU spend by matching a workload's memory, throughput, availability, and
+latency requirements to the smallest approved capacity. Cost changes must preserve
+the service SLO and retain a measured rollback path; approximate public prices are
+planning inputs, not a billing source of truth.
+
+## Prerequisites
+
+- Read-only access to workload utilization, namespace quota, and billing allocation data.
+- A named service owner and target SLO for the workload being resized.
+- Approval for any change that can reduce production capacity or alter availability.
+
 ## GPU Pricing Reference (approximate)
 
 | GPU | Per GPU/hour | Best For |
@@ -68,6 +81,46 @@ Use AWQ or GPTQ quantization to fit larger models on smaller GPUs:
 # 70B model at 4-bit fits on single A100-80GB instead of 4x
 vllm serve meta-llama/Llama-3.1-70B-Instruct-AWQ --quantization awq
 ```
+
+## Instructions
+
+1. Baseline seven days of GPU utilization, queue time, request latency, error rate,
+   and allocated cost by namespace; do not decide from a single peak.
+2. Propose one reversible change—right-size a non-production workload, set a
+   conservative scale-down delay, or run a quantized canary.
+3. Compare the canary against its SLO and budget for an agreed observation window.
+   Promote only if quality, latency, and error rate remain within the published limit.
+4. Record the instance choice, owner, forecast, and rollback trigger in the
+   change record. Revert capacity immediately if the workload breaches its SLO.
+
+## Output
+
+- A documented utilization baseline and cost allocation for the selected workload.
+- A right-sizing or scale-to-zero recommendation with its performance guardrails.
+- A reversible change record containing owner, observation window, and rollback threshold.
+
+## Error Handling
+
+| Condition | Likely cause | Safe response |
+|---|---|---|
+| Latency rises after downsizing | Insufficient GPU capacity or queueing | Restore the previous resource request and investigate with the service owner. |
+| Cost data is incomplete | Labels or billing export are missing | Stop the optimization; repair allocation labels before making a pricing decision. |
+| Quantized canary loses quality | Model or quantization setting is unsuitable | Route traffic back to the baseline model and retain the evaluation result. |
+| Scale-to-zero causes cold-start failures | Delay or startup budget is too small | Restore minimum replicas for the affected service and tune in a non-production lane. |
+
+## Examples
+
+Run an approved staging canary with an explicit resource limit, then compare it to
+the baseline before touching production:
+
+```bash
+kubectl -n inference-staging patch deployment summarizer \
+  --type merge -p '{"spec":{"template":{"spec":{"containers":[{"name":"server","resources":{"limits":{"nvidia.com/gpu":1}}}]}}}}'
+kubectl -n inference-staging rollout status deployment/summarizer --timeout=10m
+```
+
+If p95 latency, error rate, or evaluation quality crosses the signed threshold,
+restore the prior manifest and attach the redacted measurements to the change record.
 
 ## Resources
 

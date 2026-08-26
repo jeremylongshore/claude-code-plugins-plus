@@ -32,6 +32,23 @@ compatibility: Designed for Claude Code
 
 CoreWeave runs GPU workloads on Kubernetes, so RBAC maps directly to K8s namespace isolation and ResourceQuotas. Each team gets a dedicated namespace with GPU limits, storage caps, and network policies. This prevents noisy-neighbor problems where one team's training job starves another's inference service. SOC 2 and HIPAA workloads require namespace-level audit logging and team-scoped API key rotation.
 
+## Prerequisites
+
+- A verified human or workload identity group from the organization identity provider.
+- Cluster-admin approval for namespace, quota, and RoleBinding changes.
+- A team owner, approved GPU quota, and data-classification decision for the namespace.
+
+## Instructions
+
+1. Create a namespace per team and apply ResourceQuota and NetworkPolicy before
+   granting workload permissions.
+2. Bind an IdP group to the smallest suitable ClusterRole; do not bind individual
+   users or reuse a cluster-wide `edit` role without a documented exception.
+3. Run a SubjectAccessReview for the intended verbs and resources, then retain the
+   redacted decision and audit entry with the access request.
+4. Review bindings and service-account tokens on a regular schedule; remove access
+   promptly when a team, project, or incident requires it.
+
 ## Role Hierarchy
 
 | Role | Permissions | Scope |
@@ -105,6 +122,30 @@ function logAccess(entry: CoreWeaveAuditEntry): void {
 | `RoleBinding not found` | Group name mismatch with IdP | Verify AD/OIDC group name matches RoleBinding subject |
 | `Namespace not found` | Team namespace not provisioned | Run namespace creation script before role assignment |
 | `SubjectAccessReview denied` | Missing ClusterRole binding | Check if ClusterRole exists and verb is permitted |
+
+## Output
+
+- An isolated team namespace with an enforced GPU quota and network boundary.
+- Least-privilege group bindings with a recorded access review and audit trail.
+- A repeatable revocation path for a compromised identity or completed project.
+
+## Examples
+
+Confirm a deployment identity can create Jobs only in its team namespace before
+releasing a workload:
+
+```bash
+kubectl auth can-i create jobs.batch \
+  --as=system:serviceaccount:research:trainer \
+  --namespace=research
+kubectl auth can-i create jobs.batch \
+  --as=system:serviceaccount:research:trainer \
+  --namespace=production
+```
+
+The expected result is `yes` only for `research`. If the second check is allowed,
+remove the over-broad binding, re-run both checks, and preserve the redacted audit
+record before resuming deployments.
 
 ## Resources
 
