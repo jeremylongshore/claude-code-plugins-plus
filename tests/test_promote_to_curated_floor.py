@@ -61,9 +61,10 @@ class PromoteFloorTests(unittest.TestCase):
         self.grades_csv = root / "freshie" / "grades.csv"
         self.grades_csv.parent.mkdir(parents=True)
 
-        self._orig = {k: getattr(pc, k) for k in ("ROOT", "GRADES_CSV", "CURATED_DIR", "MANIFEST", "tracked_files")}
+        self._orig = {k: getattr(pc, k) for k in ("ROOT", "GRADES_CSV", "GRADE_HISTOGRAM", "CURATED_DIR", "MANIFEST", "tracked_files")}
         pc.ROOT = root
         pc.GRADES_CSV = self.grades_csv
+        pc.GRADE_HISTOGRAM = root / "freshie" / "grade-histogram.json"
         pc.CURATED_DIR = self.curated
         pc.MANIFEST = self.manifest
 

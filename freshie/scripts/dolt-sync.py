@@ -862,6 +862,8 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
                 f"export. Run the validator --populate-db step for run {run_id} "
                 f"before syncing."
             )
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    histogram_path.parent.mkdir(parents=True, exist_ok=True)
     with open(csv_path, "w", newline="") as fh:
         writer = csv.writer(fh, lineterminator="\n")
         writer.writerow(["skill_path", "grade", "score"])
@@ -973,7 +975,8 @@ def load_run_delta():
 
 
 def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
-                        head_hash: str) -> bool:
+                        head_hash: str, histogram_path: Path = GRADE_HISTOGRAM,
+                        reports_dir: Path | None = None) -> bool:
     """Stamp the histogram + emit the run-delta report. Returns True when
     grade regressions were found (the --alert-on-regression signal).
 
@@ -992,14 +995,15 @@ def post_commit_outputs(repo: Path, run_id: int, tag: str | None,
             "and run-delta report")
         return regressions_found
     try:
-        stamp_dolt_commit(GRADE_HISTOGRAM, head_hash)
-        log(f"stamped dolt_commit {head_hash} into {GRADE_HISTOGRAM.name}")
+        stamp_dolt_commit(histogram_path, head_hash)
+        log(f"stamped dolt_commit {head_hash} into {histogram_path.name}")
     except (OSError, json.JSONDecodeError) as exc:
         log(f"WARNING: could not stamp dolt_commit into "
-            f"{GRADE_HISTOGRAM.name} ({exc}) — the sync itself succeeded")
+            f"{histogram_path.name} ({exc}) — the sync itself succeeded")
     try:
         run_delta = load_run_delta()
-        out_path, report = run_delta.emit(repo, run_id, head_hash, tag)
+        kwargs = {"reports_dir": reports_dir} if reports_dir is not None else {}
+        out_path, report = run_delta.emit(repo, run_id, head_hash, tag, **kwargs)
         log(run_delta.summary_line(report, out_path))
         regressions_found = bool(report["grade_regressions"])
     except Exception as exc:  # noqa: BLE001 — deliberately non-fatal
@@ -1200,6 +1204,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     parser.add_argument("--db", type=Path, default=DB_DEFAULT)
     parser.add_argument("--dolt-dir", type=Path, default=DOLT_PARENT / DOLT_DB_NAME)
+    parser.add_argument("--grades-csv", type=Path, default=GRADES_CSV,
+                        help="write the current-run grades CSV here (default: freshie/grades.csv)")
+    parser.add_argument("--grade-histogram", type=Path, default=GRADE_HISTOGRAM,
+                        help="write the current-run grade histogram here (default: freshie/grade-histogram.json)")
+    parser.add_argument("--reports-dir", type=Path, default=None,
+                        help="write run-delta reports here (default: freshie/reports)")
     parser.add_argument("--org", default=DEFAULT_ORG)
     parser.add_argument("--repo", default=DEFAULT_REPO)
     parser.add_argument("--no-push", action="store_true",
@@ -1329,7 +1339,7 @@ def main() -> int:
         gate_real_checksums(conn, repo, reals)
         gate_json_checksums(conn, repo, schema)
 
-        write_grades_export(conn, run_id)
+        write_grades_export(conn, run_id, args.grades_csv, args.grade_histogram)
         conn.close()
 
         committed, tag, head_hash = commit_and_tag(repo, run_id, source_git_sha())
@@ -1337,7 +1347,9 @@ def main() -> int:
 
         # Non-fatal by contract; runs BEFORE push so the report exists even
         # when a push fails (exit 3) — the local commit it describes does.
-        regressions_found = post_commit_outputs(repo, run_id, tag, head_hash)
+        regressions_found = post_commit_outputs(
+            repo, run_id, tag, head_hash, args.grade_histogram, args.reports_dir
+        )
 
         if args.no_push:
             log("--no-push: skipping DoltHub push (history is LOCAL-ONLY until pushed)")

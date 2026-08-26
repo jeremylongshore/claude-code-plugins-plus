@@ -388,6 +388,23 @@ class GradesExportTests(unittest.TestCase):
         self.assertEqual(json.loads(hist_text)["total"], 0)
         conn.close()
 
+    def test_scratch_output_paths_are_created(self):
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        conn.execute(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) "
+            "VALUES ('plugins/alive', 'A', 99.0, 1)"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "isolated" / "exports"
+            csv_path = output / "grades.csv"
+            hist_path = output / "grade-histogram.json"
+            dolt_sync.write_grades_export(conn, 1, csv_path, hist_path)
+            self.assertTrue(csv_path.is_file())
+            self.assertTrue(hist_path.is_file())
+        conn.close()
+
 
 class StampDoltCommitTests(unittest.TestCase):
     """The post-commit hash stamp must add dolt_commit without disturbing

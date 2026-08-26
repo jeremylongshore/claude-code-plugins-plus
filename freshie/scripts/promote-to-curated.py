@@ -83,6 +83,7 @@ from typing import Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 GRADES_CSV = ROOT / "freshie" / "grades.csv"
+GRADE_HISTOGRAM = ROOT / "freshie" / "grade-histogram.json"
 CURATED_DIR = ROOT / "skills" / ".curated"
 MANIFEST = CURATED_DIR / "MANIFEST.json"
 VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
@@ -556,10 +557,9 @@ def build(validate: bool = True, quiet: bool = False, allow_shrink: bool = False
 
 def _run_id() -> Optional[int]:
     """Latest run id from grade-histogram.json (tracked), for the audit trail."""
-    hist = ROOT / "freshie" / "grade-histogram.json"
-    if hist.exists():
+    if GRADE_HISTOGRAM.exists():
         try:
-            return json.loads(hist.read_text()).get("run_id")
+            return json.loads(GRADE_HISTOGRAM.read_text()).get("run_id")
         except Exception:  # noqa: BLE001
             return None
     return None
@@ -648,6 +648,8 @@ def check(quiet: bool = False) -> int:
 
 
 def main() -> int:
+    global ROOT, GRADES_CSV, GRADE_HISTOGRAM, CURATED_DIR, MANIFEST, VALIDATOR, CORPUS_RESOLVER
+
     ap = argparse.ArgumentParser(description="Promote A/B plugin skills into skills/.curated/ for skills.sh.")
     ap.add_argument("--check", action="store_true", help="CI drift gate: exit 1 if the mirror is stale vs source.")
     ap.add_argument("--no-validate", action="store_true", help="Skip the in-process re-grade defense (build mode).")
@@ -658,7 +660,22 @@ def main() -> int:
         "empty or far below the committed MANIFEST count (build mode).",
     )
     ap.add_argument("--quiet", action="store_true", help="Only print on error.")
+    ap.add_argument("--repo-root", type=Path, default=ROOT,
+                    help="repository root containing plugin sources (default: this checkout)")
+    ap.add_argument("--grades-csv", type=Path, default=None,
+                    help="override the grade export used for selection")
+    ap.add_argument("--grade-histogram", type=Path, default=None,
+                    help="override the grade histogram used for manifest provenance")
+    ap.add_argument("--curated-dir", type=Path, default=None,
+                    help="override the generated curated-mirror destination")
     args = ap.parse_args()
+    ROOT = args.repo_root.resolve()
+    GRADES_CSV = args.grades_csv or ROOT / "freshie" / "grades.csv"
+    GRADE_HISTOGRAM = args.grade_histogram or ROOT / "freshie" / "grade-histogram.json"
+    CURATED_DIR = args.curated_dir or ROOT / "skills" / ".curated"
+    MANIFEST = CURATED_DIR / "MANIFEST.json"
+    VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
+    CORPUS_RESOLVER = ROOT / "scripts" / "corpus-resolver.mjs"
     if args.check:
         return check(quiet=args.quiet)
     return build(validate=not args.no_validate, quiet=args.quiet, allow_shrink=args.allow_shrink)
