@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Multi-Environment Setup
 
+## Output
+
+- Isolated development, staging, and production workspaces with separate scoped credentials, segments, and delivery controls.
+- A promotion receipt with synthetic validation, owner approval, and a rollback path that avoids production-recipient experiments.
+
+## Examples
+
+Promote a campaign template by validating it against synthetic profiles in development, then staging, while keeping production workspace identifiers and secrets distinct. If staging delivery or consent checks fail, stop promotion and restore the previous approved template rather than editing the production campaign in place.
+
 ## Overview
 
 Configure isolated Customer.io environments for dev, staging, and production: separate workspaces per environment, typed configuration with validation, environment-aware client wrappers, Kubernetes ConfigMap overlays, and data isolation verification.
