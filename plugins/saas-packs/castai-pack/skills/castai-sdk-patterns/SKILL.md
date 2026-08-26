@@ -245,6 +245,22 @@ class CastAIClient:
 | 429 | Rate limited | Backoff and retry |
 | 5xx | Server error | Retry with exponential backoff |
 
+## Output
+
+Provide a small client boundary that returns typed, redacted domain data or a
+classified failure with request correlation information. The boundary must not
+log API keys, full authorization headers, or unfiltered provider responses;
+callers need an explicit retry policy and a safe error category rather than a
+raw exception string.
+
+## Examples
+
+Call `list_clusters()` with a read-only development key and expose only the
+cluster ID and agent status to the caller. When the provider returns 429,
+capture the response category and retry according to the bounded backoff
+policy; on 401, stop retries and route the request to the secret-owner
+rotation process.
+
 ## Resources
 
 - [CAST AI OpenAPI Spec](https://api.cast.ai/v1/spec/openapi.json)

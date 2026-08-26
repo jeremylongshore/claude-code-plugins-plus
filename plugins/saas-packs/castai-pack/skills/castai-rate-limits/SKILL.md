@@ -168,6 +168,21 @@ async function pollClusterStatus(
 | 5xx errors | Status >= 500 | Retry up to 3 times |
 | Connection timeout | Fetch throws | Retry with longer timeout |
 
+## Output
+
+Emit per-operation metrics for queue depth, attempts, retry delay, response
+class, and final disposition, without recording API keys or complete payloads.
+The caller receives either the validated response or a bounded terminal error;
+it must not turn a provider outage into uncontrolled parallel retries.
+
+## Examples
+
+Queue five savings reads with a finite concurrency limit and honor an observed
+`Retry-After` value before retrying a 429. If the retry budget is exhausted,
+return a retryable unavailable result to the job scheduler and preserve the
+request correlation ID so an operator can distinguish it from an empty savings
+response.
+
 ## Resources
 
 - [CAST AI API Reference](https://api.cast.ai/v1/spec/openapi.json)
