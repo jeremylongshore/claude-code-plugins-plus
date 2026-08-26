@@ -3,7 +3,7 @@
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 
-export const CANONICAL_REPOSITORY = 'jeremylongshore/claude-code-plugins-plus-skills';
+export const CANONICAL_REPOSITORY = 'jeremylongshore/tons-of-skills-marketplace';
 
 export function evaluateWorkflowRun(event, repository = CANONICAL_REPOSITORY) {
   const run = event?.workflow_run ?? {};

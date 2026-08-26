@@ -30,8 +30,8 @@
 #   releases/download/evidence-latest/report-manifest.json
 # and pins these OIDC claims for the `ccp` row:
 #   issuer      https://token.actions.githubusercontent.com
-#   subject     repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main
-#   workflowRef jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main
+#   subject     repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main
+#   workflowRef jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main
 name: Emit signed evidence manifest
 
 on:

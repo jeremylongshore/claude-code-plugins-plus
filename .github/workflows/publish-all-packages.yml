@@ -62,7 +62,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
-          test "$REPOSITORY" = 'jeremylongshore/claude-code-plugins-plus-skills'
+          test "$REPOSITORY" = 'jeremylongshore/tons-of-skills-marketplace'
           SHA=$(gh api "repos/$REPOSITORY/commits/main" --jq '.sha')
           test -n "$SHA"
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"

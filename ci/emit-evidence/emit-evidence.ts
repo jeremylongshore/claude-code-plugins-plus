@@ -70,7 +70,7 @@ import {
 } from '@intentsolutions/core/validators/v1/gate-result-v1';
 import { EvidenceBundleSchema } from '@intentsolutions/core/validators/v1/evidence-bundle';
 
-const GITHUB_REPO = 'jeremylongshore/claude-code-plugins-plus-skills';
+const GITHUB_REPO = 'jeremylongshore/tons-of-skills-marketplace';
 const REPO_KEY = 'ccp';
 
 /** The two gate scripts whose bytes ARE the policy this emit attests under. */
@@ -241,8 +241,8 @@ export interface ManifestSkeleton {
  * always `refs/heads/main` in CI — these are exactly the claims the dashboard
  * pins for the `ccp` row:
  *   issuer      https://token.actions.githubusercontent.com
- *   subject     repo:jeremylongshore/claude-code-plugins-plus-skills:ref:refs/heads/main
- *   workflowRef jeremylongshore/claude-code-plugins-plus-skills/.github/workflows/emit-evidence.yml@refs/heads/main
+ *   subject     repo:jeremylongshore/tons-of-skills-marketplace:ref:refs/heads/main
+ *   workflowRef jeremylongshore/tons-of-skills-marketplace/.github/workflows/emit-evidence.yml@refs/heads/main
  */
 export function signingClaims(ref: string): ManifestSkeleton['signing'] {
   return {

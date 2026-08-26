@@ -4,7 +4,7 @@ How this project is maintained, who can approve what, and how contributors earn
 more responsibility over time. This is the operating manual for the **maintainer
 ladder**; the live roster of people is in [`MAINTAINERS.md`](MAINTAINERS.md).
 
-> **Status:** MVP on the personal repo `jeremylongshore/claude-code-plugins-plus-skills`.
+> **Status:** MVP on the personal repo `jeremylongshore/tons-of-skills-marketplace`.
 > The ladder below is a _convention_ today (enforced by CODEOWNERS + branch
 > protection + human trust). It is designed to convert cleanly to real **GitHub
 > Teams** and org rulesets once the repo transfers to the `intent-solutions-io`

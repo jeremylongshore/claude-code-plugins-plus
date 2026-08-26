@@ -5,19 +5,19 @@ fully supported versus best-effort.
 
 ## Where to ask
 
-| I want to…                        | Go to                                                                                                                                         |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ask a usage question              | [GitHub Discussions — Q&A](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/categories/q-a)                     |
-| Propose or discuss an idea        | [GitHub Discussions — Ideas](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/categories/ideas)                 |
-| Show off something you built      | [GitHub Discussions — Show and tell](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/categories/show-and-tell) |
-| Request a new plugin pack         | [Plugin Pack Request discussion template](DISCUSSION_TEMPLATE/plugin-pack-request.yml)                                                        |
-| Report a bug or request a feature | [Open an issue](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/new/choose)                                         |
-| Submit a plugin                   | The plugin-submission issue template, then follow [CONTRIBUTING.md](CONTRIBUTING.md)                                                          |
-| Report a security vulnerability   | [SECURITY.md](SECURITY.md) — **never a public issue**                                                                                         |
+| I want to…                        | Go to                                                                                                                                    |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Ask a usage question              | [GitHub Discussions — Q&A](https://github.com/jeremylongshore/tons-of-skills-marketplace/discussions/categories/q-a)                     |
+| Propose or discuss an idea        | [GitHub Discussions — Ideas](https://github.com/jeremylongshore/tons-of-skills-marketplace/discussions/categories/ideas)                 |
+| Show off something you built      | [GitHub Discussions — Show and tell](https://github.com/jeremylongshore/tons-of-skills-marketplace/discussions/categories/show-and-tell) |
+| Request a new plugin pack         | [Plugin Pack Request discussion template](DISCUSSION_TEMPLATE/plugin-pack-request.yml)                                                   |
+| Report a bug or request a feature | [Open an issue](https://github.com/jeremylongshore/tons-of-skills-marketplace/issues/new/choose)                                         |
+| Submit a plugin                   | The plugin-submission issue template, then follow [CONTRIBUTING.md](CONTRIBUTING.md)                                                     |
+| Report a security vulnerability   | [SECURITY.md](SECURITY.md) — **never a public issue**                                                                                    |
 
 Issue templates exist for bug reports, feature requests, documentation problems,
 questions, plugin submissions, and killer-skill nominations — the
-[issue chooser](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/new/choose)
+[issue chooser](https://github.com/jeremylongshore/tons-of-skills-marketplace/issues/new/choose)
 routes you to the right one.
 
 ## Triage SLA
@@ -30,7 +30,7 @@ tracked in the issue thread.
 ## Security reports
 
 Follow [SECURITY.md](SECURITY.md): report privately via
-[GitHub Security Advisories](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/security/advisories/new)
+[GitHub Security Advisories](https://github.com/jeremylongshore/tons-of-skills-marketplace/security/advisories/new)
 or email `jeremy@intentsolutions.io`. Security reports get acknowledged within
 24 hours with a remediation timeline within 72 hours — faster than the general
 triage SLA above.

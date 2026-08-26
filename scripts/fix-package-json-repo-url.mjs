@@ -2,7 +2,7 @@
 /**
  * One-shot fixup: rewrite `repository.url` and `bugs` in every
  * plugins/**\/package.json from the legacy `claude-code-plugins` slug to
- * the canonical `claude-code-plugins-plus-skills`. npm provenance validates
+ * the canonical `tons-of-skills-marketplace`. npm provenance validates
  * repository.url against the actual GitHub Actions repo slug at publish
  * time, and a mismatch causes HTTP 422 for every package.
  *
@@ -16,9 +16,9 @@ const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const PLUGINS = join(ROOT, 'plugins');
 
 const OLD_GIT = 'git+https://github.com/jeremylongshore/claude-code-plugins.git';
-const NEW_GIT = 'git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git';
+const NEW_GIT = 'git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git';
 const OLD_BUGS = 'https://github.com/jeremylongshore/claude-code-plugins/issues';
-const NEW_BUGS = 'https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues';
+const NEW_BUGS = 'https://github.com/jeremylongshore/tons-of-skills-marketplace/issues';
 
 const SKIP = new Set(['node_modules', '.git']);
 

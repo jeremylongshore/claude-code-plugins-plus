@@ -303,7 +303,7 @@ Source of truth: `marketplace/src/data/spotlights.json`.
 
 ## Key Identifiers — Do Not "Normalize"
 
-- **GitHub repo (canonical):** `jeremylongshore/claude-code-plugins-plus-skills`
+- **GitHub repo (canonical):** `jeremylongshore/tons-of-skills-marketplace`
 - **Marketplace catalog id:** `claude-code-plugins-plus`
 - **Public install slug:** `jeremylongshore/claude-code-plugins` (legacy, GitHub 301s to canonical — hardcoded in CLI, Hero snippet, hundreds of READMEs — renaming is a breaking API change)
 

@@ -4,7 +4,7 @@
 
 **Do not open a public issue for security vulnerabilities.**
 
-Use [GitHub Private Security Advisories](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/security/advisories/new) to report vulnerabilities privately. Alternatively, email **jeremy@intentsolutions.io**.
+Use [GitHub Private Security Advisories](https://github.com/jeremylongshore/tons-of-skills-marketplace/security/advisories/new) to report vulnerabilities privately. Alternatively, email **jeremy@intentsolutions.io**.
 
 We will acknowledge receipt within 24 hours and provide a remediation timeline within 72 hours.
 

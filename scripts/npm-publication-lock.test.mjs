@@ -6,7 +6,7 @@ import { evaluateWorkflowRun } from './publication-trigger-guard.mjs';
 
 const SHA = 'a'.repeat(40);
 const OTHER_SHA = 'b'.repeat(40);
-const REPO = 'jeremylongshore/claude-code-plugins-plus-skills';
+const REPO = 'jeremylongshore/tons-of-skills-marketplace';
 
 function fixture({
   context,

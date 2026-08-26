@@ -91,7 +91,7 @@ const DEADLINE = '2026-07-22'; // delist deadline for sources still failing
 const DEADLINE_MARKER = `deadline ${DEADLINE}`; // stable comment string in sources.yaml
 
 // Enforcement surface (marketplace repo, tracking issue, removal branch).
-const MARKETPLACE_REPO = 'jeremylongshore/claude-code-plugins-plus-skills';
+const MARKETPLACE_REPO = 'jeremylongshore/tons-of-skills-marketplace';
 const MARKETPLACE_OWNER = 'jeremylongshore'; // author of the 2026-07-08 notify issues
 const RESULTS_ISSUE = 984; // census tracking issue — gets the results table
 const ENFORCE_BRANCH = 'fix/census-deadline-removals';
