@@ -150,6 +150,22 @@ terraform apply -var-file=environments/staging.tfvars
 | Policies reset after upgrade | Chart default values changed | Pass `--reuse-values` |
 | Spot handler incompatible | Node format changed | Upgrade all components together |
 
+## Output
+
+Record the source and target chart/provider versions, reviewed change notes,
+staging validation evidence, production change approval, post-upgrade health,
+and explicit rollback decision. The release is not complete merely because
+pods start: autoscaler policy state, node lifecycle behavior, and cost signals
+must match the approved baseline.
+
+## Examples
+
+Upgrade the staging agent with the production values, observe one controlled
+scale event, and compare policy exports before and after the change. Promote
+only when the acceptance checks pass; on a CrashLoop or destructive Terraform
+plan, stop promotion, run the documented Helm rollback, and attach the
+redacted failure evidence to the change record.
+
 ## Resources
 
 - [CAST AI Changelog](https://docs.cast.ai/changelog/)

@@ -174,6 +174,22 @@ spec:
 | Duplicate events | No idempotency | Track event IDs in your handler |
 | Events delayed | Queue backlog | Monitor CAST AI status page |
 
+## Output
+
+The receiver records the provider event ID, normalized event type, cluster ID,
+delivery timestamp, processing decision, and downstream notification result.
+Return a 2xx acknowledgement only after durable idempotency state is written;
+send malformed, unsigned, or unauthorized deliveries to a redacted quarantine
+queue with an operator-visible reason code.
+
+## Examples
+
+For a spot-interruption event, persist `eventId` with the cluster ID, enqueue a
+single PagerDuty notification, and return `{ "received": true }`. If the same
+event ID is retried, return 200 without creating a second incident. Test this
+flow with a synthetic payload and a non-production notification target before
+enabling the production channel.
+
 ## Resources
 
 - [CAST AI Notifications](https://docs.cast.ai/docs/getting-started)
