@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Production patterns for Apple Notes automation: JXA wrapper class, error handling, batch operations, and cross-account support.
 
+## Prerequisites
+
+- A scoped account/folder configuration resolved outside the JXA source string.
+- A safe process invocation boundary that passes source and data without shell interpolation.
+- Durable idempotency tracking for writes and a synthetic local test corpus.
+
+## Instructions
+
+1. Treat names, bodies, queries, and folder identifiers as data—not template fragments or shell arguments.
+2. Resolve only explicitly configured accounts and folders, and fail if the target is absent rather than creating it implicitly.
+3. Keep list and search results scoped and minimize returned fields; never log note bodies by default.
+4. Serialize mutations, record an opaque idempotency key before the call, and reconcile timeouts before retrying.
+
 ## Instructions
 
 ### Step 1: JXA Client Wrapper (Node.js)
@@ -98,6 +111,14 @@ async function batchCreateNotes(
 - Type-safe JXA client wrapper for Node.js
 - List, create, search operations via osascript
 - Batch operations with throttling
+
+## Error Handling
+
+If source generation, JSON parsing, or an Apple Event call fails, retain the opaque operation key and return a redacted error category. Do not retry a create until the scoped target has been checked for the prior operation. Reject unconfigured folders, over-limit requests, and any input that would require shell-string interpolation.
+
+## Examples
+
+For a synthetic import, resolve the test folder from reviewed configuration, enqueue one record with a source-record key, and verify its returned opaque identifier before advancing. For production, use a process API with argument arrays or stdin rather than the illustrative interpolated `execSync` command strings above; keep the adapter implementation in a reviewed module.
 
 ## Resources
 

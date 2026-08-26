@@ -23,6 +23,12 @@ compatibility: Designed for Claude Code
 
 Iterative development workflow for Apple Notes JXA scripts with file watching and test helpers.
 
+## Prerequisites
+
+- A local macOS development machine and a test-only `On My Mac` folder, or a fully mocked Notes adapter.
+- Synthetic test fixtures with no production note content, account names, or credentials.
+- A source-controlled allowlist of scripts eligible for local execution.
+
 ## Instructions
 
 ### Step 1: Project Setup
@@ -95,6 +101,14 @@ export { runJxa, getNoteCount, createTestNote };
 - Hot-reload JXA development with file watching
 - Test helpers for note CRUD operations
 - Iterative script development workflow
+
+## Error Handling
+
+Stop the watcher when a script fails and surface only the exit status plus a redacted error category. Never hot-run an edited script against a production or synchronized default account. If a test mutation is required, use the designated test folder and reconcile it before the next run.
+
+## Examples
+
+Run unit tests against a mock client while editing. When a JXA smoke test is necessary, point it at the designated local test folder with a synthetic title, verify the resulting opaque identifier, and clean it up under a test fixture lifecycle—do not run the watcher against `defaultAccount`.
 
 ## Resources
 

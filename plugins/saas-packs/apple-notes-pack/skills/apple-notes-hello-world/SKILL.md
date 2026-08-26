@@ -164,6 +164,10 @@ osascript -l JavaScript -e '
 - Organized note into a folder
 - Deleted a note
 
+## Examples
+
+Create one synthetic note in a pre-created, test-only local folder, read only that note back by its returned identifier, and remove it after verifying the exercise. Do not list all notes, search a live account, or create folders implicitly as part of a permission smoke test.
+
 ## Error Handling
 
 | Error | Cause | Solution |
