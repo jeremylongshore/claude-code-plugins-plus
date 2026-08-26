@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 
 AppFolio's Stack API enforces per-partner rate limits to protect shared property management infrastructure. High-volume operations like bulk tenant imports, rent-roll syncs, and work-order batch updates can quickly exhaust quotas. Property managers running nightly portfolio syncs across hundreds of units must throttle carefully, especially during month-end when lease renewals and payment processing spike concurrently.
 
+## Prerequisites
+
+- A verified per-endpoint limit from the current AppFolio partner contract or
+  response headers; do not rely on a generic rate value for tenant writes.
+- Persisted batch cursors, idempotency keys for every write, and an operator
+  policy for pausing month-end or other safety-sensitive workloads.
+- A staging fixture and request-budget owner who can prove retries, `429`
+  behavior, and unknown-write handling without touching production tenants.
+
+## Instructions
+
+1. Select the limiter ceiling for the specific endpoint and keep concurrency
+   below the smallest applicable portfolio or partner limit.
+2. Acquire a token before each request, honor `Retry-After`, and cap retries
+   with jitter for transient provider failures.
+3. Process writes from a persisted cursor with idempotency keys; never replay a
+   tenant create just because the response was lost.
+4. Pause and escalate batches that exhaust the retry budget, hit a maintenance
+   window, or have an unknown write outcome.
+
 ## Rate Limit Reference
 
 | Endpoint | Limit | Window | Scope |
@@ -40,7 +60,6 @@ class AppFolioRateLimiter {
   private lastRefill: number;
   private readonly maxTokens: number;
   private readonly refillRate: number; // tokens per ms
-  private queue: Array<{ resolve: () => void }> = [];
 
   constructor(maxPerMinute: number) {
     this.maxTokens = maxPerMinute;
@@ -50,23 +69,27 @@ class AppFolioRateLimiter {
   }
 
   async acquire(): Promise<void> {
-    this.refill();
-    if (this.tokens >= 1) { this.tokens -= 1; return; }
-    return new Promise(resolve => this.queue.push({ resolve }));
+    for (;;) {
+      this.refill();
+      if (this.tokens >= 1) {
+        this.tokens -= 1;
+        return;
+      }
+      // Wait until the next token is available; no later request is needed to
+      // wake this caller.
+      const waitMs = Math.max(1, Math.ceil((1 - this.tokens) / this.refillRate));
+      await new Promise(resolve => setTimeout(resolve, waitMs));
+    }
   }
 
   private refill() {
     const now = Date.now();
     this.tokens = Math.min(this.maxTokens, this.tokens + (now - this.lastRefill) * this.refillRate);
     this.lastRefill = now;
-    while (this.tokens >= 1 && this.queue.length) {
-      this.tokens -= 1;
-      this.queue.shift()!.resolve();
-    }
   }
 }
 
-const limiter = new AppFolioRateLimiter(100);
+const limiter = new AppFolioRateLimiter(25); // configure per endpoint contract
 ```
 
 ## Retry Strategy
@@ -123,6 +146,23 @@ async function batchSyncTenants(tenants: any[], batchSize = 25) {
 | Timeout on property list | Large portfolio (500+ units) | Paginate with `per_page=50` |
 | 409 Conflict on tenant update | Concurrent write to same tenant | Retry with fresh ETag |
 | 503 during maintenance | Scheduled nightly window (2-4 AM PT) | Skip requests, retry after window |
+
+## Output
+
+- A self-scheduling, endpoint-specific limiter that cannot strand queued work
+- Bounded retry outcomes with `Retry-After` evidence and redacted failure data
+- A persisted batch decision: completed, paused for later retry, or quarantined
+  for operator reconciliation
+
+## Examples
+
+For a sandbox tenant-update batch, set the limiter below the documented tenant
+write ceiling, process one record at a time with idempotency keys, and preserve
+the cursor after each confirmed result. Induce a `429` to prove that callers
+wait and resume without an additional request, then induce a lost response to
+prove the record is quarantined rather than blindly replayed. If rate headers
+conflict with the configured ceiling, retries exhaust, or maintenance starts,
+pause the batch and hand the cursor to the owner.
 
 ## Resources
 
