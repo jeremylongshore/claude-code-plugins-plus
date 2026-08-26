@@ -46,22 +46,22 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "axios": "^1.16.1",
-    "chalk": "^5.6.2",
-    "commander": "^12.1.0",
-    "fs-extra": "^11.3.5",
-    "ora": "^8.2.0",
+    "axios": "^1.19.0",
+    "chalk": "^6.0.0",
+    "commander": "^15.0.0",
+    "fs-extra": "^11.4.0",
+    "ora": "^9.4.1",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "@size-limit/file": "^12.1.0",
+    "@eslint/js": "^10.0.1",
+    "@size-limit/file": "^13.0.3",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.19.41",
-    "eslint": "^9.39.4",
-    "size-limit": "^12.1.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.0",
-    "vitest": "^2.1.9"
+    "@types/node": "^26.2.0",
+    "eslint": "^10.9.0",
+    "size-limit": "^13.0.3",
+    "typescript": "^7.0.2",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.11"
   }
 }

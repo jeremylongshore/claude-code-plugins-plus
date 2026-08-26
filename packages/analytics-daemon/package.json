@@ -23,16 +23,16 @@
   "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
   "license": "MIT",
   "dependencies": {
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "cors": "^2.8.6",
-    "express": "^4.22.2",
-    "ws": "^8.21.0"
+    "express": "^5.2.1",
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^22.19.19",
+    "@types/node": "^26.2.0",
     "@types/ws": "^8.18.1",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   }
 }
