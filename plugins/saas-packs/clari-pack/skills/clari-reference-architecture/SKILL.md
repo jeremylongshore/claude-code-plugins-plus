@@ -28,6 +28,21 @@ compatibility: Designed for Claude Code
 
 Production architecture for Clari revenue intelligence integrations: export pipeline design, data warehouse schema, analytics layer, and alerting.
 
+## Prerequisites
+
+- Approved Clari export scope and a named revenue-data owner
+- Separate development, staging, and production storage/state boundaries
+- Warehouse access controls, retention policy, and audit logging
+- An orchestrator capable of idempotent exports and reviewed recovery
+
+## Instructions
+
+Build the pipeline in a non-production boundary first: pin the client and
+schema version, export a designated period, validate the manifest, and load
+through an idempotent warehouse operation. Promote the same reviewed design
+only after access controls, freshness alerts, and recovery behavior pass; keep
+individual forecast and owner data out of shared dashboards by default.
+
 ## Architecture Diagram
 
 ```
@@ -129,6 +144,31 @@ WHERE exported_at = (SELECT MAX(exported_at) FROM clari_forecasts f2 WHERE f2.ti
 | Pipeline orchestration | Airflow | Retry, monitoring, DAG visualization |
 | Change detection | Snapshot comparison | Clari has no real-time webhooks |
 | Warehouse | Snowflake | SQL analytics, dbt compatibility |
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Export is partial or stale | Mark the dataset uncertified and halt downstream publication. |
+| Warehouse load breaks a constraint | Retain the staged input, diagnose the schema mismatch, and avoid destructive replacement. |
+| Data crosses environment or role boundaries | Restrict access, investigate the policy failure, and rotate affected credentials if needed. |
+| Freshness alert fires | Notify the data owner with the last certified period and job correlation data. |
+
+## Output
+
+Produce an architecture decision and pipeline manifest covering environment
+boundaries, owners, schema/client pins, data classification, retention,
+monitoring, recovery, and the latest certified export. Design diagrams are
+guidance only; the reviewed implementation and observed run evidence are the
+source of operational truth.
+
+## Examples
+
+Deploy the daily export into staging with a separate warehouse role, verify
+that a repeated run does not duplicate rows, and test a delayed-export alert.
+Promote only the approved equivalent configuration to production; if a report
+contains unauthorized rep-level detail, restrict it and correct the access
+model before publishing another refresh.
 
 ## Resources
 

@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Handle Clari API changes: version migrations, export schema updates, and Copilot API adoption.
 
+## Prerequisites
+
+- Current and target API/schema versions recorded in change control
+- Representative non-production exports and an approved compatibility baseline
+- Version-pinned client, warehouse migration, and rollback paths
+- Data-owner approval for any field, retention, or analytics semantic change
+
 ## Instructions
 
 ### Step 1: Check Current API Version
@@ -84,6 +91,30 @@ Keep the previous client version alongside the new one until migration is verifi
 # Pin client to specific behavior
 client_v4 = ClariClient(ClariConfig(api_key=api_key, base_url="https://api.clari.com/v4"))
 ```
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Source removes or renames a field | Block promotion, update the compatibility contract, and revalidate transformations. |
+| Backfill produces unexpected values | Stop the migration, preserve the prior certified table, and investigate with redacted samples. |
+| New client or endpoint fails | Restore the pinned prior client and record the provider/job evidence. |
+| Schema is empty or ambiguous | Do not infer compatibility; obtain an approved source contract or defer the change. |
+
+## Output
+
+Create a migration receipt with source/target versions, detected fields,
+compatibility decision, tested transform, backfill counts, validation evidence,
+rollback result, and named approver. Keep live credentials and raw forecast
+values out of the receipt.
+
+## Examples
+
+Detect a new export field in staging, add it behind a nullable warehouse
+migration, compare redacted records with the prior client, and verify the
+analytics contract before promotion. If a mandatory field disappears, retain
+the previous client and certified dataset while the data owner decides the new
+semantic mapping.
 
 ## Resources
 

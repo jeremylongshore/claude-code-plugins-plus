@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Secure your Clari integration: API token management, exported data PII handling, and access control best practices.
 
+## Prerequisites
+
+- An approved secret manager and named API-token owner
+- A documented data classification for forecast and rep-level exports
+- Role-based access groups for production and non-production consumers
+- A tested token-rotation and incident escalation path
+
 ## Instructions
 
 ### Step 1: Token Management
@@ -76,6 +83,29 @@ def redact_pii(entries: list[dict]) -> list[dict]:
 - [ ] Export download URLs are temporary -- do not cache
 - [ ] Audit who has API token access
 - [ ] Token regenerated if any team member leaves
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Token is exposed or a user departs | Revoke and replace it, audit access, and retain redacted incident evidence. |
+| Export lands outside approved storage | Restrict access, remove the unauthorized copy through the approved retention process, and notify data governance. |
+| PII is needed in a non-production test | Use synthetic or irreversibly redacted data; do not copy production records. |
+| Access review finds excess privilege | Remove the role, confirm no dependent job fails, and document the decision. |
+
+## Output
+
+Create a security review record with token owner, secret reference, authorized
+roles, data destinations, redaction status, rotation date, and exception
+approvals. The record must never contain a live token, temporary download URL,
+or unredacted forecast/rep data.
+
+## Examples
+
+When an analyst leaves, issue a replacement service token in the secret store,
+update the affected job, prove that it runs with its assigned role, then revoke
+the former user token. If an export was copied into a test workspace, quarantine
+it and replace it with redacted data before work resumes.
 
 ## Resources
 

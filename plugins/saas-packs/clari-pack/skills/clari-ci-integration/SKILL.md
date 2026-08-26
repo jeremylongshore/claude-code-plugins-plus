@@ -28,6 +28,13 @@ compatibility: Designed for Claude Code
 
 Add Clari export validation to CI: test API connectivity, validate export schemas, and run pipeline integration tests.
 
+## Prerequisites
+
+- Protected CI environment with scoped, masked secrets
+- Mock fixtures for pull-request tests and an approved integration test account
+- A repository environment gate for any production-targeted job
+- Retention policy for generated logs and artifacts
+
 ## Instructions
 
 ### GitHub Actions Workflow
@@ -80,6 +87,29 @@ jobs:
 ```bash
 gh secret set CLARI_API_KEY --body "your-api-token"
 ```
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Unit fixture or schema test fails | Fail the run before any external request and attach a redacted report. |
+| Integration account cannot authenticate | Stop retries, verify the secret reference and account scope, then notify its owner. |
+| Export shape changes | Quarantine the release and require a reviewed schema migration. |
+| Secret appears in logs or artifacts | Revoke it, purge according to policy, and investigate exposure. |
+
+## Output
+
+Publish a redacted run summary with fixture/integration status, schema version,
+external job IDs, artifact retention location, and promotion decision. Secrets,
+forecast payloads, and download URLs must remain masked and unavailable to
+untrusted pull-request code.
+
+## Examples
+
+Run mock tests on every pull request, then run one read-only integration export
+only from a protected branch using a scoped environment secret. Fail closed if
+the schema changes or the credential is unavailable; a successful read does not
+authorize a data load or production deployment.
 
 ## Resources
 
