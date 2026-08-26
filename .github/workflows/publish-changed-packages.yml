@@ -45,7 +45,7 @@ jobs:
       sha: ${{ steps.guard.outputs.sha }}
     steps:
       - name: Check out trusted default-branch guard
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
@@ -72,7 +72,7 @@ jobs:
     if: ${{ needs.guard.outputs.eligible == 'true' }}
     steps:
       - name: Check out trusted preflight implementation
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
@@ -101,7 +101,7 @@ jobs:
       count: ${{ steps.build.outputs.count }}
       packages_json: ${{ steps.build.outputs.packages_json }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
@@ -152,11 +152,11 @@ jobs:
     if: ${{ needs.guard.outputs.eligible == 'true' && needs.preflight.result == 'success' && needs.detect.outputs.count != '0' }}
     environment: npm-production
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'

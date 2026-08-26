@@ -51,7 +51,7 @@ jobs:
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         if: steps.check.outputs.should_run == 'true'
 
       - name: Install mcp-publisher

@@ -74,7 +74,7 @@ jobs:
     needs: guard
     steps:
       - name: Check out trusted preflight implementation
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
@@ -102,7 +102,7 @@ jobs:
       count: ${{ steps.list.outputs.count }}
       packages_json: ${{ steps.list.outputs.packages_json }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
@@ -140,11 +140,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [guard, enumerate, preflight]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
@@ -184,11 +184,11 @@ jobs:
     if: ${{ inputs.dry_run_only == false && needs.guard.result == 'success' && needs.enumerate.result == 'success' && needs.preflight.result == 'success' && needs.dry-run.result == 'success' }}
     environment: npm-production
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.guard.outputs.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
