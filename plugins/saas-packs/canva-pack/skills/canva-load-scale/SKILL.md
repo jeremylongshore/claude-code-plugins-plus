@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Load test and scale Canva Connect API integrations. Since Canva enforces per-user rate limits, scaling means distributing load across users, not increasing per-user throughput.
 
+## Prerequisites
+
+- Written authorization for load testing, a protected non-production tenant/assets, and current provider/account limits.
+- A fixed budget, concurrency ceiling, abort threshold, and incident owner.
+
+## Instructions
+
+1. Use synthetic assets and least-privilege test identities; never spread load across users or integrations to circumvent provider limits.
+2. Start below the account limit, increase one dimension at a time, and stop automatically at error/rate/cost thresholds.
+3. Record aggregate results and reconcile all created jobs/artifacts before ending the test.
+
 ## Canva Rate Limit Constraints
 
 | Operation | Per-User Limit | Implication |
@@ -229,6 +240,14 @@ spec:
           type: AverageValue
           averageValue: 50
 ```
+
+## Output
+
+Load testing produces a redacted test plan, aggregate throughput/latency/error/rate metrics, abort decision, and cleanup/reconciliation receipt. It excludes production assets, OAuth data, design contents, and user identifiers.
+
+## Examples
+
+Run a short k6 test against a synthetic design workflow with a fixed low virtual-user cap and an automatic abort on 429s. Use the result to size queues within the documented limits; do not add accounts or distribute requests across identities to create artificial throughput.
 
 ## Error Handling
 

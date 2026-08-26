@@ -27,6 +27,11 @@ compatibility: Designed for Claude Code
 
 Collect diagnostic information for Canva Connect API issues. Tests connectivity to `api.canva.com/rest/v1/*`, validates OAuth tokens, checks rate limits, and packages evidence for support tickets.
 
+## Prerequisites
+
+- Incident-owner approval, access to protected redacted telemetry, and an encrypted access-controlled evidence destination.
+- A scoped incident/request reference; diagnostic collection must not enumerate users, designs, assets, or tokens.
+
 ## Instructions
 
 ### Step 1: Connectivity & Auth Check Script
@@ -171,6 +176,14 @@ for (const r of results) {
   console.log(`[${icon}] ${r.check}: ${r.details} (${r.durationMs}ms)`);
 }
 ```
+
+## Output
+
+The bundle contains redacted platform/client versions, endpoint/status categories, opaque request references, and incident timestamps plus a checksum and expiry. It excludes OAuth material, design/user data, signed URLs, raw payloads, and full headers.
+
+## Examples
+
+For one authorization failure, collect the client version, timestamp, redacted 401 category, and trace reference; encrypt the archive and share only with approved responders. Remove it under the incident retention policy and do not add a token or design export merely to make the bundle more complete.
 
 ## Sensitive Data Handling
 

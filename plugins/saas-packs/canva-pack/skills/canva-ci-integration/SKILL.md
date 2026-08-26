@@ -28,6 +28,11 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD pipelines for Canva Connect API integrations. Uses MSW mock server for unit tests and real API calls for integration tests.
 
+## Prerequisites
+
+- Mocked test coverage, a protected integration environment, dedicated low-privilege OAuth credentials, and synthetic assets.
+- Branch/environment rules that prevent secrets and live integration tests from running on untrusted pull requests.
+
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
@@ -189,6 +194,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+## Output
+
+CI reports mocked-test status, approved live-test mode, redacted request outcome, and cleanup/reconciliation result. It must not emit OAuth values, design content, signed URLs, or customer assets in logs or artifacts.
+
+## Examples
+
+Run MSW tests for every pull request. Run one approved synthetic-asset integration test only from a protected branch or environment, use a dedicated test OAuth client, delete/expire resulting artifacts, and fail closed if authorization, scope, or test cleanup evidence is missing.
 
 ## Error Handling
 

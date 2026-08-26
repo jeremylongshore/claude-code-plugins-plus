@@ -29,6 +29,17 @@ compatibility: Designed for Claude Code
 
 Configure Canva Connect API integrations across development, staging, and production. Each environment needs separate OAuth integrations registered in the Canva developer portal with distinct redirect URIs.
 
+## Prerequisites
+
+- Separate reviewed OAuth clients, redirect URIs, secret stores, tenant/asset scopes, and owners for each environment.
+- Synthetic development/staging assets and a deployment process that cannot silently select production configuration.
+
+## Instructions
+
+1. Resolve the environment from an explicit allowlist and fail if its OAuth client, redirect URI, or scope configuration is absent or mismatched.
+2. Keep tokens, caches, queues, and webhook endpoints isolated by environment; never share production credentials with lower environments.
+3. Verify staging with synthetic assets, then promote immutable configuration through the reviewed release path.
+
 ## Environment Strategy
 
 | Environment | Canva Integration | Redirect URI | Data |
@@ -167,6 +178,14 @@ function getTokenStore(): TokenStore {
 2. **Separate integrations** — Each environment should be a distinct integration in the Canva developer portal to avoid redirect URI conflicts.
 3. **Scope differences** — Use broader scopes in dev for testing, minimal scopes in production.
 4. **Token isolation** — Never share tokens across environments. Refresh tokens are single-use.
+
+## Output
+
+Environment setup yields an approved environment label, configuration/version receipt, OAuth/redirect validation, and scope-isolation result. It excludes client secrets, tokens, tenant identifiers, and design data.
+
+## Examples
+
+For a staging release, load the dedicated staging client and redirect URI from protected configuration, verify a synthetic design callback, and record the redacted result. If the environment resolves to production or shares a credential, fail the deployment rather than falling back.
 
 ## Error Handling
 
