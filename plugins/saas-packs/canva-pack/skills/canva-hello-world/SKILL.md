@@ -164,6 +164,14 @@ async function main() {
 main().catch(console.error);
 ```
 
+## Output
+
+The example returns a validated authorization status and opaque design/export job references. It must not print OAuth tokens, user profiles, edit URLs, signed download URLs, or design content in shared logs.
+
+## Examples
+
+Use a dedicated OAuth test tenant and synthetic design template. First run the read-only profile check, then create/export only the controlled test design; store the returned IDs in a protected test ledger and delete the artifact under the test retention policy. Do not use a customer design or a browser-held token as a quickstart fixture.
+
 ## Error Handling
 
 | Error | Cause | Solution |
