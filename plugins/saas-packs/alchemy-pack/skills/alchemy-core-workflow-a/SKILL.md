@@ -221,6 +221,17 @@ export { getMultiChainBalances };
 - Multi-chain balance aggregation across 5 networks
 - Sorted holdings with dust filtering
 
+## Examples
+
+For a development demonstration, call `fetchPortfolio` with a publicly known
+test address or an address you control; never request a customer address until
+the product’s privacy notice and consent flow are in place. Render the returned
+network, timestamp, balances, and token counts, and cache metadata so repeated
+page loads do not exhaust the request budget. Verify that a zero-balance
+address produces an empty but valid portfolio and that a simulated `429` uses
+bounded backoff. If a chain query fails, show that chain as unavailable while
+retaining successful chains instead of inventing a consolidated balance.
+
 ## Error Handling
 
 | Error | Cause | Solution |
