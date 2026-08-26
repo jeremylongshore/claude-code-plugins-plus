@@ -427,6 +427,33 @@ class GradesExportTests(unittest.TestCase):
             self.assertTrue(hist_path.is_file())
         conn.close()
 
+    def test_grade_exports_are_byte_reproducible_from_clean_output_dirs(self):
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            [
+                ("plugins/zeta", "B", 80.0, 9),
+                ("plugins/alpha", "A", 99.5, 9),
+                ("plugins/legacy", "C", 70.0, 8),
+            ],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            first = root / "clean-one"
+            second = root / "clean-two"
+            dolt_sync.write_grades_export(conn, 9, first / "grades.csv", first / "grade-histogram.json")
+            dolt_sync.write_grades_export(conn, 9, second / "grades.csv", second / "grade-histogram.json")
+            self.assertEqual(
+                (first / "grades.csv").read_bytes(), (second / "grades.csv").read_bytes()
+            )
+            self.assertEqual(
+                (first / "grade-histogram.json").read_bytes(),
+                (second / "grade-histogram.json").read_bytes(),
+            )
+        conn.close()
+
 
 class StampDoltCommitTests(unittest.TestCase):
     """The post-commit hash stamp must add dolt_commit without disturbing
