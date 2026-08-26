@@ -234,6 +234,13 @@ CO_API_KEY=actual-key
 | Integration test timeout | Slow network | Increase timeout to 15s+ |
 | Type mismatch on mock | API shape changed | Update fixtures to match SDK types |
 
+## Examples
+
+Run unit tests with a mocked v2 chat response and assert that no credential or
+network call is needed, then enable one integration test only in the isolated
+staging environment. If fixture and SDK shapes diverge, update the sanitized
+fixture and contract assertion before allowing application changes to merge.
+
 ## Resources
 
 - [Vitest Documentation](https://vitest.dev/)

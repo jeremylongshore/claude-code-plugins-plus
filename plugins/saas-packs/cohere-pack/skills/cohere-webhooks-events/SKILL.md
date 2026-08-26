@@ -287,6 +287,21 @@ console.log('Registered connectors:', connectors.connectors.length);
 | Tool events but no content | Tool call in progress | Wait for tool results, re-stream |
 | Connector returns empty | Bad search endpoint | Test endpoint with `curl` |
 
+## Output
+
+Emit a streaming/event receipt with request correlation, event sequence,
+citation/tool decision, completion/usage metadata, and classified failure state.
+Do not persist complete prompts, generated content, tool arguments, document
+payloads, or credentials unless the product’s approved data policy requires it.
+
+## Examples
+
+Stream a staging RAG response with an approved synthetic document, verify the
+content and citation event order, and terminate cleanly after `message-end`.
+If the stream drops or tool arguments are incomplete, return a safe partial
+state and retry only through the bounded request policy rather than replaying
+the user’s complete data.
+
 ## Resources
 
 - [Cohere Streaming Guide](https://docs.cohere.com/docs/streaming)

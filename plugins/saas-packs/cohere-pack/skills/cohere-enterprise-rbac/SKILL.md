@@ -303,6 +303,14 @@ kubectl rollout restart deployment/search-service
 | Budget exceeded | High usage | Increase limit or optimize |
 | Key rotation gap | Old key revoked too early | Overlap keys during rotation |
 
+## Examples
+
+Issue a dedicated staging key for one team, enforce its allowed model and daily
+budget at the gateway, and verify that a disallowed chat call is denied with
+redacted audit metadata. During rotation, overlap the scoped keys in a tested
+window, confirm services move to the new reference, then revoke the old key and
+review the audit trail for unexpected use.
+
 ## Resources
 
 - [Cohere API Keys](https://dashboard.cohere.com/api-keys)
