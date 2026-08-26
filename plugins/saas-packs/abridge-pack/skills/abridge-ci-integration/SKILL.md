@@ -30,6 +30,14 @@ compatibility: Designed for Claude Code
 
 CI/CD pipeline for Abridge clinical documentation integrations. Healthcare CI pipelines require FHIR resource validation, PHI leak scanning, HIPAA compliance checks, and sandbox integration testing.
 
+## Prerequisites
+
+Use a non-production Abridge sandbox with synthetic patients only, and store
+the sandbox URL, client secret, and organization ID as protected CI secrets.
+Install Node 20 with the project's lockfile, provide FHIR R4 test fixtures,
+and ensure the repository's test data contains no PHI before enabling the
+integration job on `main`.
+
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
@@ -187,6 +195,15 @@ describe('Abridge Sandbox Integration', () => {
 - PHI leak detection scanning source code for SSN/MRN patterns
 - FHIR R4 resource validation tests
 - Sandbox integration tests (main branch only)
+
+## Examples
+
+For a pull request that changes FHIR mapping code, the lint, PHI scan, and
+FHIR schema jobs run against synthetic fixtures without contacting Abridge.
+After merge to `main`, the sandbox job creates `ci-test-patient`, verifies the
+encounter session reaches `initialized`, submits a synthetic transcript, and
+finalizes it. A timeout or missing secret fails the protected job rather than
+falling back to a production endpoint.
 
 ## Error Handling
 
