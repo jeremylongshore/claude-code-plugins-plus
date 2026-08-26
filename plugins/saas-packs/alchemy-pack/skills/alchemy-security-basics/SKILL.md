@@ -40,6 +40,16 @@ Web3 security practices for Alchemy-powered applications: API key protection, pr
 | Webhooks | Verify HMAC signatures | High |
 | Dependencies | Audit npm packages for supply chain | Medium |
 
+## Prerequisites
+
+- A threat model that names provider-key, deployer-key, webhook, public-route,
+  and user-input trust boundaries.
+- Managed secret storage and a revocation owner for every provider or signing
+  credential; do not rely on a developer workstation environment file in
+  production.
+- Security tests using synthetic inputs and a reviewed incident path for
+  suspected key exposure, invalid signatures, or unsafe contract operations.
+
 ## Instructions
 
 ### Step 1: API Key Protection
@@ -163,6 +173,27 @@ function verifyAlchemyWebhookSignature(
 - Input validation for addresses, blocks, and token IDs
 - Private key loaded from secret manager
 - Webhook HMAC signature verification
+
+## Examples
+
+Deploy the balance proxy in staging with an injected managed provider key, then
+send a checksummed test address and an invalid address. The valid request should
+return the intended public chain result; the invalid request must be rejected
+before the provider call, and neither response may contain a credential. Send
+one synthetic signed webhook and one signature mismatch to prove the verifier
+accepts only the valid event. If a key appears in a bundle, an invalid signature
+is processed, or a private key reaches application memory outside the approved
+signing boundary, stop deployment, revoke the affected credential where needed,
+and investigate before resuming traffic.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Provider or private key is exposed | Revoke/rotate it, remove the exposure, audit affected artifacts, and redeploy. |
+| Address, block, or token input is invalid | Reject before issuing an RPC or contract request. |
+| Webhook signature cannot be verified | Reject and record only safe event metadata for investigation. |
+| Server-side signer is unavailable | Fail closed; do not accept a replacement private key from a request or fallback file. |
 
 ## Resources
 
