@@ -167,6 +167,40 @@ def generate_inference_deployment(
 | OOM on inference | Model too large for GPU | Use larger GPU or quantized model |
 | Connection refused | Service not ready | Check pod readiness probe |
 
+## Prerequisites
+
+- A namespace-scoped Kubernetes credential and endpoint from the approved environment.
+- An image, GPU class, and resource budget reviewed for the target workload.
+- A secret-manager reference for private registry or model access; never pass tokens
+  into generated YAML or application logs.
+
+## Output
+
+- A reusable client or deployment manifest pattern with explicit GPU resources and
+  affinity constraints.
+- A readiness-aware request path that distinguishes unavailable services from a
+  valid application response.
+- A generated manifest that can be reviewed, versioned, and rolled back before apply.
+
+## Examples
+
+Generate a manifest, inspect it for the expected namespace and GPU resource limit,
+then apply it first in staging:
+
+```python
+manifest = generate_inference_deployment('summarizer', 'registry.example/summarizer:v1')
+open('summarizer.yaml', 'w').write(manifest)
+```
+
+```bash
+kubectl -n inference-staging apply --dry-run=server -f summarizer.yaml
+kubectl -n inference-staging apply -f summarizer.yaml
+kubectl -n inference-staging rollout status deployment/summarizer --timeout=10m
+```
+
+If validation or rollout fails, retain the reviewed manifest and redacted events;
+do not broaden the client credential or bypass the admission policy.
+
 ## Resources
 
 - [CoreWeave GPU Instances](https://docs.coreweave.com/docs/platform/instances/gpu-instances)
