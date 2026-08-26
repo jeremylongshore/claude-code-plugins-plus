@@ -45,7 +45,7 @@
  *   CREATE TABLE forge_proofs (
  *     id INTEGER PRIMARY KEY AUTOINCREMENT,
  *     plugin_name TEXT NOT NULL,
- *     run_id INTEGER,
+ *     jrig_run_id INTEGER,
  *     verification_type TEXT NOT NULL,
  *     passed INTEGER NOT NULL,
  *     evidence TEXT,
@@ -53,7 +53,7 @@
  *     total_layers INTEGER DEFAULT 7,
  *     baseline_delta REAL DEFAULT NULL,
  *     verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- *     UNIQUE(plugin_name, verification_type, run_id)
+ *     UNIQUE(plugin_name, verification_type, jrig_run_id)
  *   );
  *
  *   - verification_type = 'tier3-jrig' (the governed behavioral-evaluation evidence class)
@@ -65,9 +65,9 @@
  *                     decision, scoreCard, reasoning, timestamp} subset
  *
  * Upsert is idempotent: INSERT ... ON CONFLICT(plugin_name,
- * verification_type, run_id) DO UPDATE. `--run-id` is REQUIRED and must be a
+ * verification_type, jrig_run_id) DO UPDATE. `--jrig-run-id` is REQUIRED and must be a
  * non-negative integer — SQLite treats NULLs as distinct in UNIQUE
- * constraints, so a NULL run_id would break idempotency.
+ * constraints, so a NULL jrig_run_id would break idempotency.
  *
  * STUB GUARD: results produced by the stub provider (`ground_truth: false`)
  * are refused unless `--allow-stub` is passed — a stub row cannot be treated
@@ -79,7 +79,7 @@
  *
  * Usage:
  *   node scripts/record-jrig-proofs.mjs \
- *     --db <inventory.sqlite> --plugin <name> --run-id <int> \
+ *     --db <inventory.sqlite> --plugin <name> --jrig-run-id <int> \
  *     --result <result.json> [--allow-stub]
  */
 
@@ -97,7 +97,7 @@ const VALID_DECISIONS = new Set(['ship', 'warn', 'block', 'obsolete_review']);
 const FORGE_PROOFS_DDL = `CREATE TABLE IF NOT EXISTS forge_proofs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     plugin_name TEXT NOT NULL,
-    run_id INTEGER,
+    jrig_run_id INTEGER,
     verification_type TEXT NOT NULL,
     passed INTEGER NOT NULL,
     evidence TEXT,
@@ -105,7 +105,7 @@ const FORGE_PROOFS_DDL = `CREATE TABLE IF NOT EXISTS forge_proofs (
     total_layers INTEGER DEFAULT 7,
     baseline_delta REAL DEFAULT NULL,
     verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(plugin_name, verification_type, run_id)
+    UNIQUE(plugin_name, verification_type, jrig_run_id)
 );
 CREATE INDEX IF NOT EXISTS idx_forge_proofs_plugin ON forge_proofs(plugin_name);
 CREATE INDEX IF NOT EXISTS idx_forge_proofs_passed ON forge_proofs(passed);`;
@@ -126,7 +126,7 @@ export function parseArgs(argv) {
   const takesValue = {
     '--db': 'db',
     '--plugin': 'plugin',
-    '--run-id': 'runId',
+    '--jrig-run-id': 'jrigRunId',
     '--result': 'result',
   };
   for (let i = 0; i < argv.length; i++) {
@@ -144,12 +144,12 @@ export function parseArgs(argv) {
   for (const [flag, key] of Object.entries(takesValue)) {
     if (!args[key]) fail(`Missing required argument: ${flag}`);
   }
-  if (!/^\d+$/.test(args.runId)) {
+  if (!/^\d+$/.test(args.jrigRunId)) {
     fail(
-      `--run-id must be a non-negative integer (got: ${args.runId}) — it is part of the UNIQUE(plugin_name, verification_type, run_id) upsert key.`,
+      `--jrig-run-id must be a non-negative integer (got: ${args.jrigRunId}) — it is part of the UNIQUE(plugin_name, verification_type, jrig_run_id) upsert key.`,
     );
   }
-  args.runId = Number(args.runId);
+  args.jrigRunId = Number(args.jrigRunId);
   return args;
 }
 
@@ -239,14 +239,14 @@ export function aggregateEntries(entries, { allowStub = false } = {}) {
 }
 
 /** Build the idempotent upsert SQL for one forge_proofs row. */
-export function buildUpsertSql({ plugin, runId, row }) {
+export function buildUpsertSql({ plugin, jrigRunId, row }) {
   return `${FORGE_PROOFS_DDL}
 INSERT INTO forge_proofs
-  (plugin_name, run_id, verification_type, passed, evidence, layers_passed, total_layers, baseline_delta)
+  (plugin_name, jrig_run_id, verification_type, passed, evidence, layers_passed, total_layers, baseline_delta)
 VALUES
-  (${sqlString(plugin)}, ${runId}, ${sqlString(VERIFICATION_TYPE)}, ${row.passed},
+  (${sqlString(plugin)}, ${jrigRunId}, ${sqlString(VERIFICATION_TYPE)}, ${row.passed},
    ${sqlString(JSON.stringify(row.evidence))}, ${row.layers_passed}, ${row.total_layers}, NULL)
-ON CONFLICT(plugin_name, verification_type, run_id) DO UPDATE SET
+ON CONFLICT(plugin_name, verification_type, jrig_run_id) DO UPDATE SET
   passed = excluded.passed,
   evidence = excluded.evidence,
   layers_passed = excluded.layers_passed,
@@ -260,6 +260,17 @@ function runSqlite(dbPath, sql) {
   if (result.error) fail(`Failed to spawn sqlite3 CLI: ${result.error.message}`);
   if (result.status !== 0) fail(`sqlite3 exited ${result.status}: ${result.stderr.trim()}`);
   return result.stdout;
+}
+
+function ensureForgeProofsSchema(dbPath) {
+  const columns = runSqlite(dbPath, 'PRAGMA table_info(forge_proofs);')
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.split('|')[1]);
+  if (columns.includes('run_id') && !columns.includes('jrig_run_id')) {
+    runSqlite(dbPath, 'ALTER TABLE forge_proofs RENAME COLUMN run_id TO jrig_run_id;');
+  }
 }
 
 export function main(argv = process.argv.slice(2)) {
@@ -284,24 +295,25 @@ export function main(argv = process.argv.slice(2)) {
   const entries = extractModelEntries(parsed);
   const row = aggregateEntries(entries, { allowStub: args.allowStub });
 
-  runSqlite(args.db, buildUpsertSql({ plugin: args.plugin, runId: args.runId, row }));
+  ensureForgeProofsSchema(args.db);
+  runSqlite(args.db, buildUpsertSql({ plugin: args.plugin, jrigRunId: args.jrigRunId, row }));
 
   // Read the row back so the log line is evidence, not hope.
   const echo = runSqlite(
     args.db,
     `.mode json
-SELECT plugin_name, run_id, verification_type, passed, layers_passed, total_layers, baseline_delta, verified_at
+SELECT plugin_name, jrig_run_id, verification_type, passed, layers_passed, total_layers, baseline_delta, verified_at
 FROM forge_proofs
 WHERE plugin_name = ${sqlString(args.plugin)}
   AND verification_type = ${sqlString(VERIFICATION_TYPE)}
-  AND run_id = ${args.runId};`,
+  AND jrig_run_id = ${args.jrigRunId};`,
   ).trim();
   if (!echo)
     fail('Upsert reported success but the row is not readable back — refusing to report success.');
 
   const written = JSON.parse(echo)[0];
   console.log(
-    `[record-jrig-proofs] Upserted ${VERIFICATION_TYPE} row for '${args.plugin}' (run_id=${args.runId}): ` +
+    `[record-jrig-proofs] Upserted ${VERIFICATION_TYPE} row for '${args.plugin}' (jrig_run_id=${args.jrigRunId}): ` +
       `passed=${written.passed}, layers=${written.layers_passed}/${written.total_layers}, ` +
       `models=${row.evidence.models.map((m) => m.model).join(',')}${row.evidence.stub ? ' [STUB — not ground truth]' : ''}`,
   );

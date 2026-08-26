@@ -4917,10 +4917,13 @@ def populate_compliance_db(
     # /skill-creator --forge generation pipeline (Tier 1+2+3 results) and
     # joined into the marketplace build at render time so the JRig-Verified
     # badge surfaces real evidence on plugin detail pages.
+    forge_columns = [r[1] for r in c.execute("PRAGMA table_info(forge_proofs)").fetchall()]
+    if "run_id" in forge_columns and "jrig_run_id" not in forge_columns:
+        c.execute("ALTER TABLE forge_proofs RENAME COLUMN run_id TO jrig_run_id")
     c.execute("""CREATE TABLE IF NOT EXISTS forge_proofs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         plugin_name TEXT NOT NULL,
-        run_id INTEGER,
+        jrig_run_id INTEGER,
         verification_type TEXT NOT NULL,
         passed INTEGER NOT NULL,
         evidence TEXT,
@@ -4928,7 +4931,7 @@ def populate_compliance_db(
         total_layers INTEGER DEFAULT 7,
         baseline_delta REAL DEFAULT NULL,
         verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(plugin_name, verification_type, run_id)
+        UNIQUE(plugin_name, verification_type, jrig_run_id)
     )""")
 
     # Complete the legacy-UNIQUE migration started above: copy rows from the
