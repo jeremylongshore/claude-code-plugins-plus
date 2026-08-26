@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Enterprise RBAC
 
+## Output
+
+- A least-privilege Exa project/credential role configuration with named owners, review evidence, and a tested revocation path.
+- Verified separation between development, staging, and production access scopes.
+
+## Examples
+
+Grant a development service identity only the search/research capability it needs, verify it against a non-sensitive query, and confirm it cannot use production credentials or administrative actions. Record ownership and access-review date; revoke broad roles and correct group mappings before continuing.
+
 ## Overview
 
 Manage access to Exa search API through API key scoping and application-level controls. Exa is API-key-based (no built-in RBAC), so access control is implemented through multiple API keys per use case, application-layer permission enforcement, domain restrictions per team, and per-key usage monitoring.

@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Debug Bundle
 
+## Prerequisites
+
+- An issue owner, affected environment, approved support/incident destination, and redaction rules.
+- Permission to collect only the minimum diagnostic metadata; no raw tokens, secrets, customer queries, or full result content.
+
+## Examples
+
+For an unexpected search result, collect opaque correlation ID, environment, API/SDK version, query category (not text), request options, status class, latency, and timestamp. Reproduce with a sanitized query, review the bundle for tokens or private content, then share only through the approved channel.
+
 ## Current State
 
 !`node --version 2>/dev/null || echo 'N/A'`

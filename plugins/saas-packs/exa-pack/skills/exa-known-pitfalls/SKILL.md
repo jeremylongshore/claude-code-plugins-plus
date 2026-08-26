@@ -24,6 +24,32 @@ compatibility: Designed for Claude Code
 ---
 # Exa Known Pitfalls
 
+## Prerequisites
+
+- A defined research/search task, approved data classification, current policy/rules, and a non-sensitive evaluation query.
+
+## Instructions
+
+1. Identify the relevant pitfall before accepting a search result, changing retrieval settings, or automating an action.
+2. Constrain source domain, recency, data, and output expectations, then validate citations and policy requirements.
+3. Record recurring failures in reviewed guidance and keep sensitive queries/outputs out of diagnostics.
+
+## Output
+
+- A documented prevention or remediation for a specific retrieval, data, policy, or automation risk.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Result is unsupported or stale | Verify primary sources and date; do not treat retrieval as authoritative proof. |
+| Query contains sensitive data | Stop, sanitize or use an approved path, and follow exposure policy. |
+| Automation scope expands | Require explicit review and reduce it to a bounded task. |
+
+## Examples
+
+For a compliance research task, constrain Exa to approved primary domains and date range, inspect each result/citation, and retain only the summarized, non-sensitive evidence. Reject results that lack support rather than widening the query into private data.
+
 ## Overview
 
 Real gotchas when integrating Exa's neural search API. Exa uses embeddings-based search rather than keyword matching, which creates a different class of failure modes than traditional search APIs. This skill covers the top pitfalls with wrong/right examples.

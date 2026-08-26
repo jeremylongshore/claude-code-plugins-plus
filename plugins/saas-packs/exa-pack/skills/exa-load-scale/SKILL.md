@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Load & Scale
 
+## Output
+
+- A measured, rate-aware search/research workload with bounded concurrency, idempotent work tracking, owner, and rollback threshold.
+- An aggregate capacity receipt that excludes raw queries, customer data, API keys, and full result content.
+
+## Examples
+
+Use sanitized test queries to increase concurrency gradually below the approved limit, record aggregate latency, 429s, completion, and queue age, and apply backoff with jitter. Reduce load on throttling or quality regression; do not replay customer queries or bypass policy/rate controls to reach a benchmark.
+
 ## Overview
 
 Load testing and capacity planning for Exa integrations. Key constraint: Exa's default rate limit is 10 QPS. Scaling strategies focus on caching, request queuing, parallel processing within rate limits, and search type selection for latency budgets.
