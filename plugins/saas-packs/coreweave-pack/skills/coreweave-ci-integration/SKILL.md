@@ -33,6 +33,19 @@ Set up CI/CD for CoreWeave GPU cloud workloads: run unit tests with mocked Kuber
 
 ## GitHub Actions Workflow
 
+## Prerequisites
+
+- A repository with protected branches and a trusted runner policy.
+- Mocked tests that need no cluster credential, plus a dedicated low-privilege staging identity for optional integration tests.
+- Secret-manager-backed CI secrets available only to trusted, non-fork workflows.
+
+## Instructions
+
+1. Run deterministic unit and manifest validation on every pull request without credentials.
+2. Run live integration checks only after merge or from an approved protected workflow.
+3. Bound test resources, collect redacted pod events on failure, and revoke the staging identity if exposure is suspected.
+4. Keep deploy approval and production rollout separate from the test job.
+
 ```yaml
 # .github/workflows/coreweave-ci.yml
 name: CoreWeave CI
@@ -132,6 +145,23 @@ describe.skipIf(!hasKubeconfig)('CoreWeave Live API', () => {
 | Image pull backoff | GHCR auth expired | Verify `GHCR_TOKEN` secret and image registry permissions |
 | Quota exceeded | GPU request exceeds namespace limit | Check namespace quota with `kubectl describe quota` |
 | Pod pending | No matching GPU node type | Verify `nodeSelector` matches available GPU SKUs (A100, H100) |
+
+## Output
+
+- A credential-free pull-request test lane and a trusted, scoped integration lane.
+- A reproducible CI receipt with test result, manifest validation, and redacted failure evidence.
+- Clear rate, quota, and rollout failure handling without weakening branch protection.
+
+## Examples
+
+Run the unit suite locally, then trigger the trusted integration job only from the protected branch:
+
+```bash
+npm test
+gh workflow run coreweave-integration.yml --ref main
+```
+
+If the live job cannot schedule a GPU, preserve the namespace events and retry after capacity is confirmed. Do not make the kubeconfig available to pull-request or forked code.
 
 ## Resources
 

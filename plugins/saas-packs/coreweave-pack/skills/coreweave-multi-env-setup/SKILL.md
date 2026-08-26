@@ -33,6 +33,19 @@ CoreWeave GPU cloud requires strict environment separation to control infrastruc
 
 ## Environment Configuration
 
+## Prerequisites
+
+- Separate, approved namespaces and service identities for development, staging, and production.
+- Environment-specific secrets injected by a secrets manager, never committed `.env` files.
+- A promotion owner, staging evaluation gate, and production rollback manifest.
+
+## Instructions
+
+1. Define overlays that differ only in reviewed capacity, endpoint, and namespace values.
+2. Validate required variables and secret references before applying an overlay.
+3. Promote dev to staging, run the service evaluation, then use a controlled production rollout.
+4. Roll back the production overlay on an SLO, quality, or security-gate failure; do not copy staging credentials into production.
+
 ```typescript
 const coreweaveConfig = (env: string) => ({
   development: {
@@ -109,6 +122,24 @@ kubectl -n app-prod rollout status deployment/my-model
 | Pod stuck Pending | GPU type unavailable in region | Check `kubectl describe node` for capacity; switch region |
 | Scale-to-zero not waking | HPA misconfigured | Verify `minReplicas: 0` and KEDA scaler settings |
 | Namespace access denied | RBAC not applied to overlay | Apply `RoleBinding` in kustomize overlay |
+
+## Output
+
+- Environment-isolated manifests, identities, and quotas with a documented promotion path.
+- A redacted validation and rollout receipt for each environment.
+- A production rollback path that preserves the prior known-good revision.
+
+## Examples
+
+Validate a staging overlay server-side before rollout, then wait for its deployment:
+
+```bash
+kustomize build k8s/overlays/staging | kubectl apply --dry-run=server -f -
+kustomize build k8s/overlays/staging | kubectl apply -f -
+kubectl -n app-staging rollout status deployment/my-model --timeout=10m
+```
+
+If the staging result fails its signed gate, stop promotion and restore the prior staging revision. Keep credentials out of terminal history, logs, and overlay files.
 
 ## Resources
 
