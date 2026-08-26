@@ -203,6 +203,10 @@ await client.addTableRow(123, 'emergencyContacts', {
 - Custom and saved reports with aggregation
 - Table data CRUD for job history, compensation, contacts
 
+## Examples
+
+For a reporting workflow, use a pre-approved custom report containing only minimum necessary fields, process one bounded synthetic or authorized batch, and emit only opaque result identifiers and counts. Before mutating a downstream system, verify current employment status and policy authorization; record the idempotency key so a retry cannot create duplicate access or payroll-related actions.
+
 ## Error Handling
 
 | Error | Cause | Solution |

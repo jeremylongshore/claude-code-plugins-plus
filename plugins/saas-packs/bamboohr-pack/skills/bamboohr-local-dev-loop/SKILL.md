@@ -242,6 +242,10 @@ describe.skipIf(!HAS_KEY)('BambooHR Integration', () => {
 - Integration tests gated on `BAMBOOHR_API_KEY` presence
 - Hot-reload dev server via `tsx watch`
 
+## Examples
+
+Develop against mocked responses and synthetic employee fixtures by default. If a sandbox call is needed, use a dedicated least-privilege credential, request only the named test fields, avoid caching raw responses outside the protected test directory, and delete the artifact when the test completes.
+
 ## Error Handling
 
 | Error | Cause | Solution |

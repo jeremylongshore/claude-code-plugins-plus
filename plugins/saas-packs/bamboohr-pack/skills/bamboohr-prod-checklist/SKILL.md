@@ -190,6 +190,10 @@ curl -sf "https://your-app.com/api/health" | jq .
 - Gradual rollout with pre-flight checks
 - Documented rollback procedure
 
+## Examples
+
+Before production enablement, exercise the integration with the sandbox or approved synthetic records, verify field scope, webhook HMAC, retry/idempotency behavior, and protected observability. Attach a redacted go/no-go receipt; leave writes disabled if any HR owner approval, access review, retention, reconciliation, or rollback check is incomplete.
+
 ## Error Handling
 
 | Alert | Condition | Severity | Response |
