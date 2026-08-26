@@ -4,13 +4,14 @@
 #
 # Flow:
 #   1. Decrypt DEEPSEEK_API_KEY via SOPS, in-memory only (never written to
-#      disk; the only disk artifacts live under /dev/shm and are removed by
-#      the cleanup trap).
+#      disk; the SOPS key and j-rig runtime DB live under /dev/shm and are
+#      removed by the cleanup trap).
 #   2. Run `pnpm exec j-rig eval` against a SCRATCH SQLite DB under /dev/shm.
 #      j-rig writes its own run tables into whatever --db it is given, so it
 #      must NEVER be pointed at the tracked freshie/inventory.sqlite — the
 #      guard below refuses any scratch path containing 'freshie'.
-#   3. Feed the --json result to scripts/record-jrig-proofs.mjs, which
+#   3. Atomically retain the primary --json result outside /dev/shm, then feed
+#      that retained file to scripts/record-jrig-proofs.mjs, which
 #      upserts the tier3-jrig row into the REAL inventory DB (passed
 #      separately via --inventory-db).
 #
@@ -18,7 +19,7 @@
 #   scripts/run-jrig-eval.sh --skill-dir <dir> --plugin <catalog-name> \
 #     --inventory-db freshie/inventory.sqlite \
 #     --jrig-run-id <int> [--models <csv>] [--provider <name>] [--spec <path>] \
-#     [--scratch-db <path-under-/dev/shm>] [--stub]
+#     [--scratch-db <path-under-/dev/shm>] [--artifact-dir <durable-dir>] [--stub]
 #
 # Defaults: --provider deepseek, --models deepseek-v4-flash, scratch DB
 # under /dev/shm. --jrig-run-id is a behavioral-evaluation identity, deliberately distinct
@@ -33,9 +34,14 @@
 # DoltHub by dolt-sync. Copy first:
 #   cp freshie/inventory.sqlite /dev/shm/inventory-scratch.sqlite
 #
+# The retained artifacts default to freshie/eval-artifacts (gitignored). Set
+# JRIG_ARTIFACT_DIR or pass --artifact-dir to use a durable external store.
+# They must never live under /dev/shm: retention is evidence validity.
+#
 # Env overrides:
 #   JRIG_BIN       — j-rig binary to use instead of `pnpm exec j-rig`
 #   JRIG_SOPS_ENV  — SOPS dotenv file carrying DEEPSEEK_API_KEY
+#   JRIG_ARTIFACT_DIR — durable directory for primary eval JSON artifacts
 
 set -euo pipefail
 
@@ -54,6 +60,7 @@ models="deepseek-v4-flash"
 provider="deepseek"
 spec=""
 scratch_db=""
+artifact_dir="${JRIG_ARTIFACT_DIR:-$repo_root/freshie/eval-artifacts}"
 stub=0
 
 while [ $# -gt 0 ]; do
@@ -66,6 +73,7 @@ while [ $# -gt 0 ]; do
     --provider)     provider="${2:?--provider needs a value}"; shift 2 ;;
     --spec)         spec="${2:?--spec needs a value}"; shift 2 ;;
     --scratch-db)   scratch_db="${2:?--scratch-db needs a value}"; shift 2 ;;
+    --artifact-dir) artifact_dir="${2:?--artifact-dir needs a value}"; shift 2 ;;
     --stub)         stub=1; shift ;;
     *)              die "Unknown argument: $1" ;;
   esac
@@ -126,6 +134,18 @@ fi
 
 [ -n "$jrig_run_id" ] || die "--jrig-run-id is required; it must never default from discovery_runs"
 
+artifact_dir="$(readlink -m "$artifact_dir")"
+case "$artifact_dir" in
+  /dev/shm|/dev/shm/*) die "artifact directory must be durable and outside /dev/shm (got: $artifact_dir)" ;;
+esac
+mkdir -p "$artifact_dir" || die "cannot create artifact directory: $artifact_dir"
+
+# Keep the public ledger URI unambiguous and collision-free while retaining
+# the original bytes. Plugin names are catalog slugs, but sanitize defensively
+# before using one as a filename component.
+artifact_plugin="${plugin//[^A-Za-z0-9._-]/_}"
+artifact_json="$artifact_dir/${artifact_plugin}.jrig-run-${jrig_run_id}.json"
+
 result_json="$scratch_dir/result.json"
 jrig_bin="${JRIG_BIN:-}"
 
@@ -163,7 +183,15 @@ run_jrig "${jrig_args[@]}" > "$result_json" || die "j-rig eval failed (see outpu
 
 [ -s "$result_json" ] || die "j-rig eval produced no JSON output"
 
-record_args=(--db "$inventory_db" --plugin "$plugin" --jrig-run-id "$jrig_run_id" --result "$result_json")
+# The raw evaluator output is the primary E2 artifact. Copy into the durable
+# store using a same-directory temporary name and rename it atomically, so a
+# ledger row can never point at a partially-written JSON document.
+artifact_tmp="$artifact_dir/.${artifact_plugin}.jrig-run-${jrig_run_id}.$$.tmp"
+install -m 600 "$result_json" "$artifact_tmp" || die "failed to stage retained eval artifact"
+mv -f "$artifact_tmp" "$artifact_json" || die "failed to publish retained eval artifact"
+[ -s "$artifact_json" ] || die "retained eval artifact is empty: $artifact_json"
+
+record_args=(--db "$inventory_db" --plugin "$plugin" --jrig-run-id "$jrig_run_id" --result "$artifact_json")
 if [ "$stub" -eq 1 ]; then
   record_args+=(--allow-stub)
 fi

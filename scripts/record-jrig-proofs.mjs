@@ -84,6 +84,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -238,6 +239,29 @@ export function aggregateEntries(entries, { allowStub = false } = {}) {
   };
 }
 
+/**
+ * Hash the exact retained primary artifact that this ledger row names. The
+ * hash is computed here rather than accepted as caller input, so a shell
+ * wrapper cannot accidentally record a digest for different bytes.
+ */
+export function retainedArtifactEvidence(resultPath) {
+  const resolved = path.resolve(resultPath);
+  if (resolved === '/dev/shm' || resolved.startsWith('/dev/shm/')) {
+    fail(`Result artifact must be retained outside /dev/shm (got: ${resolved})`);
+  }
+  let bytes;
+  try {
+    bytes = fs.readFileSync(resolved);
+  } catch (err) {
+    fail(`Cannot read retained result artifact (${resolved}): ${err.message}`);
+  }
+  if (bytes.length === 0) fail(`Retained result artifact is empty: ${resolved}`);
+  return {
+    artifact_uri: resolved,
+    artifact_sha256: createHash('sha256').update(bytes).digest('hex'),
+  };
+}
+
 /** Build the idempotent upsert SQL for one forge_proofs row. */
 export function buildUpsertSql({ plugin, jrigRunId, row }) {
   return `${FORGE_PROOFS_DDL}
@@ -294,6 +318,7 @@ export function main(argv = process.argv.slice(2)) {
 
   const entries = extractModelEntries(parsed);
   const row = aggregateEntries(entries, { allowStub: args.allowStub });
+  Object.assign(row.evidence, retainedArtifactEvidence(args.result));
 
   ensureForgeProofsSchema(args.db);
   runSqlite(args.db, buildUpsertSql({ plugin: args.plugin, jrigRunId: args.jrigRunId, row }));
@@ -315,7 +340,7 @@ WHERE plugin_name = ${sqlString(args.plugin)}
   console.log(
     `[record-jrig-proofs] Upserted ${VERIFICATION_TYPE} row for '${args.plugin}' (jrig_run_id=${args.jrigRunId}): ` +
       `passed=${written.passed}, layers=${written.layers_passed}/${written.total_layers}, ` +
-      `models=${row.evidence.models.map((m) => m.model).join(',')}${row.evidence.stub ? ' [STUB — not ground truth]' : ''}`,
+      `models=${row.evidence.models.map((m) => m.model).join(',')}, artifact_sha256=${row.evidence.artifact_sha256}${row.evidence.stub ? ' [STUB — not ground truth]' : ''}`,
   );
   return written;
 }

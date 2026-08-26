@@ -20,6 +20,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -138,6 +139,12 @@ test('(a) fresh insert lands one tier3-jrig row with the contracted bindings', (
   const evidence = JSON.parse(row.evidence);
   assert.equal(evidence.source, 'j-rig eval --json');
   assert.equal(evidence.stub, false);
+  assert.equal(evidence.artifact_uri, path.resolve(result));
+  assert.equal(
+    evidence.artifact_sha256,
+    createHash('sha256').update(fs.readFileSync(result)).digest('hex'),
+    'the ledger hashes the exact retained result bytes',
+  );
   assert.equal(evidence.models.length, 1);
   assert.equal(evidence.models[0].model, 'deepseek-v4-flash');
   assert.equal(evidence.models[0].scoreCard.passed, 6);
@@ -316,6 +323,81 @@ test('(e) stub results (ground_truth:false) are refused without --allow-stub', (
   assert.equal(JSON.parse(row.evidence).stub, true);
 });
 
+test('(f) result artifacts under /dev/shm are refused because they are not retained evidence', () => {
+  const dir = tmpDir();
+  const db = freshDb(dir);
+  const result = path.join('/dev/shm', `jrig-unretained-${process.pid}-${Date.now()}.json`);
+  fs.writeFileSync(result, JSON.stringify(fixtureResult()));
+  try {
+    const stderr = recordExpectFail([
+      '--db',
+      db,
+      '--plugin',
+      'p',
+      '--jrig-run-id',
+      '8',
+      '--result',
+      result,
+    ]);
+    assert.match(stderr, /must be retained outside \/dev\/shm/);
+  } finally {
+    fs.rmSync(result, { force: true });
+  }
+});
+
+test('(g) runner atomically retains primary JSON outside /dev/shm and records its hash', () => {
+  const dir = tmpDir();
+  const skillDir = path.join(dir, 'skill');
+  const artifactDir = path.join(dir, 'retained-artifacts');
+  const db = path.join('/dev/shm', `jrig-inventory-${process.pid}-${Date.now()}.sqlite`);
+  const fakeJrig = path.join(dir, 'fake-jrig.sh');
+  fs.mkdirSync(skillDir);
+  fs.writeFileSync(db, '');
+  fs.writeFileSync(
+    fakeJrig,
+    `#!/usr/bin/env bash\nprintf '%s\\n' '${JSON.stringify(fixtureResult({ groundTruth: false }))}'\n`,
+    { mode: 0o755 },
+  );
+
+  try {
+    const result = spawnSync(
+      'bash',
+      [
+        RUNNER_SCRIPT,
+        '--skill-dir',
+        skillDir,
+        '--plugin',
+        'retained-pack',
+        '--inventory-db',
+        db,
+        '--jrig-run-id',
+        '55',
+        '--artifact-dir',
+        artifactDir,
+        '--stub',
+      ],
+      { encoding: 'utf8', env: { ...process.env, JRIG_BIN: fakeJrig } },
+    );
+    assert.equal(result.status, 0, result.stderr);
+
+    const artifact = path.join(artifactDir, 'retained-pack.jrig-run-55.json');
+    assert.ok(fs.existsSync(artifact), 'primary JSON is retained outside the scratch directory');
+    assert.equal(fs.statSync(artifact).mode & 0o777, 0o600);
+    const [row] = queryRows(
+      db,
+      "SELECT evidence FROM forge_proofs WHERE plugin_name='retained-pack';",
+    );
+    const evidence = JSON.parse(row.evidence);
+    assert.equal(evidence.artifact_uri, artifact);
+    assert.equal(
+      evidence.artifact_sha256,
+      createHash('sha256').update(fs.readFileSync(artifact)).digest('hex'),
+    );
+  } finally {
+    fs.rmSync(db, { force: true });
+  }
+});
+
 test("(d) runner guard refuses j-rig scratch DB paths containing 'freshie'", () => {
   const dir = tmpDir();
   const db = freshDb(dir);
@@ -365,4 +447,7 @@ test("(d) runner guard refuses j-rig scratch DB paths containing 'freshie'", () 
   // Static belt-and-suspenders: the guard text exists in the runner source.
   const source = fs.readFileSync(RUNNER_SCRIPT, 'utf8');
   assert.match(source, /\*freshie\*\)/, 'freshie case-glob guard present in run-jrig-eval.sh');
+  assert.match(source, /artifact directory must be durable and outside \/dev\/shm/);
+  assert.match(source, /install -m 600 "\$result_json" "\$artifact_tmp"/);
+  assert.match(source, /--result "\$artifact_json"/);
 });

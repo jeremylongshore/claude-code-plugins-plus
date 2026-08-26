@@ -206,6 +206,9 @@ freshie/inventory.sqlite
 freshie/inventory.sqlite-shm
 freshie/inventory.sqlite-wal
 freshie/dolt/
+# Primary j-rig eval JSON is retained locally or in the configured artifact
+# store; its digest and URI are recorded in forge_proofs, not the payload.
+freshie/eval-artifacts/
 # Archived inventory snapshots are local runtime evidence, not source
 # (Mission 01 baseline, 2026-08: 42M untracked with zero consumers)
 freshie/archives/*.sqlite
