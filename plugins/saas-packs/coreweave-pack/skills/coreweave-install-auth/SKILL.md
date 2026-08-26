@@ -124,6 +124,26 @@ kubectl delete pod gpu-test
 | No GPU nodes found | Wrong node labels | Check `gpu.nvidia.com/class` labels |
 | Pod stuck Pending | GPU capacity exhausted | Try different GPU type or region |
 
+## Output
+
+- A namespace-scoped Kubernetes context and a verified GPU scheduling result.
+- A credential setup that references the approved secret manager and never commits or prints live values.
+- A deleted smoke-test Pod after its redacted result is recorded.
+
+## Examples
+
+Configure a temporary shell session from your secret manager, then run the smallest GPU smoke test in a sandbox namespace:
+
+```bash
+export KUBECONFIG="$HOME/.kube/coreweave-sandbox"
+kubectl -n sandbox apply -f test-gpu.yaml
+kubectl -n sandbox wait --for=condition=Ready pod/gpu-test --timeout=10m
+kubectl -n sandbox logs gpu-test
+kubectl -n sandbox delete -f test-gpu.yaml
+```
+
+If access is denied or capacity is unavailable, retain the redacted status and contact the namespace owner. Do not put a token in `.env`, a manifest, shell history, or support tickets.
+
 ## Resources
 
 - [CoreWeave Documentation](https://docs.coreweave.com)
