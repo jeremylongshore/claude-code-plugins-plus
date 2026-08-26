@@ -28,6 +28,18 @@ compatibility: Designed for Claude Code
 
 Guide for handling Canva Connect API changes. Canva uses a single REST API version (`/rest/v1/`) but evolves endpoints over time. Monitor the [changelog](https://www.canva.dev/docs/connect/changelog/) for breaking changes.
 
+## Prerequisites
+
+- A pinned current artifact, tested rollback version, and current official changelog evidence.
+- Synthetic or approved non-production assets and a protected OAuth test tenant.
+
+## Instructions
+
+1. Map the announced change to scopes, endpoints, stored identifiers, and response contracts.
+2. Test behind a feature flag with only approved synthetic assets and minimum scopes.
+3. Compare redacted authorization, schema, rate/cost, and publication outcomes before promotion.
+4. Roll back on a policy, contract, or reconciliation difference.
+
 ## Known Migrations
 
 ### Brand Template ID Migration (September 2025)
@@ -158,6 +170,14 @@ async function createComment(designId: string, message: string, token: string) {
   });
 }
 ```
+
+## Output
+
+The upgrade produces a compatibility matrix, artifact/config versions, redacted test receipt, feature-flag decision, and rollback reference. It excludes tokens, design contents, signed URLs, and tenant-identifying data.
+
+## Examples
+
+Pin the prior client version, test the new version against a synthetic design export, compare the validated schema and policy decision, and promote only after owner approval. If a new scope or response field is unexpected, leave the flag disabled and restore the prior release.
 
 ## Error Handling
 
