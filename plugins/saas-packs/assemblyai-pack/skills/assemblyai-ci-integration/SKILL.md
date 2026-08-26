@@ -235,6 +235,10 @@ describe.skipIf(skipIfNoKey)('AssemblyAI Integration', () => {
 - GitHub Secrets configured for API key
 - Cost-controlled test strategy
 
+## Examples
+
+Run mocked unit tests for every pull request. Run a single non-destructive integration transcription only from a protected branch or manually approved environment, use a dedicated low-quota test credential, delete the resulting test transcript after assertions, and fail closed if the secret or approval is absent.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

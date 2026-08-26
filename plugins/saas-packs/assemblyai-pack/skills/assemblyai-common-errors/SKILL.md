@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Quick reference for the most common AssemblyAI errors across transcription, streaming, and LeMUR APIs with real error messages and solutions.
 
+## Scope and Safety
+
+Troubleshoot only the transcript, streaming session, or request identifier already placed in scope. Treat audio URLs, transcript text, prompts, and authorization headers as sensitive. Use redacted request metadata and official status information; never paste API keys into terminal commands, tickets, or chat.
+
 ## Prerequisites
 
 - `assemblyai` package installed
@@ -49,11 +53,9 @@ Status: 401
 **Solution:**
 
 ```bash
-# Verify key is set
-echo $ASSEMBLYAI_API_KEY
-
-# Test directly
-curl -H "Authorization: $ASSEMBLYAI_API_KEY" \
+# Test directly without printing the key; load the header from a protected file
+# or use the SDK in a local developer session.
+curl --config <(printf '%s\n' "header = Authorization: $ASSEMBLYAI_API_KEY") \
   https://api.assemblyai.com/v2/transcript \
   -X GET
 ```
@@ -252,6 +254,14 @@ node -e "console.log(process.env.ASSEMBLYAI_API_KEY ? 'SET' : 'NOT SET')"
 | Rate limit | 429 | Yes | Exponential backoff |
 | Server error | 500-503 | Yes | Retry after delay |
 | Download error | N/A | Maybe | Check audio URL accessibility |
+
+## Output
+
+Diagnosis returns a redacted status code/category, request or transcript identifier where available, retry decision, and next owner action. It excludes API keys, signed audio URLs, transcript text, and LeMUR prompts.
+
+## Examples
+
+For a 429, record the `Retry-After` value and the opaque workload key, pause further submissions, then retry only after the specified interval and a bounded backoff. For a 401, stop retries, rotate or replace the secret through the approved manager, and verify with the SDK without exposing the credential.
 
 ## Resources
 
