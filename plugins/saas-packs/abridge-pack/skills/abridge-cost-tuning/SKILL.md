@@ -42,6 +42,17 @@ Abridge pricing is enterprise, sales-led, and per-provider. Cost optimization fo
 | Patient summaries | May be add-on | Enable only for portal-integrated sites |
 | Languages | Included (28+ languages) | No incremental cost |
 
+## Prerequisites
+
+- Use an approved, de-identified utilization export or synthetic test data; do
+  not include encounter transcripts, patient identifiers, or protected health
+  information in cost reports.
+- Confirm the reporting period, enrolled-provider roster, and contract figures
+  with the finance and clinical-operations owners before making a renewal or
+  license recommendation.
+- Define the organization-specific threshold for a dormant provider and retain
+  the source report needed to reproduce the calculation.
+
 ## Instructions
 
 ### Step 1: Provider Utilization Tracking
@@ -204,6 +215,18 @@ function generateCostRecommendations(
 - Session waste detection with categorized reasons
 - ROI calculator for contract justification
 - Actionable cost optimization recommendations
+
+## Examples
+
+For a quarterly planning review, load a de-identified export for 50 enrolled
+providers and classify each provider from their monthly session count and last
+activity date. Run session-waste detection against aggregate synthetic session
+metrics, then calculate ROI using finance-approved loaded labor cost and
+contract value. Deliver a report that lists the assumptions, identifies
+dormant licenses for clinical-lead review, and recommends training before any
+removal. If the export is incomplete or the calculated contract value is zero,
+stop the calculation, record the missing input, and request a corrected
+aggregate report rather than guessing.
 
 ## Error Handling
 
