@@ -182,6 +182,34 @@ remaining_budget = 200_000 - count.input_tokens
 max_tokens = min(4096, remaining_budget)
 ```
 
+## Instructions
+
+Choose one pattern for the integration boundary instead of copying all of them
+into a single client. Start with the typed wrapper for a service that returns
+text, add the conversation manager only when the application owns turn history,
+and use token counting before submitting large documents. Keep tenant keys in a
+server-side secret store and make the factory key its cache by tenant identity;
+never accept or persist a customer key in browser code. Test the selected
+wrapper with a mocked SDK response before enabling live requests.
+
+## Output
+
+The selected pattern yields a stable application-level interface: a text value
+or stream for an interactive request, a JSON object that has passed parsing for
+structured extraction, or a tenant-scoped client whose credentials remain
+isolated. Failures are surfaced as explicit SDK errors or a missing-text/JSON
+parsing error rather than silently returning partial data.
+
+## Examples
+
+For a support API, instantiate one `ClaudeService` at process startup and call
+`complete()` from the server route; return its string only after the wrapper has
+confirmed a text block. For a document import, call `count_tokens()` first,
+reduce the requested output to the remaining budget, then pass the bounded
+request to the wrapper. In a multi-tenant service, resolve the tenant's key
+from the secret store and use `getClientForTenant()` so one customer's retry or
+usage state cannot be confused with another's.
+
 ## Error Handling
 
 | Pattern | Use Case | Benefit |

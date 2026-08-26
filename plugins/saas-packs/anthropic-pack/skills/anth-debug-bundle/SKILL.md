@@ -122,6 +122,31 @@ echo "Bundle: $BUNDLE_DIR.tar.gz"
 
 **SAFE TO INCLUDE:** Request IDs, error messages, rate limit headers, SDK versions, status codes, timestamps
 
+## Output
+
+The result is a timestamped compressed bundle containing a redacted summary,
+SDK and runtime versions, connection status, response headers, and request IDs
+that support can correlate. It must not contain an API key, authorization
+header, or customer prompt/response content; inspect the archive before it is
+attached to a ticket.
+
+## Error Handling
+
+If the connectivity request returns an HTTP error, retain its status, request
+ID, and rate-limit headers in the bundle and record the time of the attempt. If
+the status endpoint or package lookup is unavailable, note that collection step
+as unavailable rather than inventing a result. If redaction cannot be verified,
+do not share the archive; recreate it after removing the unsafe source data.
+
+## Examples
+
+When a production request repeatedly receives a 429, capture the request ID
+from the SDK exception, run the bundle script in a controlled environment, and
+attach only the reviewed archive plus the affected time window to support. When
+a response appears malformed, include the SDK version and a redacted error
+message, but replace the original user prompt with a short synthetic example
+that reproduces the behavior.
+
 ## Key Headers for Debugging
 
 | Header | Example | Use |
