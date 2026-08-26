@@ -29,6 +29,15 @@ compatibility: Designed for Claude Code
 
 Deploy Alchemy-powered dApps with proper API key security. The API key must stay server-side — never ship it to the browser.
 
+## Prerequisites
+
+- A server-side deployment target with a managed secret store and a scoped
+  Alchemy key that is distinct from local development credentials.
+- Input validation, rate limiting, and logging rules for any public RPC proxy
+  endpoint so arbitrary callers cannot turn it into an account-exhaustion path.
+- A tested rollback target and authenticated operational health check that does
+  not reveal credentials, internal configuration, or user activity.
+
 ## Instructions
 
 ### Step 1: Vercel Deployment
@@ -101,6 +110,26 @@ export default async function handler(_req: any, res: any) {
 - Vercel deployment with API key in server-side functions
 - Cloud Run with GCP Secret Manager
 - Health check endpoint verifying Alchemy connectivity
+
+## Examples
+
+Deploy a staging serverless balance endpoint with the API key injected only by
+the platform secret binding, then call it with a public test address. Confirm
+that invalid addresses return `400`, valid requests return only the intended
+balance field, and neither response nor build artifact contains key material.
+Record the deployment revision and authenticated health result as the release
+receipt. If the secret binding, server-side boundary, or health check fails,
+roll traffic back to the prior revision and correct the deployment settings;
+never work around the failure by embedding a key in client code or source.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Secret is unavailable at runtime | Fail closed, verify the managed binding, and do not substitute a plaintext fallback. |
+| Public endpoint receives malformed input | Return a bounded client error before invoking the provider. |
+| Provider health check fails | Mark the service degraded, alert the operator, and preserve the previous healthy revision. |
+| API key appears in output or artifact | Revoke it, remove the exposure, audit logs/builds, and redeploy with a replacement. |
 
 ## Resources
 
