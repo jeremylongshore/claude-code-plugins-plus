@@ -22,6 +22,29 @@ compatibility: Designed for Claude Code
 
 Production architecture for property management integrations with the AppFolio Stack API. Designed for multi-property portfolios requiring real-time vacancy tracking, tenant lifecycle management, work order routing, and accounting reconciliation. Key design drivers: data freshness for leasing decisions, idempotent sync for financial accuracy, and tenant-facing portal responsiveness.
 
+## Prerequisites
+
+- A provider-verified contract for endpoints, authentication, events (if any),
+  rate limits, data residency, and permitted downstream accounting/CRM effects.
+- Separate staging and production environments with managed secrets, synthetic
+  fixtures, durable queues/idempotency stores, and named reconciliation owners.
+- Data classification that limits dashboard and cache models to the smallest
+  permitted fields; tenant contact, payment, and balance data require separate
+  encrypted stores and access controls.
+
+## Instructions
+
+1. Build the contract-bound client and safe-read service layer first, with
+   endpoint budgets, minimized cache entries, and observability before adding
+   write or event processing.
+2. Enable provider events only after the contract and durable raw-body,
+   signature, persistence, and replay boundaries have been proven; otherwise
+   use bounded incremental reconciliation.
+3. Persist an idempotency/reconciliation record before any work-order,
+   accounting, tenant, or lease mutation and require explicit authorization.
+4. Validate the architecture in staging with synthetic data, a forced provider
+   failure, duplicate event/retry, and rollback rehearsal before promotion.
+
 ## Architecture Diagram
 
 ```
@@ -29,10 +52,13 @@ Dashboard (React) ──→ Property Service ──→ Redis Cache ──→ App
                            ↓                                 /properties
                       Queue (Bull) ──→ Sync Worker           /tenants
                            ↓                                 /leases
-                      Webhook Handler ←── AppFolio Events    /work-orders
+                      Event Handler ←── Provider events*      /work-orders
                            ↓                                 /bills
                       Accounting Sync ──→ QuickBooks/Xero
 ```
+
+`*` Use provider events only when the active contract confirms their delivery
+and security semantics; otherwise feed the queue from bounded reconciliation.
 
 ## Service Layer
 
@@ -94,7 +120,7 @@ class PropertyEventPipeline {
 
 ```typescript
 interface Property { id: string; name: string; address: Address; units: Unit[]; region: string; }
-interface Tenant   { id: string; name: string; email: string; leaseId: string; balance: number; }
+interface TenantRef { id: string; leaseId: string; contactCiphertextRef: string; }
 interface Lease    { id: string; propertyId: string; unitId: string; tenantId: string; startDate: string; endDate: string; monthlyRent: number; status: 'active' | 'pending' | 'terminated'; }
 interface WorkOrder { id: string; propertyId: string; unitId: string; category: 'plumbing' | 'electrical' | 'hvac' | 'general'; status: string; assignedVendor: string; }
 ```
@@ -116,6 +142,26 @@ interface WorkOrder { id: string; propertyId: string; unitId: string; category: 
 | Work order routing | Vendor API timeout | Queue retry with fallback to manual assignment |
 | Accounting sync | Balance mismatch | Reconciliation queue with human review flag |
 | Tenant portal | Cache miss storm | Stale-while-revalidate pattern, circuit breaker on API layer |
+
+## Output
+
+- A contract-bound, staged architecture with service, cache, queue, data, and
+  reconciliation ownership explicitly separated
+- Minimized dashboard references and encrypted/controlled boundaries for tenant
+  contact, payment, and balance data
+- A deployment decision supported by staging failure, duplicate/replay, rate,
+  rollback, and reconciliation evidence
+
+## Examples
+
+For a vacancy-dashboard rollout, start with synthetic property and unit IDs,
+one bounded safe-read, and a cache that exposes data age. Inject a duplicate
+event or reconciliation record, a `429`, and a downstream accounting timeout
+to prove the queue and idempotency store prevent duplicate effects. Promote
+only when results remain complete and authorized and the rollback/reconciliation
+owners can demonstrate their paths. If event support, data classification,
+durable state, or a write outcome is unverified, keep the corresponding path
+disabled and use operator-led reconciliation.
 
 ## Resources
 
