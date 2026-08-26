@@ -24,6 +24,22 @@ compatibility: Designed for Claude Code
 ---
 # Anima CI Integration
 
+## Overview
+
+This workflow turns explicitly approved Figma nodes into a reviewable generated
+code change. The CI identity receives design credentials only at runtime and
+must never merge or deploy generated output without the repository’s normal
+quality and ownership controls.
+
+## Prerequisites
+
+- A read-only Anima/Figma integration token stored as CI secrets and limited to
+  the intended design file.
+- An allowlisted component/node registry, deterministic output directory, and
+  generated-code ownership/review policy.
+- A branch workflow that validates generated output before any human-approved
+  merge; scheduled generation alone is not release authorization.
+
 ## Instructions
 
 ### Step 1: GitHub Actions Workflow
@@ -118,6 +134,26 @@ main().catch(err => { console.error(err); process.exit(1); });
 - Auto-PR creation when generated code changes
 - ESLint auto-fix on generated output
 - Rate-limited generation script for CI
+
+## Examples
+
+Run the workflow manually against a staging Figma file containing only an
+approved `Card` node. Confirm it generates files beneath the dedicated output
+directory, runs formatting and tests, and creates a PR with a diff that a
+maintainer can inspect. The PR should include the source node identifier and
+the generation run, but never the Figma or Anima token. If generation changes
+an unexpected path, output is invalid, or token access fails, stop before PR
+creation, retain sanitized logs, and correct the allowlist or secret binding
+before retrying.
+
+## Error Handling
+
+| Failure | Response |
+|---------|----------|
+| Design token or file access is denied | Fail the job without printing credentials; verify scoped secret configuration. |
+| Generator writes outside the approved directory | Refuse to commit or open a PR and investigate the path mapping. |
+| Generated code fails lint or tests | Keep the branch unmerged and return the actionable failure to the design/code owners. |
+| Scheduled run has no approved changes | Exit cleanly without creating an empty PR or deployment. |
 
 ## Resources
 
