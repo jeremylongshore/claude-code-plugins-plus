@@ -1,8 +1,8 @@
 {
   "$comment": "Triple-keyed safety-ratchet baseline (E4.3/E4.4/E4.11). Regenerate ONLY via `node scripts/check-safety-ratchet.mjs --write` in the PR that shrinks a class; the gate fails any growth or swap. shell_substitution is never waivable.",
-  "pinned_at": "2026-08-19",
+  "pinned_at": "2026-08-26",
   "schema_version": "4.1.0",
-  "agents_terminal_error_count": 253,
+  "agents_terminal_error_count": 236,
   "classes": {
     "bare_bash": {
       "count": 1,
@@ -15,24 +15,15 @@
       "members": ["plugins/community/framecraft/skills/demo-video/SKILL.md"]
     },
     "shell_substitution": {
-      "count": 7,
-      "set_sha256": "5272552d6a8c334921548d8ba8b009a9791ced5acfdf2bb8ffeae8c0499382f9",
-      "members": [
-        "plugins/saas-packs/langchain-py-pack/skills/langchain-deploy-integration/SKILL.md::description",
-        "plugins/saas-packs/langchain-py-pack/skills/langchain-langgraph-agents/SKILL.md::description",
-        "plugins/saas-packs/langchain-py-pack/skills/langchain-langgraph-human-in-loop/SKILL.md::description",
-        "plugins/saas-packs/langchain-py-pack/skills/langchain-multi-env-setup/SKILL.md::description",
-        "plugins/saas-packs/langchain-py-pack/skills/langchain-sdk-patterns/SKILL.md::description",
-        "plugins/saas-packs/podium-pack/skills/podium-rate-limit-survival/SKILL.md::description",
-        "plugins/security/penetration-tester/skills/detecting-exposed-secrets-files/SKILL.md::description"
-      ]
+      "count": 0,
+      "set_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "members": []
     },
     "agents_only_errors": {
-      "count": 252,
-      "set_sha256": "cafc2e52f68aa95cf34acdd98eba8f519ddc9d6f737dbb1b1ea1cbe57a0c9a38",
+      "count": 235,
+      "set_sha256": "14d6d38c794e0674e7d5436a886f9b1296101699ceb8269dc7eb98cbd9fc8f7d",
       "members": [
         "ERROR: Field 'author' must be object, got str",
-        "ERROR: Field 'author' must be object, got str",
         "ERROR: [agent] 'disallowedTools' must be an array, got: str",
         "ERROR: [agent] 'disallowedTools' must be an array, got: str",
         "ERROR: [agent] 'disallowedTools' must be an array, got: str",
@@ -69,10 +60,6 @@
         "ERROR: [agent] Missing required field: author",
         "ERROR: [agent] Missing required field: author",
         "ERROR: [agent] Missing required field: author",
-        "ERROR: [agent] Missing required field: author",
-        "ERROR: [agent] Missing required field: author",
-        "ERROR: [agent] Missing required field: author",
-        "ERROR: [agent] Missing required field: author",
         "ERROR: [agent] Missing required field: background",
         "ERROR: [agent] Missing required field: background",
         "ERROR: [agent] Missing required field: background",
@@ -101,10 +88,6 @@
         "ERROR: [agent] Missing required field: background",
         "ERROR: [agent] Missing required field: background",
         "ERROR: [agent] Missing required field: background",
-        "ERROR: [agent] Missing required field: color",
-        "ERROR: [agent] Missing required field: color",
-        "ERROR: [agent] Missing required field: color",
-        "ERROR: [agent] Missing required field: color",
         "ERROR: [agent] Missing required field: color",
         "ERROR: [agent] Missing required field: color",
         "ERROR: [agent] Missing required field: color",
@@ -212,10 +195,6 @@
         "ERROR: [agent] Missing required field: skills",
         "ERROR: [agent] Missing required field: skills",
         "ERROR: [agent] Missing required field: skills",
-        "ERROR: [agent] Missing required field: tags",
-        "ERROR: [agent] Missing required field: tags",
-        "ERROR: [agent] Missing required field: tags",
-        "ERROR: [agent] Missing required field: tags",
         "ERROR: [agent] Missing required field: tags",
         "ERROR: [agent] Missing required field: tags",
         "ERROR: [agent] Missing required field: tags",
@@ -248,10 +227,6 @@
         "ERROR: [agent] Missing required field: tools",
         "ERROR: [agent] Missing required field: tools",
         "ERROR: [agent] Missing required field: tools",
-        "ERROR: [agent] Missing required field: version",
-        "ERROR: [agent] Missing required field: version",
-        "ERROR: [agent] Missing required field: version",
-        "ERROR: [agent] Missing required field: version",
         "ERROR: [agent] Missing required field: version",
         "ERROR: [agent] Missing required field: version",
         "ERROR: [agent] Missing required field: version",

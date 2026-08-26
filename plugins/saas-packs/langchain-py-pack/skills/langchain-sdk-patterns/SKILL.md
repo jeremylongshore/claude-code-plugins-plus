@@ -7,9 +7,9 @@ description: 'Compose LangChain 1.0 Python runnables with the production default
 
   Use when building an LCEL chain with RunnableSequence / RunnableParallel,
 
-  adding resilience via `.with_fallbacks()`, tuning throughput with `.batch()`
+  adding resilience via .with_fallbacks(), tuning throughput with .batch()
 
-  or `.abatch()`, or wrapping user input in a prompt template.
+  or .abatch(), or wrapping user input in a prompt template.
 
   Trigger with "langchain runnable", "with_fallbacks", "langchain batch",
 

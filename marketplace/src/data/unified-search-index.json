@@ -33030,7 +33030,7 @@
       "id": "detecting-exposed-secrets-files",
       "slug": "detecting-exposed-secrets-files",
       "name": "detecting-exposed-secrets-files",
-      "description": "Probe a target for accidentally-served secret-bearing files in the web root — `.git/`, `.env`, `.DS_Store`, backup files, database dumps, key files, CI configs, IDE configs. Use when: post-deploy verification on a new release, or SOC2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. Threshold: any of the canonical 40+ paths returns 200 OR returns a body matching the expected fingerprint of the file type (e.g., `.git/HEAD` returns content starting with `ref:` or a 40-char hex SHA). Trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\".",
+      "description": "Probe a target for accidentally-served secret-bearing files in the web root — .git/, .env, .DS_Store, backup files, database dumps, key files, CI configs, IDE configs. Use when: post-deploy verification on a new release, or SOC2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. Threshold: any of the canonical 40+ paths returns 200 OR returns a body matching the expected fingerprint of the file type (e.g., .git/HEAD returns content starting with ref: or a 40-char hex SHA). Trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\".",
       "category": "security",
       "allowedTools": [
         "Read",
@@ -33043,7 +33043,7 @@
         "name": "penetration-tester",
         "category": "security"
       },
-      "searchText": "detecting-exposed-secrets-files probe a target for accidentally-served secret-bearing files in the web root — `.git/`, `.env`, `.ds_store`, backup files, database dumps, key files, ci configs, ide configs. use when: post-deploy verification on a new release, or soc2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. threshold: any of the canonical 40+ paths returns 200 or returns a body matching the expected fingerprint of the file type (e.g., `.git/head` returns content starting with `ref:` or a 40-char hex sha). trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\". security read bash(python3:*) bash(curl:*) "
+      "searchText": "detecting-exposed-secrets-files probe a target for accidentally-served secret-bearing files in the web root — .git/, .env, .ds_store, backup files, database dumps, key files, ci configs, ide configs. use when: post-deploy verification on a new release, or soc2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. threshold: any of the canonical 40+ paths returns 200 or returns a body matching the expected fingerprint of the file type (e.g., .git/head returns content starting with ref: or a 40-char hex sha). trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\". security read bash(python3:*) bash(curl:*) "
     },
     {
       "type": "skill",
@@ -50779,7 +50779,7 @@
       "id": "langchain-deploy-integration",
       "slug": "langchain-deploy-integration",
       "name": "langchain-deploy-integration",
-      "description": "\"Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or\\",
+      "description": ">-",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -50795,7 +50795,7 @@
         "name": "langchain-py-pack",
         "category": "saas-packs"
       },
-      "searchText": "langchain-deploy-integration \"deploy a langchain 1.0 / langgraph 1.0 app to cloud run, vercel, or\\ saas-packs read write edit bash(docker:*) bash(gcloud:*) bash(vercel:*) "
+      "searchText": "langchain-deploy-integration >- saas-packs read write edit bash(docker:*) bash(gcloud:*) bash(vercel:*) "
     },
     {
       "type": "skill",
@@ -50887,7 +50887,7 @@
       "id": "langchain-langgraph-agents",
       "slug": "langchain-langgraph-agents",
       "name": "langchain-langgraph-agents",
-      "description": "\"Build a correct LangGraph 1.0 ReAct agent with `create_react_agent`\\",
+      "description": ">-",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -50901,7 +50901,7 @@
         "name": "langchain-py-pack",
         "category": "saas-packs"
       },
-      "searchText": "langchain-langgraph-agents \"build a correct langgraph 1.0 react agent with `create_react_agent`\\ saas-packs read write edit bash(python:*) "
+      "searchText": "langchain-langgraph-agents >- saas-packs read write edit bash(python:*) "
     },
     {
       "type": "skill",
@@ -50951,7 +50951,7 @@
       "id": "langchain-langgraph-human-in-loop",
       "slug": "langchain-langgraph-human-in-loop",
       "name": "langchain-langgraph-human-in-loop",
-      "description": "\"Build LangGraph 1.0 human-in-the-loop approval flows with `interrupt_before`\\",
+      "description": "\"Build LangGraph 1.0 human-in-the-loop approval flows with interrupt_before\\",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -50965,7 +50965,7 @@
         "name": "langchain-py-pack",
         "category": "saas-packs"
       },
-      "searchText": "langchain-langgraph-human-in-loop \"build langgraph 1.0 human-in-the-loop approval flows with `interrupt_before`\\ saas-packs read write edit bash(python:*) "
+      "searchText": "langchain-langgraph-human-in-loop \"build langgraph 1.0 human-in-the-loop approval flows with interrupt_before\\ saas-packs read write edit bash(python:*) "
     },
     {
       "type": "skill",

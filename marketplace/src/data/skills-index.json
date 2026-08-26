@@ -9797,7 +9797,7 @@
     {
       "slug": "detecting-exposed-secrets-files",
       "name": "detecting-exposed-secrets-files",
-      "description": "Probe a target for accidentally-served secret-bearing files in the web root — `.git/`, `.env`, `.DS_Store`, backup files, database dumps, key files, CI configs, IDE configs. Use when: post-deploy verification on a new release, or SOC2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. Threshold: any of the canonical 40+ paths returns 200 OR returns a body matching the expected fingerprint of the file type (e.g., `.git/HEAD` returns content starting with `ref:` or a 40-char hex SHA). Trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\".",
+      "description": "Probe a target for accidentally-served secret-bearing files in the web root — .git/, .env, .DS_Store, backup files, database dumps, key files, CI configs, IDE configs. Use when: post-deploy verification on a new release, or SOC2 auditor asked \"what's reachable in the web root that shouldn't be,\" or a bug-bounty report hints at a leaked file. Threshold: any of the canonical 40+ paths returns 200 OR returns a body matching the expected fingerprint of the file type (e.g., .git/HEAD returns content starting with ref: or a 40-char hex SHA). Trigger with: \"check exposed files\", \"git directory exposure\", \"env file leak\", \"backup file scan\".",
       "version": "3.30.0",
       "category": "security",
       "parentPlugin": "penetration-tester",
@@ -19541,7 +19541,7 @@
     {
       "slug": "langchain-deploy-integration",
       "name": "langchain-deploy-integration",
-      "description": "\"Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or\\",
+      "description": ">-",
       "version": "2.5.0",
       "category": "saas-packs",
       "parentPlugin": "langchain-py-pack",
@@ -19601,7 +19601,7 @@
     {
       "slug": "langchain-langgraph-agents",
       "name": "langchain-langgraph-agents",
-      "description": "\"Build a correct LangGraph 1.0 ReAct agent with `create_react_agent`\\",
+      "description": ">-",
       "version": "2.5.0",
       "category": "saas-packs",
       "parentPlugin": "langchain-py-pack",
@@ -19637,7 +19637,7 @@
     {
       "slug": "langchain-langgraph-human-in-loop",
       "name": "langchain-langgraph-human-in-loop",
-      "description": "\"Build LangGraph 1.0 human-in-the-loop approval flows with `interrupt_before`\\",
+      "description": "\"Build LangGraph 1.0 human-in-the-loop approval flows with interrupt_before\\",
       "version": "2.5.0",
       "category": "saas-packs",
       "parentPlugin": "langchain-py-pack",
@@ -36808,7 +36808,7 @@
     }
   ],
   "count": 3067,
-  "generatedAt": "2026-08-26T17:00:17.281Z",
+  "generatedAt": "2026-08-26T17:11:27.171Z",
   "categories": [
     "ai-agency",
     "ai-ml",

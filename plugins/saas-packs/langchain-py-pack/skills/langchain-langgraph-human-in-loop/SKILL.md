@@ -1,7 +1,7 @@
 ---
 name: langchain-langgraph-human-in-loop
-description: "Build LangGraph 1.0 human-in-the-loop approval flows with `interrupt_before`\
-  \ /\n`interrupt_after` and `Command(resume=...)` \u2014 JSON-serializable state,\
+description: "Build LangGraph 1.0 human-in-the-loop approval flows with interrupt_before\
+  \ /\ninterrupt_after and Command(resume=...) \u2014 JSON-serializable state,\
   \ clean\nresume semantics, and UI wiring for approval decisions. Use when adding\
   \ an\napproval gate before an expensive tool call, wiring a Slack/web UI for agent\n\
   approvals, or debugging a graph that crashes on interrupt.\nTrigger with \"langgraph\
