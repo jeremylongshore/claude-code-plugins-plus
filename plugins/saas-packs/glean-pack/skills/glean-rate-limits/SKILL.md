@@ -125,6 +125,28 @@ async function bulkIndexDocuments(docs: any[], batchSize = 100) {
 | Partial index failure | Some docs rejected in bulk | Check response `failedDocuments` array, retry those |
 | 401 token expired | Rotating API credentials | Refresh token before long ingestion runs |
 
+## Prerequisites
+
+- An approved per-operation budget, observed response-header baseline, and a test environment with synthetic requests.
+- Idempotency keys for writes, a bounded queue, and a dead-letter path for exhausted retries.
+- A defined caller identity and datasource scope so throttling cannot be bypassed by broadening credentials.
+
+## Instructions
+
+1. Classify calls as read or write, apply per-scope concurrency limits, and honor server retry guidance when it is present.
+2. Use bounded exponential backoff with jitter and a maximum attempt count; never blindly replay a write without its idempotency key.
+3. Shed or defer nonessential work before queue growth threatens freshness or downstream access-control synchronization.
+4. Monitor aggregate rate-limit responses and canary success, then tune one scope at a time with a rollback to the prior limits.
+5. Route exhausted items to reviewed recovery rather than silently dropping or duplicating them.
+
+## Output
+
+Return a rate-limit receipt with operation scope, request/limited/deferred counts, retry policy revision, idempotency outcome, queue state, canary result, and rollback reference. Omit tokens, URLs with sensitive parameters, and payloads.
+
+## Examples
+
+`scope=sandbox-index; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; queue=healthy; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

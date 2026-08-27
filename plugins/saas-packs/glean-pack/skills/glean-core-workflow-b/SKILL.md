@@ -119,6 +119,20 @@ await fetch(`${GLEAN}/index/v1/deletedocument`, {
 | `document too large` | Content exceeds limit | Truncate body to ~100KB |
 | `invalid permissions` | Malformed user/group | Use valid email addresses |
 
+## Prerequisites
+
+- A named datasource owner, approved classification and retention policy, scoped indexing credential, and a sandbox source with fictitious documents.
+- Opaque document IDs, an idempotency strategy, and two synthetic identities to test source ACL propagation.
+- A delete/rollback plan that is limited to the staged test cohort and does not weaken source permissions.
+
+## Output
+
+Return an indexing receipt with datasource, batch and accepted/quarantined counts, idempotency revision, source-to-index ACL comparison, allow/deny results, retention date, and rollback reference. Never include document bodies, titles, credentials, or user membership.
+
+## Examples
+
+`source=sandbox-onboarding; batch=25; accepted=24; quarantined=1; acl=match; allow=pass; deny=pass; rollback=batch-r6` is a safe connector result.
+
 ## Resources
 
 - [Bulk Indexing](https://developers.glean.com/api-info/indexing/documents/bulk-indexing)

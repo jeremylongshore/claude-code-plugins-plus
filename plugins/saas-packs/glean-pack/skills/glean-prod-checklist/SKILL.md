@@ -94,6 +94,28 @@ checkGleanReadiness();
 | Zero-result tracking | Employees lose trust in search | P2 |
 | Index count monitoring | Silent data source disconnection | P3 |
 
+## Prerequisites
+
+- A protected production change approval, named incident and rollback owners, and an artifact/configuration revision that has passed sandbox and staging.
+- Baselines for health, freshness, error budget, and synthetic allow/deny access tests.
+- A canary datasource and an explicit stop condition for unexpected destination, access expansion, or unredacted evidence.
+
+## Instructions
+
+1. Confirm environment, secret reference, destination allowlist, artifact digest, and approval before enabling any production action.
+2. Run the documented health and authorization probes against the canary with only synthetic terms and opaque identifiers.
+3. Monitor error rate, freshness, queue depth, and access probes through the stated observation window; halt on any regression.
+4. Promote in bounded stages or restore the previous revision, recording the decision and verified rollback result.
+5. Close the change only when the owner accepts the redacted receipt and temporary credentials are revoked.
+
+## Output
+
+Create a production readiness receipt with revision, canary source, health/freshness/error results, allow/deny evidence, owner approvals, outcome, and rollback reference. It must not include secrets, queries, or indexed content.
+
+## Examples
+
+`revision=r44; canary=sandbox-guides; health=pass; freshness=pass; errors=within-budget; allow=pass; deny=pass; outcome=promote` is a complete canary decision.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
