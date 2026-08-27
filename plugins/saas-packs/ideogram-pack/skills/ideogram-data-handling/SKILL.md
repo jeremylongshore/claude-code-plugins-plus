@@ -271,6 +271,10 @@ function findByTags(tags: string[]): GenerationRecord[] {
 - Seed-based reproduction for exact image regeneration
 - Lifecycle management with configurable retention
 
+## Examples
+
+`input=fictional-prompt-fixture; rights=test-owned; destination=sandbox-gallery; generated=2; rejected=1; retention=24h; deletion=verified` is a handling receipt that excludes prompts, reference assets, and image output.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

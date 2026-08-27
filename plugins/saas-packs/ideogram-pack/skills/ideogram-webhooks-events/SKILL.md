@@ -239,6 +239,10 @@ async function processImage(filePath: string, metadata?: Record<string, string>)
 - Batch generation for marketing campaigns
 - Post-processing pipeline with sharp
 
+## Examples
+
+`type=generation.completed; event=evt-opaque-9; signature=pass; replay=absent; destination=sandbox-gallery; rights=test-owned; output_retention=none; rollback=consumer-disabled` proves the event boundary without retaining a prompt or image.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

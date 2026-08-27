@@ -235,6 +235,15 @@ groups:
 - Prometheus metrics with alerting rules
 - Grafana dashboard query templates
 
+## Prerequisites
+
+- Data-minimization rules for prompts, reference assets, generated images, and metadata; alert owners, retention limits, and an approved restricted destination.
+- Synthetic prompt fixtures and aggregate probes for availability, quota, content-policy enforcement, and approved-destination behavior.
+
+## Examples
+
+`dashboard=image-r6; alert=generation-lag; probe=pass; destination=restricted-ops; prompt_fields=excluded; output_retention=none; rollback=alert-r5` is a safe alert-test result.
+
 ## Resources
 
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
