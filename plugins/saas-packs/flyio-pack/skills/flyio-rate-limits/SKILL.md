@@ -23,6 +23,26 @@ compatibility: Designed for Claude Code
 
 The Fly.io Machines API rate-limits per organization, with write operations (create, delete, update) throttled much more aggressively than reads. Deploying fleets of edge machines across multiple regions can easily trigger 429s, especially during rolling deployments or auto-scaling events. The API returns a `Retry-After` header on rate-limited responses, and organizations running 50+ machines should implement client-side token bucket limiting to avoid cascading failures during high-churn operations.
 
+## Prerequisites
+
+- Current platform limits confirmed for the organization plus approved concurrency, retry bounds, and a queue owner.
+- Redacted telemetry for request category, queue age, throttle count, and machine lifecycle—not tokens or payloads.
+- A staging fleet/synthetic workload for testing pauses, retries, and cancellation.
+
+## Instructions
+
+1. Honor explicit throttling guidance and use bounded concurrency with jittered backoff.
+2. Attach idempotency/operation tracking to lifecycle changes so a retry cannot duplicate a create, stop, or delete action.
+3. Queue exhausted operations for reviewed handling, alert on backlog growth, and reduce demand before resuming.
+
+## Output
+
+Publish a rate-control receipt with policy version, concurrency, retry bounds, throttle count, queue outcome, owner, and manual disposition. Do not expose app names if they are sensitive, tokens, or request bodies.
+
+## Examples
+
+Apply a small synthetic scale change, simulate a `429`, and confirm the worker waits and then performs the operation once. A repeated failure must enter the review queue rather than trigger a fleet-wide replay.
+
 ## Rate Limit Reference
 
 | Endpoint | Limit | Window | Scope |

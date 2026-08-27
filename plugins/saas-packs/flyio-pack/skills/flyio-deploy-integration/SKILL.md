@@ -23,6 +23,26 @@ compatibility: Designed for Claude Code
 
 Deploy edge applications on Fly.io with Docker containers and the `fly.toml` configuration file. This skill covers building production images optimized for Fly's micro-VM architecture, configuring `fly.toml` for services, health checks, and multi-region placement, verifying API connectivity from edge locations, and executing rolling updates with automatic rollback. Fly.io deploys as Firecracker micro-VMs, so containers start in under a second and scale to zero when idle.
 
+## Prerequisites
+
+- A deployment owner, scoped CI token, reviewed image, environment config, health criteria, and rollback operator.
+- Staging with synthetic traffic and explicit data/region requirements before any multi-region promotion.
+
+## Instructions
+
+1. Build reproducibly and run as a non-root user; inject secrets only through the platform.
+2. Deploy a small canary, observe redacted health and saturation metrics, and verify graceful failure behavior.
+3. Promote region by region only when the canary succeeds; stop and roll back on health, configuration, or access failures.
+4. Retain the release reference and recovery evidence for the approved change window.
+
+## Output
+
+Record image/release identifier, environment, regions, health criteria, canary metrics, approval, and rollback result. Exclude tokens, env values, request bodies, and user data.
+
+## Examples
+
+Deploy a staging image to one region with synthetic traffic, simulate a failed health check, and confirm the release stops before traffic expands. Restore the previous release and verify the readiness endpoint remains generic and redacted.
+
 ## Docker Configuration
 
 ```dockerfile

@@ -25,6 +25,25 @@ compatibility: Designed for Claude Code
 
 Fast local development workflow for Fly.io apps: build and test Docker containers locally, proxy remote Fly services (Postgres, Redis) to localhost, and use `fly deploy` for integration testing.
 
+## Prerequisites
+
+- Local Docker tooling, a non-production environment, synthetic fixtures, and a directory excluded from source control for runtime secrets.
+- Approved read-only/sandbox access for any remote proxy; development must not proxy production data by default.
+
+## Output
+
+Create a local validation receipt with image/config version, fixture set, health result, and redacted failures. Never commit connection strings, proxy credentials, database contents, or user data.
+
+## Error Handling
+
+- Stop a proxy or local test that targets production or exposes credentials; notify the environment owner if access was attempted.
+- Treat configuration or schema mismatches as review items and clean up temporary containers/fixtures through approved processes.
+- Revoke test credentials if they were disclosed in a terminal capture or artifact.
+
+## Examples
+
+Run a container locally with a fictional database URL and verify the health endpoint. Use an isolated staging proxy only for a read-only synthetic fixture, then stop the proxy and confirm no remote credential or data was written to the repository.
+
 ## Instructions
 
 ### Step 1: Local Docker Testing
