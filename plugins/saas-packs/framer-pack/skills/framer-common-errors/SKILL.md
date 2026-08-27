@@ -22,6 +22,26 @@ compatibility: Designed for Claude Code
 ---
 # Framer Common Errors
 
+## Prerequisites
+
+An authorized site owner, an opaque incident ID, redacted diagnostics, and a safe staging reproduction path.
+
+## Instructions
+
+Classify the issue as publishing, domain, asset, access, integration, or availability; reproduce with a staging page; apply the smallest reversible correction; verify both recovery and a safe failure response.
+
+## Output
+
+Return a receipt with category, opaque correlation ID, action, verification, owner, and follow-up. Keep visitor data, tokens, and page content out of support evidence.
+
+## Error Handling
+
+Pause publishing or integration changes on access, domain, or unexpected-destination failures. Use a rollback and route repeated failures to the site owner.
+
+## Examples
+
+Break a fictional staging publish configuration, restore it, and verify the production site is untouched while the receipt contains no visitor or credential data.
+
 ## Overview
 
 Diagnostic reference for common Framer plugin, component, and Server API errors with actionable fixes.

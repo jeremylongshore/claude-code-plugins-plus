@@ -22,6 +22,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer Install & Auth
 
+## Examples
+
+Use a scoped staging credential to confirm a read-only project check, record only the scope and redacted outcome, then revoke the test credential and verify access is denied.
+
 ## Overview
 
 Set up the Framer Plugin SDK for building editor plugins, or the `framer-api` package for Server API access. Framer has two developer surfaces: **Plugins** (run inside the Framer editor UI) and **Server API** (run from any Node.js server via WebSocket).

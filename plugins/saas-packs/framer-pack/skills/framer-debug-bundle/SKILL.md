@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer Debug Bundle
 
+## Prerequisites
+
+An incident owner, secure evidence location, retention date, redaction rules for tokens and visitor data, and an opaque correlation ID.
+
+## Error Handling
+
+Stop collection if a credential, customer submission, or private page content is found; rotate the affected credential if necessary and preserve only approved evidence.
+
+## Examples
+
+Collect a synthetic staging publish failure using release/version data and an opaque ID, review the bundle for secrets and form submissions, then restrict it to the incident owner and retire it at the retention date.
+
 ## Overview
 
 Collect diagnostic information for Framer plugin or Server API issues including package versions, API connectivity, and configuration.
