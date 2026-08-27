@@ -192,6 +192,32 @@ def generate_audit_report(log_dir: str = "audit", days: int = 30) -> dict:
 - [ ] Log access restricted to authorized personnel
 - [ ] Regular verification of chain integrity
 
+## Prerequisites
+
+- An approved audit schema, authorized workspace, redaction standard, retention schedule, least-privilege reader roles, synthetic test event, and an incident/rollback owner.
+
+## Instructions
+
+1. Emit append-only, aggregate or hashed audit events; never store prompts, asset URLs, identities beyond approved pseudonymous references, or credentials.
+2. Validate chain integrity, access controls, retention, deletion, policy/rights review, and draft-only workflow events using a sandbox fixture.
+3. Halt exports or access changes on integrity, scope, policy, or retention drift; revoke temporary roles and restore the prior audit configuration.
+4. Promote only after owner approval and retain a redacted verification receipt for the approved window.
+
+## Output
+
+Produce an audit receipt with environment, event classes, integrity/access checks, redaction and retention/deletion outcomes, policy/rights and draft-only assertions, owner approval, and rollback reference. Exclude event payloads, prompts, assets, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Integrity or access control fails | Stop audit delivery, revoke temporary access, and restore the last verified configuration. |
+| Sensitive data reaches the log | Quarantine and delete the affected record, correct redaction, and document only the redacted incident. |
+
+## Examples
+
+`env=staging; events=hashed-aggregate; integrity=pass; access=least-privilege; retention=30d; draft-only=pass; rollback=available` is a valid audit check.
+
 ## Resources
 
 - [Developer Portal](https://app.klingai.com/global/dev)
