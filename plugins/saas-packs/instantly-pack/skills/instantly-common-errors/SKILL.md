@@ -223,6 +223,21 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=100 \
 | Campaign `-2` bounce protect | Bounce rate >5% | Clean lead list, verify emails before import |
 | Warmup health dropping | Too many campaign emails too soon | Reduce daily_limit, extend warmup period |
 
+## Instructions
+
+1. Classify identity, sender, consent, suppression, recipient validation, quota, schedule, delivery, and webhook errors before changing configuration.
+2. Reproduce once with synthetic recipients and a draft-only campaign, capturing only status, latency, quota, and opaque IDs.
+3. Check sender scope, consent, suppression, campaign state, and quota in that order.
+4. Apply one reversible change at a time and escalate a redacted bundle when the error persists.
+
+## Output
+
+Return error class, correlation ID, campaign scope, consent/suppression state, probe outcome, remediation attempted, and next owner. Do not include addresses, copy, sender details, or credentials.
+
+## Examples
+
+`status=429; campaign=sandbox-only; correlation=send-opaque-11; action=bounded-backoff; consent=pass; suppression=pass; sends=0` supports a safe handoff.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
