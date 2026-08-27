@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Production architecture for fundraising operations integrating with Finta's CRM platform. Designed for startup founders and fund managers who need investor pipeline visibility, automated round management, and document room analytics. Key design drivers: deal velocity tracking, investor communication audit trail, capital collection automation via Stripe, and CRM integration with external systems like HubSpot or Salesforce for LP relationship management.
 
+## Prerequisites
+
+- A documented data-flow inventory naming each source, destination, owner, retention period, and approved fields.
+- Separate development, staging, and production credentials with least-privilege access.
+- An incident and rollback owner for every sync or document-sharing integration.
+
+## Instructions
+
+1. Treat Finta as the authoritative system only where the business has explicitly assigned that role; resolve conflicts through a review queue instead of automatic overwrites.
+2. Put exports, notifications, and CRM updates behind a durable queue with idempotency keys, bounded retries, and a dead-letter review path.
+3. Limit event payloads to identifiers and required fields; retrieve sensitive records only inside the authorized worker and redact diagnostics.
+4. Separate document-room access from operational dashboards, and enforce a permission check at the point where a document is retrieved.
+5. Promote changes through staging with fictitious investor data, observe a small canary, and retain a tested disable/rollback path for each integration.
+
 ## Architecture Diagram
 
 ```
@@ -112,6 +126,14 @@ interface Document  { id: string; name: string; type: 'pitch-deck' | 'financials
 | Email tracking | Gmail OAuth token expired | Auto-refresh token, fallback to manual logging alert |
 | Stripe collection | Payment declined | Retry schedule (1d, 3d, 7d), escalate to founder dashboard |
 | CRM sync | HubSpot conflict | Last-write-wins with Finta as source of truth, log discrepancies |
+
+## Output
+
+Maintain an architecture decision record showing each data boundary, the source of truth for each entity, the queue and retry policy, privileged-access owners, and the rollback switch for every external integration. Operational telemetry should be aggregated and redacted.
+
+## Examples
+
+For a stage-change test, publish a synthetic event with an opaque investor identifier. The worker records an idempotency key, sends one redacted CRM update, and writes a success receipt. Replaying the same event must result in no second update; a destination failure goes to the review queue after the retry limit.
 
 ## Resources
 
