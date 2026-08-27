@@ -208,6 +208,12 @@ app.get("/health", async (req, res) => {
 - Health check endpoint
 - Platform-specific secret management
 
+## Examples
+
+### Deploy a bounded research endpoint with an explicit fallback
+
+Deploy an immutable build to preview with the API key supplied only by the platform secret manager, then exercise a synthetic query through the health and citation-validation paths. Configure a short cache for time-sensitive requests and an abort signal for client disconnects. Promote only after latency, cost, and error limits are met; if the provider degrades, return a clear unavailable response or cached dated result rather than retrying indefinitely.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)

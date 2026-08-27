@@ -227,6 +227,12 @@ curl -s -o /dev/null -w "%{http_code}" \
 - Domain-restricted search for compliance teams
 - Usage tracking and cost allocation per team
 
+## Examples
+
+### Issue a team-scoped key with a reviewable policy
+
+Create a key for one team with the minimum model, token, domain-filter, and monthly-budget policy required for its workflow. Test approved and denied synthetic requests through the gateway, confirm usage is attributed to the team, and ensure audit logs omit prompt contents and key values. Set an expiry or rotation date and revoke the key immediately when the team or integration is decommissioned.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)

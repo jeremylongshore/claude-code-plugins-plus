@@ -130,6 +130,12 @@ print("Tokens:", response.usage.total_tokens)
 - Successful API response confirming connection
 - Token usage confirming billing is active
 
+## Examples
+
+### Configure a least-privilege local client
+
+Create a short-lived development API key with only the models required by the sample, save it in an ignored environment file, and initialize the compatible client with the documented base URL. Verify access with a small synthetic request and inspect only the status and usage summary. Never hardcode the key in source, test fixtures, or logs; rotate or revoke it when development access is no longer needed.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)
