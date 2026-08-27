@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Speed up Fondo workflows: faster month-end close (target: 15 days), reduced back-and-forth with CPA team, and efficient data export processing.
 
+## Prerequisites
+
+- A named finance owner, approved close calendar, data-access policy, and aggregate baseline for close time and exception volume.
+- Synthetic/sample data for workflow tests; real financial records remain in the approved accounting environment.
+
+## Output
+
+Produce an operational receipt with period, aggregate bottleneck metrics, approved workflow change, owner, verification date, and unresolved exceptions. Do not include account numbers, transactions, tax documents, or credentials.
+
+## Error Handling
+
+- Pause automation when an import, categorization, or reconciliation result is incomplete or unexpected; route it to the finance owner.
+- Do not replace professional review with an automated classification or calculator result.
+- Redact all financial data in performance diagnostics and roll back changes that harm accuracy or auditability.
+
+## Examples
+
+Use a fictional month of aggregate expenses to test a categorization workflow. Compare only close duration and exception count, then have the authorized finance reviewer approve the result before changing a live process.
+
 ## Instructions
 
 ### Faster Month-End Close

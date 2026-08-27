@@ -24,6 +24,31 @@ compatibility: Designed for Claude Code
 
 Collect Fondo API connectivity status, filing compliance state, integration health, and accounting sync diagnostics into a single archive for Fondo support tickets. This bundle helps troubleshoot bank connection failures, reconciliation discrepancies, R&D credit calculation issues, and tax filing errors.
 
+## Prerequisites
+
+- An incident owner, approved secure evidence store, retention deadline, and redaction rules for financial, tax, payroll, and credential data.
+- An opaque correlation ID and a safe sandbox/read-only diagnostic path.
+
+## Instructions
+
+1. Capture runtime/configuration references, aggregate health, opaque case IDs, and error categories only.
+2. Review generated files for account data, tax records, payroll details, exports, and secrets before encrypting the bundle.
+3. Restrict evidence access to the approved incident/finance responders and delete or retire it according to policy.
+
+## Output
+
+Create a redacted bundle index with correlation ID, artifact list, access owner, retention date, reproduction result, and next action. Store any sensitive originals only in the approved secure location.
+
+## Error Handling
+
+- Stop collection if a secret or financial record is present; rotate credentials if exposure is possible.
+- Record missing diagnostics rather than expanding collection beyond the authorized scope.
+- Escalate suspected data exposure or filing-impacting discrepancy to the designated finance/incident owner.
+
+## Examples
+
+For a synthetic import failure, keep only runtime version, opaque case ID, and aggregate error category. Verify the archive contains no transactions or tax forms, give access to the owner only, and remove it at the retention deadline.
+
 ## Debug Collection Script
 
 ```bash
