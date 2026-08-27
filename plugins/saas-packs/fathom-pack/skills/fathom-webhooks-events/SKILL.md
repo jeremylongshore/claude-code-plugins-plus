@@ -24,6 +24,32 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Webhooks & Events
 
+## Prerequisites
+
+- A verified callback endpoint, signature/authentication rule, idempotency store, redaction policy, and event owner.
+
+## Instructions
+
+1. Validate signatures before parsing payloads and acknowledge within the documented timeout.
+2. Deduplicate events using stable opaque IDs and record only necessary redacted metadata.
+3. Apply bounded retry/backoff for transient errors and quarantine malformed terminal failures.
+
+## Output
+
+- A signed, idempotent webhook/event flow with redacted observability, recovery ownership, and a safe replay decision path.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Signature fails | Reject the event and investigate configuration without logging secrets/payload content. |
+| Duplicate event arrives | Return idempotent success and avoid duplicate CRM/follow-up actions. |
+| Processing fails permanently | Quarantine it with redacted metadata and fix the contract before replay. |
+
+## Examples
+
+Test a development callback using a synthetic event, verify signature, deduplication, and a bounded failure path, then record only event ID/state/result. Do not persist transcript text, meeting content, contacts, or webhook secrets in the diagnostics.
+
 ## Overview
 
 Fathom webhooks send meeting data to your URL when recordings are ready. Webhooks can include summary, transcript, and action items. Configure in Settings or via API.

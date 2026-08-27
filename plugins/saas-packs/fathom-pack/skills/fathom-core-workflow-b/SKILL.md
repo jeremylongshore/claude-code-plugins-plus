@@ -24,6 +24,26 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Core Workflow: CRM Sync & Follow-Up
 
+## Prerequisites
+
+- Approved CRM mapping, consent/recording policy, scoped credentials, owner, and synthetic test meeting data.
+
+## Output
+
+- A reviewed Fathom-to-CRM follow-up workflow with explicit field mapping, consent/data controls, idempotency, and rollback/disable action.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| CRM record maps incorrectly | Pause sync, correct the field mapping, and validate with a synthetic record before replay. |
+| Duplicate follow-up is detected | Deduplicate by stable meeting/action ID and do not resend automatically. |
+| Consent/recording state is unclear | Do not sync or distribute content until the owner verifies it. |
+
+## Examples
+
+Use a synthetic meeting summary and test CRM contact to verify field mapping, follow-up creation, and deduplication in development. Record only opaque IDs and outcomes; do not use customer recordings, transcripts, or contacts as a tutorial fixture.
+
 ## Overview
 
 Automate post-meeting workflows: sync meeting notes to CRM opportunities, send follow-up emails with action items, and maintain a meeting history database.
