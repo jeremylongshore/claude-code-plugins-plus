@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Assemble a safe support bundle for an intermittent failure
+
+Collect the affected call ID, agent version, webhook status, API response
+headers, and deployment revision from a test or consented call. Exclude API
+keys, raw audio, and full transcripts from the archive; include a redacted
+timeline instead. Reproduce against a preview agent before changing the live
+configuration, and preserve the bundle checksum so the support handoff can be
+matched to the exact evidence reviewed.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
