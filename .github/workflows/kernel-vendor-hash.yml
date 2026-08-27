@@ -30,6 +30,15 @@ name: Kernel Vendor Version Coupling (advisory)
 
 on:
   workflow_dispatch:
+    inputs:
+      kernel_latest_override:
+        description: 'Test-only K override for exercising the advisory violation lane; leave blank for npm latest.'
+        required: false
+        type: string
+      kernel_published_override:
+        description: 'Test-only published-at override paired with kernel_latest_override; leave blank for npm metadata.'
+        required: false
+        type: string
   pull_request:
     paths:
       - 'scripts/kernel-vendor-hash.mjs'
@@ -104,15 +113,55 @@ jobs:
         id: vendor-hash
         continue-on-error: true
         run: |
+          set -euo pipefail
           ARGS=""
-          if [ -n "${{ steps.kernel.outputs.latest }}" ]; then
-            ARGS="--kernel-latest ${{ steps.kernel.outputs.latest }}"
+          KERNEL_LATEST="${{ inputs.kernel_latest_override || steps.kernel.outputs.latest }}"
+          KERNEL_PUBLISHED="${{ inputs.kernel_published_override || steps.kernel.outputs.published }}"
+          if [ -n "$KERNEL_LATEST" ]; then
+            ARGS="--kernel-latest $KERNEL_LATEST"
           fi
-          if [ -n "${{ steps.kernel.outputs.published }}" ]; then
-            ARGS="$ARGS --kernel-published ${{ steps.kernel.outputs.published }}"
+          if [ -n "$KERNEL_PUBLISHED" ]; then
+            ARGS="$ARGS --kernel-published $KERNEL_PUBLISHED"
           fi
           # shellcheck disable=SC2086
           node scripts/kernel-vendor-hash.mjs $ARGS | tee "$GITHUB_STEP_SUMMARY" || true
+          if jq -e '.violations | length > 0' scripts/.kernel-vendor-hash/report.json > /dev/null; then
+            echo "violation=true" >> "$GITHUB_OUTPUT"
+            echo "Kernel coupling violation detected; human notification will run."
+          else
+            echo "violation=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The coupling check stays advisory and out of branch protection. A real
+      # violation must nevertheless reach a human-readable lane; silently
+      # printing it in an Actions summary recreated the stale-pin blind spot.
+      - name: Alert Slack on kernel coupling violation
+        if: steps.vendor-hash.outputs.violation == 'true'
+        env:
+          WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ -z "$WEBHOOK" ]; then
+            echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping alert."
+            exit 0
+          fi
+          PAYLOAD=$(python3 - "$RUN_URL" <<'PY'
+          import json, sys
+          run_url = sys.argv[1]
+          text = (
+              "⚠️ *Kernel vendor version-coupling violation* — "
+              "the advisory V ≤ C ≤ K / staleness check found a breach. "
+              f"<@U099CBRE7CL> <{run_url}|View run>"
+          )
+          print(json.dumps({"text": text}))
+          PY
+          )
+          curl --silent --show-error --fail \
+            --header "Content-Type: application/json" \
+            --data "$PAYLOAD" \
+            -- "$WEBHOOK" > /dev/null
+          echo "✓ Slack kernel-coupling violation alert posted."
 
       - name: Upload version-coupling report artifact
         if: always()
