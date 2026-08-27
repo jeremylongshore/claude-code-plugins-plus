@@ -26,6 +26,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Architecture Variants
 
+## Prerequisites
+
+- A defined use case, data/policy classification, owner, source/citation requirements, and fallback decision.
+- A non-sensitive evaluation set and review for any automation or architecture change.
+
+## Output
+
+- A documented architecture choice tied to retrieval quality, latency, cost, policy, ownership, and rollback implications.
+
+## Examples
+
+Compare a direct-search and a review-gated retrieval architecture using sanitized evaluation queries, score citation support and latency, and record the selected variant plus fallback. Do not choose an autonomous action path without explicit policy controls and human review for consequential decisions.
+
 ## Overview
 
 Three deployment architectures for Exa neural search at different scales. Each uses real Exa SDK methods: `search`, `searchAndContents`, `findSimilar`, `getContents`, and `answer`.

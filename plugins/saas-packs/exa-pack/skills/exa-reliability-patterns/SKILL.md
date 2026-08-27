@@ -25,6 +25,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Reliability Patterns
 
+## Prerequisites
+
+- An SLO, owner, sanitized test inputs, rate/timeout policy, and a safe fallback/rollback path.
+- Idempotent work tracking and redacted observability for request state and outcome.
+
+## Output
+
+- A resilient retrieval integration with bounded retry, timeout, circuit-breaker/fallback, and incident evidence controls.
+
+## Examples
+
+Use a sanitized query fixture to exercise timeout and transient error handling, verify exponential backoff and fallback behavior, then record aggregate completion/latency/error results. Do not retry unboundedly or turn a failed retrieval into an unreviewed automated decision.
+
 ## Overview
 
 Production reliability patterns for Exa neural search. Exa-specific failure modes include: empty result sets (query too narrow), content retrieval failures (sites block crawling), variable latency by search type, and 429 rate limits at 10 QPS default.

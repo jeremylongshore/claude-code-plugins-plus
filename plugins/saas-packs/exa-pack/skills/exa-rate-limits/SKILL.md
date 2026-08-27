@@ -24,6 +24,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa Rate Limits
 
+## Output
+
+- A rate-aware client/workflow with bounded concurrency, idempotency, backoff, monitoring, and safe recovery decisions.
+- An aggregate throttle receipt that excludes raw queries, result content, and credentials.
+
 ## Overview
 
 Handle Exa API rate limits gracefully. Default limit is 10 QPS (queries per second) across all endpoints. Rate limit errors return HTTP 429 with a simple `{ "error": "rate limit exceeded" }` response. For higher limits, contact hello@exa.ai for Enterprise plans.
