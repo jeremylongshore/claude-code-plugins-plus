@@ -122,6 +122,25 @@ export function mockSearchResponse(count = 3): SearchResponse {
 | LinkedIn dedup | Multi-query search | `Set<string>` on `linkedin_url` prevents duplicates |
 | Cursor pagination | Search results > 100 | Pass `cursor` from previous response |
 
+## Prerequisites
+
+- A typed client boundary, secret-manager reference, sandbox workspace, approved source/destination allowlist, and synthetic prospect fixture.
+
+## Instructions
+
+1. Construct clients from scoped environment configuration and reject unknown workspace, source, or destination before a request is sent.
+2. Centralize source-authority, suppression, schema, redaction, and idempotency checks in the client boundary.
+3. Model partial/denied responses explicitly; never turn a denied or unverified enrichment into a success or export fallback.
+4. Test malformed data, rate limits, source/suppression rejection, and rollback using synthetic fixtures only.
+
+## Output
+
+Produce a client-contract receipt with SDK revision, environment, source/destination policy revisions, fixture result, error classification, aggregate counts, export-count assertion, and rollback behavior. Exclude contacts, enrichment data, and credentials.
+
+## Examples
+
+`sdk=v3; env=sandbox; source=synthetic; destination=approved; suppression=pass; malformed=blocked; contacts_exported=0; telemetry=aggregate-only` is a safe SDK result.
+
 ## Resources
 
 - Juicebox API Docs
