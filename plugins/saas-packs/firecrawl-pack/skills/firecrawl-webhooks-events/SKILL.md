@@ -28,6 +28,16 @@ compatibility: Designed for Claude Code
 
 Handle Firecrawl webhooks for real-time notifications on async crawl and batch scrape jobs. Instead of polling `checkCrawlStatus`, configure a webhook URL and Firecrawl will POST events as pages are scraped and jobs complete. Signed with HMAC-SHA256 via `X-Firecrawl-Signature`.
 
+## Prerequisites
+
+- A signing secret delivered through the secret manager and a handler that preserves the raw request for verification.
+- An event ledger for idempotency, reviewed exception queue, approved destinations, and synthetic signed fixtures.
+- Redaction rules preventing page content and credentials from entering event logs.
+
+## Output
+
+Return a processing receipt with opaque event ID, signature result, handler version, idempotency result, destination state, and redacted error category. Store any permitted content only in the approved destination.
+
 ## Webhook Event Types
 
 | Event | Trigger | Payload |

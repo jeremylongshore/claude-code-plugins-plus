@@ -28,6 +28,16 @@ compatibility: Designed for Claude Code
 
 Production architecture for web scraping and content ingestion with Firecrawl. Covers three tiers: on-demand scraping, scheduled crawl pipelines, and real-time RAG ingestion. Uses all four Firecrawl endpoints: scrape, crawl, map, and extract.
 
+## Prerequisites
+
+- A decision owner, approved target policy, retention classification, budget, and documented consumer access boundaries.
+- Separate environments and scoped identities for requester, worker, storage, and downstream index.
+- Synthetic fixtures, redacted telemetry, and a tested disable/rollback path for ingestion.
+
+## Output
+
+Maintain an architecture record naming the selected pipeline, trust boundaries, data destinations, target and budget controls, retention rule, owner, and rollback switch. Captured pages and credentials are not architecture evidence.
+
 ## Architecture Diagram
 
 ```

@@ -27,6 +27,16 @@ compatibility: Designed for Claude Code
 
 Firecrawl enforces rate limits per API key measured in requests per minute and concurrent connections. When exceeded, the API returns `429 Too Many Requests` with a `Retry-After` header. This skill covers backoff strategies, request queuing, and proactive throttling.
 
+## Prerequisites
+
+- Provider limits confirmed for the current account, plus an approved concurrency, budget, and exception-queue owner.
+- Aggregate queue and throttle telemetry; never place scraped content or keys in retry logs.
+- Synthetic jobs for testing pause, replay, and duplicate suppression behavior.
+
+## Output
+
+Produce a rate-control receipt with policy version, concurrency, retry bound, throttle count, queue age, idempotency result, escalation owner, and any manual disposition. Stop or reduce load before a budget or safety threshold is exceeded.
+
 ## Rate Limit Tiers
 
 | Plan | Scrape RPM | Crawl Concurrency | Credits/Month |
