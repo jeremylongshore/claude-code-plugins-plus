@@ -20,6 +20,22 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Upgrade & Migration
 
+## Prerequisites
+
+Current provider change information, approved finance-data inventory, synthetic staging fixtures, a finance owner, and a tested correction/rollback path.
+
+## Output
+
+Record versions and mappings reviewed, aggregate validation/reconciliation result, reviewer approval, and rollback state. Exclude financial records and credentials.
+
+## Error Handling
+
+Stop promotion on schema, access, reconciliation, retention, or professional-review gaps; restore the prior mapping and quarantine opaque failures for review.
+
+## Examples
+
+Compare old and proposed mappings using fictional aggregate data, deliberately introduce an unknown field, and verify the change remains pending until the finance reviewer approves it.
+
 ## Overview
 
 Migrate to Fondo from DIY bookkeeping, other accounting firms, or platforms like Pilot, Bench, or Kruze. Fondo handles the historical data import.

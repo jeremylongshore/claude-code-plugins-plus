@@ -19,6 +19,22 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Rate Limits
 
+## Prerequisites
+
+Confirmed provider limits, an approved concurrency/retry policy, opaque queue telemetry, a finance owner, and synthetic test workload.
+
+## Instructions
+
+Honor throttle signals, use bounded backoff and idempotency, route exhausted work to reviewed handling, and reduce load before resuming.
+
+## Output
+
+Publish a rate-control receipt with policy version, aggregate throttles, queue outcome, owner, and manual disposition—never financial payloads or credentials.
+
+## Examples
+
+Simulate a throttle for a fictional export, verify the retry runs once under its operation ID, and send repeated failure to review without exposing records.
+
 ## Overview
 
 Fondo itself is a managed tax and accounting service without direct API rate limits, but startups building parallel integrations to the same financial providers Fondo connects to (Gusto, QuickBooks, Plaid, Stripe, Mercury) must coordinate their own API calls to avoid shared-limit conflicts. During Fondo's nightly sync windows, your direct API calls compete for the same provider quotas, making careful scheduling and throttling critical for tax-season workloads and month-end reconciliation batches.

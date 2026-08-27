@@ -20,6 +20,22 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Webhooks & Events
 
+## Prerequisites
+
+A signing secret in the secret manager, raw-body validation, event ledger, approved destinations, redaction policy, and synthetic fixtures.
+
+## Output
+
+Return opaque event ID, signature result, idempotency outcome, destination status, and redacted error category. Keep financial payloads and credentials out of logs.
+
+## Error Handling
+
+Reject invalid signatures, quarantine unknown schemas or destinations, bound retries, and pause downstream processing on access or reconciliation failures.
+
+## Examples
+
+Deliver a fictional signed event twice and confirm only the first is processed; reject an invalid signature without logging its payload or forwarding data.
+
 ## Overview
 
 Fondo itself does not send webhooks. Instead, build event-driven workflows using webhooks from the same providers Fondo connects to: Stripe (revenue), Gusto (payroll), Plaid (bank transactions), and Mercury (banking).
