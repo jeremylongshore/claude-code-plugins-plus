@@ -111,6 +111,28 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" \
 | OAuth token failure | 401 on all authenticated endpoints | Trigger refresh flow, re-authorize if refresh fails |
 | Rate limit storm | 429 responses with Retry-After header | Implement request queuing, reduce concurrency |
 
+## Prerequisites
+
+- An incident owner, support path, and synthetic health input that contains no customer, employee, or unpublished text.
+- Read-only diagnostics scoped to the affected environment, plus known-good baselines for availability, latency, quota, and authorization.
+- A redaction standard that prohibits sending source text, suggestions, headers, or tokens to chat, tickets, or support bundles.
+
+## Instructions
+
+1. Open a timestamped incident record, classify impact, and reproduce once with the synthetic input.
+2. Isolate the boundary—identity, endpoint, quota, client integration, or downstream storage—using status and correlation IDs only.
+3. Freeze nonessential rollout changes, apply one reversible remediation, and monitor the synthetic probe and aggregate metrics.
+4. Verify recovery with least-privilege and denied identities where applicable; stop if a change expands text access or logging scope.
+5. Close with the remediation, rollback decision, and redacted evidence, then schedule any credential rotation or configuration follow-up.
+
+## Output
+
+Produce an incident receipt with severity, UTC window, affected integration, redacted error class, remediation/rollback decision, probe results, owner, and next action. Never include submitted text, suggestions, identities, or credentials.
+
+## Examples
+
+`P2; integration=staging-editor; error=429; action=bounded-backoff; probe=healthy; rollback=not-needed; followup=quota-review` is a safe incident summary.
+
 ## Resources
 
 - Grammarly Developer Docs

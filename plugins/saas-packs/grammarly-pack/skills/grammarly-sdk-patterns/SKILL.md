@@ -124,6 +124,23 @@ class GrammarlyClient:
         return r.json()
 ```
 
+## Prerequisites
+
+- A typed client boundary, secret-manager-backed configuration, destination allowlist, and fixtures containing only fictional text.
+- Explicit text-retention and telemetry rules plus a policy that unknown authorization or response shape fails closed.
+
+## Output
+
+Produce a client-contract receipt with SDK revision, environment, schema revisions, fixture results, error classification, redacted telemetry fields, and rollback behavior. Never record input text, suggestions, credentials, or user identifiers.
+
+## Error Handling
+
+Classify malformed responses, authorization failures, quota responses, and timeout limits separately. Do not retry writes without an idempotency key, fall back to a broader token, or log the rejected text to diagnose a failure.
+
+## Examples
+
+`sdk=v3; env=sandbox; contract=check-r5; malformed=blocked; 429=backoff; text_retention=none; telemetry=redacted` captures a safe client result.
+
 ## Resources
 
 - [Grammarly API](https://developer.grammarly.com/)

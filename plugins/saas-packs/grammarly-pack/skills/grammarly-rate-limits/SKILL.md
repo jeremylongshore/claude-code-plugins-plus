@@ -133,6 +133,28 @@ async function batchScoreDocuments(documents: string[], batchSize = 8) {
 | 413 on large document | Text exceeds 100K character limit | Split into sections, score individually |
 | Empty score response | Text too short for analysis | Validate minimum 50 characters before submission |
 
+## Prerequisites
+
+- An approved per-operation quota, observed response-header baseline, and a sandbox workload containing fictitious text only.
+- Idempotency keys for writes, a bounded queue, and a reviewed recovery path for exhausted work.
+- A caller scope that cannot be broadened merely to evade throttling.
+
+## Instructions
+
+1. Classify requests as read or write and apply per-scope concurrency limits before dispatch.
+2. Honor server retry guidance where present; otherwise use bounded exponential backoff with jitter and a maximum attempt count.
+3. Never replay a text-changing request without its idempotency key, and defer nonessential work before the queue threatens freshness.
+4. Monitor aggregate limited/deferred counts and canary success, tuning one scope at a time with a rollback to the prior limits.
+5. Route exhausted work to reviewed recovery instead of silently dropping or duplicating it.
+
+## Output
+
+Return a rate-limit receipt with operation scope, request/limited/deferred counts, retry-policy revision, idempotency outcome, queue state, canary result, and rollback reference. Omit credentials and text payloads.
+
+## Examples
+
+`scope=sandbox-check; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; queue=healthy; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Grammarly Developer API](https://developer.grammarly.com/)
