@@ -1910,21 +1910,6 @@
     "plugins/saas-packs/replit-pack/skills/replit-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/replit-pack/skills/replit-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/replit-pack/skills/replit-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-load-scale/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-local-dev-loop/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-migration-deep-dive/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-multi-env-setup/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-observability/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-performance-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-policy-guardrails/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-prod-checklist/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-rate-limits/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-reference-architecture/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-reliability-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-sdk-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/runway-pack/skills/runway-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/runway-pack/skills/runway-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/runway-pack/skills/runway-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2241,9 +2226,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:23:42.947626Z",
-    "run_id": "33036176360",
-    "sha": "c67c0e5267b65823d8817cca79c17d3f7e7023a0"
+    "captured_at": "2026-08-27T03:28:38.875819Z",
+    "run_id": "33036422203",
+    "sha": "5d39d9ac570bd484628b154d6b8eb11d7705449b"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2268,7 +2253,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2231,
+    "errors": 2216,
     "grade_A_plus_B": 2962,
     "grade_A_plus_B_pct": 81.6428
   }
