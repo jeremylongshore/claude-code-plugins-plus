@@ -62,6 +62,31 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
             ["schema_version drift: baseline=4.1.0, live=4.2.0"],
         )
 
+    def test_baseline_growth_is_refused_on_a_regular_pull_request(self):
+        baseline = {"entries": ["a/SKILL.md :: E-ONE :: name"]}
+        current = {"entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"]}
+        self.assertEqual(
+            self.ratchet.baseline_growth_error(
+                baseline,
+                current,
+                {"scripts/.marketplace-compliance-baseline.json", "plugins/example/SKILL.md"},
+                "feature/ordinary-change",
+            ),
+            "baseline growth may only occur in a one-file baseline-only pull request",
+        )
+
+    def test_baseline_growth_is_only_allowed_on_the_ci_capture_branch(self):
+        baseline = {"entries": ["a/SKILL.md :: E-ONE :: name"]}
+        current = {"entries": ["a/SKILL.md :: E-ONE :: name", "b/SKILL.md :: E-TWO :: tags"]}
+        self.assertIsNone(
+            self.ratchet.baseline_growth_error(
+                baseline,
+                current,
+                {"scripts/.marketplace-compliance-baseline.json"},
+                "automation/compliance-baseline-123",
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

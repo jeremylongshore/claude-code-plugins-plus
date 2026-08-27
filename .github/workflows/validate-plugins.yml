@@ -545,6 +545,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Refuse unauthorized marketplace baseline growth
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          python3 scripts/check-marketplace-compliance-baseline.py \
+            --check-growth-only \
+            --base "origin/$BASE_REF" \
+            --head-ref "$HEAD_REF"
       - name: Reject marketplace compliance debt outside the pinned baseline
         run: |
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml

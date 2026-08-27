@@ -37,6 +37,7 @@
 # approval-gated per 000-docs/SCHEMA_CHANGELOG.md NON-NEGOTIABLES. Lead-owned.
 # ---------------------------------------------------------------------------
 /scripts/validate-skills-schema.py  @jeremylongshore @blueandyellow44
+/scripts/.marketplace-compliance-baseline.json @jeremylongshore @blueandyellow44
 /scripts/validate-unicode-hygiene.py  @jeremylongshore @blueandyellow44
 /scripts/run-verification-pipeline.mjs  @jeremylongshore @blueandyellow44
 /scripts/check-package-manager.mjs  @jeremylongshore @blueandyellow44

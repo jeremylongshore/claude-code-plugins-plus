@@ -19,6 +19,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BASELINE = ROOT / "scripts" / ".marketplace-compliance-baseline.json"
 VALIDATOR = ROOT / "scripts" / "validate-skills-schema.py"
+BASELINE_PATH = "scripts/.marketplace-compliance-baseline.json"
+CAPTURE_BRANCH_PREFIX = "automation/compliance-baseline-"
 
 
 def entries(payload: dict[str, Any]) -> set[str]:
@@ -65,6 +67,47 @@ def metadata_drift(baseline: dict[str, Any], current: dict[str, Any]) -> list[st
     return errors
 
 
+def baseline_growth_error(
+    base: dict[str, Any], current: dict[str, Any], changed_paths: set[str], head_ref: str
+) -> str | None:
+    """Return an E6.6 violation when a regular PR grows pinned debt."""
+    growth = entries(current) - entries(base)
+    if not growth:
+        return None
+    if changed_paths != {BASELINE_PATH}:
+        return "baseline growth may only occur in a one-file baseline-only pull request"
+    if not head_ref.startswith(CAPTURE_BRANCH_PREFIX):
+        return (
+            "baseline growth may only occur on the dedicated CI capture branch "
+            f"({CAPTURE_BRANCH_PREFIX}<run-id>)"
+        )
+    return None
+
+
+def baseline_at_ref(repo_root: Path, ref: str) -> dict[str, Any]:
+    result = subprocess.run(
+        ["git", "show", f"{ref}:{BASELINE_PATH}"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr.strip() or f"could not read baseline at {ref}")
+    return json.loads(result.stdout)
+
+
+def changed_paths_since(repo_root: Path, base_ref: str) -> set[str]:
+    result = subprocess.run(
+        ["git", "diff", "--name-only", f"{base_ref}...HEAD"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr.strip() or f"could not diff against {base_ref}")
+    return {path for path in result.stdout.splitlines() if path}
+
+
 def emit_current(repo_root: Path) -> dict[str, Any]:
     result = subprocess.run(
         [sys.executable, str(VALIDATOR), "--emit-baseline", "--repo-root", str(repo_root)],
@@ -81,14 +124,38 @@ def main() -> int:
     parser.add_argument("--baseline", type=Path, default=DEFAULT_BASELINE)
     parser.add_argument("--repo-root", type=Path, default=ROOT)
     parser.add_argument("--current", type=Path, help="test-only emitted baseline JSON")
+    parser.add_argument("--base", help="git base ref for the E6.6 PR baseline-growth check")
+    parser.add_argument("--head-ref", default="", help="PR head branch for the E6.6 growth check")
+    parser.add_argument(
+        "--check-growth-only",
+        action="store_true",
+        help="check a PR diff for unauthorized baseline growth without emitting the corpus",
+    )
     args = parser.parse_args()
 
     try:
+        repo_root = args.repo_root.resolve()
+        if args.check_growth_only:
+            if not args.base:
+                raise ValueError("--check-growth-only requires --base")
+            baseline = baseline_at_ref(repo_root, args.base)
+            current = json.loads(args.baseline.read_text(encoding="utf-8"))
+            violation = baseline_growth_error(
+                baseline,
+                current,
+                changed_paths_since(repo_root, args.base),
+                args.head_ref,
+            )
+            if violation:
+                print(f"marketplace-compliance-ratchet: FAIL — {violation}", file=sys.stderr)
+                return 1
+            print("marketplace-compliance-ratchet: OK (no unauthorized baseline growth)")
+            return 0
         baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
         current = (
             json.loads(args.current.read_text(encoding="utf-8"))
             if args.current
-            else emit_current(args.repo_root.resolve())
+            else emit_current(repo_root)
         )
         drift = metadata_drift(baseline, current)
         newcomers = compare(baseline, current)
