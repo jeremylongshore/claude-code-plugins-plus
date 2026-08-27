@@ -30,6 +30,16 @@ compatibility: Designed for Claude Code
 
 Optimize Fireflies.ai subscription costs. Fireflies charges per-seat per month. The main levers: remove unused seats, configure selective recording, manage storage, and right-size your plan tier.
 
+## Prerequisites
+
+- Current contract and billing data reviewed by the account owner; do not treat examples as current pricing.
+- Aggregate seat, storage, and workflow usage data, without transcript content or participant identities.
+- A documented approval and retention process before removing seats, recordings, or integrations.
+
+## Examples
+
+Use aggregate utilization to find an inactive test seat, confirm ownership and retention requirements, and remove it only after the approver records the decision. Verify that access is revoked while retained records follow the approved policy.
+
 ## Pricing Reference
 
 | Plan | Price | API Access | Key Features |

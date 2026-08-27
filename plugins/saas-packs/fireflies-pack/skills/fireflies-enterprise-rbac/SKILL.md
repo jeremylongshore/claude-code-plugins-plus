@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Manage workspace access control in Fireflies.ai using roles, channels, privacy levels, and the sharing API. Fireflies uses per-seat licensing with workspace roles and channel-based transcript organization.
 
+## Examples
+
+Create a test channel containing a fictional meeting, grant a temporary least-privilege role, and verify it can access only that channel. Remove the role and confirm access is revoked; record the review outcome without storing participant or transcript data.
+
 ## Prerequisites
 
 - Fireflies Business or Enterprise plan
