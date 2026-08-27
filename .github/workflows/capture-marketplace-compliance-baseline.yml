@@ -41,8 +41,9 @@ jobs:
       - name: Refuse any generated diff outside the pinned baseline
         run: |
           set -euo pipefail
-          changed="$(git diff --name-only)"
-          test "$changed" = "scripts/.marketplace-compliance-baseline.json"
+          mapfile -t changed < <(git status --porcelain | cut -c4-)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = "scripts/.marketplace-compliance-baseline.json"
 
       - name: Open the dedicated baseline pull request
         env:
