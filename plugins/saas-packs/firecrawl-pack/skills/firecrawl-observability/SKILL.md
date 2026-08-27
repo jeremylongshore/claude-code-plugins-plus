@@ -30,6 +30,20 @@ compatibility: Designed for Claude Code
 
 Monitor Firecrawl web scraping pipelines for success rates, credit consumption, content quality, and latency. Key signals: scrape success rate, crawl job completion, credit burn velocity, extraction quality (did markdown actually contain useful content vs error pages), and webhook delivery health.
 
+## Prerequisites
+
+- An approved telemetry schema that uses aggregate measurements and opaque job identifiers.
+- Named alert owners, escalation thresholds, data-retention rules, and dashboards with restricted access.
+- Synthetic fixtures for alert testing and a documented way to suppress noisy signals without hiding incidents.
+
+## Output
+
+Produce an observability receipt with metric definitions, dashboard reference, alert thresholds, test result, owner, and review date. Do not send page content, API keys, or personal data to metrics, traces, or alert payloads.
+
+## Examples
+
+Use a synthetic target to create one successful crawl and one policy rejection. Confirm dashboards count both outcomes by category, an alert fires only on the configured threshold, and the alert contains an opaque job ID rather than captured content.
+
 ## Key Metrics
 
 | Metric | Type | Why It Matters |

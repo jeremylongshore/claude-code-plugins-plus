@@ -30,6 +30,20 @@ compatibility: Designed for Claude Code
 
 Deep debugging techniques for complex Firecrawl issues: empty scrapes on certain domains, crawl jobs that never complete, inconsistent extraction results, and webhook delivery failures. Uses systematic layer-by-layer isolation.
 
+## Prerequisites
+
+- An incident owner, opaque correlation ID, approved evidence store, and retention deadline.
+- A synthetic or read-only reproduction target; do not repeatedly run expensive or sensitive production jobs to investigate.
+- Redaction rules for keys, request headers, captured content, and user-supplied URLs.
+
+## Output
+
+Return a troubleshooting receipt with the isolated layer, safe reproduction, configuration references, aggregate observations, corrective action, verification, owner, and follow-up. Keep raw page bodies and credentials outside the receipt.
+
+## Examples
+
+Reproduce an empty-content report on an approved synthetic page, first with a minimal read-only request and then with the smallest policy-approved option change. If the change causes an allowlist or budget failure, restore the earlier configuration and attach only redacted evidence to the incident.
+
 ## Instructions
 
 ### Step 1: Minimal Reproduction

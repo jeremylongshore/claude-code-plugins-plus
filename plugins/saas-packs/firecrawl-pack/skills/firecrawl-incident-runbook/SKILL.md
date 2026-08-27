@@ -28,6 +28,28 @@ compatibility: Designed for Claude Code
 
 Rapid incident response procedures for Firecrawl integration failures. Covers API outage triage, credential issues, credit exhaustion, crawl job failures, and webhook delivery problems.
 
+## Prerequisites
+
+- A declared incident commander, communications owner, escalation path, and approved secure evidence location.
+- Current service ownership, target-policy, credential-revocation, and rollback references.
+- A way to collect aggregate health evidence without exposing captured pages or keys.
+
+## Instructions
+
+1. Assign severity and commander, record the start time and opaque incident ID, and stabilize unsafe jobs by disabling or rate-limiting them.
+2. Determine whether the event concerns availability, credentials, policy enforcement, budget exhaustion, or data exposure; preserve redacted evidence only.
+3. Apply the smallest safe mitigation, validate both recovery and a safe failure path, and communicate the user impact through the incident channel.
+4. Rotate or revoke credentials when exposure is possible, and do not resume queues until policy and idempotency checks pass.
+5. Record root cause, corrective actions, owners, and a follow-up review date before resolving the incident.
+
+## Output
+
+Produce an incident receipt with severity, opaque ID, timeline, impact, mitigation, recovery verification, rollback/revocation decisions, owner, and follow-ups. Sensitive evidence remains in the approved incident store.
+
+## Examples
+
+During a synthetic provider outage, pause the worker, verify queued jobs do not replay side effects, and send a redacted status update. Restore one canary after health recovers, then reopen normal processing only after the commander records the recovery receipt.
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |

@@ -33,6 +33,20 @@ compatibility: Designed for Claude Code
 
 Guide for upgrading `@mendable/firecrawl-js` SDK versions and migrating from Firecrawl API v0/v1 to v2. Covers breaking changes in import paths, method signatures, response formats, and the new extract v2 schema format.
 
+## Prerequisites
+
+- Current provider release notes and a versioned inventory of SDK/API use, target policies, schemas, and downstream consumers.
+- Staging credentials, synthetic fixtures, and a named rollback owner; keep the prior dependency and configuration available during reconciliation.
+- Acceptance criteria for response shape, target enforcement, budget, retention, and error behavior.
+
+## Output
+
+Maintain an upgrade receipt with versions reviewed, affected consumers, compatibility results, canary outcome, reconciliation evidence, approval, and rollback state. Redact credentials and captured content.
+
+## Examples
+
+Upgrade in staging against an approved synthetic target, compare only schema-valid fields and aggregate job outcomes, and deliberately exercise an invalid target and throttle response. If either policy or response compatibility differs, revert the dependency and open a mapping review before retrying.
+
 ## Version History
 
 | SDK Version | API Version | Key Changes |
