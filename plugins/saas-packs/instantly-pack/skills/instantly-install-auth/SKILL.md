@@ -185,6 +185,10 @@ verify().catch((err) => {
 | `ECONNREFUSED` | Network/firewall issue | Ensure outbound HTTPS to `api.instantly.ai` is allowed |
 | `API key not found` | Key was revoked | Generate a new key from the dashboard |
 
+## Examples
+
+`env=sandbox; secret_ref=instantly-client-v4; scope=draft-campaign; sender=approved; synthetic_probe=200; sends=0; rotation_owner=platform-ops` proves setup without exposing a credential or recipient.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)

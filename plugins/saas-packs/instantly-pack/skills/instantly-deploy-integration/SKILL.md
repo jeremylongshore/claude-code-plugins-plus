@@ -252,6 +252,14 @@ curl -X POST ${DEPLOY_URL}/webhooks/instantly \
 | Secret not available | Env var not set | Verify with `fly secrets list` or cloud console |
 | Webhook retries flooding | Processing takes >30s | Return 200 immediately, process async |
 
+## Output
+
+Produce a deployment receipt with artifact digest, environment, draft-canary campaign, health/quota/consent/suppression outcomes, sent-count assertion, owner approval, rollout state, and rollback reference. Exclude addresses, copy, and secrets.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=campaign-sandbox; health=pass; consent=pass; suppression=pass; sends=0; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - Instantly Webhooks API
