@@ -24,6 +24,26 @@ compatibility: Designed for Claude Code
 
 Fly.io deploys applications to edge locations worldwide using Firecracker microVMs. Security concerns center on deploy token scoping (org-wide vs per-app), secrets management (encrypted at rest, injected as env vars), private networking via WireGuard mesh (6PN), and TLS certificate management. A leaked deploy token can push arbitrary code to production machines across all regions.
 
+## Prerequisites
+
+- A named security owner, app/organization access inventory, secret-manager integration, and recurring access-review cadence.
+- Approved network, region, TLS, logging, and incident/revocation policies plus synthetic staging fixtures.
+
+## Instructions
+
+1. Use app-scoped deploy tokens and separate identities per environment; never place tokens in code, tickets, terminal captures, or debug bundles.
+2. Restrict private services and secrets to the minimum set of machines and roles, with explicit network boundaries and access review.
+3. Verify incoming signed events before processing, log opaque IDs only, and make downstream actions idempotent.
+4. Monitor for unauthorized deployment, secret, region, or certificate changes and rotate/revoke credentials immediately after suspected exposure.
+
+## Output
+
+Maintain a security receipt with identity scope, secret reference, policy version, access-review date, verification/rotation result, owner, and redacted incident state. Never include tokens, configuration secrets, or user data.
+
+## Examples
+
+Create a disposable staging app using a scoped token, attempt an unauthorized app operation, and verify it is denied. Rotate the token, confirm the old credential fails, and retain only the redacted policy and control outcome.
+
 ## API Key Management
 
 ```typescript

@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Guide for Fly.io platform migrations: Apps v1 (Nomad) to v2 (Machines), flyctl CLI upgrades, Postgres major version upgrades, and region migrations.
 
+## Prerequisites
+
+- Current platform documentation and an inventory of applications, machines, regions, volumes, databases, identities, and dependent consumers.
+- A staging environment, synthetic traffic/data, tested backup/restore, rollback owner, and explicit acceptance/reconciliation criteria.
+
+## Output
+
+Produce a migration receipt with versions reviewed, affected resources, staging/canary results, backup/restore evidence, reconciliation outcome, approver, and rollback state. Keep tokens, connection strings, and user data out of the receipt.
+
+## Error Handling
+
+- Stop promotion on health, schema, region, permission, or reconciliation mismatches and restore the prior configuration.
+- Quarantine failed migrations by opaque resource ID; do not bulk replay stateful workloads to diagnose failures.
+- Escalate potential data loss or credential exposure and retain only approved incident evidence.
+
+## Examples
+
+Migrate a disposable staging app using synthetic traffic, exercise a backup/restore of fictional data, and simulate a failed health check. Verify rollback returns routing and data access to the known-good release before considering a production canary.
+
 ## Instructions
 
 ### Apps v1 to v2 Migration
