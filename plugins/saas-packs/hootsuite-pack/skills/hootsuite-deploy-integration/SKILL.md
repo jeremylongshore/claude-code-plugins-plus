@@ -81,6 +81,23 @@ async function getStoredToken(): Promise<string> {
 }
 ```
 
+## Prerequisites
+
+- An approved deployment change, secret references, profile/destination allowlist, and pinned client/configuration revision.
+- A draft-only canary profile, baselines for health/quota/schedule behavior, and tested rollback/cancel procedures.
+
+## Output
+
+Produce a deployment receipt with artifact digest, environment, canary profile, health/quota/draft assertions, owner approval, rollout state, and rollback reference. Exclude post copy, media, handles, and secrets.
+
+## Error Handling
+
+Halt for unknown profile/destination, missing approval, public-post path in a canary, unbounded retry, or leaked copy in telemetry. Cancel/revert the schedule and restore the previous revision.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=sandbox-brand; health=pass; draft=pass; public_posts=0; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - [Vercel KV](https://vercel.com/docs/storage/vercel-kv)

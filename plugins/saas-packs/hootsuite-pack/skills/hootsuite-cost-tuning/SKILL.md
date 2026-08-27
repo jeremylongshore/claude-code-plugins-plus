@@ -69,6 +69,35 @@ globalThis.fetch = async (...args) => {
 setInterval(() => { console.log(`Hootsuite API calls: ${apiCallCount}`); apiCallCount = 0; }, 3600000);
 ```
 
+## Overview
+
+Tune social operations using aggregate volume and quota data. A cost saving is invalid if it widens account access, removes approval, changes audience targeting, or causes duplicate/public posts.
+
+## Prerequisites
+
+- An approved budget, account inventory, baseline API/quota metrics, and named owner for each social profile.
+- A sandbox/draft-only rehearsal, rollback revision for schedule/cache/concurrency, and an approval path for any audience change.
+
+## Instructions
+
+1. Measure aggregate publish, schedule, retry, and quota counts before proposing a control; never export unpublished copy merely to assess cost.
+2. Classify candidates as duplicate, expired, nonessential, or owner-review, retaining draft and approval state.
+3. Dry-run the change against draft-only content, compare aggregate counts and approval/audience assertions, then canary one non-production profile.
+4. Promote only with owner approval; roll back for duplicate posting, target drift, approval bypass, or increased failures.
+5. State savings as a range and preserve a reversible schedule/configuration revision.
+
+## Output
+
+Return a cost-change receipt with baseline/projected counts, control revision, owner approval, draft/canary result, approval/audience assertions, savings range, and rollback reference. Exclude copy, tokens, and account identities.
+
+## Error Handling
+
+Stop for unknown profile, destination, audience, approval state, or an attempt to apply a cost control directly to public content. Revert to the prior schedule/configuration rather than bypass review.
+
+## Examples
+
+`profile=sandbox-brand; baseline=12000; deferred=120; deduped=900; approval=pass; audience=unchanged; rollback=cost-r18` is a safe cost decision.
+
 ## Resources
 
 - [Hootsuite Pricing](https://www.hootsuite.com/plans)

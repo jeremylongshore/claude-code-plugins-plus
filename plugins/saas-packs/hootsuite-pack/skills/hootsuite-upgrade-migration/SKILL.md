@@ -57,6 +57,23 @@ const SUPPORTED_NETWORKS = ['TWITTER', 'FACEBOOK', 'INSTAGRAM', 'LINKEDIN', 'PIN
 type SocialNetwork = typeof SUPPORTED_NETWORKS[number];
 ```
 
+## Prerequisites
+
+- Pinned current/target versions, compatibility assessment, draft-only fixtures, and an owner for changed account or scheduling contracts.
+- Versioned configuration backups plus approved downgrade, schedule-cancel, and integration-disable procedures.
+
+## Output
+
+Produce an upgrade receipt with from/to versions, affected contracts, fixture/draft-canary outcomes, approval/audience assertions, owner approval, compatibility decision, and rollback revision. Exclude copy, media, account identities, and credentials.
+
+## Error Handling
+
+Stop for incompatible scheduling/approval contracts, account-scope drift, unbounded replay, or a draft-canary that reaches a public path. Restore the pinned prior revision rather than forcing migration.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; draft=pass; public_posts=0; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Hootsuite Developer Changelog](https://developer.hootsuite.com/changelog)
