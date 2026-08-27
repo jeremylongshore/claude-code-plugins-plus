@@ -28,6 +28,24 @@ compatibility: Designed for Claude Code
 
 Rapid incident response procedures for Fireflies.ai integration failures. Covers API outages, authentication problems, webhook issues, and rate limiting.
 
+## Prerequisites
+
+- A declared incident commander, communication owner, secure evidence location, and escalation path.
+- Credential-revocation and queue-disable procedures, plus redaction rules for transcripts and participants.
+- Aggregate health probes that can be run without retrieving a real transcript.
+
+## Instructions
+
+1. Assign severity and incident owner, record an opaque incident ID, and pause unsafe automation or sharing paths.
+2. Classify the event as availability, access, webhook, throttle, retention, or potential data exposure.
+3. Apply the smallest safe mitigation, verify recovery with a synthetic/read-only probe, and test the safe failure path.
+4. Revoke or rotate credentials when exposure is possible; do not resume queued work until permission and idempotency checks pass.
+5. Record timeline, impact, owner decisions, corrective actions, and the post-incident review date.
+
+## Examples
+
+During a synthetic API outage, pause a transcript-routing worker, verify that queued events do not resend, and publish a redacted status receipt. Restore one canary only after the health probe recovers, then resume production processing with commander approval.
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |

@@ -27,6 +27,16 @@ compatibility: Designed for Claude Code
 
 Handle Fireflies.ai GraphQL API rate limits with exponential backoff and request queuing. Fireflies enforces per-plan limits and per-operation limits.
 
+## Prerequisites
+
+- Current provider limits confirmed for the account, plus an approved concurrency, retry bound, and queue owner.
+- Aggregate telemetry that omits transcript content, participant information, and authorization data.
+- Synthetic meeting fixtures for testing pauses, retries, and duplicate suppression.
+
+## Examples
+
+Queue two synthetic transcript summaries under one idempotency key and simulate a throttle response. The worker backs off within its bound, processes the item once after recovery, and routes an exhausted retry to review without logging transcript text.
+
 ## Rate Limit Reference
 
 ### Per-Plan Limits
