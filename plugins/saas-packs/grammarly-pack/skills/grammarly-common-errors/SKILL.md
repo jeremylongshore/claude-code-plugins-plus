@@ -70,6 +70,34 @@ curl -X POST https://api.grammarly.com/ecosystem/api/v2/scores \
   -d '{"text": "This is a test sentence that has more than thirty words so that the API will accept it and return a valid writing score for our diagnostic purposes."}' | python3 -m json.tool
 ```
 
+## Overview
+
+This reference triages common integration failures without retaining the text, suggestions, credentials, or account metadata that caused them. Use a bounded synthetic input and correlation IDs for every diagnostic.
+
+## Prerequisites
+
+- A synthetic test string, redacted correlation ID, endpoint class, and HTTP status.
+- A scoped read-only diagnostic credential and a named owner for configuration or access changes.
+
+## Instructions
+
+1. Classify the status and operation before modifying a client, credential, or retry policy.
+2. Reproduce once with synthetic input; capture only status, latency band, quota state, and correlation ID.
+3. Check scope, request shape, size limit, quota, and asynchronous job state in that order.
+4. Apply one reversible change at a time and escalate with a redacted bundle if the failure persists.
+
+## Output
+
+Return error class, correlation ID, environment, probe outcome, remediation attempted, and next owner. Do not include text, suggestions, tokens, or identities.
+
+## Error Handling
+
+Treat unknown destination, failed redaction, access-scope change, or repeated non-idempotent request as a stop condition. Do not retry by broadening access or logging rejected text.
+
+## Examples
+
+`status=413; env=sandbox; correlation=req-opaque-11; action=bounded-chunking; synthetic_probe=recovered` supports a safe handoff.
+
 ## Resources
 
 - Grammarly API Support

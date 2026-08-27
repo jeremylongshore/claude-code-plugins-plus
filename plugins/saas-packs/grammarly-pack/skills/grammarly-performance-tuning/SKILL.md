@@ -65,6 +65,27 @@ async function fullAudit(text: string, token: string) {
 }
 ```
 
+## Overview
+
+Tune latency and throughput using bounded synthetic fixtures and aggregate metrics. A performance gain is invalid if it expands text retention, access scope, error rate, or duplication risk.
+
+## Prerequisites
+
+- Baseline latency percentiles, error/quota rates, synthetic fixture revision, and an approved error budget.
+- A rollback revision for cache, concurrency, chunking, and retry settings, plus retention-safe telemetry.
+
+## Output
+
+Return a tuning receipt with baseline/canary percentile bands, cache/concurrency/chunking revisions, quota and error outcomes, fixture result, retention check, owner approval, and rollback reference. Use aggregates only.
+
+## Error Handling
+
+Roll back for quota saturation, increased errors, retained text in telemetry, duplicated submissions, or incorrect synthetic results. Do not raise concurrency or cache duration to hide a failure.
+
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; cache=r4; quota=within-budget; fixture=pass; rollback=perf-r3` documents a safe canary.
+
 ## Resources
 
 - [Grammarly API](https://developer.grammarly.com/)

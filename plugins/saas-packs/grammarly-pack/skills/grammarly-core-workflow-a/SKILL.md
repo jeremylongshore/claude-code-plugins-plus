@@ -121,6 +121,14 @@ if (!gate.passed) console.error('Quality gate failed:', gate.issues);
 | `413` | Text too large | Split into chunks < 100K chars |
 | `429` | Rate limited | Implement exponential backoff |
 
+## Output
+
+Return a redacted scoring receipt with environment, fixture revision, request-count band, policy threshold revision, aggregate outcome, retention decision, and correlation ID. Do not store input text, suggestions, scores tied to an identifiable author, or credentials.
+
+## Examples
+
+Score a fictional fixture, assert only its expected policy class, then record `fixture=writing-basic-v2; requests=1; threshold=r5; outcome=pass; retention=none`.
+
 ## Resources
 
 - [Writing Score API](https://developer.grammarly.com/writing-score-api.html)
