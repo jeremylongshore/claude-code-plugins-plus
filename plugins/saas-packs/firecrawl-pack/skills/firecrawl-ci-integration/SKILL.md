@@ -30,6 +30,14 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD pipelines to test Firecrawl integrations automatically. Covers GitHub Actions workflow, API key secrets management, integration tests that validate real scraping, and mock-based unit tests for PRs.
 
+## Output
+
+Publish a CI receipt with commit SHA, test type, synthetic target or fixture version, protected-environment approval, aggregate result, and redacted failure reference. Secrets and scraped content must never appear in pull-request logs.
+
+## Examples
+
+Run unit tests with mocked Firecrawl responses for every pull request. After merge, use a protected job to test one approved synthetic target with a scoped staging key; fail the release step if the target, schema, or budget policy differs from the approved contract.
+
 ## Prerequisites
 
 - GitHub repository with Actions enabled

@@ -33,6 +33,18 @@ Quick-reference diagnostic guide for the most common Firecrawl API errors. Cover
 - `FIRECRAWL_API_KEY` environment variable set
 - Access to error logs or console output
 
+## Instructions
+
+1. Capture the timestamp, opaque request or crawl identifier, status category, and affected approved target.
+2. Reproduce with a synthetic or read-only request before retrying any production crawl.
+3. Check credential scope, target policy, request shape, throttle state, and queue backlog in order.
+4. Apply the smallest reversible correction and verify both a successful request and a safe failure path.
+5. Escalate key exposure, unexpected capture, or policy bypass immediately with redacted evidence.
+
+## Output
+
+Return a diagnostic receipt with the error category, opaque correlation ID, safe reproduction result, corrective action, verification, owner, and follow-up. Do not attach credentials, response bodies, or captured page content.
+
 ## Error Reference
 
 ### 401 Unauthorized — Invalid API Key

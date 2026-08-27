@@ -30,6 +30,16 @@ compatibility: Designed for Claude Code
 
 Automated guardrails for Firecrawl scraping pipelines. Web scraping carries legal (robots.txt, ToS), ethical (rate limiting, attribution), and cost (credit burn) risks. This skill implements domain blocklists, credit budgets, content quality gates, and per-domain rate limits as enforceable policies.
 
+## Prerequisites
+
+- A policy owner, written domain allowlist/blocklist, and review process for exceptions.
+- Current source terms and robots guidance assessed for each target where required; this guide does not replace legal review.
+- Enforced budget, rate-control, retention, and incident-response settings with synthetic test targets.
+
+## Output
+
+Keep a policy decision receipt naming the target, policy version, allow/deny result, exception owner, aggregate budget use, retention decision, and review date. Do not store captured content or credentials in the receipt.
+
 ## Instructions
 
 ### Step 1: Domain Policy Enforcement
