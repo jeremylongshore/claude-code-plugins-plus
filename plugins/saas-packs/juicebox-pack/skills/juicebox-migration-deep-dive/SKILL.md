@@ -41,6 +41,34 @@ compatibility: Designed for Claude Code
 # PeopleGPT: software engineer with Python experience in San Francisco
 ```
 
+## Overview
+
+This migration workflow moves approved enrichment configurations without treating contact records as transferable test data. Every cohort retains source authority, suppression, retention, destination, and rollback boundaries.
+
+## Prerequisites
+
+- A signed migration plan with data owners, source-authority and suppression policies, synthetic fixtures, approved destination, and cutover/rollback owner.
+
+## Instructions
+
+1. Baseline source authority, aggregate counts, suppression state, retention, destination scope, and synthetic probe outcomes before migration.
+2. Rehearse a bounded idempotent migration in sandbox; quarantine unknown sources, schema mismatches, and unverified records.
+3. Migrate one approved cohort at a time, compare aggregate counts/policy probes, and retain opaque correlation IDs only.
+4. Cut over after owner approval and an observation window; keep the prior configuration available until recovery criteria are met.
+5. Roll back for source, destination, suppression, integrity, or retention failure and delete staged artifacts before retrying.
+
+## Output
+
+Create a migration receipt with cohort, baseline/target counts, source/destination/suppression results, checkpoint, owner approval, cutover status, retention/deletion action, and rollback reference. Never attach contact details or credentials.
+
+## Error Handling
+
+Stop on unknown authority, destination, suppression state, incomplete deletion, or non-idempotent replay. Restore the prior controlled path and escalate with redacted evidence rather than forcing cutover.
+
+## Examples
+
+`cohort=synthetic-prospects-01; baseline=420; migrated=420; source=approved; suppression=pass; contacts_exported=0; cutover=held; rollback=old-client-r8` documents a safe rehearsal.
+
 ## Resources
 
 - PeopleGPT Guide
