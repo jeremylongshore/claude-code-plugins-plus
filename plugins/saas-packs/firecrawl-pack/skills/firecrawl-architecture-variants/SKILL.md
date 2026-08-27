@@ -30,6 +30,20 @@ compatibility: Designed for Claude Code
 
 Three deployment architectures for Firecrawl at different scales: on-demand scraping for simple use cases, scheduled crawl pipelines for content monitoring, and real-time ingestion pipelines for AI/RAG applications. Choose based on volume, latency requirements, and cost budget.
 
+## Prerequisites
+
+- A documented use case, target-domain allowlist, data-retention policy, budget, and owner.
+- Explicit security boundaries between requesters, workers, content storage, and downstream consumers.
+- A staging environment with synthetic targets and a tested disable/rollback path.
+
+## Output
+
+Produce an architecture decision record naming the selected pattern, reason, trust boundaries, approved targets, retention and budget controls, operational owner, and rollback path. Keep captured content and credentials out of the record.
+
+## Examples
+
+For a knowledge-base pipeline, choose a scheduled queue only after a synthetic target proves the parser, retention policy, and budget controls. Route unknown targets to review, preserve aggregate job telemetry, and disable the consumer path if a policy check fails.
+
 ## Decision Matrix
 
 | Factor | On-Demand | Scheduled Pipeline | Real-Time Pipeline |

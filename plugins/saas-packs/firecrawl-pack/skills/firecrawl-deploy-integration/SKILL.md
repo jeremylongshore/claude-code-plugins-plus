@@ -27,6 +27,14 @@ compatibility: Designed for Claude Code
 
 Deploy applications using Firecrawl's web scraping API to production. Covers Vercel serverless, Cloud Run containers, self-hosted Firecrawl via Docker, and webhook endpoint deployment for async crawl results.
 
+## Output
+
+Keep a deployment receipt with the image or release identifier, environment, secret-manager references, approved domain policy, canary outcome, aggregate health metrics, and rollback decision. Never place API keys, response bodies, or scraped content in deployment logs.
+
+## Examples
+
+Deploy one staging route with a scoped credential injected by the platform. Confirm it rejects an unapproved target before making a provider call, then simulate upstream failure and verify it returns a generic error without leaking headers or content. Roll back the canary before broad release if either check fails.
+
 ## Prerequisites
 
 - Firecrawl API key (`FIRECRAWL_API_KEY`)

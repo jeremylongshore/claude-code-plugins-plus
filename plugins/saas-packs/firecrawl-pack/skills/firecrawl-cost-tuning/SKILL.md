@@ -30,6 +30,20 @@ compatibility: Designed for Claude Code
 
 Firecrawl charges credits per operation: 1 credit per scrape, 1 per crawled page, 1 per map call, and variable credits for extract (LLM usage). An unbounded crawl on a large site can consume thousands of credits in minutes. This skill covers concrete techniques to reduce credit consumption by 50-80%.
 
+## Prerequisites
+
+- Current provider pricing and contract terms, reviewed by the billing owner rather than assumed from examples.
+- An approved domain allowlist, crawl budget, usage owner, and aggregate metering source.
+- Synthetic or staging targets for validating limits before changing a production job.
+
+## Output
+
+Record a cost-control receipt with the measurement window, approved target set, configured limits, aggregate credits consumed, owner decision, and follow-up date. Do not include credentials, page contents, or customer data.
+
+## Examples
+
+Run a canary crawl against an approved staging target with a low page limit. Compare only aggregate credit use and valid-page count, then stop promotion if the observed cost or target expansion exceeds the approved budget.
+
 ## Credit Cost Table
 
 | Operation | Credits | Notes |
