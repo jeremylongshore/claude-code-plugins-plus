@@ -24,6 +24,26 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Core Workflow: Meeting Analytics
 
+## Prerequisites
+
+- A meeting-recording/consent policy, data owner, scoped access, retention rules, and synthetic fixture for validation.
+
+## Output
+
+- A consent-aware meeting analytics workflow with approved access, redacted reporting, owner, and a safe disable/rollback action.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Meeting access or consent is uncertain | Stop processing/sharing and verify with the designated owner. |
+| Summary/action item is wrong | Mark it for human review; do not auto-send it as a source of record. |
+| Content is exposed incorrectly | Restrict access and follow the incident/data procedure. |
+
+## Examples
+
+Use a synthetic meeting record to validate analytics fields, summary workflow, access restriction, and retention outcome. Record only opaque IDs and aggregate status; do not use participant recordings, transcripts, or personal data for testing.
+
 ## Overview
 
 Build automated meeting analytics: extract action items, sync to project management tools, analyze meeting patterns, and create follow-up workflows.

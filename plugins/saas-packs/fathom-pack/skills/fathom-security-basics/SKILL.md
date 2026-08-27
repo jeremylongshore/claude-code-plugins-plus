@@ -18,6 +18,25 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Security Basics
 
+## Prerequisites
+
+- A current recording/data classification, consent policy, scoped identity/secrets, and incident owner.
+
+## Instructions
+
+1. Apply least-privilege roles and approved recording/transcript access settings.
+2. Keep credentials in the secret manager and meeting content out of logs and test fixtures.
+3. Validate integrations and sharing controls with synthetic records before broad rollout.
+4. Revoke access and follow the incident process on suspected exposure.
+
+## Output
+
+- A controlled Fathom deployment with data/consent safeguards, scoped credentials, access review, and incident path.
+
+## Examples
+
+Verify a development role can access only its synthetic meeting record and cannot retrieve production content, then record the redacted result and review date. If a token, recording, transcript, or participant data is exposed, contain/revoke first and follow the data incident process.
+
 ## Overview
 
 Fathom records and transcribes meetings, producing transcripts and action items that contain participant PII (names, emails, spoken content), confidential business decisions, and potentially sensitive negotiations. API keys are per-user and grant access to all meetings the user recorded or that were shared to their team. Protect recording consent workflows, transcript storage, and any analytics pipeline touching meeting content.
