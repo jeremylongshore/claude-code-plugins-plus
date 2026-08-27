@@ -27,6 +27,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install validator dependency
+        run: python3 -m pip install --quiet pyyaml
+
       - name: Refuse a non-quiet capture tree
         run: git diff --quiet && git diff --cached --quiet
 
