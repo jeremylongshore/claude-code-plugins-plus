@@ -69,6 +69,34 @@ curl -s -H "Authorization: Bearer $HEX_API_TOKEN" \
   https://app.hex.tech/api/v1/project/PROJECT_ID/runs | python3 -m json.tool
 ```
 
+## Overview
+
+This reference triages project-run failures using status, aggregate telemetry, and opaque run IDs. It does not authorize copying SQL, cell output, data previews, or tokens into a ticket.
+
+## Prerequisites
+
+- A safe sandbox probe, redacted correlation ID, endpoint class, and HTTP or terminal-run status.
+- A scoped read-only diagnostic credential and named owner for any project, schedule, or access change.
+
+## Instructions
+
+1. Classify authentication, authorization, project lookup, validation, quota, timeout, and terminal-run errors before changing configuration.
+2. Reproduce once with the safe probe and capture only status, latency, quota, and opaque run ID.
+3. Check scope, parameter schema, project state, quota, and downstream connection health in that order.
+4. Make one reversible change at a time and escalate a redacted bundle when the error persists.
+
+## Output
+
+Return error class, correlation ID, project scope, probe outcome, remediation attempted, and next owner. Do not include SQL, output, credentials, or identities.
+
+## Error Handling
+
+Treat unknown destination, failed redaction, access expansion, or repeated non-idempotent run as a stop condition. Cancel or restore the prior revision rather than retrying with broader scope.
+
+## Examples
+
+`status=429; project=proj-sandbox-12; correlation=run-opaque-11; action=bounded-backoff; safe_probe=recovered` supports a safe handoff.
+
 ## Resources
 
 - [Hex API Reference](https://learn.hex.tech/docs/api/api-reference)

@@ -105,6 +105,30 @@ async function checkHex(): Promise<void> {
 checkHex();
 ```
 
+## Prerequisites
+
+- An incident ID, bounded collection window, approved restricted destination, and sandbox project with safe probe parameters.
+- A redaction policy excluding API tokens, SQL, cell output, dataset values, user identities, and connection metadata before evidence leaves the runtime.
+
+## Instructions
+
+1. Collect only status, latency bands, run state, configuration revision, quota headers, and opaque project/run correlation IDs from the safe probe.
+2. Run a redaction check before packaging and stop if output-bearing fields cannot be proven absent.
+3. Compare aggregate results with the last known-good baseline, encrypt the bundle in the approved location, and grant minimum access.
+4. Record owner and deletion date, then remove temporary artifacts after the incident window.
+
+## Output
+
+Create a bundle manifest with incident ID, collection window, checks run, opaque correlation IDs, aggregate metrics, configuration revision, destination, owner, and retention date. Workspace data and credentials are prohibited.
+
+## Error Handling
+
+Stop for failed redaction, unknown destination, or a command that would expose production output or credentials. Record the unavailable evidence class and escalate; do not bypass the collection policy.
+
+## Examples
+
+`incident=inc-opaque-21; window=15m; project=proj-sandbox-12; run=errored; latency=p95-420ms; destination=restricted-support; retention=7d` is a useful redacted bundle summary.
+
 ## Resources
 
 - [Hex Status](https://status.hex.tech)
