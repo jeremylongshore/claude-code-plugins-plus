@@ -116,6 +116,28 @@ function validateDocument(doc: GleanDocument): string[] {
 | Zero-result queries spike | Connector sync failure, stale index | Check connector health dashboard, trigger manual re-crawl |
 | Rate limit 429 on indexing | Batch size too large or too frequent | Reduce batch to 50 docs, add 500ms delay between batches |
 
+## Prerequisites
+
+- A documented data owner and approved classification/retention policy for the source being indexed.
+- A non-production sample containing fictitious identities, plus an allowlisted destination and credentials scoped only to that datasource.
+- A reviewed redaction and deletion plan; pattern matching is a safeguard, not proof that sensitive data is absent.
+
+## Instructions
+
+1. Inventory fields and source ACLs before indexing; default any unknown permission or classification to deny and quarantine the record.
+2. Run redaction and schema validation on a bounded staging batch, logging only record counts, rule versions, and opaque document identifiers.
+3. Compare source and proposed index ACLs for both an allowed and denied test principal before approving a production batch.
+4. Send idempotent, bounded batches to the approved datasource and retain a reversible manifest of submitted opaque IDs and timestamps.
+5. On a failed validation, stop the batch, delete only the staged artifacts, and escalate to the data owner rather than weakening redaction or ACL rules.
+
+## Output
+
+Return a handling receipt with source classification, approved destination, policy and redaction-rule versions, input/accepted/quarantined counts, ACL comparison result, retention date, and deletion or rollback reference. Do not emit bodies, queries, emails, phone numbers, or access tokens.
+
+## Examples
+
+Example receipt: `source=staging-wiki; classification=confidential; accepted=96; quarantined=4; acl_probe=allow+deny pass; retention=2026-10-01; redaction_rules=v3`. The sample is fictional and identifies no employee or document.
+
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)

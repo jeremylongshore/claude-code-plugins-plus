@@ -96,6 +96,28 @@ function logSearchAccess(entry: GleanAuditEntry): void {
 | Stale permissions after IdP change | Connector sync lag | Trigger manual resync from Glean admin |
 | Missing search results | Overly restrictive allowedGroups | Audit group membership against source system ACLs |
 
+## Prerequisites
+
+- A source-of-truth group inventory, named data owner, and two synthetic test identities: one authorized and one explicitly denied.
+- A least-privilege admin role that can stage a mapping in one non-production datasource without changing organization-wide access.
+- A rollback record capturing the prior mapping by opaque group ID; never place real group membership exports or search results in tickets.
+
+## Instructions
+
+1. Map source ACL groups to opaque target groups and require a one-to-one owner approval for every expanded access path.
+2. Stage the change on a low-risk datasource, then run the allow and deny test identities against a fictitious document identifier.
+3. Promote only when both tests match the source ACL; otherwise restore the prior mapping and investigate the IdP or connector sync boundary.
+4. Log the actor, change request, datasource, mapping revision, and outcomes without query text, document titles, or user email addresses.
+5. Recheck after the next identity synchronization and revoke the mapping immediately if it grants access beyond the approved scope.
+
+## Output
+
+Produce an RBAC change receipt: datasource, prior and new mapping revisions, approving owner, staged/production status, synthetic allow and deny outcomes, sync watermark, and rollback reference. The receipt must contain only opaque IDs and aggregate counts.
+
+## Examples
+
+Example: `datasource=staging-contracts; mapping_rev=42; owner=legal-ops; allow_probe=pass; deny_probe=pass; sync=2026-08-27T14:00Z; rollback=rev41`. This proves the boundary without disclosing membership or content.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
