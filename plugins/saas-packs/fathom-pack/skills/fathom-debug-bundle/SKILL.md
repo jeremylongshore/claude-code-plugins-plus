@@ -18,6 +18,32 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Debug Bundle
 
+## Prerequisites
+
+- An issue owner, affected environment, approved incident/support destination, and strict redaction policy for meeting content and credentials.
+
+## Instructions
+
+1. Collect only correlation IDs, environment, versions, configuration state, status classes, and aggregate timing.
+2. Review the bundle for recordings, transcripts, participant data, CRM records, tokens, and private links before distribution.
+3. Reproduce with a synthetic meeting/test account and retain the minimum approved evidence.
+
+## Output
+
+- A minimal redacted diagnostic bundle with owner, scope, evidence, and safe escalation/recovery path.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Bundle contains meeting/participant data | Stop distribution, restrict access, and recreate it with stronger redaction. |
+| Credentials appear | Revoke/rotate first, then assess the exposure. |
+| Issue cannot reproduce | Record environment differences and keep it open for evidence. |
+
+## Examples
+
+For a CRM-sync failure, collect opaque meeting/action IDs, environment, mapping version, status class, and timestamp, then reproduce with a synthetic record. Do not attach recordings, transcript text, contact details, or tokens to the case.
+
 ## Overview
 
 Collect Fathom API connectivity status, meeting recording metadata, transcript availability, and authentication state into a single diagnostic archive. This bundle helps troubleshoot missing transcripts, failed meeting syncs, webhook delivery issues, and API authentication problems. Attach the output to Fathom support tickets so engineers can diagnose integration failures without back-and-forth.

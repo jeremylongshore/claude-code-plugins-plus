@@ -19,6 +19,24 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Deploy Integration
 
+## Prerequisites
+
+- A versioned deployment/configuration, approved tenant/data/consent policy, scoped secret reference, owner, and rollback plan.
+
+## Instructions
+
+1. Deploy to development/staging with synthetic meeting data and validate access, mapping, callbacks, redacted telemetry, and recovery.
+2. Promote only through an approved production canary with named observer.
+3. Roll back or pause on consent, access, data, delivery, or reliability regression.
+
+## Output
+
+- A staged deployment receipt with owner approval, synthetic validation, canary evidence, and rollback reference.
+
+## Examples
+
+Deploy a versioned CRM-sync integration to staging with scoped credentials, test a synthetic meeting/action, and verify mappings and alerts. Promote an approved canary only; restore the prior configuration if unexpected access, follow-up, or data behavior occurs.
+
 ## Overview
 
 Deploy a containerized Fathom AI meeting integration service with Docker. This skill covers building a production image that connects to the Fathom API for processing meeting transcripts, summaries, and action items. Includes environment configuration for webhook handling, health checks that verify Fathom API connectivity and transcript retrieval, and rolling update strategies to maintain continuous meeting data processing without losing webhook events.

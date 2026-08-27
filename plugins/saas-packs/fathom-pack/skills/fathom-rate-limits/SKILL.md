@@ -18,6 +18,24 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Rate Limits
 
+## Prerequisites
+
+- Current provider limits, aggregate baseline, stable request/event IDs, synthetic test data, and a capacity owner.
+
+## Instructions
+
+1. Bound concurrency and preserve idempotency for meeting, sync, and follow-up operations.
+2. Monitor throttling, queue age, errors, and duplicate-action risk using redacted aggregate metrics.
+3. Back off with jitter on transient limits and reduce load before replaying failed work.
+
+## Output
+
+- A rate-aware workflow with bounded retry, idempotency, redacted monitoring, and safe recovery ownership.
+
+## Examples
+
+Increase synthetic development workload gradually below approved limits, record aggregate 429s/latency/completion, and apply backoff on throttling. Do not retry meeting/CRM follow-up actions without checking stable IDs, consent, and current state.
+
 ## Overview
 
 Fathom's API enforces a strict 60 requests-per-minute cap per user across all API keys. Since meeting transcripts and action items are often fetched in bulk after a day of calls, this limit becomes a real constraint for teams processing large meeting backlogs. Transcript endpoints are especially heavy because they return full conversation text, making pagination and careful throttling essential for any integration that syncs meeting intelligence into CRMs or project trackers.

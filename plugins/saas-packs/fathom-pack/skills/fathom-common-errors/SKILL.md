@@ -23,6 +23,36 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Common Errors
 
+## Overview
+
+Diagnose Fathom meeting, transcript, integration, CRM-sync, and authorization issues with minimal redacted evidence and reversible fixes.
+
+## Prerequisites
+
+- A bounded non-sensitive reproduction, environment/version, consent/data policy, and approved diagnostic channel.
+
+## Instructions
+
+1. Identify affected meeting/action state and collect only opaque IDs, status, configuration version, and timing.
+2. Validate scope, access, consent, mapping, and rate-limit conditions before applying a correction.
+3. Test the smallest safe fix with synthetic records and document the verified result.
+
+## Output
+
+- A classified failure with redacted evidence, bounded remediation, owner, and verified recovery/escalation.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Consent or access is unclear | Stop processing/sharing and verify ownership/policy. |
+| CRM mapping is wrong | Pause sync and correct/test mapping before replay. |
+| Duplicate action occurs | Deduplicate by stable ID; do not resend automatically. |
+
+## Examples
+
+For a missing follow-up, verify the synthetic meeting's action ID, consent state, mapping version, and CRM result in development. Escalate with redacted evidence if unresolved; do not inspect or share a customer recording to troubleshoot it.
+
 ## Error Reference
 
 ### 1. 401 Unauthorized
