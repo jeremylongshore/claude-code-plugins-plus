@@ -277,6 +277,14 @@ class ThrottledEmailClient {
 | Stale cache data | TTL too long | Reduce TTL or add cache invalidation |
 | Memory issues | Large pagination result set | Use async generators, process in chunks |
 
+## Output
+
+Return a tuning receipt with baseline/canary latency and quota bands, cache/concurrency/schedule revisions, consent/suppression/draft assertions, owner approval, and rollback reference. Use aggregates only.
+
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; quota=within-budget; consent=pass; suppression=pass; sends=0; rollback=perf-r3` documents a safe canary.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)

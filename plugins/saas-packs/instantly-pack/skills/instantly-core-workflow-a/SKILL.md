@@ -290,6 +290,14 @@ main().catch(console.error);
 | `422` on lead add | Duplicate email in workspace | Set `skip_if_in_workspace: true` |
 | Low open rates | Poor subject lines or spam folder | Disable link tracking, test with inbox placement |
 
+## Output
+
+Return a campaign-workflow receipt with campaign scope, synthetic/consented recipient-count band, consent/suppression revision, draft state, sent-count assertion, and rollback reference. Never retain addresses, copy, or credentials.
+
+## Examples
+
+`campaign=workflow-sandbox; recipients=synthetic-only; consent=pass; suppression=pass; state=draft; sends=0; rollback=workflow-r5` records a controlled campaign workflow.
+
 ## Resources
 
 - Create Campaign API

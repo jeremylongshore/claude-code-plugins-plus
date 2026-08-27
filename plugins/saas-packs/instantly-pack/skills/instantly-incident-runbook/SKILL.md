@@ -304,6 +304,25 @@ curl -s https://api.instantly.ai/api/v2/webhooks?limit=20 \
 | Can't pause accounts | `403` scope error | Use dashboard as fallback |
 | Runbook script rate-limited | Too many diagnostic calls | Space out requests, use backoff |
 
+## Prerequisites
+
+- An incident owner, synthetic recipient fixture, approved support path, and redaction rules for addresses, copy, sender accounts, and credentials.
+
+## Instructions
+
+1. Open a timestamped incident, classify impact, and reproduce once with the synthetic fixture and draft-only campaign.
+2. Isolate identity, sender, consent, suppression, quota, scheduling, delivery, or webhook failure with statuses and opaque IDs only.
+3. Freeze nonessential campaign changes, apply one reversible remediation, and assert `sends=0` until a human explicitly approves release.
+4. Close only after suppression/consent checks and rollback decision are verified; do not restore a campaign by re-enrolling recipients.
+
+## Output
+
+Produce an incident receipt with severity, UTC window, affected integration, redacted error class, consent/suppression state, sent-count assertion, remediation/rollback decision, and next action. Exclude addresses and copy.
+
+## Examples
+
+`P2; campaign=sandbox-only; error=429; action=bounded-backoff; consent=pass; suppression=pass; sends=0; rollback=not-needed` is a safe incident summary.
+
 ## Resources
 
 - [Instantly Help Center](https://help.instantly.ai)
