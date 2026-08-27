@@ -1731,12 +1731,7 @@
     "plugins/saas-packs/palantir-pack/skills/palantir-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-advanced-troubleshooting/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-architecture-variants/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/perplexity-pack/skills/perplexity-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/perplexity-pack/skills/perplexity-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/perplexity-pack/skills/perplexity-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/perplexity-pack/skills/perplexity-cost-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/perplexity-pack/skills/perplexity-data-handling/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-debug-bundle/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-deploy-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/perplexity-pack/skills/perplexity-enterprise-rbac/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2176,9 +2171,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T04:04:59.180259Z",
-    "run_id": "33038250686",
-    "sha": "c1980b6eb9aaae42512efab6785cd02ef4d8ad66"
+    "captured_at": "2026-08-27T04:08:07.753960Z",
+    "run_id": "33038412567",
+    "sha": "660074f3f54ac3434dc52f6976688a15f723e203"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2203,7 +2198,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2166,
+    "errors": 2161,
     "grade_A_plus_B": 2968,
     "grade_A_plus_B_pct": 81.8082
   }
