@@ -129,6 +129,19 @@ describe('Hootsuite Publishing', () => {
 - Mocked test suite
 - Project structure for Hootsuite integrations
 
+## Prerequisites
+
+- A mock/draft-only sandbox endpoint, fictitious fixtures, no production token in source/history/test output, and a fixture-reset command.
+- Approval/audience policy assertions plus a change record and rollback path for future promotion.
+
+## Error Handling
+
+Stop on public-profile destination, missing approval/audience assertion, unbounded fixture, or failed cleanup. Do not use a real account or actual post copy as a fallback test fixture.
+
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; profile=dev-draft; tests=12/12; approval=pass; public_posts=0; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Hootsuite REST API](https://developer.hootsuite.com/docs/using-rest-apis)

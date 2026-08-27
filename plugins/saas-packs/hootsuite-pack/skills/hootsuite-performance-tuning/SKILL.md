@@ -78,6 +78,26 @@ const agent = new Agent({ keepAlive: true, maxSockets: 5 });
 // Pass agent to fetch/axios for connection reuse to platform.hootsuite.com
 ```
 
+## Overview
+
+Tune scheduling latency and throughput through draft-only sandbox fixtures and aggregate metrics. A gain is invalid if it changes account scope, audience, approval, publication state, or rollback ability.
+
+## Prerequisites
+
+- Baseline latency/quota metrics, draft-only fixture revision, error budget, and rollback revision for cache, concurrency, scheduling, and retry policy.
+
+## Output
+
+Return a tuning receipt with baseline/canary bands, cache/concurrency/schedule revisions, quota/error outcomes, draft/approval assertions, owner approval, and rollback reference. Use aggregates only.
+
+## Error Handling
+
+Roll back for quota saturation, increased errors, audience/approval drift, duplicate schedules, or a public-post path. Do not increase concurrency or cache duration to hide failure.
+
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; schedule=r4; quota=within-budget; draft=pass; public_posts=0; rollback=perf-r3` documents a safe canary.
+
 ## Resources
 
 - [Hootsuite API](https://developer.hootsuite.com/docs/api-overview)
