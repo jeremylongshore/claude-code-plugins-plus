@@ -69,6 +69,23 @@ describe('Writing Score', () => {
 });
 ```
 
+## Prerequisites
+
+- A mock or sandbox endpoint, fictional fixtures, no production token in environment files/history/test output, and a fixture-reset command.
+- Consent and retention policy assertions plus a change record and rollback path for future promotion.
+
+## Output
+
+Return a local-loop receipt with fixture revision, environment, test totals, consent/retention outcome, temporary credential reference, and cleanup state. Exclude text, suggestions, and tokens.
+
+## Error Handling
+
+Stop on production destination, missing redaction/consent assertion, unbounded fixture, or failed cleanup. Do not copy text into logs or use production as a fallback test environment.
+
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; tests=12/12; consent=pass; retention=none; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Grammarly API Docs](https://developer.grammarly.com/)

@@ -112,6 +112,28 @@ function redactGrammarlyLog(record: Record<string, unknown>): Record<string, unk
 | Overly broad OAuth scopes | Access to unrelated user documents | Minimum-privilege scope requests |
 | Unencrypted text cache | Local storage breach exposes content | AES encryption for any local cache |
 
+## Prerequisites
+
+- A threat model naming secret custodians, text classification/consent authority, untrusted inputs, incident owner, and approved secret manager.
+- Low-privilege sandbox credentials and fictitious text for verification; production credentials must not enter shells, source, fixtures, or logs.
+- Rotation, revocation, integration-disable, and deletion runbooks with tested rollback.
+
+## Instructions
+
+1. Scope credentials by environment and integration, inject them from the secret manager, and deny unknown scope or destination.
+2. Validate input size, origin, consent, and schema before submission; quarantine failures using opaque correlation IDs.
+3. Verify webhook authenticity before parsing, reject stale/replayed events, and record only bounded redacted envelopes.
+4. Test consent and retention controls with synthetic fixtures after every client or configuration change.
+5. Revoke suspected credentials immediately, disable the integration if data integrity is uncertain, and preserve only redacted incident evidence.
+
+## Output
+
+Return a security receipt with environment, integration scope, secret-reference version, validation/consent outcomes, rotation/revocation state, correlation ID, and rollback action. Never include a token, text, or raw event.
+
+## Examples
+
+`env=staging; integration=editor-synthetic; secret_ref=client-v12; input=pass; consent=pass; retention=none; rollback=disabled` is an auditable control result.
+
 ## Resources
 
 - [Grammarly API](https://developer.grammarly.com/)
