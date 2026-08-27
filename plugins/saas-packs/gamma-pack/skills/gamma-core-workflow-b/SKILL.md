@@ -26,6 +26,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Core Workflow B: Templates & Export
 
+## Output
+
+Record opaque document/template ID, approved export destination, owner, review status, and next action. Keep presentation content, viewer data, and credentials in authorized systems.
+
+## Examples
+
+Export a fictional staging template to an approved test destination, verify an unapproved destination is denied, and ensure a rerun does not create duplicate exports.
+
 ## Overview
 
 Use Gamma's template-based generation (`POST /v1.0/generations/from-template`) and export retrieval (`GET /v1.0/generations/{id}/files`) endpoints. Template generation lets you replicate a single-page gamma template across multiple variations. Export retrieval gives you downloadable PDF, PPTX, and PNG files.

@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Local Dev Loop
 
+## Output
+
+Create a local validation receipt with fixture version, schema result, owner, and redacted failure reference. Never commit private presentations, viewer data, or secrets.
+
+## Examples
+
+Run offline tests using fictional presentation fixtures, verify logs are redacted and no production credential is required, then remove temporary artifacts after validation.
+
 ## Overview
 
 Set up an efficient local development workflow for Gamma API integrations. Since Gamma is a REST API with no SDK, the dev loop centers on HTTP request/response testing, mock servers for offline development, and a reusable client wrapper.
