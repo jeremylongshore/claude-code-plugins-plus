@@ -283,6 +283,12 @@ export async function withRetry<T>(
 | Typed queries | All SOQL | Catches field mismatches at compile time |
 | Token refresh | Long-running processes | Prevents session expiration |
 
+## Examples
+
+### Query safely with a typed, parameterized filter
+
+Define the fields required by the workflow, construct the SOQL condition from validated inputs or bind parameters where available, and run the query through a wrapper that maps retryable API errors separately from authorization failures. Test with synthetic values containing quotes and wildcard characters to ensure they cannot alter query structure. Log query timing and result count only, avoiding raw filter values or sObject fields unless an approved redaction rule applies.
+
 ## Resources
 
 - [jsforce API Reference](https://jsforce.github.io/document/)

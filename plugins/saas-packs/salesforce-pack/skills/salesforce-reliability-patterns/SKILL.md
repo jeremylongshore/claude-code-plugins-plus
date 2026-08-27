@@ -287,6 +287,12 @@ class SalesforceDeadLetterQueue {
 | DLQ growing | Persistent error (e.g., permission) | Check error codes — may need fix, not retry |
 | Stale cache too old | Long SF outage | Set max stale age, show user warning |
 
+## Examples
+
+### Make an External-ID upsert resilient to duplicate delivery
+
+Require a stable source event ID, map it to an External ID on the target object, and write through an idempotent upsert instead of a create call. Classify Salesforce responses so permission and schema errors go to a reviewed dead-letter queue while short outages receive bounded retries. Reprocess a synthetic duplicate in a sandbox to prove only one record exists, and alert before the dead-letter backlog threatens the agreed recovery window.
+
 ## Resources
 
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)

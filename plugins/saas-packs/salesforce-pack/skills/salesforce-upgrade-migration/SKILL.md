@@ -160,6 +160,12 @@ console.log('Supported versions:', versions.map((v: any) => v.version));
 | `MODULE_NOT_FOUND` | Import path changed in jsforce v3 | Update import statements |
 | Bulk API errors | v1 vs v2 API mismatch | Migrate to `conn.bulk2` methods |
 
+## Examples
+
+### Upgrade an API version behind a sandbox verification gate
+
+Pin the candidate API and SDK versions in a branch, deploy the metadata and application to a sandbox, and run regression tests covering queries, bulk operations, and authentication refresh. Compare error codes and response shapes to the previous version before approving production promotion. Keep the prior dependency lock and deployment artifact available for rollback, and split incompatible field or endpoint changes into separately reviewed migrations.
+
 ## Resources
 
 - [Salesforce Release Notes](https://help.salesforce.com/s/articleView?id=release-notes.salesforce_release_notes.htm)
