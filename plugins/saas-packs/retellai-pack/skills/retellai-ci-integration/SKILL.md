@@ -50,6 +50,16 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Validate an agent configuration in a pull request
+
+In CI, lint the agent configuration and run a scripted call against a dedicated
+test agent using a masked test credential. Assert the expected tool invocation,
+handoff outcome, and redacted transcript markers, but never upload real call
+audio or customer data. Publish the test result as a PR artifact and require a
+separate promotion step before the tested configuration reaches a live number.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

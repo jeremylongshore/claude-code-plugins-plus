@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Isolate a voice-call failure without changing production routing
+
+Reproduce the reported failure with a test number and a non-production agent
+version. Capture the call identifier, selected agent version, webhook response
+code, and timestamp; redact caller audio and personal data from the ticket.
+Compare that evidence with one successful test call before changing prompts,
+transfers, or routing. Promote the smallest verified correction through the
+preview path, then retain the before/after identifiers for rollback.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
