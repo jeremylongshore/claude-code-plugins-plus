@@ -1933,13 +1933,8 @@
     "plugins/saas-packs/salesforce-pack/skills/salesforce-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-incident-runbook/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-known-pitfalls/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-load-scale/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-local-dev-loop/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-migration-deep-dive/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-multi-env-setup/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-observability/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-performance-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-policy-guardrails/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-prod-checklist/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-rate-limits/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-reference-architecture/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2186,9 +2181,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:58:49.573436Z",
-    "run_id": "33037939469",
-    "sha": "f2c4184bf37790eb2d2908c3a905ee13337536bc"
+    "captured_at": "2026-08-27T04:01:47.514860Z",
+    "run_id": "33038070684",
+    "sha": "3481efea7337061af50342523f623633ec131168"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2213,8 +2208,8 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2176,
-    "grade_A_plus_B": 2964,
-    "grade_A_plus_B_pct": 81.6979
+    "errors": 2171,
+    "grade_A_plus_B": 2966,
+    "grade_A_plus_B_pct": 81.753
   }
 }
