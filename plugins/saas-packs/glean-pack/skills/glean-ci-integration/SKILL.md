@@ -22,6 +22,19 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD for Glean enterprise search integrations: run unit tests with mocked search and indexing responses on every PR, validate connector document transforms and search quality against a staging Glean instance on merge to main. Glean indexes content across SaaS tools, so CI pipelines focus on connector data transforms, indexing API calls, and search relevance regression testing.
 
+## Prerequisites
+
+- A CI secret reference rather than a literal token and a sandbox endpoint accepting only fictitious tenant and datasource IDs.
+- Fixtures with no employee names, customer content, or production URLs; redact headers and bodies from logs.
+- A protected branch and an approved rollback mechanism for any deployment or connector configuration the pipeline can influence.
+
+## Instructions
+
+1. Run mocked unit tests first, including deny-by-default ACL and malformed-response cases.
+2. Run a bounded sandbox batch with an idempotency key; prohibit production destinations in CI configuration.
+3. Emit only aggregate counts, correlation IDs, and policy versions, and fail on an unexpected destination, expanded ACL, or unredacted log assertion.
+4. Promote through a canary datasource after review, test both allow and deny identities, and restore the last known-good revision on failure.
+
 ## GitHub Actions Workflow
 
 ```yaml
@@ -130,6 +143,14 @@ describe.skipIf(!hasKey)('Glean Live API', () => {
 | Search quality regression | Index not yet updated | Add wait between indexing and search quality checks |
 | Datasource not found | Connector not configured in staging | Set up test datasource in Glean admin before CI runs |
 | Rate limit (429) | Too many indexing calls | Batch documents (max 100 per call) and add throttling |
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox datasource, test totals, policy checks, canary outcome, and rollback reference. Exclude secrets, payloads, and real search queries.
+
+## Examples
+
+`sha=abc123; fixtures=v5; sandbox=ci-synthetic; tests=18/18; acl_allow=pass; acl_deny=pass; canary=not-promoted` is a valid pre-production receipt.
 
 ## Resources
 
