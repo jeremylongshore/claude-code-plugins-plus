@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Core Workflow A: Content Generation
 
+## Output
+
+Create a workflow receipt with opaque document ID, approved audience/destination, generation/review status, owner, and next action. Do not include private source material, viewer data, or credentials.
+
+## Examples
+
+Generate a fictional staging deck from synthetic notes, have the content owner approve sharing, and verify a duplicate job does not republish or expose content to an unapproved audience.
+
 ## Overview
 
 Generate presentations, documents, webpages, and social posts using Gamma's Generate API (`POST /v1.0/generations`). This skill covers the full parameter set: content, output format, text mode, text amount, themes, image options, sharing, folders, and export format.

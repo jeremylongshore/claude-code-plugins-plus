@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma API Patterns
 
+## Output
+
+Produce a client-validation receipt with contract/fixture version, opaque operation ID, schema result, idempotency outcome, owner, and redacted failure reference. Do not log presentation content or tokens.
+
+## Examples
+
+Use a scoped staging integration and fictional document to validate field allowlists and duplicate suppression. Reject an unknown destination before the provider call and retain only aggregate results.
+
 ## Overview
 
 Gamma has no published SDK — all interaction is via REST at `https://public-api.gamma.app/v1.0/`. This skill provides production-grade patterns for typed clients, generation helpers, polling, template workflows, and error handling.
