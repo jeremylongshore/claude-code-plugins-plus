@@ -25,6 +25,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Reference Architecture
 
+## Prerequisites
+
+- An approved search/research data flow, policy/data classification, environment boundaries, and owner for each integration point.
+- Reviewed interfaces for credentials, retrieval controls, result handling, observability, automation, and incident response.
+
+## Output
+
+- A documented architecture with trust boundaries, ownership, source/citation controls, redacted telemetry, and reversible integration points.
+
+## Examples
+
+Model a development client that receives sanitized queries, applies approved source/date constraints, records only aggregate/correlation metadata, and returns results for human review. Promote the versioned contract through staging before production automation; keep policy guardrails and fallback behavior explicit rather than treating retrieval output as authoritative.
+
 ## Overview
 
 Production architecture for Exa neural search integration. Covers search service design, content extraction pipeline, RAG integration, domain-scoped search profiles, and caching strategy.

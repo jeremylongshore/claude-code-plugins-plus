@@ -25,6 +25,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa SDK Patterns
 
+## Output
+
+- A reusable Exa client boundary with scoped configuration, sanitized inputs, policy controls, redacted telemetry, and safe error classification.
+- Unit/integration evidence that avoids real sensitive queries, result content, and credentials.
+
 ## Overview
 
 Production-ready patterns for the `exa-js` SDK. Covers client singletons, typed wrappers, error handling, retry logic, and response validation for real Exa API methods.
