@@ -222,6 +222,12 @@ This approach requires zero CI configuration but gives less control over test ga
 | Preview not commenting on PR | Missing `actions/github-script` | Add the comment step with correct permissions |
 | Build cache not working | CI runs on fresh runner | Use `actions/cache` for `node_modules` and `.vercel/output` |
 
+## Examples
+
+### Gate a preview deployment on the same commit’s tests
+
+In GitHub Actions, run unit and integration tests before `vercel deploy --prebuilt`, use repository secrets only through the runner environment, and post the resulting preview URL to the pull request. Require a smoke request to a non-destructive health endpoint and fail the workflow if it is not healthy. Production promotion remains a separate protected `main` workflow, so a preview token or an unreviewed pull request cannot publish production traffic.
+
 ## Resources
 
 - [Vercel CLI in CI](https://vercel.com/docs/cli/deploying-from-cli)
