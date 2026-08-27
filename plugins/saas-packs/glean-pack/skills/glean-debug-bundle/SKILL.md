@@ -155,6 +155,25 @@ async function checkGleanHealth(): Promise<{
 }
 ```
 
+## Instructions
+
+1. Start with a synthetic probe and a bounded time window; collect status codes, timing bands, configuration revisions, and opaque correlation IDs only.
+2. Redact or exclude authorization headers, tokens, query text, document bodies, result snippets, user identifiers, and group membership before writing the bundle.
+3. Compare connector freshness, index status, rate-limit state, and synthetic allow/deny outcomes with the last known-good baseline.
+4. Encrypt the bundle in the approved incident location, grant the minimum support audience, and delete it at the stated retention date.
+
+## Output
+
+Create a redacted debug bundle manifest with incident ID, collection window, components checked, correlation IDs, aggregate counts, policy/config revisions, probe outcomes, owner, destination, and retention date. The manifest must not contain sensitive source data.
+
+## Error Handling
+
+Stop collection if redaction cannot be verified, the requested destination is unapproved, or a command would expose a production credential. Record the blocked evidence class and escalate to the incident owner; do not bypass the collection policy for urgency.
+
+## Examples
+
+`incident=inc-opaque-12; window=15m; source=sandbox-guides; index_age=12m; allow=pass; deny=pass; destination=restricted-support; retention=7d` is a useful, non-sensitive bundle summary.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

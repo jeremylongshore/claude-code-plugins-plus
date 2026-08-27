@@ -114,6 +114,28 @@ async function handleIdempotent(event: { id: string; type: string; data: any }) 
 | Duplicate documents | Source sends create + update rapidly | Deduplicate by `doc_id` before indexing |
 | Connector timeout | Source API rate limited | Implement exponential backoff in connector |
 
+## Prerequisites
+
+- A secret-manager webhook secret, an approved event origin allowlist, a replay-window policy, and an opaque event ledger.
+- A sandbox receiver with fictional events and a tested disable/rollback control for the consumer.
+- Data-owner approval for every event type that can alter an index, permission mapping, or retention state.
+
+## Instructions
+
+1. Authenticate the source before parsing, validate timestamp and event ID, and reject unknown origins, stale deliveries, and malformed payloads.
+2. Store only a bounded, redacted event envelope and use event ID plus target revision as the idempotency key.
+3. Validate source ACL and destination before enqueueing work; quarantine uncertainty rather than creating or changing indexed content.
+4. Process one canary source first, observe synthetic allow/deny outcomes and queue health, then promote or disable the consumer.
+5. Retry transient failures within a fixed budget and route exhausted events to a reviewed dead-letter path without replaying non-idempotent writes.
+
+## Output
+
+Return an event receipt with event type, opaque event ID, signature/timestamp result, target datasource, idempotency outcome, queue state, canary result, and rollback reference. Exclude payload content and signatures.
+
+## Examples
+
+`type=document.updated; event=evt-opaque-9; signature=pass; replay=absent; source=sandbox-guides; enqueue=once; allow=pass; rollback=consumer-disabled` proves the event boundary.
+
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api/indexing-api/index-documents)

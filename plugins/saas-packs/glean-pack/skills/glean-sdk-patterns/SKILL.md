@@ -127,6 +127,27 @@ export function mockSearchResponse(n = 3): GleanSearchResponse {
 | Batch pagination | Indexing > 100 documents | `bulkIndex` with batch tracking |
 | Auth validation | Client init | Fail fast on missing `GLEAN_API_KEY` |
 
+## Prerequisites
+
+- A typed client boundary, secret-manager-backed configuration, and a sandbox base URL allowlist.
+- Contract fixtures containing fictional data plus an explicit error and retry budget.
+- A policy that unknown ACL, destination, or response shape fails closed rather than falling back to a broad client.
+
+## Instructions
+
+1. Construct clients from environment-specific, scoped configuration and reject missing or production-unsafe destinations.
+2. Centralize request validation, bounded response parsing, redacted telemetry, and idempotency keys in the client boundary.
+3. Model authorization and partial failure explicitly; never convert a denied result into an empty success or retry writes without a key.
+4. Test client behavior against fixtures for malformed payloads, rate limits, deny-by-default ACLs, and rollback of a failed submission.
+
+## Output
+
+Produce a client-contract receipt showing SDK revision, target environment, request/response schema revisions, fixture results, error classification, observability fields, and rollback behavior. Do not log credentials, query text, or document bodies.
+
+## Examples
+
+`sdk=v3; env=sandbox; contract=search-r5; malformed=blocked; 429=backoff; deny=preserved; telemetry=redacted` captures a safe client result.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

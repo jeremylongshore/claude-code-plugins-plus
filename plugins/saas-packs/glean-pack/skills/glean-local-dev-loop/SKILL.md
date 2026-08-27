@@ -107,6 +107,27 @@ MOCK_MODE=false npm run test:integration  # Integration test against real Glean 
 | `429 Rate Limited` | Too many indexing requests | Batch documents (max 100 per request) |
 | `ECONNREFUSED :3003` | Dev server not running | Run `npm run dev:mock` first |
 
+## Prerequisites
+
+- A local mock or sandbox endpoint, a fictitious datasource, and no production token in environment files, shell history, or test output.
+- A fixture reset command and two synthetic identities for access-boundary tests.
+- A change record and rollback path for any configuration that might later be promoted.
+
+## Instructions
+
+1. Start in mock mode with bounded fixtures and validate transforms, rejection paths, and redaction before any network call.
+2. Use a sandbox datasource with a scoped credential only after local tests pass; assign an idempotency key and verify both allow and deny cases.
+3. Keep logs to opaque IDs, status, counts, and correlation values; inspect payloads only in the local fixture directory.
+4. Reset fixtures and revoke temporary credentials after the run, then attach a redacted receipt to the change.
+
+## Output
+
+Return a local-loop receipt with fixture revision, environment, datasource, tests run, allow/deny outcomes, temporary credential reference, and cleanup state. Exclude tokens, real documents, and search text.
+
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; source=dev-synthetic; tests=12/12; allow=pass; deny=pass; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
