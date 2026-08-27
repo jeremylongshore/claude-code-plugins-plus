@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Incident Runbook
 
+## Instructions
+
+Assign severity and an opaque incident ID, pause unsafe publishing/sharing, classify the issue, apply the smallest safe mitigation, verify recovery with synthetic content, and record the owner’s decision.
+
+## Output
+
+Produce a redacted incident receipt with severity, impact, mitigation, recovery verification, rollback decision, owner, and follow-ups.
+
+## Error Handling
+
+Revoke scoped credentials on suspected exposure, do not replay content actions until access/destination checks pass, and keep private content out of incident artifacts.
+
+## Examples
+
+During a synthetic sharing outage, pause the staging integration, confirm no duplicate publish occurs, restore one canary, and resume only after the incident owner records recovery evidence.
+
 ## Overview
 
 Systematic procedures for responding to and resolving Gamma integration incidents.

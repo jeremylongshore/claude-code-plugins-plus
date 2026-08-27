@@ -23,6 +23,10 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Deploy Integration
 
+## Examples
+
+Deploy a fictional staging presentation integration with a scoped credential, verify its canary reaches only the approved audience, then simulate a failed check and roll back before production sharing.
+
 ## Overview
 
 Deploy Gamma-integrated applications to various cloud platforms with proper configuration and secret management.

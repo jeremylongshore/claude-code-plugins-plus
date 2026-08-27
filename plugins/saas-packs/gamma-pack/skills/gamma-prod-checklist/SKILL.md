@@ -25,6 +25,22 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Production Checklist
 
+## Instructions
+
+Attach evidence or an owner decision to each control, run a fictional-content canary, verify publishing/visibility/privacy and rollback behavior, and stop promotion on an access, destination, or health failure.
+
+## Output
+
+Create a go-live receipt with completed controls, aggregate canary results, approver, exceptions, rollback owner, and follow-up date. Exclude private content, viewer data, and credentials.
+
+## Error Handling
+
+Pause publishing and integrations on policy failures, restore the prior configuration, and keep only redacted incident evidence.
+
+## Examples
+
+Publish a fictional staging deck, revoke a test viewer, and simulate a failed integration. Promote only after the owner records that access and rollback worked correctly.
+
 ## Overview
 
 Comprehensive checklist to ensure your Gamma integration is production-ready.

@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Performance Tuning
 
+## Output
+
+Publish a tuning receipt with baseline/post-change aggregate metrics, change owner, canary result, and rollback state. Do not include source content, viewer data, or tokens.
+
+## Examples
+
+Optimize a fictional staging deck, compare aggregate load/render metrics, and roll back if a synthetic sharing or accessibility check regresses.
+
 ## Overview
 
 Optimize Gamma API integration performance. Gamma's generate-poll-retrieve pattern means most latency is in generation time (10-60s), not API call overhead. Optimize by: reducing poll overhead, parallelizing batch operations, caching results, and choosing the right generation parameters.
