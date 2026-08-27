@@ -81,6 +81,23 @@ run_task = HexRunProjectOperator(
 )
 ```
 
+## Prerequisites
+
+- A typed client boundary, secret-manager reference, environment allowlist, and a sandbox project using fictional or approved non-sensitive data.
+- An explicit execution budget, idempotency/correlation convention, and policy that unknown project scope or response shape fails closed.
+
+## Output
+
+Produce an SDK receipt with client revision, environment, opaque project/run IDs, parameter schema revision, execution state, aggregate result checks, and rollback/cancel reference. Do not include API tokens, SQL, cell output, or workspace data.
+
+## Error Handling
+
+Classify authentication, authorization, validation, quota, timeout, and terminal-run failures separately. Do not retry a write-like project run without idempotency, broaden scope to bypass a denial, or log notebook output for diagnosis.
+
+## Examples
+
+`sdk=v3; env=sandbox; project=proj-opaque-11; params=r4; run=succeeded; row_count=within-range; cancel=not-needed` is a safe SDK execution receipt.
+
 ## Resources
 
 - [Hex API](https://learn.hex.tech/docs/api/api-overview)
