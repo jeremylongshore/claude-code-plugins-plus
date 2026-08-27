@@ -22,6 +22,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer Local Dev Loop
 
+## Examples
+
+Use fictional pages, CMS records, and form submissions in local tests. Confirm the workflow runs without production credentials, redacts logs, and removes temporary artifacts after the staging validation is complete.
+
 ## Overview
 
 Set up a fast development workflow for Framer plugins and code components with Vite hot-reload, TypeScript, and testing.
