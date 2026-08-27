@@ -102,6 +102,23 @@ app.post('/webhooks/hootsuite', async (req, res) => {
 });
 ```
 
+## Prerequisites
+
+- A secret-manager webhook secret, event-origin allowlist, replay-window policy, and opaque event ledger.
+- A sandbox consumer with a tested disable/cancel control for downstream scheduling or publishing.
+
+## Output
+
+Return an event receipt with type, opaque event ID, signature/timestamp result, idempotency outcome, queue state, draft/public assertion, and rollback reference. Exclude payload copy, media, handles, and signatures.
+
+## Error Handling
+
+Reject unknown origin, stale/replayed delivery, malformed payload, unknown profile/audience, or non-idempotent retry. Quarantine the event and disable the consumer if integrity or approval is uncertain.
+
+## Examples
+
+`type=post.approved; event=evt-opaque-9; signature=pass; replay=absent; profile=sandbox-brand; enqueue=once; public_posts=0; rollback=consumer-disabled` proves the boundary.
+
 ## Resources
 
 - [Hootsuite Developer Platform](https://developer.hootsuite.com/docs/the-hootsuite-platform)

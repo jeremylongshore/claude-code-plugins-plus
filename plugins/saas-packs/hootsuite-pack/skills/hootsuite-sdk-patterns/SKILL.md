@@ -130,6 +130,19 @@ function formatPost(text: string, platform: string): string {
 - Python client class
 - Cross-platform post formatting
 
+## Prerequisites
+
+- A typed client boundary, secret-manager reference, environment/profile allowlist, and a draft-only sandbox account.
+- Approval/audience schema, idempotency convention, and policy that unknown profile, audience, or response state fails closed.
+
+## Error Handling
+
+Classify authentication, authorization, validation, quota, approval, audience, and terminal-schedule errors separately. Do not retry a create/publish mutation without idempotency, broaden account scope, or log copy/media to diagnose failure.
+
+## Examples
+
+`sdk=v3; env=sandbox; profile=brand-draft; audience=r4; operation=draft-create; state=pending-approval; public_posts=0; rollback=not-needed` is a safe SDK receipt.
+
 ## Resources
 
 - [Hootsuite REST API](https://apidocs.hootsuite.com/docs/api/index.html)

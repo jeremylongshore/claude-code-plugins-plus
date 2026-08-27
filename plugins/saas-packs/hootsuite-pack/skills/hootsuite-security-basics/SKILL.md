@@ -74,6 +74,27 @@ async function secureRefresh(refreshToken: string) {
 - [ ] Pre-commit hook blocks `HOOTSUITE_` credential leaks
 - [ ] Separate OAuth apps for dev/staging/prod
 
+## Overview
+
+Public publishing is a high-impact boundary: credentials, profile scope, audience selection, approval state, copy, and media must all be protected. This guidance keeps draft and publication paths distinct and auditable.
+
+## Prerequisites
+
+- A threat model naming credential custodians, account owners, approved profiles/audiences, incident owner, and secret manager.
+- Low-privilege sandbox credentials, draft-only fixtures, and tested revoke/disable/cancel procedures.
+
+## Output
+
+Return a security receipt with environment, profile scope, secret-reference version, approval/audience validation, revocation state, correlation ID, and rollback action. Never include tokens, copy, media, or account identities.
+
+## Error Handling
+
+Stop for unknown profile/audience, absent approval, failed signature/validation, or public-post attempt from an unapproved path. Revoke credentials or disable scheduling when integrity is uncertain.
+
+## Examples
+
+`env=staging; profile=sandbox-brand; secret_ref=publisher-v12; approval=pass; audience=approved; public_posts=0; rollback=scheduler-disabled` is an auditable control result.
+
 ## Resources
 
 - [Hootsuite OAuth 2.0](https://developer.hootsuite.com/docs/using-rest-apis)
