@@ -1634,8 +1634,6 @@
     "plugins/saas-packs/linktree-pack/skills/linktree-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/linktree-pack/skills/linktree-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/linktree-pack/skills/linktree-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/lokalise-pack/skills/lokalise-observability/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/lokalise-pack/skills/lokalise-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/lucidchart-pack/skills/lucidchart-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/lucidchart-pack/skills/lucidchart-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/lucidchart-pack/skills/lucidchart-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -1912,21 +1910,6 @@
     "plugins/saas-packs/replit-pack/skills/replit-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/replit-pack/skills/replit-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/replit-pack/skills/replit-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-advanced-troubleshooting/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-architecture-variants/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-cost-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-data-handling/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-debug-bundle/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-deploy-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-enterprise-rbac/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-hello-world/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-incident-runbook/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-install-auth/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/retellai-pack/skills/retellai-known-pitfalls/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/retellai-pack/skills/retellai-load-scale/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/retellai-pack/skills/retellai-local-dev-loop/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/retellai-pack/skills/retellai-migration-deep-dive/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2258,9 +2241,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T02:52:32.937992Z",
-    "run_id": "33034586948",
-    "sha": "d809b9a346e1050dc74d37d3a5e13b81c8817b76"
+    "captured_at": "2026-08-27T03:23:42.947626Z",
+    "run_id": "33036176360",
+    "sha": "c67c0e5267b65823d8817cca79c17d3f7e7023a0"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2285,7 +2268,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2248,
+    "errors": 2231,
     "grade_A_plus_B": 2962,
     "grade_A_plus_B_pct": 81.6428
   }
