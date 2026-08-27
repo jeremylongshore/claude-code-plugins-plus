@@ -26,6 +26,7 @@ import {
   editCatalogVersions,
   editSkillFrontmatter,
   findSkillFiles,
+  requiresFullHistory,
 } from './reconstruct-versions.mjs';
 
 const v = (s) => parseVersion(s);
@@ -43,6 +44,11 @@ test('findSkillFiles returns every SKILL.md under a multi-skill plugin dir', () 
     assert.ok(f.endsWith('/SKILL.md'), `not a SKILL.md: ${f}`);
     assert.ok(f.startsWith('plugins/saas-packs/clerk-pack/'), `outside plugin dir: ${f}`);
   }
+});
+
+test('version-surface agreement does not require full Git history', () => {
+  assert.equal(requiresFullHistory({ check: true }), false);
+  assert.equal(requiresFullHistory({ check: false }), true);
 });
 
 test('compareVersion orders by major, then minor, then patch', () => {

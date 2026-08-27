@@ -64,6 +64,15 @@ export function pluginDirFor(relPath) {
   return parts.slice(0, 3).join('/');
 }
 
+// Agreement mode reads only the checked-out display surfaces. Reconstructing
+// a version, by contrast, derives a count from complete first-parent history.
+// Keep that distinction explicit so the blocking CI agreement check works in
+// GitHub Actions' intentionally shallow checkout without weakening history
+// reconstruction.
+export function requiresFullHistory({ check }) {
+  return !check;
+}
+
 // ---------------------------------------------------------------------------
 // History pass: one `git log` over full first-parent main history.
 // Returns Map<dir, { commits: [{sha, subject}] }> where each listed commit
@@ -269,13 +278,6 @@ function main() {
     process.exit(1);
   }
 
-  if (existsSync(join(ROOT, '.git', 'shallow'))) {
-    console.error(
-      'Repo is a SHALLOW clone — run `git fetch --unshallow` first; counts would be wrong.',
-    );
-    process.exit(1);
-  }
-
   const catalogRaw = readFileSync(CATALOG, 'utf-8');
   const catalog = JSON.parse(catalogRaw);
 
@@ -296,39 +298,6 @@ function main() {
       continue;
     }
     plugins.push({ name: entry.name, source: entry.source, dir, catalogVersion: entry.version });
-  }
-
-  const history = collectHistory();
-
-  const rows = [];
-  for (const p of plugins) {
-    const commits = history.get(p.dir)?.commits ?? [];
-    // Oldest commit = the one that introduced the dir → creation, not an update.
-    const updates = Math.max(0, commits.length - 1);
-    // Floor = the HIGHEST of catalog + plugin.json. The plugin.json can lead
-    // the catalog (e.g. a hand-bump that never reached the catalog); flooring on
-    // the catalog alone silently DOWNGRADED such plugins — the 2026-07
-    // reconstruction bug (claude-never-forgets 1.0.0→0.21.0 etc.). Taking the
-    // higher of the two, and its major, keeps a leading plugin.json's major.
-    const catV = parseVersion(p.catalogVersion) || { major: 1, minor: 0, patch: 0 };
-    let pjV = null;
-    try {
-      const pjRaw = readFileSync(join(ROOT, p.dir, '.claude-plugin', 'plugin.json'), 'utf-8');
-      pjV = parseVersion(JSON.parse(pjRaw).version);
-    } catch {
-      /* no plugin.json (vendored sub-marketplace) — the catalog is the floor */
-    }
-    const existing = pjV && compareVersion(pjV, catV) > 0 ? pjV : catV;
-    const derived = { major: existing.major, minor: updates, patch: 0 };
-    const finalV = compareVersion(derived, existing) > 0 ? derived : existing;
-    rows.push({
-      ...p,
-      updates,
-      evidence: commits.slice(0, 10).map((c) => `${c.sha.slice(0, 9)} ${c.subject}`),
-      totalCommits: commits.length,
-      oldVersion: p.catalogVersion,
-      newVersion: fmt(finalV),
-    });
   }
 
   // -------------------------------------------------------------- check mode
@@ -393,6 +362,46 @@ function main() {
         : 'All surfaces agree (plugin.json + marketplace.json + SKILL.md frontmatter vs catalog).',
     );
     process.exit(bad ? 2 : 0);
+  }
+
+  if (requiresFullHistory({ check }) && existsSync(join(ROOT, '.git', 'shallow'))) {
+    console.error(
+      'Repo is a SHALLOW clone — run `git fetch --unshallow` first; counts would be wrong.',
+    );
+    process.exit(1);
+  }
+
+  const history = collectHistory();
+
+  const rows = [];
+  for (const p of plugins) {
+    const commits = history.get(p.dir)?.commits ?? [];
+    // Oldest commit = the one that introduced the dir → creation, not an update.
+    const updates = Math.max(0, commits.length - 1);
+    // Floor = the HIGHEST of catalog + plugin.json. The plugin.json can lead
+    // the catalog (e.g. a hand-bump that never reached the catalog); flooring on
+    // the catalog alone silently DOWNGRADED such plugins — the 2026-07
+    // reconstruction bug (claude-never-forgets 1.0.0→0.21.0 etc.). Taking the
+    // higher of the two, and its major, keeps a leading plugin.json's major.
+    const catV = parseVersion(p.catalogVersion) || { major: 1, minor: 0, patch: 0 };
+    let pjV = null;
+    try {
+      const pjRaw = readFileSync(join(ROOT, p.dir, '.claude-plugin', 'plugin.json'), 'utf-8');
+      pjV = parseVersion(JSON.parse(pjRaw).version);
+    } catch {
+      /* no plugin.json (vendored sub-marketplace) — the catalog is the floor */
+    }
+    const existing = pjV && compareVersion(pjV, catV) > 0 ? pjV : catV;
+    const derived = { major: existing.major, minor: updates, patch: 0 };
+    const finalV = compareVersion(derived, existing) > 0 ? derived : existing;
+    rows.push({
+      ...p,
+      updates,
+      evidence: commits.slice(0, 10).map((c) => `${c.sha.slice(0, 9)} ${c.subject}`),
+      totalCommits: commits.length,
+      oldVersion: p.catalogVersion,
+      newVersion: fmt(finalV),
+    });
   }
 
   // ----------------------------------------------------------------- summary
