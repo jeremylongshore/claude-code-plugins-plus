@@ -27,6 +27,13 @@ compatibility: Designed for Claude Code
 
 Production patterns for `@animaapp/anima-sdk`: singleton client, generation caching, output normalization, and configurable settings presets.
 
+## Prerequisites
+
+- Pin the Anima SDK and TypeScript runtime versions, define the supported framework presets, and provide a sandbox Figma file containing synthetic components for tests and examples.
+- Inject `ANIMA_TOKEN` and any Figma credentials from a secret manager at runtime. Authentication failures must be distinguishable from generation failures; never hard-code, log, cache, or include credentials in generated output or receipts.
+- Make `.anima-cache` private to the worker, exclude it from version control and artifact uploads, and define a retention/deletion policy. Cache keys may identify a request, but cached design source and generated content must not be sent to telemetry.
+- Set an allowlist for input file/node IDs and output paths, a maximum cache size, a bounded retry count, and an owner-approved normalization configuration before enabling the wrapper in CI or production.
+
 ## Instructions
 
 ### Step 1: Singleton Client with Configuration
@@ -168,6 +175,43 @@ async function generateWithRetry(
   }
 }
 ```
+
+## Error Handling
+
+- Fail fast with a redacted configuration error when `ANIMA_TOKEN` is missing or rejected, and do not retry 401/403 responses. Check Figma file/node permissions separately from Anima authentication so an operator can correct the smallest scope.
+- Treat cache misses as normal, but treat malformed JSON, schema drift, a settings-hash mismatch, or a cache entry outside the approved directory as a cache failure: quarantine or delete that entry and regenerate from the sandbox-approved request rather than trusting it.
+- Retry only bounded transient network, timeout, 429, and 5xx failures with exponential backoff and jitter. Cap total attempts and elapsed time; use a request fingerprint to make a resume idempotent and never retry a whole batch when only selected nodes failed.
+- If normalization or type-checking fails, retain the raw result only in the private quarantine area, block publication, and report rule IDs plus file counts. Never write generated source, design contents, personal data, or exception payloads to logs.
+- On process interruption or partial cache writes, use atomic replacement and restore the previous valid entry. A rollback removes quarantined artifacts, revokes temporary access, and records only the digest, stage, and retention/deletion result.
+
+## Examples
+
+The wrapper can keep a sandbox run deterministic while avoiding duplicate generation:
+
+```typescript
+const settings = PRESETS.nextjs;
+const fileKey = 'synthetic-design-system';
+const nodeId = 'button-primary-fixture';
+const cache = new AnimaCache('/var/lib/anima-cache/sandbox');
+
+const cached = cache.get(fileKey, nodeId, settings);
+const files = cached?.files ?? (await getAnimaClient().generateCode({
+  fileKey,
+  nodesId: [nodeId],
+  settings,
+})).files;
+
+if (!cached) cache.set(fileKey, nodeId, settings, files);
+const normalized = normalizeOutput(files, {
+  componentNameCase: 'PascalCase',
+  addBarrelExport: true,
+  wrapWithCn: false,
+  addTypeAnnotations: true,
+});
+console.log(JSON.stringify({ fileKey, nodeCount: 1, files: normalized.length, contactsExported: 0 }));
+```
+
+The acceptance receipt for this fixture is `cache=miss|hit; source=synthetic; files=bounded; contacts_exported=0; secret_scan=pass`. A production run additionally requires an approved file/node allowlist, a reviewed diff, and a tested rollback reference before the normalized files are published.
 
 ## Output
 

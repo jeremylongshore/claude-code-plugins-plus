@@ -23,6 +23,24 @@ compatibility: Designed for Claude Code
 ---
 # Anima Security Basics
 
+## Overview
+
+This workflow protects the Anima and Figma credentials used by a
+design-to-code pipeline while keeping generated output reviewable. It applies
+least privilege to the design source, keeps tokens on the server, and makes
+secret exposure or unexpected file access a fail-closed condition.
+
+## Prerequisites
+
+- A managed secret store and separate development, staging, and production
+  bindings for `ANIMA_TOKEN` and `FIGMA_TOKEN`.
+- An allowlist of Figma file keys and component node IDs, with an owner for
+  each design source and a documented rotation/revocation contact.
+- A non-production fixture and a disposable staging workspace for testing
+  token scope, generated artifacts, and rollback behavior.
+- Repository secret scanning and a deterministic generated-code directory;
+  never use real customer or personal design data as the test fixture.
+
 ## Security Checklist
 
 - [ ] Anima token stored in secret manager (not .env in prod)
@@ -62,6 +80,20 @@ function validateEnvironment(): void {
 validateEnvironment();
 ```
 
+## Error Handling
+
+| Failure | Required response |
+|---------|-------------------|
+| Secret manager is unavailable or a required token is empty | Abort before any Figma or Anima request; emit only a redacted reason and retry through the deployment system. |
+| A browser bundle imports the SDK or contains a token | Fail the build, remove the artifact, and rotate any credential that may have been exposed. |
+| Figma returns an authorization or scope error | Stop the run and review the file/node allowlist; do not broaden scopes automatically. |
+| A token is expired, over-scoped, or present in logs/artifacts | Revoke and replace it through the managed store, then rerun the leak scan before enabling the pipeline. |
+| Generated code contains credentials or unapproved source content | Quarantine the output and block the merge; retain only a sanitized finding and artifact digest. |
+
+All failures should preserve the previous known-good generated revision. Do not
+print token values, design content, personal identifiers, or full request
+payloads while diagnosing a failure.
+
 ### Step 3: Secret Manager Integration
 
 ```typescript
@@ -89,6 +121,26 @@ async function loadAnimaSecrets(): Promise<{ animaToken: string; figmaToken: str
 - Figma token with minimal scope (read-only)
 - Server-side enforcement preventing browser usage
 - Secrets loaded from cloud secret manager
+
+## Examples
+
+Run a staging preflight with an allowlisted synthetic file and verify that the
+process can read the managed bindings without revealing their values:
+
+```bash
+export FIGMA_FILE_KEY="synthetic-staging-file"
+node scripts/anima-preflight.mjs \
+  --file-key "$FIGMA_FILE_KEY" \
+  --node-id "1:2" \
+  --check-token-scope \
+  --assert-server-only \
+  --redact-output
+```
+
+The preflight should fail closed if either secret is absent, the file or node
+is not allowlisted, or a generated artifact contains a token. Record only the
+environment, source identifier, scope result, artifact digest, and cleanup
+result in the receipt; never record the credentials or design contents.
 
 ## Resources
 

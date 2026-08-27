@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 ---
 # Anima Upgrade & Migration
 
+## Overview
+
+This workflow moves an Anima integration between SDK versions or from manual
+Figma exports to automation while preserving a reviewable, reversible design
+source of truth. It uses a pinned dependency and a staging canary so API or
+generated-code changes are detected before production output is replaced.
+
+## Prerequisites
+
+- A clean working tree, committed lockfile, current SDK version, and a
+  reviewed changelog or release note for the proposed target version.
+- A fixture registry containing synthetic or approved design nodes, expected
+  output paths, and a baseline artifact digest for the current workflow.
+- Separate staging credentials with read-only design access, an owner for
+  generated-code review, and a rollback revision that can restore the prior
+  SDK and generated output.
+- CI gates for install, lint, type checking, tests, and secret scanning; do
+  not test an upgrade against customer designs or live production writes.
+
 ## Migration Paths
 
 | From | To | Complexity |
@@ -98,11 +117,47 @@ async function testUpgrade() {
 }
 ```
 
+## Error Handling
+
+| Failure | Required response |
+|---------|-------------------|
+| Dependency resolution or lockfile changes are unexpected | Stop the migration, inspect the dependency tree, and restore the approved lockfile before retrying. |
+| Authentication, file access, or API schema changes fail | Keep the old revision active; verify credentials and supported request fields without widening access. |
+| Generated files move, disappear, or contain an unexpected diff | Quarantine the output, compare against the baseline fixture, and require owner review before any merge. |
+| Lint, type, visual, or accessibility checks fail | Do not promote the SDK; retain the sanitized test receipt and return the failure to the design/code owner. |
+| Staging canary fails or rollback is unavailable | Disable automated generation and restore the last known-good package and generated artifact. |
+
+Never log tokens, full Figma payloads, or design content while comparing
+versions. A migration is complete only after the pinned package, source
+version, artifact digest, test result, and rollback reference are recorded.
+
 ## Output
 
 - SDK upgraded to latest version
 - Migrated from manual plugin to automated SDK
 - All generation tests passing after upgrade
+
+## Examples
+
+Use an approved version and one synthetic, allowlisted component for a staged
+canary; keep the lockfile and generated diff in the review boundary:
+
+```bash
+export APPROVED_ANIMA_VERSION="2.x.y"
+npm install "@animaapp/anima-sdk@${APPROVED_ANIMA_VERSION}"
+npm test
+npm run lint
+npm run generate:staging -- \
+  --file-key synthetic-staging-file \
+  --node-id 1:2 \
+  --output-dir .tmp/anima-upgrade \
+  --no-production-write
+```
+
+Compare the staged artifact with the baseline, review the source-version and
+path changes, and promote only after owner approval. If the canary changes an
+unexpected file or fails a quality gate, delete the temporary output and
+restore the prior lockfile/package before rerunning.
 
 ## Resources
 
