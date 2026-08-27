@@ -122,6 +122,28 @@ interface IndexReport     { datasource: string; totalIndexed: number; failures: 
 | Bulk reindex | Timeout on large datasource | Checkpoint cursor, resume from last successful batch |
 | Search aggregation | Stale index for one datasource | Degrade gracefully — return results from healthy sources, flag staleness |
 
+## Prerequisites
+
+- A named data owner for every source, a source-ACL inventory, and an approved classification/retention policy.
+- Separate sandbox, staging, and production identities, credentials, queues, and destinations; production content must never be an architecture test fixture.
+- A documented rollback for connector configuration, ACL mapping, and queue consumers before enabling a new path.
+
+## Instructions
+
+1. Draw the source-to-index boundary and assign an owner, data class, ACL authority, retry policy, and rollback for every edge.
+2. Start with a synthetic source and deny-by-default mapping; prove allow and deny paths before adding volume or a connector.
+3. Make indexing idempotent, bound queues and payloads, and quarantine an uncertain ACL or transform result rather than publishing it.
+4. Promote one datasource at a time with freshness, error-rate, and authorization probes, retaining the previous configuration revision.
+5. Review cache invalidation and retention whenever source permissions, document lifecycle, or identity mapping changes.
+
+## Output
+
+Produce an architecture record with component owners, source/destination classes, opaque datasource IDs, ACL authority, idempotency and retry behavior, observability signals, test evidence, and rollback revision. Exclude documents, queries, and identities.
+
+## Examples
+
+`source=sandbox-handbook; queue=index-synthetic; acl=source-groups; transform=v4; allow_probe=pass; deny_probe=pass; rollback=connector-r17` is a reviewable connector receipt.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

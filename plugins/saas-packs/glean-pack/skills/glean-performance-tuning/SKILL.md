@@ -113,6 +113,28 @@ function trackSearch(startMs: number, cached: boolean) {
 | Connector sync timeout | Large datasource with no checkpointing | Enable incremental sync with cursor tracking |
 | Missing documents in results | Incomplete metadata during indexing | Include title, body, author, and updated_at fields |
 
+## Prerequisites
+
+- A baseline for latency percentiles, error rate, freshness lag, queue depth, and authorized-search coverage by datasource.
+- A staging workload made of synthetic, bounded data and an approved error budget; do not capture real queries or content as a performance trace.
+- A rollback revision for cache TTL, concurrency, batching, and connector schedules before production changes.
+
+## Instructions
+
+1. Establish a baseline and target one bottleneck at a time: source read, transform, index submission, permission sync, or query.
+2. Test bounded batch and concurrency changes in staging with backpressure, idempotency, and strict retry limits.
+3. Confirm cache invalidation after ACL and document updates so lower latency never serves unauthorized or stale results.
+4. Canary one datasource, monitor latency, freshness, rate limits, and synthetic allow/deny probes, then promote or roll back.
+5. Record the configuration revision and review cost, error budget, and authorization evidence together.
+
+## Output
+
+Return a tuning receipt with baseline and canary percentile bands, batch/concurrency/TTL revisions, rate-limit and freshness outcomes, authorization probes, owner approval, and rollback reference. Use aggregates only.
+
+## Examples
+
+`source=sandbox-guides; p95=420ms->310ms; batch=50; concurrency=2; freshness=pass; allow=pass; deny=pass; rollback=perf-r9` documents a safe canary.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

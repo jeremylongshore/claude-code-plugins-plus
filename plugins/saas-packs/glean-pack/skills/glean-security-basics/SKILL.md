@@ -113,6 +113,28 @@ function redactGleanLog(record: Record<string, unknown>): Record<string, unknown
 | Overly broad connector scope | Sensitive repos/channels indexed unintentionally | Per-connector permission review |
 | Search queries in logs | Employee activity surveillance risk | Query redaction in logging pipeline |
 
+## Prerequisites
+
+- A threat model identifying token custodians, untrusted inputs, source ACL authority, incident owner, and approved secret manager.
+- Separate low-privilege sandbox credentials and fictitious documents for verification; never test with a production token in a shell or CI log.
+- Rotation, revocation, and connector-disable runbooks with a named owner and tested rollback path.
+
+## Instructions
+
+1. Scope credentials by environment and datasource, inject them from the secret manager, and deny unknown scope or destination.
+2. Validate document schema, size, origin, and ACL before indexing; quarantine failures with opaque correlation IDs.
+3. Verify webhook authenticity before parsing, validate comparable lengths before constant-time comparison, and reject replayed or stale events.
+4. Run synthetic allow and deny probes after ACL or identity changes, logging policy revisions and aggregates rather than content.
+5. Rotate or revoke compromised credentials, disable a connector if integrity is uncertain, and preserve redacted incident evidence.
+
+## Output
+
+Return a security receipt with environment, datasource scope, secret-reference version, validation and allow/deny outcomes, rotation/revocation state, incident correlation ID, and rollback action. Never include a token, raw webhook, query, or document body.
+
+## Examples
+
+`env=staging; source=sandbox-contracts; secret_ref=indexer-v12; signature=pass; allow_probe=pass; deny_probe=pass; rollback=connector-disabled` is an auditable control result.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
