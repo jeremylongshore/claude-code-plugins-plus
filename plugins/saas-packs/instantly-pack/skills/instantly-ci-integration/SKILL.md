@@ -244,6 +244,14 @@ npx vitest run --reporter=dot
 | Rate limited in CI | Too many parallel runs | Use mock server for PR checks |
 | Deploy fails | Missing env vars | Check secrets are set in deployment target |
 
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox campaign, test totals, consent/suppression checks, sent-count assertion, canary outcome, and rollback reference. Exclude recipients, copy, sender details, and secrets.
+
+## Examples
+
+`sha=abc123; fixtures=v5; campaign=ci-synthetic; tests=18/18; consent=pass; suppression=pass; sends=0; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - Instantly Mock Server
