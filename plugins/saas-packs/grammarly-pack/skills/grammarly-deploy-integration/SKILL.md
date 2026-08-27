@@ -132,6 +132,28 @@ docker run -d --name grammarly-integration -p 3000:3000 \
 | `429 Rate Limited` | Exceeding API rate limits | Cache results for identical text; implement backoff |
 | Token exchange fails | Incorrect `grant_type` or URL | Verify OAuth endpoint and `client_credentials` flow |
 
+## Prerequisites
+
+- An approved deployment change, environment-specific secret references, destination allowlist, and immutable artifact/configuration revision.
+- Baselines for health, latency, quota, retention, and synthetic check behavior plus a tested rollback artifact.
+- A canary integration containing fictitious text and a named owner.
+
+## Instructions
+
+1. Build and test the artifact with sandbox fixtures; reject literal credentials and unknown destinations.
+2. Deploy to staging and verify health, quota, retention, and synthetic behavior before production approval.
+3. Release to the canary with bounded concurrency and retry policy, monitoring redacted correlation IDs and aggregate metrics.
+4. Promote in stages only while probes remain within budget; restore the previous revision on any retention, scope, or error regression.
+5. Retain the release receipt and revoke temporary deployment credentials.
+
+## Output
+
+Produce a deployment receipt with artifact digest, environment, canary, health/quota/retention outcomes, owner approval, rollout state, and rollback reference. Exclude secrets and text.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=editor-synthetic; health=pass; quota=pass; retention=none; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - [Grammarly Developer Hub](https://developer.grammarly.com)

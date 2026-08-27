@@ -104,6 +104,27 @@ npm run deploy -- --env production
 | Style guide mismatch | Team ID points to wrong guide | Verify `GRAMMARLY_TEAM_ID` matches the intended style guide |
 | Suggestions differ across envs | Sandbox uses older model version | Expected behavior; validate core rules only in staging |
 
+## Prerequisites
+
+- Separate credentials, network destinations, and configuration revisions for sandbox, staging, and production.
+- A secret-manager reference per environment, protected promotion approval, synthetic fixtures, and a production rollback revision.
+
+## Instructions
+
+1. Validate the selected environment against an explicit allowlist before reading credentials or sending text.
+2. Apply versioned, idempotent configuration changes in sandbox and run synthetic retention and behavior probes.
+3. Promote to staging only with owner approval, bounded fixtures, and redacted observability compared with baseline.
+4. Canary one production integration after protected review; halt and restore the prior revision for a scope, retention, quota, or error regression.
+5. Record only environment, configuration revision, aggregate counts, and rollback result in the promotion receipt.
+
+## Output
+
+Produce a promotion receipt with environment, configuration revision, synthetic test totals, staging/canary result, owner approval, and rollback reference. Exclude credentials, source text, and identities.
+
+## Examples
+
+`env=staging; config=r22; fixture=writing-v4; retention=none; behavior=pass; rollback=r21` is evidence for controlled promotion.
+
 ## Resources
 
 - [Grammarly API](https://developer.grammarly.com/)
