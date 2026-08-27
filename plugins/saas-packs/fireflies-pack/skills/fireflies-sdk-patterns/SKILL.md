@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Production-ready patterns for the Fireflies.ai GraphQL API. Fireflies has no official SDK -- all interaction is via HTTP POST to `https://api.fireflies.ai/graphql`. These patterns provide typed wrappers, error handling, caching, and multi-tenant support.
 
+## Examples
+
+Use a scoped staging credential to query a synthetic meeting record and return only an opaque meeting ID plus a schema-validation result. Confirm application logs redact authorization headers and transcript text, then revoke the test credential before connecting to any production workspace.
+
 ## Prerequisites
 
 - `FIREFLIES_API_KEY` environment variable set
