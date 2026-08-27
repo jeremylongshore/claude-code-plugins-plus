@@ -269,6 +269,12 @@ class UsageTracker {
 | `ERR_REQUIRE_ESM` | CommonJS import | SDK is ESM-only; use `import` syntax |
 | Timeout | Large prompt or slow network | Increase `timeoutMs` |
 
+## Examples
+
+### Retry a transient completion safely
+
+Wrap a deterministic completion in `withRetry`, preserve the provider’s `Retry-After` value when present, and record usage only after a successful final response. Do not retry a 401 or schema-validation failure: those require a credential or request correction, not more traffic.
+
 ## Resources
 
 - [TypeScript SDK (client-ts)](https://github.com/mistralai/client-ts)

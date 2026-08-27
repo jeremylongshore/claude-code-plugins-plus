@@ -237,6 +237,12 @@ def audit_mistral_security():
 | Key compromise | Hardcoded or leaked | Use secret manager, rotate immediately |
 | XSS via output | Model generating HTML/JS | Strip script tags before rendering |
 
+## Examples
+
+### Respond to an accidentally exposed key
+
+Revoke the exposed key in the provider console, create a replacement in the secret manager, deploy the new secret reference, and verify the service with a metadata-only request. Search the affected logs and commit history for further exposure, but never paste the old or new secret into the incident record.
+
 ## Resources
 
 - [Mistral Guardrails](https://docs.mistral.ai/capabilities/guardrailing/)

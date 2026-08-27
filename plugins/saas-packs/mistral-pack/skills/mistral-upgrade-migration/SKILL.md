@@ -239,6 +239,12 @@ git branch -D upgrade/mistral-sdk-v1
 | Type errors | Interface changes | Update types to match v1.x |
 | Test failures | Response shape changed | Update assertions and mocks |
 
+## Examples
+
+### Upgrade one service with a reversible release
+
+Pin the target SDK version in a short-lived branch, update imports and mocked response shapes, then run the unit suite before enabling a protected integration check. Keep the prior lockfile and deploy artifact available until the health and error-rate checks pass; revert the release rather than editing production dependencies in place.
+
 ## Resources
 
 - [TypeScript SDK Releases](https://github.com/mistralai/client-ts/releases)

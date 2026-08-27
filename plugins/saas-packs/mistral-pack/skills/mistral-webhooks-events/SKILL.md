@@ -292,6 +292,12 @@ results = asyncio.run(process_batch([
 | Worker crash | Unhandled exception | BullMQ auto-retries with backoff |
 | SSE disconnected | Client/network timeout | Implement reconnection logic |
 
+## Examples
+
+### Queue a resumable bulk summarization job
+
+Put each document ID—not its sensitive content—into the queue payload, enforce a bounded concurrency limit, and persist the provider request ID with the job state. On worker retry, reuse the idempotency key and publish the result only once the callback signature and output schema pass validation.
+
 ## Resources
 
 - [Agents API](https://docs.mistral.ai/agents/agents/)
