@@ -195,6 +195,12 @@ Debug bundle: [attached]
 | Empty function logs | Function not invoked or log retention expired | Check Observability tab in dashboard |
 | VERCEL_TOKEN not set | Not authenticated for API calls | Export token or run `vercel login` |
 
+## Examples
+
+### Prepare a support bundle that is safe to share
+
+Copy the deployment ID, timestamps, status-page snapshot, and a redacted request trace into a new temporary directory. Before archiving, scan the bundle for tokens, cookies, email addresses, and raw request bodies; replace values with stable placeholders so support can correlate events without receiving secrets. Encrypt or use the approved support attachment channel, set an expiry for the local bundle, and confirm the original deployment is still retained for follow-up.
+
 ## Resources
 
 - [Vercel Support Portal](https://vercel.com/support)
