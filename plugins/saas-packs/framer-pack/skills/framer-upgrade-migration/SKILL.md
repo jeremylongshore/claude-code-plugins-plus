@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code
 ---
 # Framer Upgrade & Migration
 
+## Prerequisites
+
+Current release information, an inventory of site components, domains, integrations, and redirects, plus a staging site and rollback owner.
+
+## Output
+
+Record versions/components reviewed, staging and canary outcome, redirect/integration checks, approver, and rollback state without copying visitor or credential data.
+
+## Error Handling
+
+Stop promotion on routing, publishing, access, integration, or privacy mismatches; restore the prior version and review opaque failures before retrying.
+
+## Examples
+
+Migrate a fictional staging page, compare published routes and a synthetic form flow, and roll back when a redirect or integration fails.
+
 ## Overview
 
 Guide for upgrading Framer plugin SDK, Server API, and migrating between Framer platform versions. Check the Framer Developer Changelog for breaking changes before upgrading.
