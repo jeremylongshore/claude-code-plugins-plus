@@ -194,6 +194,10 @@ async function bulkSchedule(posts: ScheduledPost[]) {
 | `413 Payload Too Large` | Image exceeds limit | Compress or resize image |
 | Missing profile | Profile disconnected | Reconnect in Hootsuite dashboard |
 
+## Examples
+
+Run a fictional content-plan fixture and record `fixture=calendar-basic-v2; profile=sandbox-brand; drafts=4; approval=required; audience=validated; public_posts=0; cleanup=complete`.
+
 ## Resources
 
 - [Message Scheduling](https://developer.hootsuite.com/docs/message-scheduling)

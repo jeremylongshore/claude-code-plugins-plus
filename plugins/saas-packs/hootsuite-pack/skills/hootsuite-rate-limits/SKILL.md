@@ -80,6 +80,23 @@ async function queuedSchedule(profileId: string, text: string, time: Date) {
 }
 ```
 
+## Prerequisites
+
+- An approved API budget, header baseline, draft-only sandbox profile, and bounded queue.
+- Idempotency keys for mutations plus a reviewed recovery path for exhausted work.
+
+## Output
+
+Return a rate-limit receipt with account scope, requested/limited/deferred counts, retry revision, idempotency state, queue health, draft/public assertion, and rollback reference. Exclude copy, media, handles, and credentials.
+
+## Error Handling
+
+Stop for unknown profile, quota saturation, an attempt to replay a public mutation, or a public-post path during recovery. Defer or cancel work rather than bypassing approval or account scope.
+
+## Examples
+
+`scope=sandbox-brand; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; public_posts=0; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Hootsuite API FAQ](https://developer.hootsuite.com/docs/rest-api-faq)

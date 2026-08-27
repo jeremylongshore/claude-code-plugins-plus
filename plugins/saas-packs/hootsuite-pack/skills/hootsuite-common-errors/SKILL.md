@@ -84,6 +84,34 @@ curl -s -H "Authorization: Bearer $HOOTSUITE_ACCESS_TOKEN" \
   https://platform.hootsuite.com/v1/socialProfiles | python3 -m json.tool
 ```
 
+## Overview
+
+This reference triages profile, schedule, approval, audience, and quota failures through redacted status and opaque IDs. It does not authorize copying post content, media, handles, or account metadata into a ticket.
+
+## Prerequisites
+
+- A draft-only sandbox probe, redacted correlation ID, endpoint class, and HTTP or terminal schedule status.
+- A scoped read-only diagnostic credential and named owner for account, audience, or approval changes.
+
+## Instructions
+
+1. Classify authentication, authorization, profile lookup, approval, audience, validation, quota, and schedule errors before changes.
+2. Reproduce once with the draft-only fixture, capturing only status, latency, quota, and opaque IDs.
+3. Check scope, approval, audience, schedule state, and quota in that order.
+4. Apply one reversible change at a time and escalate a redacted bundle when the failure persists.
+
+## Output
+
+Return error class, correlation ID, profile scope, probe outcome, remediation attempted, and next owner. Do not include copy, media, handles, tokens, or identities.
+
+## Error Handling
+
+Treat unknown profile/audience, missing approval, failed redaction, public-post path, or repeated non-idempotent schedule as a stop condition. Cancel/revert rather than retrying with broader scope.
+
+## Examples
+
+`status=429; profile=sandbox-brand; correlation=schedule-opaque-11; action=bounded-backoff; public_posts=0; safe_probe=recovered` supports a safe handoff.
+
 ## Resources
 
 - [Hootsuite API FAQ](https://developer.hootsuite.com/docs/rest-api-faq)
