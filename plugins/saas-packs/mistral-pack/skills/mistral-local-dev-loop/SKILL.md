@@ -280,6 +280,12 @@ describe.skipIf(!apiKey)('Mistral Integration', () => {
 | Integration timeout | Slow API response | Increase test timeout |
 | Mock type errors | SDK interface changed | Update mock to match current SDK |
 
+## Examples
+
+### Separate deterministic and paid checks
+
+Run the mocked Vitest suite on every local change and CI pull request. Enable the integration suite only in a protected environment that supplies `MISTRAL_API_KEY`; it should skip—not fail—when that secret is intentionally absent from an untrusted pull request.
+
 ## Resources
 
 - [Mistral TypeScript SDK](https://github.com/mistralai/client-ts)

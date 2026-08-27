@@ -249,6 +249,12 @@ export function getFlags(): FeatureFlags {
 | Cross-env data leak | Missing guards | Add `requireEnvironment()` checks |
 | Config mismatch | Env var naming | Use consistent naming convention |
 
+## Examples
+
+### Promote a configuration without copying production secrets
+
+Deploy the same application artifact from staging to production while selecting secrets by `APP_ENV` in the platform secret manager. Before promotion, assert the environment guard rejects production-only operations in staging and verify no secret value is emitted in application logs or CI output.
+
 ## Resources
 
 - [GCP Secret Manager](https://cloud.google.com/secret-manager)

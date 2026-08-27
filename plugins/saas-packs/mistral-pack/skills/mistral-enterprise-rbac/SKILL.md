@@ -194,6 +194,12 @@ async function rotateApiKey(oldKeyId: string, keyName: string): Promise<string> 
 | `429 Rate limit` | Workspace RPM exceeded | Distribute across workspaces |
 | Spending alert | Monthly budget near cap | Review per-key usage, restrict heavy consumers |
 
+## Examples
+
+### Rotate a service key without downtime
+
+Create a replacement key with the service’s least-privileged model scope, update the secret-manager reference, and verify `models.list()` from the deployed revision before revoking the old key. Keep both key IDs in the audit record so an unexpected consumer can be identified during the overlap window.
+
 ## Resources
 
 - [La Plateforme Console](https://console.mistral.ai/)

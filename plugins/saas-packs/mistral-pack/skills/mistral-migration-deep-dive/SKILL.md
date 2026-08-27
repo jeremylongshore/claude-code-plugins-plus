@@ -245,6 +245,12 @@ async function validateMigration(adapter1: AIAdapter, adapter2: AIAdapter) {
 | Missing feature | Not supported by Mistral | Implement fallback in adapter |
 | Cost increase | Token counting differs | Monitor and optimize prompts |
 
+## Examples
+
+### Migrate one classification endpoint safely
+
+Put the old and Mistral adapters behind the same interface, send a fixed evaluation set through both at zero temperature, and compare category agreement, latency, and token cost. Start production at the five-percent flag, advance only when the agreed thresholds hold, and reset the flag to zero for an immediate rollback.
+
 ## Resources
 
 - [Mistral AI Documentation](https://docs.mistral.ai/)
