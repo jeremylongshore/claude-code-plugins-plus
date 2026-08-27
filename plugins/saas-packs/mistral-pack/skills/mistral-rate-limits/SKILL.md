@@ -231,6 +231,12 @@ function rateLimitStatus(limiter: MistralRateLimiter) {
 | Batch failures | Too many tokens per batch | Reduce batch size for embeddings |
 | Spike traffic blocked | No request smoothing | Queue requests, spread over window |
 
+## Examples
+
+### Absorb a burst without retry amplification
+
+Place incoming chat work on the shared RPM/TPM queue and honor each server-provided retry delay before retrying a 429. If the queue age exceeds the product’s latency budget, return a retryable overload response for noncritical traffic instead of launching parallel retries that exhaust the workspace budget.
+
 ## Resources
 
 - [Rate Limits & Usage Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)

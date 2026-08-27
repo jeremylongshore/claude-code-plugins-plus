@@ -304,6 +304,12 @@ export const PROMPTS: Record<string, PromptTemplate> = {
 | Auth error (401) | Invalid API key | Not retryable, check credentials |
 | Cache ineffective | High temperature | Only cache temperature=0 requests |
 
+## Examples
+
+### Wire a deterministic summarization service
+
+Validate the environment at process start, route summarization through the singleton client with temperature zero and the bounded `summarize` template, and cache only the normalized input plus model version. On a retryable provider failure, surface a typed service error to the caller; on a 401, stop retrying and alert the credential owner.
+
 ## Resources
 
 - [Mistral API Reference](https://docs.mistral.ai/api/)

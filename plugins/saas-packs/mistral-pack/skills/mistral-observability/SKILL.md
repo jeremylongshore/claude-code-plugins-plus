@@ -244,6 +244,12 @@ function logMistralRequest(entry: MistralLogEntry): void {
 | Alert storm on 429s | Rate limit burst | Tune alert threshold, add request queue |
 | High cardinality | Per-request labels | Never label by request ID or user ID |
 
+## Examples
+
+### Investigate a sudden latency increase
+
+Start with the p95 panel grouped by model and endpoint, then correlate the time window with token velocity and 429 counts. Add a temporary alert only on bounded aggregate labels; never include prompt content, user identifiers, or request IDs in a metric label while diagnosing the issue.
+
 ## Resources
 
 - [OpenLIT Mistral Monitoring](https://docs.mistral.ai/cookbooks/third_party-openlit-cookbook_mistral_opentelemetry/)
