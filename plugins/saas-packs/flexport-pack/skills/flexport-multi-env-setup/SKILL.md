@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Configure isolated Flexport environments for development, staging, and production with separate API keys, webhook endpoints, and safety guards to prevent production data access from dev.
 
+## Prerequisites
+
+- Distinct environment identities, secret references, webhook routes, approved data destinations, and accountable owners.
+- Guardrails that prevent development/PR workloads from querying production or receiving production webhooks.
+
+## Output
+
+Record an environment-control receipt with identity references, allowed destinations, policy version, validation outcome, owner, and rollback path. Do not include keys, shipment data, or documents.
+
+## Error Handling
+
+- Deny an environment mismatch before an API call and alert the environment owner.
+- Rotate/revoke the affected credential after suspected cross-environment access.
+- Roll back configuration changes that bypass target, destination, or secret isolation.
+
+## Examples
+
+Send a fictional event to staging and verify the development key cannot authenticate there and no staging route can call a production destination. Rotate the staging credential, prove the old key is denied, and store only redacted test evidence.
+
 ## Instructions
 
 ### Environment Configuration

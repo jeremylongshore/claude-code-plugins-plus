@@ -25,6 +25,25 @@ compatibility: Designed for Claude Code
 
 Set up a fast, reproducible local development workflow for Flexport integrations. Since Flexport has no official SDK, the dev loop centers on a typed HTTP client wrapper with mock responses for testing.
 
+## Prerequisites
+
+- Fictional fixtures only, a local directory excluded from version control, and an approved sandbox/read-only test path.
+- Separate developer credentials supplied through an approved secret manager, never copied into fixtures or shell history.
+
+## Output
+
+Produce a local test receipt with fixture version, schema/contract result, opaque correlation IDs, and redacted failures. No real shipment, address, invoice, customs, or credential data belongs in the repository.
+
+## Error Handling
+
+- Stop fixture generation if it contains real exports, documents, or identifiers; replace with synthetic values.
+- Treat schema and authorization mismatches as review items rather than widening scope or retrying production actions.
+- Revoke a test credential and report a redacted incident if exposure is possible.
+
+## Examples
+
+Test a fictional container event with an opaque ID and invented ports. Run offline unit tests, confirm no network call is made, then validate a read-only sandbox probe separately. Ensure deleting the fixture removes every local derived artifact.
+
 ## Instructions
 
 ### Step 1: Project Structure

@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 
 Manage Flexport commercial invoices for customs clearance, maintain the product catalog for landed cost calculations, and handle freight billing. These APIs complement the booking/shipment workflow in `flexport-core-workflow-a`.
 
+## Output
+
+Maintain an approved workflow receipt with opaque invoice/product identifiers, authorized owner, source-validation status, approved destination, idempotency outcome, and next action. Keep commercial terms, invoice contents, tariff data, and documents in the authorized system of record.
+
 ## Prerequisites
 
 - Completed `flexport-install-auth` setup
