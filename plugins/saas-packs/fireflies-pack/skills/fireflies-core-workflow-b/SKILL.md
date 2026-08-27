@@ -30,6 +30,10 @@ compatibility: Designed for Claude Code
 
 Secondary workflow: search across transcripts with keyword and date filters, use AskFred AI for natural language Q&A over meetings, and aggregate meeting analytics for reporting.
 
+## Examples
+
+Search a synthetic meeting set using a narrow date range and a fictional keyword, then return only aggregate counts and approved action-item categories. Confirm that the destination never receives raw transcript passages or participant identities unless the documented access policy permits them.
+
 ## Prerequisites
 
 - Completed `fireflies-install-auth` setup
