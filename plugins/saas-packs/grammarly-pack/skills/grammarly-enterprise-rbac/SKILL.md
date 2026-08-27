@@ -105,6 +105,27 @@ function logAccess(entry: GrammarlyAuditEntry): void {
 | Guest sees full suggestion set | Role not properly scoped on invite | Re-invite with explicit guest role |
 | Seat limit reached | All team licenses assigned | Remove inactive members or purchase additional seats |
 
+## Prerequisites
+
+- Source-of-truth role inventory, named data owner, two synthetic identities (authorized and denied), and a least-privilege admin role.
+- A rollback record for the prior mapping using opaque group IDs; never attach real membership exports, text, or suggestions to tickets.
+
+## Instructions
+
+1. Map roles to the minimum integration scope and require owner approval for every access expansion.
+2. Stage the mapping on a sandbox integration, then run authorized and denied synthetic probes against fictitious text.
+3. Promote only if both outcomes match policy; otherwise restore the prior mapping and investigate the identity boundary.
+4. Log actor, change ID, scope, mapping revision, and aggregate outcomes without text, email addresses, or membership data.
+5. Recheck after identity synchronization and revoke access immediately if it exceeds approved scope.
+
+## Output
+
+Produce an RBAC receipt with integration scope, prior/new mapping revisions, approving owner, staged/production status, authorized/denied outcomes, sync watermark, and rollback reference. Use opaque IDs only.
+
+## Examples
+
+`scope=staging-editor; mapping_rev=42; owner=platform-ops; allow_probe=pass; deny_probe=pass; sync=2026-08-27T14:00Z; rollback=rev41` proves the boundary without disclosing members.
+
 ## Resources
 
 - [Grammarly Enterprise](https://www.grammarly.com/business)

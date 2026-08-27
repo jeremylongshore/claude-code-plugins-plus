@@ -131,6 +131,26 @@ describe.skipIf(!hasCredentials)('Grammarly Live API', () => {
 | Rate limit (429) | Too many text check requests | Batch text submissions and add throttling |
 | Empty suggestions | Text too short for analysis | Ensure test inputs are at least 50 characters |
 
+## Prerequisites
+
+- CI secret references rather than literal credentials, a sandbox endpoint, and fixtures containing only fictional text.
+- Protected branches, retention/redaction assertions, and a rollback mechanism for deployment/configuration the pipeline can influence.
+
+## Instructions
+
+1. Run mocked unit tests first, including malformed response, denied consent, retention, and quota cases.
+2. Run a bounded sandbox integration with idempotency and prohibit production destinations in CI configuration.
+3. Emit aggregate counts, correlation IDs, and policy revisions only; fail for unknown destination, expanded scope, or unredacted log assertion.
+4. Canary after protected review, verify synthetic behavior/retention, and restore the last-known-good revision on failure.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox target, test totals, policy checks, canary outcome, and rollback reference. Exclude text, suggestions, and secrets.
+
+## Examples
+
+`sha=abc123; fixtures=v5; sandbox=ci-synthetic; tests=18/18; consent=pass; retention=none; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - [Grammarly Developer API](https://developer.grammarly.com/)

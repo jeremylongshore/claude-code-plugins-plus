@@ -72,6 +72,23 @@ grammarlyEvents.on('ai.detected', (data) => {
 });
 ```
 
+## Prerequisites
+
+- A secret-manager webhook secret, event-origin allowlist, replay-window policy, and opaque event ledger.
+- A sandbox receiver with fictional events plus a tested disable/rollback control for the consumer.
+
+## Output
+
+Return an event receipt with type, opaque ID, signature/timestamp result, idempotency outcome, queue state, retention/consent result, canary result, and rollback reference. Exclude payload text and signatures.
+
+## Error Handling
+
+Reject unknown origin, stale/replayed delivery, malformed payload, unknown destination, or non-idempotent retry. Quarantine the opaque event and disable the consumer if integrity or consent is uncertain.
+
+## Examples
+
+`type=check.completed; event=evt-opaque-9; signature=pass; replay=absent; enqueue=once; retention=none; rollback=consumer-disabled` proves the boundary.
+
 ## Resources
 
 - [Grammarly API](https://developer.grammarly.com/)
