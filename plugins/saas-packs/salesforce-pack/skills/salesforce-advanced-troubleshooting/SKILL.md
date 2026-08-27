@@ -246,6 +246,12 @@ async function minimalRepro(): Promise<void> {
 | Query plan shows TableScan | Non-selective filter | Add indexed field to WHERE clause |
 | EventLogFile empty | Not Enterprise+ edition | Use instrumented client logging instead |
 
+## Examples
+
+### Diagnose a governor-limit regression without exposing tenant data
+
+Enable a short-lived trace flag for a sandbox integration user, reproduce the failing transaction with synthetic records, and inspect the resulting log for SOQL count, CPU time, and query selectivity. Remove the trace flag when analysis ends and share only redacted excerpts with support. Validate the proposed bulkification change in the sandbox, compare limit consumption against the baseline, and keep a rollback deployment package ready before production release.
+
 ## Resources
 
 - [Debug Log Reference](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_debugging_debug_log.htm)

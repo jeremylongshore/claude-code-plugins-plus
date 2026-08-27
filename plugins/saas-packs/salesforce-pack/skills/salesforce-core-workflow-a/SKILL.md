@@ -224,6 +224,12 @@ await conn.request({
 | `UNABLE_TO_LOCK_ROW` | Concurrent update on same record | Retry with backoff — common in high-volume writes |
 | `ENTITY_IS_DELETED` | Operating on deleted record | Query Recycle Bin or use `ALL ROWS` in SOQL |
 
+## Examples
+
+### Upsert a controlled batch by external ID
+
+Load a small, schema-validated set of synthetic records into a sandbox and use an External ID for idempotent upsert rather than matching on mutable names. Check field-level permissions before the operation, record per-row failures without logging full customer payloads, and retry lock errors with bounded backoff. Reconcile the returned IDs against the input count and retain a rollback plan for the specific batch before scheduling a production job.
+
 ## Resources
 
 - [sObject CRUD (REST API)](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/dome_sobject_create.htm)

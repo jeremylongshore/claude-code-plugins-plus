@@ -228,6 +228,12 @@ deploy:
 | Deploy validation errors | Missing dependencies | Check component dependencies with `sf project deploy report` |
 | API limit in CI | Too many test runs/day | Use sandbox instead of production for CI |
 
+## Examples
+
+### Validate metadata with a least-privilege CI identity
+
+Use a dedicated sandbox user whose permission set grants only the metadata and test access needed by the pipeline, authenticate through a CI-held JWT secret, and run `sf project deploy validate` against a non-production org. Require Apex tests and a check-only deployment before any production promotion. Keep the private key out of logs and artifacts, rotate it on schedule, and fail rather than retrying indefinitely on authorization errors.
+
 ## Resources
 
 - [Salesforce CLI JWT Auth](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_jwt_flow.htm)
