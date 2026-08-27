@@ -1667,11 +1667,6 @@
     "plugins/saas-packs/mindtickle-pack/skills/mindtickle-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mindtickle-pack/skills/mindtickle-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-cost-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-debug-bundle/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-deploy-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-enterprise-rbac/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-hello-world/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-incident-runbook/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2161,9 +2156,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T04:13:42.046325Z",
-    "run_id": "33038709834",
-    "sha": "2461bd44dbb98415e3ac483c003c8852629880de"
+    "captured_at": "2026-08-27T04:55:37.212860Z",
+    "run_id": "33040832126",
+    "sha": "f259ee1102fe381e8cf74fe2000c84038af354f3"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2188,8 +2183,8 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2151,
-    "grade_A_plus_B": 2969,
-    "grade_A_plus_B_pct": 81.8357
+    "errors": 2146,
+    "grade_A_plus_B": 2971,
+    "grade_A_plus_B_pct": 81.8908
   }
 }
