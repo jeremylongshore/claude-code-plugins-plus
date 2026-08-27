@@ -155,6 +155,25 @@ response = requests.post(f"{BASE}/videos/text2video", headers=get_headers(), jso
 | `402` insufficient credits | Not enough credits | Top up account |
 | `task_status: failed` | Content policy violation or complexity | Simplify prompt, remove restricted content |
 
+## Prerequisites
+
+- An approved brief, rights-cleared or synthetic reference material, an authorized workspace and budget, a content-policy review, and a named owner for publication and removal.
+
+## Instructions
+
+1. Create a sandbox draft from an approved brief; do not include private individuals, protected material, or unverified claims in prompts or uploads.
+2. Verify the requested duration, style, destination, credit budget, content-policy status, and draft-only setting before submission.
+3. Review one watermarked canary render for policy, rights, and quality; halt on a policy or attribution concern and delete the draft rather than publishing it.
+4. Promote only after owner approval and retain a redacted production receipt; remove temporary assets at the approved retention boundary.
+
+## Output
+
+Produce a render receipt with brief ID, approved source classification, model/mode, duration, credit estimate, policy and rights-review outcome, draft destination, approver, retention/removal reference, and task ID. Exclude prompt text, identities, and credentials.
+
+## Examples
+
+`brief=synthetic-product-demo; source=rights-cleared; mode=standard; duration=5s; policy=pass; destination=draft-only; approval=pending; cleanup=24h` is a safe canary request.
+
 ## Resources
 
 - [Text-to-Video API](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

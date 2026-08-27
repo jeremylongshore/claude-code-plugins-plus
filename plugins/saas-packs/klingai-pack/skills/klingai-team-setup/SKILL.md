@@ -176,6 +176,32 @@ class TeamKlingClient:
         return result
 ```
 
+## Prerequisites
+
+- An approved team role matrix, authorized workspace, budget owner, rights/content-policy workflow, synthetic test brief, and a tested access-revocation path.
+
+## Instructions
+
+1. Configure least-privilege roles in a sandbox team and reject shared credentials or unapproved publishing destinations.
+2. Test quota, approval, audit, policy, and revocation paths with synthetic briefs only; keep all generated assets draft-only.
+3. Run one role canary at a time and halt on unexpected permission, budget, policy, or retention drift.
+4. Promote roles only after owner approval, revoke temporary access, and delete test assets after the agreed window.
+
+## Output
+
+Produce a team-setup receipt with workspace, role scopes, quota limits, approval/policy checks, draft-only assertion, revocation test, owner approval, retention/removal proof, and rollback reference. Exclude member identities and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Role grants exceed the approved matrix | Revoke the grant, restore the prior matrix, and record only a redacted audit event. |
+| Budget or policy control fails | Stop generation, cancel queued drafts, and require owner review before retrying. |
+
+## Examples
+
+`workspace=sandbox-studio; role=editor-draft-only; quota=100-credits; policy=pass; publish=disabled; revocation=tested` is a valid setup canary.
+
 ## Resources
 
 - [API Key Management](https://app.klingai.com/global/dev/api-key)
