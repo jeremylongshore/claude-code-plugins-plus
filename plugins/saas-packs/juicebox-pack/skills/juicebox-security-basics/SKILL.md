@@ -110,6 +110,25 @@ function redactJuiceboxLog(record: Record<string, unknown>): Record<string, unkn
 | Enrichment without consent | Privacy regulation violation | Consent gate before enrichment calls |
 | Unencrypted contact storage | Bulk PII breach from database leak | Encryption at rest + access controls |
 
+## Prerequisites
+
+- A data classification, approved lawful-use basis, synthetic test fixture, secrets-manager references, least-privilege roles, and an incident owner with a tested revocation path.
+
+## Instructions
+
+1. Run the security checks only against a sandbox fixture and reject literal credentials, unapproved sources, or unapproved destinations.
+2. Verify suppression, encryption, access scope, audit-log redaction, retention, and `contacts_exported=0` before approving a release.
+3. Use staged canaries; halt on any policy, scope, or retention drift and revoke temporary access before rollback.
+4. Preserve only aggregate, redacted evidence and delete test records according to the approved retention window.
+
+## Output
+
+Record a security receipt with environment, fixture classification, access review, suppression/encryption/redaction results, no-export assertion, owner approval, retention/deletion proof, and rollback reference. Exclude identities, enrichment values, and secrets.
+
+## Examples
+
+`env=staging; fixture=synthetic; rbac=least-privilege; suppression=pass; encryption=pass; contacts_exported=0; cleanup=verified` is an acceptable release-gate record.
+
 ## Resources
 
 - Juicebox Privacy

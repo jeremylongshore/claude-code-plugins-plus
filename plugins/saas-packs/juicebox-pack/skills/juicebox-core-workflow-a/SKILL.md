@@ -74,6 +74,18 @@ await client.export({
 | Low results | Filters too strict | Relax experience or location |
 | Duplicates | Overlapping searches | Deduplicate by LinkedIn URL |
 
+## Prerequisites
+
+- An approved hiring workflow, a sandbox workspace, documented source authority, a suppression list, and an allowlisted ATS test destination.
+
+## Output
+
+Produce a redacted workflow receipt with the sandbox query scope, aggregate result count, suppression outcome, destination approval, `contacts_exported=0` test assertion, owner approval, retention window, and rollback reference. Do not retain candidate records, contact details, or credentials.
+
+## Examples
+
+`workspace=sandbox-hiring; source=approved; query=synthetic-go-k8s; matched=20; suppression=pass; contacts_exported=0; retention=24h` is a valid pre-production receipt.
+
 ## Resources
 
 - Search Filters
