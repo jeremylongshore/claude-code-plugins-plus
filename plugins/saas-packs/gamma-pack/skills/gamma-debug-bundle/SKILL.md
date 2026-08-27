@@ -25,6 +25,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Debug Bundle
 
+## Output
+
+Create a redacted evidence index with opaque correlation ID, artifact list, access owner, retention date, reproduction outcome, and next action. Sensitive originals remain in the approved incident store.
+
+## Examples
+
+For a synthetic publish failure, retain runtime/configuration references and aggregate errors only; review the bundle for private content or tokens, restrict access to the incident owner, and retire it at the retention date.
+
 ## Current State
 
 !`node --version 2>/dev/null || echo 'N/A'`
