@@ -23,6 +23,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Migration Deep Dive
 
+## Output
+
+Record source/target scope, mapping decision, staging and canary results, aggregate reconciliation, approver, and rollback state without copying content or viewer data.
+
+## Examples
+
+Migrate a fictional presentation in staging, compare approved metadata and route behavior, introduce an unknown field, and confirm the canary stops for review.
+
 ## Current State
 
 !`npm list 2>/dev/null | head -10`

@@ -23,6 +23,22 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Reference Architecture
 
+## Instructions
+
+Separate content creation, review, publishing, sharing, integrations, and observability by explicit ownership and least privilege. Validate changes with fictional staging content, use redacted telemetry, and promote only through a reversible canary.
+
+## Output
+
+Maintain an architecture record with trust boundaries, approved audiences/destinations, access/retention controls, owners, and rollback mechanism. Exclude private content and credentials.
+
+## Error Handling
+
+Quarantine unknown destinations, sharing policies, or content schemas; disable unsafe consumers and restore the prior route before replaying work.
+
+## Examples
+
+Route a fictional deck through a staging review/publish flow, deny an unapproved viewer, and verify duplicate publish events are suppressed.
+
 ## Overview
 
 Reference architecture patterns for building scalable, maintainable Gamma integrations.
