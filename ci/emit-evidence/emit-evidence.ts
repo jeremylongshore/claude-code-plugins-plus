@@ -366,6 +366,7 @@ type PublicationArtifact = {
   readonly version?: string;
   readonly release_tag?: string;
   readonly artifact_digest?: string;
+  readonly package_name?: string;
 };
 
 type RequiredCheck = {
@@ -503,6 +504,9 @@ export function publicationOutcomes(report: unknown): GateOutcome[] {
     if (typeof publication.name !== 'string' || publication.name.length === 0) {
       throw new Error(`publication ${index} missing name`);
     }
+    if (publication.package_name !== undefined && typeof publication.package_name !== 'string') {
+      throw new Error(`publication ${publication.name} has invalid package_name`);
+    }
     if (publication.version !== undefined && typeof publication.version !== 'string') {
       throw new Error(`publication ${publication.name} has invalid version`);
     }
@@ -518,6 +522,7 @@ export function publicationOutcomes(report: unknown): GateOutcome[] {
     const fact = {
       channel: publication.channel,
       name: publication.name,
+      ...(publication.package_name === undefined ? {} : { package_name: publication.package_name }),
       ...(publication.version === undefined ? {} : { version: publication.version }),
       ...(publication.release_tag === undefined ? {} : { release_tag: publication.release_tag }),
       ...(publication.artifact_digest === undefined
