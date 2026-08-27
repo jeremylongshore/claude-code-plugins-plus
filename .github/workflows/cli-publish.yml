@@ -96,6 +96,8 @@ jobs:
     needs: [quality-gate, preflight]
     if: ${{ needs.quality-gate.result == 'success' && needs.preflight.result == 'success' }}
     environment: npm-production
+    outputs:
+      publication_report: ${{ steps.publication-report.outputs.publication_report }}
 
     steps:
       - name: Checkout code
@@ -131,6 +133,16 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/cli-v}
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "✅ Published version: $VERSION"
+
+      - name: Record completed CLI publication for signed evidence
+        id: publication-report
+        run: |
+          set -euo pipefail
+          VERSION='${{ steps.version.outputs.version }}'
+          jq -cn --arg version "$VERSION" --arg tag "${GITHUB_REF_NAME}" \
+            '{schema_version:"publication-report/v1", publications:[{channel:"npm", name:"@claude-code-plugins/ccp", version:$version, release_tag:$tag}]}' \
+            > /tmp/publication-report.json
+          echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
@@ -205,3 +217,17 @@ jobs:
             echo ""
             echo "Package is live and installable from npm registry"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  emit-publication-evidence:
+    name: Emit signed evidence for the completed CLI publication
+    needs: publish
+    if: ${{ needs.publish.result == 'success' && needs.publish.outputs.publication_report != '' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ github.sha }}
+      publication_report: ${{ needs.publish.outputs.publication_report }}

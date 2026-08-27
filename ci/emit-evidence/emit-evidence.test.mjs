@@ -70,3 +70,121 @@ test('refuses a malformed certification report instead of omitting its evidence'
   assert.equal(result.status, 1);
   assert.match(result.stderr, /invalid certification report/);
 });
+
+test('emits one content-bound signed-ready row per completed publication', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'publication-report-'));
+  const file = path.join(dir, 'publication-report.json');
+  fs.writeFileSync(
+    file,
+    JSON.stringify({
+      schema_version: 'publication-report/v1',
+      publications: [
+        {
+          channel: 'npm',
+          name: '@intentsolutionsio/example',
+          version: '1.2.3',
+          release_tag: '@intentsolutionsio/example@1.2.3',
+          artifact_digest: `sha256:${'a'.repeat(64)}`,
+        },
+        { channel: 'mcp-registry', name: 'project-health-auditor', version: '1.0.0' },
+      ],
+    }),
+  );
+  const output = path.join(dir, 'evidence');
+  const result = run(['--out', output, '--publication-report', file, '--publication-only']);
+  assert.equal(result.status, 0, result.stderr);
+  const first = JSON.parse(fs.readFileSync(path.join(output, 'gate-result-0.json'), 'utf8'));
+  const second = JSON.parse(fs.readFileSync(path.join(output, 'gate-result-1.json'), 'utf8'));
+  assert.equal(first.gate_decision, 'pass');
+  assert.equal(first.metadata.channel, 'npm');
+  assert.equal(first.metadata.artifact_digest, `sha256:${'a'.repeat(64)}`);
+  assert.equal(second.metadata.channel, 'mcp-registry');
+});
+
+test('refuses a publication report that is only a publish candidate', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'publication-report-'));
+  const file = path.join(dir, 'publication-report.json');
+  fs.writeFileSync(
+    file,
+    JSON.stringify({ schema_version: 'publication-report/v1', publications: [] }),
+  );
+  const result = run([
+    '--out',
+    path.join(dir, 'evidence'),
+    '--publication-report',
+    file,
+    '--publication-only',
+  ]);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /non-empty publications/);
+});
+
+test('emits exactly the three completed protected-branch contexts', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'required-checks-'));
+  const file = path.join(dir, 'checks.json');
+  fs.writeFileSync(
+    file,
+    JSON.stringify({
+      check_runs: [
+        { name: 'ci-required', status: 'completed', conclusion: 'success' },
+        { name: 'gitleaks', status: 'completed', conclusion: 'success' },
+        { name: 'skill-conform', status: 'completed', conclusion: 'success' },
+      ],
+    }),
+  );
+  const output = path.join(dir, 'evidence');
+  const result = run([
+    '--out',
+    output,
+    '--required-checks-report',
+    file,
+    '--publication-only',
+    '--publication-report',
+    (() => {
+      const publication = path.join(dir, 'publication.json');
+      fs.writeFileSync(
+        publication,
+        JSON.stringify({
+          schema_version: 'publication-report/v1',
+          publications: [{ channel: 'npm', name: 'x' }],
+        }),
+      );
+      return publication;
+    })(),
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+  const rows = fs.readdirSync(output).filter((name) => name.startsWith('gate-result-'));
+  assert.equal(rows.length, 4);
+});
+
+test('refuses an incomplete protected-branch check report', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'required-checks-'));
+  const file = path.join(dir, 'checks.json');
+  fs.writeFileSync(
+    file,
+    JSON.stringify({
+      check_runs: [{ name: 'ci-required', status: 'completed', conclusion: 'success' }],
+    }),
+  );
+  const result = run([
+    '--out',
+    path.join(dir, 'evidence'),
+    '--required-checks-report',
+    file,
+    '--publication-only',
+    '--publication-report',
+    (() => {
+      const publication = path.join(dir, 'publication.json');
+      fs.writeFileSync(
+        publication,
+        JSON.stringify({
+          schema_version: 'publication-report/v1',
+          publications: [{ channel: 'npm', name: 'x' }],
+        }),
+      );
+      return publication;
+    })(),
+  ]);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /must appear exactly once/);
+});

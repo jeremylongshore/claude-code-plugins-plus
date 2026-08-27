@@ -183,6 +183,8 @@ jobs:
     needs: [guard, enumerate, preflight, dry-run]
     if: ${{ inputs.dry_run_only == false && needs.guard.result == 'success' && needs.enumerate.result == 'success' && needs.preflight.result == 'success' && needs.dry-run.result == 'success' }}
     environment: npm-production
+    outputs:
+      publication_report: ${{ steps.publish.outputs.publication_report }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -194,6 +196,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish every package (skip already-published versions)
+        id: publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           PACKAGES_JSON: ${{ needs.enumerate.outputs.packages_json }}
@@ -208,7 +211,8 @@ jobs:
           SKIPPED=0
           FAILED=0
           FAIL_NAMES=()
-          echo "$PACKAGES_JSON" | jq -c '.[]' | while read -r row; do
+          PUBLISHED_JSON='[]'
+          while read -r row; do
             NAME=$(echo "$row" | jq -r '.name')
             DIR=$(echo "$row" | jq -r '.dir')
             VERSION=$(echo "$row" | jq -r '.version')
@@ -225,6 +229,8 @@ jobs:
             if (cd "$DIR" && npm publish --access public --provenance); then
               echo "✓ published: $NAME@$VERSION"
               PUBLISHED=$((PUBLISHED+1))
+              PUBLISHED_JSON=$(jq -cn --argjson prior "$PUBLISHED_JSON" --arg name "$NAME" --arg version "$VERSION" \
+                '$prior + [{channel:"npm", name:$name, version:$version}]')
             else
               echo "❌ publish FAILED: $NAME@$VERSION"
               FAIL_NAMES+=("$NAME")
@@ -233,7 +239,7 @@ jobs:
 
             # Throttle — stay under npm's 5/sec rate limit comfortably
             sleep 2
-          done
+          done < <(printf '%s' "$PACKAGES_JSON" | jq -c '.[]')
 
           echo ""
           echo "=== Mass publish summary ==="
@@ -246,3 +252,22 @@ jobs:
             printf '  - %s\n' "${FAIL_NAMES[@]}"
             exit 1
           fi
+          if [ "$PUBLISHED" -gt 0 ]; then
+            jq -cn --argjson publications "$PUBLISHED_JSON" \
+              '{schema_version:"publication-report/v1", publications:$publications}' > /tmp/publication-report.json
+            echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+          fi
+
+  emit-publication-evidence:
+    name: Emit signed evidence for every completed mass publication
+    needs: [guard, publish]
+    if: ${{ needs.publish.result == 'success' && needs.publish.outputs.publication_report != '' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ needs.guard.outputs.sha }}
+      publication_report: ${{ needs.publish.outputs.publication_report }}

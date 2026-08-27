@@ -15,9 +15,9 @@
 #       instead — prerelease so it never becomes the repo's `latest`.
 #
 # What it does (fail-closed at every step):
-#   1. re-runs two of the repo's REAL blocking CI gates (both are steps of the
-#      `validate` job that `ci-required` needs): catalog-invariants +
-#      unicode-hygiene;
+#   1. re-runs two deterministic validation steps and records the exact
+#      completed protected-branch contexts for this source SHA:
+#      `ci-required`, `gitleaks`, and `skill-conform`;
 #   2. shapes each outcome into a kernel gate-result/v1 row wrapped in a kernel
 #      EvidenceBundle, validated against @intentsolutions/core@0.10.0 — the
 #      EXACT version the dashboard verifies with (ci/emit-evidence/);
@@ -52,8 +52,9 @@ jobs:
     # produce an unverifiable manifest, so guard instead of emitting one.
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
+      checks: read # read the three exact protected-branch contexts at this SHA
       contents: write # create/upload the rolling evidence-latest release
       id-token: write # cosign keyless (Fulcio OIDC)
 
@@ -85,11 +86,34 @@ jobs:
       - name: Emit-evidence self-check (kernel-valid + canonical-stable)
         run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --self-check
 
-      # Runs the two real gates (python3 stdlib only), builds + kernel-validates
-      # the gate-result/v1 rows and EvidenceBundles. Fail-closed: a failing
-      # gate emits a FAIL row (honest evidence); a malformed artifact aborts.
+      - name: Await completed protected-branch contexts for this SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/check-runs?per_page=100" > /tmp/required-checks.json
+            missing=$(jq -r '
+              .check_runs as $runs |
+              ["ci-required", "gitleaks", "skill-conform"] |
+              map(. as $name | ($runs | map(select(.name == $name and .status == "completed")) | length) as $n | select($n != 1) | $name) |
+              join(",")
+            ' /tmp/required-checks.json)
+            if [ -z "$missing" ]; then
+              echo "all three required contexts completed"
+              exit 0
+            fi
+            echo "waiting for required contexts: $missing (attempt $attempt/30)"
+            sleep 20
+          done
+          echo "::error::required contexts did not complete for ${GITHUB_SHA}"
+          exit 1
+
+      # Runs the two deterministic validation steps and attaches all three
+      # protected-branch contexts. Missing/in-progress/duplicate contexts abort
+      # rather than being represented as a pass.
       - name: Emit gate-result/v1 EvidenceBundle(s)
-        run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --out build/evidence --ref "${GITHUB_REF}"
+        run: node --experimental-strip-types ci/emit-evidence/emit-evidence.ts --out build/evidence --ref "${GITHUB_REF}" --workflow-ref "${GITHUB_WORKFLOW_REF}" --required-checks-report /tmp/required-checks.json
 
       - name: Sign each EvidenceBundle (cosign keyless -> production Rekor)
         run: |

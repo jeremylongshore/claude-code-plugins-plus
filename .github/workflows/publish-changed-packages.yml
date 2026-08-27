@@ -153,6 +153,8 @@ jobs:
     needs: [guard, preflight, detect]
     if: ${{ needs.guard.outputs.eligible == 'true' && needs.preflight.result == 'success' && needs.detect.outputs.count != '0' }}
     environment: npm-production
+    outputs:
+      publication_report: ${{ steps.publish.outputs.publication_report }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -169,6 +171,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Assert source release before publishing each changed package
+        id: publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -179,6 +182,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$PUBLISH_SHA"
           PUBLISHED=0; SKIPPED=0; FAILED=0
           PUBLISHED_LIST=""
+          PUBLISHED_JSON='[]'
 
           # Use a process-substitution loop so subshell counters survive.
           while read -r row; do
@@ -241,6 +245,10 @@ jobs:
             echo "✓ published: $NAME@$VERSION"
             PUBLISHED=$((PUBLISHED+1))
             PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
+            PUBLISHED_JSON=$(jq -cn \
+              --argjson prior "$PUBLISHED_JSON" \
+              --arg name "$NAME" --arg version "$VERSION" --arg tag "$TAG" \
+              '$prior + [{channel:"npm", name:$name, version:$version, release_tag:$tag}]')
 
             sleep 2
           done < <(echo "$PACKAGES_JSON" | jq -c '.[]')
@@ -253,3 +261,22 @@ jobs:
             printf '%b\n' "$PUBLISHED_LIST"
           fi
           [ "$FAILED" -eq 0 ] || exit 1
+          if [ "$PUBLISHED" -gt 0 ]; then
+            jq -cn --argjson publications "$PUBLISHED_JSON" \
+              '{schema_version:"publication-report/v1", publications:$publications}' > /tmp/publication-report.json
+            echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+          fi
+
+  emit-publication-evidence:
+    name: Emit signed evidence for every completed package publication
+    needs: [guard, publish]
+    if: ${{ needs.publish.result == 'success' && needs.publish.outputs.publication_report != '' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ needs.guard.outputs.sha }}
+      publication_report: ${{ needs.publish.outputs.publication_report }}

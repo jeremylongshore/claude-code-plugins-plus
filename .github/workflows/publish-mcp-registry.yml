@@ -86,3 +86,43 @@ jobs:
           sleep 3
           echo "Verifying ${{ matrix.server }}..."
           curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=io.github.jeremylongshore/${{ matrix.server }}" | head -20
+
+  prepare-publication-evidence:
+    name: Record exactly the completed MCP publication selection
+    needs: publish
+    if: ${{ inputs.dry_run != true }}
+    runs-on: ubuntu-latest
+    outputs:
+      publication_report: ${{ steps.report.outputs.publication_report }}
+    steps:
+      - id: report
+        env:
+          SELECTION: ${{ inputs.server || 'all' }}
+        run: |
+          set -euo pipefail
+          case "$SELECTION" in
+            all)
+              servers='["project-health-auditor","conversational-api-debugger","domain-memory-agent","ai-experiment-logger","design-to-code","lumera-agent-memory","workflow-orchestrator"]'
+              ;;
+            project-health-auditor|conversational-api-debugger|domain-memory-agent|ai-experiment-logger|design-to-code|lumera-agent-memory|workflow-orchestrator)
+              servers=$(jq -cn --arg server "$SELECTION" '[$server]')
+              ;;
+            *) echo "::error::unknown MCP publication selection: $SELECTION"; exit 1 ;;
+          esac
+          jq -cn --argjson servers "$servers" \
+            '{schema_version:"publication-report/v1", publications:($servers | map({channel:"mcp-registry", name:.}))}' > /tmp/publication-report.json
+          echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
+
+  emit-publication-evidence:
+    name: Emit signed evidence for every completed MCP publication
+    needs: prepare-publication-evidence
+    if: ${{ needs.prepare-publication-evidence.result == 'success' }}
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ github.sha }}
+      publication_report: ${{ needs.prepare-publication-evidence.outputs.publication_report }}

@@ -20,6 +20,9 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.new_version.outputs.version }}
+      release_sha: ${{ steps.release_commit.outputs.sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -106,6 +109,7 @@ jobs:
           echo "Updated README.md version references"
 
       - name: Commit version bump
+        id: release_commit
         run: |
           NEW_VERSION="${{ steps.new_version.outputs.version }}"
           git config user.name "github-actions[bot]"
@@ -113,6 +117,7 @@ jobs:
 
           git add .claude-plugin/marketplace.json README.md
           git commit -m "chore: bump version to v$NEW_VERSION"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Create Git tag
         run: |
@@ -185,3 +190,17 @@ jobs:
             echo ""
             echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/v$NEW_VERSION)"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  emit-publication-evidence:
+    name: Emit signed evidence for the completed marketplace release
+    needs: release
+    uses: ./.github/workflows/emit-publication-evidence.yml
+    permissions:
+      actions: read
+      checks: read
+      contents: write
+      id-token: write
+    with:
+      source_sha: ${{ needs.release.outputs.release_sha }}
+      publication_report: >-
+        {"schema_version":"publication-report/v1","publications":[{"channel":"github-release","name":"tons-of-skills-marketplace","version":"${{ needs.release.outputs.version }}","release_tag":"v${{ needs.release.outputs.version }}"}]}
