@@ -19,7 +19,7 @@
 #      `validate` job that `ci-required` needs): catalog-invariants +
 #      unicode-hygiene;
 #   2. shapes each outcome into a kernel gate-result/v1 row wrapped in a kernel
-#      EvidenceBundle, validated against @intentsolutions/core@0.9.0 — the
+#      EvidenceBundle, validated against @intentsolutions/core@0.10.0 — the
 #      EXACT version the dashboard verifies with (ci/emit-evidence/);
 #   3. keyless-signs each bundle's canonical bytes with cosign (Fulcio OIDC +
 #      production Rekor), then verifies every signature back in-repo;

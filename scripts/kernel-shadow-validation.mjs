@@ -7,7 +7,7 @@
  * WHAT THIS IS
  * ------------
  * Runs the kernel's published machine-spec — the authoring/v1 `skill-frontmatter`
- * JSON Schema from @intentsolutions/core@0.9.0 — over the SAME SKILL.md corpus the
+ * JSON Schema from @intentsolutions/core@0.10.0 — over the SAME SKILL.md corpus the
  * existing prose-spec validator (scripts/validate-skills-schema.py) already grades,
  * and reports the per-file AGREE / DISAGREE rate between the two.
  *
@@ -59,19 +59,16 @@
  *   existing-PASS-raw  := validate-skills-schema.py --marketplace reports errors == 0
  *                         (a `fatal` entry counts as existing-FAIL).
  *   existing-PASS-fm   := the file has ZERO non-`[body]` errors (frontmatter-scoped PASS).
- *                         Computed by fetching the file's full error STRING list (single-file
- *                         `--marketplace --json`, which emits the strings the batch run omits)
- *                         and filtering out every error message starting with `[body]`.
+ *                         Computed from the batch `error_details` error strings and filtering
+ *                         out every error message starting with `[body]`.
  *   RAW DISAGREE       := existing-PASS-raw !== kernel-PASS (conflates frontmatter + body).
  *   FRONTMATTER DISAGREE := existing-PASS-fm !== kernel-PASS (the cutover-relevant deviation;
  *                         a remaining one here would be a REAL kernel gap to surface).
  *   BODY-SCOPE-ONLY    := existing-FAIL-raw && kernel-PASS && every error is `[body]` (a scope
  *                         difference, NOT a deviation).
  *
- * The single-file `--json` invocation emits the full `errors` array of message strings;
- * the batch `--json` run emits only per-file error COUNTS. So the shadow runs the batch
- * once to enumerate the corpus + raw verdict, then re-fetches error STRINGS per-file ONLY
- * for the (small) raw-disagreement set to scope it — never for the whole corpus.
+ * The batch `--json` run includes `error_details`, the full error-string array per file.
+ * The single-file form is retained only as a compatibility fallback for older output.
  *
  * OUTPUT
  * ------
@@ -86,7 +83,7 @@
  *   and even then the calling workflow uses continue-on-error so it can NEVER fail
  *   the build. The deviation rate itself is REPORTED, never enforced.
  *
- * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.9.0 in package.json
+ * KERNEL PIN: @intentsolutions/core is pinned EXACTLY to 0.10.0 in package.json
  * (no ^/~). This shadow reads the schema straight out of node_modules so the
  * comparison is always against the pinned, published contract.
  *
@@ -104,7 +101,7 @@ import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
-const KERNEL_PIN = '0.9.0';
+const KERNEL_PIN = '0.10.0';
 
 const SCHEMA_DIR = join(
   REPO_ROOT,
@@ -186,9 +183,9 @@ function resolvePythonContext() {
 
 /**
  * Drive the existing prose-spec validator (batch mode) to get its per-file MARKETPLACE
- * verdict. The batch `--json` run emits per-file error COUNTS (not strings), which is all
- * the RAW verdict needs; frontmatter scoping re-fetches strings per-file in main().
- * Returns Map<absPath, { pass: boolean, errors: number, fatal: boolean }>.
+ * verdict and batch error strings.
+ * Returns Map<absPath, { pass: boolean, errors: number, errorStrings: string[] | null,
+ * fatal: boolean }>.
  */
 function loadExistingVerdicts(py, script) {
   const res = spawnSync(py, [script, '--marketplace', '--json'], {
@@ -215,10 +212,13 @@ function loadExistingVerdicts(py, script) {
     if (entry.kernel_shadow || typeof entry.path !== 'string') continue;
     const abs = resolve(REPO_ROOT, entry.path);
     if ('fatal' in entry) {
-      map.set(abs, { pass: false, errors: 0, fatal: true });
+      map.set(abs, { pass: false, errors: 0, errorStrings: null, fatal: true });
     } else {
       const errors = entry.errors ?? 0;
-      map.set(abs, { pass: errors === 0, errors, fatal: false });
+      const errorStrings = Array.isArray(entry.error_details)
+        ? entry.error_details.map(String)
+        : null;
+      map.set(abs, { pass: errors === 0, errors, errorStrings, fatal: false });
     }
   }
   return map;
@@ -243,10 +243,8 @@ function nonBodyErrorCount(errorStrings) {
 /**
  * Fetch the full per-file error STRING list from the existing validator.
  *
- * The batch `--json` run emits only per-file error COUNTS, which cannot be scoped to
- * frontmatter. The SINGLE-FILE `--json` invocation emits the `errors` array of message
- * strings (each `[body]` / `[frontmatter]` / `[stub-section]` / … prefixed). We call this
- * ONLY for the (small) raw-disagreement set, never the whole corpus, to scope it.
+ * Older validator output may omit batch `error_details`; the SINGLE-FILE `--json`
+ * invocation supplies the same strings as a backward-compatible fallback.
  *
  * Returns { ok: true, errors: string[] } or { ok: false, reason } on a harness hiccup
  * (the caller degrades gracefully — an unscopable file stays a raw disagreement).
@@ -348,6 +346,7 @@ function main() {
         path: relTo(absPath),
         existing: ex.pass ? 'PASS' : ex.fatal ? 'FATAL' : 'FAIL',
         existingErrorCount: ex.errors,
+        errorStrings: ex.errorStrings,
         kernel: kernelPass ? 'PASS' : 'FAIL',
         kernelPass,
         kernelErrors: kernelErrors.slice(0, 6),
@@ -364,16 +363,19 @@ function main() {
   // ---- FRONTMATTER-SCOPED deviation ----
   // The kernel is a FRONTMATTER contract; the prose-spec also lints the BODY. A raw
   // existing-FAIL / kernel-PASS file is a frontmatter deviation ONLY if the prose-spec
-  // failure is NOT body-only. Re-fetch error STRINGS per file (single-file --json) for
-  // the raw-disagreement set and filter out `[body]`-prefixed errors before counting.
+  // failure is NOT body-only. Use batch error strings and fall back to a single-file
+  // lookup only when an older validator omits them.
   let bodyScopeOnlyCount = 0; // kernel-PASS, existing-FAIL on BODY sections only (a scope diff, not a deviation)
   const bodyScopeOnlyFiles = [];
   const frontmatterDisagreements = []; // the cutover-relevant set (REAL kernel gaps if any remain)
 
   for (const d of rawDisagreements) {
     if (d.direction === 'existing-FAIL / kernel-PASS') {
-      // Could be a pure body-scope difference. Fetch strings to decide.
-      const fetched = fetchFileErrorStrings(py, script, d.absPath);
+      // Could be a pure body-scope difference. Prefer the batch strings.
+      const fetched =
+        d.errorStrings !== null
+          ? { ok: true, errors: d.errorStrings }
+          : fetchFileErrorStrings(py, script, d.absPath);
       if (fetched.ok) {
         const bodyOnly = allErrorsAreBodyScope(fetched.errors);
         const fmErrCount = nonBodyErrorCount(fetched.errors);
@@ -479,9 +481,10 @@ function main() {
     // Informational: kernel-PASS / existing-FAIL-on-body-only files (scope difference):
     bodyScopeOnlyFiles,
     // Raw scope-conflated disagreements (transparency):
-    rawDisagreements: rawDisagreements.map(({ absPath, kernelPass, ...rest }) => {
+    rawDisagreements: rawDisagreements.map(({ absPath, kernelPass, errorStrings, ...rest }) => {
       void absPath;
       void kernelPass;
+      void errorStrings;
       return rest;
     }),
     generatedAt: new Date().toISOString(),

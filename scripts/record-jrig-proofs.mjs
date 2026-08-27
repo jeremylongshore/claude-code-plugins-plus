@@ -13,7 +13,7 @@
  * requirements owned by Blueprint 727.
  *
  * INPUT SHAPE (what we bind to — inspected from @intentsolutions/jrig-cli
- * 0.1.2, dist/index.js `registerEvalCommand`): `j-rig eval --json` prints a
+ * 0.2.0, dist/index.js `registerEvalCommand`): `j-rig eval --json` prints a
  * map keyed by model name, one entry per `--models` entry:
  *
  *   {

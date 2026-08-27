@@ -376,7 +376,7 @@ function main() {
     warnings,
     advisory: !args.strict,
     // Derived, never hardcoded. The previous literal asserted the pin "tracks latest
-    // published (0.9.0)" — a claim that silently went false the moment a newer kernel
+    // published (0.10.0)" — a claim that silently went false the moment a newer kernel
     // shipped, turning the footer into misinformation printed under a green check.
     soak: (() => {
       const base = 'DR-049 shadow soak — this check stays ADVISORY.';

@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@intentsolutions/core': 0.10.0
   esbuild: '>=0.25.0'
   vite: '>=6.4.2'
   qs: '>=6.15.2'
@@ -26,11 +27,11 @@ importers:
         specifier: 1.3.1
         version: 1.3.1
       '@intentsolutions/core':
-        specifier: 0.9.0
-        version: 0.9.0
+        specifier: 0.10.0
+        version: 0.10.0
       '@intentsolutions/jrig-cli':
-        specifier: 0.1.2
-        version: 0.1.2(bun-types@1.3.11)
+        specifier: 0.2.0
+        version: 0.2.0(bun-types@1.3.11)
       '@types/node':
         specifier: ^20.19.41
         version: 20.19.41
@@ -725,8 +726,6 @@ importers:
   plugins/saas-packs/webflow-pack: {}
 
   plugins/saas-packs/windsurf-pack: {}
-
-  plugins/saas-packs/wispr-pack: {}
 
   plugins/saas-packs/workhuman-pack: {}
 
@@ -1785,22 +1784,22 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@intentsolutions/core@0.9.0':
-    resolution: {integrity: sha512-XGF3rR/FFgRz1qkiXMEXLijmPX3/9layH9e2wqykMitkl2gX/JREpS6ilRXB1tVnkdcHnDdfAxWstpW/UoGKsA==}
+  '@intentsolutions/core@0.10.0':
+    resolution: {integrity: sha512-6IF/A5qqrUdA/L4HB6YLd2/7+T3fA/1gY7rX1izkIhrx1E5+4XL/O3MIXvJafobQztPnm6ItYHbHLV1EpLnYOg==}
     engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
 
-  '@intentsolutions/jrig-cli@0.1.2':
-    resolution: {integrity: sha512-UkrdEerwf/58Je5OOLLA9n6NmnnCtyp+ySnGPACANAuZSWpC+x4WdwgPyMz4YSZS++aJuHpyUerOUQa2RHMkJw==}
+  '@intentsolutions/jrig-cli@0.2.0':
+    resolution: {integrity: sha512-lgJoWeJW7/H705jdub02tuXYN0yM7WwJ9m7d1nM+C4x7uEUkp8oBul3vZ0jwmoDktmVZlenh3LcZR9P9ruUxkQ==}
     engines: {node: '>=20'}
     hasBin: true
 
-  '@intentsolutions/refiner-core@0.2.0':
-    resolution: {integrity: sha512-UOEoaSgkZpGch3WiClegZGfesSv4aayKaE+59JSvs3o2uTPbvGtDvOw/ahv1nwKR07vby5SnyBIhlAk8nOGNnw==}
+  '@intentsolutions/refiner-core@0.3.0':
+    resolution: {integrity: sha512-vTZrgrBkfEc9ZIoPIvXQOjrDUhyjHuiDPEUIgu+ScJdt+QnLhXgib+nTWi5/hpFAvKZ8XsWEsCupSL3moIjcUA==}
     peerDependencies:
-      '@intentsolutions/core': ^0.8.0
+      '@intentsolutions/core': 0.10.0
 
-  '@intentsolutions/refiner@0.2.0':
-    resolution: {integrity: sha512-yMs6LGoeHcc3oRYU115nfvDc4jR36dbWXS32a06i4CCaflbL1nCC3RAwv3d914nQjqagA85PwrqnMvUeQho/Kw==}
+  '@intentsolutions/refiner@0.3.0':
+    resolution: {integrity: sha512-SEC6jWOprnWxsQWpytVtbngl8mYevg+ryopy7RRdRzUtwYNx4d2nUuV5Dh1g2wCQSCXoFbROYLWiuhhTXEvXcw==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1900,26 +1899,32 @@ packages:
     resolution: {integrity: sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q==}
     engines: {node: '>=8.0.0'}
 
-  '@opentelemetry/core@2.8.0':
-    resolution: {integrity: sha512-hd1Lfh8p545nNz+jq1Ejfz+Mn1hyLuxYn1YzTfFNrxr8urEWMNQLPf1Th8kjOH+HxwawCrtgBp8JpBUR4ZSgww==}
+  '@opentelemetry/core@2.10.0':
+    resolution: {integrity: sha512-/wNZ8twnEQQA4HoHu22+vcsdru6pWPWxW+7w+FlxT6Id7PE/WIbZmVKkte+PF72e0F2dnImFeHD2syyE1Mw6MQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/resources@2.8.0':
-    resolution: {integrity: sha512-qmXQ27ilDbUK/vGMqwL8D4/rhn76C+sherM4wTbjlfknR8Nvfc/hCxjRJPhkzZzUsPiNg16SA31NxMabwttRjg==}
+  '@opentelemetry/resources@2.10.0':
+    resolution: {integrity: sha512-q6MMm2zhggzsHVNbabYwut+a6nbuQQe3URUoxaojM/8K1IBfwwPzvxIjNi2/lI1TFe+fMHMW9MWhrtDLEXEnkA==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/sdk-trace-base@2.8.0':
-    resolution: {integrity: sha512-mhU4jp+vW0mGbFRd+GeXHvmfA4aDqWjBjLC3pE5XMpLs0IE2ryYb019Ts2AQrOq67gaTF25D91+fgvEHDZEnuQ==}
+  '@opentelemetry/sdk-trace-base@2.10.0':
+    resolution: {integrity: sha512-GuYQQT7QD2EeO8lcZLRQzcbOyhqAzL+6WWTKTU9mSUBYBazkEDl+VrQcXQhbB08OWM9anD1aHleVadzulpOaUQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/semantic-conventions@1.41.1':
-    resolution: {integrity: sha512-/UhIkaZgPutTFmQ7RnIJGgDXZmtEJ7Dvi86xNTFWcnRxVRNk/aotsqDJYeEvDP+FSMB2SdW+pQzNMcWP0rwuNA==}
+  '@opentelemetry/sdk-trace@2.10.0':
+    resolution: {integrity: sha512-MfQGq3GRmTh5fM/y+OjaO0vj6+luCB1XO2gfXCalKCfgKw0eHL++sm75DNweC6ohlp+aFvACqeE0fYayqdRaoQ==}
+    engines: {node: ^18.19.0 || >=20.6.0}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.3.0 <1.10.0'
+
+  '@opentelemetry/semantic-conventions@1.43.0':
+    resolution: {integrity: sha512-eSYWTm620tTk45EKSedaUL8MFYI8hW164hIXsgIHyxu3VobUB3fFCu5t0hQby6OoWRPsG1KkKUG2M5UadiLiVg==}
     engines: {node: '>=14'}
 
   '@oslojs/encoding@1.1.0':
@@ -3477,6 +3482,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -3749,6 +3755,7 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   github-from-package@0.0.0:
@@ -4073,8 +4080,8 @@ packages:
   js-tokens@9.0.1:
     resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
 
-  js-yaml@3.15.0:
-    resolution: {integrity: sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==}
+  js-yaml@3.15.2:
+    resolution: {integrity: sha512-6EuL879VkRA+1Cz578mKMiKvjPNEuk6+r1JaFzoSWejZmtf7xWbIyw1e3KkxlkzTIt9Taw6JBhEppG7utc1P+w==}
     hasBin: true
 
   js-yaml@4.1.1:
@@ -4549,8 +4556,8 @@ packages:
   nlcst-to-string@4.0.0:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
 
-  node-abi@3.92.0:
-    resolution: {integrity: sha512-KdHvFWZjEKDf0cakgFjebl371GPsISX2oZHcuyKqM7DtogIsHrqKeLTo8wBHxaXRAQlY2PsPlZmfo+9ZCxEREQ==}
+  node-abi@3.95.0:
+    resolution: {integrity: sha512-T9iGctuocf0qIWFFOTxPzjT5q0SILqaBYXt272tlBHvTKC5+3JnkMirLxNJNkXHtFyBjU2Jx+NL4Zipr0B/c6Q==}
     engines: {node: '>=10'}
 
   node-fetch-native@1.6.7:
@@ -5054,6 +5061,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.5:
+    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@0.19.2:
     resolution: {integrity: sha512-VMbMxbDeehAxpOtWJXlcUS5E8iXh6QmN+BkRX1GARS3wRaXEEgzCcB10gTQazO42tpNIya8xIyNx8fll1OFPrg==}
     engines: {node: '>= 0.8.0'}
@@ -5260,8 +5272,8 @@ packages:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
 
-  tar-fs@2.1.4:
-    resolution: {integrity: sha512-mDAjwmZdh7LTT6pNleZ05Yt65HC3E+NiQzl672vQG38jIrehtJk/J3mNwIg+vShQPcLF/LV7CMnDW6vjj6sfYQ==}
+  tar-fs@2.1.5:
+    resolution: {integrity: sha512-OboTd8mmMhZDNPV+UjQcK9yKAatXu2aJ+r1w4im1Otd4M4fl2hwvdoXUxIYHFTHWK/3y3FarBP70v3vwmGlOxw==}
 
   tar-stream@2.2.0:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
@@ -6782,16 +6794,16 @@ snapshots:
 
   '@intentsolutions/audit-harness@1.3.1': {}
 
-  '@intentsolutions/core@0.9.0':
+  '@intentsolutions/core@0.10.0':
     dependencies:
       zod: 4.4.3
 
-  '@intentsolutions/jrig-cli@0.1.2(bun-types@1.3.11)':
+  '@intentsolutions/jrig-cli@0.2.0(bun-types@1.3.11)':
     dependencies:
-      '@intentsolutions/core': 0.9.0
-      '@intentsolutions/refiner': 0.2.0(@intentsolutions/core@0.9.0)
+      '@intentsolutions/core': 0.10.0
+      '@intentsolutions/refiner': 0.3.0(@intentsolutions/core@0.10.0)
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/sdk-trace-base': 2.8.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace-base': 2.10.0(@opentelemetry/api@1.9.1)
       better-sqlite3: 12.11.1
       chalk: 5.6.2
       commander: 15.0.0
@@ -6828,14 +6840,14 @@ snapshots:
       - sql.js
       - sqlite3
 
-  '@intentsolutions/refiner-core@0.2.0(@intentsolutions/core@0.9.0)':
+  '@intentsolutions/refiner-core@0.3.0(@intentsolutions/core@0.10.0)':
     dependencies:
-      '@intentsolutions/core': 0.9.0
+      '@intentsolutions/core': 0.10.0
       zod: 4.4.3
 
-  '@intentsolutions/refiner@0.2.0(@intentsolutions/core@0.9.0)':
+  '@intentsolutions/refiner@0.3.0(@intentsolutions/core@0.10.0)':
     dependencies:
-      '@intentsolutions/refiner-core': 0.2.0(@intentsolutions/core@0.9.0)
+      '@intentsolutions/refiner-core': 0.3.0(@intentsolutions/core@0.10.0)
       commander: 15.0.0
     transitivePeerDependencies:
       - '@intentsolutions/core'
@@ -6990,25 +7002,33 @@ snapshots:
 
   '@opentelemetry/api@1.9.1': {}
 
-  '@opentelemetry/core@2.8.0(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/semantic-conventions': 1.41.1
+      '@opentelemetry/semantic-conventions': 1.43.0
 
-  '@opentelemetry/resources@2.8.0(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.8.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/semantic-conventions': 1.41.1
+      '@opentelemetry/core': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/semantic-conventions': 1.43.0
 
-  '@opentelemetry/sdk-trace-base@2.8.0(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.8.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/resources': 2.8.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/semantic-conventions': 1.41.1
+      '@opentelemetry/core': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-trace': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/semantic-conventions': 1.43.0
 
-  '@opentelemetry/semantic-conventions@1.41.1': {}
+  '@opentelemetry/sdk-trace@2.10.0(@opentelemetry/api@1.9.1)':
+    dependencies:
+      '@opentelemetry/api': 1.9.1
+      '@opentelemetry/core': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/semantic-conventions': 1.43.0
+
+  '@opentelemetry/semantic-conventions@1.43.0': {}
 
   '@oslojs/encoding@1.1.0': {}
 
@@ -7637,7 +7657,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@25.9.1)(@vitest/coverage-v8@4.1.7)(vite@7.3.3(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.9.0))
+      vitest: 4.1.7(@opentelemetry/api@1.9.1)(@types/node@22.19.19)(@vitest/coverage-v8@4.1.7)(vite@7.3.3(@types/node@22.19.19)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.9.0))
 
   '@vitest/expect@2.1.9':
     dependencies:
@@ -9065,7 +9085,7 @@ snapshots:
 
   gray-matter@4.0.3:
     dependencies:
-      js-yaml: 3.15.0
+      js-yaml: 3.15.2
       kind-of: 6.0.3
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
@@ -9347,7 +9367,7 @@ snapshots:
 
   js-tokens@9.0.1: {}
 
-  js-yaml@3.15.0:
+  js-yaml@3.15.2:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
@@ -9938,9 +9958,9 @@ snapshots:
     dependencies:
       '@types/nlcst': 2.0.3
 
-  node-abi@3.92.0:
+  node-abi@3.95.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.5
 
   node-fetch-native@1.6.7: {}
 
@@ -10145,11 +10165,11 @@ snapshots:
       minimist: 1.2.8
       mkdirp-classic: 0.5.3
       napi-build-utils: 2.0.0
-      node-abi: 3.92.0
+      node-abi: 3.95.0
       pump: 3.0.4
       rc: 1.2.8
       simple-get: 4.0.1
-      tar-fs: 2.1.4
+      tar-fs: 2.1.5
       tunnel-agent: 0.6.0
 
   prelude-ls@1.2.1: {}
@@ -10520,6 +10540,8 @@ snapshots:
 
   semver@7.8.1: {}
 
+  semver@7.8.5: {}
+
   send@0.19.2:
     dependencies:
       debug: 2.6.9
@@ -10804,7 +10826,7 @@ snapshots:
 
   tapable@2.3.3: {}
 
-  tar-fs@2.1.4:
+  tar-fs@2.1.5:
     dependencies:
       chownr: 1.1.4
       mkdirp-classic: 0.5.3
