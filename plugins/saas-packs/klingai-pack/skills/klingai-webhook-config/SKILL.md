@@ -187,6 +187,32 @@ class WebhookManager:
 | Idempotency | Handle duplicate deliveries gracefully |
 | Timeout | Kling retries on timeout, so process async |
 
+## Prerequisites
+
+- An allowlisted HTTPS endpoint, secret references for signature verification, sandbox event fixture, idempotency store, redaction policy, retention window, and incident owner.
+
+## Instructions
+
+1. Register only a sandbox callback during testing and validate signatures before parsing or queueing an event.
+2. Enforce idempotency, schema validation, least-privilege downstream routing, redacted logging, and draft-only handling for generated assets.
+3. Reject, quarantine, and alert on unsigned, malformed, duplicate, unapproved-destination, policy, or retention-drift events; do not retry unsafe payloads.
+4. Promote a callback route only after owner approval; retain aggregate redacted evidence and delete test events at the approved boundary.
+
+## Output
+
+Produce a webhook receipt with endpoint classification, event correlation ID, signature/schema/idempotency results, downstream destination, draft-only and policy checks, alert owner, retention/deletion proof, and rollback reference. Exclude payloads, prompts, asset URLs, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Signature or schema validation fails | Return a safe failure response, quarantine redacted metadata, and do not forward the event. |
+| Duplicate, policy, or destination violation | Deduplicate or reject the event, remove temporary artifacts, and notify the owner. |
+
+## Examples
+
+`endpoint=sandbox-allowlisted; event=opaque-42; signature=pass; schema=pass; idempotency=pass; destination=draft-only; cleanup=verified` is valid canary evidence.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)
