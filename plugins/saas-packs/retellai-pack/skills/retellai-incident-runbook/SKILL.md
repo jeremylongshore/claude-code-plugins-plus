@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Contain a spike in failed transfers
+
+When transfer failures cross the alert threshold, freeze new agent promotions
+and route new calls to the last known-good agent or human queue. Capture call
+identifiers, agent versions, transfer destinations, and response codes without
+copying recordings into the incident channel. Compare a synthetic preview call
+with the affected production version, make one reversible routing change, and
+document the rollback condition before restoring normal traffic.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
