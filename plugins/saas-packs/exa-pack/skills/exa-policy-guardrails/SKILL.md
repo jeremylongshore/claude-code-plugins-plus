@@ -25,6 +25,14 @@ compatibility: Designed for Claude Code
 ---
 # Exa Policy Guardrails
 
+## Output
+
+- A versioned policy-control configuration with owner, scope, enforcement/evaluation evidence, exception path, and rollback decision.
+
+## Examples
+
+Test a guardrail using a sanitized query that should be allowed and one that should be blocked, verify the redacted decision/audit record, and review any exception through the designated owner. Do not encode private data or weaken guardrails solely to obtain a desired retrieval result.
+
 ## Overview
 
 Policy enforcement for Exa neural search integrations. Exa searches the open web, so results may include unreliable sources, competitor content, or inappropriate material. This skill covers domain allowlists/blocklists (via Exa's `includeDomains`/`excludeDomains`), content moderation, query sanitization, freshness policies, and per-user budget enforcement.

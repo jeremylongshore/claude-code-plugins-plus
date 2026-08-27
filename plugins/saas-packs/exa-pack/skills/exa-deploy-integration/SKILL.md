@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Deploy Integration
 
+## Output
+
+- A versioned staged deployment with scoped credentials, policy/configuration evidence, owner approval, and rollback reference.
+- A protected path that prevents unreviewed retrieval/automation changes from affecting production.
+
+## Examples
+
+Deploy a versioned integration to staging with sanitized queries and a scoped secret reference, verify health, guardrails, redacted metrics, and rollback, then promote an approved canary. Halt and restore on policy, quality, or error regression; do not deploy keys or private query fixtures in manifests.
+
 ## Overview
 
 Deploy applications using Exa's neural search API to production. Covers API endpoint creation, secret management per platform, caching for production traffic, and health check endpoints.

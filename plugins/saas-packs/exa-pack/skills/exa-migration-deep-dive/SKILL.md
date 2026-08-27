@@ -25,6 +25,19 @@ compatibility: Designed for Claude Code
 ---
 # Exa Migration Deep Dive
 
+## Prerequisites
+
+- An inventory of existing retrieval/data flows, policy classification, sanitized evaluation set, acceptance threshold, and rollback owner.
+- Separate staging credentials and review for any automation or customer-query migration.
+
+## Output
+
+- A staged migration record with compatibility/evaluation evidence, owner, observation window, and rollback configuration.
+
+## Examples
+
+Run prior and target retrieval flows against sanitized evaluation queries in staging, compare aggregate citation/quality/latency/error data, then promote an approved canary. Roll back on policy or quality regression; do not bulk-replay customer queries or turn migration output into unreviewed decisions.
+
 ## Current State
 
 !`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`

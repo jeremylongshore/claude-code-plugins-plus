@@ -25,6 +25,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa Security Basics
 
+## Output
+
+- A least-privilege Exa integration with scoped credentials, approved data boundaries, policy enforcement, and incident/revocation ownership.
+- A tested security boundary for secrets, private queries/results, automation scope, and redacted logging.
+
 ## Overview
 
 Security best practices for Exa API integrations. Exa authenticates via the `x-api-key` header. Key security concerns include API key protection, content moderation for search results, domain filtering to prevent exposure to malicious sources, and query sanitization.

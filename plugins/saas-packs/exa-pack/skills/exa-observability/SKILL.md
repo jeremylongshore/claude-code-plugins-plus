@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Observability
 
+## Output
+
+- Bounded redacted metrics/traces for request outcome, latency, rate headroom, policy decision, source/citation coverage, and fallback behavior.
+- An owned alert/runbook path that excludes raw queries, result content, identifiers, and credentials.
+
+## Examples
+
+Emit aggregate metrics by environment, endpoint, status class, and policy outcome, then trigger a sanitized staging failure to verify alert routing. Record correlation ID and remediation time only; do not put customer queries, result text, or API keys into logs, dashboards, or tickets.
+
 ## Overview
 
 Monitor Exa search API performance, result quality, and cost efficiency. Key metrics: search latency by type (neural ~500-2000ms, keyword ~200-500ms), result count per query, cache hit rates, error rates by status code, and daily search volume for budget tracking.
