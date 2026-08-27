@@ -241,6 +241,10 @@ describe("mockGenerate", () => {
 - Vitest test suite with fetch mocking
 - Fast iteration cycle without spending credits
 
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; prompts=fictional; rights=test-owned; tests=12/12; output_retention=none; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

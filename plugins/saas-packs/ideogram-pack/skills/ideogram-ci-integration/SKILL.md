@@ -259,6 +259,10 @@ describe.skipIf(!process.env.IDEOGRAM_API_KEY)("Ideogram Live API", () => {
 - Prompt validation tests (zero API calls)
 - Gated integration tests for main branch only
 
+## Examples
+
+`sha=abc123; fixtures=v5; target=ci-synthetic; tests=18/18; rights=pass; destination=approved; output_retention=none; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - [GitHub Actions Docs](https://docs.github.com/en/actions)

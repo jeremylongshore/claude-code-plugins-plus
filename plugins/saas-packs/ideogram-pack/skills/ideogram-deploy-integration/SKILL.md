@@ -214,6 +214,10 @@ export async function GET() {
 - Health check endpoint for monitoring
 - Platform-specific configuration files
 
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=sandbox-gallery; health=pass; rights=test-owned; destination=approved; output_retention=none; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
