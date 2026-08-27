@@ -126,6 +126,35 @@ except anthropic.APIConnectionError:
     print("Network error — check connectivity")
 ```
 
+## Prerequisites
+
+- Use an API key supplied by the environment's secret manager and a workspace/model that the caller is authorized to use; never paste a key into a command, issue, or receipt.
+- Have a sandbox project, a synthetic prompt such as `health-check-001`, and a request-correlation ID available for diagnosis.
+- Capture only status, error type, request ID, retry metadata, and timing. Redact authorization headers, message content, tool inputs, and any provider response that could contain sensitive data.
+
+## Instructions
+
+1. Classify the HTTP status and provider error type before changing retry behavior. Preserve the request ID and relevant rate-limit headers in a redacted diagnostic record.
+2. Reproduce with the smallest permitted request in the sandbox, using synthetic content and the approved model endpoint. Do not replay a user's original prompt unless its data handling has been approved.
+3. Correct request construction for 400/401/403/404 errors; do not retry these blindly. Retry 429, 500, and 529 only with bounded exponential backoff, honoring `retry-after` when present.
+4. Verify the fix with one canary request, then restore the prior configuration if error rate, scope, latency, or data-handling checks regress.
+5. Close the diagnostic by deleting temporary fixtures and retaining only the redacted receipt.
+
+## Output
+
+Produce a diagnostic receipt containing `correlation_id`, status/error type, endpoint class, model identifier, request ID, retry decision, canary result, rollback result, and cleanup status. Include counts and timings rather than prompts, completions, tokens containing user data, credentials, or raw response bodies.
+
+## Error Handling
+
+- Treat malformed or missing error bodies as an unknown provider failure; use the HTTP status and request ID, then apply the safest bounded retry policy.
+- Treat network timeouts as indeterminate: retry only an application-level idempotent operation and cap attempts to avoid duplicate work.
+- If authentication or permission failures persist after a sandbox check, stop and rotate/re-authorize through the approved secret and workspace process; do not print or inspect the secret value.
+- If a canary exposes an unexpected model, destination, retention period, or data class, open the circuit, roll back, and quarantine the receipt for operator review.
+
+## Examples
+
+For a sandbox probe, send `health-check-001` with a bounded `max_tokens` value, record only `status=200`, the request ID, and `content_redacted=true`, and assert that no user-data export occurred. For a 429, record `retry_after=2`, wait the provider value within a configured cap, issue at most the configured retry count, and report `recovered=true|false` without logging the prompt.
+
 ## Resources
 
 - [Error Types Reference](https://docs.anthropic.com/en/api/errors)

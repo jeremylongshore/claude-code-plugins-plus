@@ -145,6 +145,35 @@ class OpenAIProvider(LLMProvider):
 - [ ] Test prompt behavior (Claude may respond differently to same prompts)
 - [ ] Update error handling for Anthropic error types
 
+## Prerequisites
+
+- Inventory provider models, prompts, tools, response consumers, data flows, budgets, and retention rules. Obtain owner approval for the target model/workspace and rollback window.
+- Define a provider-neutral contract with explicit fields for model, token budget, stop reason, tool calls, errors, usage, and correlation ID; keep provider-specific details behind the adapter.
+- Prepare representative synthetic fixtures and a no-op tool registry in a sandbox. Configure redacted comparison logs and exclude prompts, completions, PII, credentials, and tool arguments.
+
+## Instructions
+
+1. Map request and response fields using the tables above, preserving semantics rather than assuming identical tokenization, tool behavior, stop reasons, or safety behavior.
+2. Move system instructions to the Anthropic `system` parameter, make `max_tokens` explicit, and validate alternating message roles and tool schemas before calling the target provider.
+3. Run old and new providers in a shadow or replay lane with synthetic fixtures. Compare structured outcomes, latency, token/cost aggregates, refusal/guardrail decisions, and tool-call counts—not raw content in shared logs.
+4. Release behind a feature flag to a small canary with a bounded budget and authorized destinations. Monitor for scope, retention, error, or quality regressions.
+5. Promote only after acceptance evidence is approved. If any invariant fails, disable the flag and restore the prior provider adapter/configuration; delete temporary replay data.
+
+## Output
+
+Return a migration receipt containing source/target provider classes, adapter version, mapped capabilities, fixture and comparison counts, aggregate parity metrics, canary decision, rollback reference, and cleanup/retention status. Redact all prompt, completion, tool, account, and credential values.
+
+## Error Handling
+
+- If a source capability has no Anthropic equivalent (for example, multiple completions or logprobs), fail the compatibility check and choose an explicit product fallback; do not silently drop it.
+- If tool schemas or role ordering are invalid, reject before the API call and report the field path without including user content.
+- If shadow results diverge beyond the approved threshold, freeze rollout and keep the source provider active while the prompt/adapter is corrected.
+- If rollback cannot be verified, do not widen the canary; preserve the last known-good deployment and escalate to the owner.
+
+## Examples
+
+Replay a synthetic fixture with one system instruction, one user turn, and a no-op `get_weather` tool through both adapters. Record `fixture_count=1; tool_side_effects=0; source_status=pass; target_status=pass; content_logged=0; canary=approved`, while comparing content through an access-controlled evaluator rather than the receipt.
+
 ## Resources
 
 - [Anthropic vs OpenAI Migration](https://docs.anthropic.com/en/docs/about-claude/models)

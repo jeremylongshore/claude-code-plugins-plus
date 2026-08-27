@@ -130,6 +130,32 @@ def get_response_with_fallback(prompt: str) -> str:
 | Slow responses (>10s) | Large max_tokens or complex prompt | Reduce max_tokens, use Haiku |
 | Intermittent 500s | Upstream API issue | Check status.anthropic.com |
 
+## Overview
+
+This runbook provides a bounded, evidence-driven response to Claude API outages, throttling, latency, key compromise, and degraded behavior. It separates provider diagnosis from application containment and requires a reversible change for every mitigation.
+
+## Prerequisites
+
+- Maintain on-call ownership, escalation contacts, status-page access, a sandbox health probe, circuit-breaker/fallback controls, and a tested rollback path.
+- Keep environment-specific keys in a secret manager with least privilege and documented revocation authority. Do not place credentials in incident chat or tickets.
+- Configure redacted telemetry for status class, request ID, model class, latency, rate-limit headers, aggregate impact, and change history; exclude prompts, completions, PII, tool arguments, and key material.
+
+## Instructions
+
+1. Declare severity from observed scope, record a correlation ID, and verify the issue with a synthetic sandbox probe before changing production traffic.
+2. Check provider status, request IDs, rate-limit metadata, application error/latency aggregates, and recent deploys. Distinguish provider failure from key, permission, network, or request-shape failure.
+3. Contain with the narrowest reversible control: reduce traffic, open the circuit, queue noncritical work, or use an already approved fallback. Preserve authorization and retention rules during degradation.
+4. For a suspected key compromise, revoke through the secret manager/provider console, rotate, deploy to one canary, verify, and then revoke the old credential. Avoid exposing the key while testing.
+5. Confirm recovery with synthetic probes and aggregate production metrics, then roll back emergency configuration if it caused scope, quality, cost, or data-handling regressions. Capture a redacted postmortem and clean temporary artifacts.
+
+## Output
+
+Produce an incident receipt with severity, start/end times, affected scope, status/error classes, aggregate request impact, mitigation and owner, provider/request IDs, canary and recovery evidence, rollback/revocation reference, follow-up actions, and retention status. Never include raw content or credentials.
+
+## Examples
+
+For a synthetic 529 spike, record `severity=P1; probe=529; circuit=open; noncritical_queued=true; fallback=approved-static; side_effects=0`, then perform one bounded half-open probe after the configured interval. If it passes, canary recovery and record `rollback=ready; cleanup=verified`; otherwise keep the circuit open and escalate.
+
 ## Resources
 
 - [API Status](https://status.anthropic.com)

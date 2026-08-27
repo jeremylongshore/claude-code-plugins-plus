@@ -165,6 +165,35 @@ msg = client.messages.create(
 - [ ] Retry logic uses exponential backoff (SDK default)
 - [ ] Rate limit headers monitored for pre-emptive throttling
 
+## Prerequisites
+
+- Define an approved model/workspace policy, request timeout, retry and circuit thresholds, fallback behavior, idempotency store, and rollback owner.
+- Exercise the controls in a sandbox using synthetic prompts and a no-op downstream sink before enabling production traffic.
+- Permit telemetry to contain only correlation IDs, status classes, model IDs, token counts, latency, breaker state, and aggregate fallback counts. Never store prompts, completions, credentials, or sensitive tool arguments.
+
+## Instructions
+
+1. Validate request scope and estimate budget before the call; reject unapproved models, destinations, or data classes before invoking the API.
+2. Apply bounded retries only to transient, repeat-safe failures. Coordinate backoff and breaker state across instances so a provider incident does not create a retry storm.
+3. Generate an application idempotency key from a stable request identity, not from an unredacted prompt. Cache only completed, policy-approved results and never deduplicate operations with unreviewed side effects.
+4. Route to an explicitly approved fallback or a static response when the breaker opens. A fallback must preserve authorization and data-handling rules rather than silently widening scope.
+5. Run a canary after configuration changes, compare error/latency/fallback metrics, and restore the prior configuration if thresholds or data controls regress. Expire test fixtures and temporary cache entries.
+
+## Output
+
+Return a reliability receipt with correlation ID, breaker transition, retry attempts and reasons, fallback route, idempotency outcome, timeout, aggregate token/cost counters, canary result, rollback reference, and cleanup status. Keep content and secret fields redacted.
+
+## Error Handling
+
+- Do not retry validation, authentication, permission, or policy failures; surface a stable operator-safe error and preserve the original request ID.
+- When all fallbacks fail, fail closed with a bounded user-facing message and queue only work that has an explicit retention and replay policy.
+- If a cached response is stale, scope-mismatched, or missing its policy version, discard it and use the static fallback.
+- If duplicate suppression or breaker state is unavailable, stop new nonessential traffic rather than issuing uncoordinated retries.
+
+## Examples
+
+In a sandbox, inject five synthetic 529 responses, confirm the breaker opens, then allow one half-open probe. Record `retries=bounded; fallback=static; duplicate_writes=0; canary=pass; rollback=not-needed`, with no prompt or completion in the receipt.
+
 ## Resources
 
 - [API Error Types](https://docs.anthropic.com/en/api/errors)

@@ -163,6 +163,28 @@ batch = client.messages.batches.create(
 | `anthropic-ratelimit-tokens-remaining` | Tokens left in window | Reduce `max_tokens` if low |
 | `anthropic-ratelimit-requests-reset` | ISO timestamp of window reset | Schedule retry after this time |
 
+## Prerequisites
+
+- Record the authorized organization/model limits, budget ceiling, retry cap, and shared limiter policy. Do not infer a production limit from a local load test.
+- Use synthetic prompts and a sandbox workspace for experiments, with no-op downstream effects and aggregate-only telemetry.
+- Ensure logs exclude API keys, prompts, completions, tool arguments, and user identifiers; retain only headers needed to explain throttling, request IDs, and counts.
+
+## Instructions
+
+1. Read the response headers after each permitted call and update a shared limiter using the provider's remaining/reset values. Reserve headroom for interactive traffic.
+2. Honor `retry-after` when present, apply jitter and a maximum delay, and stop after a bounded number of attempts. Never let every worker retry at the same instant.
+3. Coordinate RPM, input-token, and output-token budgets across instances. Queue or batch offline work and apply backpressure when the shared budget is exhausted.
+4. Canary limiter changes with synthetic traffic and compare 429 rate, latency, queue age, token totals, and `side_effects=0`. Roll back the limiter/configuration if thresholds or scope checks fail.
+5. Expire queued test items and temporary counters according to the retention policy; retain a redacted receipt for the decision.
+
+## Output
+
+Produce a rate-limit receipt with model class, configured and observed aggregate limits, limiter version, request/token counts, retry-after handling, 429 count, queue/batch disposition, canary result, rollback reference, and cleanup status. Do not include payloads or secrets.
+
+## Examples
+
+Queue 20 synthetic `OK` prompts behind a shared 10-RPM limiter, permit only the configured window, and assert `429_retries_bounded=true; side_effects=0`. The receipt may contain `submitted=20; completed=<aggregate>; deferred=<aggregate>; headers_captured=true; canary=pass; cleanup=verified` without user content.
+
 ## Resources
 
 - [Rate Limits Documentation](https://docs.anthropic.com/en/api/rate-limits)

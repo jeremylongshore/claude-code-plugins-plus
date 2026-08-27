@@ -160,6 +160,35 @@ def validate_output(response_text: str) -> str:
 - [ ] Rate limiting on your application layer
 - [ ] Audit logging for all Claude API calls
 
+## Prerequisites
+
+- Use a secret manager, separate least-privilege keys/workspaces for development, staging, and production, and an owner-approved rotation and revocation procedure.
+- Define input/output data classes, allowed models and destinations, retention/deletion windows, and a sandbox fixture set containing synthetic secrets and prompt-injection attempts.
+- Ensure logs and traces can redact authorization headers, prompts, completions, tool inputs, PII, and key-like strings before collection.
+
+## Instructions
+
+1. Load the key only at process startup from the approved secret provider; do not pass it in source, shell history, URLs, prompts, or logs. Restrict network egress to the intended API endpoint.
+2. Enforce workspace/model and user authorization before the request. Keep system instructions separate from untrusted content, validate lengths/encoding, and treat tool calls and outputs as untrusted data.
+3. Scan outbound inputs and returned content for prohibited data, then apply destination and retention checks before persistence or display. Require approval for any external side effect.
+4. Test key rotation, revocation, redaction, and prompt-injection defenses in the sandbox. Promote one canary only after secret and data-scope assertions pass.
+5. On a failed security check, stop the affected flow, revoke or roll back the changed credential/configuration, and retain only a redacted incident receipt.
+
+## Output
+
+Produce a security verification receipt with environment, key/workspace alias (never the key), policy version, checks performed, blocked/allowed counts, canary status, rollback or revocation reference, retention, and cleanup status. Include no prompts, outputs, PII, or credentials.
+
+## Error Handling
+
+- If a secret is missing, malformed, or exposed, fail closed; do not print it while diagnosing. Rotate through the secret manager and audit access.
+- If input/output scanning is unavailable or inconclusive, do not send or publish the content. Quarantine the event for authorized review.
+- If an injection attempt asks for tool execution or policy disclosure, treat it as untrusted input and require the same allowlist and approval gates as any other request.
+- If a canary shows cross-environment access, unexpected egress, retention drift, or redaction failure, revoke the canary credential and restore the last known-good configuration.
+
+## Examples
+
+In staging, submit a synthetic prompt containing `FAKE_SECRET=not-a-credential` and an instruction to reveal the system prompt. Expect `input_policy=pass; injection_test=blocked; secrets_logged=0; external_side_effects=0; canary=pass; cleanup=verified`, with the fixture text omitted from logs.
+
 ## Resources
 
 - Anthropic Security Practices

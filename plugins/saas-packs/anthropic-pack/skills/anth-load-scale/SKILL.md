@@ -161,6 +161,28 @@ def check_rate_limit(key: str = "claude:rpm", limit: int = 100, window: int = 60
 | Increasing latency under load | Output queue saturation | Reduce max_tokens |
 | Uneven request distribution | No load balancing | Use queue for fair distribution |
 
+## Prerequisites
+
+- Confirm the organization/model rate limits, budget ceiling, test environment, concurrency cap, and success/latency/error thresholds before measuring capacity.
+- Run only against an approved sandbox using synthetic prompts and a no-op result sink. Never stress production or use real customer content for load tests.
+- Configure aggregate metrics and redaction: request counts, status classes, latency, token totals, queue depth, and 429 counts are sufficient; prompts, completions, keys, and tool arguments are not.
+
+## Instructions
+
+1. Calculate RPM, input tokens per minute, output tokens per minute, concurrency, and expected cost from the measured workload. Reserve headroom below provider and application limits.
+2. Start with a small canary, then increase concurrency in bounded steps while a shared limiter coordinates all workers. Stop immediately at error, budget, data-scope, or latency thresholds.
+3. Separate real-time traffic from batch work, and use queue backpressure rather than unbounded task creation. Honor provider retry metadata and avoid synchronized retries.
+4. Compare baseline and candidate metrics, including aggregate token/cost usage and `side_effects=0`. Promote only after an owner approves the result; revert autoscaling/limiter changes on regression.
+5. Expire synthetic fixtures, queues, and temporary metrics according to the test retention policy, and keep a redacted capacity receipt.
+
+## Output
+
+Return a capacity receipt with workload class, model, concurrency steps, aggregate request/token counts, p50/p95/p99 latency, status/429 counts, queue depth, cost estimate, threshold decision, canary result, rollback reference, and cleanup status. Do not include payloads or secret material.
+
+## Examples
+
+Run 50 requests using `Respond with exactly: OK` in the sandbox, cap concurrency at 10, and assert `side_effects=0`. A useful receipt is `requests=50; successes=50; rate_limited=0; p99_ms=<redacted>; tokens=<aggregate>; canary=pass; cleanup=verified`.
+
 ## Resources
 
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)

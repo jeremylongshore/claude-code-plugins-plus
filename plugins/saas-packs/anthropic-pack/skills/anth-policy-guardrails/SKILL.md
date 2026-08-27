@@ -158,6 +158,35 @@ def enforce_model_policy(user_tier: str, requested_model: str) -> str:
     return requested_model
 ```
 
+## Prerequisites
+
+- Establish the approved use policy, data classes, model/workspace allowlist, output destinations, retention period, and an owner for policy exceptions.
+- Use a sandbox with synthetic inputs, a no-op tool registry, and redaction tests. Keep API keys in a secret manager with least-privilege access.
+- Define a fail-closed response for blocked input/output and aggregate audit fields that exclude user text, completions, PII, credentials, and tool arguments.
+
+## Instructions
+
+1. Validate length, encoding, data class, user authorization, and requested model before making the API call. Reject or quarantine disallowed input rather than attempting to hide the policy decision in a prompt.
+2. Keep trusted guardrails in the system parameter and mark user content as untrusted. Allow tools only by name and schema; require explicit approval for side effects or external destinations.
+3. Validate the returned content and tool calls for sensitive data, policy violations, output size, and destination scope. Do not treat model compliance as a substitute for application enforcement.
+4. Apply per-user and global budgets atomically, with a bounded `max_tokens` and rate limit. Emit an aggregate decision receipt for allow/block/transform outcomes.
+5. Canary policy changes against synthetic adversarial fixtures, compare block/allow and leakage metrics, and roll back the policy bundle if an invariant fails.
+
+## Output
+
+Produce a guardrail receipt containing policy version, input/output decision, model class, aggregate token/cost estimate, tool approval result, destination class, canary result, rollback reference, and retention/cleanup status. Store hashes or counts instead of raw prompts, responses, PII, or keys.
+
+## Error Handling
+
+- On validator uncertainty or scanner failure, fail closed and do not send the input or output onward.
+- On a budget or model-policy violation, return a stable denial and record only the rule ID; never disclose internal policy text or user identifiers in logs.
+- If output filtering blocks a response, preserve the request ID and redacted reason for review, then discard the unsafe payload according to retention policy.
+- If guardrail configuration cannot be loaded or is unversioned, stop traffic and restore the last known-good bundle.
+
+## Examples
+
+Run a sandbox fixture containing a fake key and a synthetic prompt. The expected receipt is `input=blocked; rule=secret-pattern; api_call=0; output_exported=0; policy_version=v3; cleanup=verified`; it must not contain the fixture text or key-like value.
+
 ## Resources
 
 - Anthropic Usage Policy

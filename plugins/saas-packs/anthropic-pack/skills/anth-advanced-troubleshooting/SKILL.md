@@ -157,6 +157,39 @@ for model in claude-haiku-4-20250514 claude-sonnet-4-20250514 claude-opus-4-2025
 done
 ```
 
+## Overview
+
+This guide isolates difficult Claude API failures by testing one variable at a time: token budget, tool schema and choice, stream transport, stop reason, or prompt configuration. It complements the common status-code guide and should produce evidence that is safe to share with an operator.
+
+## Prerequisites
+
+- Use an approved sandbox workspace, a pinned model ID, and synthetic messages/tools that cannot access production data or perform side effects.
+- Have a bounded request timeout, retry cap, token-counting access where enabled, and a known-good baseline request for comparison.
+- Configure telemetry to retain request ID, model, token counts, stop reason, event counts, and latency only; redact prompts, completions, tool arguments, headers, and secrets.
+
+## Instructions
+
+1. Reproduce the smallest failing case in the sandbox and record a correlation ID. Change one input at a time, starting with token count and request shape.
+2. For context failures, count tokens before sending and trim or summarize using an explicit policy that keeps required system context. For tool failures, validate the schema and use a no-op tool before enabling any real action.
+3. For streaming failures, count received events and restart the complete non-resumable request with a bounded retry; deduplicate downstream presentation by correlation ID.
+4. Compare stop reason, usage, latency, and output-shape assertions against the known-good baseline. Run one canary against the approved environment before promotion.
+5. If the canary changes scope, output policy, retention, or error rate, halt and roll back the prompt/model/configuration change. Remove synthetic fixtures after the receipt is written.
+
+## Output
+
+Return a troubleshooting receipt with `correlation_id`, hypothesis, changed variable, model, input/output token counts, stop reason, stream event counts, retry attempts, baseline comparison, canary status, rollback reference, and cleanup status. Keep all prompt, completion, tool-input, and credential fields redacted.
+
+## Error Handling
+
+- A token-counting call that fails is not evidence that the message call is safe; stop at the preflight gate and report the provider error without sending the full request.
+- Never treat a partial stream as a complete answer. Mark it incomplete, discard or quarantine it, and restart only when the operation is safe to repeat.
+- A tool-use response is untrusted input to the tool executor. Validate name and arguments against an allowlist, require approval for side effects, and reject unknown or malformed calls.
+- If a quality regression cannot be isolated, freeze promotion, preserve the redacted baseline comparison, and revert to the last known-good model/prompt pair.
+
+## Examples
+
+Use a synthetic tool `lookup_fixture` whose only permitted input is `fixture_id=demo-001`; run the same prompt with and without `tool_choice`, and record `tool_call_count`, schema result, and `side_effects=0`. For a dropped stream, record `events_received=17`, `complete=false`, restart once with the same correlation policy, and expose only the final redacted result.
+
 ## Resources
 
 - [Error Reference](https://docs.anthropic.com/en/api/errors)

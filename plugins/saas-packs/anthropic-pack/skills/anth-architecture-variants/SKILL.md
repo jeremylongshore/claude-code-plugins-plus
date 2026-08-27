@@ -150,6 +150,35 @@ class ClaudeOrchestrator:
 | Complexity | Low | Medium | Medium | High |
 | Best for | APIs, triggers | Chatbots | ETL, processing | Complex workflows |
 
+## Prerequisites
+
+- Document latency, throughput, availability, data residency, retention, budget, and side-effect requirements before choosing a variant.
+- Provide an approved model/workspace allowlist, secret-manager integration, authenticated ingress/egress, shared rate limiter where needed, and a rollback owner.
+- Use synthetic fixtures and a no-op tool/sink in a sandbox. Logs must contain topology and aggregate metrics only, not prompts, completions, credentials, or tool arguments.
+
+## Instructions
+
+1. Select the smallest architecture that satisfies measured latency and volume, then record why its timeout, queue, connection, and failure boundaries are adequate.
+2. Keep API keys server-side, validate tenant/model/destination scope at ingress, and apply least privilege to workers and queues. Isolate streaming connections from batch consumers.
+3. Add bounded retries, circuit breaking, backpressure, idempotent result handling, and health checks appropriate to the selected variant. Protect every tool or downstream write with an allowlist and approval gate.
+4. Exercise the design with synthetic load and failure injection, then release to a limited canary. Compare error rate, latency, queue depth, token/cost aggregates, and data-scope assertions.
+5. Promote only after owner approval; otherwise restore the prior topology/configuration and remove temporary fixtures, queues, and credentials.
+
+## Output
+
+Produce an architecture decision receipt with selected variant, constraints, trust boundaries, model/workspace scope, scaling and failure controls, aggregate test results, canary outcome, rollback reference, and retention/cleanup status. Exclude all content and secrets.
+
+## Error Handling
+
+- If measured demand exceeds the selected variant's safe envelope, apply backpressure and choose a queue or scale path; do not simply increase concurrency against the provider.
+- If a worker, stream, or queue loses its authorization context, fail closed and quarantine the item rather than retrying with broader credentials.
+- If partial output or duplicate delivery occurs, mark the result incomplete, deduplicate by an application ID, and roll back the consumer if duplicates persist.
+- If an architecture gate cannot be observed, stop promotion and retain the last known-good variant.
+
+## Examples
+
+For a synthetic 20-RPM interactive workload with a strict streaming UX, select the microservice variant, use a shared limiter and a no-op sink, and record `scope=staging; external_side_effects=0; canary=pass; rollback=ready`. For offline summaries, select the queue/batch variant and retain only aggregate completion counts.
+
 ## Resources
 
 - [API Getting Started](https://docs.anthropic.com/en/api/getting-started)
