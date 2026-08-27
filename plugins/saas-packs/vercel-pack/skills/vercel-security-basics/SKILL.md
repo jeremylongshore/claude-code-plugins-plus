@@ -217,6 +217,12 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 | Preview accessible without auth | Deployment protection disabled | Enable in vercel.json or dashboard |
 | Token expired | Past expiration date | Generate new token, update CI secrets |
 
+## Examples
+
+### Respond to a secret accidentally bundled into client code
+
+Treat the exposed value as compromised: revoke or rotate it at the provider, remove the client-side reference, and move the required operation behind an authenticated server route. Deploy the correction to preview, use a bundle inspection to confirm the old string is absent, then promote through the normal release workflow. Do not paste the secret into tickets, logs, or commit messages; record only the rotation reference and verification outcome.
+
 ## Resources
 
 - [Vercel Security](https://vercel.com/docs/security)
