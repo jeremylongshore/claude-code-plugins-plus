@@ -25,6 +25,25 @@ compatibility: Designed for Claude Code
 
 Collect all necessary diagnostic information for Flexport support tickets. The bundle captures API connectivity, authentication status, recent shipment data, and error logs while automatically redacting secrets.
 
+## Prerequisites
+
+- An incident owner, secure evidence location, retention date, and redaction rules for logistics and credential data.
+- An opaque correlation ID and a safe sandbox/read-only reproduction path.
+
+## Output
+
+Create a redacted evidence index with runtime versions, configuration references, opaque correlation ID, aggregate diagnostics, access owner, retention date, and next action. Store sensitive originals only in the approved incident location.
+
+## Error Handling
+
+- Stop bundle generation if it contains a key, address, invoice, customs document, or raw shipment payload; rotate credentials if exposure is possible.
+- Record diagnostic gaps explicitly rather than broadening collection.
+- Escalate suspected data exposure before continuing support work.
+
+## Examples
+
+For a synthetic rate-limit failure, retain only the runtime version, opaque request ID, configured policy reference, and aggregate retry count. Review the archive for sensitive data, grant it solely to the incident owner, and delete it at the stated retention date.
+
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script

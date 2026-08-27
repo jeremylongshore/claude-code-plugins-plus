@@ -25,6 +25,19 @@ compatibility: Designed for Claude Code
 
 Production-ready patterns for the Flexport REST API v2. Since Flexport has no official npm/pip SDK, you build typed HTTP clients. Key patterns: singleton client, paginated iteration, retry wrapper, and Zod response validation.
 
+## Prerequisites
+
+- Scoped credentials from the secret manager, approved endpoint/destination policies, and fictional sandbox fixtures.
+- An idempotency/retry design, redacted telemetry, and a clear owner for schema or permission failures.
+
+## Output
+
+Return a client-validation receipt with contract version, fixture version, aggregate schema result, idempotency behavior, owner, and redacted failure reference. Do not log headers, documents, or shipment payloads.
+
+## Examples
+
+Use a fictional shipment with an opaque ID to exercise pagination and a schema error. Verify that a retry cannot duplicate a write and that a rejected field is quarantined for review rather than forwarded to an external system.
+
 ## Instructions
 
 ### Pattern 1: Singleton Client with Auto-Retry

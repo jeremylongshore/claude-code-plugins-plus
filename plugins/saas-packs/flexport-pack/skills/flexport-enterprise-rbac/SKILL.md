@@ -25,6 +25,25 @@ compatibility: Designed for Claude Code
 
 Implement role-based access control for Flexport integrations. Since Flexport API keys are scoped at the account level, RBAC is implemented in your application layer with per-role API key allocation and request filtering.
 
+## Prerequisites
+
+- A role owner, current access matrix, least-privilege credential allocation, and periodic access-review schedule.
+- Approved endpoint/data classifications and synthetic fixtures that can test authorization without a real shipment.
+
+## Output
+
+Maintain an RBAC receipt with role, allowed operation class, policy version, access-review date, approver, and revocation outcome. Never include credentials, customer identifiers, commercial records, or documents.
+
+## Error Handling
+
+- Deny unknown roles, paths, methods, and cross-tenant requests by default.
+- Alert the policy owner on repeated authorization failures and suspend a credential if misuse is suspected.
+- Preserve redacted evidence only and require review before expanding a role or endpoint policy.
+
+## Examples
+
+Give a temporary test role access to a fictional shipment status only, attempt an invoice read, and verify it is denied. Remove the role and confirm the status access is revoked, recording only opaque test IDs and decisions.
+
 ## Instructions
 
 ### Step 1: Define Roles
