@@ -1936,13 +1936,8 @@
     "plugins/saas-packs/salesforce-pack/skills/salesforce-observability/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-performance-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-prod-checklist/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-rate-limits/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-reference-architecture/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-reliability-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-sdk-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesloft-pack/skills/salesloft-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesloft-pack/skills/salesloft-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesloft-pack/skills/salesloft-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2181,9 +2176,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T04:01:47.514860Z",
-    "run_id": "33038070684",
-    "sha": "3481efea7337061af50342523f623633ec131168"
+    "captured_at": "2026-08-27T04:04:59.180259Z",
+    "run_id": "33038250686",
+    "sha": "c1980b6eb9aaae42512efab6785cd02ef4d8ad66"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2208,8 +2203,8 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2171,
-    "grade_A_plus_B": 2966,
-    "grade_A_plus_B_pct": 81.753
+    "errors": 2166,
+    "grade_A_plus_B": 2968,
+    "grade_A_plus_B_pct": 81.8082
   }
 }
