@@ -28,6 +28,16 @@ compatibility: Designed for Claude Code
 
 Configure Fireflies.ai with isolated API keys, webhook URLs, and settings per environment. Each environment gets its own Fireflies workspace or API key to prevent cross-environment data leakage.
 
+## Prerequisites
+
+- Separate environment identities, secret-manager references, webhook endpoints, budgets, and responsible owners.
+- A guard that prevents development or pull-request jobs from reaching production workspaces or transcript destinations.
+- Synthetic fixtures and a rollback test for environment configuration changes.
+
+## Examples
+
+Send a fictional transcript event to staging and verify its secret, storage, and webhook route cannot access production. Rotate the staging secret, confirm the old credential is denied, and record the change without including any key or transcript content.
+
 ## Environment Strategy
 
 | Environment | API Key | Webhook URL | Settings |

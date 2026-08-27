@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Set up Fireflies.ai GraphQL API authentication. Fireflies uses a single GraphQL endpoint at `https://api.fireflies.ai/graphql` with Bearer token auth. No SDK needed -- all interaction is via HTTP POST with GraphQL queries.
 
+## Examples
+
+Store a scoped staging key in the approved secret manager and run a read-only query against a fictitious test workspace. Record only the authentication method, scope, and redacted outcome; then revoke the test credential to confirm access does not persist unexpectedly.
+
 ## Prerequisites
 
 - Fireflies.ai account (Pro or higher for API access)
