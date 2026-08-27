@@ -115,6 +115,28 @@ def create_message(user_role: UserRole, model: str, **kwargs):
 | New team member can't access | Not added to workspace | Invite via Console > Members |
 | Usage not visible | Viewing wrong workspace | Switch workspace in Console |
 
+## Prerequisites
+
+- Obtain the organization owner’s approved workspace map, role matrix, service inventory, key owners, rotation schedule, and incident/revocation contacts.
+- Create isolated dev/staging workspaces with synthetic requests; production changes require an approved change record and least-privileged service identity.
+- Define the allowed models, token/rate budgets, data classes, destinations, and redacted audit fields for each role and service.
+
+## Instructions
+
+1. Map each human and service to the minimum Console role and workspace required for its job. Separate development, staging, and production keys; store them only in the approved secret manager.
+2. Enforce application RBAC before constructing a request, including model, token, rate, data-class, and destination checks. Treat unknown roles, stale memberships, and missing workspace mappings as deny.
+3. Test grants, denials, key rotation, revocation, and cross-workspace isolation with synthetic fixtures. Verify that audit records identify the actor and decision without recording prompts, responses, credentials, or personal data.
+4. Roll out policy changes to one sandbox workspace or internal canary. Require owner approval and review aggregate authorization failures, usage, and spend before production promotion.
+5. On suspected compromise or policy drift, revoke the affected key, disable the route, restore the last approved role policy, and document the redacted evidence.
+
+## Output
+
+Produce an RBAC receipt containing policy/version, workspace and service classes, role decision counts, model/token/rate constraints, test and canary outcomes, key rotation/revocation status, approver, and rollback reference. Exclude key values, member emails, prompts, responses, and raw Console exports.
+
+## Examples
+
+In a sandbox, assign `fixture-service` the user role, request a permitted Haiku call, and assert an Opus request is denied with `decision=deny; reason=model_scope; prompt_logged=0`. Rotate the synthetic service key, verify the old key is rejected, and record only the redacted receipt.
+
 ## Resources
 
 - [Console](https://console.anthropic.com)

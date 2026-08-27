@@ -163,6 +163,28 @@ my-claude-app/
 | Queue-Based | Worker crashes | Dead-letter queue + retry policy |
 | Multi-Model | Router misclassifies | Default to Sonnet (safest middle) |
 
+## Prerequisites
+
+- Choose the workload class, availability/latency SLOs, data classification, approved destinations, and synchronous versus asynchronous behavior with an owner.
+- Provide an isolated workspace, least-privileged secret-manager credential, synthetic fixtures, bounded queue/concurrency settings, and a tested rollback/circuit-breaker plan.
+- Define idempotency, retention, dead-letter, and redacted evidence requirements before selecting an architecture.
+
+## Instructions
+
+1. Select the smallest architecture that meets the workload: gateway for interactive calls, queue for asynchronous work, or a router only when model policy and quality tests justify it.
+2. Keep credentials and policy enforcement at the service boundary. Validate model, token, rate, data-class, source, and destination scope before enqueueing or sending a request.
+3. Exercise success, timeout, 429/5xx, duplicate, queue-retry, tool-use, and partial-response paths with synthetic fixtures. Ensure traces and result stores exclude prompts, responses, and secrets.
+4. Canary the selected topology in an isolated workspace, observe SLOs/cost/rate limits, and require approval before production traffic. Preserve the prior topology and configuration.
+5. On policy, reliability, or cost regression, open the circuit or pause workers, drain/quarantine unsafe work, roll back, and retain a redacted architecture receipt.
+
+## Output
+
+Produce an architecture receipt naming the selected pattern, component/config digests, workspace and model classes, scope/idempotency/retention controls, synthetic test results, canary and SLO outcomes, approval, and rollback reference. Exclude request content, user identifiers, credentials, and raw queue payloads.
+
+## Examples
+
+For 100 synthetic asynchronous classification jobs, use a sandbox queue with a bounded worker pool, assert `duplicate_jobs=0; contacts_exported=0; content_logged=0`, and canary one internal consumer. A queue failure yields `paused=true; dead_letter=synthetic-only; rollback=worker-v1`.
+
 ## Resources
 
 - [API Overview](https://docs.anthropic.com/en/api/getting-started)

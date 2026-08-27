@@ -164,6 +164,37 @@ git checkout main -- package.json package-lock.json
 npm install
 ```
 
+## Prerequisites
+
+- Record the current SDK version, lockfile digest, API version header, model identifiers, supported runtime versions, and a tested rollback revision.
+- Obtain release notes from the official SDK/API sources and an approved sandbox workspace with synthetic prompts; production credentials must not be used for migration tests.
+- Define compatibility, latency, cost, and response-shape acceptance thresholds and identify the owner who approves promotion.
+
+## Instructions
+
+1. Create a migration branch and lock the current dependency graph. Compare the target SDK and API behavior against official release notes; do not infer compatibility from a package version alone.
+2. Update the SDK and request shapes in a sandbox, preserving explicit model IDs, `max_tokens`, authentication through the secret manager, and least-privileged workspace access.
+3. Run unit, contract, streaming, tool-use, error, and token-count tests using synthetic fixtures. Compare redacted response-shape and usage receipts with the baseline; never log prompt or response content.
+4. Canary the pinned artifact on an isolated workspace with zero customer traffic. Promote only after owner approval and threshold checks; monitor errors, latency, rate limits, and spend during the rollout.
+5. If any gate fails, stop promotion, restore the prior lockfile/revision, revoke temporary credentials, and preserve the redacted migration receipt.
+
+## Output
+
+Produce a migration receipt containing source and target SDK versions, API-version header, lockfile/artifact digests, test and canary results, model IDs, workspace/environment, approval, rollout state, rollback reference, and retention deadline. Exclude API keys, prompt/response text, customer identifiers, and raw exception payloads.
+
+## Error Handling
+
+| Failure | Response |
+|---|---|
+| Dependency or API contract test fails | Pin the prior version, isolate the failing fixture, and do not promote. |
+| Authentication or permission failure | Stop the canary, verify the secret-manager reference and workspace scope, and never print the key. |
+| 429/5xx, timeout, or latency regression | Respect SDK retry guidance, apply a bounded circuit breaker, and roll back when the canary threshold is exceeded. |
+| Response-shape or tool-use drift | Quarantine the result, update the adapter only after an approved contract decision, and rerun the full suite. |
+
+## Examples
+
+For a synthetic migration fixture, pin `anthropic` from `0.39.0` to the reviewed target, run 100 sandbox Messages API calls with `customer=fixture-017`, assert response-shape parity and `customer_content_logged=0`, then promote to a 1% internal canary. A failed threshold yields `promotion=halted; rollback=prior-lockfile`.
+
 ## Resources
 
 - [Python SDK Changelog](https://github.com/anthropics/anthropic-sdk-python/releases)

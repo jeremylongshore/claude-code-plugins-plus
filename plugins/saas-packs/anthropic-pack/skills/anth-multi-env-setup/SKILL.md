@@ -136,6 +136,28 @@ def get_model(override: str | None = None) -> str:
 | Staging rate limited | Low tier workspace | Upgrade staging workspace tier |
 | Cost overrun in dev | No budget guard | Add per-env spend limits |
 
+## Prerequisites
+
+- Define the environment inventory, workspace/key ownership, model policy, rate and spend budgets, data classification, and promotion approver.
+- Provision separate least-privileged credentials through a secret manager; production secrets must not exist in repository files, shell history, examples, or CI logs.
+- Prepare synthetic fixtures, environment isolation tests, a canary route, and a rollback configuration before changing any workspace or client factory.
+
+## Instructions
+
+1. Map each environment to exactly one approved Anthropic workspace and secret-manager reference. Validate environment identity at startup and fail closed on a missing or mismatched key.
+2. Load configuration through the environment-specific client factory, pin model and API settings, and enforce per-environment token, rate, timeout, retry, data, and destination limits.
+3. Run authentication, cross-environment isolation, budget, and request-shape tests with synthetic fixtures. Capture only aggregate pass/fail and usage metadata.
+4. Promote a reviewed artifact from staging to a small internal canary before production. Require owner approval and verify no production traffic or data can reach non-production workspaces.
+5. On drift, leaked scope, or failed health checks, disable the route, restore the previous environment mapping, rotate affected credentials, and retain a redacted receipt.
+
+## Output
+
+Produce an environment receipt containing environment/workspace classes, config and artifact digests, model policy, isolation and synthetic-test results, canary/approval state, secret rotation status, retention, and rollback reference. Exclude API keys, endpoint tokens, prompts, responses, and member identifiers.
+
+## Examples
+
+Run a synthetic `fixture-request-001` through development and staging with separate keys, assert `workspace_crossing=0; production_key_in_nonprod=0; content_logged=0`, and record `canary=internal; approval=pending`. Promotion remains blocked until the owner approves the staging receipt.
+
 ## Resources
 
 - [Workspaces](https://docs.anthropic.com/en/docs/administration/workspaces)

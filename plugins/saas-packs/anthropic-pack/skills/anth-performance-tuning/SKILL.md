@@ -154,6 +154,37 @@ const results = await Promise.all(
 | Lower max_tokens | -10-30% total time | Same cost |
 | Prefill technique | -20% output tokens | Proportional savings |
 
+## Prerequisites
+
+- Define latency, throughput, quality, token, and error SLOs plus the owner-approved model, cache, concurrency, and retry policy.
+- Use pinned model IDs, synthetic prompts, an isolated workspace, and representative non-sensitive fixtures; do not benchmark with customer content or production credentials.
+- Configure aggregate-only telemetry, bounded concurrency, rate-limit awareness, and a tested rollback configuration.
+
+## Instructions
+
+1. Establish a baseline for time-to-first-token, completion latency, tokens, cache hit rate, throughput, quality, and errors using repeated synthetic runs.
+2. Change one lever at a time: model, prompt/cache layout, token budget, streaming, batching, or concurrency. Keep prompt content out of logs and verify cache eligibility for sensitive data before enabling it.
+3. Enforce request scope, `max_tokens`, timeout, retry, and concurrency limits. Stop the run when rate limits, quality, or data-policy checks fail rather than increasing access or disabling controls.
+4. Canary the selected configuration in a sandbox or internal workspace, compare against baseline, and obtain approval before production rollout. Monitor p95/p99 latency, error rate, token use, and spend.
+5. Restore the prior configuration on regression, invalidate temporary cache/test artifacts according to retention policy, and retain a redacted benchmark receipt.
+
+## Output
+
+Produce a performance receipt containing configuration and model IDs, benchmark fixture class, sample size, latency/throughput/token/cache aggregates, quality and error outcomes, workspace/canary scope, approval, retention, and rollback reference. Exclude prompts, responses, user identifiers, and secrets.
+
+## Error Handling
+
+| Failure | Response |
+|---|---|
+| Rate limit or queue saturation | Reduce bounded concurrency, honor retry guidance, and stop the canary if the SLO remains breached. |
+| Quality falls after model/token change | Restore the baseline configuration and quarantine the comparison until reviewed. |
+| Cache miss or policy-ineligible content | Disable caching for that path and use the approved uncached flow. |
+| Timeout or streaming disconnect | Apply bounded retry/idempotency handling, return a safe partial-state result, and investigate without logging content. |
+
+## Examples
+
+Benchmark 500 synthetic `fixture-prompt-*` requests in a staging workspace with Haiku and the current route, assert `content_logged=0`, `p99_latency<approved_limit`, and `quality=pass`, then canary the winner to internal traffic. If p99 or error thresholds fail, emit `canary=halted; rollback=perf-baseline`.
+
 ## Resources
 
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)

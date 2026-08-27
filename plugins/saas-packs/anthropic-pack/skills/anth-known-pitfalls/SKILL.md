@@ -23,6 +23,10 @@ compatibility: Designed for Claude Code
 ---
 # Anthropic Known Pitfalls
 
+## Overview
+
+This reference is a review aid for common Anthropic API integration mistakes. Apply the checks to the actual SDK/API version in use and confirm changing behavior against Anthropic’s current documentation before making a compatibility claim.
+
 ## Pitfall 1: Wrong Import / Class Name
 
 ```python
@@ -187,6 +191,37 @@ cost = (msg.usage.input_tokens * 3.0 + msg.usage.output_tokens * 15.0) / 1_000_0
 | Default import | Named export | Default export |
 | Auto-retry | No | Yes (configurable) |
 | Streaming | Yields chunks | SSE events |
+
+## Prerequisites
+
+- Identify the SDK/runtime versions, pinned model IDs, request paths, tool definitions, data classification, and owner of the integration.
+- Use a sandbox workspace, synthetic prompts, least-privileged credentials, and a redaction policy for review and reproduction; do not paste production content or keys into diagnostics.
+- Define acceptance checks for authentication, request shape, stop reasons, tool IDs, retries, token budgets, cost, and logging hygiene.
+
+## Instructions
+
+1. Review imports, request construction, response parsing, model/version pins, retry behavior, and token limits against the installed SDK and official API reference.
+2. Exercise each suspected pitfall with synthetic fixtures, including malformed requests, truncated output, tool calls, 429/5xx, timeout, and duplicate retry cases. Assert no sensitive content appears in logs or receipts.
+3. Check that authentication comes from the secret manager, permissions and model/workspace scope are enforced, and retries are bounded and safe for the operation.
+4. Canary corrective changes in an isolated workspace and compare response-shape, latency, cost, and error aggregates with the baseline. Require approval before production rollout.
+5. For a failed gate, quarantine affected output, restore the prior revision, revoke temporary access if needed, and record a redacted finding with the documented remediation.
+
+## Output
+
+Produce a pitfall-review receipt listing SDK/API versions, checks run, synthetic fixture classes, findings and severity, response-shape/error aggregates, logging/redaction result, canary and approval state, and rollback reference. Exclude prompt/response text, personal data, member information, and credentials.
+
+## Error Handling
+
+| Finding | Response |
+|---|---|
+| Request-shape or import mismatch | Pin the compatible SDK, update the code under test, and rerun contract tests. |
+| Missing/incorrect stop or tool handling | Reject or quarantine the result; use the exact response metadata and tool-use ID. |
+| Unbounded retry or inflated token budget | Apply bounded retry/idempotency controls and a role/budget-specific token cap. |
+| Content or secret appears in telemetry | Stop the canary, rotate exposed credentials if applicable, purge according to retention policy, and fix the redaction boundary. |
+
+## Examples
+
+Run a sandbox review using `fixture-tool-call-001` and `fixture-truncated-002`, assert `tool_use_id_match=1; stop_reason_checked=1; content_logged=0`, and emit `pitfalls=0; canary=internal; rollback=integration-v1`. Never reproduce a failure with a live customer prompt.
 
 ## Resources
 

@@ -139,6 +139,28 @@ def track_metrics(response, duration: float):
 | Missing cost tracking | Budget surprise | Track per-request cost |
 | No latency histogram | Can't spot slow queries | Add Prometheus/Datadog histograms |
 
+## Prerequisites
+
+- Define SLOs, alert owners, budget and rate-limit thresholds, approved metric labels, and retention rules for telemetry.
+- Configure authenticated server-side access through a secret manager and use a sandbox workspace with synthetic requests to verify instrumentation.
+- Establish a redaction/filter policy before enabling logs, traces, dashboards, or usage reconciliation; prompts, responses, secrets, and personal data are never telemetry fields.
+
+## Instructions
+
+1. Instrument the request boundary with request ID, model, status, stop reason, token aggregates, cache counters, and duration while excluding content and high-cardinality identifiers.
+2. Emit success and failure metrics for authentication, 4xx/5xx, 429, timeout, latency, spend, and remaining rate-limit headroom. Validate labels against an allowlist and cap cardinality.
+3. Test dashboards and alerts with synthetic success, timeout, rate-limit, permission, and malformed-response fixtures. Verify the alert path without sending live customer data.
+4. Reconcile usage through the approved authenticated server-side API on a bounded schedule, compare aggregate totals, and alert on unexplained divergence or budget breach.
+5. Canary telemetry changes, then promote with owner approval. If redaction, cardinality, or retention checks fail, disable the new sink, restore the prior configuration, and preserve only a redacted receipt.
+
+## Output
+
+Produce an observability receipt containing instrumentation version, metric/label allowlist, synthetic test results, alert thresholds, aggregate usage/cost/latency/error outcomes, retention policy, canary scope, approval, and rollback reference. Exclude prompts, responses, API keys, user IDs, and raw exception bodies.
+
+## Examples
+
+Send synthetic `fixture-request-001` through a staging client and assert `request_id_present=1; content_fields=0; labels_allowlisted=1`; inject a synthetic 429 and verify the alert fires. Record `telemetry=pass; retention=24h; rollback=metrics-v1` without recording the fixture text.
+
 ## Resources
 
 - [Usage & Cost API](https://docs.anthropic.com/en/api/usage-cost-api)

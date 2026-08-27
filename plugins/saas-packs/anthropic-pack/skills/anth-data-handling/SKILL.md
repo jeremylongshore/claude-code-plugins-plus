@@ -138,6 +138,28 @@ def audited_request(client, user_id: str, purpose: str, **kwargs):
 | Audit log gaps | Centralized logging with alerting |
 | Data subject access request | Searchable audit trail by user_id |
 
+## Prerequisites
+
+- Define the data classification, processing purpose, legal basis or user consent, and retention owner before sending anything to the API.
+- Provide an approved redaction policy, a secret-manager-backed API credential, and an allowlisted Anthropic workspace or service boundary.
+- Prepare synthetic fixtures that exercise each PII class and a deletion test; do not use real customer records while validating the pipeline.
+
+## Instructions
+
+1. Classify the input and reject fields outside the approved purpose or destination. Apply deterministic redaction before constructing the request; keep any restoration map encrypted, access-controlled, and short-lived.
+2. Run the redaction, prompt, and response scanners against synthetic fixtures. A failed scan, missing consent, or unexpected content block is a hard stop; do not retry with the original data.
+3. Call the Messages API with the least-privileged credential and only the approved model, workspace, and retention configuration. Do not place prompts, responses, redaction maps, or secrets in logs, traces, metrics, or exception text.
+4. Scan the response before restoration or release. Record only aggregate counts, policy decisions, request identifier, and token metadata, then enforce the documented retention and deletion procedure.
+5. Verify deletion in the sandbox and retain a redacted audit receipt for the owner and compliance reviewer.
+
+## Output
+
+Produce a redacted data-handling receipt containing the purpose, policy version, environment, workspace class, redaction and response-scan outcomes, request identifier, token counts, retention deadline, deletion result, and reviewer. Exclude names, contact details, prompt/response text, raw identifiers, redaction maps, and credentials.
+
+## Examples
+
+For a synthetic fixture such as `customer_id=fixture-017; email=test@example.invalid; purpose=classification`, redact the email, call a sandbox workspace, assert `raw_pii_sent=0` and `sensitive_content_logged=0`, and emit `redaction=pass; output_scan=pass; retention=24h; deletion=verified`. Never substitute a real person or production record in this example.
+
 ## Resources
 
 - [Anthropic Privacy Policy](https://www.anthropic.com/privacy)

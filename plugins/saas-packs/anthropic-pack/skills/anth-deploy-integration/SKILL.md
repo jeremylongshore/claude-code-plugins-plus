@@ -112,6 +112,28 @@ kubectl rollout undo deployment/claude-service
 | Health check fails | Key invalid in prod | Test key with curl |
 | 429 after scaling up | More replicas = more RPM | Shared rate limiter (Redis) |
 
+## Prerequisites
+
+- Have an approved artifact digest, environment/workspace mapping, secret-manager reference, health probe, deployment owner, canary plan, and tested rollback command.
+- Use a least-privileged runtime identity and synthetic fixtures in staging; never embed API keys in images, manifests, command history, or deployment output.
+- Define deployment SLOs for health, errors, latency, rate limits, cost, and data-policy checks, with explicit halt thresholds.
+
+## Instructions
+
+1. Build and scan the pinned artifact, bind the environment-specific secret at runtime, and verify that logs and probes cannot expose prompts, responses, or credentials.
+2. Deploy to staging and run the token-count/health probe plus synthetic Messages API, error, timeout, rate-limit, and redaction tests. Confirm the workspace and model are approved.
+3. Release to one sandbox or internal canary, monitor aggregate SLOs and `sensitive_content_logged=0`, and require owner approval before wider traffic.
+4. Promote in bounded stages while preserving the prior revision and idempotent deployment record. Do not bypass failed health, authorization, or data-policy gates.
+5. On failure, stop traffic, roll back to the prior revision, revoke temporary access, clean up staged artifacts under the retention policy, and issue a redacted deployment receipt.
+
+## Output
+
+Produce a deployment receipt containing artifact digest, environment/workspace class, model policy, probe/test results, canary scope, SLO outcomes, approval, rollout state, retention cleanup, and rollback reference. Exclude API keys, prompts, responses, customer identifiers, and raw stack traces.
+
+## Examples
+
+Deploy `artifact=sha256:fixture` to a staging workspace, run synthetic `fixture-request-001`, assert `workspace=staging; sensitive_content_logged=0`, then release a 1% internal canary. If the 5xx or latency gate fails, record `promotion=halted; rollback=previous-revision` and send no production traffic.
+
 ## Resources
 
 - [API Getting Started](https://docs.anthropic.com/en/api/getting-started)
