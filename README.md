@@ -13,6 +13,8 @@
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/U5S225PTME)
 
+> **Version semantics:** the release badge is this marketplace's display version. npm packages, including the `ccpi` CLI and publishable plugins, retain their own package versions; they are intentionally not expected to equal the display version. The version-surface checker governs the display surfaces without rewriting package semver.
+
 ## Install
 
 Inside Claude Code, one command installs the whole marketplace:

@@ -311,6 +311,7 @@
       "Bash(top:*)",
       "Bash(traceroute:*)",
       "Bash(util:*)",
+      "Bash(uv:*)",
       "Bash(vastai:*)",
       "Bash(vault:*)",
       "Bash(vercel:*)",
@@ -32762,7 +32763,7 @@
         "Read",
         "Write",
         "Edit",
-        "Bash",
+        "Bash(uv:*)",
         "Glob"
       ],
       "compatibleWith": [],
@@ -32771,7 +32772,7 @@
         "name": "framecraft",
         "category": "community"
       },
-      "searchText": "demo-video 'generate polished demo videos from a single prompt. use when the user community read write edit bash glob "
+      "searchText": "demo-video 'generate polished demo videos from a single prompt. use when the user community read write edit bash(uv:*) glob "
     },
     {
       "type": "skill",
@@ -46747,14 +46748,16 @@
       "name": "hyperfocus",
       "description": "'ADHD-friendly output formatting for Claude Code. Restructures responses",
       "category": "productivity",
-      "allowedTools": [],
+      "allowedTools": [
+        "Read"
+      ],
       "compatibleWith": [],
       "version": "0.2.0",
       "parentPlugin": {
         "name": "hyperfocus",
         "category": "productivity"
       },
-      "searchText": "hyperfocus 'adhd-friendly output formatting for claude code. restructures responses productivity  "
+      "searchText": "hyperfocus 'adhd-friendly output formatting for claude code. restructures responses productivity read "
     },
     {
       "type": "skill",
