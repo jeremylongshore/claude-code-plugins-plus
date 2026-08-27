@@ -39,7 +39,7 @@ Set up a Canva Connect API integration with OAuth 2.0 Authorization Code flow wi
 2. Store tokens in the approved encrypted secret/data store, bind them to the authorized user/tenant, and exclude them from logs and clients.
 3. Verify a read-only synthetic-tenant call first; use the owner-controlled revocation/reauthorization process on any mismatch.
 
-## Instructions
+## Procedure
 
 ### Step 1: Register Your Integration
 

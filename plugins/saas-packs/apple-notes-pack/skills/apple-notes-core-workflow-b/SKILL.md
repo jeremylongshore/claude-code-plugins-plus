@@ -42,7 +42,7 @@ Export Apple Notes to portable formats: Markdown, JSON, HTML files, and SQLite d
 3. Verify record count and checksum, then encrypt or move the artifact according to the approved handling policy.
 4. Keep SQLite or search indexes private and time-bounded; they replicate sensitive note data.
 
-## Instructions
+## Procedure
 
 ### Step 1: Export All Notes to JSON
 

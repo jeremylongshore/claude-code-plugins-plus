@@ -35,7 +35,7 @@ Production patterns for Apple Notes automation: JXA wrapper class, error handlin
 3. Keep list and search results scoped and minimize returned fields; never log note bodies by default.
 4. Serialize mutations, record an opaque idempotency key before the call, and reconcile timeouts before retrying.
 
-## Instructions
+## Procedure
 
 ### Step 1: JXA Client Wrapper (Node.js)
 

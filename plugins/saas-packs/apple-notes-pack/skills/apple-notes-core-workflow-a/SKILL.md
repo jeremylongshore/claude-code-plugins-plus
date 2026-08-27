@@ -42,7 +42,7 @@ Primary workflow: automate Apple Notes management with batch creation, template-
 3. Record only opaque source keys and outcomes, inspect a bounded sample, and reconcile counts before widening scope.
 4. Stop on a timeout or unexpected folder match; do not rerun a whole batch blindly.
 
-## Instructions
+## Procedure
 
 ### Step 1: Batch Note Creator from Markdown Files
 
