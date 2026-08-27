@@ -252,6 +252,14 @@ async function addLeadsBatched(
 | Webhook delivery retries exhausted | Your endpoint too slow | Return 200 immediately, process async |
 | Queue memory growing | Too many queued operations | Set max queue size, reject overflow |
 
+## Output
+
+Return a rate-limit receipt with sender/campaign scope, requested/limited/deferred counts, retry revision, idempotency state, queue health, consent/suppression checks, sent-count assertion, and rollback reference. Exclude addresses, copy, and credentials.
+
+## Examples
+
+`scope=sandbox-campaign; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; consent=pass; suppression=pass; sends=0; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
