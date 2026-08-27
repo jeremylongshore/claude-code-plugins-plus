@@ -26,6 +26,26 @@ compatibility: Designed for Claude Code
 
 The primary Fondo workflow: automated monthly bookkeeping close. Fondo's CPA team handles reconciliation, categorization, and financial statement preparation. Your role is to answer questions and review deliverables.
 
+## Prerequisites
+
+- A designated finance owner, close calendar, approved source systems, access controls, and professional-review responsibility.
+- Documented retention and correction process; use synthetic data for automation tests.
+
+## Instructions
+
+1. Confirm source completeness and reconciliation state before treating a close as ready for review.
+2. Respond to questions through the authorized finance workflow, preserving supporting evidence in approved systems.
+3. Review statements and exceptions with the responsible professional; correct discrepancies using the documented process.
+4. Publish only approved, access-controlled reports and record the review state.
+
+## Output
+
+Create a close receipt with period, source-completeness result, reviewer, open exceptions, report approval state, and next action. Do not include ledger rows, accounts, payroll, tax data, or credentials.
+
+## Examples
+
+Use a fictional month-end ledger summary to test the review workflow, create one deliberate reconciliation exception, and verify the close remains pending until the finance reviewer resolves it.
+
 ## Monthly Close Timeline
 
 | Day | Activity | Who |

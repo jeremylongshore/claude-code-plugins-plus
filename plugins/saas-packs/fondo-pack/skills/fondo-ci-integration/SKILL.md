@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD for Fondo startup tax and bookkeeping integrations: run unit tests with mocked filing and compliance data on every PR, validate live API connectivity for tax filing status and bookkeeping records on merge to main. Fondo handles R&D tax credits, quarterly filings, and ongoing bookkeeping, so CI pipelines verify compliance data transforms, filing deadline monitoring, and automated alert workflows.
 
+## Prerequisites
+
+- Protected CI environments, scoped secrets available only to trusted jobs, and synthetic finance fixtures.
+- A finance owner and deployment/rollback approver for any authenticated staging verification.
+
+## Instructions
+
+1. Run unit/schema tests with fictional data and no credentials on pull requests.
+2. Restrict authenticated checks to protected branches, use minimum scopes, and redact all output.
+3. Validate destination, idempotency, failure handling, and professional-review boundaries before promotion.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture version, checks run, aggregate result, approval, and redacted failure reference. Exclude financial data and credentials.
+
+## Examples
+
+A pull request tests a fictional filing-status mapping without secrets. A protected job validates one synthetic staging record and blocks promotion if an unexpected field, destination, or professional-review gap appears.
+
 ## GitHub Actions Workflow
 
 ```yaml

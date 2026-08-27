@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Deploy a containerized Fondo tax and accounting integration service with Docker. This skill covers building a production image that connects to Fondo's API for managing tax filings, compliance status, and financial reporting. Includes environment configuration for multi-entity accounting setups, health checks that verify API connectivity to Fondo's compliance endpoints, and rolling update strategies for zero-downtime deployments during critical tax filing periods.
 
+## Prerequisites
+
+- A deployment owner, scoped runtime identity, approved data destinations, synthetic staging fixtures, and rollback operator.
+- Health checks that expose generic status only and a policy prohibiting financial data/secrets in images and logs.
+
+## Instructions
+
+1. Build reproducibly, inject secrets through the approved platform, and run the service with least privilege.
+2. Validate schema, destination, and access controls using fictional data in staging before a canary.
+3. Monitor aggregate health and reconciliation signals; stop and roll back on permission, data-boundary, or integrity failures.
+
+## Output
+
+Record release/image ID, environment, approved configuration reference, canary result, owner, and rollback outcome. Exclude any financial, tax, payroll, account, or credential data.
+
+## Examples
+
+Deploy a staging image with a fictitious export, simulate an upstream failure, and confirm health returns no sensitive payload. Roll back the canary before production if a destination or permission check fails.
+
 ## Docker Configuration
 
 ```dockerfile

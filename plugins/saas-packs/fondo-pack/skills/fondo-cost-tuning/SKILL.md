@@ -24,6 +24,31 @@ compatibility: Designed for Claude Code
 
 Maximize Fondo ROI: the R&D tax credit alone should exceed the annual Fondo cost for most startups.
 
+## Prerequisites
+
+- Current contract/billing information reviewed by the finance owner and an approved decision process.
+- Aggregate usage data only; individual employee, payroll, tax, and account data stays in authorized systems.
+
+## Instructions
+
+1. Measure cost and workflow value using current data and document assumptions for review.
+2. Consider operational simplification only when it preserves compliance, retention, reconciliation, and professional-review requirements.
+3. Obtain finance approval before changing plan, scope, integrations, or tax workflow.
+
+## Output
+
+Record the measurement period, aggregate inputs, decision owner, approved action, verification date, and exceptions. This is not a tax, legal, or financial conclusion.
+
+## Error Handling
+
+- Stop if data is incomplete or a proposed saving reduces auditability, access controls, or required review.
+- Route eligibility or filing questions to the designated professional rather than automating a decision.
+- Keep evidence redacted and reversible.
+
+## Examples
+
+Compare two fictional aggregate workload profiles, have the finance owner approve the selected option, and verify no account, payroll, or tax information was copied into the analysis.
+
 ## ROI Analysis
 
 ```
