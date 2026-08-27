@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Full observability stack for Flexport integrations: Prometheus metrics for API health, pino structured logging for debugging, OpenTelemetry tracing for latency analysis, and Grafana dashboards for monitoring.
 
+## Prerequisites
+
+- An approved telemetry schema using aggregate measurements and opaque correlation IDs.
+- Named alert owners, escalation thresholds, secure dashboard access, retention rules, and synthetic alert fixtures.
+
+## Output
+
+Publish an observability receipt with metric definitions, dashboard/alert references, threshold tests, owner, and review date. Metrics, traces, and logs must exclude shipment payloads, addresses, invoices, documents, and credentials.
+
+## Error Handling
+
+- Reject telemetry fields that contain sensitive logistics data or headers.
+- Alert on unexpected destination, queue, access, or integrity anomalies and route them to the incident owner.
+- Suppress noise only through a documented time-bound rule that preserves incident visibility.
+
+## Examples
+
+Send one successful and one rejected fictional event. Confirm dashboards report only aggregate outcomes and opaque IDs, an alert fires at the agreed threshold, and no payload or secret appears in the alert message.
+
 ## Instructions
 
 ### Step 1: Prometheus Metrics

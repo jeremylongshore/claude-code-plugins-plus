@@ -24,6 +24,26 @@ compatibility: Designed for Claude Code
 
 Reduce Flexport API costs by minimizing unnecessary calls. Key strategies: use webhooks instead of polling, cache aggressively, maximize page sizes, and batch operations.
 
+## Prerequisites
+
+- Current contract/billing data and provider limits reviewed by the account owner, not inferred from this guide.
+- Aggregate usage metrics, an approved target/data policy, and a named budget owner.
+- Synthetic staging workload plus a rollback switch for caching, polling, or batch changes.
+
+## Output
+
+Record a cost-control receipt with measurement window, aggregate usage, approved optimization, owner decision, expected effect, verification date, and rollback state. Do not include invoices, commercial terms, shipment content, or credentials.
+
+## Error Handling
+
+- Stop a change if it violates freshness, access, retention, or target policy even if it reduces calls.
+- Reduce load and use bounded retries on throttles; do not increase polling after a delivery gap.
+- Revert a cache or webhook switch if reconciliation detects missed or duplicate events.
+
+## Examples
+
+Compare a fictional webhook-driven workflow with a low-frequency staging poll using only request counts and synthetic event delivery. Promote the reduction only if reconciliation proves no missed/duplicate event and the data-access policy remains unchanged.
+
 ## Instructions
 
 ### Strategy 1: Webhooks Over Polling
