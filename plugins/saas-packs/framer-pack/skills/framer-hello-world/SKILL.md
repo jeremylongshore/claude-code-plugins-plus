@@ -22,6 +22,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer Hello World
 
+## Examples
+
+Create a disposable staging page with fictional content, publish it only to the approved test domain, verify no credential or visitor data appears in output, then remove the test artifact through the approved process.
+
 ## Overview
 
 Build a minimal Framer plugin that inserts a styled text layer onto the canvas, and a code component that renders inside Framer sites. Both use the `framer-plugin` SDK which provides the `framer` global for editor interaction.

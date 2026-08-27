@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer Rate Limits
 
+## Prerequisites
+
+Confirmed provider limits, bounded concurrency/retry policy, approved integration owner, and synthetic staging requests.
+
+## Output
+
+Record policy version, aggregate throttles, retry/queue outcome, owner, and manual disposition without visitor data or credentials.
+
+## Examples
+
+Simulate a throttled staging request, honor the retry bound under an opaque operation ID, and route repeated failures to review instead of replaying publish actions.
+
 ## Overview
 
 Handle Framer API rate limits for Server API and plugin operations. The Server API uses WebSocket, so rate limits apply per-connection. CMS operations are limited by collection size and concurrent writes.

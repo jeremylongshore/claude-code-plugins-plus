@@ -22,6 +22,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer Deploy Integration
 
+## Prerequisites
+
+A deployment owner, scoped integration credential, approved destination/domain policy, staging canary, and rollback operator.
+
+## Error Handling
+
+Stop deployment on publishing, domain, access, integration, or privacy failures; restore the previous configuration and keep evidence redacted.
+
+## Examples
+
+Deploy a fictional staging site, simulate a failed health/publish check, and verify production is unchanged after rollback.
+
 ## Overview
 
 Deploy Framer Server API integrations (CMS sync services, webhook handlers) to cloud platforms. Framer sites themselves are hosted by Framer — this covers deploying your backend services that interact with Framer.

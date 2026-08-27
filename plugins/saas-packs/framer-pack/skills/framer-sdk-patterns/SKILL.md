@@ -22,6 +22,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer SDK Patterns
 
+## Examples
+
+Use a scoped staging integration and fictional CMS data to validate schema and idempotency. Reject an unexpected destination before publishing and record only opaque IDs and aggregate results.
+
 ## Overview
 
 Production-ready patterns for Framer plugins, Server API, code components, and CMS integrations. Covers plugin architecture, type-safe CMS operations, and reusable component patterns.
