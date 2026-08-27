@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Deploy a containerized Finta fundraising integration service with Docker. This skill covers building a production image that connects to the Finta API for managing fundraising rounds, investor pipelines, and deal flow analytics. Includes environment configuration for multi-round tracking, health checks that verify API connectivity to Finta's investor management endpoints, and rolling update strategies for zero-downtime deployments during active fundraising campaigns.
 
+## Prerequisites
+
+- A reviewed deployment plan that names the integration owner, data destinations, health signal, and rollback operator.
+- Runtime secrets injected by the deployment platform; no credentials in images, repositories, build logs, or health responses.
+- Staging validation with synthetic data and an approved change window for production.
+
+## Instructions
+
+1. Build a reproducible image, pin and review dependencies, and run the container as a non-root user.
+2. Inject only the scoped credentials required by the running service and confirm that logs redact authorization headers and sensitive payloads.
+3. Use readiness checks that test the service’s dependencies without returning provider errors or record data to callers.
+4. Deploy a small canary, observe aggregate error rate, queue backlog, and idempotency outcomes, then promote or roll back through the declared mechanism.
+5. Disable the integration and rotate scoped secrets immediately if an exposure, unintended destination, or unsafe replay is detected.
+
 ## Docker Configuration
 
 ```dockerfile
@@ -120,6 +134,14 @@ docker run -d --name finta-integration -p 3000:3000 \
 | `404 Not Found` | Round or investor ID not found | Check IDs from Finta dashboard |
 | `429 Rate Limited` | Exceeding API rate limits | Implement exponential backoff with 30s window |
 | Empty investor list | API key lacks read scope | Request full-access key from workspace admin |
+
+## Output
+
+Record the image digest, environment name, approved configuration references, deployment owner, canary result, aggregate health metrics, and rollback outcome. Do not include secrets, contact data, raw provider responses, or document URLs.
+
+## Examples
+
+Deploy the image to staging with a synthetic workspace and a read-only credential supplied by the platform. Confirm that `/health` returns only a generic status, simulate an upstream failure, and verify the service becomes unready without leaking an error payload. Roll back the canary before enabling any production destination.
 
 ## Resources
 
