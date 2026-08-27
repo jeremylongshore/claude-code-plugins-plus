@@ -321,6 +321,18 @@ Key panels for Grafana/Datadog:
 | Stale metrics | Polling interval too long | Reduce collection interval to 5 minutes |
 | High cardinality | Too many label values | Limit `operation` labels to top-level SDK methods |
 
+## Examples
+
+### Verify a stalled translation pipeline before paging a team
+
+An alert reports that French translations have remained at 74% for a day. First
+query the project statistic and the webhook/error metrics for the same window;
+do not assume that a low progress value is an API outage. If API latency and
+error rate are normal but no `project.translation.updated` events arrived,
+route the incident to the translation owner with the project and locale. If
+the webhook error metric is elevated, preserve the failed delivery identifiers
+and use the webhook runbook before replaying or changing any production data.
+
 ## Resources
 
 - [Lokalise Webhooks API](https://developers.lokalise.com/reference/create-a-webhook)
