@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Optimize Fly.io performance: eliminate cold starts, right-size VMs, leverage multi-region for low latency, and tune concurrency settings.
 
+## Prerequisites
+
+- A redacted baseline for latency, error rate, saturation, cost, and region-level health.
+- A staging application, synthetic load, named change owner, and a tested rollback mechanism.
+
+## Output
+
+Publish a tuning receipt with baseline/post-change aggregate metrics, VM/concurrency settings, regions affected, canary result, owner, and rollback outcome. Exclude runtime secrets, request bodies, and user data.
+
+## Error Handling
+
+- Stop rollout on health, latency, saturation, or cost threshold breaches and revert the canary.
+- Reduce concurrency or capacity changes before retrying a failed region promotion.
+- Keep diagnostics redacted and route deployment incidents to the on-call owner.
+
+## Examples
+
+Run a synthetic load test against a staging region, adjust one VM setting, and compare aggregate p95 latency and error rate. Simulate a failed health check and confirm the release rolls back before traffic expands.
+
 ## Instructions
 
 ### Step 1: Eliminate Cold Starts

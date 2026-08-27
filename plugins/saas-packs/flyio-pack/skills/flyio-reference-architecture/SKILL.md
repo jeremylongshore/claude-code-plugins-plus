@@ -23,6 +23,32 @@ compatibility: Designed for Claude Code
 
 Production architecture for Fly.io: multi-region web tier, Postgres with read replicas, Redis for caching, background workers, and private networking.
 
+## Prerequisites
+
+- A documented data-flow inventory, trust boundaries, ownership, region/retention choices, and disaster-recovery objectives.
+- Separate scoped identities for deployment, runtime, database, worker, and observability systems.
+
+## Instructions
+
+1. Place public ingress, private services, storage, workers, and observability behind explicit network and identity boundaries.
+2. Define data locality, replication, backup, access, and recovery behavior before creating additional regions or consumers.
+3. Use staged deployment, health checks, redacted telemetry, and an independently tested rollback per service.
+4. Validate architecture changes with synthetic traffic and ensure a failure in one region cannot leak secrets or corrupt cross-region state.
+
+## Output
+
+Maintain an architecture decision record with components, trust boundaries, data locations, identities, health/rollback controls, owners, and recovery evidence. Do not include secrets or customer data.
+
+## Error Handling
+
+- Isolate an unhealthy region or consumer and preserve a safe primary path while recovery proceeds.
+- Quarantine unexpected cross-region writes or permission failures for review.
+- Restore the previous routing/configuration before replaying queued work.
+
+## Examples
+
+Deploy a fictional workload to a staging primary and replica region, deny the worker access to public ingress secrets, and simulate a regional health failure. Verify traffic stays on the healthy route and rollback does not replay writes.
+
 ## Architecture
 
 ```

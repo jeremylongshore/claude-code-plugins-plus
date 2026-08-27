@@ -24,6 +24,31 @@ compatibility: Designed for Claude Code
 
 Collect machine state, app health, volume status, deploy history, network connectivity, and platform diagnostics into a single archive for Fly.io support tickets. This bundle captures everything needed to troubleshoot stuck deployments, machine boot failures, volume corruption, and edge networking problems.
 
+## Prerequisites
+
+- An incident owner, secure evidence location, retention deadline, and redaction rules for logs, configuration, tokens, and user data.
+- An opaque correlation ID and a safe health/read-only probe before collecting broad runtime evidence.
+
+## Instructions
+
+1. Capture version, release, aggregate health, opaque machine identifiers, and relevant configuration references.
+2. Review all logs and generated files for tokens, credentials, request bodies, and personal data before archiving.
+3. Encrypt and restrict the resulting evidence to incident responders, then retire it according to the retention decision.
+
+## Output
+
+Create a redacted bundle index with correlation ID, artifact list, access owner, retention date, reproduction result, and next action. Sensitive originals belong only in the approved incident store.
+
+## Error Handling
+
+- Stop collection and rotate credentials if a secret or sensitive data is found in the bundle.
+- Record missing diagnostics rather than expanding access or collection without approval.
+- Escalate possible exposure before continuing normal troubleshooting.
+
+## Examples
+
+For a synthetic machine boot failure, retain release ID, opaque machine ID, and aggregate health result. Verify the archive contains no token or request body, grant access only to the incident owner, and delete it when its retention period ends.
+
 ## Debug Collection Script
 
 ```bash
