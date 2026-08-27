@@ -18,6 +18,24 @@ compatibility: Designed for Claude Code
 ---
 # Fathom CI Integration
 
+## Prerequisites
+
+- A protected repository, mocked fixtures, required checks, and a separate scoped development credential for optional integration tests.
+
+## Instructions
+
+1. Run deterministic schema/mapping/template/unit checks on pull requests without credentials.
+2. Run live synthetic integration checks only from trusted protected workflows.
+3. Bound retries and resources, retain redacted evidence, and keep production deployment approval separate.
+
+## Output
+
+- A credential-free PR validation lane and a trusted development integration lane with redacted receipts.
+
+## Examples
+
+Run mocked meeting/CRM mapping tests on every pull request, then execute one synthetic protected-branch check using a development secret. If it fails, record opaque IDs/status and back off; never expose Fathom/CRM credentials or real meeting data to forked code.
+
 ## Overview
 
 Set up CI/CD for Fathom meeting intelligence integrations: run unit tests with mocked transcript and action-item responses on every PR, validate live API connectivity against the Fathom meetings endpoint on merge to main. Fathom provides AI-generated meeting summaries, transcripts, and action items, so CI pipelines focus on verifying data parsing logic and webhook handling for real-time meeting events.

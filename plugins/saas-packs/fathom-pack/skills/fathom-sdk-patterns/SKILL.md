@@ -24,6 +24,28 @@ compatibility: Designed for Claude Code
 ---
 # Fathom SDK Patterns
 
+## Overview
+
+Build a narrow Fathom client boundary that makes consent, data handling, idempotency, redaction, and human ownership explicit.
+
+## Prerequisites
+
+- Scoped development credentials, an approved recording/data policy, synthetic fixtures, and existing test conventions.
+
+## Instructions
+
+1. Inject credentials only from the approved secret manager and validate request/response contracts at the boundary.
+2. Use stable IDs, bounded retries, and redacted telemetry for sync/follow-up actions.
+3. Unit-test with mocks and run one synthetic development integration check before promotion.
+
+## Output
+
+- A test-backed SDK boundary with scoped credentials, safe errors, redacted observability, and rollback-friendly behavior.
+
+## Examples
+
+Instantiate the client with a development secret reference, send a synthetic meeting/action event with an idempotency key, and assert the mocked CRM-sync payload. Record only opaque IDs/results; never log a recording, transcript, contact, or token.
+
 ## Python Client
 
 ```python

@@ -18,6 +18,25 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Upgrade & Migration
 
+## Prerequisites
+
+- Current/target version inventory, compatibility notes, synthetic fixtures, acceptance criteria, and rollback owner.
+
+## Instructions
+
+1. Inventory configuration, credentials, CRM mappings, access, retention, and consent behavior.
+2. Test the target in development/staging with synthetic meetings and records.
+3. Compare aggregate quality, delivery, error, access, and policy results before a bounded canary.
+4. Pause or roll back on regression and retain the prior configuration until sign-off.
+
+## Output
+
+- A staged upgrade record with evidence, owner, observation window, and rollback revision.
+
+## Examples
+
+Upgrade the integration in staging, run mock/unit and synthetic workflow checks against prior and target versions, and compare aggregate sync/follow-up behavior. Roll back on consent, access, mapping, or reliability regression; do not replay customer meetings to validate a migration.
+
 ## Overview
 
 Fathom is an AI meeting assistant that records, transcribes, and summarizes meetings. The API operates under `/external/v1` and exposes endpoints for meetings, transcripts, and action items. Tracking API changes is important because Fathom iterates rapidly on transcript schema fields (speaker attribution, sentiment data, highlight clips) and breaking changes to response shapes can silently corrupt downstream integrations that consume meeting data for CRM sync or analytics pipelines.
