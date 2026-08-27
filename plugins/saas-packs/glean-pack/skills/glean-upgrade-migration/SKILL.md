@@ -140,6 +140,28 @@ class GleanIndexClient {
 | Search response format changed | Client crashes parsing `snippets` as string instead of array | Handle both `string` and `Snippet[]` return types |
 | Datasource quota exceeded | `429` during bulk re-index | Implement rate limiting with exponential backoff per Glean docs |
 
+## Prerequisites
+
+- A pinned current and target version, compatibility assessment, sandbox fixtures, and a named owner for every breaking behavior.
+- Configuration and schema backups identified by revision, plus an approved downgrade and connector-disable procedure.
+- Synthetic data and allow/deny identities to prove the upgrade does not change access scope or freshness.
+
+## Instructions
+
+1. Read the version delta and inventory affected client, connector, schema, and authorization contracts.
+2. Upgrade in sandbox first, run bounded regression tests, and compare response shape, indexing counts, freshness, and authorization probes with baseline.
+3. Promote through staging and a single canary datasource after approval; do not mix unrelated configuration changes into the upgrade.
+4. Monitor the stated rollback triggers, then either promote in stages or restore the pinned prior revision and preserve redacted evidence.
+5. Update the compatibility record only after the canary and rollback exercise are both complete.
+
+## Output
+
+Produce an upgrade receipt with from/to versions, affected contracts, test/canary outcomes, allow/deny results, owner approval, compatibility decision, and rollback revision. Do not include production data or secrets.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; allow=pass; deny=pass; canary=held; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

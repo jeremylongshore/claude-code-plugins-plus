@@ -127,6 +127,28 @@ docker run -d --name glean-integration -p 3000:3000 \
 | `429 Rate Limited` | Exceeding indexing rate limits | Batch documents (max 100 per request) and add backoff |
 | Stale search results | Connector not running on schedule | Verify cron schedule or Cloud Scheduler job status |
 
+## Prerequisites
+
+- An approved deployment change, environment-specific secret references, and a destination allowlist that distinguishes sandbox, staging, and production.
+- Health, freshness, and synthetic allow/deny baselines plus a tested rollback artifact.
+- A canary datasource that carries only approved data and has a named owner.
+
+## Instructions
+
+1. Build and test the immutable artifact with mocked or sandbox fixtures; refuse literal credentials and unknown destinations.
+2. Deploy to staging, verify health, bounded index behavior, freshness, and both authorization probes before requesting production approval.
+3. Release first to the canary datasource with concurrency and retry caps, monitoring errors and redacted correlation IDs.
+4. Promote in stages only while all probes remain within budget; restore the previous artifact/configuration immediately on regression.
+5. Retain the release receipt and rollback result, then revoke any temporary deployment credential.
+
+## Output
+
+Produce a deployment receipt with artifact digest, environment, canary datasource, health/freshness/allow/deny outcomes, owner approval, rollout state, and rollback reference. Exclude secrets and indexed content.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=sandbox-guides; health=pass; freshness=pass; allow=pass; deny=pass; rollback=release-r31` supports a controlled promotion.
+
 ## Resources
 
 - [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)

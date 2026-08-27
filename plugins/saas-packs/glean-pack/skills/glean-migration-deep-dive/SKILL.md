@@ -166,6 +166,28 @@ echo "Rollback complete — old search provider re-enabled"
 | `422 Invalid document` | Missing required field | Validate `id`, `title`, `url` before indexing |
 | Stale search results | Index not refreshed | Wait 5 min or trigger manual refresh |
 
+## Prerequisites
+
+- A signed migration plan with data owners, source ACL authority, retention requirements, and a cutover/rollback decision owner.
+- An inventory of opaque source IDs, counts, and checksums rather than exported document bodies or user lists.
+- A sandbox rehearsal and a proven method to freeze writes, disable the new connector, and restore the prior search path.
+
+## Instructions
+
+1. Baseline source counts, ACL mappings, freshness, and synthetic allow/deny probes before any migration.
+2. Rehearse a bounded, idempotent migration in sandbox; quarantine schema or permission mismatches rather than coercing them.
+3. Migrate one source cohort at a time, compare aggregate counts/checksums and access outcomes, and log opaque correlation IDs.
+4. Cut over only after owner approval and a monitoring window; keep the prior path available until recovery criteria are met.
+5. Roll back on an ACL, integrity, or freshness failure, then document the exact boundary that failed before retrying.
+
+## Output
+
+Create a migration receipt with source cohort, baseline/target counts, ACL and probe results, checkpoint, owner approval, cutover status, retention action, and rollback reference. Never attach source content or credentials.
+
+## Examples
+
+`cohort=sandbox-hr-01; baseline=420; indexed=420; checksum=match; allow=pass; deny=pass; cutover=held; rollback=old-search-r8` documents a safe rehearsal.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

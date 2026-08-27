@@ -100,6 +100,14 @@ async function verifySearchAccess() {
 | `Forbidden` | 403 | Token lacks scope | Use correct token type (indexing vs client) |
 | `Not Found` | 404 | Wrong domain | Verify GLEAN_DOMAIN includes `-be` suffix |
 
+## Output
+
+Return an authentication setup receipt containing the environment, secret reference (not its value), token scope class, destination allowlist result, synthetic connectivity status, and rotation/cleanup owner. Never print a token or actual request header.
+
+## Examples
+
+`env=sandbox; secret_ref=glean-client-v4; scope=search-only; destination=approved; synthetic_probe=200; rotation_owner=platform-ops` proves setup without exposing a credential.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)
