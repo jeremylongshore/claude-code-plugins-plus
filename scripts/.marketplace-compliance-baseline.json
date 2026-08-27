@@ -1668,10 +1668,6 @@
     "plugins/saas-packs/mindtickle-pack/skills/mindtickle-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/mistral-pack/skills/mistral-incident-runbook/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-sdk-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/mistral-pack/skills/mistral-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/obsidian-pack/skills/obsidian-reference-architecture/SKILL.md :: E-BODY-a8e5f61fa69b :: s/",
     "plugins/saas-packs/openevidence-pack/skills/openevidence-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/openevidence-pack/skills/openevidence-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2146,9 +2142,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T05:01:48.077870Z",
-    "run_id": "33041163221",
-    "sha": "32308b673cc083f0a368e834da746fb5ef798c79"
+    "captured_at": "2026-08-27T05:05:06.612963Z",
+    "run_id": "33041324162",
+    "sha": "c064ba493e014c8018218431854e5ef73bff49e9"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2173,8 +2169,8 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2136,
-    "grade_A_plus_B": 2976,
-    "grade_A_plus_B_pct": 82.0287
+    "errors": 2132,
+    "grade_A_plus_B": 2979,
+    "grade_A_plus_B_pct": 82.1114
   }
 }
