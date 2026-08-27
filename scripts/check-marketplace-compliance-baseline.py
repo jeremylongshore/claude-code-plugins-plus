@@ -77,10 +77,7 @@ def baseline_growth_error(
     if changed_paths != {BASELINE_PATH}:
         return "baseline growth may only occur in a one-file baseline-only pull request"
     if not head_ref.startswith(CAPTURE_BRANCH_PREFIX):
-        return (
-            "baseline growth may only occur on the dedicated CI capture branch "
-            f"({CAPTURE_BRANCH_PREFIX}<run-id>)"
-        )
+        return f"baseline growth may only occur on the dedicated CI capture branch ({CAPTURE_BRANCH_PREFIX}<run-id>)"
     return None
 
 
@@ -152,11 +149,7 @@ def main() -> int:
             print("marketplace-compliance-ratchet: OK (no unauthorized baseline growth)")
             return 0
         baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
-        current = (
-            json.loads(args.current.read_text(encoding="utf-8"))
-            if args.current
-            else emit_current(repo_root)
-        )
+        current = json.loads(args.current.read_text(encoding="utf-8")) if args.current else emit_current(repo_root)
         drift = metadata_drift(baseline, current)
         newcomers = compare(baseline, current)
     except (OSError, ValueError, json.JSONDecodeError, RuntimeError) as error:
@@ -175,10 +168,7 @@ def main() -> int:
             print(f"  {entry}", file=sys.stderr)
         return 1
 
-    print(
-        "marketplace-compliance-ratchet: OK "
-        f"({len(entries(current))} live triples; no entries outside baseline)"
-    )
+    print(f"marketplace-compliance-ratchet: OK ({len(entries(current))} live triples; no entries outside baseline)")
     return 0
 
 

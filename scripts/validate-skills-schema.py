@@ -4516,6 +4516,7 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
 
 # === MARKETPLACE COMPLIANCE BASELINE =========================================
 
+
 def baseline_finding_triple(artifact_path: str, error: str) -> Tuple[str, str, str]:
     """Return a stable ``(path, rule_id, field)`` identity for one validator
     error.
@@ -4530,9 +4531,13 @@ def baseline_finding_triple(artifact_path: str, error: str) -> Tuple[str, str, s
     scoped = re.match(r"^\[([^\]]+)\]\s*(.*)$", error)
     scope = scoped.group(1) if scoped else "validator"
     detail = scoped.group(2) if scoped else error
-    field_match = re.search(r"(?:field|section|Reference|Link|resource|script)\s*(?:missing|escapes|does not exist|must be|invalid)?[: ]*'?([^' :]+)'?", detail, re.IGNORECASE)
+    field_match = re.search(
+        r"(?:field|section|Reference|Link|resource|script)\s*(?:missing|escapes|does not exist|must be|invalid)?[: ]*'?([^' :]+)'?",
+        detail,
+        re.IGNORECASE,
+    )
     quoted_match = re.search(r"'([^']+)'", detail)
-    field = (field_match.group(1) if field_match else (quoted_match.group(1) if quoted_match else "_"))
+    field = field_match.group(1) if field_match else (quoted_match.group(1) if quoted_match else "_")
     if "Missing required field:" in detail:
         rule_id = "E-MISSING-REQUIRED-FIELD"
     elif "Required section missing:" in detail:
@@ -4565,9 +4570,7 @@ def marketplace_baseline_payload(
     triples = sorted(set(findings))
     entries = [f"{path} :: {rule_id} :: {field}" for path, rule_id, field in triples]
     try:
-        proc = subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd=repo_root, capture_output=True, text=True, check=True
-        )
+        proc = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo_root, capture_output=True, text=True, check=True)
         sha = proc.stdout.strip()
     except Exception:
         sha = "unknown"
@@ -6023,9 +6026,7 @@ def main() -> int:
             files_with_errors.append(str(rel))
             has_issues = True
             if args.emit_baseline:
-                baseline_findings.extend(
-                    baseline_finding_triple(str(rel), error) for error in result["errors"]
-                )
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
 
         if result["warnings"]:
             if not machine_output:
@@ -6081,9 +6082,7 @@ def main() -> int:
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
             if args.emit_baseline:
-                baseline_findings.extend(
-                    baseline_finding_triple(str(rel), error) for error in result["errors"]
-                )
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
             if not machine_output:
                 print(f"⚠️  {rel} (command):")
@@ -6124,9 +6123,7 @@ def main() -> int:
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
             if args.emit_baseline:
-                baseline_findings.extend(
-                    baseline_finding_triple(str(rel), error) for error in result["errors"]
-                )
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
             if not machine_output:
                 print(f"⚠️  {rel} (agent):")
@@ -6155,9 +6152,7 @@ def main() -> int:
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
             if args.emit_baseline:
-                baseline_findings.extend(
-                    baseline_finding_triple(str(rel), error) for error in result["errors"]
-                )
+                baseline_findings.extend(baseline_finding_triple(str(rel), error) for error in result["errors"])
         elif result["warnings"]:
             if not machine_output:
                 print(f"⚠️  {rel} (plugin.json):")
