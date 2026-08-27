@@ -247,6 +247,18 @@ async function applyOptimizations() {
 | Analytics return empty | Campaign too new | Wait 24h for data |
 | Account count exceeds plan | Plan limits reached | Upgrade or remove accounts |
 
+## Prerequisites
+
+- An approved budget, aggregate send/quota baseline, synthetic recipients, and a rollback revision for concurrency, cadence, and schedule policy.
+
+## Output
+
+Return a cost-change receipt with baseline/projected counts, control revision, owner approval, draft-canary result, consent/suppression assertions, sent-count result, savings range, and rollback reference. Use aggregates only.
+
+## Examples
+
+`campaign=sandbox-only; baseline=12000; deferred=120; deduped=900; consent=pass; suppression=pass; sends=0; rollback=cost-r18` is a safe cost decision.
+
 ## Resources
 
 - [Instantly Pricing](https://instantly.ai/pricing)
