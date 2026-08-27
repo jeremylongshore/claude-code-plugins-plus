@@ -1,0 +1,59 @@
+name: Capture Marketplace Compliance Baseline
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: 'Quiet commit to capture (defaults to the dispatched ref)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the requested quiet tree
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.base_ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Refuse a non-quiet capture tree
+        run: git diff --quiet && git diff --cached --quiet
+
+      - name: Emit the triple-keyed marketplace baseline
+        run: >-
+          python3 scripts/validate-skills-schema.py --emit-baseline
+          > scripts/.marketplace-compliance-baseline.json
+
+      - name: Refuse any generated diff outside the pinned baseline
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only)"
+          test "$changed" = "scripts/.marketplace-compliance-baseline.json"
+
+      - name: Open the dedicated baseline pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          branch="automation/compliance-baseline-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git add scripts/.marketplace-compliance-baseline.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore(ci): capture marketplace compliance baseline'
+          git push origin "$branch"
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title 'chore(ci): capture marketplace compliance baseline' \
+            --body "CI-only baseline capture from quiet tree ${BASE_SHA}. This PR intentionally changes only scripts/.marketplace-compliance-baseline.json; review the triple-keyed diff and CODEOWNERS approval before merge."
