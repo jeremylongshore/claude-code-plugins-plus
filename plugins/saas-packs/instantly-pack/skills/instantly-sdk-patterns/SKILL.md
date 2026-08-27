@@ -377,6 +377,14 @@ class InstantlyClient:
 | Cursor pagination | Large datasets | Memory-efficient iteration |
 | Multi-tenant factory | Agency/multi-workspace | Isolated clients per workspace |
 
+## Output
+
+Produce a client-contract receipt with SDK revision, environment, sender/campaign scope, request schema revision, fixture results, consent/suppression state, sent-count assertion, and rollback behavior. Never log recipients, copy, or credentials.
+
+## Examples
+
+`sdk=v3; env=sandbox; campaign=client-synthetic; schema=r5; consent=pass; suppression=pass; sends=0; telemetry=aggregate-only` captures a safe client result.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
