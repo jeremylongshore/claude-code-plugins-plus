@@ -30,6 +30,16 @@ compatibility: Designed for Claude Code
 
 Load test and scale Firecrawl scraping pipelines. Firecrawl's rate limits are per-plan (RPM and concurrent connections), so scaling means maximizing throughput within those limits using batch scraping, async crawls, and queue-based request management.
 
+## Prerequisites
+
+- Current provider limits confirmed from the applicable plan and a named budget owner.
+- An approved test target set, synthetic load fixtures, maximum spend, and safety cutoff.
+- Queue instrumentation for aggregate throughput, errors, throttles, duplicate suppression, and backlog age.
+
+## Output
+
+Publish a load-test receipt with fixture version, concurrency schedule, target-policy reference, aggregate throughput/latency/error metrics, credit usage, stop condition, owner approval, and rollback state. Do not retain captured page content in the report.
+
 ## Rate Limits by Plan
 
 | Plan | Scrape RPM | Concurrent Crawls | Max Batch Size |

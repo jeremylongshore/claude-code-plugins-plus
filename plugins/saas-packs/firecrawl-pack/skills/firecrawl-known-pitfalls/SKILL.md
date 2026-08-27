@@ -27,6 +27,32 @@ compatibility: Designed for Claude Code
 
 Real gotchas from production Firecrawl integrations. Each pitfall includes the bad pattern, why it fails, and the correct approach. Use this as a code review checklist.
 
+## Prerequisites
+
+- A code-review owner and approved target, budget, retention, and credential policies.
+- Access to redacted configuration and aggregate telemetry, not live API keys or captured page content.
+
+## Instructions
+
+1. Review every crawl for an allowlisted target, explicit limit, bounded retry, and idempotent downstream behavior.
+2. Verify data storage, retention, and consumer access before accepting a new output format or extraction path.
+3. Test proposed corrections with synthetic targets and compare aggregate outcomes before production promotion.
+4. Document exceptions with an owner and expiry; revoke unsafe access or disable unbounded jobs immediately.
+
+## Output
+
+Create a review receipt with findings, policy references, remediation owner, validation result, exception expiry, and follow-up date. Do not include credentials or captured content.
+
+## Error Handling
+
+- Stop a release when a target is not allowlisted, a limit is absent, or a destination cannot enforce access controls.
+- Quarantine unexpected schemas or budget spikes for review instead of expanding retries.
+- Escalate suspected credential or content exposure with redacted evidence and follow the incident process.
+
+## Examples
+
+Review a synthetic crawl configuration with no page limit. Reject it, add a bounded limit and allowlist, then verify the canary produces only aggregate metrics and can be disabled without replaying captured pages.
+
 ## Pitfall 1: Unbounded Crawl (Credit Bomb)
 
 ```typescript

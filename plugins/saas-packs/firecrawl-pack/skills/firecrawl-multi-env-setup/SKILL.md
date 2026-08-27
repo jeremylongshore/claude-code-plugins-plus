@@ -29,6 +29,16 @@ compatibility: Designed for Claude Code
 
 Firecrawl's credit-based pricing makes environment separation critical. Development should use self-hosted Firecrawl or strict limits to avoid burning production credits during testing. This skill covers per-environment config, self-hosted Docker for dev, and credit budget enforcement.
 
+## Prerequisites
+
+- Separate development, staging, and production identities with independently scoped secrets and budgets.
+- An environment owner, approved target policies, and a secret-manager integration.
+- Synthetic staging targets plus evidence that production destinations cannot be reached from untrusted jobs.
+
+## Output
+
+Record an environment-control receipt with identity references, target and budget policies, validation result, change owner, and rollback path. Never copy credentials or scraped content into configuration records.
+
 ## Environment Strategy
 
 | Environment | API Source | Crawl Limit | Concurrency | Credits |
