@@ -2101,11 +2101,6 @@
     "plugins/saas-packs/veeva-pack/skills/veeva-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/veeva-pack/skills/veeva-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/veeva-pack/skills/veeva-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-reliability-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-sdk-patterns/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/webflow-pack/skills/webflow-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/webflow-pack/skills/webflow-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/webflow-pack/skills/webflow-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2201,9 +2196,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:49:48.472812Z",
-    "run_id": "33037479738",
-    "sha": "f6419ead9715397ede262ea80da2dd18931bff9d"
+    "captured_at": "2026-08-27T03:52:17.483551Z",
+    "run_id": "33037606367",
+    "sha": "11b2688d592bb654abbcda17b3482f385d9d51a8"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2228,7 +2223,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2191,
+    "errors": 2186,
     "grade_A_plus_B": 2961,
     "grade_A_plus_B_pct": 81.6152
   }
