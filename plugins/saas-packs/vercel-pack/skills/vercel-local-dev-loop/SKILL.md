@@ -193,6 +193,12 @@ Vercel loads environment files in this order (later files override earlier):
 | `FUNCTION_INVOCATION_TIMEOUT` | Function exceeds 10s locally | Check for unresolved promises or infinite loops |
 | TypeScript errors in `api/` | Missing `@vercel/node` types | `npm install --save-dev @vercel/node` |
 
+## Examples
+
+### Reproduce a function issue locally without importing production secrets
+
+Link the local project to the correct Vercel team, pull only Development-scoped variables into an ignored `.env.development.local`, and replace sensitive upstream endpoints with sandbox fixtures. Run `vercel dev` and the focused handler test, capturing only synthetic inputs and sanitized error output. If the issue cannot reproduce locally, promote the same commit to preview for diagnosis rather than copying production variables into the workstation.
+
 ## Resources
 
 - [Vercel Dev Command](https://vercel.com/docs/cli/dev)
