@@ -237,6 +237,12 @@ async function rollbackMigration(objectType: string): Promise<void> {
 | Bulk job timeout | Very large dataset | Split into smaller jobs (< 100M records) |
 | Field mapping errors | Source schema mismatch | Validate transform functions with sample data first |
 
+## Examples
+
+### Migrate parent-child data with an external-ID rollback plan
+
+Load a representative synthetic sample into a full or partial sandbox, map parents and children through stable External IDs, and run each Bulk API job in a recorded sequence. Reconcile processed, failed, and duplicate rows before proceeding to the next phase. Keep a manifest of inserted IDs and transformation version so the sandbox run can be reversed; production cutover requires a separately approved window, backup verification, and post-load reconciliation.
+
 ## Resources
 
 - [Bulk API 2.0](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/bulk_api_2_0.htm)

@@ -276,6 +276,12 @@ function validateSoql(soql: string): { valid: boolean; warnings: string[] } {
 | Pre-commit hook slow | Too many files | Use `lint-staged` for incremental checks |
 | SOQL injection detected | String concatenation | Apply escapeSoql() wrapper |
 
+## Examples
+
+### Block a dynamic SOQL injection path before deployment
+
+Write a unit test using a malicious synthetic filter value, ensure the query builder uses bound variables or a narrowly scoped escape function, and run the custom lint rule in CI. Require the policy failure to include a safe location and remediation hint without printing the payload. If a legitimate query is flagged, document a specific suppression with reviewer approval rather than weakening the global rule or allowlisting unbounded string concatenation.
+
 ## Resources
 
 - [SOQL Injection](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/pages_security_tips_soql_injection.htm)

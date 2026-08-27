@@ -205,6 +205,12 @@ function validateEnvironment(): void {
 | Config merge fails | Wrong NODE_ENV | Verify environment variable |
 | Production guard triggered | Destructive operation | Use sandbox for testing |
 
+## Examples
+
+### Prevent a destructive command from targeting production
+
+Declare named aliases for each sandbox and production org, require a `--target-org` argument in scripts, and make destructive commands refuse aliases matching production unless an explicit, reviewed release flag is present. Test the guard with a sandbox target and a simulated production target in CI. Store each environment’s credentials separately, and promote validated metadata through the documented pipeline rather than copying configuration by hand.
+
 ## Resources
 
 - [Sandbox Types](https://help.salesforce.com/s/articleView?id=sf.deploy_sandboxes_intro.htm)
