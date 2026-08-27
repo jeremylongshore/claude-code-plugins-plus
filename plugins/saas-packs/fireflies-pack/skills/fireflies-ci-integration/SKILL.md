@@ -29,6 +29,10 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD pipelines for Fireflies.ai integrations: GraphQL query validation, mock-based unit tests, and optional live API integration tests with rate limit awareness.
 
+## Examples
+
+Run pull-request tests against synthetic GraphQL responses with no credentials. After merge, a protected job validates one fictitious staging meeting with a scoped secret and emits only schema and aggregate delivery results; an unexpected field or destination blocks promotion.
+
 ## Prerequisites
 
 - GitHub repository with Actions enabled

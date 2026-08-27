@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Manage meeting transcript data: export in multiple formats (JSON, text, SRT), redact PII from transcripts and summaries, implement retention policies with automated cleanup, and handle GDPR/CCPA data subject requests.
 
+## Examples
+
+Use a fictional transcript to test redaction and retention logic. Confirm that the export is restricted to an approved test destination, logs contain only aggregate counts, and deleting the record removes both the raw and derived test artifacts according to the configured policy.
+
 ## Prerequisites
 
 - `FIREFLIES_API_KEY` configured

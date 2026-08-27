@@ -28,6 +28,10 @@ compatibility: Designed for Claude Code
 
 Monitor Fireflies.ai integration health: API connectivity, webhook delivery, transcript processing latency, and seat utilization. Built for Prometheus/Grafana but adaptable to any metrics system.
 
+## Examples
+
+Send a synthetic webhook through the processing path and confirm dashboards show an opaque event ID, delivery latency, and aggregate status only. Trigger a controlled failure to verify the alert fires with no transcript text, participant identity, recording link, or credential in the payload.
+
 ## Prerequisites
 
 - Fireflies Business+ plan (for full API access)

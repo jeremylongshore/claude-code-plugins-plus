@@ -28,6 +28,23 @@ compatibility: Designed for Claude Code
 
 Production architecture for meeting intelligence using Fireflies.ai. Event-driven pipeline: meetings are recorded by the Fireflies bot, transcripts arrive via webhook, then are processed for action items, analytics, and CRM sync.
 
+## Prerequisites
+
+- A documented consent, access, retention, and downstream-sharing policy for each meeting source.
+- Scoped identities separating webhook ingress, transcript processing, storage, and CRM consumers.
+- A policy owner, synthetic fixtures, redacted telemetry, and an emergency disable/rollback path.
+
+## Instructions
+
+1. Verify event signatures at ingress and place opaque IDs on a durable, idempotent queue.
+2. Retrieve and process transcript data only within the authorized worker; apply field allowlists before any downstream sync.
+3. Enforce retention and access checks at storage and retrieval, and emit aggregate/redacted operational metrics.
+4. Test with fictional meetings, promote through a canary, and stop processing if consent, access, or destination validation fails.
+
+## Examples
+
+Route a synthetic transcript-ready event through the queue using an opaque ID. The worker writes only approved action items to a staging CRM, rejects a repeated event as a duplicate, and records no transcript text in logs or metrics.
+
 ## Architecture
 
 ```
