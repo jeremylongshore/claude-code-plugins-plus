@@ -1928,14 +1928,9 @@
     "plugins/saas-packs/runway-pack/skills/runway-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/runway-pack/skills/runway-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/runway-pack/skills/runway-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-advanced-troubleshooting/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-architecture-variants/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-ci-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-core-workflow-a/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-cost-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-data-handling/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-debug-bundle/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-deploy-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-enterprise-rbac/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2196,9 +2191,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:52:17.483551Z",
-    "run_id": "33037606367",
-    "sha": "11b2688d592bb654abbcda17b3482f385d9d51a8"
+    "captured_at": "2026-08-27T03:56:17.510949Z",
+    "run_id": "33037817918",
+    "sha": "8edc12d63dfc3f6da957dd66ebb298574c1bbdd3"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2223,8 +2218,8 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2186,
-    "grade_A_plus_B": 2961,
-    "grade_A_plus_B_pct": 81.6152
+    "errors": 2181,
+    "grade_A_plus_B": 2964,
+    "grade_A_plus_B_pct": 81.6979
   }
 }
