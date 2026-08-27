@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Restrict a booking agent to an approved action boundary
+
+Give an appointment agent only the lookup and create-booking tools needed for
+its flow, with explicit argument validation and a human handoff for refunds,
+medical questions, or account changes. Test synthetic prompts that attempt
+each forbidden action and verify that the agent refuses or transfers rather
+than improvising. Version the policy with the agent and review deviations from
+the guardrail before widening any permission.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

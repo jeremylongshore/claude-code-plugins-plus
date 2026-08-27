@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Handle a burst without retrying calls indefinitely
+
+When the API returns a rate-limit response, place only the idempotent request
+metadata in a bounded queue and honor the provider retry guidance before the
+next attempt. Track queue age, retry count, and error class; do not retry an
+ambiguous call-creation request until its call identifier is checked. Alert an
+operator when the queue age exceeds the service target, and shed nonessential
+work rather than allowing retries to amplify the burst.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
