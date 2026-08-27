@@ -88,6 +88,14 @@ async function verify(token: string) {
 | `403 Forbidden` | Missing API scopes | Check enterprise admin settings |
 | `invalid_client` | Wrong credentials | Verify client ID and secret |
 
+## Output
+
+Return an authentication setup receipt containing environment, secret reference rather than value, token-scope class, approved-destination result, synthetic connectivity status, and rotation/cleanup owner. Never print an access token or request header.
+
+## Examples
+
+`env=sandbox; secret_ref=grammar-client-v4; scope=text-check; destination=approved; synthetic_probe=200; rotation_owner=platform-ops` proves setup without exposing a credential.
+
 ## Resources
 
 - [Grammarly Developer Portal](https://developer.grammarly.com/)

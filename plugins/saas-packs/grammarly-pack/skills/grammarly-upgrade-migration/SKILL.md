@@ -148,6 +148,28 @@ class GrammarlyClient {
 | Text length limit changed | `413 Payload Too Large` on previously working requests | Chunk text into smaller segments per new version limits |
 | Rate limit structure changed | `429` without `X-RateLimit-Reset` header | Switch to `Retry-After` header or implement exponential backoff |
 
+## Prerequisites
+
+- Pinned current and target versions, compatibility assessment, sandbox fixtures, and an owner for each breaking contract.
+- Versioned configuration/schema backups and an approved downgrade or integration-disable procedure.
+- Synthetic text and least-privilege test identities to prove the upgrade does not broaden access or retention.
+
+## Instructions
+
+1. Inventory client, schema, configuration, authorization, telemetry, and text-retention changes between versions.
+2. Upgrade in sandbox, run bounded regression fixtures, and compare response shape, error handling, authorization, and retention behavior with baseline.
+3. Promote through staging and a canary integration only after approval; do not combine unrelated configuration changes.
+4. Monitor stated rollback triggers, then promote in stages or restore the exact pinned prior revision with redacted evidence.
+5. Update the compatibility record only after both canary and rollback exercises complete.
+
+## Output
+
+Produce an upgrade receipt with from/to versions, affected contracts, fixture and canary outcomes, authorization/retention results, owner approval, compatibility decision, and rollback revision. Exclude source text and credentials.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; retention=unchanged; canary=held; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Grammarly Developer Portal](https://developer.grammarly.com/)

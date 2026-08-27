@@ -84,6 +84,24 @@ async function scoreFile(filePath: string, token: string) {
 }
 ```
 
+## Prerequisites
+
+- A documented text-classification, consent, retention, and deletion policy approved by the data owner.
+- A sandbox fixture with entirely fictional text, a scoped destination, and a way to prove cleanup.
+- A strict rule that text, suggestions, and scores do not enter logs, metrics, tickets, or analytics unless expressly approved and minimized.
+
+## Output
+
+Return a handling receipt with source classification, consent basis, destination, policy and transform revisions, input/accepted/quarantined counts, retention date, and deletion/rollback reference. Do not include text, suggestions, or identifiers.
+
+## Error Handling
+
+Quarantine unknown classification, missing consent, unsupported destination, oversized input, or failed deletion verification. Do not truncate silently, send the text to a fallback provider, or retain it for debugging without owner approval.
+
+## Examples
+
+`source=synthetic-editor-fixture; class=internal-test; accepted=96; quarantined=4; retention=24h; cleanup=verified` is a compliant processing result.
+
 ## Resources
 
 - [Writing Score API](https://developer.grammarly.com/writing-score-api.html)
