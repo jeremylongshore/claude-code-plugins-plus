@@ -239,6 +239,14 @@ instantly-integration/
 | Tests passing locally, failing in CI | Different env vars | Ensure CI uses `.env.development` |
 | ngrok tunnel expired | Free tier 2-hour limit | Restart ngrok or upgrade |
 
+## Output
+
+Return a local-loop receipt with fixture revision, environment, test totals, consent/suppression outcome, temporary credential reference, and cleanup state. Exclude addresses, copy, and tokens.
+
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; recipients=synthetic-only; tests=12/12; consent=pass; suppression=pass; sends=0; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - Instantly Mock Server
