@@ -2,12 +2,12 @@ name: Kernel Shadow Validation (advisory)
 
 # ADVISORY / REPORT-ONLY — consumer-cutover STEP 1 for @intentsolutions/core.
 #
-# This workflow runs the kernel's published machine-spec (the authoring/v1
-# skill-frontmatter JSON Schema from @intentsolutions/core, pinned EXACTLY to
-# 0.10.0 in package.json) over the same SKILL.md corpus the existing prose-spec
-# validator (scripts/validate-skills-schema.py) grades, and reports the per-file
-# AGREE / DISAGREE deviation rate between the two (DR-049 "zero-on-corpus shadow
-# signal").
+# This workflow runs the kernel's published authoring/v1 baseline and strict
+# authoring/v2 skill-frontmatter JSON Schemas from @intentsolutions/core (pinned
+# EXACTLY to 0.10.0 in package.json) over the same SKILL.md corpus the existing
+# prose-spec validator (scripts/validate-skills-schema.py) grades. The summary
+# leads with strict-v2 existing-PASS / kernel-FAIL — the only decision-relevant
+# number for a future authority flip — while retaining the v1 scope comparison.
 #
 # GUARDRAILS — this workflow is INTENTIONALLY non-authoritative:
 #   * It is NOT in the branch-protection required-status set. It can never make a
