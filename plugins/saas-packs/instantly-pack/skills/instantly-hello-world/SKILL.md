@@ -164,6 +164,10 @@ curl -s https://api.instantly.ai/api/v2/accounts?limit=3 \
 | Empty campaign list | No campaigns created yet | Create one in the Instantly dashboard first |
 | `429 Too Many Requests` | Rate limited | Wait and retry with backoff |
 
+## Examples
+
+Create a draft with a fictional recipient fixture and record `campaign=hello-sandbox; recipients=synthetic-only; consent=pass; suppression=pass; sends=0; cleanup=complete`.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)

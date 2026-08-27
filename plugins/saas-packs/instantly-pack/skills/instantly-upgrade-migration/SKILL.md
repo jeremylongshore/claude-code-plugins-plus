@@ -293,6 +293,14 @@ await instantly("/block-lists-entries/bulk-create", {
 | `422` on lead add | New validation rules in v2 | Add required fields per v2 schema |
 | Missing pagination data | Using `skip` instead of `starting_after` | Convert to cursor pagination |
 
+## Output
+
+Produce an upgrade receipt with from/to versions, affected sender/campaign contracts, fixture/draft-canary outcomes, consent/suppression results, owner approval, compatibility decision, and rollback revision. Exclude recipients, copy, and credentials.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; consent=pass; suppression=pass; sends=0; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [API v1 to v2 Migration Guide](https://developer.instantly.ai/api-v1-docs)

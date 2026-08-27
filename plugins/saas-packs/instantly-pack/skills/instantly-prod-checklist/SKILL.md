@@ -255,6 +255,21 @@ main().catch(console.error);
 | Webhook test fails | Target URL unreachable | Verify endpoint is public HTTPS |
 | High bounce rate post-launch | Unverified leads | Pause campaign, clean list |
 
+## Instructions
+
+1. Confirm environment, sender scope, recipient consent, suppression state, schedule revision, and owner approval before enabling any campaign.
+2. Run synthetic/draft-only canary checks and assert consent, suppression, destination, and `sends=0` before human release approval.
+3. Monitor aggregate metrics through the observation window; halt on sender, audience, consent, suppression, or delivery drift.
+4. Promote only through the approved human-send path, or cancel/revert the schedule and record the verified result.
+
+## Output
+
+Create a readiness receipt with revision, canary campaign, consent/suppression results, sender scope, sent-count assertion, approvals, outcome, and rollback reference. Exclude addresses, copy, and secrets.
+
+## Examples
+
+`revision=r44; canary=campaign-sandbox; consent=pass; suppression=pass; sends=0; outcome=hold-for-human; rollback=r43` is a complete canary decision.
+
 ## Resources
 
 - [Instantly Campaign Options](https://help.instantly.ai/en/articles/6222396-campaign-options)

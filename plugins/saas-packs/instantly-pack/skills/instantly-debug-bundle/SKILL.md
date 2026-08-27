@@ -247,6 +247,10 @@ curl -s https://api.instantly.ai/api/v2/background-jobs?limit=5 \
 | Partial bundle | Some endpoints failed | Check `errors` array in bundle output |
 | Large bundle (>10MB) | 100+ campaigns and accounts | Reduce limits or collect per-campaign |
 
+## Examples
+
+`incident=inc-opaque-21; window=15m; campaign=sandbox-only; delivery=p95-420ms; destination=restricted-support; recipient_fields=excluded; copy_fields=excluded; retention=7d` is a useful debug summary.
+
 ## Resources
 
 - [Instantly Help Center](https://help.instantly.ai)

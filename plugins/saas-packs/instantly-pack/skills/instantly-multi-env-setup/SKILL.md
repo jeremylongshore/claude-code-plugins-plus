@@ -260,6 +260,19 @@ Development (mock)  →  Staging (real API, test data)  →  Production (live)
 | Webhook pointing to wrong env | Stale webhook registration | Re-run `setupWebhooksForEnv()` |
 | Staging data in production | Cross-env contamination | Use separate workspaces with separate API keys |
 
+## Prerequisites
+
+- Separate credentials, sender accounts, destinations, and configuration revisions for sandbox, staging, and production.
+- Synthetic/consented recipient fixtures, suppression checks, protected promotion approval, and a schedule-cancel rollback path.
+
+## Output
+
+Produce a promotion receipt with environment, configuration revision, synthetic test totals, suppression/consent result, staging/canary outcome, owner approval, and rollback reference. Exclude addresses, copy, and credentials.
+
+## Examples
+
+`env=staging; config=r22; recipients=synthetic-only; consent=pass; suppression=pass; sends=0; rollback=r21` is evidence for a controlled promotion.
+
 ## Resources
 
 - [Instantly Workspaces](https://developer.instantly.ai/api/v2/schemas)

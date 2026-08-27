@@ -235,6 +235,14 @@ async function testAccountVitals(emails: string[]) {
 | Missing analytics data | Campaign too new (<24h) | Wait for data to populate |
 | Background job `failed` | Invalid email in batch | Retry failed emails individually |
 
+## Output
+
+Return a workflow receipt with campaign scope, consent/suppression revision, recipient-count band, draft/schedule state, idempotency outcome, sent-count assertion, and rollback reference. Never retain addresses, email copy, or credentials.
+
+## Examples
+
+`campaign=campaign-sandbox-31; recipients=synthetic-only; consent=pass; suppression=pass; state=draft; sends=0; rollback=workflow-r6` is a controlled campaign result.
+
 ## Resources
 
 - [Instantly Email Warmup](https://instantly.ai/email-warmup)
