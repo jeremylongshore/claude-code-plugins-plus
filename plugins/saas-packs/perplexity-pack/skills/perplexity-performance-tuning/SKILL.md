@@ -223,6 +223,12 @@ async function optimizedSearch(query: string, detail: "brief" | "full" = "brief"
 - Streaming for reduced perceived latency
 - Rate-limited parallel research
 
+## Examples
+
+### Reduce latency with freshness-aware caching
+
+Classify a sanitized query as time-sensitive or stable, choose a TTL accordingly, and cache only the normalized non-sensitive request and validated result metadata. Compare preview latency, cache-hit rate, citation availability, and answer freshness with synthetic queries before rollout. If a result is stale or citations disappear, bypass or invalidate the cache and surface its timestamp rather than silently returning outdated research.
+
 ## Resources
 
 - [Perplexity Model Cards](https://docs.perplexity.ai/getting-started/models)

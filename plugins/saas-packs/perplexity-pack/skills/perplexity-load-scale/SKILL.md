@@ -244,6 +244,12 @@ For Medium+ scale, caching is mandatory. A 50% cache hit rate halves your API co
 - Request queue for sustained throughput
 - Scaling strategy by volume tier
 
+## Examples
+
+### Capacity-test a research endpoint without runaway spend
+
+Use a preview endpoint and synthetic public queries, set a fixed virtual-user ceiling, token cap, rate-limit-aware pacing, and a maximum test budget before starting k6. Capture aggregate P95 latency, error rate, and spend estimate rather than response content. Stop when any threshold is exceeded, wait for the provider quota window before a rerun, and delete the temporary test configuration after documenting the capacity result.
+
 ## Resources
 
 - [k6 Documentation](https://k6.io/docs/)

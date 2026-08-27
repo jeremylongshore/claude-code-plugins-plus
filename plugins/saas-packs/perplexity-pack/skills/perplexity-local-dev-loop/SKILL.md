@@ -212,6 +212,12 @@ describe("Perplexity Search", () => {
 - Live integration test gated on API key presence
 - Hot-reload dev server
 
+## Examples
+
+### Develop against redacted offline fixtures
+
+Inject a fixture-backed client into the local application, store only sanitized public prompts and truncated citation metadata, and run the unit suite with network access disabled. Refresh fixtures through a reviewed, low-cost capture process when the provider schema changes; do not collect customer prompts or API keys in fixtures. Keep one opt-in live smoke check outside the normal developer loop so routine edits stay deterministic and inexpensive.
+
 ## Resources
 
 - [Vitest Documentation](https://vitest.dev/)

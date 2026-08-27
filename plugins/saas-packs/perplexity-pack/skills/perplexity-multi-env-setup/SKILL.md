@@ -205,6 +205,12 @@ vault kv put secret/perplexity api_key="$PERPLEXITY_API_KEY_PROD"
 - Secret manager integration for production keys
 - Cost controls per environment
 
+## Examples
+
+### Keep development research from consuming production capacity
+
+Issue distinct keys for development, staging, and production through the approved secret manager, enforce economical model routing in non-production, and cap each environment’s request rate and spending. Verify configuration using a synthetic query that reports only environment label, model, and usage summary. Production changes require a protected deployment and rollback plan; revoke any key found in the wrong environment instead of copying it to make a test pass.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)
