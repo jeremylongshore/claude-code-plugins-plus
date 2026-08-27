@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD for Flexport logistics integrations: run unit tests with mocked shipment and tracking responses on every PR, execute live API contract validation against the Flexport sandbox on merge to main. Flexport's API covers shipments, booking, customs documentation, and real-time tracking, so CI pipelines verify data transforms for shipment lifecycle events and ensure API contract compatibility across versions.
 
+## Prerequisites
+
+- Protected CI environments with sandbox secrets available only to trusted jobs.
+- Fictional shipment fixtures, approved data mappings, and a named deployment/rollback owner.
+
+## Instructions
+
+1. Run unit and schema tests with mocked data on pull requests and do not expose secrets to forks.
+2. Limit authenticated sandbox checks to protected merges, with minimum scopes and redacted output.
+3. Validate destination allowlists, idempotency, and failure paths before an approved canary deployment.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture version, checks run, aggregate result, sandbox approval, and redacted failure reference. Exclude logistics payloads, documents, and credentials.
+
+## Examples
+
+A pull request validates a fictional port-to-status mapping without credentials. A protected post-merge job processes one sandbox event and fails the release if an unexpected field or destination appears, retaining only the opaque event ID.
+
 ## GitHub Actions Workflow
 
 ```yaml

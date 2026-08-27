@@ -26,6 +26,25 @@ compatibility: Designed for Claude Code
 
 Deploy Flexport-powered applications to production. Webhook receivers need always-on hosting. Dashboards can use serverless. Background sync workers suit containers.
 
+## Prerequisites
+
+- A deployment owner, approved logistics-data destinations, scoped secret-manager references, and tested rollback path.
+- A staging environment with fictional shipments and a policy that excludes commercial documents from logs and health checks.
+
+## Output
+
+Record the release/image identifier, environment, integration owner, approved destinations, canary result, aggregate health metrics, and rollback outcome. Do not include credentials, bills of lading, addresses, invoices, or shipment payloads.
+
+## Error Handling
+
+- Stop promotion on signature, permission, destination, or idempotency failures.
+- Pause workers and rotate scoped credentials when an exposure is suspected.
+- Preserve only redacted incident evidence and use the rollback path before replaying events.
+
+## Examples
+
+Deploy a staging receiver with a fictional shipment event, verify the signature and opaque event ID, then simulate an upstream failure. The service must return a generic health result, avoid logging the payload, and roll back the canary before production sync is enabled.
+
 ## Instructions
 
 ### Option A: Vercel (Dashboard + Webhook Routes)
