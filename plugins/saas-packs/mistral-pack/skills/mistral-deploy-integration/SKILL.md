@@ -214,6 +214,12 @@ export async function GET() {
 | Cold start latency | Serverless spin-up | Set `min-instances=1` or use edge |
 | vLLM OOM | Model too large for GPU | Use quantized model or smaller variant |
 
+## Examples
+
+### Deploy with a rollback-ready health gate
+
+Deploy a Cloud Run revision with the API key injected from the platform secret store, then call the health endpoint before shifting traffic. If model listing fails or the endpoint reports unhealthy, keep traffic on the prior revision and inspect the redacted deployment logs before retrying.
+
 ## Resources
 
 - [Mistral AI Documentation](https://docs.mistral.ai/)

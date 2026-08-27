@@ -276,6 +276,12 @@ async function ragChat(
 | RAG hallucination | Insufficient context | Add more documents, increase topK |
 | `400 Bad Request` | Missing `toolCallId` | Each tool result must include the matching `toolCallId` |
 
+## Examples
+
+### Answer from a small document set
+
+Embed the current policy documents, retrieve the three closest passages for a question, and pass only those passages to `ragChat`. Return the answer with its source identifiers; when retrieval returns no relevant passage, return an explicit insufficient-context response instead of guessing.
+
 ## Resources
 
 - [Embeddings API](https://docs.mistral.ai/capabilities/embeddings/)

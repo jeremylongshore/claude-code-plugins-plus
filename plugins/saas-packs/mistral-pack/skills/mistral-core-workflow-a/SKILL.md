@@ -242,6 +242,12 @@ function selectModel(use: UseCase): string {
 | Context exceeded | Too many tokens | Trim conversation history |
 | Empty JSON response | Missing instruction | Tell model to respond in JSON in prompt |
 
+## Examples
+
+### Classify a support ticket with a strict result shape
+
+Use JSON Schema mode when a downstream workflow must receive a predictable category and severity. Reject or retry the request when the returned payload cannot be parsed or does not satisfy the schema; do not fall back to free-form text for an automated decision.
+
 ## Resources
 
 - [Chat Completions API](https://docs.mistral.ai/api/endpoint/chat/)

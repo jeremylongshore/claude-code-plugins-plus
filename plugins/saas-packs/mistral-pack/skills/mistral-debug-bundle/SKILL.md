@@ -249,6 +249,12 @@ function createDebugClient(): Mistral {
 | Available models | Key scope verification |
 | Error logs (redacted) | Root cause analysis |
 
+## Examples
+
+### Build a safe incident attachment
+
+After a production request fails, run `collectDebugInfo`, redact every environment value that is not on the safe list, and write the result plus the minimal reproduction command into the timestamped debug bundle. Attach the bundle to the incident only after confirming it contains no API key, internal URL, or customer identifier.
+
 ## Resources
 
 - [Mistral AI Status](https://status.mistral.ai/)
