@@ -247,8 +247,8 @@ jobs:
             PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
             PUBLISHED_JSON=$(jq -cn \
               --argjson prior "$PUBLISHED_JSON" \
-              --arg name "$NAME" --arg version "$VERSION" --arg tag "$TAG" \
-              '$prior + [{channel:"npm", name:$name, version:$version, release_tag:$tag}]')
+              --arg name "$NAME" --arg version "$VERSION" --arg tag "$TAG" --arg package_path "$DIR" \
+              '$prior + [{channel:"npm", name:$name, version:$version, release_tag:$tag, package_path:$package_path}]')
 
             sleep 2
           done < <(echo "$PACKAGES_JSON" | jq -c '.[]')
@@ -262,8 +262,11 @@ jobs:
           fi
           [ "$FAILED" -eq 0 ] || exit 1
           if [ "$PUBLISHED" -gt 0 ]; then
-            jq -cn --argjson publications "$PUBLISHED_JSON" \
-              '{schema_version:"publication-report/v1", publications:$publications}' > /tmp/publication-report.json
+            printf '%s' "$PUBLISHED_JSON" > /tmp/completed-publications.json
+            node scripts/build-publication-report.mjs \
+              --completed /tmp/completed-publications.json \
+              --out /tmp/publication-report.json \
+              --sbom-dir /tmp/publication-sboms
             echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
           fi
 

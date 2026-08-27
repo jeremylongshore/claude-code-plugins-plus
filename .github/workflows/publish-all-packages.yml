@@ -229,8 +229,8 @@ jobs:
             if (cd "$DIR" && npm publish --access public --provenance); then
               echo "✓ published: $NAME@$VERSION"
               PUBLISHED=$((PUBLISHED+1))
-              PUBLISHED_JSON=$(jq -cn --argjson prior "$PUBLISHED_JSON" --arg name "$NAME" --arg version "$VERSION" \
-                '$prior + [{channel:"npm", name:$name, version:$version}]')
+              PUBLISHED_JSON=$(jq -cn --argjson prior "$PUBLISHED_JSON" --arg name "$NAME" --arg version "$VERSION" --arg package_path "$DIR" \
+                '$prior + [{channel:"npm", name:$name, version:$version, package_path:$package_path}]')
             else
               echo "❌ publish FAILED: $NAME@$VERSION"
               FAIL_NAMES+=("$NAME")
@@ -253,8 +253,11 @@ jobs:
             exit 1
           fi
           if [ "$PUBLISHED" -gt 0 ]; then
-            jq -cn --argjson publications "$PUBLISHED_JSON" \
-              '{schema_version:"publication-report/v1", publications:$publications}' > /tmp/publication-report.json
+            printf '%s' "$PUBLISHED_JSON" > /tmp/completed-publications.json
+            node scripts/build-publication-report.mjs \
+              --completed /tmp/completed-publications.json \
+              --out /tmp/publication-report.json \
+              --sbom-dir /tmp/publication-sboms
             echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
           fi
 
