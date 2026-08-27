@@ -140,8 +140,12 @@ jobs:
           set -euo pipefail
           VERSION='${{ steps.version.outputs.version }}'
           jq -cn --arg version "$VERSION" --arg tag "${GITHUB_REF_NAME}" \
-            '{schema_version:"publication-report/v1", publications:[{channel:"npm", name:"@claude-code-plugins/ccp", version:$version, release_tag:$tag}]}' \
-            > /tmp/publication-report.json
+            '[{channel:"npm", name:"@intentsolutionsio/ccpi", version:$version, release_tag:$tag, package_path:"packages/cli"}]' \
+            > /tmp/completed-publications.json
+          node scripts/build-publication-report.mjs \
+            --completed /tmp/completed-publications.json \
+            --out /tmp/publication-report.json \
+            --sbom-dir /tmp/publication-sboms
           echo "publication_report=$(jq -c . /tmp/publication-report.json)" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
