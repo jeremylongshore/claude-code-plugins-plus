@@ -112,6 +112,13 @@ jobs:
           python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet pyyaml
           pnpm run validate:safety-ratchet
 
+      # Blueprint 727 E6.3, R1: legacy marketplace debt is pinned as stable
+      # (path, rule, field) triples. Existing entries may remain while the
+      # corpus is remediated, but any new triple fails this existing required
+      # validation job. E6.4 later promotes the ratchet to its own job.
+      - name: Reject marketplace compliance debt outside the pinned baseline
+        run: python3 scripts/check-marketplace-compliance-baseline.py
+
       # Blueprint 727 E8.1: Freshie's graded cohort is the authority for the
       # disposition ledger. Regenerate-and-compare proves each current graded
       # artifact has exactly one first-match-wins outcome; missing/stale rows
