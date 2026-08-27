@@ -25,6 +25,36 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Local Dev Loop
 
+## Overview
+
+Use Fathom integrations in the normal local development loop: narrow change, synthetic validation, review, focused tests, and reversible commit.
+
+## Prerequisites
+
+- A clean or recoverable branch, development credential, synthetic meeting/CRM fixtures, repository rules, and test commands.
+
+## Instructions
+
+1. Make one scoped integration/configuration change using development-only data and identity.
+2. Inspect the diff, run focused mock/unit checks, and execute a bounded synthetic workflow test.
+3. Commit reviewed changes separately and promote only through normal protected workflow.
+
+## Output
+
+- A small reviewed change with test evidence and a normal rollback path, without production meeting or contact data.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Synthetic test exposes real data | Stop, restrict access, and follow the data procedure. |
+| CRM mapping/test fails | Revert or correct within scope; do not use production records to diagnose. |
+| Working tree is mixed | Separate unrelated changes before committing. |
+
+## Examples
+
+Update one mapping using a synthetic meeting/action, run its focused test, inspect the redacted result, and commit it separately. If the test fails or unrelated files change, revert/split the work rather than disabling checks or pointing local tooling at production.
+
 ## Project Structure
 
 ```
