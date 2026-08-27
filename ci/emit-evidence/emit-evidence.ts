@@ -367,6 +367,8 @@ type PublicationArtifact = {
   readonly release_tag?: string;
   readonly artifact_digest?: string;
   readonly package_name?: string;
+  readonly sbom_digest?: string;
+  readonly sbom_format?: 'CycloneDX';
 };
 
 type RequiredCheck = {
@@ -507,6 +509,12 @@ export function publicationOutcomes(report: unknown): GateOutcome[] {
     if (publication.package_name !== undefined && typeof publication.package_name !== 'string') {
       throw new Error(`publication ${publication.name} has invalid package_name`);
     }
+    if (!/^sha256:[a-f0-9]{64}$/.test(publication.sbom_digest ?? '')) {
+      throw new Error(`publication ${publication.name} missing or invalid sbom_digest`);
+    }
+    if (publication.sbom_format !== 'CycloneDX') {
+      throw new Error(`publication ${publication.name} must declare CycloneDX sbom_format`);
+    }
     if (publication.version !== undefined && typeof publication.version !== 'string') {
       throw new Error(`publication ${publication.name} has invalid version`);
     }
@@ -528,6 +536,8 @@ export function publicationOutcomes(report: unknown): GateOutcome[] {
       ...(publication.artifact_digest === undefined
         ? {}
         : { artifact_digest: publication.artifact_digest }),
+      sbom_digest: publication.sbom_digest,
+      sbom_format: publication.sbom_format,
     };
     return {
       gateName: `publication-${index + 1}`,

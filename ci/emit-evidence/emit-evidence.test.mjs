@@ -85,8 +85,16 @@ test('emits one content-bound signed-ready row per completed publication', () =>
           version: '1.2.3',
           release_tag: '@intentsolutionsio/example@1.2.3',
           artifact_digest: `sha256:${'a'.repeat(64)}`,
+          sbom_digest: `sha256:${'b'.repeat(64)}`,
+          sbom_format: 'CycloneDX',
         },
-        { channel: 'mcp-registry', name: 'project-health-auditor', version: '1.0.0' },
+        {
+          channel: 'mcp-registry',
+          name: 'project-health-auditor',
+          version: '1.0.0',
+          sbom_digest: `sha256:${'c'.repeat(64)}`,
+          sbom_format: 'CycloneDX',
+        },
       ],
     }),
   );
@@ -146,7 +154,14 @@ test('emits exactly the three completed protected-branch contexts', () => {
         publication,
         JSON.stringify({
           schema_version: 'publication-report/v1',
-          publications: [{ channel: 'npm', name: 'x' }],
+          publications: [
+            {
+              channel: 'npm',
+              name: 'x',
+              sbom_digest: `sha256:${'d'.repeat(64)}`,
+              sbom_format: 'CycloneDX',
+            },
+          ],
         }),
       );
       return publication;
@@ -179,7 +194,14 @@ test('refuses an incomplete protected-branch check report', () => {
         publication,
         JSON.stringify({
           schema_version: 'publication-report/v1',
-          publications: [{ channel: 'npm', name: 'x' }],
+          publications: [
+            {
+              channel: 'npm',
+              name: 'x',
+              sbom_digest: `sha256:${'d'.repeat(64)}`,
+              sbom_format: 'CycloneDX',
+            },
+          ],
         }),
       );
       return publication;

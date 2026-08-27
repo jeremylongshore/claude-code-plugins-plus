@@ -25,7 +25,7 @@ export function buildReport(completed, { sbomDir }) {
         throw new Error(`publication ${name} missing package_path`);
       const manifestPath = resolve(packagePath, 'package.json');
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      if (manifest.name !== name && channel !== 'mcp-registry')
+      if (manifest.name !== name && channel === 'npm')
         throw new Error(
           `publication name ${name} does not match ${packagePath} (${manifest.name})`,
         );
@@ -38,7 +38,7 @@ export function buildReport(completed, { sbomDir }) {
       return {
         channel,
         name,
-        ...(channel === 'mcp-registry' ? { package_name: manifest.name } : {}),
+        ...(channel === 'npm' ? {} : { package_name: manifest.name }),
         ...facts,
         sbom_digest: generateSbom(['--package', manifestPath, '--out', sbomPath]),
         sbom_format: 'CycloneDX',

@@ -95,12 +95,19 @@ export function main(argv = process.argv.slice(2)) {
   const manifest = resolve(argv[packageFlag + 1]);
   const out = resolve(argv[outFlag + 1]);
   const workspace = relative(process.cwd(), dirname(manifest));
-  if (!workspace || workspace.startsWith('..'))
-    throw new Error('package must be inside this repository');
+  if (workspace.startsWith('..')) throw new Error('package must be inside this repository');
   JSON.parse(readFileSync(manifest, 'utf8'));
   const result = spawnSync(
     'pnpm',
-    ['--filter', `./${workspace}`, 'list', '--prod', '--depth', 'Infinity', '--json'],
+    [
+      '--filter',
+      workspace ? `./${workspace}` : '.',
+      'list',
+      '--prod',
+      '--depth',
+      'Infinity',
+      '--json',
+    ],
     {
       cwd: process.cwd(),
       encoding: 'utf8',
