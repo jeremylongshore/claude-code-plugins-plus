@@ -155,6 +155,12 @@ Tokens support optional expiration dates. Set short-lived tokens (90 days) for C
 .env*.local
 ```
 
+## Examples
+
+### Set up a least-privilege local CLI session
+
+Install the CLI through the project package manager or `npx`, authenticate with the organization’s approved short-lived token mechanism, and run `vercel link` only after confirming the intended team and project ID. Keep `.vercel/` and local environment files ignored, and use `vercel env pull` only into a local ignored file. Verify access with a non-destructive project inspection, then revoke any temporary token once setup is complete.
+
 ## Resources
 
 - [Vercel CLI Overview](https://vercel.com/docs/cli)

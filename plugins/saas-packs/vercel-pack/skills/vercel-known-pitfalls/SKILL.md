@@ -323,6 +323,12 @@ grep -L 'matcher' src/middleware.ts 2>/dev/null && echo "  WARN: no matcher conf
 | P8: Node.js in edge | High | EDGE_FUNCTION_INVOCATION_FAILED | Use Web APIs |
 | P13: No cache headers | Medium | High function invocations bill | Add s-maxage |
 
+## Examples
+
+### Fix an exposed client-side secret without preserving it
+
+When a scan finds a `NEXT_PUBLIC_` value that should be private, immediately stop treating the string as a valid secret, rotate it at the upstream provider, and remove the value from code and build settings. Replace the browser call with a server-side route that enforces authorization and returns only required data. Validate the fix in preview with synthetic traffic, check that the old credential is refused, and record the rotation outcome without placing either value in logs or documentation.
+
 ## Resources
 
 - Vercel Best Practices
