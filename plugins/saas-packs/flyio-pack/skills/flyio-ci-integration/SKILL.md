@@ -23,6 +23,26 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD for Fly.io edge deployments: run unit tests on every PR, deploy to staging on pull requests, and promote to production on merge to main. Fly.io uses Machines API for app management and deploy tokens for scoped CI authentication. CI pipelines build Docker images, deploy via `flyctl`, and run post-deploy health checks against the edge endpoints.
 
+## Prerequisites
+
+- Protected CI environments with app-scoped tokens available only to trusted jobs.
+- Synthetic test traffic, reviewed deployment policy, health thresholds, and a named rollback owner.
+
+## Instructions
+
+1. Run unit, config, and container checks with no platform credentials on pull requests.
+2. Restrict authenticated staging deployment to protected branches and redacted logs.
+3. Use a canary health check and require explicit approval before production promotion.
+4. Stop on unexpected region, image, configuration, or health result and retain the rollback receipt.
+
+## Output
+
+Emit a CI receipt with commit SHA, image digest, checks run, protected-environment approval, aggregate health result, and rollback status. Exclude tokens, env values, and request data.
+
+## Examples
+
+A pull request builds and tests the image without secrets. A protected merge job deploys a staging canary with synthetic traffic; an unexpected region or health failure blocks promotion and triggers a return to the prior release.
+
 ## GitHub Actions Workflow
 
 ```yaml

@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Fly.io does not have traditional webhooks. Instead, monitor machine state changes via the Machines API, process structured logs via `fly logs`, and use health check endpoints for automated responses.
 
+## Prerequisites
+
+- A scoped monitoring identity, approved app/region policy, event ledger, and an incident owner.
+- Redaction controls for logs and synthetic fixtures for state-change, health, and duplicate-event testing.
+
+## Output
+
+Return an event-processing receipt with opaque machine/event ID, monitor version, idempotency result, aggregate health state, notification destination, and redacted error category. Do not include tokens, log bodies, or user data.
+
+## Error Handling
+
+- Reject unknown app/region events and quarantine unexpected schemas or notification destinations.
+- Bound polling/retry, deduplicate state transitions, and pause automated actions on access or health anomalies.
+- Preserve only redacted incident evidence and use the rollback path before replaying actions.
+
+## Examples
+
+Send a synthetic machine state transition twice. The monitor records the first once, marks the second duplicate, and rejects an event from an unapproved app without sending its body to any notification channel.
+
 ## Instructions
 
 ### Step 1: Poll Machine State Changes

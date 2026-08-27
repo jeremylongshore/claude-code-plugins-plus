@@ -23,6 +23,26 @@ compatibility: Designed for Claude Code
 
 Fly.io charges per-second for running machines plus storage. Key levers: auto-stop idle machines, suspend instead of stop, right-size VMs, and clean up unused volumes.
 
+## Prerequisites
+
+- Current contract/billing data reviewed by the account owner, aggregate resource usage, and a named cost owner.
+- Availability, latency, durability, and retention requirements that constrain autoscaling and volume decisions.
+- Synthetic staging load and a rollback plan for each cost-control change.
+
+## Output
+
+Produce a cost-control receipt with measurement window, aggregate usage, approved setting change, expected effect, owner, verification date, and rollback result. Never include tokens, customer data, or internal billing details.
+
+## Error Handling
+
+- Do not remove volumes or capacity without confirmed retention, backup, and recovery requirements.
+- Revert a cost change that breaches availability, latency, or data-durability thresholds.
+- Quarantine unexpected resource changes for review rather than applying bulk cleanup.
+
+## Examples
+
+Apply a suspend policy to a fictional staging app, compare aggregate idle cost and cold-start health, and roll back when a synthetic health check breaches the agreed latency threshold. Do not delete any volume as part of an exploratory test.
+
 ## Pricing Quick Reference
 
 | Resource | Free Tier | Cost |

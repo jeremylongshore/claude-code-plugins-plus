@@ -26,6 +26,14 @@ compatibility: Designed for Claude Code
 
 Deploy a minimal app to Fly.io using `fly launch`. Fly.io runs Docker containers on Firecracker microVMs across 30+ regions worldwide. Two paths: `flyctl` CLI (simple) or Machines API (programmatic).
 
+## Prerequisites
+
+- A disposable staging app name, app-scoped token from the secret manager, Docker, and a known teardown owner.
+
+## Examples
+
+Deploy the example to a disposable staging app using a scoped token, send only a synthetic health request, verify the response contains no secrets, and destroy or stop the test app through the approved cleanup path after validating rollback behavior.
+
 ## Instructions
 
 ### Step 1: Launch with flyctl
