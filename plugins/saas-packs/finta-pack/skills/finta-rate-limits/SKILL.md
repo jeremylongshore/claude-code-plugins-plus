@@ -20,6 +20,29 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
+Use provider responses and observed traffic to prevent avoidable throttling while preserving data correctness and safe retries.
+
+## Prerequisites
+
+- Aggregate request, error, and queue-age telemetry with no raw investor payloads.
+- A configured concurrency limit, retry bound, and exception-queue owner.
+- Synthetic test data and a rollback switch for worker configuration changes.
+
+## Instructions
+
+1. Treat documented or returned throttle signals as authoritative; do not hard-code assumptions about provider limits.
+2. Bound concurrency, use exponential backoff with jitter, and honor explicit retry-after guidance when present.
+3. Attach idempotency keys to externally visible actions so retries cannot duplicate communications or records.
+4. Move exhausted retries to a reviewed queue, alert on backlog growth, and reduce load before resuming.
+
+## Output
+
+Produce a redacted rate-control receipt showing the measurement window, concurrency, retry policy, throttle count, duplicate-prevention outcome, and any manually reviewed failures.
+
+## Examples
+
+Replay synthetic jobs at a small concurrency. When a simulated throttle response appears, the worker waits, retries once under its idempotency key, and places a repeated failure in the review queue rather than increasing traffic.
+
 Finta operates as a web-first fundraising platform without a traditional REST API, so rate limits manifest as plan-tier usage caps rather than HTTP request quotas. When building integrations through Finta's webhook events or Zapier connectors, the bottleneck is typically the number of investor pipeline records, deal room operations, and Aurora AI suggestion calls you can make within your plan tier. Teams running active fundraising rounds need to understand these ceilings to avoid mid-raise disruptions.
 
 ## Rate Limit Reference

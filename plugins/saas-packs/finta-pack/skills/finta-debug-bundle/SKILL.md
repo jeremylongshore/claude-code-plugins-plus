@@ -20,6 +20,35 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
+Collect the smallest diagnostic bundle needed to reproduce an integration failure while preserving investor and financial-data boundaries.
+
+## Prerequisites
+
+- An incident owner, an approved secure evidence location, and a retention deadline.
+- A reproducible symptom and opaque correlation identifier.
+- Redaction rules for credentials, contact details, financial terms, document links, and provider payloads.
+
+## Instructions
+
+1. Capture timestamps, service version, configuration references, aggregate counters, and redacted error categories.
+2. Reproduce with a synthetic record or a read-only probe before collecting live data.
+3. Review the bundle for secrets and sensitive fields, encrypt it in the approved location, and limit access to incident responders.
+4. Delete or retire the bundle according to the retention decision after resolution.
+
+## Output
+
+Create a redacted incident bundle index with correlation ID, artifacts, access owner, retention date, reproduction outcome, and next action. Keep any sensitive original evidence outside the index in the approved secure location.
+
+## Error Handling
+
+- Stop collection if a secret, unredacted export, or unauthorized recipient is detected; rotate credentials if exposure is possible.
+- Record missing diagnostics as a gap rather than expanding collection indiscriminately.
+- Escalate suspected data exposure through the incident process before continuing normal troubleshooting.
+
+## Examples
+
+For a synthetic sync failure, retain the service version, an opaque event ID, and aggregate retry count. Verify the bundle contains neither contact emails nor tokens, grant access only to the incident owner, and remove it at the documented retention date.
+
 Collect Finta API connectivity status, fundraising round data, investor pipeline health, and integration state into a single diagnostic archive. This bundle helps troubleshoot CRM sync failures, missing investor records, round update errors, and authentication problems. Attach the output to Finta support tickets for faster resolution of fundraising workflow issues.
 
 ## Debug Collection Script

@@ -20,6 +20,29 @@ compatibility: Designed for Claude Code
 
 ## Overview
 
+Automate checks for Finta-related integrations without exposing fundraising data or granting credentials to untrusted code.
+
+## Prerequisites
+
+- A CI environment with protected secrets available only to trusted, protected-branch jobs.
+- Synthetic fixtures and a staging endpoint for any integration test.
+- A named owner and rollback procedure for deployment-related workflow changes.
+
+## Instructions
+
+1. Run schema, formatting, and unit checks without provider credentials.
+2. Restrict any authenticated staging check to protected branches and least-privilege secrets.
+3. Use synthetic records, redact logs, and fail closed on unexpected destination, permission, or schema results.
+4. Require an explicit approval before production deployment and retain the test receipt.
+
+## Output
+
+Emit a CI receipt containing commit SHA, checks run, synthetic fixture version, aggregate result, and redacted failure references. Do not print secrets, raw exports, or investor data.
+
+## Examples
+
+A pull request runs lint and fixture-based mapping tests with no secrets. After merge, a protected job validates one synthetic staging record and reports its opaque correlation ID; an unexpected field causes the deployment step to stop.
+
 Set up CI/CD for Finta fundraising integrations: run unit tests with mocked investor pipeline data on every PR, validate live API connectivity for round and investor queries on merge to main. Finta centralizes fundraising CRM data including rounds, investor contacts, and pipeline stages, so CI focuses on verifying data sync logic, pipeline stage transitions, and automated investor reporting workflows.
 
 ## GitHub Actions Workflow
