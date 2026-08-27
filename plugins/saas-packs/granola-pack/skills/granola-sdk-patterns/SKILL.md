@@ -209,6 +209,10 @@ Organize Granola folders to drive different Zap behaviors:
 | API 401 Unauthorized | Invalid or expired API key | Regenerate key at Settings > API Keys |
 | Attendee data empty | Calendar event has no attendee list | Add attendees to the calendar event |
 
+## Examples
+
+`sdk=v3; env=sandbox; fixture=meeting-basic-v2; malformed=blocked; retention=none; telemetry=aggregate-only; rollback=client-r4` documents a typed client test without transmitting a real note.
+
 ## Resources
 
 - [Zapier Granola App](https://zapier.com/apps/granola/integrations)
