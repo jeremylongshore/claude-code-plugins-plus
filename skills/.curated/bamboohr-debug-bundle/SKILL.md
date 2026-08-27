@@ -205,6 +205,10 @@ async function collectDiagnostics(client: BambooHRClient): Promise<DiagnosticRes
   - `response-headers.txt` — BambooHR-specific headers
   - `config-redacted.txt` — Environment config with secrets removed
 
+## Examples
+
+For one approved incident, capture the opaque employee/request identifiers, endpoint category, status, SDK version, and timestamp into an encrypted, access-restricted archive. Redact fields before sharing, obtain HR/security approval for any expansion of scope, and delete the bundle at the incident retention deadline.
+
 ## Sensitive Data Handling
 
 **Always redact before sharing:**

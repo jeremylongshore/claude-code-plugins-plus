@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Debug Bundle
 
+## Output
+
+- A minimal redacted diagnostic bundle containing correlation IDs, environment, timestamps, configuration version, and status/error class.
+- An incident disposition that protects recipient data and credentials while allowing reproduction or vendor escalation.
+
+## Examples
+
+For a delivery failure, collect the opaque event/message correlation ID, workspace, timestamp, template/workflow version, and redacted status. Do not export email addresses, full payloads, tokens, or message content. Reproduce with a synthetic profile, then share only the approved redacted bundle with support.
+
 ## Current State
 
 !`node --version 2>/dev/null || echo 'Node.js: not installed'`

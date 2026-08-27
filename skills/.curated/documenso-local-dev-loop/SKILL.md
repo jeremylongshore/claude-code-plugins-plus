@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Local Dev Loop
 
+## Output
+
+- A small test-backed local change using synthetic documents/signers and a normal source-control rollback path.
+- A redacted development verification receipt without document content, signing links, credentials, or signer PII.
+
+## Examples
+
+Use a development workspace with a synthetic template and signer, make one integration/config change, run its focused tests and a bounded lifecycle check, then inspect redacted status. Commit only reviewed changes; never use production documents, signing URLs, or credentials in local development.
+
 ## Overview
 
 Configure a fast local development environment for Documenso integrations. Covers project structure, environment configs, self-hosted Documenso via Docker, test utilities, and cleanup scripts.

@@ -127,6 +127,19 @@ async function cancelRun(projectId: string, runId: string) {
 | Run KILLED | Timeout or manual cancel | Increase timeout or fix slow queries |
 | `404` | Project not published | Publish project before triggering runs |
 
+## Prerequisites
+
+- A named project owner, environment allowlist, approved parameter schema, and a sandbox project with fictitious or approved test data.
+- Execution/cancel authority scoped to one project, a correlation convention, and a rollback or cancel procedure.
+
+## Output
+
+Return an orchestration receipt with opaque project/run IDs, parameter revision, trigger identity class, start/terminal state, aggregate assertions, cancellation result, and rollback reference. Do not store SQL, cell output, or credentials.
+
+## Examples
+
+`project=proj-sandbox-12; params=r3; trigger=ci-service; run=complete; assertions=pass; cancel=not-needed; rollback=run-r5` records a controlled project run.
+
 ## Resources
 
 - [Run Project API](https://learn.hex.tech/docs/api/api-reference#run-project)

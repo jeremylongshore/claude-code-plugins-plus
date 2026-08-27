@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Production Checklist
 
+## Prerequisites
+
+- A named service/data owner, approved model/provider/data-routing decision, and production rollback plan.
+- Passing staging evidence for credentials, audio retention/consent, observability, rate limits, quality, and incident escalation.
+
+## Examples
+
+Run the final production gate with a non-sensitive canary, verify alert routing and the redacted request receipt, then observe against the stated quality/latency/error threshold. If any gate fails, halt rollout and restore the previous approved configuration rather than extending the canary or disabling controls.
+
 ## Overview
 
 Comprehensive go-live checklist for Deepgram integrations. Covers singleton client, health checks, Prometheus metrics, alert rules, error handling, and a phased go-live timeline.

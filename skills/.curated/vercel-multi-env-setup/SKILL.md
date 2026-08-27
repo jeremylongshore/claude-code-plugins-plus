@@ -212,6 +212,12 @@ echo '.env*.local' >> .gitignore
 | Custom env not triggering | Branch pattern doesn't match | Check branch name matches environment slug |
 | Sensitive var can't be read | type=sensitive hides value | Re-add the var if value is lost |
 
+## Examples
+
+### Prevent a preview deployment from reaching the production database
+
+Create distinct database credentials for Development, Preview, and Production, assign each only to its Vercel environment target, and validate the name and endpoint class—not secret values—in a preview health check. Require an explicit promotion workflow to change Production variables and log the approver and deployment SHA. If a preview points at production by mistake, revoke the preview credential, rotate any exposed connection string, and block further deploys until the scope is corrected.
+
 ## Resources
 
 - [Environment Variables](https://vercel.com/docs/environment-variables)

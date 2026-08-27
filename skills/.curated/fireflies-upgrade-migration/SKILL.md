@@ -32,6 +32,22 @@ compatibility: Designed for Claude Code
 
 Fireflies.ai uses a GraphQL API (no versioned SDK). Breaking changes come as field deprecations and new query parameter patterns. This skill covers all known deprecations and migration paths.
 
+## Prerequisites
+
+- Current provider change information and an inventory of queries, downstream consumers, retention rules, and access scopes.
+- Staging credentials, synthetic meeting fixtures, a rollback owner, and an acceptance checklist for schema and permission behavior.
+
+## Instructions
+
+1. Identify each deprecated field/query and classify it as compatible, transformed, removed, or unknown.
+2. Update one mapping at a time in staging with fictional data; keep the prior query available through reconciliation.
+3. Verify access controls, transcript minimization, idempotent delivery, and expected error handling before a small canary.
+4. Compare aggregate results, obtain the owner’s approval, and roll back immediately on schema, permission, or retention mismatch.
+
+## Examples
+
+Run the old and proposed query against a synthetic transcript, compare only schema-valid fields and aggregate counts, and introduce an unauthorized field deliberately. The canary must reject the extra field and retain the prior query until the mapping review is approved.
+
 ## Known Deprecations
 
 ### Transcript Query Parameter Changes

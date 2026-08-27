@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Observability
 
+## Output
+
+- Redacted, bounded metrics/traces for document lifecycle, signing state, errors, latency, and rate headroom.
+- An owned alert/runbook path that protects signer identity, document content, and credentials.
+
+## Examples
+
+Emit aggregate counts by environment, document state, and status class while excluding document bodies, signer email, signing URLs, IP addresses, tokens, and audit payloads. Trigger a development signing-state alert with a synthetic document, verify the on-call route, then retain only the redacted receipt.
+
 ## Overview
 
 Implement monitoring, structured logging, and health checks for Documenso integrations. Since Documenso does not expose rate limit headers or usage metrics via API, observability is built around your API call patterns, latency, error rates, and webhook delivery.

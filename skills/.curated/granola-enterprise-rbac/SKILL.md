@@ -213,6 +213,10 @@ Access audit logs: Organization Settings > **Security** > **Audit Log**
 | SCIM sync delayed | IdP sync interval too long | Trigger manual sync in IdP, or adjust interval |
 | Orphaned accounts after termination | SCIM deprovisioning not configured | Enable deprovisioning in SCIM settings |
 
+## Examples
+
+`scope=staging-calendar; mapping_rev=42; owner=platform-ops; allow_probe=pass; deny_probe=pass; sync=2026-08-27T14:00Z; rollback=rev41` proves the boundary without disclosing attendee groups.
+
 ## Resources
 
 - [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)

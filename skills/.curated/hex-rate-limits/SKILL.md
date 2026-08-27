@@ -139,6 +139,27 @@ async function batchRunProjects(projects: Array<{ id: string; params: any }>, ba
 | Empty run output | Project has no published outputs | Verify project has published cells |
 | 409 concurrent run | Same project triggered twice | Check run status before re-triggering |
 
+## Prerequisites
+
+- An approved request budget, observed header baseline, and sandbox run workload using opaque project IDs.
+- A bounded queue, idempotency key for mutations, and reviewed recovery path for exhausted work.
+
+## Instructions
+
+1. Classify requests by project and operation, applying per-scope concurrency limits before dispatch.
+2. Honor server retry guidance when available; otherwise use bounded exponential backoff with jitter and a maximum attempt count.
+3. Never replay a run, publish, or schedule mutation without its idempotency key, and defer nonessential work before backlog threatens freshness.
+4. Monitor aggregate limited/deferred counts and synthetic canary success, tuning a single scope at a time with rollback.
+5. Route exhausted work to reviewed recovery rather than silently dropping or duplicating runs.
+
+## Output
+
+Return a rate-limit receipt with scope, requested/limited/deferred counts, retry revision, idempotency state, queue health, canary result, and rollback reference. Exclude query text, SQL, output, and credentials.
+
+## Examples
+
+`scope=sandbox-projects; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; queue=healthy; rollback=limits-r7` proves bounded handling.
+
 ## Resources
 
 - [Hex API Documentation](https://learn.hex.tech/docs/api/api-overview)

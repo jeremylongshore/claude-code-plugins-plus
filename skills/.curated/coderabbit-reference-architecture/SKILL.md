@@ -324,6 +324,20 @@ jobs:
 - CI pipeline integration for review gating
 - Team onboarding quick reference document
 
+## Prerequisites
+
+- Named repository and configuration owners with approved review goals
+- A pilot repository and a reversible branch-protection/configuration path
+- Current team standards, generated-file policy, and security review boundaries
+
+## Examples
+
+Create a minimal reference configuration in a pilot repository, add one
+path-specific instruction for a high-risk directory, and validate it on a small
+pull request. If review volume or status behavior differs from the approved
+design, revert the configuration and adjust the scoped instruction before
+making it the organization reference.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

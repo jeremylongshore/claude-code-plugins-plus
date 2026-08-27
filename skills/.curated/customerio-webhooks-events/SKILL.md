@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Webhooks & Events
 
+## Output
+
+- A validated, signed, idempotent event/webhook flow with redacted observability and an owned retry policy.
+- A delivery receipt that records correlation ID, environment, event type, result, and consent-safe recovery decision.
+
+## Examples
+
+Verify a webhook signature before parsing payload data, store only the opaque event ID for deduplication, and acknowledge within the provider timeout. For a failed processing attempt, retry with bounded backoff; send terminal failures to a protected queue and replay only after schema and consent checks pass.
+
 ## Overview
 
 Implement Customer.io reporting webhook handling: receive real-time delivery events (sent, delivered, opened, clicked, bounced, complained, unsubscribed), verify HMAC-SHA256 signatures, process events reliably with queuing, and stream to a data warehouse.

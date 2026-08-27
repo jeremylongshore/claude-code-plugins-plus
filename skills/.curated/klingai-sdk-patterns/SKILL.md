@@ -256,6 +256,32 @@ def retry_on_transient(max_retries=3, backoff_base=2):
 KlingClient._post = retry_on_transient()(KlingClient._post)
 ```
 
+## Prerequisites
+
+- A pinned SDK version, sandbox workspace, secret references, synthetic or rights-cleared brief, approved rate/credit limits, content-policy check, and rollback owner.
+
+## Instructions
+
+1. Exercise SDK patterns with one sandbox, draft-only canary; do not hard-code credentials or submit private/unlicensed materials.
+2. Apply idempotency, bounded retries, redacted telemetry, and explicit task cancellation; verify policy, rights, credit, destination, and retention controls.
+3. Stop on authentication, policy, rights, scope, budget, or retention drift and restore the previous client configuration.
+4. Promote dependency or retry changes only after owner approval; remove temporary assets and retain a redacted receipt.
+
+## Output
+
+Produce an SDK receipt with version, environment, test classification, retry/idempotency result, aggregate task outcome, policy/rights/budget checks, draft-only assertion, approver, and cleanup/rollback reference. Exclude prompts, assets, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Retry creates duplicate work | Cancel duplicate tasks, preserve only aggregate redacted evidence, and enforce idempotency before retrying. |
+| Policy, rights, budget, or retention drift | Stop the canary, remove drafts, and restore the approved SDK configuration. |
+
+## Examples
+
+`sdk=pinned; env=ci-sandbox; retry=bounded; idempotency=pass; policy=pass; destination=draft-only; cleanup=verified` is an acceptable pattern test.
+
 ## Resources
 
 - [Kling AI Developer Portal](https://app.klingai.com/global/dev)

@@ -172,6 +172,10 @@ async function scrapeWithPuppeteer(url: string) {
 - Scraped structured data from JS-rendered pages
 - Automatic CAPTCHA solving and fingerprint management
 
+## Examples
+
+For an approved collection job, document the target authorization, collection purpose, allowed fields, retention period, and rate limit before enqueueing work. Persist an idempotency key and redacted outcome, validate the result against the allowed schema, and stop rather than expanding scope when the response includes unexpected personal or restricted data.
+
 ## Error Handling
 
 | Error | Cause | Solution |

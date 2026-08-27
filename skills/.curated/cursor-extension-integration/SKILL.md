@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Extension Integration
 
+## Overview
+
+Add extensions only when their publisher, permissions, data flow, compatibility, and maintenance risk are understood for the target repository.
+
+## Prerequisites
+
+- Approved extension source, publisher verification, and workspace/data classification.
+- A disposable profile or test workspace and a rollback method for extension settings.
+
+## Instructions
+
+1. Review publisher, permissions, license, update history, and network/data behavior.
+2. Test one extension in an isolated profile with a non-sensitive workspace.
+3. Check conflicts with Cursor, rules, completion providers, and repository tooling.
+4. Approve, document, and periodically review the extension; remove it on security or compatibility failure.
+
+## Output
+
+- A tested extension decision with owner, version, permission/data assessment, and rollback path.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Extension conflicts or degrades editor behavior | Disable/remove it in the test profile and retain diagnostics. |
+| Extension requests unapproved access | Do not install; seek security review or an approved alternative. |
+| Update changes permissions | Hold update until the new permissions are reviewed. |
+
+## Examples
+
+Test a formatter extension in a disposable profile against a sample repository, verify it does not transmit code or conflict with existing formatting, and then document the approved version. Remove it rather than disabling security controls if it conflicts.
+
 Integrate VS Code extensions with Cursor IDE. Covers the Open VSX Registry, VSIX installation for Microsoft-exclusive extensions, conflict resolution with AI features, and recommended extension stacks.
 
 ## Extension Marketplace: Key Difference from VS Code

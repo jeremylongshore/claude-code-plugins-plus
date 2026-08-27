@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Complete checklist for deploying Canva Connect API integrations to production, covering OAuth configuration, security, error handling, monitoring, and Canva's integration review process.
 
+## Prerequisites
+
+- An approved release owner, exact artifact/configuration version, and tested rollback artifact.
+- Mocked tests plus a protected integration environment using synthetic or approved non-production assets and least-privilege credentials.
+
+## Instructions
+
+1. Execute the checklist against the exact production candidate and policy configuration.
+2. Verify scopes, asset/publication authorization, retention, webhook validation, rate/cost controls, and redacted observability before enabling writes or exports.
+3. Keep traffic disabled and roll back if any evidence is missing; do not replace controlled tests with live design data.
+
 ## Pre-Deployment
 
 ### OAuth & Security
@@ -148,6 +159,14 @@ app.get('/health', async (req, res) => {
 | Export failures | `license_required` or `internal_failure` | P3 |
 | API unreachable | Connection timeout | P1 |
 | Token refresh fails | Refresh returns error | P1 |
+
+## Output
+
+The readiness run produces a redacted go/no-go receipt with artifact/config versions, approved scope, test mode, health result, and rollback version. It excludes credentials, design content, asset URLs, and user data.
+
+## Examples
+
+Run mocked tests and one approved synthetic-asset integration check before release, then attach the receipt. If authorization, retention, rate-limit, or reconciliation evidence fails, leave the release disabled and restore the prior artifact.
 
 ## Error Handling
 

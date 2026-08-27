@@ -130,6 +130,25 @@ describe.skipIf(!hasKey)('Juicebox Live API', () => {
 | Rate limit (429) | Too many concurrent analyses | Queue analyses and limit to 2 parallel runs |
 | Empty insights array | Insufficient data for AI analysis | Ensure test dataset has 100+ rows with varied data |
 
+## Prerequisites
+
+- CI secret references, a sandbox workspace, synthetic prospects, protected branches, source-authority checks, and a rollback mechanism.
+
+## Instructions
+
+1. Run mocked tests first, including unknown source, denied scope, suppression, malformed enrichment, quota, and export-block cases.
+2. Run a bounded sandbox integration with idempotency; prohibit production sources/destinations and literal credentials in CI.
+3. Emit aggregate counts, opaque IDs, and policy revisions only; fail for unapproved source, expanded scope, contact-data leakage, or export path.
+4. Canary after protected review, verify `contacts_exported=0`, and restore the last-known-good revision on failure.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox workspace, test totals, source/destination/suppression checks, export-count assertion, canary outcome, and rollback reference. Exclude contacts, enrichment fields, and secrets.
+
+## Examples
+
+`sha=abc123; fixtures=v5; workspace=ci-synthetic; tests=18/18; source=approved; suppression=pass; contacts_exported=0; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - Juicebox Documentation

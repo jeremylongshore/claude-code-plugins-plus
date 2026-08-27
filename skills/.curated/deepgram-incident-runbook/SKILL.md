@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Incident Runbook
 
+## Prerequisites
+
+- An incident ID, commander, affected service/environment, escalation route, and authorized redacted diagnostic access.
+- A data/consent owner and documented safe mitigation or rollback action.
+
+## Examples
+
+For elevated transcription errors, declare scope, capture aggregate health and redacted correlation IDs, stabilize with the documented circuit-breaker/rollback, and verify recovery against the SLO. Escalate provider or data-impact incidents through the approved path; do not attach customer audio, transcripts, or credentials to the incident channel.
+
 ## Overview
 
 Standardized incident response for Deepgram-related production issues. Includes automated triage script, severity classification (SEV1-SEV4), immediate mitigation actions, fallback activation, and post-incident review template.

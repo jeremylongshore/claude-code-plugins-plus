@@ -132,6 +132,37 @@ def tracked_create(**kwargs):
 | Daily cost | > 80% budget | > 100% budget |
 | Auth failures (401/403) | > 0 | > 0 (immediate) |
 
+## Prerequisites
+
+- Have an approved release/artifact digest, production workspace, secret-manager reference, owner/on-call, change record, canary plan, and tested rollback command.
+- Define the model/version, data classification, allowed destinations, retention, budget, rate-limit, latency, error, and content-safety thresholds for this release.
+- Prepare synthetic fixtures and a staging environment that matches production policy; never validate readiness with live customer content or by printing credentials.
+
+## Instructions
+
+1. Confirm every checklist item with an evidence link or redacted receipt: authentication, workspace isolation, model/version, error handling, limits, cost, observability, content safety, and rollback.
+2. Run staging contract, health, synthetic redaction, timeout, rate-limit, permission, and output-safety tests. Verify logs/metrics contain metadata only and that deletion/retention behavior is proven.
+3. Deploy the approved artifact to a small internal canary. Monitor p95/p99 latency, 4xx/5xx/429, token/cost aggregates, rate-limit headroom, and policy probes; halt on any critical threshold.
+4. Require owner and on-call approval before staged production promotion. Preserve the prior revision and ensure the rollback path is executable without exposing secrets or content.
+5. After rollout, issue a redacted receipt, revoke temporary test access, and retain only the evidence required by the documented policy.
+
+## Output
+
+Produce a go-live receipt containing artifact/config digests, workspace/model classes, checklist evidence, synthetic test results, canary and threshold outcomes, approvals, rollout state, retention cleanup, and rollback reference. Exclude API keys, prompts, responses, customer identifiers, and raw exception text.
+
+## Error Handling
+
+| Gate failure | Required response |
+|---|---|
+| Authentication, workspace, or permission check fails | Do not deploy; verify secret binding and scope, then rotate/revoke only through the approved process. |
+| 429/5xx, timeout, latency, or budget threshold fails | Halt promotion, apply bounded degradation/circuit breaking, and roll back to the prior revision. |
+| Redaction, content-safety, or retention check fails | Stop traffic, quarantine affected artifacts, correct the boundary, and rerun staging evidence. |
+| Missing approval or unverifiable evidence | Mark release not ready; do not bypass the gate. |
+
+## Examples
+
+For `artifact=sha256:fixture` in staging, run synthetic `fixture-request-001`, assert `sensitive_content_logged=0; contacts_exported=0; rollback_test=pass`, then canary 1% internal traffic. A failed 429 gate records `go_live=halted; rollback=prior-revision` and sends no further production traffic.
+
 ## Resources
 
 - [API Status](https://status.anthropic.com)

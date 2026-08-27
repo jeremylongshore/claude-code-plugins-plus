@@ -27,6 +27,15 @@ compatibility: Designed for Claude Code
 
 Iterative development workflow for Anima design-to-code: generate from Figma, preview in browser, tweak settings, regenerate. Includes side-by-side comparison of React vs Vue vs HTML output.
 
+## Prerequisites
+
+- A staging Figma file and allowlisted node IDs, with scoped credentials loaded
+  from an ignored local environment file or development secret store.
+- A disposable generated-output directory that is not imported by the
+  production application until code and visual review pass.
+- Agreed comparison criteria for accessibility, design-token use, responsive
+  behavior, dependencies, and generation settings.
+
 ## Instructions
 
 ### Step 1: Project Setup
@@ -105,6 +114,17 @@ compareOutputs(nodeId).catch(console.error);
 - Side-by-side React/Vue/HTML output for same design
 - Vite preview server for instant component viewing
 - Iterative generate-preview-tweak loop
+
+## Examples
+
+Select one approved staging frame and run only the `react-tailwind` preset
+first. Preview the result locally, compare it to the design for semantics and
+responsive behavior, and run the project formatter/type check before trying a
+second preset. Store the Figma version and preset alongside the generated
+review artifact so the comparison is repeatable. If generation hits a rate
+limit, output changes unexpectedly, or an unapproved dependency appears, stop
+the loop, preserve the sanitized error, and correct the fixture or settings
+instead of continuously regenerating.
 
 ## Error Handling
 

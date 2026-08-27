@@ -32,6 +32,22 @@ compatibility: Designed for Claude Code
 
 CoreWeave provides bare-metal GPU cloud on Kubernetes. Security concerns center on compute credential management (kubeconfig, deploy tokens), network isolation between inference workloads, secrets for model registry access (HuggingFace, container registries), and protecting sensitive training data on persistent volumes. A compromised namespace can expose GPU resources, model weights, and customer inference data.
 
+## Prerequisites
+
+- A named namespace owner and a current data classification for the workload.
+- Secrets-manager access for deployment credentials; no credentials in manifests or git.
+- Authority to apply Kubernetes policies in the target namespace and an approved rollback plan.
+
+## Instructions
+
+1. Store API, registry, and model credentials in the approved secrets manager and
+   mount only the minimum secret into the intended workload.
+2. Apply namespace-scoped RBAC, ResourceQuota, and default-deny NetworkPolicy before
+   exposing an inference endpoint.
+3. Validate images and request payloads in CI, then test webhook signatures with a
+   known valid and invalid payload without logging raw secrets.
+4. Review access events and rotate/revoke the affected secret after suspected exposure.
+
 ## API Key Management
 
 ```typescript
@@ -61,7 +77,9 @@ function verifyCoreWeaveWebhook(req: Request, res: Response, next: NextFunction)
   const signature = req.headers["x-coreweave-signature"] as string;
   const secret = process.env.COREWEAVE_WEBHOOK_SECRET!;
   const expected = crypto.createHmac("sha256", secret).update(req.body).digest("hex");
-  if (!signature || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+  const supplied = Buffer.from(signature ?? "");
+  const expectedBuffer = Buffer.from(expected);
+  if (supplied.length !== expectedBuffer.length || !crypto.timingSafeEqual(supplied, expectedBuffer)) {
     res.status(401).send("Invalid signature");
     return;
   }
@@ -121,6 +139,30 @@ function redactCoreWeaveLog(record: Record<string, unknown>): Record<string, unk
 | Unscanned container images | CVE exploitation in GPU pods | CI image scanning before deploy |
 | Overly broad RBAC | Cross-namespace data leakage | Per-team namespace RBAC bindings |
 | Unencrypted PVCs | Training data exposure | Encrypted storage classes |
+
+## Output
+
+- A namespace-level hardening baseline covering secrets, RBAC, network isolation,
+  image validation, and protected persistent storage.
+- A safe signature-validation and input-validation path that rejects malformed
+  requests without leaking credentials or workload data.
+- An incident response path that revokes access, preserves redacted evidence, and
+  verifies recovery with the namespace owner.
+
+## Examples
+
+Apply a default-deny ingress policy before adding an explicitly reviewed service
+exception. Test it in the target namespace with a non-sensitive health endpoint:
+
+```bash
+kubectl -n inference apply -f networkpolicy-default-deny.yaml
+kubectl -n inference get networkpolicy
+kubectl -n inference run policy-check --rm -i --restart=Never \
+  --image=curlimages/curl -- curl -fsS http://approved-service/health
+```
+
+If the expected workload is blocked, add the smallest labelled ingress rule and
+retest. Never temporarily open all namespace ingress as a diagnostic workaround.
 
 ## Resources
 

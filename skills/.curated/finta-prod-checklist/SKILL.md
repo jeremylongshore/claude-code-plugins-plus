@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Finta is a fundraising CRM for managing investor pipeline, deal rooms, and round tracking. A production integration syncs investor communications, manages deal room access, and automates pipeline stage transitions. Failures mean lost investor touchpoints, broken deal room links, or pipeline data that drifts from your actual fundraise state.
 
+## Prerequisites
+
+- A named launch owner, authorized approver, on-call contact, and tested rollback mechanism.
+- Staging evidence produced with synthetic data, including permission, deduplication, retry, and failure-path checks.
+- A reviewed list of approved data flows, retention requirements, alert thresholds, and recipients.
+
+## Instructions
+
+1. Complete every applicable checklist item with an evidence link or owner decision; do not treat unchecked items as implicitly accepted.
+2. Confirm secrets are injected at runtime, privileges are scoped, and diagnostics redact investor and financial data.
+3. Run a canary that exercises a read-only or synthetic workflow before allowing broad production synchronization.
+4. Monitor aggregate health, delivery backlog, duplicate detection, and permission failures during the launch window.
+5. Stop promotion and invoke rollback when a defined safety, delivery, or access threshold is breached; document the decision and recovery verification.
+
 ## Authentication & Secrets
 
 - [ ] `FINTA_API_KEY` stored in secrets manager (not config files)
@@ -94,6 +108,14 @@ checkFintaReadiness();
 | Deal room link expiry | Investors hit dead links before meetings | P2 |
 | Duplicate investor import | Fragmented communication history | P2 |
 | Cap table validation | Incorrect ownership reported to board | P3 |
+
+## Output
+
+Produce a go-live receipt listing completed controls, evidence locations, canary results, monitored thresholds, launch and rollback owners, unresolved exceptions, and final approval. Keep credentials, raw exports, investor details, and financial terms out of the receipt.
+
+## Examples
+
+Run the checklist in staging with a fictitious round, confirm that a revoked test user loses deal-room access, and simulate an upstream failure to verify that the integration pauses safely. Promote only after the designated owner records approval and the canary produces the expected aggregate metrics.
 
 ## Resources
 

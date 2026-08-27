@@ -133,6 +133,10 @@ curl -s -H "Authorization: Bearer $HOOTSUITE_ACCESS_TOKEN" \
 | `422 Unprocessable` | Invalid profile ID or past date | Verify profile ID and future date |
 | No profiles returned | No social accounts connected | Connect accounts in Hootsuite dashboard |
 
+## Examples
+
+Create a fictitious draft in a sandbox profile and record `profile=hello-sandbox; content=fixture-only; approval=pending; audience=test-only; public_posts=0; cleanup=complete`. Do not use a real account or post text as tutorial data.
+
 ## Resources
 
 - [Messages API](https://developer.hootsuite.com/docs/message-scheduling)

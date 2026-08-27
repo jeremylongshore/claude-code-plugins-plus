@@ -25,6 +25,26 @@ compatibility: Designed for Claude Code
 
 Flexport logistics data encompasses shipment records, bills of lading, customs declarations, commercial invoices, tracking events, and trade compliance documents. This data crosses international borders and regulatory jurisdictions, requiring strict handling for PII (shipper/consignee contacts), controlled export data (HS codes, ITAR items), and financial records (invoices, duty payments). All integrations must enforce GDPR/CCPA compliance, customs data retention mandates, and C-TPAT supply chain security standards.
 
+## Prerequisites
+
+- A documented data inventory, authorized processing purpose, owners, destination allowlist, retention/deletion schedule, and legal review where required.
+- Encryption, access control, redaction, and secure-evidence procedures appropriate to each classified data type.
+
+## Instructions
+
+1. Minimize imports to approved fields and process sensitive records only in authorized systems.
+2. Enforce access and retention at every storage and downstream handoff; use opaque IDs in diagnostics.
+3. Test mappings with fictional data, reconcile only approved aggregate values, and obtain owner approval before cutover.
+4. Quarantine unknown fields, unapproved destinations, and retention conflicts for review instead of forwarding them.
+
+## Output
+
+Create a processing receipt with source reference, field classification, approved destination, retention rule, aggregate validation outcome, owner, and exception state. Keep source payloads, documents, addresses, and credentials outside the receipt.
+
+## Examples
+
+Transform a fictional shipment containing invented contact and product data using a field allowlist. Confirm the destination receives only approved fields, logs contain an opaque ID and aggregate counts, and the test data is removed on the defined schedule.
+
 ## Data Classification
 
 | Data Type | Sensitivity | Retention | Encryption |

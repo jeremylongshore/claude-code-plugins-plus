@@ -117,6 +117,16 @@ print(f"\nTokens used: {final.usage.input_tokens}+{final.usage.output_tokens}")
 - Successful API response with text content
 - Console output showing model response and usage metadata
 
+## Examples
+
+Use the text example first when verifying credentials: send a fixed, short
+prompt and confirm that `message.content[0].text` is present before integrating
+the client into application code. Use the vision example only after that check
+passes and replace `chart.png` with a non-sensitive local fixture. For an
+interactive command-line feature, use the streaming example so text is emitted
+incrementally, then read the final message to capture token usage for logs or
+cost controls.
+
 ## Error Handling
 
 | Error | HTTP Code | Cause | Solution |

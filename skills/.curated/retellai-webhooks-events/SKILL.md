@@ -105,6 +105,17 @@ app.post('/functions/book-appointment', express.json(), async (req, res) => {
 | Function timeout | Slow backend | Respond within 5 seconds |
 | Missing transcript | Short call | Transcript only for calls > 5 seconds |
 
+## Examples
+
+### Process a duplicate webhook delivery safely
+
+Verify the webhook signature, derive a stable event identifier, and record the
+event before invoking any downstream side effect. When the same identifier is
+received again, acknowledge it without re-sending a notification, creating a
+booking, or storing another transcript copy. Send only redacted event metadata
+to observability systems, and alert on sustained signature failures or delivery
+latency rather than logging the raw call payload.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Avoid a duplicate-call retry after a network timeout
+
+An outbound request times out after submission. Before retrying, look up the
+request correlation or call identifier to determine whether Retell already
+created the call. If state is unknown, hold the retry and escalate with the
+redacted request metadata; sending a second request can contact the same
+person twice. Add bounded retries only where the operation is explicitly
+idempotent and monitor the duplicate-call rate after the change.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

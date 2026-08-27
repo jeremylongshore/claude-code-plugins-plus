@@ -111,6 +111,19 @@ async function fullContentAudit(text: string, token: string) {
 | Poll timeout | Processing taking long | Increase poll duration |
 | AI score inconsistent | Short text | AI detection works best on 200+ words |
 
+## Prerequisites
+
+- A documented consent and retention policy, a sandbox fixture containing fictitious text, and an approved destination.
+- A scoped credential, idempotency key for asynchronous work, and a deletion/rollback process for staged jobs.
+
+## Output
+
+Return a workflow receipt with environment, operation type, accepted/quarantined counts, job or idempotency state, retention decision, redacted correlation ID, and rollback reference. Never retain submitted text, matched sources, suggestions, or credentials.
+
+## Examples
+
+`env=sandbox; operation=quality-check; accepted=8; quarantined=1; job=opaque-31; retention=none; cleanup=complete` is a controlled asynchronous result.
+
 ## Resources
 
 - [AI Detection API](https://developer.grammarly.com/ai-detection-api.html)

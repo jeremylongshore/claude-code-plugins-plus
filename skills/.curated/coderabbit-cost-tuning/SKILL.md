@@ -194,6 +194,14 @@ cr review --prompt-only
 | Can't reduce seat count | Active committers across all repos | Disable CodeRabbit on low-value repos first |
 | CLI charges higher than expected | Reviewing all files | Use `cr review <specific-files>` instead |
 
+## Examples
+
+Audit a pilot organization’s active seats and review coverage, remove one
+unused repository from the app, and compare quality/latency before and after.
+Use targeted CLI review on a representative high-risk file set; if coverage or
+security-review quality falls below the approved threshold, restore the prior
+scope and revisit the cost decision with the owner.
+
 ## Resources
 
 - [CodeRabbit Pricing](https://coderabbit.ai/pricing)

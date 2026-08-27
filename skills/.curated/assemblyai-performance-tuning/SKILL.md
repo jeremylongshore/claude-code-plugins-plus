@@ -238,6 +238,10 @@ async function timedTranscribe(audioUrl: string, options: Record<string, any> = 
 - In-memory and Redis caching for transcript retrieval
 - Performance monitoring with processing time ratios
 
+## Examples
+
+Benchmark a consented short sample under the production-equivalent model and feature set, record p50/p95 latency and cost, then change only one variable behind a feature flag. Roll back if completion, accuracy review, or queue health regresses; do not use customer transcript text as a performance fixture.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

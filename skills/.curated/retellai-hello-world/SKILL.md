@@ -110,6 +110,17 @@ if (callDetail.transcript) {
 | `400 No phone number` | Number not registered | Register number in Dashboard first |
 | Call not connecting | Destination unreachable | Try web call for testing |
 
+## Examples
+
+### Validate a first agent with a web call before using a phone number
+
+Create a development agent with a short greeting and no external tools, then
+exercise it through the web-call interface using synthetic inputs. Confirm the
+selected voice, expected greeting, disconnect behavior, and redacted
+transcript. Only after this evidence is reviewed should a team attach a test
+phone number; production routing remains separate until the agent has a
+versioned preview and a documented fallback path.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

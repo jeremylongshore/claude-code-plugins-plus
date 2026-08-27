@@ -22,6 +22,22 @@ compatibility: Designed for Claude Code
 ---
 # Framer Production Checklist
 
+## Prerequisites
+
+A launch owner, approver, staging evidence with fictional content, domain/DNS owner, access policy, and rollback operator.
+
+## Instructions
+
+Attach evidence or an owner decision to every control, validate publishing/domain/integration/privacy behavior in a canary, observe aggregate health, and stop promotion on threshold or access failures.
+
+## Error Handling
+
+Pause publishing on domain, access, visitor-data, or integration failures; restore the prior configuration and verify the rollback before resolving the incident.
+
+## Examples
+
+Publish a fictional staging page, revoke a test collaborator, and simulate a failed domain check. Promote only after the owner records that access and rollback behaved as expected.
+
 ## Overview
 
 Checklist for deploying Framer plugins, code components, and Server API integrations to production.

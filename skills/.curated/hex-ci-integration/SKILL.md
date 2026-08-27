@@ -144,6 +144,25 @@ describe.skipIf(!hasToken)('Hex Live API', () => {
 | `inputParams` rejected | Parameter name mismatch | Match param names exactly to Hex project input cells |
 | Rate limit (429) | Too many run triggers | Deduplicate CI triggers and add cooldown between runs |
 
+## Prerequisites
+
+- CI secret references, a sandbox project/destination, fixtures with no production output, protected branches, and a rollback mechanism.
+
+## Instructions
+
+1. Run mocked tests first, including malformed parameter, denied access, quota, cancellation, and output-assertion cases.
+2. Run a bounded sandbox integration with idempotency and prohibit production projects/destinations in CI configuration.
+3. Emit aggregate counts, opaque IDs, and policy revisions only; fail for unexpected scope, unredacted output, or expanded access.
+4. Canary after protected review, verify assertions, and restore the last-known-good revision on failure.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox project, test totals, policy checks, canary outcome, and rollback reference. Exclude SQL, output, and secrets.
+
+## Examples
+
+`sha=abc123; fixtures=v5; project=ci-synthetic; tests=18/18; access=least-privilege; assertions=pass; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - Hex API Reference

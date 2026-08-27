@@ -250,6 +250,12 @@ GROUP BY 1 ORDER BY 2 DESC LIMIT 10;
 | Wrong model | No routing logic | Use complexity-based model selection |
 | Long responses | No maxTokens | Always set maxTokens |
 
+## Examples
+
+### Put a daily cap on a low-risk summarization lane
+
+Route short summaries to `mistral-small-latest`, set `maxTokens` to the product’s response limit, and record input/output usage for each request. When the daily budget reaches the alert threshold, queue non-urgent work for the Batch API instead of silently continuing at on-demand rates.
+
 ## Resources
 
 - [Mistral Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)

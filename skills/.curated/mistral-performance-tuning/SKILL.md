@@ -211,6 +211,12 @@ const response = await client.fim.complete({
 | Stream disconnected | Network timeout | Implement reconnection |
 | Cache thrashing | High cardinality prompts | Increase cache size or reduce TTL |
 
+## Examples
+
+### Improve an interactive code-completion path
+
+Measure time-to-first-token for the current chat request, switch the code-only completion to Codestral FIM with a fixed token cap, and compare p95 latency and output acceptance on a representative fixture set. Keep the previous path behind a feature flag until the new path meets the latency and correctness budget.
+
 ## Resources
 
 - [Models Overview](https://docs.mistral.ai/getting-started/models/)

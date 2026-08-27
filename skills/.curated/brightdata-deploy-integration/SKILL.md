@@ -169,6 +169,10 @@ export async function GET() {
 - Health check endpoint verifying proxy connectivity
 - Timeout and memory configured for scraping workloads
 
+## Examples
+
+Deploy a versioned worker with zone credentials injected only at runtime, enforce an allowlisted target policy at the application boundary, and run a read-only probe to a controlled target before accepting jobs. Promote gradually with hard rate and spend limits; preserve only redacted delivery evidence and roll back immediately if policy or reconciliation checks fail.
+
 ## Error Handling
 
 | Issue | Cause | Solution |

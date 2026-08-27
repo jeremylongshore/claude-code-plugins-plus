@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Primary Workflow
 
+## Output
+
+- A consent-aware workflow with explicit trigger, audience, data contract, message/template version, and owner.
+- A synthetic validation receipt and a scoped rollback/disable action for unexpected delivery behavior.
+
+## Examples
+
+Build the workflow in development using one synthetic profile and a versioned event, confirm trigger conditions and suppression/consent rules, then promote through staging. Enable production through an approved canary audience; pause/disable the workflow if the audience or message behavior does not match the reviewed expectation.
+
 ## Overview
 
 Implement Customer.io's core messaging workflow: identify users with segment-ready attributes, track lifecycle events that trigger campaigns, and set up the data layer for automated onboarding, nurture, and re-engagement sequences.

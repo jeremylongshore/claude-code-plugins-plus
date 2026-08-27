@@ -28,6 +28,21 @@ compatibility: Designed for Claude Code
 
 Clari provides revenue intelligence through forecast data, pipeline analytics, and deal inspection. A production integration typically exports forecast snapshots, syncs pipeline data to a warehouse, and powers revenue dashboards. Incorrect data pipelines mean unreliable forecasts, missed quota signals, or stale deal intelligence that undermines board-level reporting.
 
+## Prerequisites
+
+- Approved production data owner, change record, and release window
+- Separate production credential, state, and warehouse role
+- Certified staging export and tested recovery from partial or stale data
+- Monitoring, access-control, and retention policies accepted by owners
+
+## Instructions
+
+Complete the checklist in sequence: verify identity and secret boundaries,
+validate API/export behavior with a controlled read, confirm idempotent loading
+and freshness alerting, then secure the required approvals before enabling the
+scheduled production job. Capture evidence for each item; do not promote a
+staging result or use a successful connection alone as production acceptance.
+
 ## Authentication & Secrets
 
 - [ ] `CLARI_API_KEY` stored in secrets manager (not config files)
@@ -100,6 +115,20 @@ checkClariReadiness();
 | Duplicate record prevention | Inflated pipeline numbers | P2 |
 | Export job timeout | Stuck jobs block scheduling queue | P2 |
 | Forecast anomaly alerts | Missed revenue signals | P3 |
+
+## Output
+
+Publish a production-readiness receipt tying every control to redacted evidence,
+owner, approval, validation time, and tested rollback decision. The receipt
+must state the currently certified forecast period and must not contain live
+tokens, raw forecast values, or rep-level data outside approved storage.
+
+## Examples
+
+Before launch, run one protected-environment export, verify the source period,
+row count, warehouse merge, freshness alert, and recovery path, then record
+the results in the change ticket. If the export is empty or the anomaly check
+cannot run, keep publication disabled and restore the last certified dataset.
 
 ## Resources
 

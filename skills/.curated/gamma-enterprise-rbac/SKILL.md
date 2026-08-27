@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Enterprise RBAC
 
+## Output
+
+Maintain an access receipt with role, approved operation class, policy version, review date, approver, and revocation result. Do not include credentials or presentation content.
+
+## Examples
+
+Grant a temporary test role view access to a fictional staging deck, attempt an unauthorized publish, confirm denial, then revoke the role and record only the opaque test outcome.
+
 ## Overview
 
 Implement role-based access control for Gamma API integrations. Gamma's API uses a single API key per workspace -- granular permissions must be implemented in your application layer. The Teams and Business plans support workspace-level collaboration with shared themes and folders.

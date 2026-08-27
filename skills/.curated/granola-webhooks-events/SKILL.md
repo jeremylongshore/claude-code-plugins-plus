@@ -242,6 +242,10 @@ app.post('/webhooks/granola', async (req, res) => {
 | Webhook timeout | Handler takes > 30s | Return 200 immediately, process async |
 | Missing attendees | Calendar event has no attendee list | No fix — attendees come from calendar event data |
 
+## Examples
+
+For a synthetic `meeting.completed` event, record `event=evt-opaque-9; origin=approved; signature=pass; idempotency=once; destination=staging-actions; retention=none; rollback=consumer-disabled`. Do not retain the meeting title, attendees, notes, or payload.
+
 ## Resources
 
 - [Zapier Granola Integration](https://zapier.com/apps/granola/integrations)

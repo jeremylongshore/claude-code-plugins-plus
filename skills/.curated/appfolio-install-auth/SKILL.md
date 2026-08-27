@@ -40,16 +40,16 @@ Configure AppFolio Stack API authentication. AppFolio uses HTTP Basic Auth with 
 # AppFolio Stack API credentials come from the partner program
 # 1. Apply at appfolio.com/stack/become-a-partner
 # 2. Complete integration review
-# 3. Receive client_id and client_secret
-
-cat > .env << 'ENVFILE'
-APPFOLIO_CLIENT_ID=your-client-id
-APPFOLIO_CLIENT_SECRET=your-client-secret
-APPFOLIO_BASE_URL=https://your-company.appfolio.com/api/v1
+# 3. Receive the provider-issued base URL and credential delivery instructions.
+# Store the values in the approved secret manager. Commit only this non-secret
+# template if local development requires one:
+cat > .env.example << 'ENVFILE'
+APPFOLIO_CLIENT_ID=
+APPFOLIO_CLIENT_SECRET=
+APPFOLIO_BASE_URL=
 ENVFILE
 
-chmod 600 .env
-echo ".env" >> .gitignore
+# .env remains ignored; populate it only through an approved local secret flow.
 ```
 
 ### Step 2: Create API Client
@@ -93,9 +93,16 @@ export { AppFolioClient };
 ### Step 3: Verify Connection
 
 ```bash
-# Quick curl test
-curl -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" \
-  "${APPFOLIO_BASE_URL}/properties" | jq '.[0]'
+# Quick, redacted diagnostic without putting Basic Auth in argv.
+NETRC_FILE="$(mktemp)"
+trap 'rm -f "$NETRC_FILE"' EXIT
+chmod 600 "$NETRC_FILE"
+APPFOLIO_HOST="${APPFOLIO_BASE_URL#https://}"
+APPFOLIO_HOST="${APPFOLIO_HOST%%/*}"
+printf 'machine %s login %s password %s\n' "$APPFOLIO_HOST" \
+  "$APPFOLIO_CLIENT_ID" "$APPFOLIO_CLIENT_SECRET" > "$NETRC_FILE"
+curl -s -o /dev/null -w '%{http_code}\n' --netrc-file "$NETRC_FILE" \
+  "${APPFOLIO_BASE_URL}/properties"
 ```
 
 ## API Endpoints
@@ -113,9 +120,19 @@ curl -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" \
 
 ## Output
 
-- API credentials configured in `.env`
+- Provider-issued credentials injected through the approved secret boundary
 - TypeScript REST client with Basic Auth
-- Verified connectivity to AppFolio API
+- Redacted connectivity result for the approved safe-read endpoint
+
+## Examples
+
+For a first authentication rehearsal, inject a sandbox credential and the
+provider-issued base URL through the local secret mechanism, then make one
+read-only request to an approved synthetic property page. Record only the
+status code and client configuration verdict; do not print a property payload,
+client ID, secret, or full host/path in shared logs. If the contract, base URL,
+secret binding, or status result is unverified, stop before any write workflow
+and have the credential owner correct the configuration.
 
 ## Error Handling
 

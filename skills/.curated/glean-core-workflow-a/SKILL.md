@@ -24,6 +24,12 @@ compatibility: Designed for Claude Code
 
 Build search and chat experiences using the Glean Client API. Covers full-text search with filters, AI-powered chat answers, and autocomplete suggestions.
 
+## Prerequisites
+
+- A scoped search identity, approved datasource filter, and synthetic terms that cannot retrieve company-sensitive material.
+- User-consent and retention policy for any analytics, chat history, or feedback capture.
+- A rollback path that disables the client or filter without changing source documents or connector ACLs.
+
 ## Instructions
 
 ### Step 1: Search with Filters and Facets
@@ -80,6 +86,14 @@ suggestions.results?.forEach((s: any) => console.log(`  ${s.text}`));
 | Empty results | Query too specific or datasource not indexed | Broaden query, check datasource status |
 | Chat returns no citations | Content not indexed for chat | Verify documents have body text |
 | 403 on search | User permissions | Ensure token has search scope |
+
+## Output
+
+Return a redacted workflow receipt containing datasource scope, correlation ID, result-count band, allow/deny outcomes, and fallback used. Never record query text, titles, snippets, transcripts, or credentials.
+
+## Examples
+
+Run a fictional query against `sandbox-handbook`, verify one authorized identity sees the sample while a denied identity sees none, and record `scope=sandbox-handbook; allow=1; deny=0; fallback=none`.
 
 ## Resources
 

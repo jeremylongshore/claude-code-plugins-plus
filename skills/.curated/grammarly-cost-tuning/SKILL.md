@@ -116,6 +116,27 @@ class GrammarlyUsageMonitor {
 | Plagiarism costs spiking | Running originality check on every save | Restrict to final draft submissions only |
 | Stale cache returning outdated scores | Algorithm updates not reflected | TTL of 7 days on cached results; invalidate on version change |
 
+## Prerequisites
+
+- A budget, baseline request and quota metrics, text-retention policy, and a named owner for each integration.
+- A sandbox dry run with fictional fixtures and a rollback revision for batching, cache, and client policy.
+
+## Instructions
+
+1. Measure aggregate volume, quota pressure, retries, cache behavior, and error rate before proposing a cost control.
+2. Classify candidates as duplicate, expired, nonessential, or owner-review; never inspect or retain text merely to reduce spend.
+3. Dry-run the control, compare expected and actual counts with synthetic behavior and retention probes, then canary one integration.
+4. Promote only with owner approval; roll back for reduced quality, access expansion, retention change, or increased failure rate.
+5. Keep a reversible revision and report savings as a range rather than an unsupported guarantee.
+
+## Output
+
+Return a cost-change receipt with baseline/projected counts, control revision, owner approval, canary result, retention/behavior probes, estimated savings range, and rollback reference. Use aggregates only.
+
+## Examples
+
+`integration=sandbox-editor; baseline=12000; cached=900; deferred=120; behavior=pass; retention=none; rollback=cost-r18` is a safe cost decision.
+
 ## Resources
 
 - [Grammarly Enterprise](https://www.grammarly.com/business)

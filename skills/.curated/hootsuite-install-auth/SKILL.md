@@ -144,6 +144,10 @@ async function verifyConnection(accessToken: string) {
 | `invalid_grant` | Authorization code expired | Codes expire in 30s; re-authorize |
 | `redirect_uri_mismatch` | URI doesn't match | Must exactly match app registration |
 
+## Examples
+
+`env=sandbox; secret_ref=hootsuite-client-v4; scope=draft-scheduling; profile=approved; synthetic_probe=200; public_posts=0; rotation_owner=platform-ops` proves setup without a credential or social content.
+
 ## Resources
 
 - [Hootsuite Developer Portal](https://developer.hootsuite.com)

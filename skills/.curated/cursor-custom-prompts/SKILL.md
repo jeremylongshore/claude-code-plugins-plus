@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Custom Prompts
 
+## Overview
+
+Create reusable prompts that encode approved engineering practice without injecting secrets, bypassing repository controls, or replacing human review.
+
+## Prerequisites
+
+- A defined task class, source-of-truth repository rules, and a maintainer for prompt changes.
+- A non-sensitive evaluation fixture and review path for any shared prompt.
+
+## Instructions
+
+1. State the scope, inputs, constraints, acceptance checks, and explicit non-goals.
+2. Keep prompts free of credentials, customer data, and contradictory instructions; reference reviewed rules rather than duplicating them.
+3. Evaluate the prompt against a fixture, inspect the diff/output, and version shared prompts through normal review.
+4. Retire or revise prompts that produce policy, quality, or security regressions.
+
+## Output
+
+- A versioned, scoped reusable prompt with expected checks and a named owner.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Prompt generates over-broad changes | Narrow its file/task constraints and require a diff review. |
+| Prompt conflicts with repository rules | Treat rules as authoritative and update/remove the prompt. |
+| Prompt includes sensitive data | Remove it, follow exposure procedure, and replace with sanitized placeholders. |
+
+## Examples
+
+For a test-writing prompt, specify the exact target module, existing test framework, failure behavior, and command to run. Review the generated test diff and reject it if it changes production code or hard-codes secrets.
+
 Create effective prompts for Cursor AI. Covers prompt engineering fundamentals, reusable templates stored in project rules, and advanced techniques for consistent, high-quality code generation.
 
 ## Prompt Anatomy

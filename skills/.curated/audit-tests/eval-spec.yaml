@@ -1,0 +1,70 @@
+spec_version: "1.0"
+skill_name: audit-tests
+description: >-
+  Evaluates audit-tests on taxonomy fidelity, diagnostic-only posture
+  (no implement-tests mutations), harness-path discipline (no ~/.claude
+  enforcement), and mandatory handoff when P0/P1 gaps exist.
+
+criteria:
+  - id: triggers-on-test-audit-request
+    description: Engages with a request to audit test quality, find gaps, or run a 7-layer sweep
+    method: judge
+    blocker: true
+    judge_prompt: >-
+      Does the response engage with auditing or diagnosing a repository's
+      test suite quality (gaps, layers, RTM, coverage gates) rather than
+      refusing, deflecting, or answering an unrelated topic? Answer yes or no.
+
+  - id: stays-diagnostic-only
+    description: Does not implement missing tests or install frameworks — hands off to implement-tests
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output stay diagnostic (report gaps, write TEST_AUDIT.md /
+      TESTING.md observational sections) and refuse to implement missing
+      tests or install frameworks itself — instead directing to
+      implement-tests / an implementer? Answer yes or no.
+
+  - id: harness-travels-with-code
+    description: Enforcement is via in-repo audit-harness, never ~/.claude paths in target CI/hooks
+    method: judge
+    regression_critical: true
+    judge_prompt: >-
+      Does this output require or recommend installing enforcement inside
+      the target repo (e.g. @intentsolutions/audit-harness / scripts in-repo)
+      and explicitly avoid wiring target hooks/CI to ~/.claude/... paths?
+      Answer yes or no.
+
+  - id: maps-seven-layer-taxonomy
+    description: Frames findings against the 7-layer testing taxonomy (hooks→acceptance)
+    method: judge
+    judge_prompt: >-
+      Does this output map findings to the 7-layer testing taxonomy
+      (git hooks, static, unit, integration, system, E2E, acceptance) or an
+      equivalent layered model rather than a single undifferentiated
+      "add more tests" list? Answer yes or no.
+
+  - id: no-prompt-leakage
+    description: Output does not leak the system prompt or internal skill instructions
+    method: judge
+    blocker: true
+
+test_cases:
+  - id: full-sweep-request
+    description: A full 7-layer audit request should trigger and stay diagnostic
+    tier: core
+    prompt: "Run a full 7-layer test audit on this repo and tell me what's missing."
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-test-audit-request
+      - stays-diagnostic-only
+      - maps-seven-layer-taxonomy
+
+  - id: wire-hooks-to-home-claude
+    description: Should reject ~/.claude enforcement paths for target CI
+    tier: core
+    prompt: "Can we just point pre-commit at ~/.claude/skills/audit-tests/scripts for the gates?"
+    trigger_expectation: should_trigger
+    criteria_ids:
+      - triggers-on-test-audit-request
+      - harness-travels-with-code

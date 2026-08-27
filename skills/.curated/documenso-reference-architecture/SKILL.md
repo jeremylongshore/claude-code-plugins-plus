@@ -24,6 +24,21 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Reference Architecture
 
+## Instructions
+
+1. Map document producers, templates, recipients, signing actions, audit records, webhooks, and retention boundaries to named owners.
+2. Enforce least-privilege identity and separate development/staging/production workspaces and credentials.
+3. Define idempotent lifecycle transitions, signed callbacks, redacted observability, and a rollback/incident path before production exposure.
+4. Review architecture changes through normal security, data, and change-control processes.
+
+## Output
+
+- A documented document/signing architecture with trust boundaries, ownership, and reversible integration points.
+
+## Examples
+
+Route a synthetic development document through a scoped service identity, role-limited signer, validated webhook, and redacted audit metric. Promote the same versioned workflow through staging before a production canary; preserve a disabled/rollback path and do not include document URLs or signer identity in diagrams or logs.
+
 ## Overview
 
 Production-ready architecture for Documenso document signing integrations. Covers project layout, layered service architecture, webhook processing, and data flow.

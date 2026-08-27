@@ -95,6 +95,27 @@ checkGrammarlyReadiness();
 | Plagiarism timeout | Stuck requests block content pipeline | P2 |
 | Usage monitoring | Surprise plan overage charges | P3 |
 
+## Prerequisites
+
+- A protected production approval, named incident/rollback owners, and an artifact/configuration revision proven in sandbox and staging.
+- Baselines for health, latency, quota, consent, retention, and synthetic functionality plus a canary integration.
+
+## Instructions
+
+1. Confirm environment, secret reference, destination allowlist, artifact digest, retention policy, and approval before enabling production.
+2. Run health, quota, consent, retention, and behavior probes on the canary using fictitious text only.
+3. Monitor aggregate metrics through the observation window; halt on errors, scope/retention drift, or a failed probe.
+4. Promote in bounded stages or restore the previous revision, recording the decision and verified rollback.
+5. Close only after owner acceptance of the redacted receipt and revocation of temporary credentials.
+
+## Output
+
+Create a readiness receipt with revision, canary, health/latency/quota/retention results, approvals, outcome, and rollback reference. Exclude credentials and text.
+
+## Examples
+
+`revision=r44; canary=synthetic-editor; health=pass; quota=within-budget; consent=pass; retention=none; outcome=promote` is a complete canary decision.
+
 ## Resources
 
 - [Grammarly Developer API](https://developer.grammarly.com/)

@@ -138,10 +138,18 @@ curl -X POST "$CLAY_WEBHOOK_URL" \
 
 ## Output
 
-- Clay workspace configured with API access
-- Webhook URL ready to receive programmatic data
-- Provider API keys connected for credit savings
-- `.env` file with all required credentials
+Record the workspace, authorized account, secret-store references, enabled
+features, webhook verification result, and rotation owner. Keep API keys,
+webhook URLs, provider credentials, and any local `.env` contents out of
+repositories, tickets, shell history, and general documentation.
+
+## Examples
+
+Use a non-production workspace to store the key in the approved secret manager,
+send one synthetic authenticated webhook, and retain only the redacted result
+and correlation ID. If provider authentication fails, remove the failed secret
+reference and correct its scope with the owner rather than sharing keys or
+copying production credentials into local files.
 
 ## Resources
 

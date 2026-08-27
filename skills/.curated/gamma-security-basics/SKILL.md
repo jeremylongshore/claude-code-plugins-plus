@@ -25,6 +25,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Security Basics
 
+## Output
+
+Maintain a security receipt with identity scope, secret reference, access-review date, control result, owner, and redacted incident state. Do not include tokens or private content.
+
+## Examples
+
+Use a scoped staging credential and fictional deck to verify least-privilege access, revoke it, and confirm access is denied without exposing content or credentials in evidence.
+
 ## Overview
 
 Security best practices for Gamma API integration to protect credentials and data.

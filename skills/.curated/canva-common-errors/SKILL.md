@@ -27,6 +27,17 @@ compatibility: Designed for Claude Code
 
 Quick reference for the most common Canva Connect API errors at `api.canva.com/rest/v1/*` with real HTTP status codes, error payloads, and fixes.
 
+## Prerequisites
+
+- Redacted application telemetry, an opaque request/operation identifier, and a named integration owner.
+- A protected test tenant/asset for any reproduction; do not reproduce against customer designs.
+
+## Instructions
+
+1. Classify the error by authorization, scope, rate, provider, callback, or validated response contract.
+2. Capture only redacted status/category and trace references; never print OAuth values, design IDs, signed URLs, or payload bodies.
+3. Retry only bounded idempotent transient operations after reconciliation; route authorization and policy errors to the owner.
+
 ## Error Reference
 
 ### 401 Unauthorized — Token Expired or Invalid
@@ -182,6 +193,14 @@ curl -sI https://api.canva.com/rest/v1/users/me \
 echo "Client ID: ${CANVA_CLIENT_ID:+[SET]}"
 echo "Access Token: ${CANVA_ACCESS_TOKEN:+[SET]}"
 ```
+
+## Output
+
+Diagnosis returns a redacted failure category, opaque request reference, retry decision, and next owner action. It excludes credentials, design content, asset URLs, and user data.
+
+## Examples
+
+For a 429, retain the idempotency key, honor the configured wait, then query the existing job before retrying. For a 401/403, stop calls and use the approved reauthorization or scope-review process; do not log a token to test it.
 
 ## Error Handling
 

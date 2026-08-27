@@ -230,6 +230,10 @@ print(f'Granola Status: {status}')
 | Dashboard shows stale data | Pipeline paused | Monitor Zapier health, restart paused Zaps |
 | Low adoption alert false positive | New seats just added | Adjust alert threshold, use percentage not absolute |
 
+## Examples
+
+Test an alert with a fictional meeting event and record `dashboard=meeting-r6; alert=delivery-lag; probe=pass; destination=restricted-ops; metrics=aggregate-only; retention=14d; rollback=alert-r5`. Never include transcript, attendee, or meeting-topic fields in observability evidence.
+
 ## Resources
 
 - [Granola Updates](https://www.granola.ai/updates)

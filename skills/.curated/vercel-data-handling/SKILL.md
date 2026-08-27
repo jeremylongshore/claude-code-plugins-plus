@@ -254,6 +254,12 @@ export async function GET(request: NextRequest) {
 | Cookies not secure | Missing `secure: true` flag | Always set httpOnly and secure flags |
 | Function running in wrong region | Region not set in vercel.json | Specify `regions` per function |
 
+## Examples
+
+### Fulfill a data-subject request without exposing records in logs
+
+Accept a verified request identifier, enqueue the export or erasure job outside the request-response path, and log only the request ID and result code. Fetch the minimum records from the system of record, encrypt any export with a short-lived delivery mechanism, and record the legal retention exception if deletion is not possible. Test the flow against synthetic data in preview and have a second operator verify that the archive, temporary URL, and job artifacts are removed on schedule.
+
 ## Resources
 
 - [Vercel Privacy Policy](https://vercel.com/legal/privacy-policy)

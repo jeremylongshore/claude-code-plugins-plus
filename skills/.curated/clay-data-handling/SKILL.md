@@ -254,6 +254,22 @@ async function handleDeletionRequest(email: string): Promise<{
 | Missing consent basis | No legal basis tracked | Add consent_basis to all records |
 | GDPR deletion incomplete | Data in multiple systems | Track all systems in data map |
 
+## Output
+
+Maintain a data-handling record containing source and purpose, consent or other
+lawful basis, sensitivity classification, allowed tables/destinations,
+retention/deletion schedule, access owner, data-subject request status, and
+redacted audit reference. This guidance does not replace legal review for a
+specific jurisdiction or use case.
+
+## Examples
+
+Before importing a prospect list, verify the allowed purpose and retention rule,
+then map each downstream CRM and warehouse copy for deletion coverage. For a
+deletion request, use the hashed audit record, remove the approved systems of
+record, confirm manual Clay-table cleanup, and report completion without
+exposing the individual’s data in the ticket.
+
 ## Resources
 
 - [GDPR Official Text](https://gdpr.eu/what-is-gdpr/)

@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Data Handling
 
+## Prerequisites
+
+- Data classification, consent/legal basis, approved retention/deletion policy, storage boundary, and named data owner.
+- A redaction/logging policy and an incident route for recording or transcript exposure.
+
+## Examples
+
+Process a licensed development fixture through the approved region/storage route, verify its retention/deletion behavior, and record only a correlation ID and policy result. Do not put recordings, transcripts, participant identifiers, or storage URLs into test logs; on accidental exposure, restrict access and follow the data incident procedure.
+
 ## Overview
 
 Best practices for handling audio and transcript data with Deepgram. Covers Deepgram's built-in `redact` parameter for PII, secure audio upload with encryption, transcript storage patterns, data retention policies, and GDPR/HIPAA compliance workflows.

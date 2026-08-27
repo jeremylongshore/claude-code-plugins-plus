@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Enterprise RBAC
 
+## Output
+
+- A least-privilege role/project configuration with named owners, access-review evidence, and a tested revocation path.
+- Verified separation between development/staging/production document and signer permissions.
+
+## Examples
+
+Grant a development service account only the document action and project it needs, validate it with a synthetic document, and confirm it cannot view or sign production documents. Record the owner and review date; revoke overly broad access and correct group mapping before proceeding.
+
 ## Overview
 
 Configure team-based access control and enterprise features in Documenso. The Team plan enables multi-user collaboration with shared documents. Enterprise adds SSO (OIDC), audit logging, and organization-level management.

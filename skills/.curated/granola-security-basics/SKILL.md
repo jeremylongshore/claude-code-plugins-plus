@@ -180,6 +180,10 @@ The local cache file (`~/Library/Application Support/Granola/cache-v3.json`) con
 - Restrict file permissions: `chmod 600 "$HOME/Library/Application Support/Granola/cache-v3.json"`
 - Be aware that MCP servers and local scripts can read this file
 
+## Examples
+
+`env=staging; integration=calendar-synthetic; secret_ref=connector-v12; consent=pass; signature=pass; retention=none; rollback=disabled` records a control test without exposing a token or meeting payload.
+
 ## Resources
 
 - [Granola Security Page](https://www.granola.ai/security)

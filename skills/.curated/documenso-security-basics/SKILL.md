@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Security Basics
 
+## Output
+
+- A least-privilege Documenso configuration with scoped secrets, signer/document access controls, and an incident/revocation path.
+- A tested boundary for document authorization, webhook validation, and safe audit logging.
+
+## Examples
+
+Create a development document with a synthetic signer, validate that only its intended role can view or act on it, and verify any webhook signature before processing. If a token, signing URL, or document is exposed, revoke/contain access and follow the incident procedure before attempting cleanup.
+
 ## Overview
 
 Essential security practices for Documenso integrations: API key management, webhook verification, document access control, and self-hosted signing certificate configuration.

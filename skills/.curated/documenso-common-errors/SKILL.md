@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Common Errors
 
+## Output
+
+- A classified document/signing integration failure with redacted evidence and a bounded remediation or escalation.
+- A verified recovery that preserves authorization, document integrity, signing lifecycle, and audit continuity.
+
+## Examples
+
+For a failed signing action, record the opaque document/correlation ID, environment, lifecycle state, status class, and timestamp. Verify signer role, expiration, callback, and authorization with a synthetic fixture; escalate with redacted evidence if unresolved, rather than sharing the document or signing link.
+
 ## Overview
 
 Quick-reference troubleshooting guide for Documenso API errors. Covers authentication, document lifecycle, field validation, file upload, webhook, and SDK-specific issues with concrete solutions.

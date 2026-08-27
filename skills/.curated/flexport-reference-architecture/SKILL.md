@@ -24,6 +24,32 @@ compatibility: Designed for Claude Code
 
 Production reference architecture for Flexport logistics integrations. Three core services: Ingest (webhooks + polling), Core (business logic), and Expose (API + dashboard).
 
+## Prerequisites
+
+- A data-flow inventory naming system owners, approved destinations, retention rules, endpoint scopes, and trust boundaries.
+- Separate identities for ingress, workers, storage, dashboards, and integrations; use synthetic fixtures for every architecture test.
+
+## Instructions
+
+1. Verify webhook signatures at ingress and enqueue opaque event IDs for idempotent processing.
+2. Apply field allowlists and access checks before storage, dashboard exposure, or downstream notifications.
+3. Define cache freshness, rate limits, retry bounds, audit logging, and a disable/rollback switch per service boundary.
+4. Promote architecture changes through staging with fictional data and review aggregate canary evidence before production.
+
+## Output
+
+Maintain an architecture decision record showing trust boundaries, source-of-truth assignments, data destinations, access/retention controls, owners, and rollback mechanisms. Do not include shipments, documents, commercial terms, or secrets.
+
+## Error Handling
+
+- Quarantine events with unknown schemas, destinations, or permissions rather than forwarding them.
+- Isolate a failed service boundary, disable unsafe consumers, and preserve only redacted evidence.
+- Restore the prior routing/configuration before replaying queued work after an incident.
+
+## Examples
+
+Route a fictional milestone through ingress, queue, core, and a staging dashboard. Confirm duplicate suppression, denied access for an unapproved consumer, and a controlled rollback that leaves no shipment payload in logs.
+
 ## Architecture
 
 ```

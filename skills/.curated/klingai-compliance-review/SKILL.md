@@ -165,6 +165,32 @@ def run_compliance_check(config: dict) -> dict:
     }
 ```
 
+## Prerequisites
+
+- An approved review scope, rights-cleared or synthetic test artifact, current policy and retention standard, authorized reviewers, redaction rules, draft-only destination, and a remediation owner.
+
+## Instructions
+
+1. Review a sandbox canary against content policy, rights/attribution, access scope, budget, destination, and retention requirements.
+2. Record only aggregate and redacted evidence; reject artifacts containing private information, unlicensed material, restricted content, or unsupported claims.
+3. Halt release and remove drafts when any mandatory check fails; assign the issue to an owner and verify the remediation in a new canary.
+4. Approve promotion only after all required checks pass and retain the redacted review receipt for the authorized window.
+
+## Output
+
+Produce a compliance receipt with review scope, artifact classification, check outcomes, owner/approval state, draft-only assertion, remediation/rollback reference, and retention/removal proof. Exclude prompts, asset URLs, identities, and secrets.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Policy, rights, or privacy check fails | Block publication, remove the draft, and require documented remediation and re-review. |
+| Evidence is incomplete or unredacted | Reject the receipt and regenerate it with approved aggregate fields only. |
+
+## Examples
+
+`scope=staging-canary; artifact=synthetic; policy=pass; rights=pass; privacy=pass; destination=draft-only; approval=pending` is ready for owner review.
+
 ## Resources
 
 - [Kling AI Terms of Service](https://app.klingai.com/global/dev/document-api/protocols/paidServiceProtocol)

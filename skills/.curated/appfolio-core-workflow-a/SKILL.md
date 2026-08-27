@@ -26,7 +26,28 @@ agreements, and querying occupancy data. Uses the AppFolio Stack API with OAuth 
 client credentials for server-to-server access. All endpoints return JSON and support
 pagination via `cursor` parameters for large portfolios.
 
+## Prerequisites
+
+- A current AppFolio partner/API contract that confirms the assigned portfolio
+  base URL, authentication method, approved scopes, and write capabilities;
+  do not infer these from a tutorial or another portfolio.
+- A separate sandbox with disposable properties, units, and synthetic tenant
+  records, plus a credential owner and an approved request budget.
+- Idempotency keys and an operator-approved rollback/reconciliation process for
+  property, tenant, and lease writes, which can create real legal and billing
+  consequences.
+
 ## Instructions
+
+1. Confirm the provider-issued base URL and authentication flow for the target
+   portfolio before copying any client configuration into an environment.
+2. Exercise the create/update path only with sandbox synthetic fixtures and
+   idempotency keys; retrieve canonical records before retrying an uncertain
+   write.
+3. Validate ownership, lease dates, and unit availability before creating a
+   lease, and emit only record IDs and redacted status evidence.
+4. Promote a write-capable flow only after a staged rehearsal proves rollback,
+   reconciliation, and the least-privilege scope boundary.
 
 ### Step 1: Authenticate and Initialize Client
 
@@ -68,8 +89,8 @@ console.log(`Property created: ${property.id}`);
 const tenant = await fetch('https://api.appfolio.com/v1/tenants', {
   method: 'POST', headers,
   body: JSON.stringify({
-    first_name: 'Alex', last_name: 'Rivera',
-    email: 'alex.rivera@example.com', phone: '512-555-0199',
+    first_name: 'Test', last_name: 'Tenant',
+    email: 'test-tenant@example.invalid', phone: '555-0100',
   }),
 }).then(r => r.json());
 
@@ -107,6 +128,16 @@ console.log(`Vacant units: ${units.data.length} of ${units.meta.total}`);
 
 A successful run creates a property with units, adds a tenant, binds them via a lease,
 and reports vacancy counts. Console output confirms each resource ID on creation.
+
+## Examples
+
+For a lease-creation change, run against a named synthetic sandbox unit and
+tenant with a stable idempotency key. Read the property and current leases,
+perform the candidate write once, then read back the resulting lease and record
+only IDs, dates, and the reconciliation status. Re-run the same request to
+prove it does not create a second lease. If the provider contract, endpoint,
+authorization, or prior-write outcome cannot be verified, stop before any
+write and send the case to the portfolio operator for reconciliation.
 
 ## Resources
 

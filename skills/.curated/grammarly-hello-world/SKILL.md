@@ -134,6 +134,10 @@ curl -X POST https://api.grammarly.com/ecosystem/api/v2/scores \
 | `413 Payload Too Large` | Text > 100,000 characters | Split into chunks |
 | `429 Rate Limited` | Too many requests | Implement backoff |
 
+## Examples
+
+Use a fictional sentence such as `The sample system work correctly.` in a sandbox request, verify the response shape without persisting its suggestions, then record `fixture=grammar-basic-v1; request=accepted; retention=none; cleanup=complete`.
+
 ## Resources
 
 - [Writing Score API](https://developer.grammarly.com/writing-score-api.html)

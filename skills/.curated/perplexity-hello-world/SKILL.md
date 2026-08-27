@@ -166,6 +166,12 @@ for await (const chunk of stream) {
 | `429 Too Many Requests` | Rate limit exceeded | Wait and retry with backoff |
 | Timeout | Complex search query | Use `sonar` instead of `sonar-pro` |
 
+## Examples
+
+### Run a safe first query against a development key
+
+Store a development-scoped key in an ignored local environment file, send a fixed public factual query with a small token cap, and print only the answer summary, citation URLs, and aggregate usage. Confirm that citations resolve before treating the answer as trustworthy. Do not use customer data or production keys for the example; revoke temporary keys and remove local configuration after the learning exercise.
+
 ## Resources
 
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)

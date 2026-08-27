@@ -125,6 +125,18 @@ export default chains;
 - Verified connection with latest block number
 - Multi-chain client configuration ready
 
+## Examples
+
+Create a development-only Alchemy application for Sepolia or another supported
+test network, store its key in a local ignored environment file or platform
+secret store, and run `verifyConnection`. A successful setup prints a current
+block number from the selected test network without printing the key. Add a
+second client only when the application genuinely needs another chain, and keep
+the network selection explicit per client. If verification returns `401`, the
+network is unsupported, or the variable is absent, correct the dashboard or
+environment configuration before proceeding; do not reuse a production key in
+local examples or commit it to the repository.
+
 ## Error Handling
 
 | Error | Cause | Solution |

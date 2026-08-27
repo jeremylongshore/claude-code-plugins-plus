@@ -189,10 +189,18 @@ If the pricing page requires interaction (e.g., toggle annual/monthly), switch t
 
 ## Output
 
-- Claygent research data (news, tech stack, competitors) per prospect
-- Personalized email openers at scale
-- Campaign-ready export to outreach tools
-- QA report flagging low-quality rows
+Produce a campaign-preparation manifest with the approved source rows,
+qualification policy, research/personalization version, quality checks,
+suppressed records, downstream destination, and owner approval. Research and
+generated content are evidence to review, not permission to contact a person or
+to make claims that the source does not support.
+
+## Examples
+
+Run Claygent only for a small staging subset that has cleared the ICP and email
+conditions, sample the resulting openers for accuracy and prohibited claims,
+and send no messages. If an opener misidentifies a company or includes sensitive
+data, suppress that row, adjust the prompt/mapping, and retest before release.
 
 ## Resources
 

@@ -230,6 +230,12 @@ curl -sf https://yourapp.com/health | jq '.'
 | Circuit open | Metrics alert | Investigate availability, wait for reset |
 | High error rate | Monitoring alert | Check logs, consider rollback |
 
+## Examples
+
+### Gate a canary before resuming rollout
+
+Pause the deployment, run the health and chat smoke tests against the canary revision, and inspect the error-rate and auth-failure panels for the defined observation period. Resume only when the checks hold; otherwise execute `kubectl rollout undo` and keep the incident record linked to the failed revision.
+
 ## Resources
 
 - [Mistral AI Status](https://status.mistral.ai/)

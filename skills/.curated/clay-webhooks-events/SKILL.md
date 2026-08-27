@@ -255,6 +255,22 @@ async function notifySlack(lead: EnrichedLead): Promise<void> {
 | Webhook 50K limit hit | High volume usage | Create new webhook on same table |
 | Callback timeout | Slow processing | Respond 200 immediately, process async |
 
+## Output
+
+Record the source table or event identifier, receipt time, authentication
+decision, idempotency key, enrichment/notification action, delivery result,
+and redacted failure reason. Do not forward raw lead records, personal data,
+or webhook secrets to downstream notifications unless the receiving system and
+purpose are explicitly approved.
+
+## Examples
+
+For a high-value lead callback, validate the shared secret, persist the event
+ID before enqueueing work, and return a quick acknowledgement only after that
+write succeeds. If Clay retries the same ID, acknowledge it without creating a
+duplicate Slack alert; send malformed or unauthorized payloads to a redacted
+quarantine record for operator review.
+
 ## Resources
 
 - [Clay University -- Webhook Integration Guide](https://university.clay.com/docs/webhook-integration-guide)

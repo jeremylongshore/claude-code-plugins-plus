@@ -106,6 +106,30 @@ async function checkGrammarly(): Promise<void> {
 checkGrammarly();
 ```
 
+## Prerequisites
+
+- An incident ID, bounded collection window, approved restricted destination, and a synthetic input for diagnostics.
+- A redaction rule that removes text, suggestions, tokens, headers, account data, and identifiers before evidence leaves the runtime.
+
+## Instructions
+
+1. Collect only status codes, latency bands, quota headers, configuration revisions, and opaque correlation IDs for the synthetic probe.
+2. Run a redaction check before packaging; stop if a source-text field cannot be proven absent.
+3. Compare aggregate results to a known-good baseline, encrypt the bundle in the approved location, and grant minimum access.
+4. Record owner and deletion date, then remove temporary artifacts after the incident window.
+
+## Output
+
+Create a bundle manifest with incident ID, collection window, checks run, correlation IDs, aggregate metrics, configuration revision, destination, owner, and retention date. Source text and credentials are prohibited.
+
+## Error Handling
+
+Stop collection for failed redaction, unknown destination, or any command that would reveal a production secret. Record the unavailable evidence class and escalate; do not bypass privacy safeguards under time pressure.
+
+## Examples
+
+`incident=inc-opaque-21; window=15m; endpoint=sandbox-check; latency=p95-420ms; quota=within-budget; destination=restricted-support; retention=7d` is useful without containing text.
+
 ## Resources
 
 - [Grammarly Status](https://status.grammarly.com)

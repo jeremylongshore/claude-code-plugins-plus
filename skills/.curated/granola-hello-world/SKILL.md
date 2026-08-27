@@ -140,6 +140,10 @@ After your first meeting, check the **People** and **Companies** views in the si
 - Links all past meeting notes to each person
 - Lets you review full conversation history before follow-ups
 
+## Examples
+
+Use a fictitious meeting with no real attendees and record `fixture=hello-meeting-v1; integration=sandbox; result=accepted; destination=approved; retention=none; cleanup=complete`.
+
 ## Resources
 
 - How Transcription Works

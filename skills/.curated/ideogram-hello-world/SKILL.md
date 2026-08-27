@@ -184,6 +184,10 @@ print("Saved to hello-ideogram.png")
 - Console output with URL, seed, resolution, and safety status
 - Seed value for reproducible regeneration
 
+## Examples
+
+Generate a fictional test image in a sandbox and record `fixture=hello-image-v1; rights=test-owned; destination=sandbox-gallery; result=accepted; output_retention=none; cleanup=complete`.
+
 ## Resources
 
 - [Legacy Generate Endpoint](https://developer.ideogram.ai/api-reference/api-reference/generate)

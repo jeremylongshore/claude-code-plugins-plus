@@ -88,6 +88,17 @@ if (callDetail.transcript) {
 | No recording | Recording not enabled | Enable in agent settings |
 | Concurrent limit | Too many active calls | Upgrade plan or queue calls |
 
+## Examples
+
+### Run a bounded outbound appointment reminder campaign
+
+Upload only consented test contacts to a development campaign and set a small
+concurrency limit before enabling any production queue. For each test call,
+verify the E.164 number formatting, expected agent version, completion status,
+and redacted transcript retrieval. If a call result is ambiguous, query the
+call identifier before retrying so an operator does not create duplicate calls
+or overwrite the original outcome.
+
 ## Resources
 
 - [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)

@@ -135,6 +135,14 @@ kubectl rollout status deployment/scraper
 - Alert rules for proxy errors and budget spikes
 - Documented rollback procedure
 
+## Error Handling
+
+Block promotion when target authorization, data classification, secret injection, rate/cost caps, retention, monitoring, or rollback evidence is missing. On a policy or data-quality incident, pause the affected zone/job, preserve a redacted receipt, and escalate; do not broaden proxy routing or retries to work around the failure.
+
+## Examples
+
+Before enablement, validate a controlled target in the production-equivalent environment with a strict rate ceiling and no retained payload. Capture the policy approval, configuration version, status, and rollback version. Gradually increase only after the owner accepts the redacted receipt and reconciliation result.
+
 ## Resources
 
 - Bright Data Status

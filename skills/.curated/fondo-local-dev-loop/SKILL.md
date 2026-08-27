@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Local development workflow for Fondo startup tax and bookkeeping integration. Provides a fast feedback loop using CSV exports and mock financial data so you can build dashboards, R&D credit calculators, and burn-rate tools without waiting on live Fondo reports. Toggle between mock mode for rapid iteration and real export parsing for production validation.
 
+## Prerequisites
+
+- Fictional fixtures only, local directories excluded from version control, and a named finance owner for any approved export validation.
+- Secrets supplied from an approved manager; local development must not access production financial data by default.
+
+## Instructions
+
+1. Keep mock mode enabled for normal development and generate only synthetic account, vendor, and transaction values.
+2. Validate schema and field mappings against an approved, access-controlled sample before any live workflow change.
+3. Redact logs, avoid committing exports, and delete temporary local artifacts through the defined retention process.
+
+## Output
+
+Produce a local validation receipt with fixture version, schema result, approved mapping, owner, and redacted failure reference. Do not include transactions, account details, payroll/tax data, or credentials.
+
+## Examples
+
+Run a calculator against fictional monthly totals and confirm tests pass with network access disabled. Inspect the fixture for real names, account identifiers, or exports, then remove test artifacts after the schema validation is complete.
+
 ## Environment Setup
 
 ```bash

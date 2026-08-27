@@ -177,6 +177,22 @@ function preventCrossEnvData(env: string, crmPushEnabled: boolean): void {
 | Credit waste in dev/staging | Full enrichment on test data | Set low row caps on dev/staging tables |
 | Missing webhook URL at startup | Environment variable not set | Add startup validation with Zod |
 
+## Output
+
+Create an environment-bound configuration record listing the workspace/table
+prefix, secret references, row and credit limits, CRM permission, validation
+result, deployment owner, and tested promotion/rollback path. Never share
+actual webhook URLs, API keys, provider credentials, or production lead data in
+environment files, examples, or diagnostics.
+
+## Examples
+
+Deploy a staging configuration with a distinct table prefix and CRM push
+disabled, then submit a synthetic row and verify the safety guards reject an
+oversized batch. Promote the reviewed configuration only after production
+secrets and limits are independently validated; if any cross-environment value
+is detected, halt deployment and rotate the exposed boundary as appropriate.
+
 ## Resources
 
 - [Clay University -- Table Management Settings](https://university.clay.com/docs/table-management-settings)

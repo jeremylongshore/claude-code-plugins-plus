@@ -24,6 +24,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Install & Auth
 
+## Output
+
+Record the authentication method, minimum scope, secret-manager reference, validation time, owner, and rotation/revocation procedure—never a token, presentation, or viewer record.
+
+## Examples
+
+Use a scoped staging credential for a read-only fictional workspace check, record the redacted result, and verify the credential is denied after revocation.
+
 ## Overview
 
 Configure authentication for the Gamma Generate API v1.0 (GA since Nov 2025). Gamma uses a REST API at `https://public-api.gamma.app/v1.0/` — there is no official SDK package. All requests authenticate via the `X-API-KEY` header.

@@ -96,6 +96,27 @@ checkJuiceboxReadiness();
 | Rate limit handling | Bulk analysis requests rejected | P2 |
 | Data encryption at rest | Candidate PII exposure risk | P3 |
 
+## Prerequisites
+
+- A protected production change approval, named data/incident/rollback owners, and a pinned configuration revision proven with synthetic lead fixtures.
+- Source authority, lawful/consented-use policy, suppression policy, destination allowlist, and an explicit stop condition for scope or privacy drift.
+
+## Instructions
+
+1. Confirm environment, secret reference, source authority, enrichment scope, destination, suppression policy, and approval before any production action.
+2. Run a bounded synthetic canary and verify source/destination scope, data minimization, suppression, and aggregate output assertions.
+3. Monitor error, quota, freshness, and policy probes through the observation window; halt on an unauthorized source, recipient, or destination.
+4. Promote in stages or restore the prior revision and delete staged artifacts according to the retention policy.
+5. Close only after owner acceptance of the redacted receipt and revocation of temporary access.
+
+## Output
+
+Create a readiness receipt with revision, synthetic canary, source/destination checks, suppression result, aggregate assertions, approvals, outcome, retention, and rollback reference. Exclude identities, contact details, enrichment values, and secrets.
+
+## Examples
+
+`revision=r44; canary=synthetic-prospects; source=approved; destination=approved; suppression=pass; contacts_exported=0; outcome=hold-for-owner; rollback=r43` is a complete canary decision.
+
 ## Resources
 
 - [Juicebox Platform](https://juicebox.ai)

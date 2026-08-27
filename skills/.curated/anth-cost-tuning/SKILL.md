@@ -160,6 +160,37 @@ tracker = SpendTracker(budget_usd=50.0)
 - [ ] Implement spend tracking and budget alerts
 - [ ] Monitor via [Usage API](https://docs.anthropic.com/en/api/usage-cost-api)
 
+## Prerequisites
+
+- Establish an approved budget, billing owner, cost allocation dimensions, and alert thresholds before changing model routing or batch behavior.
+- Use a sandbox workspace, synthetic prompts, pinned model IDs, and a versioned pricing snapshot; confirm current rates in the official pricing documentation before making a forecast.
+- Configure least-privileged credentials and ensure logs/metrics contain token counts and aggregate cost only, never prompt or response content.
+
+## Instructions
+
+1. Baseline request volume, input/output/cache tokens, latency, quality, and spend by feature using a redacted measurement window. Do not make routing changes from a single outlier.
+2. Define a quality floor and route only eligible workloads to the least expensive model that meets it. Use prompt caching only for approved non-sensitive content and batches only where asynchronous completion is acceptable.
+3. Cap `max_tokens`, concurrency, retries, and batch size. Enforce per-feature and per-workspace budgets before requests are sent; fail closed when a budget or scope check cannot be evaluated.
+4. Test the proposed policy on synthetic fixtures in a sandbox, then canary it with aggregate cost, quality, latency, error, and rate-limit monitoring. Require owner approval before broader rollout.
+5. If quality, spend, or policy thresholds regress, disable the new route/cache/batch policy, restore the prior configuration, and retain a redacted comparison receipt.
+
+## Output
+
+Produce a cost-control receipt containing the pricing snapshot date, policy version, model/batch/cache decisions, token aggregates, projected and observed spend, quality and latency results, budget outcome, canary scope, approval, and rollback reference. Exclude prompt/response text, customer identifiers, API keys, and raw billing exports.
+
+## Error Handling
+
+| Failure | Response |
+|---|---|
+| Unknown model price or usage field | Stop forecasting, refresh the official pricing/usage source, and mark the estimate provisional. |
+| Budget or quota exceeded | Reject or queue new work, alert the owner, and do not bypass the guard with another key or workspace. |
+| Quality regression after cheaper routing | Restore the prior route, quarantine affected output, and rerun the quality fixture before another canary. |
+| Cache or batch unsuitable for data/latency policy | Disable that optimization and use the approved synchronous, non-cached path. |
+
+## Examples
+
+Evaluate 1,000 synthetic classification prompts in a sandbox with a fixed budget, compare pinned Sonnet against Haiku plus an approved batch policy, assert `customer_content_logged=0`, and emit `budget=within_limit; quality=pass; canary=internal; rollback=route-v1`. Do not use live customer prompts to tune pricing.
+
 ## Resources
 
 - [Pricing](https://docs.anthropic.com/en/docs/about-claude/pricing)

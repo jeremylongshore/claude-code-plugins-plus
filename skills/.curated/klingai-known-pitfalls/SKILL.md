@@ -198,6 +198,32 @@ Good prompts: specific subject, clear action, lighting, camera angle, style.
 | Audio cost surprise | 5x multiplier with `motion_has_audio` |
 | Vague prompts | Specific subject, action, style, lighting |
 
+## Prerequisites
+
+- An approved sandbox brief, rights-cleared or synthetic inputs, secret references, content-policy review, credit cap, draft-only destination, and a removal owner.
+
+## Instructions
+
+1. Reproduce pitfalls with a single watermarked sandbox draft; do not use private, unlicensed, or policy-restricted materials.
+2. Check authentication, model/mode, duration, policy/rights status, credit use, destination, and retention before applying a workaround.
+3. Stop and remove the draft if a workaround introduces policy, attribution, quality, budget, or retention drift.
+4. Record the remediation as a redacted receipt and restore the known-good configuration before further testing.
+
+## Output
+
+Produce a pitfall receipt with environment, failure category, synthetic/rights-cleared classification, remedial setting, aggregate task result, policy/rights/budget checks, draft-only status, cleanup proof, and rollback reference. Exclude prompts, assets, identities, and credentials.
+
+## Error Handling
+
+| Condition | Response |
+|---|---|
+| Workaround changes ownership, attribution, or policy posture | Reject it, remove temporary drafts, and seek owner review. |
+| Repeated task or budget failure | Cancel queued work and restore the approved test configuration. |
+
+## Examples
+
+`env=sandbox; pitfall=timeout; fixture=synthetic; remedy=bounded-polling; policy=pass; destination=draft-only; cleanup=verified` is valid evidence.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

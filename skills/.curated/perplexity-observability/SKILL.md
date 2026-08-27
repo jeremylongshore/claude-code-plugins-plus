@@ -243,6 +243,12 @@ Track these metrics on your dashboard:
 - Cost estimation per query
 - Alert rules for latency, errors, and cost
 
+## Examples
+
+### Alert on research quality without collecting prompt content
+
+Emit request count, duration, model, token estimate, citation count, and classified error metrics tagged by environment, but exclude prompts, answers, identifiers, and keys. Trigger an alert for sustained zero-citation responses, high 429 rates, or budget burn, then investigate with synthetic reproductions and dated aggregate dashboards. Set retention for observability data and verify alert routing before depending on it during an incident.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)

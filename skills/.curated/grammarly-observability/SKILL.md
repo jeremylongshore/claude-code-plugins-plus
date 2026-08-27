@@ -105,6 +105,27 @@ function logGrammarlyEvent(api: string, data: Record<string, any>) {
 | Suggestion count drops to 0 | API schema change or auth failure | Verify API key, check response format |
 | Plagiarism timeout > 5s | Large document or service overload | Chunk text, retry with exponential backoff |
 
+## Prerequisites
+
+- Data-minimization policy for logs/traces, metric owners, alert routes, retention limits, and an approved restricted evidence destination.
+- Synthetic probes for availability, quota, and authorization/consent behavior plus correlation IDs that contain no text or identity.
+
+## Instructions
+
+1. Instrument aggregate request, error, latency, quota, queue, and retention-policy metrics at the integration boundary.
+2. Redact event fields before export, bound payload capture, and fail closed when redaction cannot be proven.
+3. Alert on sustained failure, quota saturation, access/retention policy difference, and evidence-pipeline failure with a named runbook owner.
+4. Test alerts with synthetic events, verify destination and retention, then remove temporary test artifacts.
+5. Review dashboards after any credential, environment, or client change and retain only the minimum reconstruction evidence.
+
+## Output
+
+Produce an observability receipt with dashboard/alert revisions, synthetic results, owner, destination, retention, correlation ID, and remediation/rollback status. Raw text and credentials are prohibited.
+
+## Examples
+
+`dashboard=writing-r11; alert=quota-lag; probe=pass; destination=restricted-ops; retention=14d; rollback=alert-r10` is a safe alert-test result.
+
 ## Resources
 
 - [Grammarly Developer Portal](https://developer.grammarly.com/)

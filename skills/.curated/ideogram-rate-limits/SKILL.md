@@ -195,6 +195,10 @@ async function batchGenerate(
 - Token bucket for sustained throughput
 - Batch processing with progress and error tracking
 
+## Examples
+
+`scope=sandbox-generation; requested=100; limited=3; deferred=3; retry=v2; idempotent=pass; output_retention=none; rollback=limits-r7` proves bounded handling without retaining prompts or images.
+
 ## Resources
 
 - [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)

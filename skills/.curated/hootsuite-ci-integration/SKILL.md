@@ -148,6 +148,25 @@ describe.skipIf(!hasCredentials)('Hootsuite Live API', () => {
 | Rate limit (429) | Exceeded 300 requests/min | Add request throttling and reduce parallel test concurrency |
 | Duplicate post detected | Same content scheduled twice | Add idempotency key or content hash check before scheduling |
 
+## Prerequisites
+
+- CI secret references, a sandbox social profile or draft-only API target, fictitious fixtures, protected branches, and a rollback mechanism.
+
+## Instructions
+
+1. Run mocked tests first, including malformed payload, denied account, approval-required, audience mismatch, quota, and cancellation cases.
+2. Run a bounded sandbox integration with idempotency; prohibit real public-profile destinations and literal tokens in CI.
+3. Emit aggregate counts, opaque IDs, approval/audience policy revisions only; fail on unexpected scope, copy leakage, or public-post path.
+4. Canary draft scheduling after protected review, verify no-publication behavior, and restore the last-known-good revision on failure.
+
+## Output
+
+Publish a CI receipt with commit SHA, fixture revision, sandbox profile, test totals, policy checks, draft-canary outcome, and rollback reference. Exclude copy, media, handles, and secrets.
+
+## Examples
+
+`sha=abc123; fixtures=v5; profile=ci-synthetic; tests=18/18; approval=pass; public_posts=0; canary=not-promoted` is a valid pre-production receipt.
+
 ## Resources
 
 - [Hootsuite Developer Portal](https://developer.hootsuite.com/)

@@ -132,6 +132,10 @@ async function getProfileDetails(profileId: string) {
 | No analytics data | Post too recent | Wait for engagement data (24-48h) |
 | Ow.ly rate limited | Too many shortening requests | Batch and throttle |
 
+## Examples
+
+For a draft workflow, record `profile=sandbox-brand; action=queue-draft; approval=pending; audience=test-only; idempotency=once; public_posts=0; rollback=workflow-r6` rather than preserving post copy or media.
+
 ## Resources
 
 - [Hootsuite API Reference](https://apidocs.hootsuite.com/docs/api/index.html)

@@ -233,6 +233,14 @@ async function generateWithCDN(prompt: string, options: any = {}) {
 - Parallel generation with concurrency control
 - CDN integration for fast image delivery
 
+## Prerequisites
+
+- Baseline latency/quota metrics, synthetic prompt fixture revision, error budget, and rollback revision for cache, concurrency, and retry policy.
+
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; quota=within-budget; rights=test-owned; destination=approved; output_retention=none; rollback=perf-r3` documents a safe canary.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

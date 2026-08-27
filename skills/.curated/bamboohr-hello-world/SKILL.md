@@ -165,6 +165,10 @@ print(r.json())
 - Custom report with filtered results
 - Console output confirming working connection
 
+## Examples
+
+Use a BambooHR sandbox or designated synthetic employee record to make a minimal read-only directory or field request. Return only an opaque identifier and status in the demonstration output; do not print names, email addresses, compensation, time-off, or other HR fields. Keep the key in an approved local secret store.
+
 ## Error Handling
 
 | Error | Cause | Solution |

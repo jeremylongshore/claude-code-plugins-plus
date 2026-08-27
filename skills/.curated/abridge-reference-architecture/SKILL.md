@@ -29,6 +29,26 @@ compatibility: Designed for Claude Code
 
 Reference architecture for Abridge clinical AI integration in a multi-site health system. Covers data flow, component design, EHR integration patterns, and HIPAA-compliant infrastructure.
 
+## Prerequisites
+
+- An approved data-flow diagram, BAA-covered deployment environment, and a
+  named security and clinical owner for each planned site.
+- Confirmed EHR sandbox access and SMART-on-FHIR registration for each adapter
+  that will be implemented.
+- Synthetic fixtures and FHIR validation tests so the architecture can be
+  exercised without production PHI.
+
+## Instructions
+
+1. Select the EHR adapter and site configuration for one sandbox site first.
+2. Implement the session, webhook, FHIR, security, and monitoring boundaries
+   shown in the project structure; keep PHI redaction and audit logging shared
+   rather than reimplementing them per site.
+3. Validate the synthetic note-to-`DocumentReference` path, including webhook
+   idempotency and authenticated health checks, before adding another site.
+4. Promote a site only after its clinical, privacy, and operations owners sign
+   the readiness evidence and rollback plan.
+
 ## System Architecture
 
 ```
@@ -182,6 +202,27 @@ const sites: SiteConfig[] = [
 - EHR adapter pattern supporting Epic, Athena, and Cerner
 - Multi-site deployment configuration
 - End-to-end data flow documentation
+
+## Examples
+
+Start with a single synthetic Epic sandbox site using the `main-campus`
+configuration shape, a secret-managed sandbox organization ID, and a mock
+webhook event. Trace the event from session completion through the idempotency
+store to a locally validated `DocumentReference`, recording only resource IDs
+and aggregate timings. A successful architecture test proves that the adapter,
+security, and monitoring boundaries cooperate without exposing patient text.
+If signature verification, FHIR validation, or the health check fails, prevent
+the note push, retain the redacted failure evidence, and correct that boundary
+before enabling another site or real traffic.
+
+## Error Handling
+
+| Failure | Architecture response |
+|---------|-----------------------|
+| Webhook signature is invalid | Reject the event before it reaches the event router. |
+| Duplicate completion event arrives | Use the idempotency record and return a safe duplicate response. |
+| FHIR validation fails | Do not write the note; surface a redacted integration failure to the operator. |
+| Site configuration is incomplete | Keep the site disabled until its EHR, secret, and ownership requirements are verified. |
 
 ## Resources
 

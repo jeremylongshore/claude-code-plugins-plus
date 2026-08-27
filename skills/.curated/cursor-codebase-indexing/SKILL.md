@@ -21,6 +21,30 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Codebase Indexing
 
+## Overview
+
+Configure codebase indexing so relevant source and documentation are available while sensitive, generated, oversized, and unrelated files remain excluded from AI context.
+
+## Prerequisites
+
+- Repository ownership, expected source/documentation paths, and reviewed `.cursorignore`/indexing exclusions.
+- A non-sensitive verification fixture and a change-review path for configuration updates.
+
+## Instructions
+
+1. Define the intended workspace scope and add exclusions before the first indexing pass.
+2. Verify required files can be found and excluded paths cannot be attached or discovered.
+3. Reindex only after a reviewed configuration/workspace change and capture a redacted result.
+4. Monitor index size/performance and narrow scope rather than weakening data controls.
+
+## Output
+
+- A verified index scope with explicit included/excluded paths and an owner for maintenance.
+
+## Examples
+
+Index `src/` and `docs/` for a service while excluding `.env*`, build output, vendor directories, and customer exports. Verify a sanitized source file is available and an excluded placeholder is not before allowing AI work on the repository.
+
 Set up and optimize Cursor's codebase indexing system. Indexing creates embeddings of your code, enabling `@Codebase` semantic search and improving AI context awareness across Chat, Composer, and Agent mode.
 
 ## How Indexing Works

@@ -160,6 +160,12 @@ echo "REVIEW BEFORE SHARING — verify no secrets leaked"
 | Response latency | Performance baseline | Yes |
 | Model access | Key permissions | Yes |
 
+## Examples
+
+### Package a reproducible API failure without sharing sensitive prompts
+
+Capture the SDK version, model name, timestamp, HTTP status, latency, and a sanitized request shape using placeholders for user content and credentials. Verify the archive contains no API key, internal URL, personal data, or raw provider response before sharing it through the approved support channel. Retain only the minimum diagnostic artifact for the incident window and delete the local copy after the escalation closes.
+
 ## Resources
 
 - [Perplexity Community Forum](https://community.perplexity.ai)

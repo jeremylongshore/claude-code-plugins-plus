@@ -180,6 +180,12 @@ describe('Account Service', () => {
 | `MODULE_NOT_FOUND: jsforce` | Not installed | Run `npm install jsforce` |
 | `sf: command not found` | CLI not installed | Run `npm install -g @salesforce/cli` |
 
+## Examples
+
+### Use a disposable scratch org for a focused change
+
+Create a scratch org from a versioned definition, push only the metadata needed for the feature, and seed test data through a reproducible script with no customer identifiers. Run unit tests and a minimal integration path, then delete the scratch org when the branch closes or its time-to-live expires. Keep Dev Hub credentials in the approved developer secret store and never treat a scratch-org success as evidence for a production deployment.
+
 ## Resources
 
 - [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)

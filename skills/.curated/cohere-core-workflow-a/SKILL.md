@@ -199,6 +199,14 @@ async function rag(query: string, knowledgeBase: string[]) {
 | Empty citations | Docs too short/irrelevant | Improve document quality or chunking |
 | `too many documents` | >1000 rerank docs | Batch into groups of 1000 |
 
+## Examples
+
+Index a small approved staging corpus, run a query through embed, rerank, and
+grounded generation, then inspect citation coverage and retrieval quality
+without logging raw source documents. If citations are absent or retrieval is
+irrelevant, return an explicitly uncertain result and improve chunking or
+document scope before using the workflow for a user-facing decision.
+
 ## Resources
 
 - [RAG Complete Example](https://docs.cohere.com/docs/rag-complete-example)

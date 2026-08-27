@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Webhooks & Events
 
+## Output
+
+- A verified signed, idempotent webhook/event path with redacted observability and recovery ownership.
+- A receipt that records correlation ID, environment, event type, lifecycle result, and safe retry decision.
+
+## Examples
+
+Validate the callback signature before parsing the event, deduplicate with an opaque event ID, acknowledge within the documented timeout, and log only state/result metadata. Test in development using a synthetic document; retry transient errors with bounded backoff and quarantine terminal failures without replaying signing actions blindly.
+
 ## Overview
 
 Configure and handle Documenso webhooks for real-time document lifecycle notifications. Webhooks require a Teams plan or higher. The webhook secret is sent via the `X-Documenso-Secret` header (not HMAC-signed -- it is a shared secret comparison).

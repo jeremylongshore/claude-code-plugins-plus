@@ -23,6 +23,18 @@ compatibility: Designed for Claude Code
 ---
 # Framer Performance Tuning
 
+## Prerequisites
+
+A staging site, aggregate performance baseline, approved content/assets, a change owner, and rollback path.
+
+## Error Handling
+
+Revert changes that harm accessibility, publishing, privacy, or agreed performance thresholds; retain only redacted telemetry for review.
+
+## Examples
+
+Optimize a fictional staging page, compare aggregate performance metrics, and roll back if a synthetic form or route check regresses.
+
 ## Overview
 
 Optimize Framer plugin, component, and Server API performance. Key areas: CMS sync speed, component render performance, and plugin responsiveness.

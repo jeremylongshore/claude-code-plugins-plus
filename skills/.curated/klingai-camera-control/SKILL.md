@@ -159,6 +159,25 @@ response = requests.post(f"{BASE}/videos/image2video", headers=get_headers(), js
 | No visible movement | Value too low (1-2) | Increase to 3+ |
 | Mutual exclusivity error | Combined with masks/image_tail | Use only camera_control OR masks |
 
+## Prerequisites
+
+- An approved visual brief, rights-cleared or synthetic source material, sandbox workspace, content-policy review, credit cap, draft-only destination, and removal owner.
+
+## Instructions
+
+1. Test one camera preset on a watermarked sandbox draft; do not use private or unlicensed source material.
+2. Verify motion settings, policy and rights outcome, duration, credit estimate, and draft destination before submission.
+3. Review the canary for unwanted movement or prohibited content, then halt and remove it on any policy, rights, or budget concern.
+4. Promote only after owner approval and retain a redacted receipt with the asset removed at the agreed boundary.
+
+## Output
+
+Produce a camera-control receipt with brief classification, preset values, mode/duration, credit estimate, policy/rights outcome, draft status, approver, and retention/removal reference. Exclude prompts, identities, and asset URLs.
+
+## Examples
+
+`brief=synthetic-product-shot; pan=4; tilt=0; mode=standard; policy=pass; destination=draft-only; cleanup=24h` is safe for review.
+
 ## Resources
 
 - [Camera Control Guide](https://app.klingai.com/global/quickstart/ai-camera-control-guide)

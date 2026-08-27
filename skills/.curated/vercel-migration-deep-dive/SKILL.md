@@ -247,6 +247,12 @@ curl -sI https://my-app.vercel.app/old-page | grep Location
 | SSL not provisioning | DNS records incorrect | Verify A/CNAME records match Vercel's requirements |
 | 404 on migrated routes | Different path conventions | Add rewrites in vercel.json |
 
+## Examples
+
+### Migrate a route through a reversible DNS cutover
+
+Deploy the converted route to Vercel behind a preview hostname, verify functional parity and a rollback deployment with synthetic traffic, then lower DNS TTL well before the approved cutover. Change only the documented record, monitor resolution and application health from multiple regions, and retain the old platform during the validation window. If errors rise beyond the agreed threshold, restore the former DNS target and preserve the exact cutover timeline for review.
+
 ## Resources
 
 - [Migrate to Vercel from Netlify](https://vercel.com/docs/getting-started/migration/netlify)

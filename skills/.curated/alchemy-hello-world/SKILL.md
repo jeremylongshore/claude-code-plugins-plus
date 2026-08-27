@@ -150,6 +150,18 @@ getLatestBlock().catch(console.error);
 - ERC-20 token balances with symbol resolution
 - Block data with timestamp and gas usage
 
+## Examples
+
+Create a local `.env` entry through your secret-management workflow, run the
+balance and latest-block examples against a public address, and verify that
+the output contains only public chain data and no API key. Use a test address
+you control when adapting the NFT or token examples, and make one request at a
+time while learning the SDK. A successful run returns a block number or a
+well-formed empty asset list; it does not establish wallet ownership or asset
+value. If the address, network, or key is invalid, stop at the reported error,
+correct the configuration, and retry without copying the secret into source or
+terminal transcripts.
+
 ## Error Handling
 
 | Error | Cause | Solution |

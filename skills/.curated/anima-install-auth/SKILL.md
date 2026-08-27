@@ -120,6 +120,17 @@ Node ID: 1:2 (from the URL query parameter)
 - Verified code generation from a Figma design
 - Understanding of file key and node ID extraction
 
+## Examples
+
+Create a dedicated staging Figma file with one approved frame and request a
+least-privilege Anima token for that file. Store both credentials through the
+development secret workflow, run `verifySetup`, and confirm the result names a
+small expected set of generated files without printing either token. Keep the
+SDK in a server-side module and validate that no credential appears in the
+browser build. If token verification, file access, or node lookup fails, stop
+and correct the scoped entitlement or reference; do not use a personal token
+with broader design access as a workaround.
+
 ## Error Handling
 
 | Error | Cause | Solution |

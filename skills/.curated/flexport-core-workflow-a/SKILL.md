@@ -26,6 +26,10 @@ compatibility: Designed for Claude Code
 
 The primary Flexport integration path: create purchase orders, book shipments, and track cargo through the supply chain. The API v2 uses RESTful endpoints at `https://api.flexport.com` with JSON payloads.
 
+## Output
+
+Create an auditable workflow receipt with opaque booking/PO identifiers, authorized owner, validation state, approved destination, idempotency result, and next action. Keep commercial terms, addresses, documents, and cargo details inside the authorized system of record.
+
 ## Prerequisites
 
 - Completed `flexport-install-auth` setup

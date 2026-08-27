@@ -143,6 +143,10 @@ curl -X POST -H "Authorization: Bearer $HEX_API_TOKEN" \
 | `404` | Project not found | Verify project ID, ensure it's published |
 | Run ERRORED | Project code failed | Check Hex project logs |
 
+## Examples
+
+Run a sandbox project with fictional parameters and record `project=proj-hello-1; params=test-only; run=complete; result=aggregate-pass; output_retention=none; cleanup=complete` without retaining data output.
+
 ## Resources
 
 - [Hex API Reference](https://learn.hex.tech/docs/api/api-reference)

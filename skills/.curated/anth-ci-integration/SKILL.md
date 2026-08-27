@@ -27,6 +27,27 @@ compatibility: Designed for Claude Code
 
 Set up CI/CD pipelines that validate Claude API integrations with mock-based unit tests (free, fast) and prompt regression tests (live API, gated to main).
 
+## Prerequisites
+
+Create a dedicated `ANTHROPIC_API_KEY` repository secret with a spend limit that
+is appropriate for test traffic. Keep unit fixtures independent of that secret;
+only the protected prompt-regression job should call the API. Install Python
+3.12, `pytest`, and the Anthropic SDK in the test environment, and decide which
+branch is allowed to incur live-test cost before enabling the workflow.
+
+## Instructions
+
+1. Put deterministic request-shaping and tool-routing assertions in
+   `tests/unit/` and mock `anthropic.Anthropic` there.
+2. Put a small, representative set of API-backed prompt checks in
+   `tests/prompt_regression/`; make them skip cleanly when the secret is absent.
+3. Run unit tests on every push and pull request. Gate the live job to `main`
+   (or an equivalent protected release branch) and inject the secret only into
+   that job.
+4. Set explicit timeouts, concurrency limits, and a cost ceiling. Fail the
+   pipeline with a clear message when the ceiling is exceeded so an incident
+   cannot silently consume the test budget.
+
 ## GitHub Actions Workflow
 
 ```yaml
@@ -135,6 +156,23 @@ def pytest_runtest_call(item):
 | Flaky prompt tests | Non-deterministic output | Use `temperature: 0`, check patterns not exact strings |
 | 429 in CI | Parallel jobs sharing key | Use separate CI key |
 | Secret not found | Missing GitHub secret | Add `ANTHROPIC_API_KEY` in repo Settings > Secrets |
+
+## Output
+
+The pipeline produces a fast unit-test result for every change and, on the
+allowed branch, a separate prompt-regression result. The latter is either a
+pass with the tested prompt assertions, a deliberate skip when no key is
+available, or an actionable failure that identifies a timeout, rate limit,
+response-contract regression, or cost-guard breach.
+
+## Examples
+
+For a pull request that changes only formatting code, the workflow runs the
+mock-based suite and reports no live API calls. After that pull request merges
+to `main`, the protected regression job uses the repository secret to verify
+that the JSON extraction prompt still returns `name`, `age`, and `city`. If the
+response is malformed, the job fails at the assertion and preserves the test
+name in the CI log for triage.
 
 ## Resources
 

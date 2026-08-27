@@ -1,11 +1,12 @@
 ---
 name: langchain-langgraph-agents
-description: "Build a correct LangGraph 1.0 ReAct agent with `create_react_agent`\
-  \ \u2014 typed tools,\nerror propagation, recursion caps, and stop conditions that\
-  \ actually stop. Use when\nwriting your first tool-calling agent, migrating from\
-  \ `AgentExecutor` / `initialize_agent`,\nor diagnosing an agent that loops on vague\
-  \ prompts.\nTrigger with \"langgraph agent\", \"create_react_agent\", \"langgraph\
-  \ tool calling\",\n\"AgentExecutor migration\", \"agent loop cost\".\n"
+description: >-
+  Build a correct LangGraph 1.0 ReAct agent with create_react_agent — typed tools,
+  error propagation, recursion caps, and stop conditions that actually stop. Use
+  when writing a first tool-calling agent, migrating from AgentExecutor or
+  initialize_agent, or diagnosing an agent that loops on vague prompts. Trigger
+  with "langgraph agent", "create_react_agent", "langgraph tool calling",
+  "AgentExecutor migration", or "agent loop cost".
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.5.0
 license: MIT

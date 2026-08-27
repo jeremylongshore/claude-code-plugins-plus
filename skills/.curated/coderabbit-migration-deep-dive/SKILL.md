@@ -274,6 +274,14 @@ echo "  - Team satisfaction: Survey developers after 2 weeks"
 | Branch protection breaks | Old check name removed | Update to `coderabbitai` check name |
 | Higher seat cost than old tool | Per-seat vs per-repo pricing | Scope repos to reduce seat count |
 
+## Examples
+
+Run CodeRabbit and the existing reviewer in parallel on a small, representative
+repository for a defined period, measure coverage, useful findings, latency,
+and developer feedback, then migrate the reviewed rules by intent. Do not
+retire the prior protection or alter required checks until the measured rollout
+and rollback path are accepted by repository owners.
+
 ## Resources
 
 - CodeRabbit vs Alternatives

@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Customer.io Observability
 
+## Output
+
+- Bounded metrics and redacted traces for event acceptance, campaign delivery, errors, latency, and rate-limit headroom.
+- An owned alert/runbook path for delivery, authentication, data-quality, and provider incidents.
+
+## Examples
+
+Emit an aggregate counter for accepted events and failures by environment and endpoint, never by email address, customer ID, message body, API key, or full payload. Trigger a staging alert with a harmless test event, verify the on-call route, then restore the normal state and record the alert receipt.
+
 ## Overview
 
 Implement comprehensive observability for Customer.io integrations: Prometheus metrics (latency, error rates, delivery funnel), structured JSON logging with PII redaction, OpenTelemetry tracing, and Grafana dashboard definitions.

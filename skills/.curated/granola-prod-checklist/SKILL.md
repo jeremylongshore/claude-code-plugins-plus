@@ -138,6 +138,10 @@ Comprehensive pre-launch checklist for deploying Granola to a team or organizati
 | Calendar not syncing org-wide | OAuth app not approved | IT admin must approve Granola's OAuth in Google/Microsoft admin |
 | Audio issues across team | macOS permission prompt dismissed | Send instructions to re-grant Screen & System Audio permission |
 
+## Examples
+
+`revision=r44; canary=synthetic-calendar; health=pass; delivery=pass; retention=none; destination=approved; outcome=promote; rollback=r43` is a complete canary decision.
+
 ## Resources
 
 - [Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)

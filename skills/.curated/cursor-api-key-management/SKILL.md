@@ -22,6 +22,30 @@ compatibility: Designed for Claude Code
 ---
 # Cursor API Key Management
 
+## Overview
+
+Manage any Cursor BYOK/provider credentials as individual, least-privilege secrets with approved routing, ownership, rotation, spending limits, and exposure response.
+
+## Prerequisites
+
+- An approved provider/model route, named key owner, secrets-manager integration, and budget policy.
+- Confirmation that BYOK is permitted for the intended data classification and tenant configuration.
+
+## Instructions
+
+1. Issue one scoped key per owner or approved service through the provider/secrets manager.
+2. Configure it through the approved UI/injection path; never commit it, paste it into rules, or share it between users.
+3. Set provider spending/rate controls, review usage, and rotate on schedule or suspected exposure.
+4. Revoke first, then investigate, when a key is lost, leaked, or no longer required.
+
+## Output
+
+- An attributable, scoped credential with rotation, budget, and revocation evidence.
+
+## Examples
+
+Create a personal provider key in the approved secret manager, configure it only in the local secure setting, verify a low-cost non-sensitive request, and confirm usage attribution. If it appears in logs, chat, or git, revoke it immediately and replace it; do not attempt to redact history before revocation.
+
 Configure Bring Your Own Key (BYOK) for AI model providers in Cursor. BYOK lets you use your own API keys to bypass Cursor's monthly quota, pay per token directly, and access models not included in Cursor's subscription.
 
 ## Supported Providers

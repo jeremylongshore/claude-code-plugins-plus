@@ -151,6 +151,10 @@ curl -s -u "${BAMBOOHR_API_KEY}:x" \
 - `.env` file created and git-ignored
 - Successful API response from `/employees/directory`
 
+## Examples
+
+Create a dedicated integration identity with only the required read scope in a sandbox first, store its credential in the approved secret manager, and verify one synthetic read. Promote only after the HR system owner approves the exact production field scope; never use an administrator's personal API key or place the key in a command, repository, or ticket.
+
 ## Error Handling
 
 | HTTP Status | Header | Cause | Solution |

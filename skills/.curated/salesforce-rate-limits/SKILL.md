@@ -202,6 +202,12 @@ while (!result.done) {
 | `SERVER_UNAVAILABLE` | 503 | Salesforce temporarily down | Retry with backoff |
 | `UNABLE_TO_LOCK_ROW` | 409-equivalent | Record contention | Retry with backoff |
 
+## Examples
+
+### Throttle a bulk integration before quota exhaustion
+
+Read the Limits REST resource at the start of each batch, reserve a safety margin agreed with other integrations, and reduce concurrency or defer non-urgent work when the margin is approached. Use exponential backoff with jitter only for transient failures, never for a hard daily quota exhaustion. Test the policy against sandbox limits with synthetic work, record the deferred batch identifiers, and resume only after a fresh quota check confirms capacity.
+
 ## Resources
 
 - [API Request Limits](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)

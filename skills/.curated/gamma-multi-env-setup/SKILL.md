@@ -23,6 +23,14 @@ compatibility: Designed for Claude Code
 ---
 # Gamma Multi-Environment Setup
 
+## Output
+
+Record environment identity references, approved destinations, policy version, validation result, owner, and rollback path. Do not include credentials or content.
+
+## Examples
+
+Use a fictional staging deck to prove the development credential cannot publish to production, rotate the staging credential, and retain only redacted control evidence.
+
 ## Overview
 
 Configure Gamma API access across development, staging, and production environments. Since Gamma is a SaaS API with no self-hosted option, environment separation is achieved through separate workspaces (API keys), mock servers for development, and environment-aware client configuration.

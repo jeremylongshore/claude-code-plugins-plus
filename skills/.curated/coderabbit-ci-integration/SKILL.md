@@ -226,6 +226,14 @@ echo "Branch protection updated: CodeRabbit review required for merge"
 | Draft PRs blocked | `drafts: true` in config | Set `drafts: false` to skip draft PR reviews |
 | Status check stays pending | CodeRabbit outage | Check status.coderabbit.ai; admin merge if needed |
 
+## Examples
+
+In a pilot repository, create a small pull request, confirm the expected
+CodeRabbit status appears, then apply the approved branch-protection rule and
+test the documented emergency path without merging unreviewed production code.
+If the check times out or blocks unexpectedly, follow the time-bounded incident
+procedure and restore the last verified protection configuration.
+
 ## Resources
 
 - [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)

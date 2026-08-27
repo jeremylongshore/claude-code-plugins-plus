@@ -103,6 +103,28 @@ class GleanCostMonitor {
 | Duplicate documents indexed | Same content in multiple datasources | Deduplicate by content hash before indexing |
 | Query costs spiking | Bot or automated search traffic | Rate-limit API search consumers; whitelist known clients |
 
+## Prerequisites
+
+- An approved cost budget, a named content owner for each datasource, and a current count/freshness baseline.
+- A staging or dry-run inventory using synthetic identifiers; do not export document bodies, user lists, or query logs to make a cost decision.
+- A rollback plan that restores the previous inclusion filter and a written exception process for legal, compliance, or business-record sources.
+
+## Instructions
+
+1. Measure document counts, freshness, duplicate rate, and active users by datasource before proposing any exclusion.
+2. Classify candidates as draft, duplicate, archived, or stale; send ambiguous records to the source owner instead of automatically deleting them.
+3. Run the revised filter as a dry run and compare expected removed count, retained count, and representative synthetic search coverage.
+4. Apply a scoped, idempotent change to one datasource, monitor cost and freshness, and halt if relevant content or authorized access regresses.
+5. Promote in stages only after the owner accepts the evidence; retain the prior filter revision for immediate rollback.
+
+## Output
+
+Return a cost-change receipt with datasource, baseline and projected counts, exclusion categories and counts, owner approval, staged result, search-coverage probe, estimated savings range, and rollback revision. The receipt contains aggregates only.
+
+## Examples
+
+Example: `source=staging-guides; baseline=12000; proposed_exclusions=900 archived + 120 duplicates; retained=10980; probe=pass; owner=docs-ops; rollback=filter-r18`. This is a decision record, not a deletion authorization.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

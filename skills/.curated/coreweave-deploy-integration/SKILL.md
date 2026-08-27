@@ -33,6 +33,19 @@ Deploy GPU-accelerated inference services on CoreWeave Kubernetes (CKS). This sk
 
 ## Docker Configuration
 
+## Prerequisites
+
+- A reviewed image digest in an approved registry and a namespace-scoped image pull secret.
+- A production deployment manifest with resource limits, health checks, SLO, and rollback revision.
+- Approval for the target namespace, GPU capacity, and service exposure.
+
+## Instructions
+
+1. Build and scan the image, then deploy the immutable digest to staging first.
+2. Verify readiness, health, GPU allocation, and baseline request behavior before promotion.
+3. Use a controlled rolling update with a timeout and named observer.
+4. Roll back immediately if readiness, error rate, latency, or security verification fails.
+
 ```dockerfile
 FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04 AS base
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -135,6 +148,24 @@ kubectl rollout status deployment/inference-svc -n tenant-my-org --timeout=600s
 | `nvidia-smi` not found | Missing NVIDIA device plugin | Verify CoreWeave namespace has GPU operator installed |
 | `401 Unauthorized` | Invalid API key or expired credentials | Regenerate key in CoreWeave dashboard |
 | Slow rolling update | GPU nodes take time to drain | Set `terminationGracePeriodSeconds: 300` in deployment spec |
+
+## Output
+
+- A versioned, health-checked GPU deployment with declared capacity and ownership.
+- A rollout receipt containing image digest, readiness result, and redacted event evidence.
+- A known rollback command and threshold for using it.
+
+## Examples
+
+Deploy an immutable staging image and wait for the rollout before sending traffic:
+
+```bash
+kubectl -n tenant-staging set image deployment/inference-svc \
+  inference=registry.coreweave.com/my-org/inference-svc@sha256:REVIEWED_DIGEST
+kubectl -n tenant-staging rollout status deployment/inference-svc --timeout=10m
+```
+
+If the rollout fails, use `kubectl rollout undo` for the same deployment and record the redacted events. Do not retag `latest`, bypass health checks, or substitute plaintext credentials.
 
 ## Resources
 

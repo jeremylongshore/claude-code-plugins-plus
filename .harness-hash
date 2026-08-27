@@ -13,6 +13,7 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  plugins/saas-p
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml
+903555ec7e0e7d80db9f18076b50b8b9184a2f0a2b438859d15c9f8757428220  skills/.curated/audit-tests/eval-spec.yaml
 69f664a9b33c63c9012e95765d8b674a1d368dd6738c12c031bf6e1c2ec378e7  skills/.curated/coreweave-fabric-diagnostics/eval-spec.yaml
 359ac16d9bdcf83524cca2e919e4f1799d1b9ec04e867160e5e813bb6e580fa8  skills/.curated/coreweave-gpu-cost-leak-hunter/eval-spec.yaml
 01c92870854a14dd2a7f5dfb3fb2d79669e6cdf2f0c6f8494b4a909104dec699  skills/.curated/coreweave-gpu-node-forensics/eval-spec.yaml
@@ -25,3 +26,4 @@ c981c39992716a9c8dfd678952ff45a237574e4192f26a3ccbd603471b3c9d5d  skills/.curate
 d543f74906821a7fa80ba90dc80d3b6ff7fbdc81078ab0a9d75e45e965b3a5d3  skills/.curated/sentry-data-handling/eval-spec.yaml
 81eabecbc8b79a87d105d061bd0f3380e6d74648e412fa46f20885a1abf46160  skills/.curated/skill-creator/eval-spec.yaml
 4f53213f21724766085a7a4d701b5e8ffd4f30782f67880c87bac7077c0f2796  skills/.curated/supabase-known-pitfalls/eval-spec.yaml
+b91ee2d8ee323ac9591cdad232d31dbf639d7d4b2d32cc105dfa4bb05ab83ec8  skills/.curated/validate-skillmd/eval-spec.yaml

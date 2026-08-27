@@ -24,6 +24,10 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Hello World
 
+## Examples
+
+Create a development-only synthetic meeting/test account, verify the basic Fathom workflow and any resulting summary/action state, then remove or expire the fixture under policy. Record only environment and opaque result IDs; never use a customer recording, transcript, participant identity, or production CRM contact as a tutorial example.
+
 ## Overview
 
 First API calls against Fathom: list meetings, get a transcript, retrieve AI-generated summaries and action items.

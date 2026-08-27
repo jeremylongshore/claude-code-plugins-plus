@@ -22,6 +22,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Git Integration
 
+## Overview
+
+Use Cursor's Git features as a view and drafting aid while preserving repository branch protection, reviews, signed checks, and human ownership of commits/merges.
+
+## Prerequisites
+
+- A clean or recoverable working tree, repository contribution rules, and correct remote identity.
+- Required checks and reviewer/approval expectations for the target branch.
+
+## Instructions
+
+1. Inspect status and diff before staging; stage only reviewed, intended files.
+2. Draft but verify commit messages and never include secrets or unrelated changes.
+3. Run required local checks, push through the normal branch/PR workflow, and resolve feedback with evidence.
+4. Use revert or a new corrective commit for mistakes rather than rewriting shared history.
+
+## Output
+
+- A scoped, reviewable Git change with validation evidence and a normal revert path.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Working tree has unrelated changes | Separate/stash them before staging. |
+| Generated commit message misstates work | Edit it to match the actual diff. |
+| Protected branch rejects push | Use the approved PR/check process; do not weaken controls. |
+
+## Examples
+
+Review a Cursor-generated diff, stage only its intended files, run the focused suite, and push a topic branch for review. If an accidental file is staged, unstage it and recheck the diff before committing.
+
 Leverage Cursor's AI features within Git workflows: AI-generated commit messages, `@Git` context for code review, merge conflict resolution, and branch management.
 
 ## Source Control Panel

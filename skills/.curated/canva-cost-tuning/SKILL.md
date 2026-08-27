@@ -28,6 +28,17 @@ compatibility: Designed for Claude Code
 
 Optimize Canva Connect API usage. While the Connect API itself is free to call, rate limits constrain throughput. Canva Enterprise (required for autofill) has per-seat licensing costs. Optimize by reducing unnecessary calls, caching effectively, and batching operations.
 
+## Prerequisites
+
+- Current pricing and account-limit evidence from Canva and the organization; the examples below are not a purchase quote.
+- An approved workload scope, aggregate telemetry, and named spend/usage owner.
+
+## Instructions
+
+1. Verify current plan terms, features, and limits before estimating or changing workload behavior.
+2. Measure aggregate authorized usage, minimize requests and export fields, and set conservative budget/rate ceilings.
+3. Test one optimization behind a rollback flag and retain redacted reconciliation evidence before wider rollout.
+
 ## Canva Pricing Model
 
 | Tier | Cost | Connect API Access | Autofill API | Brand Templates |
@@ -141,6 +152,14 @@ class CanvaUsageTracker {
 - [ ] Thumbnail URLs refreshed only when displayed (15-min expiry)
 - [ ] Asset uploads deduplicated (don't re-upload same file)
 - [ ] Autofill results cached by template+data hash
+
+## Output
+
+Cost tuning yields current-source assumptions, aggregate usage trend, approved budget/rate limits, optimization result, and rollback decision. It excludes design content, asset URLs, user data, and credentials.
+
+## Examples
+
+For an export-heavy feature, verify the account limits, run a small synthetic pilot with a ceiling, compare aggregate usage and completion metrics, then enable a cache or batching change behind a feature flag. Roll back if authorization, freshness, or reconciliation degrades.
 
 ## Error Handling
 

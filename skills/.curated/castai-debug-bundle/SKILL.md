@@ -124,6 +124,22 @@ echo "Bundle created: $BUNDLE_DIR.tar.gz"
 | API call fails | Key expired | Bundle still useful with kubectl data |
 | tar fails | Disk full | Clean temp files first |
 
+## Output
+
+The command produces one timestamped `castai-debug-*.tar.gz` archive plus a
+summary that identifies failed collection steps. Before it leaves the cluster,
+an operator reviews the archive for credentials, workload environment values,
+customer identifiers, and internal network names; remove or redact those
+entries and retain the review decision with the support case.
+
+## Examples
+
+During an autoscaler incident, collect the archive, verify that `summary.txt`
+records the affected cluster and UTC time, then inspect `policies.json` and
+agent logs locally. Attach only the redacted archive to the support case and
+include the incident window and the failed component name rather than pasting
+raw logs into a public channel.
+
 ## Resources
 
 - [CAST AI Support](https://support.cast.ai)

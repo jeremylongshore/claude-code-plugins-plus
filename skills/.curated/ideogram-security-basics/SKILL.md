@@ -191,6 +191,10 @@ function sanitizePrompt(prompt: string): { safe: boolean; cleaned: string; reaso
 - Server-side proxy preventing client-side exposure
 - Pre-commit hook blocking accidental commits
 
+## Examples
+
+`env=staging; integration=sandbox-generator; secret_ref=image-v12; rights=test-owned; policy=pass; destination=approved; output_retention=none; rollback=disabled` is an auditable control result.
+
 ## Resources
 
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)

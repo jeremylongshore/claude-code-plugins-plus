@@ -31,6 +31,23 @@ compatibility: Designed for Claude Code
 
 CoreWeave runs GPU-intensive workloads on Kubernetes where hardware failures, memory exhaustion, and underutilization directly impact cost and reliability. Observability must cover DCGM GPU metrics, Kubernetes pod health, inference latency, and job completion rates. Proactive monitoring prevents wasted spend on idle GPUs and catches OOM conditions before they cascade.
 
+## Prerequisites
+
+- A metrics backend receiving Kubernetes and DCGM exporter metrics.
+- A named dashboard and on-call owner for the namespace or service.
+- Log and trace redaction rules that exclude prompts, model outputs, tokens, and credentials.
+
+## Instructions
+
+1. Tag metrics with bounded values such as namespace, model family, and status; do
+   not use request IDs, prompts, or user identifiers as labels.
+2. Build dashboards for utilization, memory, queue depth, latency, error rate, and
+   restart rate, then set alert thresholds from a measured baseline.
+3. Route critical alerts to the responsible on-call team and link a runbook that
+   includes a safe scale-down or rollback action.
+4. Test one alert in a non-production namespace and verify that the receipt contains
+   only operational metadata, not workload data.
+
 ## Key Metrics
 
 | Metric | Type | Target | Alert Threshold |
@@ -107,6 +124,28 @@ function logGpuEvent(event: string, node: string, data: Record<string, any>) {
 | Pod CrashLoopBackOff | Driver or config failure | Check DCGM logs, restart node |
 | Inference latency spike | Contention or throttling | Review GPU temp and queue depth |
 | Node NotReady | Hardware or network issue | Cordon node, migrate pods |
+
+## Output
+
+- A bounded-label GPU and workload dashboard with actionable alert rules.
+- A redacted event trail linking an alert to the namespace, model family, severity,
+  and response owner.
+- A tested incident path for capacity, memory, latency, and node-health failures.
+
+## Examples
+
+Use a non-production workload to verify the alert route without disrupting a live
+service:
+
+```bash
+kubectl -n inference-staging scale deployment/summarizer --replicas=0
+kubectl -n inference-staging get pods --watch
+# Confirm the unavailable-replica alert reaches the test route, then restore it.
+kubectl -n inference-staging scale deployment/summarizer --replicas=1
+```
+
+Record the alert ID and restoration time, not request or model content. Escalate a
+node or memory alert through the runbook before deleting pods or changing quotas.
 
 ## Resources
 

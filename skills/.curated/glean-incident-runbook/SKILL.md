@@ -106,6 +106,28 @@ curl -s -H "Authorization: Bearer $GLEAN_API_TOKEN" \
 | Indexing backlog | New docs not searchable after 4+ hours | Monitor queue depth, contact Glean if persistent |
 | Permission sync drift | Users see restricted docs or miss accessible ones | Audit datasource permissions, trigger permission re-sync |
 
+## Prerequisites
+
+- An incident owner, an approved support path, and a synthetic probe query that reveals no customer or employee content.
+- Read-only diagnostic credentials scoped to the affected staging or production datasource; never paste tokens, queries, document titles, or result snippets into incident chat.
+- A known-good baseline for connector freshness, permission-sync age, and the change window that preceded the incident.
+
+## Instructions
+
+1. Open a timestamped incident record and classify impact using the severity table; preserve only error codes and aggregate counts.
+2. Run the synthetic health probe, then isolate the failing boundary: identity, search endpoint, source connector, index backlog, or ACL synchronization.
+3. Freeze nonessential connector configuration changes while the owner compares the affected source's ACL watermark with the source system.
+4. Apply the smallest reversible remediation (for example, reauthorize one connector or queue a scoped resync), observe the synthetic probe and freshness metrics, and stop if access expands unexpectedly.
+5. Close only after a second, least-privilege test identity receives the expected allow and deny outcomes. Record the rollback used or explicitly record that no change was made.
+
+## Output
+
+Produce an incident receipt containing the severity, UTC start and resolution times, affected datasource identifiers, redacted error codes, remediation and rollback decision, and the two synthetic authorization outcomes. Keep raw search results, user identifiers, and document content out of the receipt.
+
+## Examples
+
+For a stale `staging-handbook` connector, record: `P2; source=staging-handbook; sync_age=6h; action=scoped_reauthorize; probe=healthy; allow_test=pass; deny_test=pass`. This proves recovery without exposing a real query or document.
+
 ## Resources
 
 - [Glean Developer Portal](https://developers.glean.com/)

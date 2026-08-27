@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Debug Bundle
 
+## Output
+
+- A minimal redacted diagnostic bundle with correlation IDs, lifecycle state, environment, version, and status evidence.
+- A safe escalation/recovery record that preserves document/signature confidentiality and audit integrity.
+
+## Examples
+
+For a signing failure, collect opaque document/correlation IDs, template version, environment, state transition, callback result, and timestamp. Review the bundle for document content, signer PII, signing links, tokens, and audit payloads before sharing; reproduce only with synthetic documents through the approved incident/support route.
+
 ## Current State
 
 !`node --version 2>/dev/null || echo 'N/A'`

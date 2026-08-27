@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso CI Integration
 
+## Output
+
+- A credential-free pull-request lane for schema/template/unit checks and a trusted, scoped development integration lane.
+- A redacted CI receipt with validation outcome and a safe failure/retry procedure.
+
+## Examples
+
+Run template/schema/unit checks on every pull request using synthetic documents and signers, then execute one protected-branch development integration check with a scoped secret. If it fails, retain redacted correlation/status evidence; never expose signing credentials, document payloads, or production workspace access to forked CI code.
+
 ## Overview
 
 Configure CI/CD pipelines for Documenso integrations with GitHub Actions. Covers unit testing with mocks, integration testing against staging, and deployment workflows with secret management.

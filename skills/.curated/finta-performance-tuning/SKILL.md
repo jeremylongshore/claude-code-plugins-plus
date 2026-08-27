@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Finta's fundraising API handles investor list pagination, round data aggregation, and CRM sync batching. Founders querying large investor databases (1,000+ contacts) hit pagination bottlenecks, while round aggregation across multiple funding stages compounds latency. Optimizing paginated fetches with cursor-based iteration, caching investor profiles, and batching CRM sync writes reduces pipeline load times by 50-70% and keeps fundraising dashboards responsive during active rounds.
 
+## Prerequisites
+
+- A baseline from aggregate, redacted latency and error metrics; do not copy investor records into performance traces.
+- An approved capacity target and freshness expectation for each dashboard or sync.
+- A staging environment with synthetic data and a rollback switch for cache, queue, and concurrency changes.
+
+## Instructions
+
+1. Measure one bottleneck at a time: pagination, cache misses, queue depth, or destination latency.
+2. Set bounded concurrency and exponential backoff before increasing throughput; respect provider responses rather than assuming a rate limit.
+3. Cache only data that is permitted to persist and define invalidation on the write path; do not trade data isolation for a higher hit rate.
+4. Roll out a small canary, compare redacted metrics against the baseline, and revert if error rate, staleness, or queue age breaches the agreed threshold.
+5. Record the observed result and owner so the tuning change can be reviewed or removed later.
+
 ## Caching Strategy
 
 ```typescript
@@ -106,6 +120,14 @@ function track(startMs: number, cached: boolean, error?: boolean) {
 | Stale round totals | Aggregation cache too long during active round | Reduce round TTL to 5 min, invalidate on write |
 | CRM sync timeout | Too many individual writes | Batch CRM updates in groups of 50 |
 | 429 Rate Limited | Burst of API calls during pipeline refresh | Parse rate limit headers, add progressive backoff |
+
+## Output
+
+Publish a performance receipt with the baseline and post-change aggregate metrics, cache and queue settings, test window, decision owner, and rollback status. Exclude contact details, document links, investment amounts, and raw payloads from the receipt.
+
+## Examples
+
+In staging, replay a synthetic page sequence at low concurrency, then raise it one step while watching queue age and error percentage. If the destination returns a throttle response, reduce concurrency and verify that the retry queue drains without duplicating a synthetic record before considering a production canary.
 
 ## Resources
 

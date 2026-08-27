@@ -240,6 +240,10 @@ After resolution, document:
 | Multiple users reporting same issue | Likely P1/P2 — check status page, post to team Slack |
 | Issue persists after all troubleshooting | Create debug bundle, submit to help@granola.ai |
 
+## Examples
+
+For a missing synthetic meeting record, document `severity=P2; integration=staging-calendar; window=15m; action=reconnect-scoped-integration; recording_probe=pass; transcript_retention=none; rollback=not-needed`. The receipt uses no attendee name, title, recording, or transcript text.
+
 ## Resources
 
 - [Granola Status Page](https://status.granola.ai)

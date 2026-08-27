@@ -24,6 +24,10 @@ compatibility: Designed for Claude Code
 ---
 # Framer CMS Plugin — Managed Collections
 
+## Examples
+
+Create a fictional staging collection, approve its fields and publishing audience, then publish one canary entry. Verify a duplicate sync is suppressed and an unapproved destination receives neither content nor visitor data.
+
 ## Overview
 
 Build a Framer plugin that syncs external data into CMS Managed Collections. Managed Collections are plugin-controlled — your plugin creates the schema and populates items. This is the primary integration pattern for connecting Framer to external CMSes, databases, or APIs.

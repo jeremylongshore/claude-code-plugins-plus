@@ -183,6 +183,12 @@ print(f"Org: {result['records'][0]['Name']}")
 | `API_DISABLED_FOR_ORG` | API not enabled | Requires Enterprise, Unlimited, Developer, or Performance edition |
 | `REQUEST_LIMIT_EXCEEDED` | Daily API limit hit | Check Setup > Company Information for remaining calls |
 
+## Examples
+
+### Configure a short-lived JWT setup for local development
+
+Register a sandbox Connected App, grant only the OAuth scopes required by the local workflow, and use a dedicated development user pre-authorized through its permission set. Store the private key and consumer key in ignored local configuration or the approved secret manager, then verify identity with a non-mutating query. Do not fall back to a username-password flow in shared scripts; revoke temporary keys and remove the app authorization when the exercise ends.
+
 ## Resources
 
 - [jsforce Documentation](https://jsforce.github.io/document/)

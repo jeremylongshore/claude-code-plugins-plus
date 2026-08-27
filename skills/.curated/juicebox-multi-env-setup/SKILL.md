@@ -102,6 +102,25 @@ JB_EXPORT_ENABLED=true npm run deploy -- --env production
 | Stale sample data in dev | Dev dataset not refreshed | Run `npm run seed:dev` to reload sample data |
 | API key scope error | Key generated for wrong workspace | Regenerate API key in correct workspace settings |
 
+## Prerequisites
+
+- Approved environment boundaries, sandbox-only synthetic fixtures, secret references rather than literal keys, source/destination allowlists, suppression controls, and a tested rollback revision.
+
+## Instructions
+
+1. Keep development and staging datasets synthetic; reject cross-environment credentials, sources, destinations, and real-record exports.
+2. Run deployment probes with aggregate metrics only and confirm suppression, data minimization, and `contacts_exported=0` before promotion.
+3. Release through one sandbox canary, monitor quota and policy drift, and stop immediately on scope, retention, or authorization failures.
+4. Promote only after owner approval; restore the prior revision, revoke temporary access, and delete staged fixtures if validation fails.
+
+## Output
+
+Produce an environment receipt with environment-to-workspace mapping, fixture type, source/destination approval, suppression and no-export assertions, canary outcome, approver, retention/deletion proof, and rollback reference. Exclude keys and contact-level data.
+
+## Examples
+
+`env=staging; workspace=isolated-synthetic; source=approved; destination=none; suppression=pass; contacts_exported=0; rollback=release-r31` is safe to promote for approval.
+
 ## Resources
 
 - [Juicebox Docs](https://docs.juicebox.work)

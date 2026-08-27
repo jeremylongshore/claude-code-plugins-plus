@@ -168,6 +168,47 @@ When building apps with user-submitted prompts:
 4. **Rate limit prompt submissions** -- prevent abuse
 5. **Review flagged content** -- human review for edge cases
 
+## Prerequisites
+
+- A versioned policy configuration, an owner for escalation, a review queue, and a documented retention/deletion schedule.
+- A synthetic or rights-cleared fixture set for tests. Likeness, voice, and other identifiable-person inputs require documented consent; do not rely on a prompt filter as proof of rights.
+- A bounded credit budget and a private, watermarked draft destination. Public distribution requires a separate approval record after policy and quality checks.
+
+## Instructions
+
+1. Normalize the prompt and provenance metadata, then run the local filter before creating a task. Preserve only a redacted reason code for rejected content.
+2. Check violence, sexual content, hate, illegal activity, self-harm, misinformation, likeness/deepfake, and copyrighted-character risk. Route ambiguous cases to human review rather than trying to evade the policy with sanitization.
+3. Confirm that every image, mask, tail frame, and reference asset is synthetic or rights-cleared and that the requested destination and audience are approved.
+4. Submit only a short, watermarked sandbox canary within the credit budget. Keep it private until the policy result, visual review, consent record, and owner approval are complete.
+5. If the provider rejects the task or a reviewer withdraws approval, do not retry the same request. Quarantine and remove staged media, revoke temporary links, and restore the previous approved version.
+6. Retain a redacted receipt with policy version, reason code, opaque task digest, approval state, budget state, retention deadline, and rollback reference; exclude prompts, images, identities, and credentials.
+
+## Output
+
+Return one of `approved_for_draft`, `needs_human_review`, or `blocked`, together with an opaque request digest, policy version, reason codes, rights/provenance result, canary state, budget result, and retention/rollback instructions. A `blocked` result must not create a public artifact or expose the submitted content in logs.
+
+## Error Handling
+
+Reject locally when a known restricted pattern, missing consent, unknown
+provenance, disallowed destination, or budget breach is detected. Treat provider
+policy failures as final for that request and report a user-safe revision hint; do
+not claim that sanitization makes an unsafe request permissible. For classifier
+outages or ambiguous results, fail closed into human review. Quarantine any output
+that later receives a complaint, remove its distribution links, preserve only the
+redacted audit receipt, and record the rollback owner.
+
+## Examples
+
+An internal canary decision can be recorded as:
+
+```text
+fixture=synthetic-product-v4; rights=cleared; likeness=none;
+policy=pass-v3; destination=staging-private; canary=watermarked;
+budget=within-limit; approval=pending; decision=approved_for_draft
+```
+
+An identifiable-person image without a consent record must instead return `blocked` and create no generation task.
+
 ## Resources
 
 - [Kling AI Terms of Service](https://app.klingai.com/global/dev/document-api/protocols/paidServiceProtocol)

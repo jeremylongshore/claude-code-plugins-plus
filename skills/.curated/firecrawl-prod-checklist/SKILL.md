@@ -27,6 +27,20 @@ compatibility: Designed for Claude Code
 
 Pre-deployment validation checklist for applications using Firecrawl's scrape, crawl, map, and extract APIs. Covers credential management, crawl safety limits, error handling, monitoring, and rollback.
 
+## Output
+
+Produce a launch receipt listing the approved deployment version, allowlist, crawl budget, evidence for completed controls, canary metrics, rollback owner, and unresolved exceptions. Exclude API keys and captured page content.
+
+## Error Handling
+
+- Stop promotion on credential exposure, allowlist bypass, unbounded crawl behavior, or a threshold breach.
+- Move exhausted jobs to a reviewed queue rather than retrying indefinitely.
+- Revoke affected credentials and preserve only redacted incident evidence when data or access boundaries may have been violated.
+
+## Examples
+
+Deploy a staging canary that crawls one approved synthetic target under a small credit budget. Simulate a throttle response and verify the job pauses safely, reports aggregate state, and can be rolled back without replaying pages.
+
 ## Prerequisites
 
 - Staging environment tested and passing

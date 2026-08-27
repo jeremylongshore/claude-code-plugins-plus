@@ -21,6 +21,23 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Debug Bundle
 
+## Overview
+
+Collect a minimal, redacted reproduction for a Cursor issue involving context, rules, indexing, model behavior, or extensions. Debug material may contain proprietary code or prompts, so scope and retention matter as much as reproducibility.
+
+## Prerequisites
+
+- A named issue owner, Cursor version, affected workspace, and approved bug-report destination.
+- Permission to inspect logs and settings, plus redaction rules for code, prompts, paths, tokens, and user data.
+- A minimal reproducer that does not require customer data or production credentials.
+
+## Instructions
+
+1. Start with the smallest reproducible prompt, file set, rule set, and model configuration.
+2. Record versions, active context, indexing state, extensions, and redacted console errors.
+3. Remove proprietary code, credentials, identifiers, and full prompt/output text before sharing externally.
+4. Test the proposed resolution in a non-sensitive workspace and document its result before closing the issue.
+
 Diagnose and fix AI suggestion quality issues in Cursor. Covers why AI generates wrong code, how to improve context, and systematic debugging workflows.
 
 ## Diagnostic Framework
@@ -193,6 +210,23 @@ Logs location:
 - **Model pinning**: If a model update degrades quality, temporarily switch to a different model while reporting
 - **Rule audits**: Periodically review `.cursor/rules/` for outdated or conflicting rules
 - **Training**: Ensure team knows the difference between context, model, and prompt issues
+
+## Output
+
+- A redacted reproduction bundle containing versions, minimal steps, active configuration, and observed/expected behavior.
+- A disposition: resolved with evidence, vendor escalation, or internal policy/configuration change.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Bundle contains proprietary code or credentials | Stop distribution, remove the material, rotate exposed secrets, and recreate a minimal redacted reproducer. |
+| Issue cannot reproduce | Record the exact environment delta and keep the issue open for additional evidence. |
+| Debugging changes global settings | Revert after the test or use a disposable profile. |
+
+## Examples
+
+For a bad-context report, create a new chat with one sanitized file and a short non-sensitive request. Record the Cursor version, active rules, selected model, expected and observed behavior, then attach only redacted material approved for the support channel.
 
 ## Resources
 

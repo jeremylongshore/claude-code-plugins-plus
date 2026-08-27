@@ -105,6 +105,25 @@ curl -s -w "\nHTTP %{http_code}\n" \
 | Quota exhaustion | 429 responses, quota endpoint shows 0 remaining | Pause automation, request quota increase, optimize usage |
 | Export failure | CSV/JSON export returns error or empty payload | Verify analysis job completed, retry export with job ID |
 
+## Prerequisites
+
+- An incident owner, synthetic lead fixture, approved support path, source-authority record, and a redaction rule for contact details and enrichment data.
+
+## Instructions
+
+1. Open a timestamped incident, classify impact, and reproduce once with the synthetic fixture.
+2. Isolate identity, source authority, enrichment, suppression, destination, quota, or export failure using status and opaque correlation IDs only.
+3. Freeze nonessential jobs, apply one reversible remediation, and stop any export when source, scope, or destination cannot be verified.
+4. Verify recovery with least-privilege access and a suppression check; delete staged artifacts and document rollback before closure.
+
+## Output
+
+Produce an incident receipt with severity, UTC window, affected integration, redacted error class, source/destination/suppression state, remediation/rollback decision, and next action. Exclude names, contact data, enrichment values, and credentials.
+
+## Examples
+
+`P2; source=synthetic-prospects; error=429; action=bounded-backoff; destination=held; suppression=pass; contacts_exported=0; rollback=not-needed` is a safe incident summary.
+
 ## Resources
 
 - Juicebox Status

@@ -144,6 +144,28 @@ job = queue.enqueue(process_with_claude, prompt="...", callback_url="https://int
 | Batch `expired` | Not processed in 24h | Resubmit the batch |
 | `errored` results | Individual request was invalid | Check `result.error.message` per request |
 
+## Prerequisites
+
+- Choose an approved sandbox workspace, synthetic documents, bounded batch size, queue with durable retry/dead-letter behavior, and an authenticated internal callback destination.
+- Treat SSE as a provider stream and callbacks as application-owned events: Anthropic does not use traditional webhooks for the patterns described here.
+- Define an event retention period and redaction policy. Do not log prompts, completions, document content, tool arguments, API keys, or callback secrets.
+
+## Instructions
+
+1. Validate the stream or batch request against an allowlist of model, source, destination, and maximum size before sending it. Use synthetic fixtures and assert `side_effects=0`.
+2. For SSE, process known event types, preserve ordering by message/block index, and mark a response incomplete until `message_stop`. Never assume a disconnected stream is resumable.
+3. For batches and queues, use stable custom IDs, authenticate internal callbacks, and make result handling idempotent. A duplicate event must not duplicate a write or notification.
+4. Enforce bounded polling, retries, and queue visibility timeouts. Quarantine errored or expired items for review instead of repeatedly resubmitting unknown data.
+5. Release from sandbox to a small canary, verify counts, suppression/data-scope checks, and retention cleanup, then roll back the consumer or producer configuration on regression.
+
+## Output
+
+Produce an event-processing receipt with correlation/batch ID, event types and counts, succeeded/errored/expired counts, retry/dead-letter counts, callback authentication result, idempotency result, `side_effects=0` for tests, canary status, rollback reference, and cleanup status. Include error classes, not raw payloads.
+
+## Examples
+
+Submit two synthetic fixtures with custom IDs `demo-001` and `demo-002`, consume each result twice, and assert one stored result per ID. A safe receipt can state `batch=redacted; succeeded=2; duplicates_suppressed=2; callbacks_authenticated=true; side_effects=0; cleanup=verified` without including document text or generated output.
+
 ## Resources
 
 - [Streaming API](https://docs.anthropic.com/en/api/messages-streaming)

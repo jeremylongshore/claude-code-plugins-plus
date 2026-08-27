@@ -19,6 +19,14 @@ compatibility: Designed for Claude Code
 ---
 # Fondo Install & Auth
 
+## Output
+
+Record authentication method, approved scope, secret-manager reference, validation time, owner, and revocation procedure. Never include keys, financial response data, or account identifiers.
+
+## Examples
+
+Use a scoped staging credential for a read-only fictional record, record the redacted outcome, and verify the old credential is denied after revocation.
+
 ## Overview
 
 Set up Fondo for automated startup bookkeeping, tax filing, and R&D tax credits. Fondo is a managed platform (not an API-first service) that integrates with payroll providers, banks, and expense tools. Configuration happens through the Fondo dashboard and OAuth connections.

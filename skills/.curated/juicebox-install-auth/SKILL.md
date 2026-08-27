@@ -70,6 +70,14 @@ print(f'Connected! {results.total} profiles')
 | Plan limit exceeded | 403 | Upgrade plan or check quota |
 | Rate limited | 429 | Check `Retry-After` header |
 
+## Output
+
+Produce a redacted authentication receipt with environment, secret-reference status, least-privilege scope, sandbox fixture classification, source/destination approval, suppression and `contacts_exported=0` checks, owner approval, and cleanup confirmation. Never include API keys, identities, or contact data.
+
+## Examples
+
+`env=staging; credential=secret-reference; scope=read-sandbox; fixture=synthetic; suppression=pass; contacts_exported=0; cleanup=verified` is a safe connection-check result.
+
 ## Resources
 
 - [Juicebox Docs](https://docs.juicebox.work)

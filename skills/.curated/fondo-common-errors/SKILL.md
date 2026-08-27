@@ -23,6 +23,32 @@ compatibility: Designed for Claude Code
 
 Quick reference for common Fondo platform issues and their resolutions.
 
+## Prerequisites
+
+- A finance owner, opaque case ID, redacted telemetry, and an authorized support path.
+- A safe synthetic or read-only reproduction; do not use live tax/payroll records for routine diagnostics.
+
+## Instructions
+
+1. Classify the issue as access, sync, categorization, reconciliation, filing workflow, or data-retention concern.
+2. Reproduce with the smallest permitted probe, then review configuration, integration scope, source mapping, and queue state.
+3. Apply a reversible correction, record the review decision, and verify a safe failure path.
+4. Escalate possible financial-data exposure or filing-impacting discrepancies to the finance owner.
+
+## Output
+
+Return a redacted diagnostic receipt with case ID, category, safe reproduction, action, verification, owner, and follow-up. Never include transactions, payroll, tax documents, account details, or credentials.
+
+## Error Handling
+
+- Do not make tax eligibility, filing, or payment decisions from an automated error flow.
+- Quarantine mismatches for professional review and use bounded retries for transient integration failures.
+- Stop sharing evidence if it contains sensitive financial data or secrets.
+
+## Examples
+
+Use a fictional categorization discrepancy, record only an aggregate error category, correct the mapping in a test fixture, and route the result to the authorized finance reviewer before any live change.
+
 ## Integration Sync Issues
 
 | Issue | Cause | Solution |

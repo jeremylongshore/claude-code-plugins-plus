@@ -200,6 +200,12 @@ Error occurred
 | `EDGE_FUNCTION_INVOCATION_FAILED` | 500 | Edge | Remove Node.js APIs from edge code |
 | `NO_RESPONSE_FROM_FUNCTION` | 502 | Runtime | Return response from all code paths |
 
+## Examples
+
+### Repair a production-only missing environment variable
+
+When a route works in preview but returns a production 500, first confirm the variable’s target scope with `vercel env ls` without printing its value. Add the secret through the project’s approved secret-management path for the Production target, redeploy a preview with a synthetic health check, and verify only that the variable is present and the route succeeds. Record the deployment URL and remove any temporary diagnostic logging before promoting the fix.
+
 ## Resources
 
 - [Vercel Error Codes](https://vercel.com/docs/errors)

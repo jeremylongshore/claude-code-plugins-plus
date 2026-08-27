@@ -21,6 +21,38 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Common Errors
 
+## Overview
+
+Diagnose Cursor startup, authentication, extension, indexing, and workspace errors with reversible, user-scoped steps before resetting local state.
+
+## Prerequisites
+
+- A reproduction, Cursor version, affected operating system, and an approved backup location for user settings.
+- Authorization to inspect local logs; redact project paths, prompts, and credentials from support evidence.
+
+## Instructions
+
+1. Reproduce the issue with extensions disabled or in a disposable profile when possible.
+2. Capture the smallest relevant status/log evidence and try the least-destructive documented remedy.
+3. Back up settings before clearing caches or resetting state, then validate recovery with a non-sensitive workspace.
+4. Escalate persistent issues with a redacted reproduction instead of sharing workspace data.
+
+## Output
+
+- A classified issue, reversible remediation, and redacted verification result.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Reset would erase user settings | Create and verify a backup before proceeding. |
+| Logs contain sensitive code or tokens | Redact them and use the approved secure support route. |
+| Error persists after safe remediation | Stop destructive retries and escalate with the minimal reproduction. |
+
+## Examples
+
+When Cursor will not start, launch once with extensions disabled, record the version and outcome, then re-enable extensions individually in a disposable profile. Clear only cache folders after backing up settings; do not delete the full profile to diagnose a single extension.
+
 Diagnostic and resolution guide for the most frequent Cursor IDE issues. Organized by error category with specific symptoms, causes, and fixes.
 
 ## Authentication Errors

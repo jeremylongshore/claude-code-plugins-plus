@@ -26,6 +26,12 @@ compatibility: Designed for Claude Code
 
 Index documents into Glean and search them. Two steps: set up a custom datasource with the Indexing API, then query with the Client API.
 
+## Prerequisites
+
+- Use an approved sandbox datasource, scoped non-production credentials, and fictional sample documents only.
+- Prepare one synthetic identity allowed to see the sample and one that must be denied, plus a deletion path for the test records.
+- Record opaque test IDs locally; do not use a production wiki, employee identity, or real result snippet as tutorial data.
+
 ## Instructions
 
 ### Step 1: Set Up Custom Datasource
@@ -109,6 +115,10 @@ Getting Started Guide (https://wiki.company.com/getting-started) — score: 0.95
 | `datasource not found` | Datasource not created | Run `adddatasource` first |
 | No search results | Indexing not yet complete | Wait 1-2 minutes for processing |
 | `invalid document` | Missing required fields | Include `id`, `title`, `url` |
+
+## Examples
+
+Index two fictional records into `sandbox-onboarding`, search for `sample-policy`, then record `indexed=2; allowed_probe=1; denied_probe=0; cleanup=complete`. This demonstrates the boundary without retaining company content.
 
 ## Resources
 

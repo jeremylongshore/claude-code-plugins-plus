@@ -107,6 +107,25 @@ function track(op: 'search' | 'enrich', startMs: number, cached: boolean) {
 | Upload failure on large dataset | Payload exceeds limit or connection drop | Chunk into 10K-row segments, retry failed chunks |
 | Slow broad search | Unfiltered query returning thousands of results | Add location/skills/title filters, set limit=20 |
 
+## Prerequisites
+
+- An approved performance baseline, synthetic sandbox fixture, bounded test budget, source/destination allowlists, suppression controls, and a rollback owner.
+
+## Instructions
+
+1. Benchmark cache, batching, and pagination changes against synthetic fixtures only; reject live contact export and unapproved destinations.
+2. Collect aggregate latency, error, and quota measurements; verify suppression, data minimization, and `contacts_exported=0` before comparison.
+3. Run one bounded canary, halt on scope, policy, quota, or retention drift, and restore the prior tuning configuration if it fails.
+4. Keep only the redacted benchmark receipt and delete test artifacts after the approved window.
+
+## Output
+
+Produce a performance receipt with environment, baseline and aggregate measurements, tuning settings, suppression/no-export assertions, canary outcome, owner approval, retention/deletion proof, and rollback reference. Exclude queries, records, and credentials.
+
+## Examples
+
+`env=staging; fixture=synthetic; p95_delta=-22%; quota=within-budget; suppression=pass; contacts_exported=0; rollback=available` supports an approval decision.
+
 ## Resources
 
 - Juicebox API Docs

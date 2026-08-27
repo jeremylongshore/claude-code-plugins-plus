@@ -21,6 +21,17 @@ compatibility: Designed for Claude Code
 ---
 # Cursor Hello World
 
+## Overview
+
+Practice Tab, Chat, Inline Edit, and Composer in a disposable sample project before using them on production code. Every proposed diff remains subject to normal review, tests, security checks, and repository rules.
+
+## Instructions
+
+1. Create a non-sensitive example project and enable the approved privacy setting.
+2. Use one feature at a time, give clear constraints, and inspect every generated diff before accepting it.
+3. Run focused tests/formatting after applying a change; reject or revert unexpected edits.
+4. Move to real repositories only after rules, indexing exclusions, and review expectations are configured.
+
 A hands-on 10-minute walkthrough of Cursor's four core AI features: Tab Completion, Chat, Inline Edit, and Composer.
 
 ## Setup
@@ -174,6 +185,23 @@ npx tsx src/index.ts
 - Hello World exercises do not send sensitive code to AI providers -- safe for evaluation
 - Enable Privacy Mode before using Cursor with production codebases
 - Tab completions work immediately; Chat and Composer require active subscription or BYOK API key
+
+## Output
+
+- A small runnable sample change created through reviewed Cursor interactions.
+- A demonstrated review loop: inspect diff, test, accept or revert, and retain source-control history.
+
+## Error Handling
+
+| Condition | Safe response |
+|---|---|
+| Generated diff touches unrelated files | Reject it, start a scoped request, and inspect active context/rules. |
+| Output includes insecure or untested code | Do not accept it; request a constrained revision and use normal review/testing. |
+| Sensitive material is included in context | Stop the session, remove the context, and follow the exposure procedure. |
+
+## Examples
+
+Ask Inline Edit to add a type to one selected function, inspect the proposed diff, then run the focused test. If it touches other files or violates project rules, reject it and restate the task with the exact file and acceptance condition.
 
 ## Resources
 

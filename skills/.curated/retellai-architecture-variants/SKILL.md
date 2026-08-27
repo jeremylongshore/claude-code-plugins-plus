@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Choose a queue-backed architecture for bursty inbound calls
+
+For a campaign that creates short spikes, keep the public number attached to a
+stable routing layer and place CRM enrichment behind an asynchronous queue.
+Start with a preview agent that records only synthetic test calls, set a clear
+timeout for the enrichment request, and configure a human-transfer fallback.
+Measure latency and transfer rate during the canary before selecting the
+variant for production traffic.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)

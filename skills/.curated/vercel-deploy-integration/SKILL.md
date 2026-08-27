@@ -202,6 +202,12 @@ git push main
 | Deploy hook returns 404 | Hook deleted or project ID wrong | Recreate the hook in Settings > Git |
 | Region not available | Plan doesn't support multi-region | Upgrade to Pro or Enterprise |
 
+## Examples
+
+### Promote a preview with an explicit rollback point
+
+Deploy the candidate from an immutable commit SHA to preview, run smoke checks against public and authenticated synthetic paths, and compare the deployment’s environment-variable names—not values—with production. Promote through the normal protected release workflow, retaining the previous production deployment ID in the change record. During the rollout, watch the agreed error-rate and latency thresholds; if either breaches, use instant rollback and stop further traffic changes while preserving the evidence.
+
 ## Resources
 
 - [Deploying to Vercel](https://vercel.com/docs/deployments)

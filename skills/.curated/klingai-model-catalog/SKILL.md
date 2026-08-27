@@ -127,6 +127,34 @@ response = requests.post(f"{BASE}/videos/text2video", headers=headers, json={
 | `2:3` | Tall portrait |
 | `21:9` | Ultra-wide, cinematic |
 
+## Prerequisites
+
+- A dated snapshot of the provider's current model and capability documentation, a selection owner, an approved credit budget, and an explicit fallback model.
+- Define the intended use, aspect ratio, duration, audio needs, quality/latency thresholds, and destination. Test with synthetic prompts and rights-cleared reference media only; confirm content-policy and likeness/consent requirements before submission.
+- Use a sandbox project and draft/watermarked canaries. Production promotion requires owner approval and a rollback/removal plan for outputs that fail policy, rights, quality, or cost checks.
+
+## Instructions
+
+1. Translate the request into capability requirements, then verify each candidate's current support, limits, pricing mode, and policy constraints from the dated documentation snapshot.
+2. Eliminate unsupported or unapproved candidates before generation. Run the smallest synthetic canary for the remaining candidates with `publish=false`, watermark/draft enabled, and an explicit credit ceiling.
+3. Compare aggregate quality, latency, credit use, policy result, and rights review. Choose the model that satisfies the requirements and document why the fallback is acceptable.
+4. Obtain approval before production use. Keep the selected model ID pinned, monitor the first staged release, and revert to the approved fallback if any threshold or policy check regresses.
+5. Remove rejected, superseded, or unapproved canary media, revoke temporary access, and retain a redacted selection receipt rather than raw prompts or outputs.
+
+## Output
+
+Return a model-selection record with requirements, documentation snapshot date, candidate IDs and exclusions, synthetic fixture ID, aggregate canary metrics, estimated credits, policy/rights outcomes, selected model, fallback, approval state, rollout scope, retention deadline, and rollback/removal reference. Do not include prompts, media, likenesses, audio, signed URLs, identities, or secrets.
+
+## Error Handling
+
+- If documentation is stale, contradictory, or missing a capability, mark the candidate unknown and stop selection until verified; do not guess from a model name.
+- If a candidate rejects content, lacks a required feature, exceeds budget, or fails quality/latency thresholds, quarantine and remove its canary output, then evaluate only an approved fallback.
+- If the selected model becomes unavailable or changes behavior, pause promotion, restore the pinned fallback, reconcile in-flight tasks, and record the redacted rollback receipt.
+
+## Examples
+
+For a synthetic vertical draft, set `requirements=t2v,9:16,5s`, candidates `kling-v2-5-turbo,kling-v2-6`, `destination=sandbox-review`, `watermark=draft`, `publish=false`, and `credits_max=100`. Select only after `policy=pass`, `rights=pass`, and owner approval; otherwise remove both canary outputs.
+
 ## Resources
 
 - [Model Documentation](https://app.klingai.com/global/dev/document-api/apiReference/model/skillsMap)

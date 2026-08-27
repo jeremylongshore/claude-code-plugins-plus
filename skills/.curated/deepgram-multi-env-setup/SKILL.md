@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Deepgram Multi-Environment Setup
 
+## Prerequisites
+
+- Separate Deepgram projects/credentials, storage/retention policies, and owners for development, staging, and production.
+- Reviewed promotion/rollback controls plus sanitized fixtures for each pre-production environment.
+
+## Examples
+
+Validate a configuration in development with a licensed fixture, promote the same version to staging with a separate key, and record its quality/latency/alert results. Promote production through an approved canary only; never reuse production keys or recordings in development to make an environment test pass.
+
 ## Overview
 
 Configure isolated Deepgram environments for development, staging, and production. Each environment uses a separate Deepgram project, scoped API keys, environment-specific model selection, and validated configuration. Includes typed config, client factory, Docker Compose profiles, and Kubernetes overlays.

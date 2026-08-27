@@ -18,6 +18,24 @@ compatibility: Designed for Claude Code
 ---
 # Fathom Production Checklist
 
+## Prerequisites
+
+- A named tenant/data owner, approved recording/consent/data-use policy, identity/secret boundary, and rollback plan.
+
+## Instructions
+
+1. Complete evidence gates for access, consent, retention, integrations, CRM mapping, observability, incident response, and rollback.
+2. Validate a synthetic or approved canary workflow and verify its access/data boundaries.
+3. Block production enablement when any data, consent, security, ownership, or recovery gate is unverified.
+
+## Output
+
+- A production-readiness receipt with evidence, owner, exceptions, canary result, and tested rollback path.
+
+## Examples
+
+Pilot a production-like configuration using approved synthetic meeting data, verify consent/access/CRM behavior and alert routing, then observe the stated window. Restore the prior configuration if any gate fails; do not widen access or send real follow-ups to conceal a defect.
+
 ## Overview
 
 Fathom provides AI-powered meeting intelligence with automated transcription, summaries, and action item extraction. A production integration ingests meeting recordings, processes transcripts, and syncs action items to downstream systems. Failures mean lost meeting context, missed follow-ups, or transcript data leaking outside authorized channels. This checklist ensures reliable, compliant meeting data pipelines.

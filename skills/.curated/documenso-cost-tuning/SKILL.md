@@ -23,6 +23,15 @@ compatibility: Designed for Claude Code
 ---
 # Documenso Cost Tuning
 
+## Output
+
+- A measured cost decision with document/signing quality, delivery, compliance, and retention guardrails.
+- An aggregate usage receipt and reversible change record owned by the appropriate service/data lead.
+
+## Examples
+
+Compare aggregate document volume, workflow duration, and error data in development/staging, change one approved capacity or lifecycle setting, and observe the stated window. Revert on signing/delivery/security regression; do not reduce audit, retention, authorization, or document-protection controls to lower cost.
+
 ## Overview
 
 Optimize Documenso costs through plan selection, template reuse, self-hosting, and usage monitoring. Documenso's pricing is uniquely developer-friendly: paid plans include unlimited API usage and signing volume.

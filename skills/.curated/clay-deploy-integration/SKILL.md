@@ -202,6 +202,21 @@ PORT=3000
 | Missing secrets in deploy | Env vars not configured | Add via platform CLI before deploying |
 | Health check fails | Clay webhook URL invalid | Re-copy webhook URL from Clay table |
 
+## Output
+
+Publish a deployment receipt containing environment, release/version, runtime
+identity, secret references, webhook verification, health checks, alert route,
+and rollback decision. Do not emit webhook URLs, shared secrets, individual
+lead payloads, or CRM credentials in application logs, CI output, or receipts.
+
+## Examples
+
+Deploy a staging callback with a dedicated runtime role, submit a synthetic
+row, and verify a signed/authorized receipt, queued processing, and a redacted
+health result. Promote only after the production environment gate approves the
+same evidence; on reachability or secret failure, roll back the release rather
+than opening the endpoint or widening its permissions.
+
 ## Resources
 
 - [Vercel Serverless Functions](https://vercel.com/docs/functions)

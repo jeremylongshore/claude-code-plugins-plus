@@ -27,6 +27,25 @@ compatibility: Designed for Claude Code
 
 Anima converts Figma designs into production-ready code for React, Vue, and HTML. A failed design-to-code pipeline means engineers receive broken components, mismatched tokens, or stale screens that drift from the source of truth. This checklist ensures your Anima integration produces reliable, framework-compliant output before it reaches CI/CD.
 
+## Prerequisites
+
+- Named design, engineering, security, and operations owners who can make a
+  go/no-go decision and own the rollback path.
+- A staging environment using separate managed Anima/Figma credentials, an
+  allowlisted design registry, and a reproducible generated-code fixture.
+- Defined output quality gates: source-version traceability, lint/type/build,
+  visual/accessibility review, and no secrets in artifacts or logs.
+
+## Instructions
+
+1. Assign an owner and evidence link to every required checklist item.
+2. Run the readiness script with the deployment identity in staging and retain
+   only its redacted result.
+3. Exercise a generation and rollback/disable path with an approved design
+   component, then verify downstream code-quality and visual gates.
+4. Approve progressive release only when all required checks pass; any failed
+   security, credential, output, or fallback control is a no-go condition.
+
 ## Authentication & Secrets
 
 - [ ] `ANIMA_API_KEY` stored in secrets manager (never in source)
@@ -101,6 +120,23 @@ checkAnimaReadiness();
 | Generation rate limits | 429 errors drop design updates | P2 |
 | Component render validation | Broken UI shipped to production | P2 |
 | Design token mapping | Visual inconsistencies across app | P3 |
+
+## Output
+
+- Signed-off go/no-go record with owners and redacted readiness evidence
+- Verified secret, provider, and Figma access boundaries
+- Generated-component validation and source-version traceability receipts
+- Tested rollback or generation-disable path for production incidents
+
+## Examples
+
+For a production rehearsal, generate one allowlisted staging component using
+the production-shaped secret binding, run the readiness script, and send the
+result through lint, type checking, visual review, and the release approval
+workflow. Record the Figma version, generated artifact digest, deploy revision,
+and rollback owner. If token safety fails, a quality gate is red, or the design
+source cannot be traced, declare a no-go, disable generation, and correct the
+failed control before rerunning the full checklist.
 
 ## Resources
 

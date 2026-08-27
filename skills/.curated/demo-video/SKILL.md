@@ -10,7 +10,7 @@ description: 'Generate polished demo videos from a single prompt. Use when the u
   "demo walkthrough", or "feature showcase video".
 
   '
-allowed-tools: Read, Write, Edit, Bash, Glob
+allowed-tools: Read, Write, Edit, Bash(uv:*), Glob
 version: 1.3.0
 author: Srinivas Vaddisrinivas <vaddisrinivas170497@gmail.com>
 license: MIT
