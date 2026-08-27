@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Optimize Flexport API integration performance. The API is rate-limited and serves logistics data that changes infrequently (shipments update hourly, products rarely). Cache aggressively for reads, batch writes, and use maximum page sizes.
 
+## Prerequisites
+
+- A redacted baseline for latency, error rate, queue age, and budget/rate use; define freshness requirements per data class.
+- Synthetic staging data, bounded concurrency, cache invalidation rules, and a rollback switch.
+
+## Output
+
+Publish a performance receipt with baseline/post-change aggregate metrics, cache/concurrency settings, freshness rule, policy owner, and rollback result. Do not put logistics payloads or credentials into telemetry.
+
+## Error Handling
+
+- Reduce concurrency and honor throttle responses rather than increasing retries during a limit breach.
+- Invalidate or disable a cache when access, freshness, or data-isolation controls cannot be demonstrated.
+- Quarantine unexpected results for review and revert the canary before a broad rollout.
+
+## Examples
+
+Replay a fictional shipment list in staging at low concurrency, enable a bounded cache, and compare only aggregate latency and cache-hit metrics. Simulate a permission change to ensure the cache does not serve data to an unauthorized consumer; revert if it does.
+
 ## Instructions
 
 ### Step 1: Maximize Page Size

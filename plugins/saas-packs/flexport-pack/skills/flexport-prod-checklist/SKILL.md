@@ -25,6 +25,32 @@ compatibility: Designed for Claude Code
 
 Pre-deployment and go-live checklist for Flexport logistics integrations covering API configuration, webhook setup, monitoring, and rollback procedures.
 
+## Prerequisites
+
+- A launch owner, approver, rollback operator, approved data-flow inventory, and staging evidence using fictional shipments.
+- Redacted monitoring, explicit target/destination policies, and a secure path for credentials and incident evidence.
+
+## Instructions
+
+1. Attach evidence or an owner decision for every applicable checklist control; leave no implicit acceptance.
+2. Verify scoped secrets, signature validation, idempotent processing, redacted diagnostics, and retention/access behavior.
+3. Run a small staging or production canary with synthetic data and observe aggregate health, queue, and delivery outcomes.
+4. Stop promotion and invoke rollback on permission, policy, integrity, or safety thresholds; record the decision and recovery test.
+
+## Output
+
+Create a go-live receipt with completed controls, evidence links, canary metrics, exceptions, approver, launch/rollback owners, and follow-up dates. Keep documents, addresses, commercial terms, and credentials out of it.
+
+## Error Handling
+
+- Pause unsafe automation or notifications on signature, permission, destination, or reconciliation failures.
+- Quarantine failed work by opaque ID and rotate credentials if exposure is possible.
+- Confirm rollback and no unintended replay before resolving the launch incident.
+
+## Examples
+
+Process a fictional shipment milestone through the canary, revoke a test destination’s access, and simulate an upstream outage. Promote only after the designated approver records that the handler paused safely, produced redacted metrics, and rolled back cleanly.
+
 ## Pre-Deployment
 
 ### Authentication & Secrets

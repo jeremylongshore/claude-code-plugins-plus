@@ -25,6 +25,20 @@ compatibility: Designed for Claude Code
 
 The Flexport API v2 enforces rate limits per API key. When exceeded, you get a `429 Too Many Requests` with `Retry-After` and `X-RateLimit-*` headers. Key limits to know: the API returns headers on every response telling you remaining quota.
 
+## Prerequisites
+
+- Current account limits confirmed from the provider, with a named concurrency/budget owner and reviewed exception queue.
+- Aggregate telemetry that excludes shipment records, documents, commercial terms, and credentials.
+- Sandbox fixtures that exercise throttling, pause/retry, and duplicate prevention.
+
+## Output
+
+Produce a rate-control receipt with policy version, concurrency, retry bound, throttle count, queue age, idempotency outcome, and manual dispositions. Do not log payloads or headers containing secrets.
+
+## Examples
+
+Run a fictional shipment event under a low concurrency limit, simulate a `429`, and confirm the worker honors its bounded wait and processes the opaque event once after recovery. Repeated failures enter review rather than causing a bulk replay.
+
 ## Rate Limit Headers
 
 | Header | Description | Example |
