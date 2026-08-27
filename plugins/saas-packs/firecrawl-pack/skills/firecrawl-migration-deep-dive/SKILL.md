@@ -32,6 +32,12 @@ compatibility: Designed for Claude Code
 
 Migrate from custom scraping (Puppeteer, Playwright, Cheerio) or competing APIs to Firecrawl. Firecrawl eliminates browser management, anti-bot handling, and JS rendering infrastructure. This skill shows equivalent code for common scraping patterns.
 
+## Prerequisites
+
+- An inventory of existing targets, permissions, extraction schemas, rate controls, and data-retention requirements.
+- A staging environment with approved target pages or synthetic fixtures; do not use production credentials in migration tests.
+- A rollback owner and a period in which the old path remains available for reconciliation.
+
 ## Migration Comparison
 
 | Feature | Puppeteer/Playwright | Cheerio | Firecrawl |
@@ -75,6 +81,14 @@ async function scrapeFirecrawl(url: string) {
   return { markdown: result.markdown, title: result.metadata?.title };
 }
 ```
+
+## Output
+
+Keep a migration receipt listing each target, old and proposed behavior, validation result, permitted data destination, canary outcome, and rollback decision. Redact page content, credentials, and any personal data collected during comparison.
+
+## Examples
+
+Choose one approved staging page and compare only metadata, content hash, and schema-valid field counts from the old and new paths. If the new path exceeds the credit budget, changes the extraction contract, or captures an unapproved field, disable the canary and retain the old path while the mapping is reviewed.
 
 ### Step 2: Replace Cheerio HTML Parsing
 

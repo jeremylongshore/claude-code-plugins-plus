@@ -29,6 +29,16 @@ compatibility: Designed for Claude Code
 
 Process scraped web content from Firecrawl pipelines. Covers markdown cleaning, structured data extraction with Zod validation, content deduplication, chunking for LLM/RAG, and storage patterns for crawled content.
 
+## Prerequisites
+
+- A written target-domain allowlist, legal/terms review where required, and an approved data-retention boundary.
+- A schema and content classification policy that identifies prohibited, sensitive, or licensed material.
+- Secure storage with encryption, access ownership, and synthetic fixtures for pipeline testing.
+
+## Output
+
+Produce a processing receipt with source URL, capture timestamp, content hash, schema-validation result, classification, retention date, and destination reference. Store content only in the approved system and omit credentials, personal data, and raw document excerpts from logs.
+
 ## Instructions
 
 ### Step 1: Content Cleaning

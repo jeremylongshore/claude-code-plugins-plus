@@ -29,6 +29,16 @@ compatibility: Designed for Claude Code
 
 Production reliability patterns for Firecrawl scraping pipelines. Firecrawl's async crawl model, JS rendering, and credit-based pricing create specific reliability challenges: crawl jobs may time out, scraped content may be empty (bot detection, JS failures), and credits can be burned by runaway crawls. This skill covers battle-tested patterns for each.
 
+## Prerequisites
+
+- A documented crawl allowlist, owner, credit budget, and retention policy for captured content.
+- Aggregate telemetry for job state, queue age, error category, and budget use.
+- A staging target or synthetic fixture for exercising timeouts, retries, and fallback logic.
+
+## Output
+
+Emit a reliability receipt with crawl ID, approved target, attempt count, content-quality result, aggregate budget use, and terminal disposition. Redact page contents and credentials; move exhausted or policy-rejected jobs to a reviewed queue.
+
 ## Instructions
 
 ### Step 1: Robust Crawl with Timeout and Backoff
