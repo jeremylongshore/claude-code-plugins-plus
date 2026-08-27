@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Finta is a fundraising CRM built for founders managing investor pipelines, deal rooms, and investor updates. The API exposes endpoints for funding rounds, investor contacts, and deal room documents. Tracking API changes matters because Finta evolves its data model around fundraising workflows — field renames in round stages, investor contact schema updates, and deal room permission changes can break integrations that sync pipeline data to external analytics or reporting tools.
 
+## Prerequisites
+
+- Current vendor release information and an inventory of the integrations, exports, and field mappings affected.
+- A versioned backup or approved recovery export, with access limited to migration owners.
+- A staging environment using fictitious data, a change owner, and an explicit rollback decision point.
+
+## Instructions
+
+1. Compare the current supported interface and release notes with the actual fields your integration consumes; do not rely on illustrative code as a contract.
+2. Classify every mapping as compatible, transformed, removed, or unknown, and require review for unknown data.
+3. Run schema and permission checks in staging with synthetic records, including an idempotent retry and rollback rehearsal.
+4. Promote with a small, monitored canary; keep the previous mapping available until reconciliation passes.
+5. Reconcile aggregate record counts and approved business totals, investigate mismatches, and obtain sign-off before decommissioning the prior path.
+
 ## Version Detection
 
 ```typescript
@@ -139,6 +153,14 @@ class FintaClient {
 | Deal room permissions | `403 Forbidden` on document upload | Re-check deal room access scopes after API key rotation |
 | CSV import column mismatch | Import fails silently with 0 records created | Re-map columns using updated Finta field names from `/schema` endpoint |
 | Webhook signature invalid | Webhook verification fails after API update | Update HMAC secret from Finta dashboard settings |
+
+## Output
+
+Keep a migration receipt that names the release reviewed, affected integrations, mapping decisions, staging results, canary outcome, reconciliation evidence, rollback owner, and final approval. Store sensitive exports separately from the receipt and redact diagnostics.
+
+## Examples
+
+Create a fictitious round with an opaque investor ID in staging, process it through both old and proposed mappings, and compare the approved aggregate fields. If the counts differ or a permission check fails, disable the canary, restore the prior mapping, and open a reviewed discrepancy before retrying.
 
 ## Resources
 

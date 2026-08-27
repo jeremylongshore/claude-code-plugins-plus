@@ -22,6 +22,20 @@ compatibility: Designed for Claude Code
 
 Finta pricing is per-seat with tiered feature access, and the primary cost driver is investor pipeline sync volume. Each fundraising round generates hundreds of investor interactions — updates, document shares, and payment collections — that all flow through Finta's API. Over-syncing investor data, maintaining unused deal rooms, and keeping inactive seats during non-fundraising periods waste budget. Strategic plan selection and sync optimization ensure you only pay for what active fundraising demands.
 
+## Prerequisites
+
+- A current contract, invoice, or administrative usage report; do not infer plan terms from this guide.
+- Named owners for seats, integrations, and deal rooms, plus a defined retention policy.
+- Aggregate usage data that is sufficient for a decision without exporting investor-level records.
+
+## Instructions
+
+1. Reconcile active seats and deal rooms against current business owners; remove or archive only after confirming the retention and access requirements.
+2. Measure sync volume by workflow and change detection rather than logging source records or financial details.
+3. Establish a budget threshold and alert owner, then prioritize safe reductions such as batching approved updates or eliminating duplicate jobs.
+4. Review plan suitability using current vendor terms and a documented feature need; obtain the contract owner’s approval for changes.
+5. Test a synchronization reduction in staging or on synthetic data before applying it to live investor workflows.
+
 ## Cost Breakdown
 
 | Component | Cost Driver | Optimization |
@@ -110,6 +124,14 @@ class FintaCostTracker {
 | Payment processing fees spike | Many small transactions | Batch payment collections into weekly rounds |
 | Deal room quota exhausted | Old rooms not archived | Auto-archive rooms 7 days after round close |
 | Duplicate document uploads | Same doc shared to multiple rooms | Use shared link references instead of copies |
+
+## Output
+
+Produce a cost-optimization decision record with the measurement window, aggregate usage, approved actions, responsible owner, expected effect, and verification date. Never place invoices, payment details, investor names, or exact deal terms in the record.
+
+## Examples
+
+Use an aggregate report to identify an unused test seat and a duplicate scheduled job. Confirm ownership and retention, disable the duplicate in staging, and compare only job counts and error rates for a week before applying the approved change to production.
 
 ## Resources
 
