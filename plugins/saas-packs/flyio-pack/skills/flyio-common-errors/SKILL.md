@@ -25,6 +25,32 @@ compatibility: Designed for Claude Code
 
 Quick reference for the most common Fly.io deployment and runtime errors with solutions.
 
+## Prerequisites
+
+- An authorized operator, opaque correlation ID, redacted logs/metrics, and a known service owner.
+- A safe staging/read-only reproduction path; do not use destructive lifecycle actions to diagnose a production issue.
+
+## Instructions
+
+1. Classify the failure as build, deploy, health, networking, storage, access, rate-limit, or platform availability.
+2. Reproduce with the smallest safe probe, then inspect configuration, secret scope, release state, machine health, and region policy.
+3. Apply the least disruptive reversible correction and verify recovery plus a safe failure path.
+4. Escalate possible secret exposure, data loss, or cross-region integrity issues immediately.
+
+## Output
+
+Return a diagnostic receipt with category, opaque correlation ID, reproduction result, corrective action, verification, owner, and follow-up. Exclude tokens, log bodies, configuration secrets, and user data.
+
+## Error Handling
+
+- Do not solve permission problems with broader tokens; route them to the authorized owner.
+- Quarantine failed deployment or storage operations for review and use bounded retry/backoff.
+- Roll back before replaying stateful work after an integrity or health failure.
+
+## Examples
+
+Use a synthetic health failure, inspect only redacted release/machine status, restore the prior configuration, and verify readiness. If the issue is a token mismatch, pause automation until the scoped credential is corrected and a read-only check succeeds.
+
 ## Error Reference
 
 ### Health Check Failed

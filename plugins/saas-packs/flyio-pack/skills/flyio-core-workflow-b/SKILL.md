@@ -24,6 +24,19 @@ compatibility: Designed for Claude Code
 
 Set up Fly Postgres, persistent Fly Volumes, and private networking between apps. Fly Postgres runs as a regular Fly app with automated replication. Volumes provide persistent NVMe storage attached to specific machines.
 
+## Prerequisites
+
+- A data owner, documented locality/retention/backup/recovery requirements, and a staging environment with synthetic data.
+- Scoped database and deployment identities, private-network policy, and a tested restore/rollback procedure.
+
+## Output
+
+Maintain a storage/network receipt with resource references, region, encryption/access controls, backup/restore verification, owner, and recovery result. Do not include connection strings, records, or keys.
+
+## Examples
+
+Create a disposable staging database and volume with fictional data, confirm an unauthorized app cannot reach it, and test a backup/restore without copying credentials to logs. Tear down only the validated disposable resources through the approved process.
+
 ## Instructions
 
 ### Step 1: Create Fly Postgres

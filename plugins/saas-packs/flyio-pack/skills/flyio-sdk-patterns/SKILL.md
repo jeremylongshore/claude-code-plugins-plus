@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Production-ready patterns for the Fly.io Machines REST API at `https://api.machines.dev`. Fly.io exposes both GraphQL (organization queries) and REST (machine lifecycle) APIs. The Machines REST API is the primary integration surface for creating, starting, stopping, and destroying VMs across 30+ global regions. A structured client ensures consistent auth, typed machine states, and reliable wait-for-state polling.
 
+## Prerequisites
+
+- An app-scoped token held in a secret manager, approved app/region policy, and synthetic staging app.
+- Idempotent lifecycle design, rate controls, redacted diagnostics, and a rollback owner.
+
+## Instructions
+
+1. Validate app, region, operation, and request schema before a lifecycle call.
+2. Track opaque operation IDs, use bounded retries, and protect create/stop/delete from duplicate execution.
+3. Route unexpected state, permission, or target results to reviewed handling and preserve the prior configuration.
+
+## Output
+
+Produce a client-validation receipt with API/contract version, fixture result, operation ID, idempotency outcome, owner, and redacted failure reference. Never log tokens, machine config secrets, or user data.
+
+## Examples
+
+Create a disposable staging machine from a synthetic configuration, retry the request under the same operation ID, and verify only one machine results. Simulate an invalid region and ensure the client rejects it before a provider call.
+
 ## Singleton Client
 
 ```typescript

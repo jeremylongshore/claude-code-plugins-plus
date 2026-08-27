@@ -26,6 +26,19 @@ compatibility: Designed for Claude Code
 
 The primary Fly.io workflow: configure `fly.toml`, deploy apps, manage secrets, scale across regions, and control machine lifecycle.
 
+## Prerequisites
+
+- A reviewed image and configuration, app-scoped deployment identity, health criteria, launch owner, and rollback operator.
+- Staging synthetic traffic plus an approved region/data policy.
+
+## Output
+
+Record a workflow receipt with release/image reference, app/region scope, health/canary result, scale decision, approver, and rollback outcome. Exclude secrets, config values, request bodies, and user data.
+
+## Examples
+
+Deploy a fictitious staging app to one approved region, validate a generic health response under synthetic load, then simulate a failed check and restore the prior release. Expand to another region only after the owner accepts the canary receipt.
+
 ## Instructions
 
 ### Step 1: Configure fly.toml
