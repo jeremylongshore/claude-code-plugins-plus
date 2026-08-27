@@ -286,6 +286,14 @@ project/
 - Describe-then-remix pipeline for reference-based generation
 - Asset manifest for tracking and reproducibility
 
+## Prerequisites
+
+- Named asset/source owner, right-to-use and retention policy, environment/destination allowlist, and rollback owner for every generation edge.
+
+## Examples
+
+`source=fictional-fixture; rights=test-owned; generator=sandbox; destination=staging-gallery; output_retention=none; probe=pass; rollback=arch-r17` is a reviewable architecture receipt.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

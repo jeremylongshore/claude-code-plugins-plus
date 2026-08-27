@@ -228,6 +228,10 @@ await reframeImage("square-photo.png", "1344x768");
 - Descriptions array for image-to-text analysis
 - Metadata including seed, resolution, and safety status
 
+## Examples
+
+`job=img-opaque-31; input=fictional; rights=test-owned; destination=sandbox-gallery; idempotency=once; output_retention=none; rollback=workflow-r6` is a controlled generation result.
+
 ## Resources
 
 - [Edit V3 API](https://developer.ideogram.ai/api-reference/api-reference/edit-v3)

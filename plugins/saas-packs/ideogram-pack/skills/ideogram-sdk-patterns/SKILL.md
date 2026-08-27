@@ -252,6 +252,10 @@ export function getClientForTenant(tenantId: string): IdeogramClient {
 - Runtime validation for API responses
 - Auto-download to prevent URL expiration issues
 
+## Examples
+
+`sdk=v3; env=sandbox; prompt=fictional; rights=test-owned; request_schema=r4; result=accepted; output_retention=none; rollback=not-needed` is a safe client receipt.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)

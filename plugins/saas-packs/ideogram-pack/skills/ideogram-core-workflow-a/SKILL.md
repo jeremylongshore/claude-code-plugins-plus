@@ -207,6 +207,10 @@ async function generateVariations(basePrompt: string, seed: number) {
 - Metadata: URL, seed, resolution, style type, safety status
 - Seed values logged for reproducibility
 
+## Examples
+
+Run a fictional prompt fixture and record `fixture=image-basic-v2; rights=test-owned; destination=sandbox-gallery; policy=pass; output_retention=none; cleanup=complete` rather than retaining prompt or image data.
+
 ## Resources
 
 - [Legacy Generate API](https://developer.ideogram.ai/api-reference/api-reference/generate)

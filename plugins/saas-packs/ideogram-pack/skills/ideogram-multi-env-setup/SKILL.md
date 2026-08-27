@@ -215,6 +215,14 @@ try {
 - Startup validation preventing misconfiguration
 - CI/CD pipeline with environment gates
 
+## Prerequisites
+
+- Separate credentials, destinations, configuration revisions, and synthetic fixtures for sandbox, staging, and production.
+
+## Examples
+
+`env=staging; config=r22; fixture=prompt-v4; rights=test-owned; destination=approved; output_retention=none; rollback=r21` is evidence for controlled promotion.
+
 ## Resources
 
 - [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)

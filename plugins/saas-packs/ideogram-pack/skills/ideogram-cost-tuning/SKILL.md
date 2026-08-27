@@ -227,6 +227,14 @@ Enterprise:
 - Budget tracker with daily spending alerts
 - Cost report by model version
 
+## Prerequisites
+
+- Approved budget, baseline generation/quota metrics, synthetic fixture, and rollback revision for concurrency, cache, and destination policy.
+
+## Examples
+
+`integration=sandbox-generator; baseline=12000; deferred=120; deduped=900; rights=test-owned; output_retention=none; rollback=cost-r18` is a safe cost decision.
+
 ## Resources
 
 - [Ideogram API Pricing](https://ideogram.ai/features/api-pricing)

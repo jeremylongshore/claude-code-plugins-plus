@@ -260,6 +260,14 @@ async function validateMigration(testPrompts: string[]) {
 - Feature-flagged gradual migration
 - Validation script for migration testing
 
+## Prerequisites
+
+- Signed migration plan with asset owners, rights/retention authority, approved destination, and cutover/rollback owner.
+
+## Examples
+
+`cohort=synthetic-assets-01; baseline=420; migrated=420; rights=test-owned; destination=approved; output_retention=none; cutover=held; rollback=old-client-r8` documents a safe rehearsal.
+
 ## Resources
 
 - [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
