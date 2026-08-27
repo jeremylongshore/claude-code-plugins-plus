@@ -296,6 +296,14 @@ async function changeWorkspaceOwner(newOwnerUserId: string) {
 | Tags not filtering | Wrong tag_id format | Ensure UUID format |
 | Audit logs empty | Feature not available on plan | Upgrade to higher tier |
 
+## Output
+
+Produce an RBAC receipt with campaign/sender scope, prior/new mapping revisions, approving owner, staged/production status, consent/suppression checks, authorized/denied outcomes, and rollback reference. Use opaque IDs only; never attach recipient lists or copy.
+
+## Examples
+
+`scope=staging-campaigns; mapping_rev=42; owner=outreach-ops; allow_probe=pass; deny_probe=pass; consent=pass; suppression=pass; sends=0; rollback=rev41` proves the boundary.
+
 ## Resources
 
 - Instantly API Key Management
