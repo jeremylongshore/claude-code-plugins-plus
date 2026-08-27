@@ -272,6 +272,26 @@ Lead CSV/CRM → import.ts → POST /leads → Campaign
 | Import fails midway | Network/rate limit | Batch with retry (see `instantly-performance-tuning`) |
 | Webhook events missing | Webhook not registered | Register after deploy (see `instantly-webhooks-events`) |
 
+## Prerequisites
+
+- Named sender/campaign owners, consent and suppression authority, approved destinations, and a rollback owner for every campaign path.
+
+## Instructions
+
+1. Map every trigger-to-campaign edge with sender scope, consent/suppression policy, approval requirement, allowed operation, idempotency, observability, and rollback.
+2. Begin with synthetic recipients and draft-only campaigns; fail closed on unknown sender, recipient source, consent, suppression state, or destination.
+3. Make scheduling idempotent and bounded; quarantine uncertainty rather than sending, re-enrolling contacts, or exporting copy for debugging.
+4. Canary one draft-only campaign with aggregate signals and `sends=0` before human release approval, retaining the previous revision.
+5. Re-evaluate controls on any change to senders, audiences, credentials, schedules, or consent policy.
+
+## Output
+
+Produce an architecture record with owners, opaque campaign IDs, consent/suppression revisions, approval gates, idempotency/retry behavior, observability, test evidence, and rollback revision. Exclude recipients, copy, sender identities, and credentials.
+
+## Examples
+
+`source=ci-synthetic; campaign=sandbox-only; consent=r4; suppression=pass; approval=required; action=draft-only; sends=0; rollback=arch-r17` is a reviewable architecture receipt.
+
 ## Resources
 
 - [Instantly API v2 Docs](https://developer.instantly.ai/)
