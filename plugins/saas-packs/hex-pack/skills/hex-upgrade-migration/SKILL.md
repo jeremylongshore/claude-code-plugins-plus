@@ -42,6 +42,23 @@ grep -r "app.hex.tech" src/ --include="*.ts" --include="*.py"
 pip install --upgrade airflow-provider-hex
 ```
 
+## Prerequisites
+
+- Pinned current and target versions, a compatibility assessment, sandbox project fixtures, and an owner for each changed contract.
+- Versioned configuration backups plus approved downgrade, cancellation, and integration-disable procedures.
+
+## Output
+
+Produce an upgrade receipt with from/to versions, affected contracts, fixture/canary outcomes, aggregate assertions, owner approval, compatibility decision, and rollback revision. Exclude SQL, workspace output, and credentials.
+
+## Error Handling
+
+Stop for incompatible parameter/output contracts, authorization drift, unbounded replays, or a failed canary assertion. Restore the exact pinned prior revision and retain redacted evidence rather than forcing migration.
+
+## Examples
+
+`from=client-r12; to=client-r13; sandbox=pass; staging=pass; assertions=pass; canary=held; rollback=r12` is a defensible upgrade record.
+
 ## Resources
 
 - [Hex Changelog](https://learn.hex.tech/changelog)

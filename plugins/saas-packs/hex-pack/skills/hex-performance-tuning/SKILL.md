@@ -77,6 +77,26 @@ async function adaptivePoll(client: HexClient, projectId: string, runId: string)
 }
 ```
 
+## Overview
+
+Tune run latency and throughput using safe sandbox projects and aggregate metrics. A gain is invalid if it expands data scope, compromises output correctness, exceeds quota, or makes rollback impossible.
+
+## Prerequisites
+
+- Baseline latency/run metrics, safe fixture revision, approved error budget, and a rollback revision for cache, concurrency, parameters, and retry policy.
+
+## Output
+
+Return a tuning receipt with baseline/canary percentile bands, cache/concurrency/parameter revisions, quota/error outcomes, aggregate assertion, owner approval, and rollback reference. Use aggregates only.
+
+## Error Handling
+
+Roll back for quota saturation, increased errors, changed output assertion, access drift, or duplicate runs. Do not raise concurrency or cache duration to hide a failing dependency.
+
+## Examples
+
+`env=sandbox; p95=420ms->310ms; concurrency=2; cache=r4; quota=within-budget; assertions=pass; rollback=perf-r3` documents a safe canary.
+
 ## Resources
 
 - [Hex API](https://learn.hex.tech/docs/api/api-overview)
