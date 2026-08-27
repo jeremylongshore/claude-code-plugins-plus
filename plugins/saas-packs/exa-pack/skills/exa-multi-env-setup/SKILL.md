@@ -25,6 +25,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa Multi-Environment Setup
 
+## Output
+
+- Isolated development, staging, and production configurations with separate scoped credentials, policy/routing controls, and owners.
+- A synthetic-validation promotion receipt with a safe rollback path that avoids production-query experiments.
+
+## Examples
+
+Validate a versioned configuration with sanitized queries in development, promote to staging using a separate key, and record quality/latency/policy results. Release through an approved production canary only; restore the prior configuration on regression and never copy production keys or private query data to lower environments.
+
 ## Overview
 
 Exa charges per search request at `api.exa.ai`. Multi-environment setup focuses on API key isolation per environment, request limits and caching to control costs in staging, and appropriate `numResults`/content settings per tier.

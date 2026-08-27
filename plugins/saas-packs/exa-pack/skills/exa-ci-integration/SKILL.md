@@ -24,6 +24,15 @@ compatibility: Designed for Claude Code
 ---
 # Exa CI Integration
 
+## Output
+
+- A credential-free pull-request lane for unit/schema/policy checks and a trusted scoped integration lane.
+- A redacted CI receipt with validation result, failure classification, and safe retry path.
+
+## Examples
+
+Run mocked request/policy tests on every pull request using sanitized fixtures, then execute one protected-branch development integration check with a scoped secret. If it fails, retain correlation/status metadata and back off; never give forked code an Exa key or private query set.
+
 ## Overview
 
 Set up CI/CD pipelines for Exa integrations with unit tests (mocked), integration tests (real API), and health checks. Uses GitHub Actions with secrets for API key management.

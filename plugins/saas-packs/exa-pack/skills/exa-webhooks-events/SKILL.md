@@ -26,6 +26,11 @@ compatibility: Designed for Claude Code
 ---
 # Exa Webhooks & Events
 
+## Output
+
+- A verified signed/idempotent event path with redacted observability, bounded retry, and recovery ownership.
+- A receipt with correlation ID, environment, type, state/result, and safe replay decision.
+
 ## Overview
 
 Build event-driven integrations around Exa neural search. Exa is a synchronous search API (no native webhooks), so this skill covers building async patterns: scheduled content monitoring with `searchAndContents`, similarity alerts with `findSimilarAndContents`, new content detection using date filters, and webhook-style notification delivery.
