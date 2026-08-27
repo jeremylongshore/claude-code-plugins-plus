@@ -116,6 +116,26 @@ function validateProfile(p: JuiceboxProfile): string[] {
 | Export contains raw PII | Consent flag not checked before export | Add consent gate in `exportAnalysisResults` |
 | Enrichment timeout | Upstream data provider slow | Implement 10s timeout with retry, fallback to cached |
 
+## Prerequisites
+
+- A documented source authority and lawful-use basis, data owner, classification/retention policy, suppression list, approved destination, and synthetic fixture.
+
+## Instructions
+
+1. Inventory fields, source terms, and intended destination before ingestion; quarantine unknown authority, classification, or suppression state.
+2. Run schema, minimization, and suppression validation on bounded synthetic batches, logging only opaque IDs and aggregate counts.
+3. Compare intended source/destination scope with policy before any enrichment or export, defaulting uncertainty to deny.
+4. Submit idempotent staged work only to approved destinations, retain a redacted manifest, and verify deletion at the stated retention boundary.
+5. Stop and escalate rather than weakening suppression, authority, or data-minimization rules.
+
+## Output
+
+Return a handling receipt with source authority, classification, destination, policy revision, input/accepted/quarantined counts, suppression result, retention/deletion state, and rollback reference. Exclude identities, contact fields, and enrichment values.
+
+## Examples
+
+`source=synthetic-prospects; authority=approved; class=internal-test; accepted=96; quarantined=4; suppression=pass; contacts_exported=0; retention=24h; cleanup=verified` is a compliant processing result.
+
 ## Resources
 
 - Juicebox Privacy Policy
