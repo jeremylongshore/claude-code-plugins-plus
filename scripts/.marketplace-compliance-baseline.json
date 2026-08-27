@@ -2101,11 +2101,6 @@
     "plugins/saas-packs/veeva-pack/skills/veeva-security-basics/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/veeva-pack/skills/veeva-upgrade-migration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/veeva-pack/skills/veeva-webhooks-events/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-load-scale/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-local-dev-loop/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-migration-deep-dive/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-multi-env-setup/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/vercel-pack/skills/vercel-observability/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/vercel-pack/skills/vercel-performance-tuning/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/vercel-pack/skills/vercel-policy-guardrails/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/vercel-pack/skills/vercel-prod-checklist/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2211,9 +2206,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:44:37.666604Z",
-    "run_id": "33037220730",
-    "sha": "544048a95a81b9cf6c7e407f6a8e89701c6fe238"
+    "captured_at": "2026-08-27T03:47:28.926949Z",
+    "run_id": "33037364072",
+    "sha": "2a7d4dd73668a038705a171c189b8d13d54c00ec"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2238,7 +2233,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2201,
+    "errors": 2196,
     "grade_A_plus_B": 2961,
     "grade_A_plus_B_pct": 81.6152
   }
