@@ -103,6 +103,25 @@ MOCK_MODE=false npm run test:integration  # Integration test against real API
 | `429 Rate Limited` | Too many requests per minute | Add exponential backoff, use mock mode |
 | `ECONNREFUSED :3004` | Dev server not running | Run `npm run dev:mock` first |
 
+## Prerequisites
+
+- A local sandbox configured for mock or synthetic data, secret references instead of literal keys, source/destination allowlists, suppression fixtures, and a tested cleanup command.
+
+## Instructions
+
+1. Start in mock mode and use only synthetic records; do not switch to an integration environment until source authority and owner approval are recorded.
+2. Log aggregate diagnostics only, verify suppression and `contacts_exported=0`, and reject requests that contain credentials or contact-level data.
+3. Test one canary workflow at a time; halt on scope, policy, quota, or retention drift and restore the known-good configuration.
+4. Delete staged data and revoke temporary credentials after collecting the redacted receipt.
+
+## Output
+
+Produce a local-test receipt with environment, mock/integration mode, fixture classification, aggregate result/error counts, suppression/no-export checks, approver, cleanup result, and rollback reference. Exclude requests, identities, and keys.
+
+## Examples
+
+`env=local; mode=mock; fixture=synthetic; requests=5; suppression=pass; contacts_exported=0; cleanup=verified` is a valid development check.
+
 ## Resources
 
 - [Juicebox API Docs](https://docs.juicebox.work)

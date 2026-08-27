@@ -116,6 +116,25 @@ interface ExportResult     { exported: number; duplicatesSkipped: number; atsJob
 | Outreach sequence | Email bounce | Mark candidate invalid, remove from active sequences, update ATS |
 | Webhook handler | Duplicate event delivery | Idempotency key on event ID + candidate ID |
 
+## Prerequisites
+
+- An approved architecture diagram, sandbox workspace, synthetic fixture set, source/destination allowlists, suppression controls, secrets references, and a tested rollback path.
+
+## Instructions
+
+1. Validate each component in a sandbox with synthetic data; reject literal credentials, unapproved integrations, and any contact-level export.
+2. Enforce least privilege, idempotency, redacted telemetry, suppression checks, and `contacts_exported=0` before connecting a new component.
+3. Run a staged canary and halt on scope, security, quota, policy, or retention drift; restore the prior component revision if it fails.
+4. Promote only with owner approval and preserve only the redacted architecture receipt after cleanup.
+
+## Output
+
+Produce an architecture receipt with component versions, environment, fixture classification, source/destination/suppression outcomes, no-export assertion, canary result, approver, retention/deletion proof, and rollback reference. Exclude diagrams containing secrets or contact data.
+
+## Examples
+
+`env=staging; fixture=synthetic; components=search,score,ats-adapter; suppression=pass; contacts_exported=0; canary=pass; rollback=release-r31` is a safe integration record.
+
 ## Resources
 
 - [Juicebox AI](https://juicebox.ai)
