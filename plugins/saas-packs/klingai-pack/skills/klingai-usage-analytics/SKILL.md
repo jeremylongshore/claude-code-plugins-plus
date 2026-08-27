@@ -189,6 +189,34 @@ def export_usage_csv(analytics: UsageAnalytics, output: str = "kling_usage.csv")
     print(f"Exported {len(events)} events to {output}")
 ```
 
+## Prerequisites
+
+- An append-only event sink with restricted access, an explicit retention/deletion schedule, a timezone, and an approved pricing source for aggregate cost calculations.
+- Define an opaque run/task identifier and a schema that records operational facts only. Prompts, source media, faces/voices, signed URLs, personal data, credentials, and free-form provider messages are prohibited in logs.
+- Seed the parser and dashboard with synthetic events, and define anomaly thresholds, export destinations, and an owner who can pause generation when spend or policy signals drift.
+
+## Instructions
+
+1. Validate each event against the allowlisted schema before writing it. Normalize timestamps to the documented timezone and reject records with raw prompts, media, identities, or secrets.
+2. Use opaque IDs to correlate submission, completion, error, and cleanup events. Deduplicate retries and preserve the original event time so totals cannot be inflated by a replay.
+3. Aggregate by date, model, mode, status, and credit bucket. Apply the current approved rate only to totals, and keep dashboards and CSV exports at aggregate level.
+4. Alert on failure-rate, latency, credit, retention, policy, and unexpected-destination thresholds. Pause new work for a confirmed anomaly, run a synthetic canary after remediation, and require owner approval before resuming.
+5. Enforce retention deletion, verify the deletion receipt, and retain only a redacted aggregate report and incident/rollback reference.
+
+## Output
+
+Produce an aggregate report containing date range, submitted/succeeded/failed counts, success rate, latency summary, credits, estimated cost range, model distribution, anomaly state, retention/deletion status, and owner approval or rollback state. It must not expose prompts, media, likenesses, audio, signed URLs, contact details, billing identifiers, or credentials.
+
+## Error Handling
+
+- Quarantine malformed, duplicate, out-of-order, or schema-breaking events without counting them twice; report the aggregate gap and repair from an approved source.
+- If a log contains prohibited content, stop exports, restrict access, remove the offending record under the retention policy, and record only the redacted cleanup receipt.
+- If pricing is missing or stale, show credits without currency conversion and mark cost as unknown. If storage, deletion, or anomaly checks fail, pause dependent reporting and generation until an owner approves recovery.
+
+## Examples
+
+A safe fixture can contain `run_id=synthetic-run-01`, `event=task_completed`, `model=kling-v2-5-turbo`, `status=succeed`, `credits_used=10`, `elapsed_sec=42`, and no prompt or URL. A seven-day report may publish counts and cost ranges to an internal dashboard only after `schema=pass`, `pii_scan=pass`, `retention=verified`, and `export=aggregate-only`.
+
 ## Resources
 
 - [Developer Portal](https://app.klingai.com/global/dev)

@@ -197,6 +197,55 @@ def inspect_task(client, endpoint, task_id):
         print(f"Error:       {data.get('task_status_msg', 'No message')}")
 ```
 
+## Prerequisites
+
+- A non-production or approved staging account, a bounded diagnostic budget, and synthetic or rights-cleared media for reproduction. Do not debug with customer images or identifiable people unless the incident owner has documented consent.
+- A secret manager for Kling credentials and a redaction policy covering JWTs, access keys, source URLs, prompts, masks, output URLs, and provider response bodies.
+- A private, access-controlled log sink with a short retention period, plus an owner-approved canary and rollback procedure before any replay or regeneration.
+
+## Instructions
+
+1. Reproduce only with a synthetic or rights-cleared fixture in staging, and assign a correlation ID before making a request.
+2. Apply redaction to request bodies, response bodies, exception text, headers, URLs, prompts, and generated-media references before logging or exporting a bundle.
+3. Use bounded polling and retry budgets. Do not replay a policy rejection, exceed the approved credit budget, or replay a request against an unapproved destination.
+4. Keep diagnostic output private and watermarked until the incident owner approves it. Quarantine generated media, remove temporary links, and restore the prior approved artifact if a replay changes state.
+5. Verify log deletion at the retention deadline and retain only the aggregate, redacted receipt needed for incident follow-up.
+
+## Output
+
+Produce a redacted diagnostic bundle containing a correlation ID, endpoint path, HTTP status, latency, retry count, opaque task ID, policy result, budget result, and a hash of relevant fixtures. Include a scrubbed error class and rollback reference; never include credentials, bearer tokens, source or CDN URLs, prompts, faces, contact data, or raw request/response bodies.
+
+## Error Handling
+
+Classify failures as authentication, validation, policy, quota/budget, transport,
+provider-task, or storage failures. Redact before persisting or printing any
+exception, cap retries with exponential backoff, and stop replay when a request is
+billable, policy-rejected, or outside the approved fixture scope. Quarantine
+generated media, revoke temporary access, delete debug artifacts at the retention
+deadline, and restore the last approved output when a replay changes production
+state. Escalate an unknown provider status with the correlation ID instead of
+exposing raw payloads.
+
+## Examples
+
+Use a synthetic fixture and a private canary when collecting a receipt:
+
+```json
+{
+  "correlation_id": "trace-opaque-42",
+  "fixture_sha256": "sha256:opaque",
+  "task_id": "task-redacted",
+  "status": "failed",
+  "failure_class": "policy",
+  "canary": "watermarked-private",
+  "budget": "within-limit",
+  "retention": "24h",
+  "rollback": "release-r31"
+}
+```
+
+Before enabling verbose tracing, verify that redaction is applied to both successful and failed paths; a diagnostic run is never permission to publish or retain generated media.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

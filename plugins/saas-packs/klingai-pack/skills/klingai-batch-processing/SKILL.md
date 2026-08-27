@@ -188,6 +188,34 @@ def estimate_batch_cost(count, duration=5, mode="standard", audio=False):
 needed = estimate_batch_cost(50, duration=5, mode="standard")
 ```
 
+## Prerequisites
+
+- An approved batch manifest with a unique batch ID, a bounded count, model, duration, mode, destination, and credit ceiling.
+- Prompts and reference media must be synthetic or rights-cleared, and the request must pass the provider's content policy review. Do not submit real people's likenesses, private data, or copyrighted material without documented permission.
+- Use a sandbox project and draft/watermarked outputs for the first canary. Store `KLING_ACCESS_KEY` and `KLING_SECRET_KEY` in the approved secret manager; never place them in prompts, source control, or logs.
+
+## Instructions
+
+1. Validate the manifest before any request: reject missing rights/consent, disallowed content, unapproved destinations, duplicate batch IDs, and a projected credit total above the approved ceiling.
+2. Run one synthetic canary with the lowest-cost permitted mode. Confirm the model, duration, aspect ratio, callback destination, watermark/draft status, and `contacts_exported=0`-style no-export invariant before expanding the batch.
+3. Submit only the approved count with bounded concurrency and pacing. Record opaque task IDs and an idempotency key; never log prompts, source media, callback secrets, or result URLs.
+4. Poll or receive callbacks with a timeout and a retry budget. Hold successful outputs in quarantine until an owner reviews content policy, rights, quality, and cost results.
+5. Promote approved outputs to the allowlisted destination, then expire temporary artifacts and access. Keep only a redacted receipt and the rollback reference.
+
+## Output
+
+Return a batch receipt containing the opaque batch ID, model/mode/duration, requested and completed counts, success/failure counts, credit estimate and actual, canary result, policy/rights review state, destination class, retention deadline, and rollback/removal action. The receipt must exclude prompts, media, personal data, credentials, and signed URLs.
+
+## Error Handling
+
+- Retry only bounded transient transport or rate-limit failures with exponential backoff; do not retry policy refusals, rights failures, authentication failures, or invalid parameters.
+- If the credit ceiling, concurrency limit, policy probe, or destination allowlist check fails, stop new submissions and mark the batch paused. Reconcile unknown task states before deciding whether to retry.
+- On a failed canary or review, cancel pending tasks where supported, remove quarantined outputs, revoke temporary callback access, and record the redacted removal receipt. Restore the last approved batch configuration rather than silently changing scope.
+
+## Examples
+
+For a safe dry run, use `batch_id=synthetic-launch-01`, 3 synthetic prompts, `model=kling-v2-5-turbo`, `duration=5`, `mode=standard`, `destination=sandbox-review`, `watermark=draft`, `credits_max=30`, and `contacts_exported=0`. Promote only after the owner records `policy=pass`, `rights=pass`, and `approval=granted`; otherwise remove the canary outputs.
+
 ## Resources
 
 - [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)

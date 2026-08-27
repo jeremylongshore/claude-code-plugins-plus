@@ -132,6 +132,34 @@ class BudgetGuard:
         self._used_today += credits_used
 ```
 
+## Prerequisites
+
+- A named project, billing owner, approved daily and per-run credit ceilings, and a current provider pricing source. Treat the tables above as estimates until verified against the account's active plan or resource pack.
+- Define the model, duration, mode, audio setting, retry allowance, and expected failure rate. Use synthetic prompts and rights-cleared media for all estimation canaries; no real customer or personal data is needed.
+- Have a sandbox destination, draft/watermarked output policy, approval threshold, and a plan to cancel queued work and remove test outputs if the estimate is exceeded.
+
+## Instructions
+
+1. Describe the workload and calculate the worst-case credits, including audio, retries, polling overhead where applicable, and a safety reserve. Check that the run fits both the project and account ceilings.
+2. Run a single low-cost synthetic canary through `BudgetGuard`. Confirm the selected model/mode and actual credit charge before authorizing the larger run.
+3. Require owner approval for the budget, destination, and promotion from draft/watermarked output to final delivery. Track actual credits by opaque run ID and aggregate model, not by prompt or media.
+4. Stop when a ceiling, policy check, rate limit, or cost anomaly fires. Cancel pending work where supported, remove quarantined outputs, and restore the approved lower-cost mode or last approved plan.
+5. At closeout, reconcile estimate versus actual, expire temporary artifacts and access, and retain a redacted cost receipt only.
+
+## Output
+
+Return a budget worksheet or receipt with opaque run ID, pricing-source timestamp, model/mode/duration/audio assumptions, expected and maximum credits, reserve, actual credits, estimated currency range, approval state, canary result, destination class, retention deadline, and rollback/removal action. Exclude billing identifiers, prompts, media, user identities, and credentials.
+
+## Error Handling
+
+- If pricing or model parameters are stale or unknown, label the estimate provisional and stop before submission; do not infer a cheaper rate.
+- If credits are depleted or the charge exceeds the ceiling, pause the run and reconcile completed tasks before retrying. A policy refusal or rights failure is not a reason to retry.
+- If actual usage diverges from the estimate, quarantine outputs, cancel remaining tasks, notify the billing owner, and record the redacted variance and cleanup receipt.
+
+## Examples
+
+For a synthetic 20-clip draft run, set `duration=5`, `mode=standard`, `audio=false`, `credits_max=200`, `reserve=20%`, `destination=sandbox-review`, and `watermark=draft`. Require `approval=granted` after the canary and `actual_credits<=200`; otherwise cancel pending tasks and remove the canary outputs.
+
 ## Resources
 
 - [Pricing Page](https://app.klingai.com/global/dev/document-api/productBilling/prePaidResourcePackage)
