@@ -23,6 +23,27 @@ compatibility: Designed for Claude Code
 
 Incident response procedures for Flexport logistics API integration failures. Covers shipment tracking outages, customs data sync failures, webhook delivery loss, and API degradation scenarios. Flexport powers real-time supply chain visibility, so incidents directly impact shipment tracking, booking workflows, and customs compliance reporting. Classify severity immediately using the matrix below, then follow the matching playbook.
 
+## Prerequisites
+
+- An incident commander, communication owner, secure evidence location, credential-revocation path, and rollback operator.
+- Redaction rules for commercial terms, addresses, customs documents, invoice details, and shipment payloads.
+
+## Instructions
+
+1. Assign severity and an opaque incident ID; pause unsafe booking, sync, or notification workflows.
+2. Classify the event as availability, authorization, delivery, data-integrity, policy, or suspected exposure.
+3. Apply the smallest safe mitigation, verify recovery using a sandbox/read-only probe, and test a safe failure path.
+4. Rotate/revoke credentials when exposure is possible and resume queues only after idempotency and destination checks pass.
+5. Record the timeline, impact, mitigation, owner, and post-incident follow-up.
+
+## Output
+
+Produce a redacted incident receipt with severity, opaque ID, impact, mitigation, recovery verification, rollback/revocation decision, and follow-ups. Sensitive evidence stays in the approved incident store.
+
+## Examples
+
+For a simulated webhook outage, pause the staging worker and verify no milestone is replayed twice. Restore one synthetic canary event after health recovers, then resume only when the incident commander records the recovery evidence.
+
 ## Severity Levels
 
 | Level | Definition | Response Time | Example |

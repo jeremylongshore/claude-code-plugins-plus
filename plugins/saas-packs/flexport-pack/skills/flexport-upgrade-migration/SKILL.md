@@ -25,6 +25,25 @@ compatibility: Designed for Claude Code
 
 Guide for migrating between Flexport API versions. The main API uses `Flexport-Version` header (currently `2`). The Logistics API has dated versions (`2023-10`, `2024-04`). Breaking changes are versioned -- old versions remain available during deprecation windows.
 
+## Prerequisites
+
+- Current vendor release information and an inventory of version headers, endpoints, mappings, consumers, and retention rules.
+- Sandbox access, fictional shipment fixtures, a rollback owner, and explicit reconciliation criteria.
+
+## Output
+
+Keep an upgrade receipt listing versions reviewed, affected mappings, sandbox result, canary result, reconciliation evidence, approver, and rollback decision. Exclude commercial documents, addresses, invoice details, and credentials.
+
+## Error Handling
+
+- Classify unexpected response changes as schema, permission, pagination, delivery, or retention failures.
+- Stop promotion and restore the prior version/mapping on a mismatch; do not bulk replay live bookings or documents to diagnose it.
+- Quarantine failed records by opaque identifier for reviewed reconciliation.
+
+## Examples
+
+Run old and proposed headers against a fictional sandbox shipment, compare only approved schema fields and aggregate results, and test an unauthorized response. If any mapping or access behavior changes unexpectedly, disable the canary and retain the prior path pending review.
+
 ## Instructions
 
 ### Step 1: Identify Current API Usage

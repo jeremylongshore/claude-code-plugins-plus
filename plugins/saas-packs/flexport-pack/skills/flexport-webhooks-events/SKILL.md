@@ -26,6 +26,19 @@ compatibility: Designed for Claude Code
 
 Flexport sends webhook notifications for shipment milestones, booking confirmations, PO updates, invoice events, and document availability. Webhooks are configured in Portal > Settings with a secret token for HMAC-SHA256 signature verification via the `X-Hub-Signature` header.
 
+## Prerequisites
+
+- A signing secret in the secret manager, raw-body verification, an event ledger, and a reviewed exception queue.
+- Approved downstream destinations, data-minimization rules, and synthetic event fixtures.
+
+## Output
+
+Return a receipt with opaque event ID, signature result, handler version, idempotency outcome, destination status, and redacted error category. Keep shipment payloads, commercial documents, and credentials out of logs.
+
+## Examples
+
+Send a fictional milestone event twice. The receiver verifies its signature, processes the first event once, records the second as a duplicate, and rejects an invalid signature without logging the body or forwarding any data.
+
 ## Webhook Event Types
 
 | Category | Events | Use Case |

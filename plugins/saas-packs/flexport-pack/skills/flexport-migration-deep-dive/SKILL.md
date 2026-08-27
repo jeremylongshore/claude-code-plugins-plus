@@ -24,6 +24,25 @@ compatibility: Designed for Claude Code
 
 Guide for migrating to Flexport from legacy freight forwarders, manual spreadsheet workflows, or other logistics platforms. Uses a strangler fig pattern to gradually move operations to the Flexport API while maintaining existing systems.
 
+## Prerequisites
+
+- Authorized migration scope, owners for product/shipment/document data, retention requirements, and legal/compliance review where required.
+- An inventory of source fields, approved target mappings, sandbox fixtures, rollback, and reconciliation owners.
+
+## Output
+
+Maintain a migration receipt with source/target scope, field classification, staged validation, aggregate reconciliation, approver, rollback status, and unresolved exceptions. Keep invoices, customs documentation, addresses, and commercial terms in approved systems only.
+
+## Error Handling
+
+- Stop a migration batch on unknown mapping, unauthorized destination, or aggregate reconciliation mismatch.
+- Quarantine failures by opaque ID and route them to the data owner instead of retrying with expanded permissions.
+- Restore the prior integration path before repeating a failed production cutover.
+
+## Examples
+
+Migrate a fictional product and shipment record through staging, compare only approved identifiers and aggregate counts, then deliberately introduce an unknown tariff field. Confirm the batch stops for review without exposing the source record or proceeding to production.
+
 ## Migration Scenarios
 
 | From | To | Complexity | Timeline |
