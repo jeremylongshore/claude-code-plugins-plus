@@ -206,6 +206,10 @@ Run through this before contacting support:
 | Zip creation fails | Disk full | Free space, or tar instead: `tar czf bundle.tar.gz debug-dir/` |
 | Cache parse error | Different Granola version | Report the error — it helps support identify the version issue |
 
+## Examples
+
+`incident=inc-opaque-21; window=15m; integration=sandbox-calendar; latency=p95-420ms; destination=restricted-support; transcript_fields=excluded; retention=7d` is a useful debug summary without meeting content.
+
 ## Resources
 
 - [Granola Support](https://help.granola.ai)

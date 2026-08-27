@@ -198,6 +198,14 @@ brew reinstall --cask granola
 | HubSpot sync fails | Contact doesn't exist | Create contact in HubSpot first |
 | App crashes | Corrupted cache | Delete ~/Library/Caches/Granola |
 
+## Error Handling
+
+Stop on unknown calendar/account scope, failed redaction, unapproved destination, repeated non-idempotent task creation, or an error bundle containing meeting content. Capture only status, aggregate counts, and opaque correlation IDs; restore the prior configuration rather than widening access or retries.
+
+## Examples
+
+`status=429; env=sandbox; correlation=req-opaque-11; action=bounded-backoff; meeting_payload=excluded; synthetic_probe=recovered` supports a privacy-safe handoff.
+
 ## Resources
 
 - [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)

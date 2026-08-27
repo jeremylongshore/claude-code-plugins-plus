@@ -150,6 +150,10 @@ For team deployments, set default templates per shared folder:
 4. **Add a "Verbatim Quotes" section** for customer-facing meetings — captures exact language
 5. **End with "Action Items" and "Next Steps"** — the AI reliably fills these
 
+## Examples
+
+For a fictional meeting fixture, record `fixture=meeting-basic-v2; capture=accepted; output=redacted-summary; consent=test-only; retention=none; cleanup=complete` rather than storing notes or transcript text.
+
 ## Resources
 
 - [Customize Notes with Templates](https://docs.granola.ai/help-center/taking-notes/customise-notes-with-templates)

@@ -219,6 +219,10 @@ Action items from Granola note: [link]"
 | Empty transcripts | Transcript stored separately from document | Check `cache["transcripts"]` keyed by document ID |
 | Stale cache data | Cache not refreshed | Restart Granola to force cache update |
 
+## Examples
+
+`fixtures=v7; mode=mock->sandbox; tests=12/12; meeting_data=synthetic; retention=none; cleanup=complete` is a safe promotion candidate.
+
 ## Resources
 
 - [Granola MCP Announcement](https://www.granola.ai/blog/granola-mcp)

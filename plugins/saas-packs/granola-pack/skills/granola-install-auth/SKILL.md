@@ -137,6 +137,10 @@ Your Device Audio ──→ Granola Desktop App ──→ Granola Cloud (transcr
 - Your typed notes are merged with the transcript for context-aware summaries
 - No bot joins your meeting — capture happens via system audio
 
+## Examples
+
+`env=sandbox; secret_ref=granola-client-v4; scope=meeting-read; destination=approved; synthetic_probe=200; rotation_owner=platform-ops` proves setup without exposing a credential.
+
 ## Resources
 
 - [Download Granola](https://www.granola.ai/download)
