@@ -4555,6 +4555,7 @@ def baseline_finding_triple(artifact_path: str, error: str) -> Tuple[str, str, s
 def marketplace_baseline_payload(
     findings: List[Tuple[str, str, str]],
     skill_files: int,
+    command_files: int,
     plugin_dirs: int,
     agent_files: int,
     grade_a_plus_b: int,
@@ -4585,6 +4586,7 @@ def marketplace_baseline_payload(
         "corpus_definition": "resolveCorpus('graded')",
         "corpus": {
             "skill_files": skill_files,
+            "command_files": command_files,
             "plugin_dirs": plugin_dirs,
             "agent_files": agent_files,
         },
@@ -5916,6 +5918,7 @@ def main() -> int:
             baseline = marketplace_baseline_payload(
                 findings=[],
                 skill_files=0,
+                command_files=0,
                 plugin_dirs=len(find_plugin_json_files(repo_root)),
                 agent_files=0,
                 grade_a_plus_b=0,
@@ -6049,18 +6052,6 @@ def main() -> int:
 
         total_description_chars += int(result.get("description_length") or 0)
 
-    if args.emit_baseline:
-        baseline = marketplace_baseline_payload(
-            findings=baseline_findings,
-            skill_files=len(skills),
-            plugin_dirs=len(find_plugin_json_files(repo_root)),
-            agent_files=len(agents),
-            grade_a_plus_b=grade_counts["A"] + grade_counts["B"],
-            repo_root=repo_root,
-        )
-        print(json_module.dumps(baseline, indent=2, sort_keys=True))
-        return 0
-
     # JSON output mode: emit machine-readable results and exit. The trailing
     # kernel_shadow element is advisory (DR-049); consumers skip entries
     # carrying the kernel_shadow key.
@@ -6074,21 +6065,30 @@ def main() -> int:
         result = validate_command(cmd)
 
         if "fatal" in result:
-            print(f"❌ {rel} (command): FATAL - {result['fatal']}")
+            if not machine_output:
+                print(f"❌ {rel} (command): FATAL - {result['fatal']}")
             total_errors += 1
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.append(baseline_finding_triple(str(rel), f"[fatal] {result['fatal']}"))
             continue
 
         if result["errors"]:
-            print(f"❌ {rel} (command):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (command):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(
+                    baseline_finding_triple(str(rel), error) for error in result["errors"]
+                )
         elif result["warnings"]:
-            print(f"⚠️  {rel} (command):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (command):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
@@ -6103,10 +6103,13 @@ def main() -> int:
         result = validate_agent(agent)
 
         if "fatal" in result:
-            print(f"❌ {rel} (agent): FATAL - {result['fatal']}")
+            if not machine_output:
+                print(f"❌ {rel} (agent): FATAL - {result['fatal']}")
             total_errors += 1
             files_with_errors.append(str(rel))
             json_agent_results.append({"path": str(agent), "errors": 1, "warnings": 0})
+            if args.emit_baseline:
+                baseline_findings.append(baseline_finding_triple(str(rel), f"[fatal] {result['fatal']}"))
             continue
 
         err_count = len(result["errors"])
@@ -6114,15 +6117,21 @@ def main() -> int:
         json_agent_results.append({"path": str(agent), "errors": err_count, "warnings": warn_count})
 
         if result["errors"]:
-            print(f"❌ {rel} (agent):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (agent):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(
+                    baseline_finding_triple(str(rel), error) for error in result["errors"]
+                )
         elif result["warnings"]:
-            print(f"⚠️  {rel} (agent):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (agent):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
@@ -6132,28 +6141,47 @@ def main() -> int:
 
     # Validate plugin.json files (batch mode)
     plugin_jsons = find_plugin_json_files(repo_root)
-    if plugin_jsons and not args.json:
+    if plugin_jsons and not machine_output:
         print(f"\nFound {len(plugin_jsons)} plugin.json files")
     for pj_file in plugin_jsons:
         rel = pj_file.relative_to(repo_root)
         result = validate_plugin_json(pj_file, strict=args.strict)
 
         if result["errors"]:
-            print(f"❌ {rel} (plugin.json):")
-            for error in result["errors"]:
-                print(f"   ERROR: {error}")
+            if not machine_output:
+                print(f"❌ {rel} (plugin.json):")
+                for error in result["errors"]:
+                    print(f"   ERROR: {error}")
             total_errors += len(result["errors"])
             files_with_errors.append(str(rel))
+            if args.emit_baseline:
+                baseline_findings.extend(
+                    baseline_finding_triple(str(rel), error) for error in result["errors"]
+                )
         elif result["warnings"]:
-            print(f"⚠️  {rel} (plugin.json):")
-            for warning in result["warnings"]:
-                print(f"   WARN: {warning}")
+            if not machine_output:
+                print(f"⚠️  {rel} (plugin.json):")
+                for warning in result["warnings"]:
+                    print(f"   WARN: {warning}")
             total_warnings += len(result["warnings"])
             files_with_warnings.append(str(rel))
         else:
             files_compliant.append(str(rel))
             if verbose:
                 print(f"✅ {rel} (plugin.json) - OK")
+
+    if args.emit_baseline:
+        baseline = marketplace_baseline_payload(
+            findings=baseline_findings,
+            skill_files=len(skills),
+            command_files=len(commands),
+            plugin_dirs=len(plugin_jsons),
+            agent_files=len(agents),
+            grade_a_plus_b=grade_counts["A"] + grade_counts["B"],
+            repo_root=repo_root,
+        )
+        print(json_module.dumps(baseline, indent=2, sort_keys=True))
+        return 0
 
     # Populate compliance database if requested (after all validations complete).
     # A failure here must NOT be swallowed: the freshie cycle's next step

@@ -53,6 +53,7 @@ class MarketplaceComplianceBaselineTests(unittest.TestCase):
                     ("a/SKILL.md", "E-FIRST", "a"),
                 ],
                 skill_files=4,
+                command_files=5,
                 plugin_dirs=2,
                 agent_files=3,
                 grade_a_plus_b=3,
@@ -60,7 +61,10 @@ class MarketplaceComplianceBaselineTests(unittest.TestCase):
             )
         self.assertEqual(payload["schema_version"], validator.SCHEMA_VERSION)
         self.assertEqual(payload["corpus_definition"], "resolveCorpus('graded')")
-        self.assertEqual(payload["corpus"], {"skill_files": 4, "plugin_dirs": 2, "agent_files": 3})
+        self.assertEqual(
+            payload["corpus"],
+            {"skill_files": 4, "command_files": 5, "plugin_dirs": 2, "agent_files": 3},
+        )
         self.assertEqual(payload["totals"]["errors"], 2)
         self.assertEqual(payload["totals"]["grade_A_plus_B_pct"], 75.0)
         self.assertEqual(payload["rule_inventory"], ["E-FIRST", "E-SECOND"])
@@ -118,6 +122,29 @@ class MarketplaceComplianceBaselineTests(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertGreater(payload["totals"]["errors"], 0)
         self.assertTrue(payload["entries"])
+
+    def test_emit_baseline_covers_commands_agents_and_manifests(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plugin = root / "plugins" / "example"
+            (plugin / "commands").mkdir(parents=True)
+            (plugin / "agents").mkdir()
+            (plugin / ".claude-plugin").mkdir()
+            (plugin / "commands" / "broken.md").write_text("not frontmatter\n", encoding="utf-8")
+            (plugin / "agents" / "broken.md").write_text("not frontmatter\n", encoding="utf-8")
+            (plugin / ".claude-plugin" / "plugin.json").write_text("{}\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "--emit-baseline", "--repo-root", str(root)],
+                capture_output=True,
+                text=True,
+            )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        paths = {entry.split(" :: ", 1)[0] for entry in payload["entries"]}
+        self.assertIn("plugins/example/commands/broken.md", paths)
+        self.assertIn("plugins/example/agents/broken.md", paths)
+        self.assertIn("plugins/example/.claude-plugin/plugin.json", paths)
+        self.assertEqual(payload["corpus"]["command_files"], 1)
 
 
 if __name__ == "__main__":
