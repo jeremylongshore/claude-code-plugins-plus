@@ -23,6 +23,25 @@ compatibility: Designed for Claude Code
 
 Production-ready patterns for integrating with Fondo tax and accounting data. Fondo is a managed bookkeeping platform that syncs through QuickBooks Online and payroll providers. Integration uses the `FONDO_API_KEY`-authenticated REST endpoints for exports, the QuickBooks Online API for GL data, and structured CSV parsing with Zod validation for bulk imports.
 
+## Prerequisites
+
+- Scoped credentials, authorized source/destination mappings, synthetic fixtures, and a designated finance-data owner.
+- Schema validation, idempotent import design, redacted diagnostics, and professional review for financial conclusions.
+
+## Instructions
+
+1. Validate source schema and field allowlists before parsing or forwarding data.
+2. Use opaque operation IDs, bounded retries, and reconciliation gates to prevent duplicate or partial imports.
+3. Quarantine unknown fields and mismatches for finance review rather than broadening data access.
+
+## Output
+
+Produce a client-validation receipt with contract/fixture version, aggregate schema and reconciliation outcome, operation ID, owner, and redacted failure reference. Do not log transactions, accounts, tax/payroll data, or tokens.
+
+## Examples
+
+Import a fictional aggregate ledger fixture into staging, repeat it under the same operation ID, and verify duplicate suppression. Introduce an unexpected field and confirm the parser blocks it for review without revealing record contents.
+
 ## Singleton Client
 
 ```typescript

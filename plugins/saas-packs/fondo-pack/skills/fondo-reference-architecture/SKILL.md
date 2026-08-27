@@ -24,6 +24,31 @@ compatibility: Designed for Claude Code
 
 Reference architecture for a startup's financial operations with Fondo at the center, connecting payroll, banking, payments, and internal reporting.
 
+## Prerequisites
+
+- A data-flow inventory, authorized business purpose, system owners, access/retention policy, and professional-review boundary.
+- Separate scoped identities for data sources, processing, storage, reporting, and support, plus synthetic integration fixtures.
+
+## Instructions
+
+1. Enforce field allowlists, access checks, encryption, and retention requirements at every financial-data boundary.
+2. Keep financial/tax conclusions under the designated finance professional’s review; integrations may prepare evidence but not replace that review.
+3. Use idempotent queues, redacted telemetry, staged promotion, and a correction/rollback path for each downstream consumer.
+
+## Output
+
+Maintain an architecture record describing sources, trust boundaries, approved destinations, access/retention controls, owners, professional-review points, and recovery mechanisms. Do not include finance data or secrets.
+
+## Error Handling
+
+- Quarantine unknown fields, unapproved destinations, and reconciliation mismatches for finance review.
+- Disable unsafe consumers and preserve only redacted evidence during recovery.
+- Restore the prior mapping/configuration before replaying any financial workflow.
+
+## Examples
+
+Route a fictional aggregate expense event through an approved staging pipeline, deny an unapproved reporting consumer, and verify a duplicate event is suppressed. Record only the opaque event ID and aggregate outcome.
+
 ## Architecture
 
 ```

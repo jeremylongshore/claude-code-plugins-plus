@@ -23,6 +23,26 @@ compatibility: Designed for Claude Code
 
 Fondo handles startup tax preparation, R&D credit claims, bookkeeping, and compliance filings. A production integration syncs financial data from banking, payroll, and expense platforms into Fondo for automated tax workflows. Failures mean missed filing deadlines, incorrect R&D credit claims, or unreconciled books that block board reporting.
 
+## Prerequisites
+
+- A finance owner, authorized reviewer, completed staging evidence using synthetic data, and documented rollback/correction process.
+- Approved data flows, retention rules, access controls, filing calendar, and escalation contacts.
+
+## Instructions
+
+1. Attach evidence or a named owner decision to each applicable control and maintain professional review for financial/tax conclusions.
+2. Verify scoped secrets, source reconciliation, redacted diagnostics, access boundaries, and safe failure handling before promotion.
+3. Run a synthetic canary and review aggregate health, delivery, and reconciliation results; halt on discrepancy or access failures.
+4. Record approval, exceptions, correction/rollback owner, and follow-up date.
+
+## Output
+
+Create a launch receipt with completed controls, evidence references, aggregate canary results, approver, exception status, and recovery owner. Exclude financial records, tax data, payroll data, and credentials.
+
+## Examples
+
+Process a fictional expense export in staging, simulate an incomplete reconciliation, and verify the workflow pauses for finance review. Promote only after the reviewer records evidence and the rollback/correction path has been tested.
+
 ## Authentication & Secrets
 
 - [ ] `FONDO_API_KEY` stored in secrets manager (not config files)
