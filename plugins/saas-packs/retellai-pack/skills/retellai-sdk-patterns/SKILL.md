@@ -152,6 +152,17 @@ async function runCallCampaign(
 | Retry wrapper | Call failures | Automatic recovery |
 | Campaign manager | Outbound calls | Rate-limited concurrency |
 
+## Examples
+
+### Use an idempotency boundary around call creation
+
+Generate a request identifier at the application edge and persist its state
+before invoking the Retell SDK. If the network response is lost, retrieve the
+existing result by that identifier or operator-visible correlation data before
+attempting another call. Keep retries bounded and limited to operations whose
+outcome can be established; this prevents a transient client failure from
+creating multiple customer calls.
+
 ## Resources
 
 - [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)

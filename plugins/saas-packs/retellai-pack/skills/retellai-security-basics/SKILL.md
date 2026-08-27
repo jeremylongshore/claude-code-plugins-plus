@@ -50,6 +50,17 @@ console.log(`Agents: ${agents.length}`);
 | 429 Rate Limited | Too many requests | Implement backoff |
 | 400 Bad Request | Invalid parameters | Check API documentation |
 
+## Examples
+
+### Rotate an exposed development credential safely
+
+Disable the exposed development key in the provider console, create a scoped
+replacement, and update only the development secret reference. Verify the new
+key with a harmless agent-list request while ensuring command output does not
+print its value. Review access logs and affected preview configurations, then
+document the incident with the credential identifier and rotation time rather
+than copying key material into the ticket or source repository.
+
 ## Resources
 
 - [Retell AI Documentation](https://docs.retellai.com)
