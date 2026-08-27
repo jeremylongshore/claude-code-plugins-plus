@@ -272,6 +272,12 @@ export async function GET() {
 | Database connection pool exhausted | Too many concurrent functions | Use connection pooler (PgBouncer, Prisma Accelerate) |
 | API route not found | Wrong directory structure | Must be in `src/app/api/` with `route.ts` filename |
 
+## Examples
+
+### Validate the layer boundary before production traffic
+
+Implement edge middleware only for routing and authorization decisions, keep database access inside server routes, and expose a non-sensitive health endpoint that verifies dependency reachability without returning credentials. Deploy the architecture to preview, test static, edge, and server paths with synthetic identities, and measure middleware overhead. Preserve the prior deployment as rollback until observability confirms the new path is stable under normal traffic.
+
 ## Resources
 
 - [Next.js Project Structure](https://nextjs.org/docs/getting-started/project-structure)
