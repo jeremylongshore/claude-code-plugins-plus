@@ -46,6 +46,22 @@ class MarketplaceComplianceRatchetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ratchet.compare({"entries": "not-a-list"}, {"entries": []})
 
+    def test_unknown_rule_id_requires_conscious_rebaseline(self):
+        baseline = {"schema_version": "4.1.0", "rule_inventory": ["E-ONE"]}
+        current = {"schema_version": "4.1.0", "rule_inventory": ["E-ONE", "E-NEW"]}
+        self.assertEqual(
+            self.ratchet.metadata_drift(baseline, current),
+            ["unknown live rule id(s): E-NEW"],
+        )
+
+    def test_schema_version_drift_requires_conscious_rebaseline(self):
+        baseline = {"schema_version": "4.1.0", "rule_inventory": ["E-ONE"]}
+        current = {"schema_version": "4.2.0", "rule_inventory": ["E-ONE"]}
+        self.assertEqual(
+            self.ratchet.metadata_drift(baseline, current),
+            ["schema_version drift: baseline=4.1.0, live=4.2.0"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
