@@ -1931,12 +1931,7 @@
     "plugins/saas-packs/salesforce-pack/skills/salesforce-architecture-variants/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-common-errors/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-core-workflow-b/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-debug-bundle/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-deploy-integration/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-enterprise-rbac/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-hello-world/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-incident-runbook/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
-    "plugins/saas-packs/salesforce-pack/skills/salesforce-install-auth/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-known-pitfalls/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-load-scale/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
     "plugins/saas-packs/salesforce-pack/skills/salesforce-local-dev-loop/SKILL.md :: E-MISSING-REQUIRED-SECTION :: ##",
@@ -2191,9 +2186,9 @@
     "plugins/testing/kobiton-automate/skills/run-interactive-session/SKILL.md :: E-REFERENCE-ESCAPES-SKILL-DIRECTORY :: skill"
   ],
   "generated_from": {
-    "captured_at": "2026-08-27T03:56:17.510949Z",
-    "run_id": "33037817918",
-    "sha": "8edc12d63dfc3f6da957dd66ebb298574c1bbdd3"
+    "captured_at": "2026-08-27T03:58:49.573436Z",
+    "run_id": "33037939469",
+    "sha": "f2c4184bf37790eb2d2908c3a905ee13337536bc"
   },
   "rule_inventory": [
     "E-AGENT-8355989ea80e",
@@ -2218,7 +2213,7 @@
   ],
   "schema_version": "4.1.0",
   "totals": {
-    "errors": 2181,
+    "errors": 2176,
     "grade_A_plus_B": 2964,
     "grade_A_plus_B_pct": 81.6979
   }
