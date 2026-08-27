@@ -202,6 +202,12 @@ for i, url in enumerate(result["citations"], 1):
 - Formatted markdown with linked sources
 - Token usage for cost tracking
 
+## Examples
+
+### Produce a source-grounded answer with a verification boundary
+
+Ask a narrowly worded factual question with an appropriate recency filter, preserve the returned citation URLs, and distinguish the model’s synthesis from each cited source. Validate the highest-impact citations before publishing and state uncertainty where sources conflict or do not support the conclusion. Cache only sanitized query text and never send private customer data or credentials to the research API.
+
 ## Resources
 
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)

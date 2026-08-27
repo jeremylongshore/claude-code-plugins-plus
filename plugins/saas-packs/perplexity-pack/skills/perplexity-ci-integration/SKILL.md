@@ -190,6 +190,12 @@ describe.skipIf(!LIVE)("Perplexity Live API", () => {
 - Cost-optimized CI that limits API calls
 - GitHub Actions workflow file
 
+## Examples
+
+### Separate mocked pull-request tests from a bounded live check
+
+Run deterministic unit tests with recorded, redacted API responses on every pull request. Restrict one live query to a protected main-branch workflow using a CI-only API key, a low token cap, and a fixed synthetic prompt. Fail on unexpected cost or missing citations, but never print the key or raw provider response; record only model, token count, status, and a redacted request ID for troubleshooting.
+
 ## Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)

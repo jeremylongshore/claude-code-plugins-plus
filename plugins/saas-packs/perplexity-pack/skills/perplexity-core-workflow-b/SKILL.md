@@ -249,6 +249,12 @@ def research_topic(topic: str, questions: list[str]) -> dict:
 - Token usage for cost tracking
 - Conversation session with context continuity
 
+## Examples
+
+### Decompose a research task and retain disagreement evidence
+
+Split a broad question into independent subquestions, use a lower-cost model for retrieval planning, and reserve the deeper model for synthesis after the sources are collected. Store normalized citations and a short contradiction list rather than asserting a false consensus. Apply rate limits between calls, keep the session history to the minimum needed, and require human review before an externally consequential recommendation is acted on.
+
 ## Resources
 
 - [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)

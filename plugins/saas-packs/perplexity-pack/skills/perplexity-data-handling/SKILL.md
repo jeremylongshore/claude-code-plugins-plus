@@ -263,6 +263,12 @@ class SearchContext {
 - Cache with query-type-aware TTL
 - Conversation context with automatic trimming
 
+## Examples
+
+### Research a support issue without transmitting customer PII
+
+Replace customer names, account IDs, email addresses, and internal URLs with stable placeholders before composing the research query. Validate citations and cache only the sanitized form with a retention-appropriate TTL. Keep any local mapping between placeholders and customer records in the approved internal system, not in prompts or logs, and delete temporary diagnostic context once the support investigation is complete.
+
 ## Resources
 
 - [Perplexity API Documentation](https://docs.perplexity.ai)

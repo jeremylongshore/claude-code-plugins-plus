@@ -207,6 +207,12 @@ class CostTracker {
 - Caching eliminating duplicate query costs
 - Cost tracking for budget monitoring
 
+## Examples
+
+### Enforce a query budget without silently degrading critical research
+
+Classify requests by risk and depth, route routine retrieval to the economical model with a capped token budget, and reserve premium research only for explicitly approved tasks. Normalize non-sensitive repeated queries for a short-lived cache, emit cost and cache-hit metrics, and stop or seek approval when the period budget is approached. Do not substitute stale cached content for time-sensitive questions without showing its age.
+
 ## Resources
 
 - [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
