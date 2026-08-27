@@ -58,6 +58,23 @@ gcloud run deploy hex-orchestrator \
   --timeout=600
 ```
 
+## Prerequisites
+
+- An approved deployment change, secret references, project/destination allowlist, and immutable client/configuration revision.
+- Safe canary project, baselines for health/latency/quota/output assertions, and a tested rollback/cancel artifact.
+
+## Output
+
+Produce a deployment receipt with artifact digest, environment, canary project, health/latency/quota/aggregate assertion outcomes, owner approval, rollout state, and rollback reference. Exclude SQL, output, and secrets.
+
+## Error Handling
+
+Halt for unknown project/destination, unauthorized scope, failed canary assertion, unbounded retry, or leaked output in telemetry. Cancel affected execution and restore the previous revision rather than bypassing a gate.
+
+## Examples
+
+`artifact=sha256:opaque; env=staging; canary=proj-sandbox-12; health=pass; assertions=pass; quota=pass; rollback=release-r31` supports controlled promotion.
+
 ## Resources
 
 - [Hex API](https://learn.hex.tech/docs/api/api-overview)

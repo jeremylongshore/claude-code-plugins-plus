@@ -112,6 +112,27 @@ class HexCostMonitor {
 | Unused notebooks accruing runs | Abandoned projects still on schedule | Audit and disable schedules for inactive projects |
 | Connection pool exhausted | Too many simultaneous data source queries | Consolidate connections; stagger scheduled run times |
 
+## Prerequisites
+
+- An approved budget, baseline run/compute metrics, safe sandbox project, and named owner for each execution path.
+- A dry-run plan and rollback revision for schedule, cache, concurrency, and project parameters.
+
+## Instructions
+
+1. Measure aggregate run frequency, duration band, retries, cache behavior, and failure rate before proposing a control.
+2. Classify candidates as duplicate, expired, nonessential, or owner-review without inspecting or exporting workspace data.
+3. Dry-run the control, compare aggregate cost/run counts and safe project assertions, then canary one project.
+4. Promote only with owner approval; roll back for changed output shape, access scope, freshness, or increased failures.
+5. Keep a reversible revision and state savings as a range rather than an unsupported guarantee.
+
+## Output
+
+Return a cost-change receipt with baseline/projected runs, control revision, owner approval, canary result, aggregate assertions, estimated savings range, and rollback reference. Exclude SQL, output, and credentials.
+
+## Examples
+
+`project=proj-sandbox-12; baseline_runs=12000; deferred=120; deduped=900; assertions=pass; rollback=cost-r18` is a safe cost decision.
+
 ## Resources
 
 - [Hex Pricing](https://hex.tech/pricing/)

@@ -69,6 +69,23 @@ runWithCallback(client, 'project-id', { date: '2025-01-01' },
 );
 ```
 
+## Prerequisites
+
+- A secret-manager webhook secret, origin allowlist, replay-window policy, and opaque event ledger.
+- A sandbox receiver plus a tested disable/cancel control for downstream project execution.
+
+## Output
+
+Return an event receipt with type, opaque event/run ID, signature/timestamp result, idempotency outcome, queue state, canary result, and rollback reference. Exclude payload data, SQL, output, and signatures.
+
+## Error Handling
+
+Reject unknown origin, stale/replayed delivery, malformed payload, unknown project destination, or non-idempotent retry. Quarantine the opaque event and disable the consumer if integrity is uncertain.
+
+## Examples
+
+`type=run.completed; event=evt-opaque-9; signature=pass; replay=absent; project=proj-sandbox-12; enqueue=once; rollback=consumer-disabled` proves the event boundary.
+
 ## Resources
 
 - [Hex API](https://learn.hex.tech/docs/api/api-reference)
