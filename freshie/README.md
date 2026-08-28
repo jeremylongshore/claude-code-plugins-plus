@@ -67,6 +67,10 @@ python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/in
 # 3. Sync to the system of record: Dolt commit, run-N tag, DoltHub push
 python3 freshie/scripts/dolt-sync.py
 
+# Read-only freshness check for the tracked export pair. This refuses a
+# histogram run stamp or CSV row count that no longer matches the latest DB run.
+python3 freshie/scripts/dolt-sync.py --verify-grade-exports
+
 # 4. Refresh the skills.sh discovery mirror from the new grades (optional; also
 #    runs weekly via .github/workflows/promote-curated.yml).
 python3 freshie/scripts/promote-to-curated.py

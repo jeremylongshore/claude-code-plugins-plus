@@ -915,6 +915,22 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 # ---------------------------------------------------------------------------
 
 
+def normalize_grade_export_path(skill_path: str) -> str:
+    """Return the portable repository-relative form required by grades.csv."""
+    candidate = Path(skill_path)
+    if candidate.is_absolute():
+        try:
+            candidate = candidate.relative_to(REPO_ROOT)
+        except ValueError as exc:
+            raise SyncError(
+                f"skill_compliance path escapes repository and cannot be exported: {skill_path}"
+            ) from exc
+    normalized = candidate.as_posix()
+    if not normalized or normalized == "." or normalized.startswith("../"):
+        raise SyncError(f"invalid skill_compliance export path: {skill_path}")
+    return normalized
+
+
 def write_grades_export(conn: sqlite3.Connection, run_id: int,
                         csv_path: Path = GRADES_CSV,
                         histogram_path: Path = GRADE_HISTOGRAM) -> None:
@@ -927,7 +943,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
     # rows (102 of them by run 9 — e.g. hyperflow's skills/amplify, gone from
     # disk since run 7, still counted in the public histogram). grades.csv
     # claims to be "current corpus grades"; only the current run's rows are.
-    rows = conn.execute(
+    db_rows = conn.execute(
         """
         SELECT skill_path, grade, score
         FROM skill_compliance
@@ -936,7 +952,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
         """,
         (run_id,),
     ).fetchall()
-    if not rows:
+    if not db_rows:
         total = conn.execute("SELECT COUNT(*) FROM skill_compliance").fetchone()[0]
         if total:
             raise SyncError(
@@ -945,6 +961,16 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
                 f"export. Run the validator --populate-db step for run {run_id} "
                 f"before syncing."
             )
+    rows = [
+        (normalize_grade_export_path(skill_path), grade, score)
+        for skill_path, grade, score in db_rows
+    ]
+    if len({skill_path for skill_path, _, _ in rows}) != len(rows):
+        raise SyncError(
+            f"skill_compliance has duplicate repository-relative paths for run {run_id}; "
+            "refusing ambiguous grade export"
+        )
+    rows.sort(key=lambda row: row[0])
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     histogram_path.parent.mkdir(parents=True, exist_ok=True)
     with open(csv_path, "w", newline="") as fh:
@@ -963,6 +989,72 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
     }
     histogram_path.write_text(json.dumps(payload, indent=2) + "\n")
     log(f"wrote {csv_path.name} ({len(rows)} skills) + {histogram_path.name}")
+
+
+def gate_tracked_grade_exports(conn: sqlite3.Connection, csv_path: Path,
+                               histogram_path: Path) -> None:
+    """Refuse a grade-export pair that does not describe the latest run.
+
+    ``grades.csv`` deliberately omits a per-row run id so its git diff exposes
+    grade movement.  ``grade-histogram.json`` is consequently the provenance
+    stamp for the pair.  Keep that convenience from becoming a stale-public-
+    artifact hazard by checking both the stamp and the CSV cardinality against
+    the source inventory before a sync can call the export current.
+    """
+    row = conn.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
+    latest_run_id = int(row[0] or 0)
+    if not latest_run_id:
+        raise SyncError("cannot verify tracked grade exports: discovery_runs has no run")
+
+    try:
+        payload = json.loads(histogram_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SyncError(
+            f"cannot read tracked grade histogram {histogram_path}: {exc}"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise SyncError(f"tracked grade histogram {histogram_path} must be a JSON object")
+
+    histogram_run_id = payload.get("run_id")
+    if isinstance(histogram_run_id, bool) or not isinstance(histogram_run_id, int):
+        raise SyncError(
+            f"tracked grade histogram {histogram_path} has invalid run_id "
+            f"{histogram_run_id!r}"
+        )
+    if histogram_run_id != latest_run_id:
+        raise SyncError(
+            "tracked grade exports are stale: "
+            f"grade-histogram.json.run_id={histogram_run_id} but "
+            f"MAX(discovery_runs.id)={latest_run_id}"
+        )
+
+    try:
+        with csv_path.open(newline="", encoding="utf-8") as fh:
+            reader = csv.reader(fh)
+            header = next(reader, None)
+            if header != ["skill_path", "grade", "score"]:
+                raise SyncError(
+                    f"tracked grades CSV {csv_path} has unexpected header {header!r}"
+                )
+            row_count = sum(1 for _ in reader)
+    except OSError as exc:
+        raise SyncError(f"cannot read tracked grades CSV {csv_path}: {exc}") from exc
+
+    histogram_total = payload.get("total")
+    if isinstance(histogram_total, bool) or not isinstance(histogram_total, int):
+        raise SyncError(
+            f"tracked grade histogram {histogram_path} has invalid total {histogram_total!r}"
+        )
+    if row_count != histogram_total:
+        raise SyncError(
+            "tracked grade export row-count mismatch: "
+            f"grades.csv has {row_count} data rows but "
+            f"grade-histogram.json.total={histogram_total}"
+        )
+    log(
+        "gate: tracked grade exports current "
+        f"(run_id={latest_run_id}, rows={row_count})"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1291,6 +1383,8 @@ def main() -> int:
                         help="write the current-run grades CSV here (default: freshie/grades.csv)")
     parser.add_argument("--grade-histogram", type=Path, default=GRADE_HISTOGRAM,
                         help="write the current-run grade histogram here (default: freshie/grade-histogram.json)")
+    parser.add_argument("--verify-grade-exports", action="store_true",
+                        help="read-only: fail unless tracked grade exports match the latest inventory run")
     parser.add_argument("--reports-dir", type=Path, default=None,
                         help="write run-delta reports here (default: freshie/reports)")
     parser.add_argument("--org", default=DEFAULT_ORG)
@@ -1310,6 +1404,18 @@ def main() -> int:
     if not args.db.exists():
         log(f"source DB not found: {args.db}")
         return 1
+
+    if args.verify_grade_exports:
+        conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
+        try:
+            try:
+                gate_tracked_grade_exports(conn, args.grades_csv, args.grade_histogram)
+            except SyncError as exc:
+                log(f"FAILED: {exc}")
+                return 1
+        finally:
+            conn.close()
+        return 0
 
     repo: Path = args.dolt_dir
     lock_fd = None
@@ -1444,6 +1550,7 @@ def main() -> int:
         gate_json_checksums(conn, repo, schema)
 
         write_grades_export(conn, run_id, args.grades_csv, args.grade_histogram)
+        gate_tracked_grade_exports(conn, args.grades_csv, args.grade_histogram)
         conn.close()
 
         committed, tag, head_hash = commit_and_tag(repo, run_id, source_git_sha())

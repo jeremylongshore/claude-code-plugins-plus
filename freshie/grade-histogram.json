@@ -1,12 +1,12 @@
 {
-  "run_id": 1,
+  "run_id": 12,
   "total": 3628,
   "grades": {
-    "A": 1594,
-    "B": 1014,
-    "C": 858,
+    "A": 1858,
+    "B": 1121,
+    "C": 487,
     "D": 157,
     "F": 5
   },
-  "dolt_commit": "u47nb9ttr34bmk99b4g59lb618viait4"
+  "dolt_commit": "istprliar7kicu0ebcoh2ecvsd3cel9l"
 }
