@@ -12,7 +12,7 @@ description: 'Execute Langfuse primary workflow: Tracing LLM calls and spans.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
