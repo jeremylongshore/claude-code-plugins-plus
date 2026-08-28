@@ -315,6 +315,21 @@ export function safeTrace<T extends (...args: any[]) => Promise<any>>(
 | Cross-service trace gaps | No context propagation | Inject OTel `traceparent` header |
 | Scale bottleneck | Direct SDK at high volume | Add queue buffer or increase sampling |
 
+## Output
+
+Produce an architecture decision record identifying the selected deployment
+tier, tracing boundary, context-propagation method, failure mode, retention
+owner, and rollback path. Include the tested revision and state whether the
+evidence comes from a local, staging, or production-like environment.
+
+## Examples
+
+A growth-stage service can keep the SDK's internal queue and add
+AsyncLocalStorage propagation, then test that a request and downstream worker
+share the trace context. An enterprise deployment can put a queue between the
+application and self-hosted Langfuse, trip the circuit breaker during an export
+failure drill, and prove application traffic continues while telemetry recovers.
+
 ## Resources
 
 - [TypeScript SDK Overview](https://langfuse.com/docs/observability/sdk/typescript/overview)
