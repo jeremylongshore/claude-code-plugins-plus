@@ -580,6 +580,31 @@ class RunCompletenessGateTests(unittest.TestCase):
         self.assertIn("mismatch", message)
         conn.close()
 
+    def test_dry_run_refuses_internally_inconsistent_latest_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "inventory.sqlite"
+            with sqlite3.connect(db) as conn:
+                conn.executescript(
+                    self.DDL
+                    + "INSERT INTO discovery_runs (id, total_skills) VALUES (6, 3000);"
+                )
+                conn.executemany(
+                    "INSERT INTO skills (id, name, run_id) VALUES (?, ?, 6)",
+                    [(index, f"skill-{index}") for index in range(1, 20)],
+                )
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "--db", str(db), "--dry-run"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("3000", result.stdout)
+        self.assertIn("19", result.stdout)
+        self.assertIn("mismatch", result.stdout)
+
     def test_run_zero_passes(self):
         conn = fixture_conn(self.DDL)
         dolt_sync.gate_run_completeness(conn, 0)  # empty DB — nothing to judge
