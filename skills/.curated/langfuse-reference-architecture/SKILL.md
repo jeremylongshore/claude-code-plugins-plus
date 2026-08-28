@@ -239,8 +239,10 @@ const configs: Record<Environment, {
   },
 };
 
-export function getTracingConfig() {
-  const env = (process.env.NODE_ENV || "development") as Environment;
+// Pass the selected environment from the application's configuration boundary.
+// Keeping configuration resolution outside tracing makes this module deterministic
+// and straightforward to test.
+export function getTracingConfig(env: Environment = "development") {
   return configs[env] || configs.development;
 }
 ```
