@@ -12,7 +12,7 @@ description: 'Implement Langfuse security best practices for API keys and data p
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -221,6 +221,22 @@ jobs:
 | Secret key leaked | Key in source code | Rotate immediately, add secret scanning |
 | Unauthorized access | Default roles too permissive | Set `LANGFUSE_DEFAULT_PROJECT_ROLE=VIEWER` |
 | Data accumulation | No retention policy | Set `LANGFUSE_RETENTION_DAYS` |
+
+## Output
+
+Produce a security checklist with an accountable owner for each control:
+credential storage and rotation, trace-data minimization, retention, access
+roles, self-hosting hardening, and CI secret scanning. The deliverable should
+identify whether each control is verified in the deployment environment rather
+than merely present in source code.
+
+## Examples
+
+For a production deployment, keep the Langfuse write credential in the
+platform's secret store, inject it only into the service that emits traces, and
+use a separate restricted credential for CI verification. Before enabling a new
+trace field, test it with representative data and confirm that identifiers and
+free-form text are scrubbed or omitted according to the retention policy.
 
 ## Resources
 

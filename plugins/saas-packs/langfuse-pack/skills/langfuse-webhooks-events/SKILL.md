@@ -13,7 +13,7 @@ description: 'Configure Langfuse webhooks for prompt change notifications and ev
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -278,6 +278,23 @@ const worker = new Worker(
 | Missed events | Handler threw error | Queue events, return 200 immediately |
 | Duplicate processing | Retry without idempotency | Dedupe by `event + timestamp + promptName` |
 | Webhook timeout | Slow handler | Enqueue and process async |
+
+## Output
+
+Produce an event contract for each enabled webhook: event name, payload fields
+used, signature-verification boundary, idempotency key, queue policy, and
+downstream owner. Include an operational receipt showing that the endpoint
+acknowledges valid deliveries quickly and rejects invalid signatures without
+processing the payload.
+
+## Examples
+
+For `prompt.updated`, verify the signature before parsing the payload, derive a
+stable key from the event identifier, enqueue that key with the prompt name,
+and return a success response. The worker then fetches the approved prompt
+version, runs the relevant regression test, and records the resulting
+deployment decision. A duplicate delivery sees the existing idempotency key and
+does not repeat the deployment.
 
 ## Resources
 

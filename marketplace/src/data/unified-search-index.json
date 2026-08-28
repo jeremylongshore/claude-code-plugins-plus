@@ -11151,7 +11151,7 @@
         "url": "https://github.com/jeremylongshore"
       },
       "authorType": "official",
-      "version": "1.16.0",
+      "version": "1.17.0",
       "isFeatured": false,
       "isNew": false,
       "badges": [],
@@ -51331,7 +51331,7 @@
         "Bash(gh:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51351,7 +51351,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51373,7 +51373,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51395,7 +51395,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51415,7 +51415,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51435,7 +51435,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51457,7 +51457,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51480,7 +51480,7 @@
         "Bash(gcloud:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51500,7 +51500,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51520,7 +51520,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51541,7 +51541,7 @@
         "Bash(curl:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51565,7 +51565,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51588,7 +51588,7 @@
         "Bash(pnpm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51609,7 +51609,7 @@
         "Bash(npm:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51632,7 +51632,7 @@
         "Bash(vault:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51652,7 +51652,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51672,7 +51672,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51694,7 +51694,7 @@
         "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51714,7 +51714,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51734,7 +51734,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51754,7 +51754,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51774,7 +51774,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51796,7 +51796,7 @@
         "Bash(pip:*)"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
@@ -51816,7 +51816,7 @@
         "Edit"
       ],
       "compatibleWith": [],
-      "version": "1.16.0",
+      "version": "1.17.0",
       "parentPlugin": {
         "name": "langfuse-pack",
         "category": "saas-packs"
