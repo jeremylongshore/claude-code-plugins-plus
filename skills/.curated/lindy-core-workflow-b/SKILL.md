@@ -169,6 +169,19 @@ For batch processing (e.g., process 50 leads from a spreadsheet):
 | Channel never activates | Reply sent to wrong thread | Verify thread context in channel config |
 | Context too large | Passing full history to delegate | Use selective context in Agent Send Message |
 
+## Output
+
+Produce a production-ready workflow handoff: trigger contract, action sequence,
+idempotency strategy, escalation behavior, and test results for both success
+and failure paths. State which downstream system owns each side effect.
+
+## Examples
+
+For an inbox-triage workflow, receive one message event, classify it against a
+fixed policy, create one follow-up task only when the policy requires it, and
+write the event ID to the idempotency store. Replaying the fixture demonstrates
+that the same message cannot create a duplicate task.
+
 ## Resources
 
 - [Triggers](https://docs.lindy.ai/fundamentals/lindy-101/triggers)
