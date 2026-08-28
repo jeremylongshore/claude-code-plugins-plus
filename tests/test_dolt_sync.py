@@ -518,6 +518,32 @@ class GradesExportTests(unittest.TestCase):
                 dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
         conn.close()
 
+    def test_absolute_validator_paths_are_normalized_for_portable_exports(self):
+        import tempfile
+
+        conn = fixture_conn(self.DDL)
+        absolute = str(dolt_sync.REPO_ROOT / "plugins" / "example")
+        conn.execute(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            (absolute, "A", 99.0, 1),
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            csv_text, _ = self.export(conn, 1, tmpdir)
+        self.assertIn("plugins/example,A,99.0", csv_text)
+        self.assertNotIn(str(dolt_sync.REPO_ROOT), csv_text)
+        conn.close()
+
+    def test_absolute_path_outside_repository_refuses_export(self):
+        conn = fixture_conn(self.DDL)
+        conn.execute(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            ("/outside/repository/skill", "A", 99.0, 1),
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with self.assertRaisesRegex(dolt_sync.SyncError, "escapes repository"):
+                self.export(conn, 1, tmpdir)
+        conn.close()
+
 
 class StampDoltCommitTests(unittest.TestCase):
     """The post-commit hash stamp must add dolt_commit without disturbing

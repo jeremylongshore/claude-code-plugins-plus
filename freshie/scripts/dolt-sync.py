@@ -915,6 +915,22 @@ def gate_varchar_lengths(conn: sqlite3.Connection, guards: list[tuple[str, str]]
 # ---------------------------------------------------------------------------
 
 
+def normalize_grade_export_path(skill_path: str) -> str:
+    """Return the portable repository-relative form required by grades.csv."""
+    candidate = Path(skill_path)
+    if candidate.is_absolute():
+        try:
+            candidate = candidate.relative_to(REPO_ROOT)
+        except ValueError as exc:
+            raise SyncError(
+                f"skill_compliance path escapes repository and cannot be exported: {skill_path}"
+            ) from exc
+    normalized = candidate.as_posix()
+    if not normalized or normalized == "." or normalized.startswith("../"):
+        raise SyncError(f"invalid skill_compliance export path: {skill_path}")
+    return normalized
+
+
 def write_grades_export(conn: sqlite3.Connection, run_id: int,
                         csv_path: Path = GRADES_CSV,
                         histogram_path: Path = GRADE_HISTOGRAM) -> None:
@@ -927,7 +943,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
     # rows (102 of them by run 9 — e.g. hyperflow's skills/amplify, gone from
     # disk since run 7, still counted in the public histogram). grades.csv
     # claims to be "current corpus grades"; only the current run's rows are.
-    rows = conn.execute(
+    db_rows = conn.execute(
         """
         SELECT skill_path, grade, score
         FROM skill_compliance
@@ -936,7 +952,7 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
         """,
         (run_id,),
     ).fetchall()
-    if not rows:
+    if not db_rows:
         total = conn.execute("SELECT COUNT(*) FROM skill_compliance").fetchone()[0]
         if total:
             raise SyncError(
@@ -945,6 +961,16 @@ def write_grades_export(conn: sqlite3.Connection, run_id: int,
                 f"export. Run the validator --populate-db step for run {run_id} "
                 f"before syncing."
             )
+    rows = [
+        (normalize_grade_export_path(skill_path), grade, score)
+        for skill_path, grade, score in db_rows
+    ]
+    if len({skill_path for skill_path, _, _ in rows}) != len(rows):
+        raise SyncError(
+            f"skill_compliance has duplicate repository-relative paths for run {run_id}; "
+            "refusing ambiguous grade export"
+        )
+    rows.sort(key=lambda row: row[0])
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     histogram_path.parent.mkdir(parents=True, exist_ok=True)
     with open(csv_path, "w", newline="") as fh:
