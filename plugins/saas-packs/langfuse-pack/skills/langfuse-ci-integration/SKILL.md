@@ -284,6 +284,24 @@ checkRegression();
 | Prompt not found | Not yet deployed | Deploy prompts before running tests |
 | Missing secrets in CI | Not configured | Add to GitHub Settings > Secrets > Actions |
 
+## Output
+
+The pipeline reports the test suite result, experiment/run identifier, and aggregate
+quality score. A regression exits non-zero so the pull request is blocked; a pass
+leaves a traceable Langfuse run linked to the commit SHA.
+
+## Examples
+
+Run the focused quality suite locally before opening a pull request:
+
+```bash
+LANGFUSE_PUBLIC_KEY=pk-lf-... LANGFUSE_SECRET_KEY=sk-lf-... \
+  npx vitest run tests/ai/ --reporter=verbose
+```
+
+For an intentionally changed prompt, first update the expected dataset result, then
+run the experiment gate and inspect the resulting run in Langfuse before merging.
+
 ## Resources
 
 - [Experiments via SDK](https://langfuse.com/docs/evaluation/experiments/experiments-via-sdk)

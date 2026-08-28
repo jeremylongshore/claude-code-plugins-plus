@@ -333,6 +333,34 @@ echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 4. Search [GitHub Issues](https://github.com/langfuse/langfuse/issues)
 5. Ask in [Discord](https://langfuse.com/discord)
 
+## Instructions
+
+1. Copy the exact error, SDK version, and Langfuse base URL from the failing environment.
+2. Match it to the error reference above and apply the smallest listed fix.
+3. Run the diagnostic script without printing secret values.
+4. Confirm one trace or score appears in the intended project before retrying production traffic.
+5. If the issue persists, collect the debug bundle and follow the escalation path.
+
+## Output
+
+Report the matched failure class, the configuration or code change made, the diagnostic
+result, and whether a new trace reaches the expected Langfuse project. Do not include
+API keys, authorization headers, or raw customer prompts in the report.
+
+## Error Handling
+
+If a proposed fix changes credentials, endpoint, SDK major version, or retention
+settings, stop after the diagnostic result and require the operator to make or approve
+that configuration change. Keep the original error and sanitized diagnostic output for
+escalation rather than retrying requests indefinitely.
+
+## Examples
+
+For a 401 error, verify that both project keys are set and that the base URL points to
+the same project; then send one low-risk trace and confirm it appears in that project.
+For missing traces, add the documented shutdown/flush behavior, rerun the smallest
+reproduction, and check the dashboard before changing sampling or credentials.
+
 ## Resources
 
 - [Langfuse Troubleshooting](https://langfuse.com/docs/observability/get-started)

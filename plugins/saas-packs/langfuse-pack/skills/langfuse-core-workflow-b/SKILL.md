@@ -265,6 +265,19 @@ await langfuse.runExperiment({
 | Dataset item missing | Wrong dataset name | Verify exact name match (case-sensitive) |
 | Experiment not in UI | Run not flushed | Check `runExperiment` completed without errors |
 
+## Output
+
+Produce a versioned dataset or prompt reference, an experiment run identifier, and
+per-item plus aggregate scores. Summarize the threshold, sample size, and failed cases
+so a release decision is reproducible.
+
+## Examples
+
+Create a small `customer-support-v1` dataset, run the exact-match evaluator at
+temperature zero, and inspect failed items before changing the prompt. Add the
+LLM-as-a-judge only as a second score; retain deterministic exact-match or rubric
+evidence as the release gate.
+
 ## Resources
 
 - [Scores via API/SDK](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)
