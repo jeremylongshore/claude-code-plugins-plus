@@ -266,6 +266,20 @@ Langfuse provides built-in cost analytics in the UI:
 | Custom model no cost | No pricing configured | Add model pricing in Langfuse Settings > Model Definitions |
 | Stale pricing | Model prices changed | Update model definitions periodically |
 
+## Output
+
+Produce a dated cost report showing total spend, calls, tokens, and cost by model, plus
+the selected budget threshold and any alert state. When routing changes, record the
+before/after model mix and quality guardrail used to ensure savings did not reduce
+acceptable output quality.
+
+## Examples
+
+Run `getCostReport(7)` after a deployment, compare the report with the prior seven-day
+baseline, and investigate any model whose cost per request rises unexpectedly. For a
+simple classification path, route a sampled cohort to the lower-cost model and retain
+the quality evaluation result before making the route the default.
+
 ## Resources
 
 - [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)
