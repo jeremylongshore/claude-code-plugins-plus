@@ -236,6 +236,20 @@ export async function GET() {
 | Self-hosted 502 | DB not ready | Add healthcheck + `depends_on` |
 | High latency in prod | Small batch size | Increase `flushAt` / `maxExportBatchSize` |
 
+## Output
+
+Produce a deployment receipt with the target environment, deployed revision, secret
+reference names (never values), health endpoint result, and one verified Langfuse trace.
+If tracing is degraded, report the application status separately from the telemetry
+status so an observability outage is not misrepresented as an application outage.
+
+## Examples
+
+Deploy a staging revision with secret-manager references, call the health endpoint, and
+submit one synthetic request; verify its trace appears in the staging Langfuse project.
+For self-hosting, wait for the database health check before accepting application traffic
+and retain the compose revision used for the deployment.
+
 ## Resources
 
 - [Self-Hosting Docker Compose](https://langfuse.com/self-hosting/deployment/docker-compose)

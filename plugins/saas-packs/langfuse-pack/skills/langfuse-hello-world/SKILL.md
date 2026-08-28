@@ -224,6 +224,19 @@ Trace: hello-world
 | Network error | Host unreachable | Check `LANGFUSE_BASE_URL` value |
 | No auto-nesting | Missing OTel setup | Register `LangfuseSpanProcessor` with `NodeSDK` |
 
+## Output
+
+Produce one trace URL or identifier with a root trace, child span, and generation. State
+the SDK version and whether token usage was recorded, but do not include the full prompt
+or generated content in the completion message.
+
+## Examples
+
+Run the JavaScript hello-world example with test credentials, wait for the SDK flush, and
+open the resulting trace to confirm all three observations appear. Repeat the Python
+example with a non-sensitive synthetic query and verify decorator-created nesting before
+instrumenting production code.
+
 ## Resources
 
 - [Langfuse JS/TS SDK Cookbook](https://langfuse.com/guides/cookbook/js_langfuse_sdk)

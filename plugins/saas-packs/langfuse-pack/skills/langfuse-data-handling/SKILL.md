@@ -262,6 +262,20 @@ async function exportAnonymized(fromDate: string, outputFile: string) {
 | Deletion not immediate | Async processing | Allow time for propagation |
 | Rate limited during export | Too many API calls | Add 200ms delay between pages |
 
+## Output
+
+Produce either a redacted, access-controlled export with its date range and trace
+count, or a deletion receipt containing only the request identifier, affected-user
+identifier, and deleted-record count. Never place raw prompts, outputs, or API keys in
+the completion report.
+
+## Examples
+
+For a subject-access request, export one user's records to an encrypted controlled
+location, verify the trace count against the dashboard, and record the export date and
+retention deadline. For an erasure request, use the exact trace user ID, wait for the
+documented propagation period, then query again to confirm no matching traces remain.
+
 ## Resources
 
 - [Langfuse Data Security](https://langfuse.com/docs/data-security-privacy)
