@@ -13,7 +13,7 @@ description: 'Execute complex Langfuse migrations including data migration and p
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.14.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -300,6 +300,18 @@ export LANGFUSE_BASE_URL="https://source.langfuse.com"
 | Import duplicates | Re-running import | Use idempotent creates with unique names |
 | Dual-write divergence | One instance failing | Monitor both, alert on variance > 5% |
 | Missing prompts | Not exported | Export prompts before datasets |
+
+## Output
+
+Produce a migration receipt with source/target environments, exported object counts,
+dual-write variance, cutover time, rollback window, and validation owner. Do not record
+live keys or trace payloads in the receipt.
+
+## Examples
+
+Export prompts and datasets from a staging source, import them into a staging target,
+and compare counts before enabling dual-write. During cutover, retain the source for the
+rollback window and switch back immediately if trace variance exceeds the agreed limit.
 
 ## Resources
 

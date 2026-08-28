@@ -12,7 +12,7 @@ description: 'Install and configure Langfuse SDK authentication for LLM observab
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
-version: 1.14.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -195,6 +195,18 @@ print(f"Connected. Trace: {trace.get_trace_url()}")
 | `Missing required configuration` | Env vars not loaded | Ensure `dotenv/config` imported at entry point |
 | `Module not found` | Package not installed | Run `npm install` or `pip install` again |
 | Using pk- key as secret | Keys swapped | Public key starts `pk-lf-`, secret starts `sk-lf-` |
+
+## Output
+
+Produce a connection-verification receipt with SDK version, configured host, project
+identifier, and a trace URL or identifier. Record only whether each credential is set;
+never print key values, headers, or compiled prompts.
+
+## Examples
+
+Configure the v4 SDK with environment-provided keys, submit a single synthetic trace,
+and confirm it appears in the intended project. For a self-hosted host change, verify
+the health endpoint and test trace before removing the previous host configuration.
 
 ## Resources
 

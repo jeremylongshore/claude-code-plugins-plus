@@ -12,7 +12,7 @@ description: 'Troubleshoot and respond to Langfuse-related incidents and outages
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.14.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -24,6 +24,12 @@ tags:
 compatibility: Designed for Claude Code
 ---
 # Langfuse Incident Runbook
+
+## Prerequisites
+
+- Access to the affected Langfuse project, deployment logs, and the service status page.
+- An on-call contact and a change path for disabling or reconfiguring telemetry safely.
+- A redaction-safe incident record; do not paste API keys, authorization headers, or prompts into it.
 
 ## Overview
 
@@ -215,6 +221,19 @@ Document for post-mortem:
 | Lost traces | Increase batch size | Add shutdown handlers |
 | High latency | Disable sync flush | Use async-only patterns |
 | Auth failures | Rotate and redeploy keys | Add key validation at startup |
+
+## Output
+
+Produce an incident record with severity, start/end time, customer impact, affected
+project, mitigation, and post-incident owner. Include a sanitized trace-flow result and
+the rollback decision; exclude raw credentials and customer payloads.
+
+## Examples
+
+For missing traces, first check the status page and deployment revision, then perform a
+single synthetic trace check after restoring connectivity. For a P1 self-hosted outage,
+capture the database health result, apply the approved rollback or restart, and create a
+post-incident review with a named prevention action.
 
 ## Resources
 

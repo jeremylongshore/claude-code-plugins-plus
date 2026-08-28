@@ -19,9 +19,9 @@
     "G9"
   ],
   "counts": {
-    "AUTO-MIGRATE": 561,
+    "AUTO-MIGRATE": 556,
     "CERTIFY": 0,
-    "CERTIFY-PENDING-EVIDENCE": 2720,
+    "CERTIFY-PENDING-EVIDENCE": 2725,
     "CERTIFY-UPSTREAM": 0,
     "DEEP-REMEDIATE": 3,
     "QUARANTINE": 344
@@ -24059,77 +24059,55 @@
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-incident-runbook/SKILL.md",
       "grade": "B",
       "score": 87,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)",
-        "[body] Required section missing: '## Prerequisites' (or an equivalent heading: ## Requirements, ## Setup, ## Dependencies, ## Before you begin, ## Installation) (marketplace tier)"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-install-auth/SKILL.md",
       "grade": "B",
       "score": 83,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-local-dev-loop/SKILL.md",
       "grade": "C",
       "score": 77,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-migration-deep-dive/SKILL.md",
       "grade": "B",
       "score": 88,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
       "path": "plugins/saas-packs/langfuse-pack/skills/langfuse-multi-env-setup/SKILL.md",
       "grade": "C",
       "score": 78,
-      "diagnostics": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
-      ],
-      "disposition": "AUTO-MIGRATE",
-      "gate": "G5",
+      "diagnostics": [],
+      "disposition": "CERTIFY-PENDING-EVIDENCE",
+      "gate": "G7",
       "reason_codes": [
-        "[body] Required section missing: '## Examples' (or an equivalent heading: ## Example, ## Sample, ## Samples, ## Usage examples, ## Example usage) (marketplace tier)",
-        "[body] Required section missing: '## Output' (or an equivalent heading: ## Outputs, ## Returns, ## Results, ## Output format, ## Response) (marketplace tier)"
+        "REPRODUCIBLE_EVIDENCE_NOT_RETAINED"
       ]
     },
     {
