@@ -12,7 +12,7 @@ description: 'Upgrade Langfuse SDK versions and migrate between API changes.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

@@ -12,7 +12,7 @@ description: 'Langfuse SDK best practices, patterns, and idiomatic usage.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
