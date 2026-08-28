@@ -1319,7 +1319,6 @@ def main() -> int:
             lock_fd = acquire_lock(repo.parent / ".sync.lock")
             if (repo / ".dolt").is_dir():
                 refuse_if_server_running(repo)
-            ensure_dolt_identity()
             # This is intentionally before VACUUM INTO: the snapshot is the
             # public-export input and must carry the demoted class, not merely
             # diagnose it after the fact.
@@ -1348,6 +1347,12 @@ def main() -> int:
         # Membership gate FIRST (also in --dry-run): an unknown table must
         # hard-fail before any DDL/plan output normalizes its presence.
         gate_export_allowlist(tables)
+        # A source that cannot be exported must fail before environment-
+        # dependent publication setup can mask the security refusal.  Once it
+        # is known publishable, a real export still requires a configured Dolt
+        # identity before it can create or update the destination repository.
+        if not args.dry_run:
+            ensure_dolt_identity()
         violations = scan_type_violations(conn, schema)
         widen = frozenset(violations)
         for (t, c), n in sorted(violations.items()):

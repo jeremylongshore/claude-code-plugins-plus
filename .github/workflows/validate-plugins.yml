@@ -541,6 +541,11 @@ jobs:
     timeout-minutes: 2
     steps:
       - uses: actions/checkout@v6
+        with:
+          # E6.6 compares the PR range to origin/main. The default one-commit
+          # checkout makes Git treat both refs as shallow roots, so the
+          # fail-closed range check cannot find their merge base.
+          fetch-depth: 0
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -552,7 +557,7 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
         run: |
           set -euo pipefail
-          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          git fetch --no-tags origin "$BASE_REF"
           python3 scripts/check-marketplace-compliance-baseline.py \
             --check-growth-only \
             --base "origin/$BASE_REF" \
