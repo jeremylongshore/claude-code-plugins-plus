@@ -12,7 +12,7 @@ description: 'Incident response procedures for Lindy AI agent failures and outag
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
