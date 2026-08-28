@@ -12,7 +12,7 @@ description: 'Create a minimal working Langfuse trace example.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -223,6 +223,19 @@ Trace: hello-world
 | Trace not appearing | Data not flushed | Call `sdk.shutdown()` (v4+) or `langfuse.flushAsync()` (v3) |
 | Network error | Host unreachable | Check `LANGFUSE_BASE_URL` value |
 | No auto-nesting | Missing OTel setup | Register `LangfuseSpanProcessor` with `NodeSDK` |
+
+## Output
+
+Produce one trace URL or identifier with a root trace, child span, and generation. State
+the SDK version and whether token usage was recorded, but do not include the full prompt
+or generated content in the completion message.
+
+## Examples
+
+Run the JavaScript hello-world example with test credentials, wait for the SDK flush, and
+open the resulting trace to confirm all three observations appear. Repeat the Python
+example with a non-sensitive synthetic query and verify decorator-created nesting before
+instrumenting production code.
 
 ## Resources
 

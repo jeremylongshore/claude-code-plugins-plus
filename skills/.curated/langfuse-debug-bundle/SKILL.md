@@ -12,7 +12,7 @@ description: 'Collect Langfuse debug evidence for support tickets and troublesho
 
   '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -208,6 +208,20 @@ echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 | Auth test | Key validity, project mismatch |
 | Redacted logs | Trace errors, flush failures, rate limits |
 | Package deps | Conflicting versions, missing peer deps |
+
+## Output
+
+Produce a sanitized archive and a short reproduction report containing the SDK/runtime
+versions, affected deployment environment, health-check result, and exact reproduction
+steps. The bundle must exclude keys, authorization headers, customer inputs, and
+unredacted logs.
+
+## Examples
+
+When traces are absent after a deployment, run the inline diagnostic, redact the log,
+and attach the smallest reproduction plus the deployment SHA. When an authentication
+failure occurs, report whether each key is set and the sanitized health status—never the
+key value or a Basic authorization header.
 
 ## Resources
 

@@ -12,7 +12,7 @@ description: 'Manage Langfuse data export, retention, and compliance requirement
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -261,6 +261,20 @@ async function exportAnonymized(fromDate: string, outputFile: string) {
 | Missing user data | Different userId format | Verify exact userId used in traces |
 | Deletion not immediate | Async processing | Allow time for propagation |
 | Rate limited during export | Too many API calls | Add 200ms delay between pages |
+
+## Output
+
+Produce either a redacted, access-controlled export with its date range and trace
+count, or a deletion receipt containing only the request identifier, affected-user
+identifier, and deleted-record count. Never place raw prompts, outputs, or API keys in
+the completion report.
+
+## Examples
+
+For a subject-access request, export one user's records to an encrypted controlled
+location, verify the trace count against the dashboard, and record the export date and
+retention deadline. For an erasure request, use the exact trace user ID, wait for the
+documented propagation period, then query again to confirm no matching traces remain.
 
 ## Resources
 

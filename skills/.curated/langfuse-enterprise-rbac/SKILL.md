@@ -12,7 +12,7 @@ description: 'Configure Langfuse enterprise organization management and access c
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -223,6 +223,20 @@ function auditedLangfuseClient(actor: string): LangfuseClient {
 | SSO login fails | Wrong callback URL | Verify SAML callback URL matches |
 | API key rejected | Wrong project or revoked | Create new key pair for correct project |
 | New user gets no access | Not added to project | Admin must invite to specific project |
+
+## Output
+
+Produce an access-control record identifying the project, role mapping, SSO enforcement
+state, and audit-log destination. Include a least-privilege verification result for a
+viewer, member, and administrator; never include client secrets, API keys, or IdP
+assertions.
+
+## Examples
+
+Map an IdP engineering group to the minimum project role, sign in with a test user, and
+confirm it cannot perform administrator actions. For a key-rotation event, revoke the
+old project key, create a replacement in the secret manager, update the owning service,
+and confirm its audit event is recorded.
 
 ## Resources
 
