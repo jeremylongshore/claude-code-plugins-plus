@@ -12,7 +12,7 @@ description: 'Execute Langfuse secondary workflow: Evaluation, scoring, and data
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -264,6 +264,19 @@ await langfuse.runExperiment({
 | LLM judge inconsistent | High temperature | Set `temperature: 0` for evaluation calls |
 | Dataset item missing | Wrong dataset name | Verify exact name match (case-sensitive) |
 | Experiment not in UI | Run not flushed | Check `runExperiment` completed without errors |
+
+## Output
+
+Produce a versioned dataset or prompt reference, an experiment run identifier, and
+per-item plus aggregate scores. Summarize the threshold, sample size, and failed cases
+so a release decision is reproducible.
+
+## Examples
+
+Create a small `customer-support-v1` dataset, run the exact-match evaluator at
+temperature zero, and inspect failed items before changing the prompt. Add the
+LLM-as-a-judge only as a second score; retain deterministic exact-match or rubric
+evidence as the release gate.
 
 ## Resources
 

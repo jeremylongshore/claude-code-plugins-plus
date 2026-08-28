@@ -175,6 +175,7 @@ plugins/saas-packs/miro-pack/skills/miro-core-workflow-a/SKILL.md:secret-exfil-c
 plugins/saas-packs/miro-pack/skills/miro-deploy-integration/SKILL.md:secret-exfil-cooccur  documented deployment example sends its Miro credential only to Miro's API
 plugins/saas-packs/miro-pack/skills/miro-hello-world/SKILL.md:secret-exfil-cooccur  documented starter API request sends its Miro token only to api.miro.com
 plugins/saas-packs/miro-pack/skills/miro-install-auth/SKILL.md:secret-exfil-cooccur  documented OAuth example sends Miro credentials only to Miro's token endpoint
+plugins/saas-packs/langfuse-pack/skills/langfuse-common-errors/SKILL.md:secret-exfil-cooccur  diagnostic curl uses Langfuse project credentials only with the configured Langfuse base URL; output redacts credentials and no foreign sink is present — reviewed 2026-08-27
 plugins/saas-packs/miro-pack/skills/miro-local-dev-loop/SKILL.md:secret-exfil-cooccur  documented local development example sends its Miro token only to api.miro.com
 plugins/saas-packs/miro-pack/skills/miro-multi-env-setup/SKILL.md:secret-exfil-cooccur  documented environment example sends its Miro credential only to Miro's API
 plugins/saas-packs/miro-pack/skills/miro-observability/SKILL.md:secret-exfil-cooccur  documented telemetry example sends its Miro token only to api.miro.com

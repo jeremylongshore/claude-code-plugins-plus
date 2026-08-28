@@ -12,7 +12,7 @@ description: 'Execute Langfuse primary workflow: Tracing LLM calls and spans.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.12.0
+version: 1.13.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -267,6 +267,19 @@ result = chain.invoke(
 | Orphaned spans | Missing end or callback finish | Use `startActiveObservation` (auto-ends) or `.end()` in `finally` |
 | No token usage on stream | Stream usage not requested | Add `stream_options: { include_usage: true }` |
 | Flat trace (no nesting) | Missing OTel context | Ensure `NodeSDK` is started with `LangfuseSpanProcessor` |
+
+## Output
+
+Produce a trace with a named root observation, nested spans or generations, model and
+usage metadata, and a final output value. Record the trace identifier or dashboard URL
+so the implementation can be verified without exposing prompt contents.
+
+## Examples
+
+After wrapping a single OpenAI client with `observeOpenAI`, make one test request and
+verify that its generation has model, latency, input/output, and token usage. For a RAG
+path, verify that `embed-query`, `vector-search`, and `generate-answer` appear under the
+same root trace.
 
 ## Resources
 
