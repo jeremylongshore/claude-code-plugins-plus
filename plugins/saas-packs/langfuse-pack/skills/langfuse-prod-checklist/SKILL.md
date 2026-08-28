@@ -12,7 +12,7 @@ description: 'Langfuse production readiness checklist and verification.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.13.0
+version: 1.14.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
