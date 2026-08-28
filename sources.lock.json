@@ -1974,8 +1974,6 @@
         "README.md": "sha256:f52610bd005d67a2a92481d030c8e2d312f0ff830059fca87c538e990221c92b",
         "commands/protect.md": "sha256:454a5ea8088678ac577fb7a94c5cdb7847fc2096584472d5067b83fec989ed21",
         "commands/scan.md": "sha256:56d5f1e7a373cf64656888cb9b8120c5df1760d89201e66d05db3c973a9f3ffd",
-        "scripts/hol-guard-plugin": "sha256:5b9c207e4c49caeaa25275affef5896ab41808efce08282bb52e1b553ec7e273",
-        "skills/hol-guard/SKILL.md": "sha256:47dd0e1f3b5998724f534f10765ac95942ed6abc516509314d002297002c2061",
         "skills/plugin-scanner/SKILL.md": "sha256:dc76f6bb5733d6e09ae796fae0fe9ea6a4021131ba869e8def6e35fb741cbae0"
       }
     }

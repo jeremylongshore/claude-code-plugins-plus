@@ -1786,8 +1786,7 @@ sources:
     include:
       - '/.claude-plugin/**'
       - '/commands/**'
-      - '/skills/**'
-      - '/scripts/hol-guard-plugin'
+      - '/skills/plugin-scanner/**'
       - '/README.md'
       - '/LICENSE'
     exclude:
