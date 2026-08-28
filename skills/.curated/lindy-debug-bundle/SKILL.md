@@ -173,6 +173,20 @@ Compile the following for a support ticket to support@lindy.ai:
 - [attempt 2]
 ```
 
+## Output
+
+Deliver a time-bounded support bundle containing the affected agent and task
+IDs, reproduction steps, sanitized error messages, environment facts, and the
+result of the webhook and integration checks. Remove credentials, personal
+data, and full webhook URLs before sharing the bundle outside the workspace.
+
+## Examples
+
+If tasks begin failing after an integration reconnect, capture one failed task
+ID, the failing action name, the HTTP status from the target, and the time the
+connection was reauthorized. A bundle saying “agent failed” without a task ID,
+timestamp, and reproducible trigger is insufficient for escalation.
+
 ## Diagnostic Decision Tree
 
 ```

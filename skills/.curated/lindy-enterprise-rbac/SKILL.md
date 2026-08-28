@@ -163,6 +163,21 @@ When a team member leaves:
 4. Review and re-authorize any integrations they set up
 5. Audit recent task history for their agents
 
+## Output
+
+Create an access-control register that maps each workspace member and service
+account to a Lindy role, permitted connections, agent ownership, and the next
+review date. The register must include the offboarding owner and evidence that
+departing users’ sessions, API keys, and shared connections were revoked.
+
+## Examples
+
+An operations analyst who only needs to inspect task history is assigned
+Viewer, receives no shared database connection, and is listed for quarterly
+review. A departing editor is removed from the workspace, their API key is
+revoked, and ownership of their production agents is transferred before the
+offboarding ticket is closed.
+
 ## Access Control Checklist
 
 - [ ] Team roles mapped to Lindy roles
