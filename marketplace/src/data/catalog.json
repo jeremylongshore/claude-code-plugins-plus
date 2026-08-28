@@ -8332,7 +8332,7 @@
       "name": "langfuse-pack",
       "displayName": "langfuse pack",
       "description": "Complete Langfuse integration skill pack with 24 skills covering LLM observability, tracing, prompt management, and evaluation. Flagship tier vendor pack.",
-      "version": "1.14.0",
+      "version": "1.15.0",
       "category": "saas-packs",
       "keywords": [
         "langfuse",

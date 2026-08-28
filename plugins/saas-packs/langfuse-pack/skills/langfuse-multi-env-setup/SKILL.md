@@ -12,7 +12,7 @@ description: 'Configure Langfuse across development, staging, and production env
 
   '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.14.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -240,6 +240,19 @@ console.log(`Langfuse config validated for ${config.NODE_ENV}`);
 | Secret not found | Wrong secret path | Verify secret manager paths match |
 | Cross-env data leak | Shared API key | Use separate keys per environment |
 | Startup crash | Missing config | Add Zod validation with clear error messages |
+
+## Output
+
+Produce an environment matrix showing each deployment's Langfuse project, secret
+reference names, host, and startup-validation status. Include a synthetic trace result
+for each environment, never the credentials themselves.
+
+## Examples
+
+Deploy development and staging with separate secret-manager entries, then verify each
+synthetic trace appears only in its designated project. Before production promotion,
+intentionally test a missing configuration value in staging and confirm startup fails
+with the safe validation message rather than sending traffic to another environment.
 
 ## Resources
 

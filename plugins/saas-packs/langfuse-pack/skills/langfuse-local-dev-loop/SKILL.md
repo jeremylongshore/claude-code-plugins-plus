@@ -12,7 +12,7 @@ description: 'Set up Langfuse local development workflow with hot reload and deb
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(pnpm:*)
-version: 1.14.0
+version: 1.15.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -198,11 +198,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/langfuse
-      - NEXTAUTH_SECRET=dev-secret-change-in-prod
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - NEXTAUTH_URL=http://localhost:3000
-      - SALT=dev-salt-change-in-prod
-      - ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000
+      - SALT=${SALT}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     depends_on:
       - db
 
@@ -210,7 +210,7 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: langfuse
     volumes:
       - langfuse-db:/var/lib/postgresql/data
@@ -218,6 +218,10 @@ services:
 volumes:
   langfuse-db:
 ```
+
+Before starting the stack, place unique local-only values for `DATABASE_URL`,
+`POSTGRES_PASSWORD`, `NEXTAUTH_SECRET`, `SALT`, and `ENCRYPTION_KEY` in a git-ignored
+`.env` file. Do not commit a database URI or reuse example or production values.
 
 ```bash
 set -euo pipefail
@@ -240,6 +244,18 @@ echo 'LANGFUSE_BASE_URL=http://localhost:3000' >> .env.local
 | Hot reload not working | Wrong watch command | Use `tsx watch` (not `ts-node`) |
 | Local instance 502 | DB not ready | Wait 10s for PostgreSQL startup |
 | Traces going to cloud | Wrong `LANGFUSE_BASE_URL` | Point to `http://localhost:3000` |
+
+## Output
+
+Produce a local development receipt naming the SDK/runtime version, local or cloud host,
+sample trace identifier, and debug setting used. Keep `.env.local` secret values and
+local database credentials out of logs and commits.
+
+## Examples
+
+Start the watch process, change a prompt or traced function, and verify the reload emits
+one local trace. For self-hosting, bring up Compose, create a disposable project and key
+in the local UI, then prove that the application points to `localhost` rather than cloud.
 
 ## Resources
 
