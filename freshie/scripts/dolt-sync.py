@@ -1372,6 +1372,12 @@ def main() -> int:
         run_id_row = conn.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
         run_id = int(run_id_row[0] or 0)
 
+        # A dry run is a publish preflight, not merely a DDL preview.  It must
+        # reject the same phantom/internally inconsistent inventory runs that
+        # a real export rejects, before printing a plan that could be mistaken
+        # for approval to publish.
+        gate_run_completeness(conn, run_id)
+
         if args.dry_run:
             for t in tables:
                 print(ddls[t] + "\n")
@@ -1381,7 +1387,6 @@ def main() -> int:
                 f"JSON checks on {[f'{t}.{c}' for t, c in JSON_CHECKSUM_COLUMNS]}")
             return 0
 
-        gate_run_completeness(conn, run_id)
         gate_varchar_lengths(conn, guards)
         ensure_repo(repo)
 
