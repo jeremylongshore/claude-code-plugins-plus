@@ -47,3 +47,20 @@ test('structural failures auto-migrate and unknown failures require deep remedia
   });
   assert.deepEqual([deep.gate, deep.disposition], ['G4', 'DEEP-REMEDIATE']);
 });
+
+test('ledger diagnostics are serialized in deterministic order', () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), 'ledger-'));
+  mkdirSync(path.join(root, 'plugins/example/skill'), { recursive: true });
+  writeFileSync(path.join(root, 'plugins/example/skill/SKILL.md'), '---\nname: x\n---\nbody\n');
+  const result = classifyArtifact({
+    root,
+    row: { path: 'plugins/example/skill/SKILL.md', grade: 'B', score: 82 },
+    validation: {
+      errors: [
+        "[frontmatter] Missing required field: 'version' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+      ],
+    },
+  });
+  assert.deepEqual(result.diagnostics, [...result.diagnostics].sort());
+});
