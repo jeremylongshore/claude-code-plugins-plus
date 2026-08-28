@@ -14,21 +14,21 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 219,
-      "a_failing": 131,
-      "ab_error_total": 2125,
-      "ab_failing": 940,
-      "b_failing": 809,
-      "error_files": 1888,
-      "error_total": 6804,
+      "a_error_total": 84,
+      "a_failing": 39,
+      "ab_error_total": 730,
+      "ab_failing": 351,
+      "b_failing": 312,
+      "error_files": 854,
+      "error_total": 4038,
       "grade_distribution": {
-        "A": 1595,
-        "B": 1013,
-        "C": 857,
-        "D": 159,
+        "A": 1858,
+        "B": 1121,
+        "C": 487,
+        "D": 157,
         "F": 5
       },
-      "rows": 3629
+      "rows": 3628
     }
   },
   "rows": {
@@ -41,8 +41,8 @@
       "target_status": "informational",
       "values": {
         "plugin_agent_files": 347,
-        "raw_tracked_plugin_skill_files": 3129,
-        "tracked_files": 22792
+        "raw_tracked_plugin_skill_files": 3128,
+        "tracked_files": 23183
       }
     },
     "2": {
@@ -79,46 +79,46 @@
       "target_status": "informational",
       "values": {
         "agent_lane": {
-          "error_total_all_validated_surfaces": 237,
-          "fully_compliant_surfaces": 767,
+          "error_total_all_validated_surfaces": 236,
+          "fully_compliant_surfaces": 768,
           "terminal_denominator": {
             "agents": 357,
             "files": 950,
             "label": "agents_plus_plugin_manifests",
             "plugin_manifests": 593
           },
-          "validator_reported_mixed_denominator_percent": 80.7
+          "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 7042,
-          "fully_compliant_surfaces": 1134,
+          "error_total_all_validated_surfaces": 4275,
+          "fully_compliant_surfaces": 1135,
           "terminal_denominator": {
             "agents": 357,
             "commands": 373,
-            "files": 4952,
+            "files": 4951,
             "label": "skills_plus_commands_plus_agents_plus_plugin_manifests",
             "plugin_manifests": 593,
-            "skills": 3629
+            "skills": 3628
           },
           "validated_plugin_manifests": 601,
           "validator_reported_mixed_denominator_percent": 22.9
         },
         "skill_rows": {
-          "a_error_total": 219,
-          "a_failing": 131,
-          "ab_error_total": 2125,
-          "ab_failing": 940,
-          "b_failing": 809,
-          "error_files": 1888,
-          "error_total": 6804,
+          "a_error_total": 84,
+          "a_failing": 39,
+          "ab_error_total": 730,
+          "ab_failing": 351,
+          "b_failing": 312,
+          "error_files": 854,
+          "error_total": 4038,
           "grade_distribution": {
-            "A": 1595,
-            "B": 1013,
-            "C": 857,
-            "D": 159,
+            "A": 1858,
+            "B": 1121,
+            "C": 487,
+            "D": 157,
             "F": 5
           },
-          "rows": 3629
+          "rows": 3628
         }
       }
     },
@@ -129,22 +129,22 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "average_score": 85.4,
+        "average_score": 87.1,
         "grade_distribution": {
-          "A": 1595,
-          "B": 1013,
-          "C": 857,
-          "D": 159,
+          "A": 1858,
+          "B": 1121,
+          "C": 487,
+          "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 44,
-          "B": 27.9,
-          "C": 23.6,
-          "D": 4.4,
+          "A": 51.2,
+          "B": 30.9,
+          "C": 13.4,
+          "D": 4.3,
           "F": 0.1
         },
-        "rows": 3629
+        "rows": 3628
       }
     },
     "6": {
@@ -154,14 +154,14 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 219,
-        "a_failing": 131,
-        "ab_error_total": 2125,
-        "ab_failing": 940,
-        "b_error_total": 1906,
-        "b_failing": 809,
+        "a_error_total": 84,
+        "a_failing": 39,
+        "ab_error_total": 730,
+        "ab_failing": 351,
+        "b_error_total": 646,
+        "b_failing": 312,
         "certified_target": 0,
-        "skill_summary_rows": 3629
+        "skill_summary_rows": 3628
       }
     },
     "7": {
@@ -210,9 +210,9 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "partial",
       "values": {
-        "agent_errors": 237,
+        "agent_errors": 236,
         "agent_files": 357,
-        "reported_compliance_percent": 80.7,
+        "reported_compliance_percent": 80.8,
         "target_errors": 0,
         "target_percent_max": 100
       }
@@ -270,12 +270,12 @@
       ],
       "status": "partial",
       "values": {
-        "declared": 3615,
+        "declared": 3617,
         "folded_scalar": 5,
         "malformed_frontmatter": 0,
         "malformed_shape": 0,
-        "missing": 14,
-        "rows": 3629,
+        "missing": 11,
+        "rows": 3628,
         "target_malformed": 0
       }
     },
@@ -286,7 +286,7 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "distinct_values": 42,
+        "distinct_values": 43,
         "invalid_or_empty": 0,
         "target_free_text_values": 0,
         "values": [
@@ -453,6 +453,10 @@
           {
             "count": 1,
             "value": "Verified against @aomi-labs/client v0.1.42 and the current aomi-widget/packages/client TypeScript CLI. Install globally via npm install -g @aomi-labs/client@latest, or run on demand via npx @aomi-labs/client@latest. The CLI defaults to https://api.aomi.dev; pass --backend-url https://api-staging.aomi.dev when explicitly targeting staging. viem and Solana signing dependencies are bundled by the package. Designed for claude-code; also works with Cursor, Codex CLI, Gemini, and any agent runtime that supports the Anthropic skill spec."
+          },
+          {
+            "count": 1,
+            "value": "claude-code >= 0.7.0"
           },
           {
             "count": 1,
@@ -1108,7 +1112,7 @@
         "answers": [
           {
             "cohort": "curated-mirror",
-            "value": 1913
+            "value": 2037
           },
           {
             "cohort": "curriculum",
@@ -1120,11 +1124,11 @@
           },
           {
             "cohort": "graded",
-            "value": 3629
+            "value": 3628
           },
           {
             "cohort": "marketplace-visible",
-            "value": 3068
+            "value": 3067
           }
         ],
         "distinct_numeric_answers": 5,
@@ -1236,17 +1240,8 @@
       ],
       "status": "measured",
       "values": {
-        "mirrors_shipping_license_text": 28,
-        "missing_license_text": [
-          "plugins/api-development/x-twitter-scraper",
-          "plugins/community/ejentum-anti-deception",
-          "plugins/community/ejentum-code",
-          "plugins/community/ejentum-memory",
-          "plugins/community/ejentum-reasoning",
-          "plugins/community/llm-box",
-          "plugins/productivity/content-multiplier",
-          "plugins/productivity/skyvern"
-        ],
+        "mirrors_shipping_license_text": 36,
+        "missing_license_text": [],
         "provenance_marked_mirrors": 36,
         "target_shipping_license_text": 36
       }
@@ -1517,8 +1512,8 @@
       "source": [".github/workflows/publish-changed-packages.yml"],
       "status": "measured",
       "values": {
-        "swallowed_operations": ["tag_create", "tag_push", "github_release"],
-        "swallowed_total": 3,
+        "swallowed_operations": [],
+        "swallowed_total": 0,
         "target": 0
       }
     },
@@ -1529,7 +1524,7 @@
       "source": [".github/workflows/release.yml"],
       "status": "measured",
       "values": {
-        "skip_tests_bypass_present": true,
+        "skip_tests_bypass_present": false,
         "target_present": false
       }
     },
@@ -1582,16 +1577,16 @@
       "values": {
         "pins": {
           "@intentsolutions/audit-harness": {
-            "exact": false,
-            "version": "^1.3.1"
+            "exact": true,
+            "version": "1.3.1"
           },
           "@intentsolutions/core": {
             "exact": true,
-            "version": "0.9.0"
+            "version": "0.10.0"
           },
           "@intentsolutions/jrig-cli": {
             "exact": true,
-            "version": "0.1.2"
+            "version": "0.2.0"
           }
         },
         "published_latest_versions": null
@@ -1644,6 +1639,7 @@
       "values": {
         "actual_needs": [
           "validate",
+          "marketplace-compliance-ratchet",
           "verify",
           "test",
           "check-package-manager",
@@ -1666,7 +1662,7 @@
           "doc-governance",
           "secret-diff-scan"
         ],
-        "actual_needs_count": 22,
+        "actual_needs_count": 23,
         "documented_needs": null
       }
     },
@@ -1712,6 +1708,9 @@
         "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
         "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
         "000-docs/790-DR-STND-safety-enforcement-register.md",
+        "000-docs/806-AT-ARCH-cross-repo-authority-contract.md",
+        "000-docs/807-DR-STND-evaluation-evidence.md",
+        "000-docs/808-DR-STND-certification-standard.md",
         "000-docs/SCHEMA_CHANGELOG.md",
         "STANDARDS.md"
       ],
@@ -1730,11 +1729,14 @@
           "000-docs/728-RA-DATA-reference-architecture-benchmark.md",
           "000-docs/729-AT-ADEC-reference-architecture-synthesis.md",
           "000-docs/790-DR-STND-safety-enforcement-register.md",
+          "000-docs/806-AT-ARCH-cross-repo-authority-contract.md",
+          "000-docs/807-DR-STND-evaluation-evidence.md",
+          "000-docs/808-DR-STND-certification-standard.md",
           "000-docs/SCHEMA_CHANGELOG.md"
         ],
-        "canonical_table_links": 13,
-        "declared": 3,
-        "linked_declared": 3,
+        "canonical_table_links": 16,
+        "declared": 6,
+        "linked_declared": 6,
         "target_unlinked": 0,
         "unlinked": []
       }
@@ -1749,10 +1751,10 @@
       ],
       "status": "measured",
       "values": {
-        "index_entries": 243,
+        "index_entries": 249,
         "missing_from_index": [],
         "target_equal": true,
-        "tracked_documents": 243,
+        "tracked_documents": 249,
         "untracked_index_entries": []
       }
     },
@@ -1778,7 +1780,7 @@
         "invalid_patterns": 0,
         "invisible_files": 21,
         "target_invisible_files": 0,
-        "tracked_files": 22792
+        "tracked_files": 23183
       }
     },
     "47": {
@@ -1907,18 +1909,18 @@
       "values": null
     },
     "56": {
-      "cohort": "verified:true fields in tracked public marketplace data",
+      "cohort": "legacy JRig marketplace verification projection",
       "dimension": "Public verified claims with backing",
       "limitations": [
-        "a boolean verified field is not evidence that a retained backing artifact exists"
+        "a future public verification surface requires retained, hash-matched evidence and an explicit consumer boundary"
       ],
-      "reason_code": "MISSING_HASH_LINKED_PUBLIC_CLAIM_CONTRACT",
+      "reason_code": "NO_PUBLIC_JRIG_VERIFICATION_PROJECTION",
       "reproduce": "pnpm run measure:e1 --row=56 --stdout",
-      "required_inputs": ["claim-to-primary-artifact hash field", "consumer-page registry"],
+      "required_inputs": [],
       "source": [],
-      "status": "partial",
+      "status": "target_met",
       "values": {
-        "backing_verified": null,
+        "projection_present": false,
         "public_verified_claims": 0
       }
     },
@@ -1941,6 +1943,7 @@
         "plugins/saas-packs/sentry-pack/skills/sentry-data-handling/eval-spec.yaml",
         "plugins/saas-packs/supabase-pack/skills/supabase-known-pitfalls/eval-spec.yaml",
         "plugins/skill-enhancers/skill-creator/skills/skill-creator/eval-spec.yaml",
+        "skills/.curated/audit-tests/eval-spec.yaml",
         "skills/.curated/coreweave-fabric-diagnostics/eval-spec.yaml",
         "skills/.curated/coreweave-gpu-cost-leak-hunter/eval-spec.yaml",
         "skills/.curated/coreweave-gpu-node-forensics/eval-spec.yaml",
@@ -1952,15 +1955,16 @@
         "skills/.curated/hubspot-warehouse-sync/eval-spec.yaml",
         "skills/.curated/sentry-data-handling/eval-spec.yaml",
         "skills/.curated/skill-creator/eval-spec.yaml",
-        "skills/.curated/supabase-known-pitfalls/eval-spec.yaml"
+        "skills/.curated/supabase-known-pitfalls/eval-spec.yaml",
+        "skills/.curated/validate-skillmd/eval-spec.yaml"
       ],
       "status": "measured",
       "values": {
         "adoption_percent": 0.45,
-        "curated_copies": 12,
-        "plugin_skill_rows": 3129,
+        "curated_copies": 14,
+        "plugin_skill_rows": 3128,
         "source_eval_specs": 14,
-        "tracked_eval_specs": 26
+        "tracked_eval_specs": 28
       }
     },
     "58": {
@@ -1983,7 +1987,7 @@
       "status": "measured",
       "values": {
         "nonblocking_flock": true,
-        "refusal_tests": 1,
+        "refusal_tests": 4,
         "server_lock_refusal": true,
         "target_mechanical_refusal": true
       }
