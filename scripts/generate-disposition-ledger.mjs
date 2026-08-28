@@ -356,9 +356,15 @@ export function main(argv = process.argv.slice(2)) {
   });
   const rendered = `${JSON.stringify(ledger, null, 2)}\n`;
   if (options.check) {
-    if (!fs.existsSync(options.out) || fs.readFileSync(options.out, 'utf8') !== rendered) {
+    const actual = fs.existsSync(options.out) ? fs.readFileSync(options.out, 'utf8') : null;
+    if (actual !== rendered) {
+      const expectedDigest = crypto.createHash('sha256').update(rendered).digest('hex');
+      const actualDigest = actual
+        ? crypto.createHash('sha256').update(actual).digest('hex')
+        : 'missing';
       fail(
-        `${relative(options.root, options.out)} is stale; rerun generate-disposition-ledger.mjs`,
+        `${relative(options.root, options.out)} is stale; rerun generate-disposition-ledger.mjs ` +
+          `(expected sha256 ${expectedDigest}, actual sha256 ${actualDigest})`,
       );
     }
   } else {
