@@ -12,7 +12,7 @@ description: 'Production readiness checklist for Lindy AI agent deployments.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

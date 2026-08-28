@@ -12,7 +12,7 @@ description: 'Set up Lindy AI account, API access, and webhook authentication.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
