@@ -108,6 +108,21 @@ Expected Slack message:
 Navigate to the **Tasks** tab in your agent view. Confirm status shows **Completed**.
 Click into the task to see each step's input/output for debugging.
 
+## Output
+
+The finished agent accepts the test webhook, creates one completed Lindy task,
+and posts one concise Slack summary without exposing the webhook secret. Keep
+the agent URL, task ID, and sanitized test payload as the setup receipt so the
+workflow can be retested after changes.
+
+## Examples
+
+Send an `order.created` event to a test-only webhook and confirm that the
+configured Slack channel receives “Jane Doe placed a $149.99 order for Widget
+Pro and Adapter Cable.” If the request returns 401, replace the placeholder
+secret with the webhook secret generated for that same agent rather than a
+different workspace credential.
+
 ## Agent Anatomy
 
 | Component | Purpose | Hello World Value |
