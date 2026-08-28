@@ -12,7 +12,7 @@ description: 'Set up Langfuse local development workflow with hot reload and deb
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(pnpm:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

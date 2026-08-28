@@ -13,7 +13,7 @@ description: 'Set up comprehensive observability for Langfuse with metrics, dash
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

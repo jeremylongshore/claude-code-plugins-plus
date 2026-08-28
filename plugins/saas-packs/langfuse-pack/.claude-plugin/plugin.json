@@ -1,6 +1,6 @@
 {
   "name": "langfuse-pack",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "Claude Code skill pack for Langfuse LLM observability (24 skills)",
   "author": {
     "name": "Jeremy Longshore",
