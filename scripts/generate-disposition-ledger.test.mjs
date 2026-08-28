@@ -63,4 +63,17 @@ test('ledger diagnostics are serialized in deterministic order', () => {
     },
   });
   assert.deepEqual(result.diagnostics, [...result.diagnostics].sort());
+
+  const numericResult = classifyArtifact({
+    root,
+    row: { path: 'plugins/example/skill/SKILL.md', grade: 'B', score: 82 },
+    validation: {
+      errors: 2,
+      error_details: [
+        "[frontmatter] Missing required field: 'version' (marketplace)",
+        "[frontmatter] Missing required field: 'author' (marketplace)",
+      ],
+    },
+  });
+  assert.deepEqual(numericResult.diagnostics, [...numericResult.diagnostics].sort());
 });

@@ -213,7 +213,7 @@ function errorsFor(record) {
   if (Array.isArray(record?.errors)) return [...record.errors].sort();
   if (!Number.isInteger(record?.errors) || record.errors < 0) return ['VALIDATOR_FACT_UNAVAILABLE'];
   if (!Array.isArray(record.error_details)) return ['VALIDATOR_DIAGNOSTICS_UNAVAILABLE'];
-  return record.error_details;
+  return [...record.error_details].sort();
 }
 
 export function classifyArtifact({ root, row, validation, cache = new Map() }) {
