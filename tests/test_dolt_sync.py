@@ -486,6 +486,38 @@ class GradesExportTests(unittest.TestCase):
             )
         conn.close()
 
+    def test_tracked_grade_exports_must_match_latest_run_and_each_other(self):
+        import tempfile
+
+        conn = fixture_conn(
+            self.DDL
+            + "CREATE TABLE discovery_runs (id INTEGER PRIMARY KEY);"
+            + "INSERT INTO discovery_runs (id) VALUES (8), (9);"
+        )
+        conn.executemany(
+            "INSERT INTO skill_compliance (skill_path, grade, score, run_id) VALUES (?,?,?,?)",
+            [("plugins/alpha", "A", 99.5, 9), ("plugins/zeta", "B", 80.0, 9)],
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            csv_path = root / "grades.csv"
+            histogram_path = root / "grade-histogram.json"
+            dolt_sync.write_grades_export(conn, 9, csv_path, histogram_path)
+            dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
+
+            histogram_path.write_text(
+                '{"run_id": 8, "total": 2, "grades": {"A": 1, "B": 1}}\n'
+            )
+            with self.assertRaisesRegex(dolt_sync.SyncError, "stale.*run_id=8.*=9"):
+                dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
+
+            histogram_path.write_text(
+                '{"run_id": 9, "total": 3, "grades": {"A": 1, "B": 1}}\n'
+            )
+            with self.assertRaisesRegex(dolt_sync.SyncError, "row-count mismatch.*2.*=3"):
+                dolt_sync.gate_tracked_grade_exports(conn, csv_path, histogram_path)
+        conn.close()
+
 
 class StampDoltCommitTests(unittest.TestCase):
     """The post-commit hash stamp must add dolt_commit without disturbing
