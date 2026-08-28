@@ -249,6 +249,22 @@ grep -rn "from ['\"]langfuse['\"]" src/ || echo "No old imports found"
 | Flat traces (no nesting) | OTel SDK not started | Register `LangfuseSpanProcessor` with `NodeSDK` |
 | `LANGFUSE_HOST` ignored | v5 dropped legacy env var | Rename to `LANGFUSE_BASE_URL` |
 
+## Output
+
+Produce a versioned migration record containing the starting and target SDK
+versions, changed packages and imports, configuration changes, test evidence,
+and a rollback decision. The record must distinguish a successful build from a
+successful trace export in the intended Langfuse project.
+
+## Examples
+
+Upgrade a staging service by installing the v4+ tracing packages beside the
+legacy client, migrating one request path to `startActiveObservation`, and
+verifying parent/child nesting in the staging project. Once the comparison is
+clean, remove the old package and imports in a separate reviewable change;
+retain the prior deployable artifact until the production verification window
+has closed.
+
 ## Resources
 
 - [v3 to v4 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v3-to-v4)
