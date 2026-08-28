@@ -13,7 +13,7 @@ description: 'Execute complex Langfuse migrations including data migration and p
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
