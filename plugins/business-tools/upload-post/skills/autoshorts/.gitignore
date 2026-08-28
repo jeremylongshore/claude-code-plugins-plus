@@ -1,0 +1,15 @@
+.env
+.DS_Store
+venv/
+__pycache__/
+*.pyc
+output/
+state/
+input/
+learnings/HOT.md
+learnings/post-history.jsonl
+learnings/candidate-history.jsonl
+learnings/metrics.jsonl
+learnings/HOT.*.md.bak
+learnings/runs/
+learnings/insights/

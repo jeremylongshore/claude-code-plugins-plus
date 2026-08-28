@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/upload-post",
+  "version": "1.0.0",
+  "description": "Operate social media via the Upload-Post API: publish/schedule to 15 platforms, comment-to-DM funnels, video-to-shorts, URL-to-carousel, analytics.",
+  "keywords": [
+    "social-media",
+    "tiktok",
+    "instagram",
+    "scheduling",
+    "content-marketing",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/tons-of-skills-marketplace.git",
+    "directory": "plugins/business-tools/upload-post"
+  },
+  "homepage": "https://tonsofskills.com/plugins/upload-post",
+  "bugs": "https://github.com/jeremylongshore/tons-of-skills-marketplace/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Upload-Post",
+    "url": "https://upload-post.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install upload-post\\\\n  or /plugin install upload-post@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

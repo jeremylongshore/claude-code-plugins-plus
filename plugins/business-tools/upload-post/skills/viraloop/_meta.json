@@ -1,0 +1,75 @@
+{
+  "name": "viraloop",
+  "version": "1.0.0",
+  "description": "Analyze any website and generate viral TikTok/Instagram carousel slides automatically. Full pipeline from research to publishing with analytics feedback loop.",
+  "requirements": {
+    "runtime": "node",
+    "minNodeVersion": "18",
+    "systemDeps": {
+      "required": ["jq"],
+      "optional": ["uv"],
+      "note": "Playwright is required for website analysis. uv is used to run Python scripts for image generation."
+    },
+    "npmDeps": ["playwright"]
+  },
+  "configPaths": [
+    "/tmp/carousel/analysis.json",
+    "/tmp/carousel/learnings.json",
+    "/tmp/carousel/post-info.json"
+  ],
+  "credentials": {
+    "required": [
+      {
+        "name": "GEMINI_API_KEY",
+        "type": "envVar",
+        "description": "Google API key for Gemini image generation (gemini-3.1-flash-image-preview)",
+        "obtain": "https://aistudio.google.com/app/apikey",
+        "usage": "Set as environment variable before running generate-slides.sh"
+      },
+      {
+        "name": "UPLOADPOST_TOKEN",
+        "type": "envVar",
+        "description": "Upload-Post API token for publishing carousels and fetching analytics",
+        "obtain": "https://upload-post.com → Dashboard → API Keys",
+        "usage": "Set as environment variable before running publish-carousel.sh or check-analytics.sh"
+      }
+    ],
+    "optional": [
+      {
+        "name": "UPLOADPOST_USER",
+        "type": "envVar",
+        "description": "Upload-Post username for publishing and analytics",
+        "sensitive": false
+      }
+    ]
+  },
+  "dataStorage": {
+    "localFiles": [
+      "/tmp/carousel/analysis.json - Website analysis results",
+      "/tmp/carousel/slide-{1-6}.jpg - Generated carousel images",
+      "/tmp/carousel/caption.txt - Generated caption",
+      "/tmp/carousel/post-info.json - Published post metadata with request_id",
+      "/tmp/carousel/learnings.json - Accumulated performance insights"
+    ],
+    "externalServices": [
+      "Gemini API (generativelanguage.googleapis.com) - Image generation",
+      "Upload-Post API (api.upload-post.com) - Publishing and analytics"
+    ]
+  },
+  "securityNotes": [
+    "All credentials are read from environment variables, not stored in files",
+    "No API keys are hardcoded in any scripts",
+    "Website analysis uses Playwright to scrape public web pages only",
+    "Generated images and analytics data are stored locally in /tmp/carousel/",
+    "UPLOADPOST_USER is not sensitive - it's just a username identifier"
+  ],
+  "permissions": {
+    "network": [
+      "Any website URL provided for analysis (read-only scraping)",
+      "generativelanguage.googleapis.com (Gemini API)",
+      "api.upload-post.com (Upload-Post API)"
+    ],
+    "filesystem": ["/tmp/carousel/"],
+    "exec": ["node", "playwright", "uv", "python", "jq", "curl"]
+  }
+}

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload-Post Larry Marketing Skill — AI-Powered TikTok & Instagram Marketing</title>
+  <meta name="description" content="Automate your TikTok & Instagram slideshow marketing with AI. Generate, overlay, post, track, and iterate — all powered by Upload-Post API.">
+  <meta property="og:title" content="Upload-Post Larry Marketing Skill">
+  <meta property="og:description" content="AI-powered TikTok + Instagram slideshow marketing. 7M+ views methodology, automated.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://upload-post.github.io/upload-post-larry-marketing-skill/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --text: #e4e4ef;
+      --text-muted: #8888a0;
+      --accent: #6c5ce7;
+      --accent-glow: rgba(108, 92, 231, 0.3);
+      --green: #00d2a0;
+      --green-glow: rgba(0, 210, 160, 0.2);
+      --orange: #ff7b54;
+      --red: #ff4757;
+      --yellow: #ffd43b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: white !important; padding: 8px 20px;
+      border-radius: 8px; font-weight: 600; font-size: 14px !important;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+
+    /* Hero */
+    .hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 6px 16px; border-radius: 50px; font-size: 13px;
+      color: var(--text-muted); margin-bottom: 24px;
+    }
+    .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    h1 .gradient {
+      background: linear-gradient(135deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding: 60px 0;
+    }
+    .stat {
+      text-align: center;
+      padding: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .stat-number {
+      font-size: 40px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+    /* Pipeline */
+    .pipeline { padding: 80px 0; }
+    .section-title {
+      font-size: 36px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 60px;
+      max-width: 550px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .pipeline-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .step:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .step-icon { font-size: 36px; margin-bottom: 12px; }
+    .step-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .step-desc { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+    .step-arrow {
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 20px;
+      z-index: 2;
+    }
+
+    /* Feedback loop */
+    .feedback { padding: 80px 0; }
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .feedback-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s;
+    }
+    .feedback-card:hover { border-color: var(--accent); }
+    .feedback-card .emoji { font-size: 28px; margin-bottom: 12px; }
+    .feedback-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .feedback-card p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .card-green { border-left: 3px solid var(--green); }
+    .card-yellow { border-left: 3px solid var(--yellow); }
+    .card-red { border-left: 3px solid var(--red); }
+    .card-orange { border-left: 3px solid var(--orange); }
+
+    /* Platforms */
+    .platforms { padding: 80px 0; text-align: center; }
+    .platform-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 40px;
+    }
+    .platform-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .platform-tag:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    /* Code */
+    .quickstart { padding: 80px 0; }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      overflow-x: auto;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+    .code-block .comment { color: #555570; }
+    .code-block .cmd { color: var(--green); }
+    .code-block .flag { color: var(--accent); }
+
+    /* Skills section */
+    .skills-section { padding: 80px 0; }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.3s, transform 0.3s;
+      display: block;
+    }
+    .skill-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .skill-card .card-icon { font-size: 32px; margin-bottom: 12px; }
+    .skill-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .skill-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+    .skill-card .card-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: rgba(108, 92, 231, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.15), rgba(0, 210, 160, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 60px 40px;
+    }
+    .cta-box h2 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .cta-box p {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: 1fr; }
+      .feedback-grid { grid-template-columns: 1fr; }
+      .pipeline-steps { grid-template-columns: 1fr; }
+      .step-arrow { display: none; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 120px 0 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="container">
+      <a href="https://upload-post.com" class="logo">Upload<span>-Post</span></a>
+      <div class="nav-links">
+        <a href="#pipeline">How It Works</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#skills">All Skills</a>
+        <a href="https://github.com/Upload-Post/upload-post-larry-marketing-skill" class="nav-cta">⭐ GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge"><span class="dot"></span> Open Source &middot; MIT Licensed</div>
+      <h1>AI Marketing on <span class="gradient">Autopilot</span></h1>
+      <p>An AI agent skill that generates TikTok & Instagram slideshows, posts to 10+ platforms, tracks analytics, and iterates on what works. Based on the Larry methodology.</p>
+      <div class="hero-buttons">
+        <a href="https://github.com/Upload-Post/upload-post-larry-marketing-skill" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          View on GitHub
+        </a>
+        <a href="https://upload-post.com" class="btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Get Upload-Post API
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section>
+    <div class="container">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number">7M+</div>
+          <div class="stat-label">Total views on content</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">10+</div>
+          <div class="stat-label">Platforms in one API call</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">$670</div>
+          <div class="stat-label">MRR from AI agent marketing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pipeline -->
+  <section class="pipeline" id="pipeline">
+    <div class="container">
+      <h2 class="section-title">The Pipeline</h2>
+      <p class="section-subtitle">From idea to published post across 10+ platforms — fully automated by your AI agent.</p>
+      <div class="pipeline-steps">
+        <div class="step">
+          <div class="step-icon">🔍</div>
+          <div class="step-title">Research</div>
+          <div class="step-desc">Analyze competitors on TikTok. What hooks work? What's missing?</div>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-icon">🎨</div>
+          <div class="step-title">Generate</div>
+          <div class="step-desc">AI creates 6 photorealistic portrait slides via OpenAI, Stability, or Replicate.</div>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-icon">✍️</div>
+          <div class="step-title">Overlay</div>
+          <div class="step-desc">Battle-tested text overlays with node-canvas. Sized for virality.</div>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-icon">🚀</div>
+          <div class="step-title">Publish</div>
+          <div class="step-desc">One Upload-Post API call → TikTok, Instagram, YouTube, X, LinkedIn & more.</div>
+          <span class="step-arrow">→</span>
+        </div>
+        <div class="step">
+          <div class="step-icon">📊</div>
+          <div class="step-title">Track & Iterate</div>
+          <div class="step-desc">Daily analytics + feedback loop. Data-driven hook optimization.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feedback Loop -->
+  <section class="feedback">
+    <div class="container">
+      <h2 class="section-title">The Intelligence Loop</h2>
+      <p class="section-subtitle">Not just "post and pray." Every day, the agent analyzes what's working and adjusts.</p>
+      <div class="feedback-grid">
+        <div class="feedback-card card-green">
+          <div class="emoji">🟢</div>
+          <h3>High Views + High Conversions</h3>
+          <p>SCALE IT — make 3 variations of the winning hook. Test different posting times. Cross-post everywhere.</p>
+        </div>
+        <div class="feedback-card card-yellow">
+          <div class="emoji">🟡</div>
+          <h3>High Views + Low Conversions</h3>
+          <p>FIX THE CTA — the hook works, but people aren't converting. Try different calls-to-action on the last slide.</p>
+        </div>
+        <div class="feedback-card card-orange">
+          <div class="emoji">🟠</div>
+          <h3>Low Views + High Conversions</h3>
+          <p>FIX THE HOOKS — content converts great, just needs more eyeballs. Test radically different hooks.</p>
+        </div>
+        <div class="feedback-card card-red">
+          <div class="emoji">🔴</div>
+          <h3>Low Views + Low Conversions</h3>
+          <p>FULL RESET — try a completely different format, approach, or audience angle. Research what's trending now.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms -->
+  <section class="platforms">
+    <div class="container">
+      <h2 class="section-title">One API Call. Every Platform.</h2>
+      <p class="section-subtitle">Upload-Post handles posting to all platforms simultaneously. Same content, different algorithms, maximum reach.</p>
+      <div class="platform-grid">
+        <div class="platform-tag">🎵 TikTok</div>
+        <div class="platform-tag">📸 Instagram</div>
+        <div class="platform-tag">▶️ YouTube</div>
+        <div class="platform-tag">💼 LinkedIn</div>
+        <div class="platform-tag">🐦 X (Twitter)</div>
+        <div class="platform-tag">📘 Facebook</div>
+        <div class="platform-tag">🧵 Threads</div>
+        <div class="platform-tag">📌 Pinterest</div>
+        <div class="platform-tag">🤖 Reddit</div>
+        <div class="platform-tag">🦋 Bluesky</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <section class="quickstart" id="quickstart">
+    <div class="container">
+      <h2 class="section-title">Quick Start</h2>
+      <p class="section-subtitle">Install the skill and let your AI agent handle the rest.</p>
+      <div class="code-block">
+<pre><span class="comment"># Install as an AI agent skill</span>
+<span class="cmd">npx skills add</span> <span class="flag">Upload-Post/upload-post-larry-marketing-skill</span>
+
+<span class="comment"># Or clone directly</span>
+<span class="cmd">git clone</span> <span class="flag">https://github.com/Upload-Post/upload-post-larry-marketing-skill.git</span>
+
+<span class="comment"># Initialize workspace</span>
+<span class="cmd">node scripts/onboarding.js</span> <span class="flag">--init --dir tiktok-marketing/</span>
+
+<span class="comment"># Your AI agent handles everything from here:</span>
+<span class="comment"># → Competitor research</span>
+<span class="comment"># → Image generation + text overlays</span>
+<span class="comment"># → Multi-platform posting via Upload-Post</span>
+<span class="comment"># → Daily analytics + optimization loop</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- All Skills -->
+  <section class="skills-section" id="skills">
+    <div class="container">
+      <h2 class="section-title">Upload-Post Ecosystem</h2>
+      <p class="section-subtitle">Tools, SDKs, and skills to power your social media automation.</p>
+      <div class="skills-grid">
+        <a href="https://github.com/Upload-Post/upload-post-larry-marketing-skill" class="skill-card">
+          <div class="card-icon">🎬</div>
+          <h3>Larry Marketing Skill</h3>
+          <p>AI-powered TikTok & Instagram slideshow marketing. Generate, overlay, post, track, iterate.</p>
+          <span class="card-tag">AI Agent Skill</span>
+        </a>
+        <a href="https://github.com/Upload-Post/upload-post-skill" class="skill-card">
+          <div class="card-icon">🤖</div>
+          <h3>Upload-Post Skill</h3>
+          <p>General Upload-Post skill for AI agents. Upload videos, photos, carousels, schedule posts.</p>
+          <span class="card-tag">AI Agent Skill</span>
+        </a>
+        <a href="https://github.com/Upload-Post/upload-post-npm" class="skill-card">
+          <div class="card-icon">📦</div>
+          <h3>Node.js SDK</h3>
+          <p>Official JavaScript/Node.js SDK for the Upload-Post API. npm install upload-post.</p>
+          <span class="card-tag">SDK</span>
+        </a>
+        <a href="https://github.com/Upload-Post/upload-post-pip" class="skill-card">
+          <div class="card-icon">🐍</div>
+          <h3>Python SDK</h3>
+          <p>Official Python SDK for the Upload-Post API. pip install upload-post.</p>
+          <span class="card-tag">SDK</span>
+        </a>
+        <a href="https://github.com/Upload-Post/n8n-nodes-upload-post" class="skill-card">
+          <div class="card-icon">🔗</div>
+          <h3>n8n Community Node</h3>
+          <p>Upload-Post node for n8n workflows. Drag-and-drop social media automation.</p>
+          <span class="card-tag">Integration</span>
+        </a>
+        <a href="https://upload-post.com" class="skill-card">
+          <div class="card-icon">🚀</div>
+          <h3>Upload-Post API</h3>
+          <p>The engine behind it all. One API call to post to 10+ social media platforms simultaneously.</p>
+          <span class="card-tag">Platform</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to automate your marketing?</h2>
+        <p>Get an Upload-Post API key, install the skill, and let your AI agent do the rest.</p>
+        <div class="hero-buttons">
+          <a href="https://upload-post.com" class="btn-primary">Get Started Free →</a>
+          <a href="https://github.com/Upload-Post/upload-post-larry-marketing-skill" class="btn-secondary">View Source Code</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Built with ❤️ by <a href="https://upload-post.com">Upload-Post</a> &middot; <a href="https://github.com/Upload-Post">GitHub</a> &middot; MIT License</p>
+    </div>
+  </footer>
+
+</body>
+</html>

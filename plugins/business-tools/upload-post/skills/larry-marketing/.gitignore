@@ -1,0 +1,19 @@
+# Generated content
+tiktok-marketing/posts/
+tiktok-marketing/reports/
+tiktok-marketing/analytics-snapshot.json
+tiktok-marketing/platform-stats.json
+tiktok-marketing/rc-snapshot.json
+tiktok-marketing/hook-performance.json
+tiktok-marketing/hook-log.json
+
+# Config with credentials
+tiktok-marketing/config.json
+
+# Node
+node_modules/
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,39 @@
+{
+  "name": "upload-post",
+  "version": "1.0.0",
+  "description": "Publish, schedule and grow on TikTok, Instagram, YouTube, LinkedIn, Facebook, X, Threads, Pinterest, Bluesky, Reddit, Discord, Telegram, Mastodon, WordPress and Google Business via the Upload-Post API.",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "author": "Upload-Post",
+  "homepage": "https://upload-post.com",
+  "repository": "https://github.com/Upload-Post/upload-post-skills",
+  "license": "MIT",
+  "keywords": [
+    "social-media",
+    "tiktok",
+    "instagram",
+    "youtube",
+    "linkedin",
+    "scheduling",
+    "content-marketing",
+    "shorts",
+    "carousel",
+    "dm-automation"
+  ],
+  "interface": {
+    "displayName": "Upload-Post",
+    "longDescription": "Operate social media from your agent — not just talk about it. Post video/photo/text to 15 platforms in one call, schedule content, run Instagram comment-to-DM funnels, repurpose long video into shorts/reels, turn any URL into a viral carousel, and track analytics. Pairs with the Upload-Post MCP connector (OAuth) so no API keys live in prompts.",
+    "category": "marketing",
+    "capabilities": [
+      "multi-platform-publishing",
+      "scheduling",
+      "analytics",
+      "dm-automation",
+      "video-repurposing"
+    ],
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png",
+    "privacyUrl": "https://upload-post.com/privacy",
+    "termsUrl": "https://upload-post.com/terms"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "upload-post": {
+      "type": "http",
+      "url": "https://mcp.upload-post.com/mcp"
+    }
+  }
+}

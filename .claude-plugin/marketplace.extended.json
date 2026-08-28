@@ -9760,6 +9760,27 @@
         "skills": 32,
         "total": 32
       }
+    },
+    {
+      "name": "upload-post",
+      "source": "./plugins/business-tools/upload-post",
+      "description": "Publish and schedule to 15 social platforms from your agent — TikTok, Instagram, YouTube, LinkedIn, X, Threads, Pinterest, Bluesky, Reddit, Discord, Telegram and more — plus Instagram comment-to-DM funnels, video-to-shorts and URL-to-carousel pipelines.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "social-media",
+        "tiktok",
+        "instagram",
+        "scheduling",
+        "content-marketing"
+      ],
+      "author": {
+        "name": "Upload-Post",
+        "url": "https://upload-post.com"
+      },
+      "homepage": "https://upload-post.com",
+      "repository": "https://github.com/Upload-Post/upload-post-skills",
+      "license": "MIT"
     }
   ]
 }

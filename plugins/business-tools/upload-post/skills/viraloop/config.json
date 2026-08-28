@@ -1,0 +1,10 @@
+{
+  "language": "es",
+  "defaultUrl": "https://upload-post.com",
+  "uploadPost": {
+    "profile": "influencersde",
+    "platforms": ["tiktok", "instagram"]
+  },
+  "imageFormat": "vertical",
+  "notes": "Generar slides en español para Upload-Post"
+}

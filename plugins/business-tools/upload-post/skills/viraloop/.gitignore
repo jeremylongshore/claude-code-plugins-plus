@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+/tmp/
+
+# Runtime data (not secrets, but instance-specific)
+posts/
+hook-ledger.json
+learnings.json
+
+# Environment files
+.env
+.env.*
+*.local

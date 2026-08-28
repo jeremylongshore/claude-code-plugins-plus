@@ -1,0 +1,5 @@
+faster-whisper>=1.0.3
+google-genai>=0.8.0
+requests>=2.32.0
+python-dotenv>=1.0.1
+Pillow>=10.0.0

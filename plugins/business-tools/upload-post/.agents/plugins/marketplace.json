@@ -1,0 +1,14 @@
+{
+  "name": "upload-post",
+  "displayName": "Upload-Post",
+  "description": "Official Upload-Post plugin — publish, schedule and grow on every social platform from your agent.",
+  "owner": "Upload-Post",
+  "homepage": "https://upload-post.com",
+  "plugins": [
+    {
+      "name": "upload-post",
+      "source": "./",
+      "description": "Publish/schedule to 15 platforms, comment-to-DM funnels, video-to-shorts, URL-to-carousel, analytics — backed by the Upload-Post MCP connector (OAuth)."
+    }
+  ]
+}
