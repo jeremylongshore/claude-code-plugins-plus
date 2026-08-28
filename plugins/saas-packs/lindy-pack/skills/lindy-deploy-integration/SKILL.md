@@ -12,7 +12,7 @@ description: 'Deploy applications that integrate with Lindy AI agents.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(docker:*), Bash(npm:*)
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -61,7 +61,7 @@ app.get('/health', (req, res) => {
 // Lindy webhook receiver with auth verification
 app.post('/lindy/callback', (req, res) => {
   const auth = req.headers.authorization;
-  if (auth !== `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`) {
+  if (auth !== `Bearer ${process.env.LINDY_CALLBACK_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -105,8 +105,7 @@ CMD ["node", "dist/server.js"]
 docker build -t lindy-integration .
 docker run -d \
   -p 3000:3000 \
-  -e LINDY_API_KEY="$LINDY_API_KEY" \
-  -e LINDY_WEBHOOK_SECRET="$LINDY_WEBHOOK_SECRET" \
+  -e LINDY_CALLBACK_SECRET="$LINDY_CALLBACK_SECRET" \
   --name lindy-app \
   lindy-integration
 ```
@@ -118,8 +117,7 @@ docker run -d \
 npm i -g vercel
 
 # Set secrets
-vercel secrets add lindy-api-key "$LINDY_API_KEY"
-vercel secrets add lindy-webhook-secret "$LINDY_WEBHOOK_SECRET"
+vercel secrets add lindy-callback-secret "$LINDY_CALLBACK_SECRET"
 
 # Deploy
 vercel --prod
@@ -129,8 +127,7 @@ vercel --prod
 // vercel.json
 {
   "env": {
-    "LINDY_API_KEY": "@lindy-api-key",
-    "LINDY_WEBHOOK_SECRET": "@lindy-webhook-secret"
+    "LINDY_CALLBACK_SECRET": "@lindy-callback-secret"
   }
 }
 ```
@@ -167,7 +164,7 @@ curl -sf "$PROD_URL/health" | jq .
 echo "[2/3] Webhook endpoint..."
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
   -X POST "$PROD_URL/lindy/callback" \
-  -H "Authorization: Bearer $LINDY_WEBHOOK_SECRET" \
+  -H "Authorization: Bearer $LINDY_CALLBACK_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"test": true}')
 echo "Webhook endpoint: HTTP $STATUS (expect 200)"
@@ -175,7 +172,7 @@ echo "Webhook endpoint: HTTP $STATUS (expect 200)"
 # Trigger a test agent run
 echo "[3/3] Agent trigger test..."
 curl -s -X POST "https://public.lindy.ai/api/v1/webhooks/YOUR_ID" \
-  -H "Authorization: Bearer $LINDY_WEBHOOK_SECRET" \
+  -H "Authorization: Bearer $LINDY_TRIGGER_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"event": "deploy.verify", "env": "production"}'
 echo "Agent triggered — check Tasks tab in Lindy dashboard"
@@ -191,12 +188,25 @@ vercel rollback
 # Docker
 docker stop lindy-app
 docker run -d --name lindy-app-rollback \
-  -e LINDY_API_KEY="$LINDY_API_KEY" \
-  -e LINDY_WEBHOOK_SECRET="$LINDY_WEBHOOK_SECRET" \
+  -e LINDY_CALLBACK_SECRET="$LINDY_CALLBACK_SECRET" \
   lindy-integration:previous-tag
 
 # Update Lindy agents back to previous URLs if needed
 ```
+
+## Output
+
+Produce a deployment receipt with the release identifier, deployed callback
+URL, health-check result, authenticated and unauthenticated webhook outcomes,
+and the verified Lindy task ID. Keep the previous image or deployment revision
+and the corresponding rollback command with that receipt.
+
+## Examples
+
+For a Vercel release, record the production URL, a `GET /health` 200 result,
+an unauthenticated callback 401 result, and a successful signed test event.
+If the signed callback returns 502, invoke the documented rollback before
+changing Lindy agent URLs or retrying the test.
 
 ## Deployment Checklist
 

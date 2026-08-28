@@ -12,7 +12,7 @@ description: 'Data handling best practices for Lindy AI agents.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -177,6 +177,21 @@ Agent Prompt Addition:
 - [ ] Regulatory compliance requirements mapped
 - [ ] BAA in place if handling healthcare data
 - [ ] Data retention policy defined and enforced in prompts
+
+## Output
+
+Produce a data-handling record for each agent that identifies its data
+classification, permitted integrations, memory policy, retention decision, and
+the owner responsible for periodic review. Escalate restricted-data workflows
+that lack a documented legal basis, BAA, or deletion path before enabling them.
+
+## Examples
+
+For a lead-routing agent, record customer email as **confidential**, prohibit it
+from agent memory and public Slack channels, limit the CRM integration to a
+service account, and retain only an aggregate routing metric. If the workflow
+starts processing health information, stop deployment until the Enterprise BAA
+and minimum-necessary controls are confirmed.
 
 ## Error Handling
 
