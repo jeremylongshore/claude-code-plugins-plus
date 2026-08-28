@@ -11,6 +11,14 @@ test('parseGrades rejects duplicate and unsafe inventory rows', () => {
   assert.throws(() => parseGrades('skill_path,grade,score\n../a,A,99\n'), /unsafe/);
 });
 
+test('parseGrades uses locale-independent code-point path order', () => {
+  const rows = parseGrades('skill_path,grade,score\na,A,99\nB,A,99\n');
+  assert.deepEqual(
+    rows.map((row) => row.path),
+    ['B/SKILL.md', 'a/SKILL.md'],
+  );
+});
+
 test('G0 shell substitution wins before all later facts', () => {
   const root = mkdtempSync(path.join(os.tmpdir(), 'ledger-'));
   mkdirSync(path.join(root, 'plugins/example/skill'), { recursive: true });

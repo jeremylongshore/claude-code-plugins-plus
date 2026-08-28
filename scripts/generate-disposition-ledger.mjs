@@ -88,7 +88,9 @@ export function parseGrades(text) {
     return { path: skillPath, grade: fields[1], score: Number(fields[2]) };
   });
   if (rows.length === 0) fail('grades export has no rows');
-  return rows.sort((left, right) => left.path.localeCompare(right.path));
+  // `localeCompare` varies with the runner locale. The ledger is a
+  // byte-addressed artifact, so order paths by code point instead.
+  return rows.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
 }
 
 function validatorJson(root, args, maxBuffer) {
