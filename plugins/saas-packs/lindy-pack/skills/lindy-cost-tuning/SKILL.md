@@ -196,6 +196,20 @@ Review agents monthly:
 | Credits exhausted mid-month | Under-budgeted or spike | Upgrade plan or pause non-critical agents |
 | Model downgrade hurts quality | Task needs larger model | Selectively upgrade only that step |
 
+## Output
+
+Produce a cost-control report showing the workload volume, credit-consuming
+steps, monthly budget, proposed optimization, and the expected service-quality
+effect. Measure before and after the change rather than inferring savings from
+agent configuration alone.
+
+## Examples
+
+For a high-volume enrichment agent, move deterministic validation ahead of the
+credit-consuming enrichment step and test it against a representative week of
+events. Compare completed useful actions, skipped invalid inputs, and credits
+per successful outcome before deploying the new ordering.
+
 ## Resources
 
 - [Lindy Pricing](https://www.lindy.ai/pricing)
