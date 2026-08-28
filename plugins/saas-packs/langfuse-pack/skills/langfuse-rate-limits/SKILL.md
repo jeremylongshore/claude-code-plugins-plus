@@ -238,6 +238,19 @@ async function sampledOperation(name: string, fn: () => Promise<any>) {
 | Flush timeout | Large batch | Reduce `flushAt`, increase `requestTimeout` |
 | Memory growth | Queue backup | Add `maxSize` to PQueue |
 
+## Output
+
+Produce a rate-limit receipt with provider/tier, observed requests per minute,
+429 count, retry policy, queue depth, sampling rate, and dropped traces. Keep
+the measurement window explicit so a quiet interval is not reported as headroom.
+
+## Examples
+
+For a sustained 429 response, honor `Retry-After`, reduce concurrent exports,
+and retry one bounded batch. Verify that error traces remain sampled and that
+the application request still completes when tracing is deferred. If queue depth
+continues to grow, lower the sample rate before increasing memory limits.
+
 ## Resources
 
 - [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)

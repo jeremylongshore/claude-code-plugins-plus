@@ -268,6 +268,21 @@ groups:
 | Alert storms | Thresholds too low | Start conservative, tune over time |
 | Metrics endpoint slow | Large registry | Use summary instead of histogram for high-volume |
 
+## Output
+
+Produce an observability receipt containing the dashboard URL, the time range,
+P95 latency, error rate, token/cost total, and alert state. State the trace
+volume used for each calculation and distinguish missing telemetry from a
+measured zero.
+
+## Examples
+
+During an incident, filter the dashboard to one deployment and compare the
+five minutes before and after it. If latency rises while error rate stays flat,
+check model/provider timing before changing application retry behavior. If the
+metrics endpoint is absent, record that as an instrumentation gap rather than
+claiming the service is healthy.
+
 ## Resources
 
 - [Langfuse Metrics Overview](https://langfuse.com/docs/metrics/overview)

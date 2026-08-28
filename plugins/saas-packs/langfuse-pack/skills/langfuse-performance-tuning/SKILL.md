@@ -272,6 +272,20 @@ setInterval(logMemoryStats, 60000);
 | Request timeouts | Batch too large | Reduce batch size or increase timeout |
 | Dropped spans | Queue full | Increase `maxQueueSize` |
 
+## Output
+
+Produce a tuning receipt with the baseline and post-change P50/P95 latency,
+throughput, sampling rate, batch settings, and dropped-event count. Include the
+rollback setting for each change; do not treat fewer traces as lower latency
+without reporting the sampling denominator.
+
+## Examples
+
+Start with a production-like load test and change only `flushAt` and
+`flushInterval`. Compare request latency and exporter queue depth for the same
+traffic window. If queue drops increase, revert the batch change and reduce
+payload size or sampling before increasing queue capacity.
+
 ## Resources
 
 - [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
