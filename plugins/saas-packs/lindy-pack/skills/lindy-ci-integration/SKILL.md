@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for testing Lindy AI agent integrations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
