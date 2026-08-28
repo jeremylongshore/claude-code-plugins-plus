@@ -12,7 +12,7 @@ description: 'Production-grade Langfuse architecture patterns and best practices
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -239,8 +239,10 @@ const configs: Record<Environment, {
   },
 };
 
-export function getTracingConfig() {
-  const env = (process.env.NODE_ENV || "development") as Environment;
+// Pass the selected environment from the application's configuration boundary.
+// Keeping configuration resolution outside tracing makes this module deterministic
+// and straightforward to test.
+export function getTracingConfig(env: Environment = "development") {
   return configs[env] || configs.development;
 }
 ```
@@ -314,6 +316,21 @@ export function safeTrace<T extends (...args: any[]) => Promise<any>>(
 | Lost traces on deploy | No SIGTERM handler | Register shutdown handler |
 | Cross-service trace gaps | No context propagation | Inject OTel `traceparent` header |
 | Scale bottleneck | Direct SDK at high volume | Add queue buffer or increase sampling |
+
+## Output
+
+Produce an architecture decision record identifying the selected deployment
+tier, tracing boundary, context-propagation method, failure mode, retention
+owner, and rollback path. Include the tested revision and state whether the
+evidence comes from a local, staging, or production-like environment.
+
+## Examples
+
+A growth-stage service can keep the SDK's internal queue and add
+AsyncLocalStorage propagation, then test that a request and downstream worker
+share the trace context. An enterprise deployment can put a queue between the
+application and self-hosted Langfuse, trip the circuit breaker during an export
+failure drill, and prove application traffic continues while telemetry recovers.
 
 ## Resources
 

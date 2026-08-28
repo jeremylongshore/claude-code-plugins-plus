@@ -12,7 +12,7 @@ description: 'Langfuse production readiness checklist and verification.
 
   '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -214,6 +214,27 @@ verify();
 - [ ] Fallback behavior defined (app works without Langfuse)
 - [ ] Data retention policy configured
 - [ ] Log rotation includes redaction of API keys
+
+## Instructions
+
+Run the checklist against one named environment and attach the verification
+script output to the deployment record. Resolve every failed required item or
+record an explicit time-bounded exception with an owner and rollback plan. Run
+the check again after changing SDK configuration, secrets, or deployment
+topology.
+
+## Output
+
+Produce a production-readiness receipt with environment, deployment revision,
+check timestamp, pass/fail results, exception owners, and one trace-health
+observation. Reference secret names only; never print API keys or trace payloads.
+
+## Examples
+
+Before a production release, run the verifier with production secret references
+available, confirm graceful shutdown in a disposable rollout, and submit one
+synthetic trace. If the trace is delayed, record telemetry as degraded while
+keeping the application's health result separate.
 
 ## Error Handling
 

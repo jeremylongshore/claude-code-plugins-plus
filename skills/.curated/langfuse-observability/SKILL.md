@@ -13,7 +13,7 @@ description: 'Set up comprehensive observability for Langfuse with metrics, dash
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -267,6 +267,21 @@ groups:
 | High cardinality | Too many label values | Limit to model + status only |
 | Alert storms | Thresholds too low | Start conservative, tune over time |
 | Metrics endpoint slow | Large registry | Use summary instead of histogram for high-volume |
+
+## Output
+
+Produce an observability receipt containing the dashboard URL, the time range,
+P95 latency, error rate, token/cost total, and alert state. State the trace
+volume used for each calculation and distinguish missing telemetry from a
+measured zero.
+
+## Examples
+
+During an incident, filter the dashboard to one deployment and compare the
+five minutes before and after it. If latency rises while error rate stays flat,
+check model/provider timing before changing application retry behavior. If the
+metrics endpoint is absent, record that as an instrumentation gap rather than
+claiming the service is healthy.
 
 ## Resources
 
