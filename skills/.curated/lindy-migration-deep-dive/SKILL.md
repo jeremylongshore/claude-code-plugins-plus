@@ -12,7 +12,7 @@ description: 'Advanced migration strategies for moving to Lindy AI from other pl
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

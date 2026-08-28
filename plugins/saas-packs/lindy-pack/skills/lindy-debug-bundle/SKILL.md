@@ -12,7 +12,7 @@ description: 'Comprehensive debugging toolkit for Lindy AI agents.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

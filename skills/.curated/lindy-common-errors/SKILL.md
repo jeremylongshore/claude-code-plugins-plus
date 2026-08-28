@@ -12,7 +12,7 @@ description: 'Troubleshoot common Lindy AI agent errors and workflow failures.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -34,6 +34,15 @@ or exit condition evaluation. This guide covers each failure class.
 - Access to Lindy dashboard (https://app.lindy.ai)
 - Ability to view agent Tasks tab for error details
 - For webhook debugging: curl installed
+
+## Instructions
+
+1. Capture the failing run identifier, trigger payload shape, and first failing
+   step without copying sensitive fields into the incident record.
+2. Reproduce the behavior in a test agent or disabled workflow using a bounded
+   input.
+3. Apply the smallest trace-supported remediation, then rerun both the failure
+   fixture and a normal-success fixture before restoring schedules.
 
 ## Trigger Errors
 
@@ -180,6 +189,19 @@ Branch C: "Go down this path for all other topics"
 | Action timeout | 504 | Yes | Simplify step or increase timeout |
 | Run Code error | 500 | Maybe | Fix code, then retry |
 | Credit exhausted | 402 | No | Upgrade plan or wait for monthly reset |
+
+## Output
+
+Return a compact incident record: observed error, failing trigger or action,
+correlation ID, reproduction input, remediation applied, and the verification
+result. Separate platform failures from errors in the connected service.
+
+## Examples
+
+When an agent step times out, replay the same bounded input in a test agent,
+inspect the step trace, reduce the action payload or timeout only where the
+trace identifies the bottleneck, then rerun the original fixture before
+re-enabling the production schedule.
 
 ## Resources
 

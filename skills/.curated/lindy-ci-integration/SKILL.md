@@ -12,7 +12,7 @@ description: 'Configure CI/CD pipelines for testing Lindy AI agent integrations.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -224,6 +224,19 @@ describe('Lindy Connectivity (smoke)', () => {
 | Connectivity test fails | Lindy endpoint unreachable in CI | Mark as `continue-on-error: true` |
 | Tests timeout | Network latency | Set `timeout-minutes: 10` on job |
 | Flaky live tests | Lindy processing delay | Add retry logic or mock external calls |
+
+## Output
+
+Produce a CI integration record containing the workflow trigger, test fixtures,
+required secrets by name only, failure ownership, and the command or dashboard
+evidence proving that the automation ran against a non-production agent.
+
+## Examples
+
+For a pull request, trigger a disposable Lindy test agent with fixed fixture
+input, wait for its terminal status, and fail the workflow when the expected
+action is absent or the agent reports an error. Keep the production agent ID
+out of the workflow and promote only after the fixture result is reviewed.
 
 ## Resources
 

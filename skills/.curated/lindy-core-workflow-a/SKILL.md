@@ -12,7 +12,7 @@ description: 'Build and configure multi-step Lindy AI agent workflows.
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
@@ -180,6 +180,19 @@ Channel: #support-triage
 | KB returns no results | Fuzziness too low | Increase to 100 (semantic search) |
 | Condition always picks same path | Ambiguous prompt | Make conditions more specific |
 | Agent loops indefinitely | No exit condition | Add measurable exit criteria |
+
+## Output
+
+Produce an agent specification with a named trigger, explicit identity and
+constraints, ordered actions, safe failure behavior, and one acceptance fixture
+that proves the agent performs the intended task without unintended side work.
+
+## Examples
+
+Create a lead-routing agent triggered by a tagged form submission. It validates
+the required fields, assigns the record only when the stated routing rule
+matches, and otherwise records a review task; a fixture for each branch proves
+the constraints are applied before any connected-system action.
 
 ## Resources
 

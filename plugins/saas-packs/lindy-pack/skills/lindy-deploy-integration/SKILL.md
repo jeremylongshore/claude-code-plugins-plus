@@ -12,7 +12,7 @@ description: 'Deploy applications that integrate with Lindy AI agents.
 
   '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(docker:*), Bash(npm:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

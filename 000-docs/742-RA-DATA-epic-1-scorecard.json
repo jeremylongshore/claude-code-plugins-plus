@@ -14,16 +14,16 @@
     "source": "scripts/validate-skills-schema.py --marketplace --skills-only --json",
     "status": "measured",
     "values": {
-      "a_error_total": 79,
-      "a_failing": 37,
-      "ab_error_total": 701,
-      "ab_failing": 338,
-      "b_failing": 301,
-      "error_files": 830,
-      "error_total": 3985,
+      "a_error_total": 70,
+      "a_failing": 33,
+      "ab_error_total": 690,
+      "ab_failing": 333,
+      "b_failing": 300,
+      "error_files": 825,
+      "error_total": 3974,
       "grade_distribution": {
-        "A": 1866,
-        "B": 1121,
+        "A": 1867,
+        "B": 1120,
         "C": 479,
         "D": 157,
         "F": 5
@@ -90,7 +90,7 @@
           "validator_reported_mixed_denominator_percent": 80.8
         },
         "marketplace_terminal": {
-          "error_total_all_validated_surfaces": 4222,
+          "error_total_all_validated_surfaces": 4211,
           "fully_compliant_surfaces": 1135,
           "terminal_denominator": {
             "agents": 357,
@@ -104,16 +104,16 @@
           "validator_reported_mixed_denominator_percent": 22.9
         },
         "skill_rows": {
-          "a_error_total": 79,
-          "a_failing": 37,
-          "ab_error_total": 701,
-          "ab_failing": 338,
-          "b_failing": 301,
-          "error_files": 830,
-          "error_total": 3985,
+          "a_error_total": 70,
+          "a_failing": 33,
+          "ab_error_total": 690,
+          "ab_failing": 333,
+          "b_failing": 300,
+          "error_files": 825,
+          "error_total": 3974,
           "grade_distribution": {
-            "A": 1866,
-            "B": 1121,
+            "A": 1867,
+            "B": 1120,
             "C": 479,
             "D": 157,
             "F": 5
@@ -131,14 +131,14 @@
       "values": {
         "average_score": 87.2,
         "grade_distribution": {
-          "A": 1866,
-          "B": 1121,
+          "A": 1867,
+          "B": 1120,
           "C": 479,
           "D": 157,
           "F": 5
         },
         "grade_percentages": {
-          "A": 51.4,
+          "A": 51.5,
           "B": 30.9,
           "C": 13.2,
           "D": 4.3,
@@ -154,12 +154,12 @@
       "source": ["scripts/validate-skills-schema.py"],
       "status": "measured",
       "values": {
-        "a_error_total": 79,
-        "a_failing": 37,
-        "ab_error_total": 701,
-        "ab_failing": 338,
-        "b_error_total": 622,
-        "b_failing": 301,
+        "a_error_total": 70,
+        "a_failing": 33,
+        "ab_error_total": 690,
+        "ab_failing": 333,
+        "b_error_total": 620,
+        "b_failing": 300,
         "certified_target": 0,
         "skill_summary_rows": 3628
       }

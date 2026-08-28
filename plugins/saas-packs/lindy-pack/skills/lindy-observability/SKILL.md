@@ -12,7 +12,7 @@ description: 'Monitor Lindy AI agent health, task success rates, and credit cons
 
   '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.15.0
+version: 1.16.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
