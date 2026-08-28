@@ -262,6 +262,31 @@ try {
 | Missing `.end()` on spans (v3) | Spans show "in progress" forever | Use `try/finally` or `observe` wrapper |
 | Hardcoding API keys | Security risk | Environment variables only |
 
+## Output
+
+Use this skill to produce a small integration plan and implementation diff: one
+process-lifetime client, trace and observation names that describe the user
+operation, safe input/output capture, and a shutdown path that drains pending
+events. Record the SDK generation assumed by the code so a future upgrade does
+not mix v3 span APIs with the v4+ OpenTelemetry APIs.
+
+## Error Handling
+
+Treat observability as non-critical infrastructure. A tracing export failure
+must be logged with enough context to diagnose it, but it must not replace or
+mask the application result. Avoid retrying a failed user operation merely to
+emit telemetry; instead rely on the SDK queue and alert on sustained export
+failures. Confirm legacy spans are ended in a `finally` block so an exception
+does not leave a permanently in-progress trace.
+
+## Examples
+
+For a request handler, create an active observation named `checkout-request`,
+attach a bounded summary of the request, call the business function once, then
+attach its result summary. On process shutdown, await the tracing SDK shutdown
+before closing the HTTP server. This gives one trace per request without adding
+an extra network call to the request's success path.
+
 ## Resources
 
 - [TypeScript SDK Instrumentation](https://langfuse.com/docs/observability/sdk/typescript/instrumentation)
