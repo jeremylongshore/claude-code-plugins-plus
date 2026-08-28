@@ -12,7 +12,7 @@ description: 'Create a minimal working Langfuse trace example.
 
   '
 allowed-tools: Read, Write, Edit
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:

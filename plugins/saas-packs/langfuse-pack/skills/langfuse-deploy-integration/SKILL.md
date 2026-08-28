@@ -12,7 +12,7 @@ description: 'Deploy Langfuse with your application across different platforms.
 
   '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(vercel:*), Bash(gcloud:*)
-version: 1.16.0
+version: 1.17.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 tags:
